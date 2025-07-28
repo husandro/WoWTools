@@ -113,6 +113,7 @@ end
 local function Save_Tooltip(tooltip, num)
     local bag= GetMoney() or 0
     local money= num*10000
+    tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '放入' or DEPOSIT)
 
     if bag>=money then
         tooltip:AddLine(
@@ -194,7 +195,6 @@ local function Init_Menu(self, root)
     end)
 
 --自动提取
-    autoSub:CreateDivider()
     local out= Save().autoOutMoney or 0
     autoSub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '自动提取' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, WITHDRAW),
@@ -295,22 +295,23 @@ local function Init_Menu(self, root)
 
 
 
-local isLeader= WoWTools_GuildMixin:IsLeaderOrOfficer()
+    local isLeader= WoWTools_GuildMixin:IsLeaderOrOfficer()
+
     root:CreateDivider()
     sub= root:CreateButton(
         WoWTools_DataMixin.onlyChinese and '放入' or DEPOSIT,
     function()
         return  MenuResponse.Open
     end)
-    
-    
 
-    for _, num in pairs({10000000,100000, 50000, 10000, 5000, 1000, 500, 100}) do
+
+
+    for _, num in pairs({100000, 50000, 10000, 5000, 1000, 500, 100}) do
         if num<5000 or isLeader then
             if num==1000 and isLeader then
                 sub:CreateDivider()
             end
-        
+
             sub2= sub:CreateButton(
                 WoWTools_Mixin:MK(num, 0)
                 ..'|A:Coin-Gold:0:0|a',

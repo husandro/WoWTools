@@ -84,7 +84,7 @@ local function UpdateTabs(self)
                 elseif remainingWithdrawals>0 then
                     remaining= remainingWithdrawals
                 else
-                    remaining= '|A:Adventures-Infinite:0:0|a'--∞
+                    remaining= IsGuildLeader() and '' or '|A:Adventures-Infinite:0:0|a'--∞
                 end
                 TabData[tabID]=remaining
             else
@@ -121,12 +121,30 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     Init_Button()
 
 
     hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(self)
         UpdateTabs(self)
+    end)
+
+--等级名称 RankName
+    GuildBankFrame.Emblem.Name= WoWTools_LabelMixin:Create(GuildBankFrame.Emblem, {justifyH='CENTER'})
+    GuildBankFrame.Emblem.Name:SetPoint('BOTTOM', GuildBankEmblemBorderBL, 'BOTTOMRIGHT')
+    hooksecurefunc(GuildBankFrame, 'UpdateTabard', function(self)
+        self.Emblem.Name:SetText(select(2, GetGuildInfo('player')) or '')
     end)
 
 

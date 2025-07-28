@@ -168,7 +168,9 @@ local function Init()
         end
     end)
 
-
+--购买标签，按钮, 不好点击
+    --BankPanel.PurchasePrompt.TabCostFrame.PurchaseButton:SetFrameStrata('HIGH')
+    BankFrame.NineSlice:SetFrameLevel(BankPanel:GetFrameLevel()+1)
 
     Init=function()end
 end
@@ -403,13 +405,6 @@ local function Init_TabSystem()
 
     Init_TabSystem=function()end
 end
-        --[[BankPanel:Reset()
-        for _, check in ipairs(BankPanel.TabSettingsMenu.DepositSettingsMenu.DepositSettingsCheckboxes) do
-            if check then
-                check.Icon:SetShown(Save().plusTab)
-            end
-        end]]
-
 
 
 

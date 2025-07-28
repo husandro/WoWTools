@@ -2496,13 +2496,23 @@ end]]
 
 --菜单
 function WoWTools_TextureMixin.Events:Blizzard_Menu()
+--bar
     hooksecurefunc(MenuProxyMixin, 'OnLoad', function(menu)
         self:SetScrollBar(menu)
     end)
+--外框
     hooksecurefunc(MenuStyle1Mixin, 'Generate', function(frame)
         local icon= frame:GetRegions()
         if icon and icon:GetObjectType()=="Texture" then
-           icon:SetVertexColor(0, 0, 0, 0.925)
+            self:SetAlphaColor(icon, true)
+            --icon:SetVertexColor(0, 0, 0, 0.925)
+        end
+    end)
+--横线
+    hooksecurefunc(MenuVariants, 'CreateDivider', function(frame)--MenuVariants.lua
+        local icon= frame:GetRegions()
+        if icon and icon:GetObjectType()=="Texture" then
+            self:SetAlphaColor(icon, true)
         end
     end)
 end

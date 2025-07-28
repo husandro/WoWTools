@@ -6055,7 +6055,9 @@
         "ArchaeologyFrameArtifactPageHistoryScrollChild",
         "ArchaeologyFrameArtifactPageHistoryScroll",
         "COMMUNITY_MEMBER_ROLE_NAME_MEMBER",
-        "COMMUNITY_MEMBER_ROLE_NAME_LEADER"
+        "COMMUNITY_MEMBER_ROLE_NAME_LEADER",
+        "MenuVariants",
+        "GuildBankEmblemBorderBL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

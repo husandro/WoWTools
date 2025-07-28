@@ -740,6 +740,8 @@ local function Init()
         end
     end)
 
+--提升，有时头像会 覆盖
+    BankPanel.MoneyFrame:SetFrameStrata('HIGH')
     Init=function()end
 end
 
