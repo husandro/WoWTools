@@ -135,7 +135,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     end
 
 --CloseButton
-    frame.CloseButton=CreateFrame('Button', name..'CloseButton', frame, 'UIPanelCloseButton')
+    frame.CloseButton=CreateFrame('Button', name..'CloseButton', frame, 'UIPanelCloseButton')--SharedUIPanelTemplates.xml
     frame.CloseButton:SetPoint('TOPRIGHT')
 
 --移动

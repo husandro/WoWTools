@@ -2560,11 +2560,13 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         end
     end)
 
-
+--NavBar
     hooksecurefunc('NavBar_Initialize', function(bar)
         self:HideFrame(bar)
         self:HideFrame(bar.overlay)
         self:HideFrame(bar.Inset)
     end)
+
+    --BattleBar-SwapPetFrame-DeadIcon
 end
 
