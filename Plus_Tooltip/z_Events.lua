@@ -237,9 +237,10 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerSpells()
                         local specID, name, _, icon= GetSpecializationInfo(specIndex)
                         if specID then
                             GameTooltip:AddDoubleLine(WoWTools_TextMixin:CN(name), icon and '|T'..icon..':0|t'..icon)
-                            GameTooltip:AddDoubleLine('ID '..(specID or ''), 'Index '..(specIndex or ''))
-                            GameTooltip:AddLine(' ')
-                            GameTooltip:AddLine(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName)
+                            GameTooltip:AddDoubleLine(
+                                'specID'..WoWTools_DataMixin.Icon.icon2..(specID or ''),
+                                'Index '..(specIndex or '')
+                            )
                         end
                     end
                     GameTooltip:Show()
