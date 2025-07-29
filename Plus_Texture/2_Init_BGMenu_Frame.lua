@@ -453,7 +453,7 @@ end
 
 
 --分开设置, 列表
-local function Add_Frame_Menu(_, root)
+local function Add_Frame_Menu(self, root)
     local sub, sub2
     sub=root:CreateButton(
         '|A:charactercreate-icon-dice:0:0|aFrames',
@@ -476,7 +476,7 @@ local function Add_Frame_Menu(_, root)
     end
 
 
-    
+
 --勾选所有
     sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
@@ -520,7 +520,7 @@ local function Add_Frame_Menu(_, root)
 
 
 
-
+    local frameName= self:GetName()
     table.sort(newTab, function(a, b)
         if a.enabled and b.enabled then
             return a.name < b.name
@@ -533,7 +533,9 @@ local function Add_Frame_Menu(_, root)
         local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(tab.texture, {480, 240})
         sub2= sub:CreateCheckbox(
             '|cffff8000'..index..'|r '
+            ..(tab.name== frameName and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
             ..tab.name
+            ..'|r'
             ..' |cnGREEN_FONT_COLOR:'..(tab.alpha or 0.5),
         function(data)
             return Save().Add[data.name].enabled
@@ -575,7 +577,22 @@ local function Add_Frame_Menu(_, root)
             end
             tooltip:AddLine(desc.data.texture)
             tooltip:AddLine('Alpha |cnGREEN_FONT_COLOR:'..(desc.data.alpha or 0.5))
+            local label= _G[desc.data.name..'TitleText']
+            local text= label and label:GetText()
+            if text and text~='' then
+               tooltip:AddLine('|cffff00ff'..text)
+            end
         end)
+
+        sub2:CreateButton(
+            (_G[tab.name] and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
+        function(data)
+            if _G[data.name] then
+                ShowUIPanel(_G[data.name])
+            end
+            return MenuResponse.Open
+        end, {name=tab.name})
     end
 
     WoWTools_MenuMixin:SetScrollMode(sub)
@@ -1017,14 +1034,14 @@ local function Set_Frame_Menu(frame, tab)
     end)
     self:HookScript('OnEnter', function(s)
         if not GameTooltip:IsShown() then
-            GameTooltip:SetOwner(s)
+            GameTooltip:SetOwner(s, 'ANCHOR_LEFT')
             GameTooltip:ClearLines()
         else
             GameTooltip:AddLine(' ')
         end
-        GameTooltip:AddDoubleLine(
-            WoWTools_TextureMixin.addName..WoWTools_DataMixin.Icon.icon2,
-            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        GameTooltip:AddLine(
+            WoWTools_TextureMixin.addName..WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             ..(
                 s.isRightShowButton
                 and WoWTools_DataMixin.Icon.right
