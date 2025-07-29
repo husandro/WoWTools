@@ -9,14 +9,6 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_MacroUI()
     if Save().disabled then
         self:Setup(MacroFrame)
-    else
-
-        WoWTools_MoveMixin:Setup(MacroFrame, {
-            needSize=true, setSize=true, minW=260, minH=250,
-            sizeRestFunc=function()
-                MacroFrame:SetSize(338, 424)
-            end
-        })
     end
 end
 
@@ -78,7 +70,7 @@ function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
         bgPoint=function(icon)
             bgPoint(icon)
         end,
-        settings=function(icon, texture, alpha)
+        settings=function(icon)
             bgPoint(icon)
         end
     })
@@ -218,6 +210,18 @@ local function Init()
     MacroFrameTextBackground:ClearAllPoints()
     MacroFrameTextBackground:SetPoint('TOPLEFT',MacroFrameScrollFrame, -4, 4)
     MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', MacroFrameScrollFrame, 4,-4)
+
+
+
+     WoWTools_MoveMixin:Setup(MacroFrame, {
+        needSize=true, setSize=true, minW=260, minH=250,
+        sizeRestFunc=function()
+            MacroFrame:SetSize(338, 424)
+        end
+    })
+
+
+    Init=function()end
 end
 
 
@@ -279,6 +283,8 @@ local function Init_Scroll()
 
         self.tempScrollPer2=  MacroFrame.MacroSelector.ScrollBox.scrollPercentage
     end)
+
+    Init_Scroll=function()end
 end
 
 

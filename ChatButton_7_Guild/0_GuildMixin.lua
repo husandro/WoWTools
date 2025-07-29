@@ -65,15 +65,16 @@ function WoWTools_GuildMixin:GetNumOnline(clubID)
     local members= clubID and C_Club.GetClubMembers(clubID) or {}
     for _, memberID in ipairs(members) do
         memberInfo = C_Club.GetMemberInfo(clubID, memberID)
-        if memberInfo and memberInfo.name and not memberInfo.isSelf then
-
-            if
-                memberInfo.presence == Enum.ClubMemberPresence.Online--在线
-                or memberInfo.presence == Enum.ClubMemberPresence.Away--离开
-                or memberInfo.presence == Enum.ClubMemberPresence.Busy--忙碌
-            then
-                online= online+1
-                table.insert(onlineTab, memberInfo)
+        if memberInfo and memberInfo.name then
+            if not memberInfo.isSelf then
+                if
+                    memberInfo.presence == Enum.ClubMemberPresence.Online--在线
+                    or memberInfo.presence == Enum.ClubMemberPresence.Away--离开
+                    or memberInfo.presence == Enum.ClubMemberPresence.Busy--忙碌
+                then
+                    online= online+1
+                    table.insert(onlineTab, memberInfo)
+                end
             end
             all= all+1
         end

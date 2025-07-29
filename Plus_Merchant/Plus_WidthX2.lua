@@ -467,6 +467,7 @@ local function Init_WidthX2()
         addTexture=true,
         size={12, 32}
     })
+    WoWTools_TextureMixin:SetAlphaColor(MerchantFrame.ResizeButton2.texture)
     MerchantFrame.ResizeButton2:SetPoint('RIGHT', 7, 0)
     MerchantFrame.ResizeButton2.texture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b,0.3)
     MerchantFrame.ResizeButton2:SetScript('OnLeave', function(self)

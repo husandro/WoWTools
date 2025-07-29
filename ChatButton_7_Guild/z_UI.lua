@@ -1,4 +1,27 @@
 
+function WoWTools_TooltipMixin.Events:Blizzard_Communities()
+    hooksecurefunc(CommunitiesAvatarButtonMixin, 'Init', function(btn)
+        if not btn.Name then
+            btn.Name= WoWTools_LabelMixin:Create(btn, {mouse=true})
+            btn.Name:SetPoint('BOTTOM')
+            btn.Name:SetScript('OnLeave', function(b)
+                b:SetAlpha(1)
+                GameTooltip:Hide()
+            end)
+            btn.Name:SetScript('OnEnter', function(b)
+                GameTooltip:SetOwner(b, 'ANCHOR_LEFT')
+                GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..'avatarId')
+                GameTooltip:Show()
+                b:SetAlpha(0.5)
+            end)
+        end
+        btn.Name:SetText(btn.avatarId or '')
+    end)
+end
+
+
+
+
 function WoWTools_TextureMixin.Events:Blizzard_GuildRename()--11.1.5
     self:SetNineSlice(GuildRenameFrame)
     self:SetAlphaColor(GuildRenameFrameBg, nil, nil, true)
@@ -308,6 +331,20 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     local sub
 
@@ -538,11 +575,20 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --社区设置
 --修改，图标, 可能会有BUG
+    --宏列表，按钮宽，数量
+    --[[CommunitiesAvatarPickerDialog:HookScript('OnSizeChanged', function(frame)--Blizzard_ScrollBoxSelector.lua
+        local value= math.max(2, math.modf(frame:GetWidth()/64))
+        if frame:GetStride()~= value then
+            frame:SetCustomStride(value)
+            frame:Init()
+        end
+    end)
+
     self:Setup(CommunitiesAvatarPickerDialog, {
-        setSize=true, notFuori=true,
+        setSize=true, notFuori=true, minW=207, minH=260,
     sizeRestFunc=function()
         CommunitiesAvatarPickerDialog:SetSize(510, 480)
-    end})
+    end})]]
 end
 
 
