@@ -47,7 +47,7 @@ local function Init_UI()
     MerchantBuyBackItemName:SetPoint('BOTTOMLEFT', MerchantBuyBackItemItemButtonIconTexture, 'TOPLEFT', 0, 5)
     MerchantBuyBackItemName:SetPoint('RIGHT', MerchantFrame)
     MerchantBuyBackItemName:SetHeight(6)
-    
+
     WoWTools_ColorMixin:Setup(MerchantBuyBackItemItemButtonNormalTexture, {alpha=0.5})
 
 --修理一件物品
@@ -194,23 +194,26 @@ local function Set_Item_Info()
     local page= isMerce and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     local numItem= isMerce and numMerchantNumItems or numBuybackItems
 
-    local btn, index
+    local showItemInfo= not Save().notItemInfo
 
     for i=1, page do
-        index = isMerce and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
+        local index = isMerce and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
 
-        btn= _G["MerchantItem"..i]
+        local btn= _G["MerchantItem"..i]
+
+
         if not btn then
             break
         end
 
-        local stats, spellID, num, itemID, itemLink
+        local stats, spellID, num, itemID, itemLink, itemName
         Create_Label(btn)
 
-        if index<= numItem then
+        if index<= numItem and showItemInfo then
             if isMerce then
                 itemID= GetMerchantItemID(index)
                 itemLink=  GetMerchantItemLink(index)
+
             else
                 itemID= C_MerchantFrame.GetBuybackItemID(index)
                 itemLink= GetBuybackItemLink(index)
@@ -240,6 +243,22 @@ local function Set_Item_Info()
                     stats= (stats or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
                 end
             end
+
+--怎理，名称
+            local itemButton= _G["MerchantItem"..i.."ItemButton"]
+            if itemButton and itemButton.name then
+                itemName= WoWTools_TextMixin:CN(itemButton.name, {itemID=itemID, isName=true})
+                if itemName then
+                    itemName= itemName:match('^|c........(.+)|r$') or itemName
+    --截取 :(.+)
+                    itemName= itemName:match('%：(.+)') or itemName
+                    itemName= itemName:match('%:(.+)') or itemName
+                    itemName= itemName:match('%- (.+)') or itemName
+                end
+                if itemName~=itemButton.name then
+                    _G["MerchantItem"..i.."Name"]:SetText(itemName);
+                end
+            end
         end
 --索引
         btn.IndexLable:SetText(itemID and index or '')
@@ -251,7 +270,7 @@ local function Set_Item_Info()
 --提示
         WoWTools_ItemMixin:SetupInfo(
             _G["MerchantItem"..i..'ItemButton'],
-            {merchant={slot=index, buyBack= not isMerce}}
+            {merchant=showItemInfo and {slot=index, buyBack= not isMerce} or nil}
         )
     end
 
@@ -329,6 +348,7 @@ local function Init_SetItem_Info()
         local itemCount = GetMerchantItemCostInfo(index)
         local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame"
         local usedCurrencies = 0
+        local showItemInfo= not Save().notItemInfo
         if ( itemCount > 0 ) then
             for i=1, MAX_ITEM_COST do
                 local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
@@ -337,10 +357,12 @@ local function Init_SetItem_Info()
                     local btn = _G[frameName.."Item"..usedCurrencies]
                     if btn and btn:IsShown() then
                         local num
-                        if currencyName then
-                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
-                        else
-                            num= C_Item.GetItemCount(itemLink, true, false, true)
+                        if showItemInfo then
+                            if currencyName then
+                                num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
+                            else
+                                num= C_Item.GetItemCount(itemLink, true, false, true)
+                            end
                         end
                         if itemValue and num then
                             if num>=itemValue then

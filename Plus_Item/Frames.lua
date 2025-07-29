@@ -15,37 +15,6 @@ end
 
 
 
-function WoWTools_ItemMixin.Frames:DungeonCompletionAlertFrameReward_SetRewardItem()
-    --boss掉落，物品, 可能，会留下 StaticPopup1 框架
-    hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
-        WoWTools_ItemMixin:SetItemStats(lootFrame, data.itemLink, {point=lootFrame.Icon})
-    end)
-
-        --拾取时, 弹出, 物品提示，信息, 战利品
-    --AlertFrameSystems.lua
-    hooksecurefunc('DungeonCompletionAlertFrameReward_SetRewardItem', function(frame, itemLink)
-        WoWTools_ItemMixin:SetItemStats(frame, frame.itemLink or itemLink , {point=frame.texture})
-    end)
-    hooksecurefunc('LootWonAlertFrame_SetUp', function(frame)
-        WoWTools_ItemMixin:SetItemStats(frame, frame.hyperlink, {point= frame.lootItem.Icon})
-    end)
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(frame)
-        WoWTools_ItemMixin:SetItemStats(frame, frame.hyperlink, {point=frame.Icon})
-    end)
-
-    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(frame)
-        WoWTools_ItemMixin:SetItemStats(frame, frame.hyperlink, {point= frame.Icon})
-    end)
-
-
-    hooksecurefunc(LootItemExtendedMixin, 'Init', function(frame, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
-        local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency)
-        WoWTools_ItemMixin:SetItemStats(frame, itemLink, {point= frame.Icon})
-    end)
-end
-
-
-
 
 
 

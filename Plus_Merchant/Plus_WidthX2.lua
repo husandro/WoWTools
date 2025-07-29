@@ -207,7 +207,7 @@ local function ResizeButton2_Menu(self, root)
     if not MerchantFrame.ResizeButton2 then
         return
     end
-    
+
     local sub
     sub=root:CreateButton(
         '|A:common-icon-rotateright:0:0|a'
@@ -299,6 +299,17 @@ local function ResizeButton2_Menu(self, root)
     end, function(value)
         Save().btnNameScale= value
         Create_ItemButton()
+    end)
+
+    root:CreateDivider()
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO),
+    function()
+        return not Save().notItemInfo
+    end, function()
+        Save().notItemInfo= not Save().notItemInfo and true or nil
+        WoWTools_MerchantMixin:Update_MerchantFrame()
+
     end)
 end
 
@@ -400,7 +411,7 @@ local function Init_WidthX2()
             index= index+1
             btn= _G['MerchantItem'..index]
         end
-        
+
         MerchantPageText:SetText(MerchantFrame.page..'/'..math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
 
         MerchantFrame.ResizeButton.setSize=true
@@ -467,20 +478,21 @@ local function Init_WidthX2()
         addTexture=true,
         size={12, 32}
     })
-    WoWTools_TextureMixin:SetAlphaColor(MerchantFrame.ResizeButton2.texture)
+    WoWTools_TextureMixin:SetAlphaColor(MerchantFrame.ResizeButton2.texture, true)
     MerchantFrame.ResizeButton2:SetPoint('RIGHT', 7, 0)
     MerchantFrame.ResizeButton2.texture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b,0.3)
     MerchantFrame.ResizeButton2:SetScript('OnLeave', function(self)
-        self.texture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b,0.3)
+        --self.texture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b,0.3)
         GameTooltip:Hide()
     end)
     MerchantFrame.ResizeButton2:SetScript('OnEnter', function(self)
-        self.texture:SetVertexColor(1,1,1,1)
+        --self.texture:SetVertexColor(1,1,1,1)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(WoWTools_MerchantMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)..WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL )..WoWTools_DataMixin.Icon.right)
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)..WoWTools_DataMixin.Icon.left,
+            WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        )
         GameTooltip:Show()
     end)
 

@@ -31,7 +31,9 @@ local P_Save={
     WoWBuyItems={
         [8529]=200,--诺格弗格药剂
     },
-    repairItems={date=date('%x'), player=0, guild=0, num=0}
+    repairItems={date=date('%x'), player=0, guild=0, num=0},
+
+    --notItemInfo=true,--禁用物品信息
     --ShowBackground=false,--显示背景
 }
 
