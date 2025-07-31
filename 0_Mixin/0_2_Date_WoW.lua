@@ -460,7 +460,8 @@ EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()--
     tab={}
     for i=1, GetNumSavedInstances() do--副本
         local name, _, reset, difficulty, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
-        if reset and reset>0 and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 and difficultyName then
+        if name and reset and reset>0 and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 and difficultyName then
+        
             local killed = encounterProgress ..'/'..numEncounters;
             killed = encounterProgress ==numEncounters and '|cnGREEN_FONT_COLOR:'..killed..'|r' or killed
             difficultyName=WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficulty)
@@ -489,45 +490,15 @@ end)
 
 
 
-
-
-
-
-
-
-
-
---稀有怪数 BOSS_KILL
---[[EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, unit)
-    if IsInInstance() or not unit or not UnitIsDead(unit) or UnitIsPlayer(unit) then
-        return
-    end
-    local classification = UnitClassification(unit)
-    if classification == "rare" or classification == "rareelite" then
-        local threat = UnitThreatSituation('player',unit)
-        if threat and threat>0 then
-            local name=UnitName(unit)
-            if name then
-                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]= UnitGUID('target')--以前用true,注意旧数据
-                print(name, UnitGUID('target'))
-                --RequestRaidInfo()
-            end
-        end
-    end
-end)]]
-
-
 EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function()
-    if IsInInstance() or not UnitExists('target') then
+    if IsInInstance() then
         return
     end
     local classification = UnitClassification('target')
     if classification == "rare" or classification == "rareelite" then
-        local name=UnitName('target')
+        local name=WoWTools_TextMixin:CN(UnitName('target'), {unit='target', isName=true})
         if name then
             WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]= UnitGUID('target')
-            print(name, UnitGUID('target'))
-            --RequestRaidInfo()
         end
     end
 end)

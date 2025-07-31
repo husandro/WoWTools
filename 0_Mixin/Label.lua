@@ -163,28 +163,9 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
         local text=''
         if tab.type=='currency' and tab.id then
             local name, info= WoWTools_CurrencyMixin:GetName(tab.id, nil, nil)
-            if info and name then
+            if info and name and info.discovered then
                 text= name
             end
-            --[[local info, num, _, percent, isMax= WoWTools_CurrencyMixin:GetInfo(tab.id)
-            if info and num and (num>0 or showAll or tab.show) then
-                if not info.discovered or num==0  then
-                    text='|cff8282820|r'
-                    if percent then
-                        text= text..(info.discovered and '|cffffffff ' or '|cff828282 ').. percent..'%|r'
-                    end
-                elseif isMax or percent then
-                    text= format('|cnRED_FONT_COLOR:%s|r%s', WoWTools_Mixin:MK(num,3),
-                        percent and format(' |cff828282%d%%|r', percent) or ''
-                    )
-
-                elseif percent then
-                    text=format('|cnGREEN_FONT_COLOR:%s |cffffffff(%d%%)|r|r', WoWTools_Mixin:MK(num, 3), percent)
-                else
-                    text= format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin:MK(num,3))
-                end
-                text= format('|T%d:0|t%s%s', info.iconFileID or 0, showName and info.name or '', text)
-            end]]
 
         elseif tab.type=='item' and tab.id then
             WoWTools_Mixin:Load({id=tab.id, type='item'})

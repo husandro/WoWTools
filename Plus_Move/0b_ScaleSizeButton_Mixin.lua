@@ -851,7 +851,8 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     local initFunc= tab.initFunc--初始
 
 
-    frame.ResizeButton= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+    frame.ResizeButton= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--UI-HUD-UnitFrame-Player-PortraitOn-CornerEmbellishment SharedUIPanelTemplates.lua
+    
     local btn= frame.ResizeButton
 
     btn:SetFrameStrata('DIALOG')

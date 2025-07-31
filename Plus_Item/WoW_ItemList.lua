@@ -1896,9 +1896,9 @@ local function Init_List()
         List2Buttons[name]:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(
-                WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL),
-                self.tooltip..WoWTools_DataMixin.Icon.left
+            GameTooltip:AddLine(
+                '|A:'..self.texture:GetAtlas()..':0:0|a'..self.tooltip..WoWTools_DataMixin.Icon.left
+                ..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             )
             GameTooltip:Show()
         end)
