@@ -264,7 +264,7 @@ end
 --https://wago.tools/db2/SpellFlyout?locale=zhCN
 --Interface\\AddOns\\WoWTools\\Source\\Texture\\WoW\\0.tga
 WoWTools_DataMixin.FlyoutID={
-
+    --{flyoutID= 244, ver=10},--英雄之路：“地心之战”第3赛季
     {flyoutID= 232, ver=10},--'英雄之路：地心之战--11
     {flyoutID= 242, ver=10, isRaid=true},--英雄之路：地心之战团队副本
 
