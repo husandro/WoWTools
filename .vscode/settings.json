@@ -6058,7 +6058,8 @@
         "COMMUNITY_MEMBER_ROLE_NAME_LEADER",
         "MenuVariants",
         "GuildBankEmblemBorderBL",
-        "CommunitiesAvatarButtonMixin"
+        "CommunitiesAvatarButtonMixin",
+        "StaticPopup1EditBox"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

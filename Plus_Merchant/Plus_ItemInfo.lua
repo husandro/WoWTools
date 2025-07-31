@@ -221,10 +221,8 @@ local function Set_Item_Info()
 
 --自动购买， 数量
             num=(not Save().notAutoBuy and itemID) and Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID]
-
-
-
-            num= num and num..'|T236994:0|t' or ''
+            --num= num and num..'|T236994:0|t' or ''
+            num= num and num..'|A:Perks-ShoppingCart:0:0|a' or ''
 
 --包里，银行
             num= num ..(WoWTools_ItemMixin:GetCount(itemID, {notZero=true}) or '')

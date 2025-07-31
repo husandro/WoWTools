@@ -5,7 +5,7 @@ end
 
 local function Get_Buy_Num(itemID)
     if itemID then
-        local num=WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]
+        local num=Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID]
         num= num==true and 1 or num
         return num
     end
@@ -13,7 +13,7 @@ end
 
 local function SaveBuyItem(itemID, num)--当num=nil时，会清除    
     num= num==true and 1 or num
-    WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]=num
+    Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID]=num
 end
 
 
@@ -132,84 +132,6 @@ end
 
 
 
-local function Add_BuyItem(itemID, itemLink)
-
-    if not itemID then
-        return
-    end
-
-
-        local icon
-        icon= C_Item.GetItemIconByID(itemLink)
-        icon= icon and '|T'..icon..':0|t' or ''
-
-        StaticPopupDialogs['WoWTools_AutoBuy']= {
-            text =WoWTools_DataMixin.addName..' '..WoWTools_MerchantMixin.addName
-            ..'|n|n'.. (WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..icon ..itemLink
-            ..'|n|n'..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.Name_Realm..': ' ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
-            ..'|n|n0: '..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-            ..(Save().notAutoBuy and '|n|n'..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..WoWTools_TextMixin:GetEnabeleDisable(false) or ''),
-            button1 = WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE,
-            button2 = WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
-            whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
-            OnAccept=function(self)
-                local edit= self.editBox or self:GetEditBox()
-                local num= edit:GetNumber()
-                if num==0 then
-                    SaveBuyItem(itemID, nil)
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
-                else
-                    SaveBuyItem(itemID, num)
-                    Save().Sell[itemID]=nil
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
-                    set_buy_item()--购买物品
-                end
-                BuyItemButton:set_text()--回购，数量，提示
-                WoWTools_MerchantMixin:Update_MerchantFrame()
-            end,
-            OnShow=function(self)
-                local edit= self.editBox or self:GetEditBox()
-                edit:SetNumeric(true)
-                local num= Get_Buy_Num(itemID) or 1
-                if num then
-                    edit:SetText(num)
-                    edit:SetFocus()
-                end
-            end,
-            OnHide= function(self)
-                local edit= self.editBox or self:GetEditBox()
-                edit:SetText("")
-                edit:ClearFocus()
-            end,
-            EditBoxOnEscapePressed =function(s)
-                s:ClearFocus()
-                s:GetParent():Hide()
-            end,
-        }
-        StaticPopup_Show('WoWTools_AutoBuy')
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -217,20 +139,10 @@ end
 
 local function Check_All(onlyRegents)
     return WoWTools_BagMixin:GetItems(nil, not onlyRegents, onlyRegents, function(_, _, info)
-        --[[local data= WoWTools_ItemMixin:GetTooltip({
-            --hyperLink= info.hyperlink,
-            bag=bag,
-            slot=slot,
-            onlyText=true,
-            text={ITEM_UNSELLABLE}--无法出售
-        })]]
-
-        --print((select(11, C_Item.GetItemInfo(info.hyperlink))), 'a')
         return not info.isLocked
             and info.quality<Enum.ItemQuality.Legendary
             and (select(11, C_Item.GetItemInfo(info.hyperlink)) or 0)> 0
             and not Save().noSell[info.itemID]
-            --and not data.text[ITEM_UNSELLABLE]
     end)
 end
 
@@ -447,6 +359,71 @@ end
 
 
 local function Init()
+    StaticPopupDialogs['WoWTools_AutoBuy']= {
+        text = WoWTools_DataMixin.Icon.icon2
+        ..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))
+        ..'|n'..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.Name_Realm
+        ..'|n',
+        button1 = WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE,
+        button2 = WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
+        button3 = WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
+        whileDead=true, hideOnEscape=true, exclusive=true,
+        OnShow=function(self, data)
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetNumeric(true)
+            local num= Get_Buy_Num(data.itemID) or select(8, C_Item.GetItemInfo(data.itemID)) or 1
+            edit:SetText(num)
+            edit:SetFocus()
+            edit:HighlightText()
+        end,
+        OnAccept=function(self, data)
+            local edit= self.editBox or self:GetEditBox()
+            local num= edit:GetNumber()
+            if num==0 then
+                SaveBuyItem(data.itemID, nil)
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                    ..'|r',
+                    select(2, C_Item.GetItemInfo(data.itemID)) or data.name or data.itemID
+                )
+            else
+                SaveBuyItem(data.itemID, num)
+                Save().Sell[data.itemID]=nil
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r',
+                    select(2, C_Item.GetItemInfo(data.itemID)) or data.name or data.itemID
+                )
+                set_buy_item()--购买物品
+            end
+            BuyItemButton:set_text()--回购，数量，提示
+            WoWTools_MerchantMixin:Update_MerchantFrame()
+        end,
+        OnAlt=function(_, data)
+            SaveBuyItem(data.itemID, nil)
+            print(
+                WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r',
+                select(2, C_Item.GetItemInfo(data.itemID)) or data.name or data.itemID
+            )
+        end,
+        OnHide= function(self)
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetText("")
+            edit:ClearFocus()
+        end,
+        EditBoxOnEscapePressed =function(s)
+            s:GetParent():Hide()
+        end,
+        hasItemFrame=true,
+        hasEditBox=true,
+    }
+
+
+
+
+
     tabCN= {
         [0]= WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC,
         [1]= WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC,
@@ -576,7 +553,21 @@ local function Init()
             self:set_text()--回购，数量，提示
 
         elseif infoType=='merchant' and itemID then--购买物品, itemID 为 index
-            Add_BuyItem(GetMerchantItemID(itemID), GetMerchantItemLink(itemID))
+            itemID= GetMerchantItemID(itemID)
+
+            if not itemID then
+                return
+            end
+
+            local itemName, _, itemRarity, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(itemID)
+            StaticPopup_Show('WoWTools_AutoBuy', nil, nil, {
+                link= GetMerchantItemLink(itemID),
+                itemID= itemID,
+                name= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}),
+                color= {ITEM_QUALITY_COLORS[itemRarity].color:GetRGBA()},
+                texture= itemTexture,
+                count=C_Item.GetItemCount(itemID, true, true, true, true),
+            })
             ClearCursor()
 
         else

@@ -1605,6 +1605,11 @@ function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
         if p then
             self:SetFrame(p.BG, {notAlpha=true})
         end
+        local edit= _G['StaticPopup'..i..'EditBox']
+        if edit then
+            self:SetEditBox(edit)
+            self:SetNineSlice(edit, 1)
+        end
     end
 end
 

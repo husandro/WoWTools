@@ -429,24 +429,26 @@ local function Init_EditBox()
             p.MouseoverOverlay:SetShown(true)
         end)
 
+
 --点击，事件
+        local function set_script(s)
+            local data = s:GetElementData()
+            local t=''
+            if data then
+                t=(GetDisplayEvent(data) or '')
+                    ..' '
+                    ..(AddTooltipArguments(data.args) or '')
+                    ..' '
+                    ..(data.formattedTimestamp and GRAY_FONT_COLOR:WrapTextInColorCode(data.formattedTimestamp) or '')
+            end
+            Frame:SetText(t)
+            Frame.editBox:SetCursorPosition(1)
+        end
+
         hooksecurefunc(self, 'SetScript', function(frame, text)
             if text=='OnClick' then
                 frame:HookScript('OnClick', function(s)
-                    local data = s:GetElementData()
-                    local t=''
-                    if data then
-                        --[[if not EventTrace:IsLoggingPaused() then--移过时，暂停
-                            EventTrace:TogglePause()
-                        end]]
-                        t=(GetDisplayEvent(data) or '')
-                            ..' '
-                            ..(AddTooltipArguments(data.args) or '')
-                            ..' '
-                            ..(data.formattedTimestamp and GRAY_FONT_COLOR:WrapTextInColorCode(data.formattedTimestamp) or '')
-                    end
-                    Frame:SetText(t)
-                    Frame.editBox:SetCursorPosition(1)
+                    set_script(s)
                 end)
             end
         end)

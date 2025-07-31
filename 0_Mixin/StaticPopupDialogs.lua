@@ -196,7 +196,7 @@ StaticPopup_Show('WoWTools_Item',addName, nil, {
     color= {ITEM_QUALITY_COLORS[itemRarity].color:GetRGBA()},
     texture= itemTexture,
     count=C_Item.GetItemCount(info.itemID, true, false, true,true),
-    OnShow=function(self, data)
+    OnShow=function(s, data)
     end,
     SetValue = function(_, data)
     end,
