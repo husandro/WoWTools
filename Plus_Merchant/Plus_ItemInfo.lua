@@ -446,11 +446,10 @@ end
 
 --堆叠,数量,框架 StackSplitFrame.lua
 local function Init_StackSplitFrame()
-    local frame= StackSplitFrame
-    frame.restButton=WoWTools_ButtonMixin:Cbtn(frame, {size=22})--重置
-    frame.restButton:SetPoint('TOP')
-    frame.restButton:SetNormalAtlas('characterundelete-RestoreButton')
-    frame.restButton:SetScript('OnMouseDown', function(self)
+    StackSplitFrame.restButton=WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size=22})--重置
+    StackSplitFrame.restButton:SetPoint('TOP')
+    StackSplitFrame.restButton:SetNormalAtlas('characterundelete-RestoreButton')
+    StackSplitFrame.restButton:SetScript('OnMouseDown', function(self)
         local f= self:GetParent()
         f.split= f.minSplit
         f.LeftButton:SetEnabled(false)
@@ -458,49 +457,49 @@ local function Init_StackSplitFrame()
         f:UpdateStackText()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
-    frame.restButton:SetScript('OnEnter', function(self)
+    StackSplitFrame.restButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET)
         GameTooltip:Show()
     end)
-    frame.restButton:SetScript('OnLeave', GameTooltip_Hide)
+    StackSplitFrame.restButton:SetScript('OnLeave', GameTooltip_Hide)
 
-    frame.MaxButton=WoWTools_ButtonMixin:Cbtn(frame, {size={40,20}})
-    frame.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
-    frame.MaxButton:SetPoint('LEFT', frame.restButton, 'RIGHT')
-    frame.MaxButton:SetScript('OnMouseDown', function(self)
+    StackSplitFrame.MaxButton=WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size={40,20}})
+    StackSplitFrame.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
+    StackSplitFrame.MaxButton:SetPoint('LEFT', StackSplitFrame.restButton, 'RIGHT')
+    StackSplitFrame.MaxButton:SetScript('OnMouseDown', function(self)
         local f= self:GetParent()
         f.split=f.maxStack
         f:UpdateStackText()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
 
-    frame.MetaButton=WoWTools_ButtonMixin:Cbtn(frame, {size={40,20}})
-    frame.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
-    frame.MetaButton:SetPoint('RIGHT', frame.restButton, 'LEFT')
-    frame.MetaButton:SetScript('OnMouseDown', function(self)
+    StackSplitFrame.MetaButton=WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size={40,20}})
+    StackSplitFrame.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
+    StackSplitFrame.MetaButton:SetPoint('RIGHT', StackSplitFrame.restButton, 'LEFT')
+    StackSplitFrame.MetaButton:SetScript('OnMouseDown', function(self)
         local f= self:GetParent()
         f.split=floor(f.maxStack/2)
         f:UpdateStackText()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
 
-    frame.editBox=CreateFrame('EditBox', nil, frame)--输入框
-    frame.editBox:SetSize(100, 23)
-    frame.editBox:SetPoint('TOPLEFT', 38, -18)
-    frame.editBox:SetTextColor(0,1,0)
-    frame.editBox:SetAutoFocus(false)
-    frame.editBox:ClearFocus()
-    frame.editBox:SetFontObject("ChatFontNormal")
-    frame.editBox:SetMultiLine(false)
-    frame.editBox:SetNumeric(true)
-    --frame.editBox:SetScript('OnEditFocusLost', function(self) self:SetText('') end)
-    frame.editBox:SetScript("OnEscapePressed",function(self) self:ClearFocus() end)
-    frame.editBox:SetScript('OnEnterPressed', function(self) self:ClearFocus() end)
-    frame.editBox:SetScript('OnHide', function(self) self:SetText('') self:ClearFocus() end)
-    frame.editBox:SetScript('OnTextChanged',function(self, userInput)
+    StackSplitFrame.editBox=CreateFrame('EditBox', nil, StackSplitFrame)--输入框
+    StackSplitFrame.editBox:SetSize(100, 23)
+    StackSplitFrame.editBox:SetPoint('TOPLEFT', 38, -18)
+    StackSplitFrame.editBox:SetTextColor(0,1,0)
+    StackSplitFrame.editBox:SetAutoFocus(false)
+    StackSplitFrame.editBox:ClearFocus()
+    StackSplitFrame.editBox:SetFontObject("ChatFontNormal")
+    StackSplitFrame.editBox:SetMultiLine(false)
+    StackSplitFrame.editBox:SetNumeric(true)
+    --StackSplitFrame.editBox:SetScript('OnEditFocusLost', function(self) self:SetText('') end)
+    StackSplitFrame.editBox:SetScript("OnEscapePressed",function(self) self:ClearFocus() end)
+    StackSplitFrame.editBox:SetScript('OnEnterPressed', function(self) self:ClearFocus() end)
+    StackSplitFrame.editBox:SetScript('OnHide', function(self) self:SetText('') self:ClearFocus() end)
+    StackSplitFrame.editBox:SetScript('OnTextChanged',function(self, userInput)
         if not userInput then
             return
         end
@@ -517,7 +516,7 @@ local function Init_StackSplitFrame()
         f:UpdateStackText()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
-    frame:HookScript('OnMouseWheel', function(self, d)
+    StackSplitFrame:HookScript('OnMouseWheel', function(self, d)
         local minSplit= self.minSplit or 1
         local maxStack= self.maxStack or 1
         local num= self.split or 1

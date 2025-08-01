@@ -29,7 +29,7 @@ local P_Save={
         --[guid]={[itemID]=numbre,}
     },
     WoWBuyItems={
-        [8529]=200,--诺格弗格药剂
+        --[8529]=200,--诺格弗格药剂
     },
     repairItems={date=date('%x'), player=0, guild=0, num=0},
 
