@@ -335,18 +335,26 @@ end
 
 local function Set_ItemList_Tooltip(sub)
     sub:SetTooltip(function(tooltip, desc)
-        for _, data in pairs(desc.data.items or {}) do
+        if not desc.data.items then
+            return
+        end
+        local num= #desc.data.items
+        local index=0
+        for i, data in pairs(desc.data.items) do
             if data.bagID then
                 if C_Container.HasContainerItem(data.bagID, data.slotID) then
+                    index= index+1
                     local itemInfo= C_Container.GetContainerItemInfo(data.bagID, data.slotID)
                     if itemInfo then
-                        tooltip:AddLine(
+                        tooltip:AddDoubleLine(
                             '|T'..(itemInfo.iconFileID or 0)..':0|t'
                             ..(
                                 WoWTools_HyperLink:CN_Link(itemInfo.hyperlink, {itemID=itemInfo.itemID, isName=true})
                                 or itemInfo.itemID
                             )
-                            ..' x'..(itemInfo.stackCount==1000 and '1k' or itemInfo.stackCount or 1)
+                            ..' x'..(itemInfo.stackCount==1000 and '1k' or itemInfo.stackCount or 1),
+
+                            index..')'
                         )
                     end
                 end
@@ -354,12 +362,19 @@ local function Set_ItemList_Tooltip(sub)
                 local itemLink= GetGuildBankItemLink(data.tabID, data.slotID)
                 local texture, itemCount= GetGuildBankItemInfo(data.tabID, data.slotID)
                 if itemLink or texture then
-                    tooltip:AddLine(
+                    index= index+1
+                    tooltip:AddDoubleLine(
                         '|T'..(texture or 0)..':0|t'
                         ..(WoWTools_HyperLink:CN_Link(itemLink, {isName=true}) or '')
-                        ..' x'..(itemCount==1000 and '1k' or itemCount or 1)
+                        ..' x'..(itemCount==1000 and '1k' or itemCount or 1),
+
+                        index..')'
                     )
                 end
+            end
+            if index>= 20 and num>i and not IsModifierKeyDown() then
+                tooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:<Shift>', '|cnGREEN_FONT_COLOR:'..(num-i))
+                break
             end
         end
     end)
@@ -388,7 +403,7 @@ local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem, titl
             else
                 num, items= Get_Bag_Num(classID, nil, onlyItem)
             end
-            
+
             sub=root:CreateButton(
                 (num==0 and '|cff828282' or '')
                 ..(classID<10 and ' ' or '')
@@ -412,7 +427,7 @@ local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem, titl
             if isOut then
                 num, items= Get_Bank_Num(tabID, 7, subClassID, onlyItem)
             else
-                num, items= Get_Bag_Num(7, subClassID, onlyItem) 
+                num, items= Get_Bag_Num(7, subClassID, onlyItem)
             end
             sub=root:CreateButton(
                 (num==0 and '|cff828282' or '')
@@ -469,14 +484,13 @@ local function Init_Out_Bank_Menu(self, root)
     function(data)
         Out_Bank(self, data.tabID, nil, nil, true, data.numOut)
         return MenuResponse.Open
-    end, {tabID= tabID, numOut=numOut, items})
+    end, {tabID=tabID, numOut=numOut, items=items})
     Set_ItemList_Tooltip(sub)
-    --sub:SetEnabled(numOut and true or nil)
 
     if not disabled and num>0 then
         Init_SubMenu(self, sub, tabID, true, numOut, true, name)
     end
-        
+
 --提取材料
     num, items= Get_Bank_Num(tabID, nil, nil, false)
     name= ((disabled or num==0) and '|cff828282' or '')
@@ -488,9 +502,8 @@ local function Init_Out_Bank_Menu(self, root)
     function(data)
         Out_Bank(self, data.tabID, nil, nil, false, numOut)
         return MenuResponse.Open
-    end, {tabID=tabID, numOut=numOut})
+    end, {tabID=tabID, numOut=numOut, items=items})
     Set_ItemList_Tooltip(sub)
-    --sub:SetEnabled(numOut and true or nil)
 
     if not disabled and num>0 then
         Init_SubMenu(self, sub, tabID, true, numOut, false, name)
@@ -628,7 +641,10 @@ local function Init()
     btn:SetupMenu(Init_Out_Bag_Menu)
 
 
-    local btn2= WoWTools_ButtonMixin:Menu(GuildBankFrame, {atlas='Cursor_OpenHand_32'})
+    local btn2= WoWTools_ButtonMixin:Menu(GuildBankFrame, {
+        atlas='Cursor_OpenHand_32',
+        name='WoWToolsGuildBankOutMenuButton',
+    })
     btn2:SetPoint('RIGHT', btn, 'LEFT', -2, 0)
 
     btn2:SetScript('OnLeave', function()

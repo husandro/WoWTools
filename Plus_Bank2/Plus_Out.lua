@@ -85,19 +85,29 @@ local function Use_Container_Item(free, containerID, data)
             C_Container.UseContainerItem(containerID, itemInfo.slotID)
             free= free-1
         end
-        
     end
     return free
 end
 
 local function Set_Tooltip_ItemList(tooltip, containerID, data)
-    for _, itemInfo in pairs(data or {}) do
+    if not data then
+        return
+    end
+    local num= #data
+    local index=0
+    for i, itemInfo in pairs(data) do
         if C_Container.HasContainerItem(containerID, itemInfo.slotID) then
-            tooltip:AddLine(
+            index=index+1
+            tooltip:AddDoubleLine(
                 '|T'..(itemInfo.iconFileID or 0)..':0|t'
                 ..WoWTools_HyperLink:CN_Link(itemInfo.hyperlink, {itemID=itemInfo.itemID, isName=true})
-                ..' x'..(itemInfo.stackCount==1000 and '1k' or itemInfo.stackCount or 1)
+                ..' x'..(itemInfo.stackCount==1000 and '1k' or itemInfo.stackCount or 1),
+
+                index..')'
             )
+            if index>20 and num>i and not IsModifierKeyDown() then
+                tooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:<Shift>',  '|cnGREEN_FONT_COLOR:#'..num-i)
+            end
         end
     end
 end
