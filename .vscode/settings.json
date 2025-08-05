@@ -6059,7 +6059,9 @@
         "MenuVariants",
         "GuildBankEmblemBorderBL",
         "CommunitiesAvatarButtonMixin",
-        "StaticPopup1EditBox"
+        "StaticPopup1EditBox",
+        "FriendsFrameIcon",
+        "ChannelFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

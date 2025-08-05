@@ -84,7 +84,7 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_RaidFrame()
     self:HideTexture(RaidInfoDetailHeader)
     self:SetButton(RaidInfoCloseButton)
-    self:SetFrame(RaidInfoFrame.Border)
+    self:SetFrame(RaidInfoFrame.Border, {show={[RaidInfoFrame.Border.Bg]=true}})
     self:SetFrame(RaidInfoFrame.Header)
     self:SetAlphaColor(RaidInfoDetailFooter)
     self:SetScrollBar(RaidInfoFrame)
@@ -246,7 +246,10 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 
 
 
-    self:Init_BGMenu_Frame(FriendsFrame)
+    self:Init_BGMenu_Frame(FriendsFrame, {
+        settings=function(_, _, _, _, portraitAlpha)
+            FriendsFrameIcon:SetAlpha(portraitAlpha or 1)
+        end})
 end
 
 

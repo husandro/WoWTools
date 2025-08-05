@@ -1234,8 +1234,9 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:Init_BGMenu_Frame(WorldMapFrame, {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer,
         NineSlice= WorldMapFrame.BorderFrame.NineSlice,
-        settings=function(_, _, _, nineSliceAlpha)
+        settings=function(_, _, _, nineSliceAlpha, portraitAlpha)
             self:SetNineSlice(WorldMapFrame.BorderFrame, nineSliceAlpha)
+            WorldMapFramePortrait:SetAlpha(portraitAlpha or 1)
         end
     })
 end
@@ -1317,6 +1318,7 @@ end
 
 --聊天设置
 function WoWTools_TextureMixin.Events:Blizzard_Channels()
+    self:SetButton(ChannelFrameCloseButton)
     self:HideFrame(ChannelFrame)
 
     self:HideFrame(ChannelFrameInset)

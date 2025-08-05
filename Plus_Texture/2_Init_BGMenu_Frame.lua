@@ -209,7 +209,7 @@ local function Set_BGTexture(self, name)
     icon:SetAlpha(alpha)
 
     if icon.BgData.settings then
-        icon.BgData.settings(icon, texture, alpha, nineSliceAlpha)
+        icon.BgData.settings(icon, texture, alpha, nineSliceAlpha, portraitAlpha)
     end
 
 --Frame.Background
@@ -230,7 +230,9 @@ local function Set_BGTexture(self, name)
 
 
 --PortraitContainer
-    if self.PortraitContainer then
+    if self.PortraitOverlay then--公会
+        self.PortraitOverlay:SetAlpha(portraitAlpha)
+    elseif self.PortraitContainer then
         WoWTools_TextureMixin:SetAlphaColor(self.PortraitContainer.portrait, nil, true, portraitAlpha)
     elseif self.Emblem then--公会银行就用这个
         WoWTools_TextureMixin:SetFrame(self.Emblem, {notColor=true, alpha=portraitAlpha})
