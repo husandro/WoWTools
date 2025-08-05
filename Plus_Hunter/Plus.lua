@@ -4,6 +4,7 @@ if WoWTools_DataMixin.Player.Class~='HUNTER' then
 end
 
 
+
 --local MAX_SUMMONABLE_HUNTER_PETS = Constants.PetConsts_PostCata.MAX_SUMMONABLE_HUNTER_PETS or 5
 
 local EXTRA_PET_STABLE_SLOT_LUA_INDEX = (Constants.PetConsts_PostCata.EXTRA_PET_STABLE_SLOT or 5) + 1;
@@ -291,6 +292,10 @@ local function Init()
         end
         self.Food:SetText(text or '')
     end)
+
+--添加按钮
+
+    Init=function()end
 end
 
 

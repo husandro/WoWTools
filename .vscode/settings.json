@@ -6061,7 +6061,9 @@
         "CommunitiesAvatarButtonMixin",
         "StaticPopup1EditBox",
         "FriendsFrameIcon",
-        "ChannelFrameCloseButton"
+        "ChannelFrameCloseButton",
+        "RegisterUIPanel",
+        "StableFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

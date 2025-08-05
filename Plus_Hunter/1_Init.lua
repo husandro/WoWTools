@@ -23,13 +23,61 @@ local function Save()
     return WoWToolsSave['Plus_StableFrame']
 end
 
+local function On_Show()
+    WoWTools_HunterMixin:Init_StableFrame_Plus()
+    WoWTools_HunterMixin:Init_Menu()
+    WoWTools_HunterMixin:Set_StableFrame_List()
+    WoWTools_HunterMixin:Init_UI()
+    On_Show=function()end
+end
+
+local function Init()
+    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
+        local sub= root:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '兽栏' or STABLE_STABLED_PET_LIST_LABEL,
+        function()
+            return StableFrame and StableFrame:IsShown()
+        end, function()
+            do
+                if not StableFrame then
+                    C_AddOns.LoadAddOn('Blizzard_StableUI')
+                end
+                if not UIPanelWindows['StableFrame'] then
+                    WoWTools_Mixin:Call(StableFrame, 'OnLoad', StableFrame)
+                end
+            end
+            StableFrame:SetShown(not StableFrame:IsShown())
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(
+                WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
+                ..WoWTools_HunterMixin.addName
+            )
+        end)
+        sub:AddInitializer(function(button)
+            local rightTexture = button:AttachTexture()
+            rightTexture:SetSize(20, 20)
+            rightTexture:SetPoint("RIGHT")
+            rightTexture:SetAtlas('tenacity-icon-small')
+            local fontString = button.fontString
+            fontString:SetPoint("RIGHT", rightTexture, "LEFT")
+        end)
+    end)
+
+    StableFrame:HookScript('OnShow', function()
+        On_Show()
+    end)
+
+    Init=function()end
+end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PET_STABLE_SHOW')
+--panel:RegisterEvent('PET_STABLE_SHOW')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
+    --if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Plus_StableFrame']= WoWToolsSave['Plus_StableFrame'] or P_Save
 
@@ -51,18 +99,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                WoWTools_MoveMixin:Setup(StableFrame)
+
                 self:UnregisterAllEvents()
             else
-                self:UnregisterEvent(event)
+                Init()
+                
+
             end
+            self:UnregisterEvent(event)
         end
 
-    elseif event=='PET_STABLE_SHOW' then
-        WoWTools_HunterMixin:Init_StableFrame_Plus()
-        WoWTools_HunterMixin:Init_Menu()
-        WoWTools_HunterMixin:Set_StableFrame_List()
-        WoWTools_HunterMixin:Init_UI()
+    --[[elseif event=='PET_STABLE_SHOW' then
+        
         self:UnregisterEvent(event)
-    end
+    end]]
 end)

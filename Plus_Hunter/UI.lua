@@ -3,6 +3,18 @@ if WoWTools_DataMixin.Player.Class~='HUNTER' then
     return
 end
 
+local function Save()
+    return WoWToolsSave['Plus_StableFrame'] or {}
+end
+
+function WoWTools_MoveMixin.Events:Blizzard_StableUI()
+    
+    if Save().disabled then
+        print(Save().disabled)
+        self:Setup(StableFrame)
+        self:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
+    end
+end
 
 
  --移动，缩放
@@ -89,7 +101,7 @@ local function Init_MoveUI()
 
 
     WoWTools_MoveMixin:Setup(StableFrame, {setSize=true, minW=860, minH=440,
-    sizeRestFunc=function(btn)
+    sizeRestFunc=function()
         StableFrame:SetSize(1040, 638)
     end})
     WoWTools_MoveMixin:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
@@ -187,7 +199,9 @@ end
 
 
 
-
+function WoWTools_TextureMixin.Events:Blizzard_StableUI()
+    Init_Texture(self)
+end
 
 
 function WoWTools_HunterMixin:Init_UI()
@@ -195,10 +209,3 @@ function WoWTools_HunterMixin:Init_UI()
     Init_Texture(WoWTools_TextureMixin)
 end
 
-function WoWTools_TextureMixin.Events:Blizzard_StableUI()
-    Init_Texture(self)
-end
-
-function WoWTools_MoveMixin.Events:Blizzard_StableUI()
-    Init_MoveUI()
-end
