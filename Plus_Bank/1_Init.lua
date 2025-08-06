@@ -1,46 +1,36 @@
-if not BankFrameTab2 then
-    return
-end
+
+WoWTools_BankMixin={}
 
 local P_Save={
-    --disabled=true,--禁用
-
     line=2,
-    num=15,
-    scale=0.85,
+    num=20,
 
-    --showIndex=true,--显示，索引
-    NormalTextureAlpha=0.5,
-    showBackground= true,--设置，背景
+    plusTab=true,
+    plusIndex=true,
+    plusItem=true,
 
+    autoSaveMoney= WoWTools_DataMixin.Player.husandro and 500,--大于当前值，自动存放多余的金到银行去
+    autoOutMoney= WoWTools_DataMixin.Player.husandro and 500,
+    filterSaveMoney={},--[guid]=true
+    allBank=WoWTools_DataMixin.Player.husandro,--整合银行
 
-    left_List= true,
-    showLeftList=true,--大包时，显示，存取，分类，按钮
-    --leftListScale=1,
-    --hideLeftListTooltip=true,
-
-    openBagInBank=WoWTools_DataMixin.Player.husandro,
-
-    allAccountBag=true,--战团银行,整合
-
-    guild={
-        line=2,
-        num=20,
-    }
+    saveWoWData=WoWTools_DataMixin.Player.husandro,
 }
 
 
 local function Save()
-    return WoWToolsSave['Plus_Bank'] or {}
+    return WoWToolsSave['Plus_Bank2']
 end
 
 
 local function Init()
-    WoWTools_BankMixin:Init_Menu()
-    WoWTools_BankMixin:Init_MoveFrame()
-    WoWTools_BankMixin:Init_Plus()--整合，一起
-    WoWTools_BankMixin:Init_UI()--存放，取出，所有
-    WoWTools_BankMixin:Init_Left_List()
+    WoWTools_BankMixin:Init_AllBank()
+    WoWTools_BankMixin:Init_BankPlus()
+    WoWTools_BankMixin:Init_BankMenu()
+    WoWTools_BankMixin:Init_Out_Plus()
+    WoWTools_BankMixin:Init_In_Plus()
+    WoWTools_BankMixin:Init_Money_Plus()
+
     Init=function()end
 end
 
@@ -60,20 +50,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Bank']= WoWToolsSave['Plus_Bank'] or P_Save
+            WoWToolsSave['Plus_Bank2']= Save() or P_Save
+
+            Save().filterSaveMoney=  Save().filterSaveMoney or {}
+            WoWToolsSave['Plus_Bank']= nil
 
             WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(WoWTools_DataMixin.onlyChinese and '银行' or BANK)
 
 --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_BankMixin.addName,
-                GetValue=function() return not WoWToolsSave['Plus_Bank'].disabled end,
+                GetValue=function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    if not Save().disabled and Init() then
-                        Init=function()end
-                    else
+
+                    if Save().disabled  then
                         print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    else
+                        Init()
                     end
                 end
             })

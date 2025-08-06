@@ -1,11 +1,3 @@
-if BankFrameTab2 then
-    return
-end
-
-
-
-
-
 
 local function Get_Container_Tab(containerID)
     local itemTab={}

@@ -1,9 +1,3 @@
-
-if BankFrameTab2 then
-    return
-end
-
-
 local function Get_Bank_Free()
     local free= 0
     for _, tabData in ipairs(BankPanel.purchasedBankTabData or {}) do

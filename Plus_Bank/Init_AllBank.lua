@@ -1,15 +1,7 @@
-
-if BankFrameTab2 then
-    return
-end
 local function Save()
     return WoWToolsSave['Plus_Bank2']
 end
 
---[[
-
-}
-]]
 local PURCHASE_TAB_ID= -1
 local BODER_LEFT= 3
 
@@ -425,6 +417,9 @@ local function Init_Move()
 
 
     BankPanel.PurchasePrompt:HookScript('OnShow', function()
+        BankFrame:SetSize(738, 460)
+    end)
+    BankPanel.LockPrompt:HookScript('OnShow', function()
         BankFrame:SetSize(738, 460)
     end)
 

@@ -1,7 +1,3 @@
-if BankFrameTab2 then
-    return
-end
-
 local function Is_Save_WoWData()
     if WoWToolsSave['Plus_Bank2'] then
         return not WoWToolsSave['Plus_Bank2'].disabled and WoWToolsSave['Plus_Bank2'].saveWoWData

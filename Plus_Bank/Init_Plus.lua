@@ -1,8 +1,3 @@
-if BankFrameTab2 then
-    return
-end
-
-
 local function Save()
     return WoWToolsSave['Plus_Bank2']
 end
