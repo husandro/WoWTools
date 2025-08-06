@@ -122,13 +122,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>            
@@ -150,13 +150,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '本周完成次数' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHALLENGE_MODE_THIS_WEEK, COMPLETE))
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>            
@@ -179,13 +179,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>
@@ -221,14 +221,14 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         local parent= self:GetParent()
                         if parent.data then
                             WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.data.specID, owner=self, anchor='ANCHOR_RIGHT'})
                         end
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>
@@ -240,13 +240,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </FontString>
@@ -265,7 +265,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -282,7 +282,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                 </Scripts>
             </FontString>
@@ -301,7 +301,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         local data= self:GetParent().data
@@ -316,7 +316,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                             GameTooltip:AddLine(realmName)
                         end
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </FontString>
@@ -346,7 +346,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -355,7 +355,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                             ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
                         )
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </FontString>
@@ -383,13 +383,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>
@@ -411,13 +411,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>
@@ -439,13 +439,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '世界' or WORLD)
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>
@@ -467,13 +467,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText('PvP')
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>
@@ -495,13 +495,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '钥石' or CHALLENGE_MODE_KEYSTONE_NAME:format(''))
                         GameTooltip:Show()
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </Texture>            
@@ -518,14 +518,14 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
-                        self:SetAlpha(1)
+                        --self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
                         local parent= self:GetParent()
                         if parent.data then
                             WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.data.itemLink, owner=self})
                         end
-                        self:SetAlpha(0.3)
+                        --self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
             </FontString>

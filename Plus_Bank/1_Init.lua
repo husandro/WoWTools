@@ -23,6 +23,7 @@ local function Save()
 end
 
 
+local IsOpend
 local function Init()
     WoWTools_BankMixin:Init_AllBank()
     WoWTools_BankMixin:Init_BankPlus()
@@ -31,6 +32,7 @@ local function Init()
     WoWTools_BankMixin:Init_In_Plus()
     WoWTools_BankMixin:Init_Money_Plus()
 
+    IsOpend=true
     Init=function()end
 end
 
@@ -39,38 +41,32 @@ end
 local function Init_Open_Menu()
     Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
         local sub= root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '兽栏' or STABLE_STABLED_PET_LIST_LABEL,
+            (IsOpend and '' or '|cff606060')
+            ..(WoWTools_DataMixin.onlyChinese and '银行' or BANK)
+            ..WoWTools_DataMixin.Icon.icon2,
         function()
-            return StableFrame and StableFrame:IsShown()
+            return BankFrame and BankFrame:IsShown()
         end, function()
-            do
-                if not StableFrame then
-                    C_AddOns.LoadAddOn('Blizzard_StableUI')
-                end
-                if not UIPanelWindows['StableFrame'] then
-                    WoWTools_Mixin:Call(StableFrame, 'OnLoad', StableFrame)
-                end
-                --EventRegistry:TriggerEvent("PET_STABLE_SHOW")
-                On_Show()
-            end
-            StableFrame:SetShown(not StableFrame:IsShown())
+            BankFrame:SetShown(not BankFrame:IsShown())
         end)
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine(
                 WoWTools_DataMixin.Icon.icon2
                 ..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
-                ..WoWTools_HunterMixin.addName
+                ..WoWTools_BankMixin.addName
             )
         end)
         sub:AddInitializer(function(button)
             local rightTexture = button:AttachTexture()
             rightTexture:SetSize(20, 20)
             rightTexture:SetPoint("RIGHT")
-            rightTexture:SetAtlas('tenacity-icon-small')
+            rightTexture:SetAtlas('Banker')
             local fontString = button.fontString
             fontString:SetPoint("RIGHT", rightTexture, "LEFT")
         end)
     end)
+
+    Init_Open_Menu=function()end
 end
 
 

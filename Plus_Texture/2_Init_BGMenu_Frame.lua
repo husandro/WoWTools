@@ -628,7 +628,8 @@ local function Init_Menu(self, root, isSub)
     local sub, sub2, sub3
 
     sub= root:CreateCheckbox(
-        '|A:MonkUI-LightOrb:0:0|a'
+        --'|A:MonkUI-LightOrb:0:0|a'
+        WoWTools_DataMixin.Icon.icon2
         ..(WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND),
     function()
         return self:IsDrawLayerEnabled('BACKGROUND')

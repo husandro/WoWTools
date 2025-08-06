@@ -34,7 +34,8 @@ end
 local function Init()
     Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
         local sub= root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '兽栏' or STABLE_STABLED_PET_LIST_LABEL,
+            WoWTools_DataMixin.onlyChinese and '兽栏' or STABLE_STABLED_PET_LIST_LABEL
+            ..WoWTools_DataMixin.Icon.icon2,
         function()
             return StableFrame and StableFrame:IsShown()
         end, function()

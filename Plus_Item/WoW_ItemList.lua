@@ -1040,6 +1040,7 @@ end
 local function Settings_Right_Button(btn, data)
     local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
     local r,g,b= col.r, col.g, col.b
+    local isNotBattle= data.battleTag~=WoWTools_DataMixin.Player.BattleTag
 --玩家，图标
     btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
 
@@ -1065,9 +1066,10 @@ local function Settings_Right_Button(btn, data)
     end
     btn.Name:SetTextColor(col.r, col.g, col.b)
 
+
 --提示，不同战网
-    btn.BattleTag:SetText(data.battleTag~=WoWTools_DataMixin.Player.BattleTag and data.battleTag or '')
-    --btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
+    btn.BattleTag:SetText(isNotBattle and data.battleTag or '')
+    btn.Battle:SetAlpha(isNotBattle and 1 or 0.3)
     btn.BattleTag:SetTextColor(r,g,b)
 
 --职业
@@ -1112,6 +1114,7 @@ local function Settings_Right_Button(btn, data)
     end
     btn.ItemName:SetText(itemName or '')
     btn.ItemName:SetTextColor(r,g,b)
+    btn.Item:SetAlpha(itemName and 1 or 0.3)
 
 --背景
     btn.Background:SetAtlas(
@@ -1121,39 +1124,46 @@ local function Settings_Right_Button(btn, data)
         or 'CampaignHeader_SelectedGlow'
     )
 
-    btn.RaidText:SetText(data.pve or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
-    btn.DungeonText:SetText(data.mythic or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
-    btn.WorldText:SetText(data.world or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
-    btn.PvPText:SetText(data.pvp or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
+    btn.RaidText:SetText(data.pve or '')--(WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
+    btn.DungeonText:SetText(data.mythic or '')--(WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
+    btn.WorldText:SetText(data.world or '')--(WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
+    btn.PvPText:SetText(data.pvp or '')--(WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
 
     btn.RaidText:SetTextColor(r,g,b)
     btn.DungeonText:SetTextColor(r,g,b)
     btn.WorldText:SetTextColor(r,g,b)
     btn.PvPText:SetTextColor(r,g,b)
 
+    btn.Raid:SetAlpha(data.pve and 1 or 0.3)
+    btn.Dungeon:SetAlpha(data.mythic and 1 or 0.3)
+    btn.World:SetAlpha(data.world and 1 or 0.3)
+    btn.PvP:SetAlpha(data.pvp and 1 or 0.3)
+
 --分数
+    btn.Score:SetAlpha(data.score>0 and 1 or 0.3)
     btn.ScoreText:SetText(
         WoWTools_ChallengeMixin:KeystoneScorsoColor(data.score)
         or ''
     )
 --本周次数
+    btn.WeekNum:SetAlpha(data.weekNum>0 and 1 or 0.3)
     btn.WeekNumText:SetText(
         data.weekNum==0 and '' or data.weekNum
     )
     btn.WeekNumText:SetTextColor(r,g,b)
 
 --本周最高
+    btn.WeekLevel:SetAlpha(data.weekLevel>0 and 1 or 0.3)
     btn.WeekLevelText:SetText(
         data.weekLevel==0 and '' or data.weekLevel
     )
     btn.WeekLevelText:SetTextColor(r,g,b)
 
 --背景
-    btn.Background:SetAlpha(WoWTools_DataMixin.Player.BattleTag~=data.battleTag and 0.5 or 1)
+    btn.Background:SetAlpha(isNotBattle and 0.5 or 1)
     btn.Background:SetDesaturated(WoWTools_DataMixin.Player.Region~=data.region)
 
     btn.SelectBg:SetShown(data.guid==Frame.guid)
-
 
     for name, texture in pairs(btn.ItemTextures) do
         TypeTabs[name].set_num(texture, data.guid)
