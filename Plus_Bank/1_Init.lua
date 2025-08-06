@@ -36,7 +36,42 @@ end
 
 
 
-
+local function Init_Open_Menu()
+    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
+        local sub= root:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '兽栏' or STABLE_STABLED_PET_LIST_LABEL,
+        function()
+            return StableFrame and StableFrame:IsShown()
+        end, function()
+            do
+                if not StableFrame then
+                    C_AddOns.LoadAddOn('Blizzard_StableUI')
+                end
+                if not UIPanelWindows['StableFrame'] then
+                    WoWTools_Mixin:Call(StableFrame, 'OnLoad', StableFrame)
+                end
+                --EventRegistry:TriggerEvent("PET_STABLE_SHOW")
+                On_Show()
+            end
+            StableFrame:SetShown(not StableFrame:IsShown())
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(
+                WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
+                ..WoWTools_HunterMixin.addName
+            )
+        end)
+        sub:AddInitializer(function(button)
+            local rightTexture = button:AttachTexture()
+            rightTexture:SetSize(20, 20)
+            rightTexture:SetPoint("RIGHT")
+            rightTexture:SetAtlas('tenacity-icon-small')
+            local fontString = button.fontString
+            fontString:SetPoint("RIGHT", rightTexture, "LEFT")
+        end)
+    end)
+end
 
 
 
@@ -76,6 +111,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
                 self:UnregisterEvent(event)
+                Init_Open_Menu()
             end
         end
 

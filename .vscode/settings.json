@@ -6064,7 +6064,9 @@
         "ChannelFrameCloseButton",
         "RegisterUIPanel",
         "StableFrameMixin",
-        "EXPANSION_NAME10"
+        "EXPANSION_NAME10",
+        "TimeManagerFrameCloseButton",
+        "TimeManagerAlarmTimeFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

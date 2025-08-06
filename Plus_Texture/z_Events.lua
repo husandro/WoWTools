@@ -39,14 +39,23 @@ end
 
 --小时图，时间
 function WoWTools_TextureMixin.Events:Blizzard_TimeManager()
+    self:SetButton(TimeManagerFrameCloseButton)
+    
     self:SetNineSlice(TimeManagerFrame, self.min, true)
     self:SetAlphaColor(TimeManagerFrameBg)
+
     self:HideTexture(TimeManagerFrameInset.Bg)
+    self:SetNineSlice(TimeManagerFrameInset, 0)
+
     self:SetEditBox(TimeManagerAlarmMessageEditBox)
+    self:SetMenu(TimeManagerAlarmTimeFrame.HourDropdown)
+    self:SetMenu(TimeManagerAlarmTimeFrame.MinuteDropdown)
+
     WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
     --秒表 Blizzard_TimeManager.lua
     self:HideTexture(StopwatchFrameBackgroundLeft)
+    self:SetButton(StopwatchCloseButton)
     if StopwatchFrame then
         self:HideTexture(select(2, StopwatchFrame:GetRegions()))
         self:HideTexture(StopwatchTabFrameMiddle)
@@ -1113,8 +1122,8 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     self:SetFrame(QuestMapFrame.MapLegend.BorderFrame, {alpha=0})
     self:HideTexture(QuestMapFrame.MapLegendTab.Background)
-    
-    
+
+
 
     self:SetFrame(QuestScrollFrame.BorderFrame, {alpha=0})
     self:SetScrollBar(QuestScrollFrame)
@@ -1429,7 +1438,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
         self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0)
     end
 
-    
+
 --货币，XP，追踪，最下面BAR
     --self:SetAlphaColor(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.1)
     --self:SetAlphaColor(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.1)
@@ -2465,7 +2474,7 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
             self:HideFrame(btn, {index=1})
         end
         WoWTools_ButtonMixin:AddMask(btn, nil, btn.Icon)
-    
+
         btn.SelectedTexture:ClearAllPoints()
         btn.SelectedTexture:SetPoint('TOPLEFT',-3,3)
         btn.SelectedTexture:SetPoint('BOTTOMRIGHT',3,-3)

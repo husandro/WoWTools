@@ -398,6 +398,8 @@ end
 
 --秒表
 local function Init_StopwatchFrame()
+    StopwatchFrame:SetWidth(150)--100
+    print(StopwatchFrame:GetSize())
 --Tooltip
     function StopwatchFrame:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
