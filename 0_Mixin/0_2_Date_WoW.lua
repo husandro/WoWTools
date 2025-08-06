@@ -461,7 +461,7 @@ EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()--
     for i=1, GetNumSavedInstances() do--副本
         local name, _, reset, difficulty, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
         if name and reset and reset>0 and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 and difficultyName then
-        
+
             local killed = encounterProgress ..'/'..numEncounters;
             killed = encounterProgress ==numEncounters and '|cnGREEN_FONT_COLOR:'..killed..'|r' or killed
             difficultyName=WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficulty)
@@ -706,8 +706,12 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     WoWTools_WoWDate[guid].region= WoWTools_DataMixin.Player.Region
     WoWTools_WoWDate[guid].faction= WoWTools_DataMixin.Player.Faction--派系
     WoWTools_WoWDate[guid].level= WoWTools_DataMixin.Player.Level
-    WoWTools_WoWDate[guid].battleTag= WoWTools_DataMixin.Player.BattleTag or WoWTools_WoWDate[guid].battleTag
 
+    if not WoWTools_DataMixin.Player.BattleTag and WoWTools_WoWDate[guid].battleTag then
+        WoWTools_DataMixin.Player.BattleTag= WoWTools_WoWDate[guid].battleTag
+    else
+        WoWTools_WoWDate[guid].battleTag= WoWTools_DataMixin.Player.BattleTag-- or WoWTools_WoWDate[guid].battleTag
+    end
 
     for guid2, tab in pairs(WoWTools_WoWDate) do--清除不是本周数据
         if tab.Keystone.week ~=WoWTools_DataMixin.Player.Week then

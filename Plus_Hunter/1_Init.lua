@@ -45,6 +45,7 @@ local function Init()
                 if not UIPanelWindows['StableFrame'] then
                     WoWTools_Mixin:Call(StableFrame, 'OnLoad', StableFrame)
                 end
+                --EventRegistry:TriggerEvent("PET_STABLE_SHOW")
                 On_Show()
             end
             StableFrame:SetShown(not StableFrame:IsShown())

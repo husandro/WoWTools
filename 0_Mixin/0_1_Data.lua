@@ -59,7 +59,6 @@ local function GetWeek()--周数
     return week
 end
 
-
 WoWTools_DataMixin.Player={
     Realm= playerRealm,
     Realms= {},--多服务器
@@ -89,7 +88,7 @@ WoWTools_DataMixin.Player={
     Layer= nil, --位面数字
     Language={},--多语言，文本
 }
-for realmIndex, realmName in pairs(GetAutoCompleteRealms()) do
+for realmIndex, realmName in pairs(GetAutoCompleteRealms() or {}) do
     WoWTools_DataMixin.Player.Realms[realmName]=realmIndex
 end
 

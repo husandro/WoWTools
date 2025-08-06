@@ -306,7 +306,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <OnEnter>
                         local data= self:GetParent().data
                         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '名称' or Name)
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '名称' or NAME)
                         local guid= data and data.guid
                         if guid then
                             local name, realmName = select(6, GetPlayerInfoByGUID(guid))

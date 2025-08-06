@@ -414,6 +414,7 @@ Plus_Encounter\MonthlyActivities.lua
 Plus_Encounter\Right_AllInfo.lua
 Plus_Encounter\Spell_Boss.lua
 Plus_Encounter\UI_ListInstances.lua
+Plus_Encounter\z_UI.lua
 
 
 ##史诗钥石地下城, 挑战增强

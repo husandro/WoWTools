@@ -69,6 +69,7 @@ local function Init_All_Class(_, root, num)
                 sub2=sub:CreateCheckbox(
                     '|T'..( select(4,  GetSpecializationInfoByID(specID)) or 0)..':0|t'
                     ..col
+                    --..WoWTools_TextMixin:CN(self.name, {journalEncounterID=self.journalEncounterID, isName=true}
                     ..dungeonEncounterID,
                 function(data)
                     return Save().loot[data.class][data.dungeonEncounterID]==data.specID
@@ -99,6 +100,7 @@ local function Init_All_Class(_, root, num)
                     end})
                     return MenuResponse.Open
                 end, {class=classInfo.classFile, name=name})
+
                 WoWTools_MenuMixin:SetScrollMode(sub)
             end
         end
@@ -162,7 +164,7 @@ local function Init_Menu(self, root)
     end
 
     root:CreateDivider()
-    
+
     sub=root:CreateTitle((WoWTools_TextMixin:CN(self.name, {journalEncounterID=self.journalEncounterID, isName=true}) or self.name)..' '..self.dungeonEncounterID)
 
 
@@ -266,14 +268,14 @@ end
 
 
 
-local function Init_ScrollBox(frame)
+--[[local function Init_ScrollBox(frame)
     if not frame:GetView() then
         return
     end
     for _, button in pairs(frame:GetFrames()) do
         set_Loot_Spec(button)
     end
-end
+end]]
 
 
 
@@ -327,10 +329,14 @@ local function Init()
             end
         end
     end)
-
-    hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(...)
-            Init_ScrollBox(...)
+--BOSS 列表
+    hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
+        set_Loot_Spec(btn)
     end)
+
+    --[[hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(...)
+        Init_ScrollBox(...)
+    end)]]
 
     Frame:set_event()
     Init=function()
