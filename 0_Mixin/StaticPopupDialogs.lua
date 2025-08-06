@@ -300,7 +300,6 @@ nil,
 {SetValue=function()
 
 end})
-return MenuResponse.Open
 ]]
 
 

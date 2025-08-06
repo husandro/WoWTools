@@ -92,7 +92,9 @@ local function Init_Plus_Menu(self, root)
     function()
         return C_CVar.GetCVarBool("minimapTrackingShowAll")
     end, function()
-        C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
+        if not InCombatLockdown() then
+            C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
+        end
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)

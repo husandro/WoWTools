@@ -77,9 +77,30 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --自定义，对话，文本，放在主菜单，前
-
-
 local function Init(isShow)
     if isShow==false then
         return
@@ -643,7 +664,11 @@ local function Init(isShow)
     end)
 
     --删除，玩家数据
-    List.DeleteAllPlayerData=WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-button-autosort-up'})
+    List.DeleteAllPlayerData=WoWTools_ButtonMixin:Cbtn(Frame, {
+        size=22,
+        atlas='bags-button-autosort-up',
+        name='WoWToolsGossipDeleteAllPlayerDataButton'
+    })
     List.DeleteAllPlayerData:SetPoint('BOTTOMLEFT', List, 'TOPLEFT', -3, 2)
     List.DeleteAllPlayerData:SetScript('OnLeave', GameTooltip_Hide)
     List.DeleteAllPlayerData:SetScript('OnEnter', function(self)
@@ -655,7 +680,7 @@ local function Init(isShow)
         GameTooltip:Show()
     end)
 
-    StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
+    --[[StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
         text=WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
@@ -665,9 +690,17 @@ local function Init(isShow)
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
             List:set_list()
         end,
-    }
+    }]]
     List.DeleteAllPlayerData:SetScript('OnClick', function()
-        StaticPopup_Show('WoWTools_Gossip_Delete_All_Player_Data')
+        --StaticPopup_Show('WoWTools_Gossip_Delete_All_Player_Data')
+        StaticPopup_Show('WoWTools_OK',
+        WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        nil,
+        {SetValue=function()
+            WoWToolsPlayerDate['GossipTextIcon']= {}
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
+            List:set_list()
+        end})
     end)
 
     --自定义，对话，文本，数量

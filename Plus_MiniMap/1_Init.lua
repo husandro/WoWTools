@@ -87,6 +87,34 @@ local function Init()
     WoWTools_MinimapMixin:Init_ExpansionLanding()
     WoWTools_MinimapMixin:Init_Minimap_Zoom()--缩放数值, 缩小化地图
 
+        --CVar 镇民
+    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
+        local sub=root:CreateCheckbox(
+            (InCombatLockdown() and '|cff606060' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
+        function()
+            return C_CVar.GetCVarBool("minimapTrackingShowAll") and true or false
+        end, function()
+            if not InCombatLockdown() then
+                if C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' ) then
+                    return MenuResponse.CloseAll
+                end
+            end
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2)
+            tooltip:AddLine([[SetCVar("minimapTrackingShowAll", "1")]])
+        end)
+        sub:AddInitializer(function(button)
+            local rightTexture = button:AttachTexture()
+            rightTexture:SetSize(20, 20)
+            rightTexture:SetPoint("RIGHT")
+            rightTexture:SetAtlas('poi-town')
+            local fontString = button.fontString
+            fontString:SetPoint("RIGHT", rightTexture, "LEFT")
+        end)
+    end)
+
     Init=function()end
 end
 
