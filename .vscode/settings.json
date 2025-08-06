@@ -6063,7 +6063,8 @@
         "FriendsFrameIcon",
         "ChannelFrameCloseButton",
         "RegisterUIPanel",
-        "StableFrameMixin"
+        "StableFrameMixin",
+        "EXPANSION_NAME10"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

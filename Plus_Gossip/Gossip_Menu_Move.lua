@@ -243,86 +243,102 @@ local list={
 1,
 }
 
+--table.sort(list, function(a,b) return a>b end)
 --[[
 BlizzardInterfaceCode/Interface/AddOns/Blizzard_GlueXMLBase/Mists/Constants.lua
 CinematicsMenu.lua
 Constants.lua
+C_CinematicList.GetUICinematicList()
+MOVIE_LIST
 ]]
-local MovieList= {
-    { expansion=LE_EXPANSION_CLASSIC,
-        movieIDs = { 1, 2 },
-        upAtlas="StreamCinematic-Classic-Up",
-        text= WoWTools_DataMixin.onlyChinese and '经典旧世' or nil,
-    },
-    { expansion=LE_EXPANSION_BURNING_CRUSADE,
-        movieIDs = { 27 },
-        upAtlas="StreamCinematic-BC-Up",
-        text= WoWTools_DataMixin.onlyChinese and '燃烧的远征' or nil,
-    },
-    { expansion=LE_EXPANSION_WRATH_OF_THE_LICH_KING,
-        movieIDs = { 18 },
-        upAtlas="StreamCinematic-LK-Up",
-        text= WoWTools_DataMixin.onlyChinese and '巫妖王之怒' or nil,
-    },
-    { expansion=LE_EXPANSION_CATACLYSM,
-        movieIDs = { 23 },
-        upAtlas="StreamCinematic-CC-Up",
-        text= WoWTools_DataMixin.onlyChinese and '大地的裂变' or nil,
-    },
-    { expansion=LE_EXPANSION_MISTS_OF_PANDARIA,
-        movieIDs = { 115 },
-        upAtlas="StreamCinematic-MOP-Up",
-        text= WoWTools_DataMixin.onlyChinese and '熊猫人之谜' or nil,
-    },
-    { expansion=LE_EXPANSION_WARLORDS_OF_DRAENOR,
-        movieIDs = { 195 },
-        upAtlas="StreamCinematic-WOD-Up",
-        text= WoWTools_DataMixin.onlyChinese and '德拉诺之王' or nil,
-    },
-    { expansion=LE_EXPANSION_LEGION,
-        movieIDs = { 470 },
-        upAtlas="StreamCinematic-Legion-Up",
-        text= WoWTools_DataMixin.onlyChinese and '军团再临' or nil,
-    },
-    { expansion=LE_EXPANSION_BATTLE_FOR_AZEROTH,
-        movieIDs = { 852 },
-        upAtlas="StreamCinematic-BFA-Up",
-        text= WoWTools_DataMixin.onlyChinese and '争霸艾泽拉斯' or nil,
-    },
-    { expansion=LE_EXPANSION_SHADOWLANDS,
-        movieIDs = { 936 },
-        upAtlas="StreamCinematic-Shadowlands-Up",
-        text= WoWTools_DataMixin.onlyChinese and '暗影国度' or nil,
-    },
-    { expansion=LE_EXPANSION_DRAGONFLIGHT,
-        movieIDs = { 960 },
-        upAtlas="StreamCinematic-Dragonflight-Up",
-        text= WoWTools_DataMixin.onlyChinese and '巨龙时代' or nil,
-    },
-    { expansion=LE_EXPANSION_DRAGONFLIGHT,
-        movieIDs = { 973 },
-        upAtlas="StreamCinematic-Dragonflight2-Up",
-        title=_G['DRAGONFLIGHT_TOTHESKIES'],
-        disableAutoPlay=true,
-        text= WoWTools_DataMixin.onlyChinese and '巨龙时代' or nil,
-    },
-    {
-		expansion = LE_EXPANSION_WAR_WITHIN,
-		movieIDs = { 1014 },
-		upAtlas = "StreamCinematic-WarWithin-Large-Up",
-		downAtlas = "StreamCinematic-WarWithin-Large-Down",
-	},
-    {
-		expansion = LE_EXPANSION_WAR_WITHIN,
-		movieIDs = { 1023 },
-		upAtlas = "StreamCinematic-WarWithin2-Large-Up",
-		downAtlas = "StreamCinematic-WarWithin2-Large-Down",
-		title = WARWITHIN_TITLE2,
-		disableAutoPlay = true,
-	},
-	-- Movie sequence 12 = WarWithin
+local MovieList={}
 
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
+MovieList= {
+{
+    expansion = LE_EXPANSION_WAR_WITHIN,
+    movieIDs = { 1023 },
+    upAtlas = "StreamCinematic-WarWithin2-Large-Up",
+    downAtlas = "StreamCinematic-WarWithin2-Large-Down",
+    text= WoWTools_DataMixin.onlyChinese and '地心之战' or EXPANSION_NAME10,
+    disableAutoPlay = true,
+},
+{
+    expansion = LE_EXPANSION_WAR_WITHIN,
+    movieIDs = { 1014 },
+    upAtlas = "StreamCinematic-WarWithin-Large-Up",
+    downAtlas = "StreamCinematic-WarWithin-Large-Down",
+    text= WoWTools_DataMixin.onlyChinese and '地心之战' or EXPANSION_NAME10,
+},
+{ expansion=LE_EXPANSION_DRAGONFLIGHT,
+    movieIDs = { 973 },
+    upAtlas="StreamCinematic-Dragonflight2-Up",
+    disableAutoPlay=true,
+    text= WoWTools_DataMixin.onlyChinese and '巨龙时代' or EXPANSION_NAME9,
+},
+{ expansion=LE_EXPANSION_DRAGONFLIGHT,
+    movieIDs = { 960 },
+    upAtlas="StreamCinematic-Dragonflight-Up",
+    text= WoWTools_DataMixin.onlyChinese and '巨龙时代' or EXPANSION_NAME9,
+},
+{ expansion=LE_EXPANSION_SHADOWLANDS,
+    movieIDs = { 936 },
+    upAtlas="StreamCinematic-Shadowlands-Up",
+    text= WoWTools_DataMixin.onlyChinese and '暗影国度' or EXPANSION_NAME8,
+},
+{ expansion=LE_EXPANSION_BATTLE_FOR_AZEROTH,
+    movieIDs = { 852 },
+    upAtlas="StreamCinematic-BFA-Up",
+    text= WoWTools_DataMixin.onlyChinese and '争霸艾泽拉斯' or EXPANSION_NAME7,
+},
+{ expansion=LE_EXPANSION_LEGION,
+    movieIDs = { 470 },
+    upAtlas="StreamCinematic-Legion-Up",
+    text= WoWTools_DataMixin.onlyChinese and '军团再临' or EXPANSION_NAME6,
+},
+
+{ expansion=LE_EXPANSION_WARLORDS_OF_DRAENOR,
+    movieIDs = { 195 },
+    upAtlas="StreamCinematic-WOD-Up",
+    text= WoWTools_DataMixin.onlyChinese and '德拉诺之王' or EXPANSION_NAME5,
+},
+{ expansion=LE_EXPANSION_MISTS_OF_PANDARIA,
+    movieIDs = { 115 },
+    upAtlas="StreamCinematic-MOP-Up",
+    text= WoWTools_DataMixin.onlyChinese and '熊猫人之谜' or EXPANSION_NAME4,
+},
+{ expansion=LE_EXPANSION_CATACLYSM,
+    movieIDs = { 23 },
+    upAtlas="StreamCinematic-CC-Up",
+    text= WoWTools_DataMixin.onlyChinese and '大地的裂变' or EXPANSION_NAME3,
+},
+{ expansion=LE_EXPANSION_WRATH_OF_THE_LICH_KING,
+    movieIDs = { 18 },
+    upAtlas="StreamCinematic-LK-Up",
+    text= WoWTools_DataMixin.onlyChinese and '巫妖王之怒' or EXPANSION_NAME2,
+},
+{ expansion=LE_EXPANSION_BURNING_CRUSADE,
+    movieIDs = { 27 },
+    upAtlas="StreamCinematic-BC-Up",
+    text= WoWTools_DataMixin.onlyChinese and '燃烧的远征' or EXPANSION_NAME1,
+},
+{ expansion=LE_EXPANSION_CLASSIC,
+    movieIDs = { 1, 2 },
+    upAtlas="StreamCinematic-Classic-Up",
+    text= WoWTools_DataMixin.onlyChinese and '经典旧世' or EXPANSION_NAME0,
+},
 }
+EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
+end)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -342,6 +358,7 @@ local function Movie_SubMenu(root, movieID)
         WoWTools_DataMixin.onlyChinese and '下载' or 'Download',
     function(data)
         PreloadMovie(data.movieID)
+        return MenuResponse.Open
     end, {movieID=movieID})
 
 --进度        
@@ -371,13 +388,17 @@ local function Init_Menu(_, root)
 
     for _, movieEntry in pairs(MovieList) do--MOVIE_LIST or 
         for _, movieID in pairs(movieEntry.movieIDs) do
-            tab[movieID]= true
+            tab[movieID]= movieEntry
             sub2=sub:CreateButton(
                 '|A:'..(movieEntry.upAtlas or '')..':0:0|a'
-                ..(WoWTools_TextMixin:CN(movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion]) or '')
+                ..(WoWTools_TextMixin:CN(movieEntry.text
+                    or _G["EXPANSION_NAME"..movieEntry.expansion])
+                    or ''
+                )
                 ..' '..movieID,
             function(data)
                 MovieFrame_PlayMovie(MovieFrame, data.movieID)
+                return MenuResponse.Open
             end, {movieID=movieID, atlas=movieEntry.upAtlas})
 
 
@@ -398,26 +419,43 @@ local function Init_Menu(_, root)
         return MenuResponse.Open
     end)
 
-    table.sort(list, function(a,b) return a>b end)
+
 
     for _, movieID in pairs(list) do
-        if not tab[movieID] then
-            sub2=sub:CreateButton(
-                movieID,
-            function(data)
-                MovieFrame_PlayMovie(MovieFrame, data.movieID)
-            end, {movieID=movieID})
-    --下载
-            Movie_SubMenu(sub2, movieID)
+        --if not tab[movieID] then
+        local text, atlas
+        if tab[movieID] then
+            text= tab[movieID].text
+                or WoWTools_TextMixin:CN(_G["EXPANSION_NAME"..tab[movieID].expansion])
+                or '|cnRED_FONT_COLOR:'
+            text= text..' '
+            atlas= tab[movieID].upAtlas
         end
+        sub2=sub:CreateButton(
+            (atlas and '|A:'..atlas..':0:0|a' or '')
+            ..(text or '')
+            ..movieID,
+        function(data)
+            MovieFrame_PlayMovie(MovieFrame, data.movieID)
+            return MenuResponse.Open
+        end, {movieID=movieID, atlas=atlas})
+        sub2:SetTooltip(function(tooltip, desc)
+            if desc.data.atlas then
+                tooltip:AddLine('|A:'..(desc.data.atlas or '')..':134:246|a')
+            end
+        end)
+--下载
+        Movie_SubMenu(sub2, movieID)
+    --end
     end
 
     WoWTools_MenuMixin:SetScrollMode(sub)
     tab=nil
 end
 
-
+    
 
 function WoWTools_GossipMixin:Init_WoW_MoveList(...)
     Init_Menu(...)
 end
+
