@@ -37,7 +37,7 @@ function WoWTools_LabelMixin:Create(frame, tab)
     local wheel= tab.wheel
 
     font = font or frame:CreateFontString(name, layer, fontName)
-    if copyFont then
+    if copyFont and copyFont.GetFont then
         local fontName2, size2, fontFlag2 = copyFont:GetFont()
         if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
             fontName2= 'Fonts\\ARHei.ttf'--'Interface\\AddOns\\WoWTools\\Source\\ARHei.TTF'--黑体字

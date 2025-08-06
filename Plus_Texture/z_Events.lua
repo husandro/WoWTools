@@ -2070,6 +2070,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
 
 
 --货币转移
+    self:SetButton(CurrencyTransferLogCloseButton)
     self:SetNineSlice(CurrencyTransferLog)
     self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
     self:SetNineSlice(CurrencyTransferLogInset, nil, true)

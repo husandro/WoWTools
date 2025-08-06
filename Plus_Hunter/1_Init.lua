@@ -45,6 +45,7 @@ local function Init()
                 if not UIPanelWindows['StableFrame'] then
                     WoWTools_Mixin:Call(StableFrame, 'OnLoad', StableFrame)
                 end
+                On_Show()
             end
             StableFrame:SetShown(not StableFrame:IsShown())
         end)
@@ -65,19 +66,19 @@ local function Init()
         end)
     end)
 
-    StableFrame:HookScript('OnShow', function()
+    --[[StableFrame:HookScript('OnShow', function()
         On_Show()
-    end)
+    end)]]
 
     Init=function()end
 end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
---panel:RegisterEvent('PET_STABLE_SHOW')
+panel:RegisterEvent('PET_STABLE_SHOW')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    --if event == "ADDON_LOADED" then
+    if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Plus_StableFrame']= WoWToolsSave['Plus_StableFrame'] or P_Save
 
@@ -99,18 +100,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-
-                self:UnregisterAllEvents()
+                self:UnregisterEvent('PET_STABLE_SHOW')
             else
                 Init()
-                
-
             end
             self:UnregisterEvent(event)
         end
 
-    --[[elseif event=='PET_STABLE_SHOW' then
-        
+    elseif event=='PET_STABLE_SHOW' then
+        On_Show()
         self:UnregisterEvent(event)
-    end]]
+    end
 end)

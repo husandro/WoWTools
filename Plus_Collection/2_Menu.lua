@@ -89,7 +89,7 @@ local function Init_Menu(_, root)
 
 --外观：物品
     sub= root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '外观：物品' or format('%: %', WARDROBE, WARDROBE_ITEMS),
+        WoWTools_DataMixin.onlyChinese and '外观：物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WARDROBE, WARDROBE_ITEMS),
     function()
         return not Save().hideItems
     end, function()
@@ -102,7 +102,7 @@ local function Init_Menu(_, root)
 
 --外观：套装
     sub= root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '外观：套装' or format('%: %', WARDROBE, WARDROBE_SETS),
+        WoWTools_DataMixin.onlyChinese and '外观：套装' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WARDROBE, WARDROBE_SETS),
     function()
         return not Save().hideSets
     end, function()
