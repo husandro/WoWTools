@@ -35,6 +35,7 @@ function WoWTools_LabelMixin:Create(frame, tab)
     local color= tab.color
     local mouse= tab.mouse
     local wheel= tab.wheel
+    local text= tab.text
 
     font = font or frame:CreateFontString(name, layer, fontName)
     if copyFont and copyFont.GetFont then
@@ -70,7 +71,7 @@ function WoWTools_LabelMixin:Create(frame, tab)
         elseif type(color)=='table' then
             font:SetTextColor(color.r or 1, color.g or 1, color.b or 1, color.a or alpha)
         else
-            font:SetTextColor(1, 0.82, 0, alpha)
+            font:SetTextColor(1, 0.823529, 0, alpha)
         end
     end
     if mouse then
@@ -78,6 +79,9 @@ function WoWTools_LabelMixin:Create(frame, tab)
     end
     if wheel then
         font:EnableMouseWheel(true)
+    end
+    if text then
+        font:SetText(text)
     end
     --[[if alpha then
         font:SetAlpha(alpha)

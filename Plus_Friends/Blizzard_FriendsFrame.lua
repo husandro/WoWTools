@@ -619,12 +619,26 @@ local function Init()--好友列表, 初始化
     hooksecurefunc('WhoList_Update', function()
         set_WhoList_Update()
     end)
-    
+
     hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
         set_WhoList_Update(self)
     end)
 
 
+    FriendsFrame:HookScript('OnShow', function(self)
+        local isConnected= BNConnected()
+        if not isConnected and not self.ConnectedLabel then
+            self.ConnectedLabel= WoWTools_LabelMixin:Create(self.TitleContainer, {
+                name= 'WoWToolsFriendsConnectedLabel',
+                text= WoWTools_DataMixin.onlyChinese and '战网断开' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET),
+                --color= true,
+            })
+            self.ConnectedLabel:SetPoint('LEFT', FriendsFrameTitleText, 0, 0)
+        end
+        if self.ConnectedLabel then
+            self.ConnectedLabel:SetShown(not isConnected)
+        end
+    end)
 
     Init=function()end
 end

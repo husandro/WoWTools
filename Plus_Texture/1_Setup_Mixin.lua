@@ -275,25 +275,25 @@ end
 
 
 --设置，滚动条，颜色
-function WoWTools_TextureMixin:SetScrollBar(bar, isHideBar)
+function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     bar= bar and bar.ScrollBar or bar
     if not bar or not bar.Track then
         return
     end
 
-    self:SetFrame(bar.Back, {notAlpha=true})--{alpha=0.8})
-    self:SetFrame(bar.Forward, {notAlpha=true})--{{alpha=0.8})
-    self:SetFrame(bar.Track, {notAlpha=true})--{{alpha=0.8})
-    self:SetFrame(bar.Track.Thumb, {notAlpha=true})--{{alpha=0.8})
+    self:SetFrame(bar.Back, {alpha=0.8})
+    self:SetFrame(bar.Forward, {alpha=0.8})
+    self:SetFrame(bar.Track, {alpha=0.8})
+    self:SetFrame(bar.Track.Thumb, {alpha=0.8})
 
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, nil, 0.5)
 
-    if isHideBar and not bar.hideIfUnscrollable  then
+    --if isHideBar and not bar.hideIfUnscrollable  then
         hooksecurefunc(bar, 'Update', function(b)
             b:SetAlpha(b:HasScrollableExtent() and 1 or 0)
         end)
-    end
+    --end
 --bar:SetHideIfUnscrollable(true)
 end
 
