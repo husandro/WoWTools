@@ -423,9 +423,9 @@ local function Init_Move()
         BankFrame:SetSize(738, 460)
     end)
 
-    BankFrame.ResizeButton.setSize= Save().allBank
+    BankFrame.ResizeButton.setSize= Save().allBank and C_Bank.AreAnyBankTypesViewable()
     Init_Move=function()
-        BankFrame.ResizeButton.setSize= Save().allBank
+        BankFrame.ResizeButton.setSize= Save().allBank and C_Bank.AreAnyBankTypesViewable()
     end
 end
 
