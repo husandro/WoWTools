@@ -6,6 +6,11 @@ end
 local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
+    elseif not C_Bank.AreAnyBankTypesViewable() then
+        root:CreateTitle(
+            '|cnRED_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '此角色没有使用此银行的权限。' or ERR_BANK_NOT_ACCESSIBLE))
+        root:CreateDivider()
     end
     local sub, sub2
 
@@ -167,59 +172,6 @@ local function Init()
     end)
 
 
-    local wow= WoWTools_ItemMixin:Create_WoWButton(btn, {
-        name='WoWToolsPlusBankWoWButton',
-        tooltip=function(tooltip)
-            --[[tooltip:AddLine(' ')
-            tooltip:AddLine(
-                WoWTools_DataMixin.Icon.left
-                ..(WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS))
-            )]]
-            tooltip:AddLine(
-                '|A:BonusLoot-Chest:0:0|a'
-                ..(WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS))
-                ..WoWTools_DataMixin.Icon.right
-                ..WoWTools_TextMixin:GetEnabeleDisable(Save().saveWoWData)
-            )
-        end,
-        click=function(self, d, click)
-            if d=='LeftButton' then
-                click()
-            else
-                MenuUtil.CreateContextMenu(self, function(_, root)
-                    local sub=root:CreateCheckbox(
-                        '|A:BonusLoot-Chest:0:0|a'
-                        ..(WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS)),
-                    function()
-                        return Save().saveWoWData
-                    end, function()
-                        self:set_click()
-                    end)
-                    sub:SetTooltip(function(tooltip)
-                        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '记录' or GUILD_BANK_LOG)
-                    end)
-
-                    root:CreateSpacer()
-
-                    WoWTools_ItemMixin:OpenWoWItemListMenu(self, root)
-                end)
-            end
-        end}
-    )
-    wow:SetPoint('RIGHT', btn, 'LEFT')
-    wow:GetNormalTexture():SetVertexColor(1,1,1)
-    function wow:settings()
-        local saveWoWData= Save().saveWoWData
-        local icon= self:GetNormalTexture()
-        icon:SetDesaturated(not saveWoWData)
-        icon:SetAlpha(saveWoWData and 1 or 0.3)
-    end
-    function wow:set_click()
-        Save().saveWoWData= not Save().saveWoWData and true or nil
-        self:settings()
-        BankPanel:Clean()
-    end
-    wow:settings()
 
 
     --[[

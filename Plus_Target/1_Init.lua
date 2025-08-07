@@ -92,10 +92,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         WoWToolsSave['Plus_Target']= WoWToolsSave['Plus_Target'] or P_Save
 
-        if WoWToolsSave['Plus_Target'].targetTextureNewTab then
-            WoWToolsPlayerDate['TargetTexture']= WoWToolsSave['Plus_Target'].targetTextureNewTab
-            WoWToolsSave['Plus_Target'].targetTextureNewTab= nil
-        end
         WoWToolsPlayerDate['TargetTexture']= WoWToolsPlayerDate['TargetTexture'] or {}
 
         WoWTools_TargetMixin.addName= '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)

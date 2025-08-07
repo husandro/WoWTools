@@ -452,6 +452,9 @@ local function Init_ItemInfo()
     end
 
     hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(btn)
+        if not C_Bank.AreAnyBankTypesViewable() then
+            return
+        end
         WoWTools_ItemMixin:SetupInfo(btn, {
             bag={
                 bag= btn:GetBankTabID(),

@@ -265,6 +265,9 @@ local function Init_All()
     end
 
     local function GenerateItemSlotsForSelectedTab(self)
+        if not C_Bank.AreAnyBankTypesViewable() then
+            return
+        end
         self.itemButtonPool:ReleaseAll()
 
         if not self.selectedTabID or self.selectedTabID == PURCHASE_TAB_ID then
@@ -304,7 +307,7 @@ local function Init_All()
                     y= -63
                     width= width+ 37+ line+  (isNewContainer and newContainer or 0)
 
-                    
+
                 else
                     y= (y-37)-line
                 end
@@ -392,15 +395,16 @@ local function Init_Move()
     WoWTools_MoveMixin:Setup(BankFrame, {
         setSize=true, minW=80, minH=140,
     --[[sizeUpdateFunc= function()
-
-        --Init()
-    end,]] sizeRestFunc= function()
-        Save().num=20
+    end, ]]sizeRestFunc= function()
+        Save().num=15
         Save().accountNum= nil
         --BankFrame:SetSize(738, 460)
         BankPanel:GenerateItemSlotsForSelectedTab()
     end, sizeStopFunc= function()
-        if BankPanel.PurchasePrompt:IsShown() then
+        if BankPanel.PurchasePrompt:IsShown()
+            or BankPanel.LockPrompt:IsShown()
+            or not C_Bank.AreAnyBankTypesViewable()
+        then
             return
         end
         local line= Save().line or 2
@@ -423,9 +427,9 @@ local function Init_Move()
         BankFrame:SetSize(738, 460)
     end)
 
-    BankFrame.ResizeButton.setSize= Save().allBank and C_Bank.AreAnyBankTypesViewable()
+    BankFrame.ResizeButton.setSize= Save().allBank
     Init_Move=function()
-        BankFrame.ResizeButton.setSize= Save().allBank and C_Bank.AreAnyBankTypesViewable()
+        BankFrame.ResizeButton.setSize= Save().allBank
     end
 end
 

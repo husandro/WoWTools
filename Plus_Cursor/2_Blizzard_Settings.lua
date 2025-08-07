@@ -176,11 +176,10 @@ local function Init_Cursor_Options()
         end
 
         local sub
-        --local num=0
         for index, texture in pairs(Save().Atlas) do
-            local icon= select(3, WoWTools_TextureMixin:IsAtlas(texture, 0)) or texture
+            local isAtlas, _, icon= WoWTools_TextureMixin:IsAtlas(texture, 64)
             sub=root:CreateCheckbox(
-                icon,
+                '',
             function(data)
                 return Save().atlasIndex==data.index
             end, function(data)
@@ -190,17 +189,24 @@ local function Init_Cursor_Options()
                 self:SetDefaultText(data.icon)
                 set_panel_Texture()
                 WoWTools_CursorMixin:Cursor_Settings()
-            end, {index=index, icon=icon, texture=texture})
-            sub:SetTooltip(function(tooltip, description)
-                tooltip:AddLine(select(3, WoWTools_TextureMixin:IsAtlas(description.data.texture, 64)))
-                tooltip:AddLine(description.data.texture)
+            end, {index=index, icon=icon, texture=texture, isAtlas=isAtlas})
+
+            sub:SetTooltip(function(tooltip, desc)
+                tooltip:AddLine(desc.data.icon)
+                tooltip:AddLine(desc.data.texture)
                 tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
             end)
-            sub:AddInitializer(function(btn)
-                btn.fontString:ClearAllPoints()
-                btn.fontString:SetPoint('CENTER')
+
+            sub:AddInitializer(function(btn, desc)
+                local t= btn:AttachTexture()
+                t:SetSize(32, 32)
+                t:SetPoint('CENTER')
+                if desc.data.isAtlas then
+                    t:SetAtlas(desc.data.texture)
+                else
+                    t:SetTexture(desc.data.texture)
+                end
             end)
-            --num= index
         end
         WoWTools_MenuMixin:SetScrollMode(root)
     end)
@@ -376,9 +382,9 @@ local function Init_GCD_Options()
         local sub
         --local num=0
         for index, texture in pairs(Save().GCDTexture) do
-            local icon= select(3, WoWTools_TextureMixin:IsAtlas(texture, 0)) or texture
+            local isAtlas, _, icon= WoWTools_TextureMixin:IsAtlas(texture, 64)
             sub=root:CreateCheckbox(
-                icon,
+                '',
             function(data)
                 return Save().gcdTextureIndex==data.index
             end, function(data)
@@ -388,17 +394,22 @@ local function Init_GCD_Options()
                 self:SetDefaultText(data.icon)
                 set_panel_Texture()
                 WoWTools_CursorMixin:GCD_Settings(true)
-            end, {index=index, icon=icon, texture=texture})
+            end, {index=index, icon=icon, texture=texture, isAtlas=isAtlas})
             sub:SetTooltip(function(tooltip, description)
                 tooltip:AddLine(select(3, WoWTools_TextureMixin:IsAtlas(description.data.texture, 64)))
                 tooltip:AddLine(description.data.texture)
                 tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
             end)
-            sub:AddInitializer(function(btn)
-                btn.fontString:ClearAllPoints()
-                btn.fontString:SetPoint('CENTER')
+            sub:AddInitializer(function(btn, desc)
+                local t= btn:AttachTexture()
+                t:SetSize(32, 32)
+                t:SetPoint('CENTER')
+                if desc.data.isAtlas then
+                    t:SetAtlas(desc.data.texture)
+                else
+                    t:SetTexture(desc.data.texture)
+                end
             end)
-            --num= index
         end
         WoWTools_MenuMixin:SetScrollMode(root)
     end)
@@ -435,6 +446,11 @@ local function Init_GCD_Options()
         if userInput then
             local text= self:GetText()
             if text:gsub(' ','')~='' then
+                if C_Texture.GetAtlasInfo(text) then
+                    self:SetTextColor(0.6,0.6,0.6)
+                else
+                    self:SetTextColor(1,1,1)
+                end
                 PanelFrame.Texture:SetTexture(text)
             end
         end

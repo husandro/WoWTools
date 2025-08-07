@@ -6066,7 +6066,8 @@
         "StableFrameMixin",
         "EXPANSION_NAME10",
         "TimeManagerFrameCloseButton",
-        "TimeManagerAlarmTimeFrame"
+        "TimeManagerAlarmTimeFrame",
+        "ERR_BANK_NOT_ACCESSIBLE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

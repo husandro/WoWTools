@@ -69,7 +69,7 @@ local TextureTab={
 
 
 local function get_texture_tab()
-    for name, _ in pairs(WoWToolsPlayerDate['TargetTexture']) do
+    for name, _ in pairs(WoWToolsPlayerDate['TargetTexture'] or {}) do
         if TextureTab[name] then
             WoWToolsPlayerDate['TargetTexture'][name]=nil
         else
@@ -601,7 +601,7 @@ local function Init_Options()
                 sub:AddInitializer(function(btn, desc)
                     local t = btn:AttachTexture()
                     t:SetSize(32, 32)
-                    t:SetPoint("RIGHT")
+                    t:SetPoint("CENTER")
                     if desc.data.isAtlas then
                         t:SetAtlas(desc.data.name)
                     else
