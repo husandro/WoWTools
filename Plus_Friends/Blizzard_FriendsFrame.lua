@@ -631,7 +631,7 @@ local function Init()--好友列表, 初始化
             self.ConnectedLabel= WoWTools_LabelMixin:Create(self.TitleContainer, {
                 name= 'WoWToolsFriendsConnectedLabel',
                 text= WoWTools_DataMixin.onlyChinese and '战网断开' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET),
-                color= {r=0,g=1,b=0},
+                --color= {r=1,g=0,b=0},
             })
             self.ConnectedLabel:SetPoint('LEFT', FriendsFrameTitleText, 0, 0)
         end
