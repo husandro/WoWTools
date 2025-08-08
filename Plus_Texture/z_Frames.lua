@@ -251,15 +251,64 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:SetFrame(ChatFrameMenuButton, {alpha= 0.5})
     self:SetFrame(TextToSpeechButton, {alpha= 0.5})
 
---聊天框
+--聊天框 FloatingChatFrame.lua
+    --最小化聊天框
+    hooksecurefunc('FCF_CreateMinimizedFrame', function(chatFrame)
+        local name= chatFrame:GetName()
+        self:SetFrame(_G[name..'MinimizedMaximizeButton'])
+        self:SetFrame(_G[name..'Minimized'])
+    end)
+
+    --hooksecurefunc('FCF_OpenTemporaryWindow', function(chatType, chatTarget, sourceChatFrame, selectWindow)
+--提示, 使其不可交互
+    local function Set_SetUninteractable(chatFrame)
+        local name= chatFrame:GetName()
+        local isLocked= chatFrame.isUninteractable
+        --print(name, isLocked)
+        if isLocked then
+            chatFrame.lockedTexture= chatFrame:CreateTexture('WoWToolsIsLocked'..name, 'BORDER')
+            chatFrame.lockedTexture:SetPoint('RIGHT', _G[name..'Tab'].Text, 'LEFT', 2,-2)
+            chatFrame.lockedTexture:SetSize(8,14)
+            chatFrame.lockedTexture:SetAtlas('Garr_LockedBuilding')
+            chatFrame.lockedTexture:SetAlpha(0.5)
+        end
+        if chatFrame.lockedTexture then
+            chatFrame.lockedTexture:SetShown(isLocked)
+        end
+    end
+    hooksecurefunc('FCF_SetUninteractable', function(chatFrame)--使其不可交互
+        Set_SetUninteractable(chatFrame)
+    end)
+    --[[hooksecurefunc('FCF_SetExpandedUninteractable', function(chatFrame)--使其不可交互
+        if ( chatFrame.isDocked ) then
+            for _, frame in pairs(GENERAL_CHAT_DOCK.DOCKED_CHAT_FRAMES) do
+                FCF_SetUninteractable(frame)
+            end
+        else
+            FCF_SetUninteractable(chatFrame)
+        end
+    end)]]
+    
+    --[[hooksecurefunc('FCF_MaximizeFrame', function(chatFrame)
+        local name= chatFrame:GetName()
+        self:SetFrame(_G[name..'ButtonFrameMinimizeButton'])
+        self:SetFrame(_G[name..'ResizeButton'])
+
+    end)]]
     for i=1, NUM_CHAT_WINDOWS do
         local frame= _G["ChatFrame"..i]
         if frame then
             self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxMid'], nil, nil, 0.3)
             self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxLeft'], nil, nil, 0.3)
             self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxRight'], nil, nil, 0.3)
+
+            self:SetFrame(_G['ChatFrame'..i..'ResizeButton'])
+            self:SetFrame(_G['ChatFrame'..i..'ButtonFrameMinimizeButton'])
+
             self:SetScrollBar(frame)
             self:SetFrame(frame.ScrollToBottomButton, {notAlpha=true})
+
+            Set_SetUninteractable(frame)
         end
     end
 

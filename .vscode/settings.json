@@ -6067,7 +6067,21 @@
         "EXPANSION_NAME10",
         "TimeManagerFrameCloseButton",
         "TimeManagerAlarmTimeFrame",
-        "ERR_BANK_NOT_ACCESSIBLE"
+        "ERR_BANK_NOT_ACCESSIBLE",
+        "ChatFrame2Tab",
+        "ChatFrame2ButtonFrameMinimizeButton",
+        "FCF_CreateMinimizedFrame",
+        "ChatFrame2",
+        "FCF_MaximizeFrame",
+        "ChatFrame2ResizeButton",
+        "ChatFrame4ButtonFrameMinimizeButton",
+        "ChatFrame4ResizeButton",
+        "ChatFrame4",
+        "PrimaryChatFrameMixin",
+        "ChatFrame1ButtonFrameMinimizeButton",
+        "ChatFrame1ResizeButton",
+        "FCF_SetUninteractable",
+        "FCF_SetExpandedUninteractable"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -6093,5 +6107,6 @@
         "assign-type-mismatch",
         "undefined-field",
         "param-type-mismatch",
+        "unused-local"
     ],
 }
