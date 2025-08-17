@@ -141,7 +141,7 @@ WoWTools_DataMixin.ChallengesSpellTabs={
     [251]= {spell=410074, ins=1022, name='地渊孢林', spellName='腐败丛生之路', spellDes='传送到|cff00ccff地渊孢林|r的入口'},--地渊孢林
     [438]= {spell=410080, ins=68, name='旋云之巅', spellName='风神领域之路', spellDes='传送到|cff00ccff旋云之巅|r的入口。'},--旋云之巅
     [353]= {spell=464256, ins=1023, name='围攻伯拉勒斯', spellName='困守孤港之路', spellDes='传送到|cff00ccff围攻伯拉勒斯|r的入口。'},--围攻伯拉勒斯
-    [247]= {spell=467555 , ins=1012, name='暴富矿区', spellName='艾泽里特精炼厂之路', spellDes='传送至|cff00ccff暴富矿区|！！r入口处。'},
+    [247]= {spell=467555, ins=1012, name='暴富矿区', spellName='艾泽里特精炼厂之路', spellDes='传送至|cff00ccff暴富矿区|！！r入口处。'},
 
 
 
@@ -200,7 +200,11 @@ WoWTools_DataMixin.ChallengesSpellTabs={
     [506]= {spell=445440, ins=1272, name='燧酿酒庄', spellName='酒庄之路', spellDes='传送至|cff00ccff燧酿酒庄|r入口处。'},
     [507]= {spell=445424, ins=71, name='格瑞姆巴托', spellName='格瑞姆巴托之路', spellDes='传送至|cff00ccff格瑞姆巴托|r入口处。'},
     [525]= {spell=1216786, ins=1298, name='水闸行动', spellName='水闸行动之路', spellDes='传送至|cff00ccff水闸行动|r入口处。'},
+
+    [541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.5
+
     [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'}
+
 
 }
 

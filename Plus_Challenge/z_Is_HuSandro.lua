@@ -24,7 +24,7 @@ local function Init()
         end
 
         -- If timerunning enabled, hide PVP and M+, and re-anchor delves to Dungeons tab
-        if self:TimerunningEnabled() then
+        if TimerunningUtil.TimerunningEnabledForPlayer() then
             self.tab2:Hide();
             self.tab3:Hide();
             if self.tab4:IsShown() then
