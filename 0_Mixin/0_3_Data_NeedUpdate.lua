@@ -18,8 +18,7 @@ WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物
     {type='currency', id=3113},--符文安德麦纹章
     {type='currency', id=3114},--鎏金安德麦纹章
 
-    {type='currency', id=3289},--11.2
-    {type='currency', id=3291},
+
     
     
     {type='currency', id=WoWTools_DataMixin.CurrencyUpdateItemLevelID, show=true},--套装，转换，货币
