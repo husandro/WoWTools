@@ -3,8 +3,7 @@
 --z_ItemInteractionFrame.lua
 --套装，转换，货币, 不指定, 值可能是nil
 --WoWTools_DataMixin.CurrencyUpdateItemLevelID=nil
-
-
+--C_MythicPlus.GetCurrentSeason()
 
 
 
@@ -13,13 +12,8 @@
 WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
     {type='currency', id=3008},--神勇石
 
-    {type='currency', id=3107},--风化安德麦纹章
-    {type='currency', id=3112},--蚀刻安德麦纹章
-    {type='currency', id=3113},--符文安德麦纹章
-    {type='currency', id=3114},--鎏金安德麦纹章
-
-
-    
+    {type='currency', id=3289},--符文虚灵纹章 11.2
+    {type='currency', id=3291},--鎏金虚灵纹章
     
     {type='currency', id=WoWTools_DataMixin.CurrencyUpdateItemLevelID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
@@ -44,39 +38,7 @@ local function Level_Text(text)
 end
 
 local endOfRunRewardLevel={
-[2]=639,
-[3]=639,
-[4]=642,
-[5]=645,
-[6]=649,
-[7]=649,
-[8]=652,
-[9]=652,
-[10]=655,
-[11]=655,
-[12]=655,
-}
-
-local WeekItemLevel={
-    [2]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t10',--14
-    [3]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t12',
-    [4]='%d'..Level_Text('Champion')..'3/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t14',
-    [5]='%d'..Level_Text('Champion')..'4/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t16',
-    [6]='%d'..Level_Text('Hero')..'1/6  %d'..Level_Text('Hero')..'3/6|T5872051:0|t18',
-
-    [7]='%d'..Level_Text('Hero')..'1/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t10',
-    [8]='%d'..Level_Text('Hero')..'2/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t12',
-    [9]='%d'..Level_Text('Hero')..'2/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t14',
-    [10]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t16',
-    [11]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t18',
-    [12]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t20',
-
-    min=2,
-    max=12,
-}
-
-if C_MythicPlus.GetCurrentSeason()==15 then--内战 第三赛季
-    endOfRunRewardLevel={
+endOfRunRewardLevel={--15
     [2]=684,
     [3]=684,
     [4]=688,
@@ -89,8 +51,10 @@ if C_MythicPlus.GetCurrentSeason()==15 then--内战 第三赛季
     [11]=701,
     [12]=701,
     }
-    WeekItemLevel={
-    [2]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t10',--14
+}
+
+local WeekItemLevel={
+    [2]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t10',--15
     [3]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t12',
     [4]='%d'..Level_Text('Champion')..'3/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t14',
     [5]='%d'..Level_Text('Champion')..'4/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t16',
@@ -106,7 +70,6 @@ if C_MythicPlus.GetCurrentSeason()==15 then--内战 第三赛季
     min=2,
     max=12,
 }
-end
 
 function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)
     if isGetNum then
@@ -132,7 +95,7 @@ end
 -- TWW Season 2 (Sort:[1](Level 4+);[2](Level 7+);[3](Level 10+);[4](Level 12+))
 -- Information from(资料来自)：https://www.wowhead.com/guide/mythic-plus-dungeons/the-war-within-season-2/overview
 -- AngryKeystones Schedule
-WoWTools_DataMixin.affixScheduleSeason= 14--第几赛季--C_MythicPlus.GetCurrentSeason()
+WoWTools_DataMixin.affixScheduleSeason= 15--第几赛季--C_MythicPlus.GetCurrentSeason()
 WoWTools_DataMixin.affixSchedule = {
 	{ 148, 9 , 10, 147, },
 	{ 162, 10, 9 , 147, },
@@ -263,7 +226,7 @@ end
 --https://wago.tools/db2/SpellFlyout?locale=zhCN
 --Interface\\AddOns\\WoWTools\\Source\\Texture\\WoW\\0.tga
 WoWTools_DataMixin.FlyoutID={
-    --{flyoutID= 244, ver=10},--英雄之路：“地心之战”第3赛季
+    {flyoutID= 244, ver=10},--英雄之路：“地心之战”第3赛季
     {flyoutID= 232, ver=10},--'英雄之路：地心之战--11
     {flyoutID= 242, ver=10, isRaid=true},--英雄之路：地心之战团队副本
 
