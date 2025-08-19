@@ -403,10 +403,12 @@ local function Init()
     addAllGem:SetScript('OnLeave', GameTooltip_Hide)
     addAllGem:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(WoWTools_DataMixin.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS))
+        GameTooltip:SetText(
+            (WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+            ..'|T135998:0|t'
+            ..(WoWTools_DataMixin.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS)
+            ..WoWTools_DataMixin.Icon.icon2
+        )
         GameTooltip:Show()
     end)
     addAllGem:SetScript('OnClick', function()
@@ -434,10 +436,12 @@ local function Init()
     ScrappingMachineFrame.addAllEquip:SetScript('OnLeave', GameTooltip_Hide)
     ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|T135995:0|t'..(WoWTools_DataMixin.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT))
+        GameTooltip:SetText(
+            (WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+            ..'|T135995:0|t'
+            ..(WoWTools_DataMixin.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT)
+            ..WoWTools_DataMixin.Icon.icon2
+        )
         GameTooltip:Show()
     end)
 
