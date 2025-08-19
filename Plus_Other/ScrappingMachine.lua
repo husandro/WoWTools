@@ -218,8 +218,34 @@ end
 
 
 
+--[[背包，所有物品，列表
+local function Init_BagList_Menu(self, root)
+    local sub
+    local tab={}
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
+            local itemLocation= can_scrap_item(bag, slot, nil, nil)
+            local itemLink= itemLocation and C_Item.GetItemLink(itemLocation)
+            if itemLink then
+                local itemID, _, _, _, _, classID= C_Item.GetItemInfoInstant(itemLink)
+                if itemID then
+                    tab[classID]=tab[classID] or {}
+                    tab[classID][itemID]={bagID=bag, slotID=slot}
+                end
+            end
+        end
+    end
 
+    for classID, info in pairs(tab) do
+        sub=root:CreateButton(
+            '|cff606060'..classID..'|r '..(WoWTools_TextMixin:CN(C_Item.GetItemClassInfo(classID)) or ''),
+        function()
+            return MenuResponse.Open
+        end)
 
+        Init_SubItem_Menu(self, sub, info)
+    end
+end]]
 
 
 
@@ -369,6 +395,13 @@ local tab={
                 end
             end
         end
+    --[[},{
+        name='ItemBag',
+        atlas='bag-main',
+        tooltip=WoWTools_DataMixin.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL,
+        click=function(self)
+            MenuUtil.CreateContextMenu(self, Init_BagList_Menu)
+        end]]
     },{
         name='AddAll',
         atlas='communities-chat-icon-plus',
@@ -393,7 +426,7 @@ local tab={
     },
 
 
-    --{name='-'},
+    {name='-'},
 
     {
         name='ClearItem',
@@ -408,7 +441,7 @@ local tab={
 
 
 
-local y=0
+local y=-23
 for _, info in pairs(tab) do
     if info.name~='-' then
         local btn=WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {
@@ -429,14 +462,14 @@ for _, info in pairs(tab) do
         end)
         btn:SetScript('OnClick', info.click)
     end
-    hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
-        _G['WoWToolsScrappingClearItemButton']:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
-        _G['WoWToolsScrappingAddAllButton']:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
-    end)
     y= y-23
-    
 end
 tab=nil
+hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
+    _G['WoWToolsScrappingClearItemButton']:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
+    _G['WoWToolsScrappingAddAllButton']:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
+end)
+
 
 
 
