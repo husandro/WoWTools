@@ -709,7 +709,9 @@ WoWTools_MenuMixin:OpenOptions(root, {
 name=,
 name2=,
 GetCategory=function()
-end
+end,
+category=,
+tooltip=,
 })
 
 

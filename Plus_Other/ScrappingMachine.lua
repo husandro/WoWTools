@@ -73,7 +73,12 @@ end
 
 
 local function can_scrap_item(bag, slot, onlyEquip, classID)
+    if not ScrappingMachineFrame:IsShown() then
+        return
+    end
+
     local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
+
     if itemLocation and itemLocation:IsValid() and C_Item.CanScrapItem(itemLocation) then
         local itemID= C_Item.GetItemID(itemLocation)
         if Save().items[itemID] then--禁用，自动添加，物品
@@ -162,7 +167,7 @@ local function Init_Menu(self, root)
 
     for classID, info in pairs(tab) do
         sub=root:CreateButton(
-            classID..' '..(WoWTools_TextMixin:CN(C_Item.GetItemClassInfo(classID)) or ''),
+            '|cff606060'..classID..'|r '..(WoWTools_TextMixin:CN(C_Item.GetItemClassInfo(classID)) or ''),
         function()
             return MenuResponse.Open
         end)
@@ -190,6 +195,14 @@ local function Init_Menu(self, root)
         end})
         return MenuResponse.Open
     end)
+
+    
+--打开选项界面
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {
+    name=addName,
+    category=WoWTools_OtherMixin.Category
+    })
 end
 
 
@@ -211,19 +224,33 @@ end
 
 
 
-local function Init_Disabled_Button()
-    local btn= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=23})
-    btn.Text= WoWTools_LabelMixin:Create(btn)
-    btn.Text:SetPoint('CENTER')
-    btn:SetPoint('RIGHT', -10,0)
-    function btn:get_num()
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Button()
+    local ItemsButton= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=23})
+    ItemsButton.Text= WoWTools_LabelMixin:Create(ItemsButton)
+    ItemsButton.Text:SetPoint('CENTER')
+    ItemsButton:SetPoint('TOPLEFT', ScrappingMachineFrame.ItemSlots, 'TOPRIGHT', 4, 0)
+
+    function ItemsButton:get_num()
         local n=0
         for _ in pairs(Save().items) do
             n=n+1
         end
         return n
     end
-    function btn:settings()
+    function ItemsButton:settings()
         local num= self:get_num()
         self.Text:SetText(num)
         if num==0 then
@@ -233,7 +260,7 @@ local function Init_Disabled_Button()
         end
         self:SetNormalAtlas('talents-node-choiceflyout-circle-red')
     end
-    function btn:set_tooltips()
+    function ItemsButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
 
@@ -248,8 +275,6 @@ local function Init_Disabled_Button()
             end
         end
 
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
-        GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
             ..'|A:talents-button-reset:0:0|a'
@@ -262,9 +287,14 @@ local function Init_Disabled_Button()
         )
         GameTooltip:Show()
     end
-    btn:SetScript('OnLeave', function(self) GameTooltip:Hide() self:settings() end)
-    btn:SetScript('OnEnter', btn.set_tooltips)
-    btn:SetScript('OnMouseDown', function(self)
+    ItemsButton:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:settings()
+    end)
+    ItemsButton:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+    end)
+    ItemsButton:SetScript('OnMouseDown', function(self)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
             Save().items[itemID]= not Save().items[itemID] and true or nil
@@ -282,78 +312,178 @@ local function Init_Disabled_Button()
             end)
         end
     end)
+    ItemsButton:settings()
 
-    btn:settings()
+
+
+
+
+
+
+
+
+
+
+local tab={
+    {
+        name='AddGem',
+        texture=135998,
+        classID=3,
+        tooltip=WoWTools_DataMixin.onlyChinese and '添加宝石' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_CATEGORY_GEMS),
+        click=function()
+            local free= MaxNumeri- get_num_items()
+            if free==0 or InCombatLockdown() then
+                return
+            end
+            for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
+                for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
+                    if can_scrap_item(bag, slot, nil, 3) then
+                        C_Container.UseContainerItem(bag, slot)
+                        free= free-1
+                        if free==0 then
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    },{
+
+        name='AddItem',
+        texture=135995,
+        tooltip=WoWTools_DataMixin.onlyChinese and '添加装备' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, BAG_FILTER_EQUIPMENT),
+        click=function()
+            local free= MaxNumeri-get_num_items()
+            if free==0 or InCombatLockdown() then
+                return
+            end
+            for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
+                for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
+                    if can_scrap_item(bag, slot, true, nil) then
+                        C_Container.UseContainerItem(bag, slot)
+                        free= free-1
+                        if free<=0 then
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    },{
+        name='AddAll',
+        atlas='communities-chat-icon-plus',
+        tooltip=WoWTools_DataMixin.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, ALL),
+        click=function()
+            local free= MaxNumeri-get_num_items()
+            if free==0 or InCombatLockdown() then
+                return
+            end
+            for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
+                for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
+                    if can_scrap_item(bag, slot, nil, nil) then
+                        C_Container.UseContainerItem(bag, slot)
+                        free= free-1
+                        if free==0 then
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    },
+
+
+    --{name='-'},
+
+    {
+        name='ClearItem',
+        atlas='bags-button-autosort-up',
+        tooltip=(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        click=function() C_ScrappingMachineUI.RemoveAllScrapItems() end
+    }
+}
+
+
+
+
+
+
+local y=0
+for _, info in pairs(tab) do
+    if info.name~='-' then
+        local btn=WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {
+            name= 'WoWToolsScrapping'..info.name..'Button',
+            size=23,
+            atlas=info.atlas,
+            texture=info.texture,
+        })
+        btn.tooltip= (info.texture and format('|T%d:0|t', info.texture) or format('|A:%s:0:0|a', info.atlas))..info.tooltip
+        btn:SetPoint('TOP', ItemsButton, 'BOTTOM', 0, y)
+        btn:SetScript('OnLeave', function()
+            GameTooltip:Hide()
+        end)
+        btn:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText(self.tooltip..WoWTools_DataMixin.Icon.icon2)
+            GameTooltip:Show()
+        end)
+        btn:SetScript('OnClick', info.click)
+    end
+    hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
+        _G['WoWToolsScrappingClearItemButton']:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
+        _G['WoWToolsScrappingAddAllButton']:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
+    end)
+    y= y-23
+    
 end
+tab=nil
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init()
-    --拆解法术，提示
-    ScrappingMachineFrame.ScrapButton:HookScript('OnLeave', GameTooltip_Hide)
-    ScrappingMachineFrame.ScrapButton:HookScript('OnEnter', function(self)
-        local spellID= C_ScrappingMachineUI.GetScrapSpellID()
-        if not spellID or GameTooltip:IsOwned(self) then
+--[[
+    --添加，所有，宝石
+    local addAllGem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {
+        name='WoWToolsScrappingAddAllGem',
+        size=23,
+        texture=135998
+    })
+    addAllGem:SetPoint('TOP', btn, 'BOTTOM', 0, -23)
+    --addAllGem:SetPoint('LEFT', addAllItem, 'RIGHT', 4,0)
+    addAllGem:SetScript('OnLeave', GameTooltip_Hide)
+    addAllGem:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(
+            (WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+            ..'|T135998:0|t'
+            ..(WoWTools_DataMixin.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS)
+            ..WoWTools_DataMixin.Icon.icon2
+        )
+        GameTooltip:Show()
+    end)
+    addAllGem:SetScript('OnClick', function()
+        local free= MaxNumeri- get_num_items()
+        if free==0 or InCombatLockdown() then
             return
         end
-        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:SetSpellByID(spellID)
-        GameTooltip:Show()
-    end)
-
-    --物品，提示
-    for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
-        if (btn) then
-            hooksecurefunc(btn, 'RefreshIcon', function(self)
-                WoWTools_ItemMixin:SetupInfo(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
-            end)
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
+            for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
+                if can_scrap_item(bag, slot, nil, 3) then
+                    C_Container.UseContainerItem(bag, slot)
+                    free= free-1
+                    if free==0 then
+                        return
+                    end
+                end
+            end
         end
-    end
+    end)
 
-    --清除，所有，物品
-    local clearAllItem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {
-        name= 'WoWToolsScrappingClearAllItem',
-        size=23,
-        atlas='bags-button-autosort-up'
-    })
-    --clearAllItem:SetPoint('BOTTOMRIGHT', -8, 28)
-    clearAllItem:SetPoint('BOTTOMRIGHT', ScrappingMachineFrame.ScrapButton, 'TOPRIGHT')
-    clearAllItem:SetScript('OnClick', function()
-        C_ScrappingMachineUI.RemoveAllScrapItems()
-    end)
-    clearAllItem:SetScript('OnLeave', GameTooltip_Hide)
-    clearAllItem:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..WoWTools_DataMixin.Icon.icon2)
-        GameTooltip:Show()
-    end)
+
+
+
+
+
 
 
 
@@ -393,48 +523,33 @@ local function Init()
         end
     end)
 
-    --添加，所有，宝石
-    local addAllGem= WoWTools_ButtonMixin:Cbtn(addAllItem, {
-        name='WoWToolsScrappingAddAllGem',
-        size=23,
-        texture=135998
-    })
-    addAllGem:SetPoint('LEFT', addAllItem, 'RIGHT', 4,0)
-    addAllGem:SetScript('OnLeave', GameTooltip_Hide)
-    addAllGem:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(
-            (WoWTools_DataMixin.onlyChinese and '添加' or ADD)
-            ..'|T135998:0|t'
-            ..(WoWTools_DataMixin.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS)
-            ..WoWTools_DataMixin.Icon.icon2
-        )
-        GameTooltip:Show()
-    end)
-    addAllGem:SetScript('OnClick', function()
-        local free= MaxNumeri- get_num_items()
-        if free==0 or InCombatLockdown() then
-            return
-        end
-        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
-            for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
-                if can_scrap_item(bag, slot, nil, 3) then
-                    C_Container.UseContainerItem(bag, slot)
-                    free= free-1
-                    if free==0 then
-                        return
-                    end
-                end
-            end
-        end
-    end)
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
 
 
     --添加，所有，装备
-    ScrappingMachineFrame.addAllEquip= WoWTools_ButtonMixin:Cbtn(addAllItem, {size=23, texture=135995})
-    ScrappingMachineFrame.addAllEquip:SetPoint('LEFT', addAllGem, 'RIGHT', 4, 0)
-    ScrappingMachineFrame.addAllEquip:SetScript('OnLeave', GameTooltip_Hide)
-    ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)
+    local addAllEquip= WoWTools_ButtonMixin:Cbtn(addAllItem, {size=23, texture=135995})
+    addAllEquip:SetPoint('LEFT', addAllGem, 'RIGHT', 4, 0)
+    addAllEquip:SetScript('OnLeave', GameTooltip_Hide)
+    addAllEquip:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:SetText(
             (WoWTools_DataMixin.onlyChinese and '添加' or ADD)
@@ -445,7 +560,7 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    ScrappingMachineFrame.addAllEquip:SetScript('OnClick', function()
+    addAllEquip:SetScript('OnClick', function()
         local free= MaxNumeri-get_num_items()
         if free==0 or InCombatLockdown() then
             return
@@ -466,13 +581,88 @@ local function Init()
 
 
 
-    hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
-        clearAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
-        addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
+
+
+
+
+
+    
+    --清除，所有，物品
+    local clearAllItem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {
+        name= 'WoWToolsScrappingClearAllItem',
+        size=23,
+        atlas='bags-button-autosort-up'
+    })
+    --clearAllItem:SetPoint('BOTTOMRIGHT', -8, 28)
+    clearAllItem:SetPoint('LEFT', ScrappingMachineFrame.ScrapButton, 'RIGHT', 2, 0)
+    clearAllItem:SetScript('OnClick', function()
+        C_ScrappingMachineUI.RemoveAllScrapItems()
+    end)
+    clearAllItem:SetScript('OnLeave', GameTooltip_Hide)
+    clearAllItem:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip:Show()
     end)
 
+]]
 
-    Init_Disabled_Button()
+    --[[hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
+        clearAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
+        addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
+    end)]]
+
+    Init_Button=function()end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    --拆解法术，提示
+    ScrappingMachineFrame.ScrapButton:HookScript('OnLeave', GameTooltip_Hide)
+    ScrappingMachineFrame.ScrapButton:HookScript('OnEnter', function(self)
+        local spellID= C_ScrappingMachineUI.GetScrapSpellID()
+        if not spellID or GameTooltip:IsOwned(self) then
+            return
+        end
+        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetSpellByID(spellID)
+        GameTooltip:Show()
+    end)
+
+    --物品，提示
+    for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
+        if (btn) then
+            hooksecurefunc(btn, 'RefreshIcon', function(self)
+                WoWTools_ItemMixin:SetupInfo(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
+            end)
+        end
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+    Init_Button()
 
     Init=function()end
 end
