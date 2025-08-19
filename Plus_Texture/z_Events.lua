@@ -1456,11 +1456,9 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
     self:HideTexture(PlayerFrameAlternateManaBarRightBorder)
 --额外技能
     self:SetAlphaColor(ExtraActionButton1.style, nil, true, 0.3)
---区域技能
-    self:SetAlphaColor(ZoneAbilityFrame.Style, nil, true, 0.3)
+
 --小队，背景
     self:SetFrame(PartyFrame.Background, {alpha= 0.3})
-
 
 --施法条 CastingBarFrameTemplate
     for _, frame in pairs({
@@ -1480,7 +1478,13 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
     self:SetFrame(RolePollPopup.Border, {notAlpha=true})
 end
 
-
+--区域技能
+function WoWTools_TextureMixin.Events:Blizzard_ZoneAbility()
+    self:SetAlphaColor(ZoneAbilityFrame.Style, nil, true, 0.3)
+    hooksecurefunc(ZoneAbilityFrameSpellButtonMixin, 'OnLoad', function(btn)
+        print('a', btn)
+    end)
+end
 
 
 

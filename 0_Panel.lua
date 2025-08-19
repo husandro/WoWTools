@@ -229,7 +229,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Init_Options()
 
-            WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()
+            WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()--PlayerIsTimerunning()
 
 
             if WoWTools_DataMixin.onlyChinese then
