@@ -267,7 +267,7 @@ local function Init_Button()
     local ItemsButton= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=23})
     ItemsButton.Text= WoWTools_LabelMixin:Create(ItemsButton)
     ItemsButton.Text:SetPoint('CENTER')
-    ItemsButton:SetPoint('TOPLEFT', ScrappingMachineFrame.ItemSlots, 'TOPRIGHT', 8, 0)
+    ItemsButton:SetPoint('TOPLEFT', ScrappingMachineFrame.ItemSlots, 'TOPRIGHT', 12, 0)
 
     function ItemsButton:get_num()
         local n=0
