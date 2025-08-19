@@ -177,7 +177,8 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE,
+        (WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+        ..'|cnGREEN_FONT_COLOR:#'..self.Text:GetText(),
     function()
         return MenuResponse.Open
     end)
