@@ -344,7 +344,7 @@ local function Init()
         atlas='bags-button-autosort-up'
     })
     --clearAllItem:SetPoint('BOTTOMRIGHT', -8, 28)
-    clearAllItem:SetPoint('BOTTOM', ScrappingMachineFrame.ScrapButton, 'TOP')
+    clearAllItem:SetPoint('BOTTOMRIGHT', ScrappingMachineFrame.ScrapButton, 'TOPRIGHT')
     clearAllItem:SetScript('OnClick', function()
         C_ScrappingMachineUI.RemoveAllScrapItems()
     end)
@@ -394,10 +394,14 @@ local function Init()
     end)
 
     --添加，所有，宝石
-    ScrappingMachineFrame.addAllGem= WoWTools_ButtonMixin:Cbtn(addAllItem, {size=23, texture=135998})
-    ScrappingMachineFrame.addAllGem:SetPoint('LEFT', addAllItem, 'RIGHT', 4,0)
-    ScrappingMachineFrame.addAllGem:SetScript('OnLeave', GameTooltip_Hide)
-    ScrappingMachineFrame.addAllGem:SetScript('OnEnter', function(self)
+    local addAllGem= WoWTools_ButtonMixin:Cbtn(addAllItem, {
+        name='WoWToolsScrappingAddAllGem',
+        size=23,
+        texture=135998
+    })
+    addAllGem:SetPoint('LEFT', addAllItem, 'RIGHT', 4,0)
+    addAllGem:SetScript('OnLeave', GameTooltip_Hide)
+    addAllGem:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
@@ -405,7 +409,7 @@ local function Init()
         GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(WoWTools_DataMixin.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS))
         GameTooltip:Show()
     end)
-    ScrappingMachineFrame.addAllGem:SetScript('OnClick', function()
+    addAllGem:SetScript('OnClick', function()
         local free= MaxNumeri- get_num_items()
         if free==0 or InCombatLockdown() then
             return
@@ -426,7 +430,7 @@ local function Init()
 
     --添加，所有，装备
     ScrappingMachineFrame.addAllEquip= WoWTools_ButtonMixin:Cbtn(addAllItem, {size=23, texture=135995})
-    ScrappingMachineFrame.addAllEquip:SetPoint('LEFT', ScrappingMachineFrame.addAllGem, 'RIGHT', 4, 0)
+    ScrappingMachineFrame.addAllEquip:SetPoint('LEFT', addAllGem, 'RIGHT', 4, 0)
     ScrappingMachineFrame.addAllEquip:SetScript('OnLeave', GameTooltip_Hide)
     ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -459,8 +463,8 @@ local function Init()
 
 
     hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
-        clearAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.3)
-        addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.3)
+        clearAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
+        addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
     end)
 
 
