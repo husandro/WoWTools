@@ -172,11 +172,24 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '禁用添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ADD))..' |cnGREEN_FONT_COLOR:#'..get_num_items()..'|r',
+        WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE,
     function()
         return MenuResponse.Open
     end)
+
     Init_SubItem_Menu(self, sub, Save().items)
+    sub:CreateDivider()
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+        nil,
+        {SetValue=function()
+            Save().items={}
+        end})
+        return MenuResponse.Open
+    end)
 end
 
 
@@ -199,7 +212,7 @@ end
 
 
 local function Init_Disabled_Button()
-    local btn= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=28})
+    local btn= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=23})
     btn.Text= WoWTools_LabelMixin:Create(btn)
     btn.Text:SetPoint('CENTER')
     btn:SetPoint('RIGHT', -10,0)
@@ -211,8 +224,14 @@ local function Init_Disabled_Button()
         return n
     end
     function btn:settings()
-        self.Text:SetText(self:get_num())
-        self:SetNormalAtlas('talents-button-reset')
+        local num= self:get_num()
+        self.Text:SetText(num)
+        if num==0 then
+            self.Text:SetTextColor(0.62, 0.62, 0.62)
+        else
+            self.Text:SetTextColor(1,0,0)
+        end
+        self:SetNormalAtlas('talents-node-choiceflyout-circle-red')
     end
     function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -232,8 +251,10 @@ local function Init_Disabled_Button()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '禁用物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ITEMS))..' |cnGREEN_FONT_COLOR:#'..self.Text:GetText(),
-            WoWTools_DataMixin.onlyChinese and '自动添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ADD)
+            (WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+            ..'|A:talents-button-reset:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '自动添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ADD)),
+            '|cnGREEN_FONT_COLOR:#'..self.Text:GetText()
         )
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS)),
@@ -317,36 +338,44 @@ local function Init()
     end
 
     --清除，所有，物品
-    ScrappingMachineFrame.celarAllItem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=28, atlas='bags-button-autosort-up'})
-    ScrappingMachineFrame.celarAllItem:SetPoint('BOTTOMRIGHT', -8, 28)
-    ScrappingMachineFrame.celarAllItem:SetScript('OnClick', function()
+    local clearAllItem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {
+        name= 'WoWToolsScrappingClearAllItem',
+        size=23,
+        atlas='bags-button-autosort-up'
+    })
+    --clearAllItem:SetPoint('BOTTOMRIGHT', -8, 28)
+    clearAllItem:SetPoint('BOTTOM', ScrappingMachineFrame.ScrapButton, 'TOP')
+    clearAllItem:SetScript('OnClick', function()
         C_ScrappingMachineUI.RemoveAllScrapItems()
     end)
-    ScrappingMachineFrame.celarAllItem:SetScript('OnLeave', GameTooltip_Hide)
-    ScrappingMachineFrame.celarAllItem:SetScript('OnEnter', function(self)
+    clearAllItem:SetScript('OnLeave', GameTooltip_Hide)
+    clearAllItem:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL))
+        GameTooltip:SetText('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:Show()
     end)
 
 
 
     --添加，所有，物品
-    ScrappingMachineFrame.addAllItem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=23, atlas='communities-chat-icon-plus'})
-    ScrappingMachineFrame.addAllItem:SetPoint('LEFT', ScrappingMachineFrame.ScrapButton, 'RIGHT', 2,0)
-    ScrappingMachineFrame.addAllItem:SetScript('OnLeave', GameTooltip_Hide)
-    ScrappingMachineFrame.addAllItem:SetScript('OnEnter', function(self)
+    local addAllItem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {
+        name= 'WoWToolsScrappingAddAllItem',
+        size=23,
+        atlas='communities-chat-icon-plus'
+    })
+    addAllItem:SetPoint('LEFT', ScrappingMachineFrame.ScrapButton, 'RIGHT', 2,0)
+    addAllItem:SetScript('OnLeave', GameTooltip_Hide)
+    addAllItem:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '所有' or ALL))
+        GameTooltip:SetText(
+            (WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+            ..'|A:communities-chat-icon-plus:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '所有' or ALL)
+            ..WoWTools_DataMixin.Icon.icon2
+        )
         GameTooltip:Show()
     end)
-    ScrappingMachineFrame.addAllItem:SetScript('OnClick', function()
+    addAllItem:SetScript('OnClick', function()
         local free= MaxNumeri-get_num_items()
         if free==0 or InCombatLockdown() then
             return
@@ -365,8 +394,8 @@ local function Init()
     end)
 
     --添加，所有，宝石
-    ScrappingMachineFrame.addAllGem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame.addAllItem, {size=23, texture=135998})
-    ScrappingMachineFrame.addAllGem:SetPoint('LEFT', ScrappingMachineFrame.addAllItem, 'RIGHT', 4,0)
+    ScrappingMachineFrame.addAllGem= WoWTools_ButtonMixin:Cbtn(addAllItem, {size=23, texture=135998})
+    ScrappingMachineFrame.addAllGem:SetPoint('LEFT', addAllItem, 'RIGHT', 4,0)
     ScrappingMachineFrame.addAllGem:SetScript('OnLeave', GameTooltip_Hide)
     ScrappingMachineFrame.addAllGem:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -396,7 +425,7 @@ local function Init()
 
 
     --添加，所有，装备
-    ScrappingMachineFrame.addAllEquip= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame.addAllItem, {size=23, texture=135995})
+    ScrappingMachineFrame.addAllEquip= WoWTools_ButtonMixin:Cbtn(addAllItem, {size=23, texture=135995})
     ScrappingMachineFrame.addAllEquip:SetPoint('LEFT', ScrappingMachineFrame.addAllGem, 'RIGHT', 4, 0)
     ScrappingMachineFrame.addAllEquip:SetScript('OnLeave', GameTooltip_Hide)
     ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)
@@ -430,8 +459,8 @@ local function Init()
 
 
     hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
-        self.celarAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.3)
-        self.addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.3)
+        clearAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.3)
+        addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.3)
     end)
 
 

@@ -222,6 +222,8 @@ local function Set_BGTexture(self, name)
         WoWTools_TextureMixin:SetNineSlice(self, nineSliceAlpha)
     elseif self.Border then
         WoWTools_TextureMixin:SetFrame(self.Border, {alpha=nineSliceAlpha, show={[self.Border.Bg]=true}})
+    elseif self.BorderContainer then
+        WoWTools_TextureMixin:SetFrame(self.BorderContainer, {alpha=nineSliceAlpha})
     else
 --BaseFrame 外框
         WoWTools_TextureMixin:SetBaseFrame(self, nineSliceAlpha)
@@ -245,8 +247,6 @@ local function Set_BGTexture(self, name)
 
 --动画
     Update_Animation(self)
-
-
 end
 
 
@@ -723,7 +723,7 @@ local function Init_Menu(self, root, isSub)
             SaveData(name).nineSliceAlpha=value
             Settings(IsEnabledSaveBg(name) and self or nil)
         end,
-        name= ((self.NineSlice or self.TopBorder or self.Border) and '' or '|cff626262')
+        name= ((self.NineSlice or self.TopBorder or self.Border or self.BorderContainer) and '' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '边框' or EMBLEM_BORDER),
         minValue=0,
         maxValue=1,
@@ -1133,7 +1133,7 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
     nineSliceAlpha=tab.nineSliceAlpha,
     portraitAlpha=tab.portraitAlpha,
     
-    settings=function(icon, textureName, alphaValue)--设置内容时，调用
+    settings=function(icon, textureName, alphaValue, nineSliceAlpha, portraitAlpha)--设置内容时，调用
     end,
 
     notAnims=true,

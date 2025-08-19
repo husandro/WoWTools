@@ -6082,7 +6082,10 @@
         "ChatFrame1ResizeButton",
         "FCF_SetUninteractable",
         "FCF_SetExpandedUninteractable",
-        "TimerunningUtil"
+        "TimerunningUtil",
+        "RemixArtifactFrame",
+        "RemixArtifactFrameMixin",
+        "ScrappingMachineFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

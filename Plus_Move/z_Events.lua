@@ -174,6 +174,11 @@ function WoWTools_MoveMixin.Events:Blizzard_ArtifactUI()
     self:Setup(ArtifactFrame)
 end
 
+function WoWTools_MoveMixin.Events:Blizzard_RemixArtifactUI()
+    self:Setup(RemixArtifactFrame)
+    self:Setup(RemixArtifactFrame.ButtonsParent.Overlay, {frame=RemixArtifactFrame})
+end
+
 function WoWTools_MoveMixin.Events:Blizzard_DelvesCompanionConfiguration()
     self:Setup(DelvesCompanionConfigurationFrame)
     self:Setup(DelvesCompanionAbilityListFrame)

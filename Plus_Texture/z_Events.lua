@@ -837,11 +837,13 @@ end
 
 --分解 ScrappingMachineFrame
 function WoWTools_TextureMixin.Events:Blizzard_ScrappingMachineUI()
-    self:SetNineSlice(ScrappingMachineFrame, self.min)
+    self:SetNineSlice(ScrappingMachineFrame)
     self:SetAlphaColor(ScrappingMachineFrameBg, nil, nil, 0.3)
     self:HideTexture(ScrappingMachineFrame.Background)
     self:HideTexture(ScrappingMachineFrameInset.Bg)
-    self:SetNineSlice(ScrappingMachineFrameInset, self.min)
+    self:SetNineSlice(ScrappingMachineFrameInset)
+    self:HideTexture(ScrappingMachineFrame.TopTileStreaks)
+    self:SetButton(ScrappingMachineFrameCloseButton)
 end
 
 
@@ -2414,7 +2416,37 @@ function WoWTools_TextureMixin.Events:Blizzard_ArtifactUI()
     })
 end
 
+function WoWTools_TextureMixin.Events:Blizzard_RemixArtifactUI()
+    self:SetButton(RemixArtifactFrame.CloseButton)
+    WoWTools_TextureMixin:Init_BGMenu_Frame(RemixArtifactFrame, {
+        --enabled=true,
+        isNewButton=true,
+        alpha=0,
+        nineSliceAlpha=0,
+        portraitAlpha=0.5,
+        settings=function(icon, textureName, alphaValue, _, portraitAlpha)--设置内容时，调用
+            RemixArtifactFrame.PortraitAlpha= portraitAlpha or 1
+            local alpha= textureName and 0 or alphaValue or 1
 
+            self:SetAlphaColor(RemixArtifactFrame.Model.BackgroundFront, nil, true, math.min(alpha, 0.15))
+            self:SetAlphaColor(RemixArtifactFrame.Model.BackgroundFrontSides, nil, true, math.min(alpha, 0.2))
+            self:SetAlphaColor(RemixArtifactFrame.Model.BackgroundVignette, nil, true, math.min(alpha, 0.8))
+
+            self:SetAlphaColor(RemixArtifactFrame.Background, nil, true, alpha)
+
+            self:SetAlphaColor(RemixArtifactFrame.ButtonsParent.Overlay, nil, true, alpha)
+
+            RemixArtifactFrame.Model:SetModelAlpha(portraitAlpha)
+            RemixArtifactFrame.AltModel:SetModelAlpha(portraitAlpha)
+        end
+    })
+    RemixArtifactFrame:HookScript('OnShow', function(f)
+        C_Timer.After(0.3, function()
+            f.Model:SetModelAlpha(f.PortraitAlpha or 1)
+            f.AltModel:SetModelAlpha(f.PortraitAlpha or 1)
+        end)
+    end)
+end
 
 --[[function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
     hooksecurefunc(HelpPlateButtonMixin, 'OnShow', function()

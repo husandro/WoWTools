@@ -37,7 +37,22 @@ end
 
 
 
+function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
+    
+    RemixArtifactFrame.Currency:HookScript('OnEnter', function(f)
+        if GameTooltip:IsShown() or not f.traitCurrencyID then
+            return
+        end
+        local _flags, _traitCurrencyType, currencyTypesID, overrideIcon = C_Traits.GetTraitCurrencyInfo(f.traitCurrencyID or 0)
 
+        GameTooltip:SetOwner(f, "ANCHOR_BOTTOM")
+        GameTooltip:SetText('traitCurrencyID'..WoWTools_DataMixin.Icon.icon2..f.traitCurrencyID)
+        if overrideIcon then
+            GameTooltip:AddLine('|T'..overrideIcon..':0|t'..overrideIcon)
+        end
+        GameTooltip:Show()
+    end)
+end
 
 
 
