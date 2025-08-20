@@ -22,7 +22,7 @@ local function Create_Button(frame)
     function frame.spellPort:set_alpha()
         frame.spellPort:SetAlpha(
             (
-                IsSpellKnownOrOverridesKnown(self.spellID)
+                C_SpellBook.IsSpellInSpellBook(self.spellID)
                 or GameTooltip:IsOwned(self)
             ) and 1 or 0.3
         )
@@ -121,7 +121,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
                 frame.spellPort:SetNormalAtlas('WarlockPortal-Yellow-32x32')
             end
 
-            frame.spellPort:GetNormalTexture():SetDesaturated(not IsSpellKnownOrOverridesKnown(spellID))
+            frame.spellPort:GetNormalTexture():SetDesaturated(not C_SpellBook.IsSpellInSpellBook(spellID))
 
             WoWTools_CooldownMixin:SetFrame(frame.spellPort, {spellID=spellID})
 

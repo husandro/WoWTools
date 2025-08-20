@@ -43,7 +43,7 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         end
     else
         if C_Spell.DoesSpellExist(spellID) then
-            if not IsSpellKnownOrOverridesKnown(spellID) then
+            if not C_SpellBook.IsSpellInSpellBook(spellID) then
                 col='|cnRED_FONT_COLOR:'
                 desc=(desc or '')..'|A:Islands-QuestBangDisable:0:0|a'--..(WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)
             else

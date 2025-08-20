@@ -42,7 +42,7 @@ local function Init()
         elseif guild and IsInGuild() and text:find(guildMS) then
 
             C_Timer.After(2, function()
-                SendChatMessage(
+                C_ChatInfo.SendChatMessage(
                     (WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/','')))
                     ..' '
                     .. guild

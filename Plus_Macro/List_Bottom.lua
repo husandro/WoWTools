@@ -311,7 +311,7 @@ local function Get_Spell_Macro(name, spellID)
 
     --LR
     elseif spellID==5384 then--[假死]LR
-        if IsSpellKnownOrOverridesKnown(209997) then
+        if C_SpellBook.IsSpellInSpellBook(209997) then
             local spellName= C_Spell.GetSpellName(209997)
             if spellName then
                 return '/petfollow\n/cast '..spellName..'\n/cast '..name

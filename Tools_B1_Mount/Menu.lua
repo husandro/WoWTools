@@ -278,7 +278,7 @@ local function Init_Menu_Spell(_, sub)
         index= index+1
 
         icon='|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
-        col= (IsSpellKnownOrOverridesKnown(spellID) and '' or '|cff9e9e9e')
+        col= (C_SpellBook.IsSpellInSpellBook(spellID) and '' or '|cff9e9e9e')
 
         sub2=sub:CreateButton(
             index..') '

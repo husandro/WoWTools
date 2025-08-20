@@ -589,9 +589,9 @@ local function Init()
         if text then
             text= set_Text(text)--处理%s
             if IsInRaid() then
-                SendChatMessage(text, 'RAID')
+                C_ChatInfo.SendChatMessage(text, 'RAID')
             elseif IsInGroup() then
-                SendChatMessage(text, 'PARTY')
+                C_ChatInfo.SendChatMessage(text, 'PARTY')
             else
                 WoWTools_ChatMixin:Chat(text, nil, nil)
             end

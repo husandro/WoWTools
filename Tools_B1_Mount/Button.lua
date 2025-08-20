@@ -40,8 +40,8 @@ local MountType={
 local function XDInt()--德鲁伊设置
     XD=nil
     if WoWTools_DataMixin.Player.Class=='DRUID' then
-        local ground=IsSpellKnownOrOverridesKnown(768) and 768
-        local flying=IsSpellKnownOrOverridesKnown(783) and 783
+        local ground=C_SpellBook.IsSpellInSpellBook(768) and 768
+        local flying=C_SpellBook.IsSpellInSpellBook(783) and 783
         if ground then
             XD={
                 [MOUNT_JOURNAL_FILTER_GROUND]= ground,
@@ -62,7 +62,7 @@ local function checkSpell()--检测法术
         MountButton.spellID2=XD[MOUNT_JOURNAL_FILTER_GROUND]
     else
         for spellID, _ in pairs(Save().Mounts[SPELLS]) do
-            if IsSpellKnown(spellID) then
+            if C_SpellBook.IsSpellInSpellBook(spellID) then
                 MountButton.spellID2=spellID
                 break
             end

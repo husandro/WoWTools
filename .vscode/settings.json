@@ -6113,13 +6113,10 @@
     ],
     "Lua.runtime.unicodeName": true,
     "Lua.diagnostics.disable": [
-        "redundant-parameter",
         "inject-field",
         "missing-parameter",
-        "need-check-nil",
-        "assign-type-mismatch",
-        "undefined-field",
-        "param-type-mismatch",
-        "unused-local"
+        "redundant-parameter",
+        "undefined-field"
     ],
+    "Lua.type.weakUnionCheck": true,
 }

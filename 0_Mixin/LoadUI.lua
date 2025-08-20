@@ -344,7 +344,7 @@ function WoWTools_LoadUIMixin:SpellBook(index, spellID)
         PlayerSpellsUtil.ToggleClassTalentOrSpecFrame()
 
     elseif index==3 or spellID then
-        if spellID and IsSpellKnownOrOverridesKnown(spellID) then
+        if spellID and C_SpellBook.IsSpellInSpellBook(spellID) then
             PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
         else
             PlayerSpellsUtil.OpenToSpellBookTab()

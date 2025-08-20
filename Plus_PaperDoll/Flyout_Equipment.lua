@@ -179,10 +179,10 @@ local function Settings(itemButton)
                 local location = button.location
                 slot= itemButton:GetID()
                 if location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-                    local player, bank, bags, voidStorage, slot2, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
-                    if ( voidStorage and voidSlot ) then
+                    local player, bank, bags, _, slot2, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
+                    --[[if ( voidStorage and voidSlot ) then
                         itemLink = GetVoidItemHyperlinkString(voidSlot)
-                    elseif ( not bags and slot2) then
+                    else]]if ( not bags and slot2) then
                         itemLink =GetInventoryItemLink("player",slot2)
                     elseif bag and slot2 then
                         itemLink = C_Container.GetContainerItemLink(bag, slot2)

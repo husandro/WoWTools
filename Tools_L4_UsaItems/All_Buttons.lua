@@ -6,7 +6,7 @@ end
 
 local function Has_ItemSpell(ID, spell)
     if spell then
-        if IsSpellKnownOrOverridesKnown(ID) then
+        if C_SpellBook.IsSpellInSpellBook(ID) then
             return true
         end
     else
@@ -302,7 +302,7 @@ local function Init()
     end
 
     for _, spellID in pairs(Save().spell) do
-        if IsSpellKnownOrOverridesKnown(spellID) then
+        if C_SpellBook.IsSpellInSpellBook(spellID) then
             local name= C_Spell.GetSpellName(spellID)
             local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then

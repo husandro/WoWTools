@@ -525,7 +525,7 @@ local function Init_Spell_Button()
 
         local spellID, action
         for _, spell in pairs(SpellsTab) do
-            if IsSpellKnownOrOverridesKnown(spell) then
+            if C_SpellBook.IsSpellInSpellBook(spell) then
                 local name= C_Spell.GetSpellName(spell)
                 local icon= C_Spell.GetSpellTexture(spell)
                 self:SetAttribute("type", "spell")
@@ -803,7 +803,7 @@ local function Init_Menu(self, root)
     function()
         return not Save().disableSpell
     end, function()
-        Save().disableSpell= not Save().disableSpell and true or nil
+        Save().disableSpell= not Save().disableSpell and true or false
         print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disableSpell), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end, {})
 

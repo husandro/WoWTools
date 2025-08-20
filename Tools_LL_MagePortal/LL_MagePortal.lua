@@ -149,7 +149,7 @@ local function Init_Options(category, layout)
         tooltip= addName,
         GetValue= function() return Save().isLeft end,
         SetValue= function()
-            Save().isLeft= not Save().isLeft and true or nil
+            Save().isLeft= not Save().isLeft and true or false
             WoWTools_ToolsMixin:RestAllPoint()--重置所有按钮位置
             Set_Button_All_Label()
         end
@@ -161,7 +161,7 @@ local function Init_Options(category, layout)
         tooltip= addName,
         GetValue= function() return Save().showText end,
         SetValue= function()
-            Save().showText= not Save().showText and true or nil
+            Save().showText= not Save().showText and true or false
             Set_Button_All_Label()
         end
     }, initializer)
@@ -212,7 +212,7 @@ local function Init_Button(tab)
     end
 
     function btn:set_alpha()
-        self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.3)
+        self:SetAlpha((GameTooltip:IsOwned(self) or C_SpellBook.IsSpellInSpellBook(self.spellID)) and 1 or 0.3)
     end
 
     function btn:settings()
@@ -325,7 +325,7 @@ local function Init_Button(tab)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:SetSpellByID(self.spellID)
-        if not IsSpellKnownOrOverridesKnown(self.spellID) then
+        if not C_SpellBook.IsSpellInSpellBook(self.spellID) then
             GameTooltip:AddLine(format('|cnRED_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
         end
         if self.spellID2 then
@@ -335,7 +335,7 @@ local function Init_Button(tab)
                 ..(WoWTools_TextMixin:CN(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
                 ..(WoWTools_CooldownMixin:GetText(self.spellID2, nil) or ''),
                 format('%s%s',
-                    IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
+                    C_SpellBook.IsSpellInSpellBook(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
                     WoWTools_DataMixin.Icon.right)
                 )
         end

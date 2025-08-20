@@ -45,16 +45,16 @@ local function Settings(isSay, sayType)
             and UnitIsPlayer('target')
             and UnitIsFriend('target', 'player')
         then
-            SendChatMessage(text, "WHISPER", nil, UnitName("target"))
+            C_ChatInfo.SendChatMessage(text, "WHISPER", nil, UnitName("target"))
         end
 
     else
-        SendChatMessage(text, sayType)--RAID PARTY
+        C_ChatInfo.SendChatMessage(text, sayType)--RAID PARTY
     end
 end
 
 
---SendChatMessage("My, you're a tall one!", "WHISPER", nil, UnitName("target"))
+--C_ChatInfo.SendChatMessage("My, you're a tall one!", "WHISPER", nil, UnitName("target"))
 
 --[[
 "SAY"	/s, /say	
