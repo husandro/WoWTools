@@ -753,7 +753,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     TokenFrame.ScrollBox:SetPoint('TOPLEFT', TokenFrame, 4, -58)
     TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', TokenFrame , -22, 2)
 
-    
+
 
     local function Set_Slot_Point()
         if not WoWTools_FrameMixin:IsLocked(CharacterFrame) then
@@ -984,3 +984,75 @@ function WoWTools_MoveMixin.Events:Blizzard_StaticPopup_Game()
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
+    if not CooldownViewerSettings then--冷却设置 11.2.5
+        return
+    end
+    if WoWTools_DataMixin.Player.husandro then
+        CooldownViewerSettings:Show()
+    end
+
+
+
+    CooldownViewerSettings:HookScript('OnSizeChanged', function(frame)
+        local w=frame.CooldownScroll:GetWidth()
+        local value= math.max(3, math.modf(w/46))
+        
+        local pool= frame.categoryPool:GetPool('CooldownViewerSettingsCategoryTemplate')
+        if pool then
+            for f in pool:EnumerateActive() do
+                if f.Container.stride~=value then
+                    f.Container.stride = value
+                    f:Layout()
+                end
+                f:SetPoint('RIGHT', frame.CooldownScroll)
+            end
+        end
+
+        pool= frame.categoryPool:GetPool('CooldownViewerSettingsBarCategoryTemplate')
+        if pool then
+            for f in pool:EnumerateActive() do
+                f:SetPoint('RIGHT', frame.CooldownScroll)
+                f.Container:SetPoint('RIGHT', -17, 0)
+            end
+        end
+    end)
+
+    hooksecurefunc(CooldownViewerSettings, 'RefreshLayout', function(frame)
+       local pool= frame.categoryPool:GetPool('CooldownViewerSettingsCategoryTemplate')
+        if pool then
+            for f in pool:EnumerateActive() do
+                f:SetPoint('RIGHT', frame.CooldownScroll)
+            end
+        end
+
+        pool= frame.categoryPool:GetPool('CooldownViewerSettingsBarCategoryTemplate')
+        if pool then
+            for f in pool:EnumerateActive() do
+                f:SetPoint('RIGHT', frame.CooldownScroll)
+                f.Container:SetPoint('RIGHT', -17, 0)
+            end
+        end
+    end)
+
+    hooksecurefunc(CooldownViewerSettingsBarItemMixin, 'RefreshData', function(frame)
+        frame.Bar:SetPoint('RIGHT', CooldownViewerSettings.CooldownScroll, -17, 0)
+    end)
+
+    self:Setup(CooldownViewerSettings, {needSize=true, setSize=true, minW=196, minH=183,--maxW=399,
+        sizeRestFunc=function()
+            CooldownViewerSettings:SetSize(399, 609)
+        end
+    })
+end
+

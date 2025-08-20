@@ -40,7 +40,7 @@ end
 --小时图，时间
 function WoWTools_TextureMixin.Events:Blizzard_TimeManager()
     self:SetButton(TimeManagerFrameCloseButton)
-    
+
     self:SetNineSlice(TimeManagerFrame, self.min, true)
     self:SetAlphaColor(TimeManagerFrameBg)
 
@@ -936,7 +936,7 @@ end
 
 
 
-
+--冷却设置
 function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
     hooksecurefunc(CooldownViewerBuffBarItemMixin, 'SetBarContent', function(frame)
         if not frame.Bar.isSetTexture then
@@ -944,6 +944,40 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
             frame.Bar.isSetTexture=true
         end
     end)
+
+    if not CooldownViewerSettings then--冷却设置 11.2.5
+        return
+    end
+    self:SetButton(CooldownViewerSettingsCloseButton)
+    self:SetButton(CooldownViewerSettings.SettingsDropdown, {alpha=1})
+    self:SetEditBox(CooldownViewerSettings.SearchBox)
+    self:SetNineSlice(CooldownViewerSettings)
+
+    self:HideTexture(CooldownViewerSettings.TopTileStreaks)
+    self:HideTexture(CooldownViewerSettingsBg)
+    self:SetScrollBar(CooldownViewerSettings.CooldownScroll)
+
+    self:HideTexture(CooldownViewerSettingsInset.Bg)
+    self:SetNineSlice(CooldownViewerSettingsInset)
+
+    for _, tabButton in ipairs(CooldownViewerSettings.TabButtons) do
+        self:HideTexture(tabButton.Background)
+	end
+
+
+
+    --CooldownViewerSettingsCategoryMixin 标题
+    --CooldownViewerSettingsItemMixin 追踪的状态栏
+    --CooldownViewerSettingsBarItemMixin 追踪的状态栏 bar
+
+
+    hooksecurefunc(CooldownViewerSettingsItemMixin, 'RefreshData', function(btn)
+        if not btn.IconMask then
+            WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
+        end
+    end)
+
+    self:Init_BGMenu_Frame(CooldownViewerSettings, {isNewButton=true})
 end
 
 
@@ -1118,9 +1152,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:HideTexture(QuestMapFrame.QuestsTab.Background)
     self:HideTexture(QuestMapFrame.QuestsTab.SelectedTexture)
 
-    if QuestMapFrame.EventsTab then
-        self:HideTexture(QuestMapFrame.EventsTab.Background)--11.2才有
-    end
+    self:HideTexture(QuestMapFrame.EventsTab.Background)--11.2才有
 
     self:SetFrame(QuestMapFrame.MapLegend.BorderFrame, {alpha=0})
     self:HideTexture(QuestMapFrame.MapLegendTab.Background)
@@ -1478,13 +1510,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
     self:SetFrame(RolePollPopup.Border, {notAlpha=true})
 end
 
---区域技能
-function WoWTools_TextureMixin.Events:Blizzard_ZoneAbility()
-    self:SetAlphaColor(ZoneAbilityFrame.Style, nil, true, 0.3)
-    hooksecurefunc(ZoneAbilityFrameSpellButtonMixin, 'OnLoad', function(btn)
-        print('a', btn)
-    end)
-end
+
 
 
 

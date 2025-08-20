@@ -6086,7 +6086,15 @@
         "RemixArtifactFrame",
         "RemixArtifactFrameMixin",
         "ScrappingMachineFrameCloseButton",
-        "ZoneAbilityFrameSpellButtonMixin"
+        "ZoneAbilityFrameSpellButtonMixin",
+        "CooldownViewerSettings",
+        "COOLDOWN_VIEWER_SETTINGS_TITLE",
+        "CooldownViewerSettingsBg",
+        "CooldownViewerSettingsInset",
+        "CooldownViewerSettingsCloseButton",
+        "CooldownViewerSettingsItemMixin",
+        "CooldownViewerSettingsCategoryMixin",
+        "CooldownViewerSettingsBarItemMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

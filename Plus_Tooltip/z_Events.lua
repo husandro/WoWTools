@@ -38,7 +38,6 @@ end
 
 
 function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
-    
     RemixArtifactFrame.Currency:HookScript('OnEnter', function(f)
         if GameTooltip:IsShown() or not f.traitCurrencyID then
             return

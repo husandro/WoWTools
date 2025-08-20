@@ -290,9 +290,10 @@ function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     self:SetAlphaColor(bar.Background, nil, nil, 0.5)
 
     --if isHideBar and not bar.hideIfUnscrollable  then
-        hooksecurefunc(bar, 'Update', function(b)
-            b:SetAlpha(b:HasScrollableExtent() and 1 or 0)
-        end)
+    bar:SetAlpha(bar:HasScrollableExtent() and 1 or 0)
+    hooksecurefunc(bar, 'Update', function(b)
+        b:SetAlpha(b:HasScrollableExtent() and 1 or 0)
+    end)
     --end
 --bar:SetHideIfUnscrollable(true)
 end

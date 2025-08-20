@@ -98,28 +98,36 @@ local function Init()
         )
 
         GameTooltip:AddLine(' ')
-        local bat= UnitAffectingCombat('player')
-
+        local col= UnitAffectingCombat('player') and '|cff606060' or '|cffffffff'
+        
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
+            col..(WoWTools_DataMixin.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
+            col..(WoWTools_DataMixin.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..WoWTools_DataMixin.Icon.right
         )
+
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
+            col..(WoWTools_DataMixin.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
-
+        if CooldownViewerSettings then--11.2.5
+            GameTooltip:AddLine(
+                col..(WoWTools_DataMixin.onlyChinese and '冷却设置' or COOLDOWN_VIEWER_SETTINGS_TITLE)..'|r'
+                ..'Alt+'
+                ..WoWTools_DataMixin.Icon.mid
+                ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+            )
+        end
         GameTooltip:Show()
     end)
 
     PlayerSpellsMicroButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+        if not KeybindFrames_InQuickKeybindMode() and d=='RightButton' then
             WoWTools_LoadUIMixin:SpellBook(2, nil)
         end
     end)
@@ -132,7 +140,11 @@ local function Init()
         if d==1 then
             WoWTools_LoadUIMixin:SpellBook(1, nil)
         elseif d==-1 then
-            WoWTools_LoadUIMixin:SpellBook(3, nil)
+            if IsAltKeyDown() and CooldownViewerSettings then
+                CooldownViewerSettings:SetShown(not CooldownViewerSettings:IsShown())
+            else
+                WoWTools_LoadUIMixin:SpellBook(3, nil)
+            end
         end
     end)
 

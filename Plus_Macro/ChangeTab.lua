@@ -20,10 +20,6 @@ end
 
 
 
-
-
-
-
 local function Set_OnSizeChanged(self)
     local value= math.max(1, math.modf(self:GetWidth()/49))
     if self:GetStride()~= value then

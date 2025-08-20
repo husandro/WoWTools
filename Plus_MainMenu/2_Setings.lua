@@ -137,7 +137,7 @@ local function Set_Alpha()
             Set_Bag_OnLeave_Alpha(btn)
         end
     end
-    
+
     local alpha= Save().mainMenuAlphaValue or 0.7
 
     WoWTools_TextureMixin:SetAlphaColor(BagBarExpandToggle.NormalTexture, nil, nil, alpha)
