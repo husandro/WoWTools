@@ -998,14 +998,9 @@ function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
     if not CooldownViewerSettings then--冷却设置 11.2.5
         return
     end
-    if WoWTools_DataMixin.Player.husandro then
-        --CooldownViewerSettings:Show()
-    end
-
-
-
-
-
+    --[[if WoWTools_DataMixin.Player.husandro then
+        CooldownViewerSettings:Show()
+    end]]
 
 
     local function on_settings(frame)
@@ -1043,6 +1038,8 @@ function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
     hooksecurefunc(CooldownViewerSettingsBarItemMixin, 'RefreshData', function(frame)
         frame.Bar:SetPoint('RIGHT', CooldownViewerSettings.CooldownScroll, -17, 0)
     end)
+
+    CooldownViewerSettings.SearchBox:SetPoint('RIGHT', -45, 0)
 
     self:Setup(CooldownViewerSettings, {needSize=true, setSize=true, minW=196, minH=183,--maxW=399,
         sizeRestFunc=function()
