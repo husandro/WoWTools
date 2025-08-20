@@ -24,7 +24,7 @@ local function Init()
         end
 
         -- If timerunning enabled, hide PVP and M+, and re-anchor delves to Dungeons tab
-        if TimerunningUtil.TimerunningEnabledForPlayer() then
+        if WoWTools_DataMixin.Is_Timerunning then
             self.tab2:Hide();
             self.tab3:Hide();
             if self.tab4:IsShown() then
