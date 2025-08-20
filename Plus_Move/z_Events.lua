@@ -999,15 +999,19 @@ function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
         return
     end
     if WoWTools_DataMixin.Player.husandro then
-        CooldownViewerSettings:Show()
+        --CooldownViewerSettings:Show()
     end
 
 
 
-    CooldownViewerSettings:HookScript('OnSizeChanged', function(frame)
+
+
+
+
+    local function on_settings(frame)
         local w=frame.CooldownScroll:GetWidth()
         local value= math.max(3, math.modf(w/46))
-        
+
         local pool= frame.categoryPool:GetPool('CooldownViewerSettingsCategoryTemplate')
         if pool then
             for f in pool:EnumerateActive() do
@@ -1026,23 +1030,14 @@ function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
                 f.Container:SetPoint('RIGHT', -17, 0)
             end
         end
+    end
+
+    CooldownViewerSettings:HookScript('OnSizeChanged', function(frame)
+        on_settings(frame)
     end)
 
     hooksecurefunc(CooldownViewerSettings, 'RefreshLayout', function(frame)
-       local pool= frame.categoryPool:GetPool('CooldownViewerSettingsCategoryTemplate')
-        if pool then
-            for f in pool:EnumerateActive() do
-                f:SetPoint('RIGHT', frame.CooldownScroll)
-            end
-        end
-
-        pool= frame.categoryPool:GetPool('CooldownViewerSettingsBarCategoryTemplate')
-        if pool then
-            for f in pool:EnumerateActive() do
-                f:SetPoint('RIGHT', frame.CooldownScroll)
-                f.Container:SetPoint('RIGHT', -17, 0)
-            end
-        end
+       on_settings(frame)
     end)
 
     hooksecurefunc(CooldownViewerSettingsBarItemMixin, 'RefreshData', function(frame)

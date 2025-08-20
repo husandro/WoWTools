@@ -6094,7 +6094,10 @@
         "CooldownViewerSettingsCloseButton",
         "CooldownViewerSettingsItemMixin",
         "CooldownViewerSettingsCategoryMixin",
-        "CooldownViewerSettingsBarItemMixin"
+        "CooldownViewerSettingsBarItemMixin",
+        "BuffBarCooldownViewerMixin",
+        "BuffBarCooldownViewer",
+        "CooldownViewerMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

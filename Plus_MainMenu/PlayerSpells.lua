@@ -117,7 +117,7 @@ local function Init()
         )
         if CooldownViewerSettings then--11.2.5
             GameTooltip:AddLine(
-                col..(WoWTools_DataMixin.onlyChinese and '冷却设置' or COOLDOWN_VIEWER_SETTINGS_TITLE)..'|r'
+                '|cffffffff'..(WoWTools_DataMixin.onlyChinese and '冷却设置' or COOLDOWN_VIEWER_SETTINGS_TITLE)..'|r'
                 ..'Alt+'
                 ..WoWTools_DataMixin.Icon.mid
                 ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
@@ -141,7 +141,9 @@ local function Init()
             WoWTools_LoadUIMixin:SpellBook(1, nil)
         elseif d==-1 then
             if IsAltKeyDown() and CooldownViewerSettings then
-                CooldownViewerSettings:SetShown(not CooldownViewerSettings:IsShown())
+                if not CooldownViewerSettings:IsShown() then
+                    CooldownViewerSettings:SetShown(true)
+                end
             else
                 WoWTools_LoadUIMixin:SpellBook(3, nil)
             end

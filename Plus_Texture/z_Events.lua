@@ -938,16 +938,18 @@ end
 
 --冷却设置
 function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
-    hooksecurefunc(CooldownViewerBuffBarItemMixin, 'SetBarContent', function(frame)
-        if not frame.Bar.isSetTexture then
-            self:SetFrame(frame.Bar, {alpha=0.2, index=1})--frame:GetBarFrame()
-            frame.Bar.isSetTexture=true
-        end
+
+    hooksecurefunc(CooldownViewerBuffBarItemMixin, 'OnLoad', function(frame)
+        self:SetFrame(frame.Bar, {alpha=0.2, index=1})
     end)
+    for frame in BuffBarCooldownViewer.itemFramePool:EnumerateActive() do
+		self:SetFrame(frame.Bar, {alpha=0.2, index=1})
+	end
 
     if not CooldownViewerSettings then--冷却设置 11.2.5
         return
     end
+
     self:SetButton(CooldownViewerSettingsCloseButton)
     self:SetButton(CooldownViewerSettings.SettingsDropdown, {alpha=1})
     self:SetEditBox(CooldownViewerSettings.SearchBox)
@@ -964,21 +966,53 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
         self:HideTexture(tabButton.Background)
 	end
 
-
-
     --CooldownViewerSettingsCategoryMixin 标题
     --CooldownViewerSettingsItemMixin 追踪的状态栏
     --CooldownViewerSettingsBarItemMixin 追踪的状态栏 bar
 
 
-    hooksecurefunc(CooldownViewerSettingsItemMixin, 'RefreshData', function(btn)
-        if not btn.IconMask then
-            WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
+    local function set_button(pool)
+        if not pool then
+            return
         end
+        for f in pool:EnumerateActive() do
+            self:SetAlphaColor(f.Header.Left)
+            self:SetAlphaColor(f.Header.Middle)
+            self:SetAlphaColor(f.Header.Right)
+
+            for btn in f.itemPool:EnumerateActive() do
+                if not btn.IconMask then
+                    WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
+                end
+                if btn.Bar then
+                    self:SetFrame(btn.Bar, {alpha=0.3})
+                end
+            end
+        end
+    end
+
+    local function on_show(frame)
+        set_button(frame.categoryPool:GetPool('CooldownViewerSettingsCategoryTemplate'))
+        set_button(frame.categoryPool:GetPool('CooldownViewerSettingsBarCategoryTemplate'))
+    end
+
+    on_show(CooldownViewerSettings)
+    hooksecurefunc(CooldownViewerSettings, 'RefreshLayout', function(frame)
+       on_show(frame)
     end)
 
     self:Init_BGMenu_Frame(CooldownViewerSettings, {isNewButton=true})
 end
+
+
+
+
+
+
+
+
+
+
 
 
 function WoWTools_TextureMixin.Events:Blizzard_ExpansionLandingPage()
