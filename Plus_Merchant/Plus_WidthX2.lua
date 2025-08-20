@@ -44,7 +44,7 @@ local function Create_Lable(btn)
 
 --物品，名称
     btn.Name:SetPoint('RIGHT', -2,0)
-    btn.Name:SetPoint('TOPLEFT', _G[name..'ItemButtonIconTexture'], 'TOPRIGHT', 2, 6)
+    btn.Name:SetPoint('TOPLEFT', _G[name..'ItemButtonIconTexture'], 'TOPRIGHT', 2, 4)
     btn.Name:SetPoint('BOTTOM', _G[name..'AltCurrencyFrame'], 'TOP')
 
 

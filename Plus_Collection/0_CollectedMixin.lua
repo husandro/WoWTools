@@ -27,37 +27,50 @@ end
 
 
 function WoWTools_CollectedMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--物品是否收集 --if itemIDOrLink and IsCosmeticItem(itemIDOrLink) then isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
-    sourceID= sourceID or itemIDOrLink and select(2, C_TransmogCollection.GetItemInfo(itemIDOrLink))
+    sourceID= sourceID or (itemIDOrLink and select(2, C_TransmogCollection.GetItemInfo(itemIDOrLink)))
+
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
+
+    local isCollected=nil
+    local isSelf
+
     if sourceInfo then
-        local isCollected= sourceInfo.isCollected
-        local isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
-        local text
-        if not onlyBool then
-            if isCollected==true then
-                if icon then
-                    if isSelf then
-                        text= format('|A:%s:0:0|a', 'common-icon-checkmark')
-                    else
-                        text= '|A:Adventures-Checkmark:0:0|a'--黄色√
-                    end
+        isCollected= sourceInfo.isCollected
+        isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
+
+    elseif itemIDOrLink and C_Item.IsCosmeticItem(itemIDOrLink) then
+        isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
+    end
+
+    if isCollected==nil then
+        return
+    end
+
+    local text
+    if not onlyBool then
+        if isCollected==true then
+            if icon then
+                if isSelf then
+                    text= format('|A:%s:0:0|a', 'common-icon-checkmark')
                 else
-                    text= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
+                    text= '|A:Adventures-Checkmark:0:0|a'--黄色√
                 end
-            elseif isCollected==false then
-                if icon then
-                    if isSelf then
-                        text='|T132288:0|t'
-                    else
-                        text= '|A:transmog-icon-hidden:0:0|a'
-                    end
+            else
+                text= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
+            end
+        else
+            if icon then
+                if isSelf then
+                    text='|T132288:0|t'
                 else
-                    text= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+                    text= '|A:transmog-icon-hidden:0:0|a'
                 end
+            else
+                text= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             end
         end
-        return text, sourceInfo.isCollected, isSelf
     end
+    return text, isCollected, isSelf
 end
 
 function WoWTools_CollectedMixin:SetID(setID, isLoot)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本

@@ -471,7 +471,8 @@ hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
     _G['WoWToolsScrappingAddAllButton']:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
 end)
 
-
+    Init_Button=function()end
+end
 
 
 
@@ -646,8 +647,7 @@ end)
         addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
     end)]]
 
-    Init_Button=function()end
-end
+
 
 
 
