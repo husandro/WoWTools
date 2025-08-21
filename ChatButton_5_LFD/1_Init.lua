@@ -3,7 +3,8 @@
 local P_Save={
     leaveInstance=WoWTools_DataMixin.Player.husandro,--自动离开,指示图标
     autoROLL= WoWTools_DataMixin.Player.husandro,--自动,战利品掷骰
-    --disabledLootPlus=true,--禁用，战利品Plus
+    --disabledLootPlus=true 禁用，战利品Plus
+    --hideDontEnterMenu=true 隐藏，不可能副本，列表
     ReMe=true,--仅限战场，释放，复活
     autoSetPvPRole=WoWTools_DataMixin.Player.husandro,--自动职责确认， 排副本
     LFGPlus= WoWTools_DataMixin.Player.husandro,--预创建队伍增强

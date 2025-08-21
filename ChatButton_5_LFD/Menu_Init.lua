@@ -320,7 +320,7 @@ local function set_Party_Menu_List(root)
 
                     sub:AddInitializer(Add_Initializer)
 
-                else
+                elseif not Save().hideDontEnterMenu then
                     sub=root:CreateButton('   |cff9e9e9e'..WoWTools_TextMixin:CN(name)..' |r', function()
                         return MenuResponse.Open
                     end, {
@@ -331,10 +331,14 @@ local function set_Party_Menu_List(root)
                     sub:SetTooltip(function(tooltip, desc)
                         tooltip:AddLine(WoWTools_TextMixin:CN(desc.data.dungeonName)..' ')
                         tooltip:AddLine(' ')
-                        tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
+                        GameTooltip_AddErrorLine(tooltip,
+                            WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS
+                        )
                         local declined= LFGConstructDeclinedMessage(desc.data.dungeonID)
                         if declined and declined~='' then
-                            tooltip:AddLine('|cnRED_FONT_COLOR:'..WoWTools_TextMixin:CN(declined), nil,nil,nil, true)
+                            GameTooltip_AddErrorLine(tooltip,
+                                WoWTools_TextMixin:CN(declined)
+                            )
                         end
                         tooltip:AddLine(' ')
                         tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName),nil)
@@ -415,11 +419,6 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                     rewardArg= rewardArg,
                 })
                 sub2:SetTooltip(Set_Tooltip)
-                --[[sub2:SetTooltip(function(tooltip, desc)
-                    tooltip:AddLine(desc.data.dungeonName)
-                    tooltip:AddLine(' ')
-                    tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
-                end)]]
 
                 sub2:AddInitializer(Add_Initializer)
 
@@ -434,10 +433,14 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 sub2:SetTooltip(function(tooltip, desc)
                     tooltip:AddLine(WoWTools_TextMixin:CN(desc.data.dungeonName))
                     tooltip:AddLine(' ')
-                    tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
+                    GameTooltip_AddErrorLine(tooltip,
+                        WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS
+                    )
                     local text= LFGConstructDeclinedMessage(desc.data.dungeonID)
                     if text and text~='' then
-                        tooltip:AddLine('|cnRED_FONT_COLOR:'..WoWTools_TextMixin:CN(text))
+                        GameTooltip_AddErrorLine(tooltip,
+                            WoWTools_TextMixin:CN(text)
+                        )
                     end
                     tooltip:AddLine(' ')
                     tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
@@ -607,33 +610,23 @@ local function set_Raid_Menu_List(root)
                 rewardArg= rewardArg,
             })
             sub:SetTooltip(Set_Tooltip)
-            --[[sub:SetTooltip(function(tooltip, desc)
-                tooltip:AddLine(WoWTools_TextMixin:CN(desc.data.dungeonName)..' ')
-                tooltip:AddLine(desc.data.bossKillText)
-                tooltip:AddLine(' ')
-                for index, text in pairs(desc.data.bossTab) do
-                    tooltip:AddLine(index..') '..text)
-                end
-                if desc.data.modifiedDesc then
-                    tooltip:AddLine(' ')
-                    tooltip:AddLine(desc.data.modifiedDesc, nil,nil,nil, true)
-                end
-                tooltip:AddLine(' ')
-                tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
-            end)]]
 
             sub:AddInitializer(Add_Initializer)
 
-        else
+        elseif not Save().hideDontEnterMenu then
             sub=root:CreateButton((modifiedIcon or '')..'|cff9e9e9e'..WoWTools_TextMixin:CN(dungeonName)..' |r', function()
                 return MenuResponse.Open
              end, {modifiedDesc=modifiedDesc, dungeonID=dungeonID}
             )
             sub:SetTooltip(function(tooltip, desc)
-                tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
+                GameTooltip_AddErrorLine(tooltip,
+                    WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS
+                )
                 local msg= LFGConstructDeclinedMessage(desc.data.dungeonID)
                 if msg then
-                    tooltip:AddLine('|cnRED_FONT_COLOR:'..WoWTools_TextMixin:CN(msg), 0.62, 0.62, 0.62, true)
+                    GameTooltip_AddErrorLine(tooltip,
+                        WoWTools_TextMixin:CN(msg)
+                    )
                 end
                 if desc.data.modifiedDesc then
                     tooltip:AddLine(' ')
@@ -831,7 +824,7 @@ local function Init_Menu(self, root)
         text= text..'|A:common-icon-rotateleft:0:0|a'
     end
 --释放, 复活
-    if Save().ReMe and (Save().ReMe_AllZone and (not IsInInstance() or not IsInGroup('LE_PARTY_CATEGORY_HOME'))) then
+    if Save().ReMe and (Save().ReMe_AllZone and (not IsInInstance() or not IsInGroup())) then
         text= text..'|A:poi-soulspiritghost:0:0|a'
     end
 
@@ -924,6 +917,10 @@ local function Init_Menu(self, root)
     Init_All_Role(self, sub2)
 
 
+
+
+
+
 --设置,战场
     sub:CreateDivider()
     tank, healer, dps = GetPVPRoles()--检测是否选定角色PVP
@@ -941,7 +938,7 @@ local function Init_Menu(self, root)
     function()
         return Save().ReMe
     end, function()
-        Save().ReMe= not Save().ReMe and true or nil
+        Save().ReMe= not Save().ReMe and true or false
         WoWTools_LFDMixin:Init_RepopMe()
     end)
 
@@ -998,8 +995,34 @@ local function Init_Menu(self, root)
 
 
 
+
+
+
+--隐藏，不可能副本，列表
     sub:CreateDivider()
+    sub:CreateTitle(
+        WoWTools_DataMixin.onlyChinese and '副本列表' or format('%s', PROFESSIONS_CURRENT_LISTINGS:gsub(REFORGE_CURRENT, INSTANCE))
+    )
+    sub2= sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE,
+    function()
+        return Save().hideDontEnterMenu
+    end, function()
+        Save().hideDontEnterMenu= not Save().hideDontEnterMenu and true or nil
+    end)
+    sub:SetTooltip(function(tooltip)
+        GameTooltip_AddErrorLine(tooltip,
+            WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS
+        )
+    end)
+
+
+
+
+
+
 --副本， 次数
+    sub:CreateDivider()
     num= 0
     for _, complete in pairs(Save().wow) do
         num= complete+ num
