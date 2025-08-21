@@ -6,8 +6,8 @@ Get_Minimap_Tracking
 
 WoWTools_MapMixin={}
 
+--local _x, _y, _z, mapID = UnitPosition("player");
 function WoWTools_MapMixin:GetPosition()
-   --local _x, _y, _z, mapID = UnitPosition("player");
     return UnitPosition("player")
 end
 
