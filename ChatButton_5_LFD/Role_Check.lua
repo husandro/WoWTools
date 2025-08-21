@@ -150,7 +150,8 @@ end
 
 --职责确认 RolePoll.lua
 local function Init_RolePollPopup()
-     RolePollPopup:HookScript('OnShow', function(self)
+
+    hooksecurefunc('RolePollPopup_Show', function(self)
         WoWTools_Mixin:PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
             return
@@ -178,17 +179,23 @@ local function Init_RolePollPopup()
             WoWTools_Mixin:Call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
             WoWTools_CooldownMixin:Setup(self, nil, WoWToolsSave['ChatButton_LFD'].sec, nil, true)--冷却条
             self.aceTime=C_Timer.NewTimer(Save().sec, function()
-                if self.acceptButton:IsEnabled() then
+                if self.acceptButton:IsEnabled() and self:IsShown() and not IsMetaKeyDown() then
                     self.acceptButton:Click()
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL, icon or '')
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                        WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL,
+                        icon or ''
+                    )
                 end
             end)
         end
     end)
+    
+    --RolePollPopup:HookScript('OnShow', function(self)
 
 
     RolePollPopup:HookScript('OnUpdate', function(self)
-        if IsModifierKeyDown() then
+        if IsModifierKeyDown() or not self.acceptButton:IsEnabled() then
             if self.aceTime then
                 self.aceTime:Cancel()
             end

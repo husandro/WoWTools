@@ -3,8 +3,12 @@ local function Save()
 end
 
 local MakerFrame
+local ButtonName='WoWToolsMakerFrame'
 
-
+local Buttons={}--_G[ButtonName..Button[1]]
+local PingButtons={}
+local TargetButtons={}
+local MarkerButtons={}
 
 
 
@@ -22,12 +26,11 @@ local function Init()--设置标记, 框架
 
     MakerFrame= CreateFrame('Frame', 'WoWToolsChatButtonMarkersFrame', UIParent)
     WoWTools_MarkerMixin.MakerFrame= MakerFrame
-    MakerFrame.Buttons={}
 
     local size= 23
 
     --移动按钮
-    local btn= WoWTools_ButtonMixin:Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})
+    local btn= WoWTools_ButtonMixin:Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size=size, texture='Interface\\Cursor\\UI-Cursor-Move'})
     btn:SetAllPoints(MakerFrame)
     btn:RegisterForDrag("RightButton")
     btn:SetMovable(true)
@@ -108,21 +111,21 @@ local function Init()--设置标记, 框架
 
 
     --Ping System Blizzard_PingUI.lua
-    MakerFrame.ping= CreateFrame('Frame', nil, MakerFrame)
-    table.insert(MakerFrame.Buttons, MakerFrame.ping)
-    MakerFrame.ping:SetSize(size, size)
+    MakerFrame.ping= CreateFrame('Frame', ButtonName..'PingFrame', MakerFrame)
+    table.insert(Buttons, 'PingFrame')
 
+    MakerFrame.ping:SetSize(size, size)
     function MakerFrame.ping:set_point()
         if Save().H then
-            MakerFrame.ping:SetPoint("BOTTOM", MakerFrame, 'TOP')
+            self:SetPoint("BOTTOM", MakerFrame, 'TOP')
         else
-            MakerFrame.ping:SetPoint('RIGHT', MakerFrame, 'LEFT')
+            self:SetPoint('RIGHT', MakerFrame, 'LEFT')
         end
     end
     MakerFrame.ping:set_point()
 
     MakerFrame.ping.tab={--Enum.PingSubjectType.Warning
-        [8]={name= WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Marker_Icon_NonThreat', action='TOGGLEPINGLISTENER'},
+        [8]={name=WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Marker_Icon_NonThreat', action='TOGGLEPINGLISTENER'},
         [7]={name=WoWTools_DataMixin.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
         [0]={name=WoWTools_DataMixin.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text=BINDING_NAME_PINGATTACK},--text='attack'},
         [1]={name=WoWTools_DataMixin.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text=BINDING_NAME_PINGWARNING},--text='warning'},
@@ -133,27 +136,29 @@ local function Init()--设置标记, 框架
         [5]={name=WoWTools_DataMixin.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
     }
 
-    MakerFrame.ping.Button={}
 
     for setIndex, index in pairs({8, 0, 1, 3, 2}) do
         btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.ping, {
+            name=ButtonName..'PingButton'..index,
             size=size,
             atlas= MakerFrame.ping.tab[index].atlas,
             isSecure=true,
             setID=setIndex,
         })
+        table.insert(PingButtons, 'PingButton'..index)
 
-        table.insert(MakerFrame.ping.Button, btn)
         if setIndex==1 then
             btn:SetAllPoints(MakerFrame.ping)
+
         else
-            table.insert(MakerFrame.Buttons, btn)
+            table.insert(Buttons, 'PingButton'..index)
+
             function btn:set_point()
-                local parent= self:GetParent().Button[self:GetID()-1]
+                local b= _G[ButtonName..PingButtons[self:GetID()-1]]
                 if Save().H then
-                    self:SetPoint('BOTTOMRIGHT', parent, 'TOPRIGHT')
+                    self:SetPoint('BOTTOMRIGHT', b, 'TOPRIGHT')
                 else
-                    self:SetPoint('BOTTOMRIGHT', parent, 'BOTTOMLEFT')
+                    self:SetPoint('BOTTOMRIGHT', b, 'BOTTOMLEFT')
                 end
             end
             btn:set_point()
@@ -267,8 +272,8 @@ local function Init()--设置标记, 框架
     hooksecurefunc(PingListenerFrame, 'SetupCooldownTimer', function(self)--冷却，时间
         if MakerFrame.ping:IsShown() then
             local cooldownDuration = (self.cooldownInfo.endTimeMs / 1000) - GetTime()
-            for _, btn2 in pairs(MakerFrame.ping.Button) do
-                WoWTools_CooldownMixin:Setup(btn2, nil, cooldownDuration, nil, true)
+            for _, name in pairs(PingButtons) do
+                WoWTools_CooldownMixin:Setup(_G[ButtonName..name], nil, cooldownDuration, nil, true)
             end
         end
     end)
@@ -289,15 +294,19 @@ local function Init()--设置标记, 框架
 
 
 --倒计时
-    MakerFrame.countdown= WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas='countdown-swords'})
+    MakerFrame.countdown= WoWTools_ButtonMixin:Cbtn(MakerFrame, {
+        name=ButtonName..'CountdownButton',
+        size=size,
+        atlas='countdown-swords'
+    })
+    table.insert(Buttons, 'CountdownButton')
 
-    table.insert(MakerFrame.Buttons, MakerFrame.countdown)
     function MakerFrame.countdown:set_point()
-        local frame= MakerFrame.ping.Button[#MakerFrame.ping.Button]
+        local b= _G[ButtonName..PingButtons[#PingButtons]]
         if Save().H then
-            self:SetPoint('BOTTOM',frame, 'TOP')
+            self:SetPoint('BOTTOM', b, 'TOP')
         else
-            self:SetPoint('RIGHT', frame, 'LEFT')
+            self:SetPoint('RIGHT', b, 'LEFT')
         end
     end
     MakerFrame.countdown:set_point()
@@ -376,8 +385,11 @@ local function Init()--设置标记, 框架
     MakerFrame.countdown.HotKey= WoWTools_LabelMixin:Create(MakerFrame.countdown, {color={r=1,g=1,b=1}})
     MakerFrame.countdown.HotKey:SetPoint('TOPRIGHT', 1, 2)
     function MakerFrame.countdown:set_hotkey()
-        local value= Save().showMakerFrameHotKey and Save().countdown
-        self.HotKey:SetText(value and value~=7 and WoWTools_Mixin:MK(value, 0) or '')
+        local value
+        if Save().showMakerFrameHotKey then
+            value= Save().countdown or 7
+        end
+        self.HotKey:SetText(value or '')
     end
     MakerFrame.countdown:set_hotkey()
 
@@ -395,10 +407,13 @@ local function Init()--设置标记, 框架
 
 
 --就绪
-    MakerFrame.check=WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas='common-icon-checkmark'})
+    MakerFrame.check=WoWTools_ButtonMixin:Cbtn(MakerFrame, {
+        name=ButtonName..'CheckButton',
+        size=size,
+        atlas='common-icon-checkmark'
+    })
+    table.insert(Buttons, 'CheckButton')
 
-    table.insert(MakerFrame.Buttons, MakerFrame.check)
-    --MakerFrame.check:SetNormalAtlas('common-icon-checkmark')
     function MakerFrame.check:set_point()
         if Save().H then
             self:SetPoint('BOTTOM', MakerFrame.countdown, 'TOP')
@@ -436,9 +451,13 @@ local function Init()--设置标记, 框架
 
 
 
-    MakerFrame.RolePoll=WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas='GM-icon-roles'})
+    MakerFrame.RolePoll=WoWTools_ButtonMixin:Cbtn(MakerFrame, {
+        name=ButtonName..'RolePollButton',
+        size=size,
+        atlas='GM-icon-roles'
+    })
+    table.insert(Buttons, 'RolePollButton')
 
-    table.insert(MakerFrame.Buttons, MakerFrame.RolePoll)
     function MakerFrame.RolePoll:set_point()
         if Save().H then
             self:SetPoint('BOTTOM', MakerFrame.check, 'TOP')
@@ -449,7 +468,7 @@ local function Init()--设置标记, 框架
     MakerFrame.RolePoll:set_point()
 
     MakerFrame.RolePoll:SetScript('OnClick', function()
-        InitiateRolePoll();
+        InitiateRolePoll()
     end)
     MakerFrame.RolePoll:SetScript('OnEnter', function(self)
         self:GetParent():set_Tooltips_Point()
@@ -470,11 +489,10 @@ local function Init()--设置标记, 框架
 
 
 --队伍标记
-    MakerFrame.target= CreateFrame("Frame", nil, MakerFrame)
+    MakerFrame.target= CreateFrame("Frame", ButtonName..'TargetFrame', MakerFrame)
     MakerFrame.target:SetSize(size, size)
+    table.insert(Buttons, 'TargetFrame')
 
-
-    table.insert(MakerFrame.Buttons, MakerFrame.target)
     function MakerFrame.target:set_point()
         if Save().H then
             self:SetPoint('RIGHT', MakerFrame, 'LEFT')
@@ -525,26 +543,27 @@ local function Init()--设置标记, 框架
 
 
 --目标，标记
-    MakerFrame.target.Button={}
     for index = 0, NUM_RAID_ICONS do
         btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.target, {
-            size={size,size},
-            atlas= index==0 and 'auctionhouse-itemicon-border-orange' or nil,
-            texture= index>0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index or nil,
+            name=ButtonName..'TargetButton'..index,
+            size=size,
+            atlas= index==0 and 'jailerstower-animapowerlist-powerborder-purple',--'auctionhouse-itemicon-border-orange' or nil,
+            texture= index>0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
             setID=index,
         })
 
-        table.insert(MakerFrame.target.Button, btn)
+        table.insert(TargetButtons, 'TargetButton'..index)
         if index==0 then
             btn:SetAllPoints(MakerFrame.target)
         else
-            table.insert(MakerFrame.Buttons, btn)
+            table.insert(Buttons, 'TargetButton'..index)
+
             function btn:set_point()
-                local frame= self:GetParent().Button[self:GetID()]
+                local b= _G[ButtonName..TargetButtons[self:GetID()]]
                 if Save().H then
-                    self:SetPoint('BOTTOM', frame, 'TOP')
+                    self:SetPoint('BOTTOM', b, 'TOP')
                 else
-                    self:SetPoint('RIGHT', frame, 'LEFT')
+                    self:SetPoint('RIGHT', b, 'LEFT')
                 end
             end
             btn:set_point()
@@ -670,12 +689,10 @@ local function Init()--设置标记, 框架
 
 
     --世界标记
-    MakerFrame.marker= CreateFrame("Frame", nil, MakerFrame)
+    MakerFrame.marker= CreateFrame("Frame", ButtonName..'MarkerFrame', MakerFrame)
     MakerFrame.marker:SetSize(size, size)
+    table.insert(Buttons, 'MarkerFrame')
 
-
-
-    table.insert(MakerFrame.Buttons, MakerFrame.marker)
     function MakerFrame.marker:set_point()
         if Save().H then
             self:SetPoint('RIGHT', MakerFrame.target, 'LEFT')
@@ -685,29 +702,28 @@ local function Init()--设置标记, 框架
     end
     MakerFrame.marker:set_point()
 
-    MakerFrame.marker.Button={}
     local markerTab={5,6,3,2,7,1,4,8}
     for index=0,  NUM_WORLD_RAID_MARKERS do
         btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.marker, {
+            name=ButtonName..'MakerButton'..index,
             isSecure=true,
             size=size,
-            atlas= index==0 and 'auctionhouse-itemicon-border-orange',
+            atlas= index==0 and 'jailerstower-animapowerlist-powerborder-blue',--'auctionhouse-itemicon-border-orange',
             texture= index~=0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
             setID= index
         })
 
-        table.insert(MakerFrame.marker.Button, btn)
+        table.insert(MarkerButtons, 'MakerButton'..index)
         if index==0 then
-
             btn:SetAllPoints(MakerFrame.marker)
         else
-            table.insert(MakerFrame.Buttons, btn)
+            table.insert(Buttons, 'MakerButton'..index)
             function btn:set_point()
-                local frame= self:GetParent().Button[self:GetID()]
+                local b= _G[ButtonName..MarkerButtons[self:GetID()]]
                 if Save().H then
-                    self:SetPoint('BOTTOM', frame, 'TOP')
+                    self:SetPoint('BOTTOM', b, 'TOP')
                 else
-                    self:SetPoint('RIGHT', frame, 'LEFT')
+                    self:SetPoint('RIGHT', b, 'LEFT')
                 end
                 btn:Show()
             end
@@ -902,29 +918,27 @@ local function Init()--设置标记, 框架
 
 
 --背景
-    WoWTools_TextureMixin:CreateBG(MakerFrame.ping)
-    MakerFrame.ping.Background:SetPoint('BOTTOMRIGHT', MakerFrame.ping.Button[1])
-    MakerFrame.ping.Background:SetPoint('TOPLEFT', MakerFrame.ping.Button[#MakerFrame.ping.Button])
+    WoWTools_TextureMixin:CreateBG(MakerFrame.ping, {isColor=true, alpha=Save().MakerFrameBgAlpha})
+    MakerFrame.ping.Background:SetPoint('BOTTOMRIGHT', _G[ButtonName..PingButtons[1]])
+    MakerFrame.ping.Background:SetPoint('TOPLEFT', _G[ButtonName..PingButtons[#PingButtons]])
 
-    WoWTools_TextureMixin:CreateBG(MakerFrame.target)
-    MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', MakerFrame.target.Button[2])
-    MakerFrame.target.Background:SetPoint('TOPLEFT', MakerFrame.target.Button[#MakerFrame.target.Button])
+    WoWTools_TextureMixin:CreateBG(MakerFrame.target, {isColor=true, alpha=Save().MakerFrameBgAlpha})
+    MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', _G[ButtonName..TargetButtons[2]])
+    MakerFrame.target.Background:SetPoint('TOPLEFT', _G[ButtonName..TargetButtons[#TargetButtons]])
 
-    WoWTools_TextureMixin:CreateBG(MakerFrame.marker)
-    MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', MakerFrame.marker.Button[2])
-    MakerFrame.marker.Background:SetPoint('TOPLEFT', MakerFrame.marker.Button[#MakerFrame.marker.Button])
+    WoWTools_TextureMixin:CreateBG(MakerFrame.marker, {isColor=true, alpha=Save().MakerFrameBgAlpha})
+    MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', _G[ButtonName..MarkerButtons[2]])
+    MakerFrame.marker.Background:SetPoint('TOPLEFT', _G[ButtonName..MarkerButtons[#MarkerButtons]])
 
-    WoWTools_TextureMixin:CreateBG(MakerFrame.countdown, {isAllPoint=true})
-    WoWTools_TextureMixin:CreateBG(MakerFrame.check, {isAllPoint=true})
-    WoWTools_TextureMixin:CreateBG(MakerFrame.RolePoll, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.countdown, {isAllPoint=true, isColor=true, alpha=Save().MakerFrameBgAlpha})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.check, {isAllPoint=true, isColor=true, alpha=Save().MakerFrameBgAlpha})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.RolePoll, {isAllPoint=true, isColor=true, alpha=Save().MakerFrameBgAlpha})
 
     function MakerFrame:set_background()
-        --local show= Save().showMakerFrameBackground
         local alpha= Save().MakerFrameBgAlpha or 0.5
-        for _, frame in pairs(self.Buttons) do
-            if frame.Background then
-                --frame.Background:SetShown(show)
-                frame.Background:SetAlpha(alpha)
+        for _, name in pairs(Buttons) do
+            if _G[ButtonName..name].Background then
+                _G[ButtonName..name].Background:SetAlpha(alpha)
             end
         end
     end
@@ -939,17 +953,17 @@ local function Init()--设置标记, 框架
 
 --设置全部，快捷键
     function MakerFrame:set_all_hotkey()
-        for _, frame in pairs(self.ping.Button) do
-            if frame.set_hotkey then
-                frame:set_hotkey()
+        for _, name in pairs(PingButtons) do
+            if _G[ButtonName..name].set_hotkey then
+                _G[ButtonName..name]:set_hotkey()
             end
         end
 --倒计时
         MakerFrame.countdown:set_hotkey()
 --队伍标记
-        for _, frame in pairs(self.target.Button) do
-            if frame.set_hotkey then
-                frame:set_hotkey()
+        for _, name in pairs(TargetButtons) do
+            if _G[ButtonName..name].set_hotkey then
+                _G[ButtonName..name]:set_hotkey()
             end
         end
     end
@@ -959,9 +973,9 @@ local function Init()--设置标记, 框架
         if not self:CanChangeAttribute() then
             return
         end
-        for _, frame in pairs(self.Buttons) do
-            frame:ClearAllPoints()
-            frame:set_point()
+        for _, name in pairs(Buttons) do
+            _G[ButtonName..name]:ClearAllPoints()
+            _G[ButtonName..name]:set_point()
         end
     end
 

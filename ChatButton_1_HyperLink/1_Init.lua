@@ -61,7 +61,7 @@ local function Init()
     end
 
     function LinkButton:set_OnMouseDown()
-        Save().linkIcon= not Save().linkIcon and true or nil
+        Save().linkIcon= not Save().linkIcon and true or false
         WoWTools_HyperLink:Init_Link_Icon()
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
         print(

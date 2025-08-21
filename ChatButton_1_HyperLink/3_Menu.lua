@@ -164,11 +164,12 @@ local function Init_Menu(self, root)
        return C_SocialRestrictions.IsChatDisabled()
     end, function()
         if not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
-            Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID)--ItemRef.lua
+            Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID, RESTRICT_CHAT_CONFIG_DISABLE)--ItemRef.lua
         end
         return MenuResponse.Open
     end)
     sub2:SetTooltip(function (tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '选项' or SETTINGS_TITLE)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '社交' or SOCIALS)
     end)
 

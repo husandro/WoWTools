@@ -222,4 +222,10 @@ end
 function WoWTools_MoveMixin.Frames:GearManagerPopupFrame()
     self:Setup(GearManagerPopupFrame, {frame=CharacterFrame})
 end
-    
+
+
+
+--职责选取框
+function WoWTools_MoveMixin.Frames:RolePollPopup()
+    self:Setup(RolePollPopup)
+end
