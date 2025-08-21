@@ -92,19 +92,22 @@ local function Init()
             GameTooltip:AddLine(' ')
         end
 
-        local bat= UnitAffectingCombat('player')
+        local col= InCombatLockdown() and '|cff626262' or '|cffffffff'
 
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
+            col
+            ..(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
+            col
+            ..(WoWTools_DataMixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
             ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)..'|r'
+            col
+            ..(WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )

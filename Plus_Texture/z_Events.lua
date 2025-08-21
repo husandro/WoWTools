@@ -837,8 +837,8 @@ end
 
 --分解 ScrappingMachineFrame
 function WoWTools_TextureMixin.Events:Blizzard_ScrappingMachineUI()
-    self:SetNineSlice(ScrappingMachineFrame)
-    self:SetAlphaColor(ScrappingMachineFrameBg, nil, nil, 0.3)
+    self:SetNineSlice(ScrappingMachineFrame, 0.3)
+    self:SetAlphaColor(ScrappingMachineFrameBg)
     self:HideTexture(ScrappingMachineFrame.Background)
     self:HideTexture(ScrappingMachineFrameInset.Bg)
     self:SetNineSlice(ScrappingMachineFrameInset)

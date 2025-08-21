@@ -53,19 +53,20 @@ local function Init()
         WoWTools_DurabiliyMixin:OnEnter()
 
         GameTooltip:AddLine(' ')
-        local bat= UnitAffectingCombat('player')
-
+        local bat= InCombatLockdown()
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..'|r'
+            (bat and '|cff626262' or '|cffffffff')
+            ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or (C_Reputation.GetNumFactions()>0 and '|cffffffff') or '|cff828282')..(WoWTools_DataMixin.onlyChinese and '声望' or REPUTATION)..'|r'
+            (bat and '|cff626262' or (C_Reputation.GetNumFactions()>0 and '|cffffffff') or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '声望' or REPUTATION)..'|r'
             ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or (C_CurrencyInfo.GetCurrencyListSize() > 0 and '|cffffffff') or '|cff828282')
+            (bat and '|cff626262:' or (C_CurrencyInfo.GetCurrencyListSize() > 0 and '|cffffffff') or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '货币' or TOKENS)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)

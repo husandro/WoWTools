@@ -53,9 +53,9 @@ local function Init()
                 GameTooltip:AddDoubleLine(
                     WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true}),
 
-                    '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)
+                    '|A:Banker:0:0|a'..(tab.bank==0 and '|cff626262'..tab.bank..'|r' or tab.bank)
                     ..' '
-                    ..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag)
+                    ..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff626262'..tab.bag..'|r' or tab.bag)
                 )
                 bagAll=bagAll +tab.bag
                 bankAll=bankAll +tab.bank
@@ -72,7 +72,7 @@ local function Init()
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(
                 (C_AccountStore.GetStoreFrontState(Constants.AccountStoreConsts.PlunderstormStoreFrontID) ~= Enum.AccountStoreState.Available and '|cff828282'
-                    or (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:')
+                    or (InCombatLockdown() and '|cff626262')
                     or '|cffffffff'
                 )
                 ..(WoWTools_DataMixin.onlyChinese and '霸业商店' or PLUNDERSTORM_PLUNDER_STORE_TITLE)..'|r'

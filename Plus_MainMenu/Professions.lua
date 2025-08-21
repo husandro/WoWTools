@@ -35,7 +35,7 @@ local function Init()
                 prof2Text='|T'..(icon or 0)..':0|t'..(bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..name..'|r'..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
             end
         end
-        
+
         if prof1Text or prof2Text or fishingText then
             GameTooltip:AddLine(' ')
             if prof1Text then

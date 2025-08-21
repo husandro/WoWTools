@@ -64,7 +64,7 @@ local function Create(tooltip)
     tooltip.backgroundColor:Hide()
     function tooltip:Set_BG_Color(r, g, b, a)
         local show= r and g and b
-        r,g,b,a= r or 0, g or 0, b or 0, a or 0.4
+        r,g,b,a= r or 0, g or 0, b or 0, a or 0.8
         self.backgroundColor:SetColorTexture(r,g,b,a)
         if self.NineSlice then
             self.NineSlice:SetBorderColor(r,g,b,a)
@@ -80,12 +80,12 @@ local function Create(tooltip)
             tooltip.Portrait:SetPoint('TOPRIGHT',-2, -3)
         end
         tooltip.Portrait:SetSize(40,40)
+        WoWTools_ButtonMixin:AddMask(tooltip, false, tooltip.Portrait)
     end
 
     tooltip:HookScript("OnHide", function(self)--隐藏
         WoWTools_TooltipMixin:Set_Rest_Item(self)--清除，数据
     end)
-
 end
 
 
