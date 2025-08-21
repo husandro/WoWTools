@@ -402,7 +402,7 @@ end
 local function SetUp(self)
     local insTab= WoWTools_DataMixin.ChallengesSpellTabs[self.mapID]
 
-    if not insTab then
+    if not insTab or not insTab.spell then
         return
     end
 

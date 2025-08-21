@@ -74,7 +74,9 @@ local function Init_All_Flyout()
 
             local spells={}
             for _, spellinfo in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
-                spells[spellinfo.spell]=true
+                if spellinfo.spell then
+                    spells[spellinfo.spell]=true
+                end
             end
 
             local name, description, numSlots2= GetFlyoutInfo(self.flyoutID)
