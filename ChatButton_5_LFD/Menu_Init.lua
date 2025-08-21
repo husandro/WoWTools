@@ -1010,7 +1010,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().hideDontEnterMenu= not Save().hideDontEnterMenu and true or nil
     end)
-    sub:SetTooltip(function(tooltip)
+    sub2:SetTooltip(function(tooltip)
         GameTooltip_AddErrorLine(tooltip,
             WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS
         )
