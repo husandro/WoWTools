@@ -269,7 +269,7 @@ local function Init()
         else
             local key=IsModifierKeyDown()
             if d=='LeftButton' and not key then--禁用，启用
-                Save().gossip= not Save().gossip and true or nil
+                Save().gossip= not Save().gossip and true or false
                 WoWTools_GossipMixin:Init_Gossip_Data()
                 self:set_Texture()--设置，图片
                 self:tooltip_Show()

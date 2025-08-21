@@ -368,7 +368,7 @@ local function Init_Quest()
 
     QuestButton:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
-            Save().quest= not Save().quest and true or nil
+            Save().quest= not Save().quest and true or false
             self:set_Texture()--设置，图片
             self:tooltip_Show()
         elseif d=='RightButton' then
