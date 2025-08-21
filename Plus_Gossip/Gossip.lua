@@ -687,7 +687,7 @@ local function Init_Hook()
 
 
 
-    --自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
+--自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
         Create_GossipOptionCheckBox(self, info)--建立，自动选取，选项
         Set_Gossip_Text(self, info)--自定义，对话，文本
@@ -705,14 +705,15 @@ local function Init_Hook()
         local allGossip= #gossip
         local name=info.name
         local npc=WoWTools_UnitMixin:GetNpcID('npc')
+        
 
         if IsModifierKeyDown() or not index or GossipButton.selectGissipIDTab[index] then
             return
         end
 
         local find
-        local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
-	    --local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
+        local isSaveActiveQuest= Save().quest
+        local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)--local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
 
         if Save().gossipOption[index] then--自定义
             C_GossipInfo.SelectOption(index)
@@ -721,7 +722,7 @@ local function Init_Hook()
         elseif (npc and Save().NPC[npc]) then--禁用NPC
             return
 
-        elseif Save().quest and (
+        elseif isSaveActiveQuest and (
                 quest
                 or name:find('0000FF')--PURE_BLUE_COLOR
                -- or name:find('0000ff')
@@ -738,22 +739,26 @@ local function Init_Hook()
             find=true
 
         elseif allGossip==1 and Save().unique  then--仅一个
-           -- if not getMaxQuest() then
-            local isQuestTrivialTracking= WoWTools_GossipMixin.isQuestTrivialTracking
+            
             local tab= C_GossipInfo.GetActiveQuests() or {}
             for _, questInfo in pairs(tab) do
-                if questInfo.questID and questInfo.isComplete and (Save().quest or Save().questOption[questInfo.questID]) then
+                if questInfo.questID and questInfo.isComplete and (isSaveActiveQuest or Save().questOption[questInfo.questID]) then
                     return
                 end
             end
 
             tab= C_GossipInfo.GetAvailableQuests() or {}
+            
+            local isQuestTrivialTracking= WoWTools_MapMixin:Get_Minimap_Tracking(MINIMAP_TRACKING_TRIVIAL_QUESTS, false)
             for _, questInfo in pairs(tab) do
-                if questInfo.questID and (Save().quest or Save().questOption[questInfo.questID]) and (isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial) then
+                if questInfo.questID
+                    and (isSaveActiveQuest or Save().questOption[questInfo.questID])
+                    and (isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial)
+                then
                     return
                 end
             end
-           -- end
+
 
             C_GossipInfo.SelectOption(index)
             find=true
@@ -770,7 +775,7 @@ local function Init_Hook()
             GossipButton.selectGissipIDTab[index]=true
             print(
                 '|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_UnitMixin:Get_NPC_Name()
-                ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cff00ff00'..(name or '')
+                ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cnGREEN_FONT_COLOR:'..(name or '')
                 --, index
             )
         end

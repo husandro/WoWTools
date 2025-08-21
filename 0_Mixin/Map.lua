@@ -25,7 +25,7 @@ end
 function WoWTools_MapMixin:Get_Minimap_Tracking(checkName, isSettings)
     for trackingID=1, C_Minimap.GetNumTrackingTypes() do
         local info= C_Minimap.GetTrackingInfo(trackingID)
-        if info and info.name== checkName then            
+        if info and info.name== checkName then
             local active= info.active
             if isSettings then
                 active= not info.active and true or false
