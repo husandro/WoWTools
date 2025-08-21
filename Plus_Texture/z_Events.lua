@@ -1542,6 +1542,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
 
 --团队 RolePoll.lua
     self:SetFrame(RolePollPopup.Border, {notAlpha=true})
+    self:SetButton(RolePollPopupCloseButton)
 end
 
 
