@@ -43,7 +43,7 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     end
 
     local r, g ,b , col= select(2, WoWTools_UnitMixin:GetColor(source, nil))
-    if r and g and b and tooltip.backgroundColor then
+    if r and g and b and tooltip.Set_BG_Color then
         tooltip:Set_BG_Color(r,g,b, 0.3)
     end
     if source~='player' and tooltip.Portrait then

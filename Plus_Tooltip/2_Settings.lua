@@ -1,25 +1,6 @@
 
 local function Init()
 
-
---装备，对比，提示
-    ShoppingTooltip1.Portrait2= ShoppingTooltip1:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-    ShoppingTooltip1.Portrait2:SetPoint('TOPRIGHT',-2, -3)
-    ShoppingTooltip1.Portrait2:SetSize(40,40)
-    ShoppingTooltip1.Portrait2:SetAtlas('Adventures-Target-Indicator')
-    ShoppingTooltip1.Portrait2:SetAlpha(0.5)
-    ShoppingTooltip1.Portrait2:SetTexCoord(0,1,1,0)
-
-    ShoppingTooltip2.Portrait2= ShoppingTooltip2:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-    ShoppingTooltip2.Portrait2:SetPoint('TOPRIGHT',-2, -3)
-    ShoppingTooltip2.Portrait2:SetSize(40,40)
-    ShoppingTooltip2.Portrait2:SetAtlas('Adventures-Target-Indicator')
-    ShoppingTooltip2.Portrait2:SetAlpha(0.5)
-
-
-
-
-
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
         if not tooltip.textLeft then
             WoWTools_TooltipMixin:Set_Init_Item(tooltip)--创建，设置，内容
@@ -28,11 +9,6 @@ local function Init()
             WoWTools_TooltipMixin:Set_Init_Item(tooltip, true)--创建，设置，内容
         end
     end)
-
-
-
-
-
 
 
 

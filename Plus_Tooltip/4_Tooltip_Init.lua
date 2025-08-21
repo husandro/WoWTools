@@ -59,12 +59,12 @@ local function Create(tooltip)
     tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
 
     tooltip.backgroundColor= tooltip:CreateTexture(name..'BackgroundColor', 'BACKGROUND',nil, 1)--背景颜色
-    tooltip.backgroundColor:SetPoint('TOPLEFT')
-    tooltip.backgroundColor:SetPoint('BOTTOMRIGHT')
+    tooltip.backgroundColor:SetPoint('TOPLEFT', 2, -2)
+    tooltip.backgroundColor:SetPoint('BOTTOMRIGHT', -2, 2)
     tooltip.backgroundColor:Hide()
     function tooltip:Set_BG_Color(r, g, b, a)
         local show= r and g and b
-        r,g,b,a= r or 0, g or 0, b or 0, a or 0.8
+        r,g,b,a= r or 1, g or 1, b or 1, a or 0.5
         self.backgroundColor:SetColorTexture(r,g,b,a)
         if self.NineSlice then
             self.NineSlice:SetBorderColor(r,g,b,a)
@@ -130,7 +130,6 @@ function WoWTools_TooltipMixin:Set_Rest_Item(tooltip)
     tooltip.text2Right:SetTextColor(1, 0.82, 0)
 
     tooltip.Portrait:SetShown(false)
-    --tooltip.backgroundColor:SetShown(false)
     tooltip:Set_BG_Color()
     if tooltip.playerModel then
         tooltip.playerModel:ClearModel()

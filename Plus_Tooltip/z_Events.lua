@@ -438,6 +438,46 @@ end
 
 
 
+function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
+    --装备，对比，提示
+
+    for i=1, 2 do
+        local tooltip= _G['ShoppingTooltip'..i]
+        tooltip.Portrait2= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+        tooltip.Portrait2:SetPoint('TOPRIGHT',-2, -3)
+        tooltip.Portrait2:SetSize(40,40)
+
+        tooltip:HookScript('OnShow', function(t)
+            local data= t:GetPrimaryTooltipData()--{dataInstanceID type isAzeriteItem guid isAzeriteEmpoweredItem isCorruptedItem, lines}
+            local itemLink= data and data.guid and C_Item.GetItemLinkByGUID(data.guid)
+            local atlas, isUp
+            if itemLink then
+                if itemLink== select(2, GameTooltip:GetItem()) then
+                    atlas='QuestNormal'
+                elseif itemLink==GetInventoryItemLink('player', 11) or itemLink==GetInventoryItemLink('player', 13) then
+                    atlas='Adventures-Target-Indicator'
+                    isUp=true
+                elseif itemLink==GetInventoryItemLink('player', 12) or itemLink==GetInventoryItemLink('player', 14) then
+                    atlas='Adventures-Target-Indicator'
+                end
+            end
+
+            t.Portrait2:SetAtlas(atlas or WoWTools_DataMixin.Icon.Player:match('|A:(.-):') or 'QuestArtifactTurnin')
+
+            if isUp then
+                t.Portrait2:SetTexCoord(0,1,1,0)
+            else
+                t.Portrait2:SetTexCoord(0,1,0,1)
+            end
+        end)
+    end
+end
+
+
+
+
+
+
 
 
 
@@ -479,3 +519,12 @@ function WoWTools_TooltipMixin.Events:Blizzard_SharedXML()
         Set_SetIconTexture(...)
     end)
 end
+
+
+
+
+
+
+
+
+

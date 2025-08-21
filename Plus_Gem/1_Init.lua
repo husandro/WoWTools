@@ -1106,7 +1106,7 @@ local function Init()
 
 --Plus_Tooltip 加上的
     C_Timer.After(0.3, function()
-        if not ItemSocketingDescription.backgroundColor then
+        if not ItemSocketingDescription.textLeft then
             return
         end
 
