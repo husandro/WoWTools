@@ -230,14 +230,14 @@ end
 --CreateTextureMarkup(file, fileWidth, fileHeight, width, height, left, right, top, bottom, xOffset, yOffset)
 --poi-door-arrow-down
 --poi-door-arrow-up
+--[KEY_BUTTON1]='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
+--[KEY_BUTTON2]='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
+--[KEY_BUTTON10:gsub(10, '')]= 'm',--"鼠标按键10"
+--[SHIFT_KEY]= 's',
 local KeyTabs={
-    --[KEY_BUTTON1]='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
-    --[KEY_BUTTON2]='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     [KEY_BUTTON3]='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
     [KEY_MOUSEWHEELUP]='|A:poi-door-arrow-up:0:0:-3:0|a',
-    [KEY_MOUSEWHEELDOWN]='|A:poi-door-arrow-down:0:0:-3:0|a',-- CreateAtlasMarkup('hud-MainMenuBar-arrowdown-highlight', 0, 0, 0, 0, 0, 1, 1, 0, 0, 0),
-    [SHIFT_KEY]= 's',
-    --[KEY_BUTTON10:gsub(10, '')]= 'm',--"鼠标按键10"
+    [KEY_MOUSEWHEELDOWN]='|A:poi-door-arrow-down:0:0:-3:0|a',
     [KEY_BUTTON10:gsub(10, '')]= "|A:newplayertutorial-icon-mouse-middlebutton:0:0|a",
 }
 
@@ -245,7 +245,7 @@ local KeyTabs={
 
 function WoWTools_KeyMixin:GetHotKeyText(keyText, action)
     local text= keyText or (action and GetBindingKeyForAction(action, false, false))
-    if not text or text=='' then
+    if not text or text=='' or text==RANGE_INDICATOR then
         return
     end
 

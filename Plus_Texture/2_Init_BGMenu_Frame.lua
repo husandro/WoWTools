@@ -1020,6 +1020,12 @@ local function Set_Frame_Menu(frame, tab)
         self:SetSize(48,48)
     end
 
+
+    if frame.PortraitContainer then
+        WoWTools_ButtonMixin:AddMask(frame.PortraitContainer, true, frame.PortraitContainer.portrait)
+        frame.PortraitContainer.IconMask:SetPoint('TOPLEFT', frame.PortraitContainer.portrait, 0.5, -3)
+    end
+
     function self:set_texture_alpha()
         local t= self.portrait or self.Icon
         if t then
