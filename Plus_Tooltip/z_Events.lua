@@ -94,22 +94,22 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
             end
         end
 
-        frame.AllCostLabe.needCost= needCost
+        frame.NeedostLabe.needCost= needCost
 
-        frame.AllCostLabe:SetText(
+        frame.NeedostLabe:SetText(
             needCost>0 and
             (WoWTools_DataMixin.onlyChinese and '需求' or NEED)..' '..WoWTools_Mixin:MK(needCost, 3)
             or ''
         )
     end
 
-    RemixArtifactFrame.AllCostLabe= WoWTools_LabelMixin:Create(RemixArtifactFrame.CloseButton, {mouse=true, color={r=1,g=1,b=1}})
-    RemixArtifactFrame.AllCostLabe:SetPoint('TOPRIGHT', RemixArtifactFrame.Currency, 'BOTTOMRIGHT')
-    RemixArtifactFrame.AllCostLabe:SetScript('OnLeave', function(f)
+    RemixArtifactFrame.NeedostLabe= WoWTools_LabelMixin:Create(RemixArtifactFrame.CloseButton, {name='WoWToolsRemixArtifactNeetCostLable', mouse=true, color={r=1,g=1,b=1}})
+    RemixArtifactFrame.NeedostLabe:SetPoint('TOPRIGHT', RemixArtifactFrame.Currency, 'BOTTOMRIGHT')
+    RemixArtifactFrame.NeedostLabe:SetScript('OnLeave', function(f)
         GameTooltip:Hide()
         f:SetAlpha(1)
     end)
-    RemixArtifactFrame.AllCostLabe:SetScript('OnEnter', function(f)
+    RemixArtifactFrame.NeedostLabe:SetScript('OnEnter', function(f)
         GameTooltip:SetOwner(f, "ANCHOR_BOTTOM")
         GameTooltip:SetText(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(
