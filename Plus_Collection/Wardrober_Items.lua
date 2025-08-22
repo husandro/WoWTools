@@ -338,7 +338,7 @@ end
 
 
 local function set_Items_Tooltips(self)--UpdateItems
-    if not self:IsVisible() then
+    if not self:IsVisible() or WoWTools_FrameMixin:IsLocked(self) then
         return
     end
 
@@ -456,7 +456,7 @@ end
 
  --幻化，套装，索引 WardrobeCollectionFrame.SetsTransmogFrame
  local function set_Sets_Tooltips(self)--UpdateSets
-    if not self:IsVisible() then
+    if not self:IsVisible() or WoWTools_FrameMixin:IsLocked(self) then
         return
     end
     local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE
@@ -505,13 +505,17 @@ local function Init()
         return
     end
     --外观，物品，提示, 索引
-    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', set_Items_Tooltips)
+    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', function(self)
+        set_Items_Tooltips(self)
+    end)
 
     --物品, 幻化, 界面
     Init_Wardrober_Items()
 
     --幻化，套装，索引
-    hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', set_Sets_Tooltips)
+    hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(self)
+        set_Sets_Tooltips(self)
+    end)
 
     WardrobeCollectionFrameSearchBox:ClearAllPoints()
     WardrobeCollectionFrameSearchBox:SetPoint('LEFT',WardrobeCollectionFrame.progressBar ,'RIGHT', 12, 0)

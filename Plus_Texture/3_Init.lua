@@ -137,9 +137,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_TextureMixin:Init_Class_Power()--职业
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
                 WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
-                WoWTools_TextureMixin:Init_Action_Button()
-
-                --WoWTools_TextureMixin.min= Save().alpha or 0.5
 
                 if Save().disabledTexture then
                     self:UnregisterAllEvents()
