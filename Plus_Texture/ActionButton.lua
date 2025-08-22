@@ -13,7 +13,9 @@ local function Set_Texture(btn)
     end
 end
 
-
+local function Set_Assisted(self)
+    self:SetFrameStrata('BACKGROUND')
+end
 
 
 
@@ -39,9 +41,9 @@ local function Init_HooKey(btn)
     end
 
     if btn.AssistedCombatRotationFrame then
-        btn.AssistedCombatRotationFrame:SetFrameStrata('BACKGROUND')
-        btn.AssistedCombatRotationFrame:HookScript('OnShow', function(f)
-            f:SetFrameStrata('BACKGROUND')
+        Set_Assisted(btn.AssistedCombatRotationFrame)
+        btn.AssistedCombatRotationFrame:HookScript('OnShow', function(frame)
+            Set_Assisted(frame)
         end)
     end
 
@@ -76,7 +78,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     Init_HooKey(_G['ExtraActionButton1'])
 
     hooksecurefunc(ActionBarButtonAssistedCombatRotationFrameMixin, 'OnShow', function(frame)
-        frame:SetFrameStrata('BACKGROUND')
+        Set_Assisted(frame)
     end)
 
 
