@@ -64,8 +64,12 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
 
         f.Text:ClearAllPoints()
         f.Text:SetPoint('TOPRIGHT', 0,8)
-        --f.Text:SetText('RIGHT')
-        f.Text:SetText(va or 1)
+        if f.bit then
+            f.Text:SetText(tonumber(format(f.bit, va)))
+        else
+            f.Text:SetText(math.ceil(va))
+        end
+        --f.Text:SetText(va or 1)
 
         f.Low:ClearAllPoints()
         f.Low:SetPoint('TOPLEFT', 0, 8)
@@ -78,7 +82,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             f.Text:SetTextColor(1,0,1)
         end]]
 
-        f:SetScript('OnValueChanged', function(s, value, ...)
+        f:SetScript('OnValueChanged', function(s, value)
             if s.bit then
                 value= tonumber(format(s.bit, value))
             else
