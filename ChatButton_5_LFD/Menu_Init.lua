@@ -1147,12 +1147,12 @@ local function Init_Menu(self, root)
 
 
 --显示 LFGDungeonReadyDialog
-    if not WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root) then
-
-        root:CreateDivider()
-    --副本，列表
+    if not WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root) then        
+--副本，列表
         Set_LFGFollower_Dungeon_List(root)--追随者，副本
         Init_Scenarios_Menu(root)--场景
+
+        root:CreateDivider()
         set_Party_Menu_List(root)--随机
 
         if cooldowntext then

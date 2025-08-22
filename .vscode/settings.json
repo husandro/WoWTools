@@ -6104,7 +6104,8 @@
         "TALENT_BUTTON_TOOLTIP_COST_ENTRY_FORMAT",
         "GARRISON_TALENT_TREE_REQUIRED_CURRENCY_SPENT_FORMAT",
         "ActionBarButtonAssistedCombatRotationFrameMixin",
-        "ActionButton6"
+        "ActionButton6",
+        "SHIFT_KEY_TEXT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

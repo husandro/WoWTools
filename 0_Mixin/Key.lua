@@ -226,39 +226,34 @@ end
 
 --NPE_ArrowDown
 --NPE_ArrowUp
-
+--CreateAtlasMarkup(atlasName, width, height, offsetX, offsetY, rVertexColor, gVertexColor, bVertexColor)
+--CreateTextureMarkup(file, fileWidth, fileHeight, width, height, left, right, top, bottom, xOffset, yOffset)
+--poi-door-arrow-down
+--poi-door-arrow-up
 local KeyTabs={
-    KEY_BUTTON1='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
-    KEY_BUTTON2='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
-    KEY_BUTTON3='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
-    KEY_MOUSEWHEELUP='|A:NPE_ArrowUp:0:0|a',
-    KEY_MOUSEWHEELDOWN= '|A:NPE_ArrowDown:0:0|a',
+    --[KEY_BUTTON1]='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
+    --[KEY_BUTTON2]='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
+    [KEY_BUTTON3]='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
+    [KEY_MOUSEWHEELUP]='|A:poi-door-arrow-up:0:0:-3:0|a',
+    [KEY_MOUSEWHEELDOWN]='|A:poi-door-arrow-down:0:0:-3:0|a',-- CreateAtlasMarkup('hud-MainMenuBar-arrowdown-highlight', 0, 0, 0, 0, 0, 1, 1, 0, 0, 0),
+    [SHIFT_KEY]= 's',
+    --[KEY_BUTTON10:gsub(10, '')]= 'm',--"鼠标按键10"
+    [KEY_BUTTON10:gsub(10, '')]= "|A:newplayertutorial-icon-mouse-middlebutton:0:0|a",
 }
-local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
 
-local function set_keytext(keyText)
-    local text= keyText
+
+
+function WoWTools_KeyMixin:GetHotKeyText(keyText, action)
+    local text= keyText or (action and GetBindingKeyForAction(action, false, false))
     if not text or text=='' then
         return
     end
 
-    if KeyTabs[text] then
-        return KeyTabs[text]
+    for t, a in pairs(KeyTabs) do
+        text= text:gsub(t, a)
     end
-
-    text= text:gsub(KEY_BUTTON, 'm')
-    text= text:gsub('鼠标按键', 'm')
 
     if text~=keyText then
         return text
-    end
-end
-
-function WoWTools_KeyMixin:GetHotKeyText(text, action)
-    if text then
-        return set_keytext(text)
-
-    elseif action then
-        return set_keytext(GetBindingKeyForAction(action, false, false))
     end
 end

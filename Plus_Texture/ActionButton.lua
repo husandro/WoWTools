@@ -17,38 +17,15 @@ local function Set_Assisted(self)
     self:SetFrameStrata('BACKGROUND')
 end
 
-
-
-
-local function Init_HooKey(btn)
-    if not btn then
-        return
+local function Set_KeyText(self)
+    local text= WoWTools_KeyMixin:GetHotKeyText(self.HotKey:GetText(), nil)
+    if text then
+        self.HotKey:SetText(text)
     end
-
-    if btn.UpdateHotkeys then
-        hooksecurefunc(btn, 'UpdateHotkeys', function(b)
-            if b.HotKey then--快捷键
-                local text= WoWTools_KeyMixin:GetHotKeyText(b.HotKey:GetText(), nil)
-                if text then
-                    b.HotKey:SetText(text)
-                end
-                b.HotKey:SetTextColor(1,1,1,1)
-            end
-        end)
-    end
-    if btn.cooldown then--缩小，冷却，字体
-        btn.cooldown:SetCountdownFont('NumberFontNormal')
-    end
-
-    if btn.AssistedCombatRotationFrame then
-        Set_Assisted(btn.AssistedCombatRotationFrame)
-        btn.AssistedCombatRotationFrame:HookScript('OnShow', function(frame)
-            Set_Assisted(frame)
-        end)
-    end
-
-    Set_Texture(btn)
+    self.HotKey:SetTextColor(1,1,1,1)
 end
+
+
 
 
 
@@ -58,6 +35,30 @@ end
 
 --动作条
 function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
+    local function Init_HooKey(btn)
+        if not btn then
+            return
+        end
+        if btn.UpdateHotkeys then
+            Set_KeyText(btn)
+            hooksecurefunc(btn, 'UpdateHotkeys', function(self)
+                Set_KeyText(self)
+            end)
+        end
+        if btn.cooldown then--缩小，冷却，字体
+            btn.cooldown:SetCountdownFont('NumberFontNormal')
+        end
+        if btn.AssistedCombatRotationFrame then
+            Set_Assisted(btn.AssistedCombatRotationFrame)
+            btn.AssistedCombatRotationFrame:HookScript('OnShow', function(frame)
+                Set_Assisted(frame)
+            end)
+        end
+
+        Set_Texture(btn)
+    end
+
+
     for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
         for _, name in pairs({
             "ActionButton",
@@ -76,6 +77,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     end
 
     Init_HooKey(_G['ExtraActionButton1'])
+
 
     hooksecurefunc(ActionBarButtonAssistedCombatRotationFrameMixin, 'OnShow', function(frame)
         Set_Assisted(frame)
@@ -169,3 +171,77 @@ function WoWTools_TextureMixin.Events:Blizzard_ZoneAbility()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[
+战斗宠物
+
+技能, 提示
+	PetBattlePrimaryUnitTooltip
+    PetBattleUnitTooltipTemplate
+    TooltipBackdropTemplate
+
+	PetBattlePrimaryAbilityTooltip
+    SharedPetBattleAbilityTooltipTemplate
+]]
+function WoWTools_TextureMixin.Events:Blizzard_PetBattleUI()
+    self:HideTexture(PetBattleFrame.TopArtLeft)
+    self:HideTexture(PetBattleFrame.TopArtRight)
+    self:HideTexture(PetBattleFrame.TopVersus)
+    PetBattleFrame.TopVersusText:SetText('')
+    PetBattleFrame.TopVersusText:SetShown(false)
+    self:HideTexture(PetBattleFrame.WeatherFrame.BackgroundArt)
+
+    self:HideTexture(PetBattleFrameXPBarLeft)
+    self:HideTexture(PetBattleFrameXPBarRight)
+    self:HideTexture(PetBattleFrameXPBarMiddle)
+
+    self:HideTexture(PetBattleFrame.BottomFrame.LeftEndCap)
+    self:HideTexture(PetBattleFrame.BottomFrame.RightEndCap)
+    self:HideTexture(PetBattleFrame.BottomFrame.Background)
+    self:HideTexture(PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2)
+
+    PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
+    PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
+
+    for i=1,NUM_BATTLE_PETS_IN_BATTLE do
+        if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
+            WoWTools_ColorMixin:Setup(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
+        end
+    end
+
+    --宠物， 主面板,主技能, 提示
+    --for _, btn in pairs(PetBattleFrame.BottomFrame.abilityButtons) do
+    hooksecurefunc('PetBattleAbilityButton_UpdateHotKey', function(frame)
+        if not frame.HotKey:IsShown() then
+            return
+        end
+        local key= WoWTools_KeyMixin:GetHotKeyText(GetBindingKey("ACTIONBUTTON"..frame:GetID()), nil)
+        if key then
+            frame.HotKey:SetText(key)
+        end
+        frame.HotKey:SetTextColor(1,1,1)
+    end)
+
+    self:HideFrame(PetBattleFrame.BottomFrame.MicroButtonFrame)
+
+    hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(frame)--Blizzard_PetBattleUI.lua
+        self:HideTexture(frame.BottomFrame.TurnTimer.TimerBG)
+        self:HideTexture(frame.BottomFrame.TurnTimer.ArtFrame)
+        self:HideTexture(frame.BottomFrame.TurnTimer.ArtFrame2)
+    end)
+
+    PetBattlePrimaryUnitTooltip:SetBackdropBorderColor(0,0,0, 0.1)
+    PetBattlePrimaryAbilityTooltip:SetBackdropBorderColor(0,0,0, 0.1)
+end
