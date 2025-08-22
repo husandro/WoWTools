@@ -38,11 +38,12 @@ end
 
 
 function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
+
     RemixArtifactFrame.Currency:HookScript('OnEnter', function(f)
-        if GameTooltip:IsShown() or not f.traitCurrencyID then
+        if GameTooltip:IsShown() or not f.traitCurrencyID or f.traitCurrencyID<=0 then
             return
         end
-        local _flags, _traitCurrencyType, currencyTypesID, overrideIcon = C_Traits.GetTraitCurrencyInfo(f.traitCurrencyID or 0)
+        local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(f.traitCurrencyID))
 
         GameTooltip:SetOwner(f, "ANCHOR_BOTTOM")
         GameTooltip:SetText('traitCurrencyID'..WoWTools_DataMixin.Icon.icon2..f.traitCurrencyID)
@@ -50,6 +51,88 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
             GameTooltip:AddLine('|T'..overrideIcon..':0|t'..overrideIcon)
         end
         GameTooltip:Show()
+    end)
+
+
+--需要花费，提示
+    local function Setup_Coat(frame, treeID)
+        if not treeID then
+            return
+        end
+        local needCost=0
+        for btn in frame:EnumerateAllTalentButtons() do
+            local nodeID = btn:GetNodeID()
+            local cost = nodeID and frame:GetNodeCost(nodeID)--amount ID
+            local amount
+            local data= btn:GetNodeInfo()
+            local scale=1
+            if data and data.currentRank< data.maxRanks and not data.canRefundRank then
+                for _, traitCurrencyCost in ipairs(cost) do
+                    local treeCurrency = frame.treeCurrencyInfoMap[traitCurrencyCost.ID];
+                    amount =  WoWTools_Mixin:MK(traitCurrencyCost.amount, 3)
+                    if amount then
+                        needCost= needCost+ traitCurrencyCost.amount
+                        if treeCurrency and treeCurrency.quantity < traitCurrencyCost.amount then
+                            amount = RED_FONT_COLOR:WrapTextInColorCode(amount)
+                        elseif data.canPurchaseRank then
+                            amount= '|cnGREEN_FONT_COLOR:'..amount..'|r'
+                            scale=1.5
+                        end
+                        break
+                    end
+                end
+            end
+
+            if amount and not btn.costLabel then
+                btn.costLabel= WoWTools_LabelMixin:Create(btn)
+                btn.costLabel:SetPoint('TOP', btn, 'BOTTOM')
+            end
+
+            if btn.costLabel then
+                btn.costLabel:SetText(amount or '')
+                btn.costLabel:SetScale(scale)
+            end
+        end
+
+        frame.AllCostLabe.needCost= needCost
+
+        frame.AllCostLabe:SetText(
+            needCost>0 and
+            (WoWTools_DataMixin.onlyChinese and '需求' or NEED)..' '..WoWTools_Mixin:MK(needCost, 3)
+            or ''
+        )
+    end
+
+    RemixArtifactFrame.AllCostLabe= WoWTools_LabelMixin:Create(RemixArtifactFrame.CloseButton, {mouse=true, color={r=1,g=1,b=1}})
+    RemixArtifactFrame.AllCostLabe:SetPoint('TOPRIGHT', RemixArtifactFrame.Currency, 'BOTTOMRIGHT')
+    RemixArtifactFrame.AllCostLabe:SetScript('OnLeave', function(f)
+        GameTooltip:Hide()
+        f:SetAlpha(1)
+    end)
+    RemixArtifactFrame.AllCostLabe:SetScript('OnEnter', function(f)
+        GameTooltip:SetOwner(f, "ANCHOR_BOTTOM")
+        GameTooltip:SetText(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip:AddLine(
+            format(
+                WoWTools_DataMixin.onlyChinese and "还需要再花费%i点%s" or GARRISON_TALENT_TREE_REQUIRED_CURRENCY_SPENT_FORMAT,
+                f.needCost or 0,
+                WoWTools_DataMixin.onlyChinese and '解锁' or UNLOCK
+            )
+        )
+
+        GameTooltip:Show()
+        f:SetAlpha(0.5)
+    end)
+
+    RemixArtifactFrame:HookScript('OnShow', function(frame)
+        Setup_Coat(frame, frame:GetTalentTreeID())
+    end)
+    RemixArtifactFrame:HookScript('OnEvent', function(frame, event, treeID)
+        if event == "TRAIT_TREE_CURRENCY_INFO_UPDATED" and treeID == frame:GetTalentTreeID() then
+            C_Timer.After(0.3, function()
+                Setup_Coat(frame, treeID)
+            end)
+        end
     end)
 end
 
@@ -472,6 +555,12 @@ function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
         end)
     end
 end
+
+
+
+
+
+
 
 
 

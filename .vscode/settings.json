@@ -6098,7 +6098,11 @@
         "BuffBarCooldownViewerMixin",
         "BuffBarCooldownViewer",
         "CooldownViewerMixin",
-        "RolePollPopupCloseButton"
+        "RolePollPopupCloseButton",
+        "GENERIC_TRAIT_FRAME_CONFIRM_PURCHASE_FORMAT",
+        "TALENT_BUTTON_TOOLTIP_COST_ENTRY_SEPARATOR",
+        "TALENT_BUTTON_TOOLTIP_COST_ENTRY_FORMAT",
+        "GARRISON_TALENT_TREE_REQUIRED_CURRENCY_SPENT_FORMAT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

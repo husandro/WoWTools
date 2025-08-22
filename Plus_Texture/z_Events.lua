@@ -2511,6 +2511,9 @@ function WoWTools_TextureMixin.Events:Blizzard_RemixArtifactUI()
             f.AltModel:SetModelAlpha(f.PortraitAlpha or 1)
         end)
     end)
+
+
+
 end
 
 --[[function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
