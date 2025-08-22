@@ -118,28 +118,20 @@ function WoWTools_ChatMixin:Init()
 
         ChatButton.IsMainButton=true
         Save().isShowBackground= nil
-        
-        WoWTools_TextureMixin:CreateBG(ChatButton)
-        --[[ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
-        ChatButton.Background:SetPoint('BOTTOMLEFT', Buttons[1])
-        ChatButton.Background:SetAtlas('ChallengeMode-guild-background')
-        --ChatButton.Background:SetAlpha(0.7)]]
-        
-        
+
+        WoWTools_TextureMixin:CreateBG(ChatButton, {isColor=true})
+
+
         function ChatButton:set_backgroud()
             self.Background:SetPoint('BOTTOMLEFT', Buttons[1])
             self.Background:SetPoint('TOPRIGHT', Buttons[#Buttons])
-            --self.Background:SetShown(Save().isShowBackground)
-            self.Background:SetAlpha(Save().bgAlpha or 0.5)
+            self.Background:SetColorTexture(0,0,0, Save().bgAlpha or 0.5)
+            --self.Background:SetAlpha(Save().bgAlpha or 0.5)
         end
-
 
         Set_Button_Script(ChatButton)
 
-
-
         self.ChatButton= ChatButton
-
 
         return ChatButton
     end
@@ -166,13 +158,6 @@ local function Set_Button(btn)
     btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
     btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 4)
 
-    --[[btn.background= btn:CreateTexture(nil, 'BACKGROUND')
-    btn.background:SetAllPoints(btn)
-    btn.background:SetAtlas('bag-reagent-border-empty')
-    btn.background:SetAlpha(0.5)
-    WoWTools_ColorMixin:Setup(btn.background, {type='Texture', alpha= 0.3})
-    btn.background:AddMaskTexture(btn.IconMask)]]
-
     btn.texture=btn:CreateTexture(nil, 'BORDER')
     btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
     btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
@@ -181,7 +166,6 @@ local function Set_Button(btn)
     btn.border=btn:CreateTexture(nil, 'ARTWORK')
     btn.border:SetAllPoints(btn)
     btn.border:SetAtlas('bag-reagent-border')
-    --btn.border:AddMaskTexture(btn.IconMask)
     WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha= 0.3})
 
     btn:SetSize(30, 30)
