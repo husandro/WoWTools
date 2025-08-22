@@ -1,72 +1,61 @@
 
-    local function Set_Texture(btn)
-        WoWTools_TextureMixin:HideTexture(btn.SlotArt)
-        WoWTools_TextureMixin:HideTexture(btn.NormalTexture)--外框，方块
-        WoWTools_TextureMixin:HideTexture(btn.SlotBackground, true)--背景
-        if not btn.IconMask then
-            WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
-        else
-            btn.IconMask:ClearAllPoints()
-            btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
-            btn.IconMask:SetPoint('TOPLEFT', btn.Icon or btn, 0.5, -0.5)
-            btn.IconMask:SetPoint('BOTTOMRIGHT', btn.Icon or btn, -0.5, 0.5)
-        end
+local function Set_Texture(btn)
+    WoWTools_TextureMixin:HideTexture(btn.SlotArt)
+    WoWTools_TextureMixin:HideTexture(btn.NormalTexture)--外框，方块
+    WoWTools_TextureMixin:HideTexture(btn.SlotBackground, true)--背景
+    if not btn.IconMask then
+        WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
+    else
+        btn.IconMask:ClearAllPoints()
+        btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+        btn.IconMask:SetPoint('TOPLEFT', btn.Icon or btn, 0.5, -0.5)
+        btn.IconMask:SetPoint('BOTTOMRIGHT', btn.Icon or btn, -0.5, 0.5)
+    end
+end
+
+
+
+
+
+
+local function Init_HooKey(btn)
+    if not btn then
+        return
     end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
---动作条
-    local function Set_AssistedCombatRotation(btn)
-        if not btn.AssistedCombatRotationFrame then
-            return
-        end
-        --self:SetAlphaColor(btn.AssistedCombatRotationFrame.InactiveTexture, nil, true, 0.3)
-        --self:SetAlphaColor(btn.AssistedCombatRotationFrame.ActiveFrame.Border, nil, nil, 0.3)
-        btn.AssistedCombatRotationFrame:SetFrameStrata('BACKGROUND')
-    end
-
-    local function Init_HooKey(btn)
-        if not btn then
-            return
-        end
-        if btn.UpdateHotkeys then
-            hooksecurefunc(btn, 'UpdateHotkeys', function(b)
-                if b.HotKey then--快捷键
-                    local text= WoWTools_KeyMixin:GetHotKeyText(b.HotKey:GetText(), nil)
-                    if text then
-                        b.HotKey:SetText(text)
-                    end
-                    b.HotKey:SetTextColor(1,1,1,1)
+    if btn.UpdateHotkeys then
+        hooksecurefunc(btn, 'UpdateHotkeys', function(b)
+            if b.HotKey then--快捷键
+                local text= WoWTools_KeyMixin:GetHotKeyText(b.HotKey:GetText(), nil)
+                if text then
+                    b.HotKey:SetText(text)
                 end
-            end)
-        end
-        if btn.cooldown then--缩小，冷却，字体
-            btn.cooldown:SetCountdownFont('NumberFontNormal')
-        end
-
-        Set_AssistedCombatRotation(btn)
-        Set_Texture(btn)
+                b.HotKey:SetTextColor(1,1,1,1)
+            end
+        end)
+    end
+    if btn.cooldown then--缩小，冷却，字体
+        btn.cooldown:SetCountdownFont('NumberFontNormal')
     end
 
+    if btn.AssistedCombatRotationFrame then
+        btn.AssistedCombatRotationFrame:SetFrameStrata('BACKGROUND')
+        btn.AssistedCombatRotationFrame:HookScript('OnShow', function(f)
+            f:SetFrameStrata('BACKGROUND')
+        end)
+    end
+
+    Set_Texture(btn)
+end
 
 
 
 
 
+
+
+--动作条
+function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
         for _, name in pairs({
             "ActionButton",
@@ -87,8 +76,9 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     Init_HooKey(_G['ExtraActionButton1'])
 
     hooksecurefunc(ActionBarButtonAssistedCombatRotationFrameMixin, 'OnShow', function(frame)
-        Set_AssistedCombatRotation(frame:GetParent())
+        frame:SetFrameStrata('BACKGROUND')
     end)
+
 
 
     --hooksecurefunc(MainMenuBar, 'UpdateDividers', function(bar)--主动作条 
