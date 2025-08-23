@@ -1022,12 +1022,8 @@ local function Set_Frame_Menu(frame, tab)
 
 
     if frame.PortraitContainer then
-        frame.PortraitContainer.CircleMask:SetPoint('TOPLEFT', frame.PortraitContainer.portrait, 'TOPLEFT', 3, -3)
+        frame.PortraitContainer.CircleMask:SetPoint('TOPLEFT', frame.PortraitContainer.portrait, 'TOPLEFT', 3.5, -3)
         frame.PortraitContainer.CircleMask:SetPoint('BOTTOMRIGHT', frame.PortraitContainer.portrait, 'BOTTOMRIGHT', -3, 3.5)
-        --WoWTools_ButtonMixin:AddMask(frame.PortraitContainer, true, frame.PortraitContainer.portrait)
-        --frame.PortraitContainer.IconMask:SetPoint('TOPLEFT', frame.PortraitContainer.portrait, 0.5, -3)
-        --frame.PortraitContainer.CircleMask
-        --frame.PortraitContainer.CircleMask:SetPoint("TOPLEFT", frame.PortraitContainer, "TOPLEFT", frame.PortraitContainer.circleMaskSizeOffset, -frame.PortraitContainer.circleMaskSizeOffset-2)
     end
 
     function self:set_texture_alpha()
