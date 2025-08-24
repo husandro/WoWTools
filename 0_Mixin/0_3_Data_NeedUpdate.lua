@@ -37,8 +37,7 @@ local function Level_Text(text)
     return tab[text] or text
 end
 
-local endOfRunRewardLevel={
-endOfRunRewardLevel={--15
+local endOfRunRewardLevel={--15
     [2]=684,
     [3]=684,
     [4]=688,
@@ -50,7 +49,6 @@ endOfRunRewardLevel={--15
     [10]=701,
     [11]=701,
     [12]=701,
-    }
 }
 
 local WeekItemLevel={
@@ -79,9 +77,10 @@ function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)
         level= math.max(WeekItemLevel.min, level or WeekItemLevel.max)
 
         local weekly, endOfRun= C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
-        endOfRun= (endOfRun and endOfRun>0) and endOfRun or endOfRunRewardLevel[level] or 0
 
+        endOfRun= (endOfRun and endOfRun>0) and endOfRun or endOfRunRewardLevel[level] or 0
         weekly= weekly or 0
+
         return format(WeekItemLevel[level], endOfRun, weekly)
     end
 end
