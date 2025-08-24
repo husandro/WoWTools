@@ -66,7 +66,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        self.texture:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -163,7 +163,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        self.texture:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -237,7 +237,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        self.texture:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -318,7 +318,7 @@ TypeTabs= {
             end
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        self.texture:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -396,7 +396,7 @@ TypeTabs= {
             end
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        self.texture:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -476,7 +476,7 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        self.texture:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -535,7 +535,7 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        self.texture:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -615,33 +615,35 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        self.texture:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
         local guid= Frame.guid
         local info= guid and WoWTools_WoWDate[Frame.guid]
-        local boos, boos2
-        for name in pairs(info and info.Worldboss.boss  or {}) do--[name]= id
-            num= num+1
-            name= '|cff606060'..num..'|r'..WoWTools_TextMixin:CN(name)
-            if select(2, math.modf(num/2))~=0 then
-                boos= (boos and boos..' ' or '')..name
-            else
-                boos2= (boos2 and boos2..' ' or '')..name
+        if info then
+            local boos, boos2
+            for name in pairs(info.Worldboss.boss  or {}) do--[name]= id
+                num= num+1
+                name= '|cff606060'..num..'|r'..WoWTools_TextMixin:CN(name)
+                if select(2, math.modf(num/2))~=0 then
+                    boos= (boos and boos..' ' or '')..name
+                else
+                    boos2= (boos2 and boos2..' ' or '')..name
+                end
             end
-        end
-        if boos then
-            if isFind and (
-                    boos and boos:upper():find(findText)
-                    or (boos2 and boos:upper():find(findText))
-                ) or not isFind
-            then
-                data:Insert({
-                    boos= boos,
-                    boos2= boos2,
-                    boosTab=info.Worldboss.boss
-                })
+            if boos then
+                if isFind and (
+                        boos and boos:upper():find(findText)
+                        or (boos2 and boos:upper():find(findText))
+                    ) or not isFind
+                then
+                    data:Insert({
+                        boos= boos,
+                        boos2= boos2,
+                        boosTab=info.Worldboss.boss
+                    })
+                end
             end
         end
         return data, WoWTools_Mixin:MK(num, 3)
@@ -1272,7 +1274,7 @@ local function OnMouseDown_RightButton(self, d)
     if not guid then
         return
     end
-    
+
     Frame.guid= guid
 
     if d=='RightButton' then
@@ -1887,6 +1889,14 @@ local function Init_List()
         List2Buttons[name].texture:SetSize(23,23)
         List2Buttons[name].texture:SetAtlas(data.atlas)
 
+        List2Buttons[name].SelectTexture= List2Buttons[name]:CreateTexture(nil, 'OVERLAY', nil, -1)
+        List2Buttons[name].SelectTexture:SetPoint('BOTTOM')
+        List2Buttons[name].SelectTexture:SetSize(30,25)
+
+        List2Buttons[name].SelectTexture:SetAtlas('glues-gameMode-glw-bottom')
+        List2Buttons[name].SelectTexture:Hide()
+        --List2Buttons[name].SelectTexture:SetVertexColor(0,1,0)
+
         List2Buttons[name].name= name
         List2Buttons[name].tooltip= data.tooltip
 
@@ -1919,8 +1929,9 @@ local function Init_List()
 
                 for _, btn in pairs(List2Buttons) do
                     local isSelect= List2Type==btn.name
-                    btn.texture:SetDesaturated(isSelect)
+                    --btn.texture:SetDesaturated(isSelect)
                     btn.texture:SetScale(isSelect and 0.5 or 1)
+                    btn.SelectTexture:SetShown(isSelect)
                 end
             else
                 MenuUtil.CreateContextMenu(self, function(_, root)
@@ -1999,8 +2010,12 @@ local function Init_List()
 
 
     --List2Buttons[List2Type]:SetButtonState('PUSHED', true)
-    List2Buttons[List2Type].texture:SetDesaturated(true)
-    List2Buttons[List2Type].texture:SetScale(0.5)
+    if List2Type then
+        --List2Buttons[List2Type].texture:SetDesaturated(true)
+        List2Buttons[List2Type].texture:SetScale(0.5)
+        List2Buttons[List2Type].SelectTexture:SetShown(true)
+    end
+
     Frame.SearchBox2:SetPoint('RIGHT', last, 'LEFT', -2, 0)
 
 
