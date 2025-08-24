@@ -850,7 +850,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
     end
 
     sub= root:CreateCheckbox(
-        ((C_PvP.ArePvpTalentsUnlocked() or not C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired())) and '|cff828282' or '')
+        ((C_PvP.ArePvpTalentsUnlocked() and C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired())) and '' or '|cff828282')
         ..'|A:pvptalents-warmode-swords:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE),
     function()
@@ -870,7 +870,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
                 ),
             true)
 
-        elseif C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired()) or InCombatLockdown() then
+        elseif not C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired()) then
             GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
 		end
     end)

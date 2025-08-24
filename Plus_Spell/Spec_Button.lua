@@ -153,7 +153,7 @@ local function Create_Spec_Button(index)
     btn.SelectIcon:SetVertexColor(0,1,0)
 
     function btn:Set_Active()
-  
+
         if self.isActive then
             WoWTools_LoadUIMixin:SpellBook(2)
             --if PlayerSpellsFrame then
@@ -326,9 +326,9 @@ local function Init()
             if p and p[1] then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
 
-            elseif PlayerSpellsFrame and PlayerSpellsFrame:IsVisible() then
+            --[[elseif PlayerSpellsFrame and PlayerSpellsFrame:IsVisible() then
                 self:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -self.numSpec*10-2, 0)
-            else
+            else]]
                 self:SetPoint('CENTER', -150, 150)
             end
 
@@ -336,12 +336,17 @@ local function Init()
             self:set_strata()
 
         elseif PlayerSpellsFrame then
-            self:SetParent(PlayerSpellsFrame)
-            self:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -numSpec*10-18, 0)
+            --[[self:SetParent(PlayerSpellsFrame)
+            self:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -self.numSpec*10-18, 0)
             self:SetFrameStrata('HIGH')
+            self:SetParent(PlayerSpellsFrame.TalentsFrame)
+            self:SetPoint('BOTTOM', PlayerSpellsFrame.TalentsFrame.ApplyButton, 'TOP', -self.numSpec*10-18, 25)]]
+            self:SetParent(PlayerSpellsFrame.TalentsFrame)
+            self:SetPoint('TOP', PlayerSpellsFrame.TalentsFrame.ApplyButton, 'BOTTOM', -self.numSpec*10-18, 0)
+
         else
             print(
-                WoWTools_SpellMixin.addName,
+                WoWTools_SpellMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnGREEN_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
             )

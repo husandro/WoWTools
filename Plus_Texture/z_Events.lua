@@ -2229,6 +2229,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
     --英雄专精
     self:SetNineSlice(HeroTalentsSelectionDialog, self.min, true)
+    self:SetButton(HeroTalentsSelectionDialog.CloseButton)
 
     if PlayerSpellsFrame.SpellBookFrame.SettingsDropdown then--11.1.7
         self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.SettingsDropdown.Icon, true, nil, nil)

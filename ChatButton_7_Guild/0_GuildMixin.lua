@@ -127,7 +127,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
     GameTooltip:AddLine(' ')
 
 
-    local icon, name, col, applicantList, num, info, members, online, all
+    local icon, name, col, applicantList, num, online, all
     local guildClubId= C_Club.GetGuildClubId()
     local numApplicant= 0
 
@@ -137,8 +137,9 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
 
         icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a'
 
-            or (tab.avatarId==1
+            or (tab.avatarId==1--C_Club.SetAvatarTexture(self.IconPreview, avatarId, self.clubType)
                 and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
+                or (tab.clubType==Enum.ClubType.BattleNet and '|A:gmchat-icon-blizz:0:0|a')
                 or ('|T'..(tab.avatarId or 0)..':0|t')
             )
 

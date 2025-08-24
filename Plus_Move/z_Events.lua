@@ -896,13 +896,15 @@ function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
     HeroTalentsSelectionDialog.p_point={PlayerSpellsFrame:GetPoint(1)}
     HeroTalentsSelectionDialog.p_point[2]= nil
     HeroTalentsSelectionDialog:HookScript('OnShow', function(frame)
-        PlayerSpellsFrame:ClearAllPoints()
-        PlayerSpellsFrame:SetPoint(frame.p_point[1], UIParent, frame.p_point[3], frame.p_point[4], frame.p_point[5])
+        if not InCombatLockdown() then
+            PlayerSpellsFrame:ClearAllPoints()
+            PlayerSpellsFrame:SetPoint(frame.p_point[1], UIParent, frame.p_point[3], frame.p_point[4], frame.p_point[5])
+        end
     end)
     HeroTalentsSelectionDialog:HookScript('OnHide', function()
         self:SetPoint(PlayerSpellsFrame)
     end)
-    self:Setup(HeroTalentsSelectionDialog)
+    --self:Setup(HeroTalentsSelectionDialog)
 
 --天赋，法术书
     self:Setup(PlayerSpellsFrame)

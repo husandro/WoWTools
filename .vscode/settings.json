@@ -6105,7 +6105,11 @@
         "GARRISON_TALENT_TREE_REQUIRED_CURRENCY_SPENT_FORMAT",
         "ActionBarButtonAssistedCombatRotationFrameMixin",
         "ActionButton6",
-        "SHIFT_KEY_TEXT"
+        "SHIFT_KEY_TEXT",
+        "EssentialCooldownViewer",
+        "BuffIconCooldownViewer",
+        "MultiBarRight",
+        "MultiBarLeft"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -6120,7 +6124,7 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.8\\Annotations\\Core"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.21.0\\Annotations\\Core"
     ],
     "Lua.runtime.unicodeName": true,
     "Lua.diagnostics.disable": [
