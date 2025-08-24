@@ -14,7 +14,7 @@ WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物
 
     {type='currency', id=3289},--符文虚灵纹章 11.2
     {type='currency', id=3291},--鎏金虚灵纹章
-    
+
     {type='currency', id=WoWTools_DataMixin.CurrencyUpdateItemLevelID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
@@ -27,16 +27,6 @@ WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物
 
 
 --挑战数据 Challenges.lua C_MythicPlus.GetRewardLevelForDifficultyLevel(
-local function Level_Text(text)
-    local tab={
-        ['Veteran']= format('%s%s|r', '|cff00ff00', WoWTools_DataMixin.onlyChinese and '老兵' or 'Veteran'),
-        ['Champion']= format('%s%s|r', '|cff2aa2ff', WoWTools_DataMixin.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS),
-        ['Hero']= format('%s%s|r', '|cffff00ff', WoWTools_DataMixin.onlyChinese and '英雄' or ITEM_HEROIC),
-        ['Myth']= format('%s%s|r', '|cffb78f6a', WoWTools_DataMixin.onlyChinese and '神话' or ITEM_QUALITY4_DESC),
-    }
-    return tab[text] or text
-end
-
 local endOfRunRewardLevel={--15
     [2]=684,
     [3]=684,
@@ -51,28 +41,48 @@ local endOfRunRewardLevel={--15
     [12]=701,
 }
 
-local WeekItemLevel={
-    [2]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t10',--15
-    [3]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t12',
-    [4]='%d'..Level_Text('Champion')..'3/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t14',
-    [5]='%d'..Level_Text('Champion')..'4/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t16',
-    [6]='%d'..Level_Text('Hero')..'1/6  %d'..Level_Text('Hero')..'3/6|T5872051:0|t18',
-
-    [7]='%d'..Level_Text('Hero')..'1/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t10',
-    [8]='%d'..Level_Text('Hero')..'2/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t12',
-    [9]='%d'..Level_Text('Hero')..'2/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t14',
-    [10]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t16',
-    [11]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t18',
-    [12]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t20',
-
-    min=2,
+local WeekItemLevel= {
+    mix=2,
     max=12,
 }
+local Init_WeekItemLevel
+function Init_WeekItemLevel()
+    local tab={
+        ['Veteran']= format('|cff1eff00%s|r', WoWTools_DataMixin.onlyChinese and '老兵' or 'Veteran'),
+        ['Champion']= format('|cff0070dd%s|r', WoWTools_DataMixin.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS),
+        ['Hero']= format('|cffa334ee%s|r', WoWTools_DataMixin.onlyChinese and '英雄' or ITEM_HEROIC),
+        ['Myth']= format('|cffff8000%s|r', WoWTools_DataMixin.onlyChinese and '神话' or ITEM_QUALITY4_DESC),
+    }
+    WeekItemLevel={
+        [2]='%d'..tab['Champion']..'2/8  %d'..tab['Hero']..'1/6|T5872051:0|t10',--需要修改
+        [3]='%d'..tab['Champion']..'2/8  %d'..tab['Hero']..'1/6|T5872051:0|t12',
+        [4]='%d'..tab['Champion']..'3/8  %d'..tab['Hero']..'2/6|T5872051:0|t14',
+        [5]='%d'..tab['Champion']..'4/8  %d'..tab['Hero']..'2/6|T5872051:0|t16',
+        [6]='%d'..tab['Hero']..'1/6  %d'..tab['Hero']..'3/6|T5872051:0|t18',
+
+        [7]='%d'..tab['Hero']..'1/6  %d'..tab['Hero']..'4/6|T5872049:0|t10',
+        [8]='%d'..tab['Hero']..'2/6  %d'..tab['Hero']..'4/6|T5872049:0|t12',
+        [9]='%d'..tab['Hero']..'2/6  %d'..tab['Hero']..'4/6|T5872049:0|t14',
+        [10]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T5872049:0|t16',
+        [11]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T5872049:0|t18',
+        [12]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T5872049:0|t20',
+
+        min=WeekItemLevel.mix,
+        max=WeekItemLevel.max,
+    }
+end
+
 
 function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)
+    if not WeekItemLevel then
+        Init_WeekItemLevel()
+        Init_WeekItemLevel=nil
+    end
+
     if isGetNum then
-        return WeekItemLevel.min, WeekItemLevel.max
+        return WeekItemLevel.mix, WeekItemLevel.max
     else
+
         level= math.min(WeekItemLevel.max, level or WeekItemLevel.min)
         level= math.max(WeekItemLevel.min, level or WeekItemLevel.max)
 
