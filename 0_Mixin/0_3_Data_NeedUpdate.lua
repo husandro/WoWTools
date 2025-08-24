@@ -41,11 +41,7 @@ local endOfRunRewardLevel={--15
     [12]=701,
 }
 
-local WeekItemLevel= {
-    mix=2,
-    max=12,
-}
-local Init_WeekItemLevel
+local WeekItemLevel, Init_WeekItemLevel
 function Init_WeekItemLevel()
     local tab={
         ['Veteran']= format('|cff1eff00%s|r', WoWTools_DataMixin.onlyChinese and '老兵' or 'Veteran'),
@@ -67,20 +63,22 @@ function Init_WeekItemLevel()
         [11]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T5872049:0|t18',
         [12]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T5872049:0|t20',
 
-        min=WeekItemLevel.mix,
-        max=WeekItemLevel.max,
+        min=2,
+        max=12,
     }
 end
 
 
 function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)
-    if not WeekItemLevel then
-        Init_WeekItemLevel()
-        Init_WeekItemLevel=nil
+    do
+        if not WeekItemLevel then
+            Init_WeekItemLevel()
+            Init_WeekItemLevel=nil
+        end
     end
 
     if isGetNum then
-        return WeekItemLevel.mix, WeekItemLevel.max
+        return WeekItemLevel.min, WeekItemLevel.max
     else
 
         level= math.min(WeekItemLevel.max, level or WeekItemLevel.min)
