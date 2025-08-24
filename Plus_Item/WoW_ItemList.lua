@@ -66,7 +66,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self.texture:SetAlpha(num>0 and 1 or 0.3)
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -163,7 +163,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self.texture:SetAlpha(num>0 and 1 or 0.3)
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -237,7 +237,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self.texture:SetAlpha(num>0 and 1 or 0.3)
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -318,7 +318,7 @@ TypeTabs= {
             end
         end
         self.Text:SetText(num>0 and num or '')
-        self.texture:SetAlpha(num>0 and 1 or 0.3)
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -396,7 +396,7 @@ TypeTabs= {
             end
         end
         self.Text:SetText(num>0 and num or '')
-        self.texture:SetAlpha(num>0 and 1 or 0.3)
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -476,7 +476,7 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self.texture:SetAlpha(num>0 and 1 or 0.3)
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -535,7 +535,7 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self.texture:SetAlpha(num>0 and 1 or 0.3)
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -615,7 +615,7 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self.texture:SetAlpha(num>0 and 1 or 0.3)
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -1884,6 +1884,7 @@ local function Init_List()
             --addTexture=true,
             size=23,
         })
+
         List2Buttons[name].texture=List2Buttons[name]:CreateTexture(nil, 'BORDER')
         List2Buttons[name].texture:SetPoint('CENTER')
         List2Buttons[name].texture:SetSize(23,23)
@@ -1892,10 +1893,9 @@ local function Init_List()
         List2Buttons[name].SelectTexture= List2Buttons[name]:CreateTexture(nil, 'OVERLAY', nil, -1)
         List2Buttons[name].SelectTexture:SetPoint('BOTTOM')
         List2Buttons[name].SelectTexture:SetSize(30,25)
-
         List2Buttons[name].SelectTexture:SetAtlas('glues-gameMode-glw-bottom')
         List2Buttons[name].SelectTexture:Hide()
-        --List2Buttons[name].SelectTexture:SetVertexColor(0,1,0)
+        List2Buttons[name].SelectTexture:SetVertexColor(0,1,0)
 
         List2Buttons[name].name= name
         List2Buttons[name].tooltip= data.tooltip
