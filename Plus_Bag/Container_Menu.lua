@@ -89,7 +89,6 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
         return C_Container.GetSortBagsRightToLeft()
     end, function()
         C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft())
-        return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('C_Container.SetSortBagsRightToLeft')
@@ -100,53 +99,11 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
         WoWTools_DataMixin.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
     C_Container.GetBackpackAutosortDisabled, function()
         C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
-        return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('C_Container.SetBackpackAutosortDisabled')
         tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
     end)
-
-    --[[CONTAINER_OFFSET_Y 
-    root:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(root, {
-        getValue=function()
-            return CONTAINER_OFFSET_Y or 85
-        end, setValue=function(value)
-            CONTAINER_OFFSET_Y= value
-            WoWTools_Mixin:Call(UpdateContainerFrameAnchors)
-        end,
-        name= 'y',
-        minValue=20,
-        maxValue=200,
-        step=1,
-        
-        tooltip=function(tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval')
-        end
-    
-    })
-    sub:CreateSpacer()
-
-    root:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(root, {
-        getValue=function()
-            return CONTAINER_OFFSET_X  or -4
-        end, setValue=function(value)
-            CONTAINER_OFFSET_X = value
-            WoWTools_Mixin:Call(UpdateContainerFrameAnchors)
-        end,
-        name= 'x',
-        minValue=-20,
-        maxValue=200,
-        step=1,
-        
-        tooltip=function(tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval')
-        end
-    
-    })
-    sub:CreateSpacer()]]
 end
 
 
@@ -158,8 +115,12 @@ end
 
 
 
-
-function WoWTools_BagMixin:Init_Container_Menu()
+local function Init()
     Menu.ModifyMenu("MENU_CONTAINER_FRAME", MENU_CONTAINER_FRAME)
     Menu.ModifyMenu("MENU_CONTAINER_FRAME_COMBINED", MENU_CONTAINER_FRAME_COMBINED)
+    Init=function()end
+end
+
+function WoWTools_BagMixin:Init_Container_Menu()
+    Init()
 end
