@@ -772,6 +772,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
 
     self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
 
+    self:SetButton(ProfessionsFrame.CraftingPage.CraftingOutputLog.ClosePanelButton)
+
     self:Init_BGMenu_Frame(ProfessionsFrame)
 end
 
@@ -1382,63 +1384,55 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
-    if _G['CompactRaidFrameManagerBG-regulars'] then--11.2没有了
-        self:SetAlphaColor(_G['CompactRaidFrameManagerBG-regulars'], nil, nil, 0)
-        self:SetAlphaColor(_G['CompactRaidFrameManagerBG-party-leads'], nil, nil, 0)
-        self:SetAlphaColor(_G['CompactRaidFrameManagerBG-leads'], nil, nil, 0)
-        self:SetAlphaColor(_G['CompactRaidFrameManagerBG-party-regulars'], nil,nil,0)
-        CompactRaidFrameManagerToggleButtonForward:SetAlpha(0.3)
-        CompactRaidFrameManagerToggleButtonBack:SetAlpha(0.3)
-        self:HideTexture(_G['CompactRaidFrameManagerBG-assists'])
-    else
-        self:HideFrame(CompactRaidFrameManager, {show={[CompactRaidFrameManager.Background]=true}})
+
+    self:HideFrame(CompactRaidFrameManager, {show={[CompactRaidFrameManager.Background]=true}})
 
 --打开
-        CompactRaidFrameManagerToggleButtonBack.hoverTex= 'common-icon-rotateleft'
-        CompactRaidFrameManagerToggleButtonBack.normalTex= 'common-icon-backarrow'
-        CompactRaidFrameManagerToggleButtonBack:GetNormalTexture():SetAlpha(0.3)
-        CompactRaidFrameManagerToggleButtonBack:SetNormalAtlas('common-icon-backarrow')
-        local icon= CompactRaidFrameManagerToggleButtonBack:GetPushedTexture()
-        icon:SetAtlas('common-icon-backarrow')
-        icon= CompactRaidFrameManagerToggleButtonBack:GetDisabledTexture()
-        icon:SetAtlas('common-icon-backarrow')
-        icon:SetDesaturated(true)
+    CompactRaidFrameManagerToggleButtonBack.hoverTex= 'common-icon-rotateleft'
+    CompactRaidFrameManagerToggleButtonBack.normalTex= 'common-icon-backarrow'
+    CompactRaidFrameManagerToggleButtonBack:GetNormalTexture():SetAlpha(0.3)
+    CompactRaidFrameManagerToggleButtonBack:SetNormalAtlas('common-icon-backarrow')
+    local icon= CompactRaidFrameManagerToggleButtonBack:GetPushedTexture()
+    icon:SetAtlas('common-icon-backarrow')
+    icon= CompactRaidFrameManagerToggleButtonBack:GetDisabledTexture()
+    icon:SetAtlas('common-icon-backarrow')
+    icon:SetDesaturated(true)
 --合
-        CompactRaidFrameManagerToggleButtonForward:GetNormalTexture():SetAlpha(0.3)
-        CompactRaidFrameManagerToggleButtonForward.hoverTex= 'common-icon-rotateright'
-        CompactRaidFrameManagerToggleButtonForward.normalTex= 'common-icon-forwardarrow'
-        CompactRaidFrameManagerToggleButtonForward:SetNormalAtlas('common-icon-forwardarrow')
-        icon= CompactRaidFrameManagerToggleButtonForward:GetPushedTexture()
-        icon:SetAtlas('common-icon-forwardarrow')
-        icon= CompactRaidFrameManagerToggleButtonForward:GetDisabledTexture()
-        icon:SetAtlas('common-icon-forwardarrow')
-        icon:SetDesaturated(true)
+    CompactRaidFrameManagerToggleButtonForward:GetNormalTexture():SetAlpha(0.3)
+    CompactRaidFrameManagerToggleButtonForward.hoverTex= 'common-icon-rotateright'
+    CompactRaidFrameManagerToggleButtonForward.normalTex= 'common-icon-forwardarrow'
+    CompactRaidFrameManagerToggleButtonForward:SetNormalAtlas('common-icon-forwardarrow')
+    icon= CompactRaidFrameManagerToggleButtonForward:GetPushedTexture()
+    icon:SetAtlas('common-icon-forwardarrow')
+    icon= CompactRaidFrameManagerToggleButtonForward:GetDisabledTexture()
+    icon:SetAtlas('common-icon-forwardarrow')
+    icon:SetDesaturated(true)
 --Background
-        self:SetAlphaColor(CompactRaidFrameManager.Background, true)
-        CompactRaidFrameManager.Background:SetShown(CompactRaidFrameManagerToggleButtonBack:IsShown())
-            CompactRaidFrameManagerToggleButtonBack:HookScript('OnShow', function(b)
-            b:GetParent().Background:SetShown(true)
-        end)
-        CompactRaidFrameManagerToggleButtonForward:HookScript('OnShow', function(b)
-            b:GetParent().Background:SetShown(false)
-        end)
+    self:SetAlphaColor(CompactRaidFrameManager.Background, true)
+    CompactRaidFrameManager.Background:SetShown(CompactRaidFrameManagerToggleButtonBack:IsShown())
+        CompactRaidFrameManagerToggleButtonBack:HookScript('OnShow', function(b)
+        b:GetParent().Background:SetShown(true)
+    end)
+    CompactRaidFrameManagerToggleButtonForward:HookScript('OnShow', function(b)
+        b:GetParent().Background:SetShown(false)
+    end)
 --BG
-        self:Init_BGMenu_Frame(CompactRaidFrameManagerDisplayFrame, {
-            isNewButton=true,
-            newButtonPoint=function(btn)
-                if _G['CompactRaidFrameManagerScaleMenuButton'] then
-                    btn:SetPoint('RIGHT', _G['CompactRaidFrameManagerScaleMenuButton'], 'LEFT')
-                else
-                    btn:SetPoint('LEFT', CompactRaidFrameManagerDisplayFrameModeControlDropdown, 'RIGHT')
-                end
-            end,
-            settings=function(_, texture, alpha)
-                CompactRaidFrameManager.Background:SetAlpha(texture and 0 or alpha or 1)
+    self:Init_BGMenu_Frame(CompactRaidFrameManagerDisplayFrame, {
+        isNewButton=true,
+        newButtonPoint=function(btn)
+            if _G['CompactRaidFrameManagerScaleMenuButton'] then
+                btn:SetPoint('RIGHT', _G['CompactRaidFrameManagerScaleMenuButton'], 'LEFT')
+            else
+                btn:SetPoint('LEFT', CompactRaidFrameManagerDisplayFrameModeControlDropdown, 'RIGHT')
             end
-        })
+        end,
+        settings=function(_, texture, alpha)
+            CompactRaidFrameManager.Background:SetAlpha(texture and 0 or alpha or 1)
+        end
+    })
 
-        CompactRaidFrameManagerDisplayFrameRaidMembersLabel:SetText('')--队员
-    end
+    CompactRaidFrameManagerDisplayFrameRaidMembersLabel:SetText('')--队员
+    CompactRaidFrameManagerDisplayFrameRaidMembersLabel:ClearAllPoints()
 
     self:SetMenu(CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown)
     self:SetMenu(CompactRaidFrameManagerDisplayFrameModeControlDropdown)

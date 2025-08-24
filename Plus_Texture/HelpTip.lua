@@ -65,6 +65,11 @@ local function Init()
         end
     end)
 
+    if SplashFrame then
+        WoWTools_TextureMixin:SetButton(SplashFrame.TopCloseButton)
+    end
+
+
     C_Timer.After(2, function()
         --[[if SplashFrame and SplashFrame:IsShown() then新内容 bug
             --SplashFrame:Close();

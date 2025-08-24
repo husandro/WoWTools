@@ -278,4 +278,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
             Save().size[name..'Mini']=nil
         end
     })
+
+    self:Setup(ProfessionsFrame.CraftingPage.CraftingOutputLog, {frame=ProfessionsFrame})
 end

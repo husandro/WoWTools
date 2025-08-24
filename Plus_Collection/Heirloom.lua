@@ -327,7 +327,11 @@ local function Init_ClassListButton()
         self.frame:SetScale(Save().Heirlooms_Class_Scale or 1)
         self.frame:SetShown(not Save().hideHeirloomClassList)
     end
+
+
+    Init_ClassListButton=function()end
 end
+
 
 
 
@@ -350,11 +354,15 @@ local function Init()
         return
     end
 
-    hooksecurefunc(HeirloomsJournal, 'UpdateButton', UpdateButton)
+    hooksecurefunc(HeirloomsJournal, 'UpdateButton', function(...)
+        UpdateButton(...)
+    end)
 
     HeirloomsJournalSearchBox:SetPoint('LEFT', HeirloomsJournal.progressBar, 'RIGHT', 12,0)
 
     Init_ClassListButton()
+
+    Init=function()end
 end
 
 
