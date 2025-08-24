@@ -184,7 +184,7 @@ local function set_to_send()
     end
     SendMailNameEditBox:ClearFocus()
 
-    if not Save().notAutoToSendFrame then
+    if not Save().notAutoToSendFrame and not GameLimitedMode_IsActive() then
         C_Timer.After(Save().autoToSendFrameSecond or 1, function()
             if GetInboxNumItems()==0 then--如果没有信，转到，发信
                 MailFrameTab_OnClick(nil, 2)
