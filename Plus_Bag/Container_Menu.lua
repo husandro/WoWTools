@@ -86,9 +86,10 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
     function()
-        return C_Container.GetSortBagsRightToLeft()
+        return not C_Container.GetSortBagsRightToLeft()
     end, function()
         C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft())
+        return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('C_Container.SetSortBagsRightToLeft')
@@ -99,6 +100,7 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
         WoWTools_DataMixin.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
     C_Container.GetBackpackAutosortDisabled, function()
         C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
+        return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('C_Container.SetBackpackAutosortDisabled')
