@@ -10,28 +10,14 @@ end
 
 
 
---[[hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
-    print('SetupMenu', self.Text, self.text, self.fontString)
-end)
-hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
-    hooksecurefunc(self, 'SetText', function(btn, ...)
-        print('SetText', btn:GetText())
-    end)
-end)
-hooksecurefunc(DropdownTextMixin, 'UpdateText', function(self)
-    print('UpdateText', self.Text:GetText())
-end)
-hooksecurefunc(DropdownSelectionTextMixin, 'OverrideText', function(self)
-    print('OverrideText', self.Text:GetText())
-end)
-hooksecurefunc(DropdownSelectionTextMixin, 'UpdateToMenuSelections', function(self)
-    print('UpdateToMenuSelections', self.Text:GetText())
-end)
 
 
-hooksecurefunc(MenuVariants, 'CreateCheckbox', function(...)
-    print('CreateCheckbox',...)
-end)]]
+
+
+
+
+
+
 
 local function Init()
 local tab
