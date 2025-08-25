@@ -1201,8 +1201,10 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
 --任务，列表 QuestLogHeaderCodeTemplate
     hooksecurefunc(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
-        self:SetFrame(btn, {index=2, isMinAlpha=true})
+        self:SetFrame(btn, {alpha=0.7})
     end)
+
+    
 
     for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
         self:SetFrame(frame, {alpha=0.5})

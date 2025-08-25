@@ -14,7 +14,14 @@ local function Set_Texture(btn)
 end
 
 local function Set_Assisted(self)
-    self:SetFrameStrata('BACKGROUND')
+    if not WoWTools_FrameMixin:IsLocked(self) then
+        self:SetFrameStrata('BACKGROUND')
+    else
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+            self:SetFrameStrata('BACKGROUND')
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end)
+    end
 end
 
 local function Set_KeyText(self)

@@ -1013,3 +1013,12 @@ function WoWTools_MoveMixin:Set_SizeScale(frame)
         end
     end
 end
+
+
+function WoWTools_MoveMixin:Set_Frame_Scale(frame)
+    local name= frame:GetName()
+    local value= name and Save().scale[name]
+    if value then
+        Set_Frame_Scale(frame, value)
+    end
+end

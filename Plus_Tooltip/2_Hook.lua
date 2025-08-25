@@ -273,7 +273,9 @@ local function Init()
 
 --添加任务ID
     local label= create_Quest_Label(QuestMapDetailsScrollFrame)
-    label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
+    --label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
+    label:SetPoint('LEFT', QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton, 'RIGHT', 2, 0)    
+
     hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
         QuestMapDetailsScrollFrame.questIDLabel:settings(questID)
     end)

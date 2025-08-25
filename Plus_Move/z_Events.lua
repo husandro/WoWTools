@@ -756,9 +756,10 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
 
 
     local function Set_Slot_Point()
-        if not WoWTools_FrameMixin:IsLocked(CharacterFrame) then
+        if WoWTools_FrameMixin:IsLocked(CharacterFrame) then
             return
         end
+
         local w, h= CharacterFrame:GetSize()--366 * 337   (40+4)*8
         local line= math.max(4, (h-16-42- 40*7- 58)/7)
 
@@ -818,8 +819,8 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
                 Set_Slot_Point()
             end
         end,
-        sizeStopFunc=function(btn)
-              if CharacterFrame.Expanded then
+        sizeStopFunc=function()
+            if CharacterFrame.Expanded then
                 Save().size['CharacterFrameExpanded']={CharacterFrame:GetSize()}
             else
                 Save().size['CharacterFrameCollapse']={CharacterFrame:GetSize()}
@@ -900,13 +901,19 @@ function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
             PlayerSpellsFrame:ClearAllPoints()
             PlayerSpellsFrame:SetPoint(frame.p_point[1], UIParent, frame.p_point[3], frame.p_point[4], frame.p_point[5])
         end
+
     end)
     HeroTalentsSelectionDialog:HookScript('OnHide', function()
         self:SetPoint(PlayerSpellsFrame)
     end)
     --self:Setup(HeroTalentsSelectionDialog)
 
+
+
 --天赋，法术书
+    PlayerSpellsFrame:HookScript('OnShow', function(frame)
+        self:Set_Frame_Scale(frame)
+    end)
     self:Setup(PlayerSpellsFrame)
 
 --专精
