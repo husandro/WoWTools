@@ -573,7 +573,8 @@ Plus_Other\InterruptStolenDispel.lua
 Plus_Other\DormantSeeds.lua
 ##自动隐藏，弹出NPC说话，
 Plus_Other\Talking.lua
-
+##为职业菜单，添加颜色，图标
+Plus_Other\ClassMenuColor.lua
 
 
 

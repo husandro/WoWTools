@@ -6110,7 +6110,10 @@
         "BuffIconCooldownViewer",
         "MultiBarRight",
         "MultiBarLeft",
-        "ClassMenu"
+        "ClassMenu",
+        "UNSPECIFIED_SPEC_FILTER",
+        "DropdownSelectionTextMixin",
+        "MenuTemplates"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
