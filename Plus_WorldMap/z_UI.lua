@@ -1,5 +1,3 @@
-
-
 --世界地图
 function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetButton(WorldMapFrameCloseButton)
@@ -7,7 +5,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton)
     self:SetButton(WorldMapFrame.BorderFrame.Tutorial)
 
-    self:SetNineSlice(WorldMapFrame.BorderFrame, self.min)
+    self:SetNineSlice(WorldMapFrame.BorderFrame)
     self:HideTexture(WorldMapFrameBg)
     self:SetAlphaColor(QuestMapFrame.Background)
     self:HideTexture(WorldMapFrame.NavBar.overlay)
@@ -17,6 +15,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottomRight)
     self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
     self:HideTexture(WorldMapFrame.BorderFrame.InsetBorderTop)
+
     WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
 
     hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(frame)--最大化时，隐藏背景
@@ -30,6 +29,17 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetScrollBar(QuestMapDetailsScrollFrame)
 
     self:SetFrame(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, {alpha=0})
+--共享，两边, 材质
+    for _, icon in pairs({QuestMapFrame.QuestsFrame.DetailsFrame.ShareButton:GetRegions()}) do
+        if icon:IsObjectType("Texture") then
+            local atlas= icon:GetAtlas()
+            if atlas=='UI-Frame-BtnDivMiddle' or atlas=='UI-Frame-BtnDivMiddle' then
+                icon:SetTexture(0)
+            end
+        end
+    end
+
+
     self:HideTexture(QuestMapFrame.QuestsTab.Background)
     self:HideTexture(QuestMapFrame.QuestsTab.SelectedTexture)
 
@@ -61,11 +71,16 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetButton(WorldMapFrame.SidePanelToggle.CloseButton, {alpha=0.5})
     self:SetButton(WorldMapFrame.SidePanelToggle.OpenButton, {alpha=0.5})
 
-
-
     self:SetFrame(WorldMapFrame.NavBar.overlay, {alpha=0})
 
     WorldMapFrame.BorderFrame.PortraitContainer:SetSize(48,48)
+    hooksecurefunc(WorldMapFrame, 'Minimize', function(frame)
+       frame.BorderFrame.PortraitContainer:SetSize(48,48)
+    end)
+    hooksecurefunc(WorldMapFrame, 'Maximize', function(frame)
+        frame.BorderFrame.PortraitContainer:SetSize(23,23)
+    end)
+
     self:Init_BGMenu_Frame(WorldMapFrame, {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer,
         NineSlice= WorldMapFrame.BorderFrame.NineSlice,
@@ -169,11 +184,9 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     WorldMapFrame.ScrollContainer.Child.TiledBackground:ClearAllPoints()
     WorldMapFrame.ScrollContainer.Child.TiledBackground:SetAllPoints()
 
-   -- QuestMapFrame.QuestsFrame.DetailsFrame:SetFrameLevel(WorldMapFrame.BorderFrame:GetFrameLevel()+1)
-    --QuestMapFrame.QuestsFrame.DetailsFrame:GetFrameStrata()
     QuestMapFrame.QuestsFrame.DetailsFrame:GetFrameLevel(501)
     QuestMapFrame.QuestsFrame.DetailsFrame:GetFrameStrata('HIGH')
-    
+
 
     QuestScrollFrame.Background:SetPoint('BOTTOM', 0, 123)
     QuestScrollFrame.Background:SetAllPoints()

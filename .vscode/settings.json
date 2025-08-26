@@ -6113,7 +6113,9 @@
         "ClassMenu",
         "UNSPECIFIED_SPEC_FILTER",
         "DropdownSelectionTextMixin",
-        "MenuTemplates"
+        "MenuTemplates",
+        "WORLD_MAP_FILTER_COUNTER_TOOLTIP",
+        "WorldMapTrackingOptionsFilterCounterMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
