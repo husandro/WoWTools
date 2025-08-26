@@ -73,19 +73,13 @@ local function Init()
 
 
     QuestMapFrame.DetailsFrame:SetPoint('BOTTOM')
-    --QuestMapDetailsScrollFrame:SetPoint('BOTTOM', QuestMapFrame.DetailsFrame.RewardsFrameContainer.RewardsFrame, 'TOP')
-    --QuestMapDetailsScrollFrame:SetPoint('BOTTOM', 0, 123)
-    --QuestMapFrame.DetailsFrame.RewardsFrameContainer.RewardsFrame:ClearAllPoints()
     QuestMapDetailsScrollFrame.Contents:SetPoint('BOTTOMLEFT')
 
-
-    --QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOM')
     QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOM', 0, 23)
     QuestMapFrame.DetailsFrame.SealMaterialBG:SetPoint('BOTTOM', 0, 23)
 
     WorldMapFrame.ScrollContainer.Child.TiledBackground:ClearAllPoints()
     WorldMapFrame.ScrollContainer.Child.TiledBackground:SetAllPoints()
-    
 
     QuestScrollFrame.Background:SetPoint('BOTTOM', 0, 123)
     QuestScrollFrame.Background:SetAllPoints()
@@ -95,6 +89,9 @@ local function Init()
     WoWTools_MoveMixin:Setup(QuestMapFrame, {frame=WorldMapFrame})
     WoWTools_MoveMixin:Setup(QuestMapFrame.DetailsFrame, {frame=WorldMapFrame})
     WoWTools_MoveMixin:Setup(QuestMapDetailsScrollFrame, {frame=WorldMapFrame})
+
+
+    Init=function()end
 end
 
 
