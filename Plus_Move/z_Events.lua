@@ -1,17 +1,3 @@
-local function Save()
-    return WoWToolsSave['Plus_Move']
-end
---[[
-/dump WoWTools_MoveMixin.Events.Blizzard_EncounterJournal(WoWTools_MoveMixin)
-]]
-
-
-
-
-
-
-
-
 --专业训练师
 function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
     ClassTrainerFrame.ScrollBox:ClearAllPoints()
@@ -301,7 +287,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
     AuctionHouseFrame.ItemBuyFrame.ItemDisplay.Background:SetPoint('RIGHT')
 
     hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(frame, mode)
-        local size= Save().size[frame:GetName()]
+        local size= self:Save().size[frame:GetName()]
         local btn= frame.ResizeButton
         if not size or not btn then
             return
@@ -462,7 +448,7 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
         end
         if index==3 then
             btn.setSize= true
-            local size= Save().size['PVEFrame_PVE']
+            local size= self:Save().size['PVEFrame_PVE']
             if size then
                 PVEFrame:SetSize(size[1], size[2])
                 return
@@ -485,25 +471,25 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
             end
         end, sizeStopFunc=function()
             if PVEFrame.activeTabIndex==1 then
-                Save().size['PVEFrame_PVE']= {PVEFrame:GetSize()}
+                self:Save().size['PVEFrame_PVE']= {PVEFrame:GetSize()}
             elseif PVEFrame.activeTabIndex==2 then
                 if PVPQueueFrame.selection==LFGListPVPStub then
-                    Save().size['PVEFrame_PVP']= {PVEFrame:GetSize()}
+                    self:Save().size['PVEFrame_PVP']= {PVEFrame:GetSize()}
                 end
             elseif PVEFrame.activeTabIndex==3 then
-                Save().size['PVEFrame_KEY']= {PVEFrame:GetSize()}
+                self:Save().size['PVEFrame_KEY']= {PVEFrame:GetSize()}
             end
         end, sizeRestFunc=function()
             if PVEFrame.activeTabIndex==1 then
-                Save().size['PVEFrame_PVE']=nil
+                self:Save().size['PVEFrame_PVE']=nil
                 PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
             elseif PVEFrame.activeTabIndex==2 then--Blizzard_PVPUI.lua
-                Save().size['PVEFrame_PVP']=nil
+                self:Save().size['PVEFrame_PVP']=nil
                 local width = PVE_FRAME_BASE_WIDTH;
                 width = width + PVPQueueFrame.HonorInset:Update();
                 PVEFrame:SetSize(width, 428)
             elseif PVEFrame.activeTabIndex==3 then
-                Save().size['PVEFrame_KEY']=nil
+                self:Save().size['PVEFrame_KEY']=nil
                 PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
                 WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
             end
@@ -537,7 +523,7 @@ function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
         end
         if PVPQueueFrame.selection==LFGListPVPStub then
             btn.setSize= true
-            local size= Save().size['PVEFrame_PVP']
+            local size= self:Save().size['PVEFrame_PVP']
             if size then
                 PVEFrame:SetSize(size[1], size[2])
                 return
@@ -579,7 +565,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ChallengesUI()
         if not frame.ResizeButton or frame.ResizeButton.disabledSize or not frame:CanChangeAttribute() then
             return
         end
-        local size= WoWToolsSave['Plus_Move'].size['PVEFrame_KEY']
+        local size= self:Save().size['PVEFrame_KEY']
         frame.ResizeButton.setSize= true
         if size then
             frame:SetSize(size[1], size[2])
@@ -793,9 +779,9 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
         local size
         if f.Expanded then
             f.ResizeButton.minWidth=450
-            size= Save().size['CharacterFrameExpanded']
+            size= self:Save().size['CharacterFrameExpanded']
         else
-            size= Save().size['CharacterFrameCollapse']
+            size= self:Save().size['CharacterFrameCollapse']
             f.ResizeButton.minWidth=320
         end
         if size then
@@ -821,24 +807,24 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
         end,
         sizeStopFunc=function()
             if CharacterFrame.Expanded then
-                Save().size['CharacterFrameExpanded']={CharacterFrame:GetSize()}
+                self:Save().size['CharacterFrameExpanded']={CharacterFrame:GetSize()}
             else
-                Save().size['CharacterFrameCollapse']={CharacterFrame:GetSize()}
+                self:Save().size['CharacterFrameCollapse']={CharacterFrame:GetSize()}
             end
             Set_Slot_Point()
         end,
         sizeRestFunc=function()
             if not WoWTools_FrameMixin:IsLocked(CharacterFrame) then
-                if (Save().size['CharacterFrameExpanded'] or Save().size['CharacterFrameCollapse']) then
+                if (self:Save().size['CharacterFrameExpanded'] or self:Save().size['CharacterFrameCollapse']) then
                     CharacterFrame:SetHeight(424)
                 end
-                Save().size['CharacterFrameExpanded']=nil
-                Save().size['CharacterFrameCollapse']=nil
+                self:Save().size['CharacterFrameExpanded']=nil
+                self:Save().size['CharacterFrameCollapse']=nil
                 WoWTools_Mixin:Call(CharacterFrame.UpdateSize, CharacterFrame)
             end
         end,
         sizeRestTooltipColorFunc=function(f)
-            return ((f.target.Expanded and Save().size['CharacterFrameExpanded']) or (not f.target.Expanded and Save().size['CharacterFrameCollapse'])) and '' or '|cff9e9e9e'
+            return ((f.target.Expanded and self:Save().size['CharacterFrameExpanded']) or (not f.target.Expanded and self:Save().size['CharacterFrameCollapse'])) and '' or '|cff9e9e9e'
         end
     })
 

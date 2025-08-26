@@ -388,10 +388,6 @@ local function Init_WardrobeFrame()
         if not btn or not btn.setSize then
             return
         end
-        --[[if parent==CollectionsJournal then
-
-        else]]
-
         if parent==WardrobeFrame then
             self:SetPoint('BOTTOMLEFT', 300,0)
         end

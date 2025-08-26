@@ -1,9 +1,3 @@
-local function Save()
-    return WoWToolsSave['Plus_Move']
-end
-
-
-
 --商人
 function WoWTools_MoveMixin.Frames:MerchantFrame()
     if WoWToolsSave['Plus_SellBuy'] then
@@ -73,10 +67,10 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
 
         frame:SetMovable(isMinimized)
         frame.ResizeButton:SetShown(isMinimized)
-        frame:SetScale(isMinimized and Save().scale[name] or 1)
+        frame:SetScale(isMinimized and self:Save().scale[name] or 1)
 
         if isMinimized then
-            local size= Save().size[name]
+            local size= self:Save().size[name]
             if size then
                 frame:SetSize(size[1], size[2])
             end
@@ -89,7 +83,7 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
 
     self:Setup(DressUpFrame, {setSize=true, minH=320, minW=310,
     sizeRestFunc=function()
-        Save().size[DressUpFrame:GetName()]= nil
+        self:Save().size[DressUpFrame:GetName()]= nil
         DressUpFrame:ConfigureSize(GetCVarBool("miniDressUpFrame"))
         DressUpFrame:Raise()
     end})
@@ -171,11 +165,11 @@ function WoWTools_MoveMixin.Frames:LootFrame()
             return
         end
 
-        local s= Save().size['LootFrame']
+        local s= self:Save().size['LootFrame']
         local p
 
         if not GetCVarBool("lootUnderMouse") then
-            p= Save().point['LootFrame']
+            p= self:Save().point['LootFrame']
         end
 
         if p and p[1] then
@@ -194,10 +188,10 @@ function WoWTools_MoveMixin.Frames:LootFrame()
     self:Setup(LootFrame, {
         setSize=true, isShow=true,
     sizeStopFunc=function()
-        Save().size['LootFrame']= {LootFrame:GetSize()}
+        self:Save().size['LootFrame']= {LootFrame:GetSize()}
         --ScrollingFlatPanelMixin.Open(LootFrame, false)
     end, sizeRestFunc=function()
-        Save().size['LootFrame']= nil
+        self:Save().size['LootFrame']= nil
         --LootFrame:SetWidth(220)
 	    ScrollingFlatPanelMixin.Open(LootFrame, true)
     end})

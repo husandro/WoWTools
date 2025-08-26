@@ -1,12 +1,14 @@
+local function Save()
+    return WoWToolsSave['Plus_Move'] or {}
+end
 
 WoWTools_MoveMixin={
     Events={},
     Frames={},
+    Save=Save
 }
 
-local function Save()
-    return WoWToolsSave['Plus_Move']
-end
+
 
 
 

@@ -211,35 +211,35 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
         scaleStoppedFunc=function()
             local sacle= ProfessionsFrame:GetScale()
             if ProfessionsUtil.IsCraftingMinimized() then
-                Save().scale[name..'Mini']= sacle
+                self:Save().scale[name..'Mini']= sacle
             elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-                Save().scale[name..'Spec']= sacle
+                self:Save().scale[name..'Spec']= sacle
             elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-                Save().scale[name..'Order']= sacle
+                self:Save().scale[name..'Order']= sacle
             else
-                Save().scale[name..'Normal']= sacle
+                self:Save().scale[name..'Normal']= sacle
             end
         end,
         scaleRestFunc=function()
             if ProfessionsUtil.IsCraftingMinimized() then
-                Save().scale[name..'Mini']= nil
+                self:Save().scale[name..'Mini']= nil
             elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-                Save().scale[name..'Spec']= nil
+                self:Save().scale[name..'Spec']= nil
             elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-                Save().scale[name..'Order']= nil
+                self:Save().scale[name..'Order']= nil
             else
-                Save().scale[name..'Normal']= nil
+                self:Save().scale[name..'Normal']= nil
             end
         end,
         sizeRestTooltipColorFunc=function()
             if ProfessionsUtil.IsCraftingMinimized() then
-                return Save().size[name..'Mini'] and '' or '|cff9e9e9e'
+                return self:Save().size[name..'Mini'] and '' or '|cff9e9e9e'
             elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-                return Save().size[name..'Spec'] and '' or '|cff9e9e9e'
+                return self:Save().size[name..'Spec'] and '' or '|cff9e9e9e'
             elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-                return Save().size[name..'Order'] and '' or '|cff9e9e9e'
+                return self:Save().size[name..'Order'] and '' or '|cff9e9e9e'
             else
-                return Save().size[name..'Normal'] and '' or '|cff9e9e9e'
+                return self:Save().size[name..'Normal'] and '' or '|cff9e9e9e'
             end
         end,
         sizeStopFunc=function()
@@ -254,7 +254,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
             else
                 name= name..'Normal'
             end
-            Save().size[name]= size
+            self:Save().size[name]= size
             ProfessionsFrame:Refresh()
             --ProfessionsFrame:Refresh(ProfessionsFrame.professionInfo)
         end,
@@ -272,10 +272,10 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
                 ProfessionsFrame:SetSize(942, 658)
             end
             ProfessionsFrame:Refresh()
-            Save().size[name..'Spec']=nil
-            Save().size[name..'Order']=nil
-            Save().size[name..'Normal']=nil
-            Save().size[name..'Mini']=nil
+            self:Save().size[name..'Spec']=nil
+            self:Save().size[name..'Order']=nil
+            self:Save().size[name..'Normal']=nil
+            self:Save().size[name..'Mini']=nil
         end
     })
 

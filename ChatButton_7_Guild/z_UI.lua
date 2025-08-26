@@ -251,101 +251,86 @@ end
 
 
 --公会和社区
-local function Save()
-    return WoWToolsSave['Plus_Move']
-end
-
-
-local function set_size(frame)
-    local self= frame:GetParent()
-    if not self.ResizeButton or WoWTools_FrameMixin:IsLocked(frame) then
-        return
-    end
-    local size, scale
-    local displayMode = self:GetDisplayMode();
-    if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-        self.ResizeButton.minWidth= 290
-        self.ResizeButton.minHeight= 115
-        size= Save().size['CommunitiesFrameMINIMIZED']
-        scale= Save().scale['CommunitiesFrameMINIMIZED']
-    else
-        size= Save().size['CommunitiesFrameNormal']
-        scale= Save().scale['CommunitiesFrameNormal']
-        self.ResizeButton.minWidth= 562--814
-        self.ResizeButton.minHeight= 228--426
-    end
-
-    if size then
-        self:SetSize(size[1], size[2])
-    end
-    if scale then
-        self:SetScale(scale)
-    end
-end
-
-
-
-
---hooksecurefunc(ClubFinderCommunitiesCardMixin, 'Init', function(b)
-local function Init_Update(frame)
-    if not frame:GetView() or WoWTools_FrameMixin:IsLocked(frame) then
-        return
-    end
-    for _, btn in pairs(frame:GetFrames() or {}) do
-        btn.Name:ClearAllPoints()
-        btn.Name:SetPoint('TOPLEFT', btn.LogoBorder, 'TOPRIGHT', 12,0)
-        btn.Description:ClearAllPoints()
-        btn.Description:SetPoint('LEFT', btn.LogoBorder, 'RIGHT', 12,0)
-        btn.Description:SetPoint('RIGHT', btn.RequestJoin, 'LEFT', -26,0)
-        btn.Background:SetPoint('RIGHT', -12,0)--移动背景
-        local cardInfo= btn.cardInfo-- or {}-- clubFinderGUID, isCrossFaction, clubId, 
-
-        if not btn.corssFactionTexture and cardInfo.isCrossFaction then--跨阵营
-            btn.corssFactionTexture= btn:CreateTexture(nil, 'OVERLAY')
-            btn.corssFactionTexture:SetSize(18,18)
-            btn.corssFactionTexture:SetAtlas('CrossedFlags')
-            btn.corssFactionTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 4, 0)
-        end
-        if btn.corssFactionTexture then
-            btn.corssFactionTexture:SetShown(true)--not cardInfo.isCrossFaction)
-        end
-        local autoAccept--自动，批准, 无效
-        local clubStatus= cardInfo.clubFinderGUID and C_ClubFinder.GetPlayerClubApplicationStatus(cardInfo.clubFinderGUID)
-        btn:SetAlpha(btn.RequestJoin:IsShown() and 1 or 0.3)
-        if clubStatus then
-            autoAccept= clubStatus== Enum.PlayerClubRequestStatus.AutoApproved--2
-        end
-        if not btn.autoAcceptTexture and autoAccept then
-            btn.autoAcceptTexture= btn:CreateTexture(nil, 'OVERLAY')
-            btn.autoAcceptTexture:SetSize(18,18)
-            btn.autoAcceptTexture:SetAtlas('common-icon-checkmark')
-            btn.autoAcceptTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 24, 0)
-        end
-        if btn.autoAcceptTexture then
-            btn.autoAcceptTexture:SetShown(autoAccept)
-        end
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
+
+
+    local function set_size(frame)
+        frame= frame:GetParent()
+        if WoWTools_FrameMixin:IsLocked(frame) then
+            return
+        end
+
+        local size, scale
+        local displayMode = frame:GetDisplayMode();
+        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+            frame.ResizeButton.minWidth= 290
+            frame.ResizeButton.minHeight= 115
+            size= self:Save().size['CommunitiesFrameMINIMIZED']
+            scale= self:Save().scale['CommunitiesFrameMINIMIZED']
+        else
+            size= self:Save().size['CommunitiesFrameNormal']
+            scale= self:Save().scale['CommunitiesFrameNormal']
+            frame.ResizeButton.minWidth= 562--814
+            frame.ResizeButton.minHeight= 228--426
+        end
+
+        if size then
+            frame:SetSize(size[1], size[2])
+        end
+        if scale then
+            frame:SetScale(scale)
+        end
+    end
+
+
+
+
+    --hooksecurefunc(ClubFinderCommunitiesCardMixin, 'Init', function(b)
+    local function Init_Update(frame)
+        if not frame:GetView() or WoWTools_FrameMixin:IsLocked(frame) then
+            return
+        end
+        for _, btn in pairs(frame:GetFrames() or {}) do
+            btn.Name:ClearAllPoints()
+            btn.Name:SetPoint('TOPLEFT', btn.LogoBorder, 'TOPRIGHT', 12,0)
+            btn.Description:ClearAllPoints()
+            btn.Description:SetPoint('LEFT', btn.LogoBorder, 'RIGHT', 12,0)
+            btn.Description:SetPoint('RIGHT', btn.RequestJoin, 'LEFT', -26,0)
+            btn.Background:SetPoint('RIGHT', -12,0)--移动背景
+            local cardInfo= btn.cardInfo-- or {}-- clubFinderGUID, isCrossFaction, clubId, 
+
+            if not btn.corssFactionTexture and cardInfo.isCrossFaction then--跨阵营
+                btn.corssFactionTexture= btn:CreateTexture(nil, 'OVERLAY')
+                btn.corssFactionTexture:SetSize(18,18)
+                btn.corssFactionTexture:SetAtlas('CrossedFlags')
+                btn.corssFactionTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 4, 0)
+            end
+            if btn.corssFactionTexture then
+                btn.corssFactionTexture:SetShown(true)--not cardInfo.isCrossFaction)
+            end
+            local autoAccept--自动，批准, 无效
+            local clubStatus= cardInfo.clubFinderGUID and C_ClubFinder.GetPlayerClubApplicationStatus(cardInfo.clubFinderGUID)
+            btn:SetAlpha(btn.RequestJoin:IsShown() and 1 or 0.3)
+            if clubStatus then
+                autoAccept= clubStatus== Enum.PlayerClubRequestStatus.AutoApproved--2
+            end
+            if not btn.autoAcceptTexture and autoAccept then
+                btn.autoAcceptTexture= btn:CreateTexture(nil, 'OVERLAY')
+                btn.autoAcceptTexture:SetSize(18,18)
+                btn.autoAcceptTexture:SetAtlas('common-icon-checkmark')
+                btn.autoAcceptTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 24, 0)
+            end
+            if btn.autoAcceptTexture then
+                btn.autoAcceptTexture:SetShown(autoAccept)
+            end
+        end
+    end
+
+
+
+
+
+
     local sub
 
 
@@ -424,15 +409,15 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     self:Setup(CommunitiesFrame, {
         setSize=true,
         scaleStoppedFunc= function()
-            Save().scale[CommunitiesMode_GetName()]= CommunitiesFrame:GetScale()
+            self:Save().scale[CommunitiesMode_GetName()]= CommunitiesFrame:GetScale()
 
         end,
         scaleRestFunc=function()
-            Save().scale['CommunitiesFrameMINIMIZED']= nil
-            Save().scale['CommunitiesFrameNormal']= nil
+            self:Save().scale['CommunitiesFrameMINIMIZED']= nil
+            self:Save().scale['CommunitiesFrameNormal']= nil
         end,
         sizeStopFunc=function()
-            Save().size[CommunitiesMode_GetName()]=  {CommunitiesFrame:GetSize()}
+            self:Save().size[CommunitiesMode_GetName()]=  {CommunitiesFrame:GetSize()}
         end,
         sizeRestFunc=function()
             if CommunitiesMode_IsMini() then
@@ -440,11 +425,11 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
             else
                 CommunitiesFrame:SetSize(814, 426)
             end
-            Save().size['CommunitiesFrameMINIMIZED']=nil
-            Save().size['CommunitiesFrameNormal']= nil
+            self:Save().size['CommunitiesFrameMINIMIZED']=nil
+            self:Save().size['CommunitiesFrameNormal']= nil
         end,
         sizeRestTooltipColorFunc=function()
-            if Save().size[CommunitiesMode_GetName()] then
+            if self:Save().size[CommunitiesMode_GetName()] then
                 return ''
             else
                 return '|cff9e9e9e'

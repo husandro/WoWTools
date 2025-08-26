@@ -1,7 +1,4 @@
 
-local function Save()
-    return WoWToolsSave['Plus_Move']
-end
 --职业，能量条
 --Blizzard_UnitFrame
 
@@ -42,7 +39,7 @@ local function Setup_Frame(name)
         alpha=0,
         click='LeftButton',
         restPointFunc=function(btn)
-            Save().scale[btn.name]=nil
+            WoWTools_MoveMixin:Save().scale[btn.name]=nil
             if frame:CanChangeAttribute() then
                 frame:SetScale(1)
                 WoWTools_Mixin:Call(PlayerFrame_UpdateArt, PlayerFrame)

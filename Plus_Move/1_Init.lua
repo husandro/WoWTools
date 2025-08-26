@@ -34,7 +34,6 @@ end
 
 
 local function Init()
-    WoWTools_MoveMixin:Init_WorldMapFrame()--世界地图
     WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
     WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
 

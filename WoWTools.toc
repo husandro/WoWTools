@@ -112,7 +112,6 @@ Plus_Move\3_Options.lua
 Plus_Move\Professions.lua
 Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
-Plus_Move\WorldMapFrame.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -297,7 +296,7 @@ Plus_WorldMap\Name_FlightMap.lua
 Plus_WorldMap\Name_WorldQuest.lua
 Plus_WorldMap\z_Plus_Menu.lua
 Plus_WorldMap\z_Plus_SearchBox.lua
-
+Plus_WorldMap\z_UI.lua
 
 ##单位框, 最好放在ChatButton_4_Invite前，Shift+点击=焦点
 Plus_Unit\0_UnitMixin.lua

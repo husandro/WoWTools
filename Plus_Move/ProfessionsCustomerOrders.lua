@@ -1,14 +1,4 @@
 --专业定制
-local function Save()
-    return WoWToolsSave['Plus_Move']
-end
-
-
-
-
-
-
-
 function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
     ProfessionsCustomerOrdersFrame.BrowseOrders:ClearAllPoints()
     ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('TOPLEFT')
@@ -43,11 +33,11 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
         end
         frame.ResizeButton.setSize=true
         local name= frame:GetName()
-        local scale= Save().scale[name]
+        local scale= self:Save().scale[name]
         if scale then
             frame:SetScale(scale)
         end
-        local size= Save().size[name]
+        local size= self:Save().size[name]
         if size then
             frame:SetSize(size[1], size[2])
         end
@@ -60,11 +50,11 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
         end
         frame.ResizeButton.setSize= false
         local name= frame:GetName()
-        local scale= Save().scale[name..'From']
+        local scale= self:Save().scale[name..'From']
         if scale then
             frame:SetScale(scale)
         end
-        if Save().size[name] then
+        if self:Save().size[name] then
             frame:SetSize(825, 568)
         end
     end)
@@ -78,15 +68,15 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
             local name= ProfessionsCustomerOrdersFrame:GetName()
             local scale= ProfessionsCustomerOrdersFrame:GetScale()
             if ProfessionsCustomerOrdersFrame.Form:IsShown() then
-                Save().scale[name..'From']= scale
+                self:Save().scale[name..'From']= scale
             else
-                Save().scale[name]= scale
+                self:Save().scale[name]= scale
             end
         end,
         scaleRestFunc=function()
             local name= ProfessionsCustomerOrdersFrame:GetName()
-            Save().scale[name..'From']= nil
-            Save().scale[name]= nil
+            self:Save().scale[name..'From']= nil
+            self:Save().scale[name]= nil
         end,
         sizeRestFunc=function()
             ProfessionsCustomerOrdersFrame:SetSize(825, 568)
