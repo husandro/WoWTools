@@ -158,6 +158,8 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     })
 
 
+    QuestMapDetailsScrollFrame:SetPoint('BOTTOM', 0, 72)
+
     QuestMapFrame.DetailsFrame:SetPoint('BOTTOM')
     QuestMapDetailsScrollFrame.Contents:SetPoint('BOTTOMLEFT')
 
@@ -166,6 +168,12 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
 
     WorldMapFrame.ScrollContainer.Child.TiledBackground:ClearAllPoints()
     WorldMapFrame.ScrollContainer.Child.TiledBackground:SetAllPoints()
+
+   -- QuestMapFrame.QuestsFrame.DetailsFrame:SetFrameLevel(WorldMapFrame.BorderFrame:GetFrameLevel()+1)
+    --QuestMapFrame.QuestsFrame.DetailsFrame:GetFrameStrata()
+    QuestMapFrame.QuestsFrame.DetailsFrame:GetFrameLevel(501)
+    QuestMapFrame.QuestsFrame.DetailsFrame:GetFrameStrata('HIGH')
+    
 
     QuestScrollFrame.Background:SetPoint('BOTTOM', 0, 123)
     QuestScrollFrame.Background:SetAllPoints()
