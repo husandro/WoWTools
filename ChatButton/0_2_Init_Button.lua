@@ -74,9 +74,7 @@ local function Init_Menu(self, root)
             return Save().borderAlpha or 1
         end, setValue=function(value)
             Save().borderAlpha=value
-            for _, btn in pairs(WoWTools_ChatMixin:Get_All_Buttons()) do
-                btn:set_border_alpha()
-            end
+            WoWTools_ChatMixin:Set_All_Buttons()
         end,
         name=WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY,
         minValue=0,
@@ -93,9 +91,7 @@ local function Init_Menu(self, root)
             return Save().pointX or 0
         end, setValue=function(value)
             Save().pointX=value
-            for _, btn in pairs(WoWTools_ChatMixin:Get_All_Buttons()) do
-                btn:set_point()
-            end
+            WoWTools_ChatMixin:Set_All_Buttons(true)
         end,
         name='X',
         minValue=-15,
@@ -111,9 +107,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().isVertical= not Save().isVertical and true or nil
         self:set_size()
-        for _, btn in pairs(WoWTools_ChatMixin:Get_All_Buttons()) do
-            btn:set_point()
-        end
+        WoWTools_ChatMixin:Set_All_Buttons(true)
     end)
 
 --菜单位置
@@ -132,9 +126,7 @@ local function Init_Menu(self, root)
             self:CloseMenu()
             Save().anchorMenuIndex= data.index
             self:set_anchor()
-            for _, btn in pairs(WoWTools_ChatMixin:Get_All_Buttons()) do
-                btn:set_anchor()
-            end
+            WoWTools_ChatMixin:Set_All_Buttons()
             self:OpenMenu()
         end, {index=index, p=tab[1], p2=tab[2]})
         sub2:SetTooltip(function(tooltip, desc)

@@ -264,13 +264,12 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     local function Set_SetUninteractable(chatFrame)
         local name= chatFrame:GetName()
         local isLocked= chatFrame.isUninteractable
-        --print(name, isLocked)
         if isLocked then
             chatFrame.lockedTexture= chatFrame:CreateTexture('WoWToolsIsLocked'..name, 'BORDER')
             chatFrame.lockedTexture:SetPoint('RIGHT', _G[name..'Tab'].Text, 'LEFT', 2,-2)
-            chatFrame.lockedTexture:SetSize(8,14)
+            chatFrame.lockedTexture:SetSize(10,14)
             chatFrame.lockedTexture:SetAtlas('Garr_LockedBuilding')
-            chatFrame.lockedTexture:SetAlpha(0.5)
+            --chatFrame.lockedTexture:SetAlpha(0.5)
         end
         if chatFrame.lockedTexture then
             chatFrame.lockedTexture:SetShown(isLocked)

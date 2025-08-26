@@ -120,12 +120,24 @@ function WoWTools_ChatMixin:Init()
         Save().isShowBackground= nil
 
         WoWTools_TextureMixin:CreateBG(ChatButton, {isColor=true})
+        ChatButton.Background:SetColorTexture(0,0,0)
 
+        function ChatButton:set_backgroud(btn)
+            btn= btn or _G[Buttons[#Buttons]]
+            self.Background:ClearAllPoints()
 
-        function ChatButton:set_backgroud()
-            self.Background:SetPoint('BOTTOMLEFT', Buttons[1])
-            self.Background:SetPoint('TOPRIGHT', Buttons[#Buttons])
-            self.Background:SetColorTexture(0,0,0, Save().bgAlpha or 0.5)
+            self.Background:SetPoint('BOTTOMLEFT', Buttons[1], -2, -2)
+            local w= btn:GetWidth()+4
+            if Save().isVertical then
+                self.Background:SetPoint('TOP', btn, 0, 2)
+                self.Background:SetWidth(w)
+            else
+                self.Background:SetPoint('LEFT', btn, 2, 0)
+                self.Background:SetHeight(w)
+            end
+            --self.Background:SetPoint('TOPRIGHT', Buttons[#Buttons])
+            self.Background:SetAlpha(Save().bgAlpha or 0.5)
+            
             --self.Background:SetAlpha(Save().bgAlpha or 0.5)
         end
 
@@ -221,7 +233,7 @@ function WoWTools_ChatMixin:CreateButton(name, addName)
 
     table.insert(Buttons, btn)
 
-    ChatButton:set_backgroud()
+    ChatButton:set_backgroud(btn)
 
     return btn
 end
@@ -246,8 +258,15 @@ function WoWTools_ChatMixin:GetAllAddList()
     return AddList
 end
 
-function WoWTools_ChatMixin:Get_All_Buttons()
-    return Buttons
+function WoWTools_ChatMixin:Set_All_Buttons(isPoint)
+    for _, name in pairs(Buttons) do
+        if isPoint then
+            _G[name]:set_point()
+        else
+            _G[name]:set_border_alpha()
+            _G[name]:set_anchor()
+        end
+    end
 end
 
 function WoWTools_ChatMixin:Open_SettingsPanel(root, name)
