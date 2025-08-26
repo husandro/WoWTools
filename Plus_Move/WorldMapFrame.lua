@@ -51,9 +51,7 @@ local function Init()
         if Save().scale[self:GetName()] then
             self:SetScale(1)
         end
-        if self.ResizeButton then
-            self.ResizeButton:SetShown(false)
-        end
+        self.ResizeButton:SetShown(false)
     end)
 
     WoWTools_MoveMixin:Setup(WorldMapFrame, {

@@ -120,12 +120,13 @@ for specID, classID in pairs(tab) do
         for _, sex in pairs(Enum.UnitSex) do
             local name, _, icon, role= select(2, GetSpecializationInfoByID(specID, sex))
             if name and icon then
-                classTabs[name]=
+                local colorText=
                     '|T'..icon..':0|t'
                     ..'|c'..hex
                     ..name
                     ..'|r'
                     ..(role and _G['INLINE_'..role..'_ICON'] or '')
+                classTabs[name..(specID==251 and '251' or '')]= colorText--251 DEATHKNIGHT 冰霜
             end
         end
     end
@@ -133,13 +134,19 @@ end
 
 
     hooksecurefunc(MenuUtil, 'SetElementText', function(desc, text)
-        local colorText= classTabs[text]
-        if not colorText then
-            return
+        if text then
+            local colorText
+            if type(desc.data)=='table' and desc.data.specID==251 then
+                colorText= classTabs[text..'251']
+            else
+                colorText= classTabs[text]
+            end
+            if colorText then
+            desc:AddInitializer(function(btn)
+                    btn.fontString:SetText(colorText)
+                end)
+            end
         end
-        desc:AddInitializer(function(btn)
-            btn.fontString:SetText(colorText)
-        end)
     end)
 
 
