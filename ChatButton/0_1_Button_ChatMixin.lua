@@ -38,7 +38,7 @@ local function Set_Button_Script(btn)
 
 
     function btn:set_state()
-        self:SetButtonState(self:IsMenuOpen() and 'PUSHED' or 'NORMAL')
+        self:SetButtonState(self:IsMouseOver() and 'PUSHED' or 'NORMAL')--self:IsMenuOpen()
     end
 
     btn:SetScript('OnLeave', function(self)
