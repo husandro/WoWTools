@@ -231,6 +231,15 @@ end
 --初始
 --####
 local function Init()
+
+    --[[for _, frameName in pairs(CHAT_FRAMES) do
+		local frame = _G[frameName];
+        --frame.FontStringContainer:SetPoint('BOTTOMRIGHT', 0, 23)
+        --frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', ChatFrame1.EditModeResizeButton, 'TOPRIGHT', -2, -2+23)
+        --frame.scrollOffset= 23
+        ChatFrame1:SetBottomOffset(ChatFrame1:GetBottomOffset()+23)
+    end]]
+
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
     WoWTools_TextureMixin:SetEditBox(SELECTED_DOCK_FRAME.editBox, {alpha=1})
 

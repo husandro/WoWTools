@@ -6115,7 +6115,9 @@
         "DropdownSelectionTextMixin",
         "MenuTemplates",
         "WORLD_MAP_FILTER_COUNTER_TOOLTIP",
-        "WorldMapTrackingOptionsFilterCounterMixin"
+        "WorldMapTrackingOptionsFilterCounterMixin",
+        "ChatFrame_UpdateChatFrames",
+        "CHAT_FRAMES"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
