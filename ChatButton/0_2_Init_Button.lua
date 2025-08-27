@@ -244,14 +244,12 @@ local function Init()
         self:ClearAllPoints()
         if Save().Point then
             self:SetPoint(Save().Point[1], UIParent, Save().Point[3], Save().Point[4], Save().Point[5])
-           
         else
             self:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
             self:SetParent(GeneralDockManager)
         end
-        
-        self:SetParent(Save().setParent and GeneralDockManager or UIParent)
 
+        self:SetParent(Save().setParent and GeneralDockManager or UIParent)
     end
 
     function ChatButton:set_tooltip()

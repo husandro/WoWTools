@@ -132,17 +132,17 @@ for specID, classID in pairs(tab) do
     end
 end
 
-
+--Blizzard_Menu/MenuUtil.lua
     hooksecurefunc(MenuUtil, 'SetElementText', function(desc, text)
         if text then
             local colorText
-            if type(desc.data)=='table' and desc.data.specID==251 then
-                colorText= classTabs[text..'251']
+            if type(desc.data)=='table' and (desc.data.specID==251 or desc.data.specID==64) then
+                colorText= classTabs[text..desc.data.specID]
             else
                 colorText= classTabs[text]
             end
             if colorText then
-            desc:AddInitializer(function(btn)
+                desc:AddInitializer(function(btn)
                     btn.fontString:SetText(colorText)
                 end)
             end
@@ -150,6 +150,7 @@ end
     end)
 
 
+    
     tab=nil
     Init=function()end
 end
