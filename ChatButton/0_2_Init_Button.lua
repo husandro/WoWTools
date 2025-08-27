@@ -100,7 +100,7 @@ local function Init_Menu(self, root)
         maxValue=15,
         step=1,
     })
-    
+
     sub:CreateDivider()
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '重置' or RESET,
@@ -110,6 +110,24 @@ local function Init_Menu(self, root)
         WoWTools_ChatMixin:Set_All_Buttons()
     end)
 
+--显示背景
+    sub=WoWTools_MenuMixin:BgAplha(root, function()
+        return Save().bgAlpha or 0.5
+    end, function(value)
+        Save().bgAlpha=value
+        self:set_backgroud()
+    end)
+
+--职业颜色
+    sub:CreateSpacer()
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '职业颜色' or CLASS_COLORS,
+    function()
+        return Save().bgUseClassColor
+    end, function()
+        Save().bgUseClassColor= not Save().bgUseClassColor and true or nil
+        self:set_backgroud()
+    end)
 
 
 --方向, 竖
@@ -149,15 +167,8 @@ local function Init_Menu(self, root)
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
 
 
---显示背景
-    sub=WoWTools_MenuMixin:BgAplha(root, function()
-        return Save().bgAlpha or 0.5
-    end, function(value)
-        Save().bgAlpha=value
-        self:set_backgroud()
-    end)
 
-    
+
 
 --移过图标
     sub=root:CreateCheckbox(

@@ -511,7 +511,7 @@ local function Init_Options()
     useClassColorCheck.text:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
     useClassColorCheck:SetChecked(Save().usrClassColor)
     useClassColorCheck:SetScript('OnMouseDown', function()
-        Save().usrClassColor= not Save().usrClassColor and true or nil
+        Save().usrClassColor= not Save().usrClassColor and true or false
         Save().notUseColor=nil
         notUseColorCheck:SetChecked(false)
         Set_Color()

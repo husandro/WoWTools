@@ -120,15 +120,18 @@ function WoWTools_ChatMixin:Init()
 
 
     ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
-    ChatButton.Background:SetColorTexture(0,0,0)
+   
 
     function ChatButton:set_backgroud()
         local btn1= _G[Buttons[1]]
         if not btn1 then
+            self.Background:SetAlpha(0)
             return
         end
 
         local btn2= _G[Buttons[#Buttons]]
+
+
 
         self.Background:ClearAllPoints()
 
@@ -143,7 +146,11 @@ function WoWTools_ChatMixin:Init()
             self.Background:SetHeight(w+1)
         end
 
-        self.Background:SetAlpha(Save().bgAlpha or 0.5)
+        local r,g,b,a= 0, 0, 0, Save().bgAlpha or 0.5
+        if Save().bgUseClassColor then
+            r,g,b= WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b
+        end
+        self.Background:SetColorTexture(r,g,b,a)
     end
 
     function ChatButton:set_menu_anchor()
