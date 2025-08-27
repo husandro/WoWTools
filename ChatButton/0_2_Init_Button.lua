@@ -167,6 +167,17 @@ local function Init_Menu(self, root)
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
 
 
+    sub= root:CreateCheckbox(
+        'UIParent',
+    function()
+        return not Save().setParent
+    end, function ()
+        Save().setParent= not Save().setParent and true or nil
+        self:settings()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('SetParent '..'|cnGREEN_FONT_COLOR:'..self:GetParent():GetName())
+    end)
 
 
 
@@ -190,7 +201,6 @@ local function Init_Menu(self, root)
     sub= WoWTools_ChatMixin:Open_SettingsPanel(root, nil)
 
     --重置位置
-    --root:CreateDivider()
     WoWTools_MenuMixin:RestPoint(self, sub, Save().Point, function()
         Save().Point=nil
         self:settings()
@@ -234,9 +244,14 @@ local function Init()
         self:ClearAllPoints()
         if Save().Point then
             self:SetPoint(Save().Point[1], UIParent, Save().Point[3], Save().Point[4], Save().Point[5])
+           
         else
             self:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
+            self:SetParent(GeneralDockManager)
         end
+        
+        self:SetParent(Save().setParent and GeneralDockManager or UIParent)
+
     end
 
     function ChatButton:set_tooltip()
