@@ -47,7 +47,7 @@ local function Init_Menu(self, root)
         return Save().scale
     end, function(value)
         Save().scale= value
-        self:set_scale()
+        self:settings()
     end)
 
 --FrameStrata
@@ -55,8 +55,10 @@ local function Init_Menu(self, root)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().strata= data
-        self:set_strata()
-        print(WoWTools_DataMixin.Icon.icon2..addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
+        self:settings()
+        print(WoWTools_DataMixin.Icon.icon2..addName,
+            'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")'
+        )
         return MenuResponse.Refresh
     end)
 
@@ -71,7 +73,7 @@ local function Init_Menu(self, root)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return Save().borderAlpha or 1
+            return Save().borderAlpha or 0.3
         end, setValue=function(value)
             Save().borderAlpha=value
             WoWTools_ChatMixin:Set_All_Buttons()
@@ -91,13 +93,22 @@ local function Init_Menu(self, root)
             return Save().pointX or 0
         end, setValue=function(value)
             Save().pointX=value
-            WoWTools_ChatMixin:Set_All_Buttons(true)
+            WoWTools_ChatMixin:Set_All_Buttons()
         end,
         name='X',
         minValue=-15,
         maxValue=15,
         step=1,
     })
+    
+    sub:CreateDivider()
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '重置' or RESET,
+    function()
+         Save().pointX=0
+         Save().borderAlpha=0.3
+        WoWTools_ChatMixin:Set_All_Buttons()
+    end)
 
 
 
@@ -106,8 +117,8 @@ local function Init_Menu(self, root)
         return Save().isVertical
     end, function()
         Save().isVertical= not Save().isVertical and true or nil
-        self:set_size()
-        WoWTools_ChatMixin:Set_All_Buttons(true)
+        self:settings()
+        WoWTools_ChatMixin:Set_All_Buttons()
     end)
 
 --菜单位置
@@ -121,14 +132,14 @@ local function Init_Menu(self, root)
         sub2=sub:CreateCheckbox(
             textTab[index],
         function(data)
-            return Save().anchorMenuIndex==data.index
+            return (Save().anchorMenuIndex or 1)==data.index
+
         end, function(data)
-            self:CloseMenu()
             Save().anchorMenuIndex= data.index
-            self:set_anchor()
             WoWTools_ChatMixin:Set_All_Buttons()
-            self:OpenMenu()
+
         end, {index=index, p=tab[1], p2=tab[2]})
+
         sub2:SetTooltip(function(tooltip, desc)
             tooltip:AddDoubleLine(desc.data.p, desc.data.p2)
         end)
@@ -139,14 +150,20 @@ local function Init_Menu(self, root)
 
 
 --显示背景
-    WoWTools_MenuMixin:BgAplha(root, function()
+    sub=WoWTools_MenuMixin:BgAplha(root, function()
         return Save().bgAlpha or 0.5
     end, function(value)
         Save().bgAlpha=value
         self:set_backgroud()
     end)
 
-    sub=root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+    
+
+--移过图标
+    sub=root:CreateCheckbox(
+        '|A:newplayertutorial-drag-cursor:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)),
+    function()
         return Save().isEnterShowMenu
     end, function()
         Save().isEnterShowMenu = not Save().isEnterShowMenu and true or nil
@@ -154,6 +171,7 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function (tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL))
     end)
+
 
 
 --打开选项界面
@@ -164,7 +182,7 @@ local function Init_Menu(self, root)
     --root:CreateDivider()
     WoWTools_MenuMixin:RestPoint(self, sub, Save().Point, function()
         Save().Point=nil
-        self:set_point()
+        self:settings()
         return MenuResponse.Open
     end)
 end
@@ -192,22 +210,16 @@ local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
     WoWTools_TextureMixin:SetEditBox(SELECTED_DOCK_FRAME.editBox, {alpha=1})
 
-    function ChatButton:set_size()
+    function ChatButton:settings()
         if Save().isVertical then--方向, 竖
             self:SetSize(30,10)
         else
             self:SetSize(10,30)
         end
-    end
-
-    function ChatButton:set_strata()
+        self:set_menu_anchor()
         self:SetFrameStrata(Save().strata or 'MEDIUM')
-    end
-
-    function ChatButton:set_scale()
         self:SetScale(Save().scale or 1)
-    end
-    function ChatButton:set_point()
+
         self:ClearAllPoints()
         if Save().Point then
             self:SetPoint(Save().Point[1], UIParent, Save().Point[3], Save().Point[4], Save().Point[5])
@@ -215,12 +227,13 @@ local function Init()
             self:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
         end
     end
+
     function ChatButton:set_tooltip()
-       -- GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..addName)
-       -- GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        --GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
-        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        GameTooltip:SetText(
+            (WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
+            ..' Alt+'
+            ..WoWTools_DataMixin.Icon.right
+        )
         GameTooltip:Show()
     end
 
@@ -228,7 +241,7 @@ local function Init()
     ChatButton:SetMovable(true)
     ChatButton:SetClampedToScreen(true)
 
-    ChatButton:SetScript("OnDragStart", function(self,d )
+    ChatButton:SetScript("OnDragStart", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             self:StartMoving()
         end
@@ -249,7 +262,9 @@ local function Init()
         end
     end)
 
-    ChatButton:SetScript("OnMouseUp", ResetCursor)
+    ChatButton:SetScript("OnMouseUp", function()
+        ResetCursor()
+    end)
     ChatButton:HookScript("OnMouseDown", function(self, d)
         if IsAltKeyDown() and d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
@@ -257,13 +272,10 @@ local function Init()
         end
     end)
 
-
-
-    ChatButton:set_strata()
-    ChatButton:set_point()
-    ChatButton:set_scale()
-    ChatButton:set_size()
+    ChatButton:settings()
     ChatButton:SetupMenu(Init_Menu)
+
+    Init=function()end
 end
 
 
@@ -289,8 +301,6 @@ end
 
 
 local function Init_Panel()
-
-
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
     for _, data in pairs (WoWTools_ChatMixin:GetAllAddList()) do
@@ -305,6 +315,8 @@ local function Init_Panel()
             end
         })
     end
+
+    Init_Panel=function()end
 end
 
 
@@ -319,8 +331,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
             WoWToolsSave['ChatButton']= WoWToolsSave['ChatButton'] or P_Save
             Save().disabledADD= Save().disabledADD or {}
-            Save().borderAlpha= Save().borderAlpha or 0.3
-            Save().anchorMenuIndex= Save().anchorMenuIndex or 1
 
             ChatButton= WoWTools_ChatMixin:Init()
 
@@ -341,15 +351,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..addName,
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                    )
                 end,
                 buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
                     Save().Point=nil
                     if ChatButton then
-                        ChatButton:set_point()
+                        ChatButton:settings()
                     end
-                    print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..addName,
+                        WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+                    )
                 end,
                 tooltip= addName,
                 layout= Layout,

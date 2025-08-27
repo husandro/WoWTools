@@ -24,9 +24,15 @@ local AnchorTooltip={
 }
 
 local function Set_Button_Script(btn)
+    function btn:set_state()
+        self:SetButtonState(self:IsMouseOver() and 'PUSHED' or 'NORMAL')--self:IsMenuOpen()
+    end
 
+    function btn:set_owner()
+        GameTooltip:SetOwner(self, AnchorTooltip[Save().anchorMenuIndex or 1])-- "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+    end
 
-    btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     function btn:HandlesGlobalMouseEvent(buttonName, event)
         return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
     end
@@ -39,15 +45,12 @@ local function Set_Button_Script(btn)
         self:SetButtonState('NORMAL')
     end)
 
-
-    function btn:set_state()
-        self:SetButtonState(self:IsMouseOver() and 'PUSHED' or 'NORMAL')--self:IsMenuOpen()
-    end
+    btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
 
     btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         ResetCursor()
-        if not self.IsMainButton then
+        if self.border then
             self:GetParent():SetButtonState('NORMAL')
         end
         if self.set_OnLeave then
@@ -66,7 +69,7 @@ local function Set_Button_Script(btn)
             self:set_OnEnter()
         end
 
-        if not self.IsMainButton then
+        if self.border then
             local p= self:GetParent()
             p:SetButtonState('PUSHED')
             if Save().isEnterShowMenu and not p:IsMenuOpen() and not self:IsMenuOpen() then
@@ -87,19 +90,6 @@ local function Set_Button_Script(btn)
             end
         end
     end)
-
---菜单，Tooltip, 位置
-    function btn:set_anchor()
-        local index= Save().anchorMenuIndex or 1
-        self.menuAnchor= AnchorUtil.CreateAnchor(AnchorMenu[index][1], self, AnchorMenu[index][2])
-    end
-
-    function btn:set_owner()
-        GameTooltip:SetOwner(self, AnchorTooltip[Save().anchorMenuIndex or 1])-- "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-    end
-
-    btn:set_anchor()
 end
 
 
@@ -116,12 +106,17 @@ function WoWTools_ChatMixin:Init()
         return
     end
 
+
     ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {
         name='WoWToolsChatButtonMainButton',
         icon='hide',
         frameType='DropdownButton',
     })
 
+    --[[ChatButton.texture= ChatButton:CreateTexture(nil, 'BORDER')
+    ChatButton.texture:SetPoint('CENTER')
+    ChatButton.texture:SetSize(10,10)
+    ChatButton.texture:SetTexture(WoWTools_DataMixin.Icon.icon)]]
 
 
     ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
@@ -141,18 +136,21 @@ function WoWTools_ChatMixin:Init()
 
         local w= 30+ 4
         if Save().isVertical then
-            self.Background:SetPoint('TOP', btn2, 0, 2)
+            self.Background:SetPoint('TOPLEFT', btn2, -2, 2)
             self.Background:SetWidth(w)
         else
-            print('isVertical', btn1:GetName(), btn2:GetName())
-            self.Background:SetPoint('LEFT', btn2, 2, 0)
-            self.Background:SetHeight(w)
+            self.Background:SetPoint('BOTTOMRIGHT', btn2, 2, -2)
+            self.Background:SetHeight(w+1)
         end
 
         self.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
 
-    ChatButton.IsMainButton=true
+    function ChatButton:set_menu_anchor()
+        local point= AnchorMenu[Save().anchorMenuIndex or 1]
+        self:SetMenuAnchor(AnchorUtil.CreateAnchor(point[1], self, point[2]))
+    end
+
     Set_Button_Script(ChatButton)
 
     return ChatButton
@@ -191,30 +189,30 @@ local function Set_Button(btn)
 
     btn:SetSize(30, 30)
 
-    function btn:set_border_alpha()
-        self.border:SetAlpha(Save().borderAlpha or 1)
-    end
-
-    function btn:set_point()
+    function btn:SetAllSettings()
+        
         local index= btn:GetID()
-
+        local s= index==1 and 0 or Save().pointX or 0
+        
+        --print(index,  _G[Buttons[index-1]] )
         self:ClearAllPoints()
-
-        local size= index==1 and 0 or Save().pointX or 0
-
+        
         if Save().isVertical then--方向, 竖
-            self:SetPoint('BOTTOM', _G[Buttons[index-1]] or ChatButton, 'TOP', 0, size)
+            self:SetPoint('BOTTOM', _G[Buttons[index-1]] or ChatButton, 'TOP', 0, s)
         else
-            self:SetPoint('LEFT', _G[Buttons[index-1]] or ChatButton, 'RIGHT', size, 0)
+            self:SetPoint('LEFT', _G[Buttons[index-1]] or ChatButton, 'RIGHT', s, 0)
         end
+
+        local point= AnchorMenu[Save().anchorMenuIndex or 1]
+        self:SetMenuAnchor(AnchorUtil.CreateAnchor(point[1], self, point[2]))
+
+        self.border:SetAlpha(Save().borderAlpha or 0.3)
     end
 
 
 --菜单，Tooltip, 位置
     Set_Button_Script(btn)
-
-    btn:set_border_alpha()
-    btn:set_point()
+    btn:SetAllSettings()
 end
 
 
@@ -240,8 +238,9 @@ function WoWTools_ChatMixin:CreateButton(name, addName)
         return
     end
 
-    local btn= CreateFrame("DropdownButton", 'WoWToolsChatButton_'..name, ChatButton, nil, #Buttons+1)
-    table.insert(Buttons, 'WoWToolsChatButton_'..name)
+    local btn= CreateFrame("DropdownButton", 'WoWToolsChatMenuButton_'..name, ChatButton, nil, #Buttons+1)
+
+    table.insert(Buttons, 'WoWToolsChatMenuButton_'..name)
 
     Set_Button(btn)
 
@@ -270,15 +269,12 @@ function WoWTools_ChatMixin:GetAllAddList()
     return AddList
 end
 
-function WoWTools_ChatMixin:Set_All_Buttons(isPoint)
+function WoWTools_ChatMixin:Set_All_Buttons()
     for _, name in pairs(Buttons) do
-        if isPoint then
-            _G[name]:set_point()
-        else
-            _G[name]:set_border_alpha()
-            _G[name]:set_anchor()
-        end
+        _G[name]:SetAllSettings()
     end
+    ChatButton:set_backgroud()
+    ChatButton:set_menu_anchor()
 end
 
 function WoWTools_ChatMixin:Open_SettingsPanel(root, name)
