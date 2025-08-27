@@ -2,9 +2,12 @@ local AddList={}--插件表，所有，选项用 {name=name, tooltip=tooltip})
 local Buttons={}--存放所有, 按钮 {btn1, btn2,}
 local ChatButton
 
+
+
 local function Save()
     return WoWToolsSave['ChatButton'] or {}
 end
+
 
 local AnchorMenu={--菜单位置
     {"TOPLEFT",  "BOTTOMLEFT"},--下
@@ -119,22 +122,31 @@ function WoWTools_ChatMixin:Init()
         ChatButton.IsMainButton=true
         Save().isShowBackground= nil
 
-        WoWTools_TextureMixin:CreateBG(ChatButton, {isColor=true})
+        --WoWTools_TextureMixin:CreateBG(ChatButton, {isColor=true})
+        ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
         ChatButton.Background:SetColorTexture(0,0,0)
 
-        function ChatButton:set_backgroud(btn)
-            btn= btn or _G[Buttons[#Buttons]]
+        function ChatButton:set_backgroud()
+            local btn1= _G[Buttons[1]]
+            if not btn1 then
+                return
+            end
+
+            local btn2= _G[Buttons[#Buttons]]
+
             self.Background:ClearAllPoints()
 
-            self.Background:SetPoint('BOTTOMLEFT', _G[Buttons[1]], -2, -2)
-            local w= btn:GetWidth()+4
+            self.Background:SetPoint('BOTTOMLEFT', btn1, -2, -2)
+
+            local w= 30+4
             if Save().isVertical then
-                self.Background:SetPoint('TOP', btn, 0, 2)
+                self.Background:SetPoint('TOP', btn2, 0, 2)
                 self.Background:SetWidth(w)
             else
-                self.Background:SetPoint('LEFT', btn, 2, 0)
+                self.Background:SetPoint('LEFT', btn2, 2, 0)
                 self.Background:SetHeight(w)
             end
+
             self.Background:SetAlpha(Save().bgAlpha or 0.5)
         end
 
@@ -185,8 +197,11 @@ local function Set_Button(btn)
 
     function btn:set_point()
         local index= btn:GetID()
+
         self:ClearAllPoints()
+
         local size= index==1 and 0 or Save().pointX or 0
+
         if Save().isVertical then--方向, 竖
             self:SetPoint('BOTTOM', _G[Buttons[index-1]] or ChatButton, 'TOP', 0, size)
         else
@@ -216,9 +231,13 @@ end
 
 
 function WoWTools_ChatMixin:CreateButton(name, addName)
+    if not ChatButton then
+        return
+    end
+
     table.insert(AddList, {name=name, tooltip=addName})--选项用
 
-    if not ChatButton or Save().disabledADD[name] then
+    if Save().disabledADD[name] then
         return
     end
 
@@ -226,11 +245,9 @@ function WoWTools_ChatMixin:CreateButton(name, addName)
 
     Set_Button(btn)
 
+    ChatButton:set_backgroud()
 
-
-    table.insert(Buttons, _G['WoWToolsChatButton_'..name])
-
-    ChatButton:set_backgroud(btn)
+    table.insert(Buttons, 'WoWToolsChatButton_'..name)
 
     return btn
 end
