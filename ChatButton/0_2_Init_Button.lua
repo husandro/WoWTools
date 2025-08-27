@@ -171,9 +171,12 @@ local function Init_Menu(self, root)
         'UIParent',
     function()
         return not Save().setParent
-    end, function ()
+    end, function()
         Save().setParent= not Save().setParent and true or nil
         self:settings()
+        MenuUtil.ShowTooltip(self, function(tooltip)
+            tooltip:AddLine('SetParent '..'|cnGREEN_FONT_COLOR:'..self:GetParent():GetName())
+        end)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('SetParent '..'|cnGREEN_FONT_COLOR:'..self:GetParent():GetName())
