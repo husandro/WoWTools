@@ -126,7 +126,7 @@ function WoWTools_ChatMixin:Init()
             btn= btn or _G[Buttons[#Buttons]]
             self.Background:ClearAllPoints()
 
-            self.Background:SetPoint('BOTTOMLEFT', Buttons[1], -2, -2)
+            self.Background:SetPoint('BOTTOMLEFT', _G[Buttons[1]], -2, -2)
             local w= btn:GetWidth()+4
             if Save().isVertical then
                 self.Background:SetPoint('TOP', btn, 0, 2)
@@ -135,10 +135,7 @@ function WoWTools_ChatMixin:Init()
                 self.Background:SetPoint('LEFT', btn, 2, 0)
                 self.Background:SetHeight(w)
             end
-            --self.Background:SetPoint('TOPRIGHT', Buttons[#Buttons])
             self.Background:SetAlpha(Save().bgAlpha or 0.5)
-            
-            --self.Background:SetAlpha(Save().bgAlpha or 0.5)
         end
 
         Set_Button_Script(ChatButton)
@@ -191,9 +188,9 @@ local function Set_Button(btn)
         self:ClearAllPoints()
         local size= index==1 and 0 or Save().pointX or 0
         if Save().isVertical then--方向, 竖
-            self:SetPoint('BOTTOM', Buttons[index-1] or ChatButton, 'TOP', 0, size)
+            self:SetPoint('BOTTOM', _G[Buttons[index-1]] or ChatButton, 'TOP', 0, size)
         else
-            self:SetPoint('LEFT', Buttons[index-1] or ChatButton, 'RIGHT', size, 0)
+            self:SetPoint('LEFT', _G[Buttons[index-1]] or ChatButton, 'RIGHT', size, 0)
         end
     end
 
@@ -231,7 +228,7 @@ function WoWTools_ChatMixin:CreateButton(name, addName)
 
 
 
-    table.insert(Buttons, btn)
+    table.insert(Buttons, _G['WoWToolsChatButton_'..name])
 
     ChatButton:set_backgroud(btn)
 
