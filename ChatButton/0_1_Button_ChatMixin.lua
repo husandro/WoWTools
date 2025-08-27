@@ -112,50 +112,50 @@ end
 
 
 function WoWTools_ChatMixin:Init()
-    if not Save().disabled then
-        ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {
-            name='WoWToolsChatButtonMainButton',
-            icon='hide',
-            frameType='DropdownButton',
-        })
+    if Save().disabled then
+        return
+    end
 
-        ChatButton.IsMainButton=true
-        Save().isShowBackground= nil
+    ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {
+        name='WoWToolsChatButtonMainButton',
+        icon='hide',
+        frameType='DropdownButton',
+    })
 
-        --WoWTools_TextureMixin:CreateBG(ChatButton, {isColor=true})
-        ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
-        ChatButton.Background:SetColorTexture(0,0,0)
 
-        function ChatButton:set_backgroud()
-            local btn1= _G[Buttons[1]]
-            if not btn1 then
-                return
-            end
 
-            local btn2= _G[Buttons[#Buttons]]
+    ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
+    ChatButton.Background:SetColorTexture(0,0,0)
 
-            self.Background:ClearAllPoints()
-
-            self.Background:SetPoint('BOTTOMLEFT', btn1, -2, -2)
-
-            local w= 30+4
-            if Save().isVertical then
-                self.Background:SetPoint('TOP', btn2, 0, 2)
-                self.Background:SetWidth(w)
-            else
-                self.Background:SetPoint('LEFT', btn2, 2, 0)
-                self.Background:SetHeight(w)
-            end
-
-            self.Background:SetAlpha(Save().bgAlpha or 0.5)
+    function ChatButton:set_backgroud()
+        local btn1= _G[Buttons[1]]
+        if not btn1 then
+            return
         end
 
-        Set_Button_Script(ChatButton)
+        local btn2= _G[Buttons[#Buttons]]
 
-        self.ChatButton= ChatButton
+        self.Background:ClearAllPoints()
 
-        return ChatButton
+        self.Background:SetPoint('BOTTOMLEFT', btn1, -2, -2)
+
+        local w= 30+ 4
+        if Save().isVertical then
+            self.Background:SetPoint('TOP', btn2, 0, 2)
+            self.Background:SetWidth(w)
+        else
+            print('isVertical', btn1:GetName(), btn2:GetName())
+            self.Background:SetPoint('LEFT', btn2, 2, 0)
+            self.Background:SetHeight(w)
+        end
+
+        self.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
+
+    ChatButton.IsMainButton=true
+    Set_Button_Script(ChatButton)
+
+    return ChatButton
 end
 
 
@@ -213,7 +213,6 @@ local function Set_Button(btn)
 --菜单，Tooltip, 位置
     Set_Button_Script(btn)
 
-
     btn:set_border_alpha()
     btn:set_point()
 end
@@ -242,12 +241,11 @@ function WoWTools_ChatMixin:CreateButton(name, addName)
     end
 
     local btn= CreateFrame("DropdownButton", 'WoWToolsChatButton_'..name, ChatButton, nil, #Buttons+1)
+    table.insert(Buttons, 'WoWToolsChatButton_'..name)
 
     Set_Button(btn)
 
     ChatButton:set_backgroud()
-
-    table.insert(Buttons, 'WoWToolsChatButton_'..name)
 
     return btn
 end
