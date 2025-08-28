@@ -6119,7 +6119,8 @@
         "ChatFrame_UpdateChatFrames",
         "CHAT_FRAMES",
         "IGNORE_DIALOG",
-        "UIChildWindows"
+        "UIChildWindows",
+        "KeybindListener"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
