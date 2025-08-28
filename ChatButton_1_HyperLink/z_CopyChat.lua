@@ -111,6 +111,7 @@ local function Get_Text(btn)
 			currentMsg = RGBTableToColorCode(ChatTypeInfo.GUILD) .. currentMsg
 		end
 
+		--source
 		table.insert(tab, currentMsg)
 	end
 
@@ -131,14 +132,24 @@ local function Init()
 			return
 		end
 
-		frame.CopyChatButton=WoWTools_ButtonMixin:Cbtn(frame, {
-			atlas= 'transmog-icon-chat',
+		local btn=WoWTools_ButtonMixin:Cbtn(frame, {
+			atlas= 'poi-workorders',
 			name='WoWToolsChatCopyButton'..index,
+			addTexture=true,
 			szie=32,
 		})
-		frame.CopyChatButton.index= index
-		frame.CopyChatButton:SetPoint('BOTTOM', ChatFrameMenuButton, 'TOP', 0, 32)
-		frame.CopyChatButton:SetScript('OnClick', function(b)
+
+		btn:SetNormalTexture('chatframe-button-up')
+		btn:SetPushedAtlas('chatframe-button-down')
+		btn:SetHighlightAtlas('chatframe-button-highlight')
+		WoWTools_TextureMixin:SetButton(btn)
+		btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 8, -8)
+        btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -8, 8)
+
+		btn.index= index
+
+		btn:SetPoint('BOTTOM', ChatFrameMenuButton, 'TOP', 0, 32)
+		btn:SetScript('OnClick', function(b)
 			Get_Text(b)
 		end)
 	end
