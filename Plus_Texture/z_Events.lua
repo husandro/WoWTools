@@ -997,7 +997,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
        on_show(frame)
     end)
 
-    self:Init_BGMenu_Frame(CooldownViewerSettings, {isNewButton=true})
+    self:Init_BGMenu_Frame(CooldownViewerSettings)
 end
 
 
