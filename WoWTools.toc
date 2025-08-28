@@ -594,6 +594,8 @@ ChatButton_1_HyperLink\z_Event_Sound.lua
 ChatButton_1_HyperLink\z_Reload_Button.lua
 ChatButton_1_HyperLink\z_Talking.lua
 ChatButton_1_HyperLink\z_Welcome.lua
+ChatButton_1_HyperLink\z_CopyChat.lua
+
 ##ROLL
 ChatButton_2_Roll\2_Roll.lua
 ##标记

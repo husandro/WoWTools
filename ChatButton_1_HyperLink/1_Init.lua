@@ -85,9 +85,9 @@ local function Init()
 
     WoWTools_HyperLink:Blizzard_Settings()
     WoWTools_HyperLink:Blizzard_EventTrace()
+
+    WoWTools_HyperLink:Init_CopyChat()
 end
-
-
 
 
 

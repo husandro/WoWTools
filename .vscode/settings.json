@@ -6124,7 +6124,15 @@
         "PingManager",
         "PingFrame",
         "PingPinFrame",
-        "PingPinFrameMixin"
+        "PingPinFrameMixin",
+        "ScrollingFontMixin",
+        "ChatTypeInfo",
+        "RGBToColorCode",
+        "RGBTableToColorCode",
+        "ChatFrame_OnLoad",
+        "BNGetFriendInfo",
+        "GUILD_MOTD_LABEL2",
+        "ChatFrame1Tab"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
