@@ -92,7 +92,10 @@ function WoWTools_FrameMixin:Create(parent, tab)
     local restPointFunc= tab.restPointFunc
 
     local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..getIndex()), parent or UIParent, template, setID)
-    tinsert (UISpecialFrames, name)
+
+--Esc 键
+    tinsert(UISpecialFrames, name)
+
     frame:SetToplevel(true)
 --设置大小
     local w, h= Get_Size(size)

@@ -99,7 +99,7 @@ local function Init()
 
         GameTooltip:AddLine(' ')
         local col= UnitAffectingCombat('player') and '|cff626262' or '|cffffffff'
-        
+
         GameTooltip:AddLine(
             col..(WoWTools_DataMixin.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
             ..WoWTools_DataMixin.Icon.mid

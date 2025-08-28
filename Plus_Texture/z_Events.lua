@@ -998,6 +998,10 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
     end)
 
     self:Init_BGMenu_Frame(CooldownViewerSettings)
+
+
+
+--增加 Esc 闭关窗口
 end
 
 

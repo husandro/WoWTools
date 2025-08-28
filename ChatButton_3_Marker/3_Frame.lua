@@ -95,9 +95,6 @@ local function Init()--设置标记, 框架
         self:set_Alpha(true)
         WoWTools_MarkerMixin.MarkerButton:SetButtonState('PUSHED')
     end)
-    --[[btn:SetScript('OnMouseWheel', function(self, delta)--缩放
-        Save().markersScale= WoWTools_FrameMixin:ScaleFrame(self, delta, Save().markersScale)
-    end)]]
 
 
 

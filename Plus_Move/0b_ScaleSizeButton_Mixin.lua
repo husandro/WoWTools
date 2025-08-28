@@ -84,6 +84,41 @@ end
 
 
 
+--[[按 Esc 键，隐藏框体
+local function Set_ESC(name, isSet)
+    local isRemove, isAdd
+    if isSet then--设置 1=移除(禁用), 2=添加(启用)
+        isRemove= Save().Esc[name]==1
+        isAdd= Save().Esc[name]==2
+    end
+
+    local index
+    for i, value in pairs(UISpecialFrames) do
+        print(i, value)
+        if value==name then
+            index= i
+            --break
+        end
+    end
+
+    if isRemove then
+        if index then
+            table.remove(UISpecialFrames, index)
+        end
+    elseif isAdd then
+        if not index then
+            table.insert(UISpecialFrames, name)
+        end
+    end
+    return index
+end
+]]
+
+
+
+
+
+
 
 
 
@@ -238,6 +273,56 @@ end
 
 
 
+
+
+
+
+
+
+--[[local function Init_Esc_Menu(self, root)
+    local sub
+    local name= self.name
+    local set= Save().Esc[name]
+
+    local function get_text()
+        local value= Save().Esc[name]
+        local col
+        if not value then
+            col= '|cff606060'
+        elseif value==1 then
+            col= '|cnRED_FONT_COLOR:'
+        elseif value==2 then
+            col= '|cnGREEN_FONT_COLOR:'
+        end
+        return col..'|A:NPE_Icon:0:0|aEsc'
+    end
+
+    sub= root:CreateCheckbox(
+        get_text(),
+    function()
+        return Save().Esc[name]
+    end, function()
+        Save().Esc[name]= not Save().Esc[name] and set
+        MenuUtil.SetElementText(sub, get_text())
+    end)
+
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '按Esc键，隐藏框休' or 'Press the Esc key to hide the frame')
+        tooltip:AddLine(' ')
+        tooltip:AddLine('|cff606060'..(WoWTools_DataMixin.onlyChinese and '忽略' or IGNORE_DIALOG))
+        tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE))
+        tooltip:AddLine(' ')
+        tooltip:AddLine(
+            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT, 'UISpecialFrames')
+            ..': '
+            ..WoWTools_TextMixin:GetEnabeleDisable(Set_ESC(name) and true or false)
+        )
+    end)
+end
+
+
+]]
 
 
 
@@ -426,16 +511,21 @@ local function Init_Menu(self, root)
 --锁定框体位置
     Init_Point_Menu(self, sub)
 
-
+--按 Esc 键，隐藏框体
+    --Init_Esc_Menu(self, root)
 
 
 --打开，选项
-    root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {
+    sub=root:CreateDivider()
+    sub=WoWTools_MenuMixin:OpenOptions(root, {
         category=WoWTools_MoveMixin.Category,
         name=WoWTools_MoveMixin.addName,
         --name2=name,
     })
+
+
+--/reload
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 
@@ -623,9 +713,9 @@ end
 
 
 local function Set_Enter(btn, target)
-    
+
     if btn.alpha then
-        
+
         --if btn.alpha==0 then
         target:HookScript('OnEnter', function(self)
             self.ResizeButton:SetAlpha(1)
@@ -635,7 +725,7 @@ local function Set_Enter(btn, target)
         end)
         --end
     end
-    
+
     btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
         ResetCursor()
@@ -853,7 +943,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
 
     frame.ResizeButton= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--UI-HUD-UnitFrame-Player-PortraitOn-CornerEmbellishment SharedUIPanelTemplates.lua
 
-    
+
     local btn= frame.ResizeButton
 
     btn:SetFrameStrata('DIALOG')
@@ -910,7 +1000,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=1})--设置颜色
 
     btn:SetClampedToScreen(true)
-    
+
 
     btn.SOS = { --Scaler Original State
         dist = 0,
@@ -933,9 +1023,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         Set_OnMouseDown(s, d)
     end)
     btn:SetScript('OnMouseWheel', function(s)
-        MenuUtil.CreateContextMenu(s, function(...)
-            Init_Menu(...)
-        end)
+        MenuUtil.CreateContextMenu(s, Init_Menu)
         Set_Tooltip(s)
     end)
 
@@ -970,6 +1058,11 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         UIPanelWindows[name]= nil
         FrameOnShow_SetPoint(btn, false)
     end
+
+--[[按 Esc 键，隐藏框体
+    if Save().Esc[name] then
+        Set_ESC(name, true)
+    end]]
 
     Set_Enter(btn, frame)
 end

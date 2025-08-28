@@ -778,7 +778,7 @@ local function Init_Menu(self, root)--菜单
     function()
         return Save().vigentteButtonShowText
     end, function()
-        Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or nil
+        Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or false
         self:set_shown()
         self:set_texture()
         self:set_state()
@@ -1072,7 +1072,7 @@ local function Init_Button()
         else
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
-                Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or nil
+                Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or false
                 self:set_shown()
                 self:set_texture()
 

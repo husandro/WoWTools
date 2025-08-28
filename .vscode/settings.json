@@ -6117,7 +6117,9 @@
         "WORLD_MAP_FILTER_COUNTER_TOOLTIP",
         "WorldMapTrackingOptionsFilterCounterMixin",
         "ChatFrame_UpdateChatFrames",
-        "CHAT_FRAMES"
+        "CHAT_FRAMES",
+        "IGNORE_DIALOG",
+        "UIChildWindows"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
