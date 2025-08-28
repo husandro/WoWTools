@@ -156,8 +156,9 @@ local function Init()
                     GameTooltip:Show()
                 end)
                 PlayerChoiceFrame.allButton:SetScript('OnHide', function(s)
-                    if s.time and not s.time:IsCancelled() then
+                    if s.time then
                         s.time:Cancel()
+                        s.time=nil
                     end
                 end)
                 function PlayerChoiceFrame.allButton:set_text()
@@ -167,8 +168,9 @@ local function Init()
                     )
                 end
                 PlayerChoiceFrame.allButton:SetScript('OnClick', function(s, d)
-                    if s.time and not s.time:IsCancelled() then
+                    if s.time then
                         s.time:Cancel()
+                        s.time= nil
                         s:set_text()
                         print(
                             WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
@@ -208,12 +210,13 @@ local function Init()
                             )
                             --self.parentOption:OnSelected()
                         elseif s.time then
-                        s.time:Cancel()
-                        print(
-                            WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
-                            '|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1,
-                            '|r'..n
-                        )
+                            s.time:Cancel()
+                            s.time= nil
+                            print(
+                                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                                '|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1,
+                                '|r'..n
+                            )
                         end
                         s:set_text()
                     end, all)

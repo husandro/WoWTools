@@ -73,6 +73,7 @@ local function Init_LFD()
     function LFDRoleCheckPopup:CancellORSetTime(seconds)
         if self.acceptTime then
             self.acceptTime:Cancel()
+            self.acceptTime=nil
         end
         if not seconds then
             WoWTools_CooldownMixin:Setup(self)
@@ -198,6 +199,7 @@ local function Init_RolePollPopup()
         if IsModifierKeyDown() or not self.acceptButton:IsEnabled() then
             if self.aceTime then
                 self.aceTime:Cancel()
+                self.aceTime= nil
             end
             WoWTools_CooldownMixin:Setup(self)--冷却条
         end
@@ -206,6 +208,7 @@ local function Init_RolePollPopup()
     RolePollPopup:HookScript('OnHide', function(self)
         if self.aceTime then
             self.aceTime:Cancel()
+            self.aceTime= nil
         end
         WoWTools_CooldownMixin:Setup(self)--冷却条
     end)

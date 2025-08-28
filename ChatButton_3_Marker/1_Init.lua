@@ -186,7 +186,7 @@ local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
-    if event=='ADDON_LOADED' then
+    --if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
 
             WoWToolsSave['ChatButton_Markers']= WoWToolsSave['ChatButton_Markers'] or P_Save
@@ -206,5 +206,4 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             end
             self:UnregisterEvent(event)
         end
-    end
 end)

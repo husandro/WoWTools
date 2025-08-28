@@ -488,11 +488,12 @@ local function Init_TrackButton()--添加装备管理框
         then
             self:set_shown()
 
-        elseif not self.time or self.time:IsCancelled() then
+        elseif not self.time then
             self.time= C_Timer.NewTimer(0.6, function()
                 Init_buttons()
                 self:set_player_itemLevel()
                 self.time:Cancel()
+                self.time=nil
             end)
 
         end

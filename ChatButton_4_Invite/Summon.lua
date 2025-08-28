@@ -22,7 +22,10 @@ local function Init()
         if IsModifierKeyDown() or self.isCancelledAuto or not Save().Summon then
             if not self.isCancelledAuto then
                 WoWTools_CooldownMixin:Setup(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
-                if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
+                if self.SummonTimer then--取消，计时
+                    self.SummonTimer:Cancel()
+                    self.SummonTimer=nil
+                end
             end
             self.isCancelledAuto=true
             return
@@ -31,8 +34,9 @@ local function Init()
         if not InCombatLockdown() and PlayerCanTeleport() then--启用，召唤
             if not self.enabledAutoSummon then
                 self.enabledAutoSummon= true
-                if self.SummonTimer and not self.SummonTimer:IsCancelled() then
+                if self.SummonTimer then
                     self.SummonTimer:Cancel()
+                    self.SummonTimer= nil
                 end
                 WoWTools_CooldownMixin:Setup(self, nil, 3, nil, true, true, nil)--冷却条
 
@@ -53,13 +57,19 @@ local function Init()
 
         elseif self.enabledAutoSummon then--取消，召唤
             WoWTools_CooldownMixin:Setup(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
-            if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
+            if self.SummonTimer then--取消，计时
+                self.SummonTimer:Cancel()
+                self.SummonTimer=nil
+            end
             self.enabledAutoSummon=nil
         end
     end)
 
     StaticPopupDialogs["CONFIRM_SUMMON"].OnHide= function(self)
-        if self.SummonTimer then self.SummonTimer:Cancel() end
+        if self.SummonTimer then
+            self.SummonTimer:Cancel()
+            self.SummonTimer=nil
+        end
         self.enabledAutoSummon=nil
         self.isCancelled=nil
     end

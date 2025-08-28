@@ -67,7 +67,8 @@ local function Init()
         local text= self.text:GetText()
         local show= Save().groupReadyTips and (text and text~='')
         if not show and self.HideTemr then
-            self:Cancel()
+            self.HideTemr:Cancel()
+            self.HideTemr= nil
         end
         self:SetShown(show)
     end

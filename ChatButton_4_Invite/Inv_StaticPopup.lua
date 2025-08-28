@@ -97,7 +97,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
 
         StaticPopupFrame.button3:SetText(WoWTools_DataMixin.onlyChinese and '移除拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, DECLINE))
 
-        if InvTimer then InvTimer:Cancel() end
+        if InvTimer then InvTimer:Cancel() InvTimer=nil end
 
         InvTimer = C_Timer.NewTimer(3, Decline)
 
@@ -115,7 +115,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
             ..'|r'
         setPrint()
 
-        if InvTimer then InvTimer:Cancel() end
+        if InvTimer then InvTimer:Cancel() InvTimer=nil end
         InvTimer = C_Timer.NewTimer(sec, Accept)
 
 --休息区不组队
@@ -126,7 +126,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
             ..'|r'
         setPrint()
 
-        if InvTimer then InvTimer:Cancel() end
+        if InvTimer then InvTimer:Cancel() InvTimer=nil end
         InvTimer = C_Timer.NewTimer(3, Decline)
 
     else
@@ -183,12 +183,13 @@ local function Init()
     StaticPopupDialogs["PARTY_INVITE"].OnUpdate=function(self)
         if InvTimer and IsModifierKeyDown() then
             InvTimer:Cancel()
+            InvTimer=nil
             WoWTools_CooldownMixin:Setup(self, nil, select(2, WoWTools_Mixin:StaticPopup_FindVisible('PARTY_INVITE')), nil, true, true, nil)--冷却条  
         end
     end
 
     hooksecurefunc(StaticPopupDialogs["PARTY_INVITE"], 'OnHide', function(self)
-        if InvTimer then InvTimer:Cancel() end
+        if InvTimer then InvTimer:Cancel() InvTimer=nil end
         InviterPlayerGUID=nil
         WoWTools_CooldownMixin:Setup(self)--冷却条  
     end)

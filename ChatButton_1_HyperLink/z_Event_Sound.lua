@@ -3,12 +3,7 @@ local function Save()
     return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
-local TimerType
-local Timer0
-local Timer1
-local Timer2
-local Timer3
-local Timer4
+local TimerType, Timer0, Timer1, Timer2, Timer3, Timer4
 
 
 
@@ -59,11 +54,11 @@ local function Init_Settings()
         end
         if arg2==0 and arg3==0 then
             TimerType= nil
-            if Timer4 then Timer4:Cancel() end
-            if Timer3 then Timer3:Cancel() end
-            if Timer2 then Timer2:Cancel() end
-            if Timer1 then Timer1:Cancel() end
-            if Timer0 then Timer0:Cancel() end
+            if Timer4 then Timer4:Cancel() Timer4= nil end
+            if Timer3 then Timer3:Cancel() Timer3= nil end
+            if Timer2 then Timer2:Cancel() Timer2= nil end
+            if Timer1 then Timer1:Cancel() Timer1= nil end
+            if Timer0 then Timer0:Cancel() Timer0= nil end
 
         elseif arg1 and arg2 and arg2>3 and not TimerType then
             TimerType=arg1
@@ -92,11 +87,11 @@ local function Init_Settings()
 
     EventRegistry:RegisterFrameEventAndCallback("STOP_TIMER_OF_TYPE", function()
         TimerType= nil
-        if Timer4 then Timer4:Cancel() end
-        if Timer3 then Timer3:Cancel() end
-        if Timer2 then Timer2:Cancel() end
-        if Timer1 then Timer1:Cancel() end
-        if Timer0 then Timer0:Cancel() end
+        if Timer4 then Timer4:Cancel() Timer4= nil end
+        if Timer3 then Timer3:Cancel() Timer3= nil end
+        if Timer2 then Timer2:Cancel() Timer2= nil end
+        if Timer1 then Timer1:Cancel() Timer1= nil end
+        if Timer0 then Timer0:Cancel() Timer0= nil end
     end)
 
     

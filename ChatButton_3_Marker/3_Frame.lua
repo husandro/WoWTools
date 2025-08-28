@@ -285,11 +285,6 @@ local function Init()--设置标记, 框架
 
 
 
-
-
-
-
-
 --倒计时
     MakerFrame.countdown= WoWTools_ButtonMixin:Cbtn(MakerFrame, {
         name=ButtonName..'CountdownButton',
@@ -345,9 +340,9 @@ local function Init()--设置标记, 框架
         if timerType==3 and event=='START_TIMER' then
             if totalTime==0 then
                self.star=nil
-               if self.timer then self.timer:Cancel() end
+               if self.timer then self.timer:Cancel() self.timer=nil end
             elseif totalTime>0 then
-                if self.timer then self.timer:Cancel() end
+                if self.timer then self.timer:Cancel() self.timer=nil end
                 self.timer=C_Timer.NewTimer(timeRemaining or totalTime, function() self.star=nil end)
                 self.star=true
             end
@@ -1009,3 +1004,37 @@ end
 function WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
     Init()
 end
+
+
+
+--[[
+ hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
+    local ping= self3.activePinFrames[frame]
+    if not ping.valueFrame then
+        ping.valueFrame=CreateFrame("Frame",nil, ping)
+        ping.valueFrame.value=5
+        ping.valueFrame.elapsed=1
+        ping.valueFrame:SetSize(1,1)
+        ping.valueFrame:SetPoint('CENTER')
+        ping.valueFrame.text= e.Cstr(ping.valueFrame)
+        ping.valueFrame.text:SetPoint('CENTER')
+        ping.valueFrame:SetScript('OnUpdate', function(self2, elapsed)
+            self2.elapsed = self2.elapsed + elapsed
+            self2.value= self2.value - elapsed
+            if self2.elapsed>=1 then
+                self2.text:SetFormattedText("%i", self2.value)
+                self2.elapsed=0
+            end
+        end)
+    else
+        ping.valueFrame.value=5
+        ping.valueFrame.elapsed=1
+    end
+
+    local color= PingColor[uiTextureKit]
+    if color then
+        ping.valueFrame.text:SetTextColor(color.r, color.g, color.b)
+    end
+    ping.valueFrame:SetShown(true)
+end)
+]]

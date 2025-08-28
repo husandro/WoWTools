@@ -47,7 +47,10 @@ local function Init()
     end)
 
     Frame:SetScript('OnHide', function(self)
-        if self.time then self.time:Cancel() end
+        if self.time then
+            self.time:Cancel()
+            self.time=nil
+        end
         WoWTools_CooldownMixin:Setup(self)
     end)
 

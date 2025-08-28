@@ -566,10 +566,6 @@ end
 
 
 
-
-
-
-
 function WoWTools_TooltipMixin.Events:Blizzard_SharedXML()
 --图标，修该, 提示，图标
     local function Set_SetIconTexture(btn, iconTexture)

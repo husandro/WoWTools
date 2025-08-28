@@ -6120,7 +6120,11 @@
         "CHAT_FRAMES",
         "IGNORE_DIALOG",
         "UIChildWindows",
-        "KeybindListener"
+        "KeybindListener",
+        "PingManager",
+        "PingFrame",
+        "PingPinFrame",
+        "PingPinFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

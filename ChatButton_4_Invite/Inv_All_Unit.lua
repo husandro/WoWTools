@@ -27,6 +27,7 @@ local function Inv_All_Unit()
 
     if InvPlateTimer then
         InvPlateTimer:Cancel()
+        InvPlateTimer= nil
     end
 
     InvPlateTimer=C_Timer.NewTimer(0.3, function()

@@ -28,6 +28,7 @@ local function Set_Ready(timeLeft)
 
     if AutoReadyTime then
         AutoReadyTime:Cancel()
+        AutoReadyTime= nil
     end
 
     local autoReady= Save().autoReady
@@ -191,6 +192,7 @@ local function Init()
         end
         if AutoReadyTime then
             AutoReadyTime:Cancel()
+            AutoReadyTime= nil
         end
         WoWTools_CooldownMixin:Setup(self)
         self.time= nil
@@ -204,6 +206,7 @@ local function Init()
         then
 
             AutoReadyTime:Cancel()
+            AutoReadyTime= nil
 
             print(
                 WoWTools_MarkerMixin.addName,

@@ -183,11 +183,12 @@ local function Init_Quest()
     QuestButton:SetPoint('RIGHT', _G['WoWToolsGossipButton'], 'LEFT')
 
     function QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
-        if not Save().autoSortQuest or IsInInstance() or UnitAffectingCombat('player') then
+        if not Save().autoSortQuest or IsInInstance() or InCombatLockdown() then
             return
         end
-        if self.setQuestWatchTime and not self.setQuestWatchTime:IsCancelled() then
+        if self.setQuestWatchTime then
             self.setQuestWatchTime:Cancel()
+            self.setQuestWatchTime=nil
         end
         self.setQuestWatchTime= C_Timer.NewTimer(1, function()
             --local uiMapID= C_Map.GetBestMapForUnit('player') or 0
