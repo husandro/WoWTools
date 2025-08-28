@@ -148,7 +148,9 @@ local function Init()
 
 		btn.index= index
 
-		btn:SetPoint('BOTTOM', ChatFrameMenuButton, 'TOP', 0, 32)
+		
+
+		btn:SetPoint('BOTTOM', ChatFrameMenuButton, 'TOP', 0, 23)
 		btn:SetScript('OnClick', function(b)
 			Get_Text(b)
 		end)
