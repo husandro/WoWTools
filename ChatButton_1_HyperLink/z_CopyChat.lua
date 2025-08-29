@@ -3,6 +3,7 @@ local function Save()
     return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
+local Init_Button
 
 local JunkTabs={}
 for _, name in pairs({--. ( ) + - * ? [ ^
@@ -138,11 +139,74 @@ end
 
 
 
+local function Init_Menu(frame, root)
+	local index= frame:GetName():match('%d+') or '1'
+
+	local self= _G['ChatFrame'..index]
+	if not self then
+		return
+	end
+	local sub
+
+	sub=root:CreateButton(
+		(self:GetNumMessages()==0 and '|cff606060' or '')
+		..'|A:poi-workorders:0:0|a'
+		..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT)),
+	function()
+		Get_Text(index)
+		return MenuResponse.Open
+	end)
+	sub:SetTooltip(function(tooltip)
+		local tab=  _G['ChatFrame'..index..'Tab']
+		if tab then
+			tooltip:AddLine(tab:GetText())
+		end
+		tooltip:AddLine(
+			WoWTools_DataMixin.Icon.icon2
+			..(WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
+			..' |cnGREEN_FONT_COLOR:#'
+			..self:GetNumMessages()
+		)
+	end)
+--选项
+	sub:CreateCheckbox(
+		WoWTools_DataMixin.onlyChinese and '显示按钮' or SHOW_QUICK_BUTTON,
+	function()
+		return Save().showCopyChatButton
+	end, function()
+		Save().showCopyChatButton= not Save().showCopyChatButton and true or false
+		for i= 1, NUM_CHAT_WINDOWS do
+			Init_Button(i)
+		end
+	end)
+
+--处理文本
+	sub:CreateCheckbox(
+		WoWTools_DataMixin.onlyChinese and '处理文本' or 'Processing text',
+	function()
+			return Save().copyChatSetText
+	end, function()
+		Save().copyChatSetText= not Save().copyChatSetText and true or false
+	end)
+
+--打开，选项面板
+	sub:CreateDivider()
+	WoWTools_ChatMixin:Open_SettingsPanel(sub, WoWTools_HyperLink.addName)
+end
 
 
 
 
-local function Init_Button(index)
+
+
+
+
+
+
+
+
+
+function Init_Button(index)
 	local enabled= Save().showCopyChatButton and true or false
 	local frame= _G['ChatFrame'..index]
 	if not frame then
@@ -175,22 +239,31 @@ local function Init_Button(index)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		local num = self:GetParent():GetNumMessages() or 0
 		GameTooltip:SetText(
-			(num==0 and '|cff606060' or '')
-			..WoWTools_DataMixin.Icon.icon2
-			..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
-			..(num>0 and ' |cnGREEN_FONT_COLOR:#' or ' #')
+			(num==0 and '|cff606060' or '|cffffffff')
+			--..WoWTools_DataMixin.Icon.icon2
+			..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+			..(num==0 and '|cff606060#' or'|cnGREEN_FONT_COLOR:#')
 			..num
-			..(num>0 and WoWTools_DataMixin.Icon.left or '')
+			..'|r|r'
+			..WoWTools_DataMixin.Icon.left
+			..WoWTools_DataMixin.Icon.right
+			..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
 		)
 		GameTooltip:Show()
 		WoWTools_HyperLink.LinkButton:SetButtonState('PUSHED')
 		WoWTools_Mixin:Call(FCF_FadeInScrollbar, self:GetParent())
 	end)
 
-	frame.CopyChatButton:SetScript('OnClick', function(self)
-		Get_Text(self:GetParent():GetName():match('%d+') or '1')
+	frame.CopyChatButton:SetScript('OnMouseDown', function(self, d)
+		if d~='RightButton' then
+			Get_Text(self:GetParent():GetName():match('%d+') or '1')
+		else
+			MenuUtil.CreateContextMenu(self, Init_Menu)
+		end
 	end)
 end
+
+
 
 
 
@@ -232,51 +305,8 @@ local function Init()
 	end)
 
 
-	Menu.ModifyMenu("MENU_FCF_TAB", function(self, root)
-		local index= self:GetName():match('%d+') or '1'
-		local frame= _G['ChatFrame'..index]
-		if not frame then
-			return
-		end
-		local sub, sub2
-
-		sub=root:CreateButton(
-			(frame:GetNumMessages()==0 and '|cff606060' or '')
-			..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT)),
-		function()
-			Get_Text(index)
-			return MenuResponse.Open
-		end)
-		sub:SetTooltip(function(tooltip)
-			tooltip:AddLine(self:GetText())
-			tooltip:AddLine(
-				WoWTools_DataMixin.Icon.icon2
-				..(WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
-				..' |cnGREEN_FONT_COLOR:#'
-				..frame:GetNumMessages()
-			)
-		end)
---选项
-		sub:CreateCheckbox(
-			'|A:poi-workorders:0:0|a'
-			..(WoWTools_DataMixin.onlyChinese and '显示按钮' or SHOW_QUICK_BUTTON),
-		function()
-			return Save().showCopyChatButton
-		end, function()
-			Save().showCopyChatButton= not Save().showCopyChatButton and true or false
-			for i= 1, NUM_CHAT_WINDOWS do
-				Init_Button(i)
-			end
-		end)
-
---处理文本
-		sub2= sub:CreateCheckbox(
-			WoWTools_DataMixin.onlyChinese and '处理文本' or 'Processing text',
-		function()
-				return Save().copyChatSetText
-		end, function()
-			Save().copyChatSetText= not Save().copyChatSetText and true or false
-		end)
+	Menu.ModifyMenu("MENU_FCF_TAB", function(...)
+		Init_Menu(...)
 	end)
 
 
