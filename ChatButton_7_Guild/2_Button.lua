@@ -155,9 +155,11 @@ local function Init(GuildButton)
     end
 
 
+    function GuildButton:set_OnMouseDown()
+        WoWTools_ChatMixin:Say('/g')
+    end
 
-
-    GuildButton:SetScript('OnMouseDown',function(self, d)
+    --[[GuildButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             if not IsInGuild() then-- and not InCombatLockdown() then
                 ToggleGuildFrame()
@@ -168,7 +170,7 @@ local function Init(GuildButton)
                 self:set_tooltip()
             end
         end
-    end)
+    end)]]
 
 
 

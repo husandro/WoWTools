@@ -13,6 +13,8 @@ local P_Save={
     pointX=0,
     anchorMenuIndex=1,--菜单位置 下，上，左，右
     setChatFrameLeft=nil,--放到聊天框左边
+
+    disabledTooltiip=nil,--禁用提示
 }
 
 local addName
@@ -165,12 +167,23 @@ local function Init_Menu(self, root)
         end, {index=index, p=tab[1], p2=tab[2]})
 
         sub2:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '菜单位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL,CHOOSE_LOCATION))
             tooltip:AddDoubleLine(desc.data.p, desc.data.p2)
         end)
     end
 
-    sub:CreateDivider()
-    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+--HUD提示信息
+    
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,
+    function()
+        return not Save().disabledTooltiip
+    end, function()
+        Save().disabledTooltiip= not Save().disabledTooltiip and true or nil
+    end)
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddLine('GameTooltip')
+    end)
 
 --UIParent
     sub= root:CreateCheckbox(

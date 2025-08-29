@@ -60,7 +60,7 @@ local function Set_Button_Script(btn)
     end)
 
     btn:SetScript('OnEnter', function(self)
-        if self.set_tooltip then
+        if self.set_tooltip and not Save().disabledTooltiip then
             self:set_owner()
             self:set_tooltip()
         end
@@ -79,15 +79,18 @@ local function Set_Button_Script(btn)
     end)
 
     btn:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' and self.set_OnMouseDown then
-            if not self:set_OnMouseDown() then
-                self:CloseMenu()
+        if d=='LeftButton' then--and self.set_OnMouseDown then
+            if self.set_OnMouseDown then
+                self:set_OnMouseDown()
             end
-            if self.set_tooltip then
+
+            if self.set_tooltip and not Save().disabledTooltiip then
                 self:set_owner()
                 self:set_tooltip()
                 GameTooltip:Show()
             end
+
+            self:CloseMenu()
         end
     end)
 end
@@ -120,7 +123,7 @@ function WoWTools_ChatMixin:Init()
 
 
     ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
-   
+
 
     function ChatButton:set_backgroud()
         local btn1= _G[Buttons[1]]
@@ -197,13 +200,11 @@ local function Set_Button(btn)
     btn:SetSize(30, 30)
 
     function btn:SetAllSettings()
-        
         local index= btn:GetID()
         local s= index==1 and 0 or Save().pointX or 0
-        
-        --print(index,  _G[Buttons[index-1]] )
+
         self:ClearAllPoints()
-        
+
         if Save().isVertical then--方向, 竖
             self:SetPoint('BOTTOM', _G[Buttons[index-1]] or ChatButton, 'TOP', 0, s)
         else
