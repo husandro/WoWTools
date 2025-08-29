@@ -186,7 +186,7 @@ local function Init_Menu(frame, root)
 	function()
 			return Save().copyChatSetText
 	end, function()
-		Save().copyChatSetText= not Save().copyChatSetText and true or false
+		Save().copyChatSetText= not Save().copyChatSetText and true or nil
 	end)
 
 --打开，选项面板
@@ -237,12 +237,13 @@ function Init_Button(index)
 
 	frame.CopyChatButton:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		
 		local num = self:GetParent():GetNumMessages() or 0
+		local col= num==0 and '|cff606060'
 		GameTooltip:SetText(
-			(num==0 and '|cff606060' or '|cffffffff')
-			--..WoWTools_DataMixin.Icon.icon2
+			(col or '|cffffffff')
 			..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
-			..(num==0 and '|cff606060#' or'|cnGREEN_FONT_COLOR:#')
+			..(col or'|cnGREEN_FONT_COLOR:#')
 			..num
 			..'|r|r'
 			..WoWTools_DataMixin.Icon.left

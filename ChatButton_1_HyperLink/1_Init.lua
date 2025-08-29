@@ -32,7 +32,7 @@ local P_Save={
     --eventTracePrint 事件输出
 
     showCopyChatButton=true,--显示 复制聊天 按钮
-    copyChatSetText=true,--处理，文本
+    copyChatSetText=nil--处理，文本
 }
 
 local function Save()
