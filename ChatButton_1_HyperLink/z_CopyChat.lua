@@ -88,14 +88,14 @@ local function Get_Text(index)
 	end
 
 	local tab={}
-	local copyChatOnlyText= Save().copyChatOnlyText--不处理，文本
+	local copyChatSetText= Save().copyChatSetText--不处理，文本
 
 	for i = 1, numMessage do
 		local currentMsg, r, g, b, chatTypeID = frame:GetMessageInfo(i)
 
 		currentMsg= currentMsg or ''
 
-		if not copyChatOnlyText then--不处理，文本
+		if copyChatSetText then--处理，文本
 
 			local colorCode = false
 			currentMsg = removeChatJunk(currentMsg)
@@ -238,7 +238,9 @@ local function Init()
 		if not frame then
 			return
 		end
-		local sub=root:CreateButton(
+		local sub, sub2
+
+		sub=root:CreateButton(
 			(frame:GetNumMessages()==0 and '|cff606060' or '')
 			..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT)),
 		function()
@@ -268,18 +270,29 @@ local function Init()
 		end)
 
 --处理文本
-	sub:CreateCheckbox(
-		WoWTools_DataMixin.onlyChinese and '仅文本' or format(LFG_LIST_CROSS_FACTION, LOCALE_TEXT_LABEL),
-				function()
-			return Save().copyChatOnlyText
+		sub2= sub:CreateCheckbox(
+			WoWTools_DataMixin.onlyChinese and '处理文本' or 'Processing text',
+		function()
+				return Save().copyChatSetText
 		end, function()
-			Save().copyChatOnlyText= not Save().copyChatOnlyText and true or nil
+			Save().copyChatSetText= not Save().copyChatSetText and true or false
 		end)
 	end)
 
 
 	Init=function()end
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
