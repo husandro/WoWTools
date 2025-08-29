@@ -12,6 +12,7 @@ local P_Save={
     borderAlpha=0.3,--外框，透明度
     pointX=0,
     anchorMenuIndex=1,--菜单位置 下，上，左，右
+    setChatFrameLeft=nil,--放到聊天框左边
 }
 
 local addName
@@ -131,13 +132,18 @@ local function Init_Menu(self, root)
 
 
 --方向, 竖
-    sub=root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION), function()
+    sub=root:CreateCheckbox(
+        '|A:bags-greenarrow:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION),
+    function()
         return Save().isVertical
     end, function()
         Save().isVertical= not Save().isVertical and true or nil
         self:settings()
         WoWTools_ChatMixin:Set_All_Buttons()
     end)
+
+
 
 --菜单位置
     local textTab={
@@ -166,7 +172,7 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
 
-
+--UIParent
     sub= root:CreateCheckbox(
         'UIParent',
     function()
@@ -182,6 +188,18 @@ local function Init_Menu(self, root)
         tooltip:AddLine('SetParent '..'|cnGREEN_FONT_COLOR:'..self:GetParent():GetName())
     end)
 
+--放到聊天框左边
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '聊天框左边' or (HUD_EDIT_MODE_CHAT_FRAME_LABEL..'('..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ..')'),
+    function()
+        return Save().setChatFrameLeft
+    end, function()
+        Save().setChatFrameLeft= not Save().setChatFrameLeft and true or nil
+        if Save().setChatFrameLeft then
+            Save().Point= nil
+        end
+        self:settings()
+    end)
 
 
 --移过图标
@@ -254,17 +272,27 @@ local function Init()
         self:SetScale(Save().scale or 1)
 
         self:ClearAllPoints()
-        if Save().Point then
+
+        local toChatFrame= Save().setChatFrameLeft and true or false
+        if toChatFrame then
+            self:SetPoint('BOTTOM', ChatFrameMenuButton, 'TOP')
+        elseif Save().Point then
             self:SetPoint(Save().Point[1], UIParent, Save().Point[3], Save().Point[4], Save().Point[5])
         else
             self:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
-            self:SetParent(GeneralDockManager)
         end
 
         self:SetParent(Save().setParent and GeneralDockManager or UIParent)
+
+        self:SetMovable(not toChatFrame)
+        self:SetClampedToScreen(toChatFrame)
+        self:RegisterForDrag(toChatFrame and '' or "RightButton")
     end
 
     function ChatButton:set_tooltip()
+        if not self:IsMovable() then
+            return
+        end
         GameTooltip:SetText(
             (WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
             ..' Alt+'
@@ -273,9 +301,6 @@ local function Init()
         GameTooltip:Show()
     end
 
-    ChatButton:RegisterForDrag("RightButton")
-    ChatButton:SetMovable(true)
-    ChatButton:SetClampedToScreen(true)
 
     ChatButton:SetScript("OnDragStart", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then

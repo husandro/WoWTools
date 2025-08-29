@@ -11,8 +11,8 @@ end
 
 
 
-
-local AutoGossipTab={--自动，对话 [gossipID]=总数
+--自动，对话 [gossipID]=总数
+local AutoGossipTab={
     [56363]=3,--奥达曼， 传送门
     [56364]=2,
     [56365]=1,
@@ -35,7 +35,13 @@ local SXBuff={
 }
 --[466904]= true,--鹞鹰尖啸 LR
 
-
+--自定义NPC对话
+local NpcGossipTab={
+    ['217863']={--任务 大概没事吧
+        [121100]=1,
+        [121103]=1,
+    }
+}
 
 
 
@@ -526,7 +532,7 @@ local function Create_GossipOptionCheckBox(frame, info)
             GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetLink(self.spellID, true), 'spellID '.. self.spellID)
         end
 
-    
+
         if showFrame and not ColorPickerFrame:IsShown() then
             _G['WoWToolsGossipTextIconOptionsList']:set_date(self.gossipOptionID)--设置，数据
 
@@ -704,8 +710,7 @@ local function Init_Hook()
         local gossip= C_GossipInfo.GetOptions() or {}
         local allGossip= #gossip
         local name=info.name
-        local npc=WoWTools_UnitMixin:GetNpcID('npc')
-        
+        local npc=WoWTools_UnitMixin:GetNpcID('npc')--npc是字符 不是数字
 
         if IsModifierKeyDown() or not index or GossipButton.selectGissipIDTab[index] then
             return
@@ -715,12 +720,21 @@ local function Init_Hook()
         local isSaveActiveQuest= Save().quest
         local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)--local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
 
-        if Save().gossipOption[index] then--自定义
+--自定义对话
+        if Save().gossipOption[index] then
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif (npc and Save().NPC[npc]) then--禁用NPC
+--禁用NPC
+        elseif (npc and Save().NPC[npc]) then
             return
+
+--自定义NPC对话
+        elseif NpcGossipTab[npc] then
+            if NpcGossipTab[npc][index] then
+                C_GossipInfo.SelectOption(index)
+                find=true
+            end
 
         elseif isSaveActiveQuest and (
                 quest
@@ -739,7 +753,7 @@ local function Init_Hook()
             find=true
 
         elseif allGossip==1 and Save().unique  then--仅一个
-            
+
             local tab= C_GossipInfo.GetActiveQuests() or {}
             for _, questInfo in pairs(tab) do
                 if questInfo.questID and questInfo.isComplete and (isSaveActiveQuest or Save().questOption[questInfo.questID]) then
@@ -748,7 +762,7 @@ local function Init_Hook()
             end
 
             tab= C_GossipInfo.GetAvailableQuests() or {}
-            
+
             local isQuestTrivialTracking= WoWTools_MapMixin:Get_Minimap_Tracking(MINIMAP_TRACKING_TRIVIAL_QUESTS, false)
             for _, questInfo in pairs(tab) do
                 if questInfo.questID
