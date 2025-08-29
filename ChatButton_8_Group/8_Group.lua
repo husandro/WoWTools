@@ -184,7 +184,7 @@ local function Init_Menu(self, root)
     local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
     local isInBat= UnitAffectingCombat('player')
 
-    for index, tab in pairs({
+    for index, text in pairs({
         'p',--/p
         'r',--/raid
         'i',--/i
@@ -198,24 +198,30 @@ local function Init_Menu(self, root)
         then
             col='|cff9e9e9e'
         end
-
-        sub=root:CreateCheckbox(col..tab.text..' '..tab.type, function(data)
-            return GroupButton.type==data.type
-
+        local chatType= _G[ChatTypeTabs[text].type2..'1']
+        sub=root:CreateCheckbox(
+            col
+            ..ChatTypeTabs[text].text
+            ..' '..chatType,
+        function(data)
+            return ClickType==data.type
         end, function(data)
-            WoWTools_ChatMixin:Say(data.type)
-            --Save().type=data.type
-            --Save().text=data.text
+            ClickType= data.type
+            WoWTools_ChatMixin:Say(data.text)
             Settings()
 
-        end, tab)
+        end, {type=text, text=chatType})
 
-        sub:SetTooltip(function(tooltip, description)
-            tooltip:AddLine(description.data.text)
+        sub:SetTooltip(function(tooltip, desc)
+            local newTab={
+                [desc.data.text]=1
+            }
+            
+            tooltip:AddLine(desc.data.text)
             for i=2, 12 do
-                local str=_G[description.data.type2..i]
+                local str=_G[ChatTypeTabs[desc.data.text].type2..i]
                 if str then
-                    if str~=description.data.type then
+                    if str~=desc.data.type then
                         tooltip:AddLine(str..' ')
                     end
                 else
