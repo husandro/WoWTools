@@ -30,6 +30,9 @@ local P_Save={
 
     --hideEventTracePlus=true 隐藏 EventTrace Plus
     --eventTracePrint 事件输出
+
+    showCopyChatButton=true,--显示 复制聊天 按钮
+    copyChatOnlyText=nil,--仅显示 文本
 }
 
 local function Save()

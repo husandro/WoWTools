@@ -24,34 +24,29 @@ text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
 
 ]]
 local ShowTextFrame
-local function Create_ShowTextFrame()
-    if ShowTextFrame then
-        return
-    end
-    ShowTextFrame= WoWTools_FrameMixin:Create(nil, {
-        name='WoWToolsShowTextEditBoxFrame'
-    })
-    ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateFrame(ShowTextFrame, {
-        isLink=true
-    })
-    ShowTextFrame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
-    ShowTextFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
-
-    ShowTextFrame:SetScript('OnHide', function(f)
-        if f.onHide then
-            do
-                f.onHide(f.ScrollBox:GetText())
-            end
-            f.onHide=nil
-        end
-        f.ScrollBox:SetText('')
-    end)
-    ShowTextFrame:SetFrameStrata('FULLSCREEN')
-end
-
-
 function WoWTools_TextMixin:ShowText(data, headerText, tab)
-    Create_ShowTextFrame()
+    if not ShowTextFrame then
+        ShowTextFrame= WoWTools_FrameMixin:Create(nil, {
+        name='WoWToolsShowTextEditBoxFrame'
+        })
+        ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateFrame(ShowTextFrame, {
+            isLink=true
+        })
+        ShowTextFrame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
+        ShowTextFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
+
+        ShowTextFrame:SetScript('OnHide', function(f)
+            if f.onHide then
+                do
+                    f.onHide(f.ScrollBox:GetText())
+                end
+                f.onHide=nil
+            end
+            f.ScrollBox:SetText('')
+        end)
+        ShowTextFrame:SetFrameStrata('HIGH')
+    end
+
     local onHide= tab and tab.onHide or nil
 
     local text
@@ -64,11 +59,22 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
         text= data
     end
     ShowTextFrame.ScrollBox:SetText(text or '')
-    ShowTextFrame.ScrollBox.editBox:SetCursorPosition(1)
     ShowTextFrame.Header:Setup(headerText or '' )
-    ShowTextFrame:SetShown(true)
     ShowTextFrame.onHide= onHide
+    ShowTextFrame:SetShown(true)
+
+    --ShowTextFrame.ScrollBox.editBox:SetCursorPosition(1)
+    ShowTextFrame.ScrollBox.ScrollBar:ScrollToEnd()
+    ShowTextFrame:Raise()
 end
+
+
+
+
+
+
+
+
 
 
 

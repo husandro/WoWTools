@@ -6132,7 +6132,14 @@
         "ChatFrame_OnLoad",
         "BNGetFriendInfo",
         "GUILD_MOTD_LABEL2",
-        "ChatFrame1Tab"
+        "ChatFrame1Tab",
+        "D_DAYS",
+        "D_HOURS",
+        "D_MINUTES",
+        "D_SECONDS",
+        "CHAT_FRAME_FADE_TIME",
+        "CHAT_FRAME_FADE_OUT_TIME",
+        "FCF_FadeInScrollbar"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

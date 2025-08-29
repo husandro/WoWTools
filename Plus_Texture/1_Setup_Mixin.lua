@@ -287,7 +287,7 @@ function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     self:SetFrame(bar.Track.Thumb, {alpha=0.8})
 
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
-    self:SetAlphaColor(bar.Background, nil, nil, 0.5)
+    self:SetAlphaColor(bar.Background, nil, nil, 0.6)
 
     --if isHideBar and not bar.hideIfUnscrollable  then
     bar:SetAlpha(bar:HasScrollableExtent() and 1 or 0)
