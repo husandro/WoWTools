@@ -35,7 +35,7 @@ function WoWTools_InviteMixin:Get_Leader()--取得权限
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player') or not IsInGroup()
 end
 
-local InviteButton
+
 
 
 
@@ -64,25 +64,25 @@ local InviteButton
 --####
 --初始
 --####
-local function Init()
-    InviteButton.texture:SetAtlas('communities-icon-addgroupplus')
+local function Init(btn)
+    btn.texture:SetAtlas('communities-icon-addgroupplus')
 
-    InviteButton.summonTips= InviteButton:CreateTexture(nil,'OVERLAY')--召唤，提示
-    InviteButton.summonTips:SetPoint('BOTTOMLEFT', 0, 3)
-    InviteButton.summonTips:SetSize(16,16)
-    InviteButton.summonTips:SetAtlas('Raid-Icon-SummonPending')
+    btn.summonTips= btn:CreateTexture(nil,'OVERLAY')--召唤，提示
+    btn.summonTips:SetPoint('BOTTOMLEFT', 0, 3)
+    btn.summonTips:SetSize(16,16)
+    btn.summonTips:SetAtlas('Raid-Icon-SummonPending')
 
-    InviteButton.invTips= InviteButton:CreateTexture(nil,'OVERLAY')--召唤，提示
-    InviteButton.invTips:SetPoint('BOTTOMRIGHT', -2, 0)
-    InviteButton.invTips:SetSize(16,16)
-    InviteButton.invTips:SetAtlas('poi-traveldirections-arrow2')
+    btn.invTips= btn:CreateTexture(nil,'OVERLAY')--召唤，提示
+    btn.invTips:SetPoint('BOTTOMRIGHT', -2, 0)
+    btn.invTips:SetSize(16,16)
+    btn.invTips:SetAtlas('poi-traveldirections-arrow2')
 
-    function InviteButton:settings()
+    function btn:settings()
         self.summonTips:SetShown(Save().Summon)--召唤，提示
         self.invTips:SetShown(Save().Channel and Save().ChannelText or Save().InvTar)
     end
 
-    function InviteButton:set_tooltip()
+    function btn:set_tooltip()
         self:set_owner()
         GameTooltip:AddDoubleLine(WoWTools_InviteMixin.addName, WoWTools_DataMixin.Icon.left)
         if Save().InvTar then
@@ -94,13 +94,13 @@ local function Init()
         GameTooltip:Show()
     end
 
-    WoWTools_InviteMixin:Setup_Menu(InviteButton)
+    WoWTools_InviteMixin:Setup_Menu(btn)
 
-    function InviteButton:set_OnMouseDown()
+    function btn:set_OnMouseDown()
         WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
     end
 
-    InviteButton:settings()
+    btn:settings()
 
 
 
@@ -114,7 +114,10 @@ local function Init()
         WoWTools_InviteMixin.SummonThxText= '{rt1}'..SUMMON..'{rt1} '..VOICEMACRO_16_Dw_1
     end
 
-    return true
+
+
+
+    Init=function()end
 end
 
 
@@ -142,14 +145,10 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '邀请' or INVITE)
 
-            InviteButton= WoWTools_ChatMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
+            WoWTools_InviteMixin.InviteButton= WoWTools_ChatMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
 
-            WoWTools_InviteMixin.InviteButton= InviteButton
-
-            if InviteButton then
-                if Init() then
-                    Init=function()end
-                end
+            if WoWTools_InviteMixin.InviteButton then
+                Init(WoWTools_InviteMixin.InviteButton)
                 self:UnregisterEvent(event)
             else
                 self:UnregisterAllEvents()
@@ -163,5 +162,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         WoWTools_InviteMixin:Init_Resting()--设置, 休息区提示事件
         WoWTools_InviteMixin:Init_Target()--设置, 邀请目标
         WoWTools_InviteMixin:Init_StaticPopup()
+
+        self:UnregisterEvent(event)
     end
 end)

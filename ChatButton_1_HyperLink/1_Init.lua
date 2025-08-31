@@ -39,7 +39,6 @@ local function Save()
     return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
-local LinkButton
 
 
 
@@ -48,13 +47,14 @@ local LinkButton
 
 
 
-local function Init()
-    LinkButton.eventSoundTexture= LinkButton:CreateTexture(nil,'OVERLAY')
-    LinkButton.eventSoundTexture:SetPoint('BOTTOMLEFT',4, 4)
-    LinkButton.eventSoundTexture:SetSize(12,12)
-    LinkButton.eventSoundTexture:SetAtlas('chatframe-button-icon-voicechat')
 
-    function LinkButton:set_tooltip()
+local function Init(btn)
+    btn.eventSoundTexture= btn:CreateTexture(nil,'OVERLAY')
+    btn.eventSoundTexture:SetPoint('BOTTOMLEFT',4, 4)
+    btn.eventSoundTexture:SetSize(12,12)
+    btn.eventSoundTexture:SetAtlas('chatframe-button-icon-voicechat')
+
+    function btn:set_tooltip()
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
         GameTooltip:AddDoubleLine(WoWTools_HyperLink.addName, WoWTools_TextMixin:GetEnabeleDisable(not isDisabled and Save().linkIcon))
         if isDisabled then
@@ -63,7 +63,7 @@ local function Init()
         GameTooltip:Show()
     end
 
-    function LinkButton:set_OnMouseDown()
+    function btn:set_OnMouseDown()
         Save().linkIcon= not Save().linkIcon and true or false
         WoWTools_HyperLink:Init_Link_Icon()
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
@@ -115,32 +115,15 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
 
-            if WoWToolsSave['ChatButton_HyperLink'].text then
-                WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsSave['ChatButton_HyperLink'].text
-                WoWToolsSave['ChatButton_HyperLink'].text= nil
-
-                WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsSave['ChatButton_HyperLink'].guildWelcomeText
-                WoWToolsSave['ChatButton_HyperLink'].guildWelcomeText= nil
-
-                WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsSave['ChatButton_HyperLink'].groupWelcomeText
-                WoWToolsSave['ChatButton_HyperLink'].groupWelcomeText= nil
-            end
-
-
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
             WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
             WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
 
-            Save().linkIcon= not Save().disabed
-            Save().disabed= nil
-
             WoWTools_HyperLink.addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
-            LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName)
+            WoWTools_HyperLink.LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName)
 
-            WoWTools_HyperLink.LinkButton= LinkButton
-
-            if LinkButton then
-                Init()
+            if WoWTools_HyperLink.LinkButton then
+                Init(WoWTools_HyperLink.LinkButton)
 
             else
                 --DEFAULT_CHAT_FRAME.P_AddMessage= nil

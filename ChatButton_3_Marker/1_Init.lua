@@ -25,7 +25,7 @@ local function Save()
     return WoWToolsSave['ChatButton_Markers'] or {}
 end
 
-local MarkerButton
+
 
 
 
@@ -43,18 +43,17 @@ local MarkerButton
 
 
 --初始
-local function Init()
-    WoWTools_MarkerMixin.MarkerButton= MarkerButton
+local function Init(btn)
 
     --[[自动就绪, 主图标, 提示
     ReadyCheckFrame.readyLabel= WoWTools_LabelMixin:Create(ReadyCheckFrame)
     ReadyCheckFrame.readyLabel:SetPoint('BOTTOM', ReadyCheckFrame, 'TOP')
 ]]
-    MarkerButton.ready=MarkerButton:CreateTexture(nil,'OVERLAY')
-    MarkerButton.ready:SetPoint('TOP', -6, 6)
-    MarkerButton.ready:SetSize(MarkerButton:GetWidth()/2, MarkerButton:GetWidth()/2)
+    btn.ready=btn:CreateTexture(nil,'OVERLAY')
+    btn.ready:SetPoint('TOP', -6, 6)
+    btn.ready:SetSize(btn:GetWidth()/2, btn:GetWidth()/2)
 
-    function MarkerButton:settings()--主图标,是否有权限
+    function btn:settings()--主图标,是否有权限
         local index
         if not WoWTools_MapMixin:IsInPvPArea() then
             if GetNumGroupMembers()<=1 then
@@ -88,19 +87,21 @@ local function Init()
     end
 
 
-    MarkerButton:RegisterEvent('PLAYER_ENTERING_WORLD')
-    MarkerButton:RegisterEvent('GROUP_ROSTER_UPDATE')
-    MarkerButton:RegisterEvent('GROUP_LEFT')
-    MarkerButton:RegisterEvent('GROUP_JOINED')
-    MarkerButton:SetScript("OnEvent", MarkerButton.settings)
+    btn:RegisterEvent('PLAYER_ENTERING_WORLD')
+    btn:RegisterEvent('GROUP_ROSTER_UPDATE')
+    btn:RegisterEvent('GROUP_LEFT')
+    btn:RegisterEvent('GROUP_JOINED')
+    btn:SetScript("OnEvent", function(self)
+        self:settings()
+    end)
 
      WoWTools_MarkerMixin:Setup_Menu()
 
-    function MarkerButton:set_OnMouseDown()
+    function btn:set_OnMouseDown()
         WoWTools_MarkerMixin:Set_TankHealer(true)
     end
 
-    function MarkerButton:tooltip()
+    function btn:tooltip()
         local autoSet, tank, tank2, healer, isSelf, target= Save().autoSet, Save().tank, Save().tank2, Save().healer, Save().isSelf, Save().target
         GameTooltip:AddDoubleLine(
             (autoSet and '|cnGREEN_FONT_COLOR:' or '|cff828282')
@@ -139,7 +140,7 @@ local function Init()
 
 
 
-    function MarkerButton:set_tooltip()
+    function btn:set_tooltip()
         self:set_owner()
         self:tooltip()
         GameTooltip:AddLine(' ')
@@ -148,23 +149,23 @@ local function Init()
     end
 
 
-    function MarkerButton:set_OnLeave()
+    function btn:set_OnLeave()
         if self.groupReadyTips then
             self.groupReadyTips:SetButtonState('NORMAL')
         end
-        local btn= _G['WoWTools_MarkerFrame_Move_Button']
-        if btn then
-            btn:set_Alpha(false)
+        local b= _G['WoWTools_MarkerFrame_Move_Button']
+        if b then
+            b:set_Alpha(false)
         end
     end
 
-    function MarkerButton:set_OnEnter()
+    function btn:set_OnEnter()
         if self.groupReadyTips and self.groupReadyTips:IsShown() then
             self.groupReadyTips:SetButtonState('PUSHED')
         end
-        local btn= _G['WoWTools_MarkerFrame_Move_Button']
-        if btn then
-            btn:set_Alpha(true)
+        local b= _G['WoWTools_MarkerFrame_Move_Button']
+        if b then
+            b:set_Alpha(true)
         end
     end
 
@@ -186,24 +187,23 @@ local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
-    --if event=='ADDON_LOADED' then
-        if arg1== 'WoWTools' then
+    if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButton_Markers']= WoWToolsSave['ChatButton_Markers'] or P_Save
+        WoWToolsSave['ChatButton_Markers']= WoWToolsSave['ChatButton_Markers'] or P_Save
 
-            Save().showMakerFrameBackground= nil--显示背景 改为ALPHA
+        Save().showMakerFrameBackground= nil--显示背景 改为ALPHA
 
-            if Save().autoReady==0 then
-                Save().autoReady= nil
-            end
-            Save().autoReadySeconds= Save().autoReadySeconds or 3
-
-            WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
-            MarkerButton= WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName)
-
-            if MarkerButton then
-                Init()
-            end
-            self:UnregisterEvent(event)
+        if Save().autoReady==0 then
+            Save().autoReady= nil
         end
+        Save().autoReadySeconds= Save().autoReadySeconds or 3
+
+        WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
+        WoWTools_MarkerMixin.MarkerButton= WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName)
+
+        if WoWTools_MarkerMixin.MarkerButton then
+            Init(WoWTools_MarkerMixin.MarkerButton)
+        end
+        self:UnregisterEvent(event)
+    end
 end)

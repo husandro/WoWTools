@@ -16,7 +16,6 @@ local P_Save={
     }
 }
 
-local LFDButton
 
 
 
@@ -26,22 +25,23 @@ local LFDButton
 
 
 
-local function Init()
-    LFDButton.IconMask:SetPoint("TOPLEFT", LFDButton, "TOPLEFT", 5, -5)
-    LFDButton.IconMask:SetPoint("BOTTOMRIGHT", LFDButton, "BOTTOMRIGHT", -7, 7)
 
-    --LFDButton.texture:SetPoint("TOPLEFT", LFDButton, "TOPLEFT", 4, -4)
-    --LFDButton.texture:SetPoint("BOTTOMRIGHT", LFDButton, "BOTTOMRIGHT", -6, 6)
+local function Init(btn)
+    btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 5, -5)
+    btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -7, 7)
+
+    --btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
+    --btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
 
     --自动离开,指示图标
-    LFDButton.leaveInstance=LFDButton:CreateTexture(nil, 'ARTWORK', nil, 1)
-    LFDButton.leaveInstance:SetPoint('BOTTOMLEFT',4, 0)
-    LFDButton.leaveInstance:SetSize(12,12)
-    LFDButton.leaveInstance:SetAtlas(WoWTools_DataMixin.Icon.toLeft)
-    LFDButton.leaveInstance:Hide()
+    btn.leaveInstance=btn:CreateTexture(nil, 'ARTWORK', nil, 1)
+    btn.leaveInstance:SetPoint('BOTTOMLEFT',4, 0)
+    btn.leaveInstance:SetSize(12,12)
+    btn.leaveInstance:SetAtlas(WoWTools_DataMixin.Icon.toLeft)
+    btn.leaveInstance:Hide()
 
 
-    function LFDButton:set_tooltip()
+    function btn:set_tooltip()
         self:set_owner()
         WoWTools_ChallengeMixin:ActivitiesTooltip()--周奖励，提示
 
@@ -49,16 +49,16 @@ local function Init()
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(self.name..WoWTools_DataMixin.Icon.left)
         end
-        if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then
-            WoWTools_LFDMixin.TipsButton:SetButtonState('PUSHED')
+        if _G['WoWToolsChatToolsLFDTooltipButton'] then
+            _G['WoWToolsChatToolsLFDTooltipButton']:SetButtonState('PUSHED')
         end
         GameTooltip:Show()
     end
 
-    WoWTools_LFDMixin:Init_Menu(LFDButton)
-   
+    WoWTools_LFDMixin:Init_Menu(btn)
 
-    function LFDButton:set_OnMouseDown()
+
+    function btn:set_OnMouseDown()
         if self.dungeonID then
             if self.type==LE_LFG_CATEGORY_LFD then
                 WoWTools_Mixin:Call(LFDQueueFrame_SetType, self.dungeonID)
@@ -77,9 +77,9 @@ local function Init()
     end
 
 
-    function LFDButton:set_OnLeave()
-        if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then
-            WoWTools_LFDMixin.TipsButton:SetButtonState('NORMAL')
+    function btn:set_OnLeave()
+        if _G['WoWToolsChatToolsLFDTooltipButton'] then
+           _G['WoWToolsChatToolsLFDTooltipButton']:SetButtonState('NORMAL')
         end
     end
 
@@ -97,10 +97,7 @@ local function Init()
     WoWTools_LFDMixin:Init_LFGDungeonReadyDialog()--确定，进入副本
     WoWTools_LFDMixin:Init_LFGListInviteDialog_Info()--队伍查找器, 邀请信息
 
-    PVPTimerFrame:HookScript('OnShow', function(self2)
-        WoWTools_Mixin:PlaySound()--播放, 声音
-        WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
-    end)
+
 
     Init=function()end
 end
@@ -127,13 +124,21 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
-            LFDButton= WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
+            WoWTools_LFDMixin.LFDButton= WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
 
-            if LFDButton then--禁用Chat Button                
-                WoWTools_LFDMixin.LFDButton= LFDButton
-                
-                Init()
+            if WoWTools_LFDMixin.LFDButton then--禁用Chat Button
+
+                if C_AddOns.IsAddOnLoadable('Blizzard_GroupFinder') then
+                    Init(WoWTools_LFDMixin.LFDButton)
+                    self:UnregisterEvent(event)
+                end
+
+            else
+                self:UnregisterEvent(event)
             end
+
+        elseif event=='Blizzard_GroupFinder' then
+            Init(WoWTools_LFDMixin.LFDButton)
             self:UnregisterEvent(event)
         end
     end

@@ -9,7 +9,6 @@ local function Save()
 end
 
 local LOOT_ITEM = LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
-local CHAT_SAY_SEND= CHAT_SAY_SEND
 local IsShowTimestamps--聊天中时间戳
 local Size=':0:0'--图标大小
 --DEFAULT_CHAT_FRAME.P_AddMessage= DEFAULT_CHAT_FRAME.AddMessage

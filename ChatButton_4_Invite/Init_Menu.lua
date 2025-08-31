@@ -51,7 +51,7 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-    
+
     local sub, sub2, col, num
 
     sub=root:CreateButton(
@@ -369,6 +369,6 @@ end
 
 
 
-function WoWTools_InviteMixin:Setup_Menu(btn)
-    btn:SetupMenu(Init_Menu)
+function WoWTools_InviteMixin:Setup_Menu()
+    self.InviteButton:SetupMenu(Init_Menu)
 end

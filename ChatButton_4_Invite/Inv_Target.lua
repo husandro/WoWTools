@@ -11,15 +11,14 @@ end
 
 
 
-
+local frame
 
 
 
 
 
 local function Init()
-    local frame= CreateFrame('Frame')
-    WoWTools_InviteMixin.InvTargetFrame= frame
+     frame= CreateFrame('Frame')
 
     function frame:set_event()--设置, 邀请目标事件
         self:UnregisterAllEvents()
@@ -93,6 +92,8 @@ function WoWTools_InviteMixin:Init_Target()
 end
 
 function WoWTools_InviteMixin:Inv_Target_Settings()
-    self.InvTargetFrame:set_event()
-    self.InvTargetFrame:InviteTarget()
+    if frame then
+        frame:set_event()
+        frame:InviteTarget()
+    end
 end

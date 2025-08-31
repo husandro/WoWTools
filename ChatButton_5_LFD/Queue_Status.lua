@@ -3,7 +3,7 @@
 local function Save()
     return WoWToolsSave['ChatButton_LFD'] or {}
 end
-local Button--WoWTools_LFDMixin.TipsButton= Button
+local Button
 
 
 
@@ -555,7 +555,11 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(nil, {size=23, atlas='UI-HUD-MicroMenu-Groupfinder-Mouseover'})
+    Button= WoWTools_ButtonMixin:Cbtn(nil, {
+        size=23,
+        atlas='UI-HUD-MicroMenu-Groupfinder-Mouseover',
+        name='WoWToolsChatToolsLFDTooltipButton'
+    })
 
     function Button:set_Point()
         self:ClearAllPoints()
@@ -637,7 +641,6 @@ local function Init()
     Button:SetMovable(true)
     Button:SetClampedToScreen(true)
 
-    WoWTools_LFDMixin.TipsButton= Button
 end
 
 

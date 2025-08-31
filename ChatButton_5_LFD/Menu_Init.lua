@@ -1038,10 +1038,12 @@ local function Init_Menu(self, root)
         (Save().tipsFramePoint and '' or '|cff9e9e9e')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
     function()
         Save().tipsFramePoint=nil
-        if WoWTools_LFDMixin.TipsButton then
-            WoWTools_LFDMixin.TipsButton:ClearAllPoints()
-            WoWTools_LFDMixin.TipsButton:set_Point()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+        if _G['WoWToolsChatToolsLFDTooltipButton'] then
+            _G['WoWToolsChatToolsLFDTooltipButton']:set_Point()
+            print(
+                WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+            )
         end
         return MenuResponse.Open
     end)

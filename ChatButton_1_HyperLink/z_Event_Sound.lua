@@ -94,8 +94,8 @@ local function Init_Settings()
         if Timer0 then Timer0:Cancel() Timer0= nil end
     end)
 
-    
-    return true
+
+    Init_Settings=function()end
 end
 
 
@@ -112,8 +112,8 @@ local function Init()
 
     WoWTools_DataMixin.IsSetPlayerSound= enabled--播放, 事件声音
 
-    if enabled and Init_Settings() then
-        Init_Settings=function() end
+    if enabled then
+        Init_Settings()
     end
 
     if enabled then

@@ -7,10 +7,9 @@ end
 
 
 
-
+print(GetLFGRoles())
 
 local function Set_PvERoles()
-
     if not Save().autoSetPvPRole then
         return
     end
@@ -32,17 +31,9 @@ local function Set_PvERoles()
         isTank, isHealer, isDPS=true, true, true
     end
 
-    local oldLeader = GetLFGRoles()
 
-    SetLFGRoles(oldLeader, isTank, isHealer, isDPS)
+    SetLFGRoles(true , isTank, isHealer, isDPS)
 end
-
-
-
-
-
-
-
 
 local function Set_PvPRoles()--检测是否选定角色pvp
     if not Save().autoSetPvPRole then
@@ -69,10 +60,65 @@ local function Set_PvPRoles()--检测是否选定角色pvp
     end
 end
 
-
-
 --StaticPopupTimeoutSec = 60
-local function Init_LFD()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    PVPReadyDialog:HookScript('OnShow', function(self2)
+        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
+    end)
+
+    PVPTimerFrame:HookScript('OnShow', function(self2)
+        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function LFDRoleCheckPopup:CancellORSetTime(seconds)
         if self.acceptTime then
             self.acceptTime:Cancel()
@@ -143,23 +189,12 @@ local function Init_LFD()
         end)
     end)
 
-    Init_LFD=function()end
-end
 
 
 
 
 
 
-
-
-local function Init_PvP()
-    C_Timer.After(2, Set_PvPRoles)
-    PVPReadyDialog:HookScript('OnShow', function(self2)
-        WoWTools_Mixin:PlaySound()--播放, 声音
-        WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
-    end)
-end
 
 
 
@@ -174,8 +209,6 @@ end
 
 
 --职责确认 RolePoll.lua
-local function Init_RolePollPopup()
-
     hooksecurefunc('RolePollPopup_Show', function(self)
         WoWTools_Mixin:PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
@@ -236,6 +269,35 @@ local function Init_RolePollPopup()
         end
         WoWTools_CooldownMixin:Setup(self)--冷却条
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    C_Timer.After(2, function()
+        Set_PvERoles()
+        Set_PvPRoles()
+    end)
+
+
+
+
+
+
+
+    Init=function()end
 end
 
 
@@ -256,11 +318,5 @@ end
 
 
 function WoWTools_LFDMixin:Init_RolePollPopup()
-    C_Timer.After(2, function()
-        Set_PvERoles()
-        Set_PvPRoles()
-    end)
-    Init_LFD()
-    Init_PvP()
-    Init_RolePollPopup()
+    Init()
 end

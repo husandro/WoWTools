@@ -53,7 +53,7 @@ local function Init()
             end)
         else]]
             FrameStackTooltip_ToggleDefaults()
-        
+
         --[[if Save().autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
             FrameStackTooltip_ToggleDefaults()
         end]]
@@ -100,14 +100,14 @@ local function Init()
         end
     end)
 
-    
-    
+
+
     local check= WoWTools_ButtonMixin:Cbtn(btn, {
         name='WoWToolsHyperLinkTableAttributeDisplayHideCheckBox',
         isCheck=true
     })
     function check:settings()
-        Save().autoHideTableAttributeDisplay= not Save().autoHideTableAttributeDisplay and true or nil
+        Save().autoHideTableAttributeDisplay= not Save().autoHideTableAttributeDisplay and true or false
     end
     function check:tooltip(tooltip)
         tooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HyperLink.addName)
@@ -115,7 +115,7 @@ local function Init()
     end
     check:SetPoint('RIGHT', edit, 'LEFT', -2, 0)
     check:SetChecked(Save().autoHideTableAttributeDisplay)
-    
+
 
     Init=function()
         btn:SetShown(not Save().disabedFrameStackPlus)
