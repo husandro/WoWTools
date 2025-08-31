@@ -9,12 +9,15 @@ local P_Save={
     --isShowBackground=nil,--是否显示背景 bool
     isEnterShowMenu= WoWTools_DataMixin.Player.husandro,-- 移过图标，显示菜单
 
-    borderAlpha=0.3,--外框，透明度
+    borderAlpha=0,--外框，透明度
+    bgAlpha=0,
+    
     pointX=0,
     anchorMenuIndex=1,--菜单位置 下，上，左，右
     setChatFrameLeft=nil,--放到聊天框左边
 
     disabledTooltiip=nil,--禁用提示
+
 }
 
 local addName
@@ -111,11 +114,12 @@ local function Init_Menu(self, root)
          Save().pointX=0
          Save().borderAlpha=0.3
         WoWTools_ChatMixin:Set_All_Buttons()
+        return MenuResponse.Open
     end)
 
 --显示背景
     sub=WoWTools_MenuMixin:BgAplha(root, function()
-        return Save().bgAlpha or 0.5
+        return Save().bgAlpha or 0
     end, function(value)
         Save().bgAlpha=value
         self:set_backgroud()

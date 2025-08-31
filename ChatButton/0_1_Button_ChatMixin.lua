@@ -149,7 +149,7 @@ function WoWTools_ChatMixin:Init()
             self.Background:SetHeight(w+1)
         end
 
-        local r,g,b,a= 0, 0, 0, Save().bgAlpha or 0.5
+        local r,g,b,a= 0, 0, 0, Save().bgAlpha or 0
         if Save().bgUseClassColor then
             r,g,b= WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b
         end
