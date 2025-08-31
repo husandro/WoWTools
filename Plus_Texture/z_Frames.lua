@@ -115,9 +115,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         ChatConfigChannelSettingsLeft,
 
     }) do
-      
         self:SetNineSlice(f)
-        --f.NineSlice:SetCenterColor(0,0,0, 0.15)
     end
 
     self:HideFrame(ChatConfigFrame.Border)

@@ -27,7 +27,7 @@ local roleAtlas={
 
 
 local ClickType= 'p'-- p r rw i
-local ChatTypeTabs={}
+local ChatTab={}
 
 
 
@@ -67,7 +67,7 @@ local function Settings()--队伍信息提示
 
 --使用,提示
     GroupButton.typeText:SetText(
-        WoWTools_DataMixin.onlyChinese and ChatTypeTabs[ClickType].cn
+        WoWTools_DataMixin.onlyChinese and ChatTab[ClickType].cn
         or ClickType
         or ''
     )
@@ -176,53 +176,50 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub, col
+    local sub
     local isInGroup= IsInGroup()
     local isInRaid= IsInRaid()
     local isInInstance= IsInInstance()
-    local num=GetNumGroupMembers()
-    local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
-    local isInBat= UnitAffectingCombat('player')
+    local num= GetNumGroupMembers() or 0
+    local le= UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
+    local isInBat= InCombatLockdown()
 
-    for index, text in pairs({
-        'p',--/p
-        'r',--/raid
-        'i',--/i
-        'w',
+    for _, tab in pairs({
+        {'p', (not isInGroup)},--/p
+        {'r',  (not isInRaid)},--/raid
+        {'i', (not isInInstance or num<2)},--/i
+        {'w', (not isInRaid or not le)},--/rw
     }) do
-        col=''
-        if index==1 and not isInGroup
-            or (index==2 and not isInRaid)--设置颜色
-            or (index==3 and (not isInInstance or num<2 ))
-            or (index==4 and (not isInRaid or not le))
-        then
-            col='|cff9e9e9e'
-        end
-        local chatType= _G[ChatTypeTabs[text].type2..'1']
+
+
+
+
         sub=root:CreateCheckbox(
-            col
-            ..ChatTypeTabs[text].text
-            ..' '..chatType,
+            '|A:'..ChatTab[tab[1]].atlas..':0:0|a'
+            ..(tab[2] and '|cff606060' or '')
+            ..ChatTab[tab[1]].text
+            ..' '
+            ..ChatTab[tab[1]].slashText,
+
         function(data)
             return ClickType==data.type
+
         end, function(data)
             ClickType= data.type
-            WoWTools_ChatMixin:Say(data.text)
+            WoWTools_ChatMixin:Say(ChatTab[data.type].slashText)
             Settings()
 
-        end, {type=text, text=chatType})
+        end, {type=tab[1]})
 
         sub:SetTooltip(function(tooltip, desc)
-            local newTab={
-                [desc.data.text]=1
-            }
-            
-            tooltip:AddLine(desc.data.text)
-            for i=2, 12 do
-                local str=_G[ChatTypeTabs[desc.data.text].type2..i]
+            local newTab={}
+            local slashText= ChatTab[desc.data.type].slash
+            for i=1, 12 do
+                local str=_G[slashText..i]
                 if str then
-                    if str~=desc.data.type then
-                        tooltip:AddLine(str..' ')
+                    if not newTab[str] then
+                        tooltip:AddLine(str)
+                        newTab[str]=1
                     end
                 else
                     break
@@ -543,27 +540,37 @@ end
 --####
 local function Init()
 
-    ChatTypeTabs={
+    ChatTab={
         ['p']= {--/p
-            text=WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,
-            type2='SLASH_PARTY',
-            cn='队'
+            text=WoWTools_DataMixin.onlyChinese and '队伍' or COMPACT_UNIT_FRAME_PROFILE_SORTBY_GROUP,
+            slash='SLASH_PARTY',
+            slashText= SLASH_PARTY1,
+            cn='队',
+            atlas='questlog-questtypeicon-group',
         },
         ['r']= {--/raid
             text= WoWTools_DataMixin.onlyChinese and '团队' or RAID,
-            type2='SLASH_RAID',
-            cn='团'
+            slash='SLASH_RAID',
+            slashText= SLASH_RAID1,
+            cn='团',
+            atlas='Ping_Chat_Assist',
         },
         ['i']= {--i
-            WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,--/i
-            type2='SLASH_INSTANCE_CHAT',
-            cn='副'
+            text=WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,--/i
+            slash='SLASH_INSTANCE_CHAT',
+            slashText= SLASH_INSTANCE_CHAT1,
+            cn='副',
+            atlas='delves-bountiful'
         },
         ['w']= {--rw
             text= WoWTools_DataMixin.onlyChinese and '团队通知' or RAID_WARNING,--/rw
-            type2='SLASH_RAID_WARNING',
-            cn='领'
+            slash='SLASH_RAID_WARNING',
+            slashText= SLASH_RAID_WARNING1,
+            cn='领',
+            atlas='voicechat-icon-textchat-silenced',
         }
+
+
     }
 
 --使用,提示
@@ -594,8 +601,8 @@ local function Init()
         end
 
         GameTooltip:AddDoubleLine(
-            ChatTypeTabs[ClickType].text,
-            ClickType..WoWTools_DataMixin.Icon.left
+            ChatTab[ClickType].text,
+            ChatTab[ClickType].slashText..WoWTools_DataMixin.Icon.left
         )
 
         GameTooltip:AddLine(' ')
@@ -620,9 +627,9 @@ local function Init()
     end
 
     function GroupButton:set_OnMouseDown()
-        
+        WoWTools_ChatMixin:Say(ChatTab[ClickType].slashText)
     end
-    
+
 
     GroupButton:SetScript('OnMouseWheel', function(_, d)--发送自定义信息
        Set_OnMouseWheel(d)
@@ -696,6 +703,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
+        if event=='GROUP_LEFT' then
+            ClickType= 'p'
+        end
+
         C_Timer.After(0.3, Settings)--队伍信息提示
 
     elseif event=='CVAR_UPDATE' then

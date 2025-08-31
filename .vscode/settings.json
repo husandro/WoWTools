@@ -6139,7 +6139,8 @@
         "D_SECONDS",
         "CHAT_FRAME_FADE_TIME",
         "CHAT_FRAME_FADE_OUT_TIME",
-        "FCF_FadeInScrollbar"
+        "FCF_FadeInScrollbar",
+        "Chat_GetChannelColor"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
