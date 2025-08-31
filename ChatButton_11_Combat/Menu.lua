@@ -102,10 +102,13 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
     sub:CreateButton(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION, function()
         Save().textFramePoint=nil
-        if WoWTools_CombatMixin.TrackButton then
-            WoWTools_CombatMixin.TrackButton:set_Point()
+        if _G['WoWToolsChatCombatTrackButton'] then
+            _G['WoWToolsChatCombatTrackButton']:set_Point()
         end
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CombatMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+        print(
+            WoWTools_CombatMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+        )
         return MenuResponse.Open
     end)
 

@@ -273,6 +273,143 @@ end
 
 
 
+--场景战役 SCENARIOS
+local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
+    local sub, sub2, reward, rewardIndex, rewardType, rewardArg
+    --[[if not PlayerGetTimerunningSeasonID() then
+       return
+    end]]
+    local numScenario= GetNumRandomScenarios() or 0
+    if numScenario==0 then
+        return
+    end
+
+    sub= root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '场景战役' or SCENARIOS)..' #'..numScenario,
+    function()
+        return MenuResponse.Open
+    end)
+
+
+    for i=1, numScenario do
+        --local id, name, typeID, subtype, minLevel, maxLevel= GetRandomScenarioInfo(i)
+        local dungeonID, name = GetRandomScenarioInfo(i)
+        if dungeonID and name then
+            local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(dungeonID)
+
+            if isAvailableForAll and isAvailableForPlayer then
+                reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
+                sub2=sub:CreateButton(
+                    --WoWTools_TextMixin:CN(name, {scenarioID=dungeonID, isName=true})..reward,
+                    WoWTools_TextMixin:CN(name)..reward,
+                function(data)
+                    if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
+                        LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
+                    else
+                        LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, data.dungeonID, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
+                        WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, data.dungeonName, nil)--设置图标, 点击,提示
+                    end
+                    return MenuResponse.Open
+
+                end, {
+                    dungeonID= dungeonID,
+                    dungeonName= name,
+                    type= LE_LFG_CATEGORY_SCENARIO,
+                    rewardIndex= rewardIndex,
+                    rewardType= rewardType,
+                    rewardArg= rewardArg,
+                })
+                sub2:SetTooltip(Set_Tooltip)
+
+                sub2:AddInitializer(Add_Initializer)
+
+            else
+                sub2=sub:CreateButton('     |cff9e9e9e'..WoWTools_TextMixin:CN(name)..' |r', function()
+                    return MenuResponse.Open
+                end, {
+                    dungeonID= dungeonID,
+                    dungeonName=name,
+                })
+
+                sub2:SetTooltip(function(tooltip, desc)
+                    tooltip:AddLine(WoWTools_TextMixin:CN(desc.data.dungeonName))
+                    tooltip:AddLine(' ')
+                    GameTooltip_AddErrorLine(tooltip,
+                        WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS
+                    )
+                    local text= LFGConstructDeclinedMessage(desc.data.dungeonID)
+                    if text and text~='' then
+                        GameTooltip_AddErrorLine(tooltip,
+                            WoWTools_TextMixin:CN(text)
+                        )
+                    end
+                    tooltip:AddLine(' ')
+                    tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
+                end)
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Specific_Menu(root)
+end
+
+
+--[[
+
+function LFDQueueFrameSpecificList_InitButton(button, elementData)
+	local dungeonID = elementData.dungeonID;
+	local enabled, queued = LFGDungeonList_EvaluateListState(LE_LFG_CATEGORY_LFD);
+
+	local checkedList;
+	if ( queued ) then
+		checkedList = LFGQueuedForList[LE_LFG_CATEGORY_LFD];
+	else
+		checkedList = LFGEnabledList;
+	end
+
+	button:SetWidth(295);
+
+	LFGDungeonListButton_SetDungeon(button, dungeonID, enabled, checkedList);
+end
+]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --副本， 菜单列表
 --5人，随机 LFDFrame.lua
@@ -353,102 +490,6 @@ local function set_Party_Menu_List(root)
     end
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---场景战役 SCENARIOS
-local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
-    local sub, sub2, reward, rewardIndex, rewardType, rewardArg
-    --[[if not PlayerGetTimerunningSeasonID() then
-       return
-    end]]
-    local numScenario= GetNumRandomScenarios() or 0
-    if numScenario==0 then
-        return
-    end
-
-    sub= root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '场景战役' or SCENARIOS)..' #'..numScenario,
-    function()
-        return MenuResponse.Open
-    end)
-
-
-    for i=1, numScenario do
-        --local id, name, typeID, subtype, minLevel, maxLevel= GetRandomScenarioInfo(i)
-        local dungeonID, name = GetRandomScenarioInfo(i)
-        if dungeonID and name then
-            local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(dungeonID)
-
-            if isAvailableForAll and isAvailableForPlayer then
-                reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
-                sub2=sub:CreateButton(
-                    --WoWTools_TextMixin:CN(name, {scenarioID=dungeonID, isName=true})..reward,
-                    WoWTools_TextMixin:CN(name)..reward,
-                function(data)
-                    if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
-                        LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
-                    else
-                        LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, data.dungeonID, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
-                        WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, data.dungeonName, nil)--设置图标, 点击,提示
-                    end
-                    return MenuResponse.Open
-
-                end, {
-                    dungeonID= dungeonID,
-                    dungeonName= name,
-                    type= LE_LFG_CATEGORY_SCENARIO,
-                    rewardIndex= rewardIndex,
-                    rewardType= rewardType,
-                    rewardArg= rewardArg,
-                })
-                sub2:SetTooltip(Set_Tooltip)
-
-                sub2:AddInitializer(Add_Initializer)
-
-            else
-                sub2=sub:CreateButton('     |cff9e9e9e'..WoWTools_TextMixin:CN(name)..' |r', function()
-                    return MenuResponse.Open
-                end, {
-                    dungeonID= dungeonID,
-                    dungeonName=name,
-                })
-
-                sub2:SetTooltip(function(tooltip, desc)
-                    tooltip:AddLine(WoWTools_TextMixin:CN(desc.data.dungeonName))
-                    tooltip:AddLine(' ')
-                    GameTooltip_AddErrorLine(tooltip,
-                        WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS
-                    )
-                    local text= LFGConstructDeclinedMessage(desc.data.dungeonID)
-                    if text and text~='' then
-                        GameTooltip_AddErrorLine(tooltip,
-                            WoWTools_TextMixin:CN(text)
-                        )
-                    end
-                    tooltip:AddLine(' ')
-                    tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
-                end)
-            end
-        end
-    end
-end
 
 
 
@@ -1147,10 +1188,13 @@ local function Init_Menu(self, root)
 
 
 --显示 LFGDungeonReadyDialog
-    if not WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root) then        
+    if not WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root) then
 --副本，列表
-        Set_LFGFollower_Dungeon_List(root)--追随者，副本
         Init_Scenarios_Menu(root)--场景
+
+        Set_LFGFollower_Dungeon_List(root)--追随者，副本
+
+        Init_Specific_Menu(root)--指定地下城
 
         root:CreateDivider()
         set_Party_Menu_List(root)--随机

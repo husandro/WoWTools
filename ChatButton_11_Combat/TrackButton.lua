@@ -240,7 +240,11 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
             ..' |A:poi-soulspiritghost:0:0|a'
             ..InstanceDate.dead..'|r'
 
-        print(WoWTools_DataMixin.addName, WoWTools_TextMixin:CN(InstanceDate.map) or WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, text)
+        print(
+            WoWTools_DataMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_TextMixin:CN(InstanceDate.map) or (WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE),
+            text
+        )
 
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
@@ -284,22 +288,12 @@ end
 
 
 local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
-    if Save().disabledText or TrackButton then
-        if TrackButton then
-            if Save().disabledText then
-                TrackButton.text:SetText('')
-            else
-                TrackButton:set_instance_evnet()
-                TrackButton_Frame_Init_Date(TrackButton)--初始, 数据
-            end
-            TrackButton:SetShown(not Save().disabledText)
-            Set_Event()
-        end
-        return
-    end
-
-    TrackButton= WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {size=22, icon='hide'})
-    WoWTools_CombatMixin.TrackButton= TrackButton
+    TrackButton= WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {
+        name='WoWToolsChatCombatTrackButton',
+        size=22,
+        icon='hide'
+    })
+    --WoWTools_CombatMixin.TrackButton= TrackButton
 
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
@@ -399,16 +393,15 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             Save().textScale=sacle
             self:set_text_scale()
             self:set_tooltip()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_CombatMixin.addName, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
         end
     end)
 
     TrackButton:SetScript('OnEvent', function(self, event, arg1)
         if event=='PLAYER_FLAGS_CHANGED' then--AFK
-            TrackButton_Frame_Init_Date(self)--初始, 数据
+            TrackButton_Frame_Init_Date()--初始, 数据
 
         elseif event=='PET_BATTLE_OPENING_DONE' then
-            TrackButton_Frame_Init_Date(self)--初始, 数据
+            TrackButton_Frame_Init_Date()--初始, 数据
 
         elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
             PetRound.PVP =true
@@ -425,10 +418,10 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             end
             set_Pet_Text()--宠物战斗, 设置显示内容
         elseif event=='PET_BATTLE_CLOSE' then
-            TrackButton_Frame_Init_Date(self)--初始, 数据
+            TrackButton_Frame_Init_Date()--初始, 数据
 
         elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
-            TrackButton_Frame_Init_Date(self)--初始, 数据
+            TrackButton_Frame_Init_Date()--初始, 数据
             self:set_instance_evnet()
             IsInArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
 
@@ -448,7 +441,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
                 end
             end
         elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
-            TrackButton_Frame_Init_Date(self)--初始, 数据
+            TrackButton_Frame_Init_Date()--初始, 数据
         end
     end)
 
@@ -475,7 +468,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
     TrackButton:set_instance_evnet()
 
     Set_Event()
-    TrackButton_Frame_Init_Date(TrackButton)--初始, 数据
+    TrackButton_Frame_Init_Date()--初始, 数据
 
 
 
@@ -483,6 +476,17 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         InstanceDate.dead= C_ChallengeMode.GetDeathCount() or 0
     end
 
+
+    Init=function()
+        if Save().disabledText then
+            TrackButton.text:SetText('')
+        else
+            TrackButton:set_instance_evnet()
+            TrackButton_Frame_Init_Date()--初始, 数据
+        end
+        Set_Event()
+        TrackButton:SetShown(not Save().disabledText)
+    end
 end
 
 
