@@ -6141,7 +6141,9 @@
         "CHAT_FRAME_FADE_OUT_TIME",
         "FCF_FadeInScrollbar",
         "Chat_GetChannelColor",
-        "SPECIFIC_DUNGEONS"
+        "SPECIFIC_DUNGEONS",
+        "LFDDungeonList",
+        "LFDFrame_OnEvent"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
