@@ -53,17 +53,7 @@ local function Settings()--队伍信息提示
     local isInRaid= IsInRaid()
     local isInInstance= IsInInstance()
 
-    if not ClickType then
-        if isInRaid then
-            if UnitIsGroupLeader('player') then
-               ClickType= 'w'
-            else
-                ClickType= 'r'
-            end
-        else
-            ClickType= 'p'
-        end
-    end
+    ClickType= ClickType or (isInRaid and 'r') or 'p'
 
 --使用,提示
     GroupButton.typeText:SetText(
@@ -637,7 +627,7 @@ local function Init()
 
     GroupButton:SetupMenu(Init_Menu)
 
-    C_Timer.After(0.3, function() Settings() end)--队伍信息提示
+    Settings()--队伍信息提示
 end
 
 
@@ -665,9 +655,15 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+
 panel:RegisterEvent('GROUP_LEFT')
+panel:RegisterEvent('GROUP_JOINED')
+panel:RegisterEvent('GROUP_FORMED')
+
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+
 panel:RegisterEvent('CVAR_UPDATE')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -695,23 +691,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             GroupButton= WoWTools_ChatMixin:CreateButton('Group', addName)
 
             if GroupButton then--禁用 ChatButton
-                Init()
                 self:UnregisterEvent(event)
             else
                 self:UnregisterAllEvents()
             end
         end
 
-    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        if event=='GROUP_LEFT' then
-            ClickType= 'p'
-        end
+    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+        Init()
+        self:UnregisterEvent(event)
 
+    elseif event=='GROUP_ROSTER_UPDATE' then
         C_Timer.After(0.3, Settings)--队伍信息提示
 
-    elseif event=='CVAR_UPDATE' then
-        if arg1=='chatBubblesParty' then
-            Settings()--提示，聊天泡泡，开启/禁用
-        end
+    elseif event=='GROUP_LEFT' or event=='GROUP_JOINED' or event=='GROUP_FORMED' then
+        ClickType= IsInRaid() and 'r' or 'p'
+        Settings()--队伍信息提示
+
+    elseif event=='CVAR_UPDATE' and arg1=='chatBubblesParty' then
+        Settings()--提示，聊天泡泡，开启/禁用
+
     end
 end)

@@ -8,9 +8,6 @@ end
 
 
 
-
-
-
 --主菜单
 --#####
 local function Init_Menu(self, root)

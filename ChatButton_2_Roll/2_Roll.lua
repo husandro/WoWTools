@@ -263,7 +263,7 @@ local function Init()
 
     function RollButton:set_tooltip()
         self:set_owner()
-        GameTooltip:AddDoubleLine(addName, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddLine(addName..WoWTools_DataMixin.Icon.left..'/roll')
         if #RollTab>0 then
             GameTooltip:AddLine(' ')
             local tabNew={}

@@ -86,10 +86,16 @@ local function Init()
 
     WoWTools_HyperLink:Blizzard_DebugTools()
 
-    WoWTools_HyperLink:Blizzard_Settings()
+    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+        WoWTools_HyperLink:Blizzard_Settings()
+    end
+
     WoWTools_HyperLink:Blizzard_EventTrace()
 
     WoWTools_HyperLink:Init_CopyChat()
+
+
+    Init=function()end
 end
 
 
@@ -135,7 +141,6 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             if LinkButton then
                 Init()
-
 
             else
                 --DEFAULT_CHAT_FRAME.P_AddMessage= nil

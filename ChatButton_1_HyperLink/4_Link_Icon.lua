@@ -704,7 +704,7 @@ end
 
 function WoWTools_HyperLink:Link_Icon_Settings()
     local s= Save().iconSize or 0
-    if s<8 then s=0 end
+    s = s<8  and 0 or s
     Size= ':'..s..':'..s
 end
 

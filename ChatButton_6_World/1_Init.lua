@@ -1,7 +1,7 @@
 WoWTools_WorldMixin={}
 
 local P_Save={
-    world= WoWTools_DataMixin.Player.Region==5 and '大脚世界频道' or 'World',
+    world= LOCALE_zhCN and '大脚世界频道' or 'World',
     myChatFilter= true,--过滤，多次，内容
     myChatFilterNum=70,
 
@@ -194,8 +194,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['ChatButtonWorldChannel']= WoWToolsSave['ChatButtonWorldChannel'] or P_Save
+
             Save().myChatFilterPlayers= Save().myChatFilterPlayers or {}
             Save().userChatFilterTab= Save().userChatFilterTab or {}
+            Save().lastName= Save().lastName or P_Save.world
 
             WoWTools_WorldMixin.addName= '|A:tokens-WoW-generic-regular:0:0|a'..(WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL)
             WoWTools_WorldMixin.Button= WoWTools_ChatMixin:CreateButton('World', WoWTools_WorldMixin.addName)

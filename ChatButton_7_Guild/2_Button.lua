@@ -45,16 +45,16 @@ local function Set_Text(self)
     self.membersText:SetText(online==0 and '|cff8282820' or online)
     self.membersText:SetAlpha(online==0 and 0.3 or 1)
 
+    local bottomText
     if isInGuild then
 --弹劾
         if CanReplaceGuildMaster() then--弹劾
-            self.bottomText:SetText(WoWTools_DataMixin.onlyChinese and '弹' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))
+            bottomText= WoWTools_DataMixin.onlyChinese and '弹' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true)
         elseif WoWTools_GuildMixin:IsLeaderOrOfficer() and CanGuildInvite() then
-            self.bottomText:SetText(WoWTools_GuildMixin:GetClubFindDay(nil) or '')--Club,列出查找，过期时间
+            bottomText= WoWTools_GuildMixin:GetClubFindDay(nil)--Club,列出查找，过期时间
         end
-    else
-        self.bottomText:SetText('')
     end
+    self.bottomText:SetText(bottomText or (WoWTools_DataMixin.onlyChinese and '会' or 'g'))
 end
 
 
@@ -183,7 +183,7 @@ local function Init(GuildButton)
     GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
     GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
 
-    --GuildButton:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
+    GuildButton:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
     GuildButton:RegisterEvent('CLUB_FINDER_RECRUITS_UPDATED')
     GuildButton:RegisterEvent('CLUB_FINDER_APPLICATIONS_UPDATED')
     GuildButton:RegisterEvent('CLUB_FINDER_POST_UPDATED')--C_ClubFinder.RequestPostingInformationFromClubId
@@ -195,7 +195,7 @@ local function Init(GuildButton)
 --更新，数据
             event=='PLAYER_GUILD_UPDATE'
             or event=='GUILD_ROSTER_UPDATE'
-            or (event=='CLUB_FINDER_RECRUITMENT_POST_RETURNED' and arg1==Enum.ClubFinderRequestType.Guild)
+            or event=='CLUB_FINDER_RECRUITMENT_POST_RETURNED'
 
         then
             Set_Text(self)
