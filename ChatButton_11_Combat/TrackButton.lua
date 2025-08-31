@@ -288,6 +288,10 @@ end
 
 
 local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
+    if Save().disabledText then
+        return
+    end
+
     TrackButton= WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {
         name='WoWToolsChatCombatTrackButton',
         size=22,
@@ -482,7 +486,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             TrackButton.text:SetText('')
         else
             TrackButton:set_instance_evnet()
-            TrackButton_Frame_Init_Date()--初始, 数据
+            TrackButton_Frame_Init_Date(TrackButton)--初始, 数据
         end
         Set_Event()
         TrackButton:SetShown(not Save().disabledText)

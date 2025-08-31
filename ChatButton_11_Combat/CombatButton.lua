@@ -49,6 +49,10 @@ local function Init(btn)
         GameTooltip:Show()
     end
 
+    function btn:set_OnMouseDown()
+        self:set_Click()
+    end
+
     WoWTools_CombatMixin:Init_SetupMenu()
 
     --[[function btn:HandlesGlobalMouseEvent(_, event)
@@ -57,14 +61,14 @@ local function Init(btn)
 
 
     function btn:set_OnLeave()
-        if WoWTools_CombatMixin.TrackButton then
-            WoWTools_CombatMixin.TrackButton:SetButtonState('NORMAL')
+        if _G['WoWToolsChatCombatTrackButton'] then
+            _G['WoWToolsChatCombatTrackButton']:SetButtonState('NORMAL')
         end
     end
 
     function btn:set_OnEnter()
-        if WoWTools_CombatMixin.TrackButton then
-            WoWTools_CombatMixin.TrackButton:SetButtonState('PUSHED')
+        if _G['WoWToolsChatCombatTrackButton'] then
+            _G['WoWToolsChatCombatTrackButton']:SetButtonState('PUSHED')
         end
     end
 
@@ -103,14 +107,3 @@ function WoWTools_CombatMixin:Init_Button()
     Init(self.CombatButton)
 end
 
-
-function WoWTools_CombatMixin:Set_Button_State()
-
-    if GameTooltip:IsOwned(self.TrackButton) or GameTooltip:IsOwned(self.CombatButton) then
-        self.TrackButton:SetButtonState('PUSHED')
-        self.CombatButton:SetButtonState('PUSHED')
-    else
-        self.TrackButton:SetButtonState('NORMAL')
-        self.CombatButton:SetButtonState('NORMAL')
-    end
-end

@@ -115,21 +115,24 @@ local function Init_Menu(self, root)
     name= (isInCombat and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
     sub2=sub:CreateButton(
         name,
-    function(data)
-        StaticPopup_Show('WoWTools_OK',
-        data.name..'\n\n'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
+    function()
+        StaticPopup_Show('WoWTools_RestData',
+            WoWTools_CombatMixin.addName
+            ..'\n'
+            ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+            ..'\n\n|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
         nil,
-        {SetValue=function()
+        function()
             WoWToolsSave['ChatButton_Combat']= nil
             WoWTools_Mixin:Reload()
-        end})
+        end)
+
         return MenuResponse.Open
     end)
     sub2:SetTooltip(function (tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
     end)
-
-
 
 
 
