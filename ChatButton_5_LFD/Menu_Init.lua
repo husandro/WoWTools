@@ -165,37 +165,43 @@ local function GetLFGLockList()
 end
 
 
+local function Get_Follower_Specific_List(type)
+    local list= {}
+    local lockMap= LFGLockList or GetLFGLockList()
+    local isFollowerFrameSelected = type == "follower"
 
-
-
-
-
-
---追随者，副本
-local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
-    if PlayerGetTimerunningSeasonID() then
-        return
-    end
-
-    local followerList= {}
-	for _, dungeonID in ipairs( GetLFDChoiceOrder() or {}) do--LFDFrame.lua
-        local lockMap= LFGLockList or GetLFGLockList()
+	for _, dungeonID in ipairs(GetLFDChoiceOrder() or {}) do
 		if not lockMap[dungeonID] or not lockMap[dungeonID].hideEntry then
-			if dungeonID >= 0 and C_LFGInfo.IsLFGFollowerDungeon(dungeonID) then
-				table.insert(followerList, dungeonID)
+            local isDungeonHeader = dungeonID < 0
+
+			local isLFGFollowerDungeon = dungeonID >= 0 and C_LFGInfo.IsLFGFollowerDungeon(dungeonID);
+			if (isFollowerFrameSelected and (isLFGFollowerDungeon or isDungeonHeader)) or (not isFollowerFrameSelected and not isLFGFollowerDungeon) then
+				table.insert(list, dungeonID)
 			end
 		end
 	end
 
-    local num= #followerList
-    local sub, sub2
+    return list
+end
+
+
+
+--LFGIsIDHeader(id)
+
+--追随者，副本
+local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
+	local followerList= Get_Follower_Specific_List(listType)
 
     local header= NORMAL_FONT_COLOR:WrapTextInColorCode(
-        (WoWTools_DataMixin.onlyChinese and '追随者地下城' or LFG_TYPE_FOLLOWER_DUNGEON)
-        ..' #'
+            (listType=='follower'
+                and (WoWTools_DataMixin.onlyChinese and '追随者地下城' or LFG_TYPE_FOLLOWER_DUNGEON)
+                or (WoWTools_DataMixin.onlyChinese and '指定地下城' or SPECIFIC_DUNGEONS)
+            )..' #'
     )
 
 
+    local num= #followerList
+    local sub, sub2
 
     sub= root:CreateButton(
         header..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..num,
@@ -210,7 +216,8 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
     local find=0
 
     for _, dungeonID in pairs(followerList) do
-        local info = C_LFGInfo.GetDungeonInfo(dungeonID)
+        local info =C_LFGInfo.GetDungeonInfo(dungeonID)
+        --local name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isRandomTimewalker, mapName, minGear, isScalingDungeon = GetLFGDungeonInfo(dungeonID);
         if info and info.name then
             local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
             if (isAvailableForAll or not hid2eIfNotJoinable) then
@@ -219,7 +226,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
                 if isAvailableForPlayer then
                     local reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
                     sub2= sub:CreateButton(
-                        (info.iconID and '|T'..info.iconID..':0|t' or '')
+                        '|T'..(info.iconID or 0)..':0|t'
                         ..WoWTools_TextMixin:CN(info.name)
                         ..reward
                         ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
@@ -228,7 +235,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
                         if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
                             LeaveSingleLFG(LE_LFG_CATEGORY_LFD, data.dungeonID)
                         else
-                            LFDQueueFrame_SetTypeInternal('follower')
+                            LFDQueueFrame_SetTypeInternal(data.listType)--follower, specific
                             LFDQueueFrame_SetType(data.dungeonID)
                             LFDQueueFrame_Join()
                             WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, WoWTools_TextMixin:CN(data.dungeonName), nil)--设置图标, 点击,提示
@@ -241,6 +248,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
                         rewardIndex= rewardIndex,
                         rewardType= rewardType,
                         rewardArg= rewardArg,
+                        listType= listType,
                     })
                     sub2:SetTooltip(Set_Tooltip)
 
@@ -264,9 +272,16 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
     end
 
     WoWTools_MenuMixin:SetScrollMode(sub)
+
+
+
+    --[[FollowerSpecific_Menu(
+        root,
+        specificList,
+        
+
+    )]]
 end
-
-
 
 
 
@@ -397,46 +412,6 @@ end
 
 
 
-
-
-
-local function Init_Specific_Menu(root)
-    local sub= root:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '指定地下城' or SPECIFIC_DUNGEONS,
-        function()
-            return MenuResponse.Open
-        end)
-
-
-    local function IsSelected(dungeonType)
-        return LFDQueueFrame.type == dungeonType
-    end
-
-    local function SetSelected(dungeonType)
-        LFDQueueFrame_SetTypeInternal(dungeonType)
-    end
-
-    for i=1, GetNumRandomDungeons() do
-			local id, name = GetLFGRandomDungeonInfo(i)
-			local isAvailableForAll, isAvailableForPlayer, hideIfNotJoinable = IsLFGDungeonJoinable(id)
-
-			if isAvailableForPlayer or not hideIfNotJoinable then
-                print(id,name)
-				if isAvailableForAll then
-					sub:CreateRadio(name, IsSelected, SetSelected, id)
-				else
-					local radio = sub:CreateRadio(name, IsSelected, SetSelected, id)
-					radio:SetEnabled(false)
-					radio:SetTooltip(function(tooltip)
-						GameTooltip_SetTitle(tooltip, WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS)
-						GameTooltip_AddErrorLine(tooltip, LFGConstructDeclinedMessage(id))
-					end)
-				end
-			end
-		end
-
-
-end
 
 
 --[[
@@ -679,7 +654,7 @@ local function set_Raid_Menu_List(root2)
 
 
     local num= #sortedDungeons
-    
+
     local header=NORMAL_FONT_COLOR:WrapTextInColorCode(
         (WoWTools_DataMixin.onlyChinese and '随机团队' or PLAYER_DIFFICULTY3)
         ..' #'
@@ -1337,9 +1312,11 @@ local function Init_Menu(self, root)
 --副本，列表
         Init_Scenarios_Menu(root)--场景
 
-        Set_LFGFollower_Dungeon_List(root)--追随者，副本
+        if not PlayerGetTimerunningSeasonID() then
+            Init_Follower_Specific_Menu(root, 'follower')--追随者，副本
+        end
 
-        Init_Specific_Menu(root)--指定地下城
+        --Init_Follower_Specific_Menu(root, 'specific')--指定地下城
 
         set_Party_Menu_List(root)--随机
 

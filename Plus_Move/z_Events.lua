@@ -438,8 +438,11 @@ end
 
 --地下城和团队副本 GroupFinderFrame
 function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
-   LFGListPVEStub:SetPoint('BOTTOMRIGHT')
+
+    LFGListPVEStub:SetPoint('BOTTOMRIGHT')
     LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
+    --LFDQueueFrameBackground:SetPoint('RIGHT')
+    LFDQueueFrame:SetPoint('BOTTOMRIGHT')
 
     hooksecurefunc('GroupFinderFrame_SelectGroupButton', function(index)
         local btn= PVEFrame.ResizeButton
