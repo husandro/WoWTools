@@ -1339,7 +1339,7 @@ local function Init_Menu(self, root)
 
         Set_LFGFollower_Dungeon_List(root)--追随者，副本
 
-       -- Init_Specific_Menu(root)--指定地下城
+        Init_Specific_Menu(root)--指定地下城
 
         set_Party_Menu_List(root)--随机
 

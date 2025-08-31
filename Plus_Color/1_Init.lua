@@ -71,9 +71,7 @@ local function Init()
 	WoWTools_ColorMixin:Init_Log()
 	WoWTools_ColorMixin:Init_Other()
 
-	
-
-	return true
+	Init=function()end
 end
 
 
@@ -112,13 +110,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			})
 
 			if Save().disabled then
+				WoWTools_ColorMixin:Init_CODE()
 				self:UnregisterAllEvents()
 
 			else
 				ColorPickerFrame:SetScript('OnEvent', Set_Event)--原生，去掉，在框架外，会自动关闭
 
 				ColorPickerFrame:HookScript('OnShow', function()
-					if Init() then Init=function()end end
+					Init()
 				end)
 				self:UnregisterEvent(event)
 

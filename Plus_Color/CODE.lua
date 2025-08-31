@@ -306,12 +306,14 @@ local Tab={
 }
 
 
-table.sort(Tab)
+
 
 local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
+
+
 
     local sub
     for _, name in pairs(Tab) do
@@ -340,10 +342,18 @@ end
 
 
 local function Init(frame)
+    if not frame then
+        Tab={}
+        return
+    end
+
+    table.sort(Tab)
+
     local btn= WoWTools_ButtonMixin:Menu(frame, {atlas='AnimaChannel-Bar-Necrolord-Gem'})
-    
     btn:SetPoint('RIGHT', frame.Instructions, 'LEFT')
     btn:SetupMenu(Init_Menu)
+
+    Init=function()end
 end
 
 
