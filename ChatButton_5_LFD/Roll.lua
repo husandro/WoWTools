@@ -26,8 +26,8 @@ local function set_Timer_Text(frame)--提示，剩余时间
     if frame and frame.Timer and not frame.Timer.Text and frame:IsShown() then
         frame.Timer.Text= WoWTools_LabelMixin:Create(frame.Timer)
         frame.Timer.Text:SetPoint('RIGHT')
-        frame.Timer:HookScript("OnUpdate", function(self2)
-            self2.Text:SetText(WoWTools_TimeMixin:SecondsToClock(self2:GetValue()))
+        frame.Timer:HookScript("OnUpdate", function(self)
+            self.Text:SetText(WoWTools_TimeMixin:SecondsToClock(self:GetValue()))
         end)
     end
 end
@@ -124,12 +124,12 @@ end
 --自动ROLL
 --GroupLootFrame.lua --frame.rollTime  frame.Timer
 local function Init()
-    hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
-        set_ROLL_Check(frame)
+    hooksecurefunc('GroupLootContainer_AddFrame', function(_, self)
+        set_ROLL_Check(self)
     end)
 
     hooksecurefunc('GroupLootContainer_Update', function(self)
-        for i=1, self.maxIndex do
+        for i=1, self.maxIndex or 0 do
             local frame = self.rollFrames[i]
             if frame and frame:IsShown()  then
                 set_ROLL_Check(frame, true)
@@ -137,6 +137,7 @@ local function Init()
         end
     end)
 
+    Init=function()end
 end
 
 

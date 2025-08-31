@@ -352,6 +352,10 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:SetButton(DressUpFrame.MaxMinButtonFrame.MaximizeButton, {all=true,})
     self:SetButton(DressUpFrameCloseButton)
 
+    self:SetButton(DressUpFrameCancelButton)
+    self:SetButton(DressUpFrame.LinkButton)
+    self:SetButton(DressUpFrameResetButton)
+
     self:Init_BGMenu_Frame(DressUpFrame, {
         settings=function(_, texture, alpha)
             DressUpFrame.ModelBackground:SetAlpha(texture and 0 or alpha or 1)

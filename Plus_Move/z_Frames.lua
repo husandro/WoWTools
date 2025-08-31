@@ -81,12 +81,15 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
         frame:Raise()
     end)
 
-    self:Setup(DressUpFrame, {setSize=true, minH=320, minW=310,
+    self:Setup(DressUpFrame, {
+        setSize=true, minH=320, minW=310,
     sizeRestFunc=function()
         self:Save().size[DressUpFrame:GetName()]= nil
         DressUpFrame:ConfigureSize(GetCVarBool("miniDressUpFrame"))
         DressUpFrame:Raise()
     end})
+
+    self:Setup(DressUpFrame.OutfitDetailsPanel, {frame=DressUpFrame})
 end
 
 

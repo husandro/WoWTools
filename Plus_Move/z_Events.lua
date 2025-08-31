@@ -987,6 +987,17 @@ end
 
 
 
+--LFDRoleCheckPopup
+function WoWTools_MoveMixin.Events:Blizzard_StaticPopup()
+    hooksecurefunc('StaticPopup_SetUpPosition', function(dialog)
+        if not dialog.moveFrameData then
+            self:Setup(dialog, {notSize=true})
+        else
+            self:SetPoint(dialog)--设置, 移动,
+        end
+    end)
+end
+
 
 
 

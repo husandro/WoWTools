@@ -110,9 +110,10 @@ WoWTools_DataMixin.Icon={
     toLeft='common-icon-rotateleft',--向左
     toRight='common-icon-rotateright',--向右
 
-    TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
-    HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',--INLINE_HEALER_ICON
-    DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',--INLINE_DAMAGER_ICON
+--Blizzard_FrameXMLBase/Constants.lua
+    TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON CreateAtlasMarkup(GetMicroIconForRole("TANK"), 16, 16) 
+    HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',--INLINE_HEALER_ICON CreateAtlasMarkup(GetMicroIconForRole("HEALER"), 16, 16)
+    DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',--INLINE_DAMAGER_ICON CreateAtlasMarkup(GetMicroIconForRole("DAMAGER"), 16, 16)
     NONE='|A:UI-LFG-RoleIcon-Pending:0:0|a',
 
     Alliance='charcreatetest-logo-alliance',

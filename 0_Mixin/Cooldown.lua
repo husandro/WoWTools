@@ -110,7 +110,7 @@ end
 
 
 --Cooldown.xml
-
+--StaticPopupTimeoutSec = 60
 function WoWTools_CooldownMixin:Setup(frame, start, duration, modRate, HideCountdownNumbers, Reverse, setSwipeTexture, hideDrawBling)--冷却条
     if not frame then
         return

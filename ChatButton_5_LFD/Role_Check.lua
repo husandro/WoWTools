@@ -14,6 +14,7 @@ local function Set_PvERoles()
     if not Save().autoSetPvPRole then
         return
     end
+
     local _, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
     if isTank or isHealer or isDPS then
         return
@@ -31,7 +32,9 @@ local function Set_PvERoles()
         isTank, isHealer, isDPS=true, true, true
     end
 
-    SetLFGRoles(true, isTank, isHealer, isDPS)
+    local oldLeader = GetLFGRoles()
+
+    SetLFGRoles(oldLeader, isTank, isHealer, isDPS)
 end
 
 
@@ -68,7 +71,7 @@ end
 
 
 
-
+--StaticPopupTimeoutSec = 60
 local function Init_LFD()
     function LFDRoleCheckPopup:CancellORSetTime(seconds)
         if self.acceptTime then
@@ -76,7 +79,11 @@ local function Init_LFD()
             self.acceptTime=nil
         end
         if not seconds then
-            WoWTools_CooldownMixin:Setup(self)
+            if self:IsShown() then
+                WoWTools_CooldownMixin:Setup(self, self.onShowTime, StaticPopupTimeoutSec *2, nil, true, true)
+            else
+                WoWTools_CooldownMixin:Setup(self)
+            end
         else
             WoWTools_CooldownMixin:Setup(self, nil, seconds, nil, true, true)--设置冷却
         end
@@ -90,22 +97,37 @@ local function Init_LFD()
         end
     end)
 
+    LFDRoleCheckPopup:HookScript("OnHide",function(self)
+        self:CancellORSetTime(nil)
+        self.onShowTime=nil
+    end)
 
     LFDRoleCheckPopup:HookScript("OnShow",function(self)--副本职责
+        self.onShowTime= GetTime()
+
         WoWTools_Mixin:PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
             return
         end
 
-        Set_PvPRoles()--检测是否选定角色pvp
+        local _, _, _, _, _, isBGRoleCheck = GetLFGRoleUpdate();
+        if isBGRoleCheck  then
+            Set_PvPRoles()--检测是否选定角色pvp
+        else
+            Set_PvERoles()
+        end
+
         if not LFDRoleCheckPopupAcceptButton:IsEnabled() then
             LFDRoleCheckPopup_UpdateAcceptButton()
         end
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+
+        print(WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL)..': |cfff00fff'.. SecondsToTime(Save().sec).. '|r '..(WoWTools_DataMixin.onlyChinese and '接受' or ACCEPT)..'|r',
                 '|cnRED_FONT_COLOR:'..'Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
             )
+
         self:CancellORSetTime(Save().sec)
+
         self.acceptTime= C_Timer.NewTimer(Save().sec, function()
             if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
                 local t=LFDRoleCheckPopupDescriptionText:GetText()
@@ -120,6 +142,8 @@ local function Init_LFD()
             end
         end)
     end)
+
+    Init_LFD=function()end
 end
 
 
@@ -191,7 +215,7 @@ local function Init_RolePollPopup()
             end)
         end
     end)
-    
+
     --RolePollPopup:HookScript('OnShow', function(self)
 
 
@@ -232,7 +256,10 @@ end
 
 
 function WoWTools_LFDMixin:Init_RolePollPopup()
-    C_Timer.After(2, Set_PvERoles)
+    C_Timer.After(2, function()
+        Set_PvERoles()
+        Set_PvPRoles()
+    end)
     Init_LFD()
     Init_PvP()
     Init_RolePollPopup()

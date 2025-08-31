@@ -6144,7 +6144,8 @@
         "SPECIFIC_DUNGEONS",
         "LFDDungeonList",
         "LFDFrame_OnEvent",
-        "LFGIsIDHeader"
+        "LFGIsIDHeader",
+        "StaticPopupTimeoutSec"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
