@@ -166,7 +166,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isUI= tab.isUI
 
     local name= tab.name --or ((frame and frame:GetName() or 'WoWTools')..'Button'..get_index())
---
+
     local frameType= tab.frameType
                     or (isMenu and 'DropdownButton')
                     or (isItem and 'ItemButton')

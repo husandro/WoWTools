@@ -145,7 +145,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             WoWTools_MountMixin.MountButton= WoWTools_ToolsMixin:CreateButton({
-                name='Mount',
+                name='MOUNT',
                 tooltip=WoWTools_MountMixin.addName,
             })
 

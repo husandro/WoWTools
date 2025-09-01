@@ -106,8 +106,9 @@ local function Set_Button_Label(btn)
 end
 
 local function Set_Button_All_Label()
-    for _, btn in pairs(Buttons) do
-        Set_Button_Label(btn)
+    local buttonName= WoWTools_ToolsMixin:Get_ButtonName()
+    for _, name in pairs(Buttons) do
+        Set_Button_Label(_G[buttonName..name])
     end
 end
 
@@ -182,11 +183,14 @@ end
 
 
 local function Init_Button(tab)
+    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
+
     local name= C_Spell.GetSpellName(tab.spell)
     local icon= C_Spell.GetSpellTexture(tab.spell)
+    local buttonName= 'MagePortal'..tab.spell
 
     local btn=WoWTools_ToolsMixin:CreateButton({
-        name='MagePortal_Spell_'..tab.spell,
+        name=buttonName,
         tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(WoWTools_TextMixin:CN(name, {spellID=tab.spell, isName=true}) or tab.spell),
         isLeftOnlyLine=function()
             return Save().isLeft
@@ -237,7 +241,7 @@ local function Init_Button(tab)
                 self:SetAttribute('spell2', name2)
                 self.texture2:SetTexture(icon2)
                 self.name2= self.name2 or name2
-                done=true
+                done= done==true and true or done
             else
                 done=false
             end
@@ -350,7 +354,7 @@ local function Init_Button(tab)
     C_Timer.After(2, function()
         btn:set_alpha()
     end)
-    table.insert(Buttons, btn)
+    table.insert(Buttons, buttonName)
 end
 
 
@@ -374,7 +378,7 @@ end
 --###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -382,18 +386,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Tools_MagePortal']= WoWToolsSave['Tools_MagePortal'] or P_Save
 
-            if not Save().disabled and WoWTools_ToolsMixin.Button then
+            if not Save().disabled and WoWTools_ToolsMixin:Get_MainButton() then
                 addName= '|T626001:0|t|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
             else
                 Tab={}
+                self:UnregisterEvent(event)
             end
 
-            WoWTools_ToolsMixin:AddOptions(Init_Options)
-
-            self:UnregisterEvent(event)
+            WoWTools_ToolsMixin:Set_AddList(Init_Options)
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         Buttons={}
         for _, tab in pairs(Tab) do
             Init_Button(tab)

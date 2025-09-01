@@ -46,7 +46,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_HearthstoneMixin.addName='|A:delves-bountiful:0:0|a'..(WoWTools_DataMixin.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
             WoWTools_HearthstoneMixin.ToyButton= WoWTools_ToolsMixin:CreateButton({
-                name='Hearthstone',
+                name='HEARTHSTONE',
                 tooltip= WoWTools_HearthstoneMixin.addName,
                 --isMenu=true,
             })

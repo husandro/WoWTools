@@ -404,7 +404,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             addName= '|A:Taxi_Frame_Yellow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
-            WoWTools_ToolsMixin:AddOptions(function(category, layout)
+            WoWTools_ToolsMixin:Set_AddList(function(category, layout)
                  WoWTools_PanelMixin:Check_Button({
                      checkName= addName,
                      GetValue= function() return not Save().disabled end,
@@ -422,10 +422,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save().disabled
                 and not Save().no[WoWTools_DataMixin.Player.GUID]
-                and WoWTools_ToolsMixin.Button
+                and WoWTools_ToolsMixin:Get_MainButton()
             then
                 ToyButton= WoWTools_ToolsMixin:CreateButton({
-                    name='MapToy',
+                    name='MAPTOY',
                     tooltip=addName,
                     disabledOptions=true
                 })

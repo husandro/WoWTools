@@ -392,7 +392,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|T3150958:0|t'..(WoWTools_DataMixin.onlyChinese and '黛西' or 'Daisy')
 
             button= WoWTools_ToolsMixin:CreateButton({
-                name='SummonPet',
+                name='SUMMONPET',
                 tooltip=addName,
             })
 

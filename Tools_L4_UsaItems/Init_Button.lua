@@ -8,8 +8,10 @@ end
 
 
 
-local function Init_Dia()
 
+
+
+local function Init()
     StaticPopupDialogs['WoWToolsUseItemsADD']={--添加, 移除
         text= WoWTools_UseItemsMixin.addName..'|n|n%s: %s',
         whileDead=true, hideOnEscape=true, exclusive=true,
@@ -34,15 +36,12 @@ local function Init_Dia()
         end,
     }
 
-end
 
-
-
-
-local function Init()
-
-    button=WoWTools_ButtonMixin:Cbtn(WoWTools_ToolsMixin.Button.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size=22})
-    button:SetPoint('TOPLEFT', WoWTools_ToolsMixin.Button, 'TOPRIGHT')
+    button=WoWTools_ButtonMixin:Cbtn(WoWTools_ToolsMixin:Get_MainButton().Frame, {
+        atlas='Soulbinds_Tree_Conduit_Icon_Utility',
+        size=22
+    })
+    button:SetPoint('TOPLEFT', WoWTools_ToolsMixin:Get_MainButton(), 'TOPRIGHT')
 
     button:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -81,11 +80,12 @@ local function Init()
         self:SetAlpha(0.3)
         GameTooltip:Hide()
     end)
+
     C_Timer.After(8, function()
         button:SetAlpha(0.3)
     end)
 
-    Init_Dia()
+
 
     Init=function()end
 end

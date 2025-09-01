@@ -163,7 +163,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_FoodMixin.addName= '|A:Food:0:0|a'..(WoWTools_DataMixin.onlyChinese and '食物' or POWER_TYPE_FOOD)
 
             WoWTools_FoodMixin.Button= WoWTools_ToolsMixin:CreateButton({
-                name='Food',
+                name='FOOD',
                 tooltip=WoWTools_FoodMixin.addName,
                 isMoveButton=true,
                 option=function(category, layout, initializer)

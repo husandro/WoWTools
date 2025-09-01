@@ -15,7 +15,7 @@ local function Create_Button(index)
     if not skillLine or not icon then return end
 
     local button= WoWTools_ToolsMixin:CreateButton({
-        name='WoWToolsToolsProfession'..index,
+        name='PROFESSION'..index,
         tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name),
     })
     if button then
@@ -369,33 +369,20 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Tools_Professions']= WoWToolsSave['Tools_Professions'] or P_Save
 
-            if WoWTools_ToolsMixin.Button then
-                --Init()
-                --[[C_Timer.After(2, function()
-                    if UnitAffectingCombat('player') then
-                        self:RegisterEvent('PLAYER_REGEN_ENABLED')
-                    else
-                       Init()
-                    end
-                end)]]
-                self:UnregisterEvent(event)
-            else
-                self:UnregisterAllEvents()
+            if WoWTools_ToolsMixin:Get_MainButton() then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
+            self:UnregisterEvent(event)
         end
 
-    --[[elseif event=='PLAYER_REGEN_ENABLED' then
-        Init()
-        self:UnregisterEvent('PLAYER_REGEN_ENABLED')]]
-
-    elseif event == 'PLAYER_ENTERING_WORLD' and WoWTools_ToolsMixin.Button then
+    elseif event == 'PLAYER_ENTERING_WORLD' then
         Init()
         self:UnregisterEvent(event)
     end

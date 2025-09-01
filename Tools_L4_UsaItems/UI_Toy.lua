@@ -15,21 +15,23 @@ end
 
 
 
-local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
-    if btn.useItem then
-        btn.useItem:set_alpha()
-        return
-    end
+local function Create_Button(btn)--标记, 是否已选取
+    btn.useItem= WoWTools_ButtonMixin:Cbtn(btn,{
+        size=16,
+        atlas='soulbinds_tree_conduit_icon_utility'
+    })
 
-    btn.useItem= WoWTools_ButtonMixin:Cbtn(btn,{size=16, atlas='soulbinds_tree_conduit_icon_utility'})
     btn.useItem:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 32, 0)
+
     function btn.useItem:get_itemID()
         return self:GetParent().itemID
     end
+
     function btn.useItem:set_alpha()
         local find=WoWTools_UseItemsMixin:Find_Type('item', self:get_itemID())
         self:SetAlpha(find and 1 or 0.1)
     end
+
     function btn.useItem:set_tooltips()
         local itemID=self:get_itemID()
         if not itemID then
@@ -70,10 +72,15 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
             WoWTools_UseItemsMixin:Init_Menu(self)
         end
     end)
-    btn.useItem:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha() end)
-    btn.useItem:SetScript('OnEnter', btn.useItem.set_tooltips)
-    btn.useItem:set_alpha()
 
+    btn.useItem:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:set_alpha()
+    end)
+
+    btn.useItem:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+    end)
 end
 
 
@@ -84,7 +91,12 @@ end
 
 
 local function Init()
-    hooksecurefunc('ToySpellButton_UpdateButton', Init_Opetions_ToyBox)--玩具界面, 菜单
+    hooksecurefunc('ToySpellButton_UpdateButton', function(btn)--玩具界面, 菜单
+        if not btn.useItem then
+           Create_Button(btn)
+        end
+        btn.useItem:set_alpha()
+    end)
     Init=function()end
 end
 

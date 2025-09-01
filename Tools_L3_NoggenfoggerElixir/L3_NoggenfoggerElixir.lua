@@ -317,7 +317,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['NoggenfoggerElixir']= WoWToolsSave['NoggenfoggerElixir'] or P_Save
 
             button= WoWTools_ToolsMixin:CreateButton({
-                name='NoggenfoggerElixir',
+                name='NOGGENFOGGERS',
                 tooltip=addName,
             })
 

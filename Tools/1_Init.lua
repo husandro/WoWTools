@@ -102,8 +102,8 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
-
-    for _, data in pairs (WoWTools_ToolsMixin.AddList) do
+do
+    for _, data in pairs(WoWTools_ToolsMixin:Get_AddList()) do
         initializer=nil
         if not data.isPlayerSetupOptions then--用户，自定义设置，选项，法师
 
@@ -150,7 +150,10 @@ local function Init_Panel()
             data.option(Category, Layout, initializer)
         end
     end
+end
 
+    WoWTools_ToolsMixin:Clear_AddList()
+    Init_Panel= function()end
 end
 
 
@@ -189,7 +192,7 @@ local function Init_Menu(self, root)
     sub:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
         return Save().isEnterShow
     end, function()
-        Save().isEnterShow = not Save().isEnterShow and true or nil
+        Save().isEnterShow = not Save().isEnterShow and true or false
     end)
 
 --隐藏
@@ -197,14 +200,14 @@ local function Init_Menu(self, root)
     sub:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
         return Save().isCombatHide
     end, function()
-        Save().isCombatHide = not Save().isCombatHide and true or nil
+        Save().isCombatHide = not Save().isCombatHide and true or false
         self:set_event()
     end)
 
     sub:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), function()
         return Save().isMovingHide
     end, function()
-        Save().isMovingHide = not Save().isMovingHide and true or nil
+        Save().isMovingHide = not Save().isMovingHide and true or false
         self:set_event()
     end)
 
@@ -214,7 +217,7 @@ local function Init_Menu(self, root)
     function()
         return Save().isMainMenuHide
     end, function()
-        Save().isMainMenuHide= not Save().isMainMenuHide and true or nil
+        Save().isMainMenuHide= not Save().isMainMenuHide and true or false
     end)
 
 
@@ -237,7 +240,7 @@ local function Init_Menu(self, root)
     function()
         return Save().showIcon
     end, function()
-        Save().showIcon= not Save().showIcon and true or nil
+        Save().showIcon= not Save().showIcon and true or false
         self:set_icon()
     end)
     sub2:SetTooltip(function(tooltip)
@@ -283,8 +286,9 @@ local function Init_Menu(self, root)
             return Save().borderAlpha or 0.3
         end, setValue=function(value)
             Save().borderAlpha=value
-            for _, btn in pairs(WoWTools_ToolsMixin:Get_All_Buttons()) do
-                btn:set_border_alpha()
+            local list, Name= WoWTools_ToolsMixin:Get_All_Buttons()
+            for _, name in pairs(list) do
+                _G[Name..name]:set_border_alpha()
             end
         end,
         name=WoWTools_DataMixin.onlyChinese and '镶边' or EMBLEM_BORDER,
@@ -400,7 +404,7 @@ local function Init()
         end
     end)
 
-    Button:SetScript("OnLeave",function(self)
+    Button:SetScript("OnLeave",function()
         GameTooltip:Hide()
         ResetCursor()
     end)
@@ -426,9 +430,7 @@ local function Init()
             return
         end
         if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(...)
-                Init_Menu(...)
-            end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
 
         elseif d=='LeftButton' then
             self:set_shown()

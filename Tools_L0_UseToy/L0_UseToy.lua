@@ -830,7 +830,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             ToyButton= WoWTools_ToolsMixin:CreateButton({
-                name='UseToy',
+                name='USETOY',
                 tooltip=addName,
             })
 

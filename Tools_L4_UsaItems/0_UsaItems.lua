@@ -82,7 +82,7 @@ end
 --加载保存数据
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -92,23 +92,32 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 --禁用，Tools模块，退出
 
-            if not WoWTools_ToolsMixin.Button then
-                self:UnregisterAllEvents()
-                return
-            end
+            if WoWTools_ToolsMixin:Get_MainButton() then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-            WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM)
+                WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM)
 
-            for _, ID in pairs(WoWToolsSave['Tools_UseItems'].item) do
-                WoWTools_Mixin:Load({id=ID, type='item'})
-            end
+                for _, ID in pairs(WoWToolsSave['Tools_UseItems'].item) do
+                    WoWTools_Mixin:Load({id=ID, type='item'})
+                end
+                for _, ID in pairs(WoWToolsSave['Tools_UseItems'].spell) do
+                    WoWTools_Mixin:Load({id=ID, type='spell'})
+                end
+                for _, ID in pairs(WoWToolsSave['Tools_UseItems'].equip) do
+                    WoWTools_Mixin:Load({id=ID, type='item'})
+                end
 
-            for _, ID in pairs(WoWToolsSave['Tools_UseItems'].spell) do
-                WoWTools_Mixin:Load({id=ID, type='spell'})
-            end
 
-            for _, ID in pairs(WoWToolsSave['Tools_UseItems'].equip) do
-                WoWTools_Mixin:Load({id=ID, type='item'})
+                if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
+                   WoWTools_UseItemsMixin:Init_PlayerSpells()
+                end
+
+                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+                    WoWTools_UseItemsMixin:Init_UI_Toy()
+                end
+
+            else
+                self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
@@ -122,10 +131,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
                 self:UnregisterEvent(event)
             end
-
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWTools_ToolsMixin.Button then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_UseItemsMixin:Init_All_Buttons()
         WoWTools_UseItemsMixin:Init_Button()
         WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
