@@ -135,10 +135,10 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     WoWTools_ColorMixin:Setup(MainMenuBar.ActionBarPageNumber.Text, {type='FontString'})
 
     if MainMenuBar.EndCaps then
-        self:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, nil, nil, 0.75)
-        self:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, nil, nil, 0.75)
+        self:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, true, nil, nil)
+        self:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, nil)
     end
-    self:SetAlphaColor(MainMenuBar.BorderArt, true, nil, nil)
+    self:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0)
 
 
     self:HideTexture(SpellFlyout.Background.Start)
