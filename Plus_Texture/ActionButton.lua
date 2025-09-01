@@ -138,7 +138,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
         self:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, nil, nil, 0.75)
         self:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, nil, nil, 0.75)
     end
-    self:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0.85)
+    self:SetAlphaColor(MainMenuBar.BorderArt, true, nil, nil)
 
 
     self:HideTexture(SpellFlyout.Background.Start)
