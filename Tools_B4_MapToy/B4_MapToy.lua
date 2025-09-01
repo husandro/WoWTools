@@ -425,7 +425,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 and WoWTools_ToolsMixin:Get_MainButton()
             then
                 ToyButton= WoWTools_ToolsMixin:CreateButton({
-                    name='MAPTOY',
+                    name='MapToy',
                     tooltip=addName,
                     disabledOptions=true
                 })

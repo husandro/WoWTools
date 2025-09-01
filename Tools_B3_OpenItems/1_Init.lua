@@ -190,7 +190,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_OpenItemMixin.addName= '|A:BonusLoot-Chest:0:0|a'..(WoWTools_DataMixin.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
 
             WoWTools_OpenItemMixin.OpenButton= WoWTools_ToolsMixin:CreateButton({
-                name='OPENITEMS',
+                name='OpenItems',
                 tooltip=WoWTools_OpenItemMixin.addName,
             })
 

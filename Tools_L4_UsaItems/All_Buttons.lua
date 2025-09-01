@@ -256,7 +256,7 @@ local function Init()
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
                 local btn= WoWTools_ToolsMixin:CreateButton({
-                    name='USEITEM_ITEM'..itemID,
+                    name='UsaItems_ItemID_'..itemID,
                     tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}),
                 })
                 if btn then
@@ -285,7 +285,7 @@ local function Init()
 
             if name and icon and slot then
                 local btn= WoWTools_ToolsMixin:CreateButton({
-                    name='USEITEM_EQUIP'..itemID,
+                    name='UsaItems_Equip_ItemID_'..itemID,
                     tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}),
                 })
                 if btn then
@@ -307,7 +307,7 @@ local function Init()
             local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then
                 local btn= WoWTools_ToolsMixin:CreateButton({
-                    name='USEITEM_SPELL'..spellID,
+                    name='UsaItems_SpellID_'..spellID,
                     tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {spellID=spellID, isName=true}),
                 })
                 if btn then

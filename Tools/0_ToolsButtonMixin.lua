@@ -432,6 +432,6 @@ end
 function WoWTools_ToolsMixin:Get_MainButton()
     return MainButton
 end
-function WoWTools_ToolsMixin:Get_ButtonName()
-    return Name
+function WoWTools_ToolsMixin:Get_ButtonForName(name)
+    return _G[Name..name]
 end

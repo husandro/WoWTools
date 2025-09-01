@@ -15,7 +15,7 @@ local function Create_Button(index)
     if not skillLine or not icon then return end
 
     local button= WoWTools_ToolsMixin:CreateButton({
-        name='PROFESSION'..index,
+        name='Profession'..index,
         tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name),
     })
     if button then

@@ -89,6 +89,10 @@ end
 
 
 local function Set_Button_Label(btn)
+    if not btn then
+        return
+    end
+
     if Save().showText then
         if not btn.text then
             btn.text=WoWTools_LabelMixin:Create(btn, {color= not btn.luce})
@@ -106,9 +110,8 @@ local function Set_Button_Label(btn)
 end
 
 local function Set_Button_All_Label()
-    local buttonName= WoWTools_ToolsMixin:Get_ButtonName()
     for _, name in pairs(Buttons) do
-        Set_Button_Label(_G[buttonName..name])
+        Set_Button_Label(WoWTools_ToolsMixin:Get_ButtonForName(name))
     end
 end
 
@@ -187,7 +190,7 @@ local function Init_Button(tab)
 
     local name= C_Spell.GetSpellName(tab.spell)
     local icon= C_Spell.GetSpellTexture(tab.spell)
-    local buttonName= 'MagePortal'..tab.spell
+    local buttonName= 'MagePortal_Spell_'..tab.spell
 
     local btn=WoWTools_ToolsMixin:CreateButton({
         name=buttonName,
