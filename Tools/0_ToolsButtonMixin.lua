@@ -46,8 +46,6 @@ end
 
 
 
-local mixin={}
-
 
 
 local function Set_BG(frame)
@@ -63,10 +61,10 @@ local function Set_Left2Point(frame)
     frame:SetPoint('BOTTOMRIGHT', MainButton.LeftFrame1, 'BOTTOMLEFT')
 end
 local function Set_RightPoint(frame)
-    frame:SetPoint('BOTTOMLEFT', MainButton.RightFrame, 'TOPRIGHT')
+    frame:SetPoint('BOTTOMLEFT', MainButton, 'TOPRIGHT')
 end
 local function Set_BottomPoint(frame)
-    frame:SetPoint('BOTTOMRIGHT', MainButton.BottomFrame, 'TOPRIGHT')
+    frame:SetPoint('BOTTOMRIGHT', MainButton, 'TOPRIGHT')
 end
 
 local function Get_ParentFrame(tab)--取得 Parent
@@ -135,7 +133,7 @@ local function Set_ButtonPoint(btn, tab)
                 btn:SetPoint('RIGHT', _G[Name..BottomButtons[num]], 'LEFT')
             end
             if not tab.isMoveButton then
-                MainButton.BottomFrame:SetPoint('LEFT', btn)--需要，设置宽 LEFT
+                --MainButton.BottomFrame:SetPoint('LEFT', btn)--需要，设置宽 LEFT
                 table.insert(BottomButtons, name)
             end
         else
