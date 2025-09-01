@@ -499,10 +499,21 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
         end
     })
 
-    --自定义，副本，创建，更多...
+--自定义，副本，创建，更多...
     LFGListFrame.EntryCreation.ActivityFinder.Dialog:ClearAllPoints()
     LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('TOPLEFT',0, -30)
     LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('BOTTOMRIGHT')
+
+--确定，进入副本
+    WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {
+        notFuori=true,
+        setResizeButtonPoint={'BOTTOMRIGHT', LFGDungeonReadyPopup, 6, -6},
+    restPointFunc=function()
+        LFGDungeonReadyPopup:ClearAllPoints()
+        LFGDungeonReadyPopup:SetPoint('TOP', UIParent, 'TOP', 0, -135)
+    end})
+    WoWTools_MoveMixin:Setup(LFGDungeonReadyDialog, {notSize=true, frame=LFGDungeonReadyPopup})
+    WoWTools_MoveMixin:Setup(LFGDungeonReadyStatus, {notSize=true, frame=LFGDungeonReadyPopup})
 end
 
 
@@ -996,6 +1007,7 @@ function WoWTools_MoveMixin.Events:Blizzard_StaticPopup()
             self:SetPoint(dialog)--设置, 移动,
         end
     end)
+
 end
 
 

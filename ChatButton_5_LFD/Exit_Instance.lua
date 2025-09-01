@@ -180,7 +180,7 @@ local function Init()
             s:GetParent():Hide()
         end,]]
         whileDead=true, exclusive=true,--hideOnEscape=true, 
-        timeout=Save().sec or 3}
+        timeout=Save().sec}
 
     Init_Frame()
     

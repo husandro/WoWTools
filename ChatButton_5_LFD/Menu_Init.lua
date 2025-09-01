@@ -1124,7 +1124,7 @@ local function Init_Menu(self, root)
 
 
 
---前往副本 Plus
+--[[前往副本 Plus
     sub:CreateDivider()
     sub2= sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '前往副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_ACTION_MOVE_TO, INSTANCE),
@@ -1152,7 +1152,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine('LFGListInviteDialog_Show')
         tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '信息' or INFO, WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '你收到了一支队伍的邀请：' or LFG_LIST_INVITED_TO_GROUP)
-    end)
+    end)]]
 
 
 
@@ -1224,6 +1224,27 @@ local function Init_Menu(self, root)
         WoWTools_MenuMixin:SetScrollMode(sub2)
     end
 
+
+
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().sec or 5
+        end, setValue=function(value)
+            Save().sec=value
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
+        minValue=1,
+        maxValue=20,
+        step=1,
+        --bit='%.2f',
+        tooltip=function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '自动确认' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, RPE_CONFIRM))
+        end
+    
+    })
+    sub:CreateSpacer()
 
 
 

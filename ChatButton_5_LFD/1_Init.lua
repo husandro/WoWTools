@@ -84,6 +84,11 @@ local function Init(btn)
     end
 
 
+
+
+
+
+
     WoWTools_LFDMixin:Init_Queue_Status()--建立，小眼睛, 更新信息
     WoWTools_LFDMixin:Init_Loot_Plus()--历史, 拾取框
     WoWTools_LFDMixin:Init_Roll_Plus()--自动 ROLL
@@ -93,11 +98,6 @@ local function Init(btn)
     WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息    
     WoWTools_LFDMixin:Init_Holiday()--节日, 提示, button.texture
     WoWTools_LFDMixin:Init_RepopMe()--释放, 复活
-
-    WoWTools_LFDMixin:Init_LFGDungeonReadyDialog()--确定，进入副本
-    WoWTools_LFDMixin:Init_LFGListInviteDialog_Info()--队伍查找器, 邀请信息
-
-
 
     Init=function()end
 end
@@ -117,29 +117,19 @@ local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
-    if event=='ADDON_LOADED' then
-        if arg1== 'WoWTools' then
-            WoWToolsSave['ChatButton_LFD']=  WoWToolsSave['ChatButton_LFD'] or P_Save
-            WoWToolsSave['ChatButton_LFD'].sec= WoWToolsSave['ChatButton_LFD'].sec or 5
-
-            WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
-
-            WoWTools_LFDMixin.LFDButton= WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
-
-            if WoWTools_LFDMixin.LFDButton then--禁用Chat Button
-
-                if C_AddOns.IsAddOnLoadable('Blizzard_GroupFinder') then
-                    Init(WoWTools_LFDMixin.LFDButton)
-                    self:UnregisterEvent(event)
-                end
-
-            else
-                self:UnregisterEvent(event)
-            end
-
-        elseif event=='Blizzard_GroupFinder' then
-            Init(WoWTools_LFDMixin.LFDButton)
-            self:UnregisterEvent(event)
-        end
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    WoWToolsSave['ChatButton_LFD']=  WoWToolsSave['ChatButton_LFD'] or P_Save
+    WoWToolsSave['ChatButton_LFD'].sec= WoWToolsSave['ChatButton_LFD'].sec or 5
+
+    WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
+
+    WoWTools_LFDMixin.LFDButton= WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
+
+    if WoWTools_LFDMixin.LFDButton then--禁用Chat Button
+        Init(WoWTools_LFDMixin.LFDButton)
+    end
+    self:UnregisterEvent(event)
 end)

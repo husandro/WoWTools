@@ -7,7 +7,7 @@ end
 
 
 
-print(GetLFGRoles())
+
 
 local function Set_PvERoles()
     if not Save().autoSetPvPRole then
@@ -168,8 +168,12 @@ local function Init()
         end
 
         print(WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL)..': |cfff00fff'.. SecondsToTime(Save().sec).. '|r '..(WoWTools_DataMixin.onlyChinese and '接受' or ACCEPT)..'|r',
-                '|cnRED_FONT_COLOR:'..'Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
+                '|cnGREEN_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL)
+                ..': |cfff00fff'.. SecondsToTime(Save().sec)..'|r '
+                ..(WoWTools_DataMixin.onlyChinese and '接受' or ACCEPT)..'|r',
+                '|cnRED_FONT_COLOR:'..'Alt '
+                ..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
             )
 
         self:CancellORSetTime(Save().sec)
@@ -235,7 +239,7 @@ local function Init()
         if btn2 then
             btn2.checkButton:SetChecked(true)
             WoWTools_Mixin:Call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
-            WoWTools_CooldownMixin:Setup(self, nil, WoWToolsSave['ChatButton_LFD'].sec, nil, true)--冷却条
+            WoWTools_CooldownMixin:Setup(self, nil, Save().sec, nil, true)--冷却条
             self.aceTime=C_Timer.NewTimer(Save().sec, function()
                 if self.acceptButton:IsEnabled() and self:IsShown() and not IsMetaKeyDown() then
                     self.acceptButton:Click()
@@ -286,12 +290,226 @@ local function Init()
 
 
 
-    C_Timer.After(2, function()
-        Set_PvERoles()
-        Set_PvPRoles()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--队伍查找器, 邀请信息
+    LFGListInviteDialog:HookScript("OnShow", function(self)
+        WoWTools_Mixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
+
+        WoWTools_CooldownMixin:Setup(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+
+        if not self.resultID then
+            return
+        end
+
+        local status, _, _, role= select(2,C_LFGList.GetApplicationInfo(self.resultID))
+        local info= C_LFGList.GetSearchResultInfo(self.resultID)
+
+        if status~="invited" or not info then
+            return
+        end
+
+        local leaderGuid = info.partyGUID and select(8, C_SocialQueue.GetGroupInfo(info.partyGUID))
+
+        print(
+            WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+
+            info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and
+                '|T4352494:0|t'..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore)
+            or '',--地下城史诗,分数
+
+            info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and
+                '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r'
+            or '',--PVP 分数
+
+            (info.leaderName or leaderGuid) and format(
+                WoWTools_DataMixin.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT,
+                WoWTools_UnitMixin:GetLink(nil, leaderGuid, info.leaderName, false)..' '
+            )
+            or '',--%s邀请你加入
+
+            info.name,--名称
+
+            WoWTools_DataMixin.Icon[role] or '',
+
+            info.numMembers and info.numMembers>0 and
+                (WoWTools_DataMixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r'
+            or '',--队伍成员数量
+
+            info.numBNetFriends and info.numBNetFriends>0 and
+            '|cff00ccff'..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '战网好友' or PLAYERS_IN_GROUP)..' '..info.numMembers..'|r'
+            or '',
+
+            info.numCharFriends and info.numCharFriends>0 and
+            '|cffedd100'..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '好友' or FRIEND)..' '..info.numCharFriends..'|r'
+            or '',
+
+            info.autoAccept and
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '自动邀请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, INVITE))..'|r'
+            or '',--对方是否开启, 自动邀请
+
+            info.activityID and
+                '|cffff00ff'..WoWTools_TextMixin:CN(C_LFGList.GetActivityFullName(info.activityID))..'|r'
+            or '',--查找器,类型
+
+            info.isWarMode and-- info.isWarMode ~= C_PvP.IsWarModeDesired() and
+                '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r'
+            or ''
+
+            --info.questID
+        )
     end)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--确定，进入副本，信息
+    LFGInvitePopup:HookScript("OnShow", function(self)--自动进入FB
+        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_CooldownMixin:Setup(self, nil, self.timeOut and STATICPOPUP_TIMEOUT, nil, true, true)
+    end)
+    LFGInvitePopup:HookScript('OnHide', function(self)
+        WoWTools_CooldownMixin:Setup(self)
+    end)
+
+    LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB
+        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_CooldownMixin:Setup(self, nil, self.timeOut or 38, nil, true, true)
+    end)
+    hooksecurefunc('LFGDungeonReadyPopup_OnFail', function()
+        if LFGDungeonReadyPopup:IsShown() then
+            WoWTools_CooldownMixin:Setup(LFGDungeonReadyPopup, nil, LFGDungeonReadyPopup.closeIn or 5, nil, true, true)
+        end
+    end)
+
+
+
+--确定，进入副本
+    LFGDungeonReadyDialog.bossTipsLabel= WoWTools_LabelMixin:Create(LFGDungeonReadyDialog)
+    LFGDungeonReadyDialog.bossTipsLabel:SetPoint('LEFT', LFGDungeonReadyDialog, 'RIGHT', 4, 0)
+
+    LFGDungeonReadyDialog:HookScript('OnHide', function(self)
+        self.bossTipsLabel:SetText('')
+    end)
+
+    LFGDungeonReadyDialog:HookScript('OnShow', function(self)
+        local totalEncounters= select(9, GetLFGProposal())
+        local text
+        local dead=0
+        for i=1, totalEncounters or 0 do
+            local bossName, _, isKilled = GetLFGProposalEncounter(i)
+            if bossName then
+                text= (text and text..'|n' or '')..i..') '
+
+                if isKilled then
+                    text= text
+                        ..'|A:common-icon-checkmark:0:0|a|cnRED_FONT_COLOR:'..WoWTools_TextMixin:CN(bossName)
+                        ..'|r |cffffffff'..(WoWTools_DataMixin.onlyChinese and '已消灭' or BOSS_DEAD)..'|r'
+                    dead= dead+1
+                else
+                    text= text
+                        ..'|A:QuestLegendary:0:0|a|cnGREEN_FONT_COLOR:'..WoWTools_TextMixin:CN(bossName)
+                        ..'|r |cffffffff'..(WoWTools_DataMixin.onlyChinese and '可消灭' or BOSS_ALIVE)..'|r'
+                end
+            end
+        end
+
+        if text then
+            text= (totalEncounters==dead and '|cff9e9e9e' or '|cffffffff')
+                ..(WoWTools_DataMixin.onlyChinese and '首领：' or BOSSES)
+                ..format(WoWTools_DataMixin.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, totalEncounters)
+                ..'|r|n|n'
+                ..text
+                ..'|n|n'..WoWTools_ChatMixin.addName..' '..WoWTools_LFDMixin.addName
+        end
+        self.bossTipsLabel:SetText(text or '')
+    end)
+
+
+    LFGDungeonReadyDialogCloseButton:HookScript('OnLeave', GameTooltip_Hide)
+    LFGDungeonReadyDialogCloseButton:HookScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+        GameTooltip:Show()
+    end)
+
+    Menu.ModifyMenu("MENU_QUEUE_STATUS_FRAME", function(_, root)
+        WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root)--显示 LFGDungeonReadyDialog
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    C_Timer.After(2, function()
+        Set_PvERoles()
+        Set_PvPRoles()
+
+--确定，进入副本
+        if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
+            StaticPopupSpecial_Show(LFGDungeonReadyPopup)
+            WoWTools_Mixin:Call(LFGDungeonReadyPopup_Update)
+        end
+    end)
 
 
 

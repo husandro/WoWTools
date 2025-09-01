@@ -628,10 +628,8 @@ ChatButton_5_LFD\Menu_Init.lua
 ChatButton_5_LFD\Queue_Status.lua
 ChatButton_5_LFD\RepopMe.lua
 ChatButton_5_LFD\Role_Check.lua
-ChatButton_5_LFD\Role_Info.lua
+ChatButton_5_LFD\Info_Plus.lua
 ChatButton_5_LFD\Roll.lua
-ChatButton_5_LFD\z_LFGDungeonReadyDialog.lua
-ChatButton_5_LFD\z_LFGListInviteDialog.lua
 ##世界频道
 ChatButton_6_World\1_Init.lua
 ChatButton_6_World\2_SetButton.lua

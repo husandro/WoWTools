@@ -6145,7 +6145,8 @@
         "LFDDungeonList",
         "LFDFrame_OnEvent",
         "LFGIsIDHeader",
-        "StaticPopupTimeoutSec"
+        "StaticPopupTimeoutSec",
+        "LFD_PROPOSAL_FAILED_CLOSE_TIME"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

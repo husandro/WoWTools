@@ -22,7 +22,7 @@ local function Settings(self)
 
         elseif
             Save().ReMe_AllZone and
-            (not IsInInstance() or not IsInGroup('LE_PARTY_CATEGORY_HOME'))
+            (not IsInInstance() or not IsInGroup())
         then
             self:RegisterEvent('PLAYER_DEAD')
             self:RegisterEvent('CORPSE_IN_RANGE')

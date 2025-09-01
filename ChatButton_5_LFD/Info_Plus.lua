@@ -23,7 +23,6 @@ local function get_Role_Info(env, Name, isT, isH, isD)
         end
         local co=GetNumGroupMembers()
         if co and co>0 then
-            local find
             local u= IsInRaid() and 'raid' or 'party'
             for i=1, co do
                 local unit=u..i
