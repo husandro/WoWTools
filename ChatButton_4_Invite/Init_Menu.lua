@@ -156,7 +156,7 @@ local function Init_Menu(self, root)
     function()
         return Save().FriendAceInvite
     end, function()
-        Save().FriendAceInvite= not Save().FriendAceInvite and true or nil
+        Save().FriendAceInvite= not Save().FriendAceInvite and true or false
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD))
@@ -197,7 +197,7 @@ local function Init_Menu(self, root)
     function()
         return Save().Summon
     end, function()
-        Save().Summon= not Save().Summon and true or nil
+        Save().Summon= not Save().Summon and true or false
         self:settings()--召唤，提示
     end)
     sub:SetTooltip(function(tooltip)
@@ -255,7 +255,7 @@ local function Init_Menu(self, root)
         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|cnGREEN_FONT_COLOR:Rest|r', ZONE), INFO), function()
         return Save().restingTips
     end, function()
-        Save().restingTips= not Save().restingTips and true or nil
+        Save().restingTips= not Save().restingTips and true or false
         WoWTools_InviteMixin:Resting_Settings()--设置, 休息区提示
     end)
     sub:SetTooltip(function(tooltip)

@@ -36,7 +36,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                                 '|A:poi-islands-table:0:0|a',
                                 WoWTools_MapMixin:GetUnit(unit)
                             )
-                        find=true
+                        --find=true
                     end
                 end
             end

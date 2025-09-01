@@ -70,7 +70,7 @@ local function Init_Filter_Menu(self, root)
             return Save().myChatFilter
 
         end, function()
-            Save().myChatFilter= not Save().myChatFilter and true or nil
+            Save().myChatFilter= not Save().myChatFilter and true or false
             WoWTools_WorldMixin:Set_Filters()
             return MenuResponse.Close
         end)
@@ -326,7 +326,7 @@ local function Init_User_Filter_Menu(_, root)
     function()
         return Save().userChatFilter
     end, function()
-        Save().userChatFilter= not Save().userChatFilter and true or nil
+        Save().userChatFilter= not Save().userChatFilter and true or false
         WoWTools_WorldMixin:Set_Filters()
     end, {all=all})
 

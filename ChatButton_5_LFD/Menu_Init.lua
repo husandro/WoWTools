@@ -1234,13 +1234,13 @@ local function Init_Menu(self, root)
         end, setValue=function(value)
             Save().sec=value
         end,
-        name=WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
+        name=WoWTools_DataMixin.onlyChinese and '自动确认' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, RPE_CONFIRM),
         minValue=1,
         maxValue=20,
         step=1,
         --bit='%.2f',
         tooltip=function(tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '自动确认' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, RPE_CONFIRM))
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
         end
     
     })

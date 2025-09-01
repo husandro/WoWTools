@@ -152,11 +152,13 @@ local function Init_Menu(self, root)
             end)
         end
     end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗中缩放'
-                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE)
-        )
-    end)
+    if sub then
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗中缩放'
+                    or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE)
+            )
+        end)
+    end
 
 --游戏时间
     local tab=WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time
