@@ -16,12 +16,13 @@ end
 
 
 
-local function Create_Button(btn, spellID)
+local function Create_Button(btn)
     btn.useSpell= WoWTools_ButtonMixin:Cbtn(btn, {
         size=16,
         atlas='soulbinds_tree_conduit_icon_utility'
     })
     btn.useSpell:SetPoint('TOP', btn, 'BOTTOM', 8,0)
+
     function btn.useSpell:set_alpha()
         if self.spellID then
             self:SetAlpha(WoWTools_UseItemsMixin:Find_Type('spell', self.spellID) and 1 or 0.2)
@@ -46,8 +47,16 @@ local function Create_Button(btn, spellID)
         GameTooltip:Show()
         self:SetAlpha(1)
     end
-    btn.useSpell:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha()  end)
-    btn.useSpell:SetScript('OnEnter', btn.useSpell.set_tooltips)
+
+    btn.useSpell:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:set_alpha()
+    end)
+
+    btn.useSpell:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+    end)
+
     btn.useSpell:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             if self.spellID then
@@ -80,7 +89,7 @@ end
 
 local function set_Use_Spell_Button(btn, spellID)
     if not btn.useSpell then
-        Create_Button(btn, spellID)
+        Create_Button(btn)
     end
 
     btn.useSpell.spellID= spellID
@@ -142,5 +151,4 @@ end
 
 function WoWTools_UseItemsMixin:Init_PlayerSpells()
     Init_PlayerSpells()
-
 end

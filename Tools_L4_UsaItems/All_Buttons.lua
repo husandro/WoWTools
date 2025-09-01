@@ -5,11 +5,13 @@ local function Save()
 end
 
 local function Has_ItemSpell(ID, spell)
-    if spell then
+    if WoWTools_DataMixin.Player.husandro then
+        return true
+    elseif spell then
         if C_SpellBook.IsSpellInSpellBook(ID) then
             return true
         end
-    else
+    elseif ID then
         if C_Item.GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then
             return true
         end
