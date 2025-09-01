@@ -106,6 +106,7 @@ local function Init(btn)
     btn:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self) then
             self:StartMoving()
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
         end
     end)
     btn:SetScript("OnDragStop", function(self)
@@ -115,6 +116,10 @@ local function Init(btn)
             Save().point={self:GetPoint(1)}
             Save().point[2]=nil
         end
+        if self:CanChangeAttribute() then
+            self:SetParent(UIParent)
+        end
+        self:UnregisterEvent('PLAYER_REGEN_DISABLED')
     end)
     btn:SetScript("OnMouseDown", function(self, d)
         local itemID, itemLink = self:get_tooltip_item()

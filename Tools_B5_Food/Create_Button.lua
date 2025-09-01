@@ -90,13 +90,17 @@ local function Set_Button_Function(btn)
         elseif event=='GET_ITEM_INFO_RECEIVED' then
             if arg1==self.itemID and arg2 then
                 self:set_attribute()
-                self:UnregisterEvent('GET_ITEM_INFO_RECEIVED')
+                self:UnregisterEvent('event')
             end
 
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_attribute()
             self.isSetAttributeInCombat=nil
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            self:UnregisterEvent('event')
+
+        elseif event=='PLAYER_REGEN_DISABLED' then
+            self:StopMovingOrSizing()
+            self:UnregisterEvent(event)
         end
     end)
 
@@ -198,13 +202,9 @@ end
 
 --检查,物品
 function WoWTools_FoodMixin:Check_Items(isPrint)
-    if not self.CheckFrame then
+    if not self.CheckFrame or self.CheckFrame.isChecking then--正在查询
         return
-    end
-
-    if self.CheckFrame.isChecking then--正在查询
-        return
-    elseif not self:CanChangeAttribute() then
+    elseif InCombatLockdown() then
         self.CheckFrame.isCheckInCombat=true
         self.CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
         return

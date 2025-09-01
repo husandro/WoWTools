@@ -506,6 +506,10 @@ local function Init()
             Button:set_shown()
         end
     end)
+
+
+
+    Init=function()end
 end
 
 
@@ -524,7 +528,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -556,6 +560,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Button then
                 Init()
+                self:RegisterEvent("PLAYER_LOGOUT")
             end
 
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
@@ -563,7 +568,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             end
 
-        elseif arg1=='Blizzard_Settings' and WoWToolsSave then
+        elseif arg1=='Blizzard_Settings' then
             Init_Panel()
             self:UnregisterEvent(event)
         end
