@@ -78,8 +78,10 @@ local function Init(btn)
         self:ClearAllPoints()
         if Save().point and Save().point[1] then
             self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
+            self:SetParent(UIParent)
         else
             self:SetPoint(self.RePoint[1], self.RePoint[2], self.RePoint[3], self.RePoint[4], self.RePoint[5])
+            self:SetParent()
         end
     end
 

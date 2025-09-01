@@ -204,7 +204,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
 
     if self.CheckFrame.isChecking then--正在查询
         return
-    elseif InCombatLockdown() then
+    elseif not self:CanChangeAttribute() then
         self.CheckFrame.isCheckInCombat=true
         self.CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
