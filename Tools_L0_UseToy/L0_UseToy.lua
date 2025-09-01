@@ -818,7 +818,7 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -835,6 +835,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if ToyButton then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
                 for itemID in pairs(Save().items) do
                     WoWTools_Mixin:Load({id=itemID, type='item'})
                 end
@@ -842,7 +844,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Set_Alt_Table()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+                    hooksecurefunc('ToySpellButton_UpdateButton', function(...)
+                        setToySpellButton_UpdateButton(...)
+                    end)
                     self:UnregisterEvent(event)
                 end
             else
@@ -850,12 +854,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-            hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+           hooksecurefunc('ToySpellButton_UpdateButton', function(...)
+                setToySpellButton_UpdateButton(...)
+            end)
             self:UnregisterEvent(event)
         end
 
-    elseif event == 'PLAYER_ENTERING_WORLD' and ToyButton then
+    elseif event == 'PLAYER_ENTERING_WORLD' then
         Init()--初始
-       self:UnregisterEvent(event)
+        self:UnregisterEvent(event)
     end
 end)

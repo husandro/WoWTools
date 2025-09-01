@@ -312,7 +312,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '可使用' or format(LFG_LIST_CROSS_FACTION, USE), function()
         return Save().olnyUsaItem
     end, function()
-        Save().olnyUsaItem= not Save().olnyUsaItem and true or nil
+        Save().olnyUsaItem= not Save().olnyUsaItem and true or false
         WoWTools_FoodMixin:Check_Items()
     end)
     sub2:SetTooltip(function(tooltip)
@@ -324,7 +324,7 @@ local function Init_Menu(self, root)
 --显示背景
     WoWTools_MenuMixin:BgAplha(sub,
     function()
-        return Save().bgAlpha or 0.5
+        return Save().bgAlpha or 0
     end, function(value)
         Save().bgAlpha= value
         self:set_background()
@@ -346,7 +346,15 @@ local function Init_Menu(self, root)
         self:set_strata()
     end)
 
-    sub2=sub:CreateButton(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function()return MenuResponse.Open end)
+
+--数量
+    sub2=sub:CreateButton(
+        '|A:newplayertutorial-icon-key:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+        ..' '.. Save().numLine,
+    function()
+        return MenuResponse.Open
+    end)
     sub2:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub2, {
         getValue=function()
@@ -362,6 +370,34 @@ local function Init_Menu(self, root)
         bit=nil,
     })
     sub2:CreateSpacer()
+
+
+--外框，透明度
+    sub2=sub:CreateButton(
+        '|A:bag-reagent-border:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '镶边' or EMBLEM_BORDER)
+        ..' '
+        ..(Save().borderAlpha or 0),
+    function()
+        return MenuResponse.Open
+    end)
+
+--Border 透明度
+    sub2:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub2, {
+        getValue=function()
+            return Save().borderAlpha or 0
+        end, setValue=function(value)
+            Save().borderAlpha=value
+            WoWTools_FoodMixin:Check_Items()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY,
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
+
 
 --重置位置
     sub:CreateDivider()

@@ -27,6 +27,8 @@ local P_Save={
     autoLogin= WoWTools_DataMixin.Player.husandro,--启动,查询
     --isShowBackground=WoWTools_DataMixin.Player.husandro,--背景--旧数据
     --onlyMaxExpansion=true,--仅本版本物品
+    borderAlpha= 0,
+    bgAlpha=0,
     olnyUsaItem=true,
     numLine=12,
     autoWho=WoWTools_DataMixin.Player.husandro,
@@ -138,7 +140,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -184,18 +186,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if WoWTools_FoodMixin.Button then
-                self:UnregisterEvent(event)
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 if Save().autoLogin or Save().autoWho  then
                     self:RegisterEvent('BAG_UPDATE_DELAYED')
                 end
-
-            else
-                self:UnregisterAllEvents()
             end
+            self:UnregisterEvent(event)
         end
 
-    elseif event == 'PLAYER_ENTERING_WORLD' and WoWTools_FoodMixin.Button then
+    elseif event == 'PLAYER_ENTERING_WORLD' then
         WoWTools_FoodMixin:Set_AltSpell()
         WoWTools_FoodMixin:Init_Button()
         WoWTools_FoodMixin:Init_Check()

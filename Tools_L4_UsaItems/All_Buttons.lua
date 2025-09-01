@@ -95,17 +95,22 @@ end
 
 --数量
 local function Set_Item_Count(btn)
-    local num = C_Item.GetItemCount(btn.itemID, false, true, true)
+    local num = C_Item.GetItemCount(btn.itemID, false, true, true) or 0
+    local hasToy= PlayerHasToy(btn.itemID)
     if not PlayerHasToy(btn.itemID) then
-        if num~=1 and not btn.count then
-            btn.count=WoWTools_LabelMixin:Create(btn, {size=10, color=true})--10,nil,nil,true)
+        if num>1 and not btn.count then
+            btn.count=WoWTools_LabelMixin:Create(btn, {size=10, {r=1,g=1,b=1}})--10,nil,nil,true)
             btn.count:SetPoint('BOTTOMRIGHT',-2, 9)
         end
-        if btn.count then
-            btn.count:SetText(num~=1 and num or '')
+    end
+    if btn.count then
+        if not hasToy and num>1 then
+            btn.count:SetText(num)
+        else
+            btn.count:SetText('')
         end
     end
-    btn.texture:SetDesaturated(num==0 and not PlayerHasToy(btn.itemID))
+    btn.texture:SetDesaturated(num<1 and not hasToy)
 end
 
 
@@ -179,11 +184,15 @@ local function Set_Item_Button(btn, equip)
         end)
         Set_Equip_Slot(btn)
     end
-    if btn.itemID==168667 or btn.itemID==87214 or btn==111821 then--布林顿任务
+
+    if btn.itemID==168667 or btn.itemID==87214 or btn.itemID==111821 then--布林顿任务
         btn:RegisterEvent('QUEST_COMPLETE')
         Set_Bling_Quest(btn)
     end
+
     WoWTools_CooldownMixin:SetFrame(btn, {itemID=btn.itemID})
+    Set_Item_Count(btn)
+    Set_Button_Event(btn, btn:IsVisible())--事件
 end
 
 
@@ -229,7 +238,10 @@ local function Set_Spell_Button(btn)
     btn:SetScript('OnHide', function(self)
         Set_Button_Event(self, false)
     end)
+
+    Set_Button_Event(btn, btn:IsVisible())
     WoWTools_CooldownMixin:SetFrame(btn, {spellID=btn.spellID})
+    Set_Spell_Count(btn)
 end
 
 

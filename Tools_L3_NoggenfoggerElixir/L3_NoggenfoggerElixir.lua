@@ -164,6 +164,8 @@ end
 
 
 local function Init()
+    ItemName= C_Item.GetItemNameByID(ItemID) or ItemName
+
     WoWTools_KeyMixin:Init(button, function() return Save().KEY end)
 
     function button:set_att()
@@ -303,9 +305,8 @@ end
 --加载保存数据
 --###########
 local panel= CreateFrame("Frame")
-
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -322,15 +323,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if button then
-                ItemName= C_Item.GetItemNameByID(ItemID) or ItemName
-                self:UnregisterEvent(event)
-
-            else
-                self:UnregisterAllEvents()
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
+            self:UnregisterEvent(event)
         end
 
-    elseif event == 'PLAYER_ENTERING_WORLD' and button then
+    elseif event == 'PLAYER_ENTERING_WORLD' then
         Init()--初始
         self:UnregisterEvent(event)
     end

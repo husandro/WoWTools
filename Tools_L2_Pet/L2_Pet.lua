@@ -134,7 +134,7 @@ local function Init_Menu(self, root)
                     WoWTools_Mixin:Call(PetJournal_UpdatePetList)
                 end
             end})
-            return MenuResponse.Open            
+            return MenuResponse.Open
         end)
     end
 
@@ -357,7 +357,7 @@ local function Init()
         button:init_pets_data()
         button:set_auto_summon_tips()
     end)
-    
+
     Init=function()end
 end
 
@@ -380,7 +380,7 @@ end
 --###########
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -397,20 +397,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if button then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
+                    hooksecurefunc('PetJournal_InitPetButton', function(...)
+                        Init_PetJournal_InitPetButton(...)
+                    end)
                     self:UnregisterEvent(event)
                 end
+
             else
                 self:UnregisterAllEvents()
             end
 
+
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-            hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
+            hooksecurefunc('PetJournal_InitPetButton', function(...)
+                Init_PetJournal_InitPetButton(...)
+            end)
             self:UnregisterEvent(event)
         end
 
-    elseif event == 'PLAYER_ENTERING_WORLD' and button then
+    elseif event == 'PLAYER_ENTERING_WORLD' then
         Init()
         self:UnregisterEvent(event)
     end

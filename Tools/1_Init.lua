@@ -12,7 +12,7 @@ local P_Save={
     },
     scale=1,
     strata='MEDIUM',
-    borderAlpha=0.3,
+
     height=10,
     lineNum=10,
 
@@ -26,6 +26,8 @@ local P_Save={
     --point
     isShowBackground=WoWTools_DataMixin.Player.husandro,
 
+    bgAlpha= 0,
+    borderAlpha=0,
 }
 
 
@@ -251,8 +253,8 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:BgAplha(sub,
     function()
         return Save().bgAlpha
-    end, function()
-        Save().bgAlpha= not Save().bgAlpha and true or nil
+    end, function(value)
+        Save().bgAlpha= value
         WoWTools_ToolsMixin:ShowBackground()--显示背景
     end)
 
@@ -278,9 +280,34 @@ local function Init_Menu(self, root)
 
 
 
+--外框，透明度
+    sub2=sub:CreateButton(
+        '|A:bag-reagent-border:0:0|a'..(WoWTools_DataMixin.onlyChinese and '镶边' or EMBLEM_BORDER),
+    function()
+        return MenuResponse.Open
+    end)
 
 --Border 透明度
-    sub:CreateSpacer()
+    sub2:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub2, {
+        getValue=function()
+            return Save().borderAlpha or 0
+        end, setValue=function(value)
+            Save().borderAlpha=value
+            local list, Name= WoWTools_ToolsMixin:Get_All_Buttons()
+            for _, name in pairs(list) do
+                _G[Name..name]:set_border_alpha()
+            end
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY,
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
+
+--Border 透明度
+    --[[sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
             return Save().borderAlpha or 0.3
@@ -300,7 +327,9 @@ local function Init_Menu(self, root)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)
         end,
     })
-    sub:CreateSpacer()
+    sub:CreateSpacer()]]
+
+
 
     sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
@@ -503,6 +532,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['WoWTools_ToolsButton']= WoWToolsSave['WoWTools_ToolsButton'] or P_Save
 
             Save().borderAlpha= Save().borderAlpha or 0.3
+
+            if type(Save().bgAlpha)~='number' then
+                Save().bgAlpha= 0
+            end
+
             Save().BottomPoint= Save().BottomPoint or {
                 Mount=true,
                 Hearthstone=true,

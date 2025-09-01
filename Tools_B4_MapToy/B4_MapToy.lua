@@ -395,7 +395,7 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -420,15 +420,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  })
              end)
 
-            if not Save().disabled
-                and not Save().no[WoWTools_DataMixin.Player.GUID]
-                and WoWTools_ToolsMixin:Get_MainButton()
-            then
-                ToyButton= WoWTools_ToolsMixin:CreateButton({
+            ToyButton= (not Save().disabled and not Save().no[WoWTools_DataMixin.Player.GUID])
+                and WoWTools_ToolsMixin:CreateButton({
                     name='MapToy',
                     tooltip=addName,
                     disabledOptions=true
                 })
+
+            if ToyButton then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 for _, info in pairs(Tab) do
                     WoWTools_Mixin:Load({id=info.itemID, type='item'})
@@ -436,15 +436,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         GetAchievementCategory(achievementID)
                     end
                 end
-
-                self:UnregisterEvent(event)
-            else
-
-                self:UnregisterAllEvents()
             end
+            self:UnregisterEvent(event)
         end
 
-    elseif event == 'PLAYER_ENTERING_WORLD' and ToyButton then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         Init()
         self:UnregisterEvent(event)
     end

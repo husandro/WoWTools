@@ -50,7 +50,7 @@ end
 
 local function Set_BG(frame)
     if frame and frame.Background then
-        frame.Background:SetAlpha(Save().bgAlpha or 0.5)
+        frame.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0)
     end
 end
 
@@ -99,7 +99,7 @@ local function Set_ButtonPoint(btn, tab)
             if num==0 then
                 Set_Left2Point(btn)
                 MainButton.LeftFrame2:SetWidth(30)
-                Set_BG(MainButton.LeftFrame2)
+                --Set_BG(MainButton.LeftFrame2)
             else
                 btn:SetPoint('BOTTOM', _G[Name..LeftButtons2[num]], 'TOP')
             end
@@ -111,7 +111,7 @@ local function Set_ButtonPoint(btn, tab)
             if num==0 then
                 Set_RightPoint(btn)
                 MainButton.RightFrame:SetWidth(30)
-                Set_BG(MainButton.RightFrame)
+                --Set_BG(MainButton.RightFrame)
             else
                 btn:SetPoint('BOTTOM', _G[Name..RightButtons[num]], 'TOP')
             end
@@ -128,7 +128,7 @@ local function Set_ButtonPoint(btn, tab)
                 btn.IsShownFrameEnterButton=true
                 Set_BottomPoint(btn)
                 MainButton.BottomFrame:SetHeight(30)
-                Set_BG(MainButton.BottomFrame)
+                --Set_BG(MainButton.BottomFrame)
             else
                 btn:SetPoint('RIGHT', _G[Name..BottomButtons[num]], 'LEFT')
             end
@@ -144,7 +144,7 @@ local function Set_ButtonPoint(btn, tab)
                 Set_Left1Point(btn)
                 MainButton.LeftFrame1:SetPoint('TOP', btn)
                 MainButton.LeftFrame1:SetPoint('LEFT', btn)
-                Set_BG(MainButton.LeftFrame1)
+                --Set_BG(MainButton.LeftFrame1)
 
             else
                 local numLine= Save().lineNum or 10
@@ -262,18 +262,19 @@ function WoWTools_ToolsMixin:Init()
     MainButton.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
 
 --底部,需要，设置高 宽
+    local bgSet= {isAllPoint=true, isColor=true, alpha= Save().bgAlpha}
     MainButton.LeftFrame1= CreateFrame('Frame', nil , MainButton.Frame)
-    WoWTools_TextureMixin:CreateBG(MainButton.LeftFrame1, {isAllPoint=true, isColor=true})
+    WoWTools_TextureMixin:CreateBG(MainButton.LeftFrame1, bgSet)
 
     MainButton.LeftFrame2= CreateFrame('Frame', nil, MainButton.Frame)
-    WoWTools_TextureMixin:CreateBG(MainButton.LeftFrame2, {isAllPoint=true, isColor=true})
+    WoWTools_TextureMixin:CreateBG(MainButton.LeftFrame2, bgSet)
 
     MainButton.RightFrame= CreateFrame('Frame', nil, MainButton.Frame)
-    WoWTools_TextureMixin:CreateBG(MainButton.RightFrame, {isAllPoint=true, isColor=true})
+    WoWTools_TextureMixin:CreateBG(MainButton.RightFrame, bgSet)
 
 --需要，设置 LEFT
     MainButton.BottomFrame= CreateFrame('Frame', 'WoWToolsToolsMainButton.BottomFrame', MainButton.Frame)
-    WoWTools_TextureMixin:CreateBG(MainButton.BottomFrame, {isAllPoint=true, isColor=true})
+    WoWTools_TextureMixin:CreateBG(MainButton.BottomFrame, bgSet)
 
     Set_Left1Point(MainButton.LeftFrame1)
     Set_Left2Point(MainButton.LeftFrame2)
