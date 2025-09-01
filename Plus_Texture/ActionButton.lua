@@ -3,6 +3,7 @@ local function Set_Texture(btn)
     WoWTools_TextureMixin:HideTexture(btn.SlotArt)
     WoWTools_TextureMixin:HideTexture(btn.NormalTexture)--外框，方块
     WoWTools_TextureMixin:HideTexture(btn.SlotBackground, true)--背景
+
     if not btn.IconMask then
         WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
     else
@@ -31,6 +32,25 @@ local function Set_KeyText(self)
     end
     self.HotKey:SetTextColor(1,1,1,1)
 end
+
+local function Set_MainMenuBarPool(self)
+    local dividersPool = MainMenuBar.isHorizontal and MainMenuBar.HorizontalDividersPool or MainMenuBar.VerticalDividersPool
+    if dividersPool then
+        for pool in dividersPool:EnumerateActive() do
+            self:HideFrame(pool)
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -93,22 +113,13 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
 
 
     --hooksecurefunc(MainMenuBar, 'UpdateDividers', function(bar)--主动作条 
+    Set_MainMenuBarPool(self)
+
     EditModeManagerFrame:HookScript('OnHide', function()
         for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
             Set_Texture(_G['ActionButton'..i])
         end
-
-        local bar= MainMenuBar
-        --[[if bar.hideBarArt or bar.numRows > 1 or bar.buttonPadding > bar.minButtonPadding then
-            return
-        end]]
-
-        local dividersPool = bar.isHorizontal and bar.HorizontalDividersPool or bar.VerticalDividersPool
-        if dividersPool then
-            for pool in dividersPool:EnumerateActive() do
-                self:SetFrame(pool)
-            end
-        end
+       Set_MainMenuBarPool(self)
     end)
 
     OverrideActionBarExpBarOverlayFrameText:SetAlpha(0.3)
@@ -124,10 +135,10 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     WoWTools_ColorMixin:Setup(MainMenuBar.ActionBarPageNumber.Text, {type='FontString'})
 
     if MainMenuBar.EndCaps then
-        self:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, true, nil, nil)
-        self:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, nil)
+        self:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, nil, nil, 0.75)
+        self:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, nil, nil, 0.75)
     end
-    self:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0.3)
+    self:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0.85)
 
 
     self:HideTexture(SpellFlyout.Background.Start)
