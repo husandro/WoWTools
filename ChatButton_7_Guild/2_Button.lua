@@ -66,44 +66,44 @@ end
 
 
 
-local function Init(GuildButton)
-    GuildButton.texture:ClearAllPoints()
-    GuildButton.texture:SetPoint('CENTER', -1.5, 1)
-    GuildButton.texture:SetSize(18,18)
+local function Init(btn)
+    btn.texture:ClearAllPoints()
+    btn.texture:SetPoint('CENTER', -1.5, 1)
+    btn.texture:SetSize(18,18)
 
-    GuildButton.texture2= GuildButton:CreateTexture(nil, 'BACKGROUND', nil, 2)
-    GuildButton.texture2:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", -14, 14)
-    GuildButton.texture2:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", 14, -14)
+    btn.texture2= btn:CreateTexture(nil, 'BACKGROUND', nil, 2)
+    btn.texture2:SetPoint("TOPLEFT", btn, "TOPLEFT", -14, 14)
+    btn.texture2:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 14, -14)
 
-    GuildButton.IconMask:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", 5.5, -5.5)
-    GuildButton.IconMask:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -8, 8)
-    GuildButton.texture2:AddMaskTexture(GuildButton.IconMask)
+    btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 5.5, -5.5)
+    btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -8, 8)
+    btn.texture2:AddMaskTexture(btn.IconMask)
 
-    GuildButton.inviteTexture= GuildButton:CreateTexture(nil, 'OVERLAY')
-    GuildButton.inviteTexture:SetPoint('TOPLEFT',1,-1)
-    GuildButton.inviteTexture:SetAtlas('communities-icon-invitemail')
-    GuildButton.inviteTexture:SetSize(12,12)
-    --GuildButton.inviteTexture:Hide()
+    btn.inviteTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.inviteTexture:SetPoint('TOPLEFT',1,-1)
+    btn.inviteTexture:SetAtlas('communities-icon-invitemail')
+    btn.inviteTexture:SetSize(12,12)
+    --btn.inviteTexture:Hide()
 
-    --[[GuildMicroButton.inviteTexture= GuildButton:CreateTexture(nil, 'OVERLAY')
+    --[[GuildMicroButton.inviteTexture= btn:CreateTexture(nil, 'OVERLAY')
     GuildMicroButton.inviteTexture:SetPoint('TOPLEFT',1,-1)
     GuildMicroButton.inviteTexture:SetAtlas('communities-icon-invitemail')
     GuildMicroButton.inviteTexture:SetSize(12,12)]]
     
     
-    GuildButton.msgTexture= GuildButton:CreateTexture(nil, 'BORDER', nil, 2)
-    GuildButton.msgTexture:SetPoint('LEFT',-3,0)
-    GuildButton.msgTexture:SetSize(12,12)
-    GuildButton.msgTexture:SetAtlas('communities-icon-notification')
+    btn.msgTexture= btn:CreateTexture(nil, 'BORDER', nil, 2)
+    btn.msgTexture:SetPoint('LEFT',-3,0)
+    btn.msgTexture:SetSize(12,12)
+    btn.msgTexture:SetAtlas('communities-icon-notification')
 
-    GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
-    GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
+    btn.membersText=WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
+    btn.membersText:SetPoint('TOPRIGHT', -3, 0)
 
-    GuildButton.bottomText= WoWTools_LabelMixin:Create(GuildButton, {size=10, color=true, justifyH='CENTER'})
-    GuildButton.bottomText:SetPoint('BOTTOM', 0, 2)
+    btn.bottomText= WoWTools_LabelMixin:Create(btn, {size=10, color=true, justifyH='CENTER'})
+    btn.bottomText:SetPoint('BOTTOM', 0, 2)
 
 
-    function GuildButton:set_guildinfo_event()
+    function btn:set_guildinfo_event()
         self:UnregisterEvent('CHAT_MSG_SYSTEM')
         if IsInGuild() and (Save().guildInfo or not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text) then
             self:RegisterEvent('CHAT_MSG_SYSTEM')
@@ -112,7 +112,7 @@ local function Init(GuildButton)
     end
 
 --申请者
-    function GuildButton:set_new_application(isInit)
+    function btn:set_new_application(isInit)
         local isInviete, isMessage= false, false
         local clubs= C_ClubFinder.IsEnabled() and C_Club.GetSubscribedClubs()
         if clubs then
@@ -143,7 +143,7 @@ local function Init(GuildButton)
         self.msgTexture:SetShown(isMessage)
     end
 
-    function GuildButton:set_tooltip()
+    function btn:set_tooltip()
         self:set_owner()
         if not IsInGuild() then
             GameTooltip:AddLine('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..WoWTools_DataMixin.Icon.left)
@@ -155,11 +155,11 @@ local function Init(GuildButton)
     end
 
 
-    function GuildButton:set_OnMouseDown()
+    function btn:set_OnMouseDown()
         WoWTools_ChatMixin:Say('/g')
     end
 
-    --[[GuildButton:SetScript('OnMouseDown',function(self, d)
+    --[[btn:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             if not IsInGuild() then-- and not InCombatLockdown() then
                 ToggleGuildFrame()
@@ -176,21 +176,21 @@ local function Init(GuildButton)
 
 
 --菜单
-    WoWTools_GuildMixin:Init_Menu(GuildButton)
+    WoWTools_GuildMixin:Init_Menu()
 
 --事件
 
-    GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
-    GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
+    btn:RegisterEvent('GUILD_ROSTER_UPDATE')
+    btn:RegisterEvent('PLAYER_GUILD_UPDATE')
 
-    GuildButton:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
-    GuildButton:RegisterEvent('CLUB_FINDER_RECRUITS_UPDATED')
-    GuildButton:RegisterEvent('CLUB_FINDER_APPLICATIONS_UPDATED')
-    GuildButton:RegisterEvent('CLUB_FINDER_POST_UPDATED')--C_ClubFinder.RequestPostingInformationFromClubId
-    GuildButton:RegisterEvent('CLUB_MESSAGE_UPDATED')
+    btn:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
+    btn:RegisterEvent('CLUB_FINDER_RECRUITS_UPDATED')
+    btn:RegisterEvent('CLUB_FINDER_APPLICATIONS_UPDATED')
+    btn:RegisterEvent('CLUB_FINDER_POST_UPDATED')--C_ClubFinder.RequestPostingInformationFromClubId
+    btn:RegisterEvent('CLUB_MESSAGE_UPDATED')
 
 
-    GuildButton:SetScript('OnEvent', function(self, event, arg1)
+    btn:SetScript('OnEvent', function(self, event, arg1)
         if
 --更新，数据
             event=='PLAYER_GUILD_UPDATE'
@@ -214,10 +214,10 @@ local function Init(GuildButton)
 
 
 
-    Set_Text(GuildButton)
+    Set_Text(btn)
 
-    GuildButton:set_guildinfo_event()
-    GuildButton:set_new_application(WoWTools_GuildMixin:IsLeaderOrOfficer())--申请者
+    btn:set_guildinfo_event()
+    btn:set_new_application(WoWTools_GuildMixin:IsLeaderOrOfficer())--申请者
 
     Init=function()end
 end

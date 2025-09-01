@@ -430,6 +430,6 @@ end
 
 
 
-function WoWTools_GuildMixin:Init_Menu(btn)
-    btn:SetupMenu(Init_Menu)
+function WoWTools_GuildMixin:Init_Menu()
+    self.GuildButton:SetupMenu(Init_Menu)
 end
