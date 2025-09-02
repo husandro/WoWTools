@@ -119,6 +119,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
         end)
 
         WoWTools_TextureMixin:SetNineSlice(f, 1)
+        WoWTools_TextureMixin:SetAlphaColor(f.Thumb, true)
     end)
 
 
