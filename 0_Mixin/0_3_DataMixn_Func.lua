@@ -1,6 +1,8 @@
 function WoWTools_DataMixin:Call(func, ...)
     if func then
         securecallfunction(func, ...)
+    elseif WoWTools_DataMixin.Player.husandro then
+        print('Call 没有发现', func, ...)
     end
 end
 
