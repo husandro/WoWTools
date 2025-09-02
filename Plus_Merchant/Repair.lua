@@ -1,9 +1,9 @@
 local function Save()
-    return WoWToolsSave['Plus_SellBuy']
+    return WoWToolsPlayerDate['Plus_SellBuy']
 end
 
 local function RepairSave()
-    return WoWToolsSave['Plus_SellBuy'].repairItems
+    return WoWToolsPlayerDate['Plus_SellBuy'].repairItems
 end
 
 

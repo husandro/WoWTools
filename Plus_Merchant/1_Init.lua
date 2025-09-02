@@ -38,7 +38,7 @@ local P_Save={
 }
 
 local function Save()
-    return WoWToolsSave['Plus_SellBuy']
+    return WoWToolsPlayerDate['Plus_SellBuy']
 end
 
 
@@ -79,11 +79,17 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['Plus_SellBuy']= Save() or P_Save
 
-            Save().buyItems= Save().buyItems or {}
+            if WoWToolsSave['Plus_SellBuy'] then
+                WoWToolsPlayerDate['Plus_SellBuy']= WoWToolsSave['Plus_SellBuy']
+                WoWToolsPlayerDate['Plus_SellBuy'].buyItems= WoWToolsPlayerDate['Plus_SellBuy'].buyItems or {}
+                WoWToolsPlayerDate['Plus_SellBuy'].WoWBuyItems= WoWToolsPlayerDate['Plus_SellBuy'].WoWBuyItems or {}
+                WoWToolsSave['Plus_SellBuy']= nil
+            end
+
+            WoWToolsPlayerDate['Plus_SellBuy']= WoWToolsPlayerDate['Plus_SellBuy'] or P_Save
+
             Save().buyItems[WoWTools_DataMixin.Player.GUID]= Save().buyItems[WoWTools_DataMixin.Player.GUID] or {}
-            Save().WoWBuyItems= Save().WoWBuyItems or {}
 
             WoWTools_MerchantMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人' or MERCHANT)
 

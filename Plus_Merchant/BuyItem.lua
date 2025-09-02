@@ -1,6 +1,6 @@
 --购买物品
 local function Save()
-    return WoWToolsSave['Plus_SellBuy']
+    return WoWToolsPlayerDate['Plus_SellBuy']
 end
 
 local function Get_Buy_Num(itemID)

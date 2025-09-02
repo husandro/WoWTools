@@ -1,5 +1,5 @@
 local function Save()
-    return WoWToolsSave['Plus_SellBuy']
+    return WoWToolsPlayerDate['Plus_SellBuy']
 end
 
 
@@ -484,7 +484,7 @@ local function Init_Menu(self, root)
 
 --重置数据
     WoWTools_MenuMixin:RestData(sub, WoWTools_MerchantMixin.addName, function()
-        WoWToolsSave['Plus_SellBuy']=nil
+        WoWToolsPlayerDate['Plus_SellBuy']=nil
         WoWTools_Mixin:Reload()
     end)
 

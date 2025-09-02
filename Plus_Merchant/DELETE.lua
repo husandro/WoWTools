@@ -5,7 +5,7 @@ local COMMUNITIES_DELETE_CONFIRM_STRING= COMMUNITIES_DELETE_CONFIRM_STRING
 
 
 local function Save()
-    return WoWToolsSave['Plus_SellBuy']
+    return WoWToolsPlayerDate['Plus_SellBuy']
 end
 
 
