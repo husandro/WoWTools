@@ -6146,7 +6146,8 @@
         "LFDFrame_OnEvent",
         "LFGIsIDHeader",
         "StaticPopupTimeoutSec",
-        "LFD_PROPOSAL_FAILED_CLOSE_TIME"
+        "LFD_PROPOSAL_FAILED_CLOSE_TIME",
+        "SETTINGS_TAB_ADDONS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

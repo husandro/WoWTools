@@ -53,9 +53,9 @@ local function Init_Options()
         end,
         buttonText= WoWTools_DataMixin.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
-            WoWTools_PanelMixin:Open(nil, (WoWTools_DataMixin.Player.UseColor and WoWTools_DataMixin.Player.UseColor.hex or '')..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR))
+            WoWTools_PanelMixin:Open(nil, ('|A:Forge-ColorSwatch:0:0|a'..WoWTools_DataMixin.Player.UseColor.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)))
         end,
-        tooltip= tooltip,
+        tooltip= '|A:Forge-ColorSwatch:0:0|a'..WoWTools_DataMixin.Player.UseColor.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR),
         layout= Layout,
         category= Category
     })

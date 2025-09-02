@@ -669,10 +669,11 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     WoWToolsPlayerDate= WoWToolsPlayerDate or {}
 
     WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
+    WoWTools_DataMixin.Player.GUID= UnitGUID('player')
 
     local day= date('%x')--日期
     local guid= WoWTools_DataMixin.Player.GUID
-    if not WoWTools_WoWDate[guid] then
+    if guid and not WoWTools_WoWDate[guid] then
         WoWTools_WoWDate[guid]= {--默认数据
             Item={},--{itemID={bag=包, bank=银行}},
             Currency={},--{[currencyID]=数量}

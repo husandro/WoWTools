@@ -173,24 +173,7 @@ end
 
 
 local function set_to_send()
-    if Save().lastSendPlayer then--收件人
-        WoWTools_MailMixin:SetSendName(Save().lastSendPlayer)--设置，发送名称，文
-    end
-    if Save().lastSendSub then--主题
-        SendMailSubjectEditBox:SetText(Save().lastSendSub)
-    end
-    if Save().lastSendBody then--内容
-        SendMailBodyEditBox:SetText(Save().lastSendBody)
-    end
-    SendMailNameEditBox:ClearFocus()
-
-    if not Save().notAutoToSendFrame and not GameLimitedMode_IsActive() then
-        C_Timer.After(Save().autoToSendFrameSecond or 1, function()
-            if GetInboxNumItems()==0 then--如果没有信，转到，发信
-                MailFrameTab_OnClick(nil, 2)
-            end
-        end)
-    end
+    
 end
 
 
@@ -205,6 +188,27 @@ end
 
 --初始
 local function Init()--SendMailNameEditBox
+    if Save().lastSendPlayer then--收件人
+        WoWTools_MailMixin:SetSendName(Save().lastSendPlayer)--设置，发送名称，文
+    end
+
+    if Save().lastSendSub then--主题
+        SendMailSubjectEditBox:SetText(Save().lastSendSub)
+    end
+
+    if Save().lastSendBody then--内容
+        SendMailBodyEditBox:SetText(Save().lastSendBody)
+    end
+    SendMailNameEditBox:ClearFocus()
+
+    if not Save().notAutoToSendFrame and not GameLimitedMode_IsActive() then
+        C_Timer.After(Save().autoToSendFrameSecond or 1, function()
+            if GetInboxNumItems()==0 then--如果没有信，转到，发信
+                MailFrameTab_OnClick(nil, 2)
+            end
+        end)
+    end
+
     WoWTools_MailMixin:Init_Menu_Button()
 
 --收件箱 Plus
@@ -240,8 +244,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('MAIL_SHOW')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -250,24 +253,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_MailMixin.addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
 
-            --添加控制面板
+--添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_MailMixin.addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MailMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    if Save().disabled then
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MailMixin.addName,
+                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        )
+                    else
+                        Init()
+                    end
+
                 end
             })
-            if Save().disabled then
-               self:UnregisterAllEvents()
-            else
-                self:UnregisterEvent(event)
+
+            if not Save().disabled then
+                self:RegisterEvent('MAIL_SHOW')
             end
+            self:UnregisterEvent(event)
         end
 
     elseif event=='MAIL_SHOW' then
-        set_to_send()
         Init()
         self:UnregisterEvent(event)
     end

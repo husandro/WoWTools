@@ -9,8 +9,10 @@ end
 
 local addName
 local RollButton
-local panel= CreateFrame('Frame')
 local RollTab={}
+local panel= CreateFrame('Frame')
+panel:RegisterEvent("ADDON_LOADED")
+
 
 --local MaxPlayer, MinPlayer
 
@@ -307,29 +309,27 @@ end
 
 
 
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('CHAT_MSG_SYSTEM')
+
+
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            if WoWToolsSave['ChatButton_Rool'] then
-                WoWToolsSave['ChatButton_Roll']= WoWToolsSave['ChatButton_Rool']
-                WoWToolsSave['ChatButton_Rool']= nil
-            else
-                WoWToolsSave['ChatButton_Roll']= WoWToolsSave['ChatButton_Roll'] or P_Save
-            end
 
-            addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_DataMixin.onlyChinese and '掷骰' or ROLL)
+            WoWToolsSave['ChatButton_Roll']= WoWToolsSave['ChatButton_Roll'] or P_Save
+
+            addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'
+                ..(WoWTools_DataMixin.onlyChinese and '掷骰' or ROLL)
+
             RollButton= WoWTools_ChatMixin:CreateButton('Roll', addName)
 
             if RollButton then
+                self:RegisterEvent("PLAYER_LOGOUT")
+                self:RegisterEvent('CHAT_MSG_SYSTEM')
                 Init()
-                self:UnregisterEvent(event)
-            else
-                self:UnregisterAllEvents()
             end
+            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

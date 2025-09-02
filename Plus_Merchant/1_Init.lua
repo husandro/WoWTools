@@ -74,7 +74,6 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -115,14 +114,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if Save().disabled then
-                self:UnregisterAllEvents()
-            else
+            if not Save().disabled then
+                self:UnregisterEvent('PLAYER_ENTERING_WORLD')
                 self:UnregisterEvent(event)
+            else
+                self:UnregisterAllEvents()
             end
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         Init()
         self:UnregisterEvent(event)
 

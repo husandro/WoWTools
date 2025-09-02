@@ -56,7 +56,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 
 
 
@@ -82,6 +82,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled  then
                 self:UnregisterEvent(event)
+
             else
                 if C_AddOns.IsAddOnLoaded("MacroToolkit") then
                     print(
@@ -96,6 +97,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Init()
                     self:UnregisterEvent(event)
                 end
+
+                self:RegisterEvent("PLAYER_LOGOUT")
             end
 
 
