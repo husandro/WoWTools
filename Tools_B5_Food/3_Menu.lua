@@ -252,22 +252,22 @@ local function Init_Menu(self, root)
         end, {itemID=itemID})
         WoWTools_SetTooltipMixin:Set_Menu(sub3)
     end
-    if find>1 then
-        sub2:CreateDivider()
-        sub2:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-        function()
-            StaticPopup_Show('WoWTools_OK',
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            nil,
-            {SetValue=function()
-                Save().noUseItems={}
-                WoWTools_FoodMixin:Check_Items()
-            end})
-            return MenuResponse.Open
-        end)
-        WoWTools_MenuMixin:SetScrollMode(sub2)
-    end
+    
+    sub2:CreateDivider()
+    sub2:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+        nil,
+        {SetValue=function()
+            Save().noUseItems={}
+            WoWTools_FoodMixin:Check_Items()
+        end})
+        return MenuResponse.Open
+    end)
+    WoWTools_MenuMixin:SetScrollMode(sub2)
+    
 
 
 --登录游戏时: 查找
@@ -430,24 +430,22 @@ local function Init_Menu(self, root)
     end
 
 --全部清除
-    if find>1 then
-        sub:CreateDivider()
-        name= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL
-        sub:CreateButton(
-            name,
-        function(data)
-            StaticPopup_Show('WoWTools_OK',
-            data.name,
-            nil,
-            {SetValue=function()
-                Save().addItems={}
-                WoWTools_FoodMixin:Check_Items()
-            end})
-            return MenuResponse.Open
-        end, {name=name})
+    sub:CreateDivider()
+    name= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL
+    sub:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
+            Save().addItems={}
+            WoWTools_FoodMixin:Check_Items()
+        end})
+        return MenuResponse.Open
+    end, {name=name})
 
-        WoWTools_MenuMixin:SetScrollMode(sub)
-    end
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
 --总是显示
     sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS, function()

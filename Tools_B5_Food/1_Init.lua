@@ -99,11 +99,10 @@ local PaneIDs={
 
 
 function WoWTools_FoodMixin:Get_Item_Valid(itemID)
-
     if itemID
         and itemID~=self.Button.itemID
         and not Save().noUseItems[itemID]
-        and not Save().addItems[itemID]
+        and (PaneIDs[itemID] or not Save().addItems[itemID])
         and (Save().olnyUsaItem and C_Item.GetItemSpell(itemID) or not Save().olnyUsaItem)
     then
         local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))

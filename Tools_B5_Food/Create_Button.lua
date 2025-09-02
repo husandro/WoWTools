@@ -73,10 +73,27 @@ local function Set_Button_Function(btn)
     end
 
     function btn:set_event()
-        self:RegisterEvent('BAG_UPDATE_DELAYED')
-        self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+        if self:IsShown() then
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+        else
+            self:UnregisterAllEvents()
+        end
     end
 
+
+    btn:SetScript('OnShow', function(self)
+        self:set_event()
+    end)
+    btn:SetScript('OnHide', function(self)
+        self:set_event()
+        self.itemID=nil
+        self:SetAttribute("type1", nil)
+        self:SetAttribute("item1", nil)
+        self.texture:SetTexture(0)
+        btn:Hide()
+        WoWTools_CooldownMixin:Setup(self)
+    end)
 
     btn:SetScript("OnEvent", function(self, event, arg1, arg2)
         if event=='BAG_UPDATE_DELAYED' then
@@ -201,15 +218,18 @@ end
 
 
 --检查,物品
+local IsChecking
 function WoWTools_FoodMixin:Check_Items(isPrint)
-    if not self.CheckFrame or self.CheckFrame.isChecking then--正在查询
+    if IsChecking then--正在查询
         return
     elseif InCombatLockdown() then
-        self.CheckFrame.isCheckInCombat=true
-        self.CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
+        if self.CheckFrame then
+            self.CheckFrame.isCheckInCombat=true
+            self.CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
+        end
         return
     end
-    self.CheckFrame.isChecking=true
+    IsChecking=true
 
 
 
@@ -239,23 +259,21 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
         table.insert(new, 1, itemID)
     end
 
-    local index=0
-    for _, itemID in pairs(new) do
-        index= index +1
+    for index, itemID in pairs(new) do
         local btn= _G[Buttons[index]] or Create_Button(index)--创建
         btn.itemID= itemID
         btn:settings()
         btn:set_attribute()
-
         btn:set_point()
+
         if not btn:IsShown() then
             btn:set_event()
             btn:Show()
         end
     end
 
-
-    for i=Save().numLine, index, Save().numLine do
+    local num= #new
+    for i=Save().numLine, num, Save().numLine do
         local btn= _G[Buttons[i]]
         if btn then
             btn:ClearAllPoints()
@@ -263,28 +281,22 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
             self.Button.Background:SetPoint('TOP', btn, 1, 1)
         end
     end
-    self.Button.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[index-1]] or self.Button, -1, -1)
+    self.Button.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[num-1]] or self.Button, -1, -1)
 
 
-    for i= index , #Buttons do
-        local btn= _G[Buttons[i]]
-        if btn and btn:IsShown() then
-            btn.itemID=nil
-            btn:SetAttribute("type1", nil)
-            btn:SetAttribute("item1", nil)
-            btn.texture:SetTexture(0)
-            btn:Hide()
-            WoWTools_CooldownMixin:Setup(btn)
-            btn:UnregisterAllEvents()
-        end
+    for i= num+1 , #Buttons do
+        _G[Buttons[i]]:SetShown(false)
     end
 
     WoWTools_FoodMixin.Button:settings()
 
     if isPrint then
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_FoodMixin.addName, WoWTools_DataMixin.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE) )
+        print(
+            WoWTools_FoodMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE)
+        )
     end
-    self.CheckFrame.isChecking=nil
+    IsChecking=nil
 end
 
 
@@ -318,9 +330,11 @@ local function Init()
     WoWTools_FoodMixin.CheckFrame:SetScript('OnEvent', function(self, event)
         WoWTools_FoodMixin:Check_Items()--检查,物品
         if event=='PLAYER_REGEN_ENABLED' then
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            self:UnregisterEvent(event)
         end
     end)
+
+    WoWTools_FoodMixin.CheckFrame:set_event()
 
     Init=function()end
 end
