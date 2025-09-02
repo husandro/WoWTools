@@ -607,7 +607,31 @@ end
 
 
 
+--选项 SettingsTooltip
+function WoWTools_TooltipMixin.Events:Blizzard_Settings_Shared()
+    SettingsTooltip:HookScript('OnShow', function(tooltip)
+        local frame= tooltip:GetOwner():GetParent()
+        local data= frame and frame.GetData and frame:GetData()
+        local setting= data.data and data.data.setting
+        if not setting then
+            return
+        end
 
+        local variable= setting.variable
+        local variableType= setting.variableType
+
+        if variable or variableType then
+            SettingsTooltip:AddLine(' ')
+            if variable then
+                SettingsTooltip:AddLine('variable'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..tostring(variable))
+            end
+            if variableType then
+                SettingsTooltip:AddLine('variableType'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..tostring(variableType))
+            end
+            SettingsTooltip:Show()
+        end
+    end)
+end
 
 
 
