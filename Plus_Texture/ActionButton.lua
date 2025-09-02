@@ -68,8 +68,8 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
         end
         if btn.UpdateHotkeys then
             Set_KeyText(btn)
-            hooksecurefunc(btn, 'UpdateHotkeys', function(self)
-                Set_KeyText(self)
+            hooksecurefunc(btn, 'UpdateHotkeys', function(b)
+                Set_KeyText(b)
             end)
         end
         if btn.cooldown then--缩小，冷却，字体
@@ -178,6 +178,8 @@ function WoWTools_TextureMixin.Events:Blizzard_ZoneAbility()
     for btn in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
         Set_Texture(btn)
     end
+
+    self:SetAlphaColor(ZoneAbilityFrame.Style, nil, nil, 0.3)
 
     ZoneAbilityFrame:HookScript('OnShow', function(frame)
         for btn in frame.SpellButtonContainer:EnumerateActive() do
