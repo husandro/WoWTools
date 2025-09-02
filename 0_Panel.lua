@@ -64,15 +64,17 @@ local function Init_Options()
         end
     })
 
-    header= WoWTools_DataMixin.onlyChinese and '清除小号数据' or 'Clear WoW data'
+
+--清除战网数据
+    local wowHeader= WoWTools_DataMixin.onlyChinese and '清除战网数据' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, 'Data'))
     WoWTools_PanelMixin:OnlyButton({
-        title= WoWTools_DataMixin.Icon.wow2..header,
+        title= WoWTools_DataMixin.Icon.wow2..wowHeader,
         buttonText= WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= header,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
                 WoWTools_DataMixin.Icon.wow2
-                ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
+                ..wowHeader
                 ..'|n|n|cnGREEN_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
                 nil,
@@ -98,6 +100,12 @@ local function Init_Options()
     })
 
 
+
+
+
+
+
+
 --清除玩家输入数据
     header= WoWTools_DataMixin.onlyChinese and '清除玩家输入数据' or 'Clear player input data'
     WoWTools_PanelMixin:OnlyButton({
@@ -105,29 +113,8 @@ local function Init_Options()
         buttonText= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= header,
         SetValue= function()
-            StaticPopup_Show('WoWTools_RestData',
-                (WoWTools_DataMixin.onlyChinese and '清除玩家输入数据' or 'Clear player input data')
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
-                nil,
-            function()
-                WoWToolsPlayerDate= {}
-                WoWTools_Mixin:Reload()
-            end)
+           
         end,
-        tooltip=function()
-            local text
-            local i=0
-            for name, value in pairs(WoWToolsPlayerDate) do
-                i= i +1
-                local t= type(value)
-                text= (text and text..'\n' or '')
-                   ..'|cnGREEN_FONT_COLOR:'..i..')|r '
-                   ..name..': |cffffffff'
-                   ..(t=='string' and value or t)
-                   ..'|r'
-            end
-            return text
-        end
     })
 
 
@@ -160,6 +147,14 @@ local function Init_Options()
     })
 
 
+--显示战网物品
+    WoWTools_PanelMixin:OnlyButton({
+        title= WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS),
+        buttonText= WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+        SetValue= function()
+           WoWTools_ItemMixin:OpenWoWItemListFrame()--战团，物品列表
+        end,
+    })
 
 
 

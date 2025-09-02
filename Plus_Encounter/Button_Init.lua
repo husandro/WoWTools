@@ -85,7 +85,10 @@ local function Init()
     btn:set_icon()
 
 
-    local wow= WoWTools_ItemMixin:Create_WoWButton(btn, {name='WoWToolsEncounterJournalWoWButton'})
+    local wow= WoWTools_ItemMixin:Create_WoWButton(btn, {
+        name='WoWToolsEncounterJournalWoWButton',
+        type='Instance',
+    })
     wow:SetPoint('RIGHT', btn, 'LEFT')
 
     if WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then

@@ -76,11 +76,12 @@ local function Init()
 
                     root:CreateSpacer()
 
-                    WoWTools_ItemMixin:OpenWoWItemListMenu(self, root)
+                    WoWTools_ItemMixin:OpenWoWItemListMenu(self, root, 'Bank')
                 end)
             end
-        end}
-    )
+        end,
+        type='Bank',
+    })
     wow:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -25,0)
     wow:GetNormalTexture():SetVertexColor(1,1,1)
     function wow:settings()

@@ -1,8 +1,5 @@
 --战团，物品列表
---[[local function Save()
-    return WoWToolsSave['Plus_ItemInfo'] or {}
-end]]
-
+--Item Bank Currency Money Time Instance Rare Worldboss
 
 
 
@@ -541,27 +538,29 @@ TypeTabs= {
         local data, num= CreateDataProvider(), 0
         local guid= Frame.guid
         local info= guid and WoWTools_WoWDate[Frame.guid]
-        local rare, rare2
-        for name in pairs(info and info.Rare.boss or {}) do--[name]= UnitGUID('target')
-            num= num+1
-            name= '|cff606060'..num..'|r'..WoWTools_TextMixin:CN(name)
-            if select(2, math.modf(num/2))~=0 then
-                rare= (rare and ' ' or '')..name
-            else
-                rare2= (rare2 and ' ' or '')..name
+        if info and info.Rare.boss then
+            local rare, rare2
+            for name in pairs(info.Rare.boss) do--[name]= UnitGUID('target')
+                num= num+1
+                name= '|cff606060'..num..'|r'..WoWTools_TextMixin:CN(name)
+                if select(2, math.modf(num/2))~=0 then
+                    rare= (rare and ' ' or '')..name
+                else
+                    rare2= (rare2 and ' ' or '')..name
+                end
             end
-        end
-        if rare then
-            if isFind and (
-                    rare and rare:upper():find(findText)
-                    or (rare2 and rare:upper():find(findText))
-                ) or not isFind
-            then
-                data:Insert({
-                    rare= rare,
-                    rare2= rare2,
-                    rareTab=info.Rare.boss
-                })
+            if rare then
+                if isFind and (
+                        rare and rare:upper():find(findText)
+                        or (rare2 and rare:upper():find(findText))
+                    ) or not isFind
+                then
+                    data:Insert({
+                        rare= rare,
+                        rare2= rare2,
+                        rareTab=info.Rare.boss
+                    })
+                end
             end
         end
         return data, WoWTools_Mixin:MK(num, 3)
@@ -1672,7 +1671,7 @@ end
 
 
 
-local function Init_List()
+local function Init_List(showListType)
     do
         Init_TypeTabs_Data()
     end
@@ -2009,12 +2008,11 @@ local function Init_List()
 
 
 
-    --List2Buttons[List2Type]:SetButtonState('PUSHED', true)
-    if List2Type then
-        --List2Buttons[List2Type].texture:SetDesaturated(true)
-        List2Buttons[List2Type].texture:SetScale(0.5)
-        List2Buttons[List2Type].SelectTexture:SetShown(true)
-    end
+
+    List2Type= showListType or 'Item'
+    List2Buttons[List2Type].texture:SetScale(0.5)
+    List2Buttons[List2Type].SelectTexture:SetShown(true)
+
 
     Frame.SearchBox2:SetPoint('RIGHT', last, 'LEFT', -2, 0)
 
@@ -2023,7 +2021,8 @@ local function Init_List()
 
 
 
-    Init_List=function()
+    Init_List=function(showListType2)
+        List2Type= showListType2 or 'Item'
         Frame:SetShown(not Frame:IsShown())
     end
 end
@@ -2108,6 +2107,7 @@ function WoWTools_ItemMixin:Create_WoWButton(frame, tab)
     local name= tab.name
     local click= tab.click
     local tooltip= tab.tooltip
+    local type= tab.type--Item Bank Currency Money Time Instance Rare Worldboss
 
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
         name=name,
@@ -2117,6 +2117,7 @@ function WoWTools_ItemMixin:Create_WoWButton(frame, tab)
 
     btn.click= click
     btn.tooltip= tooltip
+    btn.type= type
 
     btn:SetScript('OnLeave', function()
         GameTooltip_Hide()
@@ -2139,9 +2140,9 @@ function WoWTools_ItemMixin:Create_WoWButton(frame, tab)
 
     btn:SetScript('OnClick', function(s, d)
         if s.click then
-            s.click(s, d, function() Init_List() end)
+            s.click(s, d, function() Init_List(s.type) end)
         else
-            Init_List()
+            Init_List(s.type)
         end
     end)
     WoWTools_TextureMixin:SetButton(btn)
@@ -2149,15 +2150,20 @@ function WoWTools_ItemMixin:Create_WoWButton(frame, tab)
 end
 
 
-function WoWTools_ItemMixin:OpenWoWItemListMenu(_, root)--战团，物品列表
+function WoWTools_ItemMixin:OpenWoWItemListMenu(_, root, showListType)--战团，物品列表
     local sub= root:CreateButton(
         WoWTools_DataMixin.Icon.wow2
         ..(WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)),
-    function()
-        Init_List()
+    function(data)
+        Init_List(data.showListType)
         return MenuResponse.Open
-    end)
+    end, {showListType=showListType})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '打开/关闭用户界面' or BINDING_NAME_TOGGLEUI)
     end)
+end
+
+--Item Bank Currency Money Time Instance Rare Worldboss
+function WoWTools_ItemMixin:OpenWoWItemListFrame(showListType)--战团，物品列表
+    Init_List(showListType)
 end
