@@ -15,6 +15,13 @@ local function Init()
         return
     end
 
+    local btn= WoWTools_ItemMixin:Create_WoWButton(ContainerFrameCombinedBags.CloseButton, {
+        name='WoWToolsCombinedBagsWoWButton',
+        type='Item',
+    })
+    btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT', -23, 0)
+
+
     WoWTools_BagMixin:Init_Container_Menu()--背包，菜单，增强
 
     Init=function()end

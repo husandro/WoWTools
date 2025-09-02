@@ -1671,7 +1671,11 @@ end
 
 
 
-local function Init_List(showListType)
+local function Init_List(showListType, isShow)
+    if isShow==false then
+        return
+    end
+
     do
         Init_TypeTabs_Data()
     end
@@ -2021,71 +2025,42 @@ local function Init_List(showListType)
 
 
 
-    Init_List=function(showListType2)
-        List2Type= showListType2 or 'Item'
-        Frame:SetShown(not Frame:IsShown())
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init()
-    local btn= WoWTools_ItemMixin:Create_WoWButton(ContainerFrameCombinedBags.CloseButton, {name='WoWToolsCombinedBagsWoWButton'})
-    btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT', -23, 0)
-
-    MainMenuBarBackpackButton:HookScript('OnEnter', function()
-        GameTooltip:AddLine(
-            WoWTools_DataMixin.Icon.wow2
-            ..'|cnGREEN_FONT_COLOR:<'
-            ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
-            ..WoWTools_DataMixin.Icon.mid
-            ..'>'
-        )
-        GameTooltip:Show()
-    end)
-    MainMenuBarBackpackButton:EnableMouseWheel(true)
-    MainMenuBarBackpackButton:SetScript('OnMouseWheel', function(_, d)
-        if d==1 then
-            if not Frame then
-                Init_List()
-            else
-                Frame:SetShown(true)
-            end
-        elseif Frame then
-            Frame:SetShown(false)
+    Init_List=function(showListType2, isShow2)
+        local isFrameShow= Frame:IsShown()
+        if isFrameShow then
+            Frame:Hide()
         end
-    end)
 
+        if isShow2~=nil then
+            show= isShow2
+        else
+            show= not isFrameShow
+        end
 
-    Init=function()
-        Init_List()
+        if show then
+            List2Type= showListType2 or List2Type or 'Item'
+        end
+        Frame:SetShown(show)
     end
 end
 
 
 
 
-function WoWTools_ItemMixin:Init_WoW_ItemList()
-    Init()
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2164,6 +2139,6 @@ function WoWTools_ItemMixin:OpenWoWItemListMenu(_, root, showListType)--战团�
 end
 
 --Item Bank Currency Money Time Instance Rare Worldboss
-function WoWTools_ItemMixin:OpenWoWItemListFrame(showListType)--战团，物品列表
-    Init_List(showListType)
+function WoWTools_ItemMixin:OpenWoWItemListFrame(showListType, isShow)--战团，物品列表
+    Init_List(showListType, isShow)
 end

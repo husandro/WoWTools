@@ -8,7 +8,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
 
@@ -27,11 +27,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if Save().disabled then
-                self:UnregisterAllEvents()
-            else
-                WoWTools_ItemMixin:Init_WoW_ItemList()--战团，物品列表
+            if not Save().disabled then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
+            self:UnregisterEvent(event)
 
         elseif WoWToolsSave then
             if WoWTools_ItemMixin.Events[arg1] then

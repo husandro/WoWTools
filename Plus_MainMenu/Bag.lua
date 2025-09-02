@@ -46,7 +46,14 @@ local function Init()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        GameTooltip:AddLine(' ')
+         GameTooltip:AddLine(
+            WoWTools_DataMixin.Icon.wow2
+            ..'|cnGREEN_FONT_COLOR:<'
+            ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
+            ..WoWTools_DataMixin.Icon.mid
+            ..'>'
+        )
+        --GameTooltip:AddLine(' ')
 
         local numPlayer, allMoney= 0, 0
         local tab={}
@@ -180,6 +187,14 @@ local function Init()
             ToggleAllBags()
         end
     end)
+
+    MainMenuBarBackpackButton:EnableMouseWheel(true)
+    MainMenuBarBackpackButton:SetScript('OnMouseWheel', function(_, d)
+        local isShow= d==1
+        WoWTools_ItemMixin:OpenWoWItemListFrame('Item', isShow)--战团，物品列表
+    end)
+
+
 
     Init=function()end
 end
