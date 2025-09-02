@@ -113,10 +113,8 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
     tab=tab or {}
 
     local notColor= tab.notColor
-    local alpha
-    if not tab.notAlpha then
-        alpha= tab.alpha or self.min
-    end
+    local alpha= tab.notAlpha and 1 or tab.alpha or self.min
+    
 
     if tab.isSub then
         local t
@@ -305,32 +303,15 @@ function WoWTools_TextureMixin:SetSlider(frame)
         return
     end
 
-    local thumb= frame.Slider.Slider and frame.Slider.Slider.Thumb or frame.Slider.Thumb
-    self:SetAlphaColor(thumb, true)
+    local slider= frame.Slider.Slider or frame.Slider
 
-    local back= frame.Slider.Back or frame.Back
-    if back then
-        for _, icon in pairs({back:GetRegions()}) do
-            if icon:IsObjectType("Texture") then
-                WoWTools_ColorMixin:Setup(icon, {type='Texture'})
-            end
-        end
-    end
-    local forward= frame.Slider.Forward or frame.Forward
-    if forward then
-        for _, icon in pairs({forward:GetRegions()}) do
-            if icon:IsObjectType("Texture") then
-                WoWTools_ColorMixin:Setup(icon, {type='Texture'})
-            end
-        end
-    end
+    self:SetAlphaColor(slider.Thumb, true)
+    self:SetFrame(frame.Back, {alpha=1})
+    self:SetFrame(frame.Forward, {alpha=1})
 
-    local middle= frame.Slider.Slider and frame.Slider.Slider.Middle or frame.Slider.Middle
-    local right= frame.Slider.Slider and frame.Slider.Slider.Right or frame.Slider.Right
-    local left= frame.Slider.Slider and frame.Slider.Slider.Left or frame.Slider.Left
-    WoWTools_ColorMixin:Setup(middle, {type='Texture'})
-    WoWTools_ColorMixin:Setup(right, {type='Texture'})
-    WoWTools_ColorMixin:Setup(left, {type='Texture'})
+    self:SetAlphaColor(frame.Left, true)
+    self:SetAlphaColor(frame.Middle, true)
+    self:SetAlphaColor(frame.Right, true)
 end
 
 
@@ -425,6 +406,7 @@ function WoWTools_TextureMixin:SetInset(frame, alphaORmin)
     if not frame then
         return
     end
+
     self:SetAlphaColor(frame.InsetBorderLeft, nil, nil, alphaORmin)
     self:SetAlphaColor(frame.InsetBorderBottom, nil, nil, alphaORmin)
     self:SetAlphaColor(frame.InsetBorderRight, nil, nil, alphaORmin)
@@ -434,7 +416,6 @@ function WoWTools_TextureMixin:SetInset(frame, alphaORmin)
     self:SetAlphaColor(frame.InsetBorderTopLeft, nil, nil, alphaORmin)
     self:SetAlphaColor(frame.InsetBorderBottomRight, nil, nil, alphaORmin)
     self:SetAlphaColor(frame.InsetBorderBottomLeft, nil, nil, alphaORmin)
-
 
     self:SetAlphaColor(frame.LeftBorder, nil, nil, alphaORmin)
     self:SetAlphaColor(frame.RightBorder, nil, nil, alphaORmin)

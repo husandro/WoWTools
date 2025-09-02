@@ -42,8 +42,6 @@ end
 
 
 
-
-
 function WoWTools_MenuMixin:CreateSlider(root, tab)
     local sub=root:CreateTemplate("OptionsSliderTemplate")
 
@@ -69,18 +67,12 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
         else
             f.Text:SetText(math.ceil(va))
         end
-        --f.Text:SetText(va or 1)
 
         f.Low:ClearAllPoints()
         f.Low:SetPoint('TOPLEFT', 0, 8)
         f.Low:SetText(desc.data.name or '')
 
         f.High:SetText('')
-
-        --[[if desc.data.isColor then
-            f.High:SetTextColor(1,0,1)
-            f.Text:SetTextColor(1,0,1)
-        end]]
 
         f:SetScript('OnValueChanged', function(s, value)
             if s.bit then
@@ -125,6 +117,8 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             s:SetScript('OnHide', nil)
             s:SetScript('OnUpdate', nil)
         end)
+
+        WoWTools_TextureMixin:SetNineSlice(f, 1)
     end)
 
 

@@ -2374,6 +2374,13 @@ end
     end)
 end]]
 
+
+
+
+
+
+
+
 --菜单
 function WoWTools_TextureMixin.Events:Blizzard_Menu()
 --bar
@@ -2395,7 +2402,20 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
             self:SetAlphaColor(icon, true)
         end
     end)
+
+
+    --UISliderTemplat
 end
+
+
+
+
+
+
+
+
+
+
 
 
 function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
@@ -2448,5 +2468,22 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     end)
 
     --BattleBar-SwapPetFrame-DeadIcon
+
+--选项面板，Slider
+    hooksecurefunc(MinimalSliderWithSteppersMixin, 'OnLoad', function(frame)
+        self:SetSlider(frame)
+    end)
+    hooksecurefunc(MinimalSliderWithSteppersMixin, 'SetEnabled', function(frame, enabled)
+        local alpha= enabled and 1 or 0.3
+        if frame.Back then
+            frame.Back:SetAlpha(alpha)
+        end
+        if frame.Forward then
+            frame.Forward:SetAlpha(alpha)
+        end
+        if frame.Slider then
+            frame.Slider:SetAlpha(alpha)
+        end
+    end)
 end
 

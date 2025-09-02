@@ -6147,7 +6147,9 @@
         "LFGIsIDHeader",
         "StaticPopupTimeoutSec",
         "LFD_PROPOSAL_FAILED_CLOSE_TIME",
-        "SETTINGS_TAB_ADDONS"
+        "SETTINGS_TAB_ADDONS",
+        "PropertySliderMixin",
+        "MinimalSliderMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
