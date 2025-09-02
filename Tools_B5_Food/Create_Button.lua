@@ -88,8 +88,10 @@ local function Set_Button_Function(btn)
     btn:SetScript('OnHide', function(self)
         self:set_event()
         self.itemID=nil
-        self:SetAttribute("type1", nil)
-        self:SetAttribute("item1", nil)
+        if self:CanChangeAttribute() then
+            self:SetAttribute("type1", nil)
+            self:SetAttribute("item1", nil)
+        end
         self.texture:SetTexture(0)
         btn:Hide()
         WoWTools_CooldownMixin:Setup(self)

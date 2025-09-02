@@ -83,12 +83,12 @@ end
 
 
 local PaneIDs={
-    [113509]=true,--魔法汉堡
-    [80610]=true,--魔法布丁
-    [65499]=true,--魔法蛋糕
-    [43523]=true,--魔法酪饼
-    [43518]=true,--魔法馅饼
-    [5512]=true,--治疗石
+    [113509]=1,--魔法汉堡
+    [80610]=1,--魔法布丁
+    [65499]=1,--魔法蛋糕
+    [43523]=1,--魔法酪饼
+    [43518]=1,--魔法馅饼
+    [5512]=1,--治疗石
 }
 
 
@@ -99,19 +99,20 @@ local PaneIDs={
 
 
 function WoWTools_FoodMixin:Get_Item_Valid(itemID)
+    local save= Save()
     if itemID
         and itemID~=self.Button.itemID
-        and not Save().noUseItems[itemID]
-        and (PaneIDs[itemID] or not Save().addItems[itemID])
-        and (Save().olnyUsaItem and C_Item.GetItemSpell(itemID) or not Save().olnyUsaItem)
+        and not save.noUseItems[itemID]
+        and (PaneIDs[itemID] or not save.addItems[itemID])
+        and (save.olnyUsaItem and C_Item.GetItemSpell(itemID) or not save.olnyUsaItem)
     then
         local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
-        if Save().class[classID]
-            and Save().class[classID][subClassID]
+        if save.class[classID]
+            and save.class[classID][subClassID]
             and (WoWTools_DataMixin.Is_Timerunning
-                    or (Save().onlyMaxExpansion
+                    or (save.onlyMaxExpansion
                         and (PaneIDs[itemID] or WoWTools_DataMixin.ExpansionLevel==expacID)
-                        or not Save().onlyMaxExpansion
+                        or not save.onlyMaxExpansion
                     )
                 )
         then
