@@ -50,7 +50,7 @@ local P_Save={
         isEnterShow=true,--Enter显示
         alphaBG=0,--bg
         bgAlpha=0.75,--收集图标
-        borderAlpha=0.5,
+        borderAlpha=0,
         bgAlpha2=0.75,--Minimap上
         borderAlpha2=0.5,
     },

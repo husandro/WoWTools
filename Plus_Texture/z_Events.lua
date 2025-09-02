@@ -2387,22 +2387,27 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
     hooksecurefunc(MenuProxyMixin, 'OnLoad', function(menu)
         self:SetScrollBar(menu)
     end)
+
 --外框
     hooksecurefunc(MenuStyle1Mixin, 'Generate', function(frame)
-        local icon= frame:GetRegions()
-        if icon and icon:GetObjectType()=="Texture" then
-            self:SetAlphaColor(icon, true)
-            --icon:SetVertexColor(0, 0, 0, 0.925)
-        end
-    end)
---横线
-    hooksecurefunc(MenuVariants, 'CreateDivider', function(frame)--MenuVariants.lua
         local icon= frame:GetRegions()
         if icon and icon:GetObjectType()=="Texture" then
             self:SetAlphaColor(icon, true)
         end
     end)
 
+--横线
+    hooksecurefunc(MenuVariants, 'CreateDivider', function(frame)--MenuVariants.lua
+        self:SetFrame(frame, {alpha=1})
+    end)
+
+    hooksecurefunc(MenuVariants, 'CreateCheckbox', function(_, frame)
+        self:SetAlphaColor(frame.leftTexture1, true)
+    end)
+
+    hooksecurefunc(MenuVariants, 'CreateRadio', function(_, frame)
+        self:SetAlphaColor(frame.leftTexture1, true)
+    end)
 
     --UISliderTemplat
 end
@@ -2419,12 +2424,12 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
-    --TabSystem/TabSystemTemplates.lua
+--TabSystem/TabSystemTemplates.lua
     hooksecurefunc(TabSystemButtonMixin, 'Init', function(btn)
         self:SetTabButton(btn)
     end)
 
-    --SharedUIPanelTemplates.lua
+--SharedUIPanelTemplates.lua
     hooksecurefunc(PanelTabButtonMixin, 'OnLoad', function(btn)
         self:SetTabButton(btn)
     end)
@@ -2466,8 +2471,6 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         self:HideFrame(bar.overlay)
         self:HideFrame(bar.Inset)
     end)
-
-    --BattleBar-SwapPetFrame-DeadIcon
 
 --选项面板，Slider
     hooksecurefunc(MinimalSliderWithSteppersMixin, 'OnLoad', function(frame)
