@@ -1,7 +1,7 @@
 --回购物品
 
 local function Save()
-    return WoWToolsPlayerDate['Plus_SellBuy']
+    return WoWToolsSave['Plus_SellBuy']
 end
 
 
@@ -43,7 +43,7 @@ local function set_buyback_item()
     local no={}
     for index=1, num do
         local itemID = C_MerchantFrame.GetBuybackItemID(index)
-        if itemID and Save().noSell[itemID] then
+        if itemID and WoWToolsPlayerDate['SellBuyItems'].noSell[itemID] then
             local itemLink= GetBuybackItemLink(index) or itemID
             local co= select(3, GetBuybackItemInfo(index)) or 0
             if co<=GetMoney() then
@@ -79,12 +79,12 @@ end
 --添加，移除，到Save
 local function Add_Remove_ToSave(itemID)
     local text
-    if Save().noSell[itemID] then
-        Save().noSell[itemID]=nil
+    if WoWToolsPlayerDate['SellBuyItems'].noSell[itemID] then
+        WoWToolsPlayerDate['SellBuyItems'].noSell[itemID]=nil
         text= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
     else
-        Save().noSell[itemID]=true
-        Save().Sell[itemID]=nil
+        WoWToolsPlayerDate['SellBuyItems'].noSell[itemID]=true
+        WoWToolsPlayerDate['SellBuyItems'].sell[itemID]=nil
         text='|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
         set_buyback_item()
     end
@@ -153,7 +153,7 @@ local function Init_Menu(self, root)
             sub=root:CreateCheckbox(
                 WoWTools_ItemMixin:GetName(itemID, itemLink, nil),--取得物品，名称
             function(data)
-                return Save().noSell[data.itemID]
+                return WoWToolsPlayerDate['SellBuyItems'].noSell[data.itemID]
             end, function(data)
                 Add_Remove_ToSave(data.itemID)
             end, {itemID=itemID})
@@ -219,7 +219,7 @@ local function Init()
 
         if (infoType=='item' or infoType=='merchant') and itemID then
             local name= WoWTools_ItemMixin:GetName(itemID)
-            if Save().noSell[itemID] then
+            if WoWToolsPlayerDate['SellBuyItems'].noSell[itemID] then
                 GameTooltip:AddDoubleLine(name, (WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..WoWTools_DataMixin.Icon.left)
                 self.texture:SetAtlas('bags-button-autosort-up')
             else
@@ -281,7 +281,7 @@ local function Init()
 
     function BuybackButton:set_text()--回购，数量，提示
         local num= 0
-        for _ in pairs(Save().noSell) do
+        for _ in pairs(WoWToolsPlayerDate['SellBuyItems'].noSell) do
             num= num +1
         end
         self.Text:SetText(num>0 and num or '')

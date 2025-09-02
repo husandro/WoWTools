@@ -1,5 +1,5 @@
 local function Save()
-    return WoWToolsPlayerDate['Plus_SellBuy']
+    return WoWToolsSave['Plus_SellBuy']
 end
 
 
@@ -220,7 +220,7 @@ local function Set_Item_Info()
             end
 
 --自动购买， 数量
-            num=(not Save().notAutoBuy and itemID) and Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID]
+            num=(not Save().notAutoBuy and itemID) and WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]
             --num= num and num..'|T236994:0|t' or ''
             num= num and num..'|A:Perks-ShoppingCart:0:0|a' or ''
 

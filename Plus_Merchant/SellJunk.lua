@@ -1,5 +1,5 @@
 local function Save()
-    return WoWToolsPlayerDate['Plus_SellBuy']
+    return WoWToolsSave['Plus_SellBuy']
 end
 
 
@@ -52,7 +52,7 @@ local function Init()
             return
         end
 
-        local Sell, notSellCustom= Save().Sell, Save().notSellCustom
+        local Sell, notSellCustom= WoWToolsPlayerDate['SellBuyItems'].sell, Save().notSellCustom
         local num, gruop, preceTotale= 0, 0, 0
 
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
@@ -166,7 +166,7 @@ Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName
                         (itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=30)
                         or (WoWTools_DataMixin.Player.isMaxLevel and expansionID and expansionID<WoWTools_DataMixin.ExpansionLevel)--旧版本
                     )
-                and not Save().noSell[itemID]
+                and not WoWToolsPlayerDate['SellBuyItems'].noSell[itemID]
             then
 
                 if other then

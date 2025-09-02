@@ -1,19 +1,8 @@
 local P_Save={
-    noSell={
-        [144341]=true,--[可充电的里弗斯电池]
-        [49040]=true,--[基维斯]
-        [114943]=true,--[终极版侏儒军刀]
-        [103678]=true,--迷时神器
-        [142469]=true,--魔导大师的紫罗兰印戒
-        [139590]=true,--[传送卷轴：拉文霍德]
-        [144391]=true,--拳手的重击指环
-        [144392]=true,--拳手的重击指环
-        [37863]=true,--[烈酒的遥控器]
+    --noSell={},
+    --Sell={},
+    --buyItems={},
 
-    },
-    Sell={
-        [34498]=true,--[纸飞艇工具包]
-    },
     --notAutoLootPlus= WoWTools_DataMixin.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
     --notPlus=true,--商人 Plus,加宽
 
@@ -25,20 +14,36 @@ local P_Save={
 
     MERCHANT_ITEMS_PER_PAGE= 24,--页，物品数量
     numLine=6,--行数
-    buyItems={
-        --[guid]={[itemID]=numbre,}
-    },
-    WoWBuyItems={
-        --[8529]=200,--诺格弗格药剂
-    },
+
+
     repairItems={date=date('%x'), player=0, guild=0, num=0},
 
     --notItemInfo=true,--禁用物品信息
     --ShowBackground=false,--显示背景
 }
 
+
+local P_WoWSave={
+    buy={},--[guid]={[itemID]=numbre,}
+    sell={
+        [34498]=true,--[纸飞艇工具包]
+    },
+    noSell={
+        [144341]=true,--[可充电的里弗斯电池]
+        [49040]=true,--[基维斯]
+        [114943]=true,--[终极版侏儒军刀]
+        [103678]=true,--迷时神器
+        [142469]=true,--魔导大师的紫罗兰印戒
+        [139590]=true,--[传送卷轴：拉文霍德]
+        [144391]=true,--拳手的重击指环
+        [144392]=true,--拳手的重击指环
+        [37863]=true,--[烈酒的遥控器]
+    },
+}
+
+
 local function Save()
-    return WoWToolsPlayerDate['Plus_SellBuy']
+    return WoWToolsSave['Plus_SellBuy']
 end
 
 
@@ -74,31 +79,41 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+            WoWToolsSave['Plus_SellBuy']= WoWToolsSave['Plus_SellBuy'] or P_Save
 
-            if WoWToolsSave['Plus_SellBuy'] then
-                WoWToolsPlayerDate['Plus_SellBuy']= WoWToolsSave['Plus_SellBuy']
-                WoWToolsPlayerDate['Plus_SellBuy'].buyItems= WoWToolsPlayerDate['Plus_SellBuy'].buyItems or {}
-                WoWToolsPlayerDate['Plus_SellBuy'].WoWBuyItems= WoWToolsPlayerDate['Plus_SellBuy'].WoWBuyItems or {}
-                WoWToolsSave['Plus_SellBuy']= nil
+            if Save().buyItems then--清除以前数据
+                --上次的BUG
+                for guid, tab in pairs(Save().buyItems) do
+                    for itemID, num in pairs(tab) do
+                        if type(num)~='number' then
+                            Save().buyItems[guid][itemID]= nil
+                        end
+                    end
+                end
+
+                WoWToolsPlayerDate['SellBuyItems']= {}
+                WoWToolsPlayerDate['SellBuyItems'].buy= Save().buyItems
+                WoWToolsPlayerDate['SellBuyItems'].sell= Save().Sell or {}
+                WoWToolsPlayerDate['SellBuyItems'].noSell= Save().noSell or {}
+
+                WoWToolsSave['Plus_SellBuy'].buyItems=nil
+                WoWToolsSave['Plus_SellBuy'].Sell= nil
+                WoWToolsSave['Plus_SellBuy'].noSell= nil
+                WoWToolsSave['Plus_SellBuy'].WoWBuyItems= nil
+            else
+                WoWToolsPlayerDate['SellBuyItems']= WoWToolsPlayerDate['SellBuyItems'] or P_WoWSave
             end
 
-            WoWToolsPlayerDate['Plus_SellBuy']= WoWToolsPlayerDate['Plus_SellBuy'] or P_Save
-
-            Save().buyItems[WoWTools_DataMixin.Player.GUID]= Save().buyItems[WoWTools_DataMixin.Player.GUID] or {}
+            if not WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID] then
+                WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID]= {}
+            end
 
             WoWTools_MerchantMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人' or MERCHANT)
-
-            --上次的BUG
-            for itemID, numItem in pairs(Save().buyItems[WoWTools_DataMixin.Player.GUID]) do
-                if type(numItem)~='number' then
-                    Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID]= nil
-                end
-            end
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -121,11 +136,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if not Save().disabled then
-                self:UnregisterEvent('PLAYER_ENTERING_WORLD')
-                self:UnregisterEvent(event)
-            else
-                self:UnregisterAllEvents()
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent("PLAYER_LOGOUT")
             end
+            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
