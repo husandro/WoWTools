@@ -36,7 +36,7 @@ end
 --开始
 --####
 local function Init_Options()
-    WoWTools_PanelMixin:Header(nil, WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
+    WoWTools_PanelMixin:Header(nil, WoWTools_DataMixin.onlyChinese and '数据' or 'Data')
 
     local header= WoWTools_DataMixin.onlyChinese and '插件选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, OPTIONS)
     WoWTools_PanelMixin:OnlyButton({
@@ -51,7 +51,7 @@ local function Init_Options()
             function()
                 WoWTools_DataMixin.ClearAllSave= true
                 --EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-                WoWToolsSave={}
+                WoWToolsSave= {}
                 WoWTools_Mixin:Reload()
             end)
         end,
@@ -77,7 +77,7 @@ local function Init_Options()
                 ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
                 nil,
                 function()
-                    WoWTools_WoWDate={}
+                    WoWTools_WoWDate= {}
                     WoWTools_Mixin:Reload()
                 end
             )
@@ -116,14 +116,15 @@ local function Init_Options()
         end,
         tooltip=function()
             local text
-            local index=0
+            local i=0
             for name, value in pairs(WoWToolsPlayerDate) do
-                index= index +1
+                i= i +1
                 local t= type(value)
                 text= (text and text..'\n' or '')
-                   '|cnGREEN_FONT_COLOR:'..index..')|r '
-                   ..name..': '
+                   ..'|cnGREEN_FONT_COLOR:'..i..')|r '
+                   ..name..': |cffffffff'
                    ..(t=='string' and value or t)
+                   ..'|r'
             end
             return text
         end
@@ -133,6 +134,39 @@ local function Init_Options()
 
 
 
+
+
+
+
+
+--全部清除
+    header= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+    WoWTools_PanelMixin:OnlyButton({
+        title= header,
+        buttonText= header,
+        addSearchTags= header,
+        SetValue= function()
+            StaticPopup_Show('WoWTools_RestData',
+                '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                nil,
+            function()
+                WoWToolsSave={}
+                WoWToolsPlayerDate= {}
+                WoWTools_WoWDate= {}
+                WoWTools_Mixin:Reload()
+            end)
+        end,
+    })
+
+
+
+
+
+
+
+
+    WoWTools_PanelMixin:Header(nil, WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
 
     WoWTools_PanelMixin:OnlyMenu({
         SetValue= function(value)
