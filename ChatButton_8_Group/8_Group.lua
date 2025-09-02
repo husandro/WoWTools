@@ -471,13 +471,13 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     table.sort(tabDPS, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
 
 
-    GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, playerNum), WoWTools_Mixin:MK(totaleHP,3))
+    GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, playerNum), WoWTools_DataMixin:MK(totaleHP,3))
     if playerNum>0 then
         GameTooltip:AddLine(' ')
     end
     local find
     for _, data in pairs(tabT) do
-        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_Mixin:MK(data.maxHP, 3)..INLINE_TANK_ICON)
+        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_TANK_ICON)
         find=true
     end
     if find then
@@ -485,7 +485,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, data in pairs(tabN) do
-        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_Mixin:MK(data.maxHP, 3)..INLINE_HEALER_ICON)
+        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_HEALER_ICON)
         find=true
     end
     if find then
@@ -493,7 +493,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, data in pairs(tabDPS) do
-        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_Mixin:MK(data.maxHP, 3)..INLINE_DAMAGER_ICON)
+        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_DAMAGER_ICON)
         find= true
     end
     if find then

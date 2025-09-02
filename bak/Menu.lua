@@ -4,7 +4,7 @@
 .fontString
 .leftTexture1
 .leftTexture2
-WoWTools_Mixin:Call(menu.ReinitializeAll, menu)
+WoWTools_DataMixin:Call(menu.ReinitializeAll, menu)
 SharedTooltipTemplates.lua
 
 MenuUtil.GetElementText(elementDescription)

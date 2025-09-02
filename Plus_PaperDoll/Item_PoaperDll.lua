@@ -449,7 +449,7 @@ if not PlayerGetTimerunningSeasonID() then
         local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
         for n=1, numSockets do
             local gemLink= select(2, C_Item.GetItemGem(link, n))
-            WoWTools_Mixin:Load({id=gemLink, type='item'})
+            WoWTools_DataMixin:Load({id=gemLink, type='item'})
 
             local gem= self['gem'..n]
             if not gem then

@@ -646,7 +646,7 @@ local function Init()
         disabledfunc=nil,
         clearfunc= function()
             WoWToolsSave['Plus_Cursor']=nil
-            WoWTools_Mixin:Reload()
+            WoWTools_DataMixin:Reload()
         end}
     )
 

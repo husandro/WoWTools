@@ -116,7 +116,7 @@ local function Init_Menu(_, root)
             nil,
             {SetValue=function()
                 WoWToolsSave['Tools_UseItems']= nil
-                WoWTools_Mixin:Reload()
+                WoWTools_DataMixin:Reload()
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_UseItemsMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end}
         )

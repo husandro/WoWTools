@@ -183,7 +183,7 @@ local function Init()
         Save().saveWoWData= not Save().saveWoWData and true or nil
         BankPanel:Clean()
     end)
-    WoWTools_ItemMixin:OpenWoWItemListMenu(self, sub)
+    WoWTools_DataMixin:OpenWoWItemListMenu(self, sub)
     ]]
     Init=function()end
 end

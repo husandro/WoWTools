@@ -31,7 +31,7 @@ local function Init_Options()--初始, 选项
         end
     })
 
-    local initializer= WoWTools_Mixin:OnlySlider({
+    local initializer= WoWTools_DataMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
         GetValue= function() return Save().size end,
         minValue= 8,
@@ -48,7 +48,7 @@ local function Init_Options()--初始, 选项
     })
     initializer:SetParentInitializer(initializer2, function() if Save().plus then return true else return false end end)
 
-    initializer= WoWTools_Mixin:Check_Slider({
+    initializer= WoWTools_DataMixin:Check_Slider({
         checkName= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         checkGetValue= function() return Save().enabledMainMenuAlpha end,
         checkTooltip= WoWTools_MainMenuMixin.addName,
@@ -62,7 +62,7 @@ local function Init_Options()--初始, 选项
         step= 0.1,
         sliderSetValue= function(_, _, value2)
             if value2 then
-                Save().mainMenuAlphaValue= WoWTools_Mixin:GetFormatter1to10(value2, 0, 1)
+                Save().mainMenuAlphaValue= WoWTools_DataMixin:GetFormatter1to10(value2, 0, 1)
                 WoWTools_MainMenuMixin:Settings()
             end
         end,

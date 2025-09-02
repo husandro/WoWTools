@@ -476,7 +476,7 @@ end
 
 --创建，法术，列表
 local function Create_Spell_Menu(root, spellID, icon, name, index)
-    WoWTools_Mixin:Load({id=spellID, type='spell'})
+    WoWTools_DataMixin:Load({id=spellID, type='spell'})
 
     local macroText= Get_Spell_Macro(name, spellID)
     local info=  {name=name, spellID=spellID, icon=icon, tooltip=macroText}
@@ -691,8 +691,8 @@ local function Init_Equip_Menu(self, root)
                 icon= C_Item.GetItemIconByID(itemLink)
                 spellID= select(2, C_Item.GetItemSpell(itemLink))
 
-                WoWTools_Mixin:Load({id=spellID, type='spell'})
-                WoWTools_Mixin:Load({id=itemLink, type='item'})
+                WoWTools_DataMixin:Load({id=spellID, type='spell'})
+                WoWTools_DataMixin:Load({id=itemLink, type='item'})
 
                 sub= root:CreateButton(
                     slot..' '

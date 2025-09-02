@@ -52,7 +52,7 @@ local function Init_Options()
                 WoWTools_DataMixin.ClearAllSave= true
                 --EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
                 WoWToolsSave= {}
-                WoWTools_Mixin:Reload()
+                WoWTools_DataMixin:Reload()
             end)
         end,
         tooltip=function()
@@ -80,7 +80,7 @@ local function Init_Options()
                 nil,
                 function()
                     WoWTools_WoWDate= {}
-                    WoWTools_Mixin:Reload()
+                    WoWTools_DataMixin:Reload()
                 end
             )
         end,
@@ -141,7 +141,7 @@ local function Init_Options()
                 WoWToolsSave={}
                 WoWToolsPlayerDate= {}
                 WoWTools_WoWDate= {}
-                WoWTools_Mixin:Reload()
+                WoWTools_DataMixin:Reload()
             end)
         end,
     })
@@ -152,7 +152,7 @@ local function Init_Options()
         title= WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS),
         buttonText= WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
         SetValue= function()
-           WoWTools_ItemMixin:OpenWoWItemListFrame()--战团，物品列表
+           WoWTools_DataMixin:OpenWoWItemListFrame()--战团，物品列表
         end,
     })
 

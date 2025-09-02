@@ -330,7 +330,7 @@ local function Get_Info(tab)
         if currencyID then
             local info= C_CurrencyInfo.GetCurrencyInfo(currencyID) or {}
             if info.quantity and info.quantity>0 then
-                topLeftText= WoWTools_Mixin:MK(info.quantity, 3)
+                topLeftText= WoWTools_DataMixin:MK(info.quantity, 3)
             end
             return topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem
         else
@@ -762,7 +762,7 @@ local function Get_Info(tab)
     if not leftText and ((tab.bag and tab.bag.bag <= NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag) then
         local num=C_Item.GetItemCount(itemLink, true, false, true)-C_Item.GetItemCount(itemLink)--银行数量
         if num>0  then
-            leftText= '+'..WoWTools_Mixin:MK(num, 0)
+            leftText= '+'..WoWTools_DataMixin:MK(num, 0)
         end
     end
 

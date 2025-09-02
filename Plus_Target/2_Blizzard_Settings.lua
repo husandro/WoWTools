@@ -806,7 +806,7 @@ local function Init()
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), Save().disabled and (WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
 
         end,
-        clearfunc= function() WoWToolsSave['Plus_Target']=nil WoWTools_Mixin:Reload() end}
+        clearfunc= function() WoWToolsSave['Plus_Target']=nil WoWTools_DataMixin:Reload() end}
     )
 
     Init_Options()

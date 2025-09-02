@@ -94,7 +94,7 @@ end
 
 
 local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
-    WoWTools_Mixin:Load({type='item', id=itemID})
+    WoWTools_DataMixin:Load({type='item', id=itemID})
 
 
     local sub=root:CreateButton(

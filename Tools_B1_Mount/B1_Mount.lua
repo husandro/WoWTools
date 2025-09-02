@@ -152,7 +152,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if WoWTools_MountMixin.MountButton then
                  for type, tab in pairs(Save().Mounts) do
                     for ID in pairs(tab) do
-                        WoWTools_Mixin:Load({id=ID, type= type==ITEMS and 'item' or 'spell'})
+                        WoWTools_DataMixin:Load({id=ID, type= type==ITEMS and 'item' or 'spell'})
                     end
                 end
 

@@ -270,7 +270,7 @@ local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Mem
         '|T'..info.iconFileID..Size..'|t'
         ..WoWTools_HyperLink:CN_Link(link)
         ..(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
-        ..(num and WoWTools_Mixin:MK(num,3))
+        ..(num and WoWTools_DataMixin:MK(num,3))
         ..'|r'
         ..(WoWTools_CurrencyMixin:GetAccountIcon(info.currencyID) or '')
 end

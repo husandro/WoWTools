@@ -17,7 +17,7 @@ local function Delete_Macro(self)
 
     local name, icon, body = GetMacroInfo(index)
 
-    WoWTools_Mixin:Call(MacroFrame.DeleteMacro, MacroFrame)
+    WoWTools_DataMixin:Call(MacroFrame.DeleteMacro, MacroFrame)
 
     if name then
         print(WoWTools_MacroMixin.addName,
@@ -65,7 +65,7 @@ local function Init_Menu(self, root)
         '|A:QuestLegendary:0:0|a'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT),
     function()
         if not WoWTools_FrameMixin:IsLocked(MacroFrame) then
-            WoWTools_Mixin:Call(MacroEditButton_OnClick, MacroFrame, self)
+            WoWTools_DataMixin:Call(MacroEditButton_OnClick, MacroFrame, self)
         end
         return MenuResponse.Open
     end, {index=index})

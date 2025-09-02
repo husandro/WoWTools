@@ -71,7 +71,7 @@ local PointTab={
             end, function(data)
                 if not WoWTools_FrameMixin:IsLocked(MacroFrame) then
                     Save().toRightLeft=data.value
-                    WoWTools_Mixin:Call(MacroFrame.ChangeTab, MacroFrame, 1)
+                    WoWTools_DataMixin:Call(MacroFrame.ChangeTab, MacroFrame, 1)
                     TargetButton:settings()
                     WoWTools_MacroMixin:Init_Set_BG()
                 end

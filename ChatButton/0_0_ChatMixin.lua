@@ -16,13 +16,13 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
         C_ChatInfo.SendChatMessage(text, 'WHISPER', nil, name)
     elseif printText then
         if not ChatEdit_InsertLink(text) then
-            WoWTools_Mixin:Call(ChatFrame_OpenChat, text)
+            WoWTools_DataMixin:Call(ChatFrame_OpenChat, text)
         end
         
         --[[if ChatEdit_GetActiveWindow() then
-            WoWTools_Mixin:Call(ChatEdit_InsertLink, text)
+            WoWTools_DataMixin:Call(ChatEdit_InsertLink, text)
         else
-            WoWTools_Mixin:Call(ChatFrame_OpenChat, text)
+            WoWTools_DataMixin:Call(ChatFrame_OpenChat, text)
         end]]
     else
         local isNotDead= not UnitIsDeadOrGhost('player')

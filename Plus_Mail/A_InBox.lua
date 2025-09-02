@@ -17,7 +17,7 @@ local function get_Money(num)
     local text
     if num and num>0 then
         if num>=1e4 then
-            text= WoWTools_Mixin:MK(num/1e4, 2)..'|TInterface/moneyframe/ui-goldicon:0|t'
+            text= WoWTools_DataMixin:MK(num/1e4, 2)..'|TInterface/moneyframe/ui-goldicon:0|t'
         else
             text= GetMoneyString(num)
         end
@@ -62,7 +62,7 @@ local function return_delete_InBox(openMailID)--删除，或退信
         InboxFrame.openMailID= openMailID
         OpenMailFrame.itemName= (itemCount and itemCount>0) and itemName or nil
         OpenMailFrame.money= money
-        WoWTools_Mixin:Call(OpenMail_Delete)--删除，或退信 MailFrame.lua
+        WoWTools_DataMixin:Call(OpenMail_Delete)--删除，或退信 MailFrame.lua
     end
 
     print('|cFFFF00FF'..openMailID..')|r',
@@ -129,7 +129,7 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
                     end
                 end
                 if allCount>1 then
-                    GameTooltip:AddDoubleLine(' ', '#'..WoWTools_Mixin:MK(allCount, 3))
+                    GameTooltip:AddDoubleLine(' ', '#'..WoWTools_DataMixin:MK(allCount, 3))
                 end
                 GameTooltip:AddLine(' ')
             end
@@ -191,7 +191,7 @@ local function eventEnter(self, get)--enter 提示，删除，或退信，按钮
         text2= WoWTools_DataMixin.onlyChinese and '退信' or MAIL_RETURN
     end
     local icon= packageIcon or stationeryIcon
-    GameTooltip:AddLine('|cffff00ff'..self.openMailID..' |r'..(icon and '|T'..icon..':0|t')..text2..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..WoWTools_Mixin:MK(allCount,3)..'|r'..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS) or ''))
+    GameTooltip:AddLine('|cffff00ff'..self.openMailID..' |r'..(icon and '|T'..icon..':0|t')..text2..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..WoWTools_DataMixin:MK(allCount,3)..'|r'..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS) or ''))
     GameTooltip:Show()
 end
 
@@ -339,7 +339,7 @@ local function Create_Unit_Button(btn, i)
             OpenMailSender.Name:SetText(self.playerName or self.sender)
             OpenMailSubject:SetText(self.subject)
             InboxFrame.openMailID= self.openMailID
-            WoWTools_Mixin:Call(OpenMail_Reply)--回复
+            WoWTools_DataMixin:Call(OpenMail_Reply)--回复
         end
         self:SetAlpha(1)
     end)
@@ -407,7 +407,7 @@ local function Create_Unit_Button(btn, i)
     btn.outItemOrMoney= WoWTools_ButtonMixin:Cbtn(btn, {size={22, 20}, atlas='Cursor_OpenHand_32'})
     btn.outItemOrMoney:SetPoint('RIGHT', btn.DeleteButton, 'LEFT', -22, 0)
     btn.outItemOrMoney:SetScript('OnClick', function(self)
-        WoWTools_Mixin:Call(InboxFrame_OnModifiedClick, self:GetParent(), self.openMailID)
+        WoWTools_DataMixin:Call(InboxFrame_OnModifiedClick, self:GetParent(), self.openMailID)
     end)
     btn.outItemOrMoney:SetScript('OnLeave' ,function(self)
         self:GetParent().enterTipTexture:SetShown(false)

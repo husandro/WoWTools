@@ -76,7 +76,7 @@ end
 
 local function Init()
     for questID in pairs(Save().questIDs or {}) do
-        WoWTools_Mixin:Load({id= questID, type=='quest'})
+        WoWTools_DataMixin:Load({id= questID, type=='quest'})
     end
     do
         WoWTools_MinimapMixin:Init_Icon()--添加，图标

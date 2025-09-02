@@ -156,10 +156,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not class then
                 Save().spells[WoWTools_DataMixin.Player.Class]= {}
             else
-                WoWTools_Mixin:Load({id=class.item, type='item'})
-                WoWTools_Mixin:Load({id=class.alt, type='spell'})
-                WoWTools_Mixin:Load({id=class.shift, type='spell'})
-                WoWTools_Mixin:Load({id=class.ctrl, type='spell'})
+                WoWTools_DataMixin:Load({id=class.item, type='item'})
+                WoWTools_DataMixin:Load({id=class.alt, type='spell'})
+                WoWTools_DataMixin:Load({id=class.shift, type='spell'})
+                WoWTools_DataMixin:Load({id=class.ctrl, type='spell'})
             end
 
             WoWTools_FoodMixin.addName= '|A:Food:0:0|a'..(WoWTools_DataMixin.onlyChinese and '食物' or POWER_TYPE_FOOD)

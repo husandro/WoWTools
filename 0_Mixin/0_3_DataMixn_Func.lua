@@ -1,8 +1,4 @@
-WoWTools_Mixin={}
-
-
-
-function WoWTools_Mixin:Call(func, ...)
+function WoWTools_DataMixin:Call(func, ...)
     if func then
         securecallfunction(func, ...)
     end
@@ -19,7 +15,7 @@ BNET_CLIENT_APP = "App";
 BNET_CLIENT_HEROES = "Hero";
 BNET_CLIENT_CLNT = "CLNT";
 
-function WoWTools_Mixin:GetWoWTexture()
+function WoWTools_DataMixin:GetWoWTexture()
     local texture
     C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Small, function(success, icon)
         if success and texture then
@@ -34,17 +30,17 @@ end
 
 
 
-function WoWTools_Mixin:Load(tab)--WoWTools_Mixin:Load({id=, type=''})--加载 item quest spell, uiMapID
+function WoWTools_DataMixin:Load(tab)--WoWTools_DataMixin:Load({id=, type=''})--加载 item quest spell, uiMapID
     if not tab or not tab.id then
         return
     end
-    if tab.type=='quest' then --WoWTools_Mixin:Load({id=, type='quest'})
+    if tab.type=='quest' then --WoWTools_DataMixin:Load({id=, type='quest'})
         C_QuestLog.RequestLoadQuestByID(tab.id)
         if not HaveQuestRewardData(tab.id) then
             C_TaskQuest.RequestPreloadRewardData(tab.id)
         end
 
-    elseif tab.type=='spell' then--WoWTools_Mixin:Load({id=, type='spell'})
+    elseif tab.type=='spell' then--WoWTools_DataMixin:Load({id=, type='spell'})
         local spellID= tab.id
         if type(tab.id)=='string' then
             spellID= (C_Spell.GetSpellInfo(tab.id) or {}).spellID
@@ -53,7 +49,7 @@ function WoWTools_Mixin:Load(tab)--WoWTools_Mixin:Load({id=, type=''})--加载 i
             C_Spell.RequestLoadSpellData(spellID)
         end
 
-    elseif tab.type=='item' then--WoWTools_Mixin:Load({id=, type='item'})
+    elseif tab.type=='item' then--WoWTools_DataMixin:Load({id=, type='item'})
         local item= tab.itemLink or tab.id-- tab.id or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
         if item and not C_Item.IsItemDataCachedByID(item) then
             C_Item.RequestLoadItemDataByID(item)
@@ -63,10 +59,10 @@ function WoWTools_Mixin:Load(tab)--WoWTools_Mixin:Load({id=, type=''})--加载 i
             C_Item.RequestLoadItemData(tab.id)
         end
 
-    elseif tab.type=='mapChallengeModeID' then--WoWTools_Mixin:Load({id=, type='mapChallengeModeID'})
+    elseif tab.type=='mapChallengeModeID' then--WoWTools_DataMixin:Load({id=, type='mapChallengeModeID'})
         C_ChallengeMode.RequestLeaders(tab.id)
 
-    elseif tab.typ=='club' then--WoWTools_Mixin:Load({id=, type='club'})
+    elseif tab.typ=='club' then--WoWTools_DataMixin:Load({id=, type='club'})
         return C_ClubFinder.RequestPostingInformationFromClubId(tab.id)
         --C_Club.RequestTickets(tab.id)
     end
@@ -102,10 +98,10 @@ local spellLoadTab={
 
 
 for _, itemID in pairs(itemLoadTab) do
-    WoWTools_Mixin:Load({id=itemID, type='item'})
+    WoWTools_DataMixin:Load({id=itemID, type='item'})
 end
 for _, spellID in pairs(spellLoadTab) do
-    WoWTools_Mixin:Load({id=spellID, type='spell'})
+    WoWTools_DataMixin:Load({id=spellID, type='spell'})
 end
 
 
@@ -122,7 +118,7 @@ end
 
 
 
-function WoWTools_Mixin:MK(number, bit)
+function WoWTools_DataMixin:MK(number, bit)
     if not number then
         return
     end
@@ -161,7 +157,7 @@ end
 
 
 --版本
-function WoWTools_Mixin:GetExpansionText(expacID, questID)
+function WoWTools_DataMixin:GetExpansionText(expacID, questID)
     if not expacID and questID then
         expacID= GetQuestExpansion(questID)
     end
@@ -198,7 +194,7 @@ end
 
 
 
-function WoWTools_Mixin:Reload(isControlKeyDown)
+function WoWTools_DataMixin:Reload(isControlKeyDown)
     --if not (UnitAffectingCombat('player') and e.IsEncouter_Start) or not IsInInstance() then
     if not issecure() then
         if isControlKeyDown and IsControlKeyDown() or not isControlKeyDown then
@@ -213,7 +209,7 @@ end
 
 
 
-function WoWTools_Mixin:Get_CVar_Tooltips(info)--取得CVar信息 WoWTools_Mixin:Get_CVar_Tooltips({name= ,msg=, value=})
+function WoWTools_DataMixin:Get_CVar_Tooltips(info)--取得CVar信息 WoWTools_DataMixin:Get_CVar_Tooltips({name= ,msg=, value=})
     return (info.msg and info.msg..'|n' or '')..info.name..'|n'
     ..(info.value and C_CVar.GetCVar(info.name)== info.value and format('|A:%s:0:0|a', 'common-icon-checkmark') or '')
     ..(info.value and (WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
@@ -225,7 +221,7 @@ end
 
 
 
-function WoWTools_Mixin:PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua WoWTools_Mixin:PlaySound()--播放, 声音
+function WoWTools_DataMixin:PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua WoWTools_DataMixin:PlaySound()--播放, 声音
     if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' or (not setPlayerSound and not WoWTools_DataMixin.IsSetPlayerSound) then
         return
     end
@@ -251,7 +247,7 @@ end
 
 
 --添加，Check 和 划条
-function WoWTools_Mixin:GetFormatter1to10(value, minValue, maxValue)
+function WoWTools_DataMixin:GetFormatter1to10(value, minValue, maxValue)
     if value and minValue and maxValue then
         return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- minValue)) + minValue, maxValue)
     end
@@ -259,7 +255,7 @@ function WoWTools_Mixin:GetFormatter1to10(value, minValue, maxValue)
 end
 --[[local function GetFormatter1to10(minValue, maxValue)
     return function(value)
-        return WoWTools_Mixin:GetFormatter1to10(value, minValue, maxValue)
+        return WoWTools_DataMixin:GetFormatter1to10(value, minValue, maxValue)
     end
 end]]
 
@@ -269,8 +265,8 @@ end]]
 
 
 
---WoWTools_Mixin:StaticPopup_FindVisible('PARTY_INVITE')
-function WoWTools_Mixin:StaticPopup_FindVisible(which)
+--WoWTools_DataMixin:StaticPopup_FindVisible('PARTY_INVITE')
+function WoWTools_DataMixin:StaticPopup_FindVisible(which)
     local info = StaticPopupDialogs[which];
 	if info then
         for index = 1, STATICPOPUP_NUMDIALOGS or 4, 1 do--4

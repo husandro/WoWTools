@@ -15,7 +15,7 @@ local function Init()
         return
     end
 
-    local btn= WoWTools_ItemMixin:Create_WoWButton(ContainerFrameCombinedBags.CloseButton, {
+    local btn= WoWTools_DataMixin:CreateWoWItemListButton(ContainerFrameCombinedBags.CloseButton, {
         name='WoWToolsCombinedBagsWoWButton',
         type='Item',
     })

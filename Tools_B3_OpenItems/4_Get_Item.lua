@@ -123,7 +123,7 @@ local function Get_Items(self)--取得背包物品信息
                 and ((itemMinLevel and itemMinLevel<=WoWTools_DataMixin.Player.Level) or not itemMinLevel)--使用等级
                 and classID~=13
             then
-                --WoWTools_Mixin:Load({id=info.itemID, type='item'})
+                --WoWTools_DataMixin:Load({id=info.itemID, type='item'})
                 if Save().use[info.itemID] then--自定义
                     if Save().use[info.itemID]<=info.stackCount then
                         Set_Att(self, bag, slot, info.iconFileID, info.itemID)

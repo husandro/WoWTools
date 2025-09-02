@@ -11,7 +11,7 @@ end
 
 
 local ArcheologyButton
-WoWTools_Mixin:Load({id=87399, type='item'})
+WoWTools_DataMixin:Load({id=87399, type='item'})
 
 
 
@@ -52,7 +52,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         end)
 
         function framGameTooltipButton:play_sound()
-            WoWTools_Mixin:PlaySound()
+            WoWTools_DataMixin:PlaySound()
             WoWTools_FrameMixin:HelpFrame({frame=ArcheologyDigsiteProgressBar, point='left', topoint=self, size={40,40}, color={r=1,g=0,b=0,a=1}, show=true, hideTime=3, y=0})--设置，提示
         end
 

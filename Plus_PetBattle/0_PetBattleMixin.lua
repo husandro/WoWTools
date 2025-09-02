@@ -57,13 +57,13 @@ function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner,
             local numOwned= #ownedPetIDs
             if numPets and numPets>0 then
                 if numPets<numOwned or numPets<3 then
-                    AllCollected= WoWTools_Mixin:MK(numOwned, 3)
+                    AllCollected= WoWTools_DataMixin:MK(numOwned, 3)
                 else
-                    AllCollected= WoWTools_Mixin:MK(numOwned,3)..'/'..WoWTools_Mixin:MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
+                    AllCollected= WoWTools_DataMixin:MK(numOwned,3)..'/'..WoWTools_DataMixin:MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
                 end
             else
 
-                AllCollected= WoWTools_Mixin:MK(numOwned, 3)
+                AllCollected= WoWTools_DataMixin:MK(numOwned, 3)
             end
             if numCollected and numCollected>0 and limit and limit>0 then
                 local text2

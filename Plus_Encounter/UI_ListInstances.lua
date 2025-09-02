@@ -29,7 +29,7 @@ local function Init_Fvorite_Menu(self, root)
         nil,
         {SetValue=function()
             Save().favorites={}
-            WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+            WoWTools_DataMixin:Call(EncounterJournal_ListInstances)
         end})
         return MenuResponse.Open
     end)
@@ -52,7 +52,7 @@ local function Set_Button_ChallengData(button)
 
     for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
 
-        WoWTools_Mixin:Load({type='mapChallengeModeID',mapChallengeModeID })
+        WoWTools_DataMixin:Load({type='mapChallengeModeID',mapChallengeModeID })
 
         local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
         if name==instanceName or name:find(instanceName) then

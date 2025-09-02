@@ -67,7 +67,7 @@ local function Out_Text(num)
     local money= Out_Value(num)
     local text=''
     if money then
-       text= ' '..WoWTools_Mixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
+       text= ' '..WoWTools_DataMixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
     end
     return WoWTools_DataMixin.Player.col
             ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)
@@ -143,7 +143,7 @@ local function Save_Money(num)
             ..(WoWTools_DataMixin.onlyChinese and '放入' or DEPOSIT),
             C_CurrencyInfo.GetCoinTextureString(money),
 
-            SaveMoney~=money and '|cnGREEN_FONT_COLOR:'..WoWTools_Mixin:MK(SaveMoney/10000, 3) or ''
+            SaveMoney~=money and '|cnGREEN_FONT_COLOR:'..WoWTools_DataMixin:MK(SaveMoney/10000, 3) or ''
         )
     end
 end
@@ -259,7 +259,7 @@ local function Init_Menu(self, root)
 --填充 100, 500, 1000, 5000, 10000
     for _, num in pairs({100000, 50000, 10000,5000, 1000, 500, 100}) do
         sub2= sub:CreateButton(
-            WoWTools_Mixin:MK(num, 0)
+            WoWTools_DataMixin:MK(num, 0)
             ..'|A:Coin-Gold:0:0|a',
         function(data)
             Out_Money(data)
@@ -313,7 +313,7 @@ local function Init_Menu(self, root)
             end
 
             sub2= sub:CreateButton(
-                WoWTools_Mixin:MK(num, 0)
+                WoWTools_DataMixin:MK(num, 0)
                 ..'|A:Coin-Gold:0:0|a',
             function(data)
                 Save_Money(data)
@@ -384,7 +384,7 @@ local function Init()
             if money then
                 r= '|cnGREEN_FONT_COLOR:'..C_CurrencyInfo.GetCoinTextureString(money)
             else
-                r= '|cff606060'..WoWTools_Mixin:MK(num, 3)..'|A:Coin-Gold:0:0|a'
+                r= '|cff606060'..WoWTools_DataMixin:MK(num, 3)..'|A:Coin-Gold:0:0|a'
             end
         else
             r= WoWTools_TextMixin:GetEnabeleDisable(false)..'|A:Coin-Gold:0:0|a'

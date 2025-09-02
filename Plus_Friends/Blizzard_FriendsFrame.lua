@@ -145,7 +145,7 @@ local function Init_Friends_Menu(self, root)
         return not Save().disabledFriendPlus
     end, function()
         Save().disabledFriendPlus= not Save().disabledFriendPlus and true or nil
-        WoWTools_Mixin:Call(FriendsList_Update, true)
+        WoWTools_DataMixin:Call(FriendsList_Update, true)
     end)
 
     root:CreateDivider()
@@ -389,7 +389,7 @@ local function Init()--好友列表, 初始化
             if showPrint then
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_FriendsMixin.addName, text)
             else
-                WoWTools_Mixin:Call(FriendsFrame_CheckBattlenetStatus)
+                WoWTools_DataMixin:Call(FriendsFrame_CheckBattlenetStatus)
             end
 
 
@@ -534,7 +534,7 @@ local function Init()--好友列表, 初始化
                 btn:HookScript('OnClick', function()
                     if WhoFrameAddFriendButton:IsEnabled() and IsAltKeyDown() then
                         WhoFrameAddFriendButton:Click()
-                        C_Timer.After(1, function() WoWTools_Mixin:Call(WhoList_Update) end)
+                        C_Timer.After(1, function() WoWTools_DataMixin:Call(WhoList_Update) end)
                     end
                 end)
                 btn:HookScript('OnEnter', function(self)--FriendsFrame.lua

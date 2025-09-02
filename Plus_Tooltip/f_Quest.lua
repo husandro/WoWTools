@@ -9,7 +9,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
         return
     end
 
-    tooltip:AddLine(WoWTools_Mixin:GetExpansionText(nil, questID))--任务版本
+    tooltip:AddLine(WoWTools_DataMixin:GetExpansionText(nil, questID))--任务版本
 
     local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--等级
     local levelText
@@ -66,10 +66,10 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
             tooltip:AddDoubleLine(
                 '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'
                 ..(isMax and '|cnRED_FONT_COLOR:' or (canWeek or canEarned or canQuantity and '|cnGREEN_FONT_COLOR:') or col or '')
-                ..WoWTools_Mixin:MK(num,3)
+                ..WoWTools_DataMixin:MK(num,3)
                 ..(percent and ' |cnGREEN_FONT_COLOR:'..percent..'%' or ''),
 
-                (icon or '')..(wowNum and WoWTools_Mixin:MK(wowNum) or '')
+                (icon or '')..(wowNum and WoWTools_DataMixin:MK(wowNum) or '')
             )
         end
 
@@ -77,5 +77,5 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
 
     self:Set_Web_Link(tooltip, {type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
 
-    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

@@ -127,7 +127,7 @@ local function UpdateSlotButtons(self)
         if btn.Text then
             btn.Text:SetText(
                 collected and collected>0 and
-                WoWTools_Mixin:MK(collected, 3)
+                WoWTools_DataMixin:MK(collected, 3)
                 or ''
             )
         end
@@ -185,7 +185,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                         local icon= SlotsIcon[category] or ''
                         local name= WoWTools_TextMixin:CN(C_TransmogCollection.GetCategoryInfo(category)) or ''
                         GameTooltip:AddLine(
-                            format('%s%s%s %i%%  %s/%s%s', col, icon, name, collected/all*100, WoWTools_Mixin:MK(collected, 3), WoWTools_Mixin:MK(all, 3), WoWTools_DataMixin.Icon.Player)
+                            format('%s%s%s %i%%  %s/%s%s', col, icon, name, collected/all*100, WoWTools_DataMixin:MK(collected, 3), WoWTools_DataMixin:MK(all, 3), WoWTools_DataMixin.Icon.Player)
                         )
                         n=n+1
                     end
@@ -196,7 +196,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 local all= C_TransmogCollection.GetCategoryTotal(self.Text.category) or 0
                 local icon= SlotsIcon[self.Text.category] or ''
                 GameTooltip:AddLine(
-                    format('%s%i%%  %s/%s', icon, collected/all*100, WoWTools_Mixin:MK(collected, 3), (WoWTools_Mixin:MK(all, 3) ) or '')..WoWTools_DataMixin.Icon.Player)
+                    format('%s%i%%  %s/%s', icon, collected/all*100, WoWTools_DataMixin:MK(collected, 3), (WoWTools_DataMixin:MK(all, 3) ) or '')..WoWTools_DataMixin.Icon.Player)
             end
             GameTooltip:Show()
         end)
@@ -355,7 +355,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                 if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
                     local link= get_Link_Item_Type_Source(model.visualInfo.sourceID, 'illusion')--select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
                     if link then
-                        WoWTools_Mixin:Load({id=link, type='item'})--加载 item quest spell
+                        WoWTools_DataMixin:Load({id=link, type='item'})--加载 item quest spell
                         --visualInfo={isHideVisual=, visualID=, isCollected=, sourceID=, icon=, isUsable=}
                         table.insert(itemLinks, {
                             link= link,
@@ -370,7 +370,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                         local link= get_Link_Item_Type_Source(sources[index],'item')--WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index])
                         if link and not findLinks[link] then
                             --sources[index]= {sourceType=3, visualID=1, isCollected=, isValidSourceForPlayer, categoryID, isHideVisual, quality, invType, sourceID, playerCanCollect, inventorySlot, itemID, itemModID, name, canDisplayerOnPlayer}
-                            WoWTools_Mixin:Load({id=link, type='item'})--加载 item quest spell
+                            WoWTools_DataMixin:Load({id=link, type='item'})--加载 item quest spell
                             table.insert(itemLinks, {
                                 link=link,
                                 sourceID=sources[index],

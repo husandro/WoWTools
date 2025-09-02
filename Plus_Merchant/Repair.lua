@@ -76,7 +76,7 @@ local function Init_Auto_Repair()
                 RepairSave().guild=RepairSave().guild+Co
                 RepairSave().num=RepairSave().num+1
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
-                WoWTools_Mixin:Call(MerchantFrame_Update)
+                WoWTools_DataMixin:Call(MerchantFrame_Update)
             else
                 if GetMoney()>=Co then
                     do
@@ -85,7 +85,7 @@ local function Init_Auto_Repair()
                     RepairSave().player=RepairSave().player+Co
                     RepairSave().num=RepairSave().num+1
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
-                    WoWTools_Mixin:Call(MerchantFrame_Update)
+                    WoWTools_DataMixin:Call(MerchantFrame_Update)
                 else
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '失败' or FAILED)..'|r', WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
                 end
@@ -137,7 +137,7 @@ local function Init()
             local col= co==0 and '|cff9e9e9e' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
             self:SetText(
                 col
-                ..(WoWTools_Mixin:MK(co/10000, 0))
+                ..(WoWTools_DataMixin:MK(co/10000, 0))
                 ..'|A:auctionhouse-icon-coin-gold:8:8|a'
             )
         end
@@ -176,7 +176,7 @@ local function Init()
         end
         local co = GetRepairAllCost()--显示，修理所有，金钱
         local col= co==0 and '|cff9e9e9e' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnRED_FONT_COLOR:'
-        self:SetText(col..WoWTools_Mixin:MK(co/10000, 0)..'|A:auctionhouse-icon-coin-gold:8:8|a')
+        self:SetText(col..WoWTools_DataMixin:MK(co/10000, 0)..'|A:auctionhouse-icon-coin-gold:8:8|a')
 
 --修理一件
         local num=0--提示，可修理，件数

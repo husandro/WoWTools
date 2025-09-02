@@ -2,7 +2,7 @@
 --[[
 if LOCALE_zhCN then
     function BreakUpLargeNumbers(value)
-        return WoWTools_Mixin:MK(value, 3)
+        return WoWTools_DataMixin:MK(value, 3)
     end
 end
 FIRST_NUMBER = "千";
@@ -19,32 +19,32 @@ local function Set_Value_Text(line)
     local t= text:gsub('%d+', function(v)
         v=tonumber(v)
         if v>=1000 then
-            return WoWTools_Mixin:MK(v, 3)
+            return WoWTools_DataMixin:MK(v, 3)
         end
     end)
 
     t= t:gsub('%d+,%d%d%d', function(v)
         local a,b= v:match('(%d+),(%d%d%d)')
         v= tonumber(a..b)
-        return WoWTools_Mixin:MK(v, 3)
+        return WoWTools_DataMixin:MK(v, 3)
     end)
 
     t= t:gsub('%d+ '..SECOND_NUMBER, function(v)--千
         local a= v:match('(%d+)')
         v= tonumber(a..'000')
-        return WoWTools_Mixin:MK(v, 3)
+        return WoWTools_DataMixin:MK(v, 3)
     end)
 
     t= t:gsub('%d+ '..SECOND_NUMBER, function(v)--万
         local a= v:match('(%d+)')
         v= tonumber(a..'0000')
-        return WoWTools_Mixin:MK(v, 3)
+        return WoWTools_DataMixin:MK(v, 3)
     end)
 
     t= t:gsub('%d+ '..THIRD_NUMBER, function(v)--亿
         local a= v:match('(%d+)')
         v= tonumber(a..'00000000')
-        return WoWTools_Mixin:MK(v, 3)
+        return WoWTools_DataMixin:MK(v, 3)
     end)
 
     if t~=text then
@@ -309,8 +309,8 @@ local function Set_Item_Num(tooltip, itemID)
             tooltip:AddDoubleLine(
                 WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
 
-                (info.bank==0 and '|cff9e9e9e' or col)..WoWTools_Mixin:MK(info.bank, 3)..'|r|A:Banker:0:0|a '
-                ..(info.bag==0 and '|cff9e9e9e' or col)..WoWTools_Mixin:MK(info.bag, 3)..'|r|A:bag-main:0:0|a'
+                (info.bank==0 and '|cff9e9e9e' or col)..WoWTools_DataMixin:MK(info.bank, 3)..'|r|A:Banker:0:0|a '
+                ..(info.bag==0 and '|cff9e9e9e' or col)..WoWTools_DataMixin:MK(info.bag, 3)..'|r|A:bag-main:0:0|a'
             )
 
             if index>2 and not IsShiftKeyDown() then
@@ -371,7 +371,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 --版本数据, 图标，名称，版本
     if expacID or setID then
         tooltip:AddDoubleLine(
-            WoWTools_Mixin:GetExpansionText(expacID, nil) or '  ',
+            WoWTools_DataMixin:GetExpansionText(expacID, nil) or '  ',
             setID and 'setID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..setID
         )
     end
@@ -464,7 +464,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
     self:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
-    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
     --tooltip:Show()
 end
 

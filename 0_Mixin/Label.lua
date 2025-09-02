@@ -172,11 +172,11 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
             end
 
         elseif tab.type=='item' and tab.id then
-            WoWTools_Mixin:Load({id=tab.id, type='item'})
+            WoWTools_DataMixin:Load({id=tab.id, type='item'})
             local num= C_Item.GetItemCount(tab.id, true, false, true)
             local itemQuality= C_Item.GetItemQualityByID(tab.id)
             if (showAll or tab.show or num>0) and itemQuality>=1 then
-                WoWTools_Mixin:Load({id=tab.id, type='item'})
+                WoWTools_DataMixin:Load({id=tab.id, type='item'})
                 local icon= C_Item.GetItemIconByID(tab.id)
                 local name=showName and C_Item.GetItemNameByID(tab.id)
                 text= ((icon and icon>0) and '|T'..icon..':0|t' or '')

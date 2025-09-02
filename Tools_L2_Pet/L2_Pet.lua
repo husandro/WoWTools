@@ -23,7 +23,7 @@ local PetsList={
  }
 
 for _, info in pairs(PetsList) do
-    WoWTools_Mixin:Load({id=info.auraID, type='spell'})
+    WoWTools_DataMixin:Load({id=info.auraID, type='spell'})
 end
 
 
@@ -131,7 +131,7 @@ local function Init_Menu(self, root)
             {SetValue=function()
                 Save().Pets={[2780]=true}
                 if PetJournal_UpdatePetList then
-                    WoWTools_Mixin:Call(PetJournal_UpdatePetList)
+                    WoWTools_DataMixin:Call(PetJournal_UpdatePetList)
                 end
             end})
             return MenuResponse.Open

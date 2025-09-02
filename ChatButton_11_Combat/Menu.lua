@@ -125,7 +125,7 @@ local function Init_Menu(self, root)
         nil,
         function()
             WoWToolsSave['ChatButton_Combat']= nil
-            WoWTools_Mixin:Reload()
+            WoWTools_DataMixin:Reload()
         end)
 
         return MenuResponse.Open
@@ -202,7 +202,7 @@ local function Init_Menu(self, root)
     if timeAll>0 then
         sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll))
     end]]
-    WoWTools_ItemMixin:OpenWoWItemListMenu(self, root, 'Time')--战团，物品列表
+    WoWTools_DataMixin:OpenWoWItemListMenu(self, root, 'Time')--战团，物品列表
 
     root:CreateDivider()
     sub=root:CreateButton(

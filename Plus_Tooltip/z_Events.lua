@@ -29,7 +29,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_Professions()
             local name= self.WoWHead..'profession-trait/'..(f.nodeID or '')
             self:Set_Web_Link(GameTooltip, {name=name})
             --GameTooltip:Show()
-            WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+            WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         end
     end)
 end
@@ -69,7 +69,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
             if data and data.currentRank< data.maxRanks and not data.canRefundRank then
                 for _, traitCurrencyCost in ipairs(cost) do
                     local treeCurrency = frame.treeCurrencyInfoMap[traitCurrencyCost.ID];
-                    amount =  WoWTools_Mixin:MK(traitCurrencyCost.amount, 3)
+                    amount =  WoWTools_DataMixin:MK(traitCurrencyCost.amount, 3)
                     if amount then
                         needCost= needCost+ traitCurrencyCost.amount
                         if treeCurrency and treeCurrency.quantity < traitCurrencyCost.amount then
@@ -98,7 +98,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
 
         frame.NeedostLabe:SetText(
             needCost>0 and
-            (WoWTools_DataMixin.onlyChinese and '需求' or NEED)..' '..WoWTools_Mixin:MK(needCost, 3)
+            (WoWTools_DataMixin.onlyChinese and '需求' or NEED)..' '..WoWTools_DataMixin:MK(needCost, 3)
             or ''
         )
     end
@@ -144,7 +144,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_FlightMap()
         local info= f.taxiNodeData
         if info then
             GameTooltip:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
-            WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+            WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         end
     end)
 end
@@ -154,7 +154,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerChoice()
         if f.optionInfo and f.optionInfo.spellID then
             GameTooltip:ClearLines()
             GameTooltip:SetSpellByID(f.optionInfo.spellID)
-            WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+            WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         end
     end)
 end
@@ -179,7 +179,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_OrderHallUI()
         if info.ability and info.ability.id and info.ability.id>0 then
             GameTooltip:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
         end
-        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
     end)
     hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(f)--是否已激活, 和等级
         local info= f.talent
@@ -397,7 +397,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_ChallengesUI()
         end
         GameTooltip:AddDoubleLine('affixID '..f.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
         self:Set_Web_Link(GameTooltip, {type='affix', id=f.affixID, name=name, isPetUI=false})--取得网页，数据链接
-        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         --GameTooltip:Show()
     end)
 end

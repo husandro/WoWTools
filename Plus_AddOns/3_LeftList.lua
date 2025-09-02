@@ -114,7 +114,7 @@ local function Create_Fast_Button(indexAdd)
         else
             C_AddOns.EnableAddOn(self.name)
         end
-        WoWTools_Mixin:Call(AddonList_Update)
+        WoWTools_DataMixin:Call(AddonList_Update)
         self:set_tooltips()
     end)
     if indexAdd==1 then

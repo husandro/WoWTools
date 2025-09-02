@@ -25,9 +25,10 @@ Source\Libs\LibDBIcon-1.0.lua
 Source\Libs\LibRangeCheck-3.0.lua
 
 ##主要function，不能删除
-0_Mixin\3_Mixin.lua
-0_Mixin\0_1_Data.lua
-0_Mixin\0_2_Date_WoW.lua
+0_Mixin\0_1_DataMixin.lua
+0_Mixin\0_2_DataMixin_WoW.lua
+0_Mixin\0_3_DataMixn_Func.lua
+
 
 0_Mixin\StaticPopupDialogs.lua
 0_Mixin\Button.lua
@@ -53,7 +54,8 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Mixin\3_PanelMixin.lua
 
 0_Panel.lua
-0_Mixin\0_3_Data_NeedUpdate.lua
+1_WoWItemList.lua
+0_Mixin\0_z_DataMixn_NeedUpdate.lua
 
 ##坐骑， Tools 主要的，
 Tools\0_ToolsButtonMixin.lua
@@ -138,7 +140,7 @@ Plus_Item\0_SetupInfo.lua
 Plus_Item\1_Init.lua
 Plus_Item\Events.lua
 Plus_Item\Frames.lua
-Plus_Item\WoW_ItemList.lua
+
 
 ##颜色选择器
 Plus_Color\0_ColorMixin.lua

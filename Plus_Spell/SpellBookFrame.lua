@@ -88,7 +88,7 @@ local function Init_All_Flyout()
                 local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(self.flyoutID, slot)
                 local spellID= overrideSpellID or flyoutSpellID
                 if spellID then
-                    WoWTools_Mixin:Load({id=spellID, type='spell'})
+                    WoWTools_DataMixin:Load({id=spellID, type='spell'})
                     local name2= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
                     local icon= C_Spell.GetSpellTexture(spellID)
                     if name2 and icon then

@@ -160,7 +160,7 @@ local P_Save={
 
 
 if WoWTools_DataMixin.Player.Class=='ROGUE' then
-    WoWTools_Mixin:Load({id=1804, type='spell'})--开锁 Pick Lock
+    WoWTools_DataMixin:Load({id=1804, type='spell'})--开锁 Pick Lock
 end
 
 

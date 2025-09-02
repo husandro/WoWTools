@@ -470,7 +470,7 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
         minH=428,
         sizeUpdateFunc=function()
             if PVEFrame.activeTabIndex==3 then
-                WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
+                WoWTools_DataMixin:Call(ChallengesFrame.Update, ChallengesFrame)
             end
         end, sizeStopFunc=function()
             if PVEFrame.activeTabIndex==1 then
@@ -494,7 +494,7 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
             elseif PVEFrame.activeTabIndex==3 then
                 self:Save().size['PVEFrame_KEY']=nil
                 PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
-                WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
+                WoWTools_DataMixin:Call(ChallengesFrame.Update, ChallengesFrame)
             end
         end
     })
@@ -810,10 +810,10 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
         setSize=true,
         sizeUpdateFunc=function()
             if PaperDollFrame.EquipmentManagerPane:IsVisible() then
-                WoWTools_Mixin:Call(PaperDollEquipmentManagerPane_Update)
+                WoWTools_DataMixin:Call(PaperDollEquipmentManagerPane_Update)
             end
             if PaperDollFrame.TitleManagerPane:IsVisible() then
-                WoWTools_Mixin:Call(PaperDollTitlesPane_Update)
+                WoWTools_DataMixin:Call(PaperDollTitlesPane_Update)
             end
             if CharacterHeadSlot:IsVisible() then
                 Set_Slot_Point()
@@ -834,7 +834,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
                 end
                 self:Save().size['CharacterFrameExpanded']=nil
                 self:Save().size['CharacterFrameCollapse']=nil
-                WoWTools_Mixin:Call(CharacterFrame.UpdateSize, CharacterFrame)
+                WoWTools_DataMixin:Call(CharacterFrame.UpdateSize, CharacterFrame)
             end
         end,
         sizeRestTooltipColorFunc=function(f)

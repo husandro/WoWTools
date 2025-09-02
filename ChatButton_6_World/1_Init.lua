@@ -134,7 +134,7 @@ local function Init_Dialogs()
         OnAccept= function(self)
             local edit= self.editBox or self:GetEditBox()
             Save().world= edit:GetText()
-            WoWTools_Mixin:Reload()
+            WoWTools_DataMixin:Reload()
         end,
         EditBoxOnTextChanged=function(self)
             local t= self:GetText() or ''

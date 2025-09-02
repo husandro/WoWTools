@@ -15,7 +15,7 @@ local function Init()
     function frame:settings()
         local num
         num= GetTotalAchievementPoints() or 0
-        num = num==0 and '' or WoWTools_Mixin:MK(num, 1)
+        num = num==0 and '' or WoWTools_DataMixin:MK(num, 1)
         self.Text:SetText(num)
     end
     frame:RegisterEvent('ACHIEVEMENT_EARNED')

@@ -42,7 +42,7 @@ local function Init()
         end, function()
             Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
             WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精, 事件
-            WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+            WoWTools_DataMixin:Call(EncounterJournal_ListInstances)
             self:set_icon()
         end)
 
@@ -65,7 +65,7 @@ local function Init()
         if d=='LeftButton' then
             Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
             WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
-            WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+            WoWTools_DataMixin:Call(EncounterJournal_ListInstances)
             self:set_icon()
         elseif d=='RightButton' then
             Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
@@ -85,7 +85,7 @@ local function Init()
     btn:set_icon()
 
 
-    local wow= WoWTools_ItemMixin:Create_WoWButton(btn, {
+    local wow= WoWTools_DataMixin:CreateWoWItemListButton(btn, {
         name='WoWToolsEncounterJournalWoWButton',
         type='Instance',
     })
@@ -179,7 +179,7 @@ local function Set_Money(self, isTooltip)--险指南界面, 钱
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '钱' or MONEY, WoWTools_DataMixin.onlyChinese and '无' or NONE)
         else
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(WoWTools_DataMixin.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
+            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(WoWTools_DataMixin.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_DataMixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
         end
         GameTooltip:Show()
     end
@@ -295,7 +295,7 @@ end]]
         local numPlayer, allMoney= Set_Money(self, false)
         local text
         if allMoney>0 then
-            text= '#'..numPlayer..' |cffffffff'..WoWTools_Mixin:MK(allMoney/10000, 3)
+            text= '#'..numPlayer..' |cffffffff'..WoWTools_DataMixin:MK(allMoney/10000, 3)
         end
         self:SetText(text or '')
     end

@@ -92,12 +92,12 @@ end
 
 local function Init()
     PVPReadyDialog:HookScript('OnShow', function(self2)
-        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_DataMixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 
     PVPTimerFrame:HookScript('OnShow', function(self2)
-        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_DataMixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 
@@ -151,7 +151,7 @@ local function Init()
     LFDRoleCheckPopup:HookScript("OnShow",function(self)--副本职责
         self.onShowTime= GetTime()
 
-        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_DataMixin:PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
             return
         end
@@ -214,7 +214,7 @@ local function Init()
 
 --职责确认 RolePoll.lua
     hooksecurefunc('RolePollPopup_Show', function(self)
-        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_DataMixin:PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
             return
         end
@@ -238,7 +238,7 @@ local function Init()
 
         if btn2 then
             btn2.checkButton:SetChecked(true)
-            WoWTools_Mixin:Call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
+            WoWTools_DataMixin:Call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
             WoWTools_CooldownMixin:Setup(self, nil, Save().sec, nil, true)--冷却条
             self.aceTime=C_Timer.NewTimer(Save().sec, function()
                 if self.acceptButton:IsEnabled() and self:IsShown() and not IsMetaKeyDown() then
@@ -311,7 +311,7 @@ local function Init()
 
 --队伍查找器, 邀请信息
     LFGListInviteDialog:HookScript("OnShow", function(self)
-        WoWTools_Mixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
+        WoWTools_DataMixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
 
         WoWTools_CooldownMixin:Setup(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
 
@@ -406,7 +406,7 @@ local function Init()
 
 --确定，进入副本，信息
     LFGInvitePopup:HookScript("OnShow", function(self)--自动进入FB
-        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_DataMixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self, nil, self.timeOut and STATICPOPUP_TIMEOUT, nil, true, true)
     end)
     LFGInvitePopup:HookScript('OnHide', function(self)
@@ -414,7 +414,7 @@ local function Init()
     end)
 
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB
-        WoWTools_Mixin:PlaySound()--播放, 声音
+        WoWTools_DataMixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self, nil, self.timeOut or 38, nil, true, true)
     end)
     hooksecurefunc('LFGDungeonReadyPopup_OnFail', function()
@@ -507,7 +507,7 @@ local function Init()
 --确定，进入副本
         if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
             StaticPopupSpecial_Show(LFGDungeonReadyPopup)
-            WoWTools_Mixin:Call(LFGDungeonReadyPopup_Update)
+            WoWTools_DataMixin:Call(LFGDungeonReadyPopup_Update)
         end
     end)
 

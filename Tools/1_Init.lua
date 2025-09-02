@@ -95,7 +95,7 @@ local function Init_Panel()
                 nil,
                 function()
                     WoWToolsSave['WoWTools_ToolsButton']=nil
-                    WoWTools_Mixin:Reload()
+                    WoWTools_DataMixin:Reload()
                 end
             )
         end,

@@ -85,11 +85,11 @@ local function select_Reward(questID)--自动:选择奖励
     if Save().questRewardCheck[questID] and Save().questRewardCheck[questID]<=numQuests then
         bestItem= Save().questRewardCheck[questID]
         selectItemLink= GetQuestItemLink('choice', Save().questRewardCheck[questID])
-        WoWTools_Mixin:Load({id=selectItemLink, type='item'})
+        WoWTools_DataMixin:Load({id=selectItemLink, type='item'})
     else
         for i = 1, numQuests do
             local  itemLink = GetQuestItemLink('choice', i)
-            WoWTools_Mixin:Load({id=itemLink, type='item'})
+            WoWTools_DataMixin:Load({id=itemLink, type='item'})
             if itemLink then
                 local amount = select(3, GetQuestItemInfo('choice', i))--钱
                 local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = C_Item.GetItemInfo(itemLink)
@@ -539,7 +539,7 @@ local function Init_Quest()
                     )
                 end)
             end
-            WoWTools_Mixin:Call(QuestGoodbyeButton_OnClick)
+            WoWTools_DataMixin:Call(QuestGoodbyeButton_OnClick)
         else
             if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
@@ -547,7 +547,7 @@ local function Init_Quest()
                 end)
                 QuestButton.questSelect[questID]=true
             end
-            WoWTools_Mixin:Call(QuestProgressCompleteButton_OnClick)
+            WoWTools_DataMixin:Call(QuestProgressCompleteButton_OnClick)
         end
     end)
 
@@ -603,7 +603,7 @@ local function Init_Quest()
 
         local spellRewards = C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}--QuestInfo.lua QuestInfo_ShowRewards()
         for _, spellID in pairs(spellRewards) do
-            WoWTools_Mixin:Load({id=spellID, type='spell'})
+            WoWTools_DataMixin:Load({id=spellID, type='spell'})
             local spellLink= C_Spell.GetSpellLink(spellID)
             itemLink= itemLink.. (spellLink or (' spellID'..spellID))
         end
@@ -636,7 +636,7 @@ local function Init_Quest()
         end
 
         if acceptButton==QuestFrameCompleteQuestButton then
-            WoWTools_Mixin:Call(QuestRewardCompleteButton_OnClick)
+            WoWTools_DataMixin:Call(QuestRewardCompleteButton_OnClick)
         elseif acceptButton:IsEnabled() and acceptButton:IsVisible() then
             acceptButton:Click()
         end

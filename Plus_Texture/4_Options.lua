@@ -60,7 +60,7 @@ local function Init_Options()
         category= Category
     })
     --[[
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         GetValue= function() return Save().alpha or 0.5 end,
         minValue= 0,
@@ -70,7 +70,7 @@ local function Init_Options()
         category= Category,
         SetValue= function(_, _, value2)
             if value2 then
-                Save().alpha= WoWTools_Mixin:GetFormatter1to10(value2, 0, 1)
+                Save().alpha= WoWTools_DataMixin:GetFormatter1to10(value2, 0, 1)
                 WoWTools_TextureMixin.min= Save().alpha or 0.5
             end
         end
@@ -115,7 +115,7 @@ WoWTools_PanelMixin:OnlyCheck({
             WoWTools_TextureMixin:Init_Chat_Bubbles()
         end
     })
-    --[[WoWTools_Mixin:OnlySlider({
+    --[[WoWTools_DataMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         GetValue= function() return Save().chatBubbleAlpha or 0.5 end,
         minValue= 0,
@@ -125,14 +125,14 @@ WoWTools_PanelMixin:OnlyCheck({
         category= Category,
         SetValue= function(_, _, value2)
             if value2 then
-                Save().chatBubbleAlpha= WoWTools_Mixin:GetFormatter1to10(value2, 0, 1)
+                Save().chatBubbleAlpha= WoWTools_DataMixin:GetFormatter1to10(value2, 0, 1)
                 WoWTools_TextureMixin:Init_Chat_Bubbles()
             end
         end
     }, sub)]]
     
 
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
         GetValue= function() return Save().chatBubbleSacal or 0.85 end,
         minValue= 0.3,
@@ -142,7 +142,7 @@ WoWTools_PanelMixin:OnlyCheck({
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
-            Save().chatBubbleSacal= WoWTools_Mixin:GetFormatter1to10(value2, 0.3, 1)
+            Save().chatBubbleSacal= WoWTools_DataMixin:GetFormatter1to10(value2, 0.3, 1)
             WoWTools_TextureMixin:Init_Chat_Bubbles()
         end
     }, sub)
@@ -152,7 +152,7 @@ WoWTools_PanelMixin:OnlyCheck({
 
 
 
-    WoWTools_Mixin:Check_Slider({
+    WoWTools_DataMixin:Check_Slider({
         checkName= (WoWTools_DataMixin.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
         checkGetValue= function() return Save().classPowerNum end,
         tooltip= tooltip,
@@ -173,7 +173,7 @@ WoWTools_PanelMixin:OnlyCheck({
         step= 1,
         sliderSetValue= function(_, _, value2)
             if value2 then
-                local value3= WoWTools_Mixin:GetFormatter1to10(value2, 6, 64)
+                local value3= WoWTools_DataMixin:GetFormatter1to10(value2, 6, 64)
                 Save().classPowerNumSize= value3
                 WoWTools_MoveMixin:Init_Class_Power()--职业
             end

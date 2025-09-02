@@ -20,7 +20,7 @@ local function Init()
     LabelPvE:EnableMouse(true)
     LabelPvE:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
     LabelPvE:SetScript('OnMouseDown', function()
-        WoWTools_Mixin:Call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
+        WoWTools_DataMixin:Call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
     end)
     LabelPvE:SetScript('OnEnter', function(self)
         if not self.avgItemLevel then
@@ -42,7 +42,7 @@ local function Init()
     LabelPvP=WoWTools_LabelMixin:Create(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
     LabelPvP:SetPoint('TOP')
     LabelPvP:SetScript('OnMouseDown', function(self)
-        WoWTools_Mixin:Call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)
+        WoWTools_DataMixin:Call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)
     end)
     LabelPvP:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
     LabelPvP:SetScript('OnEnter', function(self)

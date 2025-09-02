@@ -74,6 +74,6 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         GameTooltip_AddBlankLineToTooltip(tooltip)
     end
 
-    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 

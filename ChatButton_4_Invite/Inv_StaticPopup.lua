@@ -46,7 +46,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
 
     InviterPlayerGUID= inviterGUID
 
-    local StaticPopupFrame, TimeLeft= WoWTools_Mixin:StaticPopup_FindVisible('PARTY_INVITE')
+    local StaticPopupFrame, TimeLeft= WoWTools_DataMixin:StaticPopup_FindVisible('PARTY_INVITE')
     if not inviterGUID or not name or not StaticPopupFrame then
         return
 
@@ -56,7 +56,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
     local sec
 
     local function setPrint()
-        WoWTools_Mixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
+        WoWTools_DataMixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
 
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName)
         print(
@@ -184,7 +184,7 @@ local function Init()
         if InvTimer and IsModifierKeyDown() then
             InvTimer:Cancel()
             InvTimer=nil
-            WoWTools_CooldownMixin:Setup(self, nil, select(2, WoWTools_Mixin:StaticPopup_FindVisible('PARTY_INVITE')), nil, true, true, nil)--冷却条  
+            WoWTools_CooldownMixin:Setup(self, nil, select(2, WoWTools_DataMixin:StaticPopup_FindVisible('PARTY_INVITE')), nil, true, true, nil)--冷却条  
         end
     end
 

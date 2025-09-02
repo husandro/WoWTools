@@ -26,8 +26,8 @@ end
 -- CallbackHandler:New
 --
 --   target            - target object to embed public APIs in
---   RegisterName      - name of thWoWTools_Mixin:Callback registration API, default "RegisterCallback"
---   UnregisterName    - name of thWoWTools_Mixin:Callback unregistration API, default "UnregisterCallback"
+--   RegisterName      - name of thWoWTools_DataMixin:Callback registration API, default "RegisterCallback"
+--   UnregisterName    - name of thWoWTools_DataMixin:Callback unregistration API, default "UnregisterCallback"
 --   UnregisterAllName - name of the API to unregister all callbacks, default "UnregisterAllCallbacks". false == don't publish this API.
 
 function CallbackHandler.New(_self, target, RegisterName, UnregisterName, UnregisterAllName)
@@ -57,7 +57,7 @@ function CallbackHandler.New(_self, target, RegisterName, UnregisterName, Unregi
 		registry.recurse = oldrecurse
 
 		if registry.insertQueue and oldrecurse==0 then
-			-- Something in one of our callbacks wanted to register morWoWTools_Mixin:Callbacks; they got queued
+			-- Something in one of our callbacks wanted to register morWoWTools_DataMixin:Callbacks; they got queued
 			for event,callbacks in pairs(registry.insertQueue) do
 				local first = not rawget(events, event) or not next(events[event])	-- test for empty before. not test for one member after. that one member may have been overwritten.
 				for object,func in pairs(callbacks) do

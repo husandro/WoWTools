@@ -77,7 +77,7 @@ local function Init_Frame()
                 and not LFGDungeonReadyStatus:IsVisible()
                 and not LFGDungeonReadyDialog:IsVisible()
                 and not StaticPopup_Visible('WoWTools_LFD_ExitIns') then
-                    WoWTools_Mixin:PlaySound()--播放, 声音
+                    WoWTools_DataMixin:PlaySound()--播放, 声音
                     local leaveSce= 30
                     if Save().autoROLL and event=='LOOT_CLOSED' then
                         leaveSce= WoWToolsSave['ChatButton_LFD'].sec
@@ -88,7 +88,7 @@ local function Init_Frame()
                     end)
                     StaticPopup_Show('WoWTools_LFD_ExitIns')
                     
-                    WoWTools_CooldownMixin:Setup(WoWTools_Mixin:StaticPopup_FindVisible('WoWTools_LFD_ExitIns') or StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
+                    WoWTools_CooldownMixin:Setup(WoWTools_DataMixin:StaticPopup_FindVisible('WoWTools_LFD_ExitIns') or StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
             end
 
         elseif event=='PLAYER_ENTERING_WORLD' then
@@ -104,7 +104,7 @@ local function Init_Frame()
             if not Save().leaveInstance then
                 return
             end
-            WoWTools_Mixin:PlaySound()--播放, 声音
+            WoWTools_DataMixin:PlaySound()--播放, 声音
             C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
             LFGTeleport(true)
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
@@ -114,7 +114,7 @@ local function Init_Frame()
             
         elseif event=='PVP_MATCH_COMPLETE' then--离开战场
             if Save().leaveInstance then
-                WoWTools_Mixin:PlaySound()--播放, 声音
+                WoWTools_DataMixin:PlaySound()--播放, 声音
                 if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                     WoWTools_CooldownMixin:Setup(PVPMatchResults.buttonContainer.leaveButton, nil, WoWToolsSave['ChatButton_LFD'].sec, nil, true, true)
                 end

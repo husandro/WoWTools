@@ -364,9 +364,9 @@ local function Init_SetItem_Info()
                         end
                         if itemValue and num then
                             if num>=itemValue then
-                                num= '|cnGREEN_FONT_COLOR:'..WoWTools_Mixin:MK(num,0)..'|r'
+                                num= '|cnGREEN_FONT_COLOR:'..WoWTools_DataMixin:MK(num,0)..'|r'
                             else
-                                num= '|cnRED_FONT_COLOR:'..WoWTools_Mixin:MK(num,0)..'|r'
+                                num= '|cnRED_FONT_COLOR:'..WoWTools_DataMixin:MK(num,0)..'|r'
                             end
                         end
 

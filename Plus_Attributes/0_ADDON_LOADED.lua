@@ -128,7 +128,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end,
                 clearfunc= function()
                     WoWToolsSave['Plus_Attributes']=nil
-                    WoWTools_Mixin:Reload()
+                    WoWTools_DataMixin:Reload()
                 end
             })
 

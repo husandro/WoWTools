@@ -20,7 +20,7 @@ local function Get_Text_Table()
             if data then
                 icon= icon or data.iconID
                 spellID=data.spellID
-                WoWTools_Mixin:Load({id=spellID, type='spell'})
+                WoWTools_DataMixin:Load({id=spellID, type='spell'})
             end
             if icon then
                 allTab[icon]= {
@@ -30,7 +30,7 @@ local function Get_Text_Table()
             end
 
         elseif item then
-            WoWTools_Mixin:Load({id=item, type='item'})
+            WoWTools_DataMixin:Load({id=item, type='item'})
             local itemID= C_Item.GetItemInfoInstant(item)
             local icon= C_Item.GetItemIconByID(item)
             if icon then
@@ -156,7 +156,7 @@ local function Init_Menu(_, root)
             local index= WoWTools_MacroMixin:GetSelectIndex()
             if index then
                 if select(3, GetMacroInfo(index))~= MacroFrameText:GetText() then
-                    WoWTools_Mixin:Call(MacroFrameSaveButton_OnClick)
+                    WoWTools_DataMixin:Call(MacroFrameSaveButton_OnClick)
                 end
             end
             do

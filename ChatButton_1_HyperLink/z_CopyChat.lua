@@ -252,7 +252,7 @@ function Init_Button(index)
 		)
 		GameTooltip:Show()
 		WoWTools_HyperLink.LinkButton:SetButtonState('PUSHED')
-		WoWTools_Mixin:Call(FCF_FadeInScrollbar, self:GetParent())
+		WoWTools_DataMixin:Call(FCF_FadeInScrollbar, self:GetParent())
 	end)
 
 	frame.CopyChatButton:SetScript('OnMouseDown', function(self, d)

@@ -12,7 +12,7 @@ local function Clear_Achievement()
     end
 --更新，成就面板
     if num>0 and AchievementFrame and AchievementFrame:IsVisible() and AchievementFrameAchievements_ForceUpdate then
-        WoWTools_Mixin:Call(AchievementFrameAchievements_ForceUpdate)--Blizzard_ObjectiveTracker
+        WoWTools_DataMixin:Call(AchievementFrameAchievements_ForceUpdate)--Blizzard_ObjectiveTracker
     end
     return tab, num
 end

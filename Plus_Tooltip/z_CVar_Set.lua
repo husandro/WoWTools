@@ -51,7 +51,7 @@ function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
         local text
         for _, info in pairs(tab) do
             if info.zh and LOCALE_zhCN or not info.zh then
-                text= (text and text..'|n|n' or '')..WoWTools_Mixin:Get_CVar_Tooltips(info)
+                text= (text and text..'|n|n' or '')..WoWTools_DataMixin:Get_CVar_Tooltips(info)
             end
         end
         return text

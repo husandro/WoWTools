@@ -122,7 +122,7 @@ local function set_Text_Value(frame, value, value2)
                 if frame.bit==0 then
                     text= BreakUpLargeNumbers(value)..(value2 and '/'..BreakUpLargeNumbers(value) or '')
                 else
-                    text= WoWTools_Mixin:MK(value, frame.bit)..( value2 and '/'..WoWTools_Mixin:MK(value2, frame.bit) or '')
+                    text= WoWTools_DataMixin:MK(value, frame.bit)..( value2 and '/'..WoWTools_DataMixin:MK(value2, frame.bit) or '')
                 end
 
             else
@@ -179,13 +179,13 @@ local function set_Text_Value(frame, value, value2)
             local text, icon
             if frame.value< value then--加
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', WoWTools_Mixin:MK(value-frame.value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', WoWTools_DataMixin:MK(value-frame.value, frame.bit)
                 else
                     icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', format('%.'..frame.bit..'f', value-frame.value)
                 end
             else--减
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:6:6|a', WoWTools_Mixin:MK(frame.value-value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:6:6|a', WoWTools_DataMixin:MK(frame.value-value, frame.bit)
                 else
                     icon, text= '|A:UI-HUD-Minimap-Zoom-Out:8:8|a', format('%.'..frame.bit..'f', frame.value-value)
                 end

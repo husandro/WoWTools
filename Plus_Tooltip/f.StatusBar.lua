@@ -39,9 +39,9 @@ function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
             else
                 text= '|c'..col..text..'|r'
             end
-            left =WoWTools_Mixin:MK(value, 2)
+            left =WoWTools_DataMixin:MK(value, 2)
         end
-        right = WoWTools_Mixin:MK(max, 2)
+        right = WoWTools_DataMixin:MK(max, 2)
         frame:SetStatusBarColor(r or 1, g or 1, b or 1)
     end
     frame.text:SetText(text or '')

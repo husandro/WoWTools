@@ -139,7 +139,7 @@ local function Init()
         if self.elapsed>1 then
             self.elapsed=0
             if not UnitAffectingCombat('player') then
-                WoWTools_Mixin:Call(RaidGroupFrame_Update)
+                WoWTools_DataMixin:Call(RaidGroupFrame_Update)
             end
         end
     end)

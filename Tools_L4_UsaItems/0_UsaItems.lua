@@ -98,13 +98,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM)
 
                 for _, ID in pairs(WoWToolsSave['Tools_UseItems'].item) do
-                    WoWTools_Mixin:Load({id=ID, type='item'})
+                    WoWTools_DataMixin:Load({id=ID, type='item'})
                 end
                 for _, ID in pairs(WoWToolsSave['Tools_UseItems'].spell) do
-                    WoWTools_Mixin:Load({id=ID, type='spell'})
+                    WoWTools_DataMixin:Load({id=ID, type='spell'})
                 end
                 for _, ID in pairs(WoWToolsSave['Tools_UseItems'].equip) do
-                    WoWTools_Mixin:Load({id=ID, type='item'})
+                    WoWTools_DataMixin:Load({id=ID, type='item'})
                 end
 
 

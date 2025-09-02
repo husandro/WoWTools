@@ -32,7 +32,7 @@ local function Init()
             money= GetMoney()
         end
         if money>=10000 then
-            self.Text:SetText(WoWTools_Mixin:MK(money/1e4, 0))
+            self.Text:SetText(WoWTools_DataMixin:MK(money/1e4, 0))
         else
             self.Text:SetText(GetMoneyString(money,true))
         end
@@ -53,7 +53,7 @@ local function Init()
             ..WoWTools_DataMixin.Icon.mid
             ..'>'
         )
-        --GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(' ')
 
         local numPlayer, allMoney= 0, 0
         local tab={}
@@ -88,7 +88,7 @@ local function Init()
                 numPlayer>3 and notIsShiftkeyDown and '|cnGREEN_FONT_COLOR:<|A:NPE_Icon:0:0|aShift+'..left..'>' or
                 '|cnGREEN_FONT_COLOR:'..left,
                 --(WoWTools_DataMixin.onlyChinese and '总计' or TOTAL)
-                WoWTools_DataMixin.Icon.wow2..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_Mixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
+                WoWTools_DataMixin.Icon.wow2..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_DataMixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
             )
         end
 
@@ -97,7 +97,7 @@ local function Init()
             GameTooltip.textLeft:SetText(
                 '|A:questlog-questtypeicon-account:0:0|a|cff00ccff'
                 ..(
-                    account >=10000 and WoWTools_Mixin:MK(account/10000, 3)..'|A:Coin-Gold:8:8|a'
+                    account >=10000 and WoWTools_DataMixin:MK(account/10000, 3)..'|A:Coin-Gold:8:8|a'
                     or C_CurrencyInfo.GetCoinTextureString(account)
                 )
             )
@@ -191,7 +191,7 @@ local function Init()
     MainMenuBarBackpackButton:EnableMouseWheel(true)
     MainMenuBarBackpackButton:SetScript('OnMouseWheel', function(_, d)
         local isShow= d==1
-        WoWTools_ItemMixin:OpenWoWItemListFrame('Item', isShow)--战团，物品列表
+        WoWTools_DataMixin:OpenWoWItemListFrame('Item', isShow)--战团，物品列表
     end)
 
 

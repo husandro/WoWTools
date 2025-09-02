@@ -83,7 +83,7 @@ local function Init_Filter_Menu(self, root)
         for _, num in pairs(Save().myChatFilterPlayers) do
             all= all+ num
         end
-        tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '总计' or TOTAL, WoWTools_Mixin:MK(all, 3).. ' '..(WoWTools_DataMixin.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1))
+        tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '总计' or TOTAL, WoWTools_DataMixin:MK(all, 3).. ' '..(WoWTools_DataMixin.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1))
     end)
 
 
@@ -137,7 +137,7 @@ local function Init_Filter_Menu(self, root)
             local name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil,{reName=true, reRealm=true})
             name= name=='' and guid or name
 
-            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. WoWTools_Mixin:MK(num, 3)..'|r', function(data)
+            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. WoWTools_DataMixin:MK(num, 3)..'|r', function(data)
                 local player= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reName=true, reRealm=true, reLink=true})
                 if Save().myChatFilterPlayers[data.guid] then
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', player)
@@ -333,7 +333,7 @@ local function Init_User_Filter_Menu(_, root)
     sub:SetTooltip(function(tooltip, desc)
         tooltip:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '总计' or TOTAL,
-            WoWTools_Mixin:MK(desc.data.all, 3)
+            WoWTools_DataMixin:MK(desc.data.all, 3)
             .. ' '..(WoWTools_DataMixin.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1)
         )
     end)
@@ -371,7 +371,7 @@ local function Init_User_Filter_Menu(_, root)
             player= (not player or player=='') and name or player
 
             sub2=sub:CreateCheckbox(
-                player..' '..(WoWTools_Mixin:MK(tab.num, 3) or ''),
+                player..' '..(WoWTools_DataMixin:MK(tab.num, 3) or ''),
             function(data)
                 return Save().userChatFilterTab[data.name]
             end, function(data)

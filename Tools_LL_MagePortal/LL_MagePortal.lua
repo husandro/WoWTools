@@ -49,8 +49,8 @@ else
 end
 
 for _, tab in pairs(Tab) do
-    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
-    WoWTools_Mixin:Load({id=tab.spell2, type='spell'})
+    WoWTools_DataMixin:Load({id=tab.spell, type='spell'})
+    WoWTools_DataMixin:Load({id=tab.spell2, type='spell'})
 end
 
 local P_Save={
@@ -186,7 +186,7 @@ end
 
 
 local function Init_Button(tab)
-    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
+    WoWTools_DataMixin:Load({id=tab.spell, type='spell'})
 
     local name= C_Spell.GetSpellName(tab.spell)
     local icon= C_Spell.GetSpellTexture(tab.spell)

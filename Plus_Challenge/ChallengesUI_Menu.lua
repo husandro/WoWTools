@@ -554,7 +554,7 @@ sub:CreateTitle(name)
 
     root:CreateDivider()
 --战团，物品列表
-    WoWTools_ItemMixin:OpenWoWItemListMenu(self, root, 'Instance')
+    WoWTools_DataMixin:OpenWoWItemListMenu(self, root, 'Instance')
 
 
 --插入史诗钥石，打开界面
@@ -625,7 +625,7 @@ local function Init()
 
     btn:SetupMenu(Init_Menu)
 
-    local wow= WoWTools_ItemMixin:Create_WoWButton(ChallengesFrame, {
+    local wow= WoWTools_DataMixin:CreateWoWItemListButton(ChallengesFrame, {
         name='WoWToolsChallengesFrameWoWItemButton',
         type='Instance'
     })

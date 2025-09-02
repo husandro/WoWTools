@@ -51,7 +51,7 @@ local function Init()
                     print(name, '|cnRED_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)
                 end
                 Save().buttons[name]= select(4 ,WoWTools_AddOnsMixin:Get_AddListInfo())
-                WoWTools_Mixin:Call(AddonList_Update)
+                WoWTools_DataMixin:Call(AddonList_Update)
             end
         })
     end)
@@ -303,7 +303,7 @@ local function Init_NotDisabled_Button()
     AddonList.DisableAllButton:HookScript('OnClick', function()
         if Save().enableAllButtn then
             C_AddOns.EnableAddOn('WoWTools')
-            WoWTools_Mixin:Call(AddonList_Update)
+            WoWTools_DataMixin:Call(AddonList_Update)
         end
     end)
     btn:set_icon()
@@ -349,7 +349,7 @@ local function Init_Refresh_Button()
                 end
             end
         end
-        WoWTools_Mixin:Call(AddonList_Update)
+        WoWTools_DataMixin:Call(AddonList_Update)
     end)
 end
 

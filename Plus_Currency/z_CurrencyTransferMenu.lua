@@ -106,7 +106,7 @@ local content= CurrencyTransferMenu.Content--11.2
 		if currencyID and currencyID>0 then
 			local num, tab= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
 			if num>0 then
-				text= text..#tab..WoWTools_DataMixin.Icon.wow2..WoWTools_Mixin:MK(num, 3)
+				text= text..#tab..WoWTools_DataMixin.Icon.wow2..WoWTools_DataMixin:MK(num, 3)
 			end
 		end
 		self.wowNumLabel:SetText(text)

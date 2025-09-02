@@ -78,7 +78,7 @@ local function Init_UI_Menu(self, root)
                     removeTable(data.type, data.spellID)--移除, 表里, 其他同样的项目
                 end
                 WoWTools_MountMixin.MountButton:settings()
-                WoWTools_Mixin:Call(MountJournal_UpdateMountList)
+                WoWTools_DataMixin:Call(MountJournal_UpdateMountList)
             end, setData
         )
         WoWTools_MountMixin:Set_Mount_Sub_Options(sub, setData)
@@ -142,8 +142,8 @@ local function Updata_MountJournal_FullUpdate(self)
     MountJournal_FullUpdate=New_MountJournal_FullUpdate--过滤，列表，Func
 
     MountJournal.FilterDropdown:Reset()
-    WoWTools_Mixin:Call(MountJournal_SetUnusableFilter, true)
-    WoWTools_Mixin:Call(MountJournal_FullUpdate, MountJournal)
+    WoWTools_DataMixin:Call(MountJournal_SetUnusableFilter, true)
+    WoWTools_DataMixin:Call(MountJournal_FullUpdate, MountJournal)
     C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true)
 
     self.ResetButton:SetShown(true)
@@ -316,8 +316,8 @@ local function Init()
         frame:set_text()
         MountJournal.FilterDropdown:Reset()
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true)
-        WoWTools_Mixin:Call(MountJournal_SetUnusableFilter,true)
-        WoWTools_Mixin:Call(MountJournal_FullUpdate, MountJournal)
+        WoWTools_DataMixin:Call(MountJournal_SetUnusableFilter,true)
+        WoWTools_DataMixin:Call(MountJournal_FullUpdate, MountJournal)
         self:Hide()
         self:GetParent():rest_type()
     end)

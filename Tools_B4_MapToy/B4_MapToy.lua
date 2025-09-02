@@ -65,7 +65,7 @@ end
 
 
 local function Is_Completed(tab)
-    WoWTools_Mixin:Load({type='item', id=tab.itemID})
+    WoWTools_DataMixin:Load({type='item', id=tab.itemID})
 
     local num= 0
     local isNotChecked
@@ -431,7 +431,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 for _, info in pairs(Tab) do
-                    WoWTools_Mixin:Load({id=info.itemID, type='item'})
+                    WoWTools_DataMixin:Load({id=info.itemID, type='item'})
                     for _, achievementID in pairs(info.achievements) do
                         GetAchievementCategory(achievementID)
                     end

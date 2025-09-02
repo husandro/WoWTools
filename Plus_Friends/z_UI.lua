@@ -157,14 +157,14 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
         sizeUpdateFunc=function()
             if RaidFrame:IsShown() and not WoWTools_FrameMixin:IsLocked(RaidFrame) then
                 Set_RaidFrame_Button_size()
-                WoWTools_Mixin:Call(RaidGroupFrame_Update)
+                WoWTools_DataMixin:Call(RaidGroupFrame_Update)
             end
         end,
         sizeRestFunc=function()
             FriendsFrame:SetSize(385, 424)
             if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
-                WoWTools_Mixin:Call(RaidGroupFrame_Update)
+                WoWTools_DataMixin:Call(RaidGroupFrame_Update)
             end
         end
     })
@@ -177,7 +177,7 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
         if not btn:GetScript('OnDoubleClick') then
             btn.name:SetPoint('RIGHT', -6, 0)
             btn:SetScript('OnDoubleClick', function()
-                WoWTools_Mixin:Call(FriendsFriendsFrame.SendRequest, FriendsFriendsFrame)
+                WoWTools_DataMixin:Call(FriendsFriendsFrame.SendRequest, FriendsFriendsFrame)
             end)
         end
     end)

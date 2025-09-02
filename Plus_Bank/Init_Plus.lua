@@ -92,7 +92,7 @@ local function Init()
                 local text
                 local money=C_Bank.FetchDepositedMoney(Enum.BankType.Account)
                 if money and money>10000 then
-                    text= WoWTools_Mixin:MK(math.modf(money/10000), 3)
+                    text= WoWTools_DataMixin:MK(math.modf(money/10000), 3)
                 end
                 self.Text2:SetText(text or '')
             end)

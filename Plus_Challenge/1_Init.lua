@@ -151,7 +151,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
 
                 for _, tab in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
-                    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
+                    WoWTools_DataMixin:Load({id=tab.spell, type='spell'})
                 end
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then

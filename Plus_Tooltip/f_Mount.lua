@@ -19,7 +19,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index)
     local creatureName, spellID, _,isActive, isUsable, _, _, isFactionSpecific, faction, _, isCollected, _, isForDragonriding =C_MountJournal.GetMountInfoByID(mountID)
 
-    WoWTools_Mixin:Load({id=spellID, type='spell'})
+    WoWTools_DataMixin:Load({id=spellID, type='spell'})
 
     tooltip:AddDoubleLine(
         spellID and '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
@@ -97,6 +97,6 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     end
     self:Set_Web_Link(tooltip, {type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
 
-    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 

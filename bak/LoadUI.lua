@@ -229,7 +229,7 @@ function WeeklyRewards_ShowUI()
 		WeeklyRewards_LoadUI();
 	end
 
-	local force = true;	-- this could bWoWTools_Mixin:Called from the world map which might be in fullscreen mode
+	local force = true;	-- this could bWoWTools_DataMixin:Called from the world map which might be in fullscreen mode
 
 	ShowUIPanel(WeeklyRewardsFrame, force);
 end

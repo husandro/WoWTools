@@ -35,7 +35,7 @@ local function Save_Text(num)
     local money= Save_Value(num)
     local text=''
     if money then
-       text= ' '..WoWTools_Mixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
+       text= ' '..WoWTools_DataMixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
     end
     return '|cff00ccff'
             ..(WoWTools_DataMixin.onlyChinese and '存钱' or DEPOSIT)
@@ -116,7 +116,7 @@ local function Out_Text(num)
     local money= Out_Value(num)
     local text=''
     if money then
-       text= ' '..WoWTools_Mixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
+       text= ' '..WoWTools_DataMixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
     end
     return WoWTools_DataMixin.Player.col
             ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)
@@ -307,7 +307,7 @@ local function Init_Save_Menu(self, root)
 --存钱 100, 500, 1000, 5000, 10000
     for _, num in pairs({100000,50000, 10000,5000, 1000, 500, 100}) do
         sub2= sub:CreateButton(
-            WoWTools_Mixin:MK(num, 0)
+            WoWTools_DataMixin:MK(num, 0)
             ..'|A:Coin-Gold:0:0|a',
         function(data)
             Save_Money(data)
@@ -472,7 +472,7 @@ local function Init_Out_Menu(self, root)
 --填充 100, 500, 1000, 5000, 10000
     for _, num in pairs({100000,50000, 10000,5000, 1000, 500, 100}) do
         sub2= sub:CreateButton(
-            WoWTools_Mixin:MK(num, 0)
+            WoWTools_DataMixin:MK(num, 0)
             ..'|A:Coin-Gold:0:0|a',
         function(data)
             local money= Out_Value(data)
@@ -676,7 +676,7 @@ local function Init()
             ..(WoWTools_DataMixin.onlyChinese and '存钱' or DEPOSIT)
             ..' |cnGREEN_FONT_COLOR:>|r '
             ..(Save().autoSaveMoney
-                and WoWTools_Mixin:MK(Save().autoSaveMoney, 3)..'|A:Coin-Gold:0:0|a'
+                and WoWTools_DataMixin:MK(Save().autoSaveMoney, 3)..'|A:Coin-Gold:0:0|a'
                 or WoWTools_TextMixin:GetEnabeleDisable(false)
             )
         )
@@ -686,7 +686,7 @@ local function Init()
             ..(WoWTools_DataMixin.onlyChinese and '填充' or WITHDRAW)
             ..' |cnGREEN_FONT_COLOR:>|r '
             ..(Save().autoOutMoney
-                and WoWTools_Mixin:MK(Save().autoOutMoney, 3)..'|A:Coin-Gold:0:0|a'
+                and WoWTools_DataMixin:MK(Save().autoOutMoney, 3)..'|A:Coin-Gold:0:0|a'
                 or WoWTools_TextMixin:GetEnabeleDisable(false)
             )
         )
@@ -715,8 +715,8 @@ local function Init()
         end
         self.texture:SetAlpha((save or out) and 1 or 0.5)
         self.texture:SetDesaturated(not (save and out) and true or false)
-        self.Text:SetText(save and '|cff00ccff'..WoWTools_Mixin:MK(save, 3) or '')
-        self.Text2:SetText(out and WoWTools_DataMixin.Player.col..WoWTools_Mixin:MK(out, 3) or '')
+        self.Text:SetText(save and '|cff00ccff'..WoWTools_DataMixin:MK(save, 3) or '')
+        self.Text2:SetText(out and WoWTools_DataMixin.Player.col..WoWTools_DataMixin:MK(out, 3) or '')
     end
 
     hooksecurefunc(BankPanel.MoneyFrame.DepositButton, 'Refresh', function()

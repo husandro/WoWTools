@@ -28,7 +28,7 @@ function WoWTools_QuestMixin:GetLink(questID)
     end
     local link= GetQuestLink(questID)
     if not link then
-        WoWTools_Mixin:Load({id=questID, type='quest'})
+        WoWTools_DataMixin:Load({id=questID, type='quest'})
         local index= C_QuestLog.GetLogIndexForQuestID(questID)
         local info= index and C_QuestLog.GetInfo(index) or {}
         local name= WoWTools_TextMixin:CN(info.title or questID, {questID=questID, isName=true})
@@ -122,7 +122,7 @@ questRewardContextFlags	Enum.QuestRewardContextFlags?
         local spells= C_QuestInfoSystem.GetQuestRewardSpells(questID)
         for _, spellID in pairs(spells or {}) do
             info = C_QuestInfoSystem.GetQuestRewardSpellInfo(questID, spellID)
-            WoWTools_Mixin:Load({id=spellID, type='spell'})
+            WoWTools_DataMixin:Load({id=spellID, type='spell'})
             if info and info.texture and info.texture>0 then
                 data= {
                     texture= info.texture,--fileID
@@ -218,7 +218,7 @@ function WoWTools_QuestMixin:GetQuestAll()
     end
     local num= select(2, C_QuestLog.GetNumQuestLogEntries())
     local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-    GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_Mixin:MK(#all, 3), self:GetColor('Daily').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', 'common-icon-checkmark'))
+    GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_DataMixin:MK(#all, 3), self:GetColor('Daily').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', 'common-icon-checkmark'))
     GameTooltip:AddLine(WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)

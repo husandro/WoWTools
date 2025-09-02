@@ -26,7 +26,7 @@ local function Init()
         local text
         local price= C_WowTokenPublic.GetCurrentMarketPrice() or 0
         if price>0 then
-            text= WoWTools_Mixin:MK(price/10000, 0)
+            text= WoWTools_DataMixin:MK(price/10000, 0)
         end
         self.Text:SetText(text or '')
     end
@@ -43,7 +43,7 @@ local function Init()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('|A:token-choice-wow:0:0|a'..WoWTools_Mixin:MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
+            GameTooltip:AddDoubleLine('|A:token-choice-wow:0:0|a'..WoWTools_DataMixin:MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
             GameTooltip:AddLine(' ')
         end
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据

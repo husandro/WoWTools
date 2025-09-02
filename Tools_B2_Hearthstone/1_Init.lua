@@ -57,7 +57,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
 
                 for itemID, _ in pairs(WoWToolsSave['Tools_Hearthstone'].items) do
-                    WoWTools_Mixin:Load({id=itemID, type='item'})
+                    WoWTools_DataMixin:Load({id=itemID, type='item'})
                 end
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then

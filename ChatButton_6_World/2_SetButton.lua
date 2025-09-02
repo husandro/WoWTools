@@ -150,7 +150,7 @@ local function Init(btn)
 
                 clubID=name:match('Community:(%d+)');
                 if clubID then
-                    WoWTools_Mixin:Load({id=clubID, type='club'})
+                    WoWTools_DataMixin:Load({id=clubID, type='club'})
 
                     clubInfo= C_Club.GetClubInfo(clubID)
 

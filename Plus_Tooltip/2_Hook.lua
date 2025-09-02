@@ -86,7 +86,7 @@ local function Init()
                         data.itemType and 'itemType|cffffffff'..WoWTools_DataMixin.Icon.icon2..data.itemType,
                         data.actionID and 'actionID|cffffffff'..WoWTools_DataMixin.Icon.icon2..data.actionID
                     )
-                    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, self)
+                    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, self)
                 end
             end
         end
@@ -199,7 +199,7 @@ local function Init()
                 GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
             end
         end]]
-        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         --GameTooltip:Show()
     end)
 
@@ -318,7 +318,7 @@ local function Init()
                     (WoWTools_DataMixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)),
                     WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(questID))
                 )
-                WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+                WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
             end
         end
 
@@ -338,7 +338,7 @@ local function Init()
     hooksecurefunc('GameTooltip_AddWidgetSet', function(tooltip, uiWidgetSetID)
         if uiWidgetSetID then
             tooltip:AddLine('widgetSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..uiWidgetSetID)
-            WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+            WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
         end
     end)
 
@@ -378,7 +378,7 @@ local function Init()
                             subType and 'subType|cffffffff'..WoWTools_DataMixin.Icon.icon2..subType
                         )
                     end
-                    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+                    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
                 end
             end)
         end
@@ -437,7 +437,7 @@ local function Init()
             '|c'..select(4,  C_Item.GetItemQualityColor(quality))..WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC'] or '')
         )
 
-        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
     end)
 
 --商店

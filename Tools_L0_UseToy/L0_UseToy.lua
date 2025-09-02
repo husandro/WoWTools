@@ -44,10 +44,10 @@ local ModifiedMenuTab={
     {type='Shift', itemID=134032},]]
 }
 for itemID in pairs(ModifiedTab) do
-    WoWTools_Mixin:Load({id=itemID, type='item'})
+    WoWTools_DataMixin:Load({id=itemID, type='item'})
 end
 for itemID in pairs(P_Items) do
-    WoWTools_Mixin:Load({id=itemID, type='item'})
+    WoWTools_DataMixin:Load({id=itemID, type='item'})
 end
 
 local P_Save={
@@ -225,7 +225,7 @@ local function Init_Menu_Toy(_, root)
     local sub, sub2, name, toyName, icon
     local index=0
     for itemID in pairs(Save().items) do
-        WoWTools_Mixin:Load({id=itemID, type='item'})
+        WoWTools_DataMixin:Load({id=itemID, type='item'})
 
         toyName, icon = select(2, C_ToyBox.GetToyInfo(itemID))
         index= index+ 1
@@ -838,7 +838,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 for itemID in pairs(Save().items) do
-                    WoWTools_Mixin:Load({id=itemID, type='item'})
+                    WoWTools_DataMixin:Load({id=itemID, type='item'})
                 end
 
                 Set_Alt_Table()

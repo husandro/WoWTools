@@ -482,7 +482,7 @@ function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
         ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
     function(data)
         if data and IsControlKeyDown() or not data then
-            WoWTools_Mixin:Reload()
+            WoWTools_DataMixin:Reload()
         end
     end, isControlKeyDown)
     sub:SetTooltip(function(tooltip, desc)
@@ -817,7 +817,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
 
             btn:SetScript('OnEvent', function(s, event)
                 if event=='ACTIVE_PLAYER_SPECIALIZATION_CHANGED' then
-                    WoWTools_Mixin:Call(menu.ReinitializeAll, menu)
+                    WoWTools_DataMixin:Call(menu.ReinitializeAll, menu)
                 end
                 s:set_loot()
             end)
@@ -878,7 +878,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
     sub:AddInitializer(function(btn, _, menu)
         btn:RegisterEvent('PLAYER_FLAGS_CHANGED')
         btn:SetScript('OnEvent', function()
-            WoWTools_Mixin:Call(menu.ReinitializeAll, menu)
+            WoWTools_DataMixin:Call(menu.ReinitializeAll, menu)
         end)
         btn:SetScript('OnHide', function(s)
             s:UnregisterEvent('PLAYER_FLAGS_CHANGED')

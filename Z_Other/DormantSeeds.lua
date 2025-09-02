@@ -23,7 +23,7 @@ local ItemTab={
    -- 210014
 }
 for _, itemID in pairs(ItemTab) do
-    WoWTools_Mixin:Load({id=itemID, type='item'})
+    WoWTools_DataMixin:Load({id=itemID, type='item'})
 end
 
 
@@ -166,7 +166,7 @@ local function Init()
         end
         function Button:set_Currency()
             local info = C_CurrencyInfo.GetCurrencyInfo(CurrencyID) or {}
-            self.label:SetText(info.quantity and info.quantity>0 and WoWTools_Mixin:MK(info.quantity, 0) or '')
+            self.label:SetText(info.quantity and info.quantity>0 and WoWTools_DataMixin:MK(info.quantity, 0) or '')
         end
         Button:set_Currency()
     else

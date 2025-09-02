@@ -80,7 +80,7 @@ end
 function WoWTools_MoveMixin.Frames:ContainerFrame1()
     --[[local restPointFunc= function()
         if not InCombatLockdown() then
-            WoWTools_Mixin:Call('UpdateContainerFrameAnchors')
+            WoWTools_DataMixin:Call('UpdateContainerFrameAnchors')
         end
     end
     for slotID= 1, NUM_TOTAL_BAG_FRAMES do
@@ -107,7 +107,7 @@ function WoWTools_MoveMixin.Frames:ContainerFrame1()
                 self:Setup(frame, {
                 restPointFunc=function()
                     if not InCombatLockdown() then
-                        WoWTools_Mixin:Call('UpdateContainerFrameAnchors')
+                        WoWTools_DataMixin:Call('UpdateContainerFrameAnchors')
                     end
                 end
                 })

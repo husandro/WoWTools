@@ -201,7 +201,7 @@ local function Init_Menu(self, root)
         Save().setPlayerSound= not Save().setPlayerSound and true or nil
 
         if Save().setPlayerSound then
-            WoWTools_Mixin:PlaySound()--播放, 声音
+            WoWTools_DataMixin:PlaySound()--播放, 声音
         end
 
         WoWTools_HyperLink:Init_Event_Sound()
@@ -210,13 +210,13 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1)
         tooltip:AddLine(' ')
-        tooltip:AddLine(WoWTools_Mixin:Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=WoWTools_DataMixin.onlyChinese and '开启声效' or ENABLE_SOUND}))
+        tooltip:AddLine(WoWTools_DataMixin:Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=WoWTools_DataMixin.onlyChinese and '开启声效' or ENABLE_SOUND}))
         tooltip:AddLine(' ')
-        tooltip:AddLine(WoWTools_Mixin:Get_CVar_Tooltips({name='Sound_MasterVolume', msg=WoWTools_DataMixin.onlyChinese and '主音量' or MASTER_VOLUME}))
+        tooltip:AddLine(WoWTools_DataMixin:Get_CVar_Tooltips({name='Sound_MasterVolume', msg=WoWTools_DataMixin.onlyChinese and '主音量' or MASTER_VOLUME}))
         tooltip:AddLine(' ')
-        tooltip:AddLine(WoWTools_Mixin:Get_CVar_Tooltips({name='Sound_DialogVolume', msg=WoWTools_DataMixin.onlyChinese and '对话' or DIALOG_VOLUME}))
+        tooltip:AddLine(WoWTools_DataMixin:Get_CVar_Tooltips({name='Sound_DialogVolume', msg=WoWTools_DataMixin.onlyChinese and '对话' or DIALOG_VOLUME}))
         tooltip:AddLine(' ')
-        tooltip:AddLine(WoWTools_Mixin:Get_CVar_Tooltips({name='Sound_EnableDialog', msg=WoWTools_DataMixin.onlyChinese and '启用对话' or ENABLE_DIALOG }))
+        tooltip:AddLine(WoWTools_DataMixin:Get_CVar_Tooltips({name='Sound_EnableDialog', msg=WoWTools_DataMixin.onlyChinese and '启用对话' or ENABLE_DIALOG }))
     end)
 
 --禁用，隐藏NPC发言

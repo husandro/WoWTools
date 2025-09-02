@@ -47,7 +47,7 @@ end
 
 
 local function Init()
-    local wow= WoWTools_ItemMixin:Create_WoWButton(BankFrameCloseButton, {
+    local wow= WoWTools_DataMixin:CreateWoWItemListButton(BankFrameCloseButton, {
         name='WoWToolsPlusBankWoWButton',
         tooltip=function(tooltip)
             tooltip:AddLine(
@@ -76,7 +76,7 @@ local function Init()
 
                     root:CreateSpacer()
 
-                    WoWTools_ItemMixin:OpenWoWItemListMenu(self, root, 'Bank')
+                    WoWTools_DataMixin:OpenWoWItemListMenu(self, root, 'Bank')
                 end)
             end
         end,

@@ -132,7 +132,7 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBag
                 and (not checkBagFunc or checkBagFunc(bag, slot, info))
             then
 
-                WoWTools_Mixin:Load({id=info.itemID, type='item'})
+                WoWTools_DataMixin:Load({id=info.itemID, type='item'})
 --仅物品，仅材料    
                 if onlyItem or onlyRegents then
 

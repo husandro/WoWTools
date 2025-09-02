@@ -3,7 +3,7 @@ local function Save()
 end
 
 --[[local function Call_Bg()
-    WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame)
+    WoWTools_DataMixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame)
     --PlayerSpellsFrame.TalentsFrame:UpdateSpecBackground()
 end]]
 

@@ -14,8 +14,8 @@ WoWTools_PanelMixin:OnlyButton(tab)
 WoWTools_PanelMixin:OnlyMenu(tab)
 WoWTools_PanelMixin:CheckMenu(tab, root)
 WoWTools_PanelMixin:Check_Button(tab)
-WoWTools_Mixin:Check_Slider(tab)
-WoWTools_Mixin:OnlySlider(tab)
+WoWTools_DataMixin:Check_Slider(tab)
+WoWTools_DataMixin:OnlySlider(tab)
 
 
 sub:AddSearchTags(bindingName)
@@ -68,7 +68,7 @@ function WoWTools_PanelMixin:ReloadButton(tab)
         reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
         reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
         reload:SetPoint('TOPLEFT',-12, 8)
-        reload:SetScript('OnClick', function() WoWTools_Mixin:Reload() end)
+        reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
         reload.addName=tab.addName
         reload:SetScript('OnLeave', GameTooltip_Hide)
         reload:SetScript('OnEnter', function(frame)
@@ -481,7 +481,7 @@ end
 
 
 
-function WoWTools_Mixin:Check_Slider(tab, root)
+function WoWTools_DataMixin:Check_Slider(tab, root)
     local layout= tab.layout or Layout
     local checkSetting=Settings.RegisterProxySetting(
         tab.category or Category,
@@ -505,7 +505,7 @@ function WoWTools_Mixin:Check_Slider(tab, root)
 
     local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.step);
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
-       return WoWTools_Mixin:GetFormatter1to10(value or 1, 0, 1)
+       return WoWTools_DataMixin:GetFormatter1to10(value or 1, 0, 1)
     end)
 
     local sub = CreateSettingsCheckboxSliderInitializer(
@@ -531,7 +531,7 @@ end
 
 
 --添加，划动条
-function WoWTools_Mixin:OnlySlider(tab, root)
+function WoWTools_DataMixin:OnlySlider(tab, root)
     local setting = Settings.RegisterProxySetting(
         tab.category or Category,
         Set_VariableIndex(),
@@ -544,7 +544,7 @@ function WoWTools_Mixin:OnlySlider(tab, root)
 
     local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.setp);
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
-        return WoWTools_Mixin:GetFormatter1to10(value or 1, 0, 1)
+        return WoWTools_DataMixin:GetFormatter1to10(value or 1, 0, 1)
     end)
 
     local sub=Settings.CreateSlider(tab.category or Category, setting, options, tab.tooltip);
@@ -584,7 +584,7 @@ function  e.Add_Panel_RestData_Button(root, SetValue)
             button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
             OnAccept = function(_, setValue)
                 setValue()
-                WoWTools_Mixin:Reload()
+                WoWTools_DataMixin:Reload()
             end,
         }
     end

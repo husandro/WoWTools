@@ -55,7 +55,7 @@ local function Init_Panel()
         end
     })
 
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= 'X',
         GetValue= function() return Save().cursorX or 0 end,
         minValue= -240,
@@ -65,13 +65,13 @@ local function Init_Panel()
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
-            Save().cursorX= WoWTools_Mixin:GetFormatter1to10(value2, -200, 200)
+            Save().cursorX= WoWTools_DataMixin:GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
     }, root)
    
 
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= 'Y',
         GetValue= function() return Save().cursorY or 0 end,
         minValue= -240,
@@ -81,7 +81,7 @@ local function Init_Panel()
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
-            Save().cursorY= WoWTools_Mixin:GetFormatter1to10(value2, -200, 200)
+            Save().cursorY= WoWTools_DataMixin:GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
     }, root)
@@ -147,7 +147,7 @@ local function Init_Panel()
         end
     }, root)
 ]]
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_BAGS_SIZE,
         GetValue= function() return Save().modelSize or 100 end,
         minValue= 40,
@@ -157,12 +157,12 @@ local function Init_Panel()
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
-            Save().modelSize= WoWTools_Mixin:GetFormatter1to10(value2, 40, 300)
+            Save().modelSize= WoWTools_DataMixin:GetFormatter1to10(value2, 40, 300)
             set_Cursor_Tips()
         end
     }, root)
 
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= 'X',
         GetValue= function() return Save().modelX or 0 end,
         minValue= -240,
@@ -172,12 +172,12 @@ local function Init_Panel()
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
-            Save().modelX= WoWTools_Mixin:GetFormatter1to10(value2, -200, 200)
+            Save().modelX= WoWTools_DataMixin:GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
     }, root)
 
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= 'Y',
         GetValue= function() return Save().modelY or -24 end,
         minValue= -240,
@@ -187,12 +187,12 @@ local function Init_Panel()
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
-            Save().modelY= WoWTools_Mixin:GetFormatter1to10(value2, -200, 200)
+            Save().modelY= WoWTools_DataMixin:GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
     }, root)
 
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
         GetValue= function() return Save().modelFacing or -24 end,
         minValue= -1,
@@ -202,7 +202,7 @@ local function Init_Panel()
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
-            Save().modelFacing= WoWTools_Mixin:GetFormatter1to10(value2, -1, 1)
+            Save().modelFacing= WoWTools_DataMixin:GetFormatter1to10(value2, -1, 1)
             set_Cursor_Tips()
         end
     }, root)
@@ -254,7 +254,7 @@ local function Init_Panel()
 
 
 
-    WoWTools_Mixin:OnlySlider({
+    WoWTools_DataMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
         GetValue= function() return Save().iconSize or 0 end,
         minValue= 0,
@@ -264,7 +264,7 @@ local function Init_Panel()
         category= Category,
         SetValue= function(_, _, value2)
             if value2 then
-                Save().iconSize= WoWTools_Mixin:GetFormatter1to10(value2, 0, 32)
+                Save().iconSize= WoWTools_DataMixin:GetFormatter1to10(value2, 0, 32)
                 WoWTools_TooltipMixin.iconSize= Save().iconSize
             end
         end
@@ -322,7 +322,7 @@ local function Init_Panel()
         GetValue= function() return C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2 end,
         name= WoWTools_DataMixin.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
         tooltip= function()
-            return WoWTools_Mixin:Get_CVar_Tooltips({
+            return WoWTools_DataMixin:Get_CVar_Tooltips({
                     name='ActionButtonUseKeyDown',
                     msg=WoWTools_DataMixin.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
                 }) end,

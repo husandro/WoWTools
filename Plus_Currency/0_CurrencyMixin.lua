@@ -206,7 +206,7 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
 
         )
 --数量
-        ..' '..WoWTools_Mixin:MK(num, 3)
+        ..' '..WoWTools_DataMixin:MK(num, 3)
 --战团图标
         ..(accountIcon or '')
 --可取，周 赛季 最大数
@@ -292,7 +292,7 @@ end
 
 function WoWTools_CurrencyMixin:UpdateTokenFrame()
 	if not WoWTools_FrameMixin:IsLocked(TokenFrame) then
-		WoWTools_Mixin:Call(TokenFrame.Update, TokenFrame)
-		WoWTools_Mixin:Call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
+		WoWTools_DataMixin:Call(TokenFrame.Update, TokenFrame)
+		WoWTools_DataMixin:Call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
 	end
 end

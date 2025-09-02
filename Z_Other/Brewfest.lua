@@ -7,7 +7,7 @@ local P_Save={
 }
 
 local button
-WoWTools_Mixin:Load({id=33976, type='item'})--美酒节赛羊
+WoWTools_DataMixin:Load({id=33976, type='item'})--美酒节赛羊
 
 
 local function Save()
@@ -64,7 +64,7 @@ local function Init()
 
     function button.leftTexture:set_tipSound()
         if self:GetParent():IsVisible() then
-            WoWTools_Mixin:PlaySound()
+            WoWTools_DataMixin:PlaySound()
         end
     end
     button.leftTexture:SetScript('OnShow', button.leftTexture.set_tipSound)
@@ -182,7 +182,7 @@ local function Init()
                     if info.spellId==43052 then
                         self.Timer= nil
                         self.spellId=nil
-                        WoWTools_Mixin:PlaySound(SOUNDKIT.IG_SPELLBOOK_OPEN)
+                        WoWTools_DataMixin:PlaySound(SOUNDKIT.IG_SPELLBOOK_OPEN)
                         break
                     end
                 end

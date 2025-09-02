@@ -125,7 +125,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='SOCKET_INFO_UPDATE' then
         if PaperDollItemsFrame:IsShown() then
-            WoWTools_Mixin:Call(PaperDollFrame_UpdateStats)
+            WoWTools_DataMixin:Call(PaperDollFrame_UpdateStats)
         end
     end
 end)

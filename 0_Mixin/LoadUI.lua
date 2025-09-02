@@ -164,8 +164,8 @@ function WoWTools_LoadUIMixin:ToggleLandingPage()
             ToggleMajorFactionRenown(Constants.MajorFactionsConsts.PLUNDERSTORM_MAJOR_FACTION_ID)
             return
         elseif frame:IsInGarrisonMode() then
-            WoWTools_Mixin:Call(GarrisonLandingPage_Toggle, frame)
-            WoWTools_Mixin:Call(GarrisonMinimap_HideHelpTip, frame)
+            WoWTools_DataMixin:Call(GarrisonLandingPage_Toggle, frame)
+            WoWTools_DataMixin:Call(GarrisonMinimap_HideHelpTip, frame)
             return
         end
     end
@@ -411,7 +411,7 @@ end
     if journalInstanceID then
         do
             if not EncounterJournal:IsShown() then
-                WoWTools_Mixin:Call(ToggleEncounterJournal)
+                WoWTools_DataMixin:Call(ToggleEncounterJournal)
             end
         end
         EncounterJournal_OpenJournal(nil, journalInstanceID)

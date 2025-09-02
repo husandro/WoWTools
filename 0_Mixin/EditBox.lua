@@ -198,7 +198,7 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
     scrollFrame.editBox:SetScript('OnTextChanged', function(s)
         s.Instructions:SetShown(s:GetText() == "")
         local line= s:GetNumLines() or 0
-        local num= WoWTools_Mixin:MK(s:GetNumLetters() or 0, 1)
+        local num= WoWTools_DataMixin:MK(s:GetNumLetters() or 0, 1)
         s.Instructions2:SetText(num..' - '..line)
     end)
     scrollFrame:HookScript('OnSizeChanged', function(s)

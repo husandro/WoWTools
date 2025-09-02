@@ -135,7 +135,7 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 --可转移
 	if info.isAccountTransferable then
 		label:SetTextColor(0, 0.8, 1)
-		accountWide= WoWTools_Mixin:MK(WoWTools_CurrencyMixin:GetAccountInfo(info.currencyID, true), 3)
+		accountWide= WoWTools_DataMixin:MK(WoWTools_CurrencyMixin:GetAccountInfo(info.currencyID, true), 3)
 
 --战团共享
 	elseif info.isAccountWide then

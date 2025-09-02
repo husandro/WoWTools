@@ -269,11 +269,11 @@ local function Init()--设置,团队
         elseif dead then--死亡
             frame.statusText:SetText('|A:deathrecap-icon-tombstone:0:0|a')
         elseif ( frame.optionTable.healthText == "health" ) then
-            frame.statusText:SetText(WoWTools_Mixin:MK(UnitHealth(frame.displayedUnit), 0))
+            frame.statusText:SetText(WoWTools_DataMixin:MK(UnitHealth(frame.displayedUnit), 0))
         elseif ( frame.optionTable.healthText == "losthealth" ) then
             local healthLost = UnitHealthMax(frame.displayedUnit) - UnitHealth(frame.displayedUnit)
             if ( healthLost > 0 ) then
-                frame.statusText:SetText('-'..WoWTools_Mixin:MK(healthLost, 0))
+                frame.statusText:SetText('-'..WoWTools_DataMixin:MK(healthLost, 0))
             end
         elseif (frame.optionTable.healthText == "perc") then
             if UnitHealth(frame.displayedUnit)== UnitHealthMax(frame.displayedUnit) then

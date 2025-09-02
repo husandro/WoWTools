@@ -136,7 +136,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                 if price and price>0 then
 --取得WOW物品数量
                     local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)
-                    text= all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..WoWTools_Mixin:MK(price/10000,3)..'|A:Front-Gold-Icon:0:0|a'
+                    text= all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..WoWTools_DataMixin:MK(price/10000,3)..'|A:Front-Gold-Icon:0:0|a'
                 end
             end
             lineRight1:SetText(text)
@@ -314,7 +314,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
     self:Set_Width(tooltip)--设置，宽度
 
-    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
     --if hideLine then
         --tooltip:Show()
     --end

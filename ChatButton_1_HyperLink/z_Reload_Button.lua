@@ -80,7 +80,7 @@ local function Init()
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
             GameTooltip:Show()
         end)
-        frame.reload:SetScript('OnClick', function() WoWTools_Mixin:Reload() end)
+        frame.reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
         Create_Texture_Tips(frame.reload, 'BattleBar-SwapPetIcon')
     end
     --end
@@ -106,7 +106,7 @@ local function Init()
         local btn = self:AddButton(
             WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI,
         function()
-            WoWTools_Mixin:Reload()
+            WoWTools_DataMixin:Reload()
         end)
 
         Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})

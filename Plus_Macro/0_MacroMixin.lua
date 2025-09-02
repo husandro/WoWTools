@@ -36,7 +36,7 @@ function WoWTools_MacroMixin:SetMacroTexture(iconTexture)--修改，当前图标
         local name= GetMacroInfo(actualIndex)
         local index = EditMacro(actualIndex, name, iconTexture) - (MacroFrame.macroBase or 0);--战斗中，出现错误
         MacroFrame:SelectMacro(index or 1);
-        WoWTools_Mixin:Call(MacroFrame.Update, MacroFrame, true)
+        WoWTools_DataMixin:Call(MacroFrame.Update, MacroFrame, true)
     end
 end
 
@@ -53,7 +53,7 @@ function WoWTools_MacroMixin:CreateMacroNew(name, icon, body)--新建，宏
 
     MacroFrame:SelectMacro(index)
 
-    WoWTools_Mixin:Call(MacroFrame.Update, MacroFrame, true)
+    WoWTools_DataMixin:Call(MacroFrame.Update, MacroFrame, true)
 end
 
 --宏，提示

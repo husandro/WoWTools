@@ -20,7 +20,7 @@ local CALL_PET_SPELL_IDS = {
 	83245,
 }
 
-WoWTools_Mixin:Load({id=267116, type='spell'})--动物伙伴
+WoWTools_DataMixin:Load({id=267116, type='spell'})--动物伙伴
 
 local backgroundForPetSpec = {
     [STABLE_PET_SPEC_CUNNING] = "hunter-stable-bg-art_cunning",

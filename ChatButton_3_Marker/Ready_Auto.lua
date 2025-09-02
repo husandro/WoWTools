@@ -144,7 +144,7 @@ local function Init()
             ReadyCheckListenerFrame.time= timeLeft+ GetTime()
         end
 
-        WoWTools_Mixin:PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
+        WoWTools_DataMixin:PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
 
         --initiator= initiator or ReadyCheckFrame.initiator
 

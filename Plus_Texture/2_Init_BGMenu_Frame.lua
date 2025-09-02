@@ -511,7 +511,7 @@ local function Add_Frame_Menu(self, root)
     sub:CreateDivider()
     sub2= WoWTools_MenuMixin:ClearAll(sub, function()
         Save().Add={}
-        WoWTools_Mixin:Reload()
+        WoWTools_DataMixin:Reload()
     end)
 
     sub2:SetTooltip(function(tooltip)

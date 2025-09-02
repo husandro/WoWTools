@@ -258,7 +258,7 @@ local function setClickAtt()--设置 Click属性
                 end
             end
         else
-            WoWTools_Mixin:Load({id=spellID, type='spell'})
+            WoWTools_DataMixin:Load({id=spellID, type='spell'})
             MountButton.Combat=true
         end
 
@@ -277,7 +277,7 @@ local function setClickAtt()--设置 Click属性
             end
             MountButton:SetAttribute('unit', nil)
         else
-            WoWTools_Mixin:Load({id=MountButton.itemID, type='item'})
+            WoWTools_DataMixin:Load({id=MountButton.itemID, type='item'})
             MountButton.Combat=true
         end
     else
@@ -340,7 +340,7 @@ local function Set_Item_Spell_Edit(info)
             SetValue = function(_, data, tab, text)
                 Save().Mounts[FLOOR][data.spellID]= tab
                 WoWTools_MountMixin.MountButton:settings()
-                if MountJournal_UpdateMountList then WoWTools_Mixin:Call(MountJournal_UpdateMountList) end
+                if MountJournal_UpdateMountList then WoWTools_DataMixin:Call(MountJournal_UpdateMountList) end
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, C_Spell.GetSpellLink(data.spellID), '|n', text)
 
             end,
@@ -348,7 +348,7 @@ local function Set_Item_Spell_Edit(info)
                 Save().Mounts[FLOOR][data.spellID]=nil
                 checkMount()--检测坐骑
                 setClickAtt()--设置 Click属性
-                if MountJournal_UpdateMountList then WoWTools_Mixin:Call(MountJournal_UpdateMountList) end
+                if MountJournal_UpdateMountList then WoWTools_DataMixin:Call(MountJournal_UpdateMountList) end
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, data.link)
             end
         })

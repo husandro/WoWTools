@@ -43,7 +43,7 @@ local function Get_Item(itemID)
 
 		local numText
 		if bag==num then
-			numText= WoWTools_Mixin:MK(num, 3)
+			numText= WoWTools_DataMixin:MK(num, 3)
 		else
 			local bank= num-bag
 			if bank==0 then
@@ -118,7 +118,7 @@ local function Get_Currency(currencyID, index)
 		need= format('(%d%%)', percent)
 	end
 
-	local num= WoWTools_Mixin:MK(num2, 3)
+	local num= WoWTools_DataMixin:MK(num2, 3)
 
 	local max
 	if isMax then

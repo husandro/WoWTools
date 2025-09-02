@@ -512,7 +512,7 @@ local function Create_positionFrame(frame)
 --距离
         local distanceSquared, checkedDistance = UnitDistanceSquared(self.unit)
         if distanceSquared and checkedDistance then
-            text= text..' '..WoWTools_Mixin:MK(distanceSquared, 0)
+            text= text..' '..WoWTools_DataMixin:MK(distanceSquared, 0)
         end
 
         self.Text:SetText(text)

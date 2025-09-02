@@ -20,7 +20,7 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
 
     local slot= frame:GetID()
 	local link= (UnitExists(unit) and not Save().hide) and GetInventoryItemLink(unit, slot) or nil
-	WoWTools_Mixin:Load({id=link, type='item'})--加载 item quest spell
+	WoWTools_DataMixin:Load({id=link, type='item'})--加载 item quest spell
 
     --set_Gem(frame, slot, link)
 
@@ -199,7 +199,7 @@ local function Init_UI()
             for index, info in pairs(newSta) do
                 text= text and text..'|n' or ''
                 local col= select(2, math.modf(index/2))==0 and '|cffffffff' or '|cffff7f00'
-                text= text..col..info.text..': '..WoWTools_Mixin:MK(info.value, 3)..'|r'
+                text= text..col..info.text..': '..WoWTools_DataMixin:MK(info.value, 3)..'|r'
             end
         end
         StatusLabel:SetText(text or '')

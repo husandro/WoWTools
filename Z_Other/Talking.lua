@@ -18,7 +18,7 @@ local function TALKINGHEAD_REQUESTED()
             StopSound(voHandle)
             voHandle = nil
         end
-        local success, vo2 = WoWTools_Mixin:PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
+        local success, vo2 = WoWTools_DataMixin:PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
         if success then
             voHandle = vo2
         end

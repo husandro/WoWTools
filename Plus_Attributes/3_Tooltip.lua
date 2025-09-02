@@ -91,9 +91,9 @@ Show_Tooltip.STATUS= function(frame, owner)
         GameTooltip:AddLine(' ')
         local text
         if frame.value< stat then
-            text= Save().greenColor..'+ '..format('%s', WoWTools_Mixin:MK(stat- frame.value,3))
+            text= Save().greenColor..'+ '..format('%s', WoWTools_DataMixin:MK(stat- frame.value,3))
         else
-            text= Save().redColor..'- '..format('%s', WoWTools_Mixin:MK(3, frame.value- stat))
+            text= Save().redColor..'- '..format('%s', WoWTools_DataMixin:MK(3, frame.value- stat))
         end
         GameTooltip:AddDoubleLine(format('%i', frame.value), text)
     end

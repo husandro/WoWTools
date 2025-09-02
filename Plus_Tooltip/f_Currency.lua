@@ -71,7 +71,7 @@ local numPlayer= #data
                 index
                 ..')'
                 ..WoWTools_UnitMixin:GetPlayerInfo(nil, info.characterGUID, nil, {reName=true, reRealm=true, faction=info.faction}),
-                WoWTools_Mixin:MK(info.quantity, 3)
+                WoWTools_DataMixin:MK(info.quantity, 3)
             )
             if index>2 and not IsShiftKeyDown() then
                 if index<numPlayer then
@@ -87,12 +87,12 @@ local numPlayer= #data
             ..numPlayer
             ..(icon or WoWTools_DataMixin.Icon.wow2)
             ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
-            ..('|T'..(info2.iconFileID or 0)..':0|t')..WoWTools_Mixin:MK(num, 3)
+            ..('|T'..(info2.iconFileID or 0)..':0|t')..WoWTools_DataMixin:MK(num, 3)
         )
     end
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 
     --tooltip:Show()
-    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

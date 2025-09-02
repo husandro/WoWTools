@@ -6,9 +6,9 @@ end
 
 function WoWTools_MerchantMixin:Update_MerchantFrame()
     if MerchantFrame.selectedTab == 2 then
-        WoWTools_Mixin:Call(MerchantFrame_UpdateBuybackInfo)
+        WoWTools_DataMixin:Call(MerchantFrame_UpdateBuybackInfo)
     else
-        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+        WoWTools_DataMixin:Call(MerchantFrame_UpdateMerchantInfo)
     end
 end
 

@@ -86,7 +86,7 @@ local function set_Count(self, event)
         if Save.sound then--播放，声音
             if all>0 then
                 if not playerSound then
-                    WoWTools_Mixin:PlaySound(nil, true)
+                    WoWTools_DataMixin:PlaySound(nil, true)
                     playerSound= true
                 end
             else
@@ -141,7 +141,7 @@ local function Init_Menu(self, level, type)
         func= function()
             Save.sound= not Save.sound and true or nil
             if Save.sound then
-                WoWTools_Mixin:PlaySound(nil, true)
+                WoWTools_DataMixin:PlaySound(nil, true)
             end
         end
     }

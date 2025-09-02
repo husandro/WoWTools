@@ -226,7 +226,7 @@ for index=1 , C_QuestLog.GetNumQuestLogEntries() do
             Num.Trivial= Num.Trivial+1
         end
 --加载数据
-        WoWTools_Mixin:Load({id=info and info.questID, type='quest'})
+        WoWTools_DataMixin:Load({id=info and info.questID, type='quest'})
     end
 end
 

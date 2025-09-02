@@ -168,7 +168,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
     if UnitIsAFK('player') then
         if not OnAFKTime then--AFk时,播放声音
             OnAFKTime= time
-            WoWTools_Mixin:PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
+            WoWTools_DataMixin:PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
         end
         LastText=nil
 

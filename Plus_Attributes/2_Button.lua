@@ -41,7 +41,7 @@ local function Init()
                 end
             end
         end
-        text= text..'HP'..WoWTools_Mixin:MK(UnitHealthMax('player'), 0)
+        text= text..'HP'..WoWTools_DataMixin:MK(UnitHealthMax('player'), 0)
 
         for _, info in pairs(WoWTools_AttributesMixin:Get_Tabs()) do
             local frame=button[info.name]

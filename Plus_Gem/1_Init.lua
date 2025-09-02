@@ -29,7 +29,7 @@ end
 
 
 for _, spellID in pairs(SpellsTab) do
-    WoWTools_Mixin:Load({id=spellID, type='spell'})
+    WoWTools_DataMixin:Load({id=spellID, type='spell'})
 end
 
 
@@ -881,7 +881,7 @@ local function Init_Menu(self, root)
         Save().gemLoc={
             [WoWTools_DataMixin.Player.Class]={}
         }
-        WoWTools_Mixin:Call(ItemSocketingFrame_Update)
+        WoWTools_DataMixin:Call(ItemSocketingFrame_Update)
         return MenuResponse.Refresh
     end)
 
