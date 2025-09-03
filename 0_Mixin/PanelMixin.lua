@@ -25,6 +25,11 @@ local bindingIndex = C_KeyBindings.GetBindingIndex(action);
 local sub = CreateKeybindingEntryInitializer(bindingIndex, true);
 sub:AddSearchTags(GetBindingName(action));
 layout:AddInitializer(sub);
+
+
+Settings.RegisterProxySetting(categoryTbl, variable, variableType, name, defaultValue, getValue, setValue)
+Settings.RegisterProxySetting(category, "PROXY_MINIMUM_CHARACTER_NAME_SIZE", Settings.VarType.Number, MINIMUM_CHARACTER_NAME_SIZE_TEXT, 0, GetValue, SetValue)
+
 ]]
 
 
@@ -207,7 +212,7 @@ end
 
 
 
-
+C_CVar.GetCVar('WoWToolsPanelVariable1') 
 
 
 
@@ -217,7 +222,8 @@ end
 
 --##############
 --创建, 添加控制面板
---##############
+
+
 local variableIndex=0
 local function Set_VariableIndex()
     variableIndex= variableIndex+1
