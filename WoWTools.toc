@@ -260,9 +260,8 @@ Plus_Attributes\Speed_Vehicle.lua
 
 ##任务框，增强
 Plus_ObjectiveTracker\0_ObjectiveMixin.lua
-Plus_ObjectiveTracker\1_Init.lua
+Plus_ObjectiveTracker\1_Init_Plus.lua
 Plus_ObjectiveTracker\2_Menu.lua
-Plus_ObjectiveTracker\Plus.lua
 
 
 ##战团藏品
