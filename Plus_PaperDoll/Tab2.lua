@@ -2,7 +2,7 @@
 local function Save()
     return WoWToolsSave['Plus_PaperDoll']
 end
-local Button
+local Button, Title
 
 
 
@@ -15,43 +15,38 @@ local function Init_Menu(self, root)
     end
 
     local all= GetNumTitles()
-    root:CreateTitle(
-       ((#GetKnownTitles()-1)..'/'..GetNumTitles()..' ')
-       ..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
-    )
+    root:CreateTitle('|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r/'..all..' ')
 
     local sub
-    local num=0
+
     for i=1, all, 1 do
-        if not IsTitleKnown(i) then
-            num= num+1
-            local name = GetTitleName(i)
-            if name then
-                local cnName
-                cnName= WoWTools_TextMixin:CN(name, {titleID=i})
-
-
-                sub=root:CreateButton(
-                    num..') '
-                    ..(cnName and cnName:find('%%s') and format(name, '') or name),
-
-                function(data)
-                    WoWTools_TooltipMixin:Show_URL(true, 'title', data.index, nil)
-                    return MenuResponse.Open
-
-                end, {index=i, name=name, cnName=cnName})
-                sub:SetTooltip(function(tooltip, description)
-                    tooltip:AddLine(WoWTools_DataMixin.Icon.left..'wowhead.com')
-                    tooltip:AddLine('index '..description.data.index)
-                    tooltip:AddLine(description.data.name..' ')
-                    local cn= description.data.cnName
-                    if cn and cn:find('%%s') then
-                        local player= UnitName('player')
-                        tooltip:AddLine(format(cn, player))
-                    end
-                end)
-
+        local name = GetTitleName(i)
+        if name then
+            local cn= WoWTools_TextMixin:CN(name, {titleID=i})
+            if cn then
+                cn= cn:gsub('%%s', '')
+                cn= cn=='' and name or cn
+                cn= cn~=name and cn or nil
             end
+            sub=root:CreateButton(
+                i..') '
+                ..(IsTitleKnown(i) and '|cffffffff' or '|cff606060')
+                ..(cn or name),
+
+            function(data)
+                WoWTools_TooltipMixin:Show_URL(true, 'title', data.index, nil)
+                return MenuResponse.Open
+
+            end, {index=i, name=name, cn=cn})
+
+            sub:SetTooltip(function(tooltip, description)
+                tooltip:AddLine(WoWTools_DataMixin.Icon.left..'wowhead.com')
+                tooltip:AddLine('index '..description.data.index)
+                tooltip:AddLine(description.data.name..' ')
+                if description.data.cn then
+                    tooltip:AddLine(description.data.cn)
+                end
+            end)
         end
     end
 
@@ -64,7 +59,10 @@ end
 
 local function Init_Button()
 --未收集
-    Button= WoWTools_ButtonMixin:Menu(PaperDollFrame.TitleManagerPane, {icon='hide'})
+    Button= WoWTools_ButtonMixin:Menu(PaperDollFrame.TitleManagerPane, {
+        icon='hide',
+        name='WoWToolsTitleMenuButton'
+    })
     Button.Text= WoWTools_LabelMixin:Create(Button)
     Button.Text:SetPoint('CENTER')
     Button:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
@@ -72,13 +70,16 @@ local function Init_Button()
     Button:SetupMenu(Init_Menu)
     Button:Hide()
 
+
     function Button:settings()
         self.Text:SetText(GetNumTitles()- #GetKnownTitles() -1)
         local w, h= self.Text:GetSize()
         self:SetSize(w+4, h+4)
     end
 
-    Button:SetScript('OnShow', Button.settings)
+    Button:SetScript('OnShow', function(self)
+        self:settings()
+    end)
     Button:SetScript('OnHide', function(self)
         self.Text:SetText("")
     end)
@@ -87,21 +88,28 @@ local function Init_Button()
 
 
 --已收集数量
-    Title= WoWTools_LabelMixin:Create(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
-    Title:SetPoint('BOTTOM')
 
+    Title= WoWTools_LabelMixin:Create(PaperDollSidebarTab2, {
+        justifyH='CENTER',
+        mouse=true,
+        name='WoWToolsTitleNumLabel'
+    })
+    Title:SetPoint('BOTTOM')
+    
     function Title:settings()
         self:SetText(#GetKnownTitles()-1)
     end
-    Title:SetScript('OnShow', Title.settings)
+    Title:SetScript('OnShow', function(self)
+        self:settings()
+    end)
     Title:SetScript('OnHide', function(self)
         self:SetText("")
     end)
 
-    Title:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
+    Title:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     Title:SetScript('OnEnter', function(self)
         self:settings()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)--, WoWTools_PaperDollMixin.addName)
         local known= #GetKnownTitles()-1
@@ -115,7 +123,7 @@ local function Init_Button()
             '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
         )
         GameTooltip:Show()
-        self:SetAlpha(0)
+        self:SetAlpha(0.5)
     end)
 
     Title:SetScript('OnMouseDown', function()

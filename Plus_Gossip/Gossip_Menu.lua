@@ -15,7 +15,6 @@ end
 local function Movie_SubMenu(root, movieID, dateTime)
 --移除
     if dateTime  then
-
         root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
         function(data)
