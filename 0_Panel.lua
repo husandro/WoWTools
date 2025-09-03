@@ -112,7 +112,7 @@ local function Init_Options()
     WoWTools_PanelMixin:OnlyButton({
         title= WoWTools_DataMixin.Icon.wow2..wowHeader,
         buttonText= WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-        addSearchTags= header,
+        addSearchTags= wowHeader,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
                 WoWTools_DataMixin.Icon.wow2
