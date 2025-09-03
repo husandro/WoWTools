@@ -106,6 +106,14 @@ local function Init_Options()
     })
 
 
+--显示战网物品
+    WoWTools_PanelMixin:OnlyButton({
+        --title= WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS),
+        buttonText= WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS),--WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+        SetValue= function()
+           WoWTools_DataMixin:OpenWoWItemListFrame()--战团，物品列表
+        end,
+    })
 
 
 
@@ -167,14 +175,6 @@ local function Init_Options()
     })
 
 
---显示战网物品
-    WoWTools_PanelMixin:OnlyButton({
-        title= WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS),
-        buttonText= WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
-        SetValue= function()
-           WoWTools_DataMixin:OpenWoWItemListFrame()--战团，物品列表
-        end,
-    })
 
 
 
