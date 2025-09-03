@@ -91,14 +91,7 @@ local function Init_Menu(_, root)
             root:CreateSpacer()
         end
 
-    --[[显示，材质
-        WoWTools_MenuMixin:ShowTexture(root, function()
-            return Save().showTexture
-        end, function()
-            Save().showTexture= not Save().showTexture and true or nil
-            WoWTools_HunterMixin:Set_UI_Texture()
-            WoWTools_HunterMixin:Set_StableFrame_List()
-        end)]]
+        
 
         root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,

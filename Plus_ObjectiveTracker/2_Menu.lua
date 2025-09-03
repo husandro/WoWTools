@@ -313,7 +313,30 @@ local function Init()
     end
 
 
---[[移动
+    ObjectiveTrackerFrame.Header:EnableMouseWheel(true)
+    ObjectiveTrackerFrame.Header:SetScript('OnMouseWheel', function(_, d)
+        Set_Collapse(d==1, true)
+    end)
+
+
+    Init=function()end
+end
+
+
+
+
+
+
+
+
+function WoWTools_ObjectiveMixin:Init_Menu()
+    Init()
+end
+
+--[[function WoWTools_ObjectiveMixin:Get_ObjectiveTab()
+    return ObjectiveTabs
+end
+-移动
     WoWTools_MoveMixin:Setup(ObjectiveTrackerFrame.Header, {
         notSave=true,
     })
@@ -340,24 +363,3 @@ local function Init()
         ResetCursor()
     end)]]
 
-
-
-
-
-    Init=function()end
-end
-
-
-
-
-
-
-
-
-function WoWTools_ObjectiveMixin:Init_Menu()
-    Init()
-end
-
---[[function WoWTools_ObjectiveMixin:Get_ObjectiveTab()
-    return ObjectiveTabs
-end]]

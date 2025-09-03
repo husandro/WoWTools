@@ -72,7 +72,7 @@ local function Init_Menu(self, root)
     function()
         return Save().gossip
     end, function()
-        Save().gossip= not Save().gossip and true or nil
+        Save().gossip= not Save().gossip and true or false
         WoWTools_GossipMixin:Init_Gossip_Data()
         self:set_Texture()--设置，图片
         self:tooltip_Show()
@@ -91,7 +91,7 @@ local function Init_Menu(self, root)
     function()
         return  Save().unique
     end, function ()
-        Save().unique= not Save().unique and true or nil
+        Save().unique= not Save().unique and true or false
         WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
     end)
 
@@ -305,7 +305,7 @@ local function Init_Menu(self, root)
     function()
         return Save().stopMovie
     end, function()
-        Save().stopMovie= not Save().stopMovie and true or nil
+        Save().stopMovie= not Save().stopMovie and true or false
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(
@@ -337,12 +337,35 @@ local function Init_Menu(self, root)
 
 
 
-    --缩放
+--缩放
     WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale or 1
     end, function(value)
         Save().scale= value
-        self:set_Scale()
+        self:settings()
+    end)
+
+
+--背景, 透明度
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()--GetValue
+        return Save().bgAlpha or 0.5
+    end, function(value)--SetValue
+        Save().bgAlpha= value
+        self:settings()
+    end, function()--RestFunc
+        Save().bgAlpha= nil
+        self:settings()
+    end)--onlyRoot
+
+
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().strata= data
+        self:settings()
+        return MenuResponse.Refresh
     end)
 
 

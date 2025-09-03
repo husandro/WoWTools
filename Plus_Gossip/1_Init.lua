@@ -24,6 +24,8 @@ local P_Save={
     showAllQuestNum= WoWTools_DataMixin.Player.husandro,--显示所有任务数量
 
     scale=1,
+    --strata='MEDIUM',
+    --bgAlpha=0.5,
     --point=nil,
 
     --not_Gossip_Text_Icon=true,--自定义，对话，文本

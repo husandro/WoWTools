@@ -751,7 +751,7 @@ local function Init(isShow)
             GameTooltip:Show()
         end)
         List.font:SetScript('OnMouseDown', function()
-            Save().Gossip_Text_Icon_cnFont= not Save().Gossip_Text_Icon_cnFont and true or nil
+            Save().Gossip_Text_Icon_cnFont= not Save().Gossip_Text_Icon_cnFont and true or false
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
             List:set_list()
             if not Save().Gossip_Text_Icon_cnFont then

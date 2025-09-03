@@ -1,86 +1,57 @@
 --贸易站
---可能会，出错误
 
-local function Save()
-    return WoWToolsSave['Adventure_Journal']
-end
-
-
-
-local function Settings(btn)
-    btn:HookScript('OnEnter', function(self3)
-        if self3.id and not Save().hideEncounterJournal then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('perksActivityID', self3.id)
-            GameTooltip:AddDoubleLine((self3.completed and '|cff9e9e9e' or '|cff00ff00')..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING), WoWTools_DataMixin.Icon.left)
-            GameTooltip:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff9e9e9e' or '|cff00ff00')..(WoWTools_DataMixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), WoWTools_DataMixin.Icon.right)
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
-            GameTooltip:Show()
-        end
-    end)
-
-    btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-    btn:HookScript('OnClick', function(self3, d)
-        if IsModifierKeyDown() or not self3.id or Save().hideEncounterJournal then
-            return
-        end
-        if d=='RightButton' then
-            local link=C_PerksActivities.GetPerksActivityChatLink(self3.id)
-            WoWTools_ChatMixin:Chat(link, nil, true)
-
-
-        elseif d=='LeftButton' then
-            if self3.tracked then
-                C_PerksActivities.RemoveTrackedPerksActivity(self3.id)
-            elseif not self3.completed then
-                C_PerksActivities.AddTrackedPerksActivity(self3.id)
-            end
-        end
-    end)
-
-    btn.showPerksActivityID= true
-end
-
-
-
-
-
-
-
-
-
-
-
-
-local function Update(frame)
-    if Save().hideEncounterJournal or not frame:GetView() then
-        return
+--[[
+    if self.tracked then
+        C_PerksActivities.RemoveTrackedPerksActivity(self.id)
+    elseif not self.completed then
+        C_PerksActivities.AddTrackedPerksActivity(self.id)
     end
-
-    for _, btn in pairs(frame:GetFrames()) do
-        if not btn.showPerksActivityID then
-            Settings(btn)
-        end
-    end
-end
-
-
+    
+MonthlySupersedeActivitiesButtonMixin
+MonthlyActivitiesButtonMixin
+]]
 
 
 local function Init()
-    --MonthlySupersedeActivitiesButtonMixin
-    --MonthlyActivitiesButtonMixin
-    hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', Update)
-
 --任务，提示
-     hooksecurefunc( MonthlyActivitiesButtonMixin, 'ShowTooltip', function(frame)
-        local data = frame:GetData()
-        if data and data.ID then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('perksActivityID', data.ID)
-            GameTooltip:Show()
+    hooksecurefunc(MonthlyActivitiesButtonMixin, 'ShowTooltip', function(self)
+        local data = self:GetData()
+        local id= data and data.ID
+        if not id then
+            return
         end
+        GameTooltip:AddLine(
+            '|cnGREEN_FONT_COLOR:<'
+            ..(WoWTools_DataMixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK)..WoWTools_DataMixin.Icon.right
+            ..'>'
+        )
+        GameTooltip:AddLine(
+            'perksActivityID|cffffffff'
+            ..WoWTools_DataMixin.Icon.icon2
+            ..id
+        )
+        GameTooltip:Show()
     end)
+
+
+    hooksecurefunc(MonthlyActivitiesButtonMixin, 'OnClick', function(self, d)
+        local data = self:GetData()
+        local id= data and data.ID
+        if id and d=='RightButton' then
+            local link=C_PerksActivities.GetPerksActivityChatLink(id)
+            WoWTools_ChatMixin:Chat(link, nil, true)
+        end
+
+    end)
+
+
+    hooksecurefunc(MonthlyActivitiesButtonMixin, 'Init', function(self)
+        self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    end)
+
+
+
+
 
     Init=function()end
 end

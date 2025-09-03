@@ -62,9 +62,6 @@ local function Init_Menu(self, root)
     end, function(data)
         Save().strata= data
         self:settings()
-        print(WoWTools_DataMixin.Icon.icon2..addName,
-            'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")'
-        )
         return MenuResponse.Refresh
     end)
 

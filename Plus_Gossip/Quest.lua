@@ -173,12 +173,16 @@ local function Init_Quest()
         icon='hide',
     })
     WoWTools_GossipMixin.QuestButton= QuestButton
-     
+
     QuestButton.texture= QuestButton:CreateTexture(nil, 'BORDER')
     QuestButton.texture:SetAllPoints()
-     
+
     QuestButton.Text=WoWTools_LabelMixin:Create(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
+
+--Bg
+    _G['WoWToolsGossipButton'].Background:SetPoint('TOPLEFT', QuestButton.Text, -2, 2)
+
 
     QuestButton:SetPoint('RIGHT', _G['WoWToolsGossipButton'], 'LEFT')
 
@@ -447,6 +451,13 @@ local function Init_Quest()
             --WoWTools_ChatMixin:Chat(GetQuestLink(questID), nil, true)
         end
     end)
+
+
+
+
+
+
+
 
 
 

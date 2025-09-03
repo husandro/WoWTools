@@ -4,7 +4,7 @@ ScaleRoot
 ScaleCheck
 Scale(
 
-ShowTexture(root, GetValue, SetValue)
+BgAplha
 ShowBackground(root, GetValue, SetValue)
 FrameStrata(root, GetValue, SetValue)
 Color(root,OnClick, ColorInfo)
@@ -317,36 +317,8 @@ function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
     end
     return sub
 end
---[[
---FrameStrata
-sub2=WoWTools_MenuMixin:FrameStrata(sub, function(data)
-    return self:GetFrameStrata()==data
-end, function(data)
-    Save.strata= data
-    self:set_strata()
-end)
-sub2:SetEnabled(not isInCombat)
 
 
---FrameStrata
-    function TrackButton:set_strata()
-        local strata= Save().trackButtonStrata
-        if strata then
-            self:SetFrameStrata(strata)
-        end
-    end
-    TrackButton:set_strata()
-]]
-
-
---材质 WoWTools_MenuMixin:ShowTexture(
-function WoWTools_MenuMixin:ShowTexture(root, GetValue, SetValue)
-    return root:CreateCheckbox(
-        '|A:AnimCreate_Icon_Texture:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER),
-        GetValue,
-        SetValue)
-end
 
 --背景, 透明度
 function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot)
@@ -387,13 +359,18 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
     end
     return sub, sub2
 end
---背景, 透明度
 --[[
+--背景, 透明度
 WoWTools_MenuMixin:BgAplha(sub,
 function()--GetValue
-end, function()--SetValue
+    return Save().bgAlpha or 0.5
+end, function(value)--SetValue
+    Save().bgAlpha= value
+    self:settings()
 end, function()--RestFunc
-end, false)--onlyRoot
+    Save().bgAlpha= nil
+    self:settings()
+end)--onlyRoot
 ]]
 
 

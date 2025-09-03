@@ -166,11 +166,11 @@ local function Init()
         name='WoWToolsGossipButton',
         icon='hide',
     })
-    --WoWTools_GossipMixin.GossipButton= GossipButton
-    GossipButton.texture= GossipButton:CreateTexture()
+    GossipButton.texture= GossipButton:CreateTexture(nil, 'BORDER')
     GossipButton.texture:SetAllPoints()
 
-
+--BG
+    WoWTools_TextureMixin:CreateBG(GossipButton, {isColor=true, point=true, alpha=Save().bgAlpha})
 
     function GossipButton:Is_ShowOptionsFrame()
         local frame=_G['WoWToolsGossipTextIconOptionsFrame']
@@ -189,8 +189,10 @@ local function Init()
             self:SetPoint('BOTTOM', _G['!KalielsTrackerFrame'] or ObjectiveTrackerFrame, 'TOP', 0 , 0)
         end
     end
-    function GossipButton:set_Scale()--设置，缩放
+    function GossipButton:settings()--设置，缩放
         self:SetScale(Save().scale or 1)
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
+        self.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0.5)
     end
     function GossipButton:set_Alpha()
         self.texture:SetAlpha(Save().gossip and 1 or 0.3)
@@ -260,7 +262,7 @@ local function Init()
             n= n>3 and 3 or n
             n= n< 0.4 and 0.4 or n
             Save().scale=n
-            self:set_Scale()
+            self:settings()
             self:tooltip_Show()
         elseif not IsModifierKeyDown() then
             WoWTools_GossipMixin:Init_Options_Frame(d==1)
@@ -448,7 +450,7 @@ local function Init()
 
 
     GossipButton:set_Texture()
-    GossipButton:set_Scale()
+    GossipButton:settings()
     GossipButton:set_Point()
     GossipButton:set_shown()
 

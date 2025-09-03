@@ -262,6 +262,7 @@ Plus_Attributes\Speed_Vehicle.lua
 Plus_ObjectiveTracker\0_ObjectiveMixin.lua
 Plus_ObjectiveTracker\1_Init_Plus.lua
 Plus_ObjectiveTracker\2_Menu.lua
+Plus_ObjectiveTracker\z_UI.lua
 
 
 ##战团藏品
