@@ -1494,11 +1494,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
                 end
             end
 
-            C_Timer.After(2, function()
-  print(ObjectiveTrackerFrame:IsCollapsed())
-            end)
             Set_Collapsed(ObjectiveTrackerFrame:IsCollapsed())
-          
 
             hooksecurefunc(ObjectiveTrackerFrame, 'SetCollapsed', function(_, collapsed)
                Set_Collapsed(collapsed)
