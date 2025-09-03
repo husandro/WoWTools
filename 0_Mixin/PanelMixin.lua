@@ -212,7 +212,6 @@ end
 
 
 
-C_CVar.GetCVar('WoWToolsPanelVariable1') 
 
 
 
@@ -220,10 +219,8 @@ C_CVar.GetCVar('WoWToolsPanelVariable1')
 
 
 
---##############
+
 --创建, 添加控制面板
-
-
 local variableIndex=0
 local function Set_VariableIndex()
     variableIndex= variableIndex+1
