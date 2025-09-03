@@ -629,28 +629,30 @@ function WoWTools_TooltipMixin.Events:Blizzard_Settings_Shared()
 
         local variable= setting and setting.variable and tostring(setting.variable)
 
-        if variable then
-            if IsAltKeyDown() then
-                WoWTools_TooltipMixin:Show_URL(nil, nil, nil, variable)
-                return
-            end
-
-            local variableType= setting.variableType and tostring(setting.variableType) or type(setting.variableType)
-
-            local value= C_CVar.GetCVarInfo(variable) or ''
-
-            tooltip:AddLine(' ')
-            tooltip:AddLine(
-                'variable'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..variable
-            )
-            tooltip:AddLine(
-                'variableType'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..variableType.. '|r '..tostring(value)
-            )
-            tooltip:AddLine(
-                '|cnGREEN_FONT_COLOR:Alt'..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
-            )
-            tooltip:Show()
+        if not variable then
+            return
         end
+
+        if IsAltKeyDown() then
+            WoWTools_TooltipMixin:Show_URL(nil, nil, nil, variable)
+            return
+        end
+
+        local variableType= setting.variableType and tostring(setting.variableType) or type(setting.variableType)
+
+        local value= C_CVar.GetCVarInfo(variable) or ''
+
+        tooltip:AddLine(' ')
+        tooltip:AddLine(
+            'variable'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..variable
+        )
+        tooltip:AddLine(
+            'variableType'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..variableType.. '|r '..tostring(value)
+        )
+        tooltip:AddLine(
+            '|cnGREEN_FONT_COLOR:Alt'..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+        )
+        tooltip:Show()
     end)
 end
 
