@@ -179,8 +179,7 @@ local function Init_Options()
                 WoWTools_DataMixin:Reload()
             end)
         end,
-        tooltip= header..'\n'
-            ..optionHeader..'\n'
+        tooltip= optionHeader..'\n'
             ..playerHeader..'\n'
             ..wowHeader,
     })
@@ -311,6 +310,9 @@ local function Init_Options()
     end
 
     WoWTools_PanelMixin:Header(nil, 'Plus')
+
+
+    Init_Options=function()end
 end
 
 
