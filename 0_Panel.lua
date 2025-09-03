@@ -38,11 +38,11 @@ end
 local function Init_Options()
     WoWTools_PanelMixin:Header(nil, WoWTools_DataMixin.onlyChinese and '数据' or 'Data')
 
-    local header= WoWTools_DataMixin.onlyChinese and '插件选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, OPTIONS)
+    local optionHeader= WoWTools_DataMixin.onlyChinese and '插件选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, OPTIONS)
     WoWTools_PanelMixin:OnlyButton({
-        title= '|A:talents-button-undo:0:0|a'..header,
+        title= '|A:talents-button-undo:0:0|a'..optionHeader,
         buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET ),
-        addSearchTags= header,
+        addSearchTags= optionHeader,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
                 (WoWTools_DataMixin.onlyChinese and '全部重置，插件设置' or (RESET_ALL_BUTTON_TEXT..', '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, SETTINGS)))
@@ -78,11 +78,11 @@ local function Init_Options()
 
 
 --清除玩家输入数据
-    header= WoWTools_DataMixin.onlyChinese and '清除玩家输入数据' or 'Clear player input data'
+    local playerHeader= WoWTools_DataMixin.onlyChinese and '清除玩家输入数据' or 'Clear player input data'
     WoWTools_PanelMixin:OnlyButton({
-        title= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..header,
+        title= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..playerHeader,
         buttonText= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-        addSearchTags= header,
+        addSearchTags= playerHeader,
         SetValue= function()
             WoWToolsPlayerDate= {}
             WoWTools_DataMixin:Reload()
@@ -145,22 +145,24 @@ local function Init_Options()
 --显示战网物品
     WoWTools_PanelMixin:OnlyButton({
         --title= WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS),
-        buttonText= WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS),--WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+        buttonText= WoWTools_DataMixin.Icon.wow2
+            ..(WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)),
         SetValue= function()
            WoWTools_DataMixin:OpenWoWItemListFrame()--战团，物品列表
         end,
+        tooltip= WoWTools_DataMixin.onlyChinese and '显示' or SHOW
     })
 
 
 
 
-    
+
 
 
 
 
 --全部清除
-    header= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+    local header= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
     WoWTools_PanelMixin:OnlyButton({
         title= header,
         buttonText= header,
@@ -177,6 +179,10 @@ local function Init_Options()
                 WoWTools_DataMixin:Reload()
             end)
         end,
+        tooltip= header..'\n'
+            ..optionHeader..'\n'
+            ..playerHeader..'\n'
+            ..wowHeader,
     })
 
 
