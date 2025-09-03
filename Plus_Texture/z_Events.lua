@@ -1484,16 +1484,33 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
             btn:SetFrameStrata(ObjectiveTrackerFrame.Header.MinimizeButton:GetFrameStrata())
             btn:SetFrameLevel(ObjectiveTrackerFrame.Header.MinimizeButton:GetFrameLevel()+1)
 
-            hooksecurefunc(ObjectiveTrackerFrame.Header, 'SetCollapsed', function(_, collapsed)
-                btn:SetShown(not collapsed)
-                icon:SetShown(not collapsed)
-                print(icon:IsShown(), icon:GetName(), icon==ObjectiveTrackerFrame.WoWTools_BG)
+            local function Set_Collapsed(collapsed)
+                local show= not collapsed
+                btn:SetShown(show)
+                icon:SetShown(show)
+                local far= ObjectiveTrackerFrame.AirParticlesFar
+                if far then
+                    far:SetShown(show)
+                end
+            end
+
+            C_Timer.After(2, function()
+  print(ObjectiveTrackerFrame:IsCollapsed())
+            end)
+            Set_Collapsed(ObjectiveTrackerFrame:IsCollapsed())
+          
+
+            hooksecurefunc(ObjectiveTrackerFrame, 'SetCollapsed', function(_, collapsed)
+               Set_Collapsed(collapsed)
             end)
         end,
         settings=function(icon, texture, alpha)
             ObjectiveTrackerFrame.NineSlice:SetAlpha(texture and 0 or 1)
             icon:SetAlpha(texture and alpha or 0)
-            ObjectiveTrackerFrame.AirParticlesFar:SetAlpha(texture and 1 or 0)
+            local far= ObjectiveTrackerFrame.AirParticlesFar
+            if far then
+                far:SetAlpha(texture and 1 or 0)
+            end
         end
     })
 end
