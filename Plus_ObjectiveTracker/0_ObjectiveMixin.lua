@@ -25,10 +25,6 @@ function WoWTools_ObjectiveMixin:Add_ClearAll_Button(frame, tooltip, func)
 
     btn:SetScript('OnClick', func)
     --btn:SetScript('OnDoubleClick', function()
-
-    function btn:print_text(num)
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveMixin.addName, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
-    end
     btn.tooltip= tooltip
 end
 
@@ -99,3 +95,158 @@ function WoWTools_ObjectiveMixin:Get_Block(f, index)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--清除，成就
+function WoWTools_ObjectiveMixin:Clear_Achievement(isPrint)
+    local num=0
+    for index, achievementID in pairs(C_ContentTracking.GetTrackedIDs(Enum.ContentTrackingType.Achievement) or {}) do
+        C_ContentTracking.StopTracking(Enum.ContentTrackingType.Achievement, achievementID,  Enum.ContentTrackingStopType.Manual)
+        num= index
+        if isPrint then
+            print(
+                index..')',
+                GetAchievementLink(achievementID)
+                or ('|cffffff00|Hachievement:'..achievementID..':'..WoWTools_DataMixin.Player.GUID..':0:0:0:-1:0:0:0:0|h['..achievementID..']|h|r')
+            )
+        end
+    end
+    if num>0 and AchievementFrame and AchievementFrame:IsVisible() and AchievementFrameAchievements_ForceUpdate then
+        WoWTools_DataMixin:Call(AchievementFrameAchievements_ForceUpdate)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+--清除，配方
+local function clear_Recipe(isRecrafting)
+    local num= 0
+    for index, recipeID in pairs(C_TradeSkillUI.GetRecipesTracked(isRecrafting) or {}) do
+        C_TradeSkillUI.SetRecipeTracked(recipeID, false, isRecrafting)
+        local itemLink= C_TradeSkillUI.GetRecipeItemLink(recipeID)
+        if itemLink then
+            print(index..')', itemLink, isRecrafting and (WoWTools_DataMixin.onlyChinese and '再造' or PROFESSIONS_CRAFTING_FORM_OUTPUT_RECRAFT) or '')
+        end
+        num=num+1
+    end
+end
+function WoWTools_ObjectiveMixin:Clear_ProfessionsRecipe(isPrint, isRecrafting)
+    if isRecrafting==nil then
+        return clear_Recipe(isPrint, true) + clear_Recipe(isPrint, false)
+    else
+        return clear_Recipe(isPrint, isRecrafting)
+    end
+end
+
+
+
+
+
+
+
+
+
+--清除，任务
+function WoWTools_ObjectiveMixin:Clear_Quest(isPrint)
+    local num = 0
+    for i= 1, C_QuestLog.GetNumQuestWatches() or 0, 1 do
+        local questID= C_QuestLog.GetQuestIDForQuestWatchIndex(i)
+        if questID and questID>0 and not C_CampaignInfo.IsCampaignQuest(questID) then
+            local wasRemoved= C_QuestLog.RemoveQuestWatch(questID)
+            if wasRemoved then
+                num= num +1
+                if isPrint then
+                    print(num..')', GetQuestLink(questID) or questID)
+                end
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+--清除，世界任务
+function WoWTools_ObjectiveMixin:Clear_WorldQuest(isPrint)
+    local index=0
+    for i= 1, C_QuestLog.GetNumWorldQuestWatches() or 0, 1 do
+        local questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(i)
+        if questID and questID>0 and C_QuestLog.RemoveWorldQuestWatch(questID)then
+            index= index+1
+            if isPrint then
+                print(index..')', GetQuestLink(questID) or questID)
+            end
+        end
+    end
+end
+
+
+
+
+--清除，战役任务
+function WoWTools_ObjectiveMixin:Clear_CampaignQuest(isPreint)
+    local num= 0
+    for i= 1, C_QuestLog.GetNumQuestWatches() or 0, 1 do
+        local questID= C_QuestLog.GetQuestIDForQuestWatchIndex(i)
+        if questID
+            and questID>0
+            and C_CampaignInfo.IsCampaignQuest(questID)
+            and C_QuestLog.RemoveQuestWatch(questID)--移除
+        then
+            num= num+1
+            if isPreint then
+                print(num..')', GetQuestLink(questID) or questID)
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+--清除，旅行者日志 任务
+function WoWTools_ObjectiveMixin:Clear_MonthlyActivities(isPring)
+    local num= 0
+    for _, perksActivityIDs in pairs(C_PerksActivities.GetTrackedPerksActivities() or {}) do
+        for _, perksActivityID in pairs(perksActivityIDs) do
+            C_PerksActivities.RemoveTrackedPerksActivity(perksActivityID)
+            num= num+1
+            if isPring then
+                  print(num..') ',
+                    C_PerksActivities.GetPerksActivityChatLink(perksActivityID) or perksActivityID
+                )
+            end
+        end
+    end
+end

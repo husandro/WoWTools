@@ -1,6 +1,6 @@
 
 --ObjectiveTrackerFrame
-local MenuButton
+
 
 
 local function Save()
@@ -119,7 +119,12 @@ local function Init_Menu(self, root)
         ..'|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL),
         nil,
         {SetValue=function()
-
+            WoWTools_ObjectiveMixin:Clear_Achievement()
+            WoWTools_ObjectiveMixin:Clear_CampaignQuest()
+            WoWTools_ObjectiveMixin:Clear_MonthlyActivities()
+            WoWTools_ObjectiveMixin:Clear_ProfessionsRecipe()
+            WoWTools_ObjectiveMixin:Clear_Quest()
+            WoWTools_ObjectiveMixin:Clear_WorldQuest()
         end}
 )
     end)
@@ -132,19 +137,52 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:Scale(ObjectiveTrackerFrame, root, function()
         return Save().scale
     end, function(value)
-        Save().scale= value
-        self:set_scale()
+        if not Is_Locked() then
+            Save().scale= value
+            self:set_scale()
+        end
     end)
+
+--透明度
+    sub= root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+    function()
+        return MenuResponse.Open
+    end)
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().alpha or 1
+        end,
+        setValue=function(value)
+            if not Is_Locked() then
+                Save().alpha= value
+                self:set_scale()
+            end
+        end,
+        name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
+        minValue=0,
+        maxValue=1,
+        step=0.01,
+        bit='%.2f',
+    })
+    sub:CreateSpacer()
+    
+
+
 
 
 
 --选项
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveMixin.addName, tooltip=function(tooltip)
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveMixin.addName, tooltip=function(tooltip)
         tooltip:AddLine(' ')
         tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
     end})
+
+    WoWTools_MenuMixin:Reload(sub)
 
 end
 
@@ -163,7 +201,7 @@ end
 
 
 local function Init()
-    MenuButton= WoWTools_ButtonMixin:Menu(ObjectiveTrackerFrame.Header, {
+    local MenuButton= WoWTools_ButtonMixin:Menu(ObjectiveTrackerFrame.Header, {
         size=20,
         name='WoWToolsObjectiveTrackerFrameMenuButton'
     })
@@ -171,6 +209,7 @@ local function Init()
     function MenuButton:set_scale()
         if not Is_Locked() then
             ObjectiveTrackerFrame:SetScale(Save().scale or 1)
+            ObjectiveTrackerFrame:SetAlpha(Save().alpha or 1)
         end
     end
 
@@ -315,7 +354,7 @@ end
 
 
 
-function WoWTools_ObjectiveMixin:Init_ObjectiveTrackerFrame()
+function WoWTools_ObjectiveMixin:Init_Menu()
     Init()
 end
 

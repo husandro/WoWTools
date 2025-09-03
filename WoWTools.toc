@@ -261,15 +261,8 @@ Plus_Attributes\Speed_Vehicle.lua
 ##任务框，增强
 Plus_ObjectiveTracker\0_ObjectiveMixin.lua
 Plus_ObjectiveTracker\1_Init.lua
-Plus_ObjectiveTracker\2_ObjectiveTrackerFrame.lua
-Plus_ObjectiveTracker\3_ObjectiveTrackerShared.lua
-Plus_ObjectiveTracker\Achievement.lua
-Plus_ObjectiveTracker\Campaign_Quest.lua
-Plus_ObjectiveTracker\MonthlyActivities.lua
-Plus_ObjectiveTracker\Professions.lua
-Plus_ObjectiveTracker\Quest.lua
-Plus_ObjectiveTracker\ScenarioObjective.lua
-Plus_ObjectiveTracker\World_Quest.lua
+Plus_ObjectiveTracker\2_Menu.lua
+Plus_ObjectiveTracker\Plus.lua
 
 
 ##战团藏品
