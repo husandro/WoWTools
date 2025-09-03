@@ -63,7 +63,11 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        if self.texture then
+            self.texture:SetAlpha(num>0 and 1 or 0.3)
+        else
+            self:SetAlpha(num>0 and 1 or 0.3)
+        end
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -160,7 +164,11 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        if self.texture then
+            self.texture:SetAlpha(num>0 and 1 or 0.3)
+        else
+            self:SetAlpha(num>0 and 1 or 0.3)
+        end
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -234,7 +242,11 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        if self.texture then
+            self.texture:SetAlpha(num>0 and 1 or 0.3)
+        else
+            self:SetAlpha(num>0 and 1 or 0.3)
+        end
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -315,7 +327,11 @@ TypeTabs= {
             end
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        if self.texture then
+            self.texture:SetAlpha(num>0 and 1 or 0.3)
+        else
+            self:SetAlpha(num>0 and 1 or 0.3)
+        end
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -393,7 +409,11 @@ TypeTabs= {
             end
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        if self.texture then
+            self.texture:SetAlpha(num>0 and 1 or 0.3)
+        else
+            self:SetAlpha(num>0 and 1 or 0.3)
+        end
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -473,7 +493,11 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        if self.texture then
+            self.texture:SetAlpha(num>0 and 1 or 0.3)
+        else
+            self:SetAlpha(num>0 and 1 or 0.3)
+        end
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -532,7 +556,11 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        if self.texture then
+            self.texture:SetAlpha(num>0 and 1 or 0.3)
+        else
+            self:SetAlpha(num>0 and 1 or 0.3)
+        end
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -614,7 +642,11 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
-        self:SetAlpha(num>0 and 1 or 0.3)
+        if self.texture then
+            self.texture:SetAlpha(num>0 and 1 or 0.3)
+        else
+            self:SetAlpha(num>0 and 1 or 0.3)
+        end
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -1894,9 +1926,9 @@ local function Init_List(showListType, isShow)
         List2Buttons[name].texture:SetAtlas(data.atlas)
 
         List2Buttons[name].SelectTexture= List2Buttons[name]:CreateTexture(nil, 'OVERLAY', nil, -1)
-        List2Buttons[name].SelectTexture:SetPoint('BOTTOM')
-        List2Buttons[name].SelectTexture:SetSize(30,25)
-        List2Buttons[name].SelectTexture:SetAtlas('glues-gameMode-glw-bottom')
+        List2Buttons[name].SelectTexture:SetPoint('CENTER')
+        List2Buttons[name].SelectTexture:SetSize(30,30)
+        List2Buttons[name].SelectTexture:SetAtlas('AlliedRace-UnlockingFrame-GenderSelectionGlow')--'glues-gameMode-glw-bottom')
         List2Buttons[name].SelectTexture:Hide()
         List2Buttons[name].SelectTexture:SetVertexColor(0,1,0)
 
@@ -1917,7 +1949,7 @@ local function Init_List(showListType, isShow)
             GameTooltip:Hide()
         end)
         List2Buttons[name]:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:SetOwner(Frame, "ANCHOR_TOPLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(
                 '|A:'..self.texture:GetAtlas()..':0:0|a'..self.tooltip..WoWTools_DataMixin.Icon.left
