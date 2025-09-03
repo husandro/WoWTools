@@ -1487,6 +1487,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
             hooksecurefunc(ObjectiveTrackerFrame.Header, 'SetCollapsed', function(_, collapsed)
                 btn:SetShown(not collapsed)
                 icon:SetShown(not collapsed)
+                print(icon:IsShown(), icon:GetName(), icon==ObjectiveTrackerFrame.WoWTools_BG)
             end)
         end,
         settings=function(icon, texture, alpha)
@@ -1496,6 +1497,11 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
         end
     })
 end
+
+
+
+
+
 
 --对话框 11.2没了
 function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Frame()

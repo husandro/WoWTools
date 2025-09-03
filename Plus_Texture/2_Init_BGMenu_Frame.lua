@@ -1100,11 +1100,11 @@ local function Create_Button(self, tab)
     local icon= self.bgMenuButton:GetNormalTexture()
     icon:ClearAllPoints()
     icon:SetPoint('CENTER')
-    icon:SetSize(16,16)
+    icon:SetSize(12,12)
     icon:SetAlpha(tab.newButtonAlpha or 0.5)
 
     if tab.newButtonPoint then
-        tab.newButtonPoint(self.bgMenuButton, icon)
+        tab.newButtonPoint(self.bgMenuButton, self[BGName])
 
     elseif closeButton then
         self.bgMenuButton:SetPoint('RIGHT', closeButton, 'LEFT')
