@@ -35,8 +35,8 @@ local function Init()
     end)
 
 
---新建 空装，按钮
-    hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(btn)
+--新建 空装，按钮 .addSetButton GearSetButtonTemplate
+    hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(btn)-- elementData)
         if Save().hide then
             if btn.createButton then
                 btn.createButton:SetShown(false)
