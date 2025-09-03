@@ -6149,7 +6149,8 @@
         "LFD_PROPOSAL_FAILED_CLOSE_TIME",
         "SETTINGS_TAB_ADDONS",
         "PropertySliderMixin",
-        "MinimalSliderMixin"
+        "MinimalSliderMixin",
+        "GraphicsOverrides"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

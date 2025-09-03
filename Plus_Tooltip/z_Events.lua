@@ -612,7 +612,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_Settings_Shared()
     SettingsTooltip:HookScript('OnShow', function(tooltip)--选项面板，值提示
         local frame= tooltip:GetOwner():GetParent()
 
-        for i=1, 3 do
+        for i=1, 4 do
             if frame.GetSetting or frame.GetData then
                 break
             else
@@ -627,9 +627,9 @@ function WoWTools_TooltipMixin.Events:Blizzard_Settings_Shared()
             setting= data.data.cbSetting or data.data.setitings
         end
 
-        if setting and setting.variable then
-            local variable= tostring(setting.variable)
+        local variable= setting and setting.variable and tostring(setting.variable)
 
+        if variable then
             if IsAltKeyDown() then
                 WoWTools_TooltipMixin:Show_URL(nil, nil, nil, variable)
                 return
