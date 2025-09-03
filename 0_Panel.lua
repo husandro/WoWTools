@@ -71,6 +71,42 @@ local function Init_Options()
     })
 
 
+
+
+
+
+
+
+--清除玩家输入数据
+    header= WoWTools_DataMixin.onlyChinese and '清除玩家输入数据' or 'Clear player input data'
+    WoWTools_PanelMixin:OnlyButton({
+        title= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..header,
+        buttonText= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+        addSearchTags= header,
+        SetValue= function()
+            WoWToolsPlayerDate= {}
+            WoWTools_DataMixin:Reload()
+        end,
+        tooltip=function()
+            local text
+            local index=0
+            for name in pairs(WoWToolsPlayerDate) do
+                text= (text and text..'\n' or '')..name
+                index= index+1
+                if index>10 then
+                    text= text..'\n|cffffffff...'
+                    break
+                end
+            end
+            return text
+        end,
+    })
+
+
+
+
+
+
 --清除战网数据
     local wowHeader= WoWTools_DataMixin.onlyChinese and '清除战网数据' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, 'Data'))
     WoWTools_PanelMixin:OnlyButton({
@@ -118,38 +154,7 @@ local function Init_Options()
 
 
 
-
-
---清除玩家输入数据
-    header= WoWTools_DataMixin.onlyChinese and '清除玩家输入数据' or 'Clear player input data'
-    WoWTools_PanelMixin:OnlyButton({
-        title= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..header,
-        buttonText= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-        addSearchTags= header,
-        SetValue= function()
-            WoWToolsPlayerDate= {}
-            WoWTools_DataMixin:Reload()
-        end,
-        tooltip=function()
-            local text
-            local index=0
-            for name in pairs(WoWToolsPlayerDate) do
-                text= (text and text..'\n' or '')..name
-                index= index+1
-                if index>10 then
-                    text= text..'\n|cffffffff...'
-                    break
-                end
-            end
-            return text
-        end,
-    })
-
-
-
-
-
-
+    
 
 
 
