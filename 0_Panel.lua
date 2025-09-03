@@ -57,8 +57,14 @@ local function Init_Options()
         end,
         tooltip=function()
             local text
+            local index=0
             for name in pairs(WoWToolsSave) do
                 text= (text and text..'\n' or '')..name
+                index= index+1
+                if index>10 then
+                    text= text..'\n|cffffffff...'
+                    break
+                end
             end
             return text
         end

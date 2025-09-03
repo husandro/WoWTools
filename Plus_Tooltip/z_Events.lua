@@ -609,26 +609,47 @@ end
 
 --选项 SettingsTooltip
 function WoWTools_TooltipMixin.Events:Blizzard_Settings_Shared()
-    SettingsTooltip:HookScript('OnShow', function(tooltip)
+    SettingsTooltip:HookScript('OnShow', function(tooltip)--选项面板，值提示
         local frame= tooltip:GetOwner():GetParent()
-        local data= frame and frame.GetData and frame:GetData()
-        local setting= data.data and data.data.setting
-        if not setting then
-            return
+
+        for i=1, 3 do
+            if frame.GetSetting or frame.GetData then
+                break
+            else
+                frame= frame:GetParent()
+            end
         end
 
-        local variable= setting.variable
-        local variableType= setting.variableType
+        local setting= frame.GetSetting and frame:GetSetting()
+        local data= frame.GetData and frame.GetData()
 
-        if variable or variableType then
-            SettingsTooltip:AddLine(' ')
-            if variable then
-                SettingsTooltip:AddLine('variable'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..tostring(variable))
+        if not setting and data and data.data then
+            setting= data.data.cbSetting or data.data.setitings
+        end
+
+        if setting and setting.variable then
+            local variable= tostring(setting.variable)
+
+            if IsAltKeyDown() then
+                WoWTools_TooltipMixin:Show_URL(nil, nil, nil, variable)
+                return
             end
-            if variableType then
-                SettingsTooltip:AddLine('variableType'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..tostring(variableType))
-            end
-            SettingsTooltip:Show()
+
+            local variableType= setting.variableType and tostring(setting.variableType) or type(setting.variableType)
+
+            local value= C_CVar.GetCVarInfo(variable) or ''
+
+            tooltip:AddLine(' ')
+            tooltip:AddLine(
+                'variable'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..variable
+            )
+            tooltip:AddLine(
+                'variableType'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..variableType.. '|r '..tostring(value)
+            )
+            tooltip:AddLine(
+                '|cnGREEN_FONT_COLOR:Alt'..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+            )
+            tooltip:Show()
         end
     end)
 end
