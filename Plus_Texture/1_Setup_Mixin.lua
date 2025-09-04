@@ -271,7 +271,7 @@ end
         end
     end]]
 
-
+WoWTools_TextureMixin:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
 --设置，滚动条，颜色
 function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     bar= bar and bar.ScrollBar or bar
@@ -279,11 +279,12 @@ function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
         return
     end
 
+
     self:SetFrame(bar.Back, {alpha=0.8})
     self:SetFrame(bar.Forward, {alpha=0.8})
     self:SetFrame(bar.Track, {alpha=0.8})
     self:SetFrame(bar.Track.Thumb, {alpha=0.8})
-
+--EncounterJournalMonthlyActivitiesFrame.ScrollBar.Track.Thumb
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, nil, 0.6)
 

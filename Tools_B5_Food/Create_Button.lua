@@ -54,7 +54,7 @@ local function Set_Button_Function(btn)
     end
 
     function btn:set_alpha(alpha)
-        self.texture:SetAlpha(alpha or (self.numCount>0 and 1) or 0.3)
+        self.texture:SetAlpha(alpha or (self.numCount and self.numCount>0 and 1) or 0.3)
     end
 
     function btn:set_count()
@@ -70,7 +70,7 @@ local function Set_Button_Function(btn)
 
 
     function btn:set_desaturated()
-        self.texture:SetDesaturated(not self.enableCooldown or self.numCount==0)
+        self.texture:SetDesaturated(not self.enableCooldown or not self.numCount or self.numCount==0)
     end
 
 
