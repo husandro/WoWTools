@@ -1146,6 +1146,7 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
     end
 
 
+    
 
     BuffFrame.CollapseAndExpandButton:HookScript('OnMouseDown', function(btn, d)
         if d~='RightButton' or InCombatLockdown() then
