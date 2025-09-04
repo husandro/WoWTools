@@ -148,9 +148,6 @@ end
 --Save().WidgetSetID = Save().WidgetSetID or 0
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-panel:RegisterEvent('PLAYER_LEAVING_WORLD')
-
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -165,10 +162,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 WoWTools_TooltipMixin.Events= {}
-                self:UnregisterAllEvents()
+                self:UnregisterEvent(event)
             else
                 Init()--初始
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('PLAYER_LEAVING_WORLD')
             end
+
 
         elseif WoWTools_TooltipMixin.Events[arg1] and WoWToolsSave then
             do
