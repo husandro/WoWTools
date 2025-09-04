@@ -88,8 +88,8 @@ local function Init()
     check:SetPoint('RIGHT', edit, 'LEFT', -2, 0)
     check:SetChecked(Save().autoHideTableAttributeDisplay)
 
---[[
---GetAttributeSource
+
+--[[GetAttributeSource
 --GetTableInspector
 --GetAttributeData 
     hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(self)
@@ -98,14 +98,17 @@ local function Init()
         end
         
         for _, line in ipairs(self.lines) do
-            print(line.GetAttributeSource, line.GetTableInspector, line.GetAttributeData)
-            --info= line:GetAttributeSource()
+            if line.GetAttributeSource then    
+            info= line:GetAttributeData()
             --for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-
+            local displayerValue= info.displayerValue
+            local type= info.type
+                print(type(displayerValue))
+            --print(line:GetAttributeSource(), line:GetTableInspector(), line:GetAttributeData())
+            end
         end
     end)
 ]]
-
     Init=function()
         btn:SetShown(not Save().disabedFrameStackPlus)
     end
