@@ -130,6 +130,7 @@ Plus_Texture\ClassPower.lua
 Plus_Texture\HelpTip.lua
 Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
+Plus_Texture\z_SharedXML.lua
 
 
 

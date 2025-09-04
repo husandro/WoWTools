@@ -132,9 +132,8 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         local icon= select(tab.index, frame:GetRegions())
         if icon and icon:IsObjectType("Texture") then
              if not notColor then
-                WoWTools_ColorMixin:Setup(icon, {type='Texture'})
-            end
-            if alpha then
+                WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha or 1})
+             elseif alpha then
                 icon:SetAlpha(alpha)
             end
         end
@@ -144,9 +143,9 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         for _, icon in pairs({frame:GetRegions()}) do
             if icon:IsObjectType("Texture") and not show[icon] then
                 if not notColor then
-                    WoWTools_ColorMixin:Setup(icon, {type='Texture'})
-                end
-                if alpha then
+                    WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha= alpha or 1})
+
+                elseif alpha then
                     icon:SetAlpha(alpha)
                 end
             end
@@ -278,7 +277,7 @@ function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     if not bar or not bar.Track then
         return
     end
-
+    print(bar.GetRegions)
 
     self:SetFrame(bar.Back, {alpha=0.8})
     self:SetFrame(bar.Forward, {alpha=0.8})

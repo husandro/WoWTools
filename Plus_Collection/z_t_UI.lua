@@ -28,6 +28,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
 
     self:SetScrollBar(MountJournal)
+    
     self:SetEditBox(MountJournalSearchBox)
 
     self:SetNineSlice(MountJournal.RightInset)
