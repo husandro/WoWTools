@@ -28,35 +28,8 @@ local function Init()
 
     btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
     btn:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-    btn:SetScript('OnClick', function(self, d)
-        --[[if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(_, root)
-                local sub=root:CreateButton(
-                    '|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK',
-                
-                function ()
-                    FrameStackTooltip_ToggleDefaults()
-                    return MenuResponse.Open
-                end)
-
-                sub:SetTooltip(function (tooltip)
-                    tooltip:AddLine('|cnGREEN_FONT_COLOR:Alt|r '..(WoWTools_DataMixin.onlyChinese and '切换' or HUD_EDIT_MODE_SWITCH))
-                    tooltip:AddLine(' ')
-                    tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl|r '..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW))
-                    tooltip:AddLine(' ')
-                    tooltip:AddLine('|cnGREEN_FONT_COLOR:Shift|r '..(WoWTools_DataMixin.onlyChinese and '材质信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TEXTURES_SUBHEADER, INFO)))
-                    tooltip:AddLine(' ')
-                    tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(WoWTools_DataMixin.onlyChinese and '类型' or TYPE))
-                end)
-
-
-            end)
-        else]]
-            FrameStackTooltip_ToggleDefaults()
-
-        --[[if Save().autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
-            FrameStackTooltip_ToggleDefaults()
-        end]]
+    btn:SetScript('OnClick', function(self)
+        FrameStackTooltip_ToggleDefaults()
         self:set_tooltip()
     end)
     btn:SetScript('OnLeave', function() GameTooltip:Hide() end)
@@ -65,7 +38,6 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HyperLink.addName)
         GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', WoWTools_DataMixin.Icon.left..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool('fstack_enabled'), nil))
-       -- GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
     btn:SetScript('OnEnter',  btn.set_tooltip)
@@ -116,6 +88,23 @@ local function Init()
     check:SetPoint('RIGHT', edit, 'LEFT', -2, 0)
     check:SetChecked(Save().autoHideTableAttributeDisplay)
 
+--[[
+--GetAttributeSource
+--GetTableInspector
+--GetAttributeData 
+    hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(self)
+        if not self.dataProviders then
+            return
+        end
+        
+        for _, line in ipairs(self.lines) do
+            print(line.GetAttributeSource, line.GetTableInspector, line.GetAttributeData)
+            --info= line:GetAttributeSource()
+            --for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+
+        end
+    end)
+]]
 
     Init=function()
         btn:SetShown(not Save().disabedFrameStackPlus)

@@ -6151,7 +6151,8 @@
         "PropertySliderMixin",
         "MinimalSliderMixin",
         "GraphicsOverrides",
-        "CLOSES_IN"
+        "CLOSES_IN",
+        "TableInspectorMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

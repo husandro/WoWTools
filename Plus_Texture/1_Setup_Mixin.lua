@@ -277,7 +277,6 @@ function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     if not bar or not bar.Track then
         return
     end
-    print(bar.GetRegions)
 
     self:SetFrame(bar.Back, {alpha=0.8})
     self:SetFrame(bar.Forward, {alpha=0.8})
