@@ -36,7 +36,14 @@ end
 
 
 
-
+--[[
+Blizzard_TalentButtonSpend.lua
+TalentButtonSpendMixin
+local canPurchase = self:CanPurchaseRank();
+local canRefund = self:CanRefundRank();
+local canRepurchase = self:CanCascadeRepurchaseRanks();
+local isGhosted = self:IsGhosted();
+]]
 function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
 
     RemixArtifactFrame.Currency:HookScript('OnEnter', function(f)
@@ -56,7 +63,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
 
 --需要花费，提示
     local function Setup_Coat(frame, treeID)
-        if not treeID then
+        if not treeID or not frame:IsShown() then
             return
         end
         local needCost=0
@@ -64,33 +71,48 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
             local nodeID = btn:GetNodeID()
             local cost = nodeID and frame:GetNodeCost(nodeID)--amount ID
             local amount
+            local levelText
             local data= btn:GetNodeInfo()
             local scale=1
-            if data and data.currentRank< data.maxRanks and not data.canRefundRank then
-                for _, traitCurrencyCost in ipairs(cost) do
-                    local treeCurrency = frame.treeCurrencyInfoMap[traitCurrencyCost.ID];
-                    amount =  WoWTools_DataMixin:MK(traitCurrencyCost.amount, 3)
-                    if amount then
-                        needCost= needCost+ traitCurrencyCost.amount
-                        if treeCurrency and treeCurrency.quantity < traitCurrencyCost.amount then
-                            amount = RED_FONT_COLOR:WrapTextInColorCode(amount)
-                        elseif data.canPurchaseRank then
-                            amount= '|cnGREEN_FONT_COLOR:'..amount..'|r'
-                            scale=1.5
+            if data and data.currentRank and data.maxRanks and data.currentRank< data.maxRanks then
+                if not data.canRefundRank then
+                    for _, traitCurrencyCost in ipairs(cost) do
+                        local treeCurrency = frame.treeCurrencyInfoMap[traitCurrencyCost.ID];
+                        amount =  WoWTools_DataMixin:MK(traitCurrencyCost.amount, 3)
+                        if amount then
+                            needCost= needCost+ traitCurrencyCost.amount
+                            if treeCurrency and treeCurrency.quantity < traitCurrencyCost.amount then
+                                amount = RED_FONT_COLOR:WrapTextInColorCode(amount)
+                            elseif data.canPurchaseRank then
+                                amount= '|cnGREEN_FONT_COLOR:'..amount..'|r'
+                                scale=1.5
+                            end
+                            break
                         end
-                        break
                     end
                 end
+
+                if data.currentRank>0 then
+                    levelText= '/'..data.maxRanks
+                end
+
             end
 
             if amount and not btn.costLabel then
                 btn.costLabel= WoWTools_LabelMixin:Create(btn)
                 btn.costLabel:SetPoint('TOP', btn, 'BOTTOM')
             end
-
             if btn.costLabel then
                 btn.costLabel:SetText(amount or '')
                 btn.costLabel:SetScale(scale)
+            end
+
+            if levelText and not btn.levelLabel then
+                btn.levelLabel= WoWTools_LabelMixin:Create(btn, {color={r=1,g=0,b=1}})
+                btn.levelLabel:SetPoint('LEFT', btn.SpendText, 'RIGHT')
+            end
+            if btn.levelLabel then
+                btn.levelLabel:SetText(levelText or '')
             end
         end
 
@@ -134,6 +156,50 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
             end)
         end
     end)
+
+
+
+    local b= WoWTools_ButtonMixin:Cbtn(RemixArtifactFrame.CloseButton, {
+        atlas='common-dropdown-icon-play',
+        size=23,
+        name= 'WoWToolsRemixArtifactAutoAceButton'
+    })
+    b:SetPoint('LEFT', RemixArtifactFrame.CommitConfigControls.UndoButton, 'RIGHT', 6, 0)
+    b:SetPushedAtlas('common-dropdown-icon-next')
+
+    b:SetScript('OnLeave', function() GameTooltip:Hide() end)
+    b:SetScript('OnEnter', function(f)
+        GameTooltip:SetOwner(f, 'ANCHOR_BOTTOM')
+        GameTooltip:SetText(
+            (InCombatLockdown() and '|cff606060' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '学习' or LEARN)
+            ..WoWTools_DataMixin.Icon.left
+            ..WoWTools_DataMixin.Icon.icon2
+            ..WoWTools_DataMixin.Icon.right
+            ..(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+        )
+        GameTooltip:Show()
+    end)
+
+    b:SetScript('OnClick', function(_, d)
+        if InCombatLockdown() then
+            return
+        end
+        for btn in RemixArtifactFrame:EnumerateAllTalentButtons() do
+            local data= btn:GetNodeInfo()
+            if d=='LeftButton' then
+                if data.canPurchaseRank then
+                    btn:Click(d)
+                end
+            elseif d=='RightButton' then
+                if data.canRefundRank then
+                    btn:Click(d)
+                end
+            end
+        end
+    end)
+
+
 end
 
 

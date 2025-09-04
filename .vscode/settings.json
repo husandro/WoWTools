@@ -6152,7 +6152,9 @@
         "MinimalSliderMixin",
         "GraphicsOverrides",
         "CLOSES_IN",
-        "TableInspectorMixin"
+        "TableInspectorMixin",
+        "PVP_TALENT_SLOT_EMPTY",
+        "TalentButtonSpendMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

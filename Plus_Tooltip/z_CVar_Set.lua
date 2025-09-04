@@ -107,7 +107,7 @@ function WoWTools_TooltipMixin:Init_CVar()
         end
     end
 
-
+--为自已开启，功能
     if WoWTools_DataMixin.Player.husandro then
         EventRegistry:RegisterFrameEventAndCallback("SETTINGS_LOADED", function(owner)
             local set= Settings.GetSetting("PROXY_SHOW_ACTIONBAR_2")
