@@ -50,8 +50,10 @@ local function set_buy_item()
             local price= info.price
             local stackCount= info.stackCount
             local canAfford
-
-            if (price and price > 0) then
+print(price, info.stackCount)
+            if price==0 or not price then
+                canAfford=  info.stackCount
+            elseif (price and price > 0) then
                 canAfford = floor(GetMoney() / (price / stackCount))
             else
                 canAfford= info.stackCount--测试服中

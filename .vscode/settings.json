@@ -6150,7 +6150,8 @@
         "SETTINGS_TAB_ADDONS",
         "PropertySliderMixin",
         "MinimalSliderMixin",
-        "GraphicsOverrides"
+        "GraphicsOverrides",
+        "CLOSES_IN"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

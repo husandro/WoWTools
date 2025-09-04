@@ -1,5 +1,5 @@
 
-
+--CVarCallbackRegistry:GetCVarValueBool("colorblindMode") --开启色盲模式界面
 WoWTools_ColorMixin={}
 
 

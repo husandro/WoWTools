@@ -23,8 +23,11 @@ local function Set_Button_Function(btn)
     btn.enableCooldown=true
 
     function btn:set_attribute()
-        local icon= C_Item.GetItemIconByID(self.itemID)
-        local name=  C_Item.GetItemNameByID(self.itemID)
+        local icon, name
+        if self.itemID then
+            icon= C_Item.GetItemIconByID(self.itemID)
+            name=  C_Item.GetItemNameByID(self.itemID)
+        end
         self.texture:SetTexture(icon or 0)
 
         if not icon or not name then
@@ -42,7 +45,10 @@ local function Set_Button_Function(btn)
     end
 
     function btn:set_cool()
-        local start, duration, enable = C_Item.GetItemCooldown(self.itemID)--C_Container.GetItemCooldown(self.itemID)
+        local start, duration, enable
+        if self.itemID then
+            start, duration, enable = C_Item.GetItemCooldown(self.itemID)--C_Container.GetItemCooldown(self.itemID)
+        end
         WoWTools_CooldownMixin:Setup(self, start, duration, nil, true, nil, true)--冷却条
         btn.enableCooldown= enable
     end
@@ -52,7 +58,11 @@ local function Set_Button_Function(btn)
     end
 
     function btn:set_count()
-        local num= C_Item.GetItemCount(self.itemID, false, true, true, false)--  false, true, true)
+        local num
+        if self.itemID then
+            num= C_Item.GetItemCount(self.itemID, false, true, true, false)--  false, true, true)
+        end
+
         self.count:SetText(num==0 and '|cff9e9e9e0|r' or (num~=1 and num) or '')
         self.numCount=num
         self:set_alpha()

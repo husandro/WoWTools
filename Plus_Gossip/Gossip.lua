@@ -369,7 +369,7 @@ local function Init()
     end)
 
 
-    GossipFrame:SetScript('OnShow', function (self)
+    GossipFrame:HookScript('OnShow', function (self)
         WoWTools_GossipMixin.QuestButton.questSelect={}--已选任务, 提示用
         GossipButton.selectGissipIDTab={}
         local npc=WoWTools_UnitMixin:GetNpcID('npc')
@@ -697,7 +697,9 @@ local function Init_Hook()
 
 --自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
+    do
         Create_GossipOptionCheckBox(self, info)--建立，自动选取，选项
+    end
         Set_Gossip_Text(self, info)--自定义，对话，文本
 
         if not info
@@ -721,6 +723,8 @@ local function Init_Hook()
         local find
         local isSaveActiveQuest= Save().quest
         local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)--local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
+
+
 
 --自定义对话
         if Save().gossipOption[index] then

@@ -1,5 +1,29 @@
 WoWTools_KeyMixin={}
--- KeybindListener:SetBinding
+--[[
+KeybindListener:SetBinding
+local function CreateKeybindingInitializers(category, layout)
+	-- Keybinding sections
+	local bindingsCategories = {};
+	local nextOrder = 1;
+	local function AddBindingCategory(key, requiredSettingName, expanded)
+		if not bindingsCategories[key] then
+			bindingsCategories[key] = {order = nextOrder, bindings = {}, requiredSettingName = requiredSettingName, expanded = expanded};
+			nextOrder = nextOrder + 1;
+		end
+	end
+
+	KeybindingsOverrides.AddBindingCategories(AddBindingCategory);
+
+
+
+local function Register()
+    local category, layout = Settings.RegisterVerticalLayoutCategory(SETTINGS_KEYBINDINGS_LABEL);
+    retained.layout = layout;
+    retained.category = category;
+    Settings.SetKeybindingsCategory(category);
+    Settings.KEYBINDINGS_CATEGORY_ID = category:GetID();
+]]
+
 local Frame=CreateFrame('Frame')
 Frame.buttons={}
 

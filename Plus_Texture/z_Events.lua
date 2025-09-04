@@ -1144,6 +1144,51 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
         auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
         auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
     end
+
+
+
+    BuffFrame.CollapseAndExpandButton:HookScript('OnMouseDown', function(btn, d)
+        if d~='RightButton' or InCombatLockdown() then
+            return
+        end
+
+        MenuUtil.CreateContextMenu(btn, function(_, root)
+            local sub= root:CreateCheckbox(
+                WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '显示冷却时间' or COUNTDOWN_FOR_COOLDOWNS_TEXT),
+            function()
+                return C_CVar.GetCVarBool('buffDurations')
+            end, function()
+                if not InCombatLockdown() then
+                    C_CVar.SetCVar('buffDurations', C_CVar.GetCVarBool('buffDurations') and 0 or 1)
+                end
+            end)
+            sub:SetTooltip(function(tooltip)
+                tooltip:AddLine('CVar |cffffffffbuffDurations')
+            end)
+        end)
+    end)
+
+    BuffFrame.CollapseAndExpandButton:HookScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
+
+    BuffFrame.CollapseAndExpandButton:HookScript('OnEnter', function(btn)
+        if InCombatLockdown() then
+            return
+        end
+        if not GameTooltip:IsShown() then
+            GameTooltip:SetOwner(btn, 'ANCHOR_BOTTOMRIGHT')
+            GameTooltip:ClearLines()
+        end
+        GameTooltip:AddLine(
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '显示冷却时间' or COUNTDOWN_FOR_COOLDOWNS_TEXT)
+            ..WoWTools_DataMixin.Icon.right
+            ..WoWTools_TextMixin:GetShowHide(C_CVar.GetCVarBool('buffDurations'), nil)
+        )
+        GameTooltip:Show()
+    end)
 end
 
 
