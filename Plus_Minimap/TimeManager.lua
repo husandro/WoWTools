@@ -372,16 +372,14 @@ local function Init_TimeManager()
         set_textcolor()
     end)
 
-    TimeManagerAlarmFiredTexture:SetScale(1.2)
-    local function set_scal()
-        TimeManagerClockTicker:SetScale(TimeManagerAlarmFiredTexture:IsShown() and 1.5,)
-    end
-    TimeManagerAlarmFiredTexture:HookScript('OnShow', function()
-
+    --[[TimeManagerAlarmFiredTexture:HookScript('OnShow', function(t)
+        t:SetScale(1.5)
     end)
-
---/dump UIFrameFlash(TimeManagerAlarmFiredTexture, 0.5, 0.5, -1);
-
+--/dump UIFrameFlash(TimeManagerAlarmFiredTexture, 0.5, 0.5, -1)
+]]
+TimeManagerAlarmFiredTexture:ClearAllPoints()
+TimeManagerAlarmFiredTexture:SetPoint('TOPLEFT', -6, 4)
+TimeManagerAlarmFiredTexture:SetPoint('BOTTOMRIGHT', 8, -8)
 
 --显示背景
     WoWTools_TextureMixin:CreateBG(btn, {
