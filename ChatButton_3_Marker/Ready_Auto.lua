@@ -194,7 +194,6 @@ local function Init()
             AutoReadyTime:Cancel()
             AutoReadyTime= nil
         end
-        WoWTools_CooldownMixin:Setup(self)
         self.time= nil
     end)
 

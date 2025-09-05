@@ -45,7 +45,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TimeManager()
     self:SetMenu(TimeManagerAlarmTimeFrame.HourDropdown)
     self:SetMenu(TimeManagerAlarmTimeFrame.MinuteDropdown)
 
-    WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+
 
     --秒表 Blizzard_TimeManager.lua
     self:HideTexture(StopwatchFrameBackgroundLeft)

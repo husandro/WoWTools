@@ -9,8 +9,8 @@ end
 
 
 
-local function Init()
-    Frame=CreateFrame('Frame', nil, WoWTools_MountMixin.MountButton)
+local function Init(btn)
+    Frame=CreateFrame('Frame', 'WoWToolsToolsMountFrame', btn)
     Frame:SetAllPoints()
     Frame:Hide()
 
@@ -120,12 +120,12 @@ local function Init()
             end
         end
     end)
-    Frame:SetScript('OnHide', Frame.rest)
+    Frame:SetScript('OnHide', function(self)
+        self:rest()
+    end)
 
     Frame:set_evnet()
     Frame:rest()
-
-    WoWTools_MountMixin.MountButton.ShowFrame=Frame
 end
 
 
@@ -138,5 +138,5 @@ end
 
 
 function WoWTools_MountMixin:Init_Mount_Show()
-    Init()
+    Init(self.MountButton)
 end

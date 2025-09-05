@@ -104,7 +104,7 @@ local function Set_Button_Function(btn)
         end
         self.texture:SetTexture(0)
         btn:Hide()
-        WoWTools_CooldownMixin:Setup(self)
+        --WoWTools_CooldownMixin:Setup(self)
     end)
 
     btn:SetScript("OnEvent", function(self, event, arg1, arg2)

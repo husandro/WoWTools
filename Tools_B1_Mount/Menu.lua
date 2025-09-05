@@ -461,7 +461,7 @@ local function Init_Menu(self, root)
         --Set_Menu_Tooltip)
 
     sub2=sub:CreateButton('|A:bags-greenarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '坐骑秀' or 'Mount show'), function()
-        self.ShowFrame:initMountShow()
+        _G['WoWToolsToolsMountFrame']:initMountShow()
         return MenuResponse.Open
     end)
     sub2:SetTooltip(function(tooltip)
@@ -473,7 +473,7 @@ local function Init_Menu(self, root)
         return Save().AFKRandom
     end, function()
         Save().AFKRandom= not Save().AFKRandom and true or nil
-        self.ShowFrame:set_evnet()
+        _G['WoWToolsToolsMountFrame']:set_evnet()
         if Save().AFKRandom then
             WoWTools_ChatMixin:SendText(SLASH_CHAT_AFK1)
         end
@@ -484,7 +484,7 @@ local function Init_Menu(self, root)
     end)
 
     sub2=sub:CreateButton('|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '坐骑特效' or EMOTE171_CMD2), function()
-        self.ShowFrame:initSpecial()
+        _G['WoWToolsToolsMountFrame']:initSpecial()
         return MenuResponse.Open
     end)
     sub2:SetTooltip(function(tooltip)

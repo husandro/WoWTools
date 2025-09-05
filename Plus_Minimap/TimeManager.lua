@@ -20,7 +20,7 @@ StopwatchFrameScale=1,缩放
 StopwatchOnClickPause=true,--移过暂停
 ]]
 
-local addName
+
 
 local function Save()
     return  WoWToolsSave['Minimap_Plus']
@@ -52,7 +52,7 @@ local function Init_Stopwatch_Menu(self, root)
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 
@@ -156,7 +156,7 @@ local function Init_TimeManager_Menu(self, root)
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --重新加载
@@ -318,11 +318,10 @@ local function Init_TimeManager()
     end)
 
     function btn:rest_point()
-        TimeManagerClockButton:ClearAllPoints()
-        TimeManagerClockButton:SetParent(MinimapCluster)
-        TimeManagerClockButton:SetFrameStrata('MEDIUM')
-        TimeManagerClockButton:SetPoint(self.rePoint[1], self.rePoint[2], self.rePoint[3], self.rePoint[4], self.rePoint[5])
-        --TimeManagerClockButton:SetPoint('TOPRIGHT', MinimapCluster.BorderTop ,-4, 0)
+        self:ClearAllPoints()
+        self:SetParent(MinimapCluster)
+        self:SetFrameStrata('MEDIUM')
+        self:SetPoint(self.rePoint[1], self.rePoint[2], self.rePoint[3], self.rePoint[4], self.rePoint[5])
     end
     btn.width= btn:GetWidth()
     function btn:set_point()
@@ -354,12 +353,24 @@ local function Init_TimeManager()
     btn:SetHighlightAtlas('auctionhouse-nav-button-select')--Forge-ColorSwatchSelection')
     btn:SetPushedAtlas('auctionhouse-nav-button-select')
     btn:HookScript('OnLeave', ResetCursor)
-    btn:HookScript('OnEnter', TimeManagerClockButton_UpdateTooltip)
+    btn:HookScript('OnEnter', function()
+        WoWTools_DataMixin:Call(TimeManagerClockButton_UpdateTooltip)
+    end)
 
 
-    --设置，时间，颜色
+--设置，时间，颜色
     TimeManagerClockTicker:SetShadowOffset(1, -1)
-    WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+    local function set_textcolor(self)
+        if self:GetChecked() then
+            TimeManagerClockTicker:SetTextColor(0,1,0,1)
+        else
+            WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+        end
+    end
+    set_textcolor(TimeManagerAlarmEnabledButton)
+    TimeManagerAlarmEnabledButton:HookScript('OnMouseDown', function(self)
+        set_textcolor(self)
+    end)
 
 
 
@@ -398,12 +409,12 @@ end
 
 --秒表
 local function Init_StopwatchFrame()
-    
+
 --Tooltip
     function StopwatchFrame:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MinimapMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
@@ -633,7 +644,6 @@ local function Init()
 
             GameTooltip:AddDoubleLine('|cffffffff'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..WoWTools_DataMixin.Icon.right)
             GameTooltip:AddDoubleLine('|cffffffff'..((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
-            --GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         end
         GameTooltip:Show()
     end)
@@ -646,17 +656,14 @@ local function Init()
     if not Save().disabledClockPlus then
         Init_StopwatchFrame()
     end
-
+    Init=function()end
 end
 
 
 
 
 function WoWTools_MinimapMixin:Init_TimeManager()
-    addName= self.addName
     Init()
-
-    
 end
 
 

@@ -51,7 +51,7 @@ local function Init()
             self.time:Cancel()
             self.time=nil
         end
-        WoWTools_CooldownMixin:Setup(self)
+        --WoWTools_CooldownMixin:Setup(self)
     end)
 
 

@@ -6155,7 +6155,10 @@
         "TableInspectorMixin",
         "PVP_TALENT_SLOT_EMPTY",
         "TalentButtonSpendMixin",
-        "TOOLTIP_UNIT_LEVEL"
+        "TOOLTIP_UNIT_LEVEL",
+        "TimeManager_StartCheckingAlarm",
+        "TimeManagerAlarmEnabledButton",
+        "TimeManagerAlarmEnabledButton_OnClick"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

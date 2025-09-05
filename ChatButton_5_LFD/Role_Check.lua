@@ -271,7 +271,7 @@ local function Init()
             self.aceTime:Cancel()
             self.aceTime= nil
         end
-        WoWTools_CooldownMixin:Setup(self)--冷却条
+        --WoWTools_CooldownMixin:Setup(self)--冷却条
     end)
 
 
@@ -409,9 +409,9 @@ local function Init()
         WoWTools_DataMixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self, nil, self.timeOut and STATICPOPUP_TIMEOUT, nil, true, true)
     end)
-    LFGInvitePopup:HookScript('OnHide', function(self)
+    --[[LFGInvitePopup:HookScript('OnHide', function(self)
         WoWTools_CooldownMixin:Setup(self)
-    end)
+    end)]]
 
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB
         WoWTools_DataMixin:PlaySound()--播放, 声音

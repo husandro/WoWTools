@@ -119,9 +119,9 @@ end
 
 
 local function Init()
-    WoWTools_MountMixin:Init_Button()
-    WoWTools_MountMixin:Init_Mount_Show()--坐骑秀
-    WoWTools_MountMixin:Init_SpellFlyoutButton()
+  
+
+    Init=function()end
 end
 
 
@@ -130,7 +130,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -150,6 +150,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if WoWTools_MountMixin.MountButton then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
                  for type, tab in pairs(Save().Mounts) do
                     for ID in pairs(tab) do
                         WoWTools_DataMixin:Load({id=ID, type= type==ITEMS and 'item' or 'spell'})
@@ -183,8 +185,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event == 'PLAYER_ENTERING_WORLD' and WoWTools_MountMixin.MountButton then
-        Init()
+    elseif event== 'PLAYER_ENTERING_WORLD'  then
+        WoWTools_MountMixin:Init_Button()
+       
+        WoWTools_MountMixin:Init_SpellFlyoutButton()
         self:UnregisterEvent(event)
     end
 end)

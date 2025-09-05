@@ -19,7 +19,7 @@ local MOUNT_JOURNAL_FILTER_GROUND= MOUNT_JOURNAL_FILTER_GROUND
 local MOUNT_JOURNAL_FILTER_FLYING= MOUNT_JOURNAL_FILTER_FLYING
 local MOUNT_JOURNAL_FILTER_AQUATIC= MOUNT_JOURNAL_FILTER_AQUATIC
 local MOUNT_JOURNAL_FILTER_DRAGONRIDING= MOUNT_JOURNAL_FILTER_DRAGONRIDING
-local MountButton
+
 
 
 local ShiJI
@@ -56,14 +56,14 @@ end
 
 
 
-local function checkSpell()--检测法术
-    MountButton.spellID2=nil
+local function checkSpell(self)--检测法术
+    self.spellID2=nil
     if XD and XD[MOUNT_JOURNAL_FILTER_GROUND] then
-        MountButton.spellID2=XD[MOUNT_JOURNAL_FILTER_GROUND]
+        self.spellID2=XD[MOUNT_JOURNAL_FILTER_GROUND]
     else
         for spellID, _ in pairs(Save().Mounts[SPELLS]) do
             if C_SpellBook.IsSpellInSpellBook(spellID) then
-                MountButton.spellID2=spellID
+                self.spellID2=spellID
                 break
             end
         end
@@ -71,11 +71,11 @@ local function checkSpell()--检测法术
 end
 
 
-local function checkItem()--检测物品
-    MountButton.itemID=nil
+local function checkItem(self)--检测物品
+    self.itemID=nil
     for itemID in pairs(Save().Mounts[ITEMS]) do
         if C_Item.GetItemCount(itemID , false, true, true, false)>0 and C_PlayerInfo.CanUseItem(itemID) then
-            MountButton.itemID=itemID
+            self.itemID=itemID
             break
         end
     end
@@ -149,35 +149,35 @@ end
 
 
 
-local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-    if not MountButton:CanChangeAttribute() then
-        MountButton.Combat=true
+local function setShiftCtrlAltAtt(self)--设置Shift Ctrl Alt 属性
+    if not self:CanChangeAttribute() then
+        self.Combat=true
         return
     end
     local tab={'Shift', 'Alt', 'Ctrl'}
 
     for _, type in pairs(tab) do
-        MountButton.textureModifier[type]=nil
+        self.textureModifier[type]=nil
         local spellID= MountTab[type] and MountTab[type][1]
         if spellID then
             local name= C_Spell.GetSpellName(spellID)
             local icon= C_Spell.GetSpellTexture(spellID)
-            MountButton:SetAttribute(type.."-spell1", name or spellID)
-            MountButton.textureModifier[type]=icon
-            MountButton.spellID=spellID
+            self:SetAttribute(type.."-spell1", name or spellID)
+            self.textureModifier[type]=icon
+            self.spellID=spellID
             --end
         end
     end
-    MountButton.Combat=nil
+    self.Combat=nil
 end
 
 
-local function setTextrue()--设置图标
-    local icon= MountButton.iconAtt
+local function setTextrue(self)--设置图标
+    local icon= self.iconAtt
     if IsMounted() then
         icon=136116
     elseif icon then
-        local spellID= MountButton.spellID or (MountButton.itemID and select(2, C_Item.GetItemSpell(MountButton.itemID)))
+        local spellID= self.spellID or (self.itemID and select(2, C_Item.GetItemSpell(self.itemID)))
         if spellID then
             local aura = C_UnitAuras.GetPlayerAuraBySpellID(spellID)
             if aura and aura.spellId then
@@ -185,8 +185,8 @@ local function setTextrue()--设置图标
             end
         end
     end
-    MountButton.texture:SetTexture(icon or 0)
-    WoWTools_CooldownMixin:SetFrame(MountButton, {itemID=MountButton.itemID, spellID=MountButton.spellID})--设置冷却
+    self.texture:SetTexture(icon or 0)
+    WoWTools_CooldownMixin:SetFrame(self, {itemID=self.itemID, spellID=self.spellID})--设置冷却
 end
 
 
@@ -197,9 +197,9 @@ end
 
 
 
-local function setClickAtt()--设置 Click属性
-    if not MountButton:CanChangeAttribute() then
-        MountButton.Combat=true
+local function setClickAtt(self)--设置 Click属性
+    if not self:CanChangeAttribute() then
+        self.Combat=true
         return
     end
 
@@ -220,8 +220,8 @@ local function setClickAtt()--设置 Click属性
         end
         spellID= spellID or (IsIndoors() and 768 or 783)
 
-    elseif not MountButton.itemID or not C_PlayerInfo.CanUseItem(MountButton.itemID) then
-        spellID= (IsIndoors() or isMoving or isBat) and MountButton.spellID2
+    elseif not self.itemID or not C_PlayerInfo.CanUseItem(self.itemID) then
+        spellID= (IsIndoors() or isMoving or isBat) and self.spellID2
             or getRandomRoll(FLOOR)--区域
             or ((isAdvancedFlyableArea or C_Spell.IsSpellUsable(368896)) and-- [368896]=true,--[复苏始祖幼龙] 
                 C_UnitAuras.GetAuraDataBySpellName('player', C_Spell.GetSpellName(404468), 'HELPFUL')--404468/飞行模式：稳定
@@ -231,7 +231,7 @@ local function setClickAtt()--设置 Click属性
             or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
-            or MountButton.spellID
+            or self.spellID
             or ShiJI
     end
 
@@ -242,56 +242,53 @@ local function setClickAtt()--设置 Click属性
         icon= C_Spell.GetSpellTexture(spellID)
         if name and icon then
             if spellID==6544 or spellID==189110 then--6544英勇飞跃 189110地狱火撞击
-                MountButton:SetAttribute("type1", "macro")
-                MountButton:SetAttribute("macrotext1", format('/cast [@cursor]%s', name))
-                MountButton:SetAttribute('unit', nil)
-                --[[MountButton:SetAttribute('type1', 'spell')
-                MountButton:SetAttribute('spell1', name)
-                MountButton:SetAttribute('unit', 'cursor')]]
+                self:SetAttribute("type1", "macro")
+                self:SetAttribute("macrotext1", format('/cast [@cursor]%s', name))
+                self:SetAttribute('unit', nil)
             else
-                MountButton:SetAttribute("type1", "spell")
-                MountButton:SetAttribute("spell1", name)
+                self:SetAttribute("type1", "spell")
+                self:SetAttribute("spell1", name)
                 if spellID==121536 then--天堂之羽 
-                    MountButton:SetAttribute('unit', "player")--mouseover player
+                    self:SetAttribute('unit', "player")--mouseover player
                 else
-                    MountButton:SetAttribute('unit', nil)
+                    self:SetAttribute('unit', nil)
                 end
             end
         else
             WoWTools_DataMixin:Load({id=spellID, type='spell'})
-            MountButton.Combat=true
+            self.Combat=true
         end
 
 
 
-    elseif MountButton.itemID then
-        name= C_Item.GetItemNameByID(MountButton.itemID)
-        icon= C_Item.GetItemIconByID(MountButton.itemID)
+    elseif self.itemID then
+        name= C_Item.GetItemNameByID(self.itemID)
+        icon= C_Item.GetItemIconByID(self.itemID)
         if name then
-            if PlayerHasToy(MountButton.itemID) then
-                MountButton:SetAttribute("type1", "macro")
-                MountButton:SetAttribute("macrotext1",  '/usetoy '..name)
+            if PlayerHasToy(self.itemID) then
+                self:SetAttribute("type1", "macro")
+                self:SetAttribute("macrotext1",  '/usetoy '..name)
             else
-                MountButton:SetAttribute("type1", "item")
-                MountButton:SetAttribute("item1", name)
+                self:SetAttribute("type1", "item")
+                self:SetAttribute("item1", name)
             end
-            MountButton:SetAttribute('unit', nil)
+            self:SetAttribute('unit', nil)
         else
-            WoWTools_DataMixin:Load({id=MountButton.itemID, type='item'})
-            MountButton.Combat=true
+            WoWTools_DataMixin:Load({id=self.itemID, type='item'})
+            self.Combat=true
         end
     else
-        MountButton:SetAttribute("item1", nil)
-        MountButton:SetAttribute("spell1", nil)
-        MountButton:SetAttribute('unit', nil)
+        self:SetAttribute("item1", nil)
+        self:SetAttribute("spell1", nil)
+        self:SetAttribute('unit', nil)
     end
 
 
-    MountButton.spellID=spellID
-    MountButton.iconAtt=icon
-    MountButton.Combat=nil
+    self.spellID=spellID
+    self.iconAtt=icon
+    self.Combat=nil
 
-    setTextrue()--设置图标
+    setTextrue(self)--设置图标
 end
 
 
@@ -347,7 +344,7 @@ local function Set_Item_Spell_Edit(info)
             OnAlt = function(_, data)
                 Save().Mounts[FLOOR][data.spellID]=nil
                 checkMount()--检测坐骑
-                setClickAtt()--设置 Click属性
+                setClickAtt(WoWTools_MountMixin.MountButton)--设置 Click属性
                 if MountJournal_UpdateMountList then WoWTools_DataMixin:Call(MountJournal_UpdateMountList) end
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, data.link)
             end
@@ -407,37 +404,37 @@ end
 
 
 
-local function Init()
-    WoWTools_KeyMixin:Init(MountButton, function() return Save().KEY end)
+local function Init(btn)
+    WoWTools_KeyMixin:Init(btn, function() return Save().KEY end)
 
 
 
-    MountButton:SetAttribute("type1", "spell")
-    MountButton:SetAttribute("alt-type1", "spell")
-    MountButton:SetAttribute("shift-type1", "spell")
-    MountButton:SetAttribute("ctrl-type1", "spell")
+    btn:SetAttribute("type1", "spell")
+    btn:SetAttribute("alt-type1", "spell")
+    btn:SetAttribute("shift-type1", "spell")
+    btn:SetAttribute("ctrl-type1", "spell")
 
-    MountButton.textureModifier=MountButton:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
-    MountButton.textureModifier:SetAllPoints(MountButton.texture)
-    MountButton.textureModifier:AddMaskTexture(MountButton.IconMask)
+    btn.textureModifier=btn:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
+    btn.textureModifier:SetAllPoints(btn.texture)
+    btn.textureModifier:AddMaskTexture(btn.IconMask)
 
-    MountButton.textureModifier:SetShown(false)
+    btn.textureModifier:SetShown(false)
 
-    MountButton.Up=MountButton:CreateTexture(nil,'OVERLAY')
-    MountButton.Up:SetPoint('TOP',-1, 9)
-    MountButton.Up:SetAtlas('NPE_ArrowUp')
-    MountButton.Up:SetSize(20,20)
-
-
-
-
+    btn.Up=btn:CreateTexture(nil,'OVERLAY')
+    btn.Up:SetPoint('TOP',-1, 9)
+    btn.Up:SetAtlas('NPE_ArrowUp')
+    btn.Up:SetSize(20,20)
 
 
 
 
 
 
-    MountButton:SetScript("OnMouseDown", function(self,d)
+
+
+
+
+    btn:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID then
             Set_Item_Spell_Edit({itemID=itemID, itemLink=itemLink, type=ITEMS})
@@ -466,21 +463,21 @@ local function Init()
         self.border:SetAtlas('bag-border')
     end)
 
-    MountButton:SetScript("OnMouseUp", function(self, d)
+    btn:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' then
             self.border:SetAtlas('bag-reagent-border')
         end
     end)
 
-    MountButton:SetScript('OnMouseWheel',function(self, d)
+    btn:SetScript('OnMouseWheel',function(self, d)
         if d==1 then--坐骑秀
-            self.ShowFrame:initMountShow()
+            _G['WoWToolsToolsMountFrame']:initMountShow()
         elseif d==-1 then--坐骑特效
-            self.ShowFrame:initSpecial()
+            _G['WoWToolsToolsMountFrame']:initSpecial()
         end
     end)
 
-    function MountButton:set_tooltip()
+    function btn:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         local infoType, itemID, _, spellID= GetCursorInfo()
@@ -519,16 +516,16 @@ local function Init()
         GameTooltip:Show()
     end
 
-    MountButton:SetScript("OnLeave",function(self)
+    btn:SetScript("OnLeave",function(self)
         GameTooltip:Hide()
-        setClickAtt()--设置属性
+        setClickAtt(self)--设置属性
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
     end)
 
-    MountButton:SetScript('OnEnter', function(self)
+    btn:SetScript('OnEnter', function(self)
         WoWTools_KeyMixin:SetTexture(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltip()
@@ -544,28 +541,28 @@ local function Init()
 
 
 
-    function MountButton:settings()
+    function btn:settings()
         set_ShiJI()--召唤司机
         --set_OkMout()--是否已学, 骑术
         XDInt()--德鲁伊设置
-        checkSpell()--检测法术
-        checkItem()--检测物品
+        checkSpell(self)--检测法术
+        checkItem(self)--检测物品
         checkMount()--检测坐骑
-        setClickAtt()--设置
-        setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+        setClickAtt(self)--设置
+        setShiftCtrlAltAtt(self)--设置Shift Ctrl Alt 属性
     end
 
-    MountButton:settings()
+    btn:settings()
 
     C_Timer.After(4, function()
-        if MountButton:CanChangeAttribute() then
-            setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-            setClickAtt()--设置
-            WoWTools_CooldownMixin:SetFrame(MountButton, {itemID=MountButton.itemID, spellID=MountButton.spellID})--设置冷却
+        if btn:CanChangeAttribute() then
+            setShiftCtrlAltAtt(btn)--设置Shift Ctrl Alt 属性
+            setClickAtt(btn)--设置
+            WoWTools_CooldownMixin:SetFrame(btn, {itemID=btn.itemID, spellID=btn.spellID})--设置冷却
         end
     end)
 
-
+    Init=function()end
 end
 
 
@@ -577,49 +574,49 @@ end
 
 
 
-local function Init_Event()
-    MountButton:RegisterEvent('PLAYER_REGEN_DISABLED')
-    MountButton:RegisterEvent('PLAYER_REGEN_ENABLED')
-    MountButton:RegisterEvent('SPELLS_CHANGED')
-    MountButton:RegisterEvent('SPELL_DATA_LOAD_RESULT')
-    MountButton:RegisterEvent('BAG_UPDATE_DELAYED')
-    MountButton:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
-    MountButton:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
-    MountButton:RegisterEvent('NEW_MOUNT_ADDED')
-    MountButton:RegisterEvent('MODIFIER_STATE_CHANGED')
-    MountButton:RegisterEvent('ZONE_CHANGED')
-    MountButton:RegisterEvent('ZONE_CHANGED_INDOORS')
-    MountButton:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-    MountButton:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-    MountButton:RegisterEvent('SPELL_UPDATE_USABLE')
-    MountButton:RegisterEvent('PET_BATTLE_CLOSE')
-    MountButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
-    MountButton:RegisterEvent('PLAYER_STOPPED_MOVING')
-    MountButton:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
-    MountButton:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')
+local function Init_Event(btn)
+    btn:RegisterEvent('PLAYER_REGEN_DISABLED')
+    btn:RegisterEvent('PLAYER_REGEN_ENABLED')
+    btn:RegisterEvent('SPELLS_CHANGED')
+    btn:RegisterEvent('SPELL_DATA_LOAD_RESULT')
+    btn:RegisterEvent('BAG_UPDATE_DELAYED')
+    btn:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
+    btn:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
+    btn:RegisterEvent('NEW_MOUNT_ADDED')
+    btn:RegisterEvent('MODIFIER_STATE_CHANGED')
+    btn:RegisterEvent('ZONE_CHANGED')
+    btn:RegisterEvent('ZONE_CHANGED_INDOORS')
+    btn:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+    btn:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+    btn:RegisterEvent('SPELL_UPDATE_USABLE')
+    btn:RegisterEvent('PET_BATTLE_CLOSE')
+    btn:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
+    btn:RegisterEvent('PLAYER_STOPPED_MOVING')
+    btn:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
+    btn:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')
 
 
-    MountButton:SetScript("OnEvent", function(self, event, arg1, arg2)
+    btn:SetScript("OnEvent", function(self, event, arg1, arg2)
         if event=='PLAYER_REGEN_DISABLED' then
-                setClickAtt()--设置属性
+                setClickAtt(self)--设置属性
 
         elseif event=='PLAYER_REGEN_ENABLED' then
             if self.Combat then
                 C_Timer.After(0.3, function()
-                    setClickAtt()--设置属性
-                    setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+                    setClickAtt(self)--设置属性
+                    setShiftCtrlAltAtt(self)--设置Shift Ctrl Alt 属性
                     self.Combat=nil
                 end)
             end
 
         elseif event=='SPELLS_CHANGED' or event=='SPELL_DATA_LOAD_RESULT' then
-            checkSpell()--检测法术
+            checkSpell(self)--检测法术
             XDInt()--德鲁伊设置
             checkMount()--检测坐骑
-            setClickAtt()--设置属性   
+            setClickAtt(self)--设置属性   
 
         elseif event=='BAG_UPDATE_DELAYED' then
-            checkItem()--检测物品
+            checkItem(self)--检测物品
 
         elseif event=='NEW_MOUNT_ADDED' then
             checkMount()--检测坐骑
@@ -635,7 +632,7 @@ local function Init_Event()
             or event=='PLAYER_STOPPED_MOVING'
             or event=='PLAYER_STARTED_MOVING'
         then-- or event=='AREA_POIS_UPDATED' then
-            setClickAtt()--设置属性
+            setClickAtt(self)--设置属性
 
         elseif event=='MODIFIER_STATE_CHANGED' then
             local icon
@@ -653,13 +650,16 @@ local function Init_Event()
             WoWTools_CooldownMixin:SetFrame(self, {itemID=self.itemID, spellID=self.spellID})--设置冷却
 
         elseif event=='SPELL_UPDATE_USABLE' then
-            setTextrue()--设置图标
+            setTextrue(self)--设置图标
 
         elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
             WoWTools_MountMixin.faction= WoWTools_DataMixin.Player.Faction=='Horde' and 0 or (WoWTools_DataMixin.Player.Faction=='Alliance' and 1)
             self:settings()
         end
     end)
+
+
+    Init_Event=function()end
 end
 
 
@@ -675,9 +675,9 @@ end
 
 
 function WoWTools_MountMixin:Init_Button()
-    MountButton= self.MountButton
-    Init()
-    Init_Event()
+    Init(self.MountButton)
+    Init_Event(self.MountButton)
+    WoWTools_MountMixin:Init_Mount_Show()--坐骑秀
 end
 
 function WoWTools_MountMixin:Set_Item_Spell_Edit(...)

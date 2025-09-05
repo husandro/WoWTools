@@ -186,9 +186,7 @@ local function Init()
         WoWTools_MarkerMixin.MarkerButton:state_enter(nil, true)
     end)
 
-    ReadyTipsButton:SetScript('OnHide', function(self)
-        WoWTools_CooldownMixin:Setup(self, nil, 0)
-    end)
+
 
     ReadyTipsButton:set_Point()
     ReadyTipsButton:set_Scale()
