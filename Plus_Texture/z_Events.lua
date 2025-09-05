@@ -1342,6 +1342,9 @@ function WoWTools_TextureMixin.Events:Blizzard_EditMode()
     self:SetFrame(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=0.3})
     self:SetSlider(EditModeManagerFrame.GridSpacingSlider)
     self:SetMenu(EditModeManagerFrame.LayoutDropdown)
+
+    self:SetFrame(EditModeSystemSettingsDialog.Border)
+    self:SetButton(EditModeSystemSettingsDialog.CloseButton)
 end
 
 

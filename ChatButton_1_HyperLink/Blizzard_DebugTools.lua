@@ -89,7 +89,7 @@ local function Init()
     check:SetChecked(Save().autoHideTableAttributeDisplay)
 
 
---[[GetAttributeSource
+--GetAttributeSource
 --GetTableInspector
 --GetAttributeData 
     hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(self)
@@ -100,7 +100,7 @@ local function Init()
         for _, line in ipairs(self.lines) do
             if line.GetAttributeSource then    
             info= line:GetAttributeData()
-            --for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+            for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
             local displayerValue= info.displayerValue
             local type= info.type
                 print(type(displayerValue))
@@ -108,7 +108,8 @@ local function Init()
             end
         end
     end)
-]]
+
+
     Init=function()
         btn:SetShown(not Save().disabedFrameStackPlus)
     end

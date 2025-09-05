@@ -118,6 +118,7 @@ function WoWTools_TooltipMixin:Init_CVar()
             end
             EventRegistry:UnregisterCallback('SETTINGS_LOADED', owner)
         end)
-
+print(Enum.EditModeActionBarSetting.HideBarArt)
+        Enum.EditModeActionBarSetting.HideBarArt=0
     end
 end
