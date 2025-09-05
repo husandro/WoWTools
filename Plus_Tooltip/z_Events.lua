@@ -45,7 +45,8 @@ local canRepurchase = self:CanCascadeRepurchaseRanks();
 local isGhosted = self:IsGhosted();
 ]]
 function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
-
+RemixArtifactFrame.Currency:ClearAllPoints()
+RemixArtifactFrame.Currency:SetPoint('RIGHT', RemixArtifactFrame.CommitConfigControls, 'LEFT')
     RemixArtifactFrame.Currency:HookScript('OnEnter', function(f)
         if GameTooltip:IsShown() or not f.traitCurrencyID or f.traitCurrencyID<=0 then
             return
@@ -158,7 +159,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
     end)
 
 
-
+--学习, 还原 按钮
     local b= WoWTools_ButtonMixin:Cbtn(RemixArtifactFrame.CloseButton, {
         atlas='common-dropdown-icon-play',
         size=23,
@@ -185,12 +186,13 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
         if InCombatLockdown() then
             return
         end
+
         for btn in RemixArtifactFrame:EnumerateAllTalentButtons() do
             local data= btn:GetNodeInfo()
             if d=='LeftButton' then
                 if data.canPurchaseRank then
                     btn:Click(d)
-                end
+                   end
             elseif d=='RightButton' then
                 if data.canRefundRank then
                     btn:Click(d)

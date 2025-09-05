@@ -73,13 +73,15 @@ local function Init()
 
         if effectiveLevel ~= level then
             level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
+        else
+            level= format('%d', level)
         end
 
         CharacterLevelText:SetText(
             (WoWTools_UnitMixin:GetFaction('player', nil, true, {size=26}) or '')
             ..(WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {size=26}) or '')
             ..(WoWTools_UnitMixin:GetClassIcon('player', nil, nil, {size=26}) or '')
-            ..level
+            ..format(WoWTools_DataMixin.onlyChinese and '等级 %s' or TOOLTIP_UNIT_LEVEL, level)
         )
     end)
 

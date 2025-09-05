@@ -1146,8 +1146,6 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
     end
 
 
-    
-
     BuffFrame.CollapseAndExpandButton:HookScript('OnMouseDown', function(btn, d)
         if d~='RightButton' or InCombatLockdown() then
             return
@@ -1170,19 +1168,16 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
         end)
     end)
 
-    BuffFrame.CollapseAndExpandButton:HookScript('OnLeave', function()
+    BuffFrame.CollapseAndExpandButton:SetScript('OnLeave', function()
         GameTooltip:Hide()
     end)
 
-    BuffFrame.CollapseAndExpandButton:HookScript('OnEnter', function(btn)
+    BuffFrame.CollapseAndExpandButton:SetScript('OnEnter', function(btn)
         if InCombatLockdown() then
             return
         end
-        if not GameTooltip:IsShown() then
-            GameTooltip:SetOwner(btn, 'ANCHOR_BOTTOMRIGHT')
-            GameTooltip:ClearLines()
-        end
-        GameTooltip:AddLine(
+        GameTooltip:SetOwner(btn, 'ANCHOR_BOTTOMRIGHT')
+        GameTooltip:SetText(
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '显示冷却时间' or COUNTDOWN_FOR_COOLDOWNS_TEXT)
             ..WoWTools_DataMixin.Icon.right

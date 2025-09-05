@@ -6154,7 +6154,8 @@
         "CLOSES_IN",
         "TableInspectorMixin",
         "PVP_TALENT_SLOT_EMPTY",
-        "TalentButtonSpendMixin"
+        "TalentButtonSpendMixin",
+        "TOOLTIP_UNIT_LEVEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
