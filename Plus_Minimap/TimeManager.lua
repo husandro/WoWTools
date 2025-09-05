@@ -360,16 +360,16 @@ local function Init_TimeManager()
 
 --设置，时间，颜色
     TimeManagerClockTicker:SetShadowOffset(1, -1)
-    local function set_textcolor(self)
-        if self:GetChecked() then
+    local function set_textcolor()
+        if TimeManagerAlarmEnabledButton:GetChecked() then
             TimeManagerClockTicker:SetTextColor(0,1,0,1)
         else
             WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
         end
     end
-    set_textcolor(TimeManagerAlarmEnabledButton)
-    TimeManagerAlarmEnabledButton:HookScript('OnMouseDown', function(self)
-        set_textcolor(self)
+    set_textcolor()
+    TimeManagerAlarmEnabledButton:HookScript('OnClick', function()
+        set_textcolor()
     end)
 
 
