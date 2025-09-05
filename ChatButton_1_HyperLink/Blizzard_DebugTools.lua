@@ -89,7 +89,7 @@ local function Init()
     check:SetChecked(Save().autoHideTableAttributeDisplay)
 
 
---GetAttributeSource
+--[[GetAttributeSource
 --GetTableInspector
 --GetAttributeData 
     hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(self)
@@ -108,7 +108,7 @@ local function Init()
             end
         end
     end)
-
+]]
 
     Init=function()
         btn:SetShown(not Save().disabedFrameStackPlus)
