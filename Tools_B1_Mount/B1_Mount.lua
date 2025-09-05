@@ -187,7 +187,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event== 'PLAYER_ENTERING_WORLD'  then
         WoWTools_MountMixin:Init_Button()
-       
         WoWTools_MountMixin:Init_SpellFlyoutButton()
         self:UnregisterEvent(event)
     end

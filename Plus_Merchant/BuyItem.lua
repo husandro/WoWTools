@@ -50,9 +50,9 @@ local function set_buy_item()
             local price= info.price
             local stackCount= info.stackCount
             local canAfford
-print(price, info.stackCount)
+
             if price==0 or not price then
-                canAfford=  info.stackCount
+                canAfford= stackCount or 1
             elseif (price and price > 0) then
                 canAfford = floor(GetMoney() / (price / stackCount))
             else
@@ -222,7 +222,7 @@ end
 
 
 
-
+--出售菜单
 local function Init_Menu_Sell(_, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then
         return

@@ -6158,7 +6158,10 @@
         "TOOLTIP_UNIT_LEVEL",
         "TimeManager_StartCheckingAlarm",
         "TimeManagerAlarmEnabledButton",
-        "TimeManagerAlarmEnabledButton_OnClick"
+        "TimeManagerAlarmEnabledButton_OnClick",
+        "ZoneAbilityFrameMixin",
+        "UIFrameFlash",
+        "TimeManagerAlarmFiredTexture"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

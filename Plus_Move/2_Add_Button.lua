@@ -263,7 +263,7 @@ end
 
 
 local function Init()
-    
+    SetupButton(ZoneAbilityFrame)
 
     Init_UIWidgetPowerBarContainerFrame()--移动, 能量条
 

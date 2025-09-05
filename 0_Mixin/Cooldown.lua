@@ -97,7 +97,7 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
         local startTime, duration = C_Item.GetItemCooldown(item)
         self:Setup(frame, startTime, duration, nil, true, nil, not type)   
 
-    elseif frame.cooldown then
+    elseif frame.Cooldown then
         self:Setup(frame)
     end
 
@@ -107,7 +107,7 @@ end
 
 
 
-
+--CooldownFrame_Set(self, start, duration, enable, forceShowDrawEdge, modRate)
 
 --Cooldown.xml
 --StaticPopupTimeoutSec = 60
@@ -115,30 +115,30 @@ function WoWTools_CooldownMixin:Setup(frame, start, duration, modRate, HideCount
     if not frame then
         return
     elseif not duration or duration<=0 then
-        if frame.cooldown then
-            frame.cooldown:Clear()
+        if frame.Cooldown then
+            frame.Cooldown:Clear()
         end
         return
     end
-    if not frame.cooldown then
-        frame.cooldown= CreateFrame("Cooldown", nil, frame, 'CooldownFrameTemplate')
-         frame.cooldown:SetFrameLevel(frame:GetFrameLevel()+5)
-        frame.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
-        frame.cooldown:SetDrawBling(not hideDrawBling)--闪光
-        frame.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
-        frame.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
-        frame.cooldown:SetReverse(Reverse)--控制冷却动画的方向
-        frame.cooldown:SetAlpha(0.7)
-        frame.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
+    if not frame.Cooldown then
+        frame.Cooldown= CreateFrame("Cooldown", nil, frame, 'CooldownFrameTemplate')
+         frame.Cooldown:SetFrameLevel(frame:GetFrameLevel()+5)
+        frame.Cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
+        frame.Cooldown:SetDrawBling(not hideDrawBling)--闪光
+        frame.Cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
+        frame.Cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
+        frame.Cooldown:SetReverse(Reverse)--控制冷却动画的方向
+        frame.Cooldown:SetAlpha(0.7)
+        frame.Cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
         if setSwipeTexture then
-            frame.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
+            frame.Cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
         end
         frame:HookScript('OnHide', function(f)
-            if f.cooldown then
-                f.cooldown:Clear()
+            if f.Cooldown then
+                f.Cooldown:Clear()
             end
         end)
     end
     start=start or GetTime()
-    frame.cooldown:SetCooldown(start, duration, modRate)
+    frame.Cooldown:SetCooldown(start, duration, modRate)
 end

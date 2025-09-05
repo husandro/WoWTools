@@ -58,7 +58,7 @@ UI-HUD-CoolDownManager-Mask
 ]]
 --遮罩
 function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
-    btn.IconMask= btn.IconMask or btn:CreateMaskTexture()
+    btn.IconMask= btn.IconMask or btn:CreateMaskTexture(nil, 'OVERLAY')
 
     if not isType2 then--方形，按钮
         btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'

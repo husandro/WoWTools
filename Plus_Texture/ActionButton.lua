@@ -1,19 +1,16 @@
 
-local function Set_Texture(btn)
-    WoWTools_TextureMixin:HideTexture(btn.SlotArt)
-    WoWTools_TextureMixin:HideTexture(btn.NormalTexture)--外框，方块
-    WoWTools_TextureMixin:HideTexture(btn.SlotBackground, true)--背景
+local function Set_Texture(self)
+    WoWTools_TextureMixin:HideTexture(self.SlotArt)
+    WoWTools_TextureMixin:HideTexture(self.NormalTexture)--外框，方块
+    WoWTools_TextureMixin:HideTexture(self.SlotBackground, true)--背景
 
-    if not btn.IconMask then
-        WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
+    if not self.IconMask then
+        WoWTools_ButtonMixin:AddMask(self, false, self.Icon)
     else
-        btn.IconMask:ClearAllPoints()
-        btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
-        btn.IconMask:SetPoint('TOPLEFT', btn.Icon or btn, 0.5, -0.5)
-        btn.IconMask:SetPoint('BOTTOMRIGHT', btn.Icon or btn, -0.5, 0.5)
-    end
-    if btn.Cooldown then
-        btn.Cooldown:SetEdgeTexture("UI-HUD-CoolDownManager-Mask")
+        self.IconMask:ClearAllPoints()
+        self.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+        self.IconMask:SetPoint('TOPLEFT', self.Icon or self, 0.5, -0.5)
+        self.IconMask:SetPoint('BOTTOMRIGHT', self.Icon or self, -0.5, 0.5)
     end
 end
 
@@ -177,14 +174,13 @@ end
 
 --区域技能
 function WoWTools_TextureMixin.Events:Blizzard_ZoneAbility()
-    --WoWTools_DataMixin:Hook(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
     for btn in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
         Set_Texture(btn)
     end
 
     self:SetAlphaColor(ZoneAbilityFrame.Style, nil, nil, 0.3)
 
-    ZoneAbilityFrame:HookScript('OnShow', function(frame)
+    hooksecurefunc(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
         for btn in frame.SpellButtonContainer:EnumerateActive() do
             if not btn.IconMask then
                 Set_Texture(btn)

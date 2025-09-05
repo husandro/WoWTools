@@ -196,25 +196,31 @@ end
 
 
 
-
+--[[
 function WoWTools_MoveMixin.Events:Blizzard_ZoneAbility()
-    --SetupButton(ZoneAbilityFrame)--, {frame=ZoneAbilityFrame.SpellButtonContainer})
-    
+    local function set_button(frame)
+        for btn in frame.SpellButtonContainer:EnumerateActive() do
+            if not btn.moveFrameData then
+                self:Setup(btn, {frame=ZoneAbilityFrame, click='RightButton'})
+                btn:HookScript('OnDragStart', function(b, d)
+                    if d=='RightButton' then
 
-    for btn in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
-        self:Setup(btn, {frame=ZoneAbilityFrame, click='RightButton'})
+                    end
+                end)
+            end
+        end
     end
 
-    ZoneAbilityFrame:HookScript('OnShow', function(frame)
-        print('show')
-        for btn in frame.SpellButtonContainer:EnumerateActive() do
-            self:Setup(btn, {frame=ZoneAbilityFrame, click='RightButton'})
-        end
+    set_button(ZoneAbilityFrame)
+
+    hooksecurefunc(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
+       set_button(frame)
     end)
+
 
     --SetupButton(ZoneAbilityFrame)--, {frame=ZoneAbilityFrame.SpellButtonContainer})
 end
-
+]]
 
 
 
@@ -978,8 +984,9 @@ end
 
 
 
---StaticPopup 11.2才有
+--[[StaticPopup 11.2才有 Blizzard_StaticPopup就行
 function WoWTools_MoveMixin.Events:Blizzard_StaticPopup_Game()
+    --print('a')
     for i=1, 4 do
         local dialog= _G['StaticPopup'..i]
         if dialog then
@@ -996,7 +1003,7 @@ function WoWTools_MoveMixin.Events:Blizzard_StaticPopup_Game()
         end
     end
 end
-
+]]
 
 
 
@@ -1004,8 +1011,9 @@ end
 --LFDRoleCheckPopup
 function WoWTools_MoveMixin.Events:Blizzard_StaticPopup()
     WoWTools_DataMixin:Hook('StaticPopup_SetUpPosition', function(dialog)
+        print(dialog:GetName(), dialog.moveFrameData)
         if not dialog.moveFrameData then
-            self:Setup(dialog, {notSize=true})
+            self:Setup(dialog, {notSize=true, notFuori=true,})
         else
             self:SetPoint(dialog)--设置, 移动,
         end

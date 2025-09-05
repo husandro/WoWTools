@@ -372,6 +372,15 @@ local function Init_TimeManager()
         set_textcolor()
     end)
 
+    TimeManagerAlarmFiredTexture:SetScale(1.2)
+    local function set_scal()
+        TimeManagerClockTicker:SetScale(TimeManagerAlarmFiredTexture:IsShown() and 1.5,)
+    end
+    TimeManagerAlarmFiredTexture:HookScript('OnShow', function()
+
+    end)
+
+--/dump UIFrameFlash(TimeManagerAlarmFiredTexture, 0.5, 0.5, -1);
 
 
 --显示背景
