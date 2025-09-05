@@ -164,7 +164,7 @@ local function Init()
         return
     end
 
-    hooksecurefunc('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
+    WoWTools_DataMixin:Hook('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
     Init=function()end
 end
 

@@ -1089,7 +1089,7 @@ local function Init()
     ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
     ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
 
-    hooksecurefunc('ItemSocketingFrame_Update', function(...)--宝石，数据
+    WoWTools_DataMixin:Hook('ItemSocketingFrame_Update', function(...)--宝石，数据
         Init_ItemSocketingFrame_Update(...)
     end)
 

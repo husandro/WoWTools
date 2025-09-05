@@ -251,7 +251,7 @@ local function Init_TrackButton()
 
 	WoWTools_CurrencyMixin:Set_TrackButton_Text()
 
-	hooksecurefunc(TokenFrame, 'Update', function(frame)
+	WoWTools_DataMixin:Hook(TokenFrame, 'Update', function(frame)
 		if WoWTools_CurrencyMixin.TrackButton then
 			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		else

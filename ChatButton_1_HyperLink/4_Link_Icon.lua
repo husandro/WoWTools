@@ -685,7 +685,7 @@ local function Init()
     end)
 
 --CVar 名称
-    hooksecurefunc('ChatConfigFrame_OnChatDisabledChanged', Set_HyperLlinkIcon)
+    WoWTools_DataMixin:Hook('ChatConfigFrame_OnChatDisabledChanged', Set_HyperLlinkIcon)
 
     Init=function()end
 end

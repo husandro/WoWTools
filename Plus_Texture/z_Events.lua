@@ -19,7 +19,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
     self:SetAlphaColor(ClassTrainerStatusBarMiddle, nil, nil, 0.3)
 
     ClassTrainerFrameSkillStepButton:SetNormalTexture(0)
-    hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(btn)
+    WoWTools_DataMixin:Hook('ClassTrainerFrame_InitServiceButton', function(btn)
         btn:SetNormalTexture(0)
     end)
 
@@ -78,7 +78,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 
     self:HideFrame(AchievementFrame, {show={[AchievementFrame.Background]=true}})
 
-    hooksecurefunc(AchievementStatTemplateMixin, 'OnLoad', function(f)
+    WoWTools_DataMixin:Hook(AchievementStatTemplateMixin, 'OnLoad', function(f)
         if f.Middle then
             self:SetAlphaColor(f.Middle, nil, nil, 0.5)
             self:SetAlphaColor(f.Left, nil, nil, 0.5)
@@ -118,7 +118,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 --总列表
     self:SetNineSlice(AchievementFrameCategories)
     self:SetScrollBar(AchievementFrameCategories)
-    hooksecurefunc(AchievementCategoryTemplateMixin, 'OnLoad', function(f)
+    WoWTools_DataMixin:Hook(AchievementCategoryTemplateMixin, 'OnLoad', function(f)
         self:SetAlphaColor(f.Button.Background, nil, nil, 0.5)
         --f.Button.Background:SetAtlas('ChallengeMode-guild-background')
         --f.Button.Background:SetTexture(0)
@@ -129,7 +129,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetScrollBar(AchievementFrameAchievements)
     self:HideFrame(AchievementFrameAchievements)--, {show={[AchievementFrameAchievements.Background]=true,}})
     self:SetNineSlice(AchievementFrameAchievements)
-    hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLoad', function(f)
         self:SetNineSlice(f)
     end)
 
@@ -139,13 +139,13 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 --点数，外框
         f.Shield.Icon:SetAlpha(alpha)
     end
-    hooksecurefunc(AchievementTemplateMixin, 'Init', function(f)--, data)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'Init', function(f)--, data)
         Set_AchievementTemplate(f, nil)
     end)
-    hooksecurefunc(AchievementTemplateMixin, 'OnEnter', function(f)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnEnter', function(f)
         Set_AchievementTemplate(f, true)
     end)
-    hooksecurefunc(AchievementTemplateMixin, 'OnLeave', function(f)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLeave', function(f)
         Set_AchievementTemplate(f, nil)
     end)
 
@@ -155,14 +155,14 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 
 --近期成就
     self:SetAlphaColor(AchievementFrameSummaryAchievementsHeaderHeader, nil, nil, 0.5)
-    hooksecurefunc('AchievementFrameSummaryAchievement_OnLoad', function(f)
+    WoWTools_DataMixin:Hook('AchievementFrameSummaryAchievement_OnLoad', function(f)
         self:SetAlphaColor(f.Background, nil, true, 0)
         f:HookScript('OnLeave', function(f2)
             self:SetAlphaColor(f.Background, nil, true, 0)
         end)
         self:SetNineSlice(f)
     end)
-    hooksecurefunc('AchievementFrameSummaryAchievement_OnEnter', function(f)
+    WoWTools_DataMixin:Hook('AchievementFrameSummaryAchievement_OnEnter', function(f)
          self:SetAlphaColor(f.Background, nil, true, 1)
     end)
 
@@ -344,7 +344,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
 
     --目录，列表
     local Alpha
-    hooksecurefunc('AuctionHouseFilterButton_SetUp', function(btn)
+    WoWTools_DataMixin:Hook('AuctionHouseFilterButton_SetUp', function(btn)
         if btn.NormalTexture then
             btn.NormalTexture:SetAlpha(Alpha or 1)
         end
@@ -657,7 +657,7 @@ end
 
 --任务选择
 function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice()
-    hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(frame)
+    WoWTools_DataMixin:Hook(PlayerChoiceFrame, 'SetupFrame', function(frame)
         if frame.Background then
             self:SetAlphaColor(frame.Background.BackgroundTile, nil, nil, 0)
             self:SetAlphaColor(frame.Background, nil, nil, 0)
@@ -729,7 +729,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     self:SetAlphaColor(InspectRecipeFrame.SchematicForm.MinimalBackground)
     --self:SetTabSystem(ProfessionsFrame)
 
-    hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(frame)
+    WoWTools_DataMixin:Hook(ProfessionsFrame.SpecPage, 'UpdateTabs', function(frame)
         for tab, bool in frame.tabsPool:EnumerateActive() do
             if bool then
                 self:SetFrame(tab, {alpha=0.3})
@@ -877,7 +877,7 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
     self:SetMenu(DelvesCompanionAbilityListFrame.DelvesCompanionRoleDropdown)
     self:HideTexture(DelvesCompanionAbilityListFrame.TopTileStreaks)
 --添加Bg
-    hooksecurefunc(DelvesCompanionAbilityMixin, 'InitAdditionalElements', function(btn)
+    WoWTools_DataMixin:Hook(DelvesCompanionAbilityMixin, 'InitAdditionalElements', function(btn)
         if not btn.Bg then
             btn.Bg= btn:CreateTexture(nil, 'BACKGROUND')
             btn.Bg:SetColorTexture(0,0,0,0.3)
@@ -935,7 +935,7 @@ end
 --冷却设置
 function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
 
-    hooksecurefunc(CooldownViewerBuffBarItemMixin, 'OnLoad', function(frame)
+    WoWTools_DataMixin:Hook(CooldownViewerBuffBarItemMixin, 'OnLoad', function(frame)
         self:SetFrame(frame.Bar, {alpha=0.2, index=1})
     end)
     for frame in BuffBarCooldownViewer.itemFramePool:EnumerateActive() do
@@ -993,7 +993,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
     end
 
     on_show(CooldownViewerSettings)
-    hooksecurefunc(CooldownViewerSettings, 'RefreshLayout', function(frame)
+    WoWTools_DataMixin:Hook(CooldownViewerSettings, 'RefreshLayout', function(frame)
        on_show(frame)
     end)
 
@@ -1029,7 +1029,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ExpansionLandingPage()
 
     SetOverlayFrame(ExpansionLandingPage.overlayFrame)
 
-    hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(frame)
+    WoWTools_DataMixin:Hook(ExpansionLandingPage, 'RefreshExpansionOverlay', function(frame)
         SetOverlayFrame(frame.overlayFrame)
     end)
 
@@ -1072,11 +1072,11 @@ function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
     self:SetButton(MajorFactionRenownFrame.CloseButton)
 
 --解锁
-    hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(frame)--Blizzard_MajorFactionsLandingTemplates.lua
+    WoWTools_DataMixin:Hook(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(frame)--Blizzard_MajorFactionsLandingTemplates.lua
         self:SetAlphaColor(frame.Background, nil, nil, 0.75)
     end)
 --没解锁
-    hooksecurefunc(MajorFactionButtonLockedStateMixin, 'Refresh', function(frame)
+    WoWTools_DataMixin:Hook(MajorFactionButtonLockedStateMixin, 'Refresh', function(frame)
         self:SetAlphaColor(frame.Background, nil, nil, 0.75)
     end)
 
@@ -1224,7 +1224,7 @@ end
         [EXIT_GAME]= {'Ping_Chat_Warning', false, {0,0.8,1}},--退出游戏
         [RETURN_TO_GAME]= {'poi-traveldirections-arrow', true, {0,1,0}},--返回游戏
     }
-    hooksecurefunc(GameMenuFrame, 'InitButtons', function(frame)
+    WoWTools_DataMixin:Hook(GameMenuFrame, 'InitButtons', function(frame)
         for btn in frame.buttonPool:EnumerateActive() do
             local data= dataButton[btn:GetText()]
             if data then
@@ -1441,7 +1441,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
     end
 
 
-    --hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
+    --WoWTools_DataMixin:Hook('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
     self:SetAlphaColor(OverrideActionBarEndCapL, nil, nil, 0)
     self:SetAlphaColor(OverrideActionBarEndCapR, nil, nil, 0)
     self:SetAlphaColor(OverrideActionBarBorder, nil, nil, 0)
@@ -1661,7 +1661,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
         end
     end
 
-    hooksecurefunc('LFGListCategorySelection_AddButton', function(frame, btnIndex)
+    WoWTools_DataMixin:Hook('LFGListCategorySelection_AddButton', function(frame, btnIndex)
         local btn = frame.CategoryButtons[btnIndex];
         if btn then
             self:SetAlphaColor(btn.Icon, nil, nil, 0.5)
@@ -1731,7 +1731,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     self:SetButton(ChallengesKeystoneFrame.CloseButton)
     self:HideFrame(ChallengesKeystoneFrame, {index=1})
     self:HideTexture(ChallengesKeystoneFrame.InstructionBackground)
-    hooksecurefunc(ChallengesKeystoneFrame, 'Reset', function(frame)
+    WoWTools_DataMixin:Hook(ChallengesKeystoneFrame, 'Reset', function(frame)
         self:HideTexture(frame, {index=1})
         self:HideTexture(frame.InstructionBackground)
     end)
@@ -1752,7 +1752,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
     self:HideFrame(WeeklyRewardsFrame)
     self:SetButton(WeeklyRewardsFrame.CloseButton)
 
-    hooksecurefunc(WeeklyRewardsFrame, 'UpdateOverlay', function(f)
+    WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'UpdateOverlay', function(f)
         f= f.Overlay
         if not f or not f:IsShown() then
             return
@@ -1761,7 +1761,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
         self:SetFrame(f)
     end)
 
-    hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(frame)
+    WoWTools_DataMixin:Hook(WeeklyRewardsFrame,'UpdateSelection', function(frame)
         for _, f in ipairs(frame.Activities) do
             self:SetAlphaColor(f.Background)
         end
@@ -1790,7 +1790,7 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
     self:HideTexture(DelvesDashboardFrame.ThresholdBar.BarBackground)
     self:SetAlphaColor(DelvesDashboardFrame.ThresholdBar.BarBorder, nil, nil, 0.3)
 
-    hooksecurefunc(DelvesDashboardFrame, 'UpdateGreatVaultVisibility', function(f)
+    WoWTools_DataMixin:Hook(DelvesDashboardFrame, 'UpdateGreatVaultVisibility', function(f)
         local bg= f.ButtonPanelLayoutFrame.CompanionConfigButtonPanel.ButtonPanelBackground
         bg:SetAlpha(bg:IsDesaturated() and 0.5 or 0)
 
@@ -1874,7 +1874,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetAlphaColor(CharacterStatsPane.ItemLevelCategory.Background, nil, nil, true)
 
 --头衔
-    hooksecurefunc('PaperDollTitlesPane_InitButton', function(btn, data)
+    WoWTools_DataMixin:Hook('PaperDollTitlesPane_InitButton', function(btn, data)
         self:SetAlphaColor(btn.BgMiddle, nil, nil, true)
         btn.BgMiddle:SetPoint('RIGHT', 4, 0)
         if data.index == 1 then
@@ -1886,7 +1886,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetScrollBar(PaperDollFrame.TitleManagerPane)
 
 --装备方案
-    hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(btn, data)
+    WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_InitButton', function(btn, data)
         self:SetAlphaColor(btn.BgMiddle, nil, nil, true)
         btn.BgMiddle:SetPoint('RIGHT', 4, 0)
         if data.addSetButton then
@@ -1921,7 +1921,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetFrame(ReputationFrame.ReputationDetailFrame.Border)
     self:SetButton(ReputationFrame.ReputationDetailFrame.CloseButton)
     self:SetAlphaColor(ReputationFrame.ReputationDetailFrame.Divider)
-    hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(f)
+    WoWTools_DataMixin:Hook(ReputationFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
             return
         end
@@ -1967,7 +1967,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
 
 
 
-    hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
+    WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
             return
         end
@@ -2099,7 +2099,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
     self:SetFrame(EventTrace.Log.Events.ScrollBox, {index=1, isMinAlpha=true})
     self:SetFrame(EventTrace.Filter.ScrollBox, {index=1, isMinAlpha=true})
 
-    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(frame)
+    WoWTools_DataMixin:Hook(EventTraceLogEventButtonMixin, 'OnLoad', function(frame)
         self:SetButton(frame.HideButton)
         local icon= frame:GetRegions()
         if icon:GetObjectType()=='Texture' then
@@ -2107,7 +2107,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
         end
         --frame.Alternate:SetAlpha(0.75)
     end)
-    hooksecurefunc(EventTraceFilterButtonMixin, 'Init', function(frame, elementData, hideCb)
+    WoWTools_DataMixin:Hook(EventTraceFilterButtonMixin, 'Init', function(frame, elementData, hideCb)
         local icon= frame:GetRegions()
         if icon:GetObjectType()=='Texture' then
             icon:SetTexture(0)
@@ -2384,7 +2384,7 @@ function WoWTools_TextureMixin.Events:Blizzard_RemixArtifactUI()
 end
 
 --[[function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
-    hooksecurefunc(HelpPlateButtonMixin, 'OnShow', function()
+    WoWTools_DataMixin:Hook(HelpPlateButtonMixin, 'OnShow', function()
   
     end)
 end]]
@@ -2399,12 +2399,12 @@ end]]
 --菜单
 function WoWTools_TextureMixin.Events:Blizzard_Menu()
 --bar
-    hooksecurefunc(MenuProxyMixin, 'OnLoad', function(menu)
+    WoWTools_DataMixin:Hook(MenuProxyMixin, 'OnLoad', function(menu)
         self:SetScrollBar(menu)
     end)
 
 --外框
-    hooksecurefunc(MenuStyle1Mixin, 'Generate', function(frame)
+    WoWTools_DataMixin:Hook(MenuStyle1Mixin, 'Generate', function(frame)
         local icon= frame:GetRegions()
         if icon and icon:GetObjectType()=="Texture" then
             self:SetAlphaColor(icon, true)
@@ -2412,15 +2412,15 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
     end)
 
 --横线
-    hooksecurefunc(MenuVariants, 'CreateDivider', function(frame)--MenuVariants.lua
+    WoWTools_DataMixin:Hook(MenuVariants, 'CreateDivider', function(frame)--MenuVariants.lua
         self:SetFrame(frame, {alpha=1})
     end)
 
-    hooksecurefunc(MenuVariants, 'CreateCheckbox', function(_, frame)
+    WoWTools_DataMixin:Hook(MenuVariants, 'CreateCheckbox', function(_, frame)
         self:SetAlphaColor(frame.leftTexture1, true)
     end)
 
-    hooksecurefunc(MenuVariants, 'CreateRadio', function(_, frame)
+    WoWTools_DataMixin:Hook(MenuVariants, 'CreateRadio', function(_, frame)
         self:SetAlphaColor(frame.leftTexture1, true)
     end)
 

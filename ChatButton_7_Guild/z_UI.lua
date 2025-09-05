@@ -1,6 +1,6 @@
 
 function WoWTools_TooltipMixin.Events:Blizzard_Communities()
-    hooksecurefunc(CommunitiesAvatarButtonMixin, 'Init', function(btn)
+    WoWTools_DataMixin:Hook(CommunitiesAvatarButtonMixin, 'Init', function(btn)
         if not btn.Name then
             btn.Name= WoWTools_LabelMixin:Create(btn, {mouse=true})
             btn.Name:SetPoint('BOTTOM')
@@ -62,7 +62,7 @@ end
     self:HideTexture(CommunitiesFrameCommunitiesList.TopFiligree)
     self:HideTexture(CommunitiesFrameCommunitiesList.BottomFiligree)
 
-    hooksecurefunc(CommunitiesListEntryMixin, 'Init', function(frame, data)
+    WoWTools_DataMixin:Hook(CommunitiesListEntryMixin, 'Init', function(frame, data)
         self:SetAlphaColor(frame.Background, 1, true)
     end)
 
@@ -104,7 +104,7 @@ end
     self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar.BG)
     self:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Perks.ScrollBar, true)
 
-    hooksecurefunc(CommunitiesGuildRewardsButtonMixin, 'Init', function(f)
+    WoWTools_DataMixin:Hook(CommunitiesGuildRewardsButtonMixin, 'Init', function(f)
         self:SetBG(f)
     end)
     
@@ -285,7 +285,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 
 
-    --hooksecurefunc(ClubFinderCommunitiesCardMixin, 'Init', function(b)
+    --WoWTools_DataMixin:Hook(ClubFinderCommunitiesCardMixin, 'Init', function(b)
     local function Init_Update(frame)
         if not frame:GetView() or WoWTools_FrameMixin:IsLocked(frame) then
             return
@@ -334,8 +334,8 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     local sub
 
 
-    hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
-    hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
+    WoWTools_DataMixin:Hook(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
+    WoWTools_DataMixin:Hook(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
 
 --公会奖励
     CommunitiesFrame.GuildBenefitsFrame.Perks:SetPoint('TOPRIGHT', CommunitiesFrame.GuildBenefitsFrame, 'TOP', -17, 0)
@@ -346,7 +346,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     CommunitiesFrame.GuildBenefitsFrame.Rewards:GetRegions():SetPoint('BOTTOMRIGHT', 14, 0)
 
 --寻找社区
-    hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
+    WoWTools_DataMixin:Hook(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
 
 
 
@@ -389,7 +389,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')
     CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('BOTTOM')
     WoWTools_EditBoxMixin:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
-    hooksecurefunc('CommunitiesGuildTextEditFrame_SetType', function(frame)
+    WoWTools_DataMixin:Hook('CommunitiesGuildTextEditFrame_SetType', function(frame)
         self:Set_SizeScale(frame)
         frame.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", nil)
     end)
@@ -451,7 +451,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --成员,叙述 CommunitiesGuildMemberDetailMixin
     self:Setup(CommunitiesFrame.GuildMemberDetailFrame, {frame=CommunitiesFrame})
-    hooksecurefunc(CommunitiesFrame.GuildMemberDetailFrame, 'DisplayMember', function(frame)
+    WoWTools_DataMixin:Hook(CommunitiesFrame.GuildMemberDetailFrame, 'DisplayMember', function(frame)
         frame:SetHeight(frame:GetHeight()+15)
     end)
     CommunitiesFrame.GuildMemberDetailFrame.NoteBackground.PersonalNoteText:SetNonSpaceWrap(true)

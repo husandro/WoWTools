@@ -8,7 +8,7 @@
 --####
 local function Init()
     --目标，生命条，颜色，材质
-    hooksecurefunc(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
+    WoWTools_DataMixin:Hook(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
         local r,g,b= select(2, WoWTools_UnitMixin:GetColor(frame.unit))
         frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
         frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
@@ -16,7 +16,7 @@ local function Init()
         frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
     end)
 
-    hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
+    WoWTools_DataMixin:Hook(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
         local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText
         if levelText then
             local r,g,b= select(2, WoWTools_UnitMixin:GetColor(self.unit))
@@ -47,7 +47,7 @@ end
     TargetFrame:HookScript('OnHide', function(self)
         self.elapsed= nil
     end)
-    hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
+    WoWTools_DataMixin:Hook(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
         self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed<0.3 then
             return

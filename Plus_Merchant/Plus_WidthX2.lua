@@ -361,7 +361,7 @@ local function Init_WidthX2()
 
 
 --出售，卖
-    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateMerchantInfo', function()
         local numMerchantItems= GetMerchantNumItems()
         local index, info, btn
         local curNum= 0
@@ -426,7 +426,7 @@ local function Init_WidthX2()
 
 
 --回购
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', function()
         local numBuybackItems = GetNumBuybackItems() or 0
         local btn
 

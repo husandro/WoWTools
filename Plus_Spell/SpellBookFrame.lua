@@ -169,7 +169,7 @@ end
 
 
 local function Init()
-    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+    WoWTools_DataMixin:Hook(SpellBookItemMixin, 'UpdateVisuals', function(frame)
         frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
         if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
             frame.Button.Arrow:SetVertexColor(1,0,1)

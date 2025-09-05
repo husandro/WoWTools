@@ -39,7 +39,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     if MountJournal.SummonRandomFavoriteSpellFrame then
         self:SetAlphaColor(MountJournal.SummonRandomFavoriteSpellFrame.Button.Border, true)
     end
-     hooksecurefunc('MountJournal_InitMountButton', function(btn)
+     WoWTools_DataMixin:Hook('MountJournal_InitMountButton', function(btn)
      end)
 --宠物
     self:HideFrame(PetJournalLoadoutBorder)
@@ -121,7 +121,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         btn:DisableDrawLayer('BACKGROUND')
         btn.Border:SetAlpha(0)
     end
-    hooksecurefunc(WardrobeItemsModelMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(WardrobeItemsModelMixin, 'OnLoad', function(btn)
         btn:DisableDrawLayer('BACKGROUND')
         btn.Border:SetAlpha(0)
     end)
@@ -131,7 +131,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         btn:DisableDrawLayer('BACKGROUND')
         self:HideTexture(btn.Border)
     end
-    hooksecurefunc(WardrobeSetsTransmogModelMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(WardrobeSetsTransmogModelMixin, 'OnLoad', function(btn)
         btn:DisableDrawLayer('BACKGROUND')
         self:HideTexture(btn.Border)
     end)
@@ -140,7 +140,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetNineSlice(WarbandSceneJournal.IconsFrame)
 
 --玩具, 传家宝，建立按钮，Bg, CollectionsSpellButton_OnLoad
-    hooksecurefunc('CollectionsSpellButton_OnShow', function(btn)--CollectionsSpellButton_OnLoad
+    WoWTools_DataMixin:Hook('CollectionsSpellButton_OnShow', function(btn)--CollectionsSpellButton_OnLoad
         if btn.Bg or not btn.name then
             return
         end
@@ -268,7 +268,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
                     self:SetAlphaColor(frame.List.ScrollToTopButton.Texture, true)
                     self:SetAlphaColor(frame.List.ScrollToBottomButton.Texture, true)
 
-                    hooksecurefunc(frame.List.ScrollBox, 'Update', function(frame)
+                    WoWTools_DataMixin:Hook(frame.List.ScrollBox, 'Update', function(frame)
                         if not frame:GetView() then
                             return
                         end

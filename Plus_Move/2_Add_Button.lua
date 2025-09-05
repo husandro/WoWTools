@@ -237,17 +237,17 @@ local function Init_UIWidgetPowerBarContainerFrame()--移动, 能量条
         end
     end
 
-    hooksecurefunc(frame, 'CreateWidget', function(self)
+    WoWTools_DataMixin:Hook(frame, 'CreateWidget', function(self)
         if self.WoWToolsMoveButton then
             self.WoWToolsMoveButton:SetShown(true)
         end
     end)
-    hooksecurefunc(frame, 'RemoveWidget', function(self)
+    WoWTools_DataMixin:Hook(frame, 'RemoveWidget', function(self)
         if self.WoWToolsMoveButton then
             self.WoWToolsMoveButton:SetShown(false)
         end
     end)
-    hooksecurefunc(frame, 'RemoveAllWidgets', function(self)
+    WoWTools_DataMixin:Hook(frame, 'RemoveAllWidgets', function(self)
         if self.WoWToolsMoveButton then
             self.WoWToolsMoveButton:SetShown(false)
         end
@@ -263,7 +263,7 @@ end
 
 
 local function Init()
-    SetupButton(ZoneAbilityFrame)--, {frame=ZoneAbilityFrame.SpellButtonContainer})
+    
 
     Init_UIWidgetPowerBarContainerFrame()--移动, 能量条
 
@@ -281,7 +281,7 @@ local function Init()
         SetupButton(QueueStatusButton, {save=true, notZoom=true, show=true})
 
     --编辑模式
-        hooksecurefunc(EditModeManagerFrame, 'ExitEditMode', function()
+        WoWTools_DataMixin:Hook(EditModeManagerFrame, 'ExitEditMode', function()
             WoWTools_MoveMixin:SetPoint(QueueStatusButton)--小眼睛, 
         end)
     end)

@@ -252,12 +252,12 @@ end
 local function Init()
     
 
-    hooksecurefunc('AddonList_InitAddon', function(entry, treeNode)
+    WoWTools_DataMixin:Hook('AddonList_InitAddon', function(entry, treeNode)
         local addonIndex = treeNode:GetData().addonIndex
         Init_Set_List(entry, addonIndex)--列表，内容
     end)
 
-    hooksecurefunc('AddonTooltip_Update', function(frame)
+    WoWTools_DataMixin:Hook('AddonTooltip_Update', function(frame)
         --WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         local index= frame:GetID()
         local va= WoWTools_AddOnsMixin:Get_MenoryValue(index, true)
@@ -270,7 +270,7 @@ local function Init()
         end
     end)
 
-    --[[hooksecurefunc('AddonList_Update', function()
+    --[[WoWTools_DataMixin:Hook('AddonList_Update', function()
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
     end)]]
 end

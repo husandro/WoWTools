@@ -719,7 +719,7 @@ local function Init()
         self.Text2:SetText(out and WoWTools_DataMixin.Player.col..WoWTools_DataMixin:MK(out, 3) or '')
     end
 
-    hooksecurefunc(BankPanel.MoneyFrame.DepositButton, 'Refresh', function()
+    WoWTools_DataMixin:Hook(BankPanel.MoneyFrame.DepositButton, 'Refresh', function()
         btn:settings()
     end)
     BankFrame:HookScript('OnShow', function()

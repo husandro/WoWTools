@@ -307,7 +307,7 @@ local function Init()
 
 
 
-	hooksecurefunc(ReputationEntryMixin, 'OnEnter', function(self)--角色栏,声望
+	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnEnter', function(self)--角色栏,声望
 		for _, btn in pairs(TrackButton.btn) do
 			if self.elementData.factionID== btn.factionID then
 				btn:SetScale(2)
@@ -316,13 +316,13 @@ local function Init()
 			end
 		end
     end)
-	hooksecurefunc(ReputationEntryMixin, 'OnLeave', function()--角色栏,声望
+	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnLeave', function()--角色栏,声望
 		for _, btn in pairs(TrackButton.btn) do
 			btn:SetScale(1)
 		end
     end)
 
-	hooksecurefunc(ReputationFrame, 'Update', function()
+	WoWTools_DataMixin:Hook(ReputationFrame, 'Update', function()
 		WoWTools_FactionMixin:TrackButton_Settings()--更新, 监视, 文本
 	end)
 

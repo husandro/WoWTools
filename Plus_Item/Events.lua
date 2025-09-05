@@ -99,7 +99,7 @@ function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
     end
 
 
-    hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'Update', function(frame)
+    WoWTools_DataMixin:Hook(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'Update', function(frame)
         set_uptate(frame)
     end)
 
@@ -117,7 +117,7 @@ end
 
 --周奖励, 物品提示，信息
 function WoWTools_ItemMixin.Events:Blizzard_WeeklyRewards()
-    hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(f)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
+    WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'Refresh', function(f)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
         for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
             local frame = f:GetActivityFrame(activityInfo.type, activityInfo.index)
             local itemFrame= frame and frame.ItemFrame
@@ -126,7 +126,7 @@ function WoWTools_ItemMixin.Events:Blizzard_WeeklyRewards()
             end
         end
     end)
-    hooksecurefunc(WeeklyRewardsFrame, 'UpdateSelection', function(f)
+    WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'UpdateSelection', function(f)
         for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
             local frame = f:GetActivityFrame(activityInfo.type, activityInfo.index)
             local itemFrame= frame and frame.ItemFrame
@@ -147,11 +147,11 @@ end
 --拍卖行
 function WoWTools_ItemMixin.Events:Blizzard_AuctionHouseUI()
     --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
-    hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
+    WoWTools_DataMixin:Hook(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
         WoWTools_ItemMixin:SetupInfo(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
     end)
 
-    hooksecurefunc(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
         local itemKey = browseResult.itemKey
         local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey) or {}
         if itemKeyInfo.isCommodity then
@@ -182,7 +182,7 @@ function WoWTools_ItemMixin.Events:Blizzard_ItemInteractionUI()
 
     ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
     ItemInteractionFrame.Tip:SetScript('OnHide', ItemInteractionFrame.Tip.ClearLines)
-    hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)
+    WoWTools_DataMixin:Hook(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)
         local itemInteractionFrame = self:GetParent():GetParent()
         local itemLocation = itemInteractionFrame:GetItemLocation()
         local itemLink
@@ -193,7 +193,7 @@ function WoWTools_ItemMixin.Events:Blizzard_ItemInteractionUI()
         end
         WoWTools_ItemMixin:SetItemStats(self, itemLink, {}) --设置，物品，次属性，表
     end)
-    hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionInputSlot, 'RefreshIcon', function(self)
+    WoWTools_DataMixin:Hook(ItemInteractionFrame.ItemConversionFrame.ItemConversionInputSlot, 'RefreshIcon', function(self)
         local itemInteractionFrame = self:GetParent():GetParent()
         local itemLocation = itemInteractionFrame:GetItemLocation()
         local itemLink
@@ -239,28 +239,28 @@ end
 function WoWTools_ItemMixin.Events:Blizzard_FrameXML()
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     --AlertFrames.xml
-    hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua data= { itemID = itemID, quantity = quantity, playerName = playerName, className = className, itemLink = itemLink }
+    WoWTools_DataMixin:Hook('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua data= { itemID = itemID, quantity = quantity, playerName = playerName, className = className, itemLink = itemLink }
         WoWTools_ItemMixin:SetItemStats(lootFrame, data.itemLink, {point=lootFrame.Icon})
     end)
 
         --拾取时, 弹出, 物品提示，信息, 战利品
     --AlertFrameSystems.lua
-    hooksecurefunc('DungeonCompletionAlertFrameReward_SetRewardItem', function(frame, itemLink)--,texture
+    WoWTools_DataMixin:Hook('DungeonCompletionAlertFrameReward_SetRewardItem', function(frame, itemLink)--,texture
         WoWTools_ItemMixin:SetItemStats(frame, frame.itemLink or itemLink , {point=frame.texture})
     end)
-    hooksecurefunc('LootWonAlertFrame_SetUp', function(frame)
+    WoWTools_DataMixin:Hook('LootWonAlertFrame_SetUp', function(frame)
         WoWTools_ItemMixin:SetItemStats(frame, frame.hyperlink, {point= frame.lootItem.Icon})
     end)
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(frame)
+    WoWTools_DataMixin:Hook('LootUpgradeFrame_SetUp', function(frame)
         WoWTools_ItemMixin:SetItemStats(frame, frame.hyperlink, {point=frame.Icon})
     end)
 
-    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(frame)
+    WoWTools_DataMixin:Hook('LegendaryItemAlertFrame_SetUp', function(frame)
         WoWTools_ItemMixin:SetItemStats(frame, frame.hyperlink, {point= frame.Icon})
     end)
 
 
-    hooksecurefunc(LootItemExtendedMixin, 'Init', function(frame, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
+    WoWTools_DataMixin:Hook(LootItemExtendedMixin, 'Init', function(frame, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
         local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency)
         WoWTools_ItemMixin:SetItemStats(frame, itemLink, {point= frame.Icon})
     end)

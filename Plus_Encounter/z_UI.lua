@@ -22,7 +22,7 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     EncounterJournalMonthlyActivitiesFrame.ThemeContainer.Bottom:SetPoint('LEFT')
     EncounterJournalMonthlyActivitiesFrame.ThemeContainer.Bottom:SetPoint('RIGHT')
 --旅行者日志,右边，列表
-    hooksecurefunc(MonthlyActivitiesButtonMixin, 'Init', function(btn)
+    WoWTools_DataMixin:Hook(MonthlyActivitiesButtonMixin, 'Init', function(btn)
         btn.TextContainer:SetPoint('RIGHT', -36, 0)
         btn.TextContainer.ConditionsText:SetPoint('RIGHT')
         btn.TextContainer.NameText:SetPoint('RIGHT')
@@ -119,7 +119,7 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
 --BOSS 列表
     EncounterJournal.encounter.info.BossesScrollBox:SetPoint('TOP', 0, -35)
     EncounterJournal.encounter.info.BossesScrollBox:SetPoint('BOTTOMRIGHT', EncounterJournal.encounter.info, 'BOTTOM', -35, 35)
-    hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
+    WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(btn)
         btn.text:SetPoint('RIGHT', -3, 0)
     end)
 --副本，概述
@@ -144,7 +144,7 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
 
 --BOSS, 掉落
     EncounterJournal.encounter.info.LootContainer:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP', 30, -43)
-    hooksecurefunc(EncounterJournalItemMixin,'Init', function(btn)
+    WoWTools_DataMixin:Hook(EncounterJournalItemMixin,'Init', function(btn)
         if btn:IsVisible() and not btn.set_texture then--btn.set_texture z_Events.lua Plus_Texture
             btn.name:SetPoint('RIGHT')
             btn.armorType:ClearAllPoints()
@@ -238,7 +238,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 --BOSS, 掉落
     EncounterJournalEncounterFrameInfoClassFilterClearFrame:GetRegions():SetAlpha(0.5)--职业过滤，标题
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
-    hooksecurefunc(EncounterJournalItemMixin,'Init', function(btn)
+    WoWTools_DataMixin:Hook(EncounterJournalItemMixin,'Init', function(btn)
         if btn:IsVisible() and not btn.set_texture then
             btn.bosslessTexture:SetTexture(0)
             btn.bosslessTexture:SetPoint('RIGHT')
@@ -258,7 +258,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:HideTexture(EncounterJournalEncounterFrameInfoLeftHeaderShadow)
     self:HideTexture(EncounterJournalEncounterFrameInfoRightHeaderShadow)
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
-    hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
+    WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(btn)
         btn:GetRegions():SetAlpha(0.5)
     end)
 --副本信息
@@ -279,7 +279,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     )
     self:HideFrame(EncounterJournal.LootJournalItems.ItemSetsFrame)
 --套装,按钮
-    hooksecurefunc(LootJournalItemSetButtonMixin, 'Init', function(btn)
+    WoWTools_DataMixin:Hook(LootJournalItemSetButtonMixin, 'Init', function(btn)
         btn.Background:SetAlpha(0.5)
         btn.Background:SetAtlas('timerunning-TopHUD-button-glow')
     end)
@@ -292,7 +292,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 --旅行者日志
     EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetColorTexture(0,0,0,0.3)
 --任务，右边列表，按钮
-    hooksecurefunc(MonthlyActivitiesButtonMixin, 'UpdateDesaturatedShared', function(btn)
+    WoWTools_DataMixin:Hook(MonthlyActivitiesButtonMixin, 'UpdateDesaturatedShared', function(btn)
         local data = btn:GetData()
         local alpha = data and data.completed and 0.1 or 0.5
         btn.NormalTexture:SetAlpha(alpha)

@@ -726,13 +726,13 @@ local function Init()--PartyFrame.lua
         Create_positionFrame(frame)--队友位置
         Create_deadFrame(frame)--队友，死亡
 
-        hooksecurefunc(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
+        WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
             if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
                 self.PartyMemberOverlay.RoleIcon:SetShown(false)
             end
         end)
 
-        hooksecurefunc(frame, 'UpdateMember', function(self)
+        WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
             local unit= frame:GetUnit() or frame.unit
             local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
 
@@ -746,7 +746,7 @@ local function Init()--PartyFrame.lua
     Init=function()end
 end
 --[[
- hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(unitFrame)
+ WoWTools_DataMixin:Hook(PartyFrame, 'UpdatePartyFrames', function(unitFrame)
     for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
         set_memberFrame(memberFrame)
     end

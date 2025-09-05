@@ -106,7 +106,7 @@ end
 
 
 local function Init()
-    hooksecurefunc('ToySpellButton_UpdateButton', ToySpellButton_UpdateButton)
+    WoWTools_DataMixin:Hook('ToySpellButton_UpdateButton', ToySpellButton_UpdateButton)
     Init=function()end
 end
 

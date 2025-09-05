@@ -126,7 +126,7 @@ local function Init()
     end)
     MerchantSellAllJunkButton.Text= WoWTools_LabelMixin:Create(MerchantSellAllJunkButton, {justifyH='RIGHT'})
     MerchantSellAllJunkButton.Text:SetPoint('BOTTOM',MerchantSellAllJunkButton, 'TOP', 0, -6)
-    hooksecurefunc('MerchantFrame_Update', function()
+    WoWTools_DataMixin:Hook('MerchantFrame_Update', function()
         if not MerchantSellAllJunkButton:IsVisible() then
             return
         end

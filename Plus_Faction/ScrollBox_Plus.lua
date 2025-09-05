@@ -199,7 +199,7 @@ end
 
 
 local function Init()
-	--[[hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(self)
+	--[[WoWTools_DataMixin:Hook(ReputationFrame.ScrollBox, 'Update', function(self)
         if not self:GetView() then
             return
         end
@@ -208,24 +208,24 @@ local function Init()
         end
     end)]]
 
-	hooksecurefunc(ReputationEntryMixin, 'Initialize', function(...)
+	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'Initialize', function(...)
 		Setup(...)
 	end)
 
-	hooksecurefunc(ReputationEntryMixin, 'RefreshAccountWideIcon', function(self)
+	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'RefreshAccountWideIcon', function(self)
 		local showAccountWideIcon = C_Reputation.IsAccountWideReputation(self.factionID)
 		self.Content.AccountWideIcon:SetShown(showAccountWideIcon)
 	end)
-	hooksecurefunc(ReputationEntryMixin, 'OnLoad', function(self)
+	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnLoad', function(self)
 		self.Content.AccountWideIcon:SetScale(0.6)
 	end)
 
 
-	hooksecurefunc(ReputationSubHeaderMixin, 'RefreshAccountWideIcon', function(self)
+	WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'RefreshAccountWideIcon', function(self)
 		local showAccountWideIcon = C_Reputation.IsAccountWideReputation(self.factionID)
 		self.Content.AccountWideIcon:SetShown(showAccountWideIcon)
 	end)
-	hooksecurefunc(ReputationSubHeaderMixin, 'OnLoad', function(self)
+	WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'OnLoad', function(self)
 		self.Content.AccountWideIcon:SetScale(0.6)
 	end)
 	Init=function()end

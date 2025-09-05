@@ -95,7 +95,7 @@ local function Init()
 
 
 --Blizzard_GameMenu/Standard/GameMenuFrame.lua
-    hooksecurefunc(GameMenuFrame, 'InitButtons', function(self)
+    WoWTools_DataMixin:Hook(GameMenuFrame, 'InitButtons', function(self)
         for btn in self.buttonPool:EnumerateActive() do
             local data= dataButton[btn:GetText()]
             Create_Texture_Tips(btn, data)

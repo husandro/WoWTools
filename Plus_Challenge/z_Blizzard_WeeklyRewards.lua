@@ -30,7 +30,7 @@ local function Init()
     btn:SetPoint('RIGHT',-4,-42)
 
 --移动，图片
-    hooksecurefunc(WeeklyRewardsFrame, 'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
+    WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
         if self.Overlay and self.Overlay:IsShown() then--未提取,提示
             self.Overlay:ClearAllPoints()
             self.Overlay:SetPoint('TOPLEFT', 23,-23)

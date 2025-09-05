@@ -85,7 +85,7 @@ info.closeButtonIsHide
 
 
 
-hooksecurefunc('StaticPopup_Show', function(self, which, text_arg1, text_arg2, data, insertedFrame)
+WoWTools_DataMixin:Hook('StaticPopup_Show', function(self, which, text_arg1, text_arg2, data, insertedFrame)
 	local info = StaticPopupDialogs[which];
 	if ( not info ) then
 		return nil;

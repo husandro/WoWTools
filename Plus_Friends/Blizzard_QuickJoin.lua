@@ -20,7 +20,7 @@ local function Init()--快速加入, 初始化 QuickJoin.lua
         set_QuickJoinToastButton()
     end)
     set_QuickJoinToastButton()
-    --[[hooksecurefunc(QuickJoinToastButton, 'UpdateEntry', function(self)
+    --[[WoWTools_DataMixin:Hook(QuickJoinToastButton, 'UpdateEntry', function(self)
         local n=#C_SocialQueue.GetAllGroups()
         self.quickJoinText:SetText(n~=0 and n or '')
 
@@ -34,7 +34,7 @@ local function Init()--快速加入, 初始化 QuickJoin.lua
 
 
 
-    hooksecurefunc(QuickJoinEntryMixin, 'ApplyToFrame', function(self, frame)
+    WoWTools_DataMixin:Hook(QuickJoinEntryMixin, 'ApplyToFrame', function(self, frame)
         if not frame then
             return
         end
@@ -132,7 +132,7 @@ local function Init()--快速加入, 初始化 QuickJoin.lua
 
 
 
-    hooksecurefunc(QuickJoinRoleSelectionFrame, 'ShowForGroup', function(self, guid)--职责选择框
+    WoWTools_DataMixin:Hook(QuickJoinRoleSelectionFrame, 'ShowForGroup', function(self, guid)--职责选择框
         local t, h ,dps=self.RoleButtonTank.CheckButton, self.RoleButtonHealer.CheckButton, self.RoleButtonDPS.CheckButton--选择职责
         local t3, h3, dps3 =t:GetChecked(), h:GetChecked(), dps:GetChecked()
         if not t3 and not h3 and not dps3 then

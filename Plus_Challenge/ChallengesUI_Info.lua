@@ -578,7 +578,7 @@ local function Init()
         end
     end
 
-    hooksecurefunc(ChallengesFrame, 'Update', function(self)
+    WoWTools_DataMixin:Hook(ChallengesFrame, 'Update', function(self)
         if not Save().hideIns then
             Set_Update(self)
         end

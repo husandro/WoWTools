@@ -317,7 +317,7 @@ local function Init_ClassListButton()
     end
 
 
-    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(self, Class, Spec)
+    WoWTools_DataMixin:Hook(HeirloomsJournal, 'SetClassAndSpecFilters', function(self, Class, Spec)
         if self:IsVisible() then
             ListButton:chek_select(Class, Spec)
         end
@@ -354,7 +354,7 @@ local function Init()
         return
     end
 
-    hooksecurefunc(HeirloomsJournal, 'UpdateButton', function(...)
+    WoWTools_DataMixin:Hook(HeirloomsJournal, 'UpdateButton', function(...)
         UpdateButton(...)
     end)
 

@@ -178,7 +178,7 @@ local function Init()
         return
     end
 
-    hooksecurefunc(ChallengesFrame, 'Update', function()
+    WoWTools_DataMixin:Hook(ChallengesFrame, 'Update', function()
         Is_Check()
     end)
 

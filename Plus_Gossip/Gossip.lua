@@ -428,7 +428,7 @@ local function Init()
     })
     NumGossipCNLabel:SetText(0)
     NumGossipCNLabel:SetPoint('TOPRIGHT', 3, 4)
-    hooksecurefunc(GossipFrame, 'Update', function()
+    WoWTools_DataMixin:Hook(GossipFrame, 'Update', function()
         local num= 0
         for _, info in pairs(C_GossipInfo.GetOptions()) do
             if not WoWToolsPlayerDate['GossipTextIcon'][info.gossipOptionID] and not WoWTools_GossipMixin:Get_GossipData()[info.gossipOptionID] then
@@ -696,7 +696,7 @@ local function Init_Hook()
 
 
 --自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
-    hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
+    WoWTools_DataMixin:Hook(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
     do
         Create_GossipOptionCheckBox(self, info)--建立，自动选取，选项
     end
@@ -824,7 +824,7 @@ local function Init_Hook()
 
 
     --自动接取任务,多个任务GossipFrameShared.lua questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial
-    hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
+    WoWTools_DataMixin:Hook(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
 
         Set_Gossip_Text(self, info)--自定义，对话，文本
 
@@ -865,7 +865,7 @@ local function Init_Hook()
 
 
     --完成已激活任务,多个任务GossipFrameShared.lua
-    hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
+    WoWTools_DataMixin:Hook(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
         Create_GossipOptionCheckBox(self, info)--建立，自动选取，选项
         Set_Gossip_Text(self, info)--自定义，对话，文本
 

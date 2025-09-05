@@ -29,7 +29,7 @@ local function Init_Button()
                 btn.indexText= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1, a=0.3}, layer='BACKGROUND'})
                 btn.indexText:SetPoint('CENTER')
 --物品信息
-                hooksecurefunc(btn, 'SetMatchesSearch', function(self)
+                WoWTools_DataMixin:Hook(btn, 'SetMatchesSearch', function(self)
                     WoWTools_ItemMixin:SetupInfo(self, {
                         guidBank= Save().plusItem and {tab=GetCurrentGuildBankTab(), slot=self:GetID()} or nil
                     })
@@ -136,14 +136,14 @@ local function Init()
     Init_Button()
 
 
-    hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(self)
+    WoWTools_DataMixin:Hook(GuildBankFrame, 'UpdateTabs', function(self)
         UpdateTabs(self)
     end)
 
 --等级名称 RankName
     GuildBankFrame.Emblem.Name= WoWTools_LabelMixin:Create(GuildBankFrame.Emblem, {justifyH='CENTER'})
     GuildBankFrame.Emblem.Name:SetPoint('BOTTOM', GuildBankEmblemBorderBL, 'BOTTOMRIGHT')
-    hooksecurefunc(GuildBankFrame, 'UpdateTabard', function(self)
+    WoWTools_DataMixin:Hook(GuildBankFrame, 'UpdateTabard', function(self)
         self.Emblem.Name:SetText(select(2, GetGuildInfo('player')) or '')
     end)
 

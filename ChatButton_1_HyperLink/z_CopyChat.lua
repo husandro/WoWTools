@@ -284,21 +284,21 @@ local function Init()
 		end
 	end
 
-	hooksecurefunc("ChatFrame_OnLoad", function(frame)
+	WoWTools_DataMixin:Hook("ChatFrame_OnLoad", function(frame)
 		local index = frame:GetName():match("(%d+)")
 		if index then
 			Init_Button(index)
 		end
 	end)
 
-	hooksecurefunc('FCF_FadeInScrollbar', function(chatFrame)
+	WoWTools_DataMixin:Hook('FCF_FadeInScrollbar', function(chatFrame)
 		local btn= chatFrame.CopyChatButton
 		if btn and btn:IsShown() then
 			UIFrameFadeIn(btn, CHAT_FRAME_FADE_TIME, btn:GetAlpha(), 0.65)
 		end
 	end)
 
-	hooksecurefunc('FCF_FadeOutScrollbar', function(chatFrame)
+	WoWTools_DataMixin:Hook('FCF_FadeOutScrollbar', function(chatFrame)
 		local btn= chatFrame.CopyChatButton
 		if btn and btn:IsShown() then
 			UIFrameFadeOut(btn, CHAT_FRAME_FADE_OUT_TIME, btn:GetAlpha(), 0)

@@ -217,7 +217,7 @@ local function Init()
     end)]]
 
 --右边Tab
-    hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(BankPanelTabMixin, 'OnLoad', function(btn)
         btn:SetScript('OnMouseWheel', function(self)
             MenuUtil.CreateContextMenu(self, function(_, root)
                 Init_RightTab_Menu(root, self.tabData)

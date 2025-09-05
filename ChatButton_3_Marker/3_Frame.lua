@@ -266,6 +266,9 @@ local function Init()--设置标记, 框架
         btn:set_Event()
     end
 
+
+
+
     hooksecurefunc(PingListenerFrame, 'SetupCooldownTimer', function(self)--冷却，时间
         if MakerFrame.ping:IsShown() then
             local cooldownDuration = (self.cooldownInfo.endTimeMs / 1000) - GetTime()
@@ -896,8 +899,8 @@ local function Init()--设置标记, 框架
             self:set_Shown()
         end
     end)
-    hooksecurefunc('MovieFrame_PlayMovie', function() MakerFrame:set_Shown() end)
-    hooksecurefunc('MovieFrame_OnMovieFinished', function() MakerFrame:set_Shown() end)
+    WoWTools_DataMixin:Hook('MovieFrame_PlayMovie', function() MakerFrame:set_Shown() end)
+    WoWTools_DataMixin:Hook('MovieFrame_OnMovieFinished', function() MakerFrame:set_Shown() end)
     MakerFrame:set_Event()
     MakerFrame:set_Shown()
 
@@ -1008,7 +1011,7 @@ end
 
 
 --[[
- hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
+ WoWTools_DataMixin:Hook( PingManager, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
     local ping= self3.activePinFrames[frame]
     if not ping.valueFrame then
         ping.valueFrame=CreateFrame("Frame",nil, ping)

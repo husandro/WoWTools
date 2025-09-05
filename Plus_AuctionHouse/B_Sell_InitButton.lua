@@ -276,7 +276,7 @@ local function Init()
         end
     end
 --事件
-    hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(self, displayMode)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame, 'SetDisplayMode', function(self, displayMode)
         if not displayMode or not self:IsShown() then
             return
         end
@@ -308,7 +308,7 @@ local function Init()
         end
     end
 
-    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self)
         C_Timer.After(0.3, function()
             AuctionHouseButton:set_select_tips()--提示，已放入物品
             if Save().isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then
@@ -317,7 +317,7 @@ local function Init()
         end)
 
     end)
-    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self)
         C_Timer.After(0.3, function()
             AuctionHouseButton:set_select_tips()--提示，已放入物品
             if Save().isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then

@@ -95,10 +95,10 @@ local function Init_Texture()
         WoWTools_TextureMixin.Frames[name]= nil
     end
 
-    hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
+    WoWTools_DataMixin:Hook(DropdownTextMixin, 'OnLoad', function(self)
         WoWTools_TextureMixin:SetMenu(self)
     end)
-    hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
+    WoWTools_DataMixin:Hook(DropdownButtonMixin, 'SetupMenu', function(self)
         WoWTools_TextureMixin:SetMenu(self)
     end)
 

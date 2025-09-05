@@ -88,7 +88,7 @@ local function Init()
             BankPanel.MoneyFrame.Text2= WoWTools_LabelMixin:Create(btn, {color={r=0,g=0.8,b=1}})
             BankPanel.MoneyFrame.Text2:SetPoint('TOP', btn.Text, 'BOTTOM')
             --BankPanel.MoneyFrame.Text2:SetPoint('BOTTOMRIGHT')
-            hooksecurefunc(BankPanel.MoneyFrame, 'Refresh', function(self)
+            WoWTools_DataMixin:Hook(BankPanel.MoneyFrame, 'Refresh', function(self)
                 local text
                 local money=C_Bank.FetchDepositedMoney(Enum.BankType.Account)
                 if money and money>10000 then
@@ -149,7 +149,7 @@ local function Init()
             check.Icon:SetAtlas(atlas)
         end
 	end
-    hooksecurefunc(BankPanel.TabSettingsMenu.DepositSettingsMenu.ExpansionFilterDropdown, 'SetFilterValue', function(self, filterType)
+    WoWTools_DataMixin:Hook(BankPanel.TabSettingsMenu.DepositSettingsMenu.ExpansionFilterDropdown, 'SetFilterValue', function(self, filterType)
         local atlas= C_BAG_FILTER_LABELS[filterType]
         if not self.Icon then
             self.Icon= self:CreateTexture()
@@ -322,7 +322,7 @@ local function Init_TabSystem()
     end
 
 --右边 Tab 添加，提示
-    hooksecurefunc(BankPanelTabMixin, 'Init', function(btn, tabData)--bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation
+    WoWTools_DataMixin:Hook(BankPanelTabMixin, 'Init', function(btn, tabData)--bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation
         if not tabData or btn:IsPurchaseTab() then
             return
         end
@@ -381,7 +381,7 @@ local function Init_TabSystem()
         end
     end)
 
-    hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(BankPanelTabMixin, 'OnLoad', function(btn)
         btn:SetScript('OnEnter', function(self)
             AddBankTabSettingsToTooltip(self, self.tabData)
             --BankPanelTabMixin.OnEnter(self)
@@ -416,7 +416,7 @@ local function Init_IndexText()
         return
     end
 
-    hooksecurefunc(BankPanelItemButtonMixin, 'Init', function(btn, bankType, bankTabID, containerSlotID)
+    WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'Init', function(btn, bankType, bankTabID, containerSlotID)
         if not btn.indexText then
             btn.indexText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', layer='BACKGROUND', })
             btn.indexText:SetPoint('CENTER')
@@ -451,7 +451,7 @@ local function Init_ItemInfo()
         return
     end
 
-    hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(btn)
+    WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'Refresh', function(btn)
         if not C_Bank.AreAnyBankTypesViewable() then
             return
         end

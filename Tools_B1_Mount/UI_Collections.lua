@@ -238,7 +238,7 @@ end
 
 --初始，坐骑界面
 local function Init()
-    hooksecurefunc('MountJournal_InitMountButton',function(frame)--Blizzard_MountCollection.lua
+    WoWTools_DataMixin:Hook('MountJournal_InitMountButton',function(frame)--Blizzard_MountCollection.lua
         if not frame or not frame.spellID then
             if frame and frame.btn then
                 frame.btn:SetShown(false)

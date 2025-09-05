@@ -98,10 +98,10 @@ local function Init()
     isMeFrame= CreateFrame('Frame', 'WoWToolsTarget_IsMeFrame')
     --WoWTools_TargetMixin.isMeFrame= isMeFrame
 
-    hooksecurefunc(NamePlateBaseMixin, 'OnAdded', function(_, unit)
+    WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnAdded', function(_, unit)
         Set_Plate(nil, unit)
     end)
-    hooksecurefunc(NamePlateBaseMixin, 'OnOptionsUpdated', function(plate)
+    WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnOptionsUpdated', function(plate)
         Set_Plate(plate, nil)
     end)
 

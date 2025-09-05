@@ -610,7 +610,7 @@ local function Init()
     end
 
 --插入, KEY时, 说
-    hooksecurefunc(ChallengesKeystoneFrame, 'OnKeystoneSlotted', Set_SlotKeystoneSay)--插入, KEY时, 说
+    WoWTools_DataMixin:Hook(ChallengesKeystoneFrame, 'OnKeystoneSlotted', Set_SlotKeystoneSay)--插入, KEY时, 说
 
 
     KeyFrame:settings()

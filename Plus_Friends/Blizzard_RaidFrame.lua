@@ -1,7 +1,7 @@
 --团队信息，副本信息
 
 local function Init()
-    hooksecurefunc('RaidInfoFrame_InitButton', function(btn, elementData)
+    WoWTools_DataMixin:Hook('RaidInfoFrame_InitButton', function(btn, elementData)
         if not btn:IsVisible() then
             return
         end

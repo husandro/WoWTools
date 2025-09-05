@@ -4,7 +4,7 @@ function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
     ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
     ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
     ClassTrainerFrameBottomInset:SetPoint('BOTTOMRIGHT', -4, 28)
-    hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
+    WoWTools_DataMixin:Hook('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
         ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
     end)
     self:Setup(ClassTrainerFrame, {
@@ -52,7 +52,7 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_PlayerChoice()
     self:Setup(PlayerChoiceFrame)
 
-    hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(frame)
+    WoWTools_DataMixin:Hook(PlayerChoiceFrame, 'SetupOptions', function(frame)
         for optionFrame in frame.optionPools:EnumerateActiveByTemplate(frame.optionFrameTemplate) do
             if not optionFrame.moveFrameData then
                 self:Setup(optionFrame, {frame=frame})
@@ -197,8 +197,23 @@ end
 
 
 
+function WoWTools_MoveMixin.Events:Blizzard_ZoneAbility()
+    --SetupButton(ZoneAbilityFrame)--, {frame=ZoneAbilityFrame.SpellButtonContainer})
+    
 
+    for btn in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
+        self:Setup(btn, {frame=ZoneAbilityFrame, click='RightButton'})
+    end
 
+    ZoneAbilityFrame:HookScript('OnShow', function(frame)
+        print('show')
+        for btn in frame.SpellButtonContainer:EnumerateActive() do
+            self:Setup(btn, {frame=ZoneAbilityFrame, click='RightButton'})
+        end
+    end)
+
+    --SetupButton(ZoneAbilityFrame)--, {frame=ZoneAbilityFrame.SpellButtonContainer})
+end
 
 
 
@@ -221,7 +236,7 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
     TableAttributeDisplay.FilterBox:SetPoint('RIGHT', -26,0)
     TableAttributeDisplay.TitleButton.Text:SetPoint('RIGHT')
 
-    hooksecurefunc(TableAttributeLineReferenceMixin, 'Initialize', function(f)
+    WoWTools_DataMixin:Hook(TableAttributeLineReferenceMixin, 'Initialize', function(f)
         local frame= f:GetParent():GetParent():GetParent()
         local btn= frame.ResizeButton
         if btn and btn.setSize then
@@ -230,7 +245,7 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
             f.ValueButton.Text:SetWidth(w)
         end
     end)
-    hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(f)
+    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'UpdateLines', function(f)
         if f.dataProviders then
             for _, line in ipairs(f.lines) do
                 if line.ValueButton then
@@ -286,7 +301,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
     AuctionHouseFrame.ItemBuyFrame.ItemDisplay:SetPoint('RIGHT',-3, 0)
     AuctionHouseFrame.ItemBuyFrame.ItemDisplay.Background:SetPoint('RIGHT')
 
-    hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(frame, mode)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame, 'SetDisplayMode', function(frame, mode)
         local size= self:Save().size[frame:GetName()]
         local btn= frame.ResizeButton
         if not size or not btn then
@@ -351,9 +366,9 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     AchievementFrameMetalBorderRight:SetPoint('BOTTOM', AchievementFrameMetalBorderBottomRight, 'TOP')
     AchievementFrameMetalBorderLeft:SetPoint('BOTTOM', AchievementFrameMetalBorderBottomLeft, 'TOP')
 
-    --hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
+    --WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLoad', function(f)
 --成就，显示，按钮
-    hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLoad', function(f)
         f.Label:SetPoint('RIGHT', f.Shield.Icon, 'LEFT')
         f.Label:SetPoint('LEFT', f.PlusMinus, 'RIGHT')
 
@@ -363,7 +378,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
         f.Reward:SetPoint('RIGHT', f.Shield.Icon, 'LEFT')
         f.Reward:SetPoint('LEFT', f.Icon, 'RIGHT')
     end)
-    --hooksecurefunc('AchievementObjectives_DisplayProgressiveAchievement', function(objectivesFrame, id)
+    --WoWTools_DataMixin:Hook('AchievementObjectives_DisplayProgressiveAchievement', function(objectivesFrame, id)
 
 
 
@@ -384,7 +399,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     AchievementFrameComparison.Summary:SetPoint('RIGHT', left, 0)
     AchievementFrameComparison.Summary.Player:SetPoint('RIGHT', -120, 0)
     AchievementFrameComparison.AchievementContainer.ScrollBar:SetPoint('TOPLEFT', AchievementFrameComparison.Summary, 'TOPRIGHT', 5, -5)
-    hooksecurefunc(AchievementComparisonTemplateMixin, 'OnLoad', function(f)
+    WoWTools_DataMixin:Hook(AchievementComparisonTemplateMixin, 'OnLoad', function(f)
         f.Player:SetPoint('RIGHT', -120, 0)
     end)
     AchievementFrameComparison.StatContainer:SetPoint('RIGHT', left, 0)
@@ -416,7 +431,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     self:Setup(AchievementFrameComparison, {frame=AchievementFrame})
     self:Setup(AchievementFrameComparison.AchievementContainer, {frame=AchievementFrame})
 
-    hooksecurefunc(AchievementFrame, 'SetWidth', function(f)
+    WoWTools_DataMixin:Hook(AchievementFrame, 'SetWidth', function(f)
         if f.ResizeButton and not f.ResizeButton.isActiveButton then
             self:Set_SizeScale(f)
         end
@@ -444,7 +459,7 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
     --LFDQueueFrameBackground:SetPoint('RIGHT')
     LFDQueueFrame:SetPoint('BOTTOMRIGHT')
 
-    hooksecurefunc('GroupFinderFrame_SelectGroupButton', function(index)
+    WoWTools_DataMixin:Hook('GroupFinderFrame_SelectGroupButton', function(index)
         local btn= PVEFrame.ResizeButton
         if not btn or btn.disabledSize or not PVEFrame:IsProtected() then
             return
@@ -530,7 +545,7 @@ function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
     LFGListPVPStub:SetPoint('BOTTOMRIGHT')
     LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
 
-    hooksecurefunc('PVPQueueFrame_ShowFrame', function()
+    WoWTools_DataMixin:Hook('PVPQueueFrame_ShowFrame', function()
         local btn= PVEFrame.ResizeButton
         if not btn or btn.disabledSize or WoWTools_FrameMixin:IsLocked(PVEFrame) then
             return
@@ -786,7 +801,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
         CharacterSecondaryHandSlot:SetPoint('TOPLEFT', CharacterMainHandSlot,'TOPRIGHT', math.max(5, line), 0)
     end
 
-    hooksecurefunc(CharacterFrame, 'UpdateSize', function(f)
+    WoWTools_DataMixin:Hook(CharacterFrame, 'UpdateSize', function(f)
         if not f.ResizeButton then
             return
         end
@@ -974,7 +989,7 @@ function WoWTools_MoveMixin.Events:Blizzard_StaticPopup_Game()
             })
 
             if dialog.SetupAnchor then
-                hooksecurefunc(dialog, 'SetupAnchor', function(f)
+                WoWTools_DataMixin:Hook(dialog, 'SetupAnchor', function(f)
                     self:SetPoint(f)
                 end)
             end
@@ -988,7 +1003,7 @@ end
 
 --LFDRoleCheckPopup
 function WoWTools_MoveMixin.Events:Blizzard_StaticPopup()
-    hooksecurefunc('StaticPopup_SetUpPosition', function(dialog)
+    WoWTools_DataMixin:Hook('StaticPopup_SetUpPosition', function(dialog)
         if not dialog.moveFrameData then
             self:Setup(dialog, {notSize=true})
         else
@@ -1040,11 +1055,11 @@ function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
         on_settings(frame)
     end)
 
-    hooksecurefunc(CooldownViewerSettings, 'RefreshLayout', function(frame)
+    WoWTools_DataMixin:Hook(CooldownViewerSettings, 'RefreshLayout', function(frame)
        on_settings(frame)
     end)
 
-    hooksecurefunc(CooldownViewerSettingsBarItemMixin, 'RefreshData', function(frame)
+    WoWTools_DataMixin:Hook(CooldownViewerSettingsBarItemMixin, 'RefreshData', function(frame)
         frame.Bar:SetPoint('RIGHT', CooldownViewerSettings.CooldownScroll, -17, 0)
     end)
 

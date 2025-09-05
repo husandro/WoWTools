@@ -91,7 +91,7 @@ end
 
 
 local function Init()
-    hooksecurefunc('ToySpellButton_UpdateButton', function(btn)--玩具界面, 菜单
+    WoWTools_DataMixin:Hook('ToySpellButton_UpdateButton', function(btn)--玩具界面, 菜单
         if not btn.useItem then
            Create_Button(btn)
         end

@@ -163,7 +163,7 @@ local function Init()
 			end
 		end
 	end)
-	hooksecurefunc(ColorPickerFrame, 'SetupColorPickerAndShow', Set_SaveLogList)
+	WoWTools_DataMixin:Hook(ColorPickerFrame, 'SetupColorPickerAndShow', Set_SaveLogList)
 	Set_SaveLogList()
 
 

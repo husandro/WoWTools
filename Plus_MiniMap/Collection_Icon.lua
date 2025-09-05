@@ -328,7 +328,7 @@ end
 
 
 local function Init_Lib_Register()
-    hooksecurefunc(libDBIcon, 'Register', function(_, name)
+    WoWTools_DataMixin:Hook(libDBIcon, 'Register', function(_, name)
         if Button and not Save().Icons.disabled then
             Init_Buttons()
         end
@@ -1251,7 +1251,7 @@ local function Init()
 
 
 
-    hooksecurefunc(libDBIcon, 'IconCallback', function(_, _, name, key, value)
+    WoWTools_DataMixin:Hook(libDBIcon, 'IconCallback', function(_, _, name, key, value)
         local btn= Objects[name]
         if not btn or libDBIcon:GetMinimapButton(name) then
             return

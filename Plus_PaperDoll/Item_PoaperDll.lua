@@ -664,7 +664,7 @@ end
 
 local function Init()
 --装备属性
-    hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
+    WoWTools_DataMixin:Hook('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
         local slot= self:GetID()
         if not slot  then
             return

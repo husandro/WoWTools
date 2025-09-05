@@ -60,17 +60,17 @@ end
 
 -- General
 local function Init_General()
-    hooksecurefunc('PaperDollFrame_SetHealth', function(frame)--生命
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetHealth', function(frame)--生命
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetPower', function(frame)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetPower', function(frame)
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetAlternateMana', function(frame)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetAlternateMana', function(frame)
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
@@ -168,7 +168,7 @@ end
 
 --Enhancement
 local function Init_Enhancements()
-    hooksecurefunc('PaperDollFrame_SetCritChance', function(frame)--爆击
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetCritChance', function(frame)--爆击
         if create_status_label(frame) then
             local rating, spellCrit, rangedCrit, meleeCrit
             local holySchool = 2
@@ -190,13 +190,13 @@ local function Init_Enhancements()
             status_set_rating(frame, rating)
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetHaste', function(frame)--急速
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetHaste', function(frame)--急速
         create_status_label(frame, CR_HASTE_MELEE)
     end)
-    hooksecurefunc('PaperDollFrame_SetMastery', function(frame)--精通
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetMastery', function(frame)--精通
         create_status_label(frame, CR_MASTERY)
     end)
-    hooksecurefunc('PaperDollFrame_SetVersatility', function(frame)--全能
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetVersatility', function(frame)--全能
         if create_status_label(frame) then
             local text
             local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE) or 0
@@ -210,13 +210,13 @@ local function Init_Enhancements()
             frame.numLabel:SetText(text or '')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetLifesteal', function(frame)--吸
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetLifesteal', function(frame)--吸
         create_status_label(frame, CR_LIFESTEAL)
     end)
-    hooksecurefunc('PaperDollFrame_SetAvoidance', function(frame)--闪避
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetAvoidance', function(frame)--闪避
         create_status_label(frame, CR_AVOIDANCE)
     end)
-    hooksecurefunc('PaperDollFrame_SetSpeed', function(frame)--速度
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetSpeed', function(frame)--速度
         create_status_label(frame, CR_SPEED)
     end)
 end
@@ -236,28 +236,28 @@ end
 
 
 local function Init_Attack()
-    hooksecurefunc('PaperDollFrame_SetDamage', function(frame)--伤害
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetDamage', function(frame)--伤害
         if create_status_label(frame) then
             frame.numLabel:SetText(frame.damage and frame.damage:match('(|c.-|r)') or '')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetAttackPower', function(frame)--功击强度
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetAttackPower', function(frame)--功击强度
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
     end)
 
-    hooksecurefunc('PaperDollFrame_SetEnergyRegen', function(frame)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetEnergyRegen', function(frame)
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetRuneRegen', function(frame)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetRuneRegen', function(frame)
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetFocusRegen', function(frame)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetFocusRegen', function(frame)
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
@@ -275,12 +275,12 @@ end
 
 -- Spell
 local function Init_Spell()
-    hooksecurefunc('PaperDollFrame_SetSpellPower', function(frame)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetSpellPower', function(frame)
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetManaRegen', function(frame)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetManaRegen', function(frame)
         if frame.numLabel then
             frame.numLabel:SetText('')
         end
@@ -297,7 +297,7 @@ end
 
 
 local function Init_Defense()
-    hooksecurefunc('PaperDollFrame_SetArmor', function(frame, unit)--护甲
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetArmor', function(frame, unit)--护甲
         if create_status_label(frame) then
             local effectiveArmor = select(2, UnitArmor(unit))
             local text
@@ -312,13 +312,13 @@ local function Init_Defense()
             frame.numLabel:SetText(text or '')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetDodge', function(frame)--躲闪
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetDodge', function(frame)--躲闪
         create_status_label(frame, CR_DODGE)
     end)
-    hooksecurefunc('PaperDollFrame_SetParry', function(frame)--招架
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetParry', function(frame)--招架
         create_status_label(frame, CR_PARRY)
     end)
-    hooksecurefunc('PaperDollFrame_SetBlock', function(frame, unit)--格挡
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetBlock', function(frame, unit)--格挡
         if create_status_label(frame) then--, CR_BLOCK)
             local text
             local shieldBlockArmor = GetShieldBlock()
@@ -333,11 +333,11 @@ local function Init_Defense()
             frame.numLabel:SetText(text or '')
         end
     end)
-    hooksecurefunc('PaperDollFrame_SetResilience', function(frame)--韧性
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetResilience', function(frame)--韧性
         create_status_label(frame, COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
     end)
 
-    hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
         local save= Save()
         if not save.hide and save.itemLevelBit>=0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
             statFrame.Value:SetFormattedText('%.0'..save.itemLevelBit..'f%%', numericValue)
@@ -388,7 +388,7 @@ local function Init()
         return
     end
 
-    hooksecurefunc('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
         local save= Save()
         if statFrame:IsShown() and not save.hide and save.itemLevelBit>=0 then
             local avgItemLevel, avgItemLevelEquipped, avgItemLevelPvP = GetAverageItemLevel()
@@ -448,7 +448,7 @@ local function Init()
 
 
 --Base stats
-    hooksecurefunc('PaperDollFrame_SetStat', Init_Base_Stats)
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetStat', Init_Base_Stats)
 
 --Enhancements
     Init_Enhancements()

@@ -6,7 +6,7 @@ end
 
 
 local function Init()
-    hooksecurefunc(LootJournalItemSetButtonMixin, 'Init', function(frame, data)
+    WoWTools_DataMixin:Hook(LootJournalItemSetButtonMixin, 'Init', function(frame, data)
         local text
         if not frame.setNum then
             frame.setNum= WoWTools_LabelMixin:Create(frame)
@@ -30,7 +30,7 @@ local function Init()
     end)
 
 --LootJournalItemSetsMixin
-    hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame, 'ConfigureItemButton', function(_, btn)
+    WoWTools_DataMixin:Hook(EncounterJournal.LootJournalItems.ItemSetsFrame, 'ConfigureItemButton', function(_, btn)
         WoWTools_ItemMixin:SetItemStats(btn, btn.itemLink, {
             itemID=btn.itemID,
             hideLevel=true,
@@ -44,5 +44,5 @@ end
 
 function WoWTools_EncounterMixin:Init_ItemSets() --战利品, 套装, 收集数
     Init()
-    --hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox, 'Update', Update)
+    --WoWTools_DataMixin:Hook(EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox, 'Update', Update)
 end

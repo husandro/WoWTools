@@ -330,11 +330,11 @@ local function Init()
         end
     end)
 --BOSS 列表
-    hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
+    WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(btn)
         set_Loot_Spec(btn)
     end)
 
-    --[[hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(...)
+    --[[WoWTools_DataMixin:Hook(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(...)
         Init_ScrollBox(...)
     end)]]
 

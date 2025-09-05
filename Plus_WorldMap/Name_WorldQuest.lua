@@ -120,6 +120,6 @@ function WoWTools_WorldMapMixin:Init_WorldQuest_Name()
     if isHooked or not WoWToolsSave['Plus_WorldMap'].ShowWorldQues_Name then
         return
     end
-    hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', Init)--世界地图任务
+    WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'RefreshVisuals', Init)--世界地图任务
     isHooked=true
 end

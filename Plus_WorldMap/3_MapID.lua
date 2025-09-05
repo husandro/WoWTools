@@ -115,9 +115,9 @@ local function Init()
     end)
 
 
-    --hooksecurefunc(WorldMapFrame.ScrollContainer, 'SetMapID', function(self, mapID)--MapCanvasScrollControllerMixin
-    hooksecurefunc(WorldMapFrame, 'OnMapChanged', Set_Text)--Blizzard_WorldMap.lua    
-    --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
+    --WoWTools_DataMixin:Hook(WorldMapFrame.ScrollContainer, 'SetMapID', function(self, mapID)--MapCanvasScrollControllerMixin
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'OnMapChanged', Set_Text)--Blizzard_WorldMap.lua    
+    --WoWTools_DataMixin:Hook('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 
 
     Frame:SetScript('OnShow', Set_Text)

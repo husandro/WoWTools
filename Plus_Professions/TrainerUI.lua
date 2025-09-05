@@ -85,7 +85,7 @@ local function Init()
         end)
 	end)
 
-	hooksecurefunc("ClassTrainerFrame_Update",function()--Blizzard_TrainerUI.lua 
+	WoWTools_DataMixin:Hook("ClassTrainerFrame_Update",function()--Blizzard_TrainerUI.lua 
         --local show= IsTradeskillTrainer()
         local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
         ClassTrainerFrame.BuyAll.all=0
@@ -145,7 +145,7 @@ local function Init()
         GameTooltip:Hide()
         self:SetAlpha(0.5)
     end)
-    --[[hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData,...)
+    --[[WoWTools_DataMixin:Hook('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData,...)
         local skillIndex = elementData.skillIndex;
         local isTradeSkill = elementData.isTradeSkill;
         local serviceName, serviceType, texture, reqLevel = GetTrainerServiceInfo(skillIndex);
@@ -153,7 +153,7 @@ local function Init()
 
 
     --增加物品，品质，颜色
-    hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData)
+    WoWTools_DataMixin:Hook('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData)
         local itemLink= GetTrainerServiceItemLink(elementData.skillIndex)
         local r,g,b
         if itemLink then

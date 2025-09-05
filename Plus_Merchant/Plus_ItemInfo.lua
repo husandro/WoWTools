@@ -28,7 +28,7 @@ end
 local function Init_UI()
 
 --重新设置，按钮
-    hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateRepairButtons', function()
         MerchantRepairItemButton:ClearAllPoints()--单个，修理
         MerchantRepairItemButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -289, 33)
         MerchantRepairAllButton:ClearAllPoints()--全部，修理
@@ -91,7 +91,7 @@ local function Init_UI()
 
 
 
-   hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
+   WoWTools_DataMixin:Hook('MerchantFrame_UpdateCurrencies', function()
         MerchantExtraCurrencyInset:SetShown(false)
         MerchantExtraCurrencyBg:SetShown(false)
         MerchantMoneyInset:SetShown(false)
@@ -327,11 +327,11 @@ local function Init_SetItem_Info()
 
 
 --物品信息
-    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateMerchantInfo', function()
         Set_Item_Info()
     end)
 
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', function()
         Set_Item_Info()
     end)
 
@@ -342,7 +342,7 @@ local function Init_SetItem_Info()
 
 
 --购买物品，所需货币数量
-    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage)
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage)
         local itemCount = GetMerchantItemCostInfo(index)
         local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame"
         local usedCurrencies = 0
@@ -529,7 +529,7 @@ local function Init_StackSplitFrame()
         self:UpdateStackSplitFrame(self.maxStack)
     end)
 
-    hooksecurefunc(StackSplitFrame, 'OpenStackSplitFrame', function(self)
+    WoWTools_DataMixin:Hook(StackSplitFrame, 'OpenStackSplitFrame', function(self)
         self.MaxButton:SetText(self.maxStack)
         self.MetaButton:SetText(floor(self.maxStack/2))
     end)

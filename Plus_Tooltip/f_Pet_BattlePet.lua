@@ -121,20 +121,20 @@ end
 --宠物面板提示
 --###########
 local function Init_BattlePet()
-    hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
+    WoWTools_DataMixin:Hook("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
         WoWTools_TooltipMixin:Set_Battle_Pet(BattlePetTooltip, ...)
     end)
 
-    hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
+    WoWTools_DataMixin:Hook('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
         WoWTools_TooltipMixin:Set_Battle_Pet(FloatingBattlePetTooltip, ...)
     end)
 
-    hooksecurefunc(GameTooltip, "SetCompanionPet", function(self, petGUID)--设置宠物信息
+    WoWTools_DataMixin:Hook(GameTooltip, "SetCompanionPet", function(self, petGUID)--设置宠物信息
         local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
         WoWTools_TooltipMixin:Set_Pet(self, speciesID)--宠物
     end)
 
-    --[[hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(self, questID)--世界任务ID GameTooltip_AddQuest
+    --[[WoWTools_DataMixin:Hook('GameTooltip_AddQuestRewardsToTooltip', function(self, questID)--世界任务ID GameTooltip_AddQuest
         WoWTools_TooltipMixin:Set_Quest(self, questID)
     end)]]
 

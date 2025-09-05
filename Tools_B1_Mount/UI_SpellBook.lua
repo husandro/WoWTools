@@ -69,7 +69,7 @@ local function Init()
     if not SpellFlyoutButton_UpdateGlyphState then
         return
     end
-    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
+    WoWTools_DataMixin:Hook('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
         local frame= self:GetParent():GetParent()
         if not frame or not frame.mountSpell or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
             if self.mountSpell then
@@ -99,7 +99,7 @@ function WoWTools_MountMixin:Init_SpellFlyoutButton()
 end
 
 function WoWTools_MountMixin:Init_UI_SpellBook_Menu()--法术书，选项
-    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+    WoWTools_DataMixin:Hook(SpellBookItemMixin, 'UpdateVisuals', function(frame)
         set_Use_Spell_Button(frame.Button, frame.spellBookItemInfo.spellID)
     end)
 end

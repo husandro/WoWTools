@@ -76,7 +76,7 @@ local function Init()
     end
     btn:Settings()
 
-    hooksecurefunc(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(...)
+    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(...)
         Set_Text(...)
     end)
 end

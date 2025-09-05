@@ -117,8 +117,8 @@ local function Init()
     end
     set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
     set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
-    hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
-    hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+    WoWTools_DataMixin:Hook(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+    WoWTools_DataMixin:Hook(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
     return true
 end
 

@@ -466,7 +466,7 @@ for _, info in pairs(tab) do
     y= y-23
 end
 tab=nil
-hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
+WoWTools_DataMixin:Hook(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
     _G['WoWToolsScrappingClearItemButton']:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
     _G['WoWToolsScrappingAddAllButton']:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
 end)
@@ -642,7 +642,7 @@ end
 
 ]]
 
-    --[[hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
+    --[[WoWTools_DataMixin:Hook(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
         clearAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
         addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
     end)]]
@@ -679,7 +679,7 @@ local function Init()
     --物品，提示
     for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
         if (btn) then
-            hooksecurefunc(btn, 'RefreshIcon', function(self)
+            WoWTools_DataMixin:Hook(btn, 'RefreshIcon', function(self)
                 WoWTools_ItemMixin:SetupInfo(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
             end)
         end

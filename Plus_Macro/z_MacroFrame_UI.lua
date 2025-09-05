@@ -140,7 +140,7 @@ local function Init()
     MacroFrameTab2.label= WoWTools_LabelMixin:Create(MacroFrameTab2)
     MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2.Text, 'TOP', 0, 8)
     MacroFrameTab2.label:SetAlpha(0.7)
-    hooksecurefunc(MacroFrame, 'Update', function()
+    WoWTools_DataMixin:Hook(MacroFrame, 'Update', function()
     	local numAccountMacros, numCharacterMacros
         numAccountMacros, numCharacterMacros = GetNumMacros()
         numAccountMacros= numAccountMacros or 0
@@ -247,7 +247,7 @@ local function Init_Scroll()
     end)
 
 
-    hooksecurefunc(MacroFrame, "SelectMacro", function(self)
+    WoWTools_DataMixin:Hook(MacroFrame, "SelectMacro", function(self)
         if ScrollFrame.tempScrollPer and not WoWTools_FrameMixin:IsLocked(MacroFrame) then-- 恢复宏选择框的滚动条位置
             self.MacroSelector.ScrollBox:SetScrollPercentage(ScrollFrame.tempScrollPer)
         end

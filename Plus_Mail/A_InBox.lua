@@ -747,7 +747,7 @@ local function Init()
     --MailFrameTrialError:ClearAllPoints()--你需要升级你的账号才能开启这项功能。
 
     Init_InboxFrame_Update()
-    hooksecurefunc('InboxFrame_Update', function()
+    WoWTools_DataMixin:Hook('InboxFrame_Update', function()
         Init_InboxFrame_Update()
     end)
 
@@ -762,7 +762,7 @@ local function Init()
 
 
     --提示，需要付钱, 可收取钱
-    hooksecurefunc('OpenMail_Update', function()
+    WoWTools_DataMixin:Hook('OpenMail_Update', function()
         Set_OpenMail_Update()
     end)
 

@@ -212,7 +212,7 @@ local function Init()
         GameTooltip:Show()
         self:SetAlpha(1)
     end)
-    hooksecurefunc(MacroFrame, 'SelectMacro', function(self, index)
+    WoWTools_DataMixin:Hook(MacroFrame, 'SelectMacro', function(self, index)
         self.numSelectionLable:SetText(index and index+MacroFrame.macroBase or '')
     end)
 

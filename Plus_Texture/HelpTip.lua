@@ -14,7 +14,7 @@ local function Init()
         return
     end
 
-    hooksecurefunc(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua
+    WoWTools_DataMixin:Hook(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua
         local find
         for frame in self.framePool:EnumerateActive() do
             local btn= frame.OkayButton:IsShown() and frame.OkayButton or (frame.CloseButton:IsShown() and frame.CloseButton)
@@ -33,7 +33,7 @@ local function Init()
     end
 
 --Blizzard_TutorialPointerFrame.lua 隐藏, 新手教程
-    hooksecurefunc(TutorialPointerFrame, 'Show',function(self, content, direction, anchorFrame)
+    WoWTools_DataMixin:Hook(TutorialPointerFrame, 'Show',function(self, content, direction, anchorFrame)
         if not anchorFrame or not self.DirectionData[direction] then
             return
         end
@@ -50,7 +50,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(ReportFrame, 'UpdateThankYouMessage', function(self, showThankYouMessage)
+    WoWTools_DataMixin:Hook(ReportFrame, 'UpdateThankYouMessage', function(self, showThankYouMessage)
         if showThankYouMessage then
             C_Timer.After(1, function()
                 if self:IsShown() then

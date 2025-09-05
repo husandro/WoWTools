@@ -65,16 +65,16 @@ local function Init()
     WoWTools_PaperDollMixin:Init_Tab3_Set_Plus()--装备管理，Plus
 
 
-    hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
+    WoWTools_DataMixin:Hook('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
         WoWTools_PaperDollMixin:Settings_Tab2()--总装等
         WoWTools_PaperDollMixin:Settings_Tab3()
     end)
 
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--装备管理
+    WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_Update', function()--装备管理
         WoWTools_PaperDollMixin:Settings_Tab3()
         WoWTools_PaperDollMixin:Settings_Tab1()--总装等
     end)
-    hooksecurefunc('GearSetButton_SetSpecInfo', function()--装备管理,修该专精
+    WoWTools_DataMixin:Hook('GearSetButton_SetSpecInfo', function()--装备管理,修该专精
         WoWTools_PaperDollMixin:Settings_Tab3()
         WoWTools_PaperDollMixin:Settings_Tab1()--总装等
     end)

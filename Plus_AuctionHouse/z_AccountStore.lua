@@ -61,5 +61,5 @@ end
 
 
 function WoWTools_AuctionHouseMixin:Init_AccountStore()
-    hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', Set_Update)
+    WoWTools_DataMixin:Hook(AccountStoreFrame.CategoryList.ScrollBox, 'Update', Set_Update)
 end

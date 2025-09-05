@@ -18,7 +18,7 @@ end
 
 --接受, 召唤
 local function Init()
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
+    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
         if IsModifierKeyDown() or self.isCancelledAuto or not Save().Summon then
             if not self.isCancelledAuto then
                 WoWTools_CooldownMixin:Setup(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
@@ -74,7 +74,7 @@ local function Init()
         self.isCancelled=nil
     end
 
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function()--StaticPopup.lua
+    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function()--StaticPopup.lua
         WoWTools_DataMixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         local name= C_SummonInfo.GetSummonConfirmSummoner()
         local info= WoWTools_DataMixin.GroupGuid[name]

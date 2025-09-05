@@ -376,8 +376,8 @@ local function Init()
             end
         end
     end
-    hooksecurefunc(Boss1TargetFrameSpellBar,'AdjustPosition', set_TotButton_point)
-    hooksecurefunc(BossTargetFrameContainer, 'SetSmallSize', set_TotButton_point)
+    WoWTools_DataMixin:Hook(Boss1TargetFrameSpellBar,'AdjustPosition', set_TotButton_point)
+    WoWTools_DataMixin:Hook(BossTargetFrameContainer, 'SetSmallSize', set_TotButton_point)
 
 
 

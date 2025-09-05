@@ -335,7 +335,7 @@ local function Init()
     end
 
 --点击，显示套装情况Blizzard_Wardrobe.lua
-    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)
+    WoWTools_DataMixin:Hook(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)
         if not btn:IsVisible() then
             return
         end
@@ -352,18 +352,18 @@ local function Init()
     end)
 
 --幻化，套装，索引
-    hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(...) set_Sets_Tooltips(...) end)
+    WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(...) set_Sets_Tooltips(...) end)
 
 
 --套装，列表
-    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(...) Set_List_Button(...) end)
+    WoWTools_DataMixin:Hook(WardrobeSetsScrollFrameButtonMixin, 'Init', function(...) Set_List_Button(...) end)
 
 
 
 
     --套装,物品, Link WardrobeSetsCollectionMixin
-    hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', function(...) Init_Wardrobe_DetailsFrame(...) end)
-     --hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'DisplaySet', function(...)
+    WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', function(...) Init_Wardrobe_DetailsFrame(...) end)
+     --WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsCollectionFrame, 'DisplaySet', function(...)
         
 
     return true

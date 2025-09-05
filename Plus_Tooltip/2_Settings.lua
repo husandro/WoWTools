@@ -135,13 +135,13 @@ local function Init()
 
 
 --Buff, 来源, 数据, 不可删除，如果删除，目标buff没有数据
-    hooksecurefunc(GameTooltip, "SetUnitBuff", function(...)
+    WoWTools_DataMixin:Hook(GameTooltip, "SetUnitBuff", function(...)
         WoWTools_TooltipMixin:Set_Buff('Buff', ...)
     end)
-    hooksecurefunc(GameTooltip, "SetUnitDebuff", function(...)
+    WoWTools_DataMixin:Hook(GameTooltip, "SetUnitDebuff", function(...)
         WoWTools_TooltipMixin:Set_Buff('Debuff', ...)
     end)
-    hooksecurefunc(GameTooltip, "SetUnitAura", function(...)
+    WoWTools_DataMixin:Hook(GameTooltip, "SetUnitAura", function(...)
         WoWTools_TooltipMixin:Set_Buff('Aura', ...)
     end)
 

@@ -160,18 +160,18 @@ end
 
 local function Init()
     --列表，按钮，操作
-    hooksecurefunc(MacroButtonMixin, 'OnLoad', function(...)
+    WoWTools_DataMixin:Hook(MacroButtonMixin, 'OnLoad', function(...)
         Set_OnLoad(...)
     end)
 
     --宏，名称，修改，字符长度
-    hooksecurefunc(MacroFrame.MacroSelector, 'setupCallback', function(self, _, name)--Blizzard_MacroUI.lua
+    WoWTools_DataMixin:Hook(MacroFrame.MacroSelector, 'setupCallback', function(self, _, name)--Blizzard_MacroUI.lua
         if name ~= nil then
             self.Name:SetText(WoWTools_TextMixin:sub(name, 2, 4))
         end
     end)
 
-    hooksecurefunc(MacroFrame.MacroSelector.ScrollBox, 'Update', function(self)
+    WoWTools_DataMixin:Hook(MacroFrame.MacroSelector.ScrollBox, 'Update', function(self)
         if not self:GetView() then
             return
         end

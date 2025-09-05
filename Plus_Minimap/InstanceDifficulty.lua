@@ -127,7 +127,7 @@ local function Init()
     WoWTools_LabelMixin:Create(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
     btn.Default.Text:SetShadowOffset(1,-1)
 
-    hooksecurefunc(btn, 'Update', InstanceDifficulty_Update)
+    WoWTools_DataMixin:Hook(btn, 'Update', InstanceDifficulty_Update)
 
     btn:HookScript('OnEnter', InstanceDifficulty_OnEnter)
     btn:HookScript('OnLeave', function(self)

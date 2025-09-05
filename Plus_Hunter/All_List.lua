@@ -129,7 +129,7 @@ local function created_button(index)
     btn.Text:SetPoint('CENTER', btn.Background)
     btn.Text:SetText(index)
     btn.Icon:SetDrawLayer('BORDER')
-    hooksecurefunc(btn, 'SetPet', function(self)
+    WoWTools_DataMixin:Hook(btn, 'SetPet', function(self)
         self.Icon:SetTexCoord(0, 1, 0, 1);
     end)
     return btn
@@ -197,7 +197,7 @@ local function Init()
         self.btn6:settings()
     end
 
-    hooksecurefunc(StableFrame, 'Refresh', function()
+    WoWTools_DataMixin:Hook(StableFrame, 'Refresh', function()
         if AllListFrame:IsShown() then
             AllListFrame:Refresh()
         end

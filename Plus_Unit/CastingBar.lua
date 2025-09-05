@@ -86,7 +86,7 @@ local function Settings(frame)
         end)
     end
     if frame.UpdateCastTimeText then
-        hooksecurefunc(frame, 'UpdateCastTimeText', function(self)--去掉 秒
+        WoWTools_DataMixin:Hook(frame, 'UpdateCastTimeText', function(self)--去掉 秒
             local text= self.CastTimeText:GetText()
             text= text:match('(%d+.%d)') or text
             text= text=='0.0' and '' or text
@@ -118,7 +118,7 @@ local function SetupTimer(frame)
             WoWTools_ColorMixin:Setup(activeTimer.valueText, {type='FontString'})--设置颜色
             WoWTools_ColorMixin:Setup(activeTimer.Text, {type='FontString'})--设置颜色
 
-            hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self)
+            WoWTools_DataMixin:Hook(activeTimer, 'UpdateStatusBarValue', function(self)
                 self.valueText:SetText(format('%i', self.StatusBar:GetValue()))
             end)
         end
@@ -142,7 +142,7 @@ local function Init()
     Settings(OverlayPlayerCastingBarFrame)
     Settings(TargetFrameSpellBar)
 
-    hooksecurefunc(MirrorTimerContainer, 'SetupTimer', SetupTimer)
+    WoWTools_DataMixin:Hook(MirrorTimerContainer, 'SetupTimer', SetupTimer)
 
 
 

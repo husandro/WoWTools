@@ -129,7 +129,7 @@ local function Init_Data()
         if WoWTools_DataMixin.Player.husandro then
             GossipFrameCloseButton.numText= WoWTools_LabelMixin:Create(GossipFrameCloseButton)
             GossipFrameCloseButton.numText:SetPoint('RIGHT', GossipFrameCloseButton, 'LEFT')
-            hooksecurefunc(GossipOptionButtonMixin, 'Setup', function()
+            WoWTools_DataMixin:Hook(GossipOptionButtonMixin, 'Setup', function()
                 local num=0
                 for _, data in pairs(C_GossipInfo.GetOptions() or {}) do
                     if not GossipTextIcon[data.gossipOptionID] and not WoWToolsPlayerDate['GossipTextIcon'][data.gossipOptionID] then

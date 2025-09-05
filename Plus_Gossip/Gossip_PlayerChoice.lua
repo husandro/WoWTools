@@ -46,7 +46,7 @@ end
 --Blizzard_PlayerChoice
 local function Init()
     --命运, 字符
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"], "OnShow", function(s)
+    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"], "OnShow", function(s)
         if Save().gossip then
             local edit= s.editBox or s:GetEditBox()
            edit:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
@@ -54,10 +54,10 @@ local function Init()
     end)
 
 
-     --hooksecurefunc(PlayerChoiceBaseOptionButtonsContainerMixin, 'Setup', function(btn, optionInfo, showAsList)
+     --WoWTools_DataMixin:Hook(PlayerChoiceBaseOptionButtonsContainerMixin, 'Setup', function(btn, optionInfo, showAsList)
        
 
-    hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(frame)
+    WoWTools_DataMixin:Hook(PlayerChoiceFrame, 'SetupOptions', function(frame)
         if not Save().gossip then
             return
         end
@@ -134,7 +134,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(PlayerChoiceNormalOptionTemplateMixin,'SetupButtons', function(frame)
+    WoWTools_DataMixin:Hook(PlayerChoiceNormalOptionTemplateMixin,'SetupButtons', function(frame)
         local info2= frame.optionInfo or {}
         if not info2.disabledOption and info2.buttons
             and info2.buttons[2] and info2.buttons[2].id
@@ -239,7 +239,7 @@ local function Init()
 
     --PlayerChoiceGenericPowerChoiceOptionTemplat
 --BUFF信息
-    hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'Setup', function(frame)
+    WoWTools_DataMixin:Hook(PlayerChoicePowerChoiceTemplateMixin, 'Setup', function(frame)
         if frame.settings then
             frame:settings()
             return

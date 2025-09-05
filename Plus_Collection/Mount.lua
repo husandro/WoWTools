@@ -105,14 +105,14 @@ end
 --坐骑, 界面
 --#########
 local function Init()
-    hooksecurefunc('MountJournal_UpdateMountDisplay',  function()--坐骑
+    WoWTools_DataMixin:Hook('MountJournal_UpdateMountDisplay',  function()--坐骑
         UpdateMountDisplay()
     end)
 
     --总数
     MountJournal.MountCount.Count:SetPoint('RIGHT', -4,0)
 
-    hooksecurefunc('MountJournal_UpdateMountList', function()
+    WoWTools_DataMixin:Hook('MountJournal_UpdateMountList', function()
         if not MountJournal:IsVisible() then
             return
         end

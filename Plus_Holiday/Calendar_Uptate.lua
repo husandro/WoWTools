@@ -57,6 +57,6 @@ end
 
 
 function WoWTools_HolidayMixin:Init_Calendar_Uptate()
-    hooksecurefunc(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID    
-    hooksecurefunc('CalendarViewHolidayFrame_Update', calendar_Uptate)
+    WoWTools_DataMixin:Hook(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID    
+    WoWTools_DataMixin:Hook('CalendarViewHolidayFrame_Update', calendar_Uptate)
 end

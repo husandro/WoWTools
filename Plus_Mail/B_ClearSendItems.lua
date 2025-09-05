@@ -31,7 +31,7 @@ local function Init()
     end)
 
 
-    hooksecurefunc('SendMailFrame_Update', function()--发信箱，物品，信息
+    WoWTools_DataMixin:Hook('SendMailFrame_Update', function()--发信箱，物品，信息
         local hasItem, btn, num= nil, nil, 0
         for i=1, ATTACHMENTS_MAX_SEND do
             btn = SendMailFrame.SendMailAttachments[i]

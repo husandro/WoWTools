@@ -124,11 +124,11 @@ end
 --自动ROLL
 --GroupLootFrame.lua --frame.rollTime  frame.Timer
 local function Init()
-    hooksecurefunc('GroupLootContainer_AddFrame', function(_, self)
+    WoWTools_DataMixin:Hook('GroupLootContainer_AddFrame', function(_, self)
         set_ROLL_Check(self)
     end)
 
-    hooksecurefunc('GroupLootContainer_Update', function(self)
+    WoWTools_DataMixin:Hook('GroupLootContainer_Update', function(self)
         for i=1, self.maxIndex or 0 do
             local frame = self.rollFrames[i]
             if frame and frame:IsShown()  then

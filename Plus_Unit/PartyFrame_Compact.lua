@@ -96,7 +96,7 @@ local function Init()
         return
     end
     set_CompactPartyFrame()--小队, 使用团框架
-    hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
+    WoWTools_DataMixin:Hook(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
 
     Init=function()end
 end

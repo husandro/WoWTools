@@ -44,7 +44,7 @@ local P_Save= {
 
 
 local function OnRemoved()
-    hooksecurefunc(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
+    WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
         if _G['WoWToolsTarget_IsMeFrame'] then
             _G['WoWToolsTarget_IsMeFrame']:hide_plate(plate)
         end

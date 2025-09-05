@@ -115,7 +115,7 @@ end
 
 --ROGUE
 local function DZ()
-    hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
+    WoWTools_DataMixin:Hook(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
         C_Timer.After(0.5, function()
             for _, btn in pairs(self.classResourceButtonTable or {}) do
                 WoWTools_TextureMixin:HideTexture(btn.BGActive)
@@ -156,7 +156,7 @@ local function WS()
         end
     end
 
-    hooksecurefunc(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
+    WoWTools_DataMixin:Hook(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
         C_Timer.After(0.5, function()
             for i = 1, #self.classResourceButtonTable do
                 set_MonkHarmonyBarFrame(self.classResourceButtonTable[i])
@@ -167,7 +167,7 @@ local function WS()
             end
         end)
     end)
-    hooksecurefunc(MonkHarmonyBarFrame, 'UpdatePower', function(self)
+    WoWTools_DataMixin:Hook(MonkHarmonyBarFrame, 'UpdatePower', function(self)
         for _, btn in pairs(self.classResourceButtonTable or {}) do
             if btn.Chi_BG then
                 btn.Chi_BG:SetAlpha(0.2)
@@ -218,7 +218,7 @@ local function SM()
         WoWTools_TextureMixin:SetAlphaColor(btn.Border, nil, nil, 0.3)
     end
 
-    hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
+    WoWTools_DataMixin:Hook(TotemButtonMixin, 'OnLoad', function(self)
         WoWTools_TextureMixin:SetAlphaColor(self.Border, nil, nil, 0.3)
     end)
 end

@@ -59,7 +59,7 @@ local function Craete_assisterButton()
     frame.isEveryoneAssistantIcon:SetSize(16,16)
     frame.isEveryoneAssistantIcon:Hide()
 
-    hooksecurefunc('PlayerFrame_UpdatePartyLeader', function()
+    WoWTools_DataMixin:Hook('PlayerFrame_UpdatePartyLeader', function()
         local contextual = PlayerFrame_GetPlayerFrameContentContextual()
         local isLeader= UnitIsGroupLeader("player")
         local isAssist= UnitIsGroupAssistant('player')
@@ -561,7 +561,7 @@ end
     PlayerFrameGroupIndicatorText:SetPoint('TOPRIGHT', PlayerFrame, -35, -24)
 
 --处理,小队, 号码
-    hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()
+    WoWTools_DataMixin:Hook('PlayerFrame_UpdateGroupIndicator', function()
         if IsInRaid() then
             local text= PlayerFrameGroupIndicatorText:GetText()
             local num= text and text:match('(%d)')
@@ -586,7 +586,7 @@ end
 
 
 --等级，颜色
-    hooksecurefunc('PlayerFrame_UpdateLevel', function()
+    WoWTools_DataMixin:Hook('PlayerFrame_UpdateLevel', function()
         if UnitExists("player") then
             local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit)
             if effectiveLevel== GetMaxLevelForLatestExpansion() then
@@ -623,7 +623,7 @@ end
 
 
 --移动，缩小，开启战争模式时，PVP图标
-    hooksecurefunc('PlayerFrame_UpdatePvPStatus', function()--开启战争模式时，PVP图标
+    WoWTools_DataMixin:Hook('PlayerFrame_UpdatePvPStatus', function()--开启战争模式时，PVP图标
         local contextual = PlayerFrame_GetPlayerFrameContentContextual();
         local icon= contextual and contextual.PVPIcon
         if icon then
@@ -635,7 +635,7 @@ end
 
 
 --修改, 宠物, 名称)
-    hooksecurefunc('UnitFrame_OnEvent', function(self, event)
+    WoWTools_DataMixin:Hook('UnitFrame_OnEvent', function(self, event)
         if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
             self.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         end

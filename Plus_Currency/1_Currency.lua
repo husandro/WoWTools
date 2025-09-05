@@ -37,7 +37,7 @@ local function Init()
 	WoWTools_CurrencyMixin:Init_ScrollBox_Plus()
 	WoWTools_CurrencyMixin:Init_MaxTooltip()
 
-	hooksecurefunc(TokenFrame, 'Update', function(frame)
+	WoWTools_DataMixin:Hook(TokenFrame, 'Update', function(frame)
 		WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)--套装,转换,货币
 
 		if WoWTools_CurrencyMixin.TrackButton then
@@ -55,7 +55,7 @@ end
 
 
 local function Init_ItemInteractionUI()
-	hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
+	WoWTools_DataMixin:Hook(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
 		WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)
 	end)
 	Init_ItemInteractionUI=function()end
@@ -67,7 +67,7 @@ end
 
 --记录，套装，转换，货币
 local function Init_Disabled()
-	hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function()--C_ItemInteraction.GetChargeInfo()
+	WoWTools_DataMixin:Hook(ItemInteractionFrame, 'SetupChargeCurrency', function()--C_ItemInteraction.GetChargeInfo()
 		local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
 		Save().ItemInteractionID= itemInfo.currencyTypeId
 		WoWTools_DataMixin.CurrencyUpdateItemLevelID= itemInfo.currencyTypeId

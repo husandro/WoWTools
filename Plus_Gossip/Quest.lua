@@ -510,7 +510,7 @@ local function Init_Quest()
 
 
     --任务进度, 继续, 完成 QuestFrame.lua
-    hooksecurefunc('QuestFrameProgressItems_Update', function()
+    WoWTools_DataMixin:Hook('QuestFrameProgressItems_Update', function()
         local questID= WoWTools_QuestMixin:GetID()
         local npc=WoWTools_UnitMixin:GetNpcID('npc')
         QuestFrame.sel.npc=npc
@@ -571,7 +571,7 @@ local function Init_Quest()
 
 
     --自动接取任务, 仅一个任务
-    hooksecurefunc('QuestInfo_Display', function(template, parentFrame, acceptButton)--, material, mapView)--QuestInfo.lua
+    WoWTools_DataMixin:Hook('QuestInfo_Display', function(template, parentFrame, acceptButton)--, material, mapView)--QuestInfo.lua
         local questID= WoWTools_QuestMixin:GetID()
         local npc=WoWTools_UnitMixin:GetNpcID('npc')
         QuestFrame.sel.npc=npc

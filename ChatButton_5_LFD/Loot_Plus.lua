@@ -142,8 +142,8 @@ local function Init()
             btn.itemSubTypeLabel:SetText(text or '')
         end
     end
-    hooksecurefunc(LootHistoryElementMixin, 'Init', function(...) set_LootFrame_btn(...) end)
-    hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+    WoWTools_DataMixin:Hook(LootHistoryElementMixin, 'Init', function(...) set_LootFrame_btn(...) end)
+    WoWTools_DataMixin:Hook(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
         if not self:GetView() then
             return
         end

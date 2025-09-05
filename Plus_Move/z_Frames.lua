@@ -12,7 +12,7 @@ end
 
 --对话
 function WoWTools_MoveMixin.Frames:GossipFrame()
-    hooksecurefunc(GossipGreetingTextMixin, 'Setup', function(b)
+    WoWTools_DataMixin:Hook(GossipGreetingTextMixin, 'Setup', function(b)
         b.GreetingText:SetWidth(b:GetWidth()-22)
     end)
     GossipFrame.GreetingPanel:SetPoint('BOTTOMRIGHT')
@@ -53,13 +53,13 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
         frame:SetPoint('CENTER')
         frame:SetSize(s, s)
     end
-    hooksecurefunc(DressUpFrame, 'SetShownOutfitDetailsPanel', function(frame)
+    WoWTools_DataMixin:Hook(DressUpFrame, 'SetShownOutfitDetailsPanel', function(frame)
         if frame.ResizeButton and not GetCVarBool("miniDressUpFrame") then
             Set_Max(frame)
         end
         frame:Raise()
     end)
-    hooksecurefunc(DressUpFrame, 'ConfigureSize', function(frame, isMinimized)
+    WoWTools_DataMixin:Hook(DressUpFrame, 'ConfigureSize', function(frame, isMinimized)
         if not frame.ResizeButton then
             return
         end
@@ -158,12 +158,12 @@ function WoWTools_MoveMixin.Frames:LootFrame()
 
     LootFrame.ScrollBox:SetPoint('RIGHT', -12, 0)
 
-    hooksecurefunc(LootFrameItemElementMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(LootFrameItemElementMixin, 'OnLoad', function(btn)
         btn.Text:SetPoint('RIGHT', -8, 0)
     end)
-    --hooksecurefunc(LootFrameElementMixin, 'Init', function(btn)
+    --WoWTools_DataMixin:Hook(LootFrameElementMixin, 'Init', function(btn)
 
-    hooksecurefunc(LootFrame, 'Open', function(frame)
+    WoWTools_DataMixin:Hook(LootFrame, 'Open', function(frame)
         if WoWTools_FrameMixin:IsLocked(frame) then
             return
         end

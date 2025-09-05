@@ -58,7 +58,7 @@ local function Init()
         WoWTools_MoveMixin.Frames[name]= nil
     end
 
-    hooksecurefunc('UpdateUIPanelPositions', function(currentFrame)
+    WoWTools_DataMixin:Hook('UpdateUIPanelPositions', function(currentFrame)
         if Save().SavePoint then
             WoWTools_MoveMixin:SetPoint(currentFrame)
         end

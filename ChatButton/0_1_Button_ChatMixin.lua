@@ -36,11 +36,11 @@ local function Set_Button_Script(btn)
         return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
     end
 
-    hooksecurefunc(btn, 'OnMenuOpened', function(self)
+    WoWTools_DataMixin:Hook(btn, 'OnMenuOpened', function(self)
         self:SetButtonState('PUSHED')
     end)
 
-    hooksecurefunc(btn, 'OnMenuClosed', function(self)
+    WoWTools_DataMixin:Hook(btn, 'OnMenuClosed', function(self)
         self:SetButtonState('NORMAL')
     end)
 

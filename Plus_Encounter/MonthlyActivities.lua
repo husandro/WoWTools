@@ -14,7 +14,7 @@ MonthlyActivitiesButtonMixin
 
 local function Init()
 --任务，提示
-    hooksecurefunc(MonthlyActivitiesButtonMixin, 'ShowTooltip', function(self)
+    WoWTools_DataMixin:Hook(MonthlyActivitiesButtonMixin, 'ShowTooltip', function(self)
         local data = self:GetData()
         local id= data and data.ID
         if not id then
@@ -34,7 +34,7 @@ local function Init()
     end)
 
 
-    hooksecurefunc(MonthlyActivitiesButtonMixin, 'OnClick', function(self, d)
+    WoWTools_DataMixin:Hook(MonthlyActivitiesButtonMixin, 'OnClick', function(self, d)
         local data = self:GetData()
         local id= data and data.ID
         if id and d=='RightButton' then
@@ -45,7 +45,7 @@ local function Init()
     end)
 
 
-    hooksecurefunc(MonthlyActivitiesButtonMixin, 'Init', function(self)
+    WoWTools_DataMixin:Hook(MonthlyActivitiesButtonMixin, 'Init', function(self)
         self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     end)
 

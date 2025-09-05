@@ -25,7 +25,7 @@ function WoWTools_TextureMixin.Frames:BankFrame()
 --右边Tab
     self:HideTexture(BankPanel.PurchaseTab.Border)
     WoWTools_ButtonMixin:AddMask(BankPanel.PurchaseTab, true, BankPanel.PurchaseTab.Border.Icon)
-    hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(BankPanelTabMixin, 'OnLoad', function(btn)
         self:HideTexture(btn.Border)
         WoWTools_ButtonMixin:AddMask(btn, true, btn.Icon)
     end)
@@ -34,7 +34,7 @@ function WoWTools_TextureMixin.Frames:BankFrame()
     self:SetIconSelectFrame(BankPanel.TabSettingsMenu)
 
 --button
-    hooksecurefunc(BankPanelItemButtonMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'OnLoad', function(btn)
         self:SetAlphaColor(btn.Background, nil, nil, 0.2)
         self:HideTexture(btn.NormalTexture)
     end)

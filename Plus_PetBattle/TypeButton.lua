@@ -452,7 +452,7 @@ local function Init(isShow)
         end
     end)]]
 
-    hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
+    WoWTools_DataMixin:Hook('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
         if self~=_G['PetBattlePrimaryUnitTooltip'] then
             return
         end
@@ -462,7 +462,7 @@ local function Init(isShow)
         end
     end)
 
-    hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo)
+    WoWTools_DataMixin:Hook('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo)
         local abilityID = abilityInfo:GetAbilityID()
         local petType = abilityID and select(7, C_PetBattles.GetAbilityInfoByID(abilityID))
         if petType then

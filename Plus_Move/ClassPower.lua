@@ -49,12 +49,12 @@ local function Setup_Frame(name)
 
     if frame.moveFrameData then
         if frame.Update then--TotemFrame.lua
-            hooksecurefunc(frame, 'Update', function(...)
+            WoWTools_DataMixin:Hook(frame, 'Update', function(...)
                 Set_Func_Point(...)
             end)
         end
         if frame.Setup then
-            hooksecurefunc(frame, 'Setup', function(...)
+            WoWTools_DataMixin:Hook(frame, 'Setup', function(...)
                 Set_Func_Point(...)
             end)
         end
@@ -68,12 +68,12 @@ local function Init()--职业，能量条
     end
 
 
-    hooksecurefunc('PlayerFrame_AdjustAttachments', function()
+    WoWTools_DataMixin:Hook('PlayerFrame_AdjustAttachments', function()
         for _, name in pairs(Frames) do
             Set_Func_Point(_G[name])
         end
     end)
-    hooksecurefunc('PlayerFrame_UpdateArt', function()
+    WoWTools_DataMixin:Hook('PlayerFrame_UpdateArt', function()
         C_Timer.After(0.5, function()
             for _, name in pairs(Frames) do
                 Set_Func_Point(_G[name])
@@ -86,7 +86,7 @@ local function Init()--职业，能量条
         for btn in TotemFrame.totemPool:EnumerateActive() do
             WoWTools_MoveMixin:Setup(btn, {frame=TotemFrame, click='LeftButton'})
         end
-        hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
+        WoWTools_DataMixin:Hook(TotemButtonMixin, 'OnLoad', function(self)
             WoWTools_MoveMixin:Setup(self, {frame=TotemFrame, click='LeftButton'})
         end)
     end

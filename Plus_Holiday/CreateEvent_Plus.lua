@@ -296,5 +296,5 @@ end
 function WoWTools_HolidayMixin:Init_CreateEventFrame()
     Init_List()
     --CalendarCreateEventFrame:HookScript('OnShow', CreateEventFrame_OnShow)
-    hooksecurefunc('CalendarCreateEventInviteListScrollFrame_Update', InviteListScrollFrame_Update)
+    WoWTools_DataMixin:Hook('CalendarCreateEventInviteListScrollFrame_Update', InviteListScrollFrame_Update)
 end

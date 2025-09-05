@@ -188,7 +188,7 @@ local function Init()
         end
     end
 
-    hooksecurefunc(StaticPopupDialogs["PARTY_INVITE"], 'OnHide', function(self)
+    WoWTools_DataMixin:Hook(StaticPopupDialogs["PARTY_INVITE"], 'OnHide', function(self)
         if InvTimer then InvTimer:Cancel() InvTimer=nil end
         InviterPlayerGUID=nil
         WoWTools_CooldownMixin:Setup(self)--冷却条  

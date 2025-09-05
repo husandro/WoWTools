@@ -124,6 +124,6 @@ function WoWTools_WorldMapMixin:Init_AreaPOI_Name()
         return
     end
 
-    hooksecurefunc(AreaPOIPinMixin,'OnAcquired', Init)--地图POI提示 AreaPOIDataProvider.lua
+    WoWTools_DataMixin:Hook(AreaPOIPinMixin,'OnAcquired', Init)--地图POI提示 AreaPOIDataProvider.lua
     IsSetup= true
 end

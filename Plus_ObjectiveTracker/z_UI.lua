@@ -30,7 +30,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
 
             Set_Collapsed(ObjectiveTrackerFrame:IsCollapsed())
           
-            hooksecurefunc(ObjectiveTrackerFrame, 'SetCollapsed', function(_, collapsed)
+            WoWTools_DataMixin:Hook(ObjectiveTrackerFrame, 'SetCollapsed', function(_, collapsed)
                Set_Collapsed(collapsed)
             end)
         end,

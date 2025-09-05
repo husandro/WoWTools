@@ -416,7 +416,7 @@ local function Init()--好友列表, 初始化
 
 
 --好友PLUS FriendsFrame.lua
-     hooksecurefunc('FriendsFrame_UpdateFriendButton', function(self)
+     WoWTools_DataMixin:Hook('FriendsFrame_UpdateFriendButton', function(self)
         if Save().disabledFriendPlus then
             return
         end
@@ -616,11 +616,11 @@ local function Init()--好友列表, 初始化
         end
     end
 
-    hooksecurefunc('WhoList_Update', function()
+    WoWTools_DataMixin:Hook('WhoList_Update', function()
         set_WhoList_Update()
     end)
 
-    hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+    WoWTools_DataMixin:Hook(WhoFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
         set_WhoList_Update(self)
     end)
 

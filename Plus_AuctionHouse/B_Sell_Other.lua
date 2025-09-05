@@ -27,10 +27,10 @@ local function Init_NextItem()
     AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetHeight(32)--<Size x="194" y="22"/>
     AuctionHouseFrame.ItemSellFrame.PostButton:SetHeight(32)
 
-    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'PostItem', function(self)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.CommoditiesSellFrame, 'PostItem', function(self)
         self.isNextItem=true
     end)
-    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
         self.PostButton:ClearAllPoints()
         self.PostButton:SetPoint('BOTTOM', 45, 75)
         if self:GetItem()
@@ -43,10 +43,10 @@ local function Init_NextItem()
         C_Timer.After(0.3, function() WoWTools_AuctionHouseMixin:SetPostNextSellItem() end)--放入，第一个，物品
         self.isNextItem=nil
     end)
-    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'PostItem', function(self)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemSellFrame, 'PostItem', function(self)
         self.isNextItem=true
     end)
-    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
         self.PostButton:ClearAllPoints()
         self.PostButton:SetPoint('BOTTOM', 45, 75)
         if self:GetItem()
@@ -151,7 +151,7 @@ local function Init_ShowCommoditiesButton()
 
 --Blizzard_AuctionHouseSearchBar.lua
 --出售，物品，双击列表，转到购买界面
-    hooksecurefunc(AuctionHouseFrame.CommoditiesSellList.ScrollBox, 'Update', function(frame)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.CommoditiesSellList.ScrollBox, 'Update', function(frame)
         if not frame:GetView() then
             return
         end
@@ -170,7 +170,7 @@ local function Init_ShowCommoditiesButton()
             end
         end
     end)
-    hooksecurefunc(AuctionHouseFrame.ItemSellList.ScrollBox, 'Update', function(frame)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemSellList.ScrollBox, 'Update', function(frame)
         if not frame:GetView() then
             return
         end
@@ -376,10 +376,10 @@ local function Init_PercentLabel()
     AuctionHouseFrame.ItemSellFrame.vendorPriceLabel= WoWTools_LabelMixin:Create(AuctionHouseFrame.ItemSellFrame, {size=12})--单价，提示
     AuctionHouseFrame.ItemSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
 
-    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdateTotalPrice', function(self)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.CommoditiesSellFrame, 'UpdateTotalPrice', function(self)
         Update_Total_Price(self)
     end)
-    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdateTotalPrice', function(self)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemSellFrame, 'UpdateTotalPrice', function(self)
         Update_Total_Price(self)
     end)
 

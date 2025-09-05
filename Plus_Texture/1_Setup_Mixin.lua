@@ -288,7 +288,7 @@ function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
 
     --if isHideBar and not bar.hideIfUnscrollable  then
     bar:SetAlpha(bar:HasScrollableExtent() and 1 or 0)
-    hooksecurefunc(bar, 'Update', function(b)
+    WoWTools_DataMixin:Hook(bar, 'Update', function(b)
         b:SetAlpha(b:HasScrollableExtent() and 1 or 0)
     end)
     --end
@@ -375,7 +375,7 @@ end
 ]]
 
 --PanelTemplates_TabResize(frame, frame:GetParent().tabPadding or 0 , nil, frame:GetParent().minTabWidth, frame:GetParent().maxTabWidth)
---hooksecurefunc(TabSystemButtonMixin, 'Init', function(self)
+--WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(self)
     
 function WoWTools_TextureMixin:SetTabButton(frame, alpha)--TabSystemOwner.lua
     if not frame then

@@ -26,6 +26,6 @@ function WoWTools_WorldMapMixin:Init_Dungeon_Name()
         return
     end
 
-    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', Dungeon_Name)
+    WoWTools_DataMixin:Hook(DungeonEntrancePinMixin, 'OnAcquired', Dungeon_Name)
     IsSetup= true
 end

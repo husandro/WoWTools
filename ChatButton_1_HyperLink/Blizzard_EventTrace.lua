@@ -296,7 +296,7 @@ local function Init_LeftList()
     end
 
     --添加，事件
-    hooksecurefunc(EventTrace, 'LogLine', function(_, data)
+    WoWTools_DataMixin:Hook(EventTrace, 'LogLine', function(_, data)
         if not data.displayEvent and data.event then
             local find= ScrollBox.events[data.event] or 0
 
@@ -314,14 +314,14 @@ local function Init_LeftList()
     end)
 
     --刷新，事件
-    hooksecurefunc(EventTrace, 'TogglePause', function(self)
+    WoWTools_DataMixin:Hook(EventTrace, 'TogglePause', function(self)
         if not self.isLoggingPaused then
             ScrollBox:settings()
         end
     end)
 
     --过滤，事件
-    hooksecurefunc(EventTrace, 'RemoveEventFromDataProvider', function(_, _, event)
+    WoWTools_DataMixin:Hook(EventTrace, 'RemoveEventFromDataProvider', function(_, _, event)
         if ScrollBox.events[event] then
             ScrollBox.events[event]= nil
             ScrollBox:settings()
@@ -412,7 +412,7 @@ local function Init_EditBox()
 
 
 
-    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(self)
+    WoWTools_DataMixin:Hook(EventTraceLogEventButtonMixin, 'OnLoad', function(self)
 --隐藏事件按钮，提示 OnEnter
         self.HideButton:SetScript('OnLeave', function(s)
             GameTooltip:Hide()
@@ -445,7 +445,7 @@ local function Init_EditBox()
             Frame.editBox:SetCursorPosition(1)
         end
 
-        hooksecurefunc(self, 'SetScript', function(frame, text)
+        WoWTools_DataMixin:Hook(self, 'SetScript', function(frame, text)
             if text=='OnClick' then
                 frame:HookScript('OnClick', function(s)
                     set_script(s)
@@ -490,7 +490,7 @@ local function Init_Plus()
     EventTraceCloseButton:SetFrameLevel(EventTrace.TitleContainer:GetFrameLevel()+1)
 
 --OnEnter 提示
-    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnEnter', function()
+    WoWTools_DataMixin:Hook(EventTraceLogEventButtonMixin, 'OnEnter', function()
         EventTraceTooltip:AddLine(' ')
         EventTraceTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '查看' or VIEW)
@@ -510,7 +510,7 @@ local function Init_Plus()
 
 --暂停/开始按钮，颜色
     EventTrace.Log.Bar.PlaybackButton.Label:SetTextColor(0,1,0)
-    hooksecurefunc(EventTrace, 'UpdatePlaybackButton', function(self)
+    WoWTools_DataMixin:Hook(EventTrace, 'UpdatePlaybackButton', function(self)
         if self:IsLoggingPaused() then
             self.Log.Bar.PlaybackButton.Label:SetTextColor(1,0,0)
         else

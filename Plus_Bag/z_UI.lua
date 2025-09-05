@@ -13,7 +13,7 @@ CONTAINER_OFFSET_X = -4;
 --背包 Bg FlatPanelBackgroundTemplate
 function WoWTools_TextureMixin.Frames:ContainerFrame1()
     local function set_script(frame)
-        hooksecurefunc(frame, 'UpdateItems', function(f)
+        WoWTools_DataMixin:Hook(frame, 'UpdateItems', function(f)
             for _, btn in f:EnumerateValidItems() do
                 if not btn.isSetTexture then
                     self:SetAlphaColor(btn.ItemSlotBackground, nil, nil, 0)
@@ -28,7 +28,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
                 btn.icon:SetAlpha(btn.hasItem and 1 or 0)
             end
         end)
-        hooksecurefunc(frame, 'UpdateName', function(f) f:SetTitle('') end)
+        WoWTools_DataMixin:Hook(frame, 'UpdateName', function(f) f:SetTitle('') end)
         self:SetButton(frame.CloseButton)
     end
 
@@ -119,7 +119,7 @@ function WoWTools_MoveMixin.Frames:ContainerFrame1()
         end
     end
 
-    hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
+    WoWTools_DataMixin:Hook('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             self:Set_SizeScale(frame)
             if frame==ContainerFrameCombinedBags or frame==ContainerFrame1 then--位置

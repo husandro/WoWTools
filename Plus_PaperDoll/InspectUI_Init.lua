@@ -236,10 +236,10 @@ local function Init_UI()
         GameTooltip:Show()
     end)
 
-    hooksecurefunc('InspectPaperDollItemSlotButton_Update', function(self)--目标, 装备
+    WoWTools_DataMixin:Hook('InspectPaperDollItemSlotButton_Update', function(self)--目标, 装备
         set_InspectPaperDollItemSlotButton_Update(self)
     end)
-    hooksecurefunc('InspectPaperDollFrame_SetLevel', function()--目标,天赋 装等
+    WoWTools_DataMixin:Hook('InspectPaperDollFrame_SetLevel', function()--目标,天赋 装等
         set_InspectPaperDollFrame_SetLevel()
     end)
 end
@@ -256,7 +256,7 @@ end
 
 
     --InspectFrame:HookScript('OnShow', Set_Target_Status)
-    --hooksecurefunc('InspectFrame_UnitChanged', Set_Target_Status)
+    --WoWTools_DataMixin:Hook('InspectFrame_UnitChanged', Set_Target_Status)
 
 
 

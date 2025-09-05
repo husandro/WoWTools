@@ -138,7 +138,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         colorTexture.BottomEdge= nineSlice and nineSlice.BottomEdge or nil
         colorTexture.font= font
 
-        hooksecurefunc(colorTexture, 'SetVertexColor', function(f, r2, g2, b2, a2)
+        WoWTools_DataMixin:Hook(colorTexture, 'SetVertexColor', function(f, r2, g2, b2, a2)
             if r2 and r2 and b2 then
                 if f.BottomEdge then
                     f.BottomEdge:SetVertexColor(r2, g2, b2, a2 or 1)
@@ -217,16 +217,16 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             set_NinelSlice(name, index, value)
         end
     end
-    hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
+    WoWTools_DataMixin:Hook('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
         settings(frame)
     end)
-    hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
+    WoWTools_DataMixin:Hook('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
         settings(frame)
     end)
-    hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame)--ChatConfigFrame.lua
+    WoWTools_DataMixin:Hook('ChatConfig_CreateColorSwatches', function(frame)--ChatConfigFrame.lua
         settings(frame)
     end)
-    hooksecurefunc('ChatConfig_UpdateSwatches', function(frame)
+    WoWTools_DataMixin:Hook('ChatConfig_UpdateSwatches', function(frame)
         settings(frame)
     end)
 
@@ -251,13 +251,13 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
 
 --聊天框 FloatingChatFrame.lua
     --最小化聊天框
-    hooksecurefunc('FCF_CreateMinimizedFrame', function(chatFrame)
+    WoWTools_DataMixin:Hook('FCF_CreateMinimizedFrame', function(chatFrame)
         local name= chatFrame:GetName()
         self:SetFrame(_G[name..'MinimizedMaximizeButton'])
         self:SetFrame(_G[name..'Minimized'])
     end)
 
-    --hooksecurefunc('FCF_OpenTemporaryWindow', function(chatType, chatTarget, sourceChatFrame, selectWindow)
+    --WoWTools_DataMixin:Hook('FCF_OpenTemporaryWindow', function(chatType, chatTarget, sourceChatFrame, selectWindow)
 --提示, 使其不可交互
     local function Set_SetUninteractable(chatFrame)
         local name= chatFrame:GetName()
@@ -273,10 +273,10 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             chatFrame.lockedTexture:SetShown(isLocked)
         end
     end
-    hooksecurefunc('FCF_SetUninteractable', function(chatFrame)--使其不可交互
+    WoWTools_DataMixin:Hook('FCF_SetUninteractable', function(chatFrame)--使其不可交互
         Set_SetUninteractable(chatFrame)
     end)
-    --[[hooksecurefunc('FCF_SetExpandedUninteractable', function(chatFrame)--使其不可交互
+    --[[WoWTools_DataMixin:Hook('FCF_SetExpandedUninteractable', function(chatFrame)--使其不可交互
         if ( chatFrame.isDocked ) then
             for _, frame in pairs(GENERAL_CHAT_DOCK.DOCKED_CHAT_FRAMES) do
                 FCF_SetUninteractable(frame)
@@ -286,7 +286,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         end
     end)]]
     
-    --[[hooksecurefunc('FCF_MaximizeFrame', function(chatFrame)
+    --[[WoWTools_DataMixin:Hook('FCF_MaximizeFrame', function(chatFrame)
         local name= chatFrame:GetName()
         self:SetFrame(_G[name..'ButtonFrameMinimizeButton'])
         self:SetFrame(_G[name..'ResizeButton'])
@@ -503,7 +503,7 @@ function WoWTools_TextureMixin.Frames:LootFrame()
     self:SetScrollBar(LootFrame)
 
 
-    hooksecurefunc(LootFrameElementMixin, 'Init', function(btn)
+    WoWTools_DataMixin:Hook(LootFrameElementMixin, 'Init', function(btn)
         btn.BorderFrame:Hide()
     end)
 

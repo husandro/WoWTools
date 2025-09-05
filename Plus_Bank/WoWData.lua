@@ -115,7 +115,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(BankPanel, 'Clean', function(self)
+    WoWTools_DataMixin:Hook(BankPanel, 'Clean', function(self)
         if self.bankType~=Enum.BankType.Character or not C_Bank.AreAnyBankTypesViewable() then
             return
         end

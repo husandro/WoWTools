@@ -844,7 +844,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Set_Alt_Table()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    hooksecurefunc('ToySpellButton_UpdateButton', function(...)
+                    WoWTools_DataMixin:Hook('ToySpellButton_UpdateButton', function(...)
                         setToySpellButton_UpdateButton(...)
                     end)
                     self:UnregisterEvent(event)
@@ -854,7 +854,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-           hooksecurefunc('ToySpellButton_UpdateButton', function(...)
+           WoWTools_DataMixin:Hook('ToySpellButton_UpdateButton', function(...)
                 setToySpellButton_UpdateButton(...)
             end)
             self:UnregisterEvent(event)

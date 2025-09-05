@@ -15,7 +15,7 @@ local function Init()
 	CurrencyTransferLogCloseButton:SetFrameLevel(CurrencyTransferLog.TitleContainer:GetFrameLevel()+2)
 	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenu.TitleContainer:GetFrameLevel()+2)
 
-	--[[hooksecurefunc(CurrencyTransferLogEntryMixin, 'Initialize', function(self, elementData)
+	--[[WoWTools_DataMixin:Hook(CurrencyTransferLogEntryMixin, 'Initialize', function(self, elementData)
 		local name= WoWTools_UnitMixin:GetPlayerInfo(nil, elementData.sourceCharacterGUID, nil, {reName=true, reRealm=true})
 		if name~='' then
 			self.SourceName:SetText(name)
@@ -28,7 +28,7 @@ local function Init()
 
 	end)]]--货币转移，bug
 
-	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)
+	WoWTools_DataMixin:Hook(CurrencyTransferLog.ScrollBox, 'Update', function(self)
 		if not self:GetView() or Save().notPlus or WoWTools_FrameMixin:IsLocked(self:GetParent()) then
             return
         end
@@ -51,7 +51,7 @@ local function Init()
 local content= CurrencyTransferMenu.Content--11.2
 	or CurrencyTransferMenu
 
-	hooksecurefunc(content.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
+	WoWTools_DataMixin:Hook(content.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
 		if not Save().notPlus and not IsLocked() then
 			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
 			if name~='' then
@@ -60,7 +60,7 @@ local content= CurrencyTransferMenu.Content--11.2
 		end
 	end)
 
-	hooksecurefunc(content.SourceBalancePreview, 'SetCharacterName', function(self)
+	WoWTools_DataMixin:Hook(content.SourceBalancePreview, 'SetCharacterName', function(self)
 		if not Save().notPlus and not IsLocked() then
 			local data= self:GetParent().sourceCharacterData or {}
 			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.characterGUID, nil, {reName=true, reRealm=true})
@@ -70,7 +70,7 @@ local content= CurrencyTransferMenu.Content--11.2
 		end
     end)
 
-    hooksecurefunc(content.PlayerBalancePreview, 'SetCharacterName', function(self)
+    WoWTools_DataMixin:Hook(content.PlayerBalancePreview, 'SetCharacterName', function(self)
 		if not Save().notPlus and not IsLocked() then
 			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true, reRealm=true})
 			if name~='' then
@@ -94,7 +94,7 @@ local content= CurrencyTransferMenu.Content--11.2
 		self:SetAlpha(0.5)
 	end)
 
-	hooksecurefunc(CurrencyTransferMenu, 'FullRefresh', function(self)
+	WoWTools_DataMixin:Hook(CurrencyTransferMenu, 'FullRefresh', function(self)
 		if IsLocked() or not self.currencyInfo or Save().notPlus then
 			self.wowNumLabel:SetText('')
 			return

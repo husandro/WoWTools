@@ -18,7 +18,7 @@ CLASS_SORT_ORDER = {
 };
 MAX_CLASSES = #CLASS_SORT_ORDER;
 
-hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+WoWTools_DataMixin:Hook(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
 if not frame:GetView() then
             return
         end
@@ -26,7 +26,7 @@ if not frame:GetView() then
         set_LootFrame_btn(btn)
     end
 end)
- hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetDataProvider', function(self)
+ WoWTools_DataMixin:Hook(CommunitiesFrameCommunitiesList.ScrollBox, 'SetDataProvider', function(self)
 	local view = self:GetView()
 	if view and view.frames then
 		for _, btn in pairs(view.frames) do
@@ -424,21 +424,21 @@ if (UIDropDownMenu_GetCurrentDropDown() == MountJournal.mountOptionsMenu) then
 	HideDropDownMenu(1);
 end
 
-hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
-hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
-hooksecurefunc(SettingsListSectionHeaderMixin, 'Init', function(self, initializer)
-hooksecurefunc(SettingsListSearchCategoryMixin, 'Init', function(self, initializer)
-hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
-hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
-hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
-hooksecurefunc(SettingsButtonControlMixin, 'Init', function(self, initializer)
-hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
-hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
-hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
-hooksecurefunc(SettingsListElementInitializer, 'Init', function(self, data)
-hooksecurefunc(SettingsPanelMixin, 'OnSearchTextChanged', function(self)
+WoWTools_DataMixin:Hook(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
+WoWTools_DataMixin:Hook(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook(SettingsListSectionHeaderMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook(SettingsListSearchCategoryMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook(SettingsSliderControlMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook(SettingsDropDownControlMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook(SettingsButtonControlMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+WoWTools_DataMixin:Hook(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+WoWTools_DataMixin:Hook(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
+WoWTools_DataMixin:Hook('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
+WoWTools_DataMixin:Hook(SettingsListElementInitializer, 'Init', function(self, data)
+WoWTools_DataMixin:Hook(SettingsPanelMixin, 'OnSearchTextChanged', function(self)
 
 
 --UnitUtil.lua

@@ -332,5 +332,5 @@ end
 
 
 function WoWTools_EncounterMixin:Init_UI_ListInstances()
-    hooksecurefunc('EncounterJournal_ListInstances', Init_ListInstances)
+    WoWTools_DataMixin:Hook('EncounterJournal_ListInstances', Init_ListInstances)
 end

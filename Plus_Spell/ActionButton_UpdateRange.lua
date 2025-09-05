@@ -3,7 +3,7 @@
 --法术按键, 颜色 ActionButton.lua
 local function set_ActionButton_UpdateRangeIndicator(frame, checksRange, inRange)
     if not frame.setHooksecurefunc and frame.UpdateUsable then
-        hooksecurefunc(frame, 'UpdateUsable', function(self)--, _, isUsable)
+        WoWTools_DataMixin:Hook(frame, 'UpdateUsable', function(self)--, _, isUsable)
             if IsUsableAction(self.action) and ActionHasRange(self.action) and IsActionInRange(self.action)==false then
                 self.icon:SetVertexColor(1,0,0)
             end
@@ -35,7 +35,7 @@ end
 
 
 local function Init()
-    hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
+    WoWTools_DataMixin:Hook('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
     Init=function()end
 end
 

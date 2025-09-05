@@ -117,7 +117,7 @@ local function Init_SpellFlyoutButton()
         return
     end
 
-    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
+    WoWTools_DataMixin:Hook('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
         local frame= self:GetParent():GetParent()
         if not frame or not frame.useSpell or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
             if self.useSpell then
@@ -134,7 +134,7 @@ end
 
 
 local function Init_PlayerSpells()
-    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+    WoWTools_DataMixin:Hook(SpellBookItemMixin, 'UpdateVisuals', function(frame)
         set_Use_Spell_Button(frame.Button, frame.spellBookItemInfo.spellID)
     end)
     Init_PlayerSpells=function()end

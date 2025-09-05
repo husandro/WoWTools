@@ -151,7 +151,7 @@ local function Init()
     WoWTools_KeyMixin:SetButtonKey(btn, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键
 
 
-    --[[hooksecurefunc("CreateFrame", function(_, name, _, template)--为新的框架，加属性
+    --[[WoWTools_DataMixin:Hook("CreateFrame", function(_, name, _, template)--为新的框架，加属性
         local frame= name and _G[name]
         if template
             and (
@@ -168,7 +168,7 @@ local function Init()
 
 
 
-    hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(self)--, groupIndex)
+    WoWTools_DataMixin:Hook('CompactRaidGroup_InitializeForGroup', function(self)--, groupIndex)
         for i=1, MEMBERS_PER_RAID_GROUP do
             local frame= _G[self:GetName().."Member"..i]
             ClearFoucsFrame:set_key(frame)

@@ -8,7 +8,7 @@ end
 --专业
 --lizzard_Professions.lua
 function WoWTools_TooltipMixin.Events:Blizzard_Professions()
-    hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)
+    WoWTools_DataMixin:Hook(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)
         if currencyInfo then
             local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID()
             local currencyTypesID = nodeID and Professions.GetCurrencyTypesID(nodeID)
@@ -21,7 +21,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_Professions()
     end)
 
     --专精，技能，查询
-    hooksecurefunc(ProfessionsSpecPathMixin, 'OnEnter', function(f)
+    WoWTools_DataMixin:Hook(ProfessionsSpecPathMixin, 'OnEnter', function(f)
         if f.nodeID then--f.nodeInfo.ID
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine('nodeID '..f.nodeID, f.entryID and 'entryID '..f.entryID)
@@ -208,7 +208,7 @@ end
 
 --飞行点，加名称
 function WoWTools_TooltipMixin.Events:Blizzard_FlightMap()
-    hooksecurefunc(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(f)
+    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(f)
         local info= f.taxiNodeData
         if info then
             GameTooltip:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
@@ -218,7 +218,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_FlightMap()
 end
 
 function WoWTools_TooltipMixin.Events:Blizzard_PlayerChoice()
-    hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(f)
+    WoWTools_DataMixin:Hook(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(f)
         if f.optionInfo and f.optionInfo.spellID then
             GameTooltip:ClearLines()
             GameTooltip:SetSpellByID(f.optionInfo.spellID)
@@ -237,7 +237,7 @@ end
 --要塞，技能树
 function WoWTools_TooltipMixin.Events:Blizzard_OrderHallUI()
 
-    hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(f)--Blizzard_OrderHallTalents.lua
+    WoWTools_DataMixin:Hook(GarrisonTalentButtonMixin, 'OnEnter', function(f)--Blizzard_OrderHallTalents.lua
         local info=f.talent--C_Garrison.GetTalentInfo(f.talent.id)
         if not info or not info.id then
             return
@@ -249,7 +249,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_OrderHallUI()
         end
         WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
     end)
-    hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(f)--是否已激活, 和等级
+    WoWTools_DataMixin:Hook(GarrisonTalentButtonMixin, 'SetTalent', function(f)--是否已激活, 和等级
         local info= f.talent
         if not info or not info.id then
             return
@@ -347,7 +347,7 @@ end
 --宠物手册， 召唤随机，偏好宠物，技能ID 
 function WoWTools_TooltipMixin.Events:Blizzard_Collections()
     if PetJournalSummonRandomFavoritePetButton_OnEnter then--11.1.7没了
-        hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
+        WoWTools_DataMixin:Hook('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
             self:Set_Spell(GameTooltip, 243819)
             --GameTooltip:Show()
         end)
@@ -374,7 +374,7 @@ end
 --天赋 ClassTalentSpecTabMixin
 function WoWTools_TooltipMixin.Events:Blizzard_PlayerSpells()
 
-    hooksecurefunc(PlayerSpellsFrame.SpecFrame, 'UpdateSpecFrame', function(btn)
+    WoWTools_DataMixin:Hook(PlayerSpellsFrame.SpecFrame, 'UpdateSpecFrame', function(btn)
         if not C_SpecializationInfo.IsInitialized() then
             return
         end
@@ -446,7 +446,7 @@ end
 
 --挑战, AffixID
 function WoWTools_TooltipMixin.Events:Blizzard_ChallengesUI()
-    hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter',function(f)
+    WoWTools_DataMixin:Hook(ChallengesKeystoneFrameAffixMixin, 'OnEnter',function(f)
         if not f.affixID then
             return
         end
@@ -473,7 +473,7 @@ end
 
 
 --[[function WoWTools_TooltipMixin.Events:Blizzard_DelvesCompanionConfiguration()
-    hooksecurefunc(CompanionConfigSlotTemplateMixin, 'OnEnter', function()
+    WoWTools_DataMixin:Hook(CompanionConfigSlotTemplateMixin, 'OnEnter', function()
         print('CompanionConfigSlotTemplateMixin')
     end)
 end]]
@@ -485,7 +485,7 @@ end]]
 
 
 function WoWTools_TooltipMixin.Events:Blizzard_AchievementUI()
-    hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'Init', function(frame)
         if frame.Shield and frame.id then
             if not frame.AchievementIDLabel  then
                 frame.AchievementIDLabel= WoWTools_LabelMixin:Create(frame.Shield)
@@ -525,7 +525,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_AchievementUI()
             frame.AchievementIDLabel:SetText(text or '')
         end
     end)
-    hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
+    WoWTools_DataMixin:Hook('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
         local frame= AchievementFrameComparison.AchievementContainer.ScrollBox
         if not frame:GetView() then
             return
@@ -556,7 +556,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_AchievementUI()
             end
         end
     end)
-    hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
+    WoWTools_DataMixin:Hook('AchievementFrameComparison_SetUnit', function(unit)--比较成就
         local text= WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true})--玩家信息图标
         if text~='' then
             AchievementFrameComparisonHeaderName:SetText(text)
@@ -578,7 +578,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_AchievementUI()
     if Save().AchievementFrameFilterDropDown then--保存，过滤
         AchievementFrame_SetFilter(Save().AchievementFrameFilterDropDown)
     end
-    hooksecurefunc('AchievementFrame_SetFilter', function(value)
+    WoWTools_DataMixin:Hook('AchievementFrame_SetFilter', function(value)
         Save().AchievementFrameFilterDropDown = value
     end)
 
@@ -716,11 +716,11 @@ function WoWTools_TooltipMixin.Events:Blizzard_SharedXML()
         btn.Text:SetText(iconTexture or '')
     end
 --装备管理
-    hooksecurefunc(GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconButton, 'SetIconTexture', function(...)
+    WoWTools_DataMixin:Hook(GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconButton, 'SetIconTexture', function(...)
         Set_SetIconTexture(...)
     end)
 --图标，修改
-    hooksecurefunc(SelectedIconButtonMixin, 'SetIconTexture', function(...)
+    WoWTools_DataMixin:Hook(SelectedIconButtonMixin, 'SetIconTexture', function(...)
         Set_SetIconTexture(...)
     end)
 end

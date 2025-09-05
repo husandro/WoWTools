@@ -112,7 +112,7 @@ local function Init_UI()
 --新建，标签，提示
     BankPanel.tabNames= {}
 --更新，信息
-    hooksecurefunc(BankPanel.TabSettingsMenu, 'OkayButton_OnClick', function()
+    WoWTools_DataMixin:Hook(BankPanel.TabSettingsMenu, 'OkayButton_OnClick', function()
         if not Save().allBank then
             return
         end
@@ -176,7 +176,7 @@ local function Init_UI()
 
     BankPanel.AutoDepositFrame.IncludeReagentsCheckbox.Text:ClearAllPoints()
     BankPanel.AutoDepositFrame.IncludeReagentsCheckbox.Text:SetAlpha(0)
-    --[[hooksecurefunc(BankPanel.AutoDepositFrame.IncludeReagentsCheckbox, 'Init', function(self)
+    --[[WoWTools_DataMixin:Hook(BankPanel.AutoDepositFrame.IncludeReagentsCheckbox, 'Init', function(self)
         self.Text:SetText('')
     end)]]
 

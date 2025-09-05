@@ -13,5 +13,5 @@ end
 
 
 function WoWTools_TooltipMixin:Init_SetPoint()
-    hooksecurefunc("GameTooltip_SetDefaultAnchor", Settings)
+    WoWTools_DataMixin:Hook("GameTooltip_SetDefaultAnchor", Settings)
 end

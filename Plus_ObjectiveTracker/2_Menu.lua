@@ -287,7 +287,7 @@ local function Init()
         Save().initIsCollapsed= ObjectiveTrackerFrame:IsCollapsed()
     end)
 
-    hooksecurefunc(ObjectiveTrackerFrame.Header, 'SetCollapsed', function(_, collapsed)
+    WoWTools_DataMixin:Hook(ObjectiveTrackerFrame.Header, 'SetCollapsed', function(_, collapsed)
         Save().initIsCollapsed= collapsed--保存，上次
         MenuButton:set_shown()
     end)
@@ -297,7 +297,7 @@ local function Init()
 
 
 --初始
-    hooksecurefunc(ObjectiveTrackerManager, 'ReleaseFrame', function(_, line)
+    WoWTools_DataMixin:Hook(ObjectiveTrackerManager, 'ReleaseFrame', function(_, line)
         if line.Icon2 then
             line.Icon2:SetTexture(0)
         end

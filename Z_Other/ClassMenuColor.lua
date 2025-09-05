@@ -133,7 +133,7 @@ for specID, classID in pairs(tab) do
 end
 
 --Blizzard_Menu/MenuUtil.lua
-    hooksecurefunc(MenuUtil, 'SetElementText', function(desc, text)
+    WoWTools_DataMixin:Hook(MenuUtil, 'SetElementText', function(desc, text)
         if text then
             local colorText
             if type(desc.data)=='table' and (desc.data.specID==251 or desc.data.specID==64) then

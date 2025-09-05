@@ -47,7 +47,7 @@ local function Init_EncounterJournal()--冒险指南界面
     end
 
     --记录上次选择版本
-    hooksecurefunc('EJ_SelectTier', function(tier)
+    WoWTools_DataMixin:Hook('EJ_SelectTier', function(tier)
         Save().EncounterJournalTier=tier
     end)]]
 

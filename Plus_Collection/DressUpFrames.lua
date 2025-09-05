@@ -76,5 +76,5 @@ end
 
 
 function WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表 a
-    hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', Set_SetDetails)
+    WoWTools_DataMixin:Hook(DressUpOutfitDetailsSlotMixin, 'SetDetails', Set_SetDetails)
 end

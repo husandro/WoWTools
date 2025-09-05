@@ -69,7 +69,7 @@ end
 
 --公会，社区，在线人数
 local function Init()
-    hooksecurefunc(CommunitiesListEntryMixin, 'Init', function(btn, elementData)
+    WoWTools_DataMixin:Hook(CommunitiesListEntryMixin, 'Init', function(btn, elementData)
         local clubID= btn.clubId
 
         local hasInvite, hasMessage, faction, text

@@ -224,7 +224,7 @@ local function Init()
     end)
     Button:SetScript('OnMouseUp', Button.set_Tooltips)
 
-    hooksecurefunc(MacroFrame, 'UpdateButtons', function()
+    WoWTools_DataMixin:Hook(MacroFrame, 'UpdateButtons', function()
         if WoWTools_MacroMixin:IsCanCreateNewMacro() then
             Button.texture:SetVertexColor(0,1,0)
         else

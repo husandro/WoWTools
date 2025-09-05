@@ -12,6 +12,9 @@ local function Set_Texture(btn)
         btn.IconMask:SetPoint('TOPLEFT', btn.Icon or btn, 0.5, -0.5)
         btn.IconMask:SetPoint('BOTTOMRIGHT', btn.Icon or btn, -0.5, 0.5)
     end
+    if btn.Cooldown then
+        btn.Cooldown:SetEdgeTexture("UI-HUD-CoolDownManager-Mask")
+    end
 end
 
 local function Set_Assisted(self)
@@ -68,7 +71,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
         end
         if btn.UpdateHotkeys then
             Set_KeyText(btn)
-            hooksecurefunc(btn, 'UpdateHotkeys', function(b)
+            WoWTools_DataMixin:Hook(btn, 'UpdateHotkeys', function(b)
                 Set_KeyText(b)
             end)
         end
@@ -106,13 +109,13 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     Init_HooKey(_G['ExtraActionButton1'])
 
 
-    hooksecurefunc(ActionBarButtonAssistedCombatRotationFrameMixin, 'OnShow', function(frame)
+    WoWTools_DataMixin:Hook(ActionBarButtonAssistedCombatRotationFrameMixin, 'OnShow', function(frame)
         Set_Assisted(frame)
     end)
 
 
 
-    --hooksecurefunc(MainMenuBar, 'UpdateDividers', function(bar)--主动作条 
+    --WoWTools_DataMixin:Hook(MainMenuBar, 'UpdateDividers', function(bar)--主动作条 
     Set_MainMenuBarPool(self)
 
     EditModeManagerFrame:HookScript('OnHide', function()
@@ -174,7 +177,7 @@ end
 
 --区域技能
 function WoWTools_TextureMixin.Events:Blizzard_ZoneAbility()
-    --hooksecurefunc(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
+    --WoWTools_DataMixin:Hook(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
     for btn in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
         Set_Texture(btn)
     end
@@ -243,7 +246,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PetBattleUI()
 
     --宠物， 主面板,主技能, 提示
     --for _, btn in pairs(PetBattleFrame.BottomFrame.abilityButtons) do
-    hooksecurefunc('PetBattleAbilityButton_UpdateHotKey', function(frame)
+    WoWTools_DataMixin:Hook('PetBattleAbilityButton_UpdateHotKey', function(frame)
         if not frame.HotKey:IsShown() then
             return
         end
@@ -256,7 +259,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PetBattleUI()
 
     self:HideFrame(PetBattleFrame.BottomFrame.MicroButtonFrame)
 
-    hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(frame)--Blizzard_PetBattleUI.lua
+    WoWTools_DataMixin:Hook('PetBattleFrame_UpdatePassButtonAndTimer', function(frame)--Blizzard_PetBattleUI.lua
         self:HideTexture(frame.BottomFrame.TurnTimer.TimerBG)
         self:HideTexture(frame.BottomFrame.TurnTimer.ArtFrame)
         self:HideTexture(frame.BottomFrame.TurnTimer.ArtFrame2)

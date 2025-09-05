@@ -6,7 +6,13 @@ function WoWTools_DataMixin:Call(func, ...)
     end
 end
 
-
+function WoWTools_DataMixin:Hook(obj, ...)
+    if obj and (obj.IsForbidden and not obj:IsForbidden() or not obj.IsForbidden) then
+        hooksecurefunc(obj, ...)
+    elseif WoWTools_DataMixin.Player.husandro then
+        print('not Hook', obj, ...)
+    end
+end
 
 --[[
 AccountUtil.lua

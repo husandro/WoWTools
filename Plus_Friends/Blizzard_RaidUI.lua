@@ -130,7 +130,7 @@ end
 
 
 local function Init()
-    hooksecurefunc('RaidGroupFrame_Update', function()
+    WoWTools_DataMixin:Hook('RaidGroupFrame_Update', function()
         Init_RaidGroupFrame_Update()
     end)
 

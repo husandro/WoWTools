@@ -33,7 +33,7 @@ local function Init()--设置,团队
         return
     end
 
-    hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍标记
+    WoWTools_DataMixin:Hook('CompactUnitFrame_SetUnit', function(frame, unit)--队伍标记
         if UnitExists(unit) and not unit:find('nameplate') and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
@@ -43,18 +43,18 @@ local function Init()--设置,团队
         end
         frame.unitItemLevel=nil--取得装等
     end)
-    hooksecurefunc('CompactUnitFrame_UpdateUnitEvents', function(frame)
+    WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateUnitEvents', function(frame)
         if frame.RaidTargetIcon then
             frame:RegisterEvent("RAID_TARGET_UPDATE")
         end
     end)
-    hooksecurefunc('CompactUnitFrame_UnregisterEvents', function(frame)
+    WoWTools_DataMixin:Hook('CompactUnitFrame_UnregisterEvents', function(frame)
         if frame.RaidTargetIcon then
             frame:UnregisterEvent("RAID_TARGET_UPDATE")
             frame:UnregisterEvent("UNIT_TARGET")
         end
     end)
-    hooksecurefunc('CompactUnitFrame_OnEvent', function(self, event)
+    WoWTools_DataMixin:Hook('CompactUnitFrame_OnEvent', function(self, event)
         if self.RaidTargetIcon and self.unit then
             if event=='RAID_TARGET_UPDATE'then
                 set_RaidTarget(self.RaidTargetIcon, self.unit)
@@ -62,7 +62,7 @@ local function Init()--设置,团队
         end
     end)
 
-    hooksecurefunc('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
+    WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
         if not UnitExists(frame.unit) or frame.unit:find('nameplate') then
             return
         end
@@ -93,7 +93,7 @@ local function Init()--设置,团队
         end
     end)
 
-    hooksecurefunc('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
+    WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
         if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
             return
         end
@@ -111,7 +111,7 @@ local function Init()--设置,团队
         end
     end)
 
-    hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
+    WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
         if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
         end
@@ -125,7 +125,7 @@ local function Init()--设置,团队
             frame.statusText:SetText(text)
         end
     end)
-    hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
+    WoWTools_DataMixin:Hook('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
         frame.title:SetText('|A:services-number-'..groupIndex..':18:18|a')
     end)
 
@@ -247,7 +247,7 @@ local function Init()--设置,团队
 
 
 
-    hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
+    WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateStatusText', function(frame)
         if frame.unit:find('nameplate') then
             return
         end

@@ -92,7 +92,7 @@ local function Init()
 --[[GetAttributeSource
 --GetTableInspector
 --GetAttributeData 
-    hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(self)
+    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'UpdateLines', function(self)
         if not self.dataProviders then
             return
         end

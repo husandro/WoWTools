@@ -397,7 +397,7 @@ local function Init()
     Button.HeaderText= WoWTools_LabelMixin:Create(Button.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT', size=14})
     Button.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
 
-    hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function()
+    WoWTools_DataMixin:Hook(MajorFactionRenownFrame, 'Refresh', function()
         --C_Timer.After(0.5, Settings)
         Settings()
         Set_HeaderText()

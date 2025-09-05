@@ -209,7 +209,7 @@ local function Init()
         s.Instructions:SetShown(s:GetText() == "")
     end)
 
-    hooksecurefunc('SendMailRadioButton_OnClick', function(index)
+    WoWTools_DataMixin:Hook('SendMailRadioButton_OnClick', function(index)
         if ( index == 1 ) then
             SendMailMoneyText:SetTextColor(1,0,0)--Text(AMOUNT_TO_SEND)
         else

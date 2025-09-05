@@ -149,7 +149,7 @@ local function Init()
 
 
 
-    hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
+    WoWTools_DataMixin:Hook(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
         if Save().TargetFramePoint=='TOP' and Save().target then
             Set_Target()
         end

@@ -122,7 +122,7 @@ local function Init()
     end
 
 
-    --[[hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
+    --[[WoWTools_DataMixin:Hook(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
         end
@@ -132,7 +132,7 @@ local function Init()
         self:SetTooltipFunc(initTooltip)
         self.CheckBox:SetTooltipFunc(initTooltip)
     end)]]
-    hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
+    WoWTools_DataMixin:Hook(SettingsSliderControlMixin, 'Init', function(self, initializer)
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
         end
@@ -143,7 +143,7 @@ local function Init()
         self:SetTooltipFunc(initTooltip)
         self.SliderWithSteppers.Slider:SetTooltipFunc(initTooltip)
     end)
-    hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
+    WoWTools_DataMixin:Hook(SettingsDropDownControlMixin, 'Init', function(self, initializer)
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
         end
@@ -157,7 +157,7 @@ local function Init()
         initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, initializer:GetName(), initializer:GetTooltip(), options, setting.variable))
         self.DropDown.Button:SetTooltipFunc(initTooltip)
     end)
-    hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
+    WoWTools_DataMixin:Hook(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
         end
@@ -168,7 +168,7 @@ local function Init()
         self:SetTooltipFunc(initTooltip)
         self.CheckBox:SetTooltipFunc(initTooltip)
     end)
-    hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+    WoWTools_DataMixin:Hook(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
         end
@@ -186,7 +186,7 @@ local function Init()
         self.CheckBox:SetTooltipFunc(cbInitTooltip)
         self.SliderWithSteppers.Slider:SetTooltipFunc(GenerateClosure(InitTooltip, sliderLabel, sliderTooltip, cbSetting.variable))
     end)
-    hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+    WoWTools_DataMixin:Hook(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
         end
@@ -207,7 +207,7 @@ local function Init()
         self.DropDown.Button:SetTooltipFunc(initTooltip)
     end)
 
-    hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)--Blizzard_Keybindings.lua
+    WoWTools_DataMixin:Hook(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)--Blizzard_Keybindings.lua
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
         end

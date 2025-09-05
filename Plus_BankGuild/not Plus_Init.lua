@@ -569,7 +569,7 @@ local function Init_UI()
         self:settings()
     end)
 
-    hooksecurefunc(GuildBankFrame, 'UpdateTabInfo', function(_, tabID)
+    WoWTools_DataMixin:Hook(GuildBankFrame, 'UpdateTabInfo', function(_, tabID)
         --QueryGuildBankTab(tabID)
 
         GuildBankTabInfoEditBox.Instructions:SetText(
@@ -703,13 +703,13 @@ local function Init()
     end})
 
 
-   hooksecurefunc(GuildBankFrame, 'Update', function(...)
+   WoWTools_DataMixin:Hook(GuildBankFrame, 'Update', function(...)
         if not WoWTools_GuildBankMixin.isInRun then
             Init_Button(...)
         end
    end)
 
-    hooksecurefunc(GuildBankFrame, 'UpdateFiltered', function(self)
+    WoWTools_DataMixin:Hook(GuildBankFrame, 'UpdateFiltered', function(self)
         if self.mode ~= "bank" then
             return
         end
@@ -721,7 +721,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(...)
+    WoWTools_DataMixin:Hook(GuildBankFrame, 'UpdateTabs', function(...)
         Set_UpdateTabs(...)
     end)
 
@@ -749,7 +749,7 @@ function WoWTools_ItemMixin.Events:Blizzard_GuildBankUI()
         (Save().plusOnlyOfficerAndLeader--仅限公会官员
         and not (WoWTools_GuildMixin:IsLeaderOrOfficer()))--会长或官员
     then
-        hooksecurefunc(GuildBankFrame, 'Update', function(frame)
+        WoWTools_DataMixin:Hook(GuildBankFrame, 'Update', function(frame)
             if frame.mode ~= "bank" then
                 return
             end

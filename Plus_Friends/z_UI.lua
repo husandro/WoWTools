@@ -144,7 +144,7 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     end
     RaidFrame:HookScript('OnShow', function(...) Set_RaidFrame_Button_size(...) end)
 
-    hooksecurefunc(FriendsListButtonMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(FriendsListButtonMixin, 'OnLoad', function(btn)
         btn.name:SetPoint('RIGHT', btn.gameIcon, 'LEFT', -2, 0)
         btn.info:SetPoint('RIGHT', btn.gameIcon, 'LEFT', -2, 0)
     end)
@@ -173,7 +173,7 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
 
 --好友的好友，列表
     FriendsFriendsFrame.ScrollFrameBorder:SetPoint('BOTTOMRIGHT', -25, 55)
-    hooksecurefunc('FriendsFriends_InitButton', function(btn)
+    WoWTools_DataMixin:Hook('FriendsFriends_InitButton', function(btn)
         if not btn:GetScript('OnDoubleClick') then
             btn.name:SetPoint('RIGHT', -6, 0)
             btn:SetScript('OnDoubleClick', function()

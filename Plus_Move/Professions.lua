@@ -129,7 +129,7 @@ local function initFunc()
        end)
     end
 
-    hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', function(self)
+    WoWTools_DataMixin:Hook(ProfessionsFrame, 'ApplyDesiredWidth', function(self)
         set_on_show(self)
     end)
 
@@ -150,7 +150,7 @@ local function initFunc()
         set_craftingpage_position(self)
         self:Refresh(self.professionInfo)
     end
-    hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMinimized', function(self)
+    WoWTools_DataMixin:Hook(ProfessionsFrame.CraftingPage, 'SetMinimized', function(self)
         self.SchematicForm.Details:ClearAllPoints()
         self.SchematicForm.Details:SetPoint('BOTTOM', 0, 33)
         self.SchematicForm:SetPoint('BOTTOMRIGHT')
@@ -186,7 +186,7 @@ local function initFunc()
             break
         end
     end
-    hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self)
+    WoWTools_DataMixin:Hook(ProfessionsRecipeListRecipeMixin, 'Init', function(self)
         self.Label:SetPoint('RIGHT', -22, 0)
     end)
 

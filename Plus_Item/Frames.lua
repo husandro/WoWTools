@@ -1,7 +1,7 @@
 
 --boss掉落，物品, 可能，会留下 StaticPopup1 框架
 function WoWTools_ItemMixin.Frames:BossBanner_ConfigureLootFrame()
-    hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
+    WoWTools_DataMixin:Hook('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
         WoWTools_ItemMixin:SetItemStats(lootFrame, data.itemLink, {point=lootFrame.Icon})
     end)
 end
@@ -30,13 +30,13 @@ end
 
 --拾取
 function WoWTools_ItemMixin.Frames:LootFrame()
-    hooksecurefunc(LootFrameItemElementMixin, 'Init', function(btn)
+    WoWTools_DataMixin:Hook(LootFrameItemElementMixin, 'Init', function(btn)
         WoWTools_ItemMixin:SetupInfo(btn.Item, {lootIndex= btn:GetSlotIndex()})
     end)
 end
     --[[
     local texture, item, quantity, currencyID, itemQuality, locked, isQuestItem, questID, isActive = GetLootSlotInfo(slotIndex);
-    hooksecurefunc(LootFrame, 'Open', function(frame)--LootFrame.lua
+    WoWTools_DataMixin:Hook(LootFrame, 'Open', function(frame)--LootFrame.lua
         if not frame.ScrollBox:GetView() then
             return
         end
@@ -44,7 +44,7 @@ end
             WoWTools_ItemMixin:SetupInfo(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
     end)
-    hooksecurefunc(LootFrame.ScrollBox, 'SetScrollTargetOffset', function(frame)
+    WoWTools_DataMixin:Hook(LootFrame.ScrollBox, 'SetScrollTargetOffset', function(frame)
         if not frame:GetView() then
             return
         end
@@ -72,7 +72,7 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
     if C_AddOns.IsAddOnLoaded("Bagnon") then
         local itemButton = Bagnon.ItemSlot or Bagnon.Item
         if (itemButton) and (itemButton.Update)  then
-            hooksecurefunc(itemButton, 'Update', function(frame)
+            WoWTools_DataMixin:Hook(itemButton, 'Update', function(frame)
                 local slot, bag= frame:GetSlotAndBagID()
                 if slot and bag then
                     if frame.hasItem then
@@ -87,7 +87,7 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
 
 
     elseif C_AddOns.IsAddOnLoaded("Baggins") then
-        hooksecurefunc(_G['Baggins'], 'UpdateItemButton', function(_, _, button, bagID, slotID)
+        WoWTools_DataMixin:Hook(_G['Baggins'], 'UpdateItemButton', function(_, _, button, bagID, slotID)
             if button and bagID and slotID then
                 WoWTools_ItemMixin:SetupInfo(button, {bag={bag=bagID, slot=slotID}})
             end
@@ -102,9 +102,9 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
                 WoWTools_ItemMixin:SetupInfo(self, {bag={bag=self.bag, slot=self.slot}})
             end
             function InvLevel:WrapItemButton(item)
-                hooksecurefunc(item, "Update", InvLevel.Update)
+                WoWTools_DataMixin:Hook(item, "Update", InvLevel.Update)
             end
-            hooksecurefunc(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
+            WoWTools_DataMixin:Hook(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
         end
 
     else
@@ -121,12 +121,12 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
             end
         end
 
-        hooksecurefunc('ContainerFrame_GenerateFrame',function()
+        WoWTools_DataMixin:Hook('ContainerFrame_GenerateFrame',function()
             for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
                 if not frame.SetBagInfo then
                     setBags(frame)
 
-                    hooksecurefunc(frame, 'UpdateItems', function(f)
+                    WoWTools_DataMixin:Hook(frame, 'UpdateItems', function(f)
                         setBags(f)
                     end)
                     frame.SetBagInfo=true

@@ -358,10 +358,10 @@ function WoWTools_LFDMixin:Init_LFG_Plus()
     Init_Button()--预创建队伍增强
 
 --预创建队伍增强
-    hooksecurefunc('LFGListSearchEntry_Update', function(...)
+    WoWTools_DataMixin:Hook('LFGListSearchEntry_Update', function(...)
         Init_LFGListSearchEntry_Update(...)
     end)
-    hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(...)
+    WoWTools_DataMixin:Hook('LFGListUtil_SetSearchEntryTooltip', function(...)
         Init_LFGListUtil_SetSearchEntryTooltip(...)
     end)
 end

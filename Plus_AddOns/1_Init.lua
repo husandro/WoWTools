@@ -126,7 +126,7 @@ local function Init()
     AddonList.ForceLoad:ClearAllPoints()
     AddonList.ForceLoad:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT', 23,0)
 
-    hooksecurefunc('AddonList_Update', function()
+    WoWTools_DataMixin:Hook('AddonList_Update', function()
         WoWTools_AddOnsMixin:Set_Left_Buttons()--插件，快捷，选中
         WoWTools_AddOnsMixin:Set_Right_Buttons()
     end)

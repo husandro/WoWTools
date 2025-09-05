@@ -1334,7 +1334,7 @@ local function Init_WorldFrame_Button()
             GameTooltip:Show()
         end
     end)
-    hooksecurefunc(WorldMapFrame, 'OnMapChanged', function() WorldMapButton:set_texture() end)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'OnMapChanged', function() WorldMapButton:set_texture() end)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
     WoWTools_TextureMixin:SetButton(WorldMapButton, {all=true, alpha=0.7})
 end
 
@@ -1356,17 +1356,17 @@ end
 
 --世界地图，事件
 local function Init_WorldFrame_Event()
-    hooksecurefunc('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
+    WoWTools_DataMixin:Hook('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
         if self.questID and self.OnMouseClickAction then
             GameTooltip:AddDoubleLine(addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()
         end
     end)
-    hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--世界任务，添加/移除 WorldQuestDataProvider.lua self.tagInfo
+    WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'RefreshVisuals', function(self)--世界任务，添加/移除 WorldQuestDataProvider.lua self.tagInfo
         if not self.OnMouseClickAction or self.setTracking then
             return
         end
-        hooksecurefunc(self, 'OnMouseClickAction', function(f, d)
+        WoWTools_DataMixin:Hook(self, 'OnMouseClickAction', function(f, d)
             if f.questID and d=='LeftButton' and IsAltKeyDown() then
                 Save().questIDs[f.questID]= not Save().questIDs[f.questID] and true or nil
                 print(WoWTools_DataMixin.Icon.icon2..addName, addName2,
@@ -1378,13 +1378,13 @@ local function Init_WorldFrame_Event()
         self.setTracking=true
     end)
 
-    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
+    WoWTools_DataMixin:Hook(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
         if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
             GameTooltip:AddDoubleLine(addName2..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()
         end
     end)
-    hooksecurefunc(AreaPOIPinMixin,'OnAcquired', function(self)---areaPoiID, 添加/移除 AreaPOIDataProvider.lua
+    WoWTools_DataMixin:Hook(AreaPOIPinMixin,'OnAcquired', function(self)---areaPoiID, 添加/移除 AreaPOIDataProvider.lua
         if self.setTracking then
             return
         end

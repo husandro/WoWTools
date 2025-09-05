@@ -148,7 +148,7 @@ local function created_model(btn, setBg)
         self.specText:SetText(WoWTools_TextMixin:CN(pet.specialization) or '')
     end
 
-    hooksecurefunc(btn, 'SetPet', btn.set_pet)--StableActivePetButtonTemplateMixin
+    WoWTools_DataMixin:Hook(btn, 'SetPet', btn.set_pet)--StableActivePetButtonTemplateMixin
 
     btn:HookScript('OnHide', btn.set_pet)
     btn:HookScript('OnEnter', function(self)--信息，提示
@@ -220,9 +220,9 @@ end
 --猎人，兽栏 Plus Blizzard_StableUI.lua
 local function Init()
 --宠物，列表，提示
-    --hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', Set_SetPet)
+    --WoWTools_DataMixin:Hook(StableStabledPetButtonTemplateMixin, 'SetPet', Set_SetPet)
 
-    hooksecurefunc(StableFrame.StabledPetList.ScrollBox, 'Update', function(self)
+    WoWTools_DataMixin:Hook(StableFrame.StabledPetList.ScrollBox, 'Update', function(self)
         if not self:GetView() then
             return
         end
@@ -237,7 +237,7 @@ local function Init()
     end
     created_model(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, false)--第二个，宠物，提示
 
-    hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function(self)--选定时，隐藏model
+    WoWTools_DataMixin:Hook(StableFrame.PetModelScene, 'SetPet', function(self)--选定时，隐藏model
         local frame= self:GetParent()
         local selecIndex= frame.selectedPet and frame.selectedPet.slotID
         for _, btn2 in ipairs(frame.ActivePetList.PetButtons) do--已激，宠物栏，提示
@@ -259,7 +259,7 @@ local function Init()
     if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
         btnSecond.SpellFrame.Name:SetText('动物伙伴')
     end
-    hooksecurefunc(btnSecond, 'Refresh', function(self)
+    WoWTools_DataMixin:Hook(btnSecond, 'Refresh', function(self)
         if _G['WoWTools_StableFrameAllList'] then
             _G['WoWTools_StableFrameAllList'].btn6:settings()
         end
@@ -282,7 +282,7 @@ local function Init()
     StableFrame.PetModelScene.PetInfo.ExoticTexture:SetTexture(461112)
     StableFrame.PetModelScene.PetInfo.ExoticTexture:Hide()
 
-    hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self, petData)
+    WoWTools_DataMixin:Hook(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self, petData)
         petData= petData or {}
         self.ExoticTexture:SetShown(petData.isExotic)
         local text

@@ -1206,7 +1206,7 @@ local function Init()
         end
     end
 
-    hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon', function(self)
+    WoWTools_DataMixin:Hook('PetBattleAbilityButton_UpdateBetterIcon', function(self)
         if not self.BetterIcon then
             return
         end
@@ -1255,7 +1255,7 @@ local function Init_BottomFrame()
 
 
 --宠物，属性
-    hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', function(self)
+    WoWTools_DataMixin:Hook('PetBattleFrame_UpdateAllActionButtons', function(self)
         local btn= self.BottomFrame.abilityButtons[1]
         local petOwner= Enum.BattlePetOwner.Ally
         local petIndex= C_PetBattles.GetActivePet(petOwner)
@@ -1405,7 +1405,7 @@ local function Init_PetBattlePrimaryUnitTooltip()
 
     Create_Labe(PetBattlePrimaryUnitTooltip)
 
-    hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
+    WoWTools_DataMixin:Hook('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
         if not self['AbilityIDLabel1'] then
             Create_Labe(self)
         end
@@ -1428,7 +1428,7 @@ local function Init_PetBattlePrimaryUnitTooltip()
 
 
 --更新，技能提示，位置
-    hooksecurefunc('PetBattleAbilityButton_OnEnter', function(self)
+    WoWTools_DataMixin:Hook('PetBattleAbilityButton_OnEnter', function(self)
         local petIndex = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally);
         if ( self:GetEffectiveAlpha() > 0 ) then
             if C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, petIndex, self:GetID()) then
@@ -1440,7 +1440,7 @@ local function Init_PetBattlePrimaryUnitTooltip()
     end)
 
 --[[宠物，类型
-    hooksecurefunc('PetBattleUnitFrame_UpdatePetType', function(self)
+    WoWTools_DataMixin:Hook('PetBattleUnitFrame_UpdatePetType', function(self)
         if not self.PetType then
             return
         end

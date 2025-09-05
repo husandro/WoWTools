@@ -22,7 +22,7 @@ local function Init()
     --###
     --数量
     --Blizzard_Professions.lua  ProfessionsRecipeSchematicFormMixin:Init
-    hooksecurefunc(Professions,'SetupOutputIconCommon', function(outputIcon, quantityMin, quantityMax, icon, itemIDOrLink, quality)
+    WoWTools_DataMixin:Hook(Professions,'SetupOutputIconCommon', function(outputIcon, quantityMin, quantityMax, icon, itemIDOrLink, quality)
         local num
         if itemIDOrLink then
             num= C_Item.GetItemCount(itemIDOrLink, true, false, true)
@@ -55,7 +55,7 @@ local function Init()
     --##################
     --移过，列表，物品提示
     --Blizzard_ProfessionsRecipeList.lua
-    hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'OnEnter', function(self)
+    WoWTools_DataMixin:Hook(ProfessionsRecipeListRecipeMixin, 'OnEnter', function(self)
         local elementData = self:GetElementData()
         local info= elementData and elementData.data and elementData.data.recipeInfo
         if not info or not info.recipeID then
@@ -84,7 +84,7 @@ local function Init()
 
 
     --专业，列表，增加图标, 颜色
-    hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self, node)
+    WoWTools_DataMixin:Hook(ProfessionsRecipeListRecipeMixin, 'Init', function(self, node)
         local elementData = node:GetData();
         local recipeInfo = Professions.GetHighestLearnedRecipe(elementData.recipeInfo) or elementData.recipeInfo
         if not recipeInfo then
@@ -118,7 +118,7 @@ local function Init()
     --######
     --附魔纸
     --Blizzard_ProfessionsRecipeSchematicForm.lua
-    hooksecurefunc(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(frame, recipeInfo)--, isRecraftOverride)
+    WoWTools_DataMixin:Hook(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(frame, recipeInfo)--, isRecraftOverride)
         local recipeID = recipeInfo and recipeInfo.recipeID
         local isEnchant = recipeID and (frame.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging()
 
@@ -192,7 +192,7 @@ local function Init()
 
     --Blizzard_ProfessionsSpecializations.lua
     --全加点，专精，
-    hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateDetailedPanel', function(frame, setLocked)
+    WoWTools_DataMixin:Hook(ProfessionsFrame.SpecPage, 'UpdateDetailedPanel', function(frame, setLocked)
         local button=frame.DetailedView.SpendAllPointsButton
         if not button then
             button= WoWTools_ButtonMixin:Cbtn(frame.DetailedView.SpendPointsButton, {isUI=true, size={80, 22}})
@@ -225,7 +225,7 @@ local function Init()
 
 
     --可加点数， 提示
-    hooksecurefunc(ProfessionsSpecPathMixin, 'UpdateProgressBar', function(frame)
+    WoWTools_DataMixin:Hook(ProfessionsSpecPathMixin, 'UpdateProgressBar', function(frame)
         if not frame.ProgressBar:IsShown() then
             return
         end

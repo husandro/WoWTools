@@ -171,5 +171,5 @@ end
 
 --Blizzard_EncounterJournal.lua
 function WoWTools_EncounterMixin:Init_EncounterJournalItemMixin()--Boss, 战利品, 信息
-    hooksecurefunc(EncounterJournalItemMixin, 'Init', Init)
+    WoWTools_DataMixin:Hook(EncounterJournalItemMixin, 'Init', Init)
 end

@@ -62,7 +62,7 @@ local function Init()
         self:SetAlpha(0.3)
     end)
 
-    hooksecurefunc('PaperDollFrame_SetLevel', function()
+    WoWTools_DataMixin:Hook('PaperDollFrame_SetLevel', function()
          if Save().hide then
             return
         end

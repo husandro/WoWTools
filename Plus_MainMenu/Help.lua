@@ -45,7 +45,7 @@ local function Init()
 
 
     --添加版本号 MainMenuBar.lua
-    hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function()
+    WoWTools_DataMixin:Hook('MainMenuBarPerformanceBarFrame_OnEnter', function()
         if not MainMenuMicroButton.hover or KeybindFrames_InQuickKeybindMode() then
             return
         end

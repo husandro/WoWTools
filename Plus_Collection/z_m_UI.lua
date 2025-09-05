@@ -220,7 +220,7 @@ local function Init_CollectionsJournal()
     PetJournalLoadoutBorder:ClearAllPoints()
     PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)
 
-    hooksecurefunc('MountJournal_InitMountButton', function(btn)
+    WoWTools_DataMixin:Hook('MountJournal_InitMountButton', function(btn)
         if btn.is_setting then
             return
         end
@@ -383,7 +383,7 @@ local function Init_WardrobeFrame()
 
 
 
-    hooksecurefunc(WardrobeCollectionFrame, 'SetContainer', function(self, parent)
+    WoWTools_DataMixin:Hook(WardrobeCollectionFrame, 'SetContainer', function(self, parent)
         local btn=parent.ResizeButton
         if not btn or not btn.setSize then
             return

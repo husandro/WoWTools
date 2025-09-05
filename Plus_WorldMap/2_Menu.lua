@@ -446,12 +446,12 @@ end
 
 --Blizzard_WorldMap.lua
 local function Init_Set_Title()
-    hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function()
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'SynchronizeDisplayState', function()
         if Save().HideTitle then
             ShowHideTitle()
         end
     end)
-    hooksecurefunc(WorldMapFrame, 'SetupTitle', function()
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'SetupTitle', function()
         if Save().HideTitle then
             ShowHideTitle()
         end

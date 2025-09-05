@@ -64,5 +64,5 @@ end
 
 
 function WoWTools_GossipMixin:Init_QuestInfo_Display()
-    hooksecurefunc('QuestInfo_Display', Set_QuestInfo_Display)
+    WoWTools_DataMixin:Hook('QuestInfo_Display', Set_QuestInfo_Display)
 end

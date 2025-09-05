@@ -59,5 +59,5 @@ end
 
 
 function WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
-    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(...) Init(...) end)
+    WoWTools_DataMixin:Hook(DungeonEntrancePinMixin, 'OnAcquired', function(...) Init(...) end)
 end

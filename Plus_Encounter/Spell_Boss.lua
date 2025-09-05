@@ -119,6 +119,6 @@ end
 
 
 function WoWTools_EncounterMixin:Init_Spell_Boss()--技能提示
-    hooksecurefunc('EncounterJournal_UpdateButtonState', UpdateButtonState)
-    hooksecurefunc('EncounterJournal_SetBullets', SetBullets)
+    WoWTools_DataMixin:Hook('EncounterJournal_UpdateButtonState', UpdateButtonState)
+    WoWTools_DataMixin:Hook('EncounterJournal_SetBullets', SetBullets)
 end

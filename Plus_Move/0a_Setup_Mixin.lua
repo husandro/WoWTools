@@ -211,7 +211,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
     local SavePoint= Save().SavePoint or tab.savePoint
     --local moveToScreenFuori= Save().moveToScreenFuori
 
-    local click= tab.click
+    local click= tab.click--RightButton LeftButton nil
     local notSave= ((tab.notSave or not SavePoint) and not tab.save) and true or nil
     local notFuori=  tab.notFuori or nil
     local isAltKeyDown= tab.isAltKeyDown or nil

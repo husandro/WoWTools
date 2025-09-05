@@ -131,7 +131,7 @@ local function Init()
 
     Set_Dragonriding_Speed(UIWidgetPowerBarContainerFrame.widgetFrames[4460])
 
-    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
+    WoWTools_DataMixin:Hook(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
         if widgetID~=4460 then
             return
         end

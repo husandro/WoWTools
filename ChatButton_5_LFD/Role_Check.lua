@@ -213,7 +213,7 @@ local function Init()
 
 
 --职责确认 RolePoll.lua
-    hooksecurefunc('RolePollPopup_Show', function(self)
+    WoWTools_DataMixin:Hook('RolePollPopup_Show', function(self)
         WoWTools_DataMixin:PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
             return
@@ -417,7 +417,7 @@ local function Init()
         WoWTools_DataMixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self, nil, self.timeOut or 38, nil, true, true)
     end)
-    hooksecurefunc('LFGDungeonReadyPopup_OnFail', function()
+    WoWTools_DataMixin:Hook('LFGDungeonReadyPopup_OnFail', function()
         if LFGDungeonReadyPopup:IsShown() then
             WoWTools_CooldownMixin:Setup(LFGDungeonReadyPopup, nil, LFGDungeonReadyPopup.closeIn or 5, nil, true, true)
         end

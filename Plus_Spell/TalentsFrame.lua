@@ -19,7 +19,7 @@ end]]
 
 local function Init()
 --天赋, 点数 Blizzard_SharedTalentButtonTemplates.lua Blizzard_ClassTalentButtonTemplates.lua
-    hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', function(btn)
+    WoWTools_DataMixin:Hook(ClassTalentButtonSpendMixin, 'UpdateSpendText', function(btn)
         local info= btn.nodeInfo-- C_Traits.GetNodeInfo btn:GetSpellID()
         local text
         if info then

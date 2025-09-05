@@ -143,7 +143,7 @@ end
 
 
 local function Init()
-    hooksecurefunc(ArchaeologyFrame.completedPage, 'UpdateFrame', function(self)--提示
+    WoWTools_DataMixin:Hook(ArchaeologyFrame.completedPage, 'UpdateFrame', function(self)--提示
         if not IsArtifactCompletionHistoryAvailable() then
             return
         end
@@ -169,7 +169,7 @@ local function Init()
     end)
 
     --增加一个按钮， 提示物品
-    hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function()
+    WoWTools_DataMixin:Hook('ArchaeologyFrame_CurrentArtifactUpdate', function()
         local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))
         local btn= ArchaeologyFrame.artifactPagGameTooltipButton
         if itemID then

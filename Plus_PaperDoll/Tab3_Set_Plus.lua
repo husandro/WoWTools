@@ -15,7 +15,7 @@ end
 
 local function Init()
 --套装已装备数量
-    hooksecurefunc('GearSetButton_UpdateSpecInfo', function(self)
+    WoWTools_DataMixin:Hook('GearSetButton_UpdateSpecInfo', function(self)
         local setID=self.setID
         local nu
         if setID and not Save().hide then
@@ -36,7 +36,7 @@ local function Init()
 
 
 --新建 空装，按钮 .addSetButton GearSetButtonTemplate
-    hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(btn)-- elementData)
+    WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_InitButton', function(btn)-- elementData)
         local hide= Save().hide or not btn.addSetButton
         if hide or btn.createButton then
             if btn.createButton then

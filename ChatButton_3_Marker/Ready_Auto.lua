@@ -139,7 +139,7 @@ end
 --自动就绪
 local function Init()
 
-    hooksecurefunc('ShowReadyCheck', function(initiator, timeLeft)--ReadyCheckListenerFrame
+    WoWTools_DataMixin:Hook('ShowReadyCheck', function(initiator, timeLeft)--ReadyCheckListenerFrame
         if timeLeft then
             ReadyCheckListenerFrame.time= timeLeft+ GetTime()
         end

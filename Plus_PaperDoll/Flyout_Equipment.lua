@@ -207,11 +207,11 @@ end
 
 
 local function Init()
-    hooksecurefunc('EquipmentFlyout_UpdateItems', function()
+    WoWTools_DataMixin:Hook('EquipmentFlyout_UpdateItems', function()
         local itemButton = EquipmentFlyoutFrame.button
         Settings(itemButton)
     end)
-   hooksecurefunc('EquipmentFlyout_Show', Settings)
+   WoWTools_DataMixin:Hook('EquipmentFlyout_Show', Settings)
 end
 
 

@@ -93,10 +93,10 @@ end
 --Blizzard_AuctionHouseUI.lua
 --local ITEM_SPELL_KNOWN = ITEM_SPELL_KNOWN--"已学习
 local function Init()
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
 
     --双击，一口价
-    hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', function(frame)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', function(frame)
         if not frame:GetView() then
             return
         end

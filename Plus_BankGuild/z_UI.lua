@@ -113,7 +113,7 @@ end
 
 --[[
 function WoWTools_ItemMixin.Events:Blizzard_GuildBankUI()
-    hooksecurefunc(GuildBankFrame, 'Update', function(frame)
+    WoWTools_DataMixin:Hook(GuildBankFrame, 'Update', function(frame)
         if frame.mode ~= "bank" then
             return
         end

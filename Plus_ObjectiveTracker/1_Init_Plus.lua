@@ -39,7 +39,7 @@ local function Init()
     ScenarioObjectiveTracker.Header.numStagesLabel= WoWTools_LabelMixin:Create(ScenarioObjectiveTracker.Header, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
     ScenarioObjectiveTracker.Header.numStagesLabel:SetPoint('LEFT', ScenarioObjectiveTracker.Header.Text, 'RIGHT')
 
-    hooksecurefunc(ScenarioObjectiveTracker, 'LayoutContents', function(self)
+    WoWTools_DataMixin:Hook(ScenarioObjectiveTracker, 'LayoutContents', function(self)
         local text
         local currentStage, numStages = select(2, C_Scenario.GetInfo())
         if numStages and numStages>1 and currentStage then
@@ -73,7 +73,7 @@ local function Init()
 
 --QuestObjectiveItemButtonTemplate
 --物品按钮左边,放大
-    hooksecurefunc(QuestObjectiveItemButtonMixin, 'SetUp', function(self)
+    WoWTools_DataMixin:Hook(QuestObjectiveItemButtonMixin, 'SetUp', function(self)
         if not WoWTools_FrameMixin:IsLocked(self) and not self.isSetTexture then
             self:SetSize(42,42)
             self.NormalTexture:SetPoint('TOPLEFT', -10, 10)
@@ -111,7 +111,7 @@ local function Init()
     function()
         WoWTools_ObjectiveMixin:Clear_Achievement(true)
     end)
-    hooksecurefunc(AchievementObjectiveTracker, 'AddAchievement', function(self, achievementID)
+    WoWTools_DataMixin:Hook(AchievementObjectiveTracker, 'AddAchievement', function(self, achievementID)
         local block = WoWTools_ObjectiveMixin:Get_Block(self, achievementID)
         if not block then
             return
@@ -151,7 +151,7 @@ local function Init()
     function()
         WoWTools_ObjectiveMixin:Clear_ProfessionsRecipe(true)
     end)
-    hooksecurefunc(ProfessionsRecipeTracker, 'AddRecipe', function(self, recipeID, isRecraft)
+    WoWTools_DataMixin:Hook(ProfessionsRecipeTracker, 'AddRecipe', function(self, recipeID, isRecraft)
         local blockID = NegateIf(recipeID, isRecraft);
 	    local block = WoWTools_ObjectiveMixin:Get_Block(self, blockID)
 
@@ -208,7 +208,7 @@ local function Init()
         WoWTools_ObjectiveMixin:Clear_Quest(true)
     end)
 
-    hooksecurefunc(QuestObjectiveTracker, 'AddBlock', function(_, block)
+    WoWTools_DataMixin:Hook(QuestObjectiveTracker, 'AddBlock', function(_, block)
         local questID= block.id and tonumber(block.id)
         if questID then
             local color = select(2, WoWTools_QuestMixin:GetAtlasColor(questID))

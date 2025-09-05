@@ -31,6 +31,6 @@ end
 
 
 function WoWTools_EncounterMixin:Init_Model_Boss()--BOSS模型 
-    hooksecurefunc('EncounterJournal_DisplayCreature', Setings)
+    WoWTools_DataMixin:Hook('EncounterJournal_DisplayCreature', Setings)
 end
     

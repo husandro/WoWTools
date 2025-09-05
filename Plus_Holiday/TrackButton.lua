@@ -982,7 +982,7 @@ local function Init()
         self:set_Events()
         Set_Text()
     end
-    hooksecurefunc('CalendarDayButton_Click', function(button)
+    WoWTools_DataMixin:Hook('CalendarDayButton_Click', function(button)
         Set_Text(button.monthOffset, button.day)
     end)
     CalendarFrame:HookScript('OnHide', function()

@@ -206,9 +206,9 @@ local function Init()
         end
     end
 
-    hooksecurefunc(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+    WoWTools_DataMixin:Hook(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
 
-    hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
+    WoWTools_DataMixin:Hook(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
 
     Init=function()end
 end

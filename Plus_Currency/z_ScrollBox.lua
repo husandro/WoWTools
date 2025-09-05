@@ -181,7 +181,7 @@ end
 
 
 local function Init()
-	hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
+	WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
             return
         end
@@ -210,7 +210,7 @@ local function Init()
 		WoWTools_SetTooltipMixin:Frame(self)
 		self:SetAlpha(0.5)
 	end)
-	hooksecurefunc(TokenFrame, 'UpdatePopup', function(_, btn)
+	WoWTools_DataMixin:Hook(TokenFrame, 'UpdatePopup', function(_, btn)
 		TokenFramePopup.Name.currencyID= btn.elementData.currencyID
 		TokenFramePopup.Name:SetText(not Save().notPlus and WoWTools_CurrencyMixin:GetName(btn.elementData.currencyID) or '')
 	end)

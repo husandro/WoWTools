@@ -400,7 +400,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    hooksecurefunc('PetJournal_InitPetButton', function(...)
+                    WoWTools_DataMixin:Hook('PetJournal_InitPetButton', function(...)
                         Init_PetJournal_InitPetButton(...)
                     end)
                     self:UnregisterEvent(event)
@@ -412,7 +412,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-            hooksecurefunc('PetJournal_InitPetButton', function(...)
+            WoWTools_DataMixin:Hook('PetJournal_InitPetButton', function(...)
                 Init_PetJournal_InitPetButton(...)
             end)
             self:UnregisterEvent(event)

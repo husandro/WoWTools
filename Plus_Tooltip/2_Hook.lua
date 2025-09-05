@@ -47,7 +47,7 @@ local function Init()
 
 
 --战斗宠物，技能 SharedPetBattleTemplates.lua  SharedPetBattleAbilityTooltipTemplate
-    hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo)
+    WoWTools_DataMixin:Hook('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo)
         local abilityID = abilityInfo:GetAbilityID()
         if not abilityID then
             if self.WoWToolsLabel then
@@ -73,7 +73,7 @@ local function Init()
 
 
 --宠物，技能书，提示
-    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)
+    WoWTools_DataMixin:Hook(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)
         if unit==Enum.SpellBookSpellBank.Pet and slot then
             local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
             if data then
@@ -95,43 +95,43 @@ local function Init()
 
 
 --声望
-    hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
+    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
         if self.elementData and self.elementData.factionID then
             WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end
     end)
-    hooksecurefunc(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
+    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
         if self.elementData and self.elementData.factionID then
             WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end
     end)
-    hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
+    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
         if self.elementData and self.elementData.factionID then
             WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end
     end)
-    hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
+    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
         if self.elementData and self.elementData.factionID then
             WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
         end
     end)
 
-    hooksecurefunc(ReputationSubHeaderMixin, 'ShowStandardTooltip', function(self)
+    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowStandardTooltip', function(self)
         if self.elementData and self.elementData.factionID then
             WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end
     end)
-    hooksecurefunc(ReputationSubHeaderMixin, 'ShowMajorFactionRenownTooltip', function(self)
+    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowMajorFactionRenownTooltip', function(self)
         if self.elementData and self.elementData.factionID then
             WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end
     end)
-    hooksecurefunc(ReputationSubHeaderMixin, 'ShowFriendshipReputationTooltip', function(self)
+    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowFriendshipReputationTooltip', function(self)
         if self.elementData and self.elementData.factionID then
             WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end
     end)
-    hooksecurefunc(ReputationSubHeaderMixin, 'ShowParagonRewardsTooltip', function(self)
+    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowParagonRewardsTooltip', function(self)
         if self.elementData and self.elementData.factionID then
             WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
         end
@@ -164,15 +164,15 @@ local function Init()
         factionIDText:settings()
     end)
 --第一次，需要刷新
-    hooksecurefunc(ReputationFrame.ReputationDetailFrame, 'Refresh', function()
+    WoWTools_DataMixin:Hook(ReputationFrame.ReputationDetailFrame, 'Refresh', function()
         factionIDText:settings()
     end)
---hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
+--WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnClick', function(frame)
 
 
 
 --POI提示 AreaPOIDataProvider.lua
-    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)
+    WoWTools_DataMixin:Hook(AreaPOIPinMixin,'TryShowTooltip', function(self)
         local uiMapID = self:GetMap() and self:GetMap():GetMapID()
         if self.areaPoiID or self.widgetSetID then
             GameTooltip:AddDoubleLine(
@@ -215,7 +215,7 @@ local function Init()
 
 --挑战, AffixID
 --Blizzard_ScenarioObjectiveTracker.lua
-    hooksecurefunc(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
+    WoWTools_DataMixin:Hook(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
         if self.affixID then
             local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
             GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
@@ -254,7 +254,7 @@ local function Init()
 
 --试衣间
 --DressUpFrames.lua
-    hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)
+    WoWTools_DataMixin:Hook(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)
         if self.transmogID then
             GameTooltip:AddLine('transmogID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.transmogID)
             GameTooltip:Show()
@@ -276,7 +276,7 @@ local function Init()
     --label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
     label:SetPoint('LEFT', QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton, 'RIGHT', 2, 0)    
 
-    hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
+    WoWTools_DataMixin:Hook('QuestMapFrame_ShowQuestDetails', function(questID)
         QuestMapDetailsScrollFrame.questIDLabel:settings(questID)
     end)
 
@@ -289,7 +289,7 @@ local function Init()
 
 
 --任务日志 显示ID
-    hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
+    WoWTools_DataMixin:Hook("QuestMapLogTitleButton_OnEnter", function(self)
         local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
         local questID= info and info.questID or self.questID
         if not questID  or not HaveQuestData(questID) then
@@ -335,7 +335,7 @@ local function Init()
 
 
 --添加 WidgetSetID
-    hooksecurefunc('GameTooltip_AddWidgetSet', function(tooltip, uiWidgetSetID)
+    WoWTools_DataMixin:Hook('GameTooltip_AddWidgetSet', function(tooltip, uiWidgetSetID)
         if uiWidgetSetID then
             tooltip:AddLine('widgetSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..uiWidgetSetID)
             WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
@@ -350,7 +350,7 @@ local function Init()
 --ActionButton.lua
     for i= 1, NUM_OVERRIDE_BUTTONS do
         if _G['OverrideActionBarButton'..i] then
-            hooksecurefunc(_G['OverrideActionBarButton'..i], 'SetTooltip', function(self)
+            WoWTools_DataMixin:Hook(_G['OverrideActionBarButton'..i], 'SetTooltip', function(self)
                 if not self.action then
                     return
                 end
@@ -388,7 +388,7 @@ local function Init()
 
 
 --GameTooltip_AddQuest    
-    hooksecurefunc('GameTooltip_AddQuest', function(self, questIDArg)
+    WoWTools_DataMixin:Hook('GameTooltip_AddQuest', function(self, questIDArg)
         local questID = self.questID or questIDArg
         if questID and HaveQuestData(questID) then
             WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID)
@@ -417,7 +417,7 @@ local function Init()
 
 
 --SharedCollectionTemplates.lua
-    hooksecurefunc(WarbandSceneEntryMixin, 'OnEnter', function(self)
+    WoWTools_DataMixin:Hook(WarbandSceneEntryMixin, 'OnEnter', function(self)
         local warbandSceneID= self.warbandSceneInfo and self.warbandSceneInfo.warbandSceneID
         if not warbandSceneID then
             return
@@ -442,7 +442,7 @@ local function Init()
 
 --商店
     if _G['AccountStoreFrame'] then
-        hooksecurefunc(AccountStoreBaseCardMixin, 'OnEnter', function(self)
+        WoWTools_DataMixin:Hook(AccountStoreBaseCardMixin, 'OnEnter', function(self)
             local info= self.itemInfo
             if not info or not info.id then
                 return

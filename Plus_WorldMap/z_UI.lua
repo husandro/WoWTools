@@ -18,7 +18,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
 
-    hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(frame)--最大化时，隐藏背景
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'SynchronizeDisplayState', function(frame)--最大化时，隐藏背景
         if frame:IsMaximized() then
             frame.BlackoutFrame:Hide()
         end
@@ -61,7 +61,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetAlphaColor(MapLegendScrollFrame.Background, nil, nil, 0.3)
 
 --任务，列表 QuestLogHeaderCodeTemplate
-    hooksecurefunc(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
         self:SetFrame(btn, {alpha=0.7})
     end)
 
@@ -74,10 +74,10 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetFrame(WorldMapFrame.NavBar.overlay, {alpha=0})
 
     WorldMapFrame.BorderFrame.PortraitContainer:SetSize(48,48)
-    hooksecurefunc(WorldMapFrame, 'Minimize', function(frame)
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'Minimize', function(frame)
        frame.BorderFrame.PortraitContainer:SetSize(48,48)
     end)
-    hooksecurefunc(WorldMapFrame, 'Maximize', function(frame)
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'Maximize', function(frame)
         frame.BorderFrame.PortraitContainer:SetSize(23,23)
     end)
 
@@ -134,7 +134,7 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
         end
     end
 
-    hooksecurefunc(WorldMapFrame, 'Minimize', function(frame)
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'Minimize', function(frame)
         local name= frame:GetName()
         local size= self:Save().size[name]
         if size then
@@ -147,7 +147,7 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
         end
         frame.ResizeButton:SetShown(true)
     end)
-    hooksecurefunc(WorldMapFrame, 'Maximize', function(frame)
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'Maximize', function(frame)
         set_min_max_value()
         if self:Save().scale[frame:GetName()] then
             frame:SetScale(1)

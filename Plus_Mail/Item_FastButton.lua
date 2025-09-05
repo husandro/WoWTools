@@ -504,7 +504,7 @@ local function Init()
     fastButton:set_shown()
 
 
-    hooksecurefunc('SendMailFrame_Update', function()
+    WoWTools_DataMixin:Hook('SendMailFrame_Update', function()
         local tab={}
         for i= 1, ATTACHMENTS_MAX_SEND do
             if not HasSendMailItem(i) then

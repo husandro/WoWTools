@@ -503,7 +503,7 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:SetScript('OnShow', TrackButton.set_event)
 
 --更新
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update',  Init_buttons)
+    WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_Update',  Init_buttons)
     TrackButton:settings()
 end
 

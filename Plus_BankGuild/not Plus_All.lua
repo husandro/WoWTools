@@ -110,7 +110,7 @@ local function Init_UI()
         self:settings()
     end)
 
-    hooksecurefunc(GuildBankFrame, 'UpdateTabInfo', function(_, tabID)
+    WoWTools_DataMixin:Hook(GuildBankFrame, 'UpdateTabInfo', function(_, tabID)
         --QueryGuildBankTab(tabID)
 
         GuildBankTabInfoEditBox.Instructions:SetText(

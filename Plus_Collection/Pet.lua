@@ -113,7 +113,7 @@ local function Init()
     PetJournal.PetCount.Label:SetPoint('RIGHT', PetJournal.PetCount.Count, 'LEFT', -2, 0)
     PetJournal.PetCount.Label:SetJustifyH('RIGHT')
 
-    hooksecurefunc('PetJournal_UpdatePetList', function()
+    WoWTools_DataMixin:Hook('PetJournal_UpdatePetList', function()
         if not PetJournal:IsVisible() or Save().hidePets then
             return
         end
@@ -121,7 +121,7 @@ local function Init()
     end)
 
 --列表
-    hooksecurefunc('PetJournal_InitPetButton', function(pet, data)
+    WoWTools_DataMixin:Hook('PetJournal_InitPetButton', function(pet, data)
         local abilityIconA, abilityIconB
         if not Save().hidePets and Save().petListIconSize~=0 then
             abilityIconA, abilityIconB= WoWTools_PetBattleMixin:GetAbilityIcon(data.speciesID, data.index, data.petID, true, Save().petListIconSize or 18)
@@ -155,7 +155,7 @@ local function Init()
 
 
 --PetCard
-    hooksecurefunc('PetJournal_UpdatePetCard', function(self)
+    WoWTools_DataMixin:Hook('PetJournal_UpdatePetCard', function(self)
         local frame= self.TypeInfo
         local speciesID= frame.speciesID
         local petType= frame:IsShown() and speciesID and select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
@@ -216,7 +216,7 @@ local function Init()
 
 
 --1,2,3 PetCard, 技能
-    hooksecurefunc('PetJournal_UpdatePetLoadOut', function()
+    WoWTools_DataMixin:Hook('PetJournal_UpdatePetLoadOut', function()
         local frame, petType, nextAbilityID
         local isEnabled= not Save().hidePets
         for i=1, 3 do--MAX_ACTIVE_PETS

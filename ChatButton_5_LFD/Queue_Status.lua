@@ -667,5 +667,5 @@ function WoWTools_LFDMixin:Set_Queue_Status()
 end
 function WoWTools_LFDMixin:Init_Queue_Status()
     Init()
-    hooksecurefunc(QueueStatusFrame, 'Update', Set_Queue_Status)--小眼睛, 更新信息, QueueStatusFrame.luaend
+    WoWTools_DataMixin:Hook(QueueStatusFrame, 'Update', Set_Queue_Status)--小眼睛, 更新信息, QueueStatusFrame.luaend
 end

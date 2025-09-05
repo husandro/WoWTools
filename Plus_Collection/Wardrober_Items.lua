@@ -143,13 +143,13 @@ end
 --物品
 local function Init_Wardrober_Items()--物品, 幻化, 界面
     --部位，已收集， 提示
-    hooksecurefunc(WardrobeCollectionFrame.ClassDropdown, 'SetClassFilter', function(self)
+    WoWTools_DataMixin:Hook(WardrobeCollectionFrame.ClassDropdown, 'SetClassFilter', function(self)
         C_Timer.After(0.3, function()
             UpdateSlotButtons(WardrobeCollectionFrame.ItemsCollectionFrame)
         end)
     end)
 
-    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateSlotButtons', UpdateSlotButtons)
+    WoWTools_DataMixin:Hook(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateSlotButtons', UpdateSlotButtons)
 
     for _, btn in pairs(WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame.Buttons) do
         btn:HookScript('OnEnter', function(self)
@@ -505,7 +505,7 @@ local function Init()
         return
     end
     --外观，物品，提示, 索引
-    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', function(self)
+    WoWTools_DataMixin:Hook(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', function(self)
         set_Items_Tooltips(self)
     end)
 
@@ -513,7 +513,7 @@ local function Init()
     Init_Wardrober_Items()
 
     --幻化，套装，索引
-    hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(self)
+    WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(self)
         set_Sets_Tooltips(self)
     end)
 
