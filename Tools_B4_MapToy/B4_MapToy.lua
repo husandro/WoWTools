@@ -341,28 +341,22 @@ local function Init()
             return
         end
 
-
-        if not itemID then
+        local spellName= nil
+        if itemID then
+            self:SetAttribute("type1", "toy")
+        else
+            self:SetAttribute("type1", "spell")
             spellID= spellID or SpellID
+            spellName= C_Spell.GetSpellName(spellID) or nil
         end
-
-        local spellName= spellID and C_Spell.GetSpellName(spellID) or nil
-
+        self:SetAttribute('toy1', itemID)
+        self:SetAttribute('spell1', spellName)
 
         self.itemID=itemID
         self.spellID=spellID
         self.achievements= achievements
         self.isLocked= isLocked
 
-        if itemID then
-            self:SetAttribute("type1", "toy")
-        else
-            self:SetAttribute("type1", "spell")
-        end
-
-
-        self:SetAttribute('toy1', itemID)
-        self:SetAttribute('spell1', spellName)
 
         self:set_texture()
         self:set_cool()
