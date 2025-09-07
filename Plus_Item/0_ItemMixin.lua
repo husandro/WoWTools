@@ -16,7 +16,6 @@ WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得物品，
 WoWTools_ItemMixin:GetEquipSlotIcon(slotID)
 WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
 
-WoWTools_ItemMixin:IsCan_EquipmentSet(setID)--装备管理，能否装备
 
 WoWTools_ItemMixin:GetCount(itemID, tab)
 WoWTools_ItemMixin:GetWoWCount(itemID)
@@ -674,12 +673,12 @@ end
 
 
 --装备管理，能否装备
---EquipmentManager.lua
-function WoWTools_ItemMixin:IsCan_EquipmentSet(setID)--装备管理，能否装备
-	if not setID or C_EquipmentSet.EquipmentSetContainsLockedItems(setID) or UnitCastingInfo("player") then
+--[[EquipmentManager.lua
+function WoWTools_ItemMixin:IsLocked_EquipmentSet(setID)--装备管理，能否装备
+	if not setID or C_EquipmentSet.EquipmentSetContainsLockedItems(setID) then
 		return '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
 	end
-end
+end]]
 
 
 

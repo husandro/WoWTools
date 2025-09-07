@@ -131,53 +131,7 @@ end
 
 
 
---Flyout, 技能，提示
-local function set_SpellFlyoutButton_UpdateGlyphState(self)
-    if not self.spellID then
-        Set_Text(self, nil)
-        return
-    end
 
-    local p=self:GetPoint(1)
-    local isLeftPoint= (p=='TOP') or (p=='BOTTOM')
-
-    local hunterPetText= GetHunterPetSpellText(self.spellID, isLeftPoint)
-    local text= hunterPetText or SpellTab[self.spellID]  or  GetSpellText(self.spellID)
-
-
-    if text then
-        if not self.spellText then
-            self.spellText= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, justifyH='CENTER', size=14})
-            self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
-
-
-            self.TextBg:SetPoint('TOPLEFT', self.spellText,-6, 6)
-            self.TextBg:SetPoint('BOTTOMRIGHT', self.spellText, 6,-6 )
-            self.TextBg:SetAtlas('ChallengeMode-guild-background')
-        end
-
-
-        if isLeftPoint~=self.isLeftPoint then
-            self.spellText:ClearAllPoints()
-            if isLeftPoint then
-                self.spellText:SetPoint('RIGHT', self, 'LEFT',-1, 0)
-            else
-                self.spellText:SetPoint('BOTTOM', self, 'TOP', 0, 1)
-            end
-            self.isLeftPoint= isLeftPoint
-        end
-
-        if not hunterPetText and not isLeftPoint then
-            text= WoWTools_TextMixin:Vstr(text)--垂直文字
-        end
-
-    elseif self.spellText then
-        self.spellText:ClearAllPoints()
-        self.isLeftPoint=nil
-    end
-
-    Set_Text(self, text)
-end
 
 
 
@@ -206,7 +160,53 @@ local function Init()
         end
     end
 
-    WoWTools_DataMixin:Hook(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+--Flyout, 技能，提示
+    WoWTools_DataMixin:Hook(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', function(self)
+        if not self.spellID then
+            Set_Text(self, nil)
+            return
+        end
+
+        local p=self:GetPoint(1)
+        local isLeftPoint= (p=='TOP') or (p=='BOTTOM')
+
+        local hunterPetText= GetHunterPetSpellText(self.spellID, isLeftPoint)
+        local text= hunterPetText or SpellTab[self.spellID]  or  GetSpellText(self.spellID)
+
+
+        if text then
+            if not self.spellText then
+                self.spellText= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, justifyH='CENTER', size=14})
+                self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
+
+
+                self.TextBg:SetPoint('TOPLEFT', self.spellText,-6, 6)
+                self.TextBg:SetPoint('BOTTOMRIGHT', self.spellText, 6,-6 )
+                self.TextBg:SetAtlas('ChallengeMode-guild-background')
+            end
+
+
+            if isLeftPoint~=self.isLeftPoint then
+                self.spellText:ClearAllPoints()
+                if isLeftPoint then
+                    self.spellText:SetPoint('RIGHT', self, 'LEFT',-1, 0)
+                else
+                    self.spellText:SetPoint('BOTTOM', self, 'TOP', 0, 1)
+                end
+                self.isLeftPoint= isLeftPoint
+            end
+
+            if not hunterPetText and not isLeftPoint then
+                text= WoWTools_TextMixin:Vstr(text)--垂直文字
+            end
+
+        elseif self.spellText then
+            self.spellText:ClearAllPoints()
+            self.isLeftPoint=nil
+        end
+
+        Set_Text(self, text)
+    end)
 
     WoWTools_DataMixin:Hook(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
 

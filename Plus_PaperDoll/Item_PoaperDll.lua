@@ -701,13 +701,16 @@ local function Init()
                     self.numAllSlots:SetAlpha(0.5)
                 end
             end
+
             if self.numFreeSlots then
                 self.numFreeSlots:SetText(numFreeSlots or '')
                 self.numAllSlots:SetText((numAllSlots and numAllSlots>0) and numAllSlots or '')
             end
+
             set_Slot_Num_Label(self, InventSlot_To_ContainerSlot[slot], isbagEquipped)--栏位
         end
     end)
+
     Init=function()end
 end
 

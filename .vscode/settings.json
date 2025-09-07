@@ -6161,7 +6161,9 @@
         "TimeManagerAlarmEnabledButton_OnClick",
         "ZoneAbilityFrameMixin",
         "UIFrameFlash",
-        "TimeManagerAlarmFiredTexture"
+        "TimeManagerAlarmFiredTexture",
+        "ORDER_HALL_EQUIPMENT_SLOTS",
+        "EquipmentManager_EquipSet"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -218,6 +218,7 @@ Plus_PaperDoll\Tab2.lua
 Plus_PaperDoll\Tab3_Set_Plus.lua
 Plus_PaperDoll\Tab3.lua
 Plus_PaperDoll\TrackButton_PaperDool.lua
+Plus_PaperDoll\z_UI.lua
 
 
 ##声望面板

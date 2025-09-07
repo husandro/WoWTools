@@ -1,15 +1,8 @@
 --装备管理，Plus
---PaperDollFrame.lua
+--[[PaperDollFrame.lua
 local function Save()
     return WoWToolsSave['Plus_PaperDoll']
-end
-
-
-
-
-
-
-
+end]]
 
 
 
@@ -18,7 +11,7 @@ local function Init()
     WoWTools_DataMixin:Hook('GearSetButton_UpdateSpecInfo', function(self)
         local setID=self.setID
         local nu
-        if setID and not Save().hide then
+        if setID then
             if not self.nu then
                 self.nu=WoWTools_LabelMixin:Create(self)
                 self.nu:SetJustifyH('RIGHT')
@@ -36,75 +29,95 @@ local function Init()
 
 
 --新建 空装，按钮 .addSetButton GearSetButtonTemplate
-    WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_InitButton', function(btn)-- elementData)
-        local hide= Save().hide or not btn.addSetButton
-        if hide or btn.createButton then
-            if btn.createButton then
-                btn.createButton:SetShown(hide)
-            end
-            return
+    WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_InitButton', function(btn)
+        local isShow= not btn.setID and true or false
+        
+
+        if not btn.createButton and isShow then
+            btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {
+                size=30,
+                atlas='groupfinder-eye-highlight'
+            })
+            btn.createButton.str= WoWTools_DataMixin.onlyChinese and '空' or EMPTY
+            btn.createButton:SetPoint('RIGHT', 0,-4)
+            btn.createButton:SetScript('OnLeave', GameTooltip_Hide)
+            btn.createButton:SetScript('OnEnter', function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddDoubleLine(self.str,
+                    C_EquipmentSet.GetEquipmentSetID(self.str)
+                    and ('|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..'|r')
+                    or ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..'|r')
+                )
+                GameTooltip:Show()
+            end)
+
+            btn.createButton:SetScript('OnClick', function(self)
+                local setID= C_EquipmentSet.GetEquipmentSetID(self.str)
+                if setID then
+                    C_EquipmentSet.DeleteEquipmentSet(setID)
+                end
+                for i=1, 18 do
+                    C_EquipmentSet.IgnoreSlotForSave(i)
+                end
+                C_EquipmentSet.CreateEquipmentSet(self.str)
+                if setID then
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..'|r', self.str)
+                else
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..'|r', self.str)
+                end
+            end)
+        end
+        if btn.createButton then
+            btn.createButton:SetShown(isShow)
         end
 
-        btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {
-            size=30,
-            atlas='groupfinder-eye-highlight'
-        })
-        btn.createButton.str= WoWTools_DataMixin.onlyChinese and '空' or EMPTY
-        btn.createButton:SetPoint('RIGHT', 0,-4)
-        btn.createButton:SetScript('OnLeave', GameTooltip_Hide)
-        btn.createButton:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(self.str,
-                C_EquipmentSet.GetEquipmentSetID(self.str)
-                and ('|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..'|r')
-                or ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..'|r')
-            )
-            GameTooltip:Show()
-        end)
-
-        btn.createButton:SetScript('OnClick', function(self)
-            local setID= C_EquipmentSet.GetEquipmentSetID(self.str)
-            if setID then
-                C_EquipmentSet.DeleteEquipmentSet(setID)
-            end
-            for i=1, 18 do
-                C_EquipmentSet.IgnoreSlotForSave(i)
-            end
-            C_EquipmentSet.CreateEquipmentSet(self.str)
-            if setID then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..'|r', self.str)
-            else
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..'|r', self.str)
-            end
-        end)
-
-
-
-        btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-        btn:HookScript('OnClick', function(self, d)
-            if self.setID and not Save().hide and d=='RightButton' then
-                local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
-                if notCan then
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, notCan)
-                else
-                    C_EquipmentSet.UseEquipmentSet(self.setID)
-                    local name, iconFileID = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
+--Hook
+        if not btn.useButton and btn.setID then
+            btn.useButton= WoWTools_ButtonMixin:Cbtn(btn, {
+                size= 22,
+                atlas= 'mechagon-projects',
+            })
+            btn.useButton:SetPoint('RIGHT', -28, 0)
+            btn.useButton:SetScript('OnClick', function(self)
+                local setID = self:GetParent().setID
+                if not setID or C_EquipmentSet.EquipmentSetContainsLockedItems(setID) then
+                    return
                 end
-            end
-        end)
+                --C_EquipmentSet.UseEquipmentSet(setID)
+                EquipmentManager_EquipSet(setID)
+            end)
 
-        btn:HookScript('OnEnter', function(self)
-            if self.setID and not Save().hide then
-                local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
-                GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP)..WoWTools_DataMixin.Icon.right)
+            btn.useButton:SetScript('OnLeave', function()
+                GameTooltip:Hide()
+            end)
+            btn.useButton:SetScript('OnEnter', function(self)
+                local p= self:GetParent()
+                local setID = p.setID
+                if not setID then
+                    return
+                end
+                GameTooltip:SetOwner(p, 'ANCHOR_RIGHT')
+                GameTooltip:SetText(
+                    WoWTools_DataMixin.Icon.icon2
+                    ..(C_EquipmentSet.EquipmentSetContainsLockedItems(setID) and '|cff606060' or '')
+                    ..(WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP)
+                )
                 GameTooltip:Show()
-            end
-        end)
+            end)
+        end
+        if btn.useButton then
+             btn.useButton:SetShown(btn.setID and not btn.Check:IsShown())
+        end
+
+        btn.SpecRing:SetShown(false)
     end)
+
+
+
+    Init=function()end
 end
 
 

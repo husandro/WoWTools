@@ -165,14 +165,9 @@ sub:CreateSpacer()
 
 --缩放, 单行
 function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValue)
-    local sub
-    if  not frame:CanChangeAttribute() then
-        sub=root:CreateButton('|cff828282'..WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,function() end)
-        sub:SetEnabled(false)
-        return
-    end
+    local isLocked= WoWTools_FrameMixin:IsLocked(frame)
     root:CreateSpacer()
-    sub= self:CreateSlider(root, {
+    local sub= self:CreateSlider(root, {
         getValue=GetValue,
         setValue=SetValue,
         name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
@@ -182,16 +177,19 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
         bit='%0.2f',
         tooltip=function(tooltip) tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE) end,
     })
+    sub:SetEnabled(not isLocked)
     root:CreateSpacer()
 
     sub=root:CreateButton(
         '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
     function(data)
-        if data.setValue then
-            data.setValue(1)
-        end
-        if data.resetValue then
-            data.resetValue()
+        if not WoWTools_FrameMixin:IsLocked(frame) then
+            if data.setValue then
+                data.setValue(1)
+            end
+            if data.resetValue then
+                data.resetValue()
+            end
         end
         return MenuResponse.Refresh
     end, {setValue=SetValue, resetValue=ResetValue})
@@ -233,20 +231,18 @@ end]]
 
 --缩放
 function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
-    local sub
-    if not frame:CanChangeAttribute() then
-        sub=root:CreateButton('|cff828282'..WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, function() end)
-        sub:SetEnabled(false)
-        return
-    end
-    sub= root:CreateButton(
-        '|A:common-icon-zoomin:0:0|a'
+    local isLocked=  WoWTools_FrameMixin:IsLocked(frame)
+    local sub= root:CreateButton(
+        (isLocked and '|cff626262' or '')
+        ..'|A:common-icon-zoomin:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE),
     function()
         return MenuResponse.Open
     end)
 
     local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
+    sub2:SetEnabled(not isLocked)
+    
     return sub, sub2
 end
 --[[

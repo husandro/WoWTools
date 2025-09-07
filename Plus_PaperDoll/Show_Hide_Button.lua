@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub= root:CreateCheckbox(
+    root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
     function()
         return not Save().hide
@@ -78,7 +78,8 @@ local function Init_Menu(self, root)
         Settings()
     end)
 
-    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_PaperDollMixin.addName})
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})
 end
 
 

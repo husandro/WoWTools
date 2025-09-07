@@ -37,6 +37,7 @@ local P_Save={
     --notStatusPlusFunc=true, --属性 PLUS Func
     itemLevelBit= 1,--物品等级，位数
 
+    itemSlotScale=1, --栏位，按钮，缩放
 }
 
 

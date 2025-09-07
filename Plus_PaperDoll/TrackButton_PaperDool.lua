@@ -147,9 +147,8 @@ local function Create_Button(index)
 
     Set_Point(btn, index)--设置位置
 
-    btn:SetScript("OnClick",function(self, d)
-        local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)--装备管理，能否装备
-        if not notCan then
+    btn:SetScript("OnClick",function(self)
+        if self.setID and not C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID) then--装备管理，能否装备
             C_EquipmentSet.UseEquipmentSet(self.setID)
 
             if TrackButton.HelpTips then
@@ -158,8 +157,6 @@ local function Create_Button(index)
             C_Timer.After(2, function()
                 WoWTools_PaperDollMixin:Settings_Tab1()--修改总装等
             end)
-        else
-            print(WoWTools_DataMixin.Icon.icon2..addName, notCan)
         end
     end)
     btn:SetScript("OnEnter", function(self)
@@ -170,10 +167,11 @@ local function Create_Button(index)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetEquipmentSet(self.setID)
 
-        local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)--装备管理，能否装备
-        if notCan then
+        if C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID) then
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(' ', notCan)
+            GameTooltip:AddDoubleLine(' ',
+                '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
+            )
         end
 
         local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)

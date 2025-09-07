@@ -339,10 +339,9 @@ end
 
 --菜单
 local function Init_Menu(self, root)
-    root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
-
     local target= self:GetParent()
     local name= self.name
+    root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
 
     local sub, sub2
     if WoWTools_FrameMixin:IsLocked(target) then
@@ -526,6 +525,10 @@ local function Init_Menu(self, root)
 
 --/reload
     WoWTools_MenuMixin:Reload(sub)
+
+    if self.addMenu then
+        self.addMenu(target, root)
+    end
 end
 
 
@@ -976,6 +979,8 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
     btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
     btn.sizeTooltip= tab.sizeTooltip
+
+    btn.addMenu= tab.addMenu--添加菜单
     --btn.alpha= tab.alpha
 
     --btn.hideButton= tab.hideButton--隐藏按钮，移过时，才显示

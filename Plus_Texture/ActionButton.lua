@@ -145,6 +145,11 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     self:HideTexture(SpellFlyout.Background.End)
     self:HideTexture(SpellFlyout.Background.HorizontalMiddle)
     self:HideTexture(SpellFlyout.Background.VerticalMiddle)
+
+
+
+--Flyout
+    --WoWTools_DataMixin:Hook(SpellFlyoutPopupButtonMixin, 'OnLoad', function(btn)
 end
 
 
