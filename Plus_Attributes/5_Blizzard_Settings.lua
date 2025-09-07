@@ -6,18 +6,24 @@ end
 
 
 
---##########
---设置 panel
---##########
-local function Init()--设置 panel
+
+
+
+
+
+
+
+
+
+
+
+local function Init(panel)--设置 panel
     if Save().disabled then
         return
     end
 
 
     local last, check, findTank, findDps
-    local panel= WoWTools_AttributesMixin.PanelFrame
-    --local button= WoWTools_AttributesMixin.Button
     local Tabs= WoWTools_AttributesMixin:Get_Tabs()
 
     for index, info in pairs(Tabs) do
@@ -71,7 +77,7 @@ local function Init()--设置 panel
         check:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            local value= WoWTools_AttributesMixin.Button[self.name] and WoWTools_AttributesMixin.Button[self.name].value
+            local value= _G['WoWToolsAttributesButton'][self.name] and _G['WoWToolsAttributesButton'][self.name].value
             GameTooltip:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
             if not info.zeroShow then
                 GameTooltip:AddLine(' ')
@@ -97,12 +103,12 @@ local function Init()--设置 panel
                     Save().tab[self.name].b= setB
                     Save().tab[self.name].a= setA
                     self:SetTextColor(setR, setG, setB, setA)
-                    if WoWTools_AttributesMixin.Button and WoWTools_AttributesMixin.Button[self.name] then
-                        if WoWTools_AttributesMixin.Button[self.name].label then
-                            WoWTools_AttributesMixin.Button[self.name].label:SetTextColor(setR, setG, setB, setA)
+                    if _G['WoWToolsAttributesButton'] and _G['WoWToolsAttributesButton'][self.name] then
+                        if _G['WoWToolsAttributesButton'][self.name].label then
+                            _G['WoWToolsAttributesButton'][self.name].label:SetTextColor(setR, setG, setB, setA)
                         end
-                        if WoWTools_AttributesMixin.Button[self.name].bar then
-                            WoWTools_AttributesMixin.Button[self.name].bar:SetStatusBarColor(setR,setG,setB,setA)
+                        if _G['WoWToolsAttributesButton'][self.name].bar then
+                            _G['WoWToolsAttributesButton'][self.name].bar:SetStatusBarColor(setR,setG,setB,setA)
                         end
                     end
                 end
@@ -400,7 +406,7 @@ local function Init()--设置 panel
         if Save().setMaxMinValue then
             C_Timer.After(0.3, function()
                 for _, info in pairs(WoWTools_AttributesMixin:Get_Tabs()) do
-                    local frame= WoWTools_AttributesMixin.Button[info.name]
+                    local frame= _G['WoWToolsAttributesButton'][info.name]
                     if frame and frame.textValue then
                         frame.textValue:SetText('+12')
                     end
@@ -618,7 +624,7 @@ local function Init()--设置 panel
             self:SetValue(value)
             self.Text:SetText(value)
             Save().scale=value
-            WoWTools_AttributesMixin.Button.frame:SetScale(value)
+            _G['WoWToolsAttributesButton'].frame:SetScale(value)
         end,
         tips=nil
     })
@@ -634,7 +640,7 @@ local function Init()--设置 panel
         self:SetValue(value)
         self.Text:SetText(value)
         Save().buttonAlpha= value
-        WoWTools_AttributesMixin.Button:set_Show_Hide()--显示， 隐藏
+        _G['WoWToolsAttributesButton']:set_Show_Hide()--显示， 隐藏
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
@@ -647,7 +653,7 @@ local function Init()--设置 panel
         self:SetValue(value)
         self.Text:SetText(value)
         Save().buttonScale= value
-        WoWTools_AttributesMixin.Button:set_Show_Hide()--显示， 隐藏
+        _G['WoWToolsAttributesButton']:set_Show_Hide()--显示， 隐藏
     end})
     sliderButtonScale:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0,-24)
 
@@ -656,7 +662,7 @@ local function Init()--设置 panel
     restPosti:SetPoint('BOTTOMRIGHT')
     restPosti:SetScript('OnClick', function()
         Save().point=nil
-        WoWTools_AttributesMixin.Button:set_Point()--设置, 位置
+        _G['WoWToolsAttributesButton']:set_Point()--设置, 位置
     end)
     restPosti:SetScript('OnLeave', GameTooltip_Hide)
     restPosti:SetScript('OnEnter', function(self)
@@ -673,11 +679,12 @@ local function Init()--设置 panel
     checkHidePet:SetChecked(Save().hideInPetBattle)
     checkHidePet:SetScript('OnMouseDown', function()
         Save().hideInPetBattle= not Save().hideInPetBattle and true or false
-        WoWTools_AttributesMixin.Button:set_event()
-        WoWTools_AttributesMixin.Button:settings()
+        _G['WoWToolsAttributesButton']:set_event()
+        _G['WoWToolsAttributesButton']:settings()
     end)
 
-    return true
+
+    Init=function()end
 end
 
 
@@ -690,8 +697,6 @@ end
 
 
 
-function WoWTools_AttributesMixin:Init_Options()
-    if Init() then
-        Init=function()end
-    end
+function WoWTools_AttributesMixin:Init_Options(panel)
+    Init(panel)
 end

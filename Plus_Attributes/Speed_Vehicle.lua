@@ -6,12 +6,15 @@
 
 --载具，移动，速度
 local function Init()
-    local vehicleTabs={
+    if WoWToolsSave['Plus_Attributes'].disabledVehicleSpeed then
+        return
+    end
+
+    for _, name in pairs({
         'MainMenuBarVehicleLeaveButton',--没有车辆，界面
         'OverrideActionBarLeaveFrameLeaveButton',--有车辆，界面
         'MainMenuBarVehicleLeaveButton',--Taxi, 移动, 速度
-    }
-    for _, name in pairs(vehicleTabs) do
+    }) do
         local frame= _G[name]
         if frame then
             frame.speedText= WoWTools_LabelMixin:Create(frame, {mouse=true})
@@ -39,9 +42,13 @@ local function Init()
                     self.speedText:SetText(math.modf(speed* 100 / BASE_MOVEMENT_SPEED))
                 end
             end)
+            frame:HookScript('OnHide', function(self)
+                self.elapsed= nil
+            end)
         end
     end
-    return true
+
+    Init=function()end
 end
 
 
@@ -52,7 +59,5 @@ end
 
 
 function WoWTools_AttributesMixin:Init_Vehicle_Speed()
-    if WoWToolsSave['Plus_Attributes'].disabledVehicleSpeed and Init() then
-        Init=function()end
-    end
+    Init()
 end

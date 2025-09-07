@@ -68,30 +68,7 @@ end
 
 
 
-local nowX, nowY = 0, 0
-local Elapsed=1
-local function OnUpdate(_, elapsed)
-    Elapsed= Elapsed + elapsed
-    if Elapsed> rate then
-        Elapsed=0
-        local oldX, oldY = nowX, nowY
-        nowX, nowY = GetCursorPosition()
 
-        local x = nowX - oldX
-        local y = nowY - oldY
-
-        if math.sqrt(x * x + y * y) > minDistance then
-            egim  = atan2((nowX - oldX) ,  (nowY - oldY))
-            Create_Particle()
-        end
-
-        for i = #Used, 1, -1 do
-            if (update_Particle(Used[i], elapsed)) then
-                delete_Particle( Used[i], i)
-            end
-        end
-    end
-end
 
 
 
@@ -142,6 +119,10 @@ end
 
 
 
+
+
+
+
 local function Init_Texture(isInit)
     local atlasIndex= randomTexture and random(1, #(Save().Atlas)) or Save().atlasIndex
 
@@ -170,6 +151,18 @@ local function Init_Texture(isInit)
         Set_Texture(Used[i], atlas, texture, isInit)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function Cursor_Settings()
@@ -201,7 +194,7 @@ local function Cursor_Settings()
     elseif randomTexture then
         CursorFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
         CursorFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
-        if UnitAffectingCombat('player') then
+        if InCombatLockdown() then
             CursorFrame:RegisterEvent('PLAYER_STARTED_MOVING')
             CursorFrame:UnregisterEvent('GLOBAL_MOUSE_DOWN')
         else
@@ -223,16 +216,53 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 --Cursor, 初始化
 local function Init()
     if Save().disabledCursor then
         return
     end
 
-
     CursorFrame= CreateFrame('Frame', 'WoWToolsCursorFrame', UIParent)
 
-    CursorFrame:SetScript('OnUpdate', OnUpdate)
+    CursorFrame:SetScript('OnHide', function(self)
+        self.elapsed= nil
+        self.nowX= nil
+        self.nowY=nil
+    end)
+
+    CursorFrame:SetScript('OnUpdate', function(self, elapsed)
+        self.elapsed= (self.elapsed or 1) + elapsed
+        if self.elapsed> rate then
+            self.elapsed=0
+            local oldX, oldY = self.nowX or 0, self.nowY or 0
+            self.nowX, self.nowY = GetCursorPosition()
+
+            local x = self.nowX - oldX
+            local y = self.nowY - oldY
+
+            if math.sqrt(x * x + y * y) > minDistance then
+                egim  = atan2((self.nowX - oldX) ,  (self.nowY - oldY))
+                Create_Particle()
+            end
+
+            for i = #Used, 1, -1 do
+                if (update_Particle(Used[i], elapsed)) then
+                    delete_Particle( Used[i], i)
+                end
+            end
+        end
+    end)
 
     CursorFrame:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_STARTED_MOVING' or event=='GLOBAL_MOUSE_DOWN' then

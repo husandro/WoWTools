@@ -44,7 +44,7 @@ for index = 1, GetNumClasses() do
         index = 11
     end
     local className, classFile, classID = GetClassInfo(index)
-    if className then
+    if className and className~='' then
         local hex= select(4, GetClassColor(classFile))
 
         classTabs[className]= WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile)
@@ -119,7 +119,7 @@ for specID, classID in pairs(tab) do
     if hex then
         for _, sex in pairs(Enum.UnitSex) do
             local name, _, icon, role= select(2, GetSpecializationInfoByID(specID, sex))
-            if name and icon then
+            if name and name~='' and icon then
                 local colorText=
                     '|T'..icon..':0|t'
                     ..'|c'..hex

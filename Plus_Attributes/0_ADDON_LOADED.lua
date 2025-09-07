@@ -85,7 +85,8 @@ local function Init()
     WoWTools_AttributesMixin:Init_Dragonriding_Speed()--驭空术UI，速度
     WoWTools_AttributesMixin:Init_Vehicle_Speed()--载具，移动，速度
     WoWTools_AttributesMixin:Init_Target_Speed()--目标，移动，速度
-    return true
+
+    Init=function()end
 end
 
 
@@ -97,7 +98,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGIN")
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -106,23 +107,26 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Attributes']= WoWToolsSave['Plus_Attributes'] or P_Save
 
             WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
-            WoWTools_AttributesMixin.PanelFrame= CreateFrame('Frame')
 
             local Category= WoWTools_PanelMixin:AddSubCategory({--添加控制面板
                 name=WoWTools_AttributesMixin.addName,
-                frame=WoWTools_AttributesMixin.PanelFrame,
+                frame=self,
                 disabled= Save().disabled,
             })
             WoWTools_AttributesMixin.Category= Category
 
-            WoWTools_PanelMixin:ReloadButton({panel=WoWTools_AttributesMixin.PanelFrame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            WoWTools_PanelMixin:ReloadButton({panel=self, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save().disabled = not Save().disabled and true or nil
                     if not Save().disabled then
-                        if Init() then Init=function()end end
+                        Init()
                         WoWTools_AttributesMixin:Init_Options()
                     else
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(
+                            WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                            WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
+                        )
                         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
                     end
                 end,
@@ -132,22 +136,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if Save().disabled then
-                self:UnregisterEvent('PLAYER_LOGIN')
-            else
+            if not Save().disabled then
+                self:RegisterEvent("PLAYER_ENTERING_WORLD")
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                    WoWTools_AttributesMixin:Init_Options()
+                    WoWTools_AttributesMixin:Init_Options(self)
                     self:UnregisterEvent(event)
                 end
             end
 
         elseif arg1=='Blizzard_Settings' then
-            WoWTools_AttributesMixin:Init_Options()
+            WoWTools_AttributesMixin:Init_Options(self)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_LOGIN' then
-        if Init() then Init=function()end end
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        Init()
         self:UnregisterEvent(event)
     end
 end)

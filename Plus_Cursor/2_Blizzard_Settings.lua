@@ -13,7 +13,6 @@ local function Set_Color()--颜色
     end
 end
 
-local PanelFrame
 
 
 
@@ -29,21 +28,28 @@ local PanelFrame
 
 
 --Curor, 添加控制面板
-local function Init_Cursor_Options()
-    if Save().disabledCursor then return end
+local function Init_Cursor_Options(panel)
+    if Save().disabledCursor then
+        return
+    end
 
-    PanelFrame.sliderMaxParticles = WoWTools_PanelMixin:Slider(PanelFrame, {min=50, max=4096, value=Save().maxParticles, setp=1,
-    text=WoWTools_DataMixin.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
-    func=function(self, value)
-        value= math.floor(value)
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save().maxParticles= value
-        WoWTools_CursorMixin:Cursor_Settings()
-    end})
-    PanelFrame.sliderMaxParticles:SetPoint("TOPLEFT", PanelFrame.cursorCheck, 'BOTTOMLEFT', 0, -20)
+    panel.sliderMaxParticles = WoWTools_PanelMixin:Slider(panel, {
+        min=50,
+        max=4096,
+        value=Save().maxParticles,
+        setp=1,
+        text=WoWTools_DataMixin.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
+        func=function(self, value)
+            value= math.floor(value)
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save().maxParticles= value
+            WoWTools_CursorMixin:Cursor_Settings()
+        end
+    })
+    panel.sliderMaxParticles:SetPoint("TOPLEFT", panel.cursorCheck, 'BOTTOMLEFT', 0, -20)
 
-    local sliderMinDistance = WoWTools_PanelMixin:Slider(PanelFrame, {min=1, max=10, value=Save().minDistance, setp=1, color=true,
+    local sliderMinDistance = WoWTools_PanelMixin:Slider(panel, {min=1, max=10, value=Save().minDistance, setp=1, color=true,
     text=WoWTools_DataMixin.onlyChinese and '最小距离' or MINIMUM..TRACKER_SORT_PROXIMITY,
     func=function(self, value)
         value= math.floor(value)
@@ -52,10 +58,10 @@ local function Init_Cursor_Options()
         Save().minDistance= value
         WoWTools_CursorMixin:Cursor_Settings()
     end})
-    sliderMinDistance:SetPoint("TOPLEFT", PanelFrame.sliderMaxParticles, 'BOTTOMLEFT', 0, -20)
+    sliderMinDistance:SetPoint("TOPLEFT", panel.sliderMaxParticles, 'BOTTOMLEFT', 0, -20)
 
 
-    local sliderSize = WoWTools_PanelMixin:Slider(PanelFrame, {min=8, max=256, value=Save().size, setp=1,
+    local sliderSize = WoWTools_PanelMixin:Slider(panel, {min=8, max=256, value=Save().size, setp=1,
     text=WoWTools_DataMixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_BAGS_SIZE ,
     func=function(self, value)
         value= math.floor(value)
@@ -66,7 +72,7 @@ local function Init_Cursor_Options()
     end})
     sliderSize:SetPoint("TOPLEFT", sliderMinDistance, 'BOTTOMLEFT', 0, -20)
 
-    local sliderX = WoWTools_PanelMixin:Slider(PanelFrame, {min=-100, max=100, value=Save().X, setp=1, color=true,
+    local sliderX = WoWTools_PanelMixin:Slider(panel, {min=-100, max=100, value=Save().X, setp=1, color=true,
     text='X',
     func=function(self, value)
         value= math.floor(value)
@@ -77,7 +83,7 @@ local function Init_Cursor_Options()
     end})
     sliderX:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -20)
 
-    local sliderY = WoWTools_PanelMixin:Slider(PanelFrame, {min=-100, max=100, value=Save().Y, setp=1,
+    local sliderY = WoWTools_PanelMixin:Slider(panel, {min=-100, max=100, value=Save().Y, setp=1,
     text='Y',
     func=function(self, value)
         value= math.floor(value)
@@ -88,7 +94,7 @@ local function Init_Cursor_Options()
     end})
     sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -20)
 
-    local sliderRate = WoWTools_PanelMixin:Slider(PanelFrame, {min=0.001, max=0.1, value=Save().rate, setp=0.001, color=true,
+    local sliderRate = WoWTools_PanelMixin:Slider(panel, {min=0.001, max=0.1, value=Save().rate, setp=0.001, color=true,
     text=WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
     func=function(self, value)
         value= tonumber(format('%.3f', value))
@@ -99,7 +105,7 @@ local function Init_Cursor_Options()
     end})
     sliderRate:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
 
-    local sliderRotate = WoWTools_PanelMixin:Slider(PanelFrame, {min=0, max=32, value=Save().rotate, setp=1,
+    local sliderRotate = WoWTools_PanelMixin:Slider(panel, {min=0, max=32, value=Save().rotate, setp=1,
     text=WoWTools_DataMixin.onlyChinese and '旋转' or HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP:gsub(MINIMAP_LABEL, ''),
     func=function(self, value)
         value= math.floor(value)
@@ -110,7 +116,7 @@ local function Init_Cursor_Options()
     end})
     sliderRotate:SetPoint("TOPLEFT", sliderRate, 'BOTTOMLEFT', 0, -20)
 
-    local sliderDuration = WoWTools_PanelMixin:Slider(PanelFrame, {min=0.1, max=4, value=Save().duration, setp=0.1, color=true,
+    local sliderDuration = WoWTools_PanelMixin:Slider(panel, {min=0.1, max=4, value=Save().duration, setp=0.1, color=true,
     text=WoWTools_DataMixin.onlyChinese and '持续时间' or AUCTION_DURATION,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -121,7 +127,7 @@ local function Init_Cursor_Options()
     end})
     sliderDuration:SetPoint("TOPLEFT", sliderRotate, 'BOTTOMLEFT', 0, -20)
 
-    local sliderGravity = WoWTools_PanelMixin:Slider(PanelFrame, {min=-512, max=512, value=Save().gravity, setp=1,
+    local sliderGravity = WoWTools_PanelMixin:Slider(panel, {min=-512, max=512, value=Save().gravity, setp=1,
     text=WoWTools_DataMixin.onlyChinese and '掉落' or BATTLE_PET_SOURCE_1,
     func=function(self, value)
         value= math.floor(value)
@@ -132,7 +138,7 @@ local function Init_Cursor_Options()
     end})
     sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -20)
 
-    local alphaSlider = WoWTools_PanelMixin:Slider(PanelFrame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
+    local alphaSlider = WoWTools_PanelMixin:Slider(panel, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
     text=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -144,20 +150,20 @@ local function Init_Cursor_Options()
     alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -20)
 
 
-    local dropDown = CreateFrame("DropdownButton", nil, PanelFrame, "WowStyle1DropdownTemplate")--下拉，菜单
-    local delColorButton= WoWTools_ButtonMixin:Cbtn(PanelFrame, {size=20})--删除, 按钮
-    local addColorEdit= CreateFrame("EditBox", nil, PanelFrame, 'InputBoxTemplate')--EditBox
-    local addColorButton= WoWTools_ButtonMixin:Cbtn(PanelFrame, {size=20})--添加, 按钮
-    local numColorText= WoWTools_LabelMixin:Create(PanelFrame, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    local dropDown = CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
+    local delColorButton= WoWTools_ButtonMixin:Cbtn(panel, {size=20})--删除, 按钮
+    local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
+    local addColorButton= WoWTools_ButtonMixin:Cbtn(panel, {size=20})--添加, 按钮
+    local numColorText= WoWTools_LabelMixin:Create(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT')
 
     local function set_panel_Texture()--大图片
         local texture= Save().Atlas[Save().atlasIndex]
         texture= texture or WoWTools_CursorMixin.DefaultTexture
         if WoWTools_TextureMixin:IsAtlas(texture) then
-            PanelFrame.Texture:SetAtlas(texture)
+            panel.Texture:SetAtlas(texture)
         else
-            PanelFrame.Texture:SetTexture(texture)
+            panel.Texture:SetTexture(texture)
         end
         addColorEdit:SetText(texture)
         numColorText:SetText(#Save().Atlas)
@@ -185,7 +191,7 @@ local function Init_Cursor_Options()
             end, function(data)
                 Save().atlasIndex=data.index
                 Save().randomTexture=nil
-                PanelFrame.randomTextureCheck:SetChecked(false)
+                panel.randomTextureCheck:SetChecked(false)
                 self:SetDefaultText(data.icon)
                 set_panel_Texture()
                 WoWTools_CursorMixin:Cursor_Settings()
@@ -245,9 +251,9 @@ local function Init_Cursor_Options()
             local text= self:GetText()
             if text:gsub(' ','')~='' then
                 if WoWTools_TextureMixin:IsAtlas(text) then
-                    PanelFrame.Texture:SetAtlas(text)
+                    panel.Texture:SetAtlas(text)
                 else
-                    PanelFrame.Texture:SetTexture(text)
+                    panel.Texture:SetTexture(text)
                 end
             end
         end
@@ -265,7 +271,9 @@ local function Init_Cursor_Options()
         GameTooltip:AddDoubleLine('Atlas', 'Texture')
         GameTooltip:Show()
     end)
-    addColorButton:SetScript('OnLeave', GameTooltip_Hide)
+    addColorButton:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
 
     Init_Cursor_Options=function()end
 end
@@ -287,10 +295,12 @@ end
 
 
 --GCD, 添加控制面板
-local function Init_GCD_Options()
-    if Save().disabledGCD then return end
+local function Init_GCD_Options(panel)
+    if Save().disabledGCD then
+        return
+    end
 
-    PanelFrame.sliderSize = WoWTools_PanelMixin:Slider(PanelFrame, {min=8, max=256, value=Save().gcdSize, setp=1,
+    panel.sliderSize = WoWTools_PanelMixin:Slider(panel, {min=8, max=256, value=Save().gcdSize, setp=1,
     text=WoWTools_DataMixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_BAGS_SIZE,
     func=function(self, value)
         value= math.floor(value)
@@ -299,9 +309,9 @@ local function Init_GCD_Options()
         Save().gcdSize= value
         WoWTools_CursorMixin:GCD_Settings(true)
     end})
-    PanelFrame.sliderSize:SetPoint("TOPLEFT", PanelFrame.gcdCheck, 'BOTTOMLEFT', 0, -20)
+    panel.sliderSize:SetPoint("TOPLEFT", panel.gcdCheck, 'BOTTOMLEFT', 0, -20)
 
-    local alphaSlider = WoWTools_PanelMixin:Slider(PanelFrame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
+    local alphaSlider = WoWTools_PanelMixin:Slider(panel, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
     text=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -310,9 +320,9 @@ local function Init_GCD_Options()
         Save().gcdAlpha= value
         WoWTools_CursorMixin:GCD_Settings(true)
     end})
-    alphaSlider:SetPoint("TOPLEFT", PanelFrame.sliderSize, 'BOTTOMLEFT', 0, -20)
+    alphaSlider:SetPoint("TOPLEFT", panel.sliderSize, 'BOTTOMLEFT', 0, -20)
 
-    local sliderX = WoWTools_PanelMixin:Slider(PanelFrame, {min=-100, max=100, value=Save().gcdX , setp=1,
+    local sliderX = WoWTools_PanelMixin:Slider(panel, {min=-100, max=100, value=Save().gcdX , setp=1,
     text='X',
     func=function(self, value)
         value= math.floor(value)
@@ -323,7 +333,7 @@ local function Init_GCD_Options()
     end})
     sliderX:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', 0, -20)
 
-    local sliderY = WoWTools_PanelMixin:Slider(PanelFrame, {min=-100, max=100, value=Save().gcdY, setp=1, color=true,
+    local sliderY = WoWTools_PanelMixin:Slider(panel, {min=-100, max=100, value=Save().gcdY, setp=1, color=true,
     text='Y',
     func=function(self, value)
         value= math.floor(value)
@@ -334,7 +344,7 @@ local function Init_GCD_Options()
     end})
     sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -20)
 
-    local checkReverse=CreateFrame("CheckButton", nil, PanelFrame, "InterfaceOptionsCheckButtonTemplate")
+    local checkReverse=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     checkReverse:SetChecked(Save().gcdReverse)
     checkReverse.text:SetText(WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION)
     checkReverse:SetScript('OnMouseUp', function()
@@ -343,7 +353,7 @@ local function Init_GCD_Options()
     end)
     checkReverse:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
 
-    local checkDrawBling=CreateFrame("CheckButton", nil, PanelFrame, "InterfaceOptionsCheckButtonTemplate")
+    local checkDrawBling=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     checkDrawBling:SetChecked(Save().gcdReverse)
     checkDrawBling.text:SetText('|TInterface\\Cooldown\\star4:16|tDrawBling')
     checkDrawBling:SetScript('OnMouseUp', function()
@@ -352,18 +362,18 @@ local function Init_GCD_Options()
     end)
     checkDrawBling:SetPoint("LEFT", checkReverse.text, 'RIGHT', 2, 00)
 
-    local dropDown = CreateFrame("DropdownButton", nil, PanelFrame, "WowStyle1DropdownTemplate")--下拉，菜单
-    local delColorButton= WoWTools_ButtonMixin:Cbtn(PanelFrame, {size=20})--删除, 按钮
-    local addColorEdit= CreateFrame("EditBox", nil, PanelFrame, 'InputBoxTemplate')--EditBox
-    local addColorButton= WoWTools_ButtonMixin:Cbtn(PanelFrame, {size=20})--添加, 按钮
-    local numColorText= WoWTools_LabelMixin:Create(PanelFrame, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    local dropDown = CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
+    local delColorButton= WoWTools_ButtonMixin:Cbtn(panel, {size=20})--删除, 按钮
+    local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
+    local addColorButton= WoWTools_ButtonMixin:Cbtn(panel, {size=20})--添加, 按钮
+    local numColorText= WoWTools_LabelMixin:Create(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT')
     numColorText:SetText(#Save().GCDTexture)
 
     local function set_panel_Texture()--大图片
         local texture= Save().GCDTexture[Save().gcdTextureIndex]
         texture= texture or WoWTools_CursorMixin.DefaultGCDTexture
-        PanelFrame.Texture:SetTexture(texture)
+        panel.Texture:SetTexture(texture)
         addColorEdit:SetText(texture)
         numColorText:SetText(#Save().GCDTexture)
     end
@@ -390,7 +400,7 @@ local function Init_GCD_Options()
             end, function(data)
                 Save().gcdTextureIndex=data.index
                 Save().randomTexture=nil
-                PanelFrame.randomTextureCheck:SetChecked(false)
+                panel.randomTextureCheck:SetChecked(false)
                 self:SetDefaultText(data.icon)
                 set_panel_Texture()
                 WoWTools_CursorMixin:GCD_Settings(true)
@@ -451,7 +461,7 @@ local function Init_GCD_Options()
                 else
                     self:SetTextColor(1,1,1)
                 end
-                PanelFrame.Texture:SetTexture(text)
+                panel.Texture:SetTexture(text)
             end
         end
     end)
@@ -468,7 +478,9 @@ local function Init_GCD_Options()
         GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and "仅限%s" or LFG_LIST_CROSS_FACTION , 'Texture'))
         GameTooltip:Show()
     end)
-    addColorButton:SetScript('OnLeave', GameTooltip_Hide)
+    addColorButton:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
 
     Init_GCD_Options=function()end
 end
@@ -491,19 +503,19 @@ end
 
 
 
-local function Init_Options()
+local function Init_Options(panel)
     if (Save().disabledCursor and Save().disabledGCD) then
         return
     end
 
     --设置, 大图片
-    PanelFrame.Texture= PanelFrame:CreateTexture()--大图片
-    PanelFrame.Texture:SetPoint('TOPRIGHT', PanelFrame, 'TOP', -20, 10)
-    PanelFrame.Texture:SetSize(80,80)
+    panel.Texture= panel:CreateTexture()--大图片
+    panel.Texture:SetPoint('TOPRIGHT', panel, 'TOP', -20, 10)
+    panel.Texture:SetSize(80,80)
 
-    local useClassColorCheck= CreateFrame("CheckButton", nil, PanelFrame, "InterfaceOptionsCheckButtonTemplate")--职业颜色
-    local colorText= WoWTools_LabelMixin:Create(PanelFrame, {color={r=Save().color.r, g=Save().color.g, b=Save().color.b, a=Save().color.a}})--nil, nil, nil, {Save().color.r, Save().color.g, Save().color.b, Save().color.a})--自定义,颜色
-    local notUseColorCheck= CreateFrame("CheckButton", nil, PanelFrame, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
+    local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
+    local colorText= WoWTools_LabelMixin:Create(panel, {color={r=Save().color.r, g=Save().color.g, b=Save().color.b, a=Save().color.a}})--nil, nil, nil, {Save().color.r, Save().color.g, Save().color.b, Save().color.a})--自定义,颜色
+    local notUseColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
 
     --职业颜色
     useClassColorCheck:SetPoint("BOTTOMLEFT")
@@ -567,7 +579,9 @@ local function Init_Options()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS, (WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
-    colorText:SetScript('OnLeave', GameTooltip_Hide)
+    colorText:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
 
     --不使用，颜色
     notUseColorCheck:SetPoint("LEFT", colorText, 'RIGHT')
@@ -582,17 +596,19 @@ local function Init_Options()
     end)
 
     --随机, 图片
-    PanelFrame.randomTextureCheck= CreateFrame("CheckButton", nil, PanelFrame, "InterfaceOptionsCheckButtonTemplate")
-    PanelFrame.randomTextureCheck:SetPoint("LEFT", notUseColorCheck.text, 'RIGHT', 10,0)
-    PanelFrame.randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_DataMixin.onlyChinese and '随机图标' or 'Random '..EMBLEM_SYMBOL))
-    PanelFrame.randomTextureCheck:SetChecked(Save().randomTexture)
-    PanelFrame.randomTextureCheck:SetScript('OnMouseDown', function()
-        Save().randomTexture= not Save().randomTexture and true or nil
+    panel.randomTextureCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.randomTextureCheck:SetPoint("LEFT", notUseColorCheck.text, 'RIGHT', 10,0)
+    panel.randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_DataMixin.onlyChinese and '随机图标' or 'Random '..EMBLEM_SYMBOL))
+    panel.randomTextureCheck:SetChecked(Save().randomTexture)
+    panel.randomTextureCheck:SetScript('OnMouseDown', function()
+        Save().randomTexture= not Save().randomTexture and true or false
         WoWTools_CursorMixin:Cursor_Settings()
         WoWTools_CursorMixin:GCD_Settings(true)
     end)
-    PanelFrame.randomTextureCheck:SetScript('OnLeave', GameTooltip_Hide)
-    PanelFrame.randomTextureCheck:SetScript('OnEnter', function(self)
+    panel.randomTextureCheck:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
+    panel.randomTextureCheck:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '事件' or EVENTS_LABEL)
@@ -625,19 +641,19 @@ end
 
 
 
-local function Init()
+local function Init(panel)
     Set_Color()
 
-    PanelFrame= CreateFrame('Frame')
+    --panel= CreateFrame('Frame')
 
     WoWTools_PanelMixin:AddSubCategory({
         name= WoWTools_CursorMixin.addName,
-        frame= PanelFrame,
+        frame= panel,
         disabled= Save().disabledCursor and  Save().disabledGCD,
     })
 
     WoWTools_PanelMixin:ReloadButton({
-        panel=PanelFrame,
+        panel=panel,
         addName=WoWTools_CursorMixin.addName,
         restTips=true,
         checked=nil,
@@ -651,28 +667,41 @@ local function Init()
     )
 
 --Cursor, 启用/禁用
-    PanelFrame.cursorCheck=CreateFrame("CheckButton", nil, PanelFrame, "InterfaceOptionsCheckButtonTemplate")
-    PanelFrame.cursorCheck:SetChecked(not Save().disabledCursor)
-    PanelFrame.cursorCheck:SetPoint("TOPLEFT", 0, -35)
-    PanelFrame.cursorCheck.text:SetText('1)'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE).. ' Cursor')
-    PanelFrame.cursorCheck:SetScript('OnMouseDown', function()
+    panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.cursorCheck:SetChecked(not Save().disabledCursor)
+    panel.cursorCheck:SetPoint("TOPLEFT", 0, -35)
+    panel.cursorCheck.text:SetText('1)'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE).. ' Cursor')
+    panel.cursorCheck:SetScript('OnMouseDown', function()
         Save().disabledCursor = not Save().disabledCursor and true or nil
         WoWTools_CursorMixin:Cursor_Settings(true)
-        WoWTools_CursorMixin:Blizzard_Settings()
+        WoWTools_CursorMixin:Set_Options(panel)
     end)
 
 --GCD, 启用/禁用
-    PanelFrame.gcdCheck=CreateFrame("CheckButton", nil, PanelFrame, "InterfaceOptionsCheckButtonTemplate")
-    PanelFrame.gcdCheck:SetChecked(not Save().disabledGCD)
-    PanelFrame.gcdCheck:SetPoint("TOPLEFT", PanelFrame, 'TOP', 0, -35)
-    PanelFrame.gcdCheck.text:SetText('2)'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE).. ' GCD')
-    PanelFrame.gcdCheck:SetScript('OnMouseDown', function()
+    panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.gcdCheck:SetChecked(not Save().disabledGCD)
+    panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
+    panel.gcdCheck.text:SetText('2)'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE).. ' GCD')
+    panel.gcdCheck:SetScript('OnMouseDown', function()
         Save().disabledGCD = not Save().disabledGCD and true or nil
         WoWTools_CursorMixin:GCD_Settings(true)
-        WoWTools_CursorMixin:Blizzard_Settings()
+        WoWTools_CursorMixin:Set_Options(panel)
     end)
 
-    Init=function()end
+
+
+    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+        Init_Options(panel)
+        Init_Cursor_Options(panel)
+        Init_GCD_Options(panel)
+        Init=function()end
+    else
+        Init=function()
+            Init_Options(panel)
+            Init_Cursor_Options(panel)
+            Init_GCD_Options(panel)
+        end
+    end
 end
 
 
@@ -685,16 +714,6 @@ end
 
 
 
-function WoWTools_CursorMixin:Init_Panel()
-    Init()
-end
-
-
-
-
-
-function WoWTools_CursorMixin:Blizzard_Settings()
-    Init_Options()
-    Init_Cursor_Options()
-    Init_GCD_Options()
+function WoWTools_CursorMixin:Set_Options(panel)
+    Init(panel)
 end

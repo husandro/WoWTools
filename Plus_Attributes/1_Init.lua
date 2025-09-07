@@ -26,7 +26,7 @@ local function get_PrimaryStat()--取得主属
     Role= GetSpecializationRole(spec)--DAMAGER, TANK, HEALER
     local icon, _
     icon, _, PrimaryStat= select(4, GetSpecializationInfo(spec, nil, nil, nil, WoWTools_DataMixin.Player.Sex))
-    SetPortraitToTexture(WoWTools_AttributesMixin.Button.texture, icon or 0)
+    SetPortraitToTexture(_G['WoWToolsAttributesButton'].texture, icon or 0)
 end
 
 
@@ -813,7 +813,7 @@ end
 
 --吸血6
 EventsTable.LIFESTEAL= function(frame)
-    WoWTools_AttributesMixin.Button.frame:RegisterEvent('LIFESTEAL_UPDATE')
+    _G['WoWToolsAttributesButton'].frame:RegisterEvent('LIFESTEAL_UPDATE')
 end
 
 --护甲
@@ -824,7 +824,7 @@ end
 
 --闪避7
 EventsTable.AVOIDANCE= function(frame)
-    WoWTools_AttributesMixin.Button.frame:RegisterEvent('AVOIDANCE_UPDATE')
+    _G['WoWToolsAttributesButton'].frame:RegisterEvent('AVOIDANCE_UPDATE')
 end
 
 --[[
@@ -869,12 +869,12 @@ local function Frame_Init(rest)
         set_Tabs()
     end
 
-    local last= WoWTools_AttributesMixin.Button.frame
+    local last= _G['WoWToolsAttributesButton'].frame
     for _, info in pairs(Tabs) do
-        local frame, find= WoWTools_AttributesMixin.Button[info.name], nil
+        local frame, find= _G['WoWToolsAttributesButton'][info.name], nil
         if not info.hide then
             if not frame then
-                frame= CreateFrame('Frame', nil, WoWTools_AttributesMixin.Button.frame)
+                frame= CreateFrame('Frame', nil, _G['WoWToolsAttributesButton'].frame)
 
                 frame.label= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
 
@@ -914,7 +914,7 @@ local function Frame_Init(rest)
                     end)
                 end
 
-                WoWTools_AttributesMixin.Button[info.name]= frame
+                _G['WoWToolsAttributesButton'][info.name]= frame
             end
 
             --重置, 数值

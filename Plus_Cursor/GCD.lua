@@ -52,7 +52,9 @@ local function GCD_Settings(isTest)
     GCDFrame.cooldown:SetSwipeColor(WoWTools_CursorMixin.Color.r, WoWTools_CursorMixin.Color.g, WoWTools_CursorMixin.Color.b, WoWTools_CursorMixin.Color.a)
 
     if Save().randomTexture then
-        GCDFrame:SetScript('OnHide', set_GCD_Texture)
+        GCDFrame:SetScript('OnHide', function()
+            set_GCD_Texture()
+        end)
     else
         GCDFrame:SetScript('OnHide', nil)
     end
@@ -113,7 +115,9 @@ local function Init()
         end
     end)
 
-    GCDFrame:SetScript('OnShow', Set_Point)
+    GCDFrame:SetScript('OnShow', function()
+        Set_Point()
+    end)
 
     GCDFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed = (self.elapsed or 0.01) + elapsed

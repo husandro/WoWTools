@@ -50,7 +50,7 @@ local function Init_Menu(self, root)
         btn:Settings()
     end)
 
-    
+
 --重置位置
     WoWTools_MenuMixin:RestPoint(self, root, Save().targetMovePoint, function()
         Save().targetMovePoint=nil
@@ -81,9 +81,8 @@ local function Init()
     btn= WoWTools_ButtonMixin:Cbtn(UIParent, {
         isType2=true,
         size=23,
-        name='WoWTools_AttributesTargetMoveButton'
+        name='WoWToolsAttributesTargetMoveButton'
     })
-    WoWTools_AttributesMixin.TargetMoveButton= btn
     btn:Hide()
 
     btn.Text= WoWTools_LabelMixin:Create(btn)
@@ -95,14 +94,12 @@ local function Init()
     end
 
     function btn:Settings()
-        self.elapsed= 0.3
-
         self:ClearAllPoints()
         local p= Save().targetMovePoint
         if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-        elseif WoWTools_AttributesMixin.Button then
-            self:SetPoint('BOTTOM', WoWTools_AttributesMixin.Button, 'TOP', 0, 2)
+        elseif _G['WoWToolsAttributesButton'] then
+            self:SetPoint('BOTTOM', _G['WoWToolsAttributesButton'], 'TOP', 0, 2)
         else
             self:SetPoint('CENTER',100, -100)
         end
@@ -155,26 +152,22 @@ local function Init()
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().targetMovePoint={self:GetPoint(1)}
             Save().targetMovePoint[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
 
     btn:SetScript('OnMouseDown', function(self)
         if not IsModifierKeyDown() then
-            MenuUtil.CreateContextMenu(self, function(...)
-                Init_Menu(...)
-            end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
         self:set_tooltip()
     end)
 
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', btn.set_tooltip)
+    btn:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+    end)
 
     btn:SetScript('OnEvent', function(self)
         SetPortraitTexture(self.texture, 'target')
@@ -185,15 +178,19 @@ local function Init()
             self.Text:SetTextColor(col.r, col.g, col.b)
             self.nameText:SetTextColor(col.r, col.g, col.b)
         end
-        self.elapsed= 0.3
+        self.elapsed= nil
         self:SetShown(exists)
     end)
-
+    btn:SetScript('OnHide', function(self)
+        self.elapsed= nil
+    end)
     btn:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= self.elapsed +elapsed
+        self.elapsed= (self.elapsed or 0.3) +elapsed
+
         if self.elapsed< 0.3 then
             return
         end
+
         self.elapsed=0
 
         self.nameText:SetFormattedText(

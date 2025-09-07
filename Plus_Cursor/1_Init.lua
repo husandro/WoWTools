@@ -72,53 +72,31 @@ local P_Save={
 
 
 
-local function Save()
-    return WoWToolsSave['Plus_Cursor']
-end
-
-
-
-
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Plus_Cursor']= WoWToolsSave['Plus_Cursor'] or P_Save
 
-            if Save().disabled then
-                Save().disabledCursor= Save().disabled
-                Save().disabled= nil
-            end
-
-            for index, name in pairs(Save().Atlas) do
-                if name:find('Sesource\\') then
-                    Save().Atlas[index]= name:gsub('Sesource\\', 'Source\\')
-                end
-            end
-            for index, name in pairs(Save().GCDTexture) do
-                if name:find('Sesource\\') then
-                    Save().GCDTexture[index]= name:gsub('Sesource\\', 'Source\\')
-                end
-            end
-
             WoWTools_CursorMixin.addName= '|A:newplayertutorial-icon-mouse-turn:0:0|a'..(WoWTools_DataMixin.onlyChinese and '鼠标' or MOUSE_LABEL)
 
-            WoWTools_CursorMixin:Init_Panel()
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+            WoWTools_CursorMixin:Set_Options(self)
 
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                WoWTools_CursorMixin:Blizzard_Settings()
                 self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_Settings' and WoWToolsSave then
-            WoWTools_CursorMixin:Blizzard_Settings()
+            WoWTools_CursorMixin:Set_Options(self)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_CursorMixin:Cursor_Settings()
         WoWTools_CursorMixin:GCD_Settings()
         self:UnregisterEvent(event)

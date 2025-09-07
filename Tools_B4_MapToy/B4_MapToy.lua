@@ -166,7 +166,7 @@ local function Init_Menu(self, root)
         function(data)
             return data.itemID==self.itemID
         end, function(data)
-            self:Set_Random_Value(data.itemID, nil, data.achievements, true)
+            self:Set_Random_Value(data.itemID, data.achievements, true)
         end, {itemID=info.itemID, achievements=info.achievements})
 
         WoWTools_SetTooltipMixin:Set_Menu(sub)
@@ -180,7 +180,7 @@ local function Init_Menu(self, root)
                 ..(WoWTools_TextMixin:CN(tab.name) or tab.achievementID)
                 ..(tab.wasEarnedByMe==true and '|A:common-icon-checkmark:0:0|a' or ''),
             function(data)
-                self:Set_Random_Value(data.itemID, nil, data.achievements, true)
+                self:Set_Random_Value(data.itemID, data.achievements, true)
                 return MenuResponse.Open
             end,
             {itemID=tab.itemID, achievementID=tab.achievementID, achievements=info.achievements})
@@ -265,7 +265,7 @@ local function Init_Menu(self, root)
     function()
         return self.spellID==SpellID
     end, function()
-        self:Set_Random_Value(nil, SpellID, nil, true)
+        self:Set_Random_Value(nil, nil, true)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:SetSpellByID(SpellID)
@@ -334,7 +334,7 @@ local function Init()
         end
     end
 
-    function ToyButton:Set_Random_Value(itemID, spellID, achievements, isLocked)--设置，随机值
+    function ToyButton:Set_Random_Value(itemID, achievements, isLocked)--设置，随机值
         --local name=C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
         if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -342,12 +342,13 @@ local function Init()
         end
 
         local spellName= nil
+        local spellID
         if itemID then
             self:SetAttribute("type1", "toy")
         else
             self:SetAttribute("type1", "spell")
-            spellID= spellID or SpellID
-            spellName= C_Spell.GetSpellName(spellID) or nil
+            spellID= SpellID
+            spellName= C_Spell.GetSpellName(spellID) or (LOCALE_zhCN and '瞬息全战团地图') or SpellID
         end
         self:SetAttribute('toy1', itemID)
         self:SetAttribute('spell1', spellName)
@@ -370,12 +371,12 @@ local function Init()
         for _, info in pairs(Tab) do
             local new= Is_Completed(info)
             if new.isNotChecked==nil and new.num>0 then
-                self:Set_Random_Value(info.itemID, nil, info.achievements, nil)
+                self:Set_Random_Value(info.itemID, info.achievements, nil)
                 return
             end
         end
 
-        self:Set_Random_Value(nil, SpellID, nil, nil)
+        self:Set_Random_Value(nil, nil, nil)
     end
 
 

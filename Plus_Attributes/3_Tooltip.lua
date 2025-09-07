@@ -1,5 +1,3 @@
----@diagnostic disable: param-type-mismatch
-
 local function Save()
     return WoWToolsSave['Plus_Attributes'] or {}
 end
