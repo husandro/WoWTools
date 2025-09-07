@@ -84,12 +84,13 @@ local function Init(OpenButton)
         WoWTools_KeyMixin:SetTexture(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltips()
+        local Elapsed= 0.3
         self:SetScript('OnUpdate', function (s, elapsed)
-            s.elapsed = (s.elapsed or 0.3) + elapsed
-            if s.elapsed > 0.3 then
-                s.elapsed = 0
+            Elapsed = Elapsed + elapsed
+            if Elapsed > 0.3 then
+                Elapsed = 0
                 if GameTooltip:IsOwned(s) then
-                    local itemID= self:GetItemID()
+                    local itemID= s:GetItemID()
                     if itemID then
                         if itemID~=select(3, GameTooltip:GetItem()) then
                             s:set_tooltips()
@@ -107,7 +108,6 @@ local function Init(OpenButton)
         WoWTools_OpenItemMixin:Get_Item()
         WoWTools_BagMixin:Find(false)--查询，背包里物品
         self:SetScript('OnUpdate',nil)
-        self.elapsed=nil
     end)
 
 

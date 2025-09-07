@@ -58,7 +58,7 @@ local function Init(btn)
     end
 
     function Frame:rest()--重置
-        self.elapsed=Save().mountShowTime
+        self.elapsed=Save().mountShowTime or 3
         self.specialEffects=nil
         self.tabs={}
         WoWTools_CooldownMixin:Setup(self)

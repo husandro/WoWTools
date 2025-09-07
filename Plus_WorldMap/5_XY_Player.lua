@@ -7,11 +7,15 @@ end
 
 
 
-local PlayerButton
+local btn
 
 
 local function Init()
-    PlayerButton= WoWTools_ButtonMixin:Cbtn(nil, {
+    if not Save().ShowPlayerXY then
+        return
+    end
+
+    btn= WoWTools_ButtonMixin:Cbtn(nil, {
         atlas=WoWTools_DataMixin.Icon.Player:match('|A:(.-):'),
         --size=14,
         name='WoWTools_PlayerXY_Button',
@@ -22,15 +26,15 @@ local function Init()
 
 
 
-    PlayerButton:SetMovable(true)
-    PlayerButton:RegisterForDrag("RightButton")
-    PlayerButton:SetClampedToScreen(true)
-    PlayerButton:SetScript("OnDragStart", function(self)
+    btn:SetMovable(true)
+    btn:RegisterForDrag("RightButton")
+    btn:SetClampedToScreen(true)
+    btn:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    PlayerButton:SetScript("OnDragStop", function(self)
+    btn:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
@@ -38,24 +42,22 @@ local function Init()
             Save().PlayerXYPoint[2]=nil
         end
     end)
-    PlayerButton:SetScript("OnMouseDown", function(_, d)
+    btn:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
      end)
-    PlayerButton:SetScript("OnMouseUp", ResetCursor)
-    PlayerButton:SetScript('OnClick', function(self, d)
+    btn:SetScript("OnMouseUp", ResetCursor)
+    btn:SetScript('OnClick', function(self, d)
         if IsModifierKeyDown() then
             return
         end
-        --if d=='RightButton' and not IsModifierKeyDown() then
-            --WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
         MenuUtil.CreateContextMenu(self, function(...)
             WoWTools_WorldMapMixin:Init_PlayerXY_Option_Menu(...)
         end)
     end)
 
-    function PlayerButton:set_tooltip()
+    function btn:set_tooltip()
         GameTooltip:ClearLines()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_DataMixin.Icon.Player..' XY')
@@ -63,31 +65,28 @@ local function Init()
 
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
 
-        --[[local mapID= C_Map.GetBestMapForUnit("player")
-        local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
-        GameTooltip:AddLine(
-            WoWTools_DataMixin.Icon.right
-            ..(can and '' or '|cnRED_FONT_COLOR:')
-            ..(WoWTools_DataMixin.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL))
-            ..'|A:Waypoint-MapPin-ChatIcon:0:0|a'
-        )]]
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
 
         GameTooltip:Show()
     end
 
-    PlayerButton:SetScript("OnEnter", PlayerButton.set_tooltip)
-    PlayerButton:SetScript("OnLeave", function()
+    btn:SetScript("OnEnter", function(self)
+        self:set_tooltip()
+    end)
+    btn:SetScript("OnLeave", function()
         GameTooltip:Hide()
         ResetCursor()
     end)
 
 
 
-    PlayerButton.Text=WoWTools_LabelMixin:Create(PlayerButton, {size=Save().PlayerXYSize, color=true})
-    
+    btn.Text=WoWTools_LabelMixin:Create(btn, {size=Save().PlayerXYSize, color=true})
 
-    PlayerButton:HookScript("OnUpdate", function (self, elapsed)
+    btn:SetScript("OnHide", function(self)
+        self.elapsed= nil
+    end)
+
+    btn:SetScript("OnUpdate", function(self, elapsed)
         self.elapsed = (self.elapsed or 0.3) + elapsed
         if self.elapsed > 0.3 then
             self.elapsed = 0
@@ -100,8 +99,14 @@ local function Init()
         end
     end)
 
-    function PlayerButton:Settings()
-        self:SetShown(Save().ShowPlayerXY)
+    function btn:Settings()
+        local isShow= Save().ShowPlayerXY
+        self:SetShown(isShow)
+
+        if not isShow then
+            return
+        end
+
         self:SetScale(Save().PlayerXY_Scale or 1)
         self:ClearAllPoints()
         if not Save().PlayerXYPoint then
@@ -112,9 +117,9 @@ local function Init()
 
         self.Text:ClearAllPoints()
         if Save().PlayerXY_Text_toLeft then
-            self.Text:SetPoint('RIGHT', PlayerButton, "LEFT")
+            self.Text:SetPoint('RIGHT', btn, "LEFT")
         else
-            self.Text:SetPoint('LEFT', PlayerButton, "RIGHT")
+            self.Text:SetPoint('LEFT', btn, "RIGHT")
         end
 
         self:SetFrameStrata(Save().PlayerXY_Strata or 'HIGH')
@@ -123,7 +128,11 @@ local function Init()
         self:SetSize(size, size)
     end
 
-    PlayerButton:Settings()
+    btn:Settings()
+
+    Init=function()
+         btn:Settings()
+    end
 end
 
 
@@ -138,10 +147,5 @@ end
 
 
 function WoWTools_WorldMapMixin:Init_XY_Player()
-    if PlayerButton then
-        PlayerButton:Settings()
-
-    elseif WoWToolsSave['Plus_WorldMap'].ShowPlayerXY then
-        Init()
-    end
+    Init()
 end

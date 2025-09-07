@@ -80,6 +80,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu(_, root)
 
     local mapID= C_Map.GetBestMapForUnit("player")
@@ -112,12 +122,49 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
+    if not Save().ShowMapXY then
+        return
+    end
+
     MapXYButton=WoWTools_ButtonMixin:Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {
         atlas=WoWTools_DataMixin.Icon.Player:match('|A:(.-):'),
         size=22,
         isMask=true,
+        name='WoWToolsMapXYButton'
     })
+
+
+
+    function MapXYButton:Settings()
+        local isShow= Save().ShowMapXY
+        self:SetShown(isShow)
+
+        if isShow then
+            self.edit:SetWidth(Save().MapXY_W or 90)
+            self:SetScale(Save().MapXYScale or 1)
+            self:ClearAllPoints()
+            self:SetPoint('BOTTOMLEFT', WorldMapFrame.BorderFrame.TitleContainer,
+                Save().MapXY_X or 72,
+                Save().MapXY_Y or -2
+            )
+        end
+    end
+
 
     MapXYButton:SetScript('OnLeave', GameTooltip_Hide)
     MapXYButton:SetScript('OnEnter', function(self)
@@ -125,25 +172,38 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
-
-        --GameTooltip:AddLine(' ')
-        --local can
-        --can= C_Map.GetBestMapForUnit("player")
-        --can= can and C_Map.CanSetUserWaypointOnMap(can)
-        --GameTooltip:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r' or '')..WoWTools_DataMixin.Icon.left)
-        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end)
-    MapXYButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
-        --[[if d=='RightButton' then--返回当前地图                
-            WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
 
-        elseif d=='LeftButton' then
-            WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
-        end]]
+    MapXYButton:SetScript('OnMouseDown', function(self)
+        MenuUtil.CreateContextMenu(self, Init_Menu)
+    end)
+
+
+    MapXYButton:SetScript('OnHide', function(self)
+        self.elapsed= nil
+    end)
+
+    MapXYButton:SetScript("OnUpdate", function (self, elapsed)
+        self.elapsed = (self.elapsed or 1) + elapsed
+        if self.elapsed > 0.15 then
+            self.elapsed = 0
+            local text=''
+            local x, y= WoWTools_WorldMapMixin:GetPlayerXY()--玩家当前位置
+            if x and y then
+                text=x..' '..y
+            end
+            if not self.edit:HasFocus() then
+                self.edit:SetText(text)
+            end
+            x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置
+            if x and y then
+                text = ('%.2f'):format(x*100)..' '..('%.2f'):format(y*100)
+            else
+                text=''
+            end
+            MapXYButton.Text:SetText(text)
+        end
     end)
 
 
@@ -205,42 +265,11 @@ local function Init()
     MapXYButton.Text:SetPoint('LEFT',MapXYButton.edit, 'RIGHT', 2, 0)
 
 
-    MapXYButton:HookScript("OnUpdate", function (self, elapsed)
-        self.elapsed = (self.elapsed or 1) + elapsed
-        if self.elapsed > 0.15 then
-            self.elapsed = 0
-            local text=''
-            local x, y= WoWTools_WorldMapMixin:GetPlayerXY()--玩家当前位置
-            if x and y then
-                text=x..' '..y
-            end
-            if not self.edit:HasFocus() then
-                self.edit:SetText(text)
-            end
-            x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置
-            if x and y then
-                text = ('%.2f'):format(x*100)..' '..('%.2f'):format(y*100)
-            else
-                text=''
-            end
-            MapXYButton.Text:SetText(text)
-        end
-    end)
-
-
-    function MapXYButton:Settings()
-        self.edit:SetWidth(Save().MapXY_W or 90)
-        self:SetScale(Save().MapXYScale or 1)
-        self:SetShown(Save().ShowMapXY)
-        
-        self:ClearAllPoints()
-        self:SetPoint('BOTTOMLEFT', WorldMapFrame.BorderFrame.TitleContainer,
-            Save().MapXY_X or 72,
-            Save().MapXY_Y or -2
-        )
-    end
 
     MapXYButton:Settings()
+    Init=function()
+        MapXYButton:Settings()
+    end
 end
 
 
@@ -253,11 +282,16 @@ end
 
 
 
-function WoWTools_WorldMapMixin:Init_XY_Map()
-    if MapXYButton then
-        MapXYButton:Settings()
 
-    elseif WoWToolsSave['Plus_WorldMap'].ShowMapXY then
-        Init()
-    end
+
+
+
+
+
+
+
+
+
+function WoWTools_WorldMapMixin:Init_XY_Map()
+    Init()
 end

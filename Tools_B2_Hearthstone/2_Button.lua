@@ -340,10 +340,11 @@ local function Init(ToyButton)
     ToyButton:SetScript("OnEnter",function(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltip()
+        local Elapsed=1
         self:SetScript('OnUpdate', function (s, elapsed)
-            s.elapsed = (s.elapsed or 1) + elapsed
-            if s.elapsed > 1 and s.itemID then
-                s.elapsed = 0
+            Elapsed = Elapsed + elapsed
+            if Elapsed > 1 and s.itemID then
+                Elapsed = 0
                 if GameTooltip:IsOwned(s) and select(3, GameTooltip:GetItem())~=s.itemID then
                     s:set_tooltip()
                 end
@@ -363,7 +364,6 @@ local function Init(ToyButton)
     ToyButton:SetScript("OnLeave",function(self)
         GameTooltip:Hide()
         self:SetScript('OnUpdate',nil)
-        self.elapsed=nil
         self:Get_Random_Value()
         self:UnregisterEvent('MODIFIER_STATE_CHANGED')
         self:set_textureModifier()

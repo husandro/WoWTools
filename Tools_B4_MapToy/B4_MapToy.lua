@@ -1,4 +1,6 @@
 
+--https://www.wowhead.com/cn/spell=431280/瞬息全战团地图
+local SpellID= 431280
 
 local Tab={
     {itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
@@ -164,7 +166,7 @@ local function Init_Menu(self, root)
         function(data)
             return data.itemID==self.itemID
         end, function(data)
-            self:Set_Random_Value(data.itemID, data.achievements, true)
+            self:Set_Random_Value(data.itemID, nil, data.achievements, true)
         end, {itemID=info.itemID, achievements=info.achievements})
 
         WoWTools_SetTooltipMixin:Set_Menu(sub)
@@ -178,7 +180,7 @@ local function Init_Menu(self, root)
                 ..(WoWTools_TextMixin:CN(tab.name) or tab.achievementID)
                 ..(tab.wasEarnedByMe==true and '|A:common-icon-checkmark:0:0|a' or ''),
             function(data)
-                self:Set_Random_Value(data.itemID, data.achievements, true)
+                self:Set_Random_Value(data.itemID, nil, data.achievements, true)
                 return MenuResponse.Open
             end,
             {itemID=tab.itemID, achievementID=tab.achievementID, achievements=info.achievements})
@@ -258,6 +260,16 @@ local function Init_Menu(self, root)
     end
     WoWTools_MenuMixin:SetScrollMode(sub)
 
+    sub= root:CreateCheckbox(
+        WoWTools_SpellMixin:GetName(SpellID),
+    function()
+        return self.spellID==SpellID
+    end, function()
+        self:Set_Random_Value(nil, SpellID, nil, true)
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:SetSpellByID(SpellID)
+    end)
 
     WoWTools_ToolsMixin:OpenMenu(root, addName)
 end
@@ -283,27 +295,38 @@ end
 
 
 local function Init()
-    ToyButton:SetAttribute("type1", "toy")
+
 
     function ToyButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         if self.itemID then
             GameTooltip:SetItemByID(self.itemID)
-        else
-            GameTooltip:AddDoubleLine(' ', addName)
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddLine(' ')
+        elseif self.spellID then
+            GameTooltip:SetSpellByID(self.spellID)
+            GameTooltip:AddLine(' ')
         end
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end
 
-    --CD
+--CD 主图标冷却
     function ToyButton:set_cool()
-        WoWTools_CooldownMixin:SetFrame(self, {itemID=self.itemID})--主图标冷却
+        WoWTools_CooldownMixin:SetFrame(self, {
+            itemID=self.itemID,
+            spellID=self.spellID,
+        })
     end
 
     function ToyButton:set_texture()
-        local icon= self.itemID and C_Item.GetItemIconByID(self.itemID)
+        local icon
+        if self.itemID then
+            icon= C_Item.GetItemIconByID(self.itemID)
+        elseif self.spellID then
+            icon= C_Spell.GetSpellTexture(self.spellID)
+        end
+
         if icon and icon>0 then
             self.texture:SetTexture(icon)
         else
@@ -311,17 +334,36 @@ local function Init()
         end
     end
 
-    function ToyButton:Set_Random_Value(itemID, achievements, isLocked)--设置，随机值
+    function ToyButton:Set_Random_Value(itemID, spellID, achievements, isLocked)--设置，随机值
         --local name=C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
         if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         end
 
+
+        if not itemID then
+            spellID= spellID or SpellID
+        end
+
+        local spellName= spellID and C_Spell.GetSpellName(spellID) or nil
+
+
         self.itemID=itemID
+        self.spellID=spellID
         self.achievements= achievements
         self.isLocked= isLocked
+
+        if itemID then
+            self:SetAttribute("type1", "toy")
+        else
+            self:SetAttribute("type1", "spell")
+        end
+
+
         self:SetAttribute('toy1', itemID)
+        self:SetAttribute('spell1', spellName)
+
         self:set_texture()
         self:set_cool()
     end
@@ -334,11 +376,12 @@ local function Init()
         for _, info in pairs(Tab) do
             local new= Is_Completed(info)
             if new.isNotChecked==nil and new.num>0 then
-                self:Set_Random_Value(info.itemID, info.achievements, nil)
+                self:Set_Random_Value(info.itemID, nil, info.achievements, nil)
                 return
             end
         end
 
+        self:Set_Random_Value(nil, SpellID, nil, nil)
     end
 
 
@@ -346,15 +389,15 @@ local function Init()
     ToyButton:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:SetScript('OnUpdate',nil)
-        self.elapsed=nil
     end)
     ToyButton:SetScript('OnEnter', function(self)
         self:set_cool()
         self:set_tooltips()
+        local Elapsed= 2
         self:SetScript('OnUpdate', function (s, elapsed)
-            s.elapsed = (s.elapsed or 2) + elapsed
-            if s.elapsed > 2 then
-                s.elapsed = 0
+            Elapsed = Elapsed + elapsed
+            if Elapsed > 2 then
+                Elapsed = 0
                 self:Cerca_Toy()
                 if GameTooltip:IsOwned(s) then
                     s:set_tooltips()
@@ -365,7 +408,7 @@ local function Init()
 
     ToyButton:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            MenuUtil.CreateContextMenu(self, function(...) Init_Menu(...) end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         elseif d=='LeftButton' then
             self.isLocked=nil
         end

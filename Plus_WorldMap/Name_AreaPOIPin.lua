@@ -4,7 +4,7 @@
 
 --地图POI提示 AreaPOIDataProvider.lua
 local INSTANCE_DIFFICULTY_FORMAT='('..WoWTools_TextMixin:Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
-local IsSetup
+
 
 
 local function set_Widget_Text_OnUpDate(self, elapsed)
@@ -37,93 +37,102 @@ end
 
 
 
-local function Init(frame)
-    if UnitAffectingCombat('player') then
+
+
+
+
+
+--地图POI提示 AreaPOIDataProvider.lua
+local function Init()
+    if not WoWToolsSave['Plus_WorldMap'].ShowAreaPOI_Name then
         return
     end
 
-    local isEnabled=  WoWToolsSave['Plus_WorldMap'].ShowAreaPOI_Name
-
-
-    frame.updateWidgetID=nil
-    frame.updateAreaPoiID=nil
-    frame:SetScript('OnUpdate', nil)
-
-
-
-    if not frame.Text and isEnabled and (frame.name or frame.widgetSetID or frame.areaPoiID) then
-        frame.Text= WoWTools_WorldMapMixin:Create_Wolor_Font(frame, 10)
-        frame.Text:SetPoint('TOP', frame, 'BOTTOM', 0, 3)
-    end
-
-    if not isEnabled or (not frame.widgetSetID and not frame.areaPoiID) then
-        if frame and frame.Text then
-            local text--地图，地名，名称
-            if isEnabled and frame.name then
-                text= WoWTools_TextMixin:CN(frame.name)
-                text= text:match(INSTANCE_DIFFICULTY_FORMAT) or text
-            end
-            frame.Text:SetText(text or '')
+    WoWTools_DataMixin:Hook(AreaPOIPinMixin,'OnAcquired', function(self)
+        if WoWTools_FrameMixin:IsLocked(self) then
+            return
         end
-        return
-    end
+
+        local isEnabled=  WoWToolsSave['Plus_WorldMap'].ShowAreaPOI_Name
 
 
-    local text
+        self.updateWidgetID=nil
+        self.updateAreaPoiID=nil
+        self:SetScript('OnUpdate', nil)
+        self:HookScript('OnHide', function(s)
+            s.elapsed= nil
+            if self.Text then
+                self.Text:SetText('')
+            end
+        end)
 
-    if frame.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(frame.areaPoiID) then
-        frame.updateAreaPoiID= frame.areaPoiID
-        frame:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
 
-    elseif frame.widgetSetID then
-        for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(frame.widgetSetID) or {}) do
-            if widget and widget.widgetID and  widget.widgetType==8 then
-                local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
-                if widgetInfo.shownState== Enum.WidgetShownState.Shown and widgetInfo.text then
-                    if widgetInfo.hasTimer then--剩余时间：
-                        text= widgetInfo.text
-                        frame.updateWidgetID= widget.widgetID
-                        if not frame.setScripOK then
-                            frame.setScripOK=true
-                            frame:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
+        if not self.Text and isEnabled and (self.name or self.widgetSetID or self.areaPoiID) then
+            self.Text= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 10)
+            self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+        end
+
+        if not isEnabled or (not self.widgetSetID and not self.areaPoiID) then
+            if self and self.Text then
+                local text--地图，地名，名称
+                if isEnabled and self.name then
+                    text= WoWTools_TextMixin:CN(self.name)
+                    text= text:match(INSTANCE_DIFFICULTY_FORMAT) or text
+                end
+                self.Text:SetText(text or '')
+            end
+            return
+        end
+
+
+        local text
+
+        if self.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID) then
+            self.updateAreaPoiID= self.areaPoiID
+            self:SetScript('OnUpdate', function(...)
+                set_Widget_Text_OnUpDate(...)
+            end)
+
+        elseif self.widgetSetID then
+            for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(self.widgetSetID) or {}) do
+                if widget and widget.widgetID and  widget.widgetType==8 then
+                    local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
+                    if widgetInfo.shownState== Enum.WidgetShownState.Shown and widgetInfo.text then
+                        if widgetInfo.hasTimer then--剩余时间：
+                            text= widgetInfo.text
+                            self.updateWidgetID= widget.widgetID
+                            if not self.setScripOK then
+                                self.setScripOK=true
+                                self:SetScript('OnUpdate', function(...)
+                                    set_Widget_Text_OnUpDate(...)
+                                end)
+                            end
+                        else
+                            local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
+                            local text2= widgetInfo.text:match('(%d+/%d+)')--次数
+                            if icon and num then
+                                text= icon..'|cff00ff00'..num..'|r'
+                            end
+                            if text2 then
+                                text= (text or '')..'|cffff00ff'..text2..'|r'
+                            end
                         end
-                    else
-                        local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
-                        local text2= widgetInfo.text:match('(%d+/%d+)')--次数
-                        if icon and num then
-                            text= icon..'|cff00ff00'..num..'|r'
+                        if text then
+                            break
                         end
-                        if text2 then
-                            text= (text or '')..'|cffff00ff'..text2..'|r'
-                        end
-                    end
-                    if text then
-                        break
                     end
                 end
             end
         end
-    end
 
-    frame.Text:SetText(text or frame.name or '')
+        self.Text:SetText(text or self.name or '')
+    end)
+
+    Init=function()end
 end
-
-
-
-
-
-
-
-
-
 
 
 --BaseMapPoiPinMixin
 function WoWTools_WorldMapMixin:Init_AreaPOI_Name()
-    if IsSetup or not WoWToolsSave['Plus_WorldMap'].ShowAreaPOI_Name then
-        return
-    end
-
-    WoWTools_DataMixin:Hook(AreaPOIPinMixin,'OnAcquired', Init)--地图POI提示 AreaPOIDataProvider.lua
-    IsSetup= true
+    Init()
 end

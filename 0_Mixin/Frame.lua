@@ -255,16 +255,16 @@ function WoWTools_FrameMixin:HelpFrame(tab)--WoWTools_FrameMixin:HelpFrame({fram
             self.elapsed=nil
             self:SetShown(false)
         end
-        tab.frame.HelpTips:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= (self.elapsed or 0.5) + elapsed
-            if self.elapsed>0.5 then
-                self.elapsed=0
-                self:SetScale(self:GetScale()==1 and 0.5 or 1)
+        tab.frame.HelpTips:SetScript('OnUpdate', function(f, elapsed)
+            f.elapsed= (f.elapsed or 0.5) + elapsed
+            if f.elapsed>0.5 then
+                f.elapsed=0
+                f:SetScale(f:GetScale()==1 and 0.5 or 1)
             end
-            if self.hideTime then
-                self.time= (self.time or 0)+  elapsed
-                if self.time>= self.hideTime then
-                    self:set_hide()
+            if f.hideTime then
+                f.time= (f.time or 0)+  elapsed
+                if f.time>= f.hideTime then
+                    f:set_hide()
                 end
             end
         end)

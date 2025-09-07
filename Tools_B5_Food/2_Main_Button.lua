@@ -200,19 +200,26 @@ local function Init(btn)
         self:set_cool()
         self:set_desaturated()
         self:SetScript('OnUpdate', nil)
-        self.elapsed=nil
+        --self.elapsed=nil
     end)
 
-    function btn:set_update(elapsed)
+    --[[function btn:set_update(elapsed)
         self.elapsed= (self.elapsed or 1) +elapsed
         if self.elapsed>=1 then
             self.elapsed=0
             self:set_tooltip()
         end
-    end
+    end]]
     btn:SetScript("OnEnter",function(self)
         if self.alt or self.ctrl or self.shift then
-            self:SetScript('OnUpdate', self.set_update)
+            local Elapsed= 1
+            self:SetScript('OnUpdate', function(s, elapsed)
+                Elapsed= (Elapsed or 1) + elapsed
+                if Elapsed>=1 then
+                    Elapsed=0
+                    s:set_tooltip()
+                end
+            end)
         else
             self:set_tooltip()
         end

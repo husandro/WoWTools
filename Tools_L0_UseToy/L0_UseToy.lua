@@ -656,15 +656,18 @@ local function Init()
     ToyButton:SetScript("OnEnter",function(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltips()
+
+        local Elapsed= 0.3
         self:SetScript('OnUpdate', function (s, elapsed)
-            s.elapsed = (s.elapsed or 0.3) + elapsed
-            if s.elapsed > 0.3 and s.itemID then
-                s.elapsed = 0
+            Elapsed = Elapsed + elapsed
+            if Elapsed > 0.3 and s.itemID then
+                Elapsed = 0
                 if GameTooltip:IsOwned(s) and select(3, GameTooltip:GetItem())~=s.itemID then
                     s:set_tooltips()
                 end
             end
         end)
+
         if self:CanChangeAttribute() then
             local itemID= Save().lockedToy or get_not_cooldown_toy()--发现就绪
             if itemID then
@@ -677,7 +680,6 @@ local function Init()
     ToyButton:SetScript("OnLeave",function(self)
         GameTooltip:Hide()
         self:SetScript('OnUpdate',nil)
-        self.elapsed=nil
     end)
 
     ToyButton:SetScript("OnMouseDown", function(self,d)

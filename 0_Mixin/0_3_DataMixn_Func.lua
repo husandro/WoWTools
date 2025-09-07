@@ -102,6 +102,7 @@ local spellLoadTab={
     436854,--切换飞行模式 C_MountJournal.GetDynamicFlightModeSpellID()
     404468,--/飞行模式：稳定
     80451,--勘测
+    431280,--/瞬息全战团地图
 }
 
 

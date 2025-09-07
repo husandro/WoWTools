@@ -522,17 +522,17 @@ local function Init(btn)
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')
         self:SetScript('OnUpdate',nil)
-        self.elapsed=nil
     end)
 
     btn:SetScript('OnEnter', function(self)
         WoWTools_KeyMixin:SetTexture(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltip()
+        local Elapsed= 0.3
         self:SetScript('OnUpdate', function (s, elapsed)
-            s.elapsed = (s.elapsed or 0.3) + elapsed
-            if s.elapsed > 0.3 and GameTooltip:IsOwned(s) then-- and (s.spellID or s.itemID) then
-                s.elapsed = 0
+            Elapsed = Elapsed + elapsed
+            if Elapsed > 0.3 and GameTooltip:IsOwned(s) then-- and (s.spellID or s.itemID) then
+                Elapsed = 0
                 s:set_tooltip()
             end
         end)
