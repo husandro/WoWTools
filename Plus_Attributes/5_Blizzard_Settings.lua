@@ -395,7 +395,7 @@ local function Init()--设置 panel
     barValueText.text:SetText(WoWTools_DataMixin.onlyChinese and '增益' or BENEFICIAL)
     barValueText:SetChecked(Save().setMaxMinValue)
     barValueText:SetScript('OnMouseDown', function()
-        Save().setMaxMinValue= not Save().setMaxMinValue and true or nil
+        Save().setMaxMinValue= not Save().setMaxMinValue and true or false
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
         if Save().setMaxMinValue then
             C_Timer.After(0.3, function()
@@ -477,7 +477,7 @@ local function Init()--设置 panel
     check2.text:SetText('Bar')
     check2:SetChecked(Save().bar)
     check2:SetScript('OnMouseDown', function()
-        Save().bar= not Save().bar and true or nil
+        Save().bar= not Save().bar and true or false
         WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
     end)
 
@@ -486,7 +486,7 @@ local function Init()--设置 panel
     check3.text:SetText((WoWTools_DataMixin.onlyChinese and '格式' or FORMATTING).. ' 2')
     check3:SetChecked(Save().barTexture2)
     check3:SetScript('OnMouseDown', function()
-        Save().barTexture2= not Save().barTexture2 and true or nil
+        Save().barTexture2= not Save().barTexture2 and true or false
         WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
     end)
 
@@ -672,7 +672,7 @@ local function Init()--设置 panel
     checkHidePet.text:SetText(WoWTools_DataMixin.onlyChinese and '自动隐藏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
     checkHidePet:SetChecked(Save().hideInPetBattle)
     checkHidePet:SetScript('OnMouseDown', function()
-        Save().hideInPetBattle= not Save().hideInPetBattle and true or nil
+        Save().hideInPetBattle= not Save().hideInPetBattle and true or false
         WoWTools_AttributesMixin.Button:set_event()
         WoWTools_AttributesMixin.Button:settings()
     end)

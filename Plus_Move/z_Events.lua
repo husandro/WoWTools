@@ -1023,7 +1023,9 @@ end
 
 
 
-
+function WoWTools_MoveMixin.Events:Blizzard_DurabilityFrame()
+    self:Setup(DurabilityFrame, {notSave=true, notSize=true})
+end
 
 function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
     if not CooldownViewerSettings then--冷却设置 11.2.5
