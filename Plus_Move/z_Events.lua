@@ -1011,7 +1011,6 @@ end
 --LFDRoleCheckPopup
 function WoWTools_MoveMixin.Events:Blizzard_StaticPopup()
     WoWTools_DataMixin:Hook('StaticPopup_SetUpPosition', function(dialog)
-        print(dialog:GetName(), dialog.moveFrameData)
         if not dialog.moveFrameData then
             self:Setup(dialog, {notSize=true, notFuori=true,})
         else
