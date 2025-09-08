@@ -87,12 +87,12 @@ local function Init()--设置标记, 框架
     btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:set_Alpha()
-        WoWTools_MarkerMixin.MarkerButton:SetButtonState('NORMAL')
+        WoWTools_MarkerMixin:GetButtonForName('Markers'):SetButtonState('NORMAL')
     end)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltip()
         self:set_Alpha(true)
-        WoWTools_MarkerMixin.MarkerButton:SetButtonState('PUSHED')
+        WoWTools_MarkerMixin:GetButtonForName('Markers'):SetButtonState('PUSHED')
     end)
 
 

@@ -43,7 +43,18 @@ end
 
 
 
-local function Init_RaidTarget_Menu(_, root)
+
+
+
+
+
+
+
+
+
+
+
+local function Init_RaidTarget_Menu(self, root)
     local sub
 
     local Tab={
@@ -106,7 +117,7 @@ local function Init_RaidTarget_Menu(_, root)
             info.text,
         function(data)
             data.rest()
-            WoWTools_MarkerMixin.MarkerButton:settings()
+            self:settings()
             WoWTools_MarkerMixin:Set_TankHealer(true)
             return MenuResponse.Refresh
         end, {
@@ -149,7 +160,7 @@ local function Init_RaidTarget_Menu(_, root)
                 elseif data.check(data.index) then
                     Save()[data.type]=data.index
                 end
-                WoWTools_MarkerMixin.MarkerButton:settings()
+                self:settings()
                 WoWTools_MarkerMixin:Set_TankHealer(true)
                 return MenuResponse.Refresh
 
@@ -195,6 +206,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
@@ -210,7 +229,7 @@ local function Init_Menu(self, root)
     ), function ()
         return Save().autoSet
     end, function ()
-        Save().autoSet= not Save().autoSet and true or nil
+        Save().autoSet= not Save().autoSet and true or false
         WoWTools_MarkerMixin.TankHealerFrame:set_Enabel_Event()
         WoWTools_MarkerMixin:Set_TankHealer()
     end)
@@ -249,7 +268,7 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)), function()
         return Save().groupReadyTips
     end, function()
-        Save().groupReadyTips= not Save().groupReadyTips and true or nil
+        Save().groupReadyTips= not Save().groupReadyTips and true or false
         WoWTools_MarkerMixin:Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
         if Save().groupReadyTips then--测试
             local btn= _G['WoWToolsChatMarkersReadyInfoButton']
@@ -306,7 +325,7 @@ local function Init_Menu(self, root)
             return data==Save().autoReady
         end, function(data)
             Save().autoReady=data
-            WoWTools_MarkerMixin.MarkerButton:settings()
+            self:settings()
             return MenuResponse.Refresh
         end, value>0 and value or nil)
 
@@ -340,6 +359,15 @@ end
 
 
 
-function WoWTools_MarkerMixin:Setup_Menu()
-    self.MarkerButton:SetupMenu(Init_Menu)
+
+
+
+
+
+
+
+
+
+function WoWTools_MarkerMixin:Setup_Menu(btn)
+    btn:SetupMenu(Init_Menu)
 end

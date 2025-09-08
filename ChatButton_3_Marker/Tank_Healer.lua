@@ -119,12 +119,12 @@ end
 
 --设置队伍标记
 local function Init()
-    local frame=CreateFrame("Frame", nil, WoWTools_MarkerMixin.MarkerButton)
+    local frame=CreateFrame("Frame", nil, WoWTools_MarkerMixin:GetButtonForName('Markers'))
     WoWTools_MarkerMixin.TankHealerFrame= frame
 
     frame:SetPoint('BOTTOMLEFT',2, 2)
     frame:SetSize(14,14)
-    frame:SetFrameLevel(WoWTools_MarkerMixin.MarkerButton:GetFrameLevel()+1)
+    frame:SetFrameLevel(WoWTools_MarkerMixin:GetButtonForName('Markers'):GetFrameLevel()+1)
 
     frame.autoSetTexture= frame:CreateTexture()
     frame.autoSetTexture:SetAtlas('mechagon-projects')

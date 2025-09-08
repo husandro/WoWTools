@@ -16,6 +16,10 @@ local ReadyTipsButton
 
 
 local function Init()
+    if not Save().groupReadyTips  then
+        return
+    end
+    
     ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {
         size=22,
         atlas='common-icon-checkmark',
@@ -59,7 +63,7 @@ local function Init()
         if Save().groupReadyTipsPoint then
             self:SetPoint(Save().groupReadyTipsPoint[1], UIParent, Save().groupReadyTipsPoint[3], Save().groupReadyTipsPoint[4], Save().groupReadyTipsPoint[5])
         else
-            self:SetPoint('BOTTOMLEFT', WoWTools_MarkerMixin.MarkerButton, 'TOPLEFT', 0, 20)
+            self:SetPoint('BOTTOMLEFT', WoWTools_MarkerMixin:GetButtonForName('Markers'), 'TOPLEFT', 0, 20)
         end
     end
 
@@ -178,12 +182,12 @@ local function Init()
     end
     ReadyTipsButton:SetScript('OnLeave', function()
         GameTooltip:Hide()
-        WoWTools_MarkerMixin.MarkerButton:SetButtonState('NORMAL')
-        WoWTools_MarkerMixin.MarkerButton:state_leave(true)
+        WoWTools_MarkerMixin:GetButtonForName('Markers'):SetButtonState('NORMAL')
+        WoWTools_MarkerMixin:GetButtonForName('Markers'):state_leave(true)
     end)
     ReadyTipsButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
-        WoWTools_MarkerMixin.MarkerButton:state_enter(nil, true)
+        WoWTools_MarkerMixin:GetButtonForName('Markers'):state_enter(nil, true)
     end)
 
 

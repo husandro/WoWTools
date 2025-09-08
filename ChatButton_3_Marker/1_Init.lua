@@ -95,7 +95,7 @@ local function Init(btn)
         self:settings()
     end)
 
-     WoWTools_MarkerMixin:Setup_Menu()
+    WoWTools_MarkerMixin:Setup_Menu(btn)
 
     function btn:set_OnMouseDown()
         WoWTools_MarkerMixin:Set_TankHealer(true)
@@ -199,10 +199,9 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         Save().autoReadySeconds= Save().autoReadySeconds or 3
 
         WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
-        WoWTools_MarkerMixin.MarkerButton= WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName)
-
-        if WoWTools_MarkerMixin.MarkerButton then
-            Init(WoWTools_MarkerMixin.MarkerButton)
+        
+        if WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName) then
+            Init(WoWTools_MarkerMixin:GetButtonForName('Markers'))
         end
         self:UnregisterEvent(event)
     end
