@@ -101,7 +101,7 @@ local function Init_UI()
         Checks[i].settings= function(self)
             Save().autoReady= self.value
             Set_Ready()--设置，就绪，未就绪
-            WoWTools_MarkerMixin:GetButtonForName('Markers'):settings()
+            WoWTools_ChatMixin:GetButtonForName('Markers'):settings()
             for _, btn in pairs(Checks) do
                 if btn~=self then
                     btn:SetChecked(false)

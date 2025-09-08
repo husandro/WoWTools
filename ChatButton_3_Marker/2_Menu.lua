@@ -118,7 +118,7 @@ local function Init_RaidTarget_Menu(self, root)
         function(data)
             data.rest()
             self:settings()
-            WoWTools_MarkerMixin:Set_TankHealer(true)
+            WoWTools_MarkerMixin:Init_Tank_Healer(true)
             return MenuResponse.Refresh
         end, {
             text= info.text,
@@ -161,7 +161,7 @@ local function Init_RaidTarget_Menu(self, root)
                     Save()[data.type]=data.index
                 end
                 self:settings()
-                WoWTools_MarkerMixin:Set_TankHealer(true)
+                WoWTools_MarkerMixin:Init_Tank_Healer(true)
                 return MenuResponse.Refresh
 
             end, {
@@ -220,7 +220,6 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2
-
     sub=root:CreateCheckbox(
         (Save().tank==0 and Save().healer==0 and '|cff9e9e9e' or '')
         ..'|A:mechagon-projects:0:0|a'
@@ -231,7 +230,7 @@ local function Init_Menu(self, root)
     end, function ()
         Save().autoSet= not Save().autoSet and true or false
         WoWTools_MarkerMixin.TankHealerFrame:set_Enabel_Event()
-        WoWTools_MarkerMixin:Set_TankHealer()
+        WoWTools_MarkerMixin:Init_Tank_Healer()
     end)
 
 
@@ -245,18 +244,21 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        (WoWTools_MapMixin:IsInPvPArea() or (WoWTools_MarkerMixin.MakerFrame and not WoWTools_MarkerMixin.MakerFrame:CanChangeAttribute()) and '|cff9e9e9e' or '')
+        (WoWTools_MapMixin:IsInPvPArea()
+        or (InCombatLockdown()) and '|cff9e9e9e' or '')
         ..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
-        return WoWTools_MarkerMixin.MakerFrame and WoWTools_MarkerMixin.MakerFrame:IsShown()
+        return  _G['WoWToolsChatButtonMarkersFrame'] and  _G['WoWToolsChatButtonMarkersFrame']:IsShown()
     end, function()
-        Save().markersFrame= not Save().markersFrame and true or nil
-        WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
+        if not InCombatLockdown() then
+            Save().markersFrame= not Save().markersFrame and true or nil
+            WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
+        end
     end)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, WoWTools_DataMixin.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''))
         GameTooltip_AddNormalLine(tooltip, WoWTools_DataMixin.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR)))
-        if WoWTools_MarkerMixin.MakerFrame and not WoWTools_MarkerMixin.MakerFrame:CanChangeAttribute() then
+        if InCombatLockdown() then
             GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
         end
     end)

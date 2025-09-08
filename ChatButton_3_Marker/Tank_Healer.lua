@@ -118,13 +118,13 @@ end
 
 
 --设置队伍标记
-local function Init()
-    local frame=CreateFrame("Frame", nil, WoWTools_MarkerMixin:GetButtonForName('Markers'))
+local function Init(set)
+    local frame=CreateFrame("Frame", nil, WoWTools_ChatMixin:GetButtonForName('Markers'))
     WoWTools_MarkerMixin.TankHealerFrame= frame
 
     frame:SetPoint('BOTTOMLEFT',2, 2)
     frame:SetSize(14,14)
-    frame:SetFrameLevel(WoWTools_MarkerMixin:GetButtonForName('Markers'):GetFrameLevel()+1)
+    frame:SetFrameLevel(WoWTools_ChatMixin:GetButtonForName('Markers'):GetFrameLevel()+1)
 
     frame.autoSetTexture= frame:CreateTexture()
     frame.autoSetTexture:SetAtlas('mechagon-projects')
@@ -170,12 +170,17 @@ local function Init()
     end)
     frame:set_Enabel_Event()
 
+    if set then
+        Set_TankHealer(set)
+    else
+        C_Timer.After(2, function()
+            Set_TankHealer(set)
+        end)
+    end
 
-    C_Timer.After(2, function()
-        Set_TankHealer()
-    end)
-
-    return true
+    Init=function(isSet)
+        Set_TankHealer(isSet)
+    end
 end
 
 
@@ -185,12 +190,6 @@ end
 
 
 --设置队伍标记
-function WoWTools_MarkerMixin:Init_Tank_Healer()
-    if Init() then
-        Init=function()end
-    end
-end
-
-function WoWTools_MarkerMixin:Set_TankHealer(set)
-    Set_TankHealer(set)
+function WoWTools_MarkerMixin:Init_Tank_Healer(set)
+    Init(set)
 end
