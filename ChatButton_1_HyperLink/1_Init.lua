@@ -65,10 +65,10 @@ local function Init(btn)
 
     function btn:set_OnMouseDown()
         Save().linkIcon= not Save().linkIcon and true or false
-        WoWTools_HyperLink:Init_Link_Icon()
+        WoWTools_HyperLink:Init_Link_Icon(self)
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
         print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName,
+            WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
             WoWTools_TextMixin:GetEnabeleDisable(not isDisabled and Save().linkIcon)
         )
         if Save().linkIcon and isDisabled and not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
@@ -77,20 +77,12 @@ local function Init(btn)
     end
 
 
-    WoWTools_HyperLink:Init_Button_Menu()
-    WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
-    WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
+    WoWTools_HyperLink:Init_Button_Menu(btn)
+    WoWTools_HyperLink:Init_Link_Icon(btn)--超链接，图标
+    WoWTools_HyperLink:Init_Event_Sound(btn)--播放, 事件声音
     WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
     WoWTools_HyperLink:Init_Welcome()--欢迎加入
     WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
-
-    WoWTools_HyperLink:Blizzard_DebugTools()
-
-    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-        WoWTools_HyperLink:Blizzard_Settings()
-    end
-
-    WoWTools_HyperLink:Blizzard_EventTrace()
 
     WoWTools_HyperLink:Init_CopyChat()
 
@@ -120,18 +112,26 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
 
             WoWTools_HyperLink.addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
-            WoWTools_HyperLink.LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName)
 
-            if WoWTools_HyperLink.LinkButton then
-                Init(WoWTools_HyperLink.LinkButton)
 
-            else
-                --DEFAULT_CHAT_FRAME.P_AddMessage= nil
-                self:UnregisterAllEvents()
+            if WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName) then
+                Init(WoWTools_ChatMixin:GetButtonForName('HyperLink'))
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                    WoWTools_HyperLink:Blizzard_Settings(self)
+                end
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
+                    WoWTools_HyperLink:Blizzard_DebugTools()
+                end
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
+                    WoWTools_HyperLink:Blizzard_EventTrace()
+                end
             end
 
         elseif arg1=='Blizzard_Settings' and WoWToolsSave then
-            WoWTools_HyperLink:Blizzard_Settings()
+            WoWTools_HyperLink:Blizzard_Settings(self)
 
 
         elseif arg1=='Blizzard_DebugTools' and WoWToolsSave then--FSTACK Blizzard_DebugTools.lua

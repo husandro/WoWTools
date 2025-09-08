@@ -13,14 +13,12 @@ end
 
 
 --local Category, Layout
-local function Init()
-    local frame= CreateFrame('Frame')
-
+local function Init(frame)
     local Category= WoWTools_PanelMixin:AddSubCategory({
         name= WoWTools_HyperLink.addName,
         frame=frame,
         category=WoWTools_ChatMixin.Category,
-        disabled=not WoWTools_HyperLink.LinkButton
+        disabled=not frame
     })
 
     WoWTools_HyperLink.Category= Category
@@ -38,8 +36,12 @@ local function Init()
     end
     editBox:SetText(s)
 
-    local btn= WoWTools_ButtonMixin:Cbtn(editBox, {size={80, 23}, isUI=true})-- CreateFrame('Button', nil, editBox, 'UIPanelButtonTemplate')
-    btn:SetText(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
+    local btn= WoWTools_ButtonMixin:Cbtn(editBox, {-- CreateFrame('Button', nil, editBox, 'UIPanelButtonTemplate')
+        size={80, 23},
+        isUI=true,
+        text=WoWTools_DataMixin.onlyChinese and '更新' or UPDATE
+    })
+
     btn:SetPoint('TOPRIGHT', editBox, 'BOTTOMRIGHT')
     btn:SetScript('OnClick', function(self)
         WoWToolsPlayerDate['HyperLinkColorText']={}
@@ -57,7 +59,8 @@ local function Init()
             end
         end)
         print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName,  WoWTools_DataMixin.Player.Language.key,
+            WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2, 
+            WoWTools_DataMixin.Player.Language.key,
             WoWTools_DataMixin.onlyChinese and '颜色' or COLOR,
             '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..'|r'
         )
@@ -121,7 +124,7 @@ local function Init()
         end)
 
         print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName,
+            WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
             '|cnGREEN_FONT_COLOR:'..n..'|r',
             WoWTools_DataMixin.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL)
         )
@@ -157,6 +160,6 @@ end
 
 
 
-function WoWTools_HyperLink:Blizzard_Settings()
-    Init()
+function WoWTools_HyperLink:Blizzard_Settings(panel)
+    Init(panel)
 end

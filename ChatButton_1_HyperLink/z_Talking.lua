@@ -11,6 +11,9 @@ local VoHandle
 
 
 local function Init()
+    if Save().disabledNPCTalking then
+        return
+    end
 
     EventRegistry:RegisterFrameEventAndCallback("TALKINGHEAD_REQUESTED", function()
         if Save().disabledNPCTalking then
@@ -44,7 +47,7 @@ local function Init()
         end
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -54,7 +57,5 @@ end
 
 --隐藏NPC发言
 function WoWTools_HyperLink:Init_NPC_Talking()
-    if not Save().disabledNPCTalking and Init() then
-        Init=function()end
-    end
+    Init()
 end

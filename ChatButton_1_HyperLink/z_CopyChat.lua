@@ -232,7 +232,7 @@ function Init_Button(index)
 
 	frame.CopyChatButton:SetScript('OnLeave', function()
 		GameTooltip:Hide()
-		WoWTools_HyperLink.LinkButton:SetButtonState('NORMAL')
+		WoWTools_ChatMixin:GetButtonForName('HyperLink'):SetButtonState('NORMAL')
 	end)
 
 	frame.CopyChatButton:SetScript('OnEnter', function(self)
@@ -251,7 +251,7 @@ function Init_Button(index)
 			..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
 		)
 		GameTooltip:Show()
-		WoWTools_HyperLink.LinkButton:SetButtonState('PUSHED')
+		WoWTools_ChatMixin:GetButtonForName('HyperLink'):SetButtonState('PUSHED')
 		WoWTools_DataMixin:Call(FCF_FadeInScrollbar, self:GetParent())
 	end)
 

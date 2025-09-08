@@ -217,7 +217,13 @@ local function Init_LeftList()
     end)
 
 --菜单
-    Menu= WoWTools_ButtonMixin:Cbtn(Refresh, {atlas='GM-icon-settings-pressed', size=size, isType2=true, notBorder=true, notLocked=true})
+    Menu= WoWTools_ButtonMixin:Cbtn(Refresh, {
+        atlas='GM-icon-settings-pressed',
+        size=size,
+        isType2=true,
+        notBorder=true,
+        notLocked=true
+    })
     Menu:SetPoint('RIGHT', Clear, 'LEFT')
     Menu.texture:SetVertexColor(0.5, 0.5, 0.5)
     Menu:SetScript('OnLeave', function(self)
@@ -227,7 +233,7 @@ local function Init_LeftList()
         self.texture:SetVertexColor(1,1,1)
     end)
     Menu:SetScript('OnClick', function()
-        WoWTools_HyperLink.LinkButton:OpenMenu()
+        WoWTools_ChatMixin:GetButtonForName('HyperLink'):OpenMenu()
     end)
 
 --数量

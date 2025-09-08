@@ -653,7 +653,7 @@ end
 
 
 
-local function Set_HyperLlinkIcon()
+local function Set_HyperLlinkIcon(btn)
     local enable= Save().linkIcon and not C_SocialRestrictions.IsChatDisabled()
 
     for i = 3, NUM_CHAT_WINDOWS do
@@ -662,8 +662,8 @@ local function Set_HyperLlinkIcon()
 
     Set_AddMessage(DEFAULT_CHAT_FRAME, enable)
 
-    WoWTools_HyperLink.LinkButton.texture:SetAtlas(enable and 'orderhalltalents-done-glow' or 'voicechat-icon-STT-on')
-    WoWTools_HyperLink.LinkButton.texture:SetDesaturated(not enable)
+    btn.texture:SetAtlas(enable and 'orderhalltalents-done-glow' or 'voicechat-icon-STT-on')
+    btn.texture:SetDesaturated(not enable)
 end
 
 
@@ -671,7 +671,7 @@ end
 
 
 
-local function Init()
+local function Init(btn)
 --是否有，聊天中时间戳
     IsShowTimestamps= C_CVar.GetCVar('showTimestamps')~='none'
 
@@ -680,14 +680,27 @@ local function Init()
             IsShowTimestamps= arg2~='none'
         end
         if Save().showCVarName then
-            print(WoWTools_DataMixin.Icon.icon2..'|A:voicechat-icon-STT-on:0:0|a|cffff00ffCVar|r|cff00ff00', arg1, '|r', arg2, ...)
+            print(
+                WoWTools_DataMixin.Icon.icon2
+                ..'|A:voicechat-icon-STT-on:0:0|a|cffff00ffCVar|r|cff00ff00',
+                arg1,
+                '|r',
+                arg2,
+                ...
+            )
         end
     end)
 
 --CVar 名称
-    WoWTools_DataMixin:Hook('ChatConfigFrame_OnChatDisabledChanged', Set_HyperLlinkIcon)
+    WoWTools_DataMixin:Hook('ChatConfigFrame_OnChatDisabledChanged', function()
+        Set_HyperLlinkIcon(btn)
+    end)
 
-    Init=function()end
+    Set_HyperLlinkIcon(btn)
+
+    Init=function(self)
+        Set_HyperLlinkIcon(self)
+    end
 end
 
 
@@ -695,10 +708,9 @@ end
 
 
 --超链接，图标
-function WoWTools_HyperLink:Init_Link_Icon()
+function WoWTools_HyperLink:Init_Link_Icon(btn)
     self:Link_Icon_Settings()
-    Init()
-    Set_HyperLlinkIcon()
+    Init(btn)
 end
 
 function WoWTools_HyperLink:Link_Icon_Settings()
