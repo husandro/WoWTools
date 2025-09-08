@@ -490,7 +490,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '增强' or 'Plus',
+        'Plus',
     function()
         return not Save().disabedFrameStackPlus
     end, function()
