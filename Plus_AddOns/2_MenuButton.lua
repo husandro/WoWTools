@@ -65,7 +65,11 @@ local function Init_Menu(self, root)
         )
     end)
 
---加载插件
+
+
+
+    
+--加载插件 Bottom
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '插件图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, EMBLEM_SYMBOL)),
     function()
@@ -106,7 +110,18 @@ local function Init_Menu(self, root)
     sub:CreateSpacer()
 
 
---方案列表    
+
+
+
+
+
+
+
+
+
+
+
+--方案列表 Right
     num=0
     for _ in pairs(Save().buttons) do
         num=num+1
@@ -156,6 +171,12 @@ local function Init_Menu(self, root)
 
 
 
+
+
+
+
+
+
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '信息' or INFO)..' Plus',
     function()
@@ -181,6 +202,17 @@ local function Init_Menu(self, root)
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub)
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 

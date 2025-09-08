@@ -1300,29 +1300,6 @@ end
 
 
 
---插件，管理
-function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
-    self:SetNineSlice(AddonList)
-    self:SetScrollBar(AddonList)
-    self:HideFrame(AddonList)
-
-    self:SetNineSlice(AddonListInset)
-    self:SetAlphaColor(AddonListInset.Bg, nil, nil, 0.3)
-
-    self:SetMenu(AddonList.Dropdown)
-    self:SetEditBox(AddonList.SearchBox)
-    self:SetButton(AddonListCloseButton)
-    self:SetAlphaColor(AddonList.Performance.Divider, true)
-
-
-    self:Init_BGMenu_Frame(AddonList, {
-        isNewButton=true,
-        newButtonPoint=function(btn)
-            btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -23, 0)
-        end,
-    })
-end
-
 
 
 

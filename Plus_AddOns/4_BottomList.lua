@@ -117,6 +117,9 @@ local function Set_Load_Button()--LoadButtons
         return
     end
 
+    local size= Save().load_list_size or 23
+    local toTop= Save().load_list_top
+
     local newTab={}
     for i=1, C_AddOns.GetNumAddOns() do
         if not C_AddOns.GetAddOnDependencies(i) then
@@ -138,11 +141,13 @@ local function Set_Load_Button()--LoadButtons
        local btn= Create_Button(i)
 
        btn:ClearAllPoints()
-        if Save().load_list_top then
+        if toTop then
             btn:SetPoint('BOTTOMRIGHT', _G[Name..(i-1)] or BottomFrame, 'BOTTOMLEFT')
         else
             btn:SetPoint('TOPRIGHT', _G[Name..(i-1)] or BottomFrame, 'TOPLEFT')
         end
+
+        btn:SetSize(size, size)
 
        if info.texture then
             btn.texture:SetTexture(info.texture)
@@ -158,13 +163,13 @@ local function Set_Load_Button()--LoadButtons
        btn:SetShown(true)
     end
 
-    local num= math.modf((AddonList:GetWidth()+12)/Save().load_list_size)
+    local num= math.modf((AddonList:GetWidth()+12)/size)
     num= num<4 and 4 or num
 
     for i=num+1, #Buttons, num do
         local btn= _G[Name..i]
         btn:ClearAllPoints()
-        if Save().load_list_top then
+        if toTop then
             btn:SetPoint('BOTTOMRIGHT', _G[Name..(i- num)], 'TOPRIGHT')
         else
             btn:SetPoint('TOPRIGHT', _G[Name..(i- num)], 'BOTTOMRIGHT')

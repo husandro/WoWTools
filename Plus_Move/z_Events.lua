@@ -663,12 +663,6 @@ function WoWTools_MoveMixin.Events:Blizzard_ChatFrame()
     self:Setup(ChatConfigFrame.Border, {frame=ChatConfigFrame})
 end
 
---插件
-function WoWTools_MoveMixin.Events:Blizzard_AddOnList()
-    if WoWToolsSave['Plus_AddOns'] and WoWToolsSave['Plus_AddOns'].disabled then
-        self:Setup(AddonList)
-    end
-end
 
 
 

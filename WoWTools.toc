@@ -467,6 +467,7 @@ Plus_AddOns\4_BottomList.lua
 Plus_AddOns\5_RightList.lua
 Plus_AddOns\5_RightList_NewButton.lua
 Plus_AddOns\Info_Plus.lua
+Plus_AddOns\z_UI.lua
 ##11.1.5无效
 ##Plus_AddOns\AddonProfiler.lua
 

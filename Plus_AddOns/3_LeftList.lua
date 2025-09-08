@@ -123,6 +123,7 @@ local function Create_Fast_Button(index)
         WoWTools_DataMixin:Call(AddonList_Update)
         self:set_tooltips()
     end)
+
     if index==1 then
         btn:SetPoint('TOPRIGHT', LeftFrame)
     else
@@ -162,16 +163,24 @@ local function Set_Left_Buttons()
     end
     table.sort(newTab, function(a, b) return a.index< b.index end)
 
+    local btn
+    local w=0
     for i, info in pairs(newTab) do
-        local btn= Create_Fast_Button(i)
+        btn= Create_Fast_Button(i)
         btn.name= info.name
         btn:SetID(math.min(i, max))
         btn:settings()
         btn:SetShown(true)
+        w= math.max(w, btn.Text:GetStringWidth())
     end
 
+    if btn then
+        LeftFrame.Background:SetPoint('BOTTOMLEFT', btn, -2-w, -2)
+    end
+    LeftFrame.Background:SetShown(btn)
+
     for i= #newTab +1, #Buttons do
-        local btn= _G[Name..i]
+        btn= _G[Name..i]
         btn:SetShown(false)
         btn.name=nil
     end
@@ -198,18 +207,28 @@ local function Init()
     LeftFrame= CreateFrame("Frame", 'WoWToolsAddOnsLeftFrame', AddonListCloseButton)
     LeftFrame:SetSize(1,1)
     LeftFrame:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT')
+
+    LeftFrame.Background= LeftFrame:CreateTexture(nil, 'BACKGROUND')
+    LeftFrame.Background:SetPoint('TOPRIGHT', LeftFrame, 2, 2)
+
     function LeftFrame:settings()
         self:SetScale(Save().leftListScale or 1)
         self:SetShown(not Save().hideLeftList)
+        self.Background:SetColorTexture(0,0,0, Save().Bg_Alpha or 0.5)
     end
 
     LeftFrame:settings()
     Set_Left_Buttons()
 
+    WoWTools_DataMixin:Hook('AddonList_Update', function()
+        Set_Left_Buttons()
+    end)
+
     Init= function()
         LeftFrame:settings()
         Set_Left_Buttons()
     end
+
 end
 
 

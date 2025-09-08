@@ -322,6 +322,10 @@ local function Init()
     RightFrame:settings()
     Set_Right_Buttons()
 
+    WoWTools_DataMixin:Hook('AddonList_Update', function()
+        Set_Right_Buttons()
+    end)
+
     Init=function()
         RightFrame:settings()
         Set_Right_Buttons()
