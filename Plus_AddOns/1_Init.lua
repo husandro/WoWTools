@@ -83,12 +83,8 @@ end
 --初始化
 --#####
 local function Init()
-    do
-        WoWTools_AddOnsMixin:Init_NewButton_Button()
-    end
-    
     WoWTools_AddOnsMixin:Init_Menu_Button()
-    WoWTools_AddOnsMixin:Init_Load_Button()
+    WoWTools_AddOnsMixin:Init_Bottom_Buttons()
     WoWTools_AddOnsMixin:Init_Right_Buttons()
     WoWTools_AddOnsMixin:Init_Left_Buttons()
     WoWTools_AddOnsMixin:Init_Info_Plus()
@@ -127,8 +123,8 @@ local function Init()
     AddonList.ForceLoad:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT', 23,0)
 
     WoWTools_DataMixin:Hook('AddonList_Update', function()
-        WoWTools_AddOnsMixin:Set_Left_Buttons()--插件，快捷，选中
-        WoWTools_AddOnsMixin:Set_Right_Buttons()
+        WoWTools_AddOnsMixin:Init_Left_Buttons()--插件，快捷，选中
+        WoWTools_AddOnsMixin:Init_Right_Buttons()
     end)
 
     Init=function()end

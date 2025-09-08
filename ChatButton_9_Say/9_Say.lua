@@ -140,7 +140,7 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-    
+
     local sub, sub2, sub3, col, icon, name, num
     --local isInCombat= UnitAffectingCombat('player')
 
@@ -545,12 +545,7 @@ end
 --###########
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
-panel:RegisterEvent("CHAT_MSG_WHISPER")
-panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
-panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-panel:RegisterEvent('CVAR_UPDATE')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" then
@@ -563,6 +558,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
             SayButton= WoWTools_ChatMixin:CreateButton('Say', addName)
 
             if SayButton then--禁用Chat Button
+                self:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
+                self:RegisterEvent("CHAT_MSG_WHISPER")
+                self:RegisterEvent("CHAT_MSG_BN_WHISPER")
+                self:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('CVAR_UPDATE')
+
                 if #Save().WhisperTab>120 then
                     for i=121, #Save().WhisperTab do
                         Save().WhisperTab[i]=nil
@@ -570,19 +572,17 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
                 end
 
                 Init()
-                self:UnregisterEvent('ADDON_LOADED')
-            else
-                self:UnregisterAllEvents()
             end
+            self:UnregisterEvent(event)
         end
 
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then
         getWhisper(event, arg1, arg2, ...)
 
-    elseif event== 'PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event== 'PLAYER_ENTERING_WORLD' then
         set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
 
-    elseif event=='CVAR_UPDATE' and arg1=='chatBubbles' and WoWToolsSave then
+    elseif event=='CVAR_UPDATE' and arg1=='chatBubbles' then
         set_chatBubbles_Tips() --提示，聊天泡泡，开启/禁用
     end
 end)

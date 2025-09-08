@@ -221,16 +221,21 @@ function Init_Button(index)
 	end
 
 	frame.CopyChatButton= CreateFrame('Button', 'WoWToolsChatCopyButton'..index, frame)
+	
 	frame.CopyChatButton:SetNormalAtlas('poi-workorders')
+    frame.CopyChatButton:SetPushedAtlas('PetList-ButtonSelect')
+    frame.CopyChatButton:SetHighlightAtlas('PetList-ButtonHighlight')
+
 	frame.CopyChatButton:SetSize(17, 15)
 	WoWTools_TextureMixin:SetButton(frame.CopyChatButton, {alpha=1})
 	frame.CopyChatButton:SetAlpha(frame.ScrollBar:GetAlpha() or 0.65)
+
 
 	frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, 15)-- -2,-2
 
 	frame.CopyChatButton:SetPoint('TOP', frame.ScrollToBottomButton, 'BOTTOM', 0, -2)
 
-	frame.CopyChatButton:SetScript('OnLeave', function()
+	frame.CopyChatButton:SetScript('OnLeave', function(self)
 		GameTooltip:Hide()
 		WoWTools_ChatMixin:GetButtonForName('HyperLink'):SetButtonState('NORMAL')
 	end)

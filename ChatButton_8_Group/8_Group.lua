@@ -656,28 +656,13 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('GROUP_JOINED')
-panel:RegisterEvent('GROUP_FORMED')
 
-panel:RegisterEvent('GROUP_ROSTER_UPDATE')
-
-panel:RegisterEvent('CVAR_UPDATE')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
             WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or P_Save
-
-            if Save().mouseUP then
-                WoWToolsPlayerDate['GroupMouseUpText']= Save().mouseUP
-                Save().mouseUP= nil
-
-                WoWToolsPlayerDate['GroupMouseDownText']= Save().mouseDown
-                Save().mouseDown= nil
-            end
 
             WoWToolsPlayerDate['GroupMouseUpText']= WoWToolsPlayerDate['GroupMouseUpText']
                 or (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
@@ -690,14 +675,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:socialqueuing-icon-group:0:0:|a'..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
             GroupButton= WoWTools_ChatMixin:CreateButton('Group', addName)
 
-            if GroupButton then--禁用 ChatButton
-                self:UnregisterEvent(event)
-            else
-                self:UnregisterAllEvents()
+            if GroupButton then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('GROUP_LEFT')
+                self:RegisterEvent('GROUP_JOINED')
+                self:RegisterEvent('GROUP_FORMED')
+
+                self:RegisterEvent('GROUP_ROSTER_UPDATE')
+
+                self:RegisterEvent('CVAR_UPDATE')
             end
+            self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         Init()
         self:UnregisterEvent(event)
 

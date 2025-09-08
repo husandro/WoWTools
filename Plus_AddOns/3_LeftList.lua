@@ -2,8 +2,9 @@
 local function Save()
     return WoWToolsSave['Plus_AddOns'] or {}
 end
-local FastButtons={}--快捷键
+local Buttons={}--快捷键
 local LeftFrame
+local Name= 'WoWToolsAddOnsLeftListButton'
 
 
 
@@ -13,9 +14,16 @@ local LeftFrame
 
 
 
+local function Create_Fast_Button(index)
 
-local function Create_Fast_Button(indexAdd)
-    local btn= WoWTools_ButtonMixin:Cbtn(LeftFrame, {size=23})
+    if _G[Name..index] then
+        return _G[Name..index]
+    end
+
+    local btn= WoWTools_ButtonMixin:Cbtn(LeftFrame, {
+        size=23,
+        name=Name..index,
+    })
     btn.Text= WoWTools_LabelMixin:Create(btn, {size=14})
     btn.Text:SetPoint('RIGHT', btn, 'LEFT')
 
@@ -23,8 +31,6 @@ local function Create_Fast_Button(indexAdd)
     btn.checkTexture:SetAtlas('GarrMission_EncounterBar-CheckMark')
     btn.checkTexture:SetPoint('BOTTOMRIGHT', 4, -2)
     btn.checkTexture:SetSize(16,16)
-    --btn.checkTexture:SetSize(16,16)
-    --btn.checkTexture:SetPoint('RIGHT', btn.Text, 'LEFT',0,-2)
 
     function btn:get_add_info()
         local atlas = C_AddOns.GetAddOnMetadata(self.name, "IconAtlas")
@@ -69,8 +75,8 @@ local function Create_Fast_Button(indexAdd)
         AddonTooltip:Show()
     end
     btn:SetScript('OnEnter', function(self)
-        local index= self:GetID()
-        if index and C_AddOns.GetAddOnInfo(index)==self.name then
+        local i2= self:GetID()
+        if i2 and C_AddOns.GetAddOnInfo(i2)==self.name then
             self:set_tooltips()
         else
            local findIndex
@@ -91,13 +97,13 @@ local function Create_Fast_Button(indexAdd)
                 GameTooltip:AddDoubleLine(icon..name)
                 GameTooltip:Show()
             else
-                index=findIndex
+                i2=findIndex
             end
         end
-        if index then
-            AddonList.ScrollBox:ScrollToElementDataIndex(index)
+        if i2 then
+            AddonList.ScrollBox:ScrollToElementDataIndex(i2)
             for _, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
-                if frame:GetID()==index then
+                if frame:GetID()==i2 then
                     if frame.check then
                         frame.check:set_enter_alpha()
                         self.findFrame=frame
@@ -117,14 +123,25 @@ local function Create_Fast_Button(indexAdd)
         WoWTools_DataMixin:Call(AddonList_Update)
         self:set_tooltips()
     end)
-    if indexAdd==1 then
+    if index==1 then
         btn:SetPoint('TOPRIGHT', LeftFrame)
     else
-        btn:SetPoint('TOPRIGHT', FastButtons[indexAdd-1], 'BOTTOMRIGHT')
+        btn:SetPoint('TOPRIGHT', _G[Name..(index-1)], 'BOTTOMRIGHT')
     end
-    FastButtons[indexAdd]= btn
+
+    table.insert(Buttons, index)
+
     return btn
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -146,35 +163,53 @@ local function Set_Left_Buttons()
     table.sort(newTab, function(a, b) return a.index< b.index end)
 
     for i, info in pairs(newTab) do
-        local btn= FastButtons[i] or Create_Fast_Button(i)
+        local btn= Create_Fast_Button(i)
         btn.name= info.name
         btn:SetID(math.min(i, max))
         btn:settings()
         btn:SetShown(true)
     end
 
-    for i= #newTab +1, #FastButtons do
-        local btn= FastButtons[i]
-        if btn then
-            btn:SetShown(false)
-            btn.name=nil
-        end
+    for i= #newTab +1, #Buttons do
+        local btn= _G[Name..i]
+        btn:SetShown(false)
+        btn.name=nil
     end
 end
 
 
 
 
+
+
+
+
+
+
+
+
+
+
 local function Init()
-    LeftFrame= CreateFrame("Frame", 'WoWToolsAddOnsLeftFrame', AddonList)
+    if Save().hideLeftList then
+        return
+    end
+
+    LeftFrame= CreateFrame("Frame", 'WoWToolsAddOnsLeftFrame', AddonListCloseButton)
     LeftFrame:SetSize(1,1)
     LeftFrame:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT')
     function LeftFrame:settings()
         self:SetScale(Save().leftListScale or 1)
         self:SetShown(not Save().hideLeftList)
     end
+
     LeftFrame:settings()
     Set_Left_Buttons()
+
+    Init= function()
+        LeftFrame:settings()
+        Set_Left_Buttons()
+    end
 end
 
 
@@ -189,9 +224,4 @@ end
 
 function WoWTools_AddOnsMixin:Init_Left_Buttons()
     Init()
-end
-
---插件，快捷，选中
-function WoWTools_AddOnsMixin:Set_Left_Buttons()
-    Set_Left_Buttons()
 end

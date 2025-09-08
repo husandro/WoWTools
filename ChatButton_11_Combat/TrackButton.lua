@@ -297,7 +297,6 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         size=22,
         icon='hide'
     })
-    --WoWTools_CombatMixin.TrackButton= TrackButton
 
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
@@ -322,7 +321,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
-            self:SetPoint('BOTTOMLEFT', WoWTools_CombatMixin.CombatButton, 'BOTTOMRIGHT')
+            self:SetPoint('BOTTOMLEFT', WoWTools_ChatMixin:GetButtonForName('Combat'), 'BOTTOMRIGHT')
         end
     end
 
@@ -378,10 +377,10 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
 
     TrackButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
-        WoWTools_CombatMixin.CombatButton:SetButtonState('PUSHED')
+        WoWTools_ChatMixin:GetButtonForName('Combat'):SetButtonState('PUSHED')
     end)
     TrackButton:SetScript("OnLeave", function()
-        WoWTools_CombatMixin.CombatButton:SetButtonState('NORMAL')
+        WoWTools_ChatMixin:GetButtonForName('Combat'):SetButtonState('NORMAL')
     end)
 
     TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放

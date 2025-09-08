@@ -64,6 +64,7 @@ local function Create_Check(frame)
     if frame.check then
         return
     end
+
     frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 
     frame.check:SetSize(20,20)--Fast，选项
@@ -71,7 +72,7 @@ local function Create_Check(frame)
 
     frame.check:SetScript('OnClick', function(self)
         Save().fast[self.name]= not Save().fast[self.name] and self:GetID() or nil
-        WoWTools_AddOnsMixin:Set_Left_Buttons()
+        WoWTools_AddOnsMixin:Init_Left_Buttons()
     end)
 
 
@@ -250,7 +251,9 @@ end
 
 
 local function Init()
-    
+    if Save().disabledInfoPlus then
+        return
+    end
 
     WoWTools_DataMixin:Hook('AddonList_InitAddon', function(entry, treeNode)
         local addonIndex = treeNode:GetData().addonIndex
@@ -270,9 +273,79 @@ local function Init()
         end
     end)
 
-    --[[WoWTools_DataMixin:Hook('AddonList_Update', function()
-        WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
-    end)]]
+
+
+    
+    
+--不禁用，本插件
+    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size=18, icon='hide'})
+    btn:SetPoint('LEFT', AddonList.DisableAllButton, 'RIGHT', 2,0)
+    btn:SetAlpha(0.3)
+    function btn:set_tooltips()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
+        GameTooltip:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', WoWTools_DataMixin.onlyChinese and '启用' or ENABLE, ''), WoWTools_TextMixin:GetYesNo(Save().enableAllButtn))
+        GameTooltip:Show()
+        self:SetAlpha(1)
+    end
+    btn:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(0.3)
+        AddonList.DisableAllButton:SetAlpha(1)
+        if self.findFrame then
+            if self.findFrame.check then
+                self.findFrame.check:set_leave_alpha()
+            end
+            self.findFrame=nil
+        end
+    end)
+    btn:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+        AddonList.DisableAllButton:SetAlpha(0.3)
+        if not self.index then
+            for i=1, C_AddOns.GetNumAddOns() do
+                if C_AddOns.GetAddOnInfo(i)== 'WoWTools' then
+                    self.index=i
+                    break
+                end
+            end
+        end
+        if self.index then
+            AddonList.ScrollBox:ScrollToElementDataIndex(self.index)
+            for index, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
+                if frame:GetID()==index then
+                    if frame.check then
+                        frame.check:set_enter_alpha()
+                        self.findFrame=frame
+                    end
+                    break
+                end
+            end
+        end
+    end)
+    function btn:set_icon()
+        if Save().enableAllButtn then
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        else
+            self:SetNormalAtlas('talents-button-reset')
+        end
+    end
+    btn:SetScript('OnClick', function(self)
+        Save().enableAllButtn= not Save().enableAllButtn and true or nil
+        self:set_icon()
+        self:set_tooltips()
+    end)
+
+    AddonList.DisableAllButton:HookScript('OnClick', function()
+        if Save().enableAllButtn then
+            C_AddOns.EnableAddOn('WoWTools')
+            WoWTools_DataMixin:Call(AddonList_Update)
+        end
+    end)
+    btn:set_icon()
+
+    Init=function()end
 end
 
 
@@ -285,7 +358,5 @@ end
 
 
 function WoWTools_AddOnsMixin:Init_Info_Plus()
-    if not Save().disabledInfoPlus then
-        Init()
-    end
+    Init()
 end

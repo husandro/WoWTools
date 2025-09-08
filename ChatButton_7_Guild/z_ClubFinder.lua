@@ -112,14 +112,17 @@ end
 
 
 local function Init()
-    if IsVeteranTrialAccount() then--试用帐号
-        return
+    if not IsVeteranTrialAccount() then
+        set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
+        set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
+        WoWTools_DataMixin:Hook(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', function(...)
+            set_RequestToJoinFrame(...)
+        end)
+        WoWTools_DataMixin:Hook(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', function(...)
+            set_RequestToJoinFrame(...)
+        end)
     end
-    set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
-    set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
-    WoWTools_DataMixin:Hook(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
-    WoWTools_DataMixin:Hook(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
-    return true
+    Init=function()end
 end
 
 
@@ -128,8 +131,5 @@ end
 
 
 function WoWTools_GuildMixin:Init_ClubFinder()
-    if Init() then
-        Init=function()end
-        return true
-    end
+    Init()
 end

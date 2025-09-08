@@ -15,7 +15,7 @@ local P_Save={
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -24,17 +24,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_GuildMixin.addName= '|A:UI-HUD-MicroMenu-GuildCommunities-Up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '公会' or GUILD)
 
-            WoWTools_GuildMixin.GuildButton= WoWTools_ChatMixin:CreateButton('Guild', WoWTools_GuildMixin.addName)
-
-            if WoWTools_GuildMixin.GuildButton then
-                self:UnregisterEvent(event)
+            if WoWTools_ChatMixin:CreateButton('Guild', WoWTools_GuildMixin.addName) then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 C_ClubFinder.RequestSubscribedClubPostingIDs()
-            else
-                self:UnregisterAllEvents()
             end
+            self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_GuildMixin:Init_Button()
         WoWTools_GuildMixin:Init_ClubFinder()
         WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus

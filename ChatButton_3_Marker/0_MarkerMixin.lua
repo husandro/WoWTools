@@ -2,11 +2,7 @@ WoWTools_MarkerMixin={}
 
 
 function WoWTools_MarkerMixin:Set_Taget(unit, index)--设置,目标,标记
-    if index and CanBeRaidTarget(unit) then
-        local marker= GetRaidTargetIndex(unit)
-        if marker==index or (not marker and index==0) then
-            return
-        end
+    if index and CanBeRaidTarget(unit) and GetRaidTargetIndex(unit)~=index then
         SetRaidTarget(unit, index)
     end
 end

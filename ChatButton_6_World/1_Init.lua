@@ -211,7 +211,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().lastName= Save().lastName or P_Save.world
 
             WoWTools_WorldMixin.addName= '|A:tokens-WoW-generic-regular:0:0|a'..(WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL)
-            --WoWTools_WorldMixin.Button= WoWTools_ChatMixin:CreateButton('World', WoWTools_WorldMixin.addName)
 
             if WoWTools_ChatMixin:CreateButton('World', WoWTools_WorldMixin.addName) then
                 self:UnregisterEvent(event)

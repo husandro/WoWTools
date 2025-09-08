@@ -34,8 +34,7 @@ local function Init_Menu(self, root)
         return not Save().hideLeftList
     end, function()
         Save().hideLeftList= not Save().hideLeftList and true or nil
-        _G['WoWToolsAddOnsLeftFrame']:settings()
-        WoWTools_AddOnsMixin:Set_Left_Buttons()
+         WoWTools_AddOnsMixin:Init_Left_Buttons()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '左边列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT, ADDON_LIST))
@@ -47,7 +46,7 @@ local function Init_Menu(self, root)
         return Save().leftListScale or 1
     end, function(value)
         Save().leftListScale= value
-        _G['WoWToolsAddOnsLeftFrame']:settings()
+         WoWTools_AddOnsMixin:Init_Left_Buttons()
     end)
     sub:CreateDivider()
 
@@ -61,7 +60,7 @@ local function Init_Menu(self, root)
             nil,
             {SetValue=function()
                 Save().fast={}
-                WoWTools_AddOnsMixin:Set_Left_Buttons()
+                WoWTools_AddOnsMixin:Init_Left_Buttons()
             end}
         )
     end)
@@ -73,7 +72,7 @@ local function Init_Menu(self, root)
         return Save().load_list
     end, function()
         Save().load_list= not Save().load_list and true or nil
-        WoWTools_AddOnsMixin:Set_Load_Button()
+        WoWTools_AddOnsMixin:Init_Bottom_Buttons()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅限有图标' or format(LFG_LIST_CROSS_FACTION, EMBLEM_SYMBOL))
@@ -87,8 +86,7 @@ local function Init_Menu(self, root)
         return Save().load_list_top
     end, function()
         Save().load_list_top= not Save().load_list_top and true or nil
-        _G['WoWToolsAddOnsBottomFrame']:set_frame_point()
-        _G['WoWToolsAddOnsBottomFrame']:set_button_point()
+        WoWTools_AddOnsMixin:Init_Bottom_Buttons()
     end)
 
 --大小
@@ -98,7 +96,7 @@ local function Init_Menu(self, root)
             return Save().load_list_size or 22
         end, setValue=function(value)
             Save().load_list_size= value
-            _G['WoWToolsAddOnsBottomFrame']:set_button_point()
+            WoWTools_AddOnsMixin:Init_Bottom_Buttons()
         end,
         name=WoWTools_DataMixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
         minValue=8,
@@ -121,8 +119,7 @@ local function Init_Menu(self, root)
         return not Save().hideRightList
     end, function()
         Save().hideRightList= not Save().hideRightList and true or nil
-        _G['WoWToolsAddOnsRightFrame']:settings()
-        WoWTools_AddOnsMixin:Set_Right_Buttons()
+        WoWTools_AddOnsMixin:Init_Right_Buttons()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '右边列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT, ADDON_LIST ))
@@ -134,7 +131,7 @@ local function Init_Menu(self, root)
         return Save().rightListScale or 1
     end, function(value)
         Save().rightListScale= value
-        _G['WoWToolsAddOnsRightFrame']:settings()
+        WoWTools_AddOnsMixin:Init_Right_Buttons()
     end)
 
     sub:CreateDivider()
@@ -148,7 +145,7 @@ local function Init_Menu(self, root)
             nil,
             {SetValue=function()
                 Save().buttons={}
-                WoWTools_AddOnsMixin:Set_Right_Buttons()
+                WoWTools_AddOnsMixin:Init_Right_Buttons()
             end}
         )
     end)
@@ -165,40 +162,24 @@ local function Init_Menu(self, root)
         return not Save().disabledInfoPlus
     end, function()
         Save().disabledInfoPlus= not Save().disabledInfoPlus and true
-        print(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        if not Save().disabledInfoPlus then
+            print(
+                WoWTools_AddOnsMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
+        end
+        WoWTools_AddOnsMixin:Init_Info_Plus()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
---[[11.1.5无效
-if WoWTools_DataMixin.Player.husandro then
-    sub=root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '启用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, ENABLE),
-    function()
-        return Save().addonProfilerEnabled
-    end, function()
-        if not InCombatLockdown() then
-            Save().addonProfilerEnabled = not Save().addonProfilerEnabled  and true or nil
-            WoWTools_AddOnsMixin:Set_AddonProfiler()
-        end
-    end)
-    sub:SetEnabled(not isInCombat)
-    sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(
-            ( C_CVar.GetCVarInfo('addonProfilerEnabled') and '' or '|cff9e9e9e')
-            ..'CVar addonProfilerEnabled'
-        )
-    end)
-end]]
-
-    root:CreateDivider()
---重新加载UI
-    WoWTools_MenuMixin:Reload(root)
 
 --打开选项界面
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_AddOnsMixin.addName})
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_AddOnsMixin.addName})
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 
@@ -215,7 +196,9 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(AddonListCloseButton, {name='WoWToolAddOnsOptionsMenuButton'})
+    local btn= WoWTools_ButtonMixin:Menu(AddonListCloseButton, {
+        name='WoWToolAddOnsOptionsMenuButton'
+    })
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
 
 --提升 Strata

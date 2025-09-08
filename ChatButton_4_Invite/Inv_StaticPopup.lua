@@ -160,7 +160,7 @@ local function Init()
         if Save().InvNoFriend[InviterPlayerGUID] then
             Save().InvNoFriend[InviterPlayerGUID] =nil
 
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
+            print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
                 WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID, nil, false)
             )
@@ -172,7 +172,7 @@ local function Init()
             Save().InvNoFriend[InviterPlayerGUID] = (Save().InvNoFriend[InviterPlayerGUID] or 0)+ 1
             Save().InvNoFriendNum=Save().InvNoFriendNum+1
 
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
+            print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_DataMixin.onlyChinese and '添加' or ADD,
                 WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID, nil, false)
             )

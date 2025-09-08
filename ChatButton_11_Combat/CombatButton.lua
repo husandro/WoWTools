@@ -104,6 +104,6 @@ end
 
 
 function WoWTools_CombatMixin:Init_Button()
-    Init(self.CombatButton)
+    Init(WoWTools_ChatMixin:GetButtonForName('Combat'))
 end
 

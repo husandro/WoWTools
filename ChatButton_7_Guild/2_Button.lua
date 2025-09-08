@@ -233,5 +233,5 @@ end
 
 
 function WoWTools_GuildMixin:Init_Button()
-    Init(self.GuildButton)
+    Init(WoWTools_ChatMixin:GetButtonForName('Guild'))
 end

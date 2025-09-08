@@ -136,7 +136,6 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGIN')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
@@ -145,17 +144,15 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '邀请' or INVITE)
 
-            WoWTools_InviteMixin.InviteButton= WoWTools_ChatMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
-
-            if WoWTools_InviteMixin.InviteButton then
-                Init(WoWTools_InviteMixin.InviteButton)
-                self:UnregisterEvent(event)
-            else
-                self:UnregisterAllEvents()
+            if WoWTools_ChatMixin:CreateButton('Invite', WoWTools_InviteMixin.addName) then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                Init(WoWTools_ChatMixin:GetButtonForName('Invite'))
             end
+
+            self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_LOGIN' then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_InviteMixin:Init_Chanell()--设置,内容,频道, 邀请,事件
         WoWTools_InviteMixin:Init_Focus()--Shift+点击设置焦点
         WoWTools_InviteMixin:Init_Summon()

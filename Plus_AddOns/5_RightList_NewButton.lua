@@ -2,7 +2,7 @@
 local function Save()
     return WoWToolsSave['Plus_AddOns'] or {}
 end
-local NewButton
+
 
 
 
@@ -16,7 +16,7 @@ local NewButton
 
 --新建按钮
 local function Init()
-    NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {
+    local NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {
         size=26,
         atlas='communities-chat-icon-plus',
         name='WoWToolsAddonsNewButton'
@@ -210,7 +210,6 @@ local function Init()
             self.Text2:SetText(text)
         end
     end)
-    NewButton:SetShown(not Save().hideRightList)
 
 
 
@@ -219,7 +218,6 @@ local function Init()
     local label= WoWTools_LabelMixin:Create(NewButton)--插件，总数
     label:SetPoint('LEFT',AddonListEnableAllButton, 3,0)
     label:SetText(C_AddOns.GetNumAddOns())
-end
 
 
 
@@ -229,99 +227,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
---不禁用，本插件
-local function Init_NotDisabled_Button()
-    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size=18, icon='hide'})
-    btn:SetPoint('LEFT', AddonList.DisableAllButton, 'RIGHT', 2,0)
-    btn:SetAlpha(0.3)
-    function btn:set_tooltips()
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
-        GameTooltip:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', WoWTools_DataMixin.onlyChinese and '启用' or ENABLE, ''), WoWTools_TextMixin:GetYesNo(Save().enableAllButtn))
-        GameTooltip:Show()
-        self:SetAlpha(1)
-    end
-    btn:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(0.3)
-        AddonList.DisableAllButton:SetAlpha(1)
-        if self.findFrame then
-            if self.findFrame.check then
-                self.findFrame.check:set_leave_alpha()
-            end
-            self.findFrame=nil
-        end
-    end)
-    btn:SetScript('OnEnter', function(self)
-        self:set_tooltips()
-        AddonList.DisableAllButton:SetAlpha(0.3)
-        if not self.index then
-            for i=1, C_AddOns.GetNumAddOns() do
-                if C_AddOns.GetAddOnInfo(i)== 'WoWTools' then
-                    self.index=i
-                    break
-                end
-            end
-        end
-        if self.index then
-            AddonList.ScrollBox:ScrollToElementDataIndex(self.index)
-            for index, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
-                if frame:GetID()==index then
-                    if frame.check then
-                        frame.check:set_enter_alpha()
-                        self.findFrame=frame
-                    end
-                    break
-                end
-            end
-        end
-    end)
-    function btn:set_icon()
-        if Save().enableAllButtn then
-            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-        else
-            self:SetNormalAtlas('talents-button-reset')
-        end
-    end
-    btn:SetScript('OnClick', function(self)
-        Save().enableAllButtn= not Save().enableAllButtn and true or nil
-        self:set_icon()
-        self:set_tooltips()
-    end)
-
-    AddonList.DisableAllButton:HookScript('OnClick', function()
-        if Save().enableAllButtn then
-            C_AddOns.EnableAddOn('WoWTools')
-            WoWTools_DataMixin:Call(AddonList_Update)
-        end
-    end)
-    btn:set_icon()
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init_Refresh_Button()
     local btn= WoWTools_ButtonMixin:Cbtn(NewButton, {atlas='talents-button-undo', size=18})
     btn:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT', 2,0)
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -351,7 +256,35 @@ local function Init_Refresh_Button()
         end
         WoWTools_DataMixin:Call(AddonList_Update)
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+    Init=function()end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -359,6 +292,4 @@ end
 
 function WoWTools_AddOnsMixin:Init_NewButton_Button()
     Init()
-    Init_Refresh_Button()
-    Init_NotDisabled_Button()
 end

@@ -623,17 +623,16 @@ local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
-    if event=='ADDON_LOADED' then
-        if arg1== 'WoWTools' then
+    if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButton_Emoji']= WoWToolsSave['ChatButton_Emoji'] or P_Save
-            addName= '|TInterface\\Addons\\WoWTools\\Source\\Emojis\\Embarrass:0|tEmoji'
-            EmojiButton= WoWTools_ChatMixin:CreateButton('Emoji', addName)
+        WoWToolsSave['ChatButton_Emoji']= WoWToolsSave['ChatButton_Emoji'] or P_Save
+        addName= '|TInterface\\Addons\\WoWTools\\Source\\Emojis\\Embarrass:0|tEmoji'
+        EmojiButton= WoWTools_ChatMixin:CreateButton('Emoji', addName)
 
-            if EmojiButton then--禁用Chat Button
-                Init()
-            end
-            self:UnregisterEvent(event)
+        if EmojiButton then--禁用Chat Button
+            Init()
         end
+        self:UnregisterEvent(event)
     end
+    
 end)

@@ -226,5 +226,5 @@ end
 
 
 function WoWTools_CombatMixin:Init_SetupMenu()
-    self.CombatButton:SetupMenu(Init_Menu)
+    WoWTools_ChatMixin:GetButtonForName('Combat'):SetupMenu(Init_Menu)
 end

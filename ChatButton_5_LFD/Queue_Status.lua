@@ -34,43 +34,47 @@ local function get_InviteButton_Frame(index)
         end
 
 
-        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, atlas='common-icon-checkmark'})
+        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {
+            size=20,
+            atlas='common-icon-checkmark'
+        })
+
         frame.InviteButton:SetAllPoints()
-        --frame.InviteButton:SetPoint('TOPLEFT')
+
         frame.InviteButton.Size=20
 
-        frame.InviteButton:SetScript('OnClick', function(self2)
+        frame.InviteButton:SetScript('OnClick', function(self)
             if ( not IsInRaid(LE_PARTY_CATEGORY_HOME)
-                and (GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + self2:GetParent().numMembers + C_LFGList.GetNumInvitedApplicantMembers()) > (MAX_PARTY_MEMBERS + 1) )
+                and (GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + self:GetParent().numMembers + C_LFGList.GetNumInvitedApplicantMembers()) > (MAX_PARTY_MEMBERS + 1) )
             then
                 local dialog = StaticPopup_Show("LFG_LIST_INVITING_CONVERT_TO_RAID")
                 if ( dialog ) then
-                    dialog.data = self2:GetParent().applicantID
+                    dialog.data = self:GetParent().applicantID
                 end
             else
-                C_LFGList.InviteApplicant(self2:GetParent().applicantID)
+                C_LFGList.InviteApplicant(self:GetParent().applicantID)
             end
         end)
         frame.InviteButton:SetScript('OnLeave', GameTooltip_Hide)
-        frame.InviteButton:SetScript('OnEnter', function(self2)
-            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+        frame.InviteButton:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(self2:GetParent().applicantID, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '邀请' or INVITE))
-            GameTooltip:AddLine(self2:GetParent().tooltip)
+            GameTooltip:AddDoubleLine(self:GetParent().applicantID, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '邀请' or INVITE))
+            GameTooltip:AddLine(self:GetParent().tooltip)
             GameTooltip:Show()
         end)
 
         frame.ChatButton= WoWTools_ButtonMixin:Cbtn(frame, {size=size, atlas='transmog-icon-chat'})
         frame.ChatButton:SetPoint('BOTTOMLEFT', frame.InviteButton, 'BOTTOMRIGHT')
-        frame.ChatButton:SetScript('OnClick', function(self2)
-            WoWTools_ChatMixin:Say(nil, self2:GetParent().name)
+        frame.ChatButton:SetScript('OnClick', function(self)
+            WoWTools_ChatMixin:Say(nil, self:GetParent().name)
         end)
         frame.ChatButton:SetScript('OnLeave', GameTooltip_Hide)
-        frame.ChatButton:SetScript('OnEnter', function(self2)
-            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+        frame.ChatButton:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine( self2:GetParent().name, WoWTools_DataMixin.onlyChinese and '/密语' or SLASH_SMART_WHISPER2)
-            GameTooltip:AddLine(self2:GetParent().tooltip)
+            GameTooltip:AddDoubleLine( self:GetParent().name, WoWTools_DataMixin.onlyChinese and '/密语' or SLASH_SMART_WHISPER2)
+            GameTooltip:AddLine(self:GetParent().tooltip)
             GameTooltip:Show()
         end)
 
@@ -78,16 +82,15 @@ local function get_InviteButton_Frame(index)
 
         frame.DeclineButton= WoWTools_ButtonMixin:Cbtn(frame, {size=size, atlas='communities-icon-redx'})
         frame.DeclineButton:SetPoint('BOTTOMLEFT', frame.ChatButton, 'BOTTOMRIGHT')
-        frame.DeclineButton:SetScript('OnClick', function(self2)
-            --C_LFGList.RemoveApplicant(self2:GetParent().applicantID)
-            C_LFGList.DeclineApplicant(self2:GetParent().applicantID)
+        frame.DeclineButton:SetScript('OnClick', function(self)
+            C_LFGList.DeclineApplicant(self:GetParent().applicantID)
         end)
         frame.DeclineButton:SetScript('OnLeave', GameTooltip_Hide)
-        frame.DeclineButton:SetScript('OnEnter', function(self2)
-            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+        frame.DeclineButton:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine( self2:GetParent().applicantID, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE))
-            GameTooltip:AddLine(self2:GetParent().tooltip)
+            GameTooltip:AddDoubleLine( self:GetParent().applicantID, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE))
+            GameTooltip:AddLine(self:GetParent().tooltip)
             GameTooltip:Show()
         end)
 
@@ -606,9 +609,7 @@ local function Init()
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         else
-            MenuUtil.CreateContextMenu(self, function(...)
-                Init_Menu(...)
-            end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
         self:set_tooltip()
     end)

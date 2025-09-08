@@ -5,7 +5,7 @@ end
 
 local Buttons={}--方案
 local RightFrame
-
+local Name= 'WoWToolsAddOnsRightListButton'
 
 local function Is_Load(nameORindex)
     return C_AddOns.IsAddOnLoaded(nameORindex) or select(2, C_AddOns.IsAddOnLoadable(nameORindex))=='DEMAND_LOADED'
@@ -88,7 +88,7 @@ local function Init_Button_Menu(self, root)
             end}
         )
 
-       
+
     end, {name=self.name})
     sub:SetTooltip(function(tooltip, description)
         WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, description.data.tab)
@@ -171,8 +171,16 @@ end
 
 
 
-local function Create_Button(indexAdd)
-    local btn= WoWTools_ButtonMixin:Menu(RightFrame, {icon='hide'})
+local function Create_Button(index)
+    if _G[Name..index] then
+        return _G[Name..index]
+    end
+
+    local btn= WoWTools_ButtonMixin:Menu(RightFrame, {
+        name=Name..index,
+        icon='hide'
+    })
+
     btn:SetHighlightAtlas('auctionhouse-nav-button-secondary-select')
     btn.Text= WoWTools_LabelMixin:Create(btn, {size=14})
     btn.Text:SetPoint('LEFT', 2, 1)
@@ -203,8 +211,8 @@ local function Create_Button(indexAdd)
             all
         )
         self.isLoadAll= self.numAllLoad==all and load==all
-        self:SetWidth(btn.Text:GetWidth()+4)
-        self:SetHeight(btn.Text:GetHeight()+6)
+        self:SetWidth(self.Text:GetWidth()+4)
+        self:SetHeight(self.Text:GetHeight()+6)
         self:SetButtonState(self.isLoadAll and 'PUSHED' or 'NORMAL')
         self.loadTexture:SetShown(Save().load_Button_Name==self.name)
     end
@@ -227,13 +235,13 @@ local function Create_Button(indexAdd)
         GameTooltip:Hide()
     end)
 
-    if indexAdd==1 then
-        --btn:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 2, -12)
+    if index==1 then
         btn:SetPoint('TOPLEFT', RightFrame)
     else
-        btn:SetPoint('TOPLEFT', Buttons[indexAdd-1], 'BOTTOMLEFT')
+        btn:SetPoint('TOPLEFT', _G[Name..(index-1)], 'BOTTOMLEFT')
     end
-    Buttons[indexAdd]= btn
+
+    table.insert(Buttons, index)
 
     return btn
 end
@@ -248,7 +256,7 @@ local function Set_Right_Buttons()
     if not RightFrame:IsShown() then
         return
     end
-    
+
     local load, need, sel, some= 0, 0, 0, 0
     for i=1, C_AddOns.GetNumAddOns() do
         if select(2, C_AddOns.IsAddOnLoadable(i))=='DEMAND_LOADED' then--需要时加载
@@ -267,7 +275,7 @@ local function Set_Right_Buttons()
     end
     local index=1
     for name in pairs(Save().buttons) do
-        local btn= Buttons[index] or  Create_Button(index)
+        local btn= Create_Button(index)
         btn.name= name
         btn.numAllLoad= load+ need
         btn:set_settings()
@@ -281,12 +289,10 @@ local function Set_Right_Buttons()
     end
 
     for i= index, #Buttons do
-        local btn= Buttons[i]
-        if btn then
-            btn:SetShown(false)
-            btn.name= nil
-            btn.numAllLoad= nil
-        end
+        local btn= _G[Name..i]
+        btn:SetShown(false)
+        btn.name= nil
+        btn.numAllLoad= nil
     end
 end
 
@@ -294,18 +300,32 @@ end
 
 
 local function Init()
-    RightFrame= CreateFrame("Frame", 'WoWToolsAddOnsRightFrame', AddonList)
+    if Save().hideRightList then
+        return
+    end
+
+    RightFrame= CreateFrame("Frame", 'WoWToolsAddOnsRightFrame',  AddonListCloseButton)
+
+    do
+        WoWTools_AddOnsMixin:Init_NewButton_Button()
+    end
+
     RightFrame:SetSize(1,1)
     RightFrame:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 2, 0)
     function RightFrame:settings()
         self:SetScale(Save().rightListScale or 1)
-        self:SetShown(not Save().hideRightList)
-        if _G['WoWToolsAddonsNewButton'] then
-            _G['WoWToolsAddonsNewButton']:SetShown(not Save().hideRightList)
-        end
+        local show= not Save().hideRightList
+        self:SetShown(show)
+        _G['WoWToolsAddonsNewButton']:SetShown(show)
     end
+
     RightFrame:settings()
     Set_Right_Buttons()
+
+    Init=function()
+        RightFrame:settings()
+        Set_Right_Buttons()
+    end
 end
 
 
@@ -320,13 +340,8 @@ end
 
 
 
-
-
-function WoWTools_AddOnsMixin:Init_Right_Buttons()
-    Init()
-end
 
 --方案，按钮
-function WoWTools_AddOnsMixin:Set_Right_Buttons()
-    Set_Right_Buttons()
+function WoWTools_AddOnsMixin:Init_Right_Buttons()
+    Init()
 end

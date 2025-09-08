@@ -62,7 +62,7 @@ local function Init()
                         WoWTools_InviteMixin.InvPlateGuid[guid]=name--保存到已邀请列表
 
                         print(
-                            WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
+                            WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
                             WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL,
                             WoWTools_UnitMixin:GetLink(nil, guid, name, false))
                     end

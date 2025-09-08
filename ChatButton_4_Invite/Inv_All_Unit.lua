@@ -59,7 +59,7 @@ local function Inv_All_Unit()
                             )
                             if not raid and n +co>=5  then
                                 print(
-                                    WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
+                                    WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
                                     format(WoWTools_DataMixin.onlyChinese and '需求：%s' or PETITION_TITLE,
                                         '|cff00ff00'
                                         ..(WoWTools_DataMixin.onlyChinese and '转团' or CONVERT_TO_RAID)

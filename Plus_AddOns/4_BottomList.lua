@@ -3,6 +3,104 @@ local function Save()
     return WoWToolsSave['Plus_AddOns'] or {}
 end
 local BottomFrame--已加载，插件列表
+local Buttons={}
+local Name= 'WoWToolsAddOnsBottomListButton'
+
+
+
+
+
+
+
+local function Create_Button(index)
+    if _G[Name..index] then
+        return _G[Name..index]
+    end
+
+    local btn= WoWTools_ButtonMixin:Cbtn(BottomFrame, {
+        name=Name..index
+    })
+
+    btn.texture= btn:CreateTexture(nil, 'BORDER')
+    btn.texture:SetAllPoints(btn)
+    btn.texture2= btn:CreateTexture(nil, 'OVERLAY')
+    btn.texture2:SetPoint('TOPLEFT',-2,2)
+    btn.texture2:SetPoint('BOTTOMRIGHT', 2, -2)
+    btn.texture2:SetVertexColor(0,1,0)
+    btn.texture2:SetAtlas('Forge-ColorSwatchSelection')
+    
+    btn:SetScript('OnLeave', function(self)
+        if self.findFrame then
+            if self.findFrame.check then
+                self.findFrame.check:set_leave_alpha()
+            end
+            self.findFrame=nil
+        end
+        GameTooltip_Hide()
+    end)
+
+    btn:SetScript('OnEnter', function(self)
+        AddonTooltip:SetOwner(_G[Name..'1'], "ANCHOR_RIGHT")
+        AddonTooltip_Update(self)
+        AddonTooltip:AddLine(' ')
+        local addonIndex= self:GetID()
+        local character = UIDropDownMenu_GetSelectedValue(AddonList.Dropdown);
+        if ( character == true ) then
+            character = nil;
+        end
+        local loadable, reason = C_AddOns.IsAddOnLoadable(addonIndex, character)
+        local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character);
+        if ( not InGlue() ) then
+            enabled = (C_AddOns.GetAddOnEnableState(addonIndex, UnitName("player")) > Enum.AddOnEnableState.None);
+        else
+            enabled = (checkboxState > Enum.AddOnEnableState.None);
+        end
+        local col
+        if ( loadable or ( enabled and (reason == "DEP_DEMAND_LOADED" or reason == "DEMAND_LOADED") ) ) then
+            col='|cffffc600'
+        elseif ( enabled and reason ~= "DEP_DISABLED" ) then
+            col='|cffff1919'
+        else
+            col='|cff999999'
+        end
+        AddonTooltip:AddDoubleLine(
+            reason and col..(WoWTools_TextMixin:CN(_G["ADDON_"..reason]) or ' ') or ' ',
+            format('%s%s', WoWTools_DataMixin.onlyChinese and '查询' or WHO, WoWTools_DataMixin.Icon.left)
+        )
+
+        AddonTooltip:Show()
+        self:SetAlpha(1)
+    end)
+    btn:SetScript('OnClick', function(self)
+        local findIndex= self:GetID()
+        AddonList.ScrollBox:ScrollToElementDataIndex(findIndex)
+        for _, frame in pairs(AddonList.ScrollBox:GetFrames() or {}) do
+            if frame:GetID()==findIndex then
+                if frame.check then
+                    frame.check:set_enter_alpha()
+                    self.findFrame=frame
+                end
+                break
+            end
+        end
+    end)
+
+     table.insert(Buttons, index)
+
+    return btn
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14,6 +112,7 @@ local function Set_Load_Button()--LoadButtons
     local isShow= Save().load_list
 
     BottomFrame:SetShown(isShow)
+
     if not isShow then
         return
     end
@@ -36,93 +135,48 @@ local function Set_Load_Button()--LoadButtons
     end
 
     for i, info in pairs(newTab) do
-       local btn= BottomFrame.buttons[i]
-       if not btn then
-            btn= WoWTools_ButtonMixin:Cbtn(BottomFrame)
-            btn.texture= btn:CreateTexture(nil, 'BORDER')
-            btn.texture:SetAllPoints(btn)
-            btn.texture2= btn:CreateTexture(nil, 'OVERLAY')
-            btn.texture2:SetPoint('TOPLEFT',-2,2)
-            btn.texture2:SetPoint('BOTTOMRIGHT', 2, -2)
-            btn.texture2:SetVertexColor(0,1,0)
-            btn.texture2:SetAtlas('Forge-ColorSwatchSelection')
-            --btn.Text= WoWTools_LabelMixin:Create(btn)
-            --btn.Text:SetPoint('CENTER')
-            btn:SetScript('OnLeave', function(self)
-                if self.findFrame then
-                    if self.findFrame.check then
-                        self.findFrame.check:set_leave_alpha()
-                    end
-                    self.findFrame=nil
-                end
-                GameTooltip_Hide()
-            end)
-            btn:SetScript('OnEnter', function(self)
-                AddonTooltip:SetOwner(self:GetParent().buttons[1], "ANCHOR_RIGHT")
-                AddonTooltip_Update(self)
-                AddonTooltip:AddLine(' ')
-                local addonIndex= self:GetID()
-                local character = UIDropDownMenu_GetSelectedValue(AddonList.Dropdown);
-                if ( character == true ) then
-                    character = nil;
-                end
-                local loadable, reason = C_AddOns.IsAddOnLoadable(addonIndex, character)
-                local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character);
-                if ( not InGlue() ) then
-                    enabled = (C_AddOns.GetAddOnEnableState(addonIndex, UnitName("player")) > Enum.AddOnEnableState.None);
-                else
-                    enabled = (checkboxState > Enum.AddOnEnableState.None);
-                end
-                local col
-                if ( loadable or ( enabled and (reason == "DEP_DEMAND_LOADED" or reason == "DEMAND_LOADED") ) ) then
-                    col='|cffffc600'
-                elseif ( enabled and reason ~= "DEP_DISABLED" ) then
-                    col='|cffff1919'
-                else
-                    col='|cff999999'
-                end
-                AddonTooltip:AddDoubleLine(
-                    reason and col..(WoWTools_TextMixin:CN(_G["ADDON_"..reason]) or ' ') or ' ',
-                    format('%s%s', WoWTools_DataMixin.onlyChinese and '查询' or WHO, WoWTools_DataMixin.Icon.left)
-                )
+       local btn= Create_Button(i)
 
-                AddonTooltip:Show()
-                self:SetAlpha(1)
-            end)
-            btn:SetScript('OnClick', function(self)
-                local findIndex= self:GetID()
-                AddonList.ScrollBox:ScrollToElementDataIndex(findIndex)
-                for _, frame in pairs(AddonList.ScrollBox:GetFrames() or {}) do
-                    if frame:GetID()==findIndex then
-                        if frame.check then
-                            frame.check:set_enter_alpha()
-                            self.findFrame=frame
-                        end
-                        break
-                    end
-                end
-            end)
-            BottomFrame.buttons[i]= btn
-       end
+       btn:ClearAllPoints()
+        if Save().load_list_top then
+            btn:SetPoint('BOTTOMRIGHT', _G[Name..(i-1)] or BottomFrame, 'BOTTOMLEFT')
+        else
+            btn:SetPoint('TOPRIGHT', _G[Name..(i-1)] or BottomFrame, 'TOPLEFT')
+        end
 
        if info.texture then
             btn.texture:SetTexture(info.texture)
        elseif info.atlas then
             btn.texture:SetAtlas(info.atlas)
        end
+
        btn:SetID(info.index)
+
        btn.load= info.load
        btn.disabled= info.disabled
        btn.texture2:SetShown(not info.disabled)
        btn:SetShown(true)
     end
-    for i=#newTab +1,  #BottomFrame.buttons do
-        local btn= BottomFrame.buttons[i]
-        if btn then
-            btn:SetShown(false)
+
+    local num= math.modf((AddonList:GetWidth()+12)/Save().load_list_size)
+    num= num<4 and 4 or num
+
+    for i=num+1, #Buttons, num do
+        local btn= _G[Name..i]
+        btn:ClearAllPoints()
+        if Save().load_list_top then
+            btn:SetPoint('BOTTOMRIGHT', _G[Name..(i- num)], 'TOPRIGHT')
+        else
+            btn:SetPoint('TOPRIGHT', _G[Name..(i- num)], 'BOTTOMRIGHT')
         end
     end
-    BottomFrame:set_button_point()
+
+    for i=#newTab +1,  #Buttons do
+        local btn= _G[Name..i]
+        btn:SetShown(false)
+        btn.load= nil
+        btn.disabled= nil
+    end
 end
 
 
@@ -144,10 +198,16 @@ end
 
 
 local function Init()
-    BottomFrame= CreateFrame('Frame', 'WoWToolsAddOnsBottomFrame', _G['WoWToolAddOnsOptionsMenuButton'])
+    if not Save().load_list then
+        return
+    end
+
+    BottomFrame= CreateFrame('Frame', 'WoWToolsAddOnsBottomFrame', AddonListCloseButton)
 
     BottomFrame:SetSize(1,1)
-    function BottomFrame:set_frame_point()
+    BottomFrame:Hide()
+
+    function BottomFrame:set_point()
         BottomFrame:ClearAllPoints()
         if Save().load_list_top then
             BottomFrame:SetPoint('BOTTOMRIGHT', AddonList, 'TOPRIGHT', 1, 2)
@@ -155,40 +215,22 @@ local function Init()
             BottomFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
         end
     end
-    BottomFrame.buttons={}
-    function BottomFrame:set_button_point()
-        local last= self
-        for _, btn in pairs(self.buttons) do
-            btn:SetSize(Save().load_list_size, Save().load_list_size)
-            btn:ClearAllPoints()
-            if Save().load_list_top then
-                btn:SetPoint('BOTTOMRIGHT', last, 'BOTTOMLEFT')
-            else
-                btn:SetPoint('TOPRIGHT', last, 'TOPLEFT')
-            end
-            last=btn
-        end
-        local num= math.modf((AddonList:GetWidth()+12)/Save().load_list_size)
-        num= num<4 and 4 or num
-        for i=num+1, #self.buttons, num do
-            local btn= self.buttons[i]
-            btn:ClearAllPoints()
-            if Save().load_list_top then
-                btn:SetPoint('BOTTOMRIGHT', self.buttons[i- num], 'TOPRIGHT')
-            else
-                btn:SetPoint('TOPRIGHT', self.buttons[i- num], 'BOTTOMRIGHT')
-            end
-        end
-    end
+
+
     AddonList:HookScript('OnSizeChanged', function()
-        BottomFrame:set_button_point()
+        if BottomFrame:IsShown() then
+            Set_Load_Button()
+        end
     end)
-    --[[AddonList:HookScript('OnShow', function()
-        WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
+
+    BottomFrame:set_point()
+    Set_Load_Button()
+
+    Init=function()
+        BottomFrame:set_point()
         Set_Load_Button()
-    end)]]
-    BottomFrame:set_frame_point()
-    Set_Load_Button()
+        
+    end
 end
 
 
@@ -201,10 +243,6 @@ end
 
 
 
-function WoWTools_AddOnsMixin:Init_Load_Button()
+function WoWTools_AddOnsMixin:Init_Bottom_Buttons()
     Init()
-end
-
-function WoWTools_AddOnsMixin:Set_Load_Button()
-    Set_Load_Button()
 end

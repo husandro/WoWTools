@@ -431,5 +431,5 @@ end
 
 
 function WoWTools_GuildMixin:Init_Menu()
-    self.GuildButton:SetupMenu(Init_Menu)
+    WoWTools_ChatMixin:GetButtonForName('Guild'):SetupMenu(Init_Menu)
 end
