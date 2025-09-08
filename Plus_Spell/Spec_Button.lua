@@ -153,7 +153,6 @@ local function Create_Spec_Button(index)
     btn.SelectIcon:SetVertexColor(0,1,0)
 
     function btn:Set_Active()
-
         if self.isActive then
             WoWTools_LoadUIMixin:SpellBook(2)
             --if PlayerSpellsFrame then

@@ -6163,7 +6163,10 @@
         "UIFrameFlash",
         "TimeManagerAlarmFiredTexture",
         "ORDER_HALL_EQUIPMENT_SLOTS",
-        "EquipmentManager_EquipSet"
+        "EquipmentManager_EquipSet",
+        "FULL_PLAYER_NAME",
+        "VAS_REALM_LABEL",
+        "AdventureMapQuestChoiceDialog"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

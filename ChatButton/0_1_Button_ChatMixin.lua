@@ -1,6 +1,7 @@
 local AddList={}--插件表，所有，选项用 {name=name, tooltip=tooltip})
 local Buttons={}--存放所有, 按钮 {btn1, btn2,}
 local ChatButton
+local Name= 'WoWToolsChatMenuButton_'
 
 
 local function Save()
@@ -125,13 +126,13 @@ function WoWTools_ChatMixin:Init()
 
 
     function ChatButton:set_backgroud()
-        local btn1= _G[Buttons[1]]
+        local btn1= Buttons[1] and _G[Name..Buttons[1]]
         if not btn1 then
             self.Background:SetAlpha(0)
             return
         end
 
-        local btn2= _G[Buttons[#Buttons]]
+        local btn2= _G[Name..Buttons[#Buttons]]
 
 
 
@@ -204,10 +205,11 @@ local function Set_Button(btn)
 
         self:ClearAllPoints()
 
+        local parent=  Buttons[index-1] and _G[Name..Buttons[index-1]] or ChatButton
         if Save().isVertical then--方向, 竖
-            self:SetPoint('BOTTOM', _G[Buttons[index-1]] or ChatButton, 'TOP', 0, s)
+            self:SetPoint('BOTTOM', parent, 'TOP', 0, s)
         else
-            self:SetPoint('LEFT', _G[Buttons[index-1]] or ChatButton, 'RIGHT', s, 0)
+            self:SetPoint('LEFT', parent, 'RIGHT', s, 0)
         end
 
         local point= AnchorMenu[Save().anchorMenuIndex or 1]
@@ -245,9 +247,9 @@ function WoWTools_ChatMixin:CreateButton(name, addName)
         return
     end
 
-    local btn= CreateFrame("DropdownButton", 'WoWToolsChatMenuButton_'..name, ChatButton, nil, #Buttons+1)
+    local btn= CreateFrame("DropdownButton", Name..name, ChatButton, nil, #Buttons+1)
 
-    table.insert(Buttons, 'WoWToolsChatMenuButton_'..name)
+    table.insert(Buttons, name)
 
     Set_Button(btn)
 
@@ -278,12 +280,19 @@ end
 
 function WoWTools_ChatMixin:Set_All_Buttons()
     for _, name in pairs(Buttons) do
-        _G[name]:SetAllSettings()
+        _G[Name..name]:SetAllSettings()
     end
     ChatButton:set_backgroud()
     ChatButton:set_menu_anchor()
 end
 
 function WoWTools_ChatMixin:Open_SettingsPanel(root, name)
-    return WoWTools_MenuMixin:OpenOptions(root, {category=self.Category, name=name or self.addName})
+    return WoWTools_MenuMixin:OpenOptions(root, {
+        category=self.Category,
+        name=name or self.addName
+    })
+end
+
+function WoWTools_ChatMixin:GetButtonForName(name)
+    return _G[Name..name]
 end

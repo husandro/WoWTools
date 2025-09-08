@@ -376,6 +376,12 @@ local function Init()
             edit:SetFocus()
             edit:HighlightText()
         end,
+        OnHide= function(self)
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetText("")
+            edit:SetNumeric(false)
+            edit:ClearFocus()
+        end,
         OnAccept=function(self, data)
             local edit= self.editBox or self:GetEditBox()
             local num= edit:GetNumber()
@@ -408,11 +414,7 @@ local function Init()
                 select(2, C_Item.GetItemInfo(data.itemID)) or data.name or data.itemID
             )
         end,
-        OnHide= function(self)
-            local edit= self.editBox or self:GetEditBox()
-            edit:SetText("")
-            edit:ClearFocus()
-        end,
+
         EditBoxOnEscapePressed =function(s)
             s:GetParent():Hide()
         end,

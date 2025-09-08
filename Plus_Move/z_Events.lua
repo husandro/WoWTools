@@ -45,7 +45,9 @@ function WoWTools_MoveMixin.Events:Blizzard_GarrisonUI()
     self:Setup(GarrisonMissionFrame)--要塞任务
     self:Setup(GarrisonCapacitiveDisplayFrame)--要塞订单
     self:Setup(GarrisonLandingPage)--要塞报告
-    self:Setup(OrderHallMissionFrame)
+
+    self:Setup(OrderHallMissionFrame)--侦查地图
+    self:Setup(AdventureMapQuestChoiceDialog, {frame=OrderHallMissionFrame})
 end
 
 --任务选择
@@ -845,7 +847,7 @@ end
 
 
 function WoWTools_MoveMixin.Events:Blizzard_DurabilityFrame()
-    self:Setup(DurabilityFrame, {notSave=true, notSize=true})
+    self:Setup(DurabilityFrame, {notSave=true, notZoom=true})
 end
 
 function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()

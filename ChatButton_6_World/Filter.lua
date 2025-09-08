@@ -482,8 +482,8 @@ end
 
 
 function WoWTools_WorldMixin:Init_Filter_Menu(root)
-    Init_Filter_Menu(self.Button, root)--屏蔽刷屏, 菜单
-    Init_User_Filter_Menu(self.Button, root)--屏蔽刷屏, 自定义，菜单
+    Init_Filter_Menu(WoWTools_ChatMixin:GetButtonForName('World'), root)--屏蔽刷屏, 菜单
+    Init_User_Filter_Menu(nil, root)--屏蔽刷屏, 自定义，菜单
 end
 
 

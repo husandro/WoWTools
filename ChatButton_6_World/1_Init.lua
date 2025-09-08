@@ -27,7 +27,9 @@ end
 
 local function Init_Dialogs()
     StaticPopupDialogs['WoWToolsChatButtonWorldMyChatFilterNum']= {
-        text=WoWTools_WorldMixin.addName..'|n|n'..WoWTools_WorldMixin.Button:Get_myChatFilter_Text(),
+        text=WoWTools_WorldMixin.addName
+            ..'|n|n'
+            ..WoWTools_ChatMixin:GetButtonForName('World'):Get_myChatFilter_Text(),
         whileDead=true, hideOnEscape=true, exclusive=true,
         hasEditBox=true,
         button1= WoWTools_DataMixin.onlyChinese and '修改' or EDIT,
@@ -41,7 +43,10 @@ local function Init_Dialogs()
             local edit= self.editBox or self:GetEditBox()
             local num= edit:GetNumber()
             Save().myChatFilterNum= num
-            print(WoWTools_DataMixin.addName, WoWTools_WorldMixin.addName, WoWTools_WorldMixin.Button:Get_myChatFilter_Text())
+            print(
+            WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_ChatMixin:GetButtonForName('World'):Get_myChatFilter_Text()
+        )
         end,
         EditBoxOnTextChanged=function(self)
             local num= self:GetNumber() or 0
@@ -51,6 +56,7 @@ local function Init_Dialogs()
         end,
         OnHide=function(self)
             local edit= self.editBox or self:GetEditBox()
+            edit:SetNumeric(false)
             edit:ClearFocus()
         end,
         EditBoxOnEscapePressed = function(self)
@@ -60,7 +66,8 @@ local function Init_Dialogs()
 
     StaticPopupDialogs['WoWToolsChatWolrdAddPlayerNameChatFilter']= {
         text=(WoWTools_DataMixin.onlyChinese and '自定义屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, IGNORE))
-            ..'|n|n'..WoWTools_DataMixin.Player.Name_Realm..'|n',
+            ..'|n|n'..WoWTools_DataMixin.Player.Name_Realm..'|n'
+            ..(WoWTools_DataMixin.onlyChinese and '名字-服务器' or format(FULL_PLAYER_NAME, NAME, VAS_REALM_LABEL)),
         whileDead=true, hideOnEscape=true, exclusive=true,
         hasEditBox=true,
         button1= WoWTools_DataMixin.onlyChinese and '添加' or ADD,
@@ -80,7 +87,11 @@ local function Init_Dialogs()
                 text= text..'-'..WoWTools_DataMixin.Player.Realm
             end
             Save().userChatFilterTab[text]={num=0, guid=nil}
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName, WoWTools_DataMixin.onlyChinese and '添加' or ADD, text, WoWTools_UnitMixin:GetPlayerInfo(nil, nil, text, {reName=true, reRealm=true, reLink=true}))
+            print(
+                WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '添加' or ADD,
+                text,
+                WoWTools_UnitMixin:GetPlayerInfo(nil, nil, text, {reName=true, reRealm=true, reLink=true}))
         end,
         EditBoxOnTextChanged=function(self)
             local text= self:GetText() or ''
@@ -200,11 +211,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().lastName= Save().lastName or P_Save.world
 
             WoWTools_WorldMixin.addName= '|A:tokens-WoW-generic-regular:0:0|a'..(WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL)
-            WoWTools_WorldMixin.Button= WoWTools_ChatMixin:CreateButton('World', WoWTools_WorldMixin.addName)
+            --WoWTools_WorldMixin.Button= WoWTools_ChatMixin:CreateButton('World', WoWTools_WorldMixin.addName)
 
-            if WoWTools_WorldMixin.Button then--禁用Chat Button
+            if WoWTools_ChatMixin:CreateButton('World', WoWTools_WorldMixin.addName) then
                 self:UnregisterEvent(event)
-            else
+            else--禁用Chat Button
                 self:UnregisterAllEvents()
             end
 

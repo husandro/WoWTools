@@ -367,7 +367,9 @@ end})
             edit:SetNumber(data.GetValue() or 0)
         end,
         OnHide= function(s)
-            s.editBox:ClearFocus()
+            local edit= s.editBox or s:GetEditBox()
+            edit:SetNumeric(false)
+            edit:ClearFocus()
         end,
         OnAccept= function(self, data)
             local edit= self.editBox or self:GetEditBox()

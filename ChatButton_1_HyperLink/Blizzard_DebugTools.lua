@@ -21,6 +21,8 @@ local function Init()
     end
 
 
+
+
     btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {
         size=26,
         name='WoWToolsHyperLinkTableAttributeDisplayButton',
@@ -68,7 +70,11 @@ local function Init()
     end)
     edit:SetScript("OnKeyUp", function(s, key)
         if IsControlKeyDown() and key == "C" then
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+            print(
+                WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
+                s:GetText()
+            )
         end
     end)
 
@@ -96,19 +102,64 @@ local function Init()
         if not self.dataProviders then
             return
         end
-        
         for _, line in ipairs(self.lines) do
-            if line.GetAttributeSource then    
-            info= line:GetAttributeData()
-            for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
-            local displayerValue= info.displayerValue
-            local type= info.type
-                print(type(displayerValue))
-            --print(line:GetAttributeSource(), line:GetTableInspector(), line:GetAttributeData())
-            end
         end
     end)
+    WoWTools_DataMixin:Hook(TableAttributeLineReferenceMixin, 'Initialize', function(line, attributeSource, index, attributeData)
+                    local text
+            local focusedTable = attributeSource:GetFocusedTable()
+            if focusedTable and  focusedTable.GetObjectType then
+                text= focusedTable:GetObjectType()
+            end
+            if focusedTable.GetSize then
+                text= (text and text..' ' or '')
+                    ..format('%i|cffffffffx|r%i', focusedTable:GetSize())
+            end
+            print(text)
+    end)
 ]]
+
+    local objectTypeLabel= WoWTools_LabelMixin:Create(edit, {mouse=true})
+    objectTypeLabel:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    objectTypeLabel:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2..' :GetObjectType()'
+        )
+        GameTooltip:AddLine(WoWTools_DataMixin.Icon.icon2..' :GetSize()')
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
+    objectTypeLabel:SetPoint('BOTTOMLEFT', edit, 'TOPLEFT', 0, 2)
+
+
+
+
+    local function set_objectType(focusedTable)
+        local text
+        if focusedTable then
+            if focusedTable.GetObjectType then
+                text= focusedTable:GetObjectType()
+            end
+            if focusedTable.GetSize then
+                text= (text and text..' ' or '')
+                    ..format('%i|cffffffffx|r%i', focusedTable:GetSize())
+            end
+        end
+
+        objectTypeLabel:SetText(text or '')
+    end
+
+    hooksecurefunc(TableInspectorMixin, 'InspectTable', function(_, focusedTable)
+        set_objectType(focusedTable)
+    end)
+
+    hooksecurefunc(TableAttributeDisplay, 'InspectTable', function(_, focusedTable)--self.focusedTable= focusedTable
+        set_objectType(focusedTable)
+    end)
 
     Init=function()
         btn:SetShown(not Save().disabedFrameStackPlus)
@@ -118,7 +169,24 @@ end
 
 
 
-
+    --[[local iconLabel= WoWTools_LabelMixin:Create(edit, {mouse=true})
+    iconLabel:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    iconLabel:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2..'texture or atlas'..WoWTools_DataMixin.Icon.left
+        )
+        GameTooltip:Show()
+    end)
+    iconLabel:SetScript('OnMouseDown', function(self)
+        edit:SetText(self:GetText())
+    end)
+    iconLabel:SetPoint('LEFT', objectTypeLabel, 'RIGHT',4, 2)
+    iconLabel:SetPoint('BOTTOMRIGHT', edit, 'TOPRIGHT', 0, 2)
+    ]]
 
 
 

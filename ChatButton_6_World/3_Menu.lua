@@ -204,6 +204,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
@@ -250,5 +268,5 @@ end
 
 
 function WoWTools_WorldMixin:Init_Menu()
-    self.Button:SetupMenu(Init_Menu)
+    WoWTools_ChatMixin:GetButtonForName('World'):SetupMenu(Init_Menu)
 end

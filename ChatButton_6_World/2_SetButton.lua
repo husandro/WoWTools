@@ -210,5 +210,5 @@ end
 
 
 function WoWTools_WorldMixin:Set_Button()
-    Init(self.Button)
+    Init(WoWTools_ChatMixin:GetButtonForName('World'))
 end

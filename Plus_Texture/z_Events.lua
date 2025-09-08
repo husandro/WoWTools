@@ -591,17 +591,24 @@ end
 
 
 
-
 --要塞
+--GarrisonShipyardFrame--海军行动
+--GarrisonMissionFrame--要塞任务
 function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
-    self:SetButton(GarrisonLandingPage.CloseButton)
+--侦查地图
+    self:SetButton(OrderHallMissionFrame.CloseButton)
+    self:SetFrame(OrderHallMissionFrame, {alpha=0})
+    self:SetButton(AdventureMapQuestChoiceDialog.CloseButton)
+    --self:SetFrame(AdventureMapQuestChoiceDialog, {alpha=1, show={[AdventureMapQuestChoiceDialog.Background]=1}})
 
-    --要塞订单
+--要塞订单
     self:SetNineSlice(GarrisonCapacitiveDisplayFrame)
     self:SetAlphaColor(GarrisonCapacitiveDisplayFrameBg)
     self:HideTexture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
     self:HideTexture(GarrisonCapacitiveDisplayFrameInset.Bg)
 
+--要塞报告
+    self:SetButton(GarrisonLandingPage.CloseButton)
     self:HideFrame(GarrisonLandingPage)
     self:HideFrame(GarrisonLandingPage.Report)
 
@@ -625,8 +632,6 @@ function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
 
     self:Init_BGMenu_Frame(GarrisonLandingPage, {isNewButton=true})
 end
-
-
 
 
 

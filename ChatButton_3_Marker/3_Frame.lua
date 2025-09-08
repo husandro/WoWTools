@@ -41,7 +41,6 @@ local function Init()--设置标记, 框架
     end)
     btn:SetScript("OnDragStop", function(frame)
         local self= frame:GetParent()
-
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
@@ -329,7 +328,9 @@ local function Init()--设置标记, 框架
         GameTooltip:AddLine(WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS))
         GameTooltip:Show()
     end)
-    MakerFrame.countdown:SetScript('OnLeave', GameTooltip_Hide)
+    MakerFrame.countdown:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
     function MakerFrame.countdown:set_Event()
         if self:IsShown() then
             self:RegisterEvent('START_TIMER')
@@ -337,8 +338,12 @@ local function Init()--设置标记, 框架
             self:UnregisterAllEvents()
         end
     end
-    MakerFrame.countdown:SetScript('OnShow', MakerFrame.countdown.set_Event)
-    MakerFrame.countdown:SetScript('OnHide', MakerFrame.countdown.set_Event)
+    MakerFrame.countdown:SetScript('OnShow', function(self)
+        self:set_Event()
+    end)
+    MakerFrame.countdown:SetScript('OnHide', function(self)
+        self:set_Event()
+    end)
     MakerFrame.countdown:SetScript('OnEvent', function(self, event, timerType, timeRemaining, totalTime)
         if timerType==3 and event=='START_TIMER' then
             if totalTime==0 then
@@ -427,7 +432,9 @@ local function Init()--设置标记, 框架
         GameTooltip:AddLine(EMOTE127_CMD3, WoWTools_DataMixin.onlyChinese and '就绪' or READY)
         GameTooltip:Show()
     end)
-    MakerFrame.check:SetScript('OnLeave', GameTooltip_Hide)
+    MakerFrame.check:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
     function MakerFrame.check:set_Event()
         if self:IsShown() then
             self:RegisterEvent('READY_CHECK')
@@ -436,8 +443,12 @@ local function Init()--设置标记, 框架
             self:UnregisterAllEvents()
         end
     end
-    MakerFrame.check:SetScript('OnShow', MakerFrame.check.set_Event)
-    MakerFrame.check:SetScript('OnHide', MakerFrame.check.set_Event)
+    MakerFrame.check:SetScript('OnShow', function(self)
+        self:set_Event()
+    end)
+    MakerFrame.check:SetScript('OnHide', function(self)
+        self:set_Event()
+    end)
     MakerFrame.check:SetScript('OnEvent', function(self, event, _, arg2)
         WoWTools_CooldownMixin:Setup(self, nil, event=='READY_CHECK_FINISHED' and 0 or arg2 or 0, nil, true, true)--冷却条
     end)
@@ -471,7 +482,9 @@ local function Init()--设置标记, 框架
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '职责选定' or CRF_ROLE_POLL)
         GameTooltip:Show()
     end)
-    MakerFrame.RolePoll:SetScript('OnLeave', GameTooltip_Hide)--RolePollPopup
+    MakerFrame.RolePoll:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)--RolePollPopup
 
 
 
@@ -664,8 +677,12 @@ local function Init()--设置标记, 框架
                     self:set_Active()
                 end
             end)
-            btn:SetScript('OnShow', btn.set_Events)
-            btn:SetScript('OnHide', btn.set_Events)
+            btn:SetScript('OnShow', function(self)
+                self:set_Events()
+            end)
+            btn:SetScript('OnHide', function(self)
+                self:set_Events()
+            end)
             btn:set_Events()
         end
     end
@@ -732,7 +749,12 @@ local function Init()--设置标记, 框架
         btn:SetAttribute("type2", "worldmarker")
         btn:SetAttribute("marker2", index==0 and 0 or markerTab[index])
         btn:SetAttribute("action2", "clear")
-        btn:SetScript('OnLeave', function(self) GameTooltip:Hide() if self.index==0 then self:SetAlpha(0.5) end  end)
+        btn:SetScript('OnLeave', function(self)
+            GameTooltip:Hide()
+            if self.index==0 then
+                self:SetAlpha(0.5)
+            end
+        end)
         btn:SetScript('OnEnter', function(self)
             self:GetParent():GetParent():set_Tooltips_Point()
             GameTooltip:ClearLines()
@@ -766,9 +788,12 @@ local function Init()--设置标记, 框架
             btn.texture:SetColorTexture(col.r, col.g, col.b)
             btn.texture:SetAlpha(0.3)
 
-            btn.elapsed=2
+            btn:SetScript('OnHide', function(self)
+                self.elapsed= nil
+            end)
+
             btn:SetScript('OnUpdate', function(self, elapsed)
-                self.elapsed= self.elapsed +elapsed
+                self.elapsed= (self.elapsed or 2) +elapsed
                 if self.elapsed>2 then
                     self.elapsed=0
                     self:SetButtonState(IsRaidMarkerActive(self.index) and 'PUSHED' or 'NORMAL')
@@ -899,8 +924,15 @@ local function Init()--设置标记, 框架
             self:set_Shown()
         end
     end)
-    WoWTools_DataMixin:Hook('MovieFrame_PlayMovie', function() MakerFrame:set_Shown() end)
-    WoWTools_DataMixin:Hook('MovieFrame_OnMovieFinished', function() MakerFrame:set_Shown() end)
+
+    WoWTools_DataMixin:Hook('MovieFrame_PlayMovie', function()
+        MakerFrame:set_Shown()
+    end)
+
+    WoWTools_DataMixin:Hook('MovieFrame_OnMovieFinished', function()
+        MakerFrame:set_Shown()
+    end)
+
     MakerFrame:set_Event()
     MakerFrame:set_Shown()
 
