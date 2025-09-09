@@ -97,8 +97,6 @@ local function Create_Check(frame)
     frame.check.memoFrame= CreateFrame("Frame", nil, frame.check)
     frame.check.memoFrame.Text= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
     frame.check.memoFrame.Text:SetPoint('RIGHT', frame.check.Text, 'LEFT', -2, 0)
-    --frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
-    --frame.check.memoFrame.Text:SetAlpha(0.5)
     frame.check.memoFrame:Hide()
     frame.check.memoFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed = (self.elapsed or 1) + elapsed
@@ -190,6 +188,13 @@ end
 
 --列表，内容
 local function Init_Set_List(frame, addonIndex)
+    if not addonIndex then
+        if frame.check then
+            frame.check:SetShown(false)
+        end
+        return
+    end
+
     Create_Check(frame)
 
     local name, title= C_AddOns.GetAddOnInfo(addonIndex)
@@ -231,6 +236,7 @@ local function Init_Set_List(frame, addonIndex)
     end
     frame.Status:SetAlpha(0.5)
     frame.Enabled:SetAlpha(frame.Enabled:GetChecked() and 1 or 0)
+    frame.check:SetShown(true)
 end
 
 

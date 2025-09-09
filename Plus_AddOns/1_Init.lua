@@ -48,7 +48,7 @@ local P_Save={
     --hideLeftList
 
     --disabledInfoPlus=true,禁用plus
-    Bg_Alpha=0.5
+    Bg_Alpha=0.3
     --addonProfilerEnabled= true,--启用，CPU分析功能,默认开启
 }
 

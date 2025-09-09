@@ -28,7 +28,7 @@ local function Create_Button(index)
     btn.texture2:SetPoint('BOTTOMRIGHT', 2, -2)
     btn.texture2:SetVertexColor(0,1,0)
     btn.texture2:SetAtlas('Forge-ColorSwatchSelection')
-    
+
     btn:SetScript('OnLeave', function(self)
         if self.findFrame then
             if self.findFrame.check then
@@ -137,6 +137,8 @@ local function Set_Load_Button()--LoadButtons
         end
     end
 
+
+
     for i, info in pairs(newTab) do
        local btn= Create_Button(i)
 
@@ -166,17 +168,20 @@ local function Set_Load_Button()--LoadButtons
     local num= math.modf((AddonList:GetWidth()+12)/size)
     num= num<4 and 4 or num
 
-    for i=num+1, #Buttons, num do
+    local newTabNum= #newTab
+
+    for i=num+1, newTabNum, num do
         local btn= _G[Name..i]
         btn:ClearAllPoints()
         if toTop then
-            btn:SetPoint('BOTTOMRIGHT', _G[Name..(i- num)], 'TOPRIGHT')
+            btn:SetPoint('BOTTOMRIGHT', _G[Name..(i-1)], 'TOPRIGHT')
         else
-            btn:SetPoint('TOPRIGHT', _G[Name..(i- num)], 'BOTTOMRIGHT')
+            btn:SetPoint('TOPRIGHT', _G[Name..(i-1)], 'BOTTOMRIGHT')
         end
     end
 
-    for i=#newTab +1,  #Buttons do
+
+    for i=newTabNum +1,  #Buttons do
         local btn= _G[Name..i]
         btn:SetShown(false)
         btn.load= nil
@@ -212,7 +217,7 @@ local function Init()
     BottomFrame:SetSize(1,1)
     BottomFrame:Hide()
 
-    function BottomFrame:set_point()
+    function BottomFrame:setting()
         BottomFrame:ClearAllPoints()
         if Save().load_list_top then
             BottomFrame:SetPoint('BOTTOMRIGHT', AddonList, 'TOPRIGHT', 1, 2)
@@ -228,13 +233,13 @@ local function Init()
         end
     end)
 
-    BottomFrame:set_point()
+    BottomFrame:setting()
     Set_Load_Button()
 
     Init=function()
-        BottomFrame:set_point()
+        BottomFrame:setting()
         Set_Load_Button()
-        
+
     end
 end
 

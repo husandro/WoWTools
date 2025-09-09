@@ -252,6 +252,13 @@ end
 
 
 
+
+
+
+
+
+
+
 local function Set_Right_Buttons()
     if not RightFrame:IsShown() then
         return
@@ -274,19 +281,27 @@ local function Set_Right_Buttons()
         end
     end
     local index=1
+    local w=0
     for name in pairs(Save().buttons) do
         local btn= Create_Button(index)
         btn.name= name
         btn.numAllLoad= load+ need
         btn:set_settings()
         btn:SetShown(true)
+
+        w= math.max(btn:GetWidth()+2, w)
+        RightFrame.Background:SetPoint('BOTTOM', btn, 0, -2)
+
         index= index+1
     end
 
-    if _G['WoWToolsAddonsNewButton'] then
-        _G['WoWToolsAddonsNewButton'].Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', WoWTools_DataMixin.Icon.Player, some) or '')
-        _G['WoWToolsAddonsNewButton'].Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
-    end
+    RightFrame.Background:SetWidth(w)
+
+    _G['WoWToolsAddonsNewButton'].Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', WoWTools_DataMixin.Icon.Player, some) or '')
+    _G['WoWToolsAddonsNewButton'].Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
+
+
+
 
     for i= index, #Buttons do
         local btn= _G[Name..i]
@@ -295,6 +310,12 @@ local function Set_Right_Buttons()
         btn.numAllLoad= nil
     end
 end
+
+
+
+
+
+
 
 
 
@@ -312,11 +333,16 @@ local function Init()
 
     RightFrame:SetSize(1,1)
     RightFrame:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 2, 0)
+
+    RightFrame.Background= RightFrame:CreateTexture(nil, 'BACKGROUND')
+    RightFrame.Background:SetPoint('TOPLEFT', RightFrame, -2, 0)
+
     function RightFrame:settings()
-        self:SetScale(Save().rightListScale or 1)
         local show= not Save().hideRightList
+        self:SetScale(Save().rightListScale or 1)
         self:SetShown(show)
         _G['WoWToolsAddonsNewButton']:SetShown(show)
+        self.Background:SetColorTexture(0,0,0, Save().Bg_Alpha or 0.3)
     end
 
     RightFrame:settings()

@@ -21,7 +21,6 @@ local function Init()
         atlas='communities-chat-icon-plus',
         name='WoWToolsAddonsNewButton'
     })
-    --WoWTools_AddOnsMixin.NewButton= NewButton
 
 
     NewButton:SetPoint('TOPRIGHT', -2, -28)

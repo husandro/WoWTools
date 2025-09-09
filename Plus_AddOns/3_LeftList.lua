@@ -196,6 +196,7 @@ end
 
 
 
+--hooksecurefunc(AddonListEntryMixin, 'OnLoad', function()
 
 
 
@@ -206,15 +207,15 @@ local function Init()
 
     LeftFrame= CreateFrame("Frame", 'WoWToolsAddOnsLeftFrame', AddonListCloseButton)
     LeftFrame:SetSize(1,1)
-    LeftFrame:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT')
+    LeftFrame:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT', 0, -3)
 
     LeftFrame.Background= LeftFrame:CreateTexture(nil, 'BACKGROUND')
-    LeftFrame.Background:SetPoint('TOPRIGHT', LeftFrame, 2, 2)
+    LeftFrame.Background:SetPoint('TOPRIGHT', LeftFrame, 2, 0)
 
     function LeftFrame:settings()
         self:SetScale(Save().leftListScale or 1)
         self:SetShown(not Save().hideLeftList)
-        self.Background:SetColorTexture(0,0,0, Save().Bg_Alpha or 0.5)
+        self.Background:SetColorTexture(0,0,0, Save().Bg_Alpha or 0.3)
     end
 
     LeftFrame:settings()
@@ -224,11 +225,25 @@ local function Init()
         Set_Left_Buttons()
     end)
 
+
+    Menu.ModifyMenu("MENU_ADDON_LIST_ENTRY", function(self, root, desc)
+        local data= self.treeNode:GetData()
+        local isAddon = data.addonIndex
+		local hasChildren = #self.treeNode.nodes > 0
+        
+        info= data
+        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+    end)
+
     Init= function()
         LeftFrame:settings()
         Set_Left_Buttons()
     end
 
+
+
+    
+    
 end
 
 
