@@ -61,10 +61,6 @@ end
 
 
 local function Create_Check(frame)
-    if frame.check then
-        return
-    end
-
     frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 
     frame.check:SetSize(20,20)--Fast，选项
@@ -187,15 +183,17 @@ end
 
 
 --列表，内容
-local function Init_Set_List(frame, addonIndex)
+local function Init_Set_List(self, addonIndex)
     if not addonIndex then
-        if frame.check then
-            frame.check:SetShown(false)
+        if self.check then
+            self.check:SetShown(false)
         end
         return
     end
 
-    Create_Check(frame)
+    if not self.check then
+        Create_Check(self)
+    end
 
     local name, title= C_AddOns.GetAddOnInfo(addonIndex)
     local isChecked= Save().fast[name] and true or false
@@ -207,36 +205,36 @@ local function Init_Set_List(frame, addonIndex)
     local iconAtlas = C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas")
 
     if not iconTexture and not iconAtlas then--去掉，没有图标，提示
-       frame.Title:SetText(title or name)
+       self.Title:SetText(title or name)
     end
 
-    frame.check:SetID(addonIndex)
-    frame.check:SetCheckedTexture(iconTexture or 'orderhalltalents-done-glow')
-    frame.check.name= name
-    frame.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or false
-    frame.check:SetChecked(isChecked)--fast
-    frame.check:SetAlpha(isChecked and 1 or 0.1)
+    self.check:SetID(addonIndex)
+    self.check:SetCheckedTexture(iconTexture or 'orderhalltalents-done-glow')
+    self.check.name= name
+    self.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or false
+    self.check:SetChecked(isChecked)--fast
+    self.check:SetAlpha(isChecked and 1 or 0.1)
 
-    frame.check.Text:SetText(addonIndex or '')--索引
-    frame.check.memoFrame:SetID(addonIndex)
-    frame.check.memoFrame.name=name
-    frame.check.memoFrame:SetShown(C_AddOns.IsAddOnLoaded(addonIndex))
+    self.check.Text:SetText(addonIndex or '')--索引
+    self.check.memoFrame:SetID(addonIndex)
+    self.check.memoFrame.name=name
+    self.check.memoFrame:SetShown(C_AddOns.IsAddOnLoaded(addonIndex))
 
 
-    if frame.check.isDependencies then--依赖
-        frame.check.select:SetVertexColor(0,1,0)
-        frame.check.Text:SetTextColor(0.5,0.5,0.5)
-        frame.check.Text:SetAlpha(0.3)
-        frame.check.dep:SetShown(false)
+    if self.check.isDependencies then--依赖
+        self.check.select:SetVertexColor(0,1,0)
+        self.check.Text:SetTextColor(0.5,0.5,0.5)
+        self.check.Text:SetAlpha(0.3)
+        self.check.dep:SetShown(false)
     else
-        frame.check.select:SetVertexColor(1,1,1)
-        frame.check.Text:SetTextColor(1, 0.82, 0)
-        frame.check.Text:SetAlpha(1)
-        frame.check.dep:SetShown(true)
+        self.check.select:SetVertexColor(1,1,1)
+        self.check.Text:SetTextColor(1, 0.82, 0)
+        self.check.Text:SetAlpha(1)
+        self.check.dep:SetShown(true)
     end
-    frame.Status:SetAlpha(0.5)
-    frame.Enabled:SetAlpha(frame.Enabled:GetChecked() and 1 or 0)
-    frame.check:SetShown(true)
+    self.Status:SetAlpha(0.5)
+    self.Enabled:SetAlpha(self.Enabled:GetChecked() and 1 or 0)
+    self.check:SetShown(true)
 end
 
 
@@ -266,9 +264,9 @@ local function Init()
         Init_Set_List(entry, addonIndex)--列表，内容
     end)
 
-    WoWTools_DataMixin:Hook('AddonTooltip_Update', function(frame)
+    WoWTools_DataMixin:Hook('AddonTooltip_Update', function(self)
         --WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
-        local index= frame:GetID()
+        local index= self:GetID()
         local va= WoWTools_AddOnsMixin:Get_MenoryValue(index, true)
         if va then
             local iconTexture = C_AddOns.GetAddOnMetadata(index, "IconTexture")

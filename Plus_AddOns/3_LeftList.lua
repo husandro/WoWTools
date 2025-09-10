@@ -15,11 +15,6 @@ local Name= 'WoWToolsAddOnsLeftListButton'
 
 
 local function Create_Fast_Button(index)
-
-    if _G[Name..index] then
-        return _G[Name..index]
-    end
-
     local btn= WoWTools_ButtonMixin:Cbtn(LeftFrame, {
         size=23,
         name=Name..index,
@@ -166,7 +161,7 @@ local function Set_Left_Buttons()
     local btn
     local w=0
     for i, info in pairs(newTab) do
-        btn= Create_Fast_Button(i)
+        btn= _G[Name..i] or Create_Fast_Button(i)
         btn.name= info.name
         btn:SetID(math.min(i, max))
         btn:settings()
@@ -177,7 +172,7 @@ local function Set_Left_Buttons()
     if btn then
         LeftFrame.Background:SetPoint('BOTTOMLEFT', btn, -2-w, -2)
     end
-    LeftFrame.Background:SetShown(btn)
+    LeftFrame.Background:SetShown(btn and true or false)
 
     for i= #newTab +1, #Buttons do
         btn= _G[Name..i]
@@ -226,12 +221,13 @@ local function Init()
     end)
 
 
-    Menu.ModifyMenu("MENU_ADDON_LIST_ENTRY", function(self, root, desc)
-        local data= self.treeNode:GetData()
-        local isAddon = data.addonIndex
-		local hasChildren = #self.treeNode.nodes > 0
+    Menu.ModifyMenu("MENU_ADDON_LIST_ENTRY", function(self, root, desc, menu)
+        info= menu
+        --local data= self.treeNode:GetData()
+        --local isAddon = data.addonIndex
+		--local hasChildren = #self.treeNode.nodes > 0
         
-        info= data
+        --info= data
         for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
     end)
 
