@@ -155,7 +155,7 @@ local function Init()
 
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
-    Frame.view:SetElementInitializer('WoWToolsAffixTemplate', function(...) Initializer(...) end)
+    Frame.view:SetElementInitializer('WoWToolsChallengeAffixTemplate', function(...) Initializer(...) end)
 
 
 

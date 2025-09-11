@@ -53,6 +53,10 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Mixin\SetTooltip_Faction.lua
 0_Mixin\PanelMixin.lua
 
+##模板
+z_Template\PlayerFrame.xml
+z_Template\ChallengeAffix.xml
+
 0_Panel.lua
 1_WoWItemList.lua
 0_Mixin\0_z_DataMixn_NeedUpdate.lua
@@ -135,7 +139,6 @@ Plus_Texture\z_SharedXML.lua
 
 
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
-Plus_Item\0_PlayerFrameTemplate.xml
 Plus_Item\0_ItemMixin.lua
 Plus_Item\0_SetupInfo.lua
 Plus_Item\1_Init.lua
@@ -406,7 +409,6 @@ Plus_Encounter\z_UI.lua
 
 
 ##史诗钥石地下城, 挑战增强
-Plus_Challenge\0_AffixTemplate.xml
 Plus_Challenge\0_ChallengeMixin.lua
 Plus_Challenge\1_Init.lua
 Plus_Challenge\ChallengesUI_Info.lua

@@ -3,7 +3,7 @@
 https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
 
 
-<Frame name="WoWToolsAffixTemplate" virtual="true">
+<Frame name="WoWToolsChallengeAffixTemplate" virtual="true">
     <Size x="0" y="58"/>
     <Anchors>
         <Anchor point="LEFT"/>
