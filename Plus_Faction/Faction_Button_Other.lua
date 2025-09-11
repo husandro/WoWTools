@@ -87,10 +87,14 @@ end
 
 
 local function Init()
-	local P_Update= ReputationFrame.Update
+	--local P_Update= ReputationFrame.Update
 
-	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_FactionMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
-    WoWTools_FactionMixin.down= down
+	local down= WoWTools_ButtonMixin:Cbtn(_G['WoWToolsFactionMenuButton'], {
+		size=22,
+		atlas='NPE_ArrowDown',
+		name='WoWToolsFactionListExpandButton'
+	})
+    
 	down:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-2,0)
 	down:SetScript("OnClick", function()
 		for index=C_Reputation.GetNumFactions(), 1, -1 do
@@ -193,7 +197,7 @@ local function Init()
 	end)
 
 	EditBox.clearButton:SetScript('OnClick', function(self)
-		ReputationFrame.Update= P_Update
+		ReputationFrame.Update= ReputationFrameMixin.Update
 		ReputationFrame:Update()
 		EditBox:SetText('')
 		EditBox:ClearFocus()

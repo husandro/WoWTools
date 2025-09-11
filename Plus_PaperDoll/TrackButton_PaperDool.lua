@@ -3,7 +3,8 @@ local function Save()
 end
 local TrackButton
 local EquipButton
-local Buttons={}--添加装备管理按钮
+local NumButton=0--添加装备管理按钮
+local Name='WoWToolsEquipSetButton'
 local addName
 
 
@@ -115,7 +116,7 @@ end
 
 
 local function Set_Point(button, index)
-    local btn= index==1 and TrackButton or Buttons[index-1]
+    local btn= index==1 and TrackButton or _G[Name..(index-1)]
     if Save().EquipmentH then
         button:SetPoint('LEFT', btn, 'RIGHT')
     else
@@ -137,7 +138,10 @@ end
 
 --建立，按钮
 local function Create_Button(index)
-    local btn=WoWTools_ButtonMixin:Cbtn(TrackButton, {size=22})
+    local btn=WoWTools_ButtonMixin:Cbtn(TrackButton, {
+        size=22,
+        name=Name..index
+    })
     btn.texture= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
     btn.texture:SetSize(28,28)
     btn.texture:SetPoint('CENTER')
@@ -203,7 +207,9 @@ local function Create_Button(index)
         self:SetAlpha((self.numItems==0 and not self.isEquipped) and 0.3 or 1)
     end
     btn:SetScript('OnEvent', btn.set_shown)
-    Buttons[index]=btn
+
+    NumButton= index
+
     return btn
 end
 
@@ -228,7 +234,7 @@ local function Init_buttons()
     for index, setID in pairs(setIDs) do
         local texture, _, isEquipped, numItems, _, _, numLost= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
 
-        local btn= Buttons[index] or Create_Button(index)
+        local btn= _G[Name..index] or Create_Button(index)
         if numItems==0 then
             btn:SetNormalAtlas('groupfinder-eye-highlight')
         else
@@ -254,11 +260,12 @@ local function Init_buttons()
         btn:set_alpha()
     end
 
-    for index= numIndex+1, #Buttons, 1 do
-        Buttons[index].setID=nil
-        Buttons[index].isEquipped=nil
-        Buttons[index].numItems=0
-        Buttons[index]:set_shown()
+    for index= numIndex+1, NumButton, 1 do
+        local btn= _G[Name..index]
+        btn.setID=nil
+        btn.isEquipped=nil
+        btn.numItems=0
+        btn:set_shown()
     end
 end
 
@@ -323,9 +330,10 @@ local function Init_TrackButton()--添加装备管理框
 
 --向右，向下
     function TrackButton:set_to_right()
-        for index, btn in pairs(Buttons) do
+        for i=1, NumButton do
+            local btn= _G[Name..i]
             btn:ClearAllPoints()
-            Set_Point(btn, index)--设置位置
+            Set_Point(btn, i)--设置位置
         end
         self:set_player_itemLevel()
     end

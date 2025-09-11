@@ -26,8 +26,8 @@ local function Init_Menu(self, root)
 		return Save().btn
 	end, function()
 		Save().btn= not Save().btn and true or nil
-		if WoWTools_FactionMixin.TrackButton then
-			WoWTools_FactionMixin.TrackButton:set_Shown()
+		if _G['WoWToolsFactionTrackMainButton'] then
+			_G['WoWToolsFactionTrackMainButton']:set_Shown()
 		else
 			WoWTools_FactionMixin:Init_TrackButton()--监视, 文本
 		end
@@ -41,8 +41,8 @@ local function Init_Menu(self, root)
 		return not Save().notAutoHideTrack
 	end, function()
 		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
-		if WoWTools_FactionMixin.TrackButton then
-			WoWTools_FactionMixin.TrackButton:set_Shown()
+		if _G['WoWToolsFactionTrackMainButton'] then
+			_G['WoWToolsFactionTrackMainButton']:set_Shown()
 		end
 	end)
 	sub2:SetTooltip(function(tooltip)
@@ -57,9 +57,9 @@ local function Init_Menu(self, root)
 	sub:CreateDivider()
 	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
-		if WoWTools_FactionMixin.TrackButton then
-			WoWTools_FactionMixin.TrackButton:ClearAllPoints()
-			WoWTools_FactionMixin.TrackButton:set_Point()
+		if _G['WoWToolsFactionTrackMainButton'] then
+			_G['WoWToolsFactionTrackMainButton']:ClearAllPoints()
+			_G['WoWToolsFactionTrackMainButton']:set_Point()
 		end
 		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
@@ -122,7 +122,7 @@ local function Init_Menu(self, root)
 	function()
 		return Save().factionUpdateTips
 	end, function()
-		Save().factionUpdateTips= not Save().factionUpdateTips and true or nil
+		Save().factionUpdateTips= not Save().factionUpdateTips and true or false
 		if Save().factionUpdateTips then
 			WoWTools_FactionMixin:Check_Chat_MSG()
 			print(FACTION_STANDING_INCREASED)
@@ -168,8 +168,10 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(ReputationFrame, {name='WoWTools_PlusReputationMenuButton'})
-	WoWTools_FactionMixin.Button= btn
+    local btn= WoWTools_ButtonMixin:Menu(ReputationFrame, {
+		name='WoWToolsFactionMenuButton'
+	})
+
 
     btn:SetupMenu(Init_Menu)
 
@@ -184,20 +186,22 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
-		WoWTools_FactionMixin:Set_TrackButton_Pushed(true)--TrackButton，提示
+		if _G['WoWToolsFactionTrackMainButton'] then
+			_G['WoWToolsFactionTrackMainButton']:SetButtonState('PUSHED')
+		end
 	end)
 
 	btn:SetScript('OnLeave', function()
 		GameTooltip:Hide()
-		WoWTools_FactionMixin:Set_TrackButton_Pushed(false)--TrackButton，提示
+		if _G['WoWToolsFactionTrackMainButton'] then
+			_G['WoWToolsFactionTrackMainButton']:SetButtonState("NORMAL")
+		end
 	end)
 
-	
 
 	function btn:settings()
-		if self.down then
-			local show= not WoWToolsSave['Plus_Faction'].notPlus
-			self.down:SetShown(show)
+		if _G['WoWToolsFactionListExpandButton'] then
+			_G['WoWToolsFactionListExpandButton']:SetShown(not Save().notPlus)
 		end
 	end
 
