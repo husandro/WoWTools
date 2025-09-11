@@ -120,26 +120,23 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetScrollBar(AchievementFrameCategories)
     WoWTools_DataMixin:Hook(AchievementCategoryTemplateMixin, 'OnLoad', function(f)
         self:SetAlphaColor(f.Button.Background, nil, nil, 0.5)
-        --f.Button.Background:SetAtlas('ChallengeMode-guild-background')
-        --f.Button.Background:SetTexture(0)
-        --f.Background:SetColorTexture(0,0,0,0.3)
     end)
 
 --成就，列表, 显示，按钮
     self:SetScrollBar(AchievementFrameAchievements)
-    self:HideFrame(AchievementFrameAchievements)--, {show={[AchievementFrameAchievements.Background]=true,}})
+    self:HideFrame(AchievementFrameAchievements)
     self:SetNineSlice(AchievementFrameAchievements)
     WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLoad', function(f)
         self:SetNineSlice(f)
     end)
 
     local function Set_AchievementTemplate(f, show)
-        local alpha= (f.completed and not f:IsSelected() and not show) and 0 or 1-- f.Highlight:IsShown()
+        local alpha= (f.completed and not f:IsSelected() and not show) and 0 or 1
         self:SetFrame(f, {alpha=alpha, notColor=true})
 --点数，外框
         f.Shield.Icon:SetAlpha(alpha)
     end
-    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'Init', function(f)--, data)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'Init', function(f)
         Set_AchievementTemplate(f, nil)
     end)
     WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnEnter', function(f)
@@ -157,9 +154,11 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetAlphaColor(AchievementFrameSummaryAchievementsHeaderHeader, nil, nil, 0.5)
     WoWTools_DataMixin:Hook('AchievementFrameSummaryAchievement_OnLoad', function(f)
         self:SetAlphaColor(f.Background, nil, true, 0)
+
         f:HookScript('OnLeave', function(f2)
-            self:SetAlphaColor(f.Background, nil, true, 0)
+            self:SetAlphaColor(f2.Background, nil, true, 0)
         end)
+
         self:SetNineSlice(f)
     end)
     WoWTools_DataMixin:Hook('AchievementFrameSummaryAchievement_OnEnter', function(f)
@@ -2048,8 +2047,6 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetFrame(PlayerSpellsFrame.SpellBookFrame.HelpPlateButton, {alpha=0.3})
 
     self:Init_BGMenu_Frame(PlayerSpellsFrame, {
-        --notAnims=true,
-        --isHook=true,
         settings=function(_, texture, alpha)
             PlayerSpellsFrame.SpecFrame.Background:SetAlpha(texture and 0 or alpha or 1)
             PlayerSpellsFrame.TalentsFrame.Background:SetAlpha(texture and 0 or alpha or 1)
@@ -2189,7 +2186,6 @@ function WoWTools_TextureMixin.Events:Blizzard_ArtifactUI()
     if ArtifactFrame.PerksTab then
         self:SetFrame(ArtifactFrame.PerksTab, {alpha=0})
         self:SetAlphaColor(ArtifactFrame.PerksTab.BackgroundBack, nil, nil, 0)
-        --self:SetFrame(ArtifactFrame.PerksTab.DisabledFrame, {alpha= 0.3})
 
         self:HideFrame(ArtifactFrame.PerksTab.Model)
     end
@@ -2234,46 +2230,6 @@ function WoWTools_TextureMixin.Events:Blizzard_RemixArtifactUI()
 
 end
 
---[[function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
-    WoWTools_DataMixin:Hook(HelpPlateButtonMixin, 'OnShow', function()
-  
-    end)
-end]]
 
 
 
-
-
-
-
-
---菜单
-function WoWTools_TextureMixin.Events:Blizzard_Menu()
---bar
-    WoWTools_DataMixin:Hook(MenuProxyMixin, 'OnLoad', function(menu)
-        self:SetScrollBar(menu)
-    end)
-
---外框
-    WoWTools_DataMixin:Hook(MenuStyle1Mixin, 'Generate', function(frame)
-        local icon= frame:GetRegions()
-        if icon and icon:GetObjectType()=="Texture" then
-            self:SetAlphaColor(icon, true)
-        end
-    end)
-
---横线
-    WoWTools_DataMixin:Hook(MenuVariants, 'CreateDivider', function(frame)--MenuVariants.lua
-        self:SetFrame(frame, {alpha=1})
-    end)
-
-    WoWTools_DataMixin:Hook(MenuVariants, 'CreateCheckbox', function(_, frame)
-        self:SetAlphaColor(frame.leftTexture1, true)
-    end)
-
-    WoWTools_DataMixin:Hook(MenuVariants, 'CreateRadio', function(_, frame)
-        self:SetAlphaColor(frame.leftTexture1, true)
-    end)
-
-    --UISliderTemplat
-end

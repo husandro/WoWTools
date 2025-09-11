@@ -1,3 +1,54 @@
+
+
+
+--菜单
+function WoWTools_TextureMixin.Events:Blizzard_Menu()
+--bar
+    WoWTools_DataMixin:Hook(MenuProxyMixin, 'OnLoad', function(menu)
+        self:SetScrollBar(menu)
+    end)
+
+--外框
+    WoWTools_DataMixin:Hook(MenuStyle1Mixin, 'Generate', function(frame)
+        local icon= frame:GetRegions()
+        if icon and icon:GetObjectType()=="Texture" then
+            self:SetAlphaColor(icon, true)
+        end
+    end)
+
+--横线
+    WoWTools_DataMixin:Hook(MenuVariants, 'CreateDivider', function(frame)--MenuVariants.lua
+        self:SetFrame(frame, {alpha=1})
+    end)
+
+    WoWTools_DataMixin:Hook(MenuVariants, 'CreateCheckbox', function(_, frame)
+        self:SetAlphaColor(frame.leftTexture1, true)
+    end)
+
+    WoWTools_DataMixin:Hook(MenuVariants, 'CreateRadio', function(_, frame)
+        self:SetAlphaColor(frame.leftTexture1, true)
+    end)
+
+    --UISliderTemplat
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
 --TabSystem/TabSystemTemplates.lua
     WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(btn)
@@ -63,10 +114,10 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
             frame.Slider:SetAlpha(alpha)
         end
     end)
-
+end
 
     --[[WoWTools_DataMixin:Hook(ScrollBarMixin, 'OnLoad', function(bar)
         self:SetScrollBar(bar)
     end)]]
-end
+
 
