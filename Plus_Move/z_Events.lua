@@ -823,8 +823,6 @@ end
 ]]
 
 
-
-
 --LFDRoleCheckPopup
 function WoWTools_MoveMixin.Events:Blizzard_StaticPopup()
     WoWTools_DataMixin:Hook('StaticPopup_SetUpPosition', function(dialog)

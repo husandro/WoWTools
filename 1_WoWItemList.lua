@@ -2114,7 +2114,7 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
     local name= tab.name
     local click= tab.click
     local tooltip= tab.tooltip
-    local type= tab.type--Item Bank Currency Money Time Instance Rare Worldboss
+    local t= tab.type--Item Bank Currency Money Time Instance Rare Worldboss
 
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
         name=name,
@@ -2124,7 +2124,7 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
 
     btn.click= click
     btn.tooltip= tooltip
-    btn.type= type
+    btn.type= t
 
     btn:SetScript('OnLeave', function()
         GameTooltip_Hide()
