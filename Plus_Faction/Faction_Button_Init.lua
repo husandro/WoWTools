@@ -51,11 +51,11 @@ local function Init_Menu(self, root)
 	sub:CreateDivider()
 	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
-		if _G['WoWToolsFactionTrackMainButton'] then
-			_G['WoWToolsFactionTrackMainButton']:ClearAllPoints()
-			_G['WoWToolsFactionTrackMainButton']:set_Point()
-		end
-		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+		WoWTools_FactionMixin:Init_TrackButton()
+		print(
+			WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName,
+			WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+		)
 	end)
 
 --指定

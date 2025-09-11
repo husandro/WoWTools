@@ -26,7 +26,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -52,9 +52,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				end
 			})
 
-			if Save().disabled then
-				self:UnregisterAllEvents()
-			else
+			if not Save().disabled then
+				self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 				if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
 					WoWTools_FactionMixin:Init_MajorFactionRenownFrame()--名望
 				end
@@ -76,7 +76,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			end
 		end
 
-    elseif event == 'PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event == 'PLAYER_ENTERING_WORLD' then
 		WoWTools_FactionMixin:Init_Button()
 		WoWTools_FactionMixin:Init_ScrollBox_Plus()
 		WoWTools_FactionMixin:Init_Chat_MSG()

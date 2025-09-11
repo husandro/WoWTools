@@ -3,8 +3,9 @@ local function Save()
     return WoWToolsSave['Plus_Faction']
 end
 
-local TrackButton
-local OnlyIcon
+local TrackButton, Frame, OnlyIcon
+local Name='WoWToolsFactionTrackButton'
+local NumButton= 0
 
 local function Set_TrackButton_Pushed(show, label)--TrackButton，提示
 	TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
@@ -138,7 +139,14 @@ end
 
 
 local function Crated_Button(index, last)
-    local btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size=14})
+
+    --[[local btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {
+		size=14,
+		name=Name..index,
+	})]]
+	local btn= CreateFrame("Button", Name..index, Frame, 'WoWToolsButtonTemplate')
+	btn:SetSize(16, 16)
+
     if Save().toTopTrack then
         btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
     else
@@ -170,7 +178,7 @@ local function Crated_Button(index, last)
 
     btn:set_text_point()
 
-    TrackButton.btn[index]=btn
+	NumButton= index
 
     return btn
 end
@@ -180,9 +188,17 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --设置 Text
 local function TrackButton_Settings()
-	if not TrackButton:IsShown() or not TrackButton.Frame:IsShown()  then
+	if not TrackButton:IsShown() or not Frame:IsShown()  then
 		return
 	end
 
@@ -206,7 +222,7 @@ local function TrackButton_Settings()
 
 	local last
 	for index, tab in pairs(faction) do
-		local btn= TrackButton.btn[index] or Crated_Button(index, last)
+		local btn= _G[Name..index] or Crated_Button(index, last)
 		btn:SetShown(true)
 		last=btn
 
@@ -226,8 +242,8 @@ local function TrackButton_Settings()
 		end
 	end
 
-	for index= #faction+1, #TrackButton.btn do
-		local btn=TrackButton.btn[index]
+	for index= #faction+1, NumButton do
+		local btn= _G[Name..index]
 		btn.text:SetText('')
 		btn:SetShown(false)
 		btn:SetNormalTexture(0)
@@ -293,9 +309,12 @@ local function Init_Menu(self, root)
 		return Save().toRightTrackText
 	end, function()
 		Save().toRightTrackText= not Save().toRightTrackText and true or false
-		for _, btn in pairs(self.btn) do
-			btn.text:ClearAllPoints()
-			btn:set_text_point()
+		for index=1, NumButton do
+			local btn= _G[Name..index]
+			if btn then
+				btn.text:ClearAllPoints()
+				btn:set_text_point()
+			end
 		end
 		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
@@ -308,16 +327,16 @@ local function Init_Menu(self, root)
 		return Save().toTopTrack
 	end, function()
 		Save().toTopTrack= not Save().toTopTrack and true or nil
-		local last
-		for index= 1, #self.btn do
-			local btn=self.btn[index]
-			btn:ClearAllPoints()
-			if Save().toTopTrack then
-				btn:SetPoint('BOTTOM', last or self, 'TOP')
-			else
-				btn:SetPoint('TOP', last or self, 'BOTTOM')
+		for index= 1, NumButton do
+			local btn=_G[Name..index]
+			if btn then
+				btn:ClearAllPoints()
+				if Save().toTopTrack then
+					btn:SetPoint('BOTTOM', _G[Name..(index-1)] or self, 'TOP')
+				else
+					btn:SetPoint('TOP', _G[Name..(index-1)] or self, 'BOTTOM')
+				end
 			end
-			last=btn
 		end
 		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
@@ -346,7 +365,7 @@ local function Init_Menu(self, root)
 		return Save().scaleTrackButton or 1
 	end, function(value)
 		Save().scaleTrackButton= value
-		self:set_Scale()
+		self:settings()
 	end)
 
 --FrameStrata    
@@ -411,10 +430,11 @@ local function Init()
 		return
 	end
 
-	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
+	--[[TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
 		size=23,
 		name='WoWToolsFactionTrackMainButton',
-	})
+	})]]
+	TrackButton= CreateFrame('Button', 'WoWToolsFactionTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
 
 
 	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
@@ -422,10 +442,9 @@ local function Init()
     TrackButton.texture:SetPoint('CENTER')
     TrackButton.texture:SetSize(12,10)
 
-	TrackButton.btn= {}
-	TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
-	TrackButton.Frame:SetPoint('BOTTOM')
-	TrackButton.Frame:SetSize(1,1)
+	Frame= CreateFrame('Frame', nil, TrackButton)
+	Frame:SetPoint('BOTTOM')
+	Frame:SetSize(1,1)
 
 	function TrackButton:set_Shown()
 		local hide= not Save().btn
@@ -438,27 +457,13 @@ local function Init()
 			)
 	   )
 	   	self:SetShown(not hide)
-		self.Frame:SetShown(not hide and Save().btnstr)
+		Frame:SetShown(not hide and Save().btnstr)
 		TrackButton_Settings()
 		self:set_Texture()
 	end
 
 
-	function TrackButton:set_Event()
-		if not Save().btn then
-			self:UnregisterAllEvents()
-		else
-			self:RegisterEvent('UPDATE_FACTION')
-			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-			self:RegisterEvent('PLAYER_ENTERING_WORLD')
-			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
-			self:RegisterEvent('PET_BATTLE_CLOSE')
-			self:RegisterEvent('PLAYER_REGEN_DISABLED')
-			self:RegisterEvent('PLAYER_REGEN_ENABLED')
-			self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-			self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
-		end
-	end
+
 
 	TrackButton:SetScript('OnEvent', function(self, event)
 		if event=='UPDATE_FACTION' then
@@ -476,14 +481,27 @@ local function Init()
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, WoWTools_DataMixin.Icon.left)
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
-		GameTooltip:AddLine(' ')
-		--GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+		GameTooltip:AddLine(' ')		
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
 		GameTooltip:Show()
 	end
 
-	function TrackButton:set_Scale()
-		self.Frame:SetScale(Save().scaleTrackButton or 1)
+	function TrackButton:settings()
+		Frame:SetScale(Save().scaleTrackButton or 1)
+
+		self:UnregisterAllEvents()
+		if Save().btn then
+			self:RegisterEvent('UPDATE_FACTION')
+			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
+			self:RegisterEvent('PLAYER_REGEN_DISABLED')
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
+			self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+			self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+		end
+
 	end
 
 	function TrackButton:set_Texture()
@@ -546,9 +564,8 @@ local function Init()
 	end)
 
 
-	TrackButton:set_Scale()
+	TrackButton:settings()
 	TrackButton:set_Point()
-	TrackButton:set_Event()
 	TrackButton:set_Shown()
 	TrackButton:set_Texture()
 	TrackButton:set_strata()
@@ -557,17 +574,27 @@ local function Init()
 
 
 	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnEnter', function(self)--角色栏,声望
-		for _, btn in pairs(TrackButton.btn) do
-			if self.elementData.factionID== btn.factionID then
-				btn:SetScale(2)
-			else
-				btn:SetScale(1)
+		local factionID= self.elementData and self.elementData.factionID
+		if not factionID then
+			return
+		end
+		for index= 1, NumButton do
+			local btn= _G[Name..index]
+			if btn then
+				if factionID== btn.factionID then
+					btn:SetScale(2)
+				else
+					btn:SetScale(1)
+				end
 			end
 		end
     end)
 	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnLeave', function()--角色栏,声望
-		for _, btn in pairs(TrackButton.btn) do
-			btn:SetScale(1)
+		for index= 1, NumButton do
+			local btn= _G[Name..index]
+			if btn then
+				btn:SetScale(1)
+			end
 		end
     end)
 
@@ -575,7 +602,12 @@ local function Init()
 		TrackButton_Settings()--更新, 监视, 文本
 	end)
 
-	Init=function()end
+	Init=function()
+		TrackButton:settings()
+		TrackButton:set_Shown()
+		TrackButton_Settings()
+		TrackButton:set_Point()
+	end
 end
 
 
