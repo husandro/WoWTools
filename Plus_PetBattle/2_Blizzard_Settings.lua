@@ -20,7 +20,6 @@ local function Init()
 
     local category
 
-
 --技能按钮
     WoWTools_PanelMixin:Check_Button({
         checkName= WoWTools_PetBattleMixin.addName6,
