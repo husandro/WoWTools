@@ -139,16 +139,13 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
         local scale= Save().itemSlotScale or 1
         for _, slot in pairs(WoWTools_PaperDollMixin.ItemButtons) do
             local btn= _G[slot]
-            if not btn.SetScale then
-                print(slot)
-            end
-            if btn and btn.SetScale and not WoWTools_FrameMixin:IsLocked(btn) then
+            if btn and not WoWTools_FrameMixin:IsLocked(btn) then
                 btn:SetScale(scale)
             end
         end
     end
 
-    if Save().itemSlotScale~=1 then
+    if Save().itemSlotScale and Save().itemSlotScale~=1 then
         settings()
     end
 
