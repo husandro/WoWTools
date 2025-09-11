@@ -191,7 +191,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     end
 
 --建立
-    local btn= CreateFrame(frameType, name, frame or UIParent, template, setID)
+    local btn= tab.btn or CreateFrame(frameType, name, frame or UIParent, template, setID)
 
 --设置 CheckButton
     if isCheck then

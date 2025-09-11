@@ -20,12 +20,10 @@ local function Set_Button_Highlight(petType)
     do
         for _, name in pairs(Buttons) do
             local btn= _G[Name..name]
-            if btn then
-                if btn.petTypeID==petType then
-                    btn:LockHighlight()
-                else
-                    btn:UnlockHighlight()
-                end
+            if btn.petTypeID==petType then
+                btn:LockHighlight()
+            else
+                btn:UnlockHighlight()
             end
         end
     end
@@ -145,7 +143,7 @@ local function Init_Buttons()
                 texture=weakHintsTexture,
                 size=25,
                 isType2=true,
-                name=WeakHintsName
+                name=Name..WeakHintsName
             })
             btn.weakHints:SetPoint('TOP', btn.indicatoDown, 'BOTTOM', 0, 2)
             Set_Button_Script(btn.weakHints, weakHintsIndex, WeakHintsName)
@@ -294,11 +292,11 @@ end
 
 --提示,类型
 local function Init(isShow)
-    if WoWToolsSave['Plus_PetBattle2'].TypeButton.disabled then
+    if Save().TypeButton.disabled then
         return
     end
 
-    TypeButton= WoWTools_ButtonMixin:Cbtn(nil, {
+    TypeButton= WoWTools_ButtonMixin:Cbtn(UIParent, {
         name='WoWToolsPetBattleTypeButton',
         size=23,
         isType2=true,
@@ -353,7 +351,7 @@ local function Init(isShow)
         if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
-            self:SetPoint('RIGHT',-400, 200)
+            self:SetPoint('RIGHT', -400, 200)
         end
     end
 
@@ -392,12 +390,6 @@ local function Init(isShow)
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().TypeButton.point={self:GetPoint(1)}
             Save().TypeButton.point[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
     TypeButton:SetScript("OnMouseUp", ResetCursor)
@@ -406,9 +398,7 @@ local function Init(isShow)
             if IsAltKeyDown() then
                 SetCursor('UI_MOVE_CURSOR')
             else
-                MenuUtil.CreateContextMenu(self, function(...)
-                    Init_Menu(...)
-                end)
+                MenuUtil.CreateContextMenu(self, Init_Menu)
             end
         elseif d=='LeftButton' then--显示，隐藏
             Save().TypeButton.hideFrame= not Save().TypeButton.hideFrame and true or nil
@@ -430,15 +420,12 @@ local function Init(isShow)
     end)
     TypeButton:SetScript('OnHide', function()
         for _, name in pairs(Buttons) do
-           _G[Name..name]:UnlockHighlight()
+            _G[Name..name]:UnlockHighlight()
         end
     end)
 
     TypeButton:SetScript('OnEvent', function(self, event)
         if event=='PET_BATTLE_CLOSE' then
-            --[[if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏
-                PetActionBar:SetShown(true)
-            end]]
             if not UnitAffectingCombat('player') then--UIParent.lua
                 local data= C_Spell.GetSpellCooldown(125439) or {}
                 if data.duration and data.duration<=2  or not data.duration then
@@ -451,15 +438,6 @@ local function Init(isShow)
         self:set_shown()
     end)
 
---HookScript
-    --[[PetBattlePrimaryUnitTooltip:HookScript('OnShow', function(self)
-        if self.petOwner and self.petIndex then
-            local petType= C_PetBattles.GetPetType(self.petOwner, self.petIndex)
-            if petType then
-                Set_Button_Highlight(petType)
-            end
-        end
-    end)]]
 
     WoWTools_DataMixin:Hook('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
         if self~=_G['PetBattlePrimaryUnitTooltip'] then

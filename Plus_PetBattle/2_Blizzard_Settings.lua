@@ -20,19 +20,6 @@ local function Init()
 
     local category
 
---宠物对战 Plus
---[[WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_PetBattleMixin.addName5,
-        GetValue= function() return not Save().Plus.disabled end,
-        SetValue= function()
-            Save().Plus.disabled = not Save().Plus.disabled and true or nil
-            if not WoWTools_PetBattleMixin:Set_Plus() then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName5, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
-            end
-        end,
-        layout= Layout,
-        category= Category,
-    })]]
 
 --技能按钮
     WoWTools_PanelMixin:Check_Button({

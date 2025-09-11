@@ -53,14 +53,6 @@ end
 
 
 
-local function Init()
-    WoWTools_PetBattleMixin:Set_TypeButton()--宠物，类型
-    WoWTools_PetBattleMixin:Init_AbilityButton()--宠物对战，技能按钮
-    WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
-    Init=function()end
-end
-
-
 
 
 
@@ -92,7 +84,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
 
             else
-                Init()
+                WoWTools_PetBattleMixin:Set_TypeButton()--宠物，类型
+                WoWTools_PetBattleMixin:Init_AbilityButton()--宠物对战，技能按钮
+                WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                     WoWTools_PetBattleMixin:Set_Options()
