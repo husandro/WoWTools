@@ -11,7 +11,7 @@ end
 
 
 local ArcheologyButton
-WoWTools_DataMixin:Load({id=87399, type='item'})
+--item=87399/修复的遗物
 
 
 
