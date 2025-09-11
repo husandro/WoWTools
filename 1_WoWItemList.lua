@@ -1820,7 +1820,6 @@ local function Init_List(showListType, isShow)
                     self.ItemTextures[name]= self:CreateTexture(nil, 'BACKGROUND', nil, 3)
                     self.ItemTextures[name]:SetSize(w, w)
                     self.ItemTextures[name]:SetAtlas(tab.atlas)
-                    --self.ItemTextures[name]:SetAlpha(0.5)
                     self.ItemTextures[name].Text= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, layer='BORDER'})
                     self.ItemTextures[name].Text:SetPoint('BOTTOMRIGHT', self.ItemTextures[name])
 
@@ -2106,25 +2105,28 @@ end
 
 
 
-
-
+--[[
+WoWTools_DataMixin:CreateWoWItemListButton(frame, {
+name='',
+btn.click= function(btn, d, func)end,
+btn.tooltip= tab.tooltip,-- func or text
+btn.type= tab.type,--Item Bank Currency Money Time Instance Rare Worldboss
+}
+]]
 function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
     tab= tab or {}
 
-    local name= tab.name
-    local click= tab.click
-    local tooltip= tab.tooltip
-    local t= tab.type--Item Bank Currency Money Time Instance Rare Worldboss
-
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
-        name=name,
+        name= tab.name,
         atlas='glues-characterSelect-iconShop-hover',
         size=23,
     })
 
-    btn.click= click
-    btn.tooltip= tooltip
-    btn.type= t
+    --local name= tab.name
+    btn.click= tab.click
+    btn.tooltip= tab.tooltip
+    btn.type= tab.type--Item Bank Currency Money Time Instance Rare Worldboss
+
 
     btn:SetScript('OnLeave', function()
         GameTooltip_Hide()
