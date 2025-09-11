@@ -279,8 +279,8 @@ local function Init()
 
 
 
-    
-    
+
+
 --不禁用，本插件
     local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size=18, icon='hide'})
     btn:SetPoint('LEFT', AddonList.DisableAllButton, 'RIGHT', 2,0)

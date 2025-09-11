@@ -124,7 +124,7 @@ local function Init()
         tooltip='|nSetParent(\'PlayerFrame\')|n|n'..WoWTools_PetBattleMixin.addName3,
         GetValue= function() return Save().ClickMoveButton.PlayerFrame end,
         SetValue= function()
-            Save().ClickMoveButton.PlayerFrame = not Save().ClickMoveButton.PlayerFrame and true or nil
+            Save().ClickMoveButton.PlayerFrame = not Save().ClickMoveButton.PlayerFrame and true or false
             WoWTools_PetBattleMixin:ClickToMove_Button()
         end,
         layout= Layout,
