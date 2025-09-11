@@ -352,9 +352,13 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
 --声望
     self:SetScrollBar(ReputationFrame)
     self:SetMenu(ReputationFrame.filterDropdown)
+
     self:SetFrame(ReputationFrame.ReputationDetailFrame.Border)
     self:SetButton(ReputationFrame.ReputationDetailFrame.CloseButton)
     self:SetAlphaColor(ReputationFrame.ReputationDetailFrame.Divider)
+
+    self:SetScrollBar(ReputationFrame.ReputationDetailFrame.ScrollingDescriptionScrollBar)
+
     WoWTools_DataMixin:Hook(ReputationFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
             return
