@@ -221,25 +221,13 @@ local function Init()
     end)
 
 
-    Menu.ModifyMenu("MENU_ADDON_LIST_ENTRY", function(self, root, desc, menu)
-        info= menu
-        --local data= self.treeNode:GetData()
-        --local isAddon = data.addonIndex
-		--local hasChildren = #self.treeNode.nodes > 0
-        
-        --info= data
-        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
-    end)
+    --Menu.ModifyMenu("MENU_ADDON_LIST_ENTRY", function(self, root, desc, menu)
+
 
     Init= function()
         LeftFrame:settings()
         Set_Left_Buttons()
     end
-
-
-
-    
-    
 end
 
 

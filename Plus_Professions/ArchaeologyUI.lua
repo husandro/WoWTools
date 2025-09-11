@@ -57,7 +57,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         end
 
         framGameTooltipButton:SetScript('OnClick', function(self)
-            Save().ArcheologySound= not Save().ArcheologySound and true or nil
+            Save().ArcheologySound= not Save().ArcheologySound and true or false
             self:set_atlas()
             self:set_event()
             self:set_tooltips()
