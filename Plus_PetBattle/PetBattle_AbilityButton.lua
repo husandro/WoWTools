@@ -7,7 +7,7 @@ end
 
 local Buttons={}--5*3 技能按钮
 local size= 52
-
+local Name= 'WoWToolsPetBattleAbilityButton_'
 
 --[[
 Enum.BattlePetOwner.Weather
@@ -958,7 +958,7 @@ end
 local function Init_Button(tab)
     local isEnemy, s, height
     local btn= WoWTools_ButtonMixin:Cbtn(PetBattleFrame, {
-        name='WoWTools'..tab.name..'AbilityButton',
+        name=Name..tab.name,
         atlas='summon-random-pet-icon_64',
         size=32,
         isType2=true,
@@ -1124,7 +1124,7 @@ local function Init_Button(tab)
         Set_Ability_Button(btn, index, isEnemy)
     end
 
-    table.insert(Buttons, btn)
+    table.insert(Buttons, tab.name)
 end
 
 
@@ -1224,8 +1224,8 @@ local function Init()
 
 
     Init=function()
-        for _, btn in pairs(Buttons) do
-            btn:Settings()
+        for _, name in pairs(Buttons) do
+            _G[Name..name]:Settings()
         end
         WoWTools_DataMixin:Call(PetBattleFrame_UpdateAllActionButtons, PetBattleFrame)
     end

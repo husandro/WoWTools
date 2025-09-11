@@ -5,7 +5,7 @@ end
 
 local TypeButton
 local Buttons={}
-
+local Name= 'WoWToolsPetBattleButton_'
 
 local IsInCheck
 local function Set_Button_Highlight(petType)
@@ -18,11 +18,14 @@ local function Set_Button_Highlight(petType)
     IsInCheck= true
 
     do
-        for _, btn in pairs(Buttons) do
-            if btn.petTypeID==petType then
-                btn:LockHighlight()
-            else
-                btn:UnlockHighlight()
+        for _, name in pairs(Buttons) do
+            local btn= _G[Name..name]
+            if btn then
+                if btn.petTypeID==petType then
+                    btn:LockHighlight()
+                else
+                    btn:UnlockHighlight()
+                end
             end
         end
     end
@@ -46,7 +49,7 @@ end
 
 
 
-local function Set_Button_Script(btn, petTypeID)
+local function Set_Button_Script(btn, petTypeID, name)
     btn.petTypeID= petTypeID
     btn.abilityID= PET_BATTLE_PET_TYPE_PASSIVES[petTypeID]
 
@@ -62,9 +65,6 @@ local function Set_Button_Script(btn, petTypeID)
     end)
     btn:SetScript('OnEnter', function(self)
         if self.abilityID then
-            --FloatingPetBattleAbilityTooltip:ClearAllPoints()
-            --FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", TypeButton, "TOPRIGHT");
-            --FloatingPetBattleAbility_Show(self.abilityID)
             PetBattleAbilityTooltip_SetAbilityByID(nil, nil, self.abilityID)
             PetBattleAbilityTooltip_Show("BOTTOMRIGHT", TypeButton, "TOPRIGHT")
         end
@@ -75,9 +75,8 @@ local function Set_Button_Script(btn, petTypeID)
         self:UnlockHighlight()
     end)
 
-    table.insert(Buttons, btn)
+    table.insert(Buttons, name)
 
-    --btn:GetHighlightTexture():SetVertexColor(0, 1, 0, 1)
     btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", -4, 1)
     btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0, -1)
 end
@@ -104,15 +103,18 @@ end
 local function Init_Buttons()
     TypeButton.frame:SetSize(1,1)
     TypeButton.frame:SetPoint('RIGHT')
+    
 
     for petType=1, C_PetJournal.GetNumPetTypes() do
+        local name= 'petType'..petType
         local btn= WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
             size=38,
             texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType],
             isType2=true,
+            name= Name..name
         })
         btn:SetPoint('LEFT', TypeButton, 'RIGHT', (petType-1)*34+2, 0)
-        Set_Button_Script(btn, petType)
+        Set_Button_Script(btn, petType, name)
 
         local strongTexture, weakHintsTexture, stringIndex, weakHintsIndex= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)
         if strongTexture then
@@ -121,13 +123,16 @@ local function Init_Buttons()
             btn.indicatoUp:SetSize(10,10)
             btn.indicatoUp:SetPoint('BOTTOM', btn,'TOP', 0, -2)
 
+            local strongName= name..'Strong'
             btn.strong= WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
                 texture=strongTexture,
                 size=25,
-                isType2=true
+                isType2=true,
+                name=Name..strongName
             })
             btn.strong:SetPoint('BOTTOM', btn.indicatoUp, 'TOP', 0, -2)
-            Set_Button_Script(btn.strong, stringIndex)
+            Set_Button_Script(btn.strong, stringIndex, strongName)
+
         end
         if weakHintsTexture then
             btn.indicatoDown=TypeButton.frame:CreateTexture()
@@ -135,13 +140,15 @@ local function Init_Buttons()
             btn.indicatoDown:SetSize(10,10)
             btn.indicatoDown:SetPoint('TOP', btn, 'BOTTOM', 0, 6)
 
+            local WeakHintsName= name..'WeakHints'
             btn.weakHints= WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
                 texture=weakHintsTexture,
                 size=25,
-                isType2=true
+                isType2=true,
+                name=WeakHintsName
             })
             btn.weakHints:SetPoint('TOP', btn.indicatoDown, 'BOTTOM', 0, 2)
-            Set_Button_Script(btn.weakHints, weakHintsIndex)
+            Set_Button_Script(btn.weakHints, weakHintsIndex, WeakHintsName)
         end
     end
 
@@ -149,10 +156,12 @@ local function Init_Buttons()
     WoWTools_TextureMixin:CreateBG(TypeButton.frame,
     {point=function(texture)
         local num= #Buttons
-        texture:SetPoint('LEFT', Buttons[1], -2, 0)
-        texture:SetPoint('RIGHT', Buttons[num-2], -1, 0)
-        texture:SetPoint('TOP', Buttons[2], 0, 1)
-        texture:SetPoint('BOTTOM', Buttons[num])
+        if num>2 then
+            texture:SetPoint('LEFT', _G[Name..Buttons[1]], -2, 0)
+            texture:SetPoint('RIGHT', _G[Name..Buttons[num-2]], -1, 0)
+            texture:SetPoint('TOP', _G[Name..Buttons[2]], 0, 1)
+            texture:SetPoint('BOTTOM', _G[Name..Buttons[num]])
+        end
     end})
 end
 
@@ -420,8 +429,8 @@ local function Init(isShow)
         Set_Button_Highlight()
     end)
     TypeButton:SetScript('OnHide', function()
-        for _, btn in pairs(Buttons) do
-           btn:UnlockHighlight()
+        for _, name in pairs(Buttons) do
+           _G[Name..name]:UnlockHighlight()
         end
     end)
 

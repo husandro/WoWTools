@@ -15,6 +15,7 @@ local function Init()
     if Save().disabled then
         return
     end
+
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
     local category
@@ -75,24 +76,7 @@ local function Init()
     })
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
---[[点击移动
-    WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
-        tooltip=function()
-            return
-            '|n'..(not WoWTools_DataMixin.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
-            ..'|n'..(WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion()..'  '..WoWTools_TextMixin:GetEnabeleDisable(false)
-            ..'|n'..(WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion()..'  '..WoWTools_TextMixin:GetEnabeleDisable(true)
-            ..(WoWTools_DataMixin.Player.IsMaxLevel and '|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '满级' or GUILD_RECRUITMENT_MAXLEVEL) or '')
-        end,
-        GetValue= function() return Save().clickToMove end,
-        SetValue= function()
-            Save().clickToMove = not Save().clickToMove and true or nil
-            WoWTools_PetBattleMixin:ClickToMove_CVar()--点击移动
-        end,
-        layout= Layout,
-        category= Category,
-    })]]
+
 
 --点击移动按钮
     category= WoWTools_PanelMixin:Check_Button({
@@ -132,7 +116,7 @@ local function Init()
     }, category)
 
 
-    return true
+    Init=function()end
 end
 
 
@@ -160,6 +144,7 @@ local function Init_Panel()
         end
     })
 
+    Init_Panel=function()end
 end
 
 
@@ -179,8 +164,6 @@ function WoWTools_PetBattleMixin:Init_Options()
     Init_Panel()
 end
 function WoWTools_PetBattleMixin:Set_Options()
-    if Init() then
-        Init=function()end
-    end
+    Init()
 end
 

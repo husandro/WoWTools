@@ -93,7 +93,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             else
                 Init()
-                
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                     WoWTools_PetBattleMixin:Set_Options()
                 end
