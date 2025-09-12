@@ -1,6 +1,7 @@
 
 --插件，管理
 function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
+    AddonListCloseButton:SetFrameLevel(AddonList.TitleContainer:GetFrameLevel()+1)
     self:SetNineSlice(AddonList)
     self:SetScrollBar(AddonList)
     self:HideFrame(AddonList)
