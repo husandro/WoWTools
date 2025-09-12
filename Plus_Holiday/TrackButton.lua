@@ -392,12 +392,19 @@ end
 
 
 local function Create_Button(index)
-    local btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {
+    --[[local btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {
         size=14,
         setID=index,
         addTexture=true,
         name=Name..index
-    })
+    })]]
+    local btn= CreateFrame('Button', Name..index, UIParent, 'WoWToolsButtonTemplate', index)
+    btn:SetSize(16,16)
+
+    btn.texture=btn:CreateTexture(nil, 'BORDER')
+--自定义，图标大小
+    btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0, 0)
 
     btn:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
