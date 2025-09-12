@@ -212,7 +212,7 @@ end
 
 
 
-local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
+local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
     local btn= WoWTools_ButtonMixin:Cbtn(Frame, {
 		size=14,
 		isSecure=itemButtonUse,
@@ -245,9 +245,9 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
 
 
     if Save().toTopTrack then
-        btn:SetPoint("BOTTOM", last or TrackButton, 'TOP', 0,  (endTokenIndex>1 and index==endTokenIndex) and 10 or 0) --货物，物品，分开
+        btn:SetPoint("BOTTOM", _G[Name..(index-1)] or TrackButton, 'TOP', 0,  (endTokenIndex>1 and index==endTokenIndex) and 10 or 0) --货物，物品，分开
     else
-        btn:SetPoint("TOP", last or TrackButton, 'BOTTOM', 0,  (endTokenIndex>1 and index==endTokenIndex) and -10 or 0) --货物，物品，分开
+        btn:SetPoint("TOP", _G[Name..(index-1)] or TrackButton, 'BOTTOM', 0,  (endTokenIndex>1 and index==endTokenIndex) and -10 or 0) --货物，物品，分开
     end
 
 
@@ -429,7 +429,7 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 
 	for index, tables in pairs(tab) do
         local itemButtonUse=(Save().itemButtonUse and tables.itemID) and true or nil--使用物品
-		local btn= _G[Name..index] or Create_Button(_G[Name..(index-1)], index, endTokenIndex, itemButtonUse, tables)
+		local btn= _G[Name..index] or Create_Button(index, endTokenIndex, itemButtonUse, tables)
 
 		size= itemButtonUse and 22 or 14
 		btn:SetSize(size, size)

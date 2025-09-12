@@ -132,9 +132,9 @@ local function Init_TrackButton_Menu(self, root)
         Save().toRightTrackText = not Save().toRightTrackText and true or false
         for i=1, btn.NumButton or 0 do
 			local b= _G['WoWToolsCurrencyTrackButton'..i]
-			if b then
-				btn.text:ClearAllPoints()
-				btn:set_Text_Point()
+			if b and b.set_Text_Point then
+				b.text:ClearAllPoints()
+				b:set_Text_Point()
 			end
         end
     end)

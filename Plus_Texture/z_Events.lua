@@ -1809,9 +1809,8 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetMenu(TokenFrame.filterDropdown)
 
     self:SetScrollBar(TokenFrame)--bug，货币转移，出错
-    --[[self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.Begin, true)
-    self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.Middle, true)
-    self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.End, true)]]
+
+    self:SetButton(TokenFramePopup['$parent.CloseButton'] or TokenFramePopup.CloseButton)
 
 
 
