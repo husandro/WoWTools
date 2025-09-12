@@ -145,6 +145,7 @@ UIPanelCloseButton
 ]]
 function WoWTools_ButtonMixin:Cbtn(frame, tab)
     tab= tab or {}
+
     local text= tab.text
     local alpha= tab.alpha
     local setWheel= not tab.notWheel

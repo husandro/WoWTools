@@ -92,9 +92,8 @@ end
 
 --追踪
 local function Init_TrackButton_Menu(self, root)
-    if Save().itemButtonUse and WoWTools_MenuMixin:CheckInCombat(root)
-		or not WoWTools_CurrencyMixin.TrackButton
-	then
+	local btn= _G['WoWToolsCurrencyTrackMainButton']
+    if not btn or Save().itemButtonUse and WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
 
@@ -108,8 +107,8 @@ local function Init_TrackButton_Menu(self, root)
     end, function ()
 		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
 			Save().str= not Save().str and true or false
-			WoWTools_CurrencyMixin.TrackButton:set_texture()
-			WoWTools_CurrencyMixin.TrackButton.Frame:set_shown()
+			btn:set_texture()
+			_G['WoWToolsCurrencyTrackMainFrame']:set_shown()
 		end
     end)
 
@@ -130,10 +129,13 @@ local function Init_TrackButton_Menu(self, root)
     function ()
         return Save().toRightTrackText
     end, function ()
-        Save().toRightTrackText = not Save().toRightTrackText and true or nil
-        for _, btn in pairs(WoWTools_CurrencyMixin.TrackButton.btn) do
-            btn.text:ClearAllPoints()
-            btn:set_Text_Point()
+        Save().toRightTrackText = not Save().toRightTrackText and true or false
+        for i=1, btn.NumButton or 0 do
+			local b= _G['WoWToolsCurrencyTrackButton'..i]
+			if b then
+				btn.text:ClearAllPoints()
+				btn:set_Text_Point()
+			end
         end
     end)
 
@@ -158,9 +160,7 @@ local function Init_TrackButton_Menu(self, root)
 		return not Save().notAutoHideTrack
 	end, function()
 		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
-		if WoWTools_CurrencyMixin.TrackButton then
-			WoWTools_CurrencyMixin.TrackButton:set_shown()
-		end
+		btn:set_shown()
 	end)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
@@ -178,24 +178,22 @@ local function Init_TrackButton_Menu(self, root)
         return Save().scaleTrackButton
     end, function(value)
         Save().scaleTrackButton= value
-        WoWTools_CurrencyMixin.TrackButton:set_scale()
+        btn:set_scale()
     end)
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(root, function(data)
-        return WoWTools_CurrencyMixin.TrackButton:GetFrameStrata()==data
+        return btn:GetFrameStrata()==data
     end, function(data)
         Save().strata= data
-        WoWTools_CurrencyMixin.TrackButton:set_strata()
+        btn:set_strata()
     end)
 
 --重置位置
 	root:CreateDivider()
 	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
 		Save().point=nil
-		if WoWTools_CurrencyMixin.TrackButton then
-			WoWTools_CurrencyMixin.TrackButton:set_point()
-		end
+		btn:set_point()
 	end)
 end
 
@@ -357,9 +355,7 @@ end
 
 
 function WoWTools_CurrencyMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, function(...)
-		Init_Menu(...)
-	end)
+    MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
 
 

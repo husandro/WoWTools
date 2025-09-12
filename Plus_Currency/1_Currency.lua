@@ -39,12 +39,6 @@ local function Init()
 
 	WoWTools_DataMixin:Hook(TokenFrame, 'Update', function(frame)
 		WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)--套装,转换,货币
-
-		if WoWTools_CurrencyMixin.TrackButton then
-			WoWTools_CurrencyMixin:Set_TrackButton_Text()
-		else
-			WoWTools_CurrencyMixin:Init_TrackButton()
-		end
 	end)
 
 	Init=function()end

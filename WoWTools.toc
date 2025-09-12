@@ -244,7 +244,6 @@ Plus_Currency\Tokens_Button_Init.lua
 Plus_Currency\Tokens_Button_Other.lua
 Plus_Currency\Tokens_Button_Menu.lua
 Plus_Currency\TrackButton_Currency_Init.lua
-Plus_Currency\TrackButton_Currency_SetText.lua
 Plus_Currency\z_CurrencyTransferMenu.lua
 Plus_Currency\z_ItemInteractionFrame.lua
 Plus_Currency\z_Max_Tooltip.lua

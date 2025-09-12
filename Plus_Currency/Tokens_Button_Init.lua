@@ -72,8 +72,10 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {name='WoWToolsPlusCurrencyMenuButton', size=23})
-	--WoWTools_CurrencyMixin.Button= Button
+    Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {
+		name='WoWToolsPlusCurrencyMenuButton',
+		size=23
+	})
 
 	Button:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -2, 0)
 	Button:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
@@ -90,10 +92,8 @@ local function Init()
 			self.bagButton.texture:SetTexture(icon)
 		elseif Save().Hide then
 			self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-			--self.texture:SetAlpha(0.5)
 			self.bagButton.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
 		else
-			--self.texture:SetAlpha(1)
 			self.texture:SetAtlas('ui-questtrackerbutton-filter')
 			self.bagButton.texture:SetAtlas('FXAM-SmallSpikeyGlow')
 		end
@@ -117,7 +117,7 @@ local function Init()
 
 	Button.bagButton.texture= Button.bagButton:CreateTexture()
 	Button.bagButton.texture:SetAllPoints()
-	
+
 	Button.bagButton.texture:SetAlpha(0.3)
 
 	Button.bagButton:SetScript('OnMouseDown', function(...)
