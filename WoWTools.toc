@@ -230,7 +230,6 @@ Plus_Faction\1_Faction.lua
 Plus_Faction\Faction_Button_Init.lua
 Plus_Faction\Faction_Button_Other.lua
 Plus_Faction\Faction_TrackButton_Init.lua
-Plus_Faction\Faction_TrackButton_SetText.lua
 Plus_Faction\ScrollBox_Plus.lua
 Plus_Faction\z_CHAT_MSG.lua
 Plus_Faction\z_CovenantRenown.lua

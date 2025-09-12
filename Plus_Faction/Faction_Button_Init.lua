@@ -26,11 +26,7 @@ local function Init_Menu(self, root)
 		return Save().btn
 	end, function()
 		Save().btn= not Save().btn and true or nil
-		if _G['WoWToolsFactionTrackMainButton'] then
-			_G['WoWToolsFactionTrackMainButton']:set_Shown()
-		else
-			WoWTools_FactionMixin:Init_TrackButton()--监视, 文本
-		end
+		WoWTools_FactionMixin:Init_TrackButton()
 		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING, WoWTools_TextMixin:GetShowHide(Save().btn))
 	end)
 
@@ -41,9 +37,7 @@ local function Init_Menu(self, root)
 		return not Save().notAutoHideTrack
 	end, function()
 		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
-		if _G['WoWToolsFactionTrackMainButton'] then
-			_G['WoWToolsFactionTrackMainButton']:set_Shown()
-		end
+		WoWTools_FactionMixin:Init_TrackButton()
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)

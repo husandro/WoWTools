@@ -4,6 +4,8 @@ local function Save()
 end
 
 local TrackButton
+local OnlyIcon
+
 local function Set_TrackButton_Pushed(show, label)--TrackButton，提示
 	TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
 	if label then
@@ -50,7 +52,7 @@ local function get_Faction_Info(index, factionID)
 
 
 	if (isCapped and not isParagon and index)--声望已满，没有奖励
-		or (WoWTools_FactionMixin.onlyIcon and not atlas and not texture)
+		or (OnlyIcon and not atlas and not texture)
 	then
 		return
 	end
@@ -61,7 +63,7 @@ local function get_Faction_Info(index, factionID)
 	end
 
 	local text
-	if WoWTools_FactionMixin.onlyIcon then--仅显示有图标
+	if OnlyIcon then--仅显示有图标
 		name=nil
 	else
 		name= WoWTools_TextMixin:CN(name)
@@ -327,7 +329,7 @@ local function Init_Menu(self, root)
 		return Save().onlyIcon
 	end, function()
 		Save().onlyIcon= not Save().onlyIcon and true or nil
-		WoWTools_FactionMixin.onlyIcon= Save().onlyIcon
+		OnlyIcon= Save().onlyIcon
 		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
 	sub2:SetTooltip(function(tooltip)
@@ -588,9 +590,9 @@ end
 
 function WoWTools_FactionMixin:Init_TrackButton()
 	if PlayerGetTimerunningSeasonID() then--隐藏名称
-		self.onlyIcon=nil
+		OnlyIcon=nil
 	else
-		self.onlyIcon= Save().onlyIcon
+		OnlyIcon= Save().onlyIcon
 	end
 
     Init()
