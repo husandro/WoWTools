@@ -3,7 +3,8 @@ local function Save()
     return WoWToolsSave['Plus_Holiday']
 end
 local TrackButton
-local Buttons={}
+local NumButton=0
+local Name='WoWToolsHolidayTrackButton'
 
 
 
@@ -394,7 +395,8 @@ local function Create_Button(index)
     local btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {
         size=14,
         setID=index,
-        addTexture=true
+        addTexture=true,
+        name=Name..index
     })
 
     btn:SetScript('OnMouseDown', function(self, d)
@@ -474,14 +476,14 @@ local function Create_Button(index)
 
         self:ClearAllPoints()
         if Save().toTopTrack then
-            self:SetPoint('BOTTOM', Buttons[self:GetID()-1] or TrackButton, 'TOP')
+            self:SetPoint('BOTTOM', _G[Name..(self:GetID()-1)] or TrackButton, 'TOP')
         else
-            self:SetPoint('TOP', Buttons[self:GetID()-1] or TrackButton, 'BOTTOM')
+            self:SetPoint('TOP',  _G[Name..(self:GetID()-1)] or TrackButton, 'BOTTOM')
         end
 
     end
 
-    Buttons[index]=btn
+    NumButton= index
 
     btn:settings()
     return btn
@@ -582,7 +584,7 @@ local function Set_Text(monthOffset, day)
     end
 
 
-    
+
     local btn, s, tcoords
     local width=0
     local num= #events
@@ -590,7 +592,7 @@ local function Set_Text(monthOffset, day)
 
 
 	for index, event in pairs(events) do
-        btn= Buttons[index] or Create_Button(index)
+        btn= _G[Name..index] or Create_Button(index)
         btn:SetShown(true)
 
         btn.index= event.index
@@ -624,11 +626,11 @@ local function Set_Text(monthOffset, day)
     if num>0 then
         local toTop= Save().toTopTrack
         if toLeft then
-            TrackButton.Background:SetPoint(toTop and 'BOTTOMRIGHT' or 'TOPRIGHT', Buttons[1])
-            TrackButton.Background:SetPoint(toTop and 'TOPRIGHT' or 'BOTTOMRIGHT', Buttons[num])
+            TrackButton.Background:SetPoint(toTop and 'BOTTOMRIGHT' or 'TOPRIGHT', _G[Name..1])
+            TrackButton.Background:SetPoint(toTop and 'TOPRIGHT' or 'BOTTOMRIGHT', _G[Name..num])
         else
-            TrackButton.Background:SetPoint(toTop and 'BOTTOMLEFT' or 'TOPLEFT', Buttons[1])
-            TrackButton.Background:SetPoint(toTop and 'TOPLEFT' or 'BOTTOMLEFT', Buttons[num])
+            TrackButton.Background:SetPoint(toTop and 'BOTTOMLEFT' or 'TOPLEFT', _G[Name..1])
+            TrackButton.Background:SetPoint(toTop and 'TOPLEFT' or 'BOTTOMLEFT', _G[Name..num])
         end
     end
 
@@ -644,8 +646,8 @@ local function Set_Text(monthOffset, day)
         TrackButton:SetNormalTexture(0)
     end
 
-    for index= num+1, #Buttons, 1 do
-		btn=Buttons[index]
+    for index= num+1, NumButton do
+		btn=_G[Name..index]
 		btn.text:SetText('')
 		btn:SetShown(false)
 		btn:SetNormalTexture(0)
@@ -719,18 +721,7 @@ local function Init_Menu(self, root)
         return Save().toTopTrack
     end, function()
         Save().toTopTrack = not Save().toTopTrack and true or nil
-        local last
-        for index= 1, #TrackButton.btn do
-            local btn=TrackButton.btn[index]
-            btn:ClearAllPoints()
-            if Save().toTopTrack then
-                btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
-            else
-                btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
-            end
-            last=btn
-        end
-        WoWTools_HolidayMixin:Init_TrackButton()
+       WoWTools_HolidayMixin:Init_TrackButton()
     end)
 
     root:CreateCheckbox(
@@ -738,7 +729,7 @@ local function Init_Menu(self, root)
     function()
         return Save().onGoing
     end, function()
-        Save().onGoing= not Save().onGoing and true or nil
+        Save().onGoing= not Save().onGoing and true or false
         Set_Text()
     end)
 
@@ -823,10 +814,12 @@ end
 
 
 local function Init()
-    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
+    --[[TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
         size=23,
-        name='WoWToolsHolidayTrackButton'
-    })
+        name='WoWToolsHolidayTrackMainButton'
+    })]]
+    TrackButton= CreateFrame('Button', 'WoWToolsHolidayTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
+
 --显示背景 Background
     WoWTools_TextureMixin:CreateBG(TrackButton)
 
@@ -839,8 +832,6 @@ local function Init()
     TrackButton.Frame= CreateFrame('Frame',nil, TrackButton)
     TrackButton.Frame:SetPoint('BOTTOM')
     TrackButton.Frame:SetSize(1,1)
-
-    TrackButton.btn={}
 
     TrackButton:RegisterForDrag("RightButton")
     TrackButton:SetMovable(true)
@@ -1002,8 +993,11 @@ local function Init()
     Init=function()
         TrackButton:set_point()
         TrackButton:settings()
-        for _, btn in pairs(Buttons) do
-            btn:settings()
+        for index= 1, NumButton do
+            local btn= _G[Name..index]
+            if btn then
+                btn:settings()
+            end
         end
     end
 end
