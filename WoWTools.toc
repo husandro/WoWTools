@@ -252,8 +252,8 @@ Plus_Currency\z_ScrollBox.lua
 
 
 ##属性
-Plus_Attributes\0_ADDON_LOADED.lua
-Plus_Attributes\1_Init.lua
+Plus_Attributes\0_Init.lua
+Plus_Attributes\1_Setup.lua
 Plus_Attributes\2_Button.lua
 Plus_Attributes\3_Tooltip.lua
 Plus_Attributes\4_Menu.lua

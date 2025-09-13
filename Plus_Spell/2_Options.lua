@@ -59,7 +59,7 @@ local function Blizzard_Settings()
         GetValue= function() return Save().flyoutText end,
         category= Category,
         SetValue= function()
-            Save().flyoutText= not Save().flyoutText and true or nil
+            Save().flyoutText= not Save().flyoutText and true or false
             WoWTools_SpellMixin:Init_Spell_Flyout()
             if not Save().flyoutText then
                 print(
@@ -79,7 +79,7 @@ local function Blizzard_Settings()
         GetValue= function() return Save().actionButtonRangeColor end,
         category= Category,
         SetValue= function()
-            Save().actionButtonRangeColor= not Save().actionButtonRangeColor and true or nil
+            Save().actionButtonRangeColor= not Save().actionButtonRangeColor and true or false
             WoWTools_SpellMixin:Init_ActionButton_UpdateRange()--法术按键, 颜色
             if not Save().actionButtonRangeColor then
                 print(
@@ -99,7 +99,7 @@ local function Blizzard_Settings()
         GetValue= function() return Save().specButton.enabled end,
         category= Category,
         SetValue= function()
-            Save().specButton.enabled= not Save().specButton.enabled and true or nil
+            Save().specButton.enabled= not Save().specButton.enabled and true or false
             WoWTools_SpellMixin:Init_Spec_Button()
             if not Save().specButton.enabled then
                 print(
@@ -119,7 +119,7 @@ local function Blizzard_Settings()
         GetValue= function() return Save().talentsFramePlus end,
         category= Category,
         SetValue= function()
-            Save().talentsFramePlus= not Save().talentsFramePlus and true or nil
+            Save().talentsFramePlus= not Save().talentsFramePlus and true or false
             WoWTools_SpellMixin:Init_TalentsFrame()
             if not Save().talentsFramePlus then
                 print(
@@ -139,7 +139,7 @@ local function Blizzard_Settings()
         GetValue= function() return Save().spellBookPlus end,
         category= Category,
         SetValue= function()
-            Save().spellBookPlus= not Save().spellBookPlus and true or nil
+            Save().spellBookPlus= not Save().spellBookPlus and true or false
             WoWTools_SpellMixin:Init_SpellBookFrame()
             if not Save().spellBookPlus then
                 print(

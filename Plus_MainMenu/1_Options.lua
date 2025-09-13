@@ -53,7 +53,7 @@ local function Init_Options()--初始, 选项
         checkGetValue= function() return Save().enabledMainMenuAlpha end,
         checkTooltip= WoWTools_MainMenuMixin.addName,
         checkSetValue= function()
-            Save().enabledMainMenuAlpha= not Save().enabledMainMenuAlpha and true or nil
+            Save().enabledMainMenuAlpha= not Save().enabledMainMenuAlpha and true or false
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderGetValue= function() return Save().mainMenuAlphaValue end,

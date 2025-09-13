@@ -4,7 +4,7 @@ local function Save()
     return WoWToolsSave['Plus_Texture'] or {}
 end
 
-local Category, Layout
+
 
 
 
@@ -21,13 +21,12 @@ end]]
 
 
 local function Init_Options()
-    --GetMinValueAlpha()--min，透明度，最小值
     local sub
     local tooltip= '|cnGREEN_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 
 
-    Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+    local Category, Layout= WoWTools_PanelMixin:AddSubCategory({
         name= WoWTools_TextureMixin.addName,
         disabled= Save().disabled,
     })
@@ -59,33 +58,6 @@ local function Init_Options()
         layout= Layout,
         category= Category
     })
-    --[[
-    WoWTools_DataMixin:OnlySlider({
-        name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
-        GetValue= function() return Save().alpha or 0.5 end,
-        minValue= 0,
-        maxValue= 1,
-        setp= 0.1,
-        tooltip= tooltip,
-        category= Category,
-        SetValue= function(_, _, value2)
-            if value2 then
-                Save().alpha= WoWTools_DataMixin:GetFormatter1to10(value2, 0, 1)
-                WoWTools_TextureMixin.min= Save().alpha or 0.5
-            end
-        end
-    }, sub)
-
-WoWTools_PanelMixin:OnlyCheck({
-        name= '|A:MonkUI-LightOrb:0:0|a'
-            ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
-        tooltip=tooltip,
-        category= Category,
-        GetValue= function() return not Save().disabedBG end,
-        SetValue= function()
-            Save().disabedBG= not Save().disabedBG and true or nil
-        end
-    }, sub)]]
 
 
 
@@ -115,22 +87,8 @@ WoWTools_PanelMixin:OnlyCheck({
             WoWTools_TextureMixin:Init_Chat_Bubbles()
         end
     })
-    --[[WoWTools_DataMixin:OnlySlider({
-        name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
-        GetValue= function() return Save().chatBubbleAlpha or 0.5 end,
-        minValue= 0,
-        maxValue= 1,
-        setp= 0.1,
-        tooltip= WoWTools_TextureMixin.addName,
-        category= Category,
-        SetValue= function(_, _, value2)
-            if value2 then
-                Save().chatBubbleAlpha= WoWTools_DataMixin:GetFormatter1to10(value2, 0, 1)
-                WoWTools_TextureMixin:Init_Chat_Bubbles()
-            end
-        end
-    }, sub)]]
-    
+
+
 
     WoWTools_DataMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
@@ -184,9 +142,6 @@ WoWTools_PanelMixin:OnlyCheck({
 
 
 
-
-
-
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS),
         tooltip='HelpTip'..'\n\n'..tooltip,
@@ -197,6 +152,8 @@ WoWTools_PanelMixin:OnlyCheck({
             WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
         end
     })
+
+    Init_Options=function()end
 end
 
 
