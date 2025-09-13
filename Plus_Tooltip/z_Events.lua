@@ -218,6 +218,7 @@ C_Timer.After(0.5, function()
                 local function setting()
                     if not f.isStop
                         and f:IsVisible()
+                        and not IsModifierKeyDown()
                         and f:GetParent():GetNodeInfo().canPurchaseRank
                         and not InCombatLockdown()
                         and C_Traits.PurchaseRank(RemixArtifactFrame:GetConfigID(), f:GetParent():GetNodeID())

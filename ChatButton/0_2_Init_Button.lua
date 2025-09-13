@@ -404,11 +404,12 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+
             WoWToolsSave['ChatButton']= WoWToolsSave['ChatButton'] or P_Save
             Save().disabledADD= Save().disabledADD or {}
+            P_Save=nil
 
             ChatButton= WoWTools_ChatMixin:Init()
-
 
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_DataMixin.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 

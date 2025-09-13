@@ -35,7 +35,9 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
+
         WoWToolsSave['Plus_Professions']= WoWToolsSave['Plus_Professions'] or P_Save
+        P_Save= nil
 
         if PlayerGetTimerunningSeasonID() then
             self:UnregisterAllEvents()

@@ -121,6 +121,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
+            P_Save=nil
 
             if PlayerGetTimerunningSeasonID() then
                 self:UnregisterAllEvents()

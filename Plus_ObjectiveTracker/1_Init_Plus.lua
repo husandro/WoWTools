@@ -292,39 +292,38 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1~= 'WoWTools' then
-            return
-        end
-
-        WoWToolsSave['ObjectiveTracker']= WoWToolsSave['ObjectiveTracker'] or P_Save
-
-        WoWTools_ObjectiveMixin.addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
-
-        --添加控制面板
-        WoWTools_PanelMixin:OnlyCheck({
-            name=WoWTools_ObjectiveMixin.addName,
-            tooltip='|cnRED_FONT_COLOR:Bug',
-            GetValue= function() return not Save().disabled end,
-            SetValue= function()
-                Save().disabled= not Save().disabled and true or nil
-
-                Init()
-
-                if Save().disabled then
-                    print(
-                        WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveMixin.addName,
-                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                    )
-                end
-            end
-        })
-
-        if not Save().disabled then
-            Init()
-        end
-
-        self:UnregisterEvent(event)
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    WoWToolsSave['ObjectiveTracker']= WoWToolsSave['ObjectiveTracker'] or P_Save
+    P_Save= nil
+
+    WoWTools_ObjectiveMixin.addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
+
+    --添加控制面板
+    WoWTools_PanelMixin:OnlyCheck({
+        name=WoWTools_ObjectiveMixin.addName,
+        tooltip='|cnRED_FONT_COLOR:Bug',
+        GetValue= function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled= not Save().disabled and true or nil
+
+            Init()
+
+            if Save().disabled then
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveMixin.addName,
+                    WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            end
+        end
+    })
+
+    if not Save().disabled then
+        Init()
+    end
+
+    self:UnregisterEvent(event)
 end)

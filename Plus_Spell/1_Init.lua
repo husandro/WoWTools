@@ -63,6 +63,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWToolsSave['Plus_Spell'].bg= P_Save.bg
             end
 
+            P_Save= nil
+
             WoWTools_SpellMixin.addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'
                 ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)
 

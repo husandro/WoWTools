@@ -148,6 +148,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Tools_Foods']= WoWToolsSave['Tools_Foods'] or P_Save
+            P_Save= nil
 
             Save().spells= Save().spells or ClassSpells
 

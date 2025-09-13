@@ -1,6 +1,3 @@
-
-local P_Save={}
-
 local function Save()
     return WoWToolsSave['Plus_Aura'] or {}
 end
@@ -36,7 +33,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 return
             end
 
-            WoWToolsSave['Plus_Aura']= WoWToolsSave['Plus_Aura'] or P_Save
+            WoWToolsSave['Plus_Aura']= WoWToolsSave['Plus_Aura'] or {}
 
             WoWTools_AuraMixin.addName= '|A:Adventures-Target-Indicator:0:0|a'..(WoWTools_DataMixin.onlyChinese and '光环' or AURAS)
 

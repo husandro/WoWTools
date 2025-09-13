@@ -11,9 +11,11 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
-
         if arg1== 'WoWTools' then
+
             WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or {}
+            P_Save= nil
+
             WoWTools_ItemMixin.addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
             --添加控制面板

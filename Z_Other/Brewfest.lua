@@ -271,7 +271,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     end
         
     WoWToolsSave['Other_Brewfest']= WoWToolsSave['Other_Brewfest'] or P_Save
-
+    P_Save= nil
+    
     --添加控制面板
     addName= '|T132248:0|t'..(WoWTools_DataMixin.onlyChinese and '美酒节赛羊' or WoWTools_TextMixin:CN(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true}) or 'Brewfest')
 
@@ -279,7 +280,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         checkName= addName,
         GetValue= function() return not Save().disabled end,
         SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
+            Save().disabled= not Save().disabled and true or false
             Init()
         end,
         buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,

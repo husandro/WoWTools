@@ -84,6 +84,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().UIPanelWindows= Save().UIPanelWindows or P_Save.UIPanelWindows
             Save().Esc= Save() or P_Save.Esc
 
+            P_Save= nil
+
             WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
 
             WoWTools_MoveMixin:Init_Options()

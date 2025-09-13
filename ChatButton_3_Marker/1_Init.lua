@@ -187,23 +187,25 @@ local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
-    if arg1== 'WoWTools' then
-
-        WoWToolsSave['ChatButton_Markers']= WoWToolsSave['ChatButton_Markers'] or P_Save
-
-        Save().showMakerFrameBackground= nil--显示背景 改为ALPHA
-
-        if Save().autoReady==0 then
-            Save().autoReady= nil
-        end
-        Save().autoReadySeconds= Save().autoReadySeconds or 3
-
-        WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
-        
-        if WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName) then
-            Init(WoWTools_ChatMixin:GetButtonForName('Markers'))
-        end
-
-        self:UnregisterEvent(event)
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    WoWToolsSave['ChatButton_Markers']= WoWToolsSave['ChatButton_Markers'] or P_Save
+
+    Save().showMakerFrameBackground= nil--显示背景 改为ALPHA
+    if Save().autoReady==0 then
+        Save().autoReady= nil
+    end
+    Save().autoReadySeconds= Save().autoReadySeconds or 3
+
+    P_Save=nil
+
+    WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
+
+    if WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName) then
+        Init(WoWTools_ChatMixin:GetButtonForName('Markers'))
+    end
+
+    self:UnregisterEvent(event)
 end)

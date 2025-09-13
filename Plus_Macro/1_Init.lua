@@ -63,8 +63,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+
             WoWToolsSave['Plus_Macro2']= WoWToolsSave['Plus_Macro2'] or P_Save
             WoWToolsSave['Plus_Macro']=nil
+            P_Save= nil
 
             WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
 

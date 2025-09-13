@@ -2,13 +2,11 @@
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
-local P_Save={
-    --enabledInRaid=true--在团队中启用会掉帧
-}
 
 local function Save()
     return WoWToolsSave['Interrupts_Tolen']
 end
+
 
 local addName
 local de= NPEV2_RIGHT_ARROW--'->'分隔符
@@ -64,10 +62,7 @@ end
 
 local function Init_Panel()
 
-    WoWToolsSave['Interrupts_Tolen']= WoWToolsSave['Interrupts_Tolen'] or P_Save
-
-    addName= '|A:nameplates-holypower2-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
-
+ 
     --添加控制面板
     local root= WoWTools_PanelMixin:OnlyCheck({
         name= addName,
@@ -118,6 +113,10 @@ end
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+            WoWToolsSave['Interrupts_Tolen']= WoWToolsSave['Interrupts_Tolen'] or {}
+
+            addName= '|A:nameplates-holypower2-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
+
             Init_Panel()
         end
 

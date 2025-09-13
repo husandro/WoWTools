@@ -31,6 +31,16 @@ local function On_Show()
     On_Show=function()end
 end
 
+
+
+
+
+
+
+
+
+
+
 local function Init()
     Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
         local sub= root:CreateCheckbox(
@@ -46,7 +56,6 @@ local function Init()
                 if not UIPanelWindows['StableFrame'] then
                     WoWTools_DataMixin:Call(StableFrame, 'OnLoad', StableFrame)
                 end
-                --EventRegistry:TriggerEvent("PET_STABLE_SHOW")
                 On_Show()
             end
             StableFrame:SetShown(not StableFrame:IsShown())
@@ -68,21 +77,19 @@ local function Init()
         end)
     end)
 
-    --[[StableFrame:HookScript('OnShow', function()
-        On_Show()
-    end)]]
 
     Init=function()end
 end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PET_STABLE_SHOW')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+
             WoWToolsSave['Plus_StableFrame']= WoWToolsSave['Plus_StableFrame'] or P_Save
+            P_Save= nil
 
             WoWTools_HunterMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(WoWTools_DataMixin.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
 
@@ -101,9 +108,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if Save().disabled then
-                self:UnregisterEvent('PET_STABLE_SHOW')
-            else
+            if not Save().disabled then
+                self:RegisterEvent('PET_STABLE_SHOW')
                 Init()
             end
             self:UnregisterEvent(event)

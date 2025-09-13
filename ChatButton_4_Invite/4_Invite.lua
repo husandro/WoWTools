@@ -140,7 +140,9 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
+
             WoWToolsSave['ChatButton_Invite']= WoWToolsSave['ChatButton_Invite'] or P_Save
+            P_Save=nil
 
             WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '邀请' or INVITE)
 

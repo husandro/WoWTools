@@ -34,6 +34,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			WoWToolsSave['Plus_Faction']= WoWToolsSave['Plus_Faction'] or P_Save
 			Save().hideRenownFrame= Save().hideRenownFrame or {}
+			P_Save=nil
 
 
 			WoWTools_FactionMixin.addName= format('|A:%s:0:0|a%s', WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or 'ParagonReputation_Glow', WoWTools_DataMixin.onlyChinese and '声望' or REPUTATION)

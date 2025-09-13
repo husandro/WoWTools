@@ -93,7 +93,9 @@ panel:RegisterEvent('SOCKET_INFO_UPDATE')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+
             WoWToolsSave['Plus_PaperDoll']= WoWToolsSave['Plus_PaperDoll'] or P_Save
+            P_Save= nil
 
             WoWTools_PaperDollMixin.addName= (WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
                                         ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)

@@ -534,6 +534,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['WoWTools_ToolsButton']= WoWToolsSave['WoWTools_ToolsButton'] or P_Save
+            P_Save= nil
 
             Save().borderAlpha= Save().borderAlpha or 0.3
 

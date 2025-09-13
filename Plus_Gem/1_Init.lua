@@ -1153,6 +1153,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Plus_Gem']= WoWToolsSave['Plus_Gem'] or P_Save
+            P_Save=nil
 
             addName= '|T4555592:0|t'..(WoWTools_DataMixin.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
 

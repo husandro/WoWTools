@@ -385,8 +385,9 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+            
             WoWToolsSave['Tools_Daisy']= WoWToolsSave['Tools_Daisy'] or P_Save
-
+            P_Save= nil
             Save().speciesID= Save().speciesID or 2780
 
             addName= '|T3150958:0|t'..(WoWTools_DataMixin.onlyChinese and '黛西' or 'Daisy')

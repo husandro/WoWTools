@@ -827,6 +827,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Tools_UseToy']= WoWToolsSave['Tools_UseToy'] or P_Save
+            P_Save= nil
+
 
             addName='|A:collections-icon-favorites:0:0|a'..(WoWTools_DataMixin.onlyChinese and '随机玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, TOY))
 

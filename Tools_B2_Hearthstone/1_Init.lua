@@ -41,6 +41,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not WoWToolsSave['Tools_Hearthstone'] then
                 WoWToolsSave['Tools_Hearthstone']= P_Save
                 WoWToolsSave['Tools_Hearthstone'].items= WoWTools_HearthstoneMixin:Get_P_Items()
+            else
+                P_Save= nil
             end
 
             WoWTools_HearthstoneMixin.addName='|A:delves-bountiful:0:0|a'..(WoWTools_DataMixin.onlyChinese and '炉石' or TUTORIAL_TITLE31)

@@ -209,6 +209,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().myChatFilterPlayers= Save().myChatFilterPlayers or {}
             Save().userChatFilterTab= Save().userChatFilterTab or {}
             Save().lastName= Save().lastName or P_Save.world
+            P_Save=nil
+
 
             WoWTools_WorldMixin.addName= '|A:tokens-WoW-generic-regular:0:0|a'..(WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL)
 

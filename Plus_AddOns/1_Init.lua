@@ -116,6 +116,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     end
 
     WoWToolsSave['Plus_AddOns']= WoWToolsSave['Plus_AddOns'] or P_Save
+    P_Save=nil
+
     WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
 
     --添加控制面板
@@ -143,9 +145,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     end
     self:UnregisterEvent(event)
 end)
-    --[[elseif event=='PLAYER_LOGIN' then
-        if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
-            WoWTools_AddOnsMixin:Set_AddonProfiler()
-        end
-        self:UnregisterEvent(event)]]
-

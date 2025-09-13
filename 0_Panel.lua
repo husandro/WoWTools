@@ -337,8 +337,9 @@ panel:RegisterEvent('PLAYER_LOGIN')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
-
+            
             WoWToolsSave['WoWTools_Settings']= WoWToolsSave['WoWTools_Settings'] or P_Save
+            P_Save= nil
 
             WoWTools_DataMixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese
 

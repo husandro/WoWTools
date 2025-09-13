@@ -388,6 +388,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Tools_MagePortal']= WoWToolsSave['Tools_MagePortal'] or P_Save
+            P_Save= nil
 
             if not Save().disabled and WoWTools_ToolsMixin:Get_MainButton() then
                 addName= '|T626001:0|t|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')

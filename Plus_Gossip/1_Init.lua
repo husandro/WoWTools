@@ -97,6 +97,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Gossip']= WoWToolsSave['Plus_Gossip'] or P_Save
+            P_Save=nil
 
 --玩家，自定义，对话，文本
             if WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player then

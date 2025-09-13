@@ -59,7 +59,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_AuctionHouse']= WoWToolsSave['Plus_AuctionHouse'] or P_Save
-
+            P_Save=nil
 --宠物笼
             Save().hideSellItem[82800]= nil
             Save().hideSellPet= Save().hideSellPet or {}
