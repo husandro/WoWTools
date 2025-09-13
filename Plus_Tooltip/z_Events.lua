@@ -202,7 +202,7 @@ RemixArtifactFrame.Currency:SetPoint('RIGHT', RemixArtifactFrame.CommitConfigCon
     end)
 
 --为最高级，添加 一键升级按钮
-C_Timer.After(0.3, function()
+C_Timer.After(0.5, function()
     for btn in RemixArtifactFrame:EnumerateAllTalentButtons() do
         local data= btn:GetNodeInfo() or {}
 
