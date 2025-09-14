@@ -210,18 +210,18 @@ function Init_Button(index)
 	local enabled= Save().showCopyChatButton and true or false
 	local frame= _G['ChatFrame'..index]
 	if not frame then
-
 		return
 	elseif frame.CopyChatButton then
 		frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, enabled and 15 or -1)-- -2,-2
 		frame.CopyChatButton:SetShown(enabled)
 		return
+
 	elseif not enabled then
 		return
 	end
 
 	frame.CopyChatButton= CreateFrame('Button', 'WoWToolsChatCopyButton'..index, frame)
-	
+
 	frame.CopyChatButton:SetNormalAtlas('poi-workorders')
     frame.CopyChatButton:SetPushedAtlas('PetList-ButtonSelect')
     frame.CopyChatButton:SetHighlightAtlas('PetList-ButtonHighlight')
@@ -235,14 +235,14 @@ function Init_Button(index)
 
 	frame.CopyChatButton:SetPoint('TOP', frame.ScrollToBottomButton, 'BOTTOM', 0, -2)
 
-	frame.CopyChatButton:SetScript('OnLeave', function(self)
+	frame.CopyChatButton:SetScript('OnLeave', function()
 		GameTooltip:Hide()
 		WoWTools_ChatMixin:GetButtonForName('HyperLink'):SetButtonState('NORMAL')
 	end)
 
 	frame.CopyChatButton:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		
+
 		local num = self:GetParent():GetNumMessages() or 0
 		local col= num==0 and '|cff606060'
 		GameTooltip:SetText(
