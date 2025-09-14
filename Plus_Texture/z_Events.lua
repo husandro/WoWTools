@@ -1171,21 +1171,6 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
             sub:SetTooltip(function(tooltip)
                 tooltip:AddLine('CVar |cffffffffbuffDurations')
             end)
-
-            sub= root:CreateCheckbox(
-                WoWTools_DataMixin.Icon.icon2
-                ..col
-                ..(WoWTools_DataMixin.onlyChinese and '显示冷却时间' or COUNTDOWN_FOR_COOLDOWNS_TEXT),
-            function()
-                return C_CVar.GetCVarBool('buffDurations')
-            end, function()
-                if not InCombatLockdown() then
-                    C_CVar.SetCVar('colorblindMode', C_CVar.GetCVarBool('colorblindMode') and 0 or 1)
-                end
-            end)
-            sub:SetTooltip(function(tooltip)
-                tooltip:AddLine('CVar |cffffffffbuffDurations')
-            end)
         end)
     end)
 

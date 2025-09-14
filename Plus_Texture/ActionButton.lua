@@ -15,7 +15,7 @@ local function Set_Texture(self)
 end
 
 local function Set_Assisted(self)
-    if not WoWTools_FrameMixin:IsLocked(self) then
+    if not InCombatLockdown() then
         self:SetFrameStrata('BACKGROUND')
     else
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
@@ -92,7 +92,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
             "MultiBarBottomLeftButton",
             "MultiBarBottomRightButton",
             "MultiBarLeftButton",
-            "MultiBarRightButton",
+            "MultiBarRightButton",--这个有Bug SetShown
             "MultiBar5Button",
             "MultiBar6Button",
             "MultiBar7Button",

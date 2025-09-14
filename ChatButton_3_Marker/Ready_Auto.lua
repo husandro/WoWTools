@@ -100,7 +100,6 @@ local function Init_UI()
             self:SetChecked(self.value== Save().autoReady)
         end)
 
-
         Checks[i].settings= function(self)
             Save().autoReady= self.value
             Set_Ready()--设置，就绪，未就绪
