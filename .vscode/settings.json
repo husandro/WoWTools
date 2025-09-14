@@ -6169,7 +6169,10 @@
         "AdventureMapQuestChoiceDialog",
         "AddonListEntryMixin",
         "HONOR_HIGHEST_RANK",
-        "LEARN_SKILL_TEMPLATE"
+        "LEARN_SKILL_TEMPLATE",
+        "CompactRaidFrameManagerDisplayFrameRaidMarkers",
+        "CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerUnitTab",
+        "CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerGroundTab"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

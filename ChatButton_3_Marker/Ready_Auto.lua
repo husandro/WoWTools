@@ -125,6 +125,8 @@ local function Init_UI()
         AltCanellText:SetShown(Save().autoReady)
     end
     AltCanellText:set_shown()
+
+    Init_UI=function()end
 end
 
 
