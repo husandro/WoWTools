@@ -206,12 +206,10 @@ C_Timer.After(0.3, function()
     for btn in RemixArtifactFrame:EnumerateAllTalentButtons() do
         local data= btn:GetNodeInfo() or {}
 
-        if data.maxRanks==999 then
-
-
+        if data.maxRanks and data.maxRanks>20 then
             b= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
             b:SetNormalAtlas('plunderstorm-icon-upgrade')
-            b:SetPoint('LEFT', btn, 'RIGHT')
+            b:SetPoint('LEFT', btn, 'RIGHT', 4,0)
             b:SetScript('OnMouseDown', function(f)
                 if f.isIn then
                     f.isStop= true
@@ -237,16 +235,13 @@ C_Timer.After(0.3, function()
                 GameTooltip:Hide()
             end)
             b:SetScript('OnEnter', function(f)
-                GameTooltip:SetOwner(f,'ANCHOR_TOPRIGHT')
+                GameTooltip:SetOwner(f, 'ANCHOR_RIGHT')
                 GameTooltip:SetText(
                     WoWTools_DataMixin.Icon.icon2
                     ..(WoWTools_DataMixin.onlyChinese and '升到最高级' or format(LEARN_SKILL_TEMPLATE, HONOR_HIGHEST_RANK))
                 )
                 GameTooltip:Show()
             end)
-
-
-            break
         end
     end
 end)
