@@ -398,7 +398,7 @@ local function Create_Button(index)
         addTexture=true,
         name=Name..index
     })]]
-    local btn= CreateFrame('Button', Name..index, UIParent, 'WoWToolsButtonTemplate', index)
+    local btn= CreateFrame('Button', Name..index, TrackButton.Frame, 'WoWToolsButtonTemplate', index)
     btn:SetSize(16,16)
 
     btn.texture=btn:CreateTexture(nil, 'BORDER')

@@ -80,7 +80,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Move']= WoWToolsSave['Plus_Move'] or P_Save
-            
+
             Save().UIPanelWindows= Save().UIPanelWindows or P_Save.UIPanelWindows
             Save().Esc= Save() or P_Save.Esc
 
