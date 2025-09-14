@@ -88,7 +88,7 @@ local function Init_GarrisonList()
     tooltip= WoWTools_DataMixin.onlyChinese and '点击显示任务报告' or GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
     },]]
 
-    {name=  WoWTools_DataMixin.onlyChinese and '职业大厅' or ORDERHALL_MISSION_REPORT:match('(.-)%\n') or ORDER_HALL_LANDING_PAGE_TITLE,
+    {name=  WoWTools_DataMixin.onlyChinese and '职业大厅' or ORDER_HALL_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_7_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower,
     frame='OrderHallMissionFrame',
