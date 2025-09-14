@@ -54,10 +54,11 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Mixin\PanelMixin.lua
 
 ##模板
-z_Template\Button.xml
-z_Template\PlayerFrame.xml
-z_Template\ChallengeAffix.xml
+1_Template\Button.xml
+1_Template\PlayerFrame.xml
+1_Template\ChallengeAffix.xml
 
+##控制
 0_Panel.lua
 1_WoWItemList.lua
 0_Mixin\0_z_DataMixn_NeedUpdate.lua
