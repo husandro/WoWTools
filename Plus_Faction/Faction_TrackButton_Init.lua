@@ -138,7 +138,7 @@ end
 
 
 
-local function Crated_Button(index, last)
+local function Crated_Button(index)
 
     --[[local btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {
 		size=14,
@@ -148,9 +148,9 @@ local function Crated_Button(index, last)
 	btn:SetSize(16, 16)
 
     if Save().toTopTrack then
-        btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
+        btn:SetPoint('BOTTOM', _G[Name..(index-1)] or TrackButton, 'TOP')
     else
-        btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
+        btn:SetPoint('TOP', _G[Name..(index-1)] or TrackButton, 'BOTTOM')
     end
     btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -220,12 +220,10 @@ local function TrackButton_Settings()
 		end
 	end
 
-	local last
-	for index, tab in pairs(faction) do
-		local btn= _G[Name..index] or Crated_Button(index, last)
-		btn:SetShown(true)
-		last=btn
 
+	for index, tab in pairs(faction) do
+		local btn= _G[Name..index] or Crated_Button(index)
+		btn:SetShown(true)
 		btn.text:SetText(tab.text)
 		btn.factionID= tab.data.factionID
 		btn.friendshipID= tab.data.friendshipID
