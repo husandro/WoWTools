@@ -233,16 +233,16 @@ C_Timer.After(0.3, function()
                 end
                 setting()
             end)
-            btn:SetScript('OnLeave', function()
+            b:SetScript('OnLeave', function()
                 GameTooltip:Hide()
             end)
-            btn:SetScript('OnEnter', function(f)
+            b:SetScript('OnEnter', function(f)
                 GameTooltip:SetOwner(f,'ANCHOR_TOPRIGHT')
                 GameTooltip:SetText(
-                    WoWTools_DataMixin.onlyChinese and '升到最高级'
-                    or format(LEARN_SKILL_TEMPLATE, HONOR_HIGHEST_RANK)
+                    WoWTools_DataMixin.Icon.icon2
+                    ..(WoWTools_DataMixin.onlyChinese and '升到最高级' or format(LEARN_SKILL_TEMPLATE, HONOR_HIGHEST_RANK))
                 )
-                GameTooltip:Hide()
+                GameTooltip:Show()
             end)
 
 

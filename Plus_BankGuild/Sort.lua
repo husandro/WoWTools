@@ -26,7 +26,7 @@ local function Init_Sort()
         return
     end
 
-    local currentIndex = GetCurrentGuildBankTab() -- 当前 Tab
+    local currentIndex = GetCurrentGuildBankTab() or 0 -- 当前 Tab
     local numOut= WoWTools_GuildBankMixin:GetNumWithdrawals(currentIndex)
     if not numOut or numOut==0 then
         return
@@ -162,7 +162,7 @@ local function Init_Menu(self, root)
     function()
         return Save().sortRightToLeft
     end, function()
-        Save().sortRightToLeft= not Save().sortRightToLeft and true or nil
+        Save().sortRightToLeft= not Save().sortRightToLeft and true or false
          if IsInRun then--禁用，按钮移动事件
             StopRun=true--停止，已运行
         end
