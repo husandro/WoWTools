@@ -1,6 +1,4 @@
 
-local P_Save={}
-
 local function Save()
     return WoWToolsSave['Plus_Container'] or {}
 end
@@ -40,7 +38,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Container']= WoWToolsSave['Plus_Container'] or P_Save
+            WoWToolsSave['Plus_Container']= WoWToolsSave['Plus_Container'] or {}
 
             WoWTools_BagMixin.addName= '|A:bag-main:0:0|a'..(WoWTools_DataMixin.onlyChinese and '容器' or ITEM_CONTAINER)
 
