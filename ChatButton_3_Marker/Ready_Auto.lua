@@ -76,7 +76,10 @@ local function Init_UI()
     ReadyCheckFrameText:SetPoint('TOP', 20, -45)--="TOP" x="20" y="-37"/>
 
 --就位，玩家，提示
-    PlayerNameText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame, {name='ReadyCheckFramePlayerNameText', justifyH='CENTER'})
+    PlayerNameText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame, {
+        name='ReadyCheckFramePlayerNameText',
+        justifyH='CENTER'
+    })
     PlayerNameText:SetPoint('BOTTOM', ReadyCheckFrameText, 'TOP', 0, 2)
 
 

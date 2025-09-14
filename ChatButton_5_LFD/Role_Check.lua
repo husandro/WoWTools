@@ -241,7 +241,11 @@ local function Init()
             WoWTools_DataMixin:Call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
             WoWTools_CooldownMixin:Setup(self, nil, Save().sec, nil, true)--冷却条
             self.aceTime=C_Timer.NewTimer(Save().sec, function()
-                if self.acceptButton:IsEnabled() and self:IsShown() and not IsMetaKeyDown() then
+                if self.acceptButton:IsEnabled()
+                    and self:IsShown()
+                    and not IsMetaKeyDown()
+                    and not InCombatLockdown()
+                then
                     self.acceptButton:Click()
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
@@ -257,7 +261,7 @@ local function Init()
 
 
     RolePollPopup:HookScript('OnUpdate', function(self)
-        if IsModifierKeyDown() or not self.acceptButton:IsEnabled() then
+        if IsModifierKeyDown() or not self.acceptButton:IsEnabled() or InCombatLockdown() then
             if self.aceTime then
                 self.aceTime:Cancel()
                 self.aceTime= nil
