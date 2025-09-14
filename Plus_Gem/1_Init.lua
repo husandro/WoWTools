@@ -14,7 +14,7 @@ local P_Save={
 local addName
 local Frame
 local Set_Gem
-local SpellButton
+
 local SpellsTab={
     433397,--取出宝石
     --405805,--拔出始源之石
@@ -467,14 +467,19 @@ local function Init_Spell_Button()
     if Save().disableSpell then
         return
     end
-    SpellButton=WoWTools_ButtonMixin:Cbtn(Frame, {size=32, isSecure=true})
+
+    local SpellButton=WoWTools_ButtonMixin:Cbtn(Frame, {
+        size=32,
+        isSecure=true,
+        name='WoWToolsGemSpellButton'
+    })
+
     SpellButton:Hide()
-    --SpellButton:SetPoint('LEFT', ItemSocketingSocket3, 'RIGHT', 4,0)
-    --SpellButton:SetPoint('BOTTOMRIGHT', -4, 42)--, ItemSocketingSocketButton, 'TOPRIGHT', 20, 10)
+
     SpellButton:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 4, 4)
     SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
     SpellButton.texture:SetAllPoints()
-    SpellButton.count=WoWTools_LabelMixin:Create(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
+    SpellButton.count=WoWTools_LabelMixin:Create(SpellButton, {color={r=1,g=1,b=1}})
     SpellButton.count:SetPoint('BOTTOMRIGHT',-2, 9)
 
     function SpellButton:set_count()
