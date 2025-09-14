@@ -1912,12 +1912,8 @@ local function Init_List(showListType, isShow)
 
     local last
     for name, data in pairs(TypeTabs) do
-        List2Buttons[name]= WoWTools_ButtonMixin:Cbtn(Frame, {
-            name='WoWToolsWoWList2'..name..'Button',
-            icon='hide',
-            --addTexture=true,
-            size=23,
-        })
+        List2Buttons[name]= CreateFrame('Button', 'WoWToolsWoWList2'..name..'Button', Frame, 'WoWToolsButtonTemplate')
+        List2Buttons[name]:SetSize(23, 23)
 
         List2Buttons[name].texture=List2Buttons[name]:CreateTexture(nil, 'BORDER')
         List2Buttons[name].texture:SetPoint('CENTER')
@@ -1942,8 +1938,7 @@ local function Init_List(showListType, isShow)
         else
             List2Buttons[name]:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT')
         end
-        --List2Buttons[name]:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT', x, 0)
-        --x= x+23
+
         List2Buttons[name]:SetScript('OnLeave', function()
             GameTooltip:Hide()
         end)
@@ -2116,11 +2111,16 @@ btn.type= tab.type,--Item Bank Currency Money Time Instance Rare Worldboss
 function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
     tab= tab or {}
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {
+    --[[local btn= WoWTools_ButtonMixin:Cbtn(frame, {
         name= tab.name,
         atlas='glues-characterSelect-iconShop-hover',
         size=23,
-    })
+    })]]
+
+    local btn= CreateFrame('Button', tab.name, frame, 'WoWToolsButtonTemplate')
+    btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    btn:SetSize(23, 23)
+    btn:SetNormalAtlas('glues-characterSelect-iconShop-hover')
 
     --local name= tab.name
     btn.click= tab.click

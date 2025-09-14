@@ -3,12 +3,6 @@ local function Save()
     return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
-local btn
-
-
-
-
-
 
 
 
@@ -22,14 +16,16 @@ local function Init()
 
 
 
-
-    btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {
+   --[[local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {
         size=26,
         name='WoWToolsHyperLinkTableAttributeDisplayButton',
-    })
+    })]]
+    local btn= CreateFrame('Button', 'WoWToolsHyperLinkTableAttributeDisplayButton', TableAttributeDisplay, 'WoWToolsButtonTemplate')
+    btn:SetSize(26, 26)
+    btn:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+    btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
 
     btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
-    btn:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
     btn:SetScript('OnClick', function(self)
         FrameStackTooltip_ToggleDefaults()
         self:set_tooltip()
@@ -95,30 +91,6 @@ local function Init()
     check:SetChecked(Save().autoHideTableAttributeDisplay)
 
 
---[[GetAttributeSource
---GetTableInspector
---GetAttributeData 
-    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'UpdateLines', function(self)
-        if not self.dataProviders then
-            return
-        end
-        for _, line in ipairs(self.lines) do
-        end
-    end)
-    WoWTools_DataMixin:Hook(TableAttributeLineReferenceMixin, 'Initialize', function(line, attributeSource, index, attributeData)
-                    local text
-            local focusedTable = attributeSource:GetFocusedTable()
-            if focusedTable and  focusedTable.GetObjectType then
-                text= focusedTable:GetObjectType()
-            end
-            if focusedTable.GetSize then
-                text= (text and text..' ' or '')
-                    ..format('%i|cffffffffx|r%i', focusedTable:GetSize())
-            end
-            print(text)
-    end)
-]]
-
     local objectTypeLabel= WoWTools_LabelMixin:Create(edit, {mouse=true})
     objectTypeLabel:SetScript('OnLeave', function(self)
         self:SetAlpha(1)
@@ -162,31 +134,12 @@ local function Init()
     end)
 
     Init=function()
-        btn:SetShown(not Save().disabedFrameStackPlus)
+        _G['WoWToolsHyperLinkTableAttributeDisplayButton']:SetShown(not Save().disabedFrameStackPlus)
     end
 end
 
 
 
-
-    --[[local iconLabel= WoWTools_LabelMixin:Create(edit, {mouse=true})
-    iconLabel:SetScript('OnLeave', function(self)
-        self:SetAlpha(1)
-        GameTooltip:Hide()
-    end)
-    iconLabel:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:SetText(
-            WoWTools_DataMixin.Icon.icon2..'texture or atlas'..WoWTools_DataMixin.Icon.left
-        )
-        GameTooltip:Show()
-    end)
-    iconLabel:SetScript('OnMouseDown', function(self)
-        edit:SetText(self:GetText())
-    end)
-    iconLabel:SetPoint('LEFT', objectTypeLabel, 'RIGHT',4, 2)
-    iconLabel:SetPoint('BOTTOMRIGHT', edit, 'TOPRIGHT', 0, 2)
-    ]]
 
 
 
