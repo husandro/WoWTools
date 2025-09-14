@@ -6167,7 +6167,9 @@
         "FULL_PLAYER_NAME",
         "VAS_REALM_LABEL",
         "AdventureMapQuestChoiceDialog",
-        "AddonListEntryMixin"
+        "AddonListEntryMixin",
+        "HONOR_HIGHEST_RANK",
+        "LEARN_SKILL_TEMPLATE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

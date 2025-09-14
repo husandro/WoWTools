@@ -192,7 +192,7 @@ RemixArtifactFrame.Currency:SetPoint('RIGHT', RemixArtifactFrame.CommitConfigCon
             if d=='LeftButton' then
                 if data.canPurchaseRank then
                     btn:Click(d)
-                   end
+                end
             elseif d=='RightButton' then
                 if data.canRefundRank then
                     btn:Click(d)
@@ -200,6 +200,56 @@ RemixArtifactFrame.Currency:SetPoint('RIGHT', RemixArtifactFrame.CommitConfigCon
             end
         end
     end)
+
+--为最高级，添加 一键升级按钮
+C_Timer.After(0.3, function()
+    for btn in RemixArtifactFrame:EnumerateAllTalentButtons() do
+        local data= btn:GetNodeInfo() or {}
+
+        if data.maxRanks==999 then
+
+
+            b= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
+            b:SetNormalAtlas('plunderstorm-icon-upgrade')
+            b:SetPoint('LEFT', btn, 'RIGHT')
+            b:SetScript('OnMouseDown', function(f)
+                if f.isIn then
+                    f.isStop= true
+                    return
+                end
+                local function setting()
+                    if not f.isStop
+                        and f:IsVisible()
+                        and f:GetParent():GetNodeInfo().canPurchaseRank
+                        and not InCombatLockdown()
+                        and C_Traits.PurchaseRank(RemixArtifactFrame:GetConfigID(), f:GetParent():GetNodeID())
+                    then
+                        f.isIn= true
+                        C_Timer.After(0.1, setting)
+                    else
+                        f.isIn= nil
+                        f.isStop= nil
+                    end
+                end
+                setting()
+            end)
+            btn:SetScript('OnLeave', function()
+                GameTooltip:Hide()
+            end)
+            btn:SetScript('OnEnter', function(f)
+                GameTooltip:SetOwner(f,'ANCHOR_TOPRIGHT')
+                GameTooltip:SetText(
+                    WoWTools_DataMixin.onlyChinese and '升到最高级'
+                    or format(LEARN_SKILL_TEMPLATE, HONOR_HIGHEST_RANK)
+                )
+                GameTooltip:Hide()
+            end)
+
+
+            break
+        end
+    end
+end)
 
 
 end
