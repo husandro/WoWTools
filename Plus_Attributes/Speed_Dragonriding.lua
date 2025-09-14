@@ -1,9 +1,9 @@
 
-local BuffTabs={
+--[[local BuffTabs={
     447959,--一起骑乘 - 开启
     404183,--掠地滑翔
     447982,--奔雷疾冲
-}
+}]]
 
 local function Create_Buff(frame)--AuraButtonArtTemplate
 

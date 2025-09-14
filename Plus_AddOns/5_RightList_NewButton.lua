@@ -16,6 +16,12 @@ end
 
 --新建按钮
 local function Init()
+
+    
+
+
+
+
     local NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {
         size=26,
         atlas='communities-chat-icon-plus',
@@ -214,9 +220,9 @@ local function Init()
 
 
 
-    local label= WoWTools_LabelMixin:Create(NewButton)--插件，总数
-    label:SetPoint('LEFT',AddonListEnableAllButton, 3,0)
-    label:SetText(C_AddOns.GetNumAddOns())
+    local Label= WoWTools_LabelMixin:Create(NewButton)--插件，总数
+    Label:SetPoint('LEFT',AddonListEnableAllButton, 3,0)
+    Label:SetText(C_AddOns.GetNumAddOns())
 
 
 
@@ -226,16 +232,27 @@ local function Init()
 
 
 
-    local btn= WoWTools_ButtonMixin:Cbtn(NewButton, {atlas='talents-button-undo', size=18})
-    btn:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT', 2,0)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', function(self)
+    --[[local btn= WoWTools_ButtonMixin:Cbtn(NewButton, {
+        atlas='talents-button-undo',
+        size=18,
+    })]]
+    local RefeshButton= CreateFrame('Button', 'WoWToolsAddOnsRefeshButton', NewButton, 'WoWToolsButtonTemplate')
+
+    RefeshButton.texture= RefeshButton:CreateTexture(nil, 'BORDER')
+    RefeshButton.texture:SetSize(14, 14)
+    RefeshButton.texture:SetAtlas('talents-button-undo')
+    RefeshButton.texture:SetPoint('CENTER')
+
+    RefeshButton:SetSize(23,23)
+    RefeshButton:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT')
+    RefeshButton:SetScript('OnLeave', GameTooltip_Hide)
+    RefeshButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH)
         GameTooltip:Show()
     end)
-    btn:SetScript('OnClick', function()
+    RefeshButton:SetScript('OnMouseDown', function()
         if AddonList.startStatus then
             for i=1,C_AddOns.GetNumAddOns() do
                 if AddonList.startStatus[i] then
@@ -259,12 +276,42 @@ local function Init()
 
 
 
+    local up= CreateFrame('Button', 'WoWToolsAddonsUpButton', RefeshButton, 'WoWToolsButtonTemplate')
+    up:SetSize(23, 23)
+    up:SetPoint('LEFT', RefeshButton 'RIGHT')
+
+    up.texture= RefeshButton:CreateTexture(nil, 'BORDER')
+    up.texture:SetSize(14, 14)
+    up.texture:SetAtlas('NPE_ArrowDown')
+    up.texture:SetPoint('CENTER')
+
+    up:SetScript('OnMouseDown', function()
+        
+    end)
 
 
+--加载过期插件
+    AddonList.ForceLoad:ClearAllPoints()
+    AddonList.ForceLoad:SetPoint('LEFT', up, 'RIGHT')
+    for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
+        local text= label:GetObjectType()=="FontString" and label:GetText()
+        if text and (text==ADDON_FORCE_LOAD or text=='加载过期插件') then
+            label:SetText('')
+            label:ClearAllPoints()
+            break
+        end
+    end
+    AddonList.ForceLoad:HookScript('OnLeave', function() GameTooltip:Hide() end)
+    AddonList.ForceLoad:HookScript('OnEnter', function(f)
+        GameTooltip:SetOwner(f, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
+        GameTooltip:Show()
+    end)
 
-
-
-
+    AddonList.SearchBox:ClearAllPoints()
+    AddonList.SearchBox:SetPoint('LEFT', AddonList.ForceLoad, 'RIGHT', 6,0)
+    AddonList.SearchBox:SetPoint('RIGHT', NewButton, 'LEFT', -2, 0)
 
 
     Init=function()end

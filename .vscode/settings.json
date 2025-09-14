@@ -6172,7 +6172,8 @@
         "LEARN_SKILL_TEMPLATE",
         "CompactRaidFrameManagerDisplayFrameRaidMarkers",
         "CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerUnitTab",
-        "CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerGroundTab"
+        "CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerGroundTab",
+        "WoWTools_AttributesMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
