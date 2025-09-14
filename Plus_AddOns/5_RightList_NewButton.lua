@@ -276,9 +276,9 @@ local function Init()
 
 
 
-    local up= CreateFrame('Button', 'WoWToolsAddonsUpButton', RefeshButton, 'WoWToolsButtonTemplate')
+    --[[local up= CreateFrame('Button', 'WoWToolsAddonsUpButton', RefeshButton, 'WoWToolsButtonTemplate')
     up:SetSize(23, 23)
-    up:SetPoint('LEFT', RefeshButton 'RIGHT')
+    up:SetPoint('LEFT', RefeshButton, 'RIGHT')
 
     up.texture= RefeshButton:CreateTexture(nil, 'BORDER')
     up.texture:SetSize(14, 14)
@@ -286,13 +286,13 @@ local function Init()
     up.texture:SetPoint('CENTER')
 
     up:SetScript('OnMouseDown', function()
-        
-    end)
+
+    end)]]
 
 
 --加载过期插件
     AddonList.ForceLoad:ClearAllPoints()
-    AddonList.ForceLoad:SetPoint('LEFT', up, 'RIGHT')
+    AddonList.ForceLoad:SetPoint('LEFT', RefeshButton, 'RIGHT')
     for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
         local text= label:GetObjectType()=="FontString" and label:GetText()
         if text and (text==ADDON_FORCE_LOAD or text=='加载过期插件') then
