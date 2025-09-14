@@ -96,6 +96,9 @@ local function Init_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '自动选取' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CHOOSE))
+    end)
 
 
 --子目录，自定义任务
@@ -179,7 +182,7 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function (tooltip)
-        tooltip:AddLine('CVar autoQuestWatch')
+        tooltip:AddLine('CVar|cffffffff autoQuestWatch')
     end)
     sub:SetEnabled(not UnitAffectingCombat('player'))
 
