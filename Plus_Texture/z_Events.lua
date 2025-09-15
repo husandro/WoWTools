@@ -2184,11 +2184,14 @@ function WoWTools_TextureMixin.Events:Blizzard_RemixArtifactUI()
             f.AltModel:SetModelAlpha(f.PortraitAlpha or 1)
         end)
     end)
-
-
-
 end
 
+function WoWTools_TextureMixin.Events:Blizzard_AlliedRacesUI()
+    self:SetNineSlice(AlliedRacesFrame)
+    self:SetButton(AlliedRacesFrameCloseButton)
+    self:HideTexture(AlliedRacesFrameBg)
+    self:SetFrame(AlliedRacesFrame.ModelScene, {alpha=0})
+end
 
 
 

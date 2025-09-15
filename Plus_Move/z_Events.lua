@@ -842,6 +842,13 @@ function WoWTools_MoveMixin.Events:Blizzard_DurabilityFrame()
     self:Setup(DurabilityFrame, {notSave=true, notZoom=true})
 end
 
+
+
+
+
+
+
+
 function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
     if not CooldownViewerSettings then--冷却设置 11.2.5
         return
@@ -896,3 +903,12 @@ function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
     })
 end
 
+
+
+
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_AlliedRacesUI()
+    self:Setup(AlliedRacesFrame, {notSize=true})
+end
