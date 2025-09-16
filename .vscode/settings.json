@@ -6173,7 +6173,8 @@
         "CompactRaidFrameManagerDisplayFrameRaidMarkers",
         "CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerUnitTab",
         "CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerGroundTab",
-        "WoWTools_AttributesMixin"
+        "WoWTools_AttributesMixin",
+        "UIDropDownMenu_SetAnchor"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
