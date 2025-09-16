@@ -2190,7 +2190,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AlliedRacesUI()
     self:SetNineSlice(AlliedRacesFrame)
     self:SetButton(AlliedRacesFrameCloseButton)
     self:HideTexture(AlliedRacesFrameBg)
-    self:SetFrame(AlliedRacesFrame.ModelScene, {alpha=0})
+    self:SetFrame(AlliedRacesFrame.ModelScene, {alpha=0, index=2})
 end
 
 

@@ -114,7 +114,6 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
 
     local notColor= tab.notColor
     local alpha= tab.notAlpha and 1 or tab.alpha or self.min
-    
 
     if tab.isSub then
         local t
@@ -376,7 +375,7 @@ end
 
 --PanelTemplates_TabResize(frame, frame:GetParent().tabPadding or 0 , nil, frame:GetParent().minTabWidth, frame:GetParent().maxTabWidth)
 --WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(self)
-    
+
 function WoWTools_TextureMixin:SetTabButton(frame, alpha)--TabSystemOwner.lua
     if not frame then
         return
