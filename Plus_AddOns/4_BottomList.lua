@@ -174,9 +174,9 @@ local function Set_Load_Button()--LoadButtons
         local btn= _G[Name..i]
         btn:ClearAllPoints()
         if toTop then
-            btn:SetPoint('BOTTOMRIGHT', _G[Name..(i-1)], 'TOPRIGHT')
+            btn:SetPoint('BOTTOMRIGHT', _G[Name..(i-num)], 'TOPRIGHT')
         else
-            btn:SetPoint('TOPRIGHT', _G[Name..(i-1)], 'BOTTOMRIGHT')
+            btn:SetPoint('TOPRIGHT', _G[Name..(i-num)], 'BOTTOMRIGHT')
         end
     end
 
