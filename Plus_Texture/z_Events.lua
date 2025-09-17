@@ -2191,6 +2191,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AlliedRacesUI()
     self:SetButton(AlliedRacesFrameCloseButton)
     self:HideTexture(AlliedRacesFrameBg)
     self:SetFrame(AlliedRacesFrame.ModelScene, {alpha=0, index=2})
+    self:SetScrollBar(AlliedRacesFrame.RaceInfoFrame.ScrollFrame)
 end
 
 

@@ -214,10 +214,13 @@ local function Create_Tab_Label(frame, indexTab)
         return
     end
 
-    frame.tabNames[indexTab]= WoWTools_LabelMixin:Create(BankFrame.TitleContainer, {muose=true})
+    frame.tabNames[indexTab]= WoWTools_LabelMixin:Create(
+        BankFrame.TitleContainer, {
+            muose=true,
+            name='WoWToolsBankTabLabel'..indexTab
+        })
     frame.tabNames[indexTab]:SetScript('OnLeave', function(f)
         GameTooltip:Hide()
-        --ResetCursor()
         f:SetAlpha(1)
     end)
 
