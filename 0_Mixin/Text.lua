@@ -110,6 +110,7 @@ end
 --垂直文字
 function WoWTools_TextMixin:Vstr(text)--垂直文字
     if text then
+        text= self:CN(text)
         if (select(2, text:gsub("[^\128-\193]", "")) == #text) then
             return text:gsub(".", "%1|n")
         else
@@ -138,12 +139,9 @@ function WoWTools_TextMixin:sub(text, size, letterSize, lower)
     if not text or text=='' or not size or size==0  then
         return text
     end
-    --local le = strlenutf8(text)
-    --local le2= strlen(text)
+    
+    text= self:CN(text)
 
-    --text= self:CN(text)
-
-    --if le==le2 and text:find('%w') then
     if not text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
         text= text:sub(1, letterSize or size)
         return lower and strlower(text) or text
