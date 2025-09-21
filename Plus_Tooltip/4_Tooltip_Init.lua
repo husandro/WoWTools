@@ -36,11 +36,10 @@ end
 
 
 local function Create(tooltip)
-    if tooltip.textLeft then
+    local name= not tooltip.textLeft and tooltip:GetName()
+    if not name then
         return
     end
-
-    local name= tooltip:GetName()
 
     tooltip.textLeft=WoWTools_LabelMixin:Create(tooltip, {size=16, name=name..'TextLeft'})
     tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
