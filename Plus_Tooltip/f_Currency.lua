@@ -56,10 +56,8 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     end
 
     local numPlayer= #data
-    if isTrans and numPlayer>0 then
+    if isTrans and numPlayer>0 and data then
         tooltip:AddLine(' ')
-
-
         for index, info in pairs(data) do
             tooltip:AddDoubleLine(
                 index
@@ -79,12 +77,14 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     tooltip.textLeft:SetText(
         (col or '|cnGREEN_FONT_COLOR:')
         ..numPlayer
-        ..(icon or '')
         ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
+    )
+    tooltip.text2Left:SetText(
+        (col or '|cnGREEN_FONT_COLOR:')
+        ..(icon~='' and icon or WoWTools_DataMixin.Icon.wow2)
         ..WoWTools_DataMixin:MK(num, 3)
     )
-    
-    tooltip.textRight:SetText(WoWTools_DataMixin:MK(info2.quantity or 0, 3))
+    tooltip.textRight:SetText(col..WoWTools_DataMixin:MK(info2.quantity or 0, 3))
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 

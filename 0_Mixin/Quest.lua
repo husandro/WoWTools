@@ -77,7 +77,9 @@ function WoWTools_QuestMixin:GetRewardInfo(questID)
             }
         end
     end
-    if data then return data end
+    if data then
+        return data
+    end
 
 --物品
     local numRewards= GetNumQuestLogRewards(questID, true) or 0
