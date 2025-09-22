@@ -35,12 +35,6 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
 --战团可转移货币
     if isTrans then
         num, data= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
---[[
-        tooltip:AddLine(col..(WoWTools_DataMixin.onlyChinese and '战团可转移货币' or ACCOUNT_TRANSFERRABLE_CURRENCY))
---战团通用
-    elseif isWide then
-        tooltip:AddLine(col..(WoWTools_DataMixin.onlyChinese and '战团货币' or ACCOUNT_LEVEL_CURRENCY))
-]]
 
     elseif not isWide then
         for guid, info in pairs(WoWTools_WoWDate or {}) do--帐号数据
@@ -61,11 +55,11 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
         end
     end
 
-local numPlayer= #data
+    local numPlayer= #data
     if isTrans and numPlayer>0 then
         tooltip:AddLine(' ')
 
-        
+
         for index, info in pairs(data) do
             tooltip:AddDoubleLine(
                 index
@@ -80,16 +74,17 @@ local numPlayer= #data
                 break
             end
         end
-
-        
-        tooltip.textLeft:SetText(
-            (col or '|cnGREEN_FONT_COLOR:')
-            ..numPlayer
-            ..(icon or WoWTools_DataMixin.Icon.wow2)
-            ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
-            ..('|T'..(info2.iconFileID or 0)..':0|t')..WoWTools_DataMixin:MK(num, 3)
-        )
     end
+
+    tooltip.textLeft:SetText(
+        (col or '|cnGREEN_FONT_COLOR:')
+        ..numPlayer
+        ..(icon or '')
+        ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
+        ..WoWTools_DataMixin:MK(num, 3)
+    )
+    
+    tooltip.textRight:SetText(WoWTools_DataMixin:MK(info2.quantity or 0, 3))
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 
