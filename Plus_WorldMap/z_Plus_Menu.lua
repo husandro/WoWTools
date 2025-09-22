@@ -300,16 +300,15 @@ WoWTools_MenuMixin:SetScrollMode(sub)
     end
     local tab={
         'questPOI',
+        'showQuestObjectivesInLog',
         'autoQuestWatch',
         'scrollToLogQuest',
-
-        'showQuestObjectivesInLog',
+        '-',
         'displayQuestID',
         'displayInternalOnlyStatus',
         'showReadyToRecord',
-
     }
-    table.sort(tab)
+    
     local col= InCombatLockdown() and '|cff626262' or ''
     for _, var in pairs(tab) do
         if var=='-' then
@@ -318,10 +317,10 @@ WoWTools_MenuMixin:SetScrollMode(sub)
             sub2=sub:CreateCheckbox(
                 col..var,
             function(data)
-                return C_CVar.GetCVarBool(data.var) and true or false
+                return C_CVar.GetCVarBool(data.var)
             end, function(data)
                 if not InCombatLockdown() then
-                    C_CVar.SetCVar(data.var, C_CVar.GetCVarBool(data.var) and '0' or '1')
+                    C_CVar.SetCVar(data.var, C_CVar.GetCVarBool(data.var) and 0 or 1)
                 end
             end, {var=var})
             sub2:SetTooltip(function(tooltip, description)
