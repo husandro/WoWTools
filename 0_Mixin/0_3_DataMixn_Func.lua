@@ -43,7 +43,9 @@ function WoWTools_DataMixin:Load(tab)--WoWTools_DataMixin:Load({id=, type=''})--
         return
     end
     if tab.type=='quest' then --WoWTools_DataMixin:Load({id=, type='quest'})
-        C_QuestLog.RequestLoadQuestByID(tab.id)
+        if not HaveQuestData(tab.id) then
+            C_QuestLog.RequestLoadQuestByID(tab.id)
+        end
         if not HaveQuestRewardData(tab.id) then
             C_TaskQuest.RequestPreloadRewardData(tab.id)
         end
