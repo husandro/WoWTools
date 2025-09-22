@@ -299,32 +299,39 @@ WoWTools_MenuMixin:SetScrollMode(sub)
         return
     end
     local tab={
-        --'displayQuestID',
-        --'displayInternalOnlyStatus',
-        --'showReadyToRecord',
         'questPOI',
         'autoQuestWatch',
-        'scrollToLogQuest'
+        'scrollToLogQuest',
+
+        'showQuestObjectivesInLog',
+        'displayQuestID',
+        'displayInternalOnlyStatus',
+        'showReadyToRecord',
+
     }
     table.sort(tab)
+    local col= InCombatLockdown() and '|cff626262' or ''
     for _, var in pairs(tab) do
-        sub2=sub:CreateCheckbox(
-            (var=='scrollToLogQuest' and '|cnRED_FONT_COLOR:' or '')
-            ..var,
-        function(data)
-            return C_CVar.GetCVarBool(data.var) and true or false
-        end, function(data)
-            if data then
-                C_CVar.SetCVar(data.var, C_CVar.GetCVarBool(data.var) and '0' or '1')
-            end
-        end, {var=var})
-        sub2:SetTooltip(function(tooltip, description)
-            if description.data.var=='scrollToLogQuest' then
-                tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
-            end
-            tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT, WoWTools_TextMixin:GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
-            tooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
-        end)
+        if var=='-' then
+            sub:CreateDivider()
+        else
+            sub2=sub:CreateCheckbox(
+                col..var,
+            function(data)
+                return C_CVar.GetCVarBool(data.var) and true or false
+            end, function(data)
+                if not InCombatLockdown() then
+                    C_CVar.SetCVar(data.var, C_CVar.GetCVarBool(data.var) and '0' or '1')
+                end
+            end, {var=var})
+            sub2:SetTooltip(function(tooltip, description)
+                if description.data.var=='scrollToLogQuest' then
+                    tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
+                end
+                tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT, WoWTools_TextMixin:GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
+                tooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
+            end)
+        end
     end
 end
 
