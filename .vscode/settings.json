@@ -6188,7 +6188,8 @@
         "RaidFinderQueueFrameScrollFrame",
         "RaidFinderQueueFrameSelectionDropdownName",
         "RaidFinderQueueFrameScrollFrameChildFrame",
-        "RaidFinderQueueFrameRoleButtonTank"
+        "RaidFinderQueueFrameRoleButtonTank",
+        "LFDQueueFrameRoleButtonLeader"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

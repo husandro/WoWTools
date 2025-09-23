@@ -17,19 +17,37 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
     LFDQueueFrameRandomScrollFrameChildFrame:SetPoint('RIGHT', -12, 0)
     LFDQueueFrameRandomScrollFrameChildFrameDescription:SetPoint('RIGHT', -12, 0)
     LFDQueueFrameTypeDropdown:ClearAllPoints()
-    LFDQueueFrameTypeDropdown:SetPoint('TOPRIGHT', -8, -105)
+    LFDQueueFrameTypeDropdown:SetPoint('TOPRIGHT', -8, -115)
     LFDQueueFrameTypeDropdown:SetPoint('LEFT', LFDQueueFrameTypeDropdownName:GetStringWidth()+12, 0)
     LFDQueueFrameTypeDropdownName:ClearAllPoints()--<Anchor point="TOPLEFT" x="5" y="-146"/>
     LFDQueueFrameTypeDropdownName:SetPoint('RIGHT', LFDQueueFrameTypeDropdown, 'LEFT')
+
     LFDQueueFrameBackground:ClearAllPoints()
+
     LFDQueueFrameRoleButtonTank:ClearAllPoints()
     LFDQueueFrameRoleButtonTank:SetPoint('TOPLEFT', 35, -35)
+    LFDParentFrameRoleBackground:ClearAllPoints()
+    LFDParentFrameRoleBackground:SetPoint('TOPLEFT', LFDQueueFrameRoleButtonTank, -30, 10)
+    PVEFrameBlueBg:SetPoint('BOTTOM')
+    PVEFrame.shadows:SetPoint('BOTTOM')
+    for _, icon in pairs({PVEFrame.shadows:GetRegions()}) do
+        if icon:GetObjectType()=='Texture' then
+            icon:SetPoint('BOTTOM')
+        end
+    end
+    
+    LFDParentFrameInset:ClearAllPoints()
+    --LFDParentFrameInset:SetAllPoints(LFDQueueFrameRandomScrollFrame)
+    LFDParentFrameInset:SetPoint('TOPLEFT', LFDQueueFrameRandomScrollFrame)
+    LFDParentFrameInset:SetPoint('BOTTOMRIGHT', LFDQueueFrameRandomScrollFrame, 16, 0)
+
+
 
     RaidFinderFrame:SetPoint('BOTTOMRIGHT', -12, 12)
     RaidFinderQueueFrame:SetPoint('BOTTOMRIGHT')
     RaidFinderQueueFrameScrollFrame:SetPoint('TOPLEFT', 5, -146)
     RaidFinderQueueFrameSelectionDropdown:ClearAllPoints()
-    RaidFinderQueueFrameSelectionDropdown:SetPoint('TOPRIGHT', -8, -105)
+    RaidFinderQueueFrameSelectionDropdown:SetPoint('TOPRIGHT', -8, -115)
     RaidFinderQueueFrameSelectionDropdown:SetPoint('LEFT', RaidFinderQueueFrameSelectionDropdownName:GetStringWidth()+12, 0)
     RaidFinderQueueFrameScrollFrameChildFrame:SetPoint('RIGHT', -12, 0)
     RaidFinderQueueFrameScrollFrameChildFrameDescription:SetPoint('RIGHT', -24, 0)
@@ -37,8 +55,14 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
     RaidFinderQueueFrameRoleButtonTank:ClearAllPoints()
     RaidFinderQueueFrameRoleButtonTank:SetPoint('TOPLEFT', 35, -35)
 
-    LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -20, 0)
+    --自定义，副本，创建，更多...
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:ClearAllPoints()
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('TOPLEFT',0, -30)
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('BOTTOMRIGHT')
+
     LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
+    LFGListFrame.EntryCreation.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
+    LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
 
     WoWTools_DataMixin:Hook('PVEFrame_ShowFrame', function()
         if Is_Locked() then
@@ -95,10 +119,8 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
         end
     })
 
---自定义，副本，创建，更多...
-    LFGListFrame.EntryCreation.ActivityFinder.Dialog:ClearAllPoints()
-    LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('TOPLEFT',0, -30)
-    LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('BOTTOMRIGHT')
+
+
 
 --确定，进入副本
     WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {
@@ -128,22 +150,16 @@ function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
     HonorFrame:SetPoint('BOTTOMRIGHT', PVPQueueFrame.HonorInset, 'BOTTOMLEFT')
     HonorFrame.BonusFrame.WorldBattlesTexture:ClearAllPoints()
     HonorFrame.BonusFrame.WorldBattlesTexture:SetAllPoints()
-    --HonorFrame.Inset:SetPoint('BOTTOMRIGHT', PVPQueueFrame.HonorInset, 'BOTTOMLEFT')
-    --HonorFrame.BonusFrame:SetPoint('BOTTOMRIGHT', PVPQueueFrame.HonorInset, 'BOTTOMLEFT')
 
+    ConquestFrame:SetPoint('BOTTOMRIGHT', PVPQueueFrame.HonorInset, 'BOTTOMLEFT')
+    ConquestFrame.RatedBGTexture:ClearAllPoints()
+    ConquestFrame.RatedBGTexture:SetAllPoints(ConquestFrame)
+    PVPQueueFrame.NewSeasonPopup:ClearAllPoints()
+    PVPQueueFrame.NewSeasonPopup:SetAllPoints(ConquestFrame)
+    
     PVEFrameBlueBg:SetPoint('BOTTOM')
     PVPQueueFrame.HonorInset.Background:SetPoint('BOTTOM')
-
-
-    LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
 end
-
-
-
-
-
-
-
 
 
 
