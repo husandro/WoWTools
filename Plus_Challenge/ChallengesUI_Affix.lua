@@ -139,7 +139,7 @@ local function Init()
 
 
 
-    Frame= CreateFrame('Frame', nil, ChallengesFrame)
+    Frame= CreateFrame('Frame', 'WoWToolsChallengeAffixFrame', ChallengesFrame)
     Frame:SetFrameStrata('HIGH')
     Frame:SetFrameLevel(3)
     Frame:Hide()

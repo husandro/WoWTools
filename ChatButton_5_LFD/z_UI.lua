@@ -35,7 +35,7 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
             icon:SetPoint('BOTTOM')
         end
     end
-    
+
     LFDParentFrameInset:ClearAllPoints()
     --LFDParentFrameInset:SetAllPoints(LFDQueueFrameRandomScrollFrame)
     LFDParentFrameInset:SetPoint('TOPLEFT', LFDQueueFrameRandomScrollFrame)
@@ -156,7 +156,7 @@ function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
     ConquestFrame.RatedBGTexture:SetAllPoints(ConquestFrame)
     PVPQueueFrame.NewSeasonPopup:ClearAllPoints()
     PVPQueueFrame.NewSeasonPopup:SetAllPoints(ConquestFrame)
-    
+
     PVEFrameBlueBg:SetPoint('BOTTOM')
     PVPQueueFrame.HonorInset.Background:SetPoint('BOTTOM')
 end
