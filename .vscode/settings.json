@@ -6177,7 +6177,8 @@
         "UIDropDownMenu_SetAnchor",
         "AlliedRacesFrame",
         "AlliedRacesFrameCloseButton",
-        "AlliedRacesFrameBg"
+        "AlliedRacesFrameBg",
+        "RaidFinderQueueFrameSelectionDropdown"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

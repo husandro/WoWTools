@@ -1549,6 +1549,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetNineSlice(LFGListFrame.ApplicationViewer.Inset)
 
     self:SetAlphaColor(RaidFinderQueueFrameBackground)
+    self:SetMenu(RaidFinderQueueFrameSelectionDropdown)
 
     self:HideTexture(RaidFinderFrameRoleBackground)
 
