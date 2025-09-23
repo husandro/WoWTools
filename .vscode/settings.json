@@ -6178,7 +6178,17 @@
         "AlliedRacesFrame",
         "AlliedRacesFrameCloseButton",
         "AlliedRacesFrameBg",
-        "RaidFinderQueueFrameSelectionDropdown"
+        "RaidFinderQueueFrameSelectionDropdown",
+        "LFDQueueFrameRandom",
+        "LFDQueueFrameRandomScrollFrameChildFrameDescription",
+        "LFDQueueFrameRandomScrollFrameChildFrame",
+        "LFGCooldownCover_ChangeSettings",
+        "LFDQueueFrameFollower",
+        "LFDQueueFrame_SetTypeFollowerDungeon",
+        "RaidFinderQueueFrameScrollFrame",
+        "RaidFinderQueueFrameSelectionDropdownName",
+        "RaidFinderQueueFrameScrollFrameChildFrame",
+        "RaidFinderQueueFrameRoleButtonTank"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

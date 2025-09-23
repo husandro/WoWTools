@@ -174,7 +174,7 @@ end
 
 
 --设置菜单
-local function Init_Menu(self, root)
+local function Init_Menu(_, root)
     local sub, sub2, name, info
 
     root:CreateDivider()

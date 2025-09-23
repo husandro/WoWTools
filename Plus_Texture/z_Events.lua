@@ -1588,7 +1588,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetNineSlice(LFDParentFrameInset)
     self:HideTexture(LFDParentFrameInset.Bg)
     self:SetNineSlice(RaidFinderFrameBottomInset)
-    self:SetAlphaColor(RaidFinderFrameBottomInset.Bg)
+    self:HideTexture(RaidFinderFrameBottomInset.Bg)
 
     self:SetAlphaColor(LFDParentFrameRoleBackground)
 
@@ -1610,6 +1610,12 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
             self:HideTexture(btn.Cover)
         end
     end)
+
+    self:SetFrame(LFGListFrame.EntryCreation.ActivityFinder.Dialog.Border, {alpha=0})
+    self:SetAlphaColor(LFGListFrame.EntryCreation.ActivityFinder.Dialog.Bg, true)
+    self:SetEditBox(LFGListFrame.EntryCreation.ActivityFinder.Dialog.EntryBox)
+    self:SetScrollBar(LFGListFrame.EntryCreation.ActivityFinder.Dialog)
+    self:SetNineSlice(LFGListFrame.EntryCreation.ActivityFinder.Dialog.BorderFrame, 1)
 
     self:Init_BGMenu_Frame(PVEFrame)
 end
