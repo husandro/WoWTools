@@ -1,7 +1,3 @@
-if WoWTools_ChineseMixin then
-    return
-end
-
 local addName
 local classTabs={}
 local function Save()
@@ -162,34 +158,42 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if arg1~= 'WoWTools' then
-        return
-    end
+    if event=='ADDON_LOADED' then
+        if arg1== 'WoWTools' then
+            WoWToolsSave['Other_ClassMenuColor']= WoWToolsSave['Other_ClassMenuColor'] or {}
 
-    WoWToolsSave['Other_ClassMenuColor']= WoWToolsSave['Other_ClassMenuColor'] or {}
+            addName= '|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '职业菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, HUD_EDIT_MODE_MICRO_MENU_LABEL))
 
-    addName= '|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '职业菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, HUD_EDIT_MODE_MICRO_MENU_LABEL))
+            --添加控制面板
+            WoWTools_PanelMixin:OnlyCheck({
+                name= addName,
+                Value= not Save().disabled,
+                GetValue=function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    Init()
+                    if Save().disabled then
+                        print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_TextMixin:GetEnabeleDisable(Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    end
+                end,
+                tooltip=WoWTools_DataMixin.onlyChinese and '添加 颜色 图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, COLOR..', '..EMBLEM_SYMBOL),
+                layout= WoWTools_OtherMixin.Layout,
+                category= WoWTools_OtherMixin.Category,
+            })
 
-    --添加控制面板
-    WoWTools_PanelMixin:OnlyCheck({
-        name= addName,
-        Value= not Save().disabled,
-        GetValue=function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            Init()
-            if Save().disabled then
-                print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_TextMixin:GetEnabeleDisable(Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            if not Save().disabled then
+                self:RegisterEvent("PLAYER_ENTERING_WORLD")
             end
-        end,
-        tooltip=WoWTools_DataMixin.onlyChinese and '添加 颜色 图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, COLOR..', '..EMBLEM_SYMBOL),
-        layout= WoWTools_OtherMixin.Layout,
-        category= WoWTools_OtherMixin.Category,
-    })
-
-    if not Save().disabled then
-        Init()
+            self:UnregisterEvent(event)
+        end
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if not WoWTools_ChineseMixin then
+            Init()
+        else
+            Init=function()end
+        end
+        self:UnregisterEvent(event)
     end
-    self:UnregisterEvent(event)
 end)
