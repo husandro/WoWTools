@@ -191,8 +191,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_ENTERING_WORLD' then
         if not WoWTools_ChineseMixin then
             Init()
-        else
-            Init=function()end
         end
         self:UnregisterEvent(event)
     end
