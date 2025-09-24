@@ -23,7 +23,7 @@ local function Init()--预创建队伍增强
     end
 
     local btn= WoWTools_ButtonMixin:Menu(LFGListFrame, {
-        size=20,
+        size=16,
         texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
         name='WoWToolsLFGPlusMainButton',
     })
@@ -55,7 +55,7 @@ local function Init()--预创建队伍增强
         end)
 
 --重新加载UI
-        sub:CreateDivider()
+        root:CreateDivider()
         WoWTools_MenuMixin:Reload(root)
     end)
 
