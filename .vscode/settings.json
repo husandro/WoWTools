@@ -6198,7 +6198,9 @@
         "LFGListCategorySelection_StartFindGroup",
         "LFGListCategorySelectionButton_OnClick",
         "LFG_LIST_FIND_A_GROUP",
-        "CREATE_ARENA_TEAM"
+        "CREATE_ARENA_TEAM",
+        "ClickBindingFrameCloseButton",
+        "ToggleClickBindingFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

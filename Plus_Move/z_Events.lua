@@ -138,6 +138,8 @@ end
 
 --点击，施法
 function WoWTools_MoveMixin.Events:Blizzard_ClickBindingUI()
+    ClickBindingFrame.TutorialButton:SetFrameLevel(ClickBindingFrame.TitleContainer:GetFrameLevel()+1)
+
     self:Setup(ClickBindingFrame)
     self:Setup(ClickBindingFrame.ScrollBox, {frame=ClickBindingFrame})
 end

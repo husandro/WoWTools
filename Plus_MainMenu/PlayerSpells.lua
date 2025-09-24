@@ -97,8 +97,12 @@ local function Init()
             ..b
         )
 
+        if InCombatLockdown() then
+            GameTooltip:Show()
+        end
+
         GameTooltip:AddLine(' ')
-        local col= UnitAffectingCombat('player') and '|cff626262' or '|cffffffff'
+        local col= '|cffffffff'
 
         GameTooltip:AddLine(
             col..(WoWTools_DataMixin.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
@@ -115,9 +119,15 @@ local function Init()
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
+        GameTooltip:AddLine(
+            col..(WoWTools_DataMixin.onlyChinese and '点击施法' or CLICK_BIND_MODE)..'|r'
+            ..'Alt+'
+            ..WoWTools_DataMixin.Icon.mid
+            ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+        )
         if CooldownViewerSettings then--11.2.5
             GameTooltip:AddLine(
-                '|cffffffff'..(WoWTools_DataMixin.onlyChinese and '冷却设置' or COOLDOWN_VIEWER_SETTINGS_TITLE)..'|r'
+                col..(WoWTools_DataMixin.onlyChinese and '冷却设置' or COOLDOWN_VIEWER_SETTINGS_TITLE)..'|r'
                 ..'Alt+'
                 ..WoWTools_DataMixin.Icon.mid
                 ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
@@ -127,18 +137,25 @@ local function Init()
     end)
 
     PlayerSpellsMicroButton:HookScript('OnClick', function(_, d)
-        if not KeybindFrames_InQuickKeybindMode() and d=='RightButton' then
-            WoWTools_LoadUIMixin:SpellBook(2, nil)
+        if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() or d~='RightButton' then
+            return
         end
+        WoWTools_LoadUIMixin:SpellBook(2, nil)
     end)
 
     PlayerSpellsMicroButton:EnableMouseWheel(true)
     PlayerSpellsMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() then
             return
         end
-        if d==1 then
-            WoWTools_LoadUIMixin:SpellBook(1, nil)
+        if d==1 then--上
+            if IsAltKeyDown() then
+                if not ClickBindingFrame or not ClickBindingFrame:IsShown() then
+                    ToggleClickBindingFrame()
+                end
+            else
+                WoWTools_LoadUIMixin:SpellBook(1, nil)
+            end
         elseif d==-1 then
             if IsAltKeyDown() and CooldownViewerSettings then
                 if not CooldownViewerSettings:IsShown() then

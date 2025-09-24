@@ -470,7 +470,6 @@ local function Init_Menu(self, root)
 
 
 
-
 --fstack
     sub=root:CreateButton('|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK', function ()
         if not C_AddOns.IsAddOnLoaded("Blizzard_DebugTools") then

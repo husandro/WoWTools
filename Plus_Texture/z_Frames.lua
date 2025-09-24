@@ -329,6 +329,10 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             icon:SetAllPoints(ChatFrame1Background)
         end
     })
+
+--文本转语音
+    self:SetMenu(TextToSpeechFramePanelContainer.TtsVoiceDropdown)
+    self:SetMenu(TextToSpeechFramePanelContainer.TtsVoiceAlternateDropdown)
 end
 
 

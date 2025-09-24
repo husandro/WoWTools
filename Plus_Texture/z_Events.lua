@@ -790,6 +790,7 @@ end
 
 --点击，施法
 function WoWTools_TextureMixin.Events:Blizzard_ClickBindingUI()
+    --self:SetButton(ClickBindingFrameCloseButton)
     self:SetNineSlice(ClickBindingFrame, 1, true)
     self:SetScrollBar(ClickBindingFrame)
     self:SetAlphaColor(ClickBindingFrameBg)
@@ -797,8 +798,11 @@ function WoWTools_TextureMixin.Events:Blizzard_ClickBindingUI()
     self:SetNineSlice(ClickBindingFrame.TutorialFrame)
 end
 
-
-
+--快速快捷键模式
+function WoWTools_TextureMixin.Events:Blizzard_QuickKeybind()
+    self:SetFrame(QuickKeybindFrame.Header)
+    self:SetFrame(QuickKeybindFrame.BG)
+end
 
 
 
