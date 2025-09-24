@@ -27,6 +27,10 @@ local P_Save={
 
 
 local function Init(btn)
+    if not btn then
+        return
+    end
+
     btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 5, -5)
     btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -7, 7)
 
@@ -123,14 +127,11 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
     WoWToolsSave['ChatButton_LFD']=  WoWToolsSave['ChatButton_LFD'] or P_Save
     WoWToolsSave['ChatButton_LFD'].sec= WoWToolsSave['ChatButton_LFD'].sec or 5
-    P_Save=nil
 
     WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
-    WoWTools_LFDMixin.LFDButton= WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
+    --WoWTools_ChatMixin:GetButtonForName('LFD')
+    Init(WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName))
 
-    if WoWTools_LFDMixin.LFDButton then--禁用Chat Button
-        Init(WoWTools_LFDMixin.LFDButton)
-    end
     self:UnregisterEvent(event)
 end)

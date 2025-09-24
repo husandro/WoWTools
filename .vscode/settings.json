@@ -6189,7 +6189,16 @@
         "RaidFinderQueueFrameSelectionDropdownName",
         "RaidFinderQueueFrameScrollFrameChildFrame",
         "RaidFinderQueueFrameRoleButtonTank",
-        "LFDQueueFrameRoleButtonLeader"
+        "LFDQueueFrameRoleButtonLeader",
+        "MAX_LFG_LIST_GROUP_DROPDOWN_ENTRIES",
+        "LFGListEntryCreationActivityFinder_Show",
+        "LFGListEntryCreationActivityFinder_Cancel",
+        "LFGListCategorySelection_AddButton",
+        "LFGListCategorySelectionFindGroupButton_OnClick",
+        "LFGListCategorySelection_StartFindGroup",
+        "LFGListCategorySelectionButton_OnClick",
+        "LFG_LIST_FIND_A_GROUP",
+        "CREATE_ARENA_TEAM"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

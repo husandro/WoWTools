@@ -1604,7 +1604,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     end
 
     WoWTools_DataMixin:Hook('LFGListCategorySelection_AddButton', function(frame, btnIndex)
-        local btn = frame.CategoryButtons[btnIndex];
+        local btn = frame.CategoryButtons[btnIndex]
         if btn then
             self:SetAlphaColor(btn.Icon, nil, nil, 0.5)
             self:HideTexture(btn.Cover)
@@ -1612,7 +1612,8 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     end)
 
     self:SetFrame(LFGListFrame.EntryCreation.ActivityFinder.Dialog.Border, {alpha=0})
-    self:SetAlphaColor(LFGListFrame.EntryCreation.ActivityFinder.Dialog.Bg, true)
+    --self:SetAlphaColor(LFGListFrame.EntryCreation.ActivityFinder.Dialog.Bg, nil, true)
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog.Bg:SetColorTexture(0,0,0,0.75)
     self:SetEditBox(LFGListFrame.EntryCreation.ActivityFinder.Dialog.EntryBox)
     self:SetScrollBar(LFGListFrame.EntryCreation.ActivityFinder.Dialog)
     self:SetNineSlice(LFGListFrame.EntryCreation.ActivityFinder.Dialog.BorderFrame, 1)

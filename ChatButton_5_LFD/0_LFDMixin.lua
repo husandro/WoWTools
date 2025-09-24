@@ -95,21 +95,22 @@ end
 
 --设置图标, 点击,提示
 function WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, type, name, texture, atlas)
-    if not self.LFDButton then
+    local btn= WoWTools_ChatMixin:GetButtonForName('LFD')
+    if not btn then
         return
     end
-    self.LFDButton.dungeonID=dungeonID
-    self.LFDButton.name=name
-    self.LFDButton.type=type--LE_LFG_CATEGORY_LFD LE_LFG_CATEGORY_RF LE_LFG_CATEGORY_SCENARIO
+    btn.dungeonID=dungeonID
+    btn.name=name
+    btn.type=type--LE_LFG_CATEGORY_LFD LE_LFG_CATEGORY_RF LE_LFG_CATEGORY_SCENARIO
     if atlas then
-        self.LFDButton.texture:SetAtlas(atlas)
+        btn.texture:SetAtlas(atlas)
     elseif texture then
-        self.LFDButton.texture:SetTexture(texture)
+        btn.texture:SetTexture(texture)
     else
         if not WoWToolsSave['ChatButton_LFD'].hideQueueStatus then
-            self.LFDButton.texture:SetAtlas('groupfinder-eye-frame')
+            btn.texture:SetAtlas('groupfinder-eye-frame')
         else
-            self.LFDButton.texture:SetAtlas('UI-HUD-MicroMenu-Groupfinder-Mouseover')
+            btn.texture:SetAtlas('UI-HUD-MicroMenu-Groupfinder-Mouseover')
         end
     end
 end

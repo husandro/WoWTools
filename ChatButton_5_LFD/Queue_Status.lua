@@ -140,7 +140,7 @@ local function set_tipsFrame_Tips(text, LFGListTab)
 
 
 
-    WoWTools_LFDMixin.LFDButton.leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
+    WoWTools_ChatMixin:GetButtonForName('LFD').leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
 end
 
 
@@ -569,7 +569,7 @@ local function Init()
         if Save().tipsFramePoint then
             Button:SetPoint(Save().tipsFramePoint[1], UIParent, Save().tipsFramePoint[3], Save().tipsFramePoint[4], Save().tipsFramePoint[5])
         else
-            Button:SetPoint('BOTTOMLEFT', WoWTools_LFDMixin.LFDButton, 'TOPLEFT',0, 4)
+            Button:SetPoint('BOTTOMLEFT', WoWTools_ChatMixin:GetButtonForName('LFD'), 'TOPLEFT',0, 4)
         end
     end
 
@@ -618,12 +618,12 @@ local function Init()
     Button:SetScript("OnLeave", function()
         GameTooltip:Hide()
         ResetCursor()
-        WoWTools_LFDMixin.LFDButton:SetButtonState('NORMAL')
+        WoWTools_ChatMixin:GetButtonForName('LFD'):SetButtonState('NORMAL')
     end)
     Button:SetScript('OnEnter', function(self)
         self:set_tooltip()
         Set_Queue_Status()--小眼睛, 更新信息
-        WoWTools_LFDMixin.LFDButton:SetButtonState('PUSHED')
+        WoWTools_ChatMixin:GetButtonForName('LFD'):SetButtonState('PUSHED')
     end)
 
 

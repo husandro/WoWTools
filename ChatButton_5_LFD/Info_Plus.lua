@@ -126,7 +126,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
             if Save().RoleInfoPoint then
                 Button:SetPoint(Save().RoleInfoPoint[1], UIParent, Save().RoleInfoPoint[3], Save().RoleInfoPoint[4], Save().RoleInfoPoint[5])
             else
-                Button:SetPoint('TOPLEFT', WoWTools_LFDMixin.LFDButton, 'BOTTOMLEFT', 40, 40)
+                Button:SetPoint('TOPLEFT', WoWTools_ChatMixin:GetButtonForName('LFD'), 'BOTTOMLEFT', 40, 40)
                 Button:SetButtonState('PUSHED')
             end
             Button:RegisterForDrag("RightButton")

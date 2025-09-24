@@ -1057,14 +1057,22 @@ local function Init_Menu(self, root)
         return Save().LFGPlus
     end, function()
         Save().LFGPlus = not Save().LFGPlus and true or nil
-        if WoWTools_LFDMixin.LFGPlusButton then
-            WoWTools_LFDMixin.LFGPlusButton:set_texture()
+        WoWTools_LFDMixin:Init_LFG_Plus()
+        if not Save().LFGPlus then
+            print(
+                WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                WoWTools_TextMixin:GetEnabeleDisable( not Save().LFGPlus)
+            )
         end
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+        if _G['WoWToolsLFGPlusMainButton'] and not Save().LFGPlus then
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+        end
     end)
-
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub2)
 
 
 

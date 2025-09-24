@@ -119,19 +119,20 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
         end
     })
 
-
+--预创建队伍，更多副本，列表
+    self:Setup(LFGListFrame.EntryCreation.ActivityFinder.Dialog, {frame=PVEFrame})
 
 
 --确定，进入副本
-    WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {
+    self:Setup(LFGDungeonReadyPopup, {
         notFuori=true,
         setResizeButtonPoint={'BOTTOMRIGHT', LFGDungeonReadyPopup, 6, -6},
     restPointFunc=function()
         LFGDungeonReadyPopup:ClearAllPoints()
         LFGDungeonReadyPopup:SetPoint('TOP', UIParent, 'TOP', 0, -135)
     end})
-    WoWTools_MoveMixin:Setup(LFGDungeonReadyDialog, {notSize=true, frame=LFGDungeonReadyPopup})
-    WoWTools_MoveMixin:Setup(LFGDungeonReadyStatus, {notSize=true, frame=LFGDungeonReadyPopup})
+    self:Setup(LFGDungeonReadyDialog, {notSize=true, frame=LFGDungeonReadyPopup})
+    self:Setup(LFGDungeonReadyStatus, {notSize=true, frame=LFGDungeonReadyPopup})
 end
 
 
