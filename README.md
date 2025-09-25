@@ -31,6 +31,13 @@
 
 ***
 
+
+
+
+
+
+
+
 ![WoWTools_Chinese](https://private-user-images.githubusercontent.com/42209726/346324202-492105a5-2322-4deb-ac0c-f9ad9a0a963c.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjAzNDU2NDYsIm5iZiI6MTcyMDM0NTM0NiwicGF0aCI6Ii80MjIwOTcyNi8zNDYzMjQyMDItNDkyMTA1YTUtMjMyMi00ZGViLWFjMGMtZjlhZDlhMGE5NjNjLmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA3MDclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNzA3VDA5NDIyNlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTdkNjk3NzljY2IwNDE1MzZmMTg1MjVhMjliZDdlNjI5YzlmNGFmNjE4NmExYWM1MTYzMjEyZjYzNWRkNGM2YjEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.ryJXy18wZZ4zOcz11QCTkbGt63os0TBcBI-zn0Jiojc)
 # WoWTools_Chinese
 >
@@ -49,13 +56,20 @@
 
 ## BBS
 > ### <https://bbs.nga.cn/read.php?tid=40808191>
-
-
-## wago.io 主页
->
-> ### <https://wago.io/p/husandro2>
 ***
 
-## Email
-> ### husandro@qq.com
+
+# WoWTools_Chinese_Scanner
+>
+> ## 专为 WoWTools_Chinese 插件 
+> ## 收集（更新）数据
+> ## https://github.com/husandro/WoWTools_Chinese_Scanner
+***
+
+
+# Email
+> ## husandro@qq.com
+# wago.io 主页
+>
+> ## <https://wago.io/p/husandro2>
 ***
