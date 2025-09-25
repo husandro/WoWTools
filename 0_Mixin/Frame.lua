@@ -27,7 +27,7 @@ function WoWTools_FrameMixin:IsInSchermo(frame)
         return false
     end
 
-    frame= frame.TitleContainer or frame
+    frame= frame.TitleContainer or frame.Header or frame
 
     local isInSchermo= true
 
