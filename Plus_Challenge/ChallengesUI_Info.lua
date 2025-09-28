@@ -314,7 +314,7 @@ local function Create_Label(frame)
     end)
     frame:SetScript('OnMouseDown', function(self)
         if not Save().hideIns then
-            WoWTools_LoadUIMixin:JournalInstance(nil, self.journalInstanceID)
+            WoWTools_LoadUIMixin:JournalInstance(16, self.journalInstanceID)
         end
     end)
 end
