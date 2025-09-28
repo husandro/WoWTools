@@ -609,7 +609,7 @@ local function Init_Event(btn)
                 end)
             end
 
-        elseif event=='SPELLS_CHANGED' or event=='SPELL_DATA_LOAD_RESULT' then
+        elseif event=='SPELLS_CHANGED' or (event=='SPELL_DATA_LOAD_RESULT' and arg1 and arg2) then
             checkSpell(self)--检测法术
             XDInt()--德鲁伊设置
             checkMount()--检测坐骑

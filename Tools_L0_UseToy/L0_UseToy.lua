@@ -589,7 +589,7 @@ local function Init()
 
     ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
         if event=='ITEM_DATA_LOAD_RESULT' then
-            if success then
+            if itemID and success then
                 if ModifiedTab[itemID] then
                     self:set_alt()
                 elseif Save().items[itemID] then

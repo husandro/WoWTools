@@ -221,7 +221,7 @@ local function Init(ToyButton)
 
     ToyButton:SetScript('OnEvent', function(self, event, arg1, arg2)
         if event=='ITEM_DATA_LOAD_RESULT' then
-            if arg2 then--success then
+            if arg1 and arg2 then--success then
                 if self.typeItems[arg1] then
                     self:set_alt()
                 elseif Save().items[arg1] then
@@ -456,8 +456,8 @@ local function Init(ToyButton)
         end
     end
 
-    ToyButton:SetScript('OnShow', ToyButton.set_event)
-    ToyButton:SetScript('OnHide', ToyButton.set_event)
+    ToyButton:SetScript('OnShow', function(self) self:set_event() end)
+    ToyButton:SetScript('OnHide', function(self) self:set_event() end)
 
 
 

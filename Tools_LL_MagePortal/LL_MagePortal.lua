@@ -296,11 +296,11 @@ local function Init_Button(tab)
         end)
     end
 
-    btn:SetScript("OnEvent", function(self, event, arg1)
+    btn:SetScript("OnEvent", function(self, event, arg1, arg2)
         if event=='SPELL_UPDATE_COOLDOWN' then
             WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID2})--设置冷却
 
-        elseif event=='SPELL_DATA_LOAD_RESULT' then
+        elseif event=='SPELL_DATA_LOAD_RESULT' and arg1 and arg2 then
             if (arg1==self.spellID or arg1==self.spellID2) then
                 if self:CanChangeAttribute() then
                     if self:settings() then
