@@ -138,8 +138,8 @@ function WoWTools_DataMixin:MK(number, bit)
     bit = bit or 1
 
     local text= ''
-    if number>=1e6 then
-        number= number/1e6
+    if number>=1e8 then-- 1234 56789
+        number= number/1e8
         text='m'-- '|cffff00ffm|r'
     elseif number>= 1e4 and WoWTools_DataMixin.onlyChinese then
         number= number/1e4
