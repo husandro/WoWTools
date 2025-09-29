@@ -118,7 +118,7 @@ local function Init_UI()
     if C_AddOns.IsAddOnLoaded("CompactVendor") then
         print(
             WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
-            format(WoWTools_DataMixin.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'Compact Vendor'),
+            format(WoWTools_DataMixin.onlyChinese and "|cnWARNING_FONT_COLOR:与%s发生冲突！|r" or ALREADY_BOUND, 'Compact Vendor'),
             WoWTools_DataMixin.onlyChinese and '插件' or ADDONS
         )
     end

@@ -464,7 +464,7 @@ local function Init(panel)--设置 panel
         local R,G,B,A= self.r, self.g, self.b, self.a
         local function func()
             local hex= WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB,setA, self)--RGB转HEX
-            hex= hex and '|c'..hex or '|cffff0000'
+            hex= hex and '|c'..hex or '|cnWARNING_FONT_COLOR:'
             Save().redColor= hex
             RedColor= {r=setR or 1, g=setG or 0, b=setB or 0, a=setA or 1}
         end

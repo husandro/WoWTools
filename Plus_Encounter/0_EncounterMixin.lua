@@ -151,7 +151,7 @@ local function GetInstanceData(frame, showTips)
                         if t then
                             t2=t2..' ('..j else t2=j..') '..t2
                         end
-                        if isKilled then t2='|cFFFF0000'..t2..'|r' end
+                        if isKilled then t2='|cnWARNING_FONT_COLOR:'..t2..'|r' end
                         if j==numEncounters or t then
                             if not t then
                                 t=t2

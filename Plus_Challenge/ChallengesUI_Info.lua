@@ -46,7 +46,7 @@ local function Set_OnEnter(self)
                         local time2
                         if overtimeInfo and overtimeInfo.completionDate and overtimeInfo.level then
                             d=overtimeInfo.completionDate
-                            time2= format('|cffff0000%s %s:%s %d/%d/%d', '('..overtimeInfo.level..')', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year)
+                            time2= format('|cnWARNING_FONT_COLOR:%s %s:%s %d/%d/%d', '('..overtimeInfo.level..')', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year)
                         end
                         GameTooltip:AddDoubleLine(time, time2)
                     end
