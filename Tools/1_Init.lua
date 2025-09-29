@@ -186,7 +186,7 @@ local function Init_Menu(self, root)
         self:set_shown()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine((UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '')..(WoWTools_DataMixin.onlyChinese and '脱离战斗' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
+        tooltip:AddLine((UnitAffectingCombat('player') and '|cnWARNING_FONT_COLOR:' or '')..(WoWTools_DataMixin.onlyChinese and '脱离战斗' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
     end)
 
 --显示
@@ -377,7 +377,7 @@ local function Init()
 
     function Button:set_point()
         if self:IsProtected() and InCombatLockdown() then
-           print(WoWTools_DataMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+           print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         else
             self:ClearAllPoints()
             local p=Save().point
@@ -395,7 +395,7 @@ local function Init()
         if self:CanChangeAttribute() then
             self:SetScale(Save().scale or 1)
         else
-            print(WoWTools_DataMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         end
     end
 

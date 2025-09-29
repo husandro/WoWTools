@@ -34,7 +34,7 @@ local function Init_Plus_Menu(self, root)
         tooltip:AddLine('WorldQuest')
         tooltip:AddLine('Vignette')
         --tooltip:AddLine(' ')
-        --tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '内存会不断增加' or 'Memory will continue to increase')..' (Bug)')
+        --tooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '内存会不断增加' or 'Memory will continue to increase')..' (Bug)')
     end)
 
 --追踪 AreaPoiID 菜单

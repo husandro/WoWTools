@@ -213,7 +213,7 @@ local function Init()
         if not isCurrentWeek then
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(
-                '|cnRED_FONT_COLOR:'
+                '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '当前赛季数据不匹配' or 'Current season data mismatch')
             )
         end
@@ -234,7 +234,7 @@ local function Init()
     if WoWTools_DataMixin.Player.husandro then
         local season= C_MythicPlus.GetCurrentSeason()
         if season and season>0 and season~=WoWTools_DataMixin.affixScheduleSeason then
-            print('|cnRED_FONT_COLOR:需要更新赛季数据', '0_3_Data_NeedUpdate.lua' )
+            print('|cnWARNING_FONT_COLOR:需要更新赛季数据', '0_3_Data_NeedUpdate.lua' )
         end
     end
 

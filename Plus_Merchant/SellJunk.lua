@@ -87,7 +87,7 @@ local function Init()
                         gruop= gruop+ 1
                         num= num+ (info.stackCount or 1)--数量
 
-                        print('|cnRED_FONT_COLOR:'..gruop..')|r', checkText or '', info.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
+                        print('|cnWARNING_FONT_COLOR:'..gruop..')|r', checkText or '', info.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
 
                         if gruop>= 11 then
                             break

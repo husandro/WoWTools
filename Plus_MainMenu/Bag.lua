@@ -129,7 +129,7 @@ local function Init()
                     freeSlots= (freeSlots==0 and '|cff828282' or '|cnGREEN_FONT_COLOR:')..freeSlots..'|r',
                     percent= format('%i%%', freeSlots/numSlots*100)
                 })
-                    --num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnRED_FONT_COLOR:'..num..'|r'})
+                    --num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnWARNING_FONT_COLOR:'..num..'|r'})
             end
         end
 
@@ -146,7 +146,7 @@ local function Init()
         if GameTooltip.textRight then
             GameTooltip.textRight:SetText(
                 '|A:bags-button-autosort-up:18:18|a'
-                ..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
+                ..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')
                 ..use..'|r/'..num
                 ..' '..format('%i%%', use/num*100)
             )
@@ -163,7 +163,7 @@ local function Init()
         if freeSlots then
             if freeSlots==0 then
                 MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
-                freeSlots= '|cnRED_FONT_COLOR:'..freeSlots..'|r'
+                freeSlots= '|cnWARNING_FONT_COLOR:'..freeSlots..'|r'
             elseif freeSlots<=5 then
                 MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
                 freeSlots= '|cnGREEN_FONT_COLOR:'..freeSlots..'|r'

@@ -253,9 +253,9 @@ local function Init()
 
         local mapID = WorldMapFrame.mapID
         if not mapID then
-            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '没有找到MapID' or "Not found MapID"))
+            GameTooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '没有找到MapID' or "Not found MapID"))
         elseif not C_Map.CanSetUserWaypointOnMap(mapID) then
-            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
+            GameTooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
         end
 
         GameTooltip:Show()

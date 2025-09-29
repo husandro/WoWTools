@@ -293,7 +293,7 @@ local function Set_Item_Info()
     MerchantFrameTab2.numLable:SetText(
         (
         numBuybackItems==0 and '|cff626262'
-        or (numBuybackItems==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:')
+        or (numBuybackItems==BUYBACK_ITEMS_PER_PAGE and '|cnWARNING_FONT_COLOR:')
         or ''
         )
         ..numBuybackItems
@@ -366,7 +366,7 @@ local function Init_SetItem_Info()
                             if num>=itemValue then
                                 num= '|cnGREEN_FONT_COLOR:'..WoWTools_DataMixin:MK(num,0)..'|r'
                             else
-                                num= '|cnRED_FONT_COLOR:'..WoWTools_DataMixin:MK(num,0)..'|r'
+                                num= '|cnWARNING_FONT_COLOR:'..WoWTools_DataMixin:MK(num,0)..'|r'
                             end
                         end
 

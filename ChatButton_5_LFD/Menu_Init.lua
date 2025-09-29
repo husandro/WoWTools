@@ -723,7 +723,7 @@ local function set_Raid_Menu_List(root2)
                     end
                     table.insert(bossTab,
                         (texture and '|T'..texture..':0|t' or '')
-                        ..(isKilled and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')
+                        ..(isKilled and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')
                         ..WoWTools_TextMixin:CN(bossName)
                     )
                 end
@@ -977,7 +977,7 @@ local function Init_Menu(self, root)
                 ..(isDPS and WoWTools_DataMixin.Icon.DAMAGER or '')
                 ..(isLeader and '|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a' or '')
     else
-        text='|A:QuestLegendaryTurnin:0|a|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无职责' or NO_ROLE)..'|r'
+        text='|A:QuestLegendaryTurnin:0|a|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无职责' or NO_ROLE)..'|r'
     end
 
 --离开副本
@@ -1302,7 +1302,7 @@ local function Init_Menu(self, root)
     local shouldtext
     local cooldowntext
     if ( deserterExpiration ) then
-		shouldtext = format("|cnRED_FONT_COLOR:%s|r "..WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil), WoWTools_DataMixin.onlyChinese and '逃亡者' or DESERTER)
+		shouldtext = format("|cnWARNING_FONT_COLOR:%s|r "..WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil), WoWTools_DataMixin.onlyChinese and '逃亡者' or DESERTER)
         local timeRemaining = deserterExpiration - GetTime()
         if timeRemaining>0 then
             shouldtext= shouldtext..' '..SecondsToTime(ceil(timeRemaining))
@@ -1310,7 +1310,7 @@ local function Init_Menu(self, root)
 	else
 		local myExpireTime = GetLFGRandomCooldownExpiration()
         if myExpireTime then
-            cooldowntext= format("|cnRED_FONT_COLOR:%s|r "..WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil), WoWTools_DataMixin.onlyChinese and '冷却中' or ON_COOLDOWN)
+            cooldowntext= format("|cnWARNING_FONT_COLOR:%s|r "..WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil), WoWTools_DataMixin.onlyChinese and '冷却中' or ON_COOLDOWN)
             local timeRemaining = myExpireTime - GetTime()
             if timeRemaining>0 then
                 cooldowntext= cooldowntext..' '..SecondsToTime(ceil(timeRemaining))

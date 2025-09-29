@@ -116,7 +116,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 end
                 local text, unitMapID=WoWTools_MapMixin:GetUnit(v.unit)
                 if text and unitMapID~= playerMapID then
-                    m=m..'|cnRED_FONT_COLOR:|A:poi-islands-table:0:0|a'..text..'|r'
+                    m=m..'|cnWARNING_FONT_COLOR:|A:poi-islands-table:0:0|a'..text..'|r'
                 end
             end
         end
@@ -144,7 +144,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 else
                     print(
                         WoWTools_DataMixin.addName,
-                        '|cnRED_FONT_COLOR:',
+                        '|cnWARNING_FONT_COLOR:',
                         WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
                     )
                 end

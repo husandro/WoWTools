@@ -63,7 +63,7 @@ local function Init()
                     else
                         print(WoWTools_DataMixin.addName,
                             WoWTools_ProfessionMixin.addName,
-                            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD),
+                            '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD),
                             C_CurrencyInfo.GetCoinTextureString(money)
                         )
                         break
@@ -105,7 +105,7 @@ local function Init()
 
         ClassTrainerFrame.BuyAll:SetEnabled(ClassTrainerFrame.BuyAll.all>0)
         local text= ClassTrainerFrame.BuyAll.all..' '..ClassTrainerFrame.BuyAll.name
-        text= (ClassTrainerFrame.BuyAll.all>0 and ClassTrainerFrame.BuyAll.cost>GetMoney() and '|cnRED_FONT_COLOR:' or '')..text
+        text= (ClassTrainerFrame.BuyAll.all>0 and ClassTrainerFrame.BuyAll.cost>GetMoney() and '|cnWARNING_FONT_COLOR:' or '')..text
         ClassTrainerFrame.BuyAll:SetText(text)
         ClassTrainerFrame.BuyAll:SetShown(not Save().disabledClassTrainer)
 	end)

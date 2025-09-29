@@ -65,7 +65,7 @@ local content= CurrencyTransferMenu.Content--11.2
 			local data= self:GetParent().sourceCharacterData or {}
 			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.characterGUID, nil, {reName=true, reRealm=true})
 			if name~='' then
-				self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnRED_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+				self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnWARNING_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 			end
 		end
     end)

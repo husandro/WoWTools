@@ -539,7 +539,7 @@ local function Init_hideAdd_Menu(self, root)
         root:CreateCheckbox(
             index..') '
             ..'|T'..(btn.dataObject.icon or 0)..':0|t'
-            ..(Save().Icons.noAdd[name] and '|cnRED_FONT_COLOR:' or '')
+            ..(Save().Icons.noAdd[name] and '|cnWARNING_FONT_COLOR:' or '')
             ..name,
         function(data)
             return Save().Icons.hideAdd[data.name]
@@ -909,7 +909,7 @@ local function Init_Menu(self, root)
         end
     end
     sub= root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL)..' |cnRED_FONT_COLOR:#|r'..num,
+        (WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL)..' |cnWARNING_FONT_COLOR:#|r'..num,
     function()
         return MenuResponse.Open
     end)

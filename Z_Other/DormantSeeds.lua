@@ -73,7 +73,7 @@ local function Init()
             icon= icon and '|T'..icon..':0|t' or ''
             local num
             num= C_Item.GetItemCount(itemID)
-            num= num>0 and '|cnGREEN_FONT_COLOR:'..num or ('|cnRED_FONT_COLOR:'..num)
+            num= num>0 and '|cnGREEN_FONT_COLOR:'..num or ('|cnWARNING_FONT_COLOR:'..num)
             GameTooltip:AddDoubleLine(icon..link, num)
         end
         if CurrencyID and CurrencyID>0 then
@@ -109,7 +109,7 @@ local function Init()
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end

@@ -84,7 +84,7 @@ local function Init()
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
@@ -204,7 +204,7 @@ local function Init()
             local text
             info= C_UnitAuras.GetPlayerAuraBySpellID(43052)
             if info and info.applications then
-                text= (info.applications<=60 and '|cnGREEN_FONT_COLOR:' or info.applications<=80 and '|cnYELLOW_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
+                text= (info.applications<=60 and '|cnGREEN_FONT_COLOR:' or info.applications<=80 and '|cnYELLOW_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')
                     ..'|T'..info.icon..':0|t'
                     ..info.applications
             end

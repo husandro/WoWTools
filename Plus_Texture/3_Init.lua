@@ -89,7 +89,7 @@ local function Init_Texture()
             if _G[name] then
                 WoWTools_TextureMixin.Frames[name](WoWTools_TextureMixin)
             elseif WoWTools_DataMixin.Player.husandro then
-                print(WoWTools_TextureMixin.addName, 'Frames[|cnRED_FONT_COLOR:'..name..'|r]', '没有发现')
+                print(WoWTools_TextureMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
             end
         end
         WoWTools_TextureMixin.Frames[name]= nil

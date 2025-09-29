@@ -311,7 +311,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                         if guid then
                             local name, realmName = select(6, GetPlayerInfoByGUID(guid))
                             realmName= realmName~='' and realmName or WoWTools_DataMixin.Player.Realm
-                            realmName= (WoWTools_DataMixin.Player.Realms[realmName] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..realmName
+                            realmName= (WoWTools_DataMixin.Player.Realms[realmName] and '|cnGREEN_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')..realmName
                             GameTooltip:AddLine(name)
                             GameTooltip:AddLine(realmName)
                         end

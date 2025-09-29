@@ -319,7 +319,7 @@ local function Update_Total_Price(frame)
                     text= col..format('x%i', x)
                 end
             else
-                col='|cnRED_FONT_COLOR:'
+                col='|cnWARNING_FONT_COLOR:'
                 text= col..(WoWTools_DataMixin.onlyChinese and '危险' or VOICEMACRO_1_Sc_0)
                 local itemID=  C_Item.GetItemID(itemLocation)
                 if itemID and not Save().hideSellItem[itemID] then--加入，隐藏，物品列表

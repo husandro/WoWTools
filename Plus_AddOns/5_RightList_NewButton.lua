@@ -53,7 +53,7 @@ local function Init()
             SetValue=function(newIcon, newText)
                 local name= '|T'..(newIcon or 0)..':0|t'..newText
                 if Save().buttons[name] then
-                    print(name, '|cnRED_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)
+                    print(name, '|cnWARNING_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)
                 end
                 Save().buttons[name]= select(4 ,WoWTools_AddOnsMixin:Get_AddListInfo())
                 WoWTools_DataMixin:Call(AddonList_Update)
@@ -120,7 +120,7 @@ local function Init()
                 local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
                 local col= dema and '|cffff00ff' or '|cnGREEN_FONT_COLOR:'
                 local memo, value= WoWTools_AddOnsMixin:Get_MenoryValue(index, false)
-                memo= memo and ' |cnRED_FONT_COLOR:'..memo..'|r' or ''
+                memo= memo and ' |cnWARNING_FONT_COLOR:'..memo..'|r' or ''
                 table.insert(newTab, {
                     left=icon..col..title..memo,
                     right=dema and col..WoWTools_TextMixin:CN(_G['ADDON_DEMAND_LOADED']) or ' ',
@@ -152,14 +152,14 @@ local function Init()
         if allMomo>0 then
             GameTooltip:AddLine(' ')
             if allMomo<1000 then
-                allMemberText= format(' |cnRED_FONT_COLOR:%0.2fKB|r', allMomo)
+                allMemberText= format(' |cnWARNING_FONT_COLOR:%0.2fKB|r', allMomo)
             else
-                allMemberText=format(' |cnRED_FONT_COLOR:%0.2fMB|r', allMomo/1000)
+                allMemberText=format(' |cnWARNING_FONT_COLOR:%0.2fMB|r', allMomo/1000)
             end
         end
 
         GameTooltip:AddDoubleLine(
-            load..' |cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已加载' or LOAD_ADDON)..'|r |cnRED_FONT_COLOR:'..allMemberText,
+            load..' |cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已加载' or LOAD_ADDON)..'|r |cnWARNING_FONT_COLOR:'..allMemberText,
             '|cffff00ff'..need..' '..(WoWTools_DataMixin.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED)
         )
 

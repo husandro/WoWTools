@@ -128,7 +128,7 @@ local PointTab={
             end
             print(
                 WoWTools_MacroMixin.addName,
-                '|cnRED_FONT_COLOR:'
+                '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
             )
             for i = GetNumMacros(), 1, -1 do
@@ -165,7 +165,7 @@ local PointTab={
             end
             print(
                 WoWTools_MacroMixin.addName,
-                '|cnRED_FONT_COLOR:'
+                '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
             )
             for i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), MAX_ACCOUNT_MACROS+1, -1 do
@@ -337,7 +337,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MacroMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
+        GameTooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(' ', (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()

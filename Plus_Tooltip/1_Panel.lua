@@ -236,7 +236,7 @@ local function Init_Panel()
         category= Category,
         SetValue= function()
             Save().UNIT_POPUP_RIGHT_CLICK= not Save().UNIT_POPUP_RIGHT_CLICK and true or nil
-            print(WoWTools_TooltipMixin.addName,  WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            print(WoWTools_TooltipMixin.addName,  WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
         end
     })
     
@@ -331,7 +331,7 @@ local function Init_Panel()
 end
     --[[root= WoWTools_PanelMixin:OnlyCheck({
         name= (WoWTools_DataMixin.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
-        tooltip= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
+        tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
         GetValue= function() return Save().ShowOptionsCVarTips end,
         category= Category,
         SetValue= function()

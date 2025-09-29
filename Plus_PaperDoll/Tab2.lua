@@ -119,8 +119,8 @@ local function Init_Button()
         )
 
         GameTooltip:AddDoubleLine(
-            '|cnRED_FONT_COLOR:'..(GetNumTitles()-known),
-            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
+            '|cnWARNING_FONT_COLOR:'..(GetNumTitles()-known),
+            '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
         )
         GameTooltip:Show()
         self:SetAlpha(0.5)

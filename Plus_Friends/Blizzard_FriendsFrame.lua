@@ -38,7 +38,7 @@ local function Init_Friends_Menu(self, root)
 
     local sub, name
     if not BNConnected() then
-        root:CreateTitle('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))..'|r')
+        root:CreateTitle('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))..'|r')
         root:CreateDivider()
     end
 
@@ -230,10 +230,10 @@ local function Set_Friend_Event(self, _, friendIndex)
 
     if not accountInfo.gameAccountInfo.isInCurrentRegion then
         if accountInfo.gameAccountInfo.regionID and RegionNames[accountInfo.gameAccountInfo.regionID] then
-            text= text..' |cnRED_FONT_COLOR:'..RegionNames[accountInfo.gameAccountInfo.regionID]..'|r'
+            text= text..' |cnWARNING_FONT_COLOR:'..RegionNames[accountInfo.gameAccountInfo.regionID]..'|r'
         end
     elseif accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW and accountInfo.gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID then
-        text= text..' |cnRED_FONT_COLOR:CLASSIC'..accountInfo.gameAccountInfo.wowProjectID..'|r'
+        text= text..' |cnWARNING_FONT_COLOR:CLASSIC'..accountInfo.gameAccountInfo.wowProjectID..'|r'
     end
 
     local infoText
@@ -442,7 +442,7 @@ local function Init()--好友列表, 初始化
             end
             if not accountInfo.gameAccountInfo.isInCurrentRegion then--不在，当前地区
                 if accountInfo.gameAccountInfo.regionID and RegionNames[accountInfo.gameAccountInfo.regionID] then
-                    self.info:SetText('|cnRED_FONT_COLOR:'..RegionNames[accountInfo.gameAccountInfo.regionID])
+                    self.info:SetText('|cnWARNING_FONT_COLOR:'..RegionNames[accountInfo.gameAccountInfo.regionID])
                 end
                 return
             elseif not accountInfo.gameAccountInfo.isOnline then--or accountInfo.gameAccountInfo.wowProjectID~=WOW_PROJECT_ID then
@@ -450,7 +450,7 @@ local function Init()--好友列表, 初始化
 
             elseif accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW or accountInfo.gameAccountInfo.wowProjectID~= WOW_PROJECT_ID then
                 if accountInfo.gameAccountInfo.wowProjectID and accountInfo.gameAccountInfo.clientProgram then
-                    self.info:SetText('|cnRED_FONT_COLOR:'..accountInfo.gameAccountInfo.clientProgram.. accountInfo.gameAccountInfo.wowProjectID)
+                    self.info:SetText('|cnWARNING_FONT_COLOR:'..accountInfo.gameAccountInfo.clientProgram.. accountInfo.gameAccountInfo.wowProjectID)
                 end
                 return
             end

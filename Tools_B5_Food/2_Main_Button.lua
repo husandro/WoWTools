@@ -144,7 +144,7 @@ local function Init(btn)
     btn:SetScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
             if not self:CanChangeAttribute() then
-                print(WoWTools_FoodMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                print(WoWTools_FoodMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 WoWTools_FoodMixin:Check_Items(true)
             end

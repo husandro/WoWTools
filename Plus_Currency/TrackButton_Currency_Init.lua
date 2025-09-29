@@ -150,7 +150,7 @@ local function Get_Currency(currencyID, index)
 	local max
 	if isMax then
 			max= WoWTools_CurrencyMixin:GetAccountIcon(currencyID or info.currencyID, index) or '|A:quest-important-available:0:0|a'
-		num= '|cnRED_FONT_COLOR:'..num..'|r'
+		num= '|cnWARNING_FONT_COLOR:'..num..'|r'
 	elseif canWeek or canEarned or canQuantity then
 		num= '|cnGREEN_FONT_COLOR:'..num..'|r'
 	end
@@ -629,7 +629,7 @@ local function Init_TrackButton()
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(itemLink or ('itemID'..itemID),
 					Save().item[itemID] and
-						('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+						('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 					or ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
 			)
 			self:set_texture(C_Item.GetItemIconByID(itemID))
@@ -679,7 +679,7 @@ local function Init_TrackButton()
 			print(WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING,
 					Save().item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
-					or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
+					or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 					itemLink or itemID)
 			ClearCursor()
 			WoWTools_CurrencyMixin:Set_TrackButton_Text()

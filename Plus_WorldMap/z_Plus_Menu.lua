@@ -325,7 +325,7 @@ WoWTools_MenuMixin:SetScrollMode(sub)
             end, {var=var})
             sub2:SetTooltip(function(tooltip, description)
                 if description.data.var=='scrollToLogQuest' then
-                    tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
+                    tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
                 end
                 tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT, WoWTools_TextMixin:GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
                 tooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
@@ -386,7 +386,7 @@ AbandoList= {
             ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
             ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
             ..'\n',
-        button1 = '|cnRED_FONT_COLOR:'..(not WoWTools_DataMixin.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
+        button1 = '|cnWARNING_FONT_COLOR:'..(not WoWTools_DataMixin.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
         button2 = '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL),
         OnShow=function()
             PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST)

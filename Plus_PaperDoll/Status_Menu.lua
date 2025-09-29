@@ -142,12 +142,12 @@ local function Remove_Stat(tab)--移除
         for i, info in pairs(PAPERDOLL_STATCATEGORIES[index].stats or {}) do
             if info.stat==stat then
                 table.remove(PAPERDOLL_STATCATEGORIES[index].stats, i)
-                --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '移除' or REMOVE), stat, name)
+                --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnWARNING_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '移除' or REMOVE), stat, name)
                 return
             end
         end
     end
-    --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
+    --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnWARNING_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
 end
 
 local function Get_Primary_Text(primary)--主属性, 文本

@@ -290,7 +290,7 @@ end
         if not value then
             col= '|cff606060'
         elseif value==1 then
-            col= '|cnRED_FONT_COLOR:'
+            col= '|cnWARNING_FONT_COLOR:'
         elseif value==2 then
             col= '|cnGREEN_FONT_COLOR:'
         end
@@ -310,7 +310,7 @@ end
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '按Esc键，隐藏框休' or 'Press the Esc key to hide the frame')
         tooltip:AddLine(' ')
         tooltip:AddLine('|cff606060'..(WoWTools_DataMixin.onlyChinese and '忽略' or IGNORE_DIALOG))
-        tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
+        tooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
         tooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE))
         tooltip:AddLine(' ')
         tooltip:AddLine(
@@ -643,13 +643,13 @@ local function Set_Tooltip(self)
     local name= self.name or target:GetName()
 
     if WoWTools_FrameMixin:IsLocked(target) then
-        GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
+        GameTooltip:AddDoubleLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
         GameTooltip:Show()
         return
     elseif target:IsProtected() then
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
-            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁止操作' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, NPE_CONTROLS))
+            '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁止操作' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, NPE_CONTROLS))
         )
         GameTooltip:AddLine(' ')
     end
@@ -662,7 +662,7 @@ local function Set_Tooltip(self)
 
     local scale
     scale= tonumber(format('%.2f', target:GetScale() or 1))
-    scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
+    scale= ((scale<=0.4 or scale>=2.5) and ' |cnWARNING_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
     GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), scale..WoWTools_DataMixin.Icon.left)
 
     if self.setSize then
@@ -675,10 +675,10 @@ local function Set_Tooltip(self)
 
         local w, h
         w= math.modf(target:GetWidth())
-        w= format('%s%d|r', ((self.minWidth and self.minWidth>=w) or (self.maxWidth and self.maxWidth<=w)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', w)
+        w= format('%s%d|r', ((self.minWidth and self.minWidth>=w) or (self.maxWidth and self.maxWidth<=w)) and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', w)
 
         h= math.modf(target:GetHeight())
-        h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
+        h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
 
         GameTooltip:AddDoubleLine(
             col..(WoWTools_DataMixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..format(' %s |cffffffffx|r %s', w, h),
@@ -890,7 +890,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             initFunc=initFunc
         })
         if WoWTools_DataMixin.Player.husandro then
-            print(WoWTools_MoveMixin.addName, issecure(), target:GetName(), '|cnRED_FONT_COLOR:不能执行')
+            print(WoWTools_MoveMixin.addName, issecure(), target:GetName(), '|cnWARNING_FONT_COLOR:不能执行')
         end
     else
         if size then

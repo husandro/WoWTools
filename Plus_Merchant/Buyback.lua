@@ -60,7 +60,7 @@ local function set_buyback_item()
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, index..')|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK), itemLink)
         end
         for index, info in pairs(no) do
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, index..')|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, index..')|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
         end
     end)
 end
@@ -81,7 +81,7 @@ local function Add_Remove_ToSave(itemID)
     local text
     if WoWToolsPlayerDate['SellBuyItems'].noSell[itemID] then
         WoWToolsPlayerDate['SellBuyItems'].noSell[itemID]=nil
-        text= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
+        text= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
     else
         WoWToolsPlayerDate['SellBuyItems'].noSell[itemID]=true
         WoWToolsPlayerDate['SellBuyItems'].sell[itemID]=nil

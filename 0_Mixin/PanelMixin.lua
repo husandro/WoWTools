@@ -583,7 +583,7 @@ function  e.Add_Panel_RestData_Button(root, SetValue)
         StaticPopupDialogs['WoWTools_Rest_DaTa']={--重置所有,清除全部玩具
             text=id..' '..addName..'|n'..(WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL)..'|n|n'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
             whileDead=true, hideOnEscape=true, exclusive=true,
-            button1='|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET)..'|r',
+            button1='|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET)..'|r',
             button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
             OnAccept = function(_, setValue)
                 setValue()

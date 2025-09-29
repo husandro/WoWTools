@@ -17,7 +17,7 @@ local function Init()
         local num
         num= select(2, C_QuestLog.GetNumQuestLogEntries()) or 0
         if num>=38 then
-            num= '|cnRED_FONT_COLOR:'..num..'|r'
+            num= '|cnWARNING_FONT_COLOR:'..num..'|r'
         elseif num >= MAX_QUESTS then
             num= '|cnYELLOW_FONT_COLOR:'..num..'|r'
         else

@@ -74,7 +74,7 @@ local function Init()
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                 GameTooltip:ClearLines()
                 if p.dropInfo.startTime then
-                    local startTime= '|cnRED_FONT_COLOR:'..(WoWTools_TimeMixin:Info(p.dropInfo.startTime/1000, false, nil) or '')
+                    local startTime= '|cnWARNING_FONT_COLOR:'..(WoWTools_TimeMixin:Info(p.dropInfo.startTime/1000, false, nil) or '')
                     local duration= p.dropInfo.duration and '|cnGREEN_FONT_COLOR:'..format(WoWTools_DataMixin.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(p.dropInfo.duration/100))
                     GameTooltip:AddDoubleLine(startTime, duration)
                     GameTooltip:AddLine(' ')
@@ -135,7 +135,7 @@ local function Init()
             end
 
             if btn.dropInfo.startTime and notGreed then
-                text= text..' |cnRED_FONT_COLOR:'..WoWTools_TimeMixin:Info(btn.dropInfo.startTime/1000, true, nil)..'|r'
+                text= text..' |cnWARNING_FONT_COLOR:'..WoWTools_TimeMixin:Info(btn.dropInfo.startTime/1000, true, nil)..'|r'
             end
         end
         if btn.itemSubTypeLabel then

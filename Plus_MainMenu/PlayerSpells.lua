@@ -92,7 +92,7 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a)
         GameTooltip:AddLine(
-            (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
+            (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')
             ..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
             ..b
         )

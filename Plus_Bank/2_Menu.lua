@@ -8,7 +8,7 @@ local function Init_Menu(self, root)
         return
     elseif not C_Bank.AreAnyBankTypesViewable() then
         root:CreateTitle(
-            '|cnRED_FONT_COLOR:'
+            '|cnWARNING_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '此角色没有使用此银行的权限。' or ERR_BANK_NOT_ACCESSIBLE))
         root:CreateDivider()
     end

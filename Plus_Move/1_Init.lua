@@ -52,7 +52,7 @@ local function Init()
             if _G[name] then
                 WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)
             elseif WoWTools_DataMixin.Player.husandro then
-                print(WoWTools_MoveMixin.addName, 'Frames[|cnRED_FONT_COLOR:'..name..'|r]', '没有发现')
+                print(WoWTools_MoveMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
             end
         end
         WoWTools_MoveMixin.Frames[name]= nil

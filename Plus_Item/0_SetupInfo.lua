@@ -128,7 +128,7 @@ end
 --已收集, 未收集
 local function get_has_text(has)
     if has then
-        return format('|cnRED_FONT_COLOR:%s|r',  WoWTools_DataMixin.onlyChinese and '已收集' or WoWTools_TextMixin:sub(COLLECTED, 3, 5, true))
+        return format('|cnWARNING_FONT_COLOR:%s|r',  WoWTools_DataMixin.onlyChinese and '已收集' or WoWTools_TextMixin:sub(COLLECTED, 3, 5, true))
     elseif has~=nil then
         return format('|cnGREEN_FONT_COLOR:%s|r',  WoWTools_DataMixin.onlyChinese and '未收集' or WoWTools_TextMixin:sub(NOT_COLLECTED, 3, 5, true))
     end
@@ -194,7 +194,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
         upLevel=true
     end
     if upLevel or downLevel or WoWTools_DataMixin.Is_Timerunning then
-        return (upLevel and '|cnGREEN_FONT_COLOR:' or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')
+        return (upLevel and '|cnGREEN_FONT_COLOR:' or (downLevel and '|cnWARNING_FONT_COLOR:') or  '|cffffffff')
                 ..itemLevel..'|r'
     end
 end
@@ -588,7 +588,7 @@ local function Get_Info(tab)
                         if dateInfo.red then
                             if dateInfo.red~= USED then
                                 local redText= dateInfo.red:match('%d+') or dateInfo.red
-                                topRightText= '|cnRED_FONT_COLOR:'..strlower(WoWTools_TextMixin:sub(redText, 2,3, true)) ..'|r'
+                                topRightText= '|cnWARNING_FONT_COLOR:'..strlower(WoWTools_TextMixin:sub(redText, 2,3, true)) ..'|r'
                             end
                         end
                         topRightText= topRightText or WoWTools_TextMixin:sub(itemSubType, 2, 3, true)
@@ -596,7 +596,7 @@ local function Get_Info(tab)
                 end
 
                 if itemMinLevel>WoWTools_DataMixin.Player.Level then--低装等
-                    bottomLeftText= '|cnRED_FONT_COLOR:'..(bottomLeftText or itemMinLevel)..'|r'
+                    bottomLeftText= '|cnWARNING_FONT_COLOR:'..(bottomLeftText or itemMinLevel)..'|r'
                 end
                 if dateInfo.text[pvpItemStr] then--PvP装备
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
@@ -648,7 +648,7 @@ local function Get_Info(tab)
                     end
                 end
                 if topRightText and isRedItem then
-                    topRightText= '|cnRED_FONT_COLOR:'..topRightText..'|r'
+                    topRightText= '|cnWARNING_FONT_COLOR:'..topRightText..'|r'
                 end
             elseif containerInfo and itemQuality==0 then
                 topRightText= '|A:Coin-Silver:0:0|a'
@@ -724,7 +724,7 @@ local function Get_Info(tab)
                             end
                         end
                     end
-                    topLeftText= heirloomNum==0 and '|cnRED_FONT_COLOR:'..heirloomNum..'|r' or heirloomNum
+                    topLeftText= heirloomNum==0 and '|cnWARNING_FONT_COLOR:'..heirloomNum..'|r' or heirloomNum
                     bottomRightText= format('|A:%s:18:18|a', shield and 'Warfronts-BaseMapIcons-Horde-Heroes-Minimap' or 'Warfronts-BaseMapIcons-Horde-Barracks-Minimap')
                 end
             end

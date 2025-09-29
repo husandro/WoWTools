@@ -113,7 +113,7 @@ local function Init(btn)
         if value==0 then
             return '|cff9e9e9e'
         elseif value==2 then
-            return '|cnRED_FONT_COLOR:'
+            return '|cnWARNING_FONT_COLOR:'
         else
             return ''
         end

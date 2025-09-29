@@ -198,7 +198,7 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
         ..'|r'
 --数量，颜色
         ..(
-            isMax and '|cnRED_FONT_COLOR:'
+            isMax and '|cnWARNING_FONT_COLOR:'
             or (accountIcon and '|cff00ccff')
             or ((num==0 or not info.discovered) and '|cff828282')
             or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:')

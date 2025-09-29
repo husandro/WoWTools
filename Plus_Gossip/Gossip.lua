@@ -245,7 +245,7 @@ local function Init()
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
@@ -308,7 +308,7 @@ local function Init()
                     if Save().stopMovie then
                         MovieFrame:StopMovie()
                         print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '对话' or ENABLE_DIALOG,
-                            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
+                            '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
                             'movieID|cnGREEN_FONT_COLOR:',
                             arg1
                         )
@@ -325,7 +325,7 @@ local function Init()
                 print(
                     WoWTools_DataMixin.Icon.icon2
                     ..WoWTools_GossipMixin.addName,
-                    '|n|cnRED_FONT_COLOR:',
+                    '|n|cnWARNING_FONT_COLOR:',
                     format(WoWTools_DataMixin.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN,
                     arg1 or '',
                     ...
@@ -651,7 +651,7 @@ local function Create_AvailableQuestCheck(btn, info)
         else
             print(
                 WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName2,
-                '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r',
+                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r',
                 WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL,
                 'ID'
             )

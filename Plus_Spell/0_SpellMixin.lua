@@ -38,13 +38,13 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
     local mountID = C_MountJournal.GetMountFromSpell(spellID)
     if mountID then--坐骑
         if not select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-            col='|cnRED_FONT_COLOR:'
+            col='|cnWARNING_FONT_COLOR:'
             desc='|A:Islands-QuestBangDisable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED )
         end
     else
         if C_Spell.DoesSpellExist(spellID) then
             if not C_SpellBook.IsSpellInSpellBook(spellID) then
-                col='|cnRED_FONT_COLOR:'
+                col='|cnWARNING_FONT_COLOR:'
                 desc=(desc or '')..'|A:Islands-QuestBangDisable:0:0|a'--..(WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)
             else
                 --local isPet= not IsPlayerSpell(spellID)

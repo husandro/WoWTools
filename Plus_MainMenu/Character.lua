@@ -24,7 +24,7 @@ local function Init()
         if to and cu and to>0 then
             text=math.modf(cu)
             if to-cu>10 then
-                text='|cnRED_FONT_COLOR:'..text..'|r'
+                text='|cnWARNING_FONT_COLOR:'..text..'|r'
                 if IsInsane() and not WoWTools_MapMixin:IsInPvPArea() then
                     WoWTools_FrameMixin:HelpFrame({frame=self, topoint=self.Text, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=true})--设置，提示
                 end

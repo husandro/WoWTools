@@ -410,7 +410,7 @@ local function Init_Menu(self, root)
         return not Save().notPlus
     end, function()
         Save().notPlus = not Save().notPlus and true or nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnWARNING_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         --商人 Plus
         WoWTools_MerchantMixin:Init_WidthX2()
         WoWTools_MerchantMixin:Plus_ItemInfo()
@@ -451,7 +451,7 @@ local function Init_Menu(self, root)
         return not Save().notAutoLootPlus
     end, function()
         Save().notAutoLootPlus= not Save().notAutoLootPlus and true or nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnWARNING_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))

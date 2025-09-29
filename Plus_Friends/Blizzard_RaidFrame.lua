@@ -16,7 +16,7 @@ local function Init()
                 if not (extended or locked) then
                     text= '|cff9e9e9e'..num..'/'..numEncounters..'|r'
                 elseif num==0 then
-                    text= '|cnRED_FONT_COLOR:'..num..'/'..numEncounters..'|r'
+                    text= '|cnWARNING_FONT_COLOR:'..num..'/'..numEncounters..'|r'
                 else
                     text= '|cnGREEN_FONT_COLOR:'..num..'|r/'..numEncounters
                 end

@@ -115,7 +115,7 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
             GameTooltip:AddDoubleLine((i<10 and ' ' or '')
                                     ..i..') |T'..(packageIcon or stationeryIcon)..':0|t'
                                     ..WoWTools_MailMixin:GetNameInfo(sender)
-                                    ..(not wasRead and ' |cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未读' or COMMUNITIES_FRAME_JUMP_TO_UNREAD) or '')
+                                    ..(not wasRead and ' |cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未读' or COMMUNITIES_FRAME_JUMP_TO_UNREAD) or '')
                                 , subject)
 
             if not canDelete and (itemCount and itemCount>0) and not findReTips then--物品，提示
@@ -149,7 +149,7 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
         end
     end
     GameTooltip:AddDoubleLine(' ',
-                        del and '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r |cnGREEN_FONT_COLOR:#'..num
+                        del and '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r |cnGREEN_FONT_COLOR:#'..num
                         or ('|cFFFF00FF'..(WoWTools_DataMixin.onlyChinese and '退信' or MAIL_RETURN)..'|r |cnGREEN_FONT_COLOR:#'..num)
                     )
     GameTooltip:Show()
@@ -613,7 +613,7 @@ local function Init_InboxFrame_Update()
                 ..(allSenderText or '')--总，发信人数
                 ..(allItemCount>0 and '|cnGREEN_FONT_COLOR:'..allItemCount..'|r'..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS)..' ' or '')--总，物品数
                 ..(allMoney>0 and '|cnGREEN_FONT_COLOR:'..get_Money(allMoney)..'|r'..(WoWTools_DataMixin.onlyChinese and '可取' or WITHDRAW)..' ' or '')--总，可收取钱
-                ..(allCODAmount>0 and '|cnRED_FONT_COLOR:'.. get_Money(allCODAmount)..'|r'..(WoWTools_DataMixin.onlyChinese and '付款' or COD)..' ' or '')--总，要付款钱
+                ..(allCODAmount>0 and '|cnWARNING_FONT_COLOR:'.. get_Money(allCODAmount)..'|r'..(WoWTools_DataMixin.onlyChinese and '付款' or COD)..' ' or '')--总，要付款钱
         end
     end
     InboxFrame.AllTipsLable:SetText(text)

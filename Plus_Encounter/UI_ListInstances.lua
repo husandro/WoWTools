@@ -74,7 +74,7 @@ local function Set_Button_ChallengData(button)
                 local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
                 for _, tab in ipairs(affixScores) do
                     if tab.level and tab.level>0 and (tab.name == nameA or tab.name==nameB) then
-                        local level= tab.overTime and '|cnRED_FONT_COLOR:'..tab.level..'|r' or tab.level
+                        local level= tab.overTime and '|cnWARNING_FONT_COLOR:'..tab.level..'|r' or tab.level
                         local icon='|T'..(tab.name == nameA and filedataidA or filedataidB)..':0|t'
                         affix= (affix and affix..'|n' or '').. icon..level
                     end

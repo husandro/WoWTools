@@ -16,7 +16,7 @@ local function Get_Player_Name(data)
     ) or data.guid
 
     if data.battleTag and WoWTools_DataMixin.Player.BattleTag~=data.battleTag then
-        name= name..' |cnRED_FONT_COLOR:'..data.battleTag..'|r'
+        name= name..' |cnWARNING_FONT_COLOR:'..data.battleTag..'|r'
     end
     if data.region and data.region~=WoWTools_DataMixin.Player.Region then
         name= name.. ' |cff6060600'..data.region..'|r'
@@ -787,8 +787,8 @@ local function OnEnter_Left_Button(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_UnitMixin:GetFullName(nil, nil, data.guid), r,g,b)
-        GameTooltip:AddDoubleLine('Region', (WoWTools_DataMixin.Player.Region~= data.region and '|cnRED_FONT_COLOR:' or '')..(data.region or ''), r,g,b, r,g,b)
-        GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnRED_FONT_COLOR:' or '')..(data.battleTag or ''), r,g,b, r,g,b)
+        GameTooltip:AddDoubleLine('Region', (WoWTools_DataMixin.Player.Region~= data.region and '|cnWARNING_FONT_COLOR:' or '')..(data.region or ''), r,g,b, r,g,b)
+        GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnWARNING_FONT_COLOR:' or '')..(data.battleTag or ''), r,g,b, r,g,b)
     end
 
     if TypeTabs[List2Type] and TypeTabs[List2Type].set_tips then
@@ -1220,12 +1220,12 @@ local function OnEnter_BattleTexture(self)
     local battleTag= data and data.battleTag
     GameTooltip:AddDoubleLine(
         WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG,
-        (battleTag~=WoWTools_DataMixin.Player.BattleTag and '|cnRED_FONT_COLOR:' or '|cffffffff')
+        (battleTag~=WoWTools_DataMixin.Player.BattleTag and '|cnWARNING_FONT_COLOR:' or '|cffffffff')
         ..(battleTag or '')
     )
     if battleTag~=WoWTools_DataMixin.Player.BattleTag then
         GameTooltip:AddLine(
-            '|A:tokens-guildRealmTransfer-small:0:0|a|cnRED_FONT_COLOR:'
+            '|A:tokens-guildRealmTransfer-small:0:0|a|cnWARNING_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
         )
     end
@@ -1235,12 +1235,12 @@ local function OnEnter_BattleTexture(self)
     if region then
         GameTooltip:AddDoubleLine(
             'Region',
-            (region~=curRegion and '|cnRED_FONT_COLOR:' or '|cffffffff')
+            (region~=curRegion and '|cnWARNING_FONT_COLOR:' or '|cffffffff')
             ..region
         )
         if region~=curRegion then
             GameTooltip:AddLine(
-                '|A:adventureguide-microbutton-alert:0:0|a|cnRED_FONT_COLOR:'
+                '|A:adventureguide-microbutton-alert:0:0|a|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '不同地区' or ERR_TRAVEL_PASS_DIFFERENT_REGION)
             )
         end
@@ -1668,7 +1668,7 @@ local function Init_IsMe_Menu(self, root)
             tootip:AddDoubleLine('Region', curRegion)
             if not desc.data.isCurRegion then
                 tootip:AddLine(
-                    '|cnRED_FONT_COLOR:'
+                    '|cnWARNING_FONT_COLOR:'
                     ..(WoWTools_DataMixin.onlyChinese and '不同的地区' or ERR_TRAVEL_PASS_DIFFERENT_REGION)
                 )
             end

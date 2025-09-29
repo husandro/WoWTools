@@ -1059,7 +1059,7 @@ local function Init_Button()
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
@@ -1317,7 +1317,7 @@ local function Init_WorldFrame_Button()
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
             print(WoWTools_DataMixin.Icon.icon2..addName, addName2,
                 name,
-                Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
             self:set_texture()
         end
@@ -1371,7 +1371,7 @@ local function Init_WorldFrame_Event()
                 Save().questIDs[f.questID]= not Save().questIDs[f.questID] and true or nil
                 print(WoWTools_DataMixin.Icon.icon2..addName, addName2,
                     WoWTools_QuestMixin:GetLink(f.questID),
-                    Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                    Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
             end
         end)
@@ -1399,7 +1399,7 @@ local function Init_WorldFrame_Event()
                     print(WoWTools_DataMixin.Icon.icon2..addName, addName2,
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
-                        Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                        Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                     )
                 end
             end

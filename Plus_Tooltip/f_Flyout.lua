@@ -13,7 +13,7 @@ function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
     for slot= 1, numSlots do
         local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
-        local col= not isKnown2 and '|cnRED_FONT_COLOR:' or (select(2, math.modf(slot/2))==0 and '|cffffffff') or ''
+        local col= not isKnown2 and '|cnWARNING_FONT_COLOR:' or (select(2, math.modf(slot/2))==0 and '|cffffffff') or ''
         if spellID then
             WoWTools_DataMixin:Load({id=spellID, type='spell'})
             local name2= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
@@ -35,7 +35,7 @@ function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
     tooltip:AddDoubleLine(
         icon and '|T'..icon..':'..self.iconSize..'|t|cffffffff'..icon,
 
-        (not isKnown and '|cnRED_FONT_COLOR:' or '')
+        (not isKnown and '|cnWARNING_FONT_COLOR:' or '')
         ..'flyoutID|r'
         ..WoWTools_DataMixin.Icon.icon2
         ..'|cffffffff'

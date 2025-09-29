@@ -53,7 +53,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
             return
         end
         if not self:CanChangeAttribute() then
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT))
             return
         end
         local sacle= Save().compactPartyFrameScale or 1

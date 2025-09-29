@@ -210,7 +210,7 @@ local function WoW_List(_, root)
                 ..WoWTools_GuildMixin:Get_Rank_Texture(rankIndex, true)
                 ..name
                 ..(realm and realm~=WoWTools_DataMixin.Player.Realm
-                    and (WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:-|r' or '|cnRED_FONT_COLOR:-|r')..realm
+                    and (WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:-|r' or '|cnWARNING_FONT_COLOR:-|r')..realm
                     or ''
                 ),
             function(data)

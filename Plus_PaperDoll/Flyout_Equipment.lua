@@ -101,7 +101,7 @@ local function setFlyout(button, itemLink, slot)
                         if updown>0 then
                             updown= '|cnGREEN_FONT_COLOR:+'..updown..'|r'
                         elseif updown<0 then
-                            updown= '|cnRED_FONT_COLOR:'..updown..'|r'
+                            updown= '|cnWARNING_FONT_COLOR:'..updown..'|r'
                         elseif updown==0 then
                             updown= nil
                         end

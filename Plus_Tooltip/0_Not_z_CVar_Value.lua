@@ -16,7 +16,7 @@
                     ..(value and ' ('..(value or '')..'/'..(defaultValue or '')..')' or ''),
                     true)
                 if isSecure then
-                    GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
+                    GameTooltip_AddNormalLine(SettingsTooltip, '|cnWARNING_FONT_COLOR:isSecure: true|r', true)
                 end
                 GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
                 SettingsTooltip:Show()
@@ -52,7 +52,7 @@ local function Init()
                 ..(value and ' ('..(value or '')..'/'..(defaultValue or '')..')' or ''),
                 true)
             if isSecure then
-                GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
+                GameTooltip_AddNormalLine(SettingsTooltip, '|cnWARNING_FONT_COLOR:isSecure: true|r', true)
             end
             GameTooltip_AddNormalLine(SettingsTooltip, WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName)
         end

@@ -432,7 +432,7 @@ local function Init_Button()
             Save().items[itemID]= not Save().items[itemID] and true or nil
             print(WoWTools_DataMixin.Icon.icon2..addName,
                 Save().items[itemID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|r'
-                    or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r'),
+                    or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r'),
                 itemLink or itemID
             )
             ClearCursor()

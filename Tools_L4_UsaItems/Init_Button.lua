@@ -32,7 +32,7 @@ local function Init()
         end,
         OnAlt = function(_, data)
             table.remove(Save()[data.type], data.index)
-            print(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE, data.name, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE, data.name, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
 

@@ -16,7 +16,7 @@ local function Init_Menu(self, root)
         if spellID then
             sub= root:CreateButton(
                 '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
-                ..(isKnown and '' or '|cnRED_FONT_COLOR:')
+                ..(isKnown and '' or '|cnWARNING_FONT_COLOR:')
                 ..(WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true}) or spellID),
             function(data)
                 local spellLink= WoWTools_SpellMixin:GetLink(data.spellID, false)
@@ -94,10 +94,10 @@ local function Init_All_Flyout()
                     if name2 and icon then
                         GameTooltip:AddDoubleLine(
                             '|T'..icon..':0|t'
-                            ..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')
+                            ..(not isKnown2 and ' |cnWARNING_FONT_COLOR:' or '')
                             ..WoWTools_TextMixin:CN(name2)..'|r',
 
-                            (not isKnown2 and '|cnRED_FONT_COLOR:' or '')
+                            (not isKnown2 and '|cnWARNING_FONT_COLOR:' or '')
                             ..spellID
                             ..' '
                             ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)
@@ -107,7 +107,7 @@ local function Init_All_Flyout()
                             )
                         )
                     else
-                        GameTooltip:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'('..slot)
+                        GameTooltip:AddDoubleLine((not isKnown2 and ' |cnWARNING_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnWARNING_FONT_COLOR:' or '')..spellID..' '..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'('..slot)
                     end
                 end
             end

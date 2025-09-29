@@ -75,7 +75,7 @@ local function Init()
             --SplashFrame:Close();
             C_SplashScreen.SendSplashScreenCloseTelem()
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
-            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00',
+            '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00',
             SplashFrame.Label and SplashFrame.Label:GetText() or ''
         )
         end]]

@@ -20,7 +20,7 @@ local function get_durabiliy_color(cur, max)
         text= '|cff9e9e9e'..text..'|r'
         icon= '|A:Warfronts-BaseMapIcons-Empty-Armory-Minimap:0:0|a'
     elseif value<30 then
-        text= '|cnRED_FONT_COLOR:'..text..'|r'
+        text= '|cnWARNING_FONT_COLOR:'..text..'|r'
         icon= '|A:Warfronts-BaseMapIcons-Horde-Heroes-Minimap:0:0|a'
     elseif value<60 then
         text= '|cnYELLOW_FONT_COLOR:'..text..'|r'
@@ -105,7 +105,7 @@ function WoWTools_DurabiliyMixin:OnEnter()
             if cur and max and max>0 then
                 isRepair= cur<max
                 text, _, icon= get_durabiliy_color(cur, max)
-                a= a..icon..text..' '..max..'/'..(isRepair and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r'
+                a= a..icon..text..' '..max..'/'..(isRepair and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r'
                 if isRepair then
                     num= num+1
                     a=a..'|A:SpellIcon-256x256-Repair:0:0|a'
@@ -119,7 +119,7 @@ function WoWTools_DurabiliyMixin:OnEnter()
             if cur and max and max>0 then
                 isRepair= cur<max
                 text, _, icon= get_durabiliy_color(cur, max)
-                b= (isRepair and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r/'..max..' '..text..icon..b
+                b= (isRepair and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r/'..max..' '..text..icon..b
                 if isRepair then
                     num= num+1
                     b='|A:SpellIcon-256x256-Repair:0:0|a'..b
@@ -145,13 +145,13 @@ function WoWTools_DurabiliyMixin:OnEnter()
     local co = GetRepairAllCost()--显示，修理所有，金钱
     local coText=''
     if co and co>0 then
-        coText= ' |cnRED_FONT_COLOR:'..GetMoneyString(co)..'|r'
+        coText= ' |cnWARNING_FONT_COLOR:'..GetMoneyString(co)..'|r'
     end
 
     GameTooltip:AddLine(' ')
     GameTooltip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '耐久度' or DURABILITY)..' ('..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
-         '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff9e9e9e')..num..'|r) '..(WoWTools_DataMixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
+         '('..(num>0 and '|cnWARNING_FONT_COLOR:' or '|cff9e9e9e')..num..'|r) '..(WoWTools_DataMixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
     )
 
     local item, cur3, pvp= GetAverageItemLevel()
@@ -161,7 +161,7 @@ function WoWTools_DurabiliyMixin:OnEnter()
     GameTooltip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)
         ..(WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
-        ..(cur3==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur3) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur3, item)),
+        ..(cur3==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur3) or format(' |cnWARNING_FONT_COLOR:%.2f|r/%.2f', cur3, item)),
         format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
 end
 

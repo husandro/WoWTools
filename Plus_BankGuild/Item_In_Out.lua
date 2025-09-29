@@ -66,7 +66,7 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
         then
             StopRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
-            print(WoWTools_GuildBankMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT  )
+            print(WoWTools_GuildBankMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT  )
             return
         end
 
@@ -254,7 +254,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
         then
             print(
                 itemIndex,
-                '|cnRED_FONT_COLOR:'
+                '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)
                 ..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
             )

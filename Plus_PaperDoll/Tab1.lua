@@ -20,7 +20,7 @@ local function Set_Label()
         end
         pve= format('%i', pve)
         if pve==0 or cur-pve<=-5 then
-             pve= '|cnRED_FONT_COLOR:'..pve..'|r'
+             pve= '|cnWARNING_FONT_COLOR:'..pve..'|r'
         end
     end
     LabelPvE:SetText(pve or '')

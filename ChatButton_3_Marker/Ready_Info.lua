@@ -46,7 +46,7 @@ local function Init()
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
@@ -106,7 +106,7 @@ local function Init()
                 ..(index<10 and ' ' or '')..index..')'--编号号
                 ..(WoWTools_UnitMixin:GetOnlineInfo(unit) or '')
                 ..WoWTools_UnitMixin:GetPlayerInfo(unit, UnitGUID(unit), nil, {reName=true, reRealm=true})
-                ..(UnitHasLFGRandomCooldown(unit) and '|cnRED_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
+                ..(UnitHasLFGRandomCooldown(unit) and '|cnWARNING_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
                 ..(uiMapID~=mapID and mapText or '')--地图名称
                 ..' '
     end

@@ -155,7 +155,7 @@ local function Init_Menu(self, root)
 
 --关闭聊天
     sub2=sub:CreateCheckbox(
-        (C_SocialRestrictions.IsChatDisabled() and '|cnRED_FONT_COLOR:' or '')
+        (C_SocialRestrictions.IsChatDisabled() and '|cnWARNING_FONT_COLOR:' or '')
         ..(WoWTools_DataMixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE),
     function()
        return C_SocialRestrictions.IsChatDisabled()
@@ -435,7 +435,7 @@ local function Init_Menu(self, root)
         print(WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
             Save().eventTracePrint and
                 '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开始' or START)
-                or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清队' or CLEAR_ALL))
+                or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清队' or CLEAR_ALL))
             )
         WoWTools_HyperLink:Blizzard_EventTrace()
     end)

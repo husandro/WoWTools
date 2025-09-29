@@ -393,7 +393,7 @@ local function Init_Options()
         if name and WoWToolsPlayerDate['TargetTexture'][name] then
             WoWToolsPlayerDate['TargetTexture'][name]= nil
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName,
-                '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r',
+                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r',
                 (isAtals and '|A:'..name..':0:0|a' or ('|T'..name..':0|t'))..name
             )
             parent:SetText("")
@@ -491,7 +491,7 @@ local function Init_Options()
         Save().creatureUIParent= not Save().creatureUIParent and true or nil
         WoWTools_TargetMixin:Set_All_Init()
         if not Save().creatureUIParent and not Save().target then
-            print('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要启用‘1) '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..'目标’' or 'Need to enable the \"1) '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..WoWTools_TargetMixin.addName..'\"'))
+            print('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要启用‘1) '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..'目标’' or 'Need to enable the \"1) '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..WoWTools_TargetMixin.addName..'\"'))
         end
     end)
 

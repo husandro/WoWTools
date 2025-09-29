@@ -140,7 +140,7 @@ function WoWTools_MailMixin:GetRealmInfo(name)
     end
     local realm= name:match('%-(.+)')
     if realm and not (WoWTools_DataMixin.Player.Realms[realm] or realm==WoWTools_DataMixin.Player.Realm) then
-        return format('|cnRED_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '该玩家与你不在同一个服务器' or ERR_PETITION_NOT_SAME_SERVER)
+        return format('|cnWARNING_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '该玩家与你不在同一个服务器' or ERR_PETITION_NOT_SAME_SERVER)
     end
 end
 

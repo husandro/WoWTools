@@ -125,7 +125,7 @@ local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_OpenItemMixin.addName,
             Save()[data.type][data.itemID]
             and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r'
-            or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
+            or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
 
             WoWTools_ItemMixin:GetLink(data.itemID),
             data.type=='no' and self.noText or self.useText

@@ -58,7 +58,7 @@ local function Init(btn)
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
         GameTooltip:AddDoubleLine(WoWTools_HyperLink.addName, WoWTools_TextMixin:GetEnabeleDisable(not isDisabled and Save().linkIcon))
         if isDisabled then
-            GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:' ..(WoWTools_DataMixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE), WoWTools_TextMixin:GetEnabeleDisable(true))
+            GameTooltip:AddDoubleLine('|cnWARNING_FONT_COLOR:' ..(WoWTools_DataMixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE), WoWTools_TextMixin:GetEnabeleDisable(true))
         end
         GameTooltip:Show()
     end

@@ -38,7 +38,7 @@ local function Init()
             local ms= math.max(latencyHome, latencyWorld) or 0
             local fps= math.modf(GetFramerate() or 0)
             self.Text:SetText(fps<10 and '|cnGREEN_FONT_COLOR:'..fps..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..fps..'|r' or fps)
-            self.Text2:SetText(ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)
+            self.Text2:SetText(ms>400 and '|cnWARNING_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)
         end
     end)
 
@@ -62,7 +62,7 @@ local function Init()
         if info and info.wowProjectID then
             local region=''
             if info.regionID and info.regionID~=WoWTools_DataMixin.Player.Region then
-                region=' regionID'..(WoWTools_DataMixin.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
+                region=' regionID'..(WoWTools_DataMixin.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')..info.regionID..'|r'
             end
             GameTooltip:AddLine('isInCurrentRegion '..WoWTools_TextMixin:GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
         end

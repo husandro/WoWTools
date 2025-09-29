@@ -116,7 +116,7 @@ local function Save_Macro_Menu(frame, root)
             if Save().macro[data.head2] then
                 print(WoWTools_MacroMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '保存' or SAVE))
             else
-                print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE))
+                print(WoWTools_MacroMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE))
                 print(data.body)
             end
         end, {head2=head2, name=tab.name, icon=tab.icon, body=tab.body})

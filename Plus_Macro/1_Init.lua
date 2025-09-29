@@ -73,7 +73,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_MacroMixin.addName,
-                tooltip= ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
+                tooltip= ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
                     ..'|r|n'..(WoWTools_DataMixin.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()

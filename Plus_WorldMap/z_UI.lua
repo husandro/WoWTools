@@ -169,7 +169,7 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
             WorldMapFrame.minimizedHeight= minimizedHeight
             WorldMapFrame:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
             WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
-        end, sizeTooltip='|cnRED_FONT_COLOR:BUG|r'
+        end, sizeTooltip='|cnWARNING_FONT_COLOR:BUG|r'
     })
 
 

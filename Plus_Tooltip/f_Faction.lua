@@ -55,13 +55,13 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         end
         if info.hasRewardPending then
             tooltip:AddLine(
-                '|cnRED_FONT_COLOR:'
+                '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE)
             )
         end
     else
         tooltip:AddLine(
-            '|cnRED_FONT_COLOR:'
+            '|cnWARNING_FONT_COLOR:'
             ..format(
                 WoWTools_DataMixin.onlyChinese and  '%s尚未解锁' or ERR_AZERITE_ESSENCE_SELECTION_FAILED_ESSENCE_NOT_UNLOCKED,
                 '|A:greatVault-lock:0:0|a'

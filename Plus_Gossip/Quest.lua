@@ -534,7 +534,7 @@ local function Init_Quest()
                             local itemLink = GetQuestItemLink(requiredItem.type, i)
                             local name,_ , numItems = GetQuestItemInfo(requiredItem.type, i)
                             if itemLink or name then
-                                link=(link or '')..(numItems and '|cnRED_FONT_COLOR:'..numItems..'x|r' or '')..(itemLink or name)
+                                link=(link or '')..(numItems and '|cnWARNING_FONT_COLOR:'..numItems..'x|r' or '')..(itemLink or name)
                             end
                         end
                         buttonIndex = buttonIndex+1

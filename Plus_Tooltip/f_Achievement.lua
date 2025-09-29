@@ -26,7 +26,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
     tooltip.text2Left:SetText(--否是完成
         completed
         and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已完成' or CRITERIA_COMPLETED)
-        or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)
+        or '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)
     )
 
     if isGuild or flags==0x4000 then

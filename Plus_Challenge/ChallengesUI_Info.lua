@@ -109,10 +109,10 @@ local function Set_OnEnter(self)
     local timeLimit, texture, backgroundTexture = select(3, C_ChallengeMode.GetMapUIInfo(self.mapID))
 
     local a=GetNum(self.mapID, true)--所有
-        or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r')
+        or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r')
 
     local w=GetNum(self.mapID)--本周
-        or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r')
+        or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r')
 
     GameTooltip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '历史' or HISTORY)..': '..a,
@@ -182,7 +182,7 @@ local function Create_Label(frame)
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self.week and '('..self.week..')' or (WoWTools_DataMixin.onlyChinese and '无' or NONE))
             if self.completed and self.totale and self.completed < self.totale then
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(self.totale..' - |cnGREEN_FONT_COLOR:'..self.completed..'|r =', '|cnRED_FONT_COLOR:'..format(WoWTools_DataMixin.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self.totale-self.completed))
+                GameTooltip:AddDoubleLine(self.totale..' - |cnGREEN_FONT_COLOR:'..self.completed..'|r =', '|cnWARNING_FONT_COLOR:'..format(WoWTools_DataMixin.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self.totale-self.completed))
             end
             GameTooltip:Show()
             self:SetAlpha(0.3)

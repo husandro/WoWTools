@@ -19,8 +19,8 @@ local function Init()
                 )
 
     frame.leaveText= '|A:communities-icon-addgroupplus:0:0|a'..(
-                    WoWTools_DataMixin.onlyChinese and '离开|cnRED_FONT_COLOR:休息|r区'
-                    or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|cnRED_FONT_COLOR:Rest|r', ZONE))
+                    WoWTools_DataMixin.onlyChinese and '离开|cnWARNING_FONT_COLOR:休息|r区'
+                    or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|cnWARNING_FONT_COLOR:Rest|r', ZONE))
                 )
 
     function frame:set_event()

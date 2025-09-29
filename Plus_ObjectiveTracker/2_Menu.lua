@@ -177,7 +177,7 @@ local function Init_Menu(self, root)
 --选项
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveMixin.addName, tooltip=function(tooltip)
         tooltip:AddLine(' ')
-        tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
+        tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
     end})

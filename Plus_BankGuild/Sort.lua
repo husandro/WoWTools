@@ -96,7 +96,7 @@ local function Init_Sort()
             IsInRun= nil
             print(
                 WoWTools_GuildBankMixin.addName,
-                '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)..'|r',
+                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)..'|r',
                     WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
                 )
             return

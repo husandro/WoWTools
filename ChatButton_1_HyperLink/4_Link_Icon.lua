@@ -67,7 +67,7 @@ local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
             if server== WoWTools_DataMixin.Player.Realm then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
             else
-                return (text or '')..link:gsub('%-'..server..'|r]|h', (WoWTools_DataMixin.Player.Realms[server] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..'*|r|r]|h')
+                return (text or '')..link:gsub('%-'..server..'|r]|h', (WoWTools_DataMixin.Player.Realms[server] and '|cnGREEN_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')..'*|r|r]|h')
             end
         elseif text then
             return text..link
@@ -269,7 +269,7 @@ local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Mem
     return
         '|T'..info.iconFileID..Size..'|t'
         ..WoWTools_HyperLink:CN_Link(link)
-        ..(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
+        ..(isMax and '|cnWARNING_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
         ..(num and WoWTools_DataMixin:MK(num,3))
         ..'|r'
         ..(WoWTools_CurrencyMixin:GetAccountIcon(info.currencyID) or '')

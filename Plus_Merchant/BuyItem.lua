@@ -171,7 +171,7 @@ local function Sell_Items(tab)
 
         gruop= gruop+ 1
         num= num+ (data.stackCount or 1)--数量
-        print('|cnRED_FONT_COLOR:'..gruop..')|r',  data.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
+        print('|cnWARNING_FONT_COLOR:'..gruop..')|r',  data.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
     end
 
     if num > 0 then
@@ -464,7 +464,7 @@ local function Init()
             if WoWToolsPlayerDate['SellBuyItems'].sell[itemIDorIndex] then
                 GameTooltip:AddDoubleLine(
                     name,
-                    '|A:bags-button-autosort-up:0:0|a|cnRED_FONT_COLOR:'
+                    '|A:bags-button-autosort-up:0:0|a|cnWARNING_FONT_COLOR:'
                     ..(WoWTools_DataMixin.onlyChinese and '移除出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, AUCTION_HOUSE_SELL_TAB))
                 )
                 self.texture:SetAtlas('bags-button-autosort-up')
@@ -541,7 +541,7 @@ local function Init()
         if infoType=='item' and itemID then
             if WoWToolsPlayerDate['SellBuyItems'].sell[itemID] then
                 WoWToolsPlayerDate['SellBuyItems'].sell[itemID]=nil
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
             else
                 WoWToolsPlayerDate['SellBuyItems'].sell[itemID]=true
                 WoWToolsPlayerDate['SellBuyItems'].noSell[itemID]=nil

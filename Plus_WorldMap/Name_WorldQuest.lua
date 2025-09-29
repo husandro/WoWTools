@@ -59,7 +59,7 @@ local function Init(self)--WorldQuestDataProvider.lua self.tagInfo
         local info, _, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(data.currencyID, nil)
         if info and data.totalRewardAmount>1 then
             if isMax then
-                text= format('|cnRED_FONT_COLOR:%d|r', data.totalRewardAmount)
+                text= format('|cnWARNING_FONT_COLOR:%d|r', data.totalRewardAmount)
             elseif canWeek or canEarned or canQuantity then
                 text= format('|cnGREEN_FONT_COLOR:%d|r', data.totalRewardAmount)
             else

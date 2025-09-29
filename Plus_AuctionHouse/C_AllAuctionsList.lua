@@ -26,7 +26,7 @@ end
                         WoWTools_DataMixin.addName, WoWTools_AuctionHouseMixin.addName,
                         '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r',
                         itemLink,
-                        cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                        cost and cost>0 and '|cnWARNING_FONT_COLOR:'..GetMoneyString(cost) or '')
                 end
             end)
             btn.setOnDoubleClick=true
@@ -87,8 +87,8 @@ local function Init_Cancel_Button()
             GameTooltip:SetItemByID(itemID)
             GameTooltip:AddDoubleLine(' ')
         end
-        GameTooltip:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
+        GameTooltip:AddDoubleLine(' ', '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AuctionHouseMixin.addName)
         GameTooltip:Show()
     end
@@ -105,13 +105,13 @@ local function Init_Cancel_Button()
                     WoWTools_DataMixin.addName,WoWTools_AuctionHouseMixin.addName,
                     '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r',
                     itemLink or '',
-                    cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or ''
+                    cost and cost>0 and '|cnWARNING_FONT_COLOR:'..GetMoneyString(cost) or ''
                 )
             else
                 print(
                     WoWTools_DataMixin.addName,
                     WoWTools_AuctionHouseMixin.addName,
-                    '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '出错' or ERRORS)..'|r',
+                    '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '出错' or ERRORS)..'|r',
                     itemLink or ''
                 )
             end

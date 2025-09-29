@@ -91,7 +91,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         local strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)
         text2Right= '|T'..strongTexture..':0|t'
             ..'|cnGREEN_FONT_COLOR:<|r|T'..typeTexture..':0:|t'
-            ..'|cnRED_FONT_COLOR:>|r|T'..weakHintsTexture..':'..self.iconSize..'|t'
+            ..'|cnWARNING_FONT_COLOR:>|r|T'..weakHintsTexture..':'..self.iconSize..'|t'
     end
 
 --图像

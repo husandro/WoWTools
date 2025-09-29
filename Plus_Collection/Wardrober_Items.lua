@@ -289,11 +289,11 @@ local function btn_enter(self)
             GameTooltip:AddDoubleLine(
                 info.isCollected
                 and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)
-                or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)),
+                or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)),
 
                 info.isUsable
                 and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '可用' or AVAILABLE)
-                or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不可用' or UNAVAILABLE))
+                or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不可用' or UNAVAILABLE))
             )
         end
     else

@@ -102,13 +102,13 @@ local function UI_Party_Info()--队友位置
             local reason=UnitPhaseReason(unit)--位面
             if reason then
                 if reason==0 then--不同了阶段
-                    text= text ..'|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',  MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..'|r'
+                    text= text ..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',  MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..'|r'
                 elseif reason==1 then--不在同位面
-                    text= text ..'|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Player.Language.layer))..'|r'
+                    text= text ..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Player.Language.layer))..'|r'
                 elseif reason==2 then--战争模式
-                    text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
+                    text= text ..(C_PvP.IsWarModeDesired() and '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
                 elseif reason==3 then
-                    text= text..'|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
+                    text= text..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
                 end
             end
 
@@ -200,7 +200,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
         if InCombatLockdown() then
             print(
                 WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
             )
             return
@@ -220,7 +220,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
             end
         end
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
-            '|cnRED_FONT_COLOR:',
+            '|cnWARNING_FONT_COLOR:',
             WoWTools_DataMixin.onlyChinese and '钥石：尚未发现' or format(CHALLENGE_MODE_KEYSTONE_NAME, TAXI_PATH_UNREACHABLE)
         )
     end)

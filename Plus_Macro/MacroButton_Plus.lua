@@ -21,7 +21,7 @@ local function Delete_Macro(self)
 
     if name then
         print(WoWTools_MacroMixin.addName,
-            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
+            '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
             '|r', WoWTools_MacroMixin:GetName(name, icon)
         )
         if body and body~='' then
@@ -76,7 +76,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateButton(
         '|A:XMarksTheSpot:0:0|a'
-        ..(isSelect and '|cnRED_FONT_COLOR:' or '')..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
+        ..(isSelect and '|cnWARNING_FONT_COLOR:' or '')..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
     function()
         Delete_Macro(self)
     end, {index=index})

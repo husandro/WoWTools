@@ -17,7 +17,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
         if lv<WoWTools_DataMixin.Player.Level then
             levelText= '|cnGREEN_FONT_COLOR:'..lv..'|r '
         elseif lv>WoWTools_DataMixin.Player.Level then
-            levelText= '|cnRED_FONT_COLOR:'..lv..']|r '
+            levelText= '|cnWARNING_FONT_COLOR:'..lv..']|r '
         else
             levelText='|cffffffff'..lv..'|r '
         end
@@ -68,7 +68,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
             tooltip:AddDoubleLine(
                 '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'
 
-                ..(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:') or col)
+                ..(isMax and '|cnWARNING_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:') or col)
                 ..WoWTools_DataMixin:MK(num,3)
                 ..'|r '
                 ..(percent and col..percent..'%|r' or ''),

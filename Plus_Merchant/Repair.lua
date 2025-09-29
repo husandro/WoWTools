@@ -87,7 +87,7 @@ local function Init_Auto_Repair()
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                     WoWTools_DataMixin:Call(MerchantFrame_Update)
                 else
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '失败' or FAILED)..'|r', WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '失败' or FAILED)..'|r', WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
                 end
             end
         end
@@ -134,7 +134,7 @@ local function Init()
             self:SetFormattedText('|A:%s:0:0|a', 'talents-button-reset')
         else
             local co = GetGuildBankMoney() or 0
-            local col= co==0 and '|cff9e9e9e' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
+            local col= co==0 and '|cff9e9e9e' or (repairAllCost> co and '|cnWARNING_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
             self:SetText(
                 col
                 ..(WoWTools_DataMixin:MK(co/10000, 0))
@@ -175,7 +175,7 @@ local function Init()
             return
         end
         local co = GetRepairAllCost()--显示，修理所有，金钱
-        local col= co==0 and '|cff9e9e9e' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnRED_FONT_COLOR:'
+        local col= co==0 and '|cff9e9e9e' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnWARNING_FONT_COLOR:'
         self:SetText(col..WoWTools_DataMixin:MK(co/10000, 0)..'|A:auctionhouse-icon-coin-gold:8:8|a')
 
 --修理一件
@@ -208,7 +208,7 @@ local function Init()
             SetTooltipMoney(GameTooltip, repairAllCost)
             local personalMoney = GetMoney()
             if(repairAllCost > personalMoney) then
-                GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '没有足够的资金来修理所有物品' or GUILDBANK_REPAIR_INSUFFICIENT_FUNDS))
+                GameTooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '没有足够的资金来修理所有物品' or GUILDBANK_REPAIR_INSUFFICIENT_FUNDS))
             end
         end
         GameTooltip:AddLine(' ')

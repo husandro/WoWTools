@@ -81,7 +81,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
             if d=='LeftButton' then
                 local n=C_Item.GetItemCount(90146, true, false, true, false)
                 if n==0 then
-                    print(WoWTools_ItemMixin:GetLink(90146) or (WoWTools_DataMixin.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE))
+                    print(WoWTools_ItemMixin:GetLink(90146) or (WoWTools_DataMixin.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE))
                     return
                 end
                 local isShow= ProfessionsFrame and ProfessionsFrame:IsShown()
@@ -187,7 +187,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
                     GameTooltip:SetBagItem(self2.tab.bag, self2.tab.slot)
                     if not self:CanChangeAttribute() then
                         GameTooltip:AddLine(' ')
-                        GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                        GameTooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
                     end
                     GameTooltip:Show()
                     self2:SetAlpha(0.3)
@@ -690,7 +690,7 @@ local function Init()
                 numFreeSlots= C_Container.GetContainerNumFreeSlots(slot2)
                 numAllSlots= C_Container.GetContainerNumSlots(slot2)
                 if numFreeSlots==0 then
-                    numFreeSlots= '|cnRED_FONT_COLOR:'..numFreeSlots..'|r'
+                    numFreeSlots= '|cnWARNING_FONT_COLOR:'..numFreeSlots..'|r'
                 end
                 if not self.numFreeSlots then
                     self.numFreeSlots=WoWTools_LabelMixin:Create(self, {color=true, justifyH='CENTER', size=10})

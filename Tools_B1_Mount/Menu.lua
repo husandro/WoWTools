@@ -155,7 +155,7 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
         if not isCollected then--没收集
             col= '|cff9e9e9e'
         elseif not isUsable then--不可用
-            col= '|cnRED_FONT_COLOR:'
+            col= '|cnWARNING_FONT_COLOR:'
         end
     end
     col= col or ''

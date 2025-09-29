@@ -89,7 +89,7 @@ local function get_InviteButton_Frame(index)
         frame.DeclineButton:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine( self:GetParent().applicantID, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE))
+            GameTooltip:AddDoubleLine( self:GetParent().applicantID, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE))
             GameTooltip:AddLine(self:GetParent().tooltip)
             GameTooltip:Show()
         end)
@@ -159,9 +159,9 @@ local function get_Status_Text(status)--列表，状态，信息
         or status=='confirm' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '就绪' or READY)..'|r')
         or status=='active' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE)..'|r')
         or status=='proposal' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '准备进入' or QUEUED_STATUS_PROPOSAL)..'|r')
-        or status=='error' and ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '错误' or ERRORS)..'|r')
+        or status=='error' and ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '错误' or ERRORS)..'|r')
         or status=='none' and ('|cnYELLOW_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r')
-        or status=='suspended' and ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r')
+        or status=='suspended' and ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r')
         or status or ''
 end
 
@@ -221,7 +221,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                 ..WoWTools_TextMixin:CN(mapName)..(queueType and ' ('..queueType..')')
                 ..(status~='queued' and ' '..get_Status_Text(status) or '')
                 ..(teamSize and teamSize>0 and ' '..teamSize or '')
-                ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(WoWTools_DataMixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
+                ..(suspendedQueue and ('|cnWARNING_FONT_COLOR: ['..(WoWTools_DataMixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
                 ..(WoWTools_DataMixin.Icon[role] or '')
                 ..' '.. WoWTools_TimeMixin:SecondsToClock(GetBattlefieldTimeWaited(i) / 1000)
                 ..' '
@@ -260,7 +260,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                     level= level or 1
                     pet= pet..'|n   '..slotIndex..') '
                         ..'|T'..icon..':0|t'
-                        ..' '..(level<25 and '|cnRED_FONT_COLOR:'..level..'|r' or level)
+                        ..' '..(level<25 and '|cnWARNING_FONT_COLOR:'..level..'|r' or level)
                     for index= 2, 4 do
                         abilityID= tab[index]
                         abilityID= abilityID and tonumber(abilityID)
@@ -384,7 +384,7 @@ local function Set_Queue_Status()--小眼睛, 信息
 
                                 local levelText--等级
                                 if level and level~=MAX_PLAYER_LEVEL then
-                                    levelText=' |cnRED_FONT_COLOR:'..level..'|r'
+                                    levelText=' |cnWARNING_FONT_COLOR:'..level..'|r'
                                 end
 
                                 local itemLevelText--装等/PVP装有情

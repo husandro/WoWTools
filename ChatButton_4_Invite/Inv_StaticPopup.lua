@@ -92,7 +92,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
 --拒绝
     if Save().InvNoFriend[inviterGUID] then
         sec= 3
-        text= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE)..' '..Save().InvNoFriend[inviterGUID]..'/'..Save().InvNoFriendNum..'|r'
+        text= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE)..' '..Save().InvNoFriend[inviterGUID]..'/'..Save().InvNoFriendNum..'|r'
         setPrint()
 
         StaticPopupFrame.button3:SetText(WoWTools_DataMixin.onlyChinese and '移除拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, DECLINE))
@@ -121,7 +121,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
 --休息区不组队
     elseif IsResting() and Save().NoInvInResting and not questSessionActive then
         sec= 3
-        text= '|cnRED_FONT_COLOR:'
+        text= '|cnWARNING_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '休息区拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DECLINE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_STATUS_OUT, ZONE)))
             ..'|r'
         setPrint()

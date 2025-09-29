@@ -28,7 +28,7 @@ local function Init()
             C_CVar.SetCVar("addonProfilerEnabled", "0")
             print(
                 WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
-                '|cnRED_FONT_COLOR:'
+                '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '禁用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE))
                 ..'|r',
                 WoWTools_DataMixin.onlyChinese and '当前：' or ITEM_UPGRADE_CURRENT,

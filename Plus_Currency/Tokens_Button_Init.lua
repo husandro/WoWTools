@@ -18,7 +18,7 @@ local function click(self)
 		print(WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING,
 				Save().item[itemID] and
 				('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
-				or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
+				or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 				itemLink or itemID)
 		ClearCursor()
 		WoWTools_CurrencyMixin:Set_TrackButton_Text()
@@ -36,7 +36,7 @@ local function enter(self)
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddDoubleLine(itemLink or ('itemID'..itemID),
 				Save().item[itemID] and
-					('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+					('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 				or ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
 		)
 		Button:set_texture(C_Item.GetItemIconByID(itemID))

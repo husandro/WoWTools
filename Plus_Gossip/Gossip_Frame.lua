@@ -401,7 +401,7 @@ local function Init(isShow)
         if gossipID and PlayerDataSave()[gossipID] then
             local info=PlayerDataSave()[gossipID]
             PlayerDataSave()[gossipID]=nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
             self:set_list()
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         end
@@ -490,7 +490,7 @@ local function Init(isShow)
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS)
         if not _G['TAV_CoreFrame'] then
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:Texture Atlas Viewer', WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
+            GameTooltip:AddDoubleLine('|cnWARNING_FONT_COLOR:Texture Atlas Viewer', WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
         end
         GameTooltip:Show()
     end)
@@ -681,7 +681,7 @@ local function Init(isShow)
     end)
 
     --[[StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
-        text=WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        text=WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
@@ -694,7 +694,7 @@ local function Init(isShow)
     List.DeleteAllPlayerData:SetScript('OnClick', function()
         --StaticPopup_Show('WoWTools_Gossip_Delete_All_Player_Data')
         StaticPopup_Show('WoWTools_OK',
-        WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         nil,
         {SetValue=function()
             WoWToolsPlayerDate['GossipTextIcon']= {}
@@ -895,7 +895,7 @@ local function Init(isShow)
 
         local addText= format('|cnGREEN_FONT_COLOR:%s %d|r', WoWTools_DataMixin.onlyChinese and '添加' or ADD, #add)
         local delText= format('|cffffffff%s %d|r', WoWTools_DataMixin.onlyChinese and '无效的组合' or SPELL_FAILED_CUSTOM_ERROR_455, del)
-        local existText= format('|cnRED_FONT_COLOR:%s %d|r', WoWTools_DataMixin.onlyChinese and '已存在' or format(ERR_ZONE_EXPLORED, PROFESSIONS_CURRENT_LISTINGS), exist)
+        local existText= format('|cnWARNING_FONT_COLOR:%s %d|r', WoWTools_DataMixin.onlyChinese and '已存在' or format(ERR_ZONE_EXPLORED, PROFESSIONS_CURRENT_LISTINGS), exist)
         if not tooltips then
             for _, info in pairs(add) do
                 PlayerDataSave()[info.gossipID]= info.tab

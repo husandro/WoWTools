@@ -427,7 +427,7 @@ local function Init_Menu(_, root)
         if tab[movieID] then
             text= tab[movieID].text
                 or WoWTools_TextMixin:CN(_G["EXPANSION_NAME"..tab[movieID].expansion])
-                or '|cnRED_FONT_COLOR:'
+                or '|cnWARNING_FONT_COLOR:'
             text= text..' '
             atlas= tab[movieID].upAtlas
         end

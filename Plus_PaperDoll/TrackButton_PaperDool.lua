@@ -174,7 +174,7 @@ local function Create_Button(index)
         if C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID) then
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(' ',
-                '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
+                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
             )
         end
 
@@ -249,7 +249,7 @@ local function Init_buttons()
         if numItems==0 then
             btn.text:SetText('')
         else
-            btn.text:SetText(numLost>0 and '|cnRED_FONT_COLOR:'..numLost or numItems)
+            btn.text:SetText(numLost>0 and '|cnWARNING_FONT_COLOR:'..numLost or numItems)
         end
         btn.texture:SetShown(isEquipped)
         btn.setID=setID
@@ -433,7 +433,7 @@ local function Init_TrackButton()--添加装备管理框
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end

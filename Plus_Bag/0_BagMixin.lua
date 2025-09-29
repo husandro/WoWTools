@@ -268,7 +268,7 @@ function WoWTools_BagMixin:SetFreeNum(btn)
                 if value>80 then
                     free= '|cnGREEN_FONT_COLOR:'..value..'%|r'
                 elseif value==0 then
-                    free= '|cnRED_FONT_COLOR:'..value..'%|r'
+                    free= '|cnWARNING_FONT_COLOR:'..value..'%|r'
                 else
                     free= '|cffedd100'..value..'%|r'
                 end

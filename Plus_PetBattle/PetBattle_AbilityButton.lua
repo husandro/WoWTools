@@ -851,7 +851,7 @@ local function Set_Move_Button(btn)
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
@@ -1417,7 +1417,7 @@ local function Init_PetBattlePrimaryUnitTooltip()
             self['AbilityTypeTexture'..i]:SetTexture(PET_TYPE_SUFFIX[petType] and 'Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType] or 0)
             self['AbilityCooldown'..i]:SetText(
                 maxCooldown and numTurns and
-                '|cnGREEN_FONT_COLOR:'..numTurns..'|r/'..(maxCooldown==0 and '|cff626262' or '|cnRED_FONT_COLOR:')..maxCooldown
+                '|cnGREEN_FONT_COLOR:'..numTurns..'|r/'..(maxCooldown==0 and '|cff626262' or '|cnWARNING_FONT_COLOR:')..maxCooldown
                 or ''
             )
             self['AbilityIDLabel'..i]:SetText(abilityID or '')

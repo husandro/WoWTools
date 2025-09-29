@@ -105,7 +105,7 @@ local function set_TrackButton_Text()--设置显示内容
                 WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(sec), nil, nil)
             end
         end
-        text= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnRED_FONT_COLOR:'..combat..'|r'
+        text= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnWARNING_FONT_COLOR:'..combat..'|r'
     end
 
     if OnAFKTime then
@@ -214,7 +214,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         if PetRound.win then
             LastText='|cnGREEN_FONT_COLOR:'..LastText..'|r'
         else
-            LastText='|cnRED_FONT_COLOR:'..LastText..'|r'
+            LastText='|cnWARNING_FONT_COLOR:'..LastText..'|r'
         end
         print(WoWTools_DataMixin.addName,  WoWTools_CombatMixin.addName, WoWTools_DataMixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, save.pet.win..'/'..save.pet.num, (save.pet.capture>0 and save.pet.capture..' |T646379:0|t' or ''));
 
@@ -342,7 +342,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end

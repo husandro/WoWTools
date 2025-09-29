@@ -42,7 +42,7 @@ local function Lock_CVar(name)
     elseif value and C_CVar.GetCVar(name)~=value then
         if C_CVar.SetCVar(name, value) then
             print(WoWTools_DataMixin.addName, CVarNameTabs[name],
-                '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)..'|r',
+                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)..'|r',
                 name=='autoInteract' and '' or CameraTabs[value][1]
             )
         end
@@ -73,7 +73,7 @@ local function Lock_ClickToMove_CVar()
         if C_CVar.SetCVar('autoInteract', value) then
             print(WoWTools_DataMixin.addName,
             CVarNameTabs['autoInteract'],
-                '|A:AdventureMapIcon-Lock:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
+                '|A:AdventureMapIcon-Lock:0:0|a|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
             )
         end
     end
@@ -237,7 +237,7 @@ local function Init_Menu(self, root)
 
     sub:SetTooltip(function(tooltip)
         if UnitAffectingCombat('player') then
-            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            tooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         end
     end)
     root:CreateSpacer()
@@ -459,7 +459,7 @@ local function Init_Button()
         else
             print(
                 WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
+                '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end

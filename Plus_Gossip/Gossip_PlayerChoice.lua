@@ -80,7 +80,7 @@ local function Init()
                         else
                             print(
                                 WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
-                                '|cnRED_FONT_COLOR:',
+                                '|cnWARNING_FONT_COLOR:',
                                 not WoWTools_DataMixin.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误'
                             )
                         end
@@ -152,7 +152,7 @@ local function Init()
                     GameTooltip:AddLine(s.tips or (WoWTools_DataMixin.onlyChinese and '使用' or USE))
                     GameTooltip:AddDoubleLine(' ', format(WoWTools_DataMixin.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 44)..WoWTools_DataMixin.Icon.left)
                     GameTooltip:AddDoubleLine(' ', format(WoWTools_DataMixin.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 100)..WoWTools_DataMixin.Icon.right)
-                    GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1), 'Alt')
+                    GameTooltip:AddDoubleLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1), 'Alt')
                     GameTooltip:Show()
                 end)
                 PlayerChoiceFrame.allButton:SetScript('OnHide', function(s)
@@ -174,7 +174,7 @@ local function Init()
                         s:set_text()
                         print(
                             WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
-                            '|cnRED_FONT_COLOR:',
+                            '|cnWARNING_FONT_COLOR:',
                             WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1
                         )
                         return
@@ -206,7 +206,7 @@ local function Init()
                             print(
                                 WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
                                 '|cnGREEN_FONT_COLOR:'..n..'|r',
-                                '('..all-n..')', '|cnRED_FONT_COLOR:Alt'
+                                '('..all-n..')', '|cnWARNING_FONT_COLOR:Alt'
                             )
                             --self.parentOption:OnSelected()
                         elseif s.time then
@@ -214,7 +214,7 @@ local function Init()
                             s.time= nil
                             print(
                                 WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
-                                '|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1,
+                                '|cnWARNING_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1,
                                 '|r'..n
                             )
                         end
@@ -264,9 +264,9 @@ local function Init()
                         charges=info.charges
                         if info.maxCharges then
                             if info.charges==info.maxCharges then
-                                charges= '|cnRED_FONT_COLOR:'..charges..'/'..info.maxCharges..'|r'
+                                charges= '|cnWARNING_FONT_COLOR:'..charges..'/'..info.maxCharges..'|r'
                             else
-                                charges= charges..'/|cnRED_FONT_COLOR:'..info.maxCharges..'|r'
+                                charges= charges..'/|cnWARNING_FONT_COLOR:'..info.maxCharges..'|r'
                             end
                         end
                     end

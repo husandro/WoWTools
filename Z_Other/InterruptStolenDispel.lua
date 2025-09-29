@@ -76,7 +76,7 @@ local function Init_Panel()
     })
 
     WoWTools_PanelMixin:OnlyCheck({
-        name= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '团队' or RAID),
+        name= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '团队' or RAID),
         GetValue= function() return Save().enabledInRaid end,
         SetValue= function()
             Save().enabledInRaid = not Save().enabledInRaid and true or nil

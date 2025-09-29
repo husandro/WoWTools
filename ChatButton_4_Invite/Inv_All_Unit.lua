@@ -8,11 +8,11 @@ local function Inv_All_Unit()
     local all= C_CVar.GetCVarBool('nameplateShowAll')
 
     if not WoWTools_InviteMixin:Get_Leader() then--取得权限
-        print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, '|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, '|cnWARNING_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
 
     elseif UnitAffectingCombat('player') and (not p or not all) then
-        print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT))
+        print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT))
         return
     end
 
@@ -78,7 +78,7 @@ local function Inv_All_Unit()
             C_CVar.SetCVar('nameplateShowFriends', '0')
         end
         if n==1 then
-            print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, WoWTools_DataMixin.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE))
+            print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, WoWTools_DataMixin.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE))
         end
     end)
 end

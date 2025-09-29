@@ -248,10 +248,10 @@ local function Init_KeyButton(index, type)
         local isKeyValid= WoWTools_KeyMixin:IsKeyValid(self)
         local isInCombat= not self:CanChangeAttribute()
         GameTooltip:AddDoubleLine(
-            (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
+            (isInCombat and '|cnWARNING_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
             ..(WoWTools_DataMixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKEY()..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
 
-            (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
+            (isInCombat and '|cnWARNING_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '解除键位' or UNBIND)
         )
         GameTooltip:Show()
@@ -277,7 +277,7 @@ local function Init_KeyButton(index, type)
     end)
     button:SetScript('OnMouseWheel', function(self, d)
         if not self:CanChangeAttribute() then
-            print(WoWTools_DataMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         self:set_key(d==1)-- 1上, -1下

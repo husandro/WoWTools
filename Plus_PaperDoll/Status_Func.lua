@@ -20,7 +20,7 @@ end
         if extraChance>0 then
             extra= format('|cnGREEN_FONT_COLOR:+%i%%|r', extraChance)
         elseif extraChance<0 then
-            extra= format('|cnRED_FONT_COLOR:%i%%|r', extraChance)
+            extra= format('|cnWARNING_FONT_COLOR:%i%%|r', extraChance)
         end
         frame.numLabel:SetFormattedText('%s%s', BreakUpLargeNumbers(num), extra)
     end
@@ -409,7 +409,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, WoWTools_PaperDollMixin.StatusPlusButton)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '小数点 ' or 'bit ')..(Save().itemLevelBit==-1 and '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save().itemLevelBit)), '-1'..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '小数点 ' or 'bit ')..(Save().itemLevelBit==-1 and '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save().itemLevelBit)), '-1'..WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(' ', '+1'..WoWTools_DataMixin.Icon.right)
         GameTooltip:AddLine('-1 '..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
         GameTooltip:Show()

@@ -148,7 +148,7 @@ local function Init_Menu(self, root)
         local new= Is_Completed(info)
 
         local col=  new.isNotChecked==nil and new.num==0 and '|cff9e9e9e'
-                    or (new.hasToy==false and '|cnRED_FONT_COLOR:')
+                    or (new.hasToy==false and '|cnWARNING_FONT_COLOR:')
                     or ''
 
         local name= WoWTools_ItemMixin:GetName(new.itemID)

@@ -634,7 +634,7 @@ local function Init()--设置标记, 框架
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(
                     WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET),
-                    not can and '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+                    not can and '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
                 )
                 GameTooltip:AddLine(
                     WoWTools_DataMixin.Icon.right

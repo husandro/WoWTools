@@ -53,7 +53,7 @@ local function Init(OpenButton)
                 if self:CanChangeAttribute() then
                     GameTooltip:AddLine(' ')
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.mid..'|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), self.noText)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.mid..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), self.noText)
                     GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_KeyMixin:IsKeyValid(self) or '')..WoWTools_DataMixin.Icon.left)
                     GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.mid..'|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH)
                     GameTooltip:Show()

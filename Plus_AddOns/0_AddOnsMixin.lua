@@ -77,7 +77,7 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
         local title= C_AddOns.GetAddOnInfo(name) or name
         local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e'
         local memo, va= self:Get_MenoryValue(name, false)--内存
-        memo= memo and (' |cnRED_FONT_COLOR:'..memo..'|r') or ''
+        memo= memo and (' |cnWARNING_FONT_COLOR:'..memo..'|r') or ''
         table.insert(newTab, {
             left=col..icon..title..'|r'..memo,
             right= text or ' ',

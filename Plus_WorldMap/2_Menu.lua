@@ -126,7 +126,7 @@ local function Init_PlayerXY_Option_Menu(self, root2)
         local mapID= C_Map.GetBestMapForUnit("player")
         local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
         if not can then
-            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
+            tooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
         end
     end)
 

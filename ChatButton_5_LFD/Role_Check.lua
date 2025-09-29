@@ -172,7 +172,7 @@ local function Init()
                 ..(WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL)
                 ..': |cfff00fff'.. SecondsToTime(Save().sec)..'|r '
                 ..(WoWTools_DataMixin.onlyChinese and '接受' or ACCEPT)..'|r',
-                '|cnRED_FONT_COLOR:'..'Alt '
+                '|cnWARNING_FONT_COLOR:'..'Alt '
                 ..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
             )
 
@@ -340,7 +340,7 @@ local function Init()
             or '',--地下城史诗,分数
 
             info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and
-                '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r'
+                '|A:pvptalents-warmode-swords:0:0|a|cnWARNING_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r'
             or '',--PVP 分数
 
             (info.leaderName or leaderGuid) and format(
@@ -374,7 +374,7 @@ local function Init()
             or '',--查找器,类型
 
             info.isWarMode and-- info.isWarMode ~= C_PvP.IsWarModeDesired() and
-                '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r'
+                '|A:pvptalents-warmode-swords:0:0|a|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r'
             or ''
 
             --info.questID
@@ -448,7 +448,7 @@ local function Init()
 
                 if isKilled then
                     text= text
-                        ..'|A:common-icon-checkmark:0:0|a|cnRED_FONT_COLOR:'..WoWTools_TextMixin:CN(bossName)
+                        ..'|A:common-icon-checkmark:0:0|a|cnWARNING_FONT_COLOR:'..WoWTools_TextMixin:CN(bossName)
                         ..'|r |cffffffff'..(WoWTools_DataMixin.onlyChinese and '已消灭' or BOSS_DEAD)..'|r'
                     dead= dead+1
                 else

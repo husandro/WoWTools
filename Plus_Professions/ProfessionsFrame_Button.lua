@@ -268,7 +268,7 @@ local function Init_Menu(self, root)
         Save().showFuocoButton= not Save().showFuocoButton and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
+        tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
         tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT )..': '..WoWTools_TextMixin:GetShowHide(false))
         tooltip:AddLine(' ')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
