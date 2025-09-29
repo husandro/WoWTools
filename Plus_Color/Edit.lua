@@ -15,7 +15,8 @@ local function OnColorSelect(_, r, g, b)
     end
 
     local a= ColorPickerFrame.hasOpacity and ColorPickerFrame.Content.ColorPicker:GetColorAlpha() or 1
-    for _, frame in pairs(EditBoxs) do
+    for _, name in pairs(EditBoxs) do
+        local frame= _G['WoWToolsColor'..name..'EditBox']
         if frame:IsShown() then
             if not frame:HasFocus() then
                 local text= frame.get_text(r, g, b, a)
@@ -36,6 +37,7 @@ local function Set_Color(r,g,b,a)
 end
 
 local function Get_RGBAtoText(text)
+    text= text or ''
     text= text:gsub(',',' ')
     text= text:gsub('，',' ')
     text= text:gsub('  ',' ')
@@ -48,7 +50,14 @@ local function Get_RGBAtoText(text)
     if text:find('#') or text:find('|c') then
         r, g, b, a= WoWTools_ColorMixin:HEXtoRGB(text)
     else
-        r, g, b, a= text:match('(.-) (.-) (.-) (.+)')
+        
+        r,g,b= text:match('(%d%.%d+).-(%d%.%d+).-(%d%.%d+)')--r=0.78, g=0.75, b=0.73
+        a= text:match('%d%.%d+.-%d%.%d+.-%d%.%d+.-(%d%.%d+)')
+
+        if not r or not g or not b then
+            r, g, b,a= text:match('(.-) (.-) (.-) (.+)')
+        end
+        
         if not r or not g or not b then
             r, g, b= text:match('(.-) (.-) (.+)')
         end
@@ -56,6 +65,8 @@ local function Get_RGBAtoText(text)
         if not r or not g or not b then
             r, g, b= text:match('(%d+) (%d+) (%d+)')
         end
+        
+       --( ) . % + - * ? [ ^ $ 
     end
 
     if r and g and b then
@@ -117,6 +128,7 @@ local Tab={
     {
         name='RGB',
         get_value= function(text)
+            text= text or ''
             local r,g,b= text:match('(%d+).-(%d+).-(%d+)')
             if r and g and b then
                 local r2,g2,b2= tonumber(r), tonumber(g), tonumber(b)
@@ -127,16 +139,17 @@ local Tab={
         get_text= function(r,g,b)
             return format(
                 '%i %i %i',
-                r*255,
-                g*255,
-                b*255
+                (r or 1)*255,
+                (g or 1)*255,
+                (b or 1)*255
             )
         end,
     },
     {
         name= 'HSV',
         get_value= function(text)
-        local h, s, v = text:match('(%d+).-(%d+).-(%d+)')
+            text= text or ''
+            local h, s, v = text:match('(%d+).-(%d+).-(%d+)')
             h= h and tonumber(h)
             s= s and tonumber(s)
             v= v and tonumber(v)
@@ -157,7 +170,7 @@ local Tab={
     {
         name= 'CODE',
         get_value= function(text)
-            if text=='' then
+            if not text or text=='' then
                 return
             end
             text=text:gsub(' ', '')
@@ -174,7 +187,7 @@ local Tab={
             end
         end,
         get_text= function(r,g,b,a)
-            local r2,g2,b2,a2= format('%.2f',r), format('%.2f',g), format('%.2f',b), format('%.2f',a or 1)
+            local r2,g2,b2,a2= format('%.2f', r or 1), format('%.2f', g or 1), format('%.2f', b or 1), format('%.2f', a or 1)
             local r3,g3,b3,a3, r4,g4,b4,a4
             for _, info in pairs(C_UIColor.GetColors() or {}) do
                 r4,g4,b4,a4= info.color.r, info.color.g, info.color.b, info.color.a or 1
@@ -194,32 +207,6 @@ local Tab={
 }
 
 
--- |cnGREEN_FONT_COLOR:
-
-
-
---[[
-if not r or not g or not b then
-                return ''
-            end
-
-            local r2,g2,b2,a2= format('%.2f',r), format('%.2f',g), format('%.2f',b), format('%.2f',a or 1)
-            local r3,g3,b3,a3, r4,g4,b4,a4
-            for _, info in pairs(C_UIColor.GetColors() or {}) do
-                r4,g4,b4,a4= info.color.r, info.color.g, info.color.b, info.color.a or 1
-                r3,g3,b3,a3= format('%.2f',r4), format('%.2f', g4), format('%.2f',b4), format('%.2f',a4)
-                if
-                    (r2==r3 or r4==r)
-                    and (g2==g3 or g4==g)
-                    and (b2==b3 or b4==b)
-                    and (a2==a3 or a4==a4)
-                then
-                    return info.baseTag
-                end
-            end
-            return ''
-]]
-
 
 
 
@@ -227,7 +214,7 @@ if not r or not g or not b then
 
 
 local function Create_EditBox(index, tab)
-    local frame= CreateFrame("EditBox", nil, _G['WoWToolsColorPickerFrameButton'].frame, 'SearchBoxTemplate', index)--格式 RED_FONT_COLOR
+    local frame= CreateFrame("EditBox", 'WoWToolsColor'..tab.name..'EditBox', _G['WoWToolsColorPickerFrameButton'].frame, 'SearchBoxTemplate', index)--格式 RED_FONT_COLOR
 
     frame:SetPoint('TOPLEFT', ColorPickerFrame.Content, 'BOTTOMLEFT', 12, -(index-1)*22)
     frame:SetPoint('RIGHT', ColorPickerFrame.Content, -12, 0)
@@ -249,23 +236,6 @@ local function Create_EditBox(index, tab)
     WoWTools_TextureMixin:SetEditBox(frame, {alpha=0.6})
     frame.Instructions:SetAlpha(0.6)
 
-    --[[frame.clearButton:SetAlpha(0.6)
-    --frame.searchIcon:SetAlpha(0.6)
-    --frame.searchIcon:SetAtlas('NPE_Icon')
-    function frame:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        local r,g,b,a= self.get_value(self:GetText())
-        GameTooltip:AddLine(self.name, r,g,b)
-
-        if r and g and b then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(Tab[1].get_text(r, g, b, a))
-            GameTooltip:AddLine(Tab[2].get_text(r, g, b, a))
-            GameTooltip:AddLine(Tab[3].get_text(r, g, b, a))
-        end
-        GameTooltip:Show()
-    end]]
 
     function frame:set_bg_alpha(alpha)
         frame.Middle:SetAlpha(alpha)
@@ -281,14 +251,12 @@ local function Create_EditBox(index, tab)
     end)
 
 --OnTextChanged
+    
     frame:SetScript('OnTextChanged', function(self, userInput)
         if userInput and self:HasFocus() then
-            Set_Color(self.get_value(self:GetText()))
+            Set_Color(self.get_value(self:GetText() or ''))
         end
         self.clearButton:SetShown(self:HasText())
-        --[[if GameTooltip:IsOwned(self) then
-            self:set_tooltip()
-        end]]
     end)
     function frame:Setup()
         Set_Color(self.get_value(self:GetText()))
@@ -303,7 +271,7 @@ local function Create_EditBox(index, tab)
         if value>#EditBoxs then
             value=1
         end
-        EditBoxs[value]:SetFocus()
+        _G['WoWToolsColor'..EditBoxs[value]..'EditBox']:SetFocus()
     end)
 
 --OnEditFocusGained
@@ -326,24 +294,8 @@ local function Create_EditBox(index, tab)
         self:ClearFocus()
     end)
 
-    --[[frame:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-    end)
-    frame:SetScript('OnEnter', function(self)
-        self:set_tooltip()
-    end)]]
-
-   --[[rame.icon= frame:CreateTexture()
-    frame.icon:SetPoint('LEFT', frame, 'RIGHT')
-    frame.icon:SetAtlas('NPE_Icon')
-    frame.icon:SetSize(20,20)]]
-    
-    --[[if tab.name=='HSV' then
-        function frame:set_tooltip()
-        end
-    end]]
-
-    table.insert(EditBoxs, frame)
+   
+    table.insert(EditBoxs, tab.name)
 end
 
 
@@ -368,12 +320,17 @@ end
 
 
 local function Init()
-    for index, tab in pairs(Tab) do
-        Create_EditBox(index, tab)
+    do
+        for index, tab in pairs(Tab) do
+            Create_EditBox(index, tab)
+        end
     end
+    Tab=nil
 
     ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", OnColorSelect)
     OnColorSelect(nil, ColorPickerFrame:GetColorRGB())
+
+    Init=function()end
 end
 
 

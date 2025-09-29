@@ -95,19 +95,26 @@ local function UpdateButtonState(frame)--技能提示
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:SetSpellByID(spellID)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), WoWTools_DataMixin.Icon.right)
+        --GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.Icon.right
+            ..'|cnGREEN_FONT_COLOR:<'
+            ..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)
+            ..'>|r'
+            ..(IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')
+        )
         if sectionID then
             local difficulty= EJ_GetDifficulty()
             GameTooltip:AddDoubleLine(
-                'sectionID'..WoWTools_DataMixin.Icon.icon2..sectionID,
-                difficulty and 'difficulty'..WoWTools_DataMixin.Icon.icon2..difficulty
+                NORMAL_FONT_COLOR:WrapTextInColorCode('sectionID')..'|cffffffff'..WoWTools_DataMixin.Icon.icon2..sectionID,
+                difficulty and 'difficulty|cffffffff'..WoWTools_DataMixin.Icon.icon2..difficulty or WoWTools_EncounterMixin.addName
             )
         else
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
         end
         GameTooltip:Show()
     end)
+    
     --frame:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     frame:HookScript('OnMouseDown', function(self, d)
         local spellID= self:GetParent().spellID--self3.link

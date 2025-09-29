@@ -46,8 +46,16 @@ end
 
 --( ) . % + - * ? [ ^ $ 
 --HEX转RGB -- ColorUtil.lua
+local function ExtractColorValueFromHex(str, index)
+    local t= str:sub(index, index + 1)
+    if t then
+	    return tonumber(t, 16) / 255
+    end
+end
+
+
 function WoWTools_ColorMixin:HEXtoRGB(text, frame)
-    text= text:gsub(' ','')
+    text= text and text:gsub(' ','')
 	if not text or text=='' then
         return
     end
@@ -76,10 +84,16 @@ function WoWTools_ColorMixin:HEXtoRGB(text, frame)
     end
 
     if len == 8 then
-        a, r,g,b= ExtractColorValueFromHex(text, 1), ExtractColorValueFromHex(text, 3), ExtractColorValueFromHex(text, 5), ExtractColorValueFromHex(text, 7)
+        a= ExtractColorValueFromHex(text, 1)
+        r= ExtractColorValueFromHex(text, 3)
+        g= ExtractColorValueFromHex(text, 5)
+        b= ExtractColorValueFromHex(text, 7)
 
     elseif len==6 then--#COLOR_FORMAT_RGB
-        r,g,b, a= ExtractColorValueFromHex(text, 1), ExtractColorValueFromHex(text, 3), ExtractColorValueFromHex(text, 5), 1
+        a= 1
+        r= ExtractColorValueFromHex(text, 1)
+        g= ExtractColorValueFromHex(text, 3)
+        b= ExtractColorValueFromHex(text, 5)
     end
     if r and g and b then
         set_Frame_Color(frame, r, g, b, a or 1, (len~=8 and 'ff' or '')..text)
