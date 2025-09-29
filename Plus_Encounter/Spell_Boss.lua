@@ -83,18 +83,30 @@ local function UpdateButtonState(frame)--技能提示
         return
     end
 
+    WoWTools_DataMixin:Load({id=frame:GetParent().spellID, type='spell'})
+
     frame:HookScript("OnEnter", function(self)
-        local spellID= self:GetParent().spellID--self3.link
-        WoWTools_DataMixin:Load({id=spellID, type='spell'})
-        if not Save().hideEncounterJournal and spellID and spellID>0 then
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            GameTooltip:ClearLines()
-            GameTooltip:SetSpellByID(spellID)
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), WoWTools_DataMixin.Icon.right)
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
-            GameTooltip:Show()
+        local p= self:GetParent()
+        local spellID= p.spellID--self3.link    
+        local sectionID= p.myID
+        if Save().hideEncounterJournal or not spellID or spellID<1 then
+            return
         end
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetSpellByID(spellID)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), WoWTools_DataMixin.Icon.right)
+        if sectionID then
+            local difficulty= EJ_GetDifficulty()
+            GameTooltip:AddDoubleLine(
+                'sectionID'..WoWTools_DataMixin.Icon.icon2..sectionID,
+                difficulty and 'difficulty'..WoWTools_DataMixin.Icon.icon2..difficulty
+            )
+        else
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
+        end
+        GameTooltip:Show()
     end)
     --frame:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     frame:HookScript('OnMouseDown', function(self, d)
@@ -119,6 +131,6 @@ end
 
 
 function WoWTools_EncounterMixin:Init_Spell_Boss()--技能提示
-    WoWTools_DataMixin:Hook('EncounterJournal_UpdateButtonState', UpdateButtonState)
-    WoWTools_DataMixin:Hook('EncounterJournal_SetBullets', SetBullets)
+    WoWTools_DataMixin:Hook('EncounterJournal_UpdateButtonState', function(...) UpdateButtonState(...) end)
+    WoWTools_DataMixin:Hook('EncounterJournal_SetBullets', function(...) SetBullets(...) end)
 end
