@@ -56,7 +56,6 @@ local Tab={
 "DIFFICULT_DIFFICULTY_COLOR",
 "DIM_GREEN_FONT_COLOR",
 "DIM_RED_FONT_COLOR",
-"DISABLED_FONT_COLOR",
 "DISABLED_REAGENT_COLOR",
 "DRAGONFLIGHT_BLACK_COLOR",
 "DRAGONFLIGHT_BLUE_COLOR",
@@ -120,7 +119,6 @@ local Tab={
 "HEALTHBAR_OTHER_HEAL_PREDICTION_COLOR",
 "HEALTHBAR_TOTAL_ABSORB_COLOR",
 "HEIRLOOM_BLUE_COLOR",
-"HIGHLIGHT_FONT_COLOR",
 "HIGHLIGHT_LIGHT_BLUE",
 "HOSTILE_STATUS_COLOR",
 "IMPOSSIBLE_DIFFICULTY_COLOR",
@@ -163,7 +161,6 @@ local Tab={
 "LINK_FONT_COLOR",
 "LOOT_LINK_COLOR",
 "LORE_TEXT_BODY_COLOR",
-"LuaConstantName",
 "MANAFORGE_VANDALS_MAJOR_FACTION_FONT_COLOR",
 "MARBLE_MATERIAL_TEXT_COLOR",
 "MARBLE_MATERIAL_TITLETEXT_COLOR",
@@ -174,7 +171,6 @@ local Tab={
 "NIGHT_FAE_BLUE_COLOR",
 "NIGHTFALL_MAJOR_FACTION_COLOR",
 "NO_THREAT_COLOR",
-"NORMAL_FONT_COLOR",
 "NOT_ON_THREAT_COLOR",
 "OBJECTIVE_TRACKER_BLOCK_HEADER_COLOR",
 "ORANGE_FONT_COLOR",
@@ -299,7 +295,6 @@ local Tab={
 "VERY_DARK_GRAY_COLOR",
 "VERY_LIGHT_GRAY_COLOR",
 "WARBOARD_OPTION_TEXT_COLOR",
-"WARNING_FONT_COLOR",
 "WEB_MAJOR_FACTION_COLOR",
 "WHITE_FONT_COLOR",
 "YELLOW_FONT_COLOR",
@@ -314,6 +309,9 @@ local function Init_Menu(self, root)
         return
     end
 
+    
+    local text= string.upper(self:GetParent():GetText() or ' ')
+    
     local sub
     for _, name in pairs(Tab) do
         local color = _G[name..'_CODE']
@@ -321,7 +319,8 @@ local function Init_Menu(self, root)
             sub=root:CreateRadio (
                 color..name,
             function(data)
-                return self:GetParent():GetText()==data.name
+                local t= string.upper(self:GetParent():GetText() or '')
+                return t==data.name or (_G[t] and _G[t].GenerateHexColorMarkup and _G[t]:GenerateHexColorMarkup()==_G[data.name]:GenerateHexColorMarkup())
             end, function(data)
                 local edit= self:GetParent()
                 edit:SetText(data.name..'_CODE')
@@ -346,21 +345,41 @@ local function Init(edit)
         return
     end
 
+    table.sort(Tab)
+
+
+    --[[local tab={
+        [DISABLED_FONT_COLOR:GenerateHexColorMarkup()]=1,
+        [WARNING_FONT_COLOR:GenerateHexColorMarkup()]=1,
+        [HIGHLIGHT_FONT_COLOR:GenerateHexColorMarkup()]=1,
+        [NORMAL_FONT_COLOR:GenerateHexColorMarkup()]=1
+    }
+
+    do
+        for index, name in pairs(Tab) do
+            if _G[name] and _G[name].GenerateHexColorMarkup then
+                local col= _G[name]:GenerateHexColorMarkup()
+                if tab[col] then
+                    table.remove(Tab, index)
+                    print(col, name)
+                else
+                    tab[col]=1
+                end
+            else
+                table.remove(Tab, index)
+            end
+        end
+    end
+    tab= nil]]
     table.insert(Tab, 1, "DISABLED_FONT_COLOR")
     table.insert(Tab, 1, "WARNING_FONT_COLOR")
     table.insert(Tab, 1, "HIGHLIGHT_FONT_COLOR")
     table.insert(Tab, 1, "NORMAL_FONT_COLOR")
 
-    edit:SetHistoryLines(5)
-   
+
     local btn= WoWTools_ButtonMixin:Menu(edit, {atlas='AnimaChannel-Bar-Necrolord-Gem'})
     btn:SetPoint('RIGHT', edit.Instructions, 'LEFT')
     btn:SetupMenu(Init_Menu)
-
-
-    for _, name in pairs(Tab) do
-        edit:AddHistoryLine(name)
-    end
 
     Init=function()end
 end

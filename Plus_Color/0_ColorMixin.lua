@@ -55,8 +55,9 @@ end
 
 
 function WoWTools_ColorMixin:HEXtoRGB(text, frame)
-    text= text and text:gsub(' ','')
-	if not text or text=='' then
+    text= text and tostring(text) or ''
+    text= text:gsub(' ','')
+	if text=='' then
         return
     end
 

@@ -251,8 +251,12 @@ local function Create_EditBox(index, tab)
     end)
 
 --OnTextChanged
+    
     frame:SetScript('OnTextChanged', function(self, userInput)
         if userInput and self:HasFocus() then
+            if self.settings then
+                self:settings()
+            end
             Set_Color(self.get_value(self:GetText() or ''))
         end
         self.clearButton:SetShown(self:HasText())
