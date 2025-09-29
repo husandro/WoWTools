@@ -54,63 +54,6 @@ end
 
 
 
-
-
-
-
-local function Init_Menu(self, root)
-	local sub
---颜色
-
-
-	local function set_tooltip(tooltip, desc)
-		tooltip:AddDoubleLine(
-			'r'..tonumber(format('%.2f',desc.data.r))
-			..'  g'..tonumber(format('%.2f',desc.data.g))
-			..'  b'..tonumber(format('%.2f',desc.data.b)),
-
-            'a'..(desc.data.a and tonumber(format('%.2f',desc.data.a) or 1))
-        )
-	end
-
-	local function add_icon(button, desc)
-		local icon = button:AttachTexture()
-		icon:SetSize(20, 20);
-		icon:SetPoint("RIGHT")
-		icon:SetColorTexture(desc.data.r, desc.data.g, desc.data.b, 1)
-		return 20 + button.fontString:GetUnboundedStringWidth(), 20
-	end
-
---当前
-	sub= root:CreateButton('|cffffd100'..(WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT),
-		function ()
-			return MenuResponse
-		end,
-		{r=self.r, g=self.g, b=self.b, a=self.a or 1}
-	)
-	sub:AddInitializer(add_icon)
-	sub:SetTooltip(set_tooltip)
-	root:CreateDivider()
-
---替换
-	local col=select(5, WoWTools_ColorMixin:Get_ColorFrameRGBA())
-	sub= root:CreateButton(
-		(self.r==col.r and self.g==col.g and self.b==col.b and self.a==self.a and '|cff828282' or '|cnGREEN_FONT_COLOR:')
-		..(WoWTools_DataMixin.onlyChinese and '替换' or REPLACE),
-	function(data)
-		Save().saveColor[self.index]= {data.r, data.g, data.b, data.a}
-		self.r, self.g, self.b, self.a= data.r, data.g, data.b, data.a
-		self:SetColorTexture(data.r, data.g, data.b)
-		print(WoWTools_ColorMixin.addName, WoWTools_DataMixin.onlyChinese and '替换成功' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, COMPLETE))
-		return MenuResponse
-	end, col)
-	sub:AddInitializer(add_icon)
-	sub:SetTooltip(set_tooltip)
-end
-
-
-
-
 local function Init()
 	Save().logColor= Save().logColor or {}
 	Save().saveColor= Save().saveColor or {}
@@ -198,14 +141,14 @@ local function Init()
 --保存，颜色
 	for index, color in pairs(
 		{
-			{1, 0.82, 0, 1},
-			{1, 0, 1, 1},
-			{1, 1, 0, 1},
-			{0, 1, 0, 1}
+			{NORMAL_FONT_COLOR:GetRGBA()},
+			{HIGHLIGHT_FONT_COLOR:GetRGBA()},
+			{WARNING_FONT_COLOR:GetRGBA()},
+			{DISABLED_FONT_COLOR:GetRGBA()},
 		}
 	) do
-		local col= Save().saveColor[index] or color
-		local r,g,b,a= col[1],col[2],col[3], col[4] or 1
+		local c= Save().saveColor[index] or color
+		local r,g,b,a= c[1] or 1, c[2] or 1, c[3] or 1, c[4] or 1
 		local icon= WoWTools_ColorMixin:Create_Texture(r,g,b,a)--记录，打开时的颜色， 和历史
 		local s= icon:GetWidth()
 		if index==1 then
@@ -226,12 +169,72 @@ local function Init()
 			)
 		end
 		icon.notClick='RightButton'
+		icon.Color= {r=color[1], g=color[2], b=color[3], a=color[4]}
 		icon:HookScript('OnMouseDown', function(self, d)
-			if d=='RightButton' then
-				MenuUtil.CreateContextMenu(self, function(...)
-					Init_Menu(...)
-				end)
+			if d~='RightButton' then
+				return
 			end
+				MenuUtil.CreateContextMenu(self:GetParent(), function(_, root)
+
+					local function set_tooltip(tooltip, desc)
+						tooltip:AddDoubleLine(
+							'r'..tonumber(format('%.2f',desc.data.r))
+							..'  g'..tonumber(format('%.2f',desc.data.g))
+							..'  b'..tonumber(format('%.2f',desc.data.b)),
+
+							'a'..(desc.data.a and tonumber(format('%.2f',desc.data.a) or 1))
+						)
+					end
+
+					local function add_icon(button, desc)
+						local t = button:AttachTexture()
+						t:SetSize(20, 20);
+						t:SetPoint("RIGHT")
+						t:SetColorTexture(desc.data.r, desc.data.g, desc.data.b, 1)
+						return 20 + button.fontString:GetUnboundedStringWidth(), 20
+					end
+
+					local function settings(data)
+						Save().saveColor[self.index]= {data.r, data.g, data.b, data.a}
+						self.r, self.g, self.b, self.a= data.r, data.g, data.b, data.a
+						self:SetColorTexture(data.r, data.g, data.b)
+					end
+
+					local sub
+					local col= select(5, WoWTools_ColorMixin:Get_ColorFrameRGBA())
+--当前
+					sub= root:CreateButton(
+						WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT,
+					function (data)
+						settings(data)
+						return MenuResponse.Open
+					end, {r=self.r, g=self.g, b=self.b, a=self.a or 1})
+					sub:AddInitializer(add_icon)
+					sub:SetTooltip(set_tooltip)
+--选择
+					sub= root:CreateButton(
+						WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE,
+					function(data)
+						settings(data)
+						return MenuResponse.Open
+					end, col)
+					sub:AddInitializer(add_icon)
+					sub:SetTooltip(set_tooltip)
+--默认
+					sub= root:CreateButton(
+						WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT,
+					function (data)
+						settings(data)
+						print(data.r, data.g, data.b)
+						return MenuResponse.Open
+					end, self.Color)
+					sub:AddInitializer(add_icon)
+					sub:SetTooltip(set_tooltip)
+					root:CreateDivider()
+
+				end)
+
+
 		end)
 	end
 end

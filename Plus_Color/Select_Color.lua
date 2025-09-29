@@ -38,7 +38,7 @@ local function Create_Texture(r,g,b,a, atlas)
 
 	texture:SetScript('OnMouseUp', function(self) self:SetAlpha(0.7) end)
 	texture:SetScript('OnEnter', function(self)
-		local col= '|c'..WoWTools_ColorMixin:RGBtoHEX(self.r, self.g, self.b, self.a)
+		local col= '|c'..WoWTools_ColorMixin:RGBtoHEX(self.r or 1, self.g or 1, self.b or 1, self.a or 1)
 		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
 		GameTooltip:ClearLines()
 		GameTooltip:AddDoubleLine(col..WoWTools_DataMixin.addName, col..WoWTools_ColorMixin.addName)

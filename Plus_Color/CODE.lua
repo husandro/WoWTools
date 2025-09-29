@@ -308,9 +308,6 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-
-    
-    local text= string.upper(self:GetParent():GetText() or ' ')
     
     local sub
     for _, name in pairs(Tab) do
@@ -347,30 +344,6 @@ local function Init(edit)
 
     table.sort(Tab)
 
-
-    --[[local tab={
-        [DISABLED_FONT_COLOR:GenerateHexColorMarkup()]=1,
-        [WARNING_FONT_COLOR:GenerateHexColorMarkup()]=1,
-        [HIGHLIGHT_FONT_COLOR:GenerateHexColorMarkup()]=1,
-        [NORMAL_FONT_COLOR:GenerateHexColorMarkup()]=1
-    }
-
-    do
-        for index, name in pairs(Tab) do
-            if _G[name] and _G[name].GenerateHexColorMarkup then
-                local col= _G[name]:GenerateHexColorMarkup()
-                if tab[col] then
-                    table.remove(Tab, index)
-                    print(col, name)
-                else
-                    tab[col]=1
-                end
-            else
-                table.remove(Tab, index)
-            end
-        end
-    end
-    tab= nil]]
     table.insert(Tab, 1, "DISABLED_FONT_COLOR")
     table.insert(Tab, 1, "WARNING_FONT_COLOR")
     table.insert(Tab, 1, "HIGHLIGHT_FONT_COLOR")
