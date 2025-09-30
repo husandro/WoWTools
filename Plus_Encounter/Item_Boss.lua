@@ -135,13 +135,14 @@ local function Init(btn)
 
 
     --拾取, 职业
-    classText= classText:gsub('(.-),', function(t)
-        
-        local a= WoWTools_TextMixin:CN(t:gsub('^ ', ''))
-        if a and a~=t then
-            return a..', '
-        end
-    end)
+    if classText and WoWTools_ChineseMixin then
+        classText= classText:gsub('(.-),', function(t)
+            local a= WoWTools_TextMixin:CN(t:gsub('^ ', ''))
+            if a and a~=t then
+                return a..', '
+            end
+        end)
+    end
     btn.classLabel:SetText(classText or '')
     btn.upText:SetText(upText or '')
 
