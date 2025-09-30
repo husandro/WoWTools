@@ -319,8 +319,10 @@ end})
                 end
             end)
             edit:SetScript('OnCursorChanged', function(s)
-                s:SetText(web)
-                s:HighlightText()
+                if s:GetText()~=web then
+                    s:SetText(web)
+                end
+                --s:HighlightText()
             end)
             edit:SetMaxLetters(0)
             edit:SetWidth(self:GetWidth())
