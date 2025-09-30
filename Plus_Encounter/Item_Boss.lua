@@ -102,14 +102,13 @@ local function Init(btn)
 
         btn.upText= WoWTools_LabelMixin:Create(btn)--, { color={r=1, g=1, b=1}})
         btn.upText:SetPoint('BOTTOMRIGHT', btn.itemText, 'TOPRIGHT', 0, 2)
-        --btn.upText:SetPoint('TOPRIGHT', -10,-16)
+
 --调整位置
-        btn.name:SetPoint('TOPLEFT', btn.icon, 'TOPRIGHT', 7, -11)--<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="7" y="-7"/>
+        btn.name:SetPoint('TOPLEFT', btn.icon, 'TOPRIGHT', 7, -11)
         btn.slot:ClearAllPoints()
         btn.slot:SetPoint('TOPLEFT', btn.name, 'BOTTOMLEFT', 0, -4)
-        btn.classLabel= WoWTools_LabelMixin:Create(btn)--, {color={r=1, g=1, b=1}})
+        btn.classLabel= WoWTools_LabelMixin:Create(btn)
         btn.classLabel:SetPoint('BOTTOMLEFT', btn.name, 'TOPLEFT', 0 ,2)
-        --btn.classLabel:SetPoint('BOTTOM', btn, 0, 16)--<Size x="321" y="45"/>
 
         btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
         btn.spellTexture:SetSize(16,16)
@@ -136,6 +135,13 @@ local function Init(btn)
 
 
     --拾取, 职业
+    classText= classText:gsub('(.-),', function(t)
+        
+        local a= WoWTools_TextMixin:CN(t:gsub('^ ', ''))
+        if a and a~=t then
+            return a..', '
+        end
+    end)
     btn.classLabel:SetText(classText or '')
     btn.upText:SetText(upText or '')
 
