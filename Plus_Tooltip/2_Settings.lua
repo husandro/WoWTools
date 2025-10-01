@@ -1,7 +1,7 @@
 
 local function Init()
 
-    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
+    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip, data)
         if not tooltip.textLeft then
             WoWTools_TooltipMixin:Set_Init_Item(tooltip)--创建，设置，内容
         end
