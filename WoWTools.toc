@@ -474,7 +474,7 @@ Plus_AddOns\z_UI.lua
 ##Plus_AddOns\AddonProfiler.lua
 
 ##日历, 显示
-Plus_Holiday\0_Holiday.lua
+Plus_Holiday\1_Init.lua
 Plus_Holiday\Calendar_Uptate.lua
 Plus_Holiday\CreateEvent_Plus.lua
 Plus_Holiday\TrackButton.lua

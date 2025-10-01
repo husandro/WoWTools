@@ -54,9 +54,37 @@ end
 
 
 
+local function Init()
+    WoWTools_DataMixin:Hook(CalendarViewHolidayFrame, 'update', function(...) calendar_Uptate(...) end)--提示节目ID
+    WoWTools_DataMixin:Hook('CalendarViewHolidayFrame_Update', function(...) calendar_Uptate(...) end)
 
+    local btn= WoWTools_ButtonMixin:Cbtn(CalendarFrame.FilterButton, {
+        size=23,
+        name='WoWToolsHolidayReCurDayButton',
+        atlas='UI-HUD-Calendar-'..tonumber(date('%d'))..'-Mouseover'
+    })
+    btn:SetPoint('RIGHT', CalendarFrame.FilterButton, 'LEFT', 0, -3)
+    btn:SetScript('OnLeave', function() GameTooltip:Hide() end)
+    btn:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '返回当月' or NPE_ABANDON_A_RETURN))
+        GameTooltip:Show()
+    end)
+    btn:SetScript('OnMouseDown', function()
+	    local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime()
+		C_Calendar.SetAbsMonth(currentCalendarTime.month, currentCalendarTime.year)
+    end)
+
+    --WoWTools_DataMixin:Hook('CalendarDayButton_Click', function()
+    -- local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime()
+    CalendarYearBackground:ClearAllPoints()
+    CalendarYearName:ClearAllPoints()
+    CalendarYearName:SetPoint('RIGHT', btn, 'LEFT', -22, 0)
+    CalendarYearName:SetScale(1.5)
+    CalendarYearName:SetShadowOffset(1, -1)
+    Init=function()end
+end
 
 function WoWTools_HolidayMixin:Init_Calendar_Uptate()
-    WoWTools_DataMixin:Hook(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID    
-    WoWTools_DataMixin:Hook('CalendarViewHolidayFrame_Update', calendar_Uptate)
+   Init()
 end

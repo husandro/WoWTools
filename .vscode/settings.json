@@ -6200,7 +6200,9 @@
         "LFG_LIST_FIND_A_GROUP",
         "CREATE_ARENA_TEAM",
         "ClickBindingFrameCloseButton",
-        "ToggleClickBindingFrame"
+        "ToggleClickBindingFrame",
+        "CalendarYearName",
+        "NPE_ABANDON_A_RETURN"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

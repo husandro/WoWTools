@@ -519,6 +519,7 @@ end
 
 --设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
 local function Set_Text(monthOffset, day)
+
     if not monthOffset or not day then
         local info= C_Calendar.GetEventIndex()
         if info then
@@ -532,7 +533,6 @@ local function Set_Text(monthOffset, day)
             end
         end
     end
-
     local events = {};
     local findQuest
     local isToDay
