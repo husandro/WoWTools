@@ -140,7 +140,7 @@ local function Create(button)
     button.challengeText:SetPoint('BOTTOMLEFT',4,4)
     button.challengeText2= WoWTools_LabelMixin:Create(button, {size=WoWTools_DataMixin.onlyChinese and 12 or 10})
     button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
-   
+
 
 
 
@@ -226,7 +226,7 @@ local function Create(button)
         GameTooltip:Hide()
     end)
 
-    
+
     --当前, KEY地图,ID
     button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
     button.KeyTexture:SetPoint('TOPLEFT', -4, -2)
@@ -274,12 +274,11 @@ end
 
 
 
-local function Init_ListInstances()
-    local frame= EncounterJournal.instanceSelect.ScrollBox
+local function Init_ListInstances(frame)
     if not frame:GetView() then
         return
     end
-    
+
     if Save().hideEncounterJournal then
         for _, button in pairs(frame:GetFrames() or {}) do
             if button.tipsText then
@@ -305,7 +304,7 @@ local function Init_ListInstances()
             button.challengeText2:SetText(challengeText2 or '')
 
 --当前, KEY地图,ID
-            local isCurrent=  CurMaphallengeModeID and CurMaphallengeModeID==C_MythicPlus.GetOwnedKeystoneChallengeMapID() 
+            local isCurrent=  CurMaphallengeModeID and CurMaphallengeModeID==C_MythicPlus.GetOwnedKeystoneChallengeMapID()
             button.mapChallengeModeID= CurMaphallengeModeID
             button.KeyTexture:SetShown(isCurrent)
             button.KeyTexture.label:SetText(isCurrent and C_MythicPlus.GetOwnedKeystoneLevel() or '')--当前KEY，等级
@@ -332,5 +331,9 @@ end
 
 
 function WoWTools_EncounterMixin:Init_UI_ListInstances()
-    WoWTools_DataMixin:Hook('EncounterJournal_ListInstances', Init_ListInstances)
+    --WoWTools_DataMixin:Hook('EncounterJournal_ListInstances', function()Init_ListInstances)
+    --EncounterInstanceButtonTemplate
+    hooksecurefunc(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)
+        Init_ListInstances(frame)
+    end)
 end
