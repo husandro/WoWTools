@@ -80,7 +80,7 @@ local function Init()
     CalendarYearBackground:ClearAllPoints()
     CalendarYearName:ClearAllPoints()
     CalendarYearName:SetPoint('RIGHT', btn, 'LEFT', -22, 1)
-    CalendarYearName:SetScale(1.5)
+    CalendarYearName:SetScale(1.3)
     CalendarYearName:SetShadowOffset(1, -1)
     Init=function()end
 end
