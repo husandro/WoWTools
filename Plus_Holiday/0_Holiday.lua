@@ -56,7 +56,9 @@ local function Init_Open()
             end
             EventRegistry:UnregisterCallback('CALENDAR_UPDATE_EVENT_LIST', owner)
         end)
-        ToggleCalendar()
+        if not CalendarFrame then
+            ToggleCalendar()
+        end
     end
 end
 
