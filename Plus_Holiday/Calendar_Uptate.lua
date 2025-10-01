@@ -79,7 +79,7 @@ local function Init()
     -- local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime()
     CalendarYearBackground:ClearAllPoints()
     CalendarYearName:ClearAllPoints()
-    CalendarYearName:SetPoint('RIGHT', btn, 'LEFT', -22, 0)
+    CalendarYearName:SetPoint('RIGHT', btn, 'LEFT', -22, 1)
     CalendarYearName:SetScale(1.5)
     CalendarYearName:SetShadowOffset(1, -1)
     Init=function()end
