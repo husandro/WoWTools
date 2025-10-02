@@ -83,7 +83,7 @@ RemixArtifactFrame.Currency:SetPoint('RIGHT', RemixArtifactFrame.CommitConfigCon
                         if amount then
                             needCost= needCost+ traitCurrencyCost.amount
                             if treeCurrency and treeCurrency.quantity < traitCurrencyCost.amount then
-                                amount = RED_FONT_COLOR:WrapTextInColorCode(amount)
+                                amount = WARNING_FONT_COLOR:WrapTextInColorCode(amount)
                             elseif data.canPurchaseRank then
                                 amount= '|cnGREEN_FONT_COLOR:'..amount..'|r'
                                 scale=1.5

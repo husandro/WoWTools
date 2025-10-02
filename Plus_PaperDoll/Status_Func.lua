@@ -153,7 +153,7 @@ local function Init_Base_Stats(frame, unit, statIndex)--主属性
                 tooltipText = GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff)..FONT_COLOR_CODE_CLOSE
             end
             if ( negBuff < 0 ) then
-                tooltipText = (tooltipText or '')..RED_FONT_COLOR_CODE.." -"..BreakUpLargeNumbers(negBuff)..FONT_COLOR_CODE_CLOSE
+                tooltipText = (tooltipText or '')..WARNING_FONT_COLOR_CODE.." -"..BreakUpLargeNumbers(negBuff)..FONT_COLOR_CODE_CLOSE
             end
         end
         frame.numLabel:SetText(tooltipText or '')

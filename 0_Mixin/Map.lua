@@ -115,7 +115,7 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
             ['史诗']= {name= WoWTools_DataMixin.onlyChinese and '史诗' or PLAYER_DIFFICULTY6, hex='|cffff00ff', r=1, g=0, b=1},
             ['挑战']= {name= WoWTools_DataMixin.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
             ['漫游']= {name= WoWTools_DataMixin.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
-            ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
+            ['pvp']= {name= 'PvP', hex='|cffff4800', r=1, g=0, b=0},
             ['追随']= {name= WoWTools_DataMixin.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
             ['地下堡']= {name= WoWTools_DataMixin.onlyChinese and '地下堡' or DELVES_LABEL, hex='|cffedd100', r=0.93, g=0.82, b=0, a=1},
             ['团本剧情']={name= WoWTools_DataMixin.onlyChinese and '团本剧情' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RAID, QUEST_CLASSIFICATION_QUESTLINE), hex='|cffaaffaa', r=0.67, g=1.00, b=0.67}

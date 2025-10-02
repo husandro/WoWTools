@@ -3,7 +3,7 @@
 WoWTools_AttributesMixin={}
 
 local P_Save={
-    redColor= '|cffff0000',
+    redColor= '|cffff4800',
     greenColor='|cff00ff00',
     font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
     tab={

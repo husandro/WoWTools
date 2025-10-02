@@ -61,7 +61,7 @@ end
             if mi and ma then
                 text=mi..'|n'..ma
                 if mi>40 then
-                    text='|cFFFF0000'..text--红色
+                    text='|cFFFF4800'..text--红色
 
                 elseif mi>35 then
                     text='|cFFFFD000'..text

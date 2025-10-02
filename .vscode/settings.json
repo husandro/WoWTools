@@ -6202,7 +6202,8 @@
         "ClickBindingFrameCloseButton",
         "ToggleClickBindingFrame",
         "CalendarYearName",
-        "NPE_ABANDON_A_RETURN"
+        "NPE_ABANDON_A_RETURN",
+        "WARNING_FONT_COLOR_CODE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

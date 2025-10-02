@@ -81,7 +81,7 @@ local function Pet(speciesID)
         if numCollected and limit then
             return (
                     numCollected == limit and GREEN_FONT_COLOR_CODE
-                    or (numCollected==0 and RED_FONT_COLOR_CODE)
+                    or (numCollected==0 and WARNING_FONT_COLOR_CODE)
                     or YELLOW_FONT_COLOR_CODE
                 )
                 ..'['..numCollected ..'/'.. limit..']|r'
@@ -355,7 +355,7 @@ local function Outfit(link)
                 ..Get_CompletedIcon(true)
         else
             return WoWTools_HyperLink:CN_Link(link)
-                ..(co>0 and YELLOW_FONT_COLOR_CODE or RED_FONT_COLOR_CODE)
+                ..(co>0 and YELLOW_FONT_COLOR_CODE or WARNING_FONT_COLOR_CODE)
                 ..co..'/'..to..'|r'
         end
     end
@@ -497,7 +497,7 @@ local function TransmogSet(link)--幻化套装
         if n==to then
             t= t..Get_CompletedIcon(true)
         else
-            t= t..(n==0 and RED_FONT_COLOR_CODE or YELLOW_FONT_COLOR_CODE)..n..'/'..to..'|r'
+            t= t..(n==0 and WARNING_FONT_COLOR_CODE or YELLOW_FONT_COLOR_CODE)..n..'/'..to..'|r'
         end
     end
     if t~=link then

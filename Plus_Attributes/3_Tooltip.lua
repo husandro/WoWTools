@@ -33,7 +33,7 @@ Show_Tooltip.STATUS= function(frame, owner)
 			tooltipText = tooltipText..FONT_COLOR_CODE_CLOSE..GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff or 0)..FONT_COLOR_CODE_CLOSE
 		end
 		if ( negBuff < 0 ) then
-			tooltipText = tooltipText..RED_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff or 0)..FONT_COLOR_CODE_CLOSE
+			tooltipText = tooltipText..WARNING_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff or 0)..FONT_COLOR_CODE_CLOSE
 		end
 		if ( posBuff > 0 or negBuff < 0 ) then
 			tooltipText = tooltipText..HIGHLIGHT_FONT_COLOR_CODE..")"..FONT_COLOR_CODE_CLOSE
@@ -162,7 +162,7 @@ Show_Tooltip.HASTE= function(frame)
 
 	local hasteFormatString
 	if (haste < 0 and not GetPVPGearStatRules()) then
-		hasteFormatString = RED_FONT_COLOR_CODE.."%s"..FONT_COLOR_CODE_CLOSE
+		hasteFormatString = WARNING_FONT_COLOR_CODE.."%s"..FONT_COLOR_CODE_CLOSE
 	else
 		hasteFormatString = "%s"
 	end

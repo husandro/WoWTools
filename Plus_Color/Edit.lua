@@ -214,7 +214,7 @@ local Tab={
 
 
 local function Create_EditBox(index, tab)
-    local frame= CreateFrame("EditBox", 'WoWToolsColor'..tab.name..'EditBox', _G['WoWToolsColorPickerFrameButton'].frame, 'SearchBoxTemplate', index)--格式 RED_FONT_COLOR
+    local frame= CreateFrame("EditBox", 'WoWToolsColor'..tab.name..'EditBox', _G['WoWToolsColorPickerFrameButton'].frame, 'SearchBoxTemplate', index)--格式 WARNING_FONT_COLOR
 
     frame:SetPoint('TOPLEFT', ColorPickerFrame.Content, 'BOTTOMLEFT', 12, -(index-1)*22)
     frame:SetPoint('RIGHT', ColorPickerFrame.Content, -12, 0)

@@ -233,7 +233,7 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                     if avgItemLevel then
                         local lv = itemLevel- avgItemLevel
                         if lv <= -6  then
-                            itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
+                            itemLevel= WARNING_FONT_COLOR_CODE..itemLevel..'|r'
                         elseif lv>=7 then
                             itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
                         else

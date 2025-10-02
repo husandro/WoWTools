@@ -44,7 +44,7 @@ local function Create_Texture(r,g,b,a, atlas)
 		GameTooltip:AddDoubleLine(col..WoWTools_DataMixin.addName, col..WoWTools_ColorMixin.addName)
 
 		GameTooltip:AddDoubleLine(
-            '|cffff0000r|r|cffffffff=|r'..tonumber(format('%.2f',self.r))
+            '|cffff4800r|r|cffffffff=|r'..tonumber(format('%.2f',self.r))
             ..'  |cff00ff00g|r|cffffffff=|r'..tonumber(format('%.2f',self.g))
             ..'  |cff0000ffb|r|cffffffff=|r'..tonumber(format('%.2f',self.b)),
 
