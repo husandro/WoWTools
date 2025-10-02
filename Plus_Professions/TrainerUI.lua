@@ -77,7 +77,12 @@ local function Init()
                 print('|cffff00ff'..i..'|r)', link)
             end
 
-            print(WoWTools_DataMixin.addName, 'Tools', WoWTools_ProfessionMixin.addName, '|cffff00ff'..num..'|r '..(WoWTools_DataMixin.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
+            print(
+                WoWTools_ProfessionMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cffff00ff'..num..'|r '
+                ..(WoWTools_DataMixin.onlyChinese and '学习' or LEARN),
+                (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost)
+            )
 
             if GameTooltip:IsOwned(self) then
                 self:set_tooltip()
