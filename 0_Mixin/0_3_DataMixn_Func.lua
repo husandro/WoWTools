@@ -141,27 +141,27 @@ function WoWTools_DataMixin:MK(number, bit)
 
     bit = bit or 1
 
-    local text= ''
+    local t= ''
     if number>=1e8 then-- 1234 56789
         number= number/1e8
-        text='m'-- '|cffff00ffm|r'
+        t='m'-- '|cffff00ffm|r'
     elseif number>= 1e4 and WoWTools_DataMixin.onlyChinese then
         number= number/1e4
-        text='w'--'|cff00ff00w|r'
+        t='w'--'|cff00ff00w|r'
     elseif number>=1e3 then
         number= number/1e3
-        text='k'-- '|cffffffffk|r'
+        t='k'-- '|cffffffffk|r'
     end
     if bit==0 then
         number= math.modf(number)
         number= number==0 and 0 or number
-        return number..text--format('%i', number)..text
+        return number..t--format('%i', number)..text
     else
         local num, point= math.modf(number)
         if point==0 then
-            return num..text
+            return num..t
         else---0.5/10^bit
-            return format('%0.'..bit..'f', number)..text
+            return format('%0.'..bit..'f', number)..t
         end
     end
 end
