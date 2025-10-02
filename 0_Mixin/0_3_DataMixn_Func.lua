@@ -135,6 +135,10 @@ function WoWTools_DataMixin:MK(number, bit)
     if not number then
         return
     end
+    if not self.onlyChinese then
+        return BreakUpLargeNumbers(number)
+    end
+
     bit = bit or 1
 
     local text= ''

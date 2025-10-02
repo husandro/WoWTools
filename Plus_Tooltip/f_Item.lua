@@ -12,7 +12,7 @@ THIRD_NUMBER = "亿"
 
 local function Set_Value_Text(line)
     local text= line and line:GetText()
-    if not text or text=='' then
+    if not text or text=='' or text==' ' then
         return
     end
 
@@ -355,7 +355,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         return
     end
 
-    Set_Value(tooltip)
+    if WoWTools_DataMixin.onlyChinese then
+        Set_Value(tooltip)
+    end
 
     local r, g, b, col= 1,1,1,WoWTools_DataMixin.Player.col
     if itemQuality then
