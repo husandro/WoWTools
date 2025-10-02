@@ -77,6 +77,7 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 
     self:HideFrame(AchievementFrame, {show={[AchievementFrame.Background]=true}})
+    self:SetMenu(AchievementFrameFilterDropdown)
 
     WoWTools_DataMixin:Hook(AchievementStatTemplateMixin, 'OnLoad', function(f)
         if f.Middle then
