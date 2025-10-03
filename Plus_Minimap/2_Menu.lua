@@ -118,7 +118,7 @@ local function Init_Plus_Menu(self, root)
         tooltip:AddLine(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
     end)
 
-if not Save().Icons.disabled then
+
 --过滤 Border 透明度
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -152,7 +152,7 @@ if not Save().Icons.disabled then
         bit='%0.2f',
     })
     sub:CreateSpacer()
-end
+
 
 end
 
