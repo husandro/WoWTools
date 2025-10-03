@@ -79,7 +79,7 @@ local function Init_Plus_Menu(self, root)
         return not Save().disabledInstanceDifficulty
     end, function()
         Save().disabledInstanceDifficulty= not Save().disabledInstanceDifficulty and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledInstanceDifficulty), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledInstanceDifficulty), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     )
     sub:SetTooltip(function(tooltip)
@@ -104,7 +104,6 @@ local function Init_Plus_Menu(self, root)
     end)
 
 --收集图标
-print('a')
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.Icon.icon2
         ..'|cnWARNING_FONT_COLOR:'
@@ -116,7 +115,6 @@ print('a')
         WoWTools_MinimapMixin:Init_Collection_Icon()
     end)
     sub:SetTooltip(function(tooltip)
-        print(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
         tooltip:AddLine(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
     end)
 
