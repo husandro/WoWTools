@@ -104,6 +104,7 @@ local function Init_Plus_Menu(self, root)
     end)
 
 --收集图标
+print('a')
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.Icon.icon2
         ..'|cnWARNING_FONT_COLOR:'
@@ -115,10 +116,11 @@ local function Init_Plus_Menu(self, root)
         WoWTools_MinimapMixin:Init_Collection_Icon()
     end)
     sub:SetTooltip(function(tooltip)
+        print(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
         tooltip:AddLine(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
     end)
 
-
+if Save().Icons.disabled then
 --过滤 Border 透明度
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -152,7 +154,7 @@ local function Init_Plus_Menu(self, root)
         bit='%0.2f',
     })
     sub:CreateSpacer()
-
+end
 
 end
 
