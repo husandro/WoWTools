@@ -96,6 +96,9 @@ local function Unlock_Button(btn, name)
 
 --更新位置
     btn:ClearAllPoints()
+    if db then
+        print(db.minimapPos, type(db.minimapPos))
+    end
     libDBIcon:SetButtonToPosition(btn, db and db.minimapPos or nil)
 
 --还原，显示/隐藏

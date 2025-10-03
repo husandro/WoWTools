@@ -106,6 +106,7 @@ local function Init_Plus_Menu(self, root)
 --收集图标
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.Icon.icon2
+        ..'|cnWARNING_FONT_COLOR:'
         ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL)),
     function ()
         return not Save().Icons.disabled
@@ -113,8 +114,11 @@ local function Init_Plus_Menu(self, root)
         Save().Icons.disabled= not Save().Icons.disabled and true or nil
         WoWTools_MinimapMixin:Init_Collection_Icon()
     end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
+    end)
 
-if Save().Icons.disabled then
+if not Save().Icons.disabled then
 --过滤 Border 透明度
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
