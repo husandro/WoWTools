@@ -558,18 +558,8 @@ local function Init()
             return
         end
         for itemID, type in pairs(ModifiedTab) do
-
-            --local name= C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID))
-            --if name then
-                self:SetAttribute(type.."-toy1",  itemID)
-
-            --[[else
-                self.isAltEvent=true
-            end]]
+            self:SetAttribute(type.."-toy1",  itemID)
         end
-        --[[if self.isAltEvent then
-            self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
-        end]]
     end
 
 
