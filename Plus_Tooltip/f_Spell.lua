@@ -59,9 +59,9 @@ end
 
 
 
-function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID, actionID)
+function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
 
-    spellID = spellID or select(2, tooltip:GetSpell()) or (actionID and C_ActionBar.GetSpell(actionID))
+    spellID = spellID or select(2, tooltip:GetSpell())-- or (actionID and C_ActionBar.GetSpell(actionID))
 
     local name, icon, originalIcon
     local spellInfo= spellID and C_Spell.GetSpellInfo(spellID)

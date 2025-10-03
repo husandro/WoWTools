@@ -75,21 +75,15 @@ local function Init()
 --宠物，技能书，提示
     WoWTools_DataMixin:Hook(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)
         if unit==Enum.SpellBookSpellBank.Pet and slot then
-            local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
-            --C_PetInfo.IsPetActionPassive(actionID)
-            if data then
-                --[[self:AddDoubleLine(
-                    data.iconID and '|T'..data.iconID..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..data.iconID or ' ',
-                    data.spellID and (WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..data.spellID
-                )]]
-                --if data.actionID or data.itemType then
-                    WoWTools_TooltipMixin:Set_Spell(self, data.spellID, data.actionID)
-                    --[[self:AddDoubleLine(
-                        data.itemType and 'itemType|cffffffff'..WoWTools_DataMixin.Icon.icon2..data.itemType,
-                        data.actionID and 'actionID|cffffffff'..WoWTools_DataMixin.Icon.icon2..data.actionID
-                    )
-                    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, self)
-                end]]
+            local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet) or {}
+            if data.spellID then
+                WoWTools_TooltipMixin:Set_Spell(self, data.spellID)
+            elseif data.actionID then
+                self:AddDoubleLine(
+                    (data.iconID and '|T'..data.iconID..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..data.iconID or ' '),
+                    data.actionID and 'actionID|cffffffff'..WoWTools_DataMixin.Icon.icon2..data.actionID
+                )
+                WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, self)
             end
         end
     end)
