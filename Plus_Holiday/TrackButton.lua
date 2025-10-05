@@ -431,7 +431,7 @@ local function Create_Button(index)
             if (holidayInfo) then
                 local data= WoWTools_TextMixin:CN(nil, {holydayID=self.eventID}) or {}
                 title= data.T or holidayInfo.name
-                description = data.D or holidayInfo.description;
+                description = data.D or holidayInfo.description
 
                 if (holidayInfo.startTime and holidayInfo.endTime) then
                     description=format(WoWTools_DataMixin.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
@@ -455,13 +455,12 @@ local function Create_Button(index)
                 end
                 if description and description~='' then
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddLine(description, nil,nil,nil,true)
+                    GameTooltip:AddLine('|cffffffff'..description, nil,nil,nil,true)
                     GameTooltip:AddLine(' ')
                 end
             end
         end
-        GameTooltip:AddDoubleLine('eventID', self.eventID)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HolidayMixin.addName)
+        GameTooltip:AddDoubleLine('eventID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.eventID)
         GameTooltip:Show()
         WoWTools_HolidayMixin:SetTrackButtonState(true, self.text)--TrackButton，提示
     end)
