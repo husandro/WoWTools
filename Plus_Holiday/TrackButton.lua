@@ -133,8 +133,7 @@ local function Get_Button_Text(event)
     local text
     local texture
 
-    local tab= WoWTools_TextMixin:CN(nil, {holydayID=event.eventID}) or {}
-    local title=tab.T or event.title
+    local title=WoWTools_TextMixin:CN(nil, {holydayID=event.eventID, isName=true}) or event.title
 
 
     if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
@@ -452,11 +451,11 @@ local function Create_Button(index)
             end
             if title or description then
                 if title then
-                    GameTooltip:AddLine(WoWTools_TextMixin:CN(title))
+                    GameTooltip:AddLine(title)
                 end
                 if description and description~='' then
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil,nil,nil,true)
+                    GameTooltip:AddLine(description, nil,nil,nil,true)
                     GameTooltip:AddLine(' ')
                 end
             end
