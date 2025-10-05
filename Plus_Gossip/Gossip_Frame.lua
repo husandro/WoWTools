@@ -837,7 +837,7 @@ local function Init(isShow)
         self.DataFrame:SetPoint('BOTTOMRIGHT', width, 8)
     end)
 
-    List.DataFrame.CloseButton= CreateFrame(Name..'OutInScrollFrameCloseButton', nil, List.DataFrame, 'UIPanelCloseButton')
+    List.DataFrame.CloseButton= CreateFrame('Button', Name..'OutInScrollFrameCloseButton', List.DataFrame, 'UIPanelCloseButton')
     List.DataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
     List.DataFrame.CloseButton:SetScript('OnClick', function(self)
         local frame=self:GetParent()
