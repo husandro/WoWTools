@@ -106,18 +106,19 @@ local function Init(isShow)
         return
     end
 
-    Frame= CreateFrame('Frame', 'WoWToolsGossipTextIconOptionsFrame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
-    tinsert (UISpecialFrames, 'WoWToolsGossipTextIconOptionsFrame')
+    local Name= 'WoWToolsGossipTextIconOptionsFrame'
+    Frame= CreateFrame('Frame', Name, UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
+    tinsert (UISpecialFrames, Name)
     Frame:Hide()
 
-    List = CreateFrame("Frame", 'WoWToolsGossipTextIconOptionsList', Frame, "WowScrollBoxList")
+    List = CreateFrame("Frame", Name..'List', Frame, "WowScrollBoxList")
 
 
 
-    local border= CreateFrame('Frame', nil, Frame,'DialogBorderTemplate')
-    local Header= CreateFrame('Frame', nil, Frame, 'DialogHeaderTemplate')--DialogHeaderMixin
+    local border= CreateFrame('Frame', Name..'Border', Frame,'DialogBorderTemplate')
+    local Header= CreateFrame('Frame', Name..'Header', Frame, 'DialogHeaderTemplate')--DialogHeaderMixin
     Header:Setup('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE)))
-    Frame.CloseButton=CreateFrame('Button', nil, Frame, 'UIPanelCloseButton')
+    Frame.CloseButton=CreateFrame('Button', Name..'CloseButton', Frame, 'UIPanelCloseButton')
     Frame.CloseButton:SetPoint('TOPRIGHT')
     Frame.CloseButton:SetScript("OnClick", function(self)
         self:GetParent():Hide()
@@ -145,7 +146,7 @@ local function Init(isShow)
     List.bg:SetPoint('BOTTOMRIGHT',35, -72)
     List.bg:SetAtlas('QuestBG-Trading-Post')
 
-    List.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
+    List.ScrollBar= CreateFrame("EventFrame", Name..'ListScrollBar', Frame, "MinimalScrollBar")
     List.ScrollBar:SetPoint("TOPLEFT", List, "TOPRIGHT", 8,0)
     List.ScrollBar:SetPoint("BOTTOMLEFT", List, "BOTTOMRIGHT",8,12)
     WoWTools_TextureMixin:SetScrollBar(List)
@@ -409,7 +410,7 @@ local function Init(isShow)
     end
 
 
-    List.ID= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
+    List.ID= CreateFrame("EditBox", Name..'ListIDEditBox', Frame, 'SearchBoxTemplate')
     List.ID:SetSize(234, 22)
     List.ID:SetNumeric(true)
     List.ID:SetPoint('TOPLEFT', List, 'TOPRIGHT', 25, -40)
@@ -421,7 +422,7 @@ local function Init(isShow)
         List:update_list()
     end)
 
-    List.Name= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
+    List.Name= CreateFrame("EditBox", Name..'ListNameEdit', Frame, 'SearchBoxTemplate')
     List.Name:SetPoint('TOPLEFT', List.ID, 'BOTTOMLEFT')
     List.Name:SetSize(250, 22)
     List.Name:SetAutoFocus(false)
@@ -439,7 +440,7 @@ local function Init(isShow)
     List.Name.texture:SetTexCoord(0.23243, 0.24698, 0.13550, 0.12206)
     --List.Name.Middle:SetAtlas('QuestBG-Parchment')
 
-    List.Icon= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
+    List.Icon= CreateFrame("EditBox", Name..'ListIconEdit', Frame, 'SearchBoxTemplate')
     List.Icon:SetPoint('TOPLEFT', List.Name, 'BOTTOMLEFT')
     List.Icon:SetSize(250, 22)
     List.Icon:SetAutoFocus(false)
@@ -501,7 +502,7 @@ local function Init(isShow)
     end)
 
 
-    List.FindIcon.frame= CreateFrame('Frame', 'WoWToolsGossipTextIconFrame_IconSelectorPopupFrame', Frame, 'IconSelectorPopupFrameTemplate')
+    List.FindIcon.frame= CreateFrame('Frame', Name..'FindIcon', Frame, 'IconSelectorPopupFrameTemplate')
     List.FindIcon.frame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
     WoWTools_MoveMixin:Setup(List.FindIcon.frame, {notMove=true, setSize=true, minW=524, minH=276, maxW=524,
     sizeRestFunc=function()
@@ -587,7 +588,7 @@ local function Init(isShow)
     end
 
     --颜色
-    List.Color= CreateFrame('Button', nil, Frame, 'ColorSwatchTemplate')--ColorSwatchMixin
+    List.Color= CreateFrame('Button', Name..'ListColorButton', Frame, 'ColorSwatchTemplate')--ColorSwatchMixin
     List.Color:SetPoint('LEFT', List.ID, 'RIGHT', 2,0)
     List.Color:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     List.Color:SetScript('OnLeave', GameTooltip_Hide)
@@ -734,7 +735,7 @@ local function Init(isShow)
     --if LOCALE_zhCN or LOCALE_zhTW then
       --  Save().Gossip_Text_Icon_cnFont=nil
     --elseif WoWTools_DataMixin.onlyChinese then
-        List.font= CreateFrame("CheckButton", nil, Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
+        List.font= CreateFrame("CheckButton", Name..'ListFontCheckButton', Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
         List.font:SetPoint('TOPLEFT', List.Size, 'BOTTOMLEFT', 0, -12)
         List.font:SetChecked(Save().Gossip_Text_Icon_cnFont)
         List.font.Text:SetText('修改字体')
@@ -822,18 +823,21 @@ local function Init(isShow)
 
     --导入数据
     List.DataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
-        --isInstructions= 'text'
-        'WoWToolsGossipTextIconOutInScrollFrame'
+        name=Name..'OutInScrollFrame'
     })
     List.DataFrame:Hide()
     List.DataFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 0, -10)
     List.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
 
+    --[[List.DataFrame.Bg= List.DataFrame:CreateTexture(Name..'OutInScrollFrameBg', "BACKGROUND")
+    List.DataFrame.Bg:SetAllPoints()
+    List.DataFrame.Bg:SetColorTexture(0.3, 0.3, 0.3)]]
+
     List:SetScript('OnSizeChanged', function(self, width)
         self.DataFrame:SetPoint('BOTTOMRIGHT', width, 8)
     end)
 
-    List.DataFrame.CloseButton= CreateFrame('Button', nil, List.DataFrame, 'UIPanelCloseButton')
+    List.DataFrame.CloseButton= CreateFrame(Name..'OutInScrollFrameCloseButton', nil, List.DataFrame, 'UIPanelCloseButton')
     List.DataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
     List.DataFrame.CloseButton:SetScript('OnClick', function(self)
         local frame=self:GetParent()
@@ -842,7 +846,11 @@ local function Init(isShow)
     end)
     WoWTools_TextureMixin:SetButton(List.DataFrame.CloseButton)
 
-    List.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(List.DataFrame, {size={100, 23}, isUI=true})
+    List.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(List.DataFrame, {
+        name= Name..'OutInScrollFrameEnterButton',
+        size={100, 23},
+        isUI=true
+    })
     List.DataFrame.enter:SetPoint('BOTTOM', List.DataFrame, 'TOP', 0, 5)
     List.DataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
     List.DataFrame.enter:Hide()

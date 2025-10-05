@@ -457,11 +457,11 @@ function WoWTools_TextureMixin:SetIconSelectFrame(frame)
         )
 
 --清除，焦点
-        frame:HookScript('OnShow', function(f)
+        --[[frame:HookScript('OnShow', function(f)
             if f.BorderBox.IconSelectorEditBox:HasFocus() then
                 f.BorderBox.IconSelectorEditBox:ClearFocus()
             end
-        end)
+        end)]]
     end
 
     self:SetScrollBar(frame.IconSelector)

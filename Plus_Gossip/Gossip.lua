@@ -85,7 +85,7 @@ local function Set_Gossip_Text(self, info)
         return
     end
 
-    local size= save.Gossip_Text_Icon_Size
+    local size= save.Gossip_Text_Icon_Size or 14
     local isChangFont= save.Gossip_Text_Icon_cnFont
 
     local text
