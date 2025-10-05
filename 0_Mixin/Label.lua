@@ -5,14 +5,14 @@ local IndexLabel=0
 
 --[[
 SharedFonts.xml
-
-function WoWTools_LabelMixin:Size(label, size)
-    if not label or not size then
-        return
-    end
-    local font, _, flag= label:GetFont()
-    label:SetFont(font, size, flag)
-end
+<SimpleHTML parentKey="Text" setAllPoints="true" inherits="InlineHyperlinkFrameTemplate">
+    <FontString inherits="GameFontBlack" justifyH="LEFT" justifyV="TOP">
+        <Color r="0.25" g="0.1484375" b=".02" a="1"/>
+    </FontString>
+    <Scripts>
+        <OnHyperlinkEnter function="EncounterJournal_OnHyperlinkEnter"/>
+    </Scripts>
+</SimpleHTML>
 ]]
 
 

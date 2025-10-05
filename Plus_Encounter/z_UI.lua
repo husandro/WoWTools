@@ -155,11 +155,24 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
 --BOSS, 概述
     EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP', 30, -43)
     EncounterJournal.encounter.overviewFrame:SetPoint('LEFT', 23, 0)
-    EncounterJournal.encounter.overviewFrame:SetPoint('RIGHT', -23, 0)--.encounter.info.overviewScroll.child
     EncounterJournal.encounter.overviewFrame:HookScript('OnSizeChanged', function(f)
         f:SetPoint('RIGHT', -23, 0)
-        f:SetPoint('LEFT', 23, 0)
     end)
+
+--综述
+    --[[
+    <Frame parentKey="overviewDescription" inherits="EncounterDescriptionTemplate">
+        <Size x="95" y="10"/>
+        <Anchors>
+            <Anchor point="TOP" relativeKey="$parent.header" relativePoint="BOTTOM" x="0" y="-6"/>
+        </Anchors>
+    </Frame>
+    ]]
+    
+    
+    
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild.overviewDescription:SetPoint('RIGHT', 10, 0)
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription:SetPoint('RIGHT', 10, 0)
     EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildHeader:SetPoint('LEFT')
     EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildHeader:SetPoint('RIGHT', -23, 0)
 
