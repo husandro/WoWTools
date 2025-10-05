@@ -134,7 +134,7 @@ local function Get_Button_Text(event)
     local texture
 
     local tab= WoWTools_TextMixin:CN(nil, {holydayID=event.eventID}) or {}
-    local title=tab[1] or event.title
+    local title=tab.T or event.title
 
 
     if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
@@ -431,12 +431,12 @@ local function Create_Button(index)
             local holidayInfo= C_Calendar.GetHolidayInfo(self.monthOffset, self.day, self.index);
             if (holidayInfo) then
                 local data= WoWTools_TextMixin:CN(nil, {holydayID=self.eventID}) or {}
-                title= data[1] or holidayInfo.name
-                description = data[2] or holidayInfo.description;
+                title= data.T or holidayInfo.name
+                description = data.D or holidayInfo.description;
 
                 if (holidayInfo.startTime and holidayInfo.endTime) then
                     description=format(WoWTools_DataMixin.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
-                        WoWTools_TextMixin:CN(description),
+                        description,
                         FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month, holidayInfo.startTime.year),
                         GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true),
                         FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month, holidayInfo.startTime.year),
