@@ -57,9 +57,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         for name in pairs(WoWTools_ItemMixin.Frames) do
             if _G[name] then
                 do
-                    WoWTools_ItemMixin.Frames[_G[name]](WoWTools_ItemMixin)
+                    WoWTools_ItemMixin.Frames[name](WoWTools_ItemMixin)
                 end
-                WoWTools_ItemMixin.Frames[_G[name]]= nil
+                WoWTools_ItemMixin.Frames[name]= nil
             end
         end
 
