@@ -109,7 +109,7 @@ end
 
 
 
-local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
+local function Set_Move_Frame(frame, target, click, notSave, isAltKeyDown)
 --设置，数据
     frame.moveFrameData={
         target= target and target:GetName() or nil,
@@ -118,12 +118,12 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
         isAltKeyDown= isAltKeyDown,
     }
 --设置，可否到屏幕外
-    if notFuori then
+    --[[if notFuori then
         frame:SetClampedToScreen(true)
         if target and not target.moveFrameData then
             target:SetClampedToScreen(true)
         end
-    end
+    end]]
 
 --设置，可移动
     frame:SetMovable(true)
@@ -213,7 +213,6 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     local click= tab.click--RightButton LeftButton nil
     local notSave= ((tab.notSave or not SavePoint) and not tab.save) and true or nil
-    local notFuori=  tab.notFuori or nil
     local isAltKeyDown= tab.isAltKeyDown or nil
 
     self:Scale_Size_Button(frame, tab)
@@ -223,11 +222,11 @@ function WoWTools_MoveMixin:Setup(frame, tab)
     end
 
     do
-        Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
+        Set_Move_Frame(frame, target, click, notSave, isAltKeyDown)
     end
 
     if frame.TitleContainer then
-        Set_Move_Frame(frame.TitleContainer, frame, click, notSave, notFuori, isAltKeyDown)
+        Set_Move_Frame(frame.TitleContainer, frame, click, notSave, isAltKeyDown)
     end
 
     if not target or not target.moveFrameData then

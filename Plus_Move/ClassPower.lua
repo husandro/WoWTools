@@ -33,7 +33,6 @@ local function Setup_Frame(name)
     end
 
     WoWTools_MoveMixin:Setup(frame, {
-        notFuori=true,
         save=true,
         notMoveAlpha=true,
         alpha=0,

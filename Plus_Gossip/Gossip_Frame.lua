@@ -504,7 +504,10 @@ local function Init(isShow)
 
     List.FindIcon.frame= CreateFrame('Frame', Name..'FindIcon', Frame, 'IconSelectorPopupFrameTemplate')
     List.FindIcon.frame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
-    WoWTools_MoveMixin:Setup(List.FindIcon.frame, {notMove=true, setSize=true, minW=524, minH=276, maxW=524,
+
+    WoWTools_MoveMixin:Setup(List.FindIcon.frame, {
+    notMove=true,
+    minW=524, minH=276, maxW=524,
     sizeRestFunc=function()
         List.FindIcon.frame:SetSize(524, 495)
     end})
@@ -1066,7 +1069,7 @@ local function Init(isShow)
 
 --移动
     WoWTools_MoveMixin:Setup(Frame, {
-        minW=370, minH=240, setSize=true,
+    minW=370, minH=240,
     sizeRestFunc=function()
         Frame:SetSize(580, 370)
     end})

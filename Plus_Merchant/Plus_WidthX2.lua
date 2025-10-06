@@ -342,7 +342,8 @@ local function Init_WidthX2()
 
 --移动 WoWTools_MoveMixin
     WoWTools_MoveMixin:Setup(MerchantFrame, {
-        setSize=true, minW=329, minH=402,
+    minW=329,
+    minH=402,
     sizeUpdateFunc= function()
         Size_Update()
     end, sizeRestFunc= function()

@@ -207,77 +207,74 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
     local name= ProfessionsFrame:GetName()
 
     self:Setup(ProfessionsFrame, {
-        setSize=true,
-        scaleStoppedFunc=function()
-            local sacle= ProfessionsFrame:GetScale()
-            if ProfessionsUtil.IsCraftingMinimized() then
-                Save().scale[name..'Mini']= sacle
-            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-                Save().scale[name..'Spec']= sacle
-            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-                Save().scale[name..'Order']= sacle
-            else
-                Save().scale[name..'Normal']= sacle
-            end
-        end,
-        scaleRestFunc=function()
-            if ProfessionsUtil.IsCraftingMinimized() then
-                Save().scale[name..'Mini']= nil
-            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-                Save().scale[name..'Spec']= nil
-            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-                Save().scale[name..'Order']= nil
-            else
-                Save().scale[name..'Normal']= nil
-            end
-        end,
-        sizeRestTooltipColorFunc=function()
-            if ProfessionsUtil.IsCraftingMinimized() then
-                return Save().size[name..'Mini'] and '' or '|cff9e9e9e'
-            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-                return Save().size[name..'Spec'] and '' or '|cff9e9e9e'
-            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-                return Save().size[name..'Order'] and '' or '|cff9e9e9e'
-            else
-                return Save().size[name..'Normal'] and '' or '|cff9e9e9e'
-            end
-        end,
-        sizeStopFunc=function()
-            local size= {ProfessionsFrame:GetSize()}
-
-            if ProfessionsUtil.IsCraftingMinimized() then
-                name= name..'Mini'
-            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-                name= name..'Spec'
-            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-                name= name..'Order'
-            else
-                name= name..'Normal'
-            end
-            Save().size[name]= size
-            ProfessionsFrame:Refresh()
-            --ProfessionsFrame:Refresh(ProfessionsFrame.professionInfo)
-        end,
-        sizeRestFunc=function()
-            if ProfessionsUtil.IsCraftingMinimized() then
-                ProfessionsFrame:SetSize(404, 658)
-
-            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-                ProfessionsFrame:SetSize(1144, 658)
-
-            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-                ProfessionsFrame:SetSize(1105, 658)
-
-            else
-                ProfessionsFrame:SetSize(942, 658)
-            end
-            ProfessionsFrame:Refresh()
-            Save().size[name..'Spec']=nil
-            Save().size[name..'Order']=nil
-            Save().size[name..'Normal']=nil
-            Save().size[name..'Mini']=nil
+    scaleStoppedFunc=function()
+        local sacle= ProfessionsFrame:GetScale()
+        if ProfessionsUtil.IsCraftingMinimized() then
+            Save().scale[name..'Mini']= sacle
+        elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+            Save().scale[name..'Spec']= sacle
+        elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+            Save().scale[name..'Order']= sacle
+        else
+            Save().scale[name..'Normal']= sacle
         end
-    })
+    end,
+    scaleRestFunc=function()
+        if ProfessionsUtil.IsCraftingMinimized() then
+            Save().scale[name..'Mini']= nil
+        elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+            Save().scale[name..'Spec']= nil
+        elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+            Save().scale[name..'Order']= nil
+        else
+            Save().scale[name..'Normal']= nil
+        end
+    end,
+    sizeRestTooltipColorFunc=function()
+        if ProfessionsUtil.IsCraftingMinimized() then
+            return Save().size[name..'Mini'] and '' or '|cff9e9e9e'
+        elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+            return Save().size[name..'Spec'] and '' or '|cff9e9e9e'
+        elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+            return Save().size[name..'Order'] and '' or '|cff9e9e9e'
+        else
+            return Save().size[name..'Normal'] and '' or '|cff9e9e9e'
+        end
+    end,
+    sizeStopFunc=function()
+        local size= {ProfessionsFrame:GetSize()}
+
+        if ProfessionsUtil.IsCraftingMinimized() then
+            name= name..'Mini'
+        elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+            name= name..'Spec'
+        elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+            name= name..'Order'
+        else
+            name= name..'Normal'
+        end
+        Save().size[name]= size
+        ProfessionsFrame:Refresh()
+    end,
+    sizeRestFunc=function()
+        if ProfessionsUtil.IsCraftingMinimized() then
+            ProfessionsFrame:SetSize(404, 658)
+
+        elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+            ProfessionsFrame:SetSize(1144, 658)
+
+        elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+            ProfessionsFrame:SetSize(1105, 658)
+
+        else
+            ProfessionsFrame:SetSize(942, 658)
+        end
+        ProfessionsFrame:Refresh()
+        Save().size[name..'Spec']=nil
+        Save().size[name..'Order']=nil
+        Save().size[name..'Normal']=nil
+        Save().size[name..'Mini']=nil
+    end})
 
     self:Setup(ProfessionsFrame.CraftingPage.CraftingOutputLog, {frame=ProfessionsFrame})
 end

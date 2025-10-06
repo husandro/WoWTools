@@ -158,9 +158,6 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     self:Setup(WorldMapFrame, {
         minW=(WorldMapFrame.questLogWidth or 333)*2+37,
         minH=WorldMapFrame.questLogWidth,
-        setSize=true,
-        --onShowFunc=true,
-        --notMoveAlpha=true,
         sizeUpdateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
             set_min_max_value({WorldMapFrame:GetSize()})
         end,

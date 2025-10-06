@@ -8,13 +8,11 @@ function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
         ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
     end)
     self:Setup(ClassTrainerFrame, {
-        minW=200,--328,
-        minH=197,
-        setSize=true,
-        sizeRestFunc=function(btn)
-            ClassTrainerFrame:SetSize(338, 424)
-        end}
-    )
+    minW=200,
+    minH=197,
+    sizeRestFunc=function()
+        ClassTrainerFrame:SetSize(338, 424)
+    end})
 end
 
 --小时图，时间
@@ -270,7 +268,6 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
     self:Setup(TableAttributeDisplay, {
         minW=476,
         minH=150,
-        setSize=true,
         sizeUpdateFunc=function()
             TableAttributeDisplay:UpdateLines()--RefreshAllData()
         end,
@@ -334,7 +331,6 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
     end)
 
     self:Setup(AuctionHouseFrame, {
-        setSize=true,
         sizeRestFunc=function()
             AuctionHouseFrame:SetSize(800, 538)
         end
@@ -428,9 +424,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
 
     self:Setup(AchievementFrame, {
         minW=768,
-        --maxW=768,
         minH=500,
-        setSize=true,
         sizeRestFunc= function()
             AchievementFrame:SetSize(768, 500)
         end,
@@ -474,7 +468,9 @@ end
 
 --聊天设置
 function WoWTools_MoveMixin.Events:Blizzard_Channels()
-    self:Setup(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(btn)
+    self:Setup(ChannelFrame, {
+        minW=402, minH=200, maxW=402,
+    sizeRestFunc=function()
         ChannelFrame:SetSize(402, 423)
     end})
 end
@@ -486,7 +482,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Settings_Shared()
             region:SetPoint('BOTTOMRIGHT', -12, 38)
         end
     end
-    self:Setup(SettingsPanel, {setSize=true, minW=800, minH=200, sizeRestFunc=function(btn)
+    self:Setup(SettingsPanel, {minW=800, minH=200, sizeRestFunc=function(btn)
         SettingsPanel:SetSize(920, 724)
     end})
 end
@@ -512,7 +508,7 @@ end
 
 
 function WoWTools_MoveMixin.Events:Blizzard_ActionBar()
-    self:Setup(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
+    self:Setup(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true})--额外技能
 end
 
 function WoWTools_MoveMixin.Events:Blizzard_UnitFrame()
@@ -621,7 +617,7 @@ end
 --商店
 function WoWTools_MoveMixin.Events:Blizzard_AccountStore()
     self:Setup(AccountStoreFrame, {
-        setSize=true, minH=537, minW=800,
+        minH=537, minW=800,
     sizeRestFunc=function()
         AccountStoreFrame:SetSize(800, 537)
     end})
@@ -665,7 +661,7 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_StaticPopup()
     WoWTools_DataMixin:Hook('StaticPopup_SetUpPosition', function(dialog)
         if not dialog.moveFrameData then
-            self:Setup(dialog, {notSize=true, notFuori=true,})
+            self:Setup(dialog)
         else
             self:SetPoint(dialog)--设置, 移动,
         end
@@ -734,10 +730,11 @@ function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
 
     CooldownViewerSettings.SearchBox:SetPoint('RIGHT', -45, 0)
 
-    self:Setup(CooldownViewerSettings, {needSize=true, setSize=true, minW=196, minH=183,--maxW=399,
-        sizeRestFunc=function()
-            CooldownViewerSettings:SetSize(399, 609)
-        end
+    self:Setup(CooldownViewerSettings, {
+        minW=196, minH=183,
+    sizeRestFunc=function()
+        CooldownViewerSettings:SetSize(399, 609)
+    end
     })
 end
 
@@ -748,5 +745,5 @@ end
 
 
 function WoWTools_MoveMixin.Events:Blizzard_AlliedRacesUI()
-    self:Setup(AlliedRacesFrame, {notSize=true})
+    self:Setup(AlliedRacesFrame)
 end

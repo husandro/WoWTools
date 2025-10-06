@@ -67,7 +67,6 @@ function WoWTools_MoveMixin.Events:Blizzard_RaidFrame()
         RaidInfoFrame:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", 0 ,-28)
     end
     WoWTools_MoveMixin:Setup(RaidInfoFrame, {
-        setSize=true,
         minW=345,
         minH=128,
         notMoveAlpha=true,
@@ -151,9 +150,6 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
 
 
     WoWTools_MoveMixin:Setup(FriendsFrame, {
-        setSize=true,
-        --minW=385,
-        --minH=424,
         sizeUpdateFunc=function()
             if RaidFrame:IsShown() and not WoWTools_FrameMixin:IsLocked(RaidFrame) then
                 Set_RaidFrame_Button_size()
@@ -184,7 +180,6 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     WoWTools_MoveMixin:Setup(FriendsFriendsFrame, {
         minW=295,
         minH=157,
-        setSize=true,
         sizeRestFunc=function()
             FriendsFriendsFrame:SetSize(314, 345)
         end

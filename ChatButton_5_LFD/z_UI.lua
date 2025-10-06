@@ -79,7 +79,6 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
         end
     end)
     self:Setup(PVEFrame, {
-        setSize=true,
         minW=563,
         minH=428,
         initFunc=function()
@@ -125,14 +124,13 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
 
 --确定，进入副本
     self:Setup(LFGDungeonReadyPopup, {
-        notFuori=true,
         setResizeButtonPoint={'BOTTOMRIGHT', LFGDungeonReadyPopup, 6, -6},
     restPointFunc=function()
         LFGDungeonReadyPopup:ClearAllPoints()
         LFGDungeonReadyPopup:SetPoint('TOP', UIParent, 'TOP', 0, -135)
     end})
-    self:Setup(LFGDungeonReadyDialog, {notSize=true, frame=LFGDungeonReadyPopup})
-    self:Setup(LFGDungeonReadyStatus, {notSize=true, frame=LFGDungeonReadyPopup})
+    self:Setup(LFGDungeonReadyDialog, {frame=LFGDungeonReadyPopup})
+    self:Setup(LFGDungeonReadyStatus, {frame=LFGDungeonReadyPopup})
 end
 
 

@@ -40,7 +40,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AddOnList()
 
 
 
-    WoWTools_MoveMixin:Setup(AddonList, {minW=430, minH=120, setSize=true,
+    WoWTools_MoveMixin:Setup(AddonList, {minW=430, minH=120,
     sizeRestFunc=function()
         AddonList:SetSize(500, 480)
     end})

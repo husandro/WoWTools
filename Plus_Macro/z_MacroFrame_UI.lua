@@ -213,12 +213,11 @@ local function Init()
 
 
 
-     WoWTools_MoveMixin:Setup(MacroFrame, {
-        needSize=true, setSize=true, minW=260, minH=250,
-        sizeRestFunc=function()
-            MacroFrame:SetSize(338, 424)
-        end
-    })
+    WoWTools_MoveMixin:Setup(MacroFrame, {
+    needSize=true, minW=260, minH=250,
+    sizeRestFunc=function()
+        MacroFrame:SetSize(338, 424)
+    end})
 
 
     Init=function()end

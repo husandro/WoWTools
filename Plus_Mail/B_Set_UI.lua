@@ -86,8 +86,8 @@ local function Init()
         Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
     end
 
-    WoWTools_MoveMixin:Setup(MailFrame, {setSize=true, minW=338, minH=424,
-
+    WoWTools_MoveMixin:Setup(MailFrame, {
+    minW=338, minH=424,
     sizeUpdateFunc=function(btn)
         local h= _G[btn.name]:GetHeight()-424
         local num= P_INBOXITEMS_TO_DISPLAY
@@ -99,7 +99,6 @@ local function Init()
         Save().INBOXITEMS_TO_DISPLAY= num>P_INBOXITEMS_TO_DISPLAY and num or nil
         WoWTools_MailMixin:RefreshAll()
     end,
-
     sizeRestFunc=function(btn)
         _G[btn.name]:SetSize(338, 424)
         Save().INBOXITEMS_TO_DISPLAY=nil

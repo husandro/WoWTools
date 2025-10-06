@@ -189,14 +189,11 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     EncounterJournalEncounterFrameInfoModelFrameShadow:SetPoint('TOPLEFT', 0, -2)
 
     self:Setup(EncounterJournal, {
-        minW=400,--800,
-        minH=248,--496,
-        --maxW=800,
-        setSize=true,
-        sizeRestFunc=function()
-            EncounterJournal:SetSize(800, 496)
-        end
-    })
+    minW=400,--800,
+    minH=248,--496,
+    sizeRestFunc=function()
+        EncounterJournal:SetSize(800, 496)
+    end})
 
     self:Setup(EncounterJournalInstanceSelect.ScrollBox, {frame=EncounterJournal})
     --self:Setup(EncounterJournalEncounterFrameInfo.LootContainer.ScrollBox, {frame=EncounterJournal})

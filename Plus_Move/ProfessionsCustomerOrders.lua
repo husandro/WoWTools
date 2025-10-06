@@ -60,7 +60,6 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
     end)
 
     WoWTools_MoveMixin:Setup(ProfessionsCustomerOrdersFrame, {
-        setSize=true,
         minW=825,
         minH=200,
         onShowFunc=true,

@@ -152,7 +152,6 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     self:Setup(CharacterFrame, {
         minW=450,
         minH=424,
-        setSize=true,
         sizeUpdateFunc=function()
             if PaperDollFrame.EquipmentManagerPane:IsVisible() then
                 WoWTools_DataMixin:Call(PaperDollEquipmentManagerPane_Update)
@@ -215,7 +214,6 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
 
     self:Setup(CurrencyTransferMenu)
     self:Setup(CurrencyTransferLog, {
-        setSize=true,
         sizeRestFunc=function()
             CurrencyTransferLog:ClearAllPoints()
             CurrencyTransferLog:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)

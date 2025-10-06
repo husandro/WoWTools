@@ -1035,7 +1035,6 @@ local function Set_Move(self)
         ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
 
         self:Setup(ItemSocketingFrame, {
-        setSize=true,
         minW=338,
         minH=424,
         sizeRestFunc=function()

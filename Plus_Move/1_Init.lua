@@ -47,7 +47,11 @@ local function Init()
         end
     end
 
-     for name in pairs(WoWTools_MoveMixin.Frames) do
+
+ 
+
+
+    for name in pairs(WoWTools_MoveMixin.Frames) do
         do
             if _G[name] then
                 WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)
@@ -57,6 +61,18 @@ local function Init()
         end
         WoWTools_MoveMixin.Frames[name]= nil
     end
+
+   do
+        for name in ipairs(UIPanelWindows) do
+            if _G[name] and not _G[name].moveFrameData then
+                WoWTools_MoveMixin:Setup(_G[name])
+                if WoWTools_DataMixin.Player.husandro then
+                    print(WoWTools_MoveMixin.addName, '没有添加', name)
+                end
+            end
+        end
+    end
+
 
     WoWTools_DataMixin:Hook('UpdateUIPanelPositions', function(currentFrame)
         if Save().SavePoint then

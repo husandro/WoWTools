@@ -100,7 +100,8 @@ local function Init_MoveUI()
     end)
 
 
-    WoWTools_MoveMixin:Setup(StableFrame, {setSize=true, minW=860, minH=440,
+    WoWTools_MoveMixin:Setup(StableFrame, {
+    minW=860, minH=440,
     sizeRestFunc=function()
         StableFrame:SetSize(1040, 638)
     end})

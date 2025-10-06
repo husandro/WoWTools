@@ -39,6 +39,7 @@ function WoWTools_TextureMixin.Frames:QuestFrame()
     self:HideFrame(QuestLogPopupDetailFrameInset)
     self:SetScrollBar(QuestLogPopupDetailFrameScrollFrame)
     self:SetNineSlice(QuestLogPopupDetailFrameInset)
+    self:SetButton(QuestLogPopupDetailFrameCloseButton)
 
     self:SetFrame(QuestModelScene)
     self:SetAlphaColor(QuestNPCModelTextFrameBg, nil, nil, 0.3)

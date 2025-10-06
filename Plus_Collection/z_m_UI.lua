@@ -240,7 +240,6 @@ local function Init_CollectionsJournal()
 
 
     WoWTools_MoveMixin:Setup(CollectionsJournal, {
-        setSize=true,
         minW=703,
         minH=606,
         sizeUpdateFunc=function(btn)
@@ -358,26 +357,33 @@ end
 
 
 local function Init_WardrobeFrame()
-    WoWTools_MoveMixin:Setup(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function()
+    WoWTools_MoveMixin:Setup(WardrobeFrame, {
+    minW=965, minH=606,
+    initFunc=function()
         WardrobeTransmogFrame:ClearAllPoints()
         WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()--两侧肩膀使用不同的幻化外观
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('RIGHT', WardrobeTransmogFrame.ShoulderButton, 'LEFT', -6, 0)
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetPoint('RIGHT', WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox, 'LEFT')
-    end, sizeUpdateFunc=function(btn)
+    end,
+    sizeUpdateFunc=function(btn)
         init_items_colllection(btn, true)
-    end, sizeStopFunc=function()
+    end,
+    sizeStopFunc=function()
         Save().size['WardrobeFrame']= {WardrobeFrame:GetSize()}
         update_frame()
-    end, sizeRestFunc=function(btn)
+    end,
+    sizeRestFunc=function(btn)
         WardrobeFrame:SetSize(965, 606)
         Save().size[btn.name]=nil
         init_items_colllection(btn)
 
-    end, scaleStoppedFunc=function()
+    end,
+    scaleStoppedFunc=function()
         update_frame()
-    end, scaleRestFunc=function()
+    end,
+    scaleRestFunc=function()
         update_frame()
     end})--幻化
 

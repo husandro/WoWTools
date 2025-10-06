@@ -932,7 +932,6 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     end
 
     local setResizeButtonPoint= tab.setResizeButtonPoint--设置，按钮，位置
-    local setSize= tab.setSize
     local onShowFunc= tab.onShowFunc-- true, function
 
     local minW= tab.minW or 115--最小窗口， 宽
@@ -969,8 +968,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
     btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
     btn.alpha= tab.alpha--button 透明度
-    btn.setSize= setSize --and not disabledSize--是否有，设置大小，功能    
-    --btn.notInCombat= tab.notInCombat--战斗中，禁止操作
+    btn.setSize= tab.sizeRestFunc and true or nil --and not disabledSize--是否有，设置大小，功能
     btn.notUpdatePositon= tab.notUpdatePositon
     btn.notMoveAlpha= tab.notMoveAlpha--是否设置，移动时，设置透明度
 

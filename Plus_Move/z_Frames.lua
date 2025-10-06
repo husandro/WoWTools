@@ -22,7 +22,6 @@ function WoWTools_MoveMixin.Frames:GossipFrame()
     self:Setup(GossipFrame, {
         minW=220,
         minH=220,
-        setSize=true,
         sizeRestFunc=function()
             GossipFrame:SetSize(384, 512)
         end
@@ -82,7 +81,7 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
     end)
 
     self:Setup(DressUpFrame, {
-        setSize=true, minH=320, minW=310,
+        minH=320, minW=310,
     sizeRestFunc=function()
         self:Save().size[DressUpFrame:GetName()]= nil
         DressUpFrame:ConfigureSize(GetCVarBool("miniDressUpFrame"))
@@ -99,6 +98,9 @@ end
 
 --任务
 function WoWTools_MoveMixin.Frames:QuestFrame()
+    
+    self:Setup(QuestLogPopupDetailFrame)
+
     local tab={
         'Detail',
         'Greeting',
@@ -125,7 +127,6 @@ function WoWTools_MoveMixin.Frames:QuestFrame()
     self:Setup(QuestFrame, {
         minW=164,
         minH=128,
-        setSize=true,
         sizeRestFunc=function()
             QuestFrame:SetSize(338, 496)
         end
@@ -143,7 +144,7 @@ end
 
 --就绪
 function WoWTools_MoveMixin.Frames:ReadyCheckFrame()
-    self:Setup(ReadyCheckFrame, {notFuori=true})
+    self:Setup(ReadyCheckFrame)
 end
 
 --颜色选择器
@@ -189,20 +190,17 @@ function WoWTools_MoveMixin.Frames:LootFrame()
 
 
     self:Setup(LootFrame, {
-        setSize=true, isShow=true,
+        isShow=true,
     sizeStopFunc=function()
         self:Save().size['LootFrame']= {LootFrame:GetSize()}
-        --ScrollingFlatPanelMixin.Open(LootFrame, false)
     end, sizeRestFunc=function()
         self:Save().size['LootFrame']= nil
-        --LootFrame:SetWidth(220)
 	    ScrollingFlatPanelMixin.Open(LootFrame, true)
     end})
 end
 
 function WoWTools_MoveMixin.Frames:ItemTextFrame()
     self:Setup(ItemTextFrame, {
-        --setSize=true,
         sizeRestFunc=function()
             ItemTextFrame:SetSize(338, 424)
         end

@@ -180,8 +180,6 @@ function WoWTools_FrameMixin:Create(parent, tab)
         --needMove=true,
         minW=minW or 370,
         minH=minH or 240,
-        --notFuori=true,
-        setSize=true,
         sizeRestFunc= sizeRestFunc or function()
             if not self:IsLocked(frame) then
                 frame:SetSize(w, h)

@@ -396,12 +396,10 @@ local function Init_Move()
     BankPanel:SetPoint('BOTTOMRIGHT')
 
     WoWTools_MoveMixin:Setup(BankFrame, {
-        setSize=true, minW=80, minH=140,
-    --[[sizeUpdateFunc= function()
-    end, ]]sizeRestFunc= function()
+    minW=80, minH=140,
+    sizeRestFunc= function()
         Save().num=15
         Save().accountNum= nil
-        --BankFrame:SetSize(738, 460)
         BankPanel:GenerateItemSlotsForSelectedTab()
     end, sizeStopFunc= function()
         if BankPanel.PurchasePrompt:IsShown()

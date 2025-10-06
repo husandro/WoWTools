@@ -407,7 +407,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     end
 
     self:Setup(CommunitiesFrame, {
-        setSize=true,
         scaleStoppedFunc= function()
             self:Save().scale[CommunitiesMode_GetName()]= CommunitiesFrame:GetScale()
 
@@ -446,7 +445,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     self:Setup(CommunitiesTicketManagerDialog)
 
 --新闻过滤
-    self:Setup(CommunitiesGuildNewsFiltersFrame, {notFuori=true})
+    self:Setup(CommunitiesGuildNewsFiltersFrame)
 
 
 --成员,叙述 CommunitiesGuildMemberDetailMixin
@@ -458,14 +457,12 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --信息，查看记录
     self:Setup(CommunitiesGuildLogFrame, {
-        setSize=true, notFuori=true,
-    sizeRestFunc=function(btn)
+    sizeRestFunc=function()
         CommunitiesGuildLogFrame:SetSize(384, 432)
     end})
 
 --公会信息， 点击以编辑
     self:Setup(CommunitiesGuildTextEditFrame, {
-        setSize=true, notFuori=true,
     sizeRestFunc=function()
         CommunitiesGuildTextEditFrame:SetSize(295, 295)
     end})
@@ -492,7 +489,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --新建，公会, 签名
     self:Setup(PetitionFrame, {
-        setSize=true,
     sizeRestFunc=function()
         PetitionFrame:SetSize(338, 424)
     end})
@@ -505,7 +501,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --设计，公会战袍
     self:Setup(TabardFrame, {
-        setSize=true,
     sizeRestFunc=function()
         TabardFrame:SetSize(338, 424)
     end})
@@ -551,7 +546,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --公会设置
     self:Setup(GuildControlUI, {
-        setSize=true, notFuori=true,
     sizeRestFunc=function()
         GuildControlUI:SetSize(338, 444)
     end})
@@ -570,7 +564,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     end)
 
     self:Setup(CommunitiesAvatarPickerDialog, {
-        setSize=true, notFuori=true, minW=207, minH=260,
+        minW=207, minH=260,
     sizeRestFunc=function()
         CommunitiesAvatarPickerDialog:SetSize(510, 480)
     end})]]

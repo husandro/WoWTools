@@ -186,7 +186,6 @@ local function SetupButton(frame, tab)
 
     --tab.name= name
     tab.click= 'RightButton'--点击，移动
-    tab.notFuori= true
     tab.isAltKeyDown= true
 
     WoWTools_MoveMixin:Setup(btn, tab)
