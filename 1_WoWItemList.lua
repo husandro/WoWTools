@@ -1588,7 +1588,9 @@ local function Init_IsMe_Menu(self, root)
             bl= bl+1
         end
 
-        b[tab.battleTag]= (b[tab.battleTag] or 0)+1
+        if tab.battleTag then
+            b[tab.battleTag]= (b[tab.battleTag] or 0)+1
+        end
     end
 
 
