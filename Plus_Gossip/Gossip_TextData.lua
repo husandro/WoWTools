@@ -110,23 +110,17 @@ local function Init_Data()
     end
 
 --数据在，汉化插件 WoWTools_Chinese
-    if WoWTools_ChineseMixin_GossipTextData_Tabs then
+    if WoWTools_SC_Gossip then
         do
-            for gossipID, tab in pairs(WoWTools_ChineseMixin_GossipTextData_Tabs) do
+            for gossipID, name in pairs(WoWTools_SC_Gossip) do
                 if not GossipTextIcon[gossipID] and not WoWToolsPlayerDate['GossipTextIcon'][gossipID] then
-                    local hex= tab.hex and tab.hex~='' and tab.hex or nil
-                    local icon= tab.icon and tab.icon~='' and tab.icon or nil
-                    local name= tab.name and tab.name~='' and tab.name or nil
-
-                    if hex or icon or name then
-                        GossipTextIcon[gossipID]= {name=name, icon=icon, hex=hex}
-                    end
+                    GossipTextIcon[gossipID]= {name=name}
                 end
             end
         end
-        WoWTools_ChineseMixin_GossipTextData_Tabs={}
+        WoWTools_SC_Gossip={}
 
-        if WoWTools_DataMixin.Player.husandro then
+        --[[if WoWTools_DataMixin.Player.husandro then
             GossipFrameCloseButton.numText= WoWTools_LabelMixin:Create(GossipFrameCloseButton)
             GossipFrameCloseButton.numText:SetPoint('RIGHT', GossipFrameCloseButton, 'LEFT')
             WoWTools_DataMixin:Hook(GossipOptionButtonMixin, 'Setup', function()
@@ -138,7 +132,7 @@ local function Init_Data()
                 end
                 GossipFrameCloseButton.numText:SetText(num)
             end)
-        end
+        end]]
     end
 
 

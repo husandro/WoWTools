@@ -5704,7 +5704,6 @@
         "PetBattleAbilityButton_OnEnter",
         "PetBattleUnitFrame_UpdatePetType",
         "PetJournal_UpdateAll",
-        "WoWTools_ChineseMixin_GossipTextData_Tabs",
         "MerchantFrame_CloseStackSplitFrame",
         "QuestFrameCloseButton",
         "QuestLogHeaderCodeMixin",
