@@ -64,7 +64,7 @@ local function Init()
 
    do
         for name in ipairs(UIPanelWindows) do
-            if _G[name] and not _G[name].moveFrameData then
+            if _G[name] and not _G[name].moveFrameData and not _G[name].ResizeButton then
                 WoWTools_MoveMixin:Setup(_G[name])
                 if WoWTools_DataMixin.Player.husandro then
                     print(WoWTools_MoveMixin.addName, '没有添加', name)

@@ -921,7 +921,6 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     tab= tab or {}
 
     if not name
-        --or (Save().disabledZoom and not tab.needSize)
         or tab.notZoom
         or frame.ResizeButton
         or (tab.frame and not tab.needSize)
