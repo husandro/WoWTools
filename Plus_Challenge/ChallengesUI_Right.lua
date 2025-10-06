@@ -13,7 +13,7 @@ local function Set_Text()--所有记录
 --历史
 
     Frame.history:SetText(
-        (WoWTools_DataMixin.onlyChinese and '历史' or Frame.history)
+        (WoWTools_DataMixin.onlyChinese and '历史' or HISTORY)
         ..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true)
         ..'|r/'..#C_MythicPlus.GetRunHistory(true, true)
     )
