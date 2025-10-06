@@ -3,6 +3,7 @@ WoWTools_GossipMixin= {}
 local P_Save={
     NPC={--禁用NPC
         ['223594']=true,
+        ['150122']=true,--荣耀堡法师 50005 我必须向黑暗之门报到。
     },
     gossip= true,
 

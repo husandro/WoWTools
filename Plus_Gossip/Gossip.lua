@@ -340,7 +340,7 @@ local function Init()
 
 
     --禁用此npc闲话选项
-    GossipFrame.WoWToolsSelectNPC=CreateFrame("CheckButton", 'WowToolsGossipDisableNPCButton', GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
+    GossipFrame.WoWToolsSelectNPC=CreateFrame("CheckButton", 'WowToolsGossipDisableNPCCheckButton', GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
     GossipFrame.WoWToolsSelectNPC:SetPoint("BOTTOMLEFT",5,2)
     GossipFrame.WoWToolsSelectNPC.Text:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
     GossipFrame.WoWToolsSelectNPC:SetScript("OnLeave", GameTooltip_Hide)
@@ -366,7 +366,7 @@ local function Init()
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '无' or NONE, 'NPC ID')
         end
         if self.npc  then
-            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='npc', self.npc, name=self.name, isPetUI=false})--取得网页，数据链接 
+            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='npc', id=self.npc, name=self.name, isPetUI=false})--取得网页，数据链接 
         end
         GameTooltip:Show()
     end)
@@ -519,8 +519,7 @@ local function Create_GossipOptionCheckBox(frame, info)
     frame.gossipCheckBox:SetScript("OnEnter", function(self)--GameTooltip:SetSpellByID(self.spellID)
         local showFrame= GossipButton:Is_ShowOptionsFrame()
         GameTooltip:SetOwner(showFrame or self, showFrame and "ANCHOR_BOTTOM" or "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
+        GameTooltip:SetText(WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG), WoWTools_TextMixin:GetEnabeleDisable(Save().gossip))
         GameTooltip:AddDoubleLine(' ')
         if self.gossipOptionID then
@@ -548,6 +547,9 @@ local function Create_GossipOptionCheckBox(frame, info)
                     break
                 end
             end
+        end
+        if self.gossipOptionID then
+            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type=nil, id=nil, name=self.gossipOptionID..(self.name and ' '..self.name or ''), isPetUI=false})--取得网页，数据链接 
         end
         GameTooltip:Show()
         self:SetAlpha(1)
