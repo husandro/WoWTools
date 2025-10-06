@@ -626,7 +626,7 @@ local function Create_AvailableQuestCheck(btn, info)
         return
     end
 
-    btn.availableQuestCheckBox=CreateFrame("CheckButton", nil, btn, 'InterfaceOptionsCheckButtonTemplate')
+    btn.availableQuestCheckBox= CreateFrame("CheckButton", nil, btn, 'InterfaceOptionsCheckButtonTemplate')
     btn.availableQuestCheckBox:SetPoint("RIGHT", -2, 0)
     btn.availableQuestCheckBox:SetSize(18, 18)
 
@@ -634,17 +634,7 @@ local function Create_AvailableQuestCheck(btn, info)
         GameTooltip:Hide()
     end)
     btn.availableQuestCheckBox:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName2)
-        GameTooltip:AddLine(' ')
-
-        if self.questID and self.text then
-            GameTooltip:AddDoubleLine(self.text, 'questID |cnGREEN_FONT_COLOR:'..self.questID..'|r')
-        else
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '无' or NONE, (WoWTools_DataMixin.onlyChinese and '任务' or  QUESTS_LABEL)..' ID',1,0,0)
-        end
-        GameTooltip:Show()
+        WoWTools_SetTooltipMixin:Frame(self, nil, {anchor='ANCHOR_RIGHT', questID= self.questID})
     end)
 
     btn.availableQuestCheckBox:SetScript("OnMouseDown", function (self)
