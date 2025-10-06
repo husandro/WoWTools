@@ -66,13 +66,12 @@ end
 
 
 
-
 --容器，背包
 function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
     if C_AddOns.IsAddOnLoaded("Bagnon") then
         local itemButton = Bagnon.ItemSlot or Bagnon.Item
         if (itemButton) and (itemButton.Update)  then
-            WoWTools_DataMixin:Hook(itemButton, 'Update', function(frame)
+            hooksecurefunc(itemButton, 'Update', function(frame)
                 local slot, bag= frame:GetSlotAndBagID()
                 if slot and bag then
                     if frame.hasItem then
@@ -87,7 +86,7 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
 
 
     elseif C_AddOns.IsAddOnLoaded("Baggins") then
-        WoWTools_DataMixin:Hook(_G['Baggins'], 'UpdateItemButton', function(_, _, button, bagID, slotID)
+        hooksecurefunc(_G['Baggins'], 'UpdateItemButton', function(_, _, button, bagID, slotID)
             if button and bagID and slotID then
                 WoWTools_ItemMixin:SetupInfo(button, {bag={bag=bagID, slot=slotID}})
             end
@@ -102,9 +101,9 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
                 WoWTools_ItemMixin:SetupInfo(self, {bag={bag=self.bag, slot=self.slot}})
             end
             function InvLevel:WrapItemButton(item)
-                WoWTools_DataMixin:Hook(item, "Update", InvLevel.Update)
+                hooksecurefunc(item, "Update", InvLevel.Update)
             end
-            WoWTools_DataMixin:Hook(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
+            hooksecurefunc(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
         end
 
     else
