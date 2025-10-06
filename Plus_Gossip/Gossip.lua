@@ -340,7 +340,7 @@ local function Init()
 
 
     --禁用此npc闲话选项
-    GossipFrame.WoWToolsSelectNPC=CreateFrame("CheckButton", nil, GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
+    GossipFrame.WoWToolsSelectNPC=CreateFrame("CheckButton", 'WowToolsGossipDisableNPCButton', GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
     GossipFrame.WoWToolsSelectNPC:SetPoint("BOTTOMLEFT",5,2)
     GossipFrame.WoWToolsSelectNPC.Text:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
     GossipFrame.WoWToolsSelectNPC:SetScript("OnLeave", GameTooltip_Hide)
@@ -357,13 +357,16 @@ local function Init()
         )
     end)
     GossipFrame.WoWToolsSelectNPC:SetScript('OnEnter',function (self)
+
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
+        GameTooltip:SetText(WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2)
         if self.npc and self.name then
-            GameTooltip:AddDoubleLine(self.name, 'NPC |cnGREEN_FONT_COLOR:'..self.npc..'|r')
+            GameTooltip:AddDoubleLine(self.name, self.npc and 'NPC |cnGREEN_FONT_COLOR:'..self.npc..'|r')
         else
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '无' or NONE, 'NPC ID')
+        end
+        if self.npc  then
+            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='npc', self.npc, name=self.name, isPetUI=false})--取得网页，数据链接 
         end
         GameTooltip:Show()
     end)

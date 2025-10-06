@@ -18,6 +18,8 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
     local size= ':'..self.iconSize..':0'..self.iconSize
 
+    guid= guid or UnitGUID(unit)
+
 --图像
     tooltip.Portrait:SetAtlas(WoWTools_DataMixin.Icon[englishFaction] or 'Neutral')
     tooltip.Portrait:SetShown(true)

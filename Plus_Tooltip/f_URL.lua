@@ -224,7 +224,7 @@ end
 
 
 
-
+--WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
 function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
     if tooltip==ItemRefTooltip or tooltip==FloatingBattlePetTooltip then
         if tab.type and tab.id then

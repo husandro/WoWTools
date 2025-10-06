@@ -115,8 +115,8 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     --NPC 中文名称
     local data= WoWTools_TextMixin:CN(nil, {unit=unit, npcID=npc})
     if data then
-        textLeft= data[1]
-        text2Right= data[2]
+        textLeft= data.T
+        text2Right= data.D
     end
 
     tooltip.textLeft:SetText(textLeft)
