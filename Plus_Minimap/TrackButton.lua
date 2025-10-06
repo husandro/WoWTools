@@ -1,5 +1,29 @@
 
+--[[
+function GameTooltip_AddWidgetSet(self, widgetSetID, verticalPadding)
+	if not widgetSetID then
+		return;
+	end
 
+	if not self.widgetContainer then
+		self.widgetContainer = CreateFrame("FRAME", nil, self, "UIWidgetContainerTemplate");
+		self.widgetContainer.verticalAnchorPoint = "TOPLEFT";
+		self.widgetContainer.verticalRelativePoint = "BOTTOMLEFT";
+		self.widgetContainer.showAndHideOnWidgetSetRegistration = false;
+		self.widgetContainer.disableWidgetTooltips = true;
+		self.widgetContainer:Hide();
+	end
+
+	self.widgetContainer:RegisterForWidgetSet(widgetSetID, WidgetLayout);
+
+	if self.widgetContainer.shownWidgetCount > 0 then
+		local heightUsed = GameTooltip_InsertFrame(self, self.widgetContainer, verticalPadding);
+		-- overflow
+		local widgetHeight = self.widgetContainer:GetHeight() + (verticalPadding or 0);
+		return heightUsed - widgetHeight;
+	end
+end
+]]
 local TrackButton
 local WorldMapButton--世界地图，添加一个按钮
 local addName, addName2
@@ -193,7 +217,7 @@ end
 --##############
 --areaPoiID 文本
 --##############
-local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
+local function Get_areaPoiID_Text(uiMapID, areaPoiID)
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
     if not poiInfo.name  then
         return
@@ -261,7 +285,6 @@ end
 local function Get_Current_Vignettes()
     local onMinimap={}
     local onWorldMap={}
-    local save=Save()
     local hideOnMinimap= Save().hideVigentteCurrentOnMinimap
     local hideWorldMap= Save().hideVigentteCurrentOnWorldMap
 
