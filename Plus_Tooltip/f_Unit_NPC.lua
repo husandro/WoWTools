@@ -113,16 +113,16 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     end
 
     --NPC 中文名称
-    local data= WoWTools_TextMixin:CN(nil, {unit=unit, npcID=npc})
+    --[[local data= WoWTools_TextMixin:CN(nil, {unit=unit, npcID=npc})
     if data then
         textLeft= data.T
         text2Right= data.D
-    end
+    end]]
 
-    tooltip.textLeft:SetText(textLeft)
-    tooltip.text2Left:SetText(text2Left)
-    tooltip.textRight:SetText(textRight)
-    tooltip.text2Right:SetText(text2Right)
+    tooltip.textLeft:SetText(textLeft or '')
+    tooltip.text2Left:SetText(text2Left or '')
+    tooltip.textRight:SetText(textRight or '' )
+    tooltip.text2Right:SetText(text2Right or '')
 
     if not WoWToolsSave['Plus_Tootips'].disabledNPCcolor then
         local r, g, b = select(2, WoWTools_UnitMixin:GetColor(unit, nil))--颜色
