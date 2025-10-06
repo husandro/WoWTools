@@ -116,7 +116,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
+            WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or CopyTable(P_Save)
 
             Save().Bg= Save().Bg or P_Save.Bg
             Save().Bg.Anims= Save().Bg.Anims or P_Save.Bg.Anims

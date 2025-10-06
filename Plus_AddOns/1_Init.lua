@@ -115,7 +115,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['Plus_AddOns']= WoWToolsSave['Plus_AddOns'] or P_Save
+    WoWToolsSave['Plus_AddOns']= WoWToolsSave['Plus_AddOns'] or CopyTable(P_Save)
     P_Save=nil
 
     WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))

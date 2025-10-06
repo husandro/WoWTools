@@ -29,7 +29,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Collection']= WoWToolsSave['Plus_Collection'] or P_Save
+            WoWToolsSave['Plus_Collection']= WoWToolsSave['Plus_Collection'] or CopyTable(P_Save)
             P_Save=nil
             
             WoWTools_CollectionMixin.addName= '|A:UI-HUD-MicroMenu-Collections-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战团收藏' or COLLECTIONS)

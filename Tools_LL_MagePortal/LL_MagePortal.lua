@@ -387,7 +387,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Tools_MagePortal']= WoWToolsSave['Tools_MagePortal'] or P_Save
+            WoWToolsSave['Tools_MagePortal']= WoWToolsSave['Tools_MagePortal'] or CopyTable(P_Save)
             P_Save= nil
 
             if not Save().disabled and WoWTools_ToolsMixin:Get_MainButton() then

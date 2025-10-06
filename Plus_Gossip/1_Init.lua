@@ -96,7 +96,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Gossip']= WoWToolsSave['Plus_Gossip'] or P_Save
+            WoWToolsSave['Plus_Gossip']= WoWToolsSave['Plus_Gossip'] or CopyTable(P_Save)
             P_Save=nil
 
 --玩家，自定义，对话，文本

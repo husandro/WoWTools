@@ -147,7 +147,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Tools_Foods']= WoWToolsSave['Tools_Foods'] or P_Save
+            WoWToolsSave['Tools_Foods']= WoWToolsSave['Tools_Foods'] or CopyTable(P_Save)
             P_Save= nil
 
             Save().spells= Save().spells or ClassSpells

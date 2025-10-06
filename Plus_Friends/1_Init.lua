@@ -23,7 +23,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_FriendsList']= WoWToolsSave['Plus_FriendsList'] or P_Save
+            WoWToolsSave['Plus_FriendsList']= WoWToolsSave['Plus_FriendsList'] or CopyTable(P_Save)
             P_Save=nil
 
             WoWTools_FriendsMixin.addName= '|A:socialqueuing-icon-group:0:0|a'..(WoWTools_DataMixin.onlyChinese and '好友列表' or FRIENDS_LIST)

@@ -625,7 +625,7 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript('OnEvent', function(self, event, arg1)
     if arg1== 'WoWTools' then
 
-        WoWToolsSave['ChatButton_Emoji']= WoWToolsSave['ChatButton_Emoji'] or P_Save
+        WoWToolsSave['ChatButton_Emoji']= WoWToolsSave['ChatButton_Emoji'] or CopyTable(P_Save)
         P_Save=nil
 
         addName= '|TInterface\\Addons\\WoWTools\\Source\\Emojis\\Embarrass:0|tEmoji'

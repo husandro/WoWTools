@@ -70,7 +70,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Holiday']= WoWToolsSave['Plus_Holiday'] or P_Save
+            WoWToolsSave['Plus_Holiday']= WoWToolsSave['Plus_Holiday'] or CopyTable(P_Save)
             P_Save=nil
 
             WoWTools_HolidayMixin.addName= '|A:GarrisonTroops-Health:0:0|a'..(WoWTools_DataMixin.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)

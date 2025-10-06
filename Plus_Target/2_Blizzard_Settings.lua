@@ -298,6 +298,7 @@ local function Init_Options()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save().elapsed= value
+        WoWTools_TargetMixin:Set_All_Init()
     end})
     sliderElapsed:SetPoint("LEFT", sliderScale, 'RIGHT',15, 0)
 

@@ -92,23 +92,30 @@ local function Set_Texture()
         targetFrame.Texture:SetTexture(texture or 0)
     end
 
-    local scale= Save().scale
-    local elapse= Save().elapsed
-
-    targetFrame.elapsed= nil
     targetFrame:SetScale(1)--缩放
     targetFrame:set_color(Save().targetInCombat and UnitAffectingCombat('player') or false)
 
-    if scale~=1 then
+    local scale= Save().scale or 1
+    local elapse= Save().elapsed or 1
+
+    if scale~=1 and texture then
+        targetFrame.ElapseTime= elapse
+        targetFrame.ScaleValue= scale
+        targetFrame.elapsed= elapse
+
+
         targetFrame:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= (self.elapsed or elapse) + elapsed
-            if self.elapsed> elapse then
+            self.elapsed= self.elapsed + elapsed
+
+            if self.elapsed> self.ElapseTime then
                 self.elapsed=0
-                self:SetScale(self:GetScale()==1 and scale or 1)
+                self:SetScale(self:GetScale()==1 and self.ScaleValue or 1)
             end
         end)
-
     else
+        targetFrame.ElapseTime= nil
+        targetFrame.ScaleValue= nil
+        targetFrame.elapsed= nil
         targetFrame:SetScript('OnUpdate', nil)
     end
 

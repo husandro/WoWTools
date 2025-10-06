@@ -79,7 +79,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Move']= WoWToolsSave['Plus_Move'] or P_Save
+            WoWToolsSave['Plus_Move']= WoWToolsSave['Plus_Move'] or CopyTable(P_Save)
 
             Save().UIPanelWindows= Save().UIPanelWindows or P_Save.UIPanelWindows
             Save().Esc= Save() or P_Save.Esc

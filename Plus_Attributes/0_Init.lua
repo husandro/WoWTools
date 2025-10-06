@@ -104,7 +104,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Attributes']= WoWToolsSave['Plus_Attributes'] or P_Save
+            WoWToolsSave['Plus_Attributes']= WoWToolsSave['Plus_Attributes'] or CopyTable(P_Save)
             P_Save=nil
 
             WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)

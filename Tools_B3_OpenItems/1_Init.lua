@@ -185,7 +185,7 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['Tools_OpenItems']= WoWToolsSave['Tools_OpenItems'] or P_Save
+            WoWToolsSave['Tools_OpenItems']= WoWToolsSave['Tools_OpenItems'] or CopyTable(P_Save)
             P_Save= nil
 
             WoWTools_OpenItemMixin.addName= '|A:BonusLoot-Chest:0:0|a'..(WoWTools_DataMixin.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))

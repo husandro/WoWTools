@@ -57,7 +57,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Other_SpellFrame']=nil--旧数扰
             WoWToolsSave['Other_SpellFlyout']=nil
 
-            WoWToolsSave['Plus_Spell'] = WoWToolsSave['Plus_Spell'] or P_Save
+            WoWToolsSave['Plus_Spell'] = WoWToolsSave['Plus_Spell'] or CopyTable(P_Save)
 
             if not WoWToolsSave['Plus_Spell'].bg then
                 WoWToolsSave['Plus_Spell'].bg= P_Save.bg

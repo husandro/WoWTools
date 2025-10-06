@@ -386,7 +386,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             
-            WoWToolsSave['Tools_Daisy']= WoWToolsSave['Tools_Daisy'] or P_Save
+            WoWToolsSave['Tools_Daisy']= WoWToolsSave['Tools_Daisy'] or CopyTable(P_Save)
             P_Save= nil
             Save().speciesID= Save().speciesID or 2780
 

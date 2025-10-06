@@ -270,7 +270,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         return
     end
         
-    WoWToolsSave['Other_Brewfest']= WoWToolsSave['Other_Brewfest'] or P_Save
+    WoWToolsSave['Other_Brewfest']= WoWToolsSave['Other_Brewfest'] or CopyTable(P_Save)
     P_Save= nil
     
     --添加控制面板
