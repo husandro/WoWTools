@@ -109,7 +109,7 @@ end
 
 --垂直文字
 function WoWTools_TextMixin:Vstr(text)--垂直文字
-    if text then
+    if text and WoWTools_DataMixin.onlyChinese then
         text= self:CN(text)
         if (select(2, text:gsub("[^\128-\193]", "")) == #text) then
             return text:gsub(".", "%1|n")
