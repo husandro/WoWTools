@@ -377,6 +377,6 @@ end
 
 
 
-function WoWTools_InviteMixin:Setup_Menu()
-    WoWTools_ChatMixin:GetButtonForName('Invite'):SetupMenu(Init_Menu)
+function WoWTools_InviteMixin:Setup_Menu(btn)
+    btn:SetupMenu(Init_Menu)
 end

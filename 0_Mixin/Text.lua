@@ -109,7 +109,7 @@ end
 
 --垂直文字
 function WoWTools_TextMixin:Vstr(text)--垂直文字
-    if text and WoWTools_DataMixin.onlyChinese then
+    if text then
         text= self:CN(text)
         if (select(2, text:gsub("[^\128-\193]", "")) == #text) then
             return text:gsub(".", "%1|n")
@@ -124,7 +124,7 @@ end
 
 --取得中文
 function WoWTools_TextMixin:CN(text, tab)--{gossipOptionID=, questID=}
-    if WoWTools_ChineseMixin and (text or tab) then
+    if WoWTools_ChineseMixin and WoWTools_DataMixin.onlyChinese and (text or tab) then
         local data= WoWTools_ChineseMixin:GetData(text, tab)
         if data then
             return data
