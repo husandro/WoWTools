@@ -1,7 +1,7 @@
 
 local function Init()
 
-    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip, data)
+    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
         if not tooltip.textLeft then
             WoWTools_TooltipMixin:Set_Init_Item(tooltip)--创建，设置，内容
         end
@@ -38,6 +38,9 @@ local function Init()
 
 --Corpse 3
 --Object 4
+ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, function(tooltip, ...)
+        print(...)
+    end)
 
 --货币 5
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
