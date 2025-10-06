@@ -110,7 +110,8 @@ local function Init_Data()
     end
 
 --数据在，汉化插件 WoWTools_Chinese
-    if WoWTools_SC_Gossip then
+
+    if WoWTools_SC_Gossip and not C_AddOns.IsAddOnLoaded('WoWTools_Chinese_Scanner') then
         do
             for gossipID, name in pairs(WoWTools_SC_Gossip) do
                 if not GossipTextIcon[gossipID] and not WoWToolsPlayerDate['GossipTextIcon'][gossipID] then
@@ -119,7 +120,7 @@ local function Init_Data()
             end
         end
         WoWTools_SC_Gossip={}
-
+    end
         --[[if WoWTools_DataMixin.Player.husandro then
             GossipFrameCloseButton.numText= WoWTools_LabelMixin:Create(GossipFrameCloseButton)
             GossipFrameCloseButton.numText:SetPoint('RIGHT', GossipFrameCloseButton, 'LEFT')
@@ -133,7 +134,7 @@ local function Init_Data()
                 GossipFrameCloseButton.numText:SetText(num)
             end)
         end]]
-    end
+    
 
 
     PlayerGossipTab=nil
