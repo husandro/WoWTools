@@ -6204,7 +6204,8 @@
         "NPE_ABANDON_A_RETURN",
         "WARNING_FONT_COLOR_CODE",
         "QuestLogPopupDetailFrameCloseButton",
-        "AddonCategoryCollapseExpandMixin"
+        "AddonCategoryCollapseExpandMixin",
+        "CURRENCY_BUTTON_TOOLTIP_CLICK_INSTRUCTION"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
