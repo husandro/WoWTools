@@ -282,7 +282,8 @@ local function Init()
 
 
 --不禁用，本插件
-    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size=18, icon='hide'})
+    local btn= CreateFrame('Button', 'WoWToolsAddonsNotDisableButton', AddonList, 'WoWToolsButtonTemplate')
+    btn:SetSize(18, 18)
     btn:SetPoint('LEFT', AddonList.DisableAllButton, 'RIGHT', 2,0)
     btn:SetAlpha(0.3)
     function btn:set_tooltips()
@@ -340,6 +341,7 @@ local function Init()
         self:set_icon()
         self:set_tooltips()
     end)
+    btn:set_icon()
 
     AddonList.DisableAllButton:HookScript('OnClick', function()
         if Save().enableAllButtn then
@@ -347,7 +349,97 @@ local function Init()
             WoWTools_DataMixin:Call(AddonList_Update)
         end
     end)
-    btn:set_icon()
+    
+
+
+    
+
+
+
+
+
+    
+    btn= CreateFrame('Button', 'WoWToolsAddOnsRefeshButton', AddonList, 'WoWToolsButtonTemplate')
+    btn.texture= btn:CreateTexture(nil, 'BORDER')
+    btn.texture:SetSize(14, 14)
+    btn.texture:SetAtlas('talents-button-undo')
+    btn.texture:SetPoint('CENTER')
+
+    btn:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT')
+    btn.tooltip= WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT
+
+    btn:SetScript('OnClick', function()
+        if AddonList.startStatus then
+            for i=1,C_AddOns.GetNumAddOns() do
+                if AddonList.startStatus[i] then
+                    C_AddOns.EnableAddOn(i)
+                else
+                    C_AddOns.DisableAddOn(i)
+                end
+            end
+        else
+            for i=1, C_AddOns.GetNumAddOns() do
+                if C_AddOns.IsAddOnLoaded(i) then
+                    C_AddOns.EnableAddOn(i)
+                else
+                    C_AddOns.DisableAddOn(i)
+                end
+            end
+        end
+        WoWTools_DataMixin:Call(AddonList_Update)
+    end)
+
+
+
+
+
+--加载过期插件
+    AddonList.ForceLoad:ClearAllPoints()
+    AddonList.ForceLoad:SetPoint('LEFT', btn, 'RIGHT')
+    for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
+        local text= label:GetObjectType()=="FontString" and label:GetText()
+        if text and (text==ADDON_FORCE_LOAD or text=='加载过期插件') then
+            label:SetText('')
+            label:ClearAllPoints()
+            break
+        end
+    end
+    AddonList.ForceLoad:HookScript('OnLeave', function() GameTooltip:Hide() end)
+    AddonList.ForceLoad:HookScript('OnEnter', function(f)
+        GameTooltip:SetOwner(f, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
+        GameTooltip:Show()
+    end)
+
+    btn= WoWTools_ButtonMixin:Cbtn(AddonList, {
+        size=22,
+        atlas='NPE_ArrowDown',
+        name='WoWToolsFactionListExpandButton'
+    })
+
+
+    btn=WoWTools_ButtonMixin:Cbtn(AddonList, {
+		size=22,
+		atlas='NPE_ArrowUp',
+		name='WoWToolsFactionListCollapsedButton',
+	})
+
+    AddonList.SearchBox:ClearAllPoints()
+    AddonList.SearchBox:SetPoint('LEFT', btn, 'RIGHT', 6, 0)
+    AddonList.SearchBox:SetPoint('LEFT', -36, 0)
+
+
+
+
+
+
+
+
+
+
+
+
 
     Init=function()end
 end

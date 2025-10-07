@@ -1915,7 +1915,6 @@ local function Init_List(showListType, isShow)
     local last
     for name, data in pairs(TypeTabs) do
         List2Buttons[name]= CreateFrame('Button', 'WoWToolsWoWList2'..name..'Button', Frame, 'WoWToolsButtonTemplate')
-        List2Buttons[name]:SetSize(23, 23)
 
         List2Buttons[name].texture=List2Buttons[name]:CreateTexture(nil, 'BORDER')
         List2Buttons[name].texture:SetPoint('CENTER')
@@ -1930,7 +1929,7 @@ local function Init_List(showListType, isShow)
         List2Buttons[name].SelectTexture:SetVertexColor(0,1,0)
 
         List2Buttons[name].name= name
-        List2Buttons[name].tooltip= data.tooltip
+        List2Buttons[name].tip= data.tooltip
 
         List2Buttons[name].Text= WoWTools_LabelMixin:Create(List2Buttons[name], {color={r=1,g=1,b=1}})
         List2Buttons[name].Text:SetPoint('BOTTOMRIGHT')
@@ -1941,9 +1940,6 @@ local function Init_List(showListType, isShow)
             List2Buttons[name]:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT')
         end
 
-        List2Buttons[name]:SetScript('OnLeave', function()
-            GameTooltip:Hide()
-        end)
         List2Buttons[name]:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(Frame, "ANCHOR_TOPLEFT")
             GameTooltip:ClearLines()
@@ -1953,14 +1949,13 @@ local function Init_List(showListType, isShow)
             )
             GameTooltip:Show()
         end)
-        List2Buttons[name]:SetScript('OnMouseDown', function(self, d)
+        List2Buttons[name]:SetScript('OnClick', function(self, d)
             List2Type= self.name
             if d=='LeftButton' then
                 Init_Left_List()
 
                 for _, btn in pairs(List2Buttons) do
                     local isSelect= List2Type==btn.name
-                    --btn.texture:SetDesaturated(isSelect)
                     btn.texture:SetScale(isSelect and 0.5 or 1)
                     btn.SelectTexture:SetShown(isSelect)
                 end
@@ -2120,30 +2115,24 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
     })]]
 
     local btn= CreateFrame('Button', tab.name, frame, 'WoWToolsButtonTemplate')
-    btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-    btn:SetSize(23, 23)
     btn:SetNormalAtlas('glues-characterSelect-iconShop-hover')
 
     --local name= tab.name
     btn.click= tab.click
-    btn.tooltip= tab.tooltip
+    btn.tip= tab.tooltip
     btn.type= tab.type--Item Bank Currency Money Time Instance Rare Worldboss
 
-
-    btn:SetScript('OnLeave', function()
-        GameTooltip_Hide()
-    end)
     btn:SetScript('OnEnter', function(s)
         GameTooltip:SetOwner(s, "ANCHOR_LEFT")
         GameTooltip:SetText(
             WoWTools_DataMixin.Icon.wow2
             ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
         )
-        if s.tooltip then
-            if type(s.tooltip)=='function' then
+        if s.tip then
+            if type(s.tip)=='function' then
                 s.tooltip(GameTooltip, s)
             else
-                GameTooltip:AddLine(s.tooltip)
+                GameTooltip:AddLine(s.tip)
             end
         end
         GameTooltip:Show()

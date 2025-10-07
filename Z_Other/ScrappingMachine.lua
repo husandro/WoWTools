@@ -370,7 +370,7 @@ end]]
 
 local function Init_Button()
     local ItemsButton= CreateFrame('Button', 'WoWToolsScrappingItemButton', ScrappingMachineFrame, 'WoWToolsButtonTemplate')--  WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=23})
-    ItemsButton:SetSize(23,23)
+
     ItemsButton.Text= WoWTools_LabelMixin:Create(ItemsButton)
     ItemsButton.Text:SetPoint('CENTER')
     ItemsButton:SetPoint('TOPLEFT', ScrappingMachineFrame.ItemSlots, 'TOPRIGHT', 12, 0)
@@ -456,7 +456,7 @@ for index, info in pairs(ButtonList) do
             texture=info.texture,
         })]]
         local btn= CreateFrame('Button', 'WoWToolsScrapping'..info.name..'Button', ScrappingMachineFrame, 'WoWToolsButtonTemplate')
-        btn:SetSize(23,23)
+
         if info.atlas then
             btn:SetNormalAtlas(info.atlas)
         elseif info.texture then
@@ -477,7 +477,7 @@ for index, info in pairs(ButtonList) do
             GameTooltip:Show()
         end)
 
-        btn:SetScript('OnMouseDown', function(self)
+        btn:SetScript('OnClick', function(self)
             local spellID= C_ScrappingMachineUI.GetScrapSpellID()
             if spellID and C_Spell.IsCurrentSpell(spellID) then
                 return

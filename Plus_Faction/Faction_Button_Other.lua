@@ -127,7 +127,11 @@ local function Init()
 
 
 
-	local up= WoWTools_ButtonMixin:Cbtn(down, {size=22, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	local up= WoWTools_ButtonMixin:Cbtn(down, {
+		size=22,
+		atlas='NPE_ArrowUp',
+		name='WoWToolsFactionListCollapsedButton',
+	})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	up:SetPoint("RIGHT", down, 'LEFT', -2, 0)
 	up:SetScript("OnClick", function()
 		for index=C_Reputation.GetNumFactions(), 1, -1 do

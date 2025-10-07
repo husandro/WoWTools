@@ -936,7 +936,7 @@ local function Init()
         GameTooltip:Show()
     end
 
-    TrackButton:SetScript('OnMouseUp', ResetCursor)
+    TrackButton:SetScript('OnMouseUp', function() ResetCursor() end)
     TrackButton:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
@@ -948,10 +948,6 @@ local function Init()
         end
     end)
 
-
-    TrackButton:SetScript('OnLeave', function()
-        GameTooltip:Hide()
-    end)
     TrackButton:SetScript('OnEnter', function(self)
         self:set_Tooltips()
     end)

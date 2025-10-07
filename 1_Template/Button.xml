@@ -5,5 +5,32 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
         <Size x="23" y="23"/>
         <PushedTexture atlas="PetList-ButtonSelect"/>
         <HighlightTexture atlas="PetList-ButtonHighlight"/>
+        <Scripts>
+            <OnLoad>
+                self:EnableMouseWheel(true)
+                self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+            </OnLoad>
+            <OnLeave>
+                GameTooltip_Hide()
+                if self.set_alpha then
+                    self:set_alpha()
+                end
+            </OnLeave>
+            <OnEnter>
+                if self.tooltip then
+                    GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+                    GameTooltip:ClearLines()
+                    if type(self.tooltip)=='function' then
+                        self:tooltip(GameTooltip)
+                    else
+                        GameTooltip:AddLine(self.tooltip)
+                    end
+                    GameTooltip:Show()
+                end
+                if self.set_alpha then
+                    self:set_alpha()
+                end
+            </OnEnter>
+        </Scripts>
     </Button>
 </Ui>

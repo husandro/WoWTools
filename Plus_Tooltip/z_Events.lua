@@ -210,7 +210,7 @@ C_Timer.After(0.5, function()
             b= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
             b:SetNormalAtlas('plunderstorm-icon-upgrade')
             b:SetPoint('LEFT', btn, 'RIGHT', 4,0)
-            b:SetScript('OnMouseDown', function(f)
+            b:SetScript('OnClick', function(f)
                 if f.isIn then
                     f.isStop= true
                     return
@@ -231,9 +231,6 @@ C_Timer.After(0.5, function()
                     end
                 end
                 setting()
-            end)
-            b:SetScript('OnLeave', function()
-                GameTooltip:Hide()
             end)
             b:SetScript('OnEnter', function(f)
                 GameTooltip:SetOwner(f, 'ANCHOR_RIGHT')
