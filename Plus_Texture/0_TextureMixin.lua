@@ -375,7 +375,7 @@ local ExpansionIcon = {
 
 
 function WoWTools_TextureMixin:GetWoWLog(expacID, texture, size)
-    local info= expacID and (ExpansionIcon[expacID] or ExpansionIcon[0])
+    local info= ExpansionIcon[expacID]
     if not info then
         return
     end
