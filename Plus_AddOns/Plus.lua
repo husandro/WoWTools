@@ -409,29 +409,40 @@ local function Init()
     up:SetNormalAtlas('NPE_ArrowUp')
     up:SetPoint('LEFT', refesh, 'RIGHT')
     up:SetScript('OnClick', function()
-        --AddonList.ScrollBox:ScrollToBegin()
-        for _, frame in pairs(AddonList.ScrollBox:GetFrames()) do
-            local data= frame:GetData()
-            if data and data.category and not frame:IsCollapsed() then
-                frame:Click()
+        AddonList.ScrollBox:FindElementDataByPredicate(function(elementData)
+            local data= elementData:GetData()
+            if data and data.category and not elementData:IsCollapsed() then
+                do
+                   AddonList.ScrollBox:ScrollToElementData(elementData)
+                end
+                local frame= AddonList.ScrollBox:FindFrame(elementData)
+                if frame then
+                    frame:Click()
+                end
             end
-        end
+        end)
     end)
 
     local down= CreateFrame('Button', 'WoWToolsAddOnsListExpandButton', up, 'WoWToolsButtonTemplate')
     down:SetNormalAtlas('NPE_ArrowDown')
     down:SetPoint('LEFT', up, 'RIGHT')
     down:SetScript('OnClick', function()
-        for _, frame in pairs(AddonList.ScrollBox:GetFrames()) do
-            local data= frame:GetData()
-            if data and data.category and frame:IsCollapsed() then
-                frame:Click()
+        AddonList.ScrollBox:FindElementDataByPredicate(function(elementData)
+            local data= elementData:GetData()
+            if data and data.category and elementData:IsCollapsed() then
+                do
+                   AddonList.ScrollBox:ScrollToElementData(elementData)
+                end
+                local frame= AddonList.ScrollBox:FindFrame(elementData)
+                if frame then
+                    frame:Click()
+                end
             end
-        end
+        end)
     end)
 
     AddonList.SearchBox:ClearAllPoints()
-    AddonList.SearchBox:SetPoint('LEFT', refesh, 'RIGHT', 6, 0)
+    AddonList.SearchBox:SetPoint('LEFT', down, 'RIGHT', 6, 0)
     AddonList.SearchBox:SetPoint('RIGHT', -32, 0)
 
 
