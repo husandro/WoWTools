@@ -289,8 +289,8 @@ local function Set_Right_Buttons()
         btn:set_settings()
         btn:SetShown(true)
 
-        w= math.max(btn:GetWidth()+2, w)
-        RightFrame.Background:SetPoint('BOTTOM', btn, 0, -2)
+        w= math.max(btn:GetWidth(), w)
+        RightFrame.Background:SetPoint('BOTTOM', btn)
 
         index= index+1
     end
@@ -335,7 +335,7 @@ local function Init()
     RightFrame:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 2, 0)
 
     RightFrame.Background= RightFrame:CreateTexture(nil, 'BACKGROUND')
-    RightFrame.Background:SetPoint('TOPLEFT', RightFrame, -2, 0)
+    RightFrame.Background:SetPoint('TOPLEFT', RightFrame)
 
     function RightFrame:settings()
         local show= not Save().hideRightList

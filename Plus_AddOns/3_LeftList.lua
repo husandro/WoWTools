@@ -53,20 +53,21 @@ local function Create_Fast_Button(index)
         end
     end
     btn:SetScript('OnLeave', function(self)
-        if self.findFrame then
-            if self.findFrame.check then
-                self.findFrame.check:set_leave_alpha()
-            end
-            self.findFrame=nil
-        end
+        WoWTools_AddOnsMixin:LevelButtonTip(self)
         GameTooltip_Hide()
         self.Text:SetAlpha(1)
     end)
     function btn:set_tooltips()
         AddonTooltip:SetOwner(self.Text, "ANCHOR_LEFT")
         AddonTooltip_Update(self)
-        AddonTooltip:AddLine(' ')
-        AddonTooltip:AddDoubleLine(' ', WoWTools_TextMixin:GetEnabeleDisable(C_AddOns.GetAddOnEnableState(self:GetID())~=0)..WoWTools_DataMixin.Icon.left)
+        AddonTooltip:AddDoubleLine(
+            WoWTools_DataMixin.Icon.left
+            ..WoWTools_TextMixin:GetEnabeleDisable(C_AddOns.GetAddOnEnableState(self:GetID())~=0),
+
+          (WoWTools_DataMixin.onlyChinese and '查询' or WHO)
+            ..WoWTools_DataMixin.Icon.right
+            ..self:GetID()
+        )
         AddonTooltip:Show()
     end
     btn:SetScript('OnEnter', function(self)
@@ -78,7 +79,6 @@ local function Create_Fast_Button(index)
             for i=1, C_AddOns.GetNumAddOns() do
                 if C_AddOns.GetAddOnInfo(i)== self.name then
                     findIndex= i
-                    self:SetID(i)
                     Save().fast[self.name]= i
                     self:set_tooltips()
                     break
@@ -91,32 +91,34 @@ local function Create_Fast_Button(index)
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine(icon..name)
                 GameTooltip:Show()
+                findIndex= 0
             else
                 i2=findIndex
             end
+            self:SetID(findIndex)
         end
-        if i2 then
-            AddonList.ScrollBox:ScrollToElementDataIndex(i2)
-            for _, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
-                if frame:GetID()==i2 then
-                    if frame.check then
-                        frame.check:set_enter_alpha()
-                        self.findFrame=frame
-                    end
-                    break
-                end
-            end
+        if i2 and i2>0 then
+           WoWTools_AddOnsMixin:EnterButtonTip(self)
         end
         self.Text:SetAlpha(0.3)
     end)
-    btn:SetScript('OnClick', function(self)
-        if C_AddOns.GetAddOnEnableState(self.name)~=0 then
-            C_AddOns.DisableAddOn(self.name)
-        else
-            C_AddOns.EnableAddOn(self.name)
+    --AddonList_Enable(index, enabled)
+    btn:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            if C_AddOns.GetAddOnEnableState(self.name)~=0 then
+                C_AddOns.DisableAddOn(self.name)
+            else
+                C_AddOns.EnableAddOn(self.name)
+            end
+            WoWTools_DataMixin:Call(AddonList_Update)
+            C_Timer.After(0.5, function()
+                if AddonTooltip:IsOwned(self.Text) then
+                    self:set_tooltips()
+                end
+            end)
+        elseif self.name then
+           WoWTools_AddOnsMixin:FindAddon(nil, self.name)
         end
-        WoWTools_DataMixin:Call(AddonList_Update)
-        self:set_tooltips()
     end)
 
     if index==1 then

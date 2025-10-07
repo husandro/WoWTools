@@ -110,3 +110,44 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
         tooltip:AddDoubleLine((i<10 and ' '..i or i)..') '..left, info.right)
     end
 end
+
+
+function WoWTools_AddOnsMixin:FindAddon(addonIndex, name)
+    name = name or (addonIndex and C_AddOns.GetAddOnName(addonIndex))
+    if name then
+        name= name:match('(.-)%-') or name
+        if AddonList.SearchBox:GetText()==name then
+            AddonList.SearchBox:SetText('')
+        else
+            AddonList.SearchBox:SetText(name)
+            return true
+        end
+    end
+end
+
+
+function WoWTools_AddOnsMixin:EnterButtonTip(btn)
+    btn.findFrame= nil
+    local addonIndex= btn:GetID()
+    if not addonIndex or addonIndex<1 then
+        return
+    end
+    for _, frame in pairs(AddonList.ScrollBox:GetFrames() or {}) do
+        local data= frame:GetData()
+        if data and data.addonIndex==addonIndex then
+            if frame.check then
+                frame.check:set_enter_alpha()
+                btn.findFrame=frame
+                return true
+            end
+        end
+    end
+end
+function WoWTools_AddOnsMixin:LevelButtonTip(btn)
+    if btn.findFrame then
+        if btn.findFrame.check then
+            btn.findFrame.check:set_leave_alpha()
+        end
+        btn.findFrame=nil
+    end
+end

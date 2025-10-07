@@ -30,12 +30,7 @@ local function Create_Button(index)
     btn.texture2:SetAtlas('Forge-ColorSwatchSelection')
 
     btn:SetScript('OnLeave', function(self)
-        if self.findFrame then
-            if self.findFrame.check then
-                self.findFrame.check:set_leave_alpha()
-            end
-            self.findFrame=nil
-        end
+        WoWTools_AddOnsMixin:LevelButtonTip(self)
         GameTooltip_Hide()
     end)
 
@@ -44,16 +39,16 @@ local function Create_Button(index)
         AddonTooltip_Update(self)
         AddonTooltip:AddLine(' ')
         local addonIndex= self:GetID()
-        local character = UIDropDownMenu_GetSelectedValue(AddonList.Dropdown);
+        local character = UIDropDownMenu_GetSelectedValue(AddonList.Dropdown)
         if ( character == true ) then
-            character = nil;
+            character = nil
         end
         local loadable, reason = C_AddOns.IsAddOnLoadable(addonIndex, character)
-        local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character);
+        local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character)
         if ( not InGlue() ) then
-            enabled = (C_AddOns.GetAddOnEnableState(addonIndex, UnitName("player")) > Enum.AddOnEnableState.None);
+            enabled = (C_AddOns.GetAddOnEnableState(addonIndex, UnitName("player")) > Enum.AddOnEnableState.None)
         else
-            enabled = (checkboxState > Enum.AddOnEnableState.None);
+            enabled = (checkboxState > Enum.AddOnEnableState.None)
         end
         local col
         if ( loadable or ( enabled and (reason == "DEP_DEMAND_LOADED" or reason == "DEMAND_LOADED") ) ) then
@@ -64,25 +59,18 @@ local function Create_Button(index)
             col='|cff999999'
         end
         AddonTooltip:AddDoubleLine(
-            reason and col..(WoWTools_TextMixin:CN(_G["ADDON_"..reason]) or ' ') or ' ',
-            format('%s%s', WoWTools_DataMixin.onlyChinese and '查询' or WHO, WoWTools_DataMixin.Icon.left)
+            (WoWTools_DataMixin.onlyChinese and '查询' or WHO)
+            ..WoWTools_DataMixin.Icon.left
+            ..self:GetID(),
+            reason and _G["ADDON_"..reason] and col..WoWTools_TextMixin:CN(_G["ADDON_"..reason])
         )
 
         AddonTooltip:Show()
         self:SetAlpha(1)
+        WoWTools_AddOnsMixin:EnterButtonTip(self)
     end)
     btn:SetScript('OnClick', function(self)
-        local findIndex= self:GetID()
-        AddonList.ScrollBox:ScrollToElementDataIndex(findIndex)
-        for _, frame in pairs(AddonList.ScrollBox:GetFrames() or {}) do
-            if frame:GetID()==findIndex then
-                if frame.check then
-                    frame.check:set_enter_alpha()
-                    self.findFrame=frame
-                end
-                break
-            end
-        end
+        WoWTools_AddOnsMixin:FindAddon(self:GetID(), nil)
     end)
 
      table.insert(Buttons, index)
