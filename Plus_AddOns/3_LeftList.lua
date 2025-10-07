@@ -64,7 +64,7 @@ local function Create_Fast_Button(index)
             WoWTools_DataMixin.Icon.left
             ..WoWTools_TextMixin:GetEnabeleDisable(C_AddOns.GetAddOnEnableState(self:GetID())~=0),
 
-          (WoWTools_DataMixin.onlyChinese and '查询' or WHO)
+          (WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH)
             ..WoWTools_DataMixin.Icon.right
             ..self:GetID()
         )

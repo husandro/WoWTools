@@ -265,7 +265,6 @@ local function Init()
     end)
 
     WoWTools_DataMixin:Hook('AddonTooltip_Update', function(self)
-        --WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         local index= self:GetID()
         local va= WoWTools_AddOnsMixin:Get_MenoryValue(index, true)
         if va then
@@ -349,26 +348,42 @@ local function Init()
             WoWTools_DataMixin:Call(AddonList_Update)
         end
     end)
-    
-
-
-    
 
 
 
 
 
-    
-    btn= CreateFrame('Button', 'WoWToolsAddOnsRefeshButton', AddonList, 'WoWToolsButtonTemplate')
-    btn.texture= btn:CreateTexture(nil, 'BORDER')
-    btn.texture:SetSize(14, 14)
-    btn.texture:SetAtlas('talents-button-undo')
-    btn.texture:SetPoint('CENTER')
 
-    btn:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT')
-    btn.tooltip= WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT
 
-    btn:SetScript('OnClick', function()
+
+--加载过期插件
+    AddonList.ForceLoad:ClearAllPoints()
+    AddonList.ForceLoad:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT')
+    for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
+        local text= label:GetObjectType()=="FontString" and label:GetText()
+        if text and (text==ADDON_FORCE_LOAD or text=='加载过期插件') then
+            label:SetText('')
+            label:ClearAllPoints()
+            break
+        end
+    end
+    AddonList.ForceLoad:SetScript('OnLeave', function() GameTooltip:Hide() end)
+    AddonList.ForceLoad:SetScript('OnEnter', function(f)
+        GameTooltip:SetOwner(f, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
+        GameTooltip:Show()
+    end)
+
+
+    local refesh= CreateFrame('Button', 'WoWToolsAddOnsRefeshButton', AddonList, 'WoWToolsButtonTemplate')
+    refesh.texture= refesh:CreateTexture(nil, 'BORDER')
+    refesh.texture:SetSize(16, 16)
+    refesh.texture:SetAtlas('talents-button-undo')
+    refesh.texture:SetPoint('CENTER')
+    refesh:SetPoint('LEFT', AddonList.ForceLoad, 'RIGHT')
+    refesh.tooltip= WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT
+    refesh:SetScript('OnClick', function()
         if AddonList.startStatus then
             for i=1,C_AddOns.GetNumAddOns() do
                 if AddonList.startStatus[i] then
@@ -390,55 +405,34 @@ local function Init()
     end)
 
 
-
-
-
---加载过期插件
-    AddonList.ForceLoad:ClearAllPoints()
-    AddonList.ForceLoad:SetPoint('LEFT', btn, 'RIGHT')
-    for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
-        local text= label:GetObjectType()=="FontString" and label:GetText()
-        if text and (text==ADDON_FORCE_LOAD or text=='加载过期插件') then
-            label:SetText('')
-            label:ClearAllPoints()
-            break
+    local up= CreateFrame('Button', 'WoWToolsAddOnsListCollapsedButton', AddonList.TitleContainer, 'WoWToolsButtonTemplate')
+    up:SetNormalAtlas('NPE_ArrowUp')
+    up:SetPoint('LEFT', refesh, 'RIGHT')
+    up:SetScript('OnClick', function()
+        --AddonList.ScrollBox:ScrollToBegin()
+        for _, frame in pairs(AddonList.ScrollBox:GetFrames()) do
+            local data= frame:GetData()
+            if data and data.category and not frame:IsCollapsed() then
+                frame:Click()
+            end
         end
-    end
-    AddonList.ForceLoad:HookScript('OnLeave', function() GameTooltip:Hide() end)
-    AddonList.ForceLoad:HookScript('OnEnter', function(f)
-        GameTooltip:SetOwner(f, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
-        GameTooltip:Show()
     end)
 
-    btn= WoWTools_ButtonMixin:Cbtn(AddonList, {
-        size=22,
-        atlas='NPE_ArrowDown',
-        name='WoWToolsFactionListExpandButton'
-    })
-
-
-    btn=WoWTools_ButtonMixin:Cbtn(AddonList, {
-		size=22,
-		atlas='NPE_ArrowUp',
-		name='WoWToolsFactionListCollapsedButton',
-	})
+    local down= CreateFrame('Button', 'WoWToolsAddOnsListExpandButton', up, 'WoWToolsButtonTemplate')
+    down:SetNormalAtlas('NPE_ArrowDown')
+    down:SetPoint('LEFT', up, 'RIGHT')
+    down:SetScript('OnClick', function()
+        for _, frame in pairs(AddonList.ScrollBox:GetFrames()) do
+            local data= frame:GetData()
+            if data and data.category and frame:IsCollapsed() then
+                frame:Click()
+            end
+        end
+    end)
 
     AddonList.SearchBox:ClearAllPoints()
-    AddonList.SearchBox:SetPoint('LEFT', btn, 'RIGHT', 6, 0)
-    AddonList.SearchBox:SetPoint('LEFT', -36, 0)
-
-
-
-
-
-
-
-
-
-
-
+    AddonList.SearchBox:SetPoint('LEFT', refesh, 'RIGHT', 6, 0)
+    AddonList.SearchBox:SetPoint('RIGHT', -32, 0)
 
 
     Init=function()end

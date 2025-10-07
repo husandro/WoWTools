@@ -115,7 +115,7 @@ end
 function WoWTools_AddOnsMixin:FindAddon(addonIndex, name)
     name = name or (addonIndex and C_AddOns.GetAddOnName(addonIndex))
     if name then
-        name= name:match('(.-)%-') or name
+        name= name:match('(.-)%-') or name:match('(.-)_') or name:match('(.-) ') or name
         if AddonList.SearchBox:GetText()==name then
             AddonList.SearchBox:SetText('')
         else
@@ -143,6 +143,7 @@ function WoWTools_AddOnsMixin:EnterButtonTip(btn)
         end
     end
 end
+
 function WoWTools_AddOnsMixin:LevelButtonTip(btn)
     if btn.findFrame then
         if btn.findFrame.check then

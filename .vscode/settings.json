@@ -6203,7 +6203,8 @@
         "CalendarYearName",
         "NPE_ABANDON_A_RETURN",
         "WARNING_FONT_COLOR_CODE",
-        "QuestLogPopupDetailFrameCloseButton"
+        "QuestLogPopupDetailFrameCloseButton",
+        "AddonCategoryCollapseExpandMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

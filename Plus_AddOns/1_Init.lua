@@ -135,10 +135,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     })
 
 
+
     if not Save().disabled then
         AddonList:HookScript('OnShow', function()
             Init()
         end)
+        
+        if WoWTools_DataMixin.Player.husandro then
+            C_Timer.After(0.3, function()
+            AddonList:Show()
+            end)
+        end
     end
+
     self:UnregisterEvent(event)
 end)
