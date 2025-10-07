@@ -61,19 +61,34 @@ local function Create_Button(index)
         AddonTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH)
             ..WoWTools_DataMixin.Icon.left
-            ..self:GetID(),
-            reason and _G["ADDON_"..reason] and col..WoWTools_TextMixin:CN(_G["ADDON_"..reason])
+            ..(reason and _G["ADDON_"..reason] and col..WoWTools_TextMixin:CN(_G["ADDON_"..reason]) or ''),
+            
+            (WoWTools_DataMixin.onlyChinese and '转向' or NPE_TURN)
+            ..WoWTools_DataMixin.Icon.right
+            ..self:GetID()
         )
-
         AddonTooltip:Show()
         self:SetAlpha(1)
         WoWTools_AddOnsMixin:EnterButtonTip(self)
     end)
-    btn:SetScript('OnClick', function(self)
-        WoWTools_AddOnsMixin:FindAddon(self:GetID(), nil)
+    btn:SetScript('OnClick', function(self, d)
+        local addonIndex= self:GetID()
+        if d=='LeftButton' then
+            local name = C_AddOns.GetAddOnInfo(addonIndex)-- C_AddOns.GetAddOnName 12.5
+            if name then
+                name= name:match('(.-)%-') or name:match('(.-)_') or name:match('(.-) ') or name
+                if AddonList.SearchBox:GetText()==name then
+                    AddonList.SearchBox:SetText('')
+                else
+                    AddonList.SearchBox:SetText(name)
+                end
+            end
+        else
+            WoWTools_AddOnsMixin:FindAddon(addonIndex)
+        end
     end)
 
-     table.insert(Buttons, index)
+    table.insert(Buttons, index)
 
     return btn
 end
@@ -113,6 +128,10 @@ local function Set_Load_Button()--LoadButtons
         if not C_AddOns.GetAddOnDependencies(i) then
             local texture = C_AddOns.GetAddOnMetadata(i, "IconTexture")
             local atlas = C_AddOns.GetAddOnMetadata(i, "IconAtlas")
+            local name = C_AddOns.GetAddOnInfo(i)
+            if Save().fast[name] then
+                Save().fast[name]=i
+            end
             if texture or atlas then
                 if C_AddOns.IsAddOnLoaded(i) then
                     table.insert(newTab, 1, {index=i, load=true, atlas=atlas, texture=texture})

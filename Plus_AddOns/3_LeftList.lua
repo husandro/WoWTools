@@ -62,9 +62,9 @@ local function Create_Fast_Button(index)
         AddonTooltip_Update(self)
         AddonTooltip:AddDoubleLine(
             WoWTools_DataMixin.Icon.left
-            ..WoWTools_TextMixin:GetEnabeleDisable(C_AddOns.GetAddOnEnableState(self:GetID())~=0),
+            ..WoWTools_TextMixin:GetEnabeleDisable(nil, true),
 
-          (WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH)
+          (WoWTools_DataMixin.onlyChinese and '转向' or NPE_TURN)
             ..WoWTools_DataMixin.Icon.right
             ..self:GetID()
         )
@@ -102,7 +102,8 @@ local function Create_Fast_Button(index)
         end
         self.Text:SetAlpha(0.3)
     end)
-    --AddonList_Enable(index, enabled)
+
+--AddonList_Enable(index, enabled)
     btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             if C_AddOns.GetAddOnEnableState(self.name)~=0 then
@@ -111,13 +112,9 @@ local function Create_Fast_Button(index)
                 C_AddOns.EnableAddOn(self.name)
             end
             WoWTools_DataMixin:Call(AddonList_Update)
-            C_Timer.After(0.5, function()
-                if AddonTooltip:IsOwned(self.Text) then
-                    self:set_tooltips()
-                end
-            end)
-        elseif self.name then
-           WoWTools_AddOnsMixin:FindAddon(nil, self.name)
+            self:set_tooltips()
+        else
+           WoWTools_AddOnsMixin:FindAddon(self:GetID())
         end
     end)
 

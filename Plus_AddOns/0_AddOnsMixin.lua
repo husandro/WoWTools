@@ -112,18 +112,37 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
 end
 
 
-function WoWTools_AddOnsMixin:FindAddon(addonIndex, name)
-    name = name or (addonIndex and C_AddOns.GetAddOnName(addonIndex))
-    if name then
-        name= name:match('(.-)%-') or name:match('(.-)_') or name:match('(.-) ') or name
-        if AddonList.SearchBox:GetText()==name then
-            AddonList.SearchBox:SetText('')
-        else
-            AddonList.SearchBox:SetText(name)
-            return true
-        end
+function WoWTools_AddOnsMixin:FindAddon(addonIndex)
+    if not addonIndex or addonIndex<1 then
+        return
     end
+    local category=  C_AddOns.GetAddOnMetadata(addonIndex, "Category")
+
+    AddonList.ScrollBox:FindElementDataByPredicate(function(elementData)
+        local data= elementData:GetData()
+        if not data then
+            return
+        end
+
+        if category and data.category== category then
+            AddonList.ScrollBox:ScrollToElementData(elementData)
+            local frame= AddonList.ScrollBox:FindFrame(elementData)
+            if frame and elementData:IsCollapsed() then
+                frame:Click()
+            end
+
+        elseif data.addonIndex==addonIndex then
+            AddonList.ScrollBox:ScrollToElementData(elementData)
+            local frame= AddonList.ScrollBox:FindFrame(elementData)
+            if frame and frame.check and frame.check.set_enter_alpha then
+                frame.check:set_enter_alpha()
+            end
+
+            return
+        end
+    end)
 end
+
 
 
 function WoWTools_AddOnsMixin:EnterButtonTip(btn)
