@@ -30,7 +30,7 @@ local function Show_ClorFrame()
 	WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
 
 	print(
-		WoWTools_DataMixin.Icon.icon2..WoWTools_ColorMixin.addName,
+		WoWTools_ColorMixin.addName..WoWTools_DataMixin.Icon.icon2,
 		'|cnGREEN_FONT_COLOR:'
 		..(WoWTools_DataMixin.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))
 
@@ -98,8 +98,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				SetValue= function()
 					Save().disabled= not Save().disabled and true or nil
 					print(
-						WoWTools_DataMixin.addName,
-						WoWTools_ColorMixin.addName,
+						WoWTools_ColorMixin.addName..WoWTools_DataMixin.Icon.icon2,
 						WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
 						WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
 					)

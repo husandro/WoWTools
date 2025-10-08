@@ -58,7 +58,9 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
     local function setPrint()
         WoWTools_DataMixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
 
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName)
+        print(
+            WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2
+        )
         print(
             '|cnGREEN_FONT_COLOR:'..(sec or ''), (WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)..'|r',
 
@@ -73,7 +75,8 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
         )
         if isNativeRealm then--转服务器
              print(
-                '|cffff00ff'
+                WoWTools_DataMixin.Icon.icon2
+                ..'|cffff00ff'
                 ..format(
                     WoWTools_DataMixin.onlyChinese
                     and '%s邀请你加入队伍。接受邀请可能会将你传送到另外一个服务器区域。'
@@ -83,7 +86,10 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
             )
         end
         if sec then
-            print('|cnGREEN_FONT_COLOR:Alt',WoWTools_DataMixin.onlyChinese and '取消' or CANCEL )
+            print(
+                WoWTools_DataMixin.Icon.icon2..'|cnGREEN_FONT_COLOR:Alt',
+                WoWTools_DataMixin.onlyChinese and '取消' or CANCEL
+            )
         end
         WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, sec or TimeLeft, nil, true, true, nil)--冷却条    
     end
@@ -160,7 +166,8 @@ local function Init()
         if Save().InvNoFriend[InviterPlayerGUID] then
             Save().InvNoFriend[InviterPlayerGUID] =nil
 
-            print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            print(
+                WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
                 WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID, nil, false)
             )
@@ -172,7 +179,8 @@ local function Init()
             Save().InvNoFriend[InviterPlayerGUID] = (Save().InvNoFriend[InviterPlayerGUID] or 0)+ 1
             Save().InvNoFriendNum=Save().InvNoFriendNum+1
 
-            print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            print(
+                WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_DataMixin.onlyChinese and '添加' or ADD,
                 WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID, nil, false)
             )

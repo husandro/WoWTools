@@ -27,7 +27,11 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().btn= not Save().btn and true or nil
 		WoWTools_FactionMixin:Init_TrackButton()
-		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING, WoWTools_TextMixin:GetShowHide(Save().btn))
+		print(
+			WoWTools_FactionMixin.addName..WoWTools_DataMixin.Icon.icon2,
+			WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING,
+			WoWTools_TextMixin:GetShowHide(Save().btn)
+		)
 	end)
 
 --自动隐藏
@@ -53,7 +57,7 @@ local function Init_Menu(self, root)
 		Save().point=nil
 		WoWTools_FactionMixin:Init_TrackButton()
 		print(
-			WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName,
+			WoWTools_FactionMixin.addName..WoWTools_DataMixin.Icon.icon2,
 			WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
 		)
 	end)
@@ -119,8 +123,12 @@ local function Init_Menu(self, root)
 		Save().factionUpdateTips= not Save().factionUpdateTips and true or false
 		if Save().factionUpdateTips then
 			WoWTools_FactionMixin:Check_Chat_MSG()
-			print(FACTION_STANDING_INCREASED)
-			print(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
+			print(
+				FACTION_STANDING_INCREASED
+			)
+			print(
+				FACTION_STANDING_INCREASED_ACCOUNT_WIDE
+			)
 		end
 	end)
 	sub:SetTooltip(function(tooltip)

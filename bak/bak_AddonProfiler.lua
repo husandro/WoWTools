@@ -15,7 +15,7 @@ local function Init()
         if not isEnabled then
             C_CVar.SetCVar("addonProfilerEnabled", "1")
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
+               WoWTools_AddOnsMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnGREEN_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '启用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, ENABLE))
                 ..'|r',
@@ -27,7 +27,7 @@ local function Init()
         if isEnabled then
             C_CVar.SetCVar("addonProfilerEnabled", "0")
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
+                WoWTools_AddOnsMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '禁用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE))
                 ..'|r',

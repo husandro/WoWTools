@@ -51,7 +51,7 @@ local function Init_OnShow(self)
         if option and option.name then
 
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|T'..(option.icon or 0)..':0|t',
 
                 option.spellID and WoWTools_HyperLink:CN_Link(

@@ -346,7 +346,10 @@ local function Init_Menu(self, root)
                     local edit= s.editBox or s:GetEditBox()
                     local text= edit:GetText()
                     WoWToolsPlayerDate['HyperLinkGroupWelcomeText']=text
-                    print(WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2, text)
+                    print(
+                        WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
+                        text
+                    )
                 end
             }
         )
@@ -432,7 +435,8 @@ local function Init_Menu(self, root)
         return Save().eventTracePrint
     end, function()
         Save().eventTracePrint= not Save().eventTracePrint and true or nil
-        print(WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
+        print(
+            WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
             Save().eventTracePrint and
                 '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开始' or START)
                 or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清队' or CLEAR_ALL))
@@ -543,7 +547,10 @@ local function Init_Menu(self, root)
     end, function ()
         Save().not_Add_Reload_Button= not Save().not_Add_Reload_Button and true or nil
         if not Save().not_Add_Reload_Button then
-            print(WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(
+                WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
         end
     end)
     sub2:SetTooltip(function (tooltip)

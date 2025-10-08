@@ -91,7 +91,10 @@ local function Init_Friends_Menu(self, root)
         nil,
         {SetValue=function()
             Save().Friends= {}
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_FriendsMixin.addName, data.name)
+            print(
+                WoWTools_FriendsMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                data.name
+            )
         end})
         return MenuResponse.Open
     end, {name=name})
@@ -272,7 +275,9 @@ local function Set_Friend_Event(self, _, friendIndex)
 
     if self.tips~= text then
         self.tips= text
-        print(text)
+        print(
+            WoWTools_DataMixin.Icon.icon2..text
+        )
     end
 end
 
@@ -387,7 +392,10 @@ local function Init()--好友列表, 初始化
 
         if text then
             if showPrint then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_FriendsMixin.addName, text)
+                print(
+                    WoWTools_FriendsMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    text
+                )
             else
                 WoWTools_DataMixin:Call(FriendsFrame_CheckBattlenetStatus)
             end

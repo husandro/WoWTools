@@ -66,7 +66,11 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
         then
             StopRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
-            print(WoWTools_GuildBankMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT  )
+            print(
+                WoWTools_GuildBankMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r',
+                WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
+            )
             return
         end
 
@@ -80,7 +84,6 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
 
                 freeSlots = freeSlots - 1
                 itemIndex= itemIndex+ 1
-                --print(itemIndex, WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW, itemLink)
 
                 find=true
                 break
@@ -89,9 +92,17 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(WoWTools_GuildBankMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r',  WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT)
+                print(
+                    WoWTools_GuildBankMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r',
+                    WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
+                )
             else
-                print(WoWTools_GuildBankMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE )
+                print(
+                    WoWTools_GuildBankMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r',
+                    WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE
+                )
             end
             StopRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
@@ -253,7 +264,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
             or InCombatLockdown()
         then
             print(
-                itemIndex,
+                WoWTools_DataMixin.Icon.icon2..itemIndex,
                 '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)
                 ..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
@@ -270,7 +281,6 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
             freeSlots = freeSlots- 1
             itemIndex= itemIndex+ 1
             table.remove(items, index)
-            --print(itemIndex, WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT, info.info.hyperlink)
 
             find=true
             break
@@ -278,9 +288,17 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(itemIndex, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r',  WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT )
+                print(
+                    WoWTools_DataMixin.Icon.icon2..itemIndex,
+                    '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r',
+                    WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
+                 )
             else
-                print(itemIndex, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE )
+                print(
+                    WoWTools_DataMixin.Icon.icon2..itemIndex,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r',
+                    WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE
+                )
             end
             StopRun= nil
             WoWTools_GuildBankMixin.isInRun= nil

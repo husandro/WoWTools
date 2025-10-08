@@ -75,8 +75,13 @@ local function Init_Auto_Repair()
                 end
                 RepairSave().guild=RepairSave().guild+Co
                 RepairSave().num=RepairSave().num+1
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                 WoWTools_DataMixin:Call(MerchantFrame_Update)
+                print(
+                    WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r',
+                    C_CurrencyInfo.GetCoinTextureString(Co)
+                )
+                
             else
                 if GetMoney()>=Co then
                     do
@@ -84,10 +89,19 @@ local function Init_Auto_Repair()
                     end
                     RepairSave().player=RepairSave().player+Co
                     RepairSave().num=RepairSave().num+1
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
+                    print(
+                        WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST)..'|r',
+                        C_CurrencyInfo.GetCoinTextureString(Co)
+                    )
                     WoWTools_DataMixin:Call(MerchantFrame_Update)
                 else
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '失败' or FAILED)..'|r', WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
+                    print(
+                        WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '失败' or FAILED)..'|r',
+                        WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST,
+                        C_CurrencyInfo.GetCoinTextureString(Co)
+                    )
                 end
             end
         end

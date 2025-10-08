@@ -40,7 +40,7 @@ local function Init()
     Frame:SetScript('OnEnter', function(frame)
         frame:set_Show(false)
         print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
+            WoWTools_ChallengeMixin.addName..WoWTools_DataMixin.Icon.icon2,
             '|cffff00ff',
             WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION
         )

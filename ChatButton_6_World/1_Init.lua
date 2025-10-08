@@ -44,9 +44,9 @@ local function Init_Dialogs()
             local num= edit:GetNumber()
             Save().myChatFilterNum= num
             print(
-            WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2,
-            WoWTools_ChatMixin:GetButtonForName('World'):Get_myChatFilter_Text()
-        )
+                WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_ChatMixin:GetButtonForName('World'):Get_myChatFilter_Text()
+            )
         end,
         EditBoxOnTextChanged=function(self)
             local num= self:GetNumber() or 0
@@ -91,7 +91,8 @@ local function Init_Dialogs()
                 WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_DataMixin.onlyChinese and '添加' or ADD,
                 text,
-                WoWTools_UnitMixin:GetPlayerInfo(nil, nil, text, {reName=true, reRealm=true, reLink=true}))
+                WoWTools_UnitMixin:GetPlayerInfo(nil, nil, text, {reName=true, reRealm=true, reLink=true})
+            )
         end,
         EditBoxOnTextChanged=function(self)
             local text= self:GetText() or ''

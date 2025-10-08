@@ -158,12 +158,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
 --Border
     frame.Border= CreateFrame('Frame', name..'Border', frame, 'DialogBorderTemplate')
     frame.Border.Bg:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga')
-    --[[frame.Border:SetScript('OnKeyDown', function(f, key)
-        print(key)
-        if key=='ESCAPE' then
-            f:GetParent():SetShown(false)
-        end
-    end)]]
+
 
 --Header
     frame.Header= CreateFrame('Frame', name..'Header', frame, 'DialogHeaderTemplate')--DialogHeaderMixin

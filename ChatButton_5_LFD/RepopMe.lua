@@ -51,13 +51,18 @@ local function Event(self, event)
         RepopMe()--死后将你的幽灵释放到墓地。
 
         if WoWTools_MapMixin:IsInPvPArea() then
-            print(WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '释放' or BATTLE_PET_RELEASE)..'|r')
+            print(
+                WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cnGREEN_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '释放' or BATTLE_PET_RELEASE
+            )
 
         else
 
             print(
-                WoWTools_LFDMixin.addName,
-                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '释放' or BATTLE_PET_RELEASE)..'|r', SecondsToTime(GetCorpseRecoveryDelay() or 0)
+                WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '释放' or BATTLE_PET_RELEASE..'|r'),
+                SecondsToTime(GetCorpseRecoveryDelay() or 0)
             )
         end
 
@@ -66,11 +71,18 @@ local function Event(self, event)
 
         AcceptAreaSpiritHeal()--在范围内时在战场上注册灵魂治疗师的复活计时器
 
-        print(WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复活' or RESURRECT))
+        print(
+            WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            '|cnGREEN_FONT_COLOR:',
+            WoWTools_DataMixin.onlyChinese and '复活' or RESURRECT
+        )
 
         local time= GetAreaSpiritHealerTime()
         if time>0 then
-            print(WoWTools_DataMixin.onlyChinese and '|cffff2020灵魂医者|r' or SPIRIT_HEALER_RELEASE_RED, SecondsToTime(time))
+            print(
+                WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '|cffff2020灵魂医者|r' or SPIRIT_HEALER_RELEASE_RED),
+                SecondsToTime(time)
+            )
         end
 
     elseif event=='CORPSE_IN_RANGE' then
@@ -80,7 +92,7 @@ local function Event(self, event)
             C_Timer.After(1, function()
                 RetrieveCorpse()--当玩家站在它的尸体附近时复活。
                 print(
-                    WoWTools_LFDMixin.addName,
+                    WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复活' or RESURRECT)
                 )
             end)
@@ -89,10 +101,13 @@ local function Event(self, event)
         else
 
             print(
-                WoWTools_LFDMixin.addName,
+                WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复活' or RESURRECT)..'|r', SecondsToTime(time)
             )
-            print('|cffff00ffAlt', WoWTools_DataMixin.onlyChinese and '取消' or  CANCEL)
+            print(
+                WoWTools_DataMixin.Icon.icon2..'|cffff00ffAlt',
+                WoWTools_DataMixin.onlyChinese and '取消' or  CANCEL
+            )
             self:SetShown(true)
 
         end
@@ -108,8 +123,9 @@ end
 local function Set_Updata(self)
     if IsModifierKeyDown() then
         print(
-            WoWTools_LFDMixin.addName,
-            '|cnGREEN_FONT_COLOR:'..((WoWTools_DataMixin.onlyChinese and '取消复活' or CANCEL)..'|r' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, RESURRECT))
+            WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            '|cnGREEN_FONT_COLOR:',
+            WoWTools_DataMixin.onlyChinese and '取消复活' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, RESURRECT)
         )
         self:Hide()
 

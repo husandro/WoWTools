@@ -398,7 +398,10 @@ local function Init_Menu(self, root)
 		Save().point=nil
 		self:ClearAllPoints()
 		self:set_Point()
-		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+		print(
+			WoWTools_FactionMixin.addName..WoWTools_DataMixin.Icon.icon2,
+			WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+		)
 	end)
 
 	--打开选项界面

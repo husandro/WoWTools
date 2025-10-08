@@ -199,7 +199,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
     KeyFrame.InsetKeyButton:SetScript("OnMouseDown",function()
         if InCombatLockdown() then
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
+                WoWTools_ChallengeMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnWARNING_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
             )
@@ -219,7 +219,8 @@ local function Init_Buttons()--挑战,钥石,插入界面
                 end
             end
         end
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
+        print(
+            WoWTools_ChallengeMixin.addName..WoWTools_DataMixin.Icon.icon2,
             '|cnWARNING_FONT_COLOR:',
             WoWTools_DataMixin.onlyChinese and '钥石：尚未发现' or format(CHALLENGE_MODE_KEYSTONE_NAME, TAXI_PATH_UNREACHABLE)
         )

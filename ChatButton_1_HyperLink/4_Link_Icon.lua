@@ -545,20 +545,7 @@ end
 --[[
 社区 |HclubTicket:WMo42zSmYP|h[Unisciti a: asdfasd]|h
 CommunitiesHyperlink.lua CommunitiesHyperlink_OnEvent
-
-local function ClubTicket(link)
-    local ticketId= link:match('|HclubTicket:(.-)|h%[')
-    --C_Club.RequestTicket(ticketId)
-   -- local error, clubInfo, showError = C_Club.GetLastTicketResponse(ticketId)
-    --print(error, clubInfo, showError)
-end
 ]]
-
-
-
-
-
-
 local function New_AddMessage(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 

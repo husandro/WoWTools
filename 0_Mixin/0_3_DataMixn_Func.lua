@@ -218,7 +218,11 @@ function WoWTools_DataMixin:Reload(isControlKeyDown)
             C_UI.Reload()
         end
     else
-        print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(
+            WoWTools_DataMixin.Icon.icon2
+            ..'|cnWARNING_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        )
     end
 end
 

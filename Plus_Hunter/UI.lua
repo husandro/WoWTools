@@ -8,9 +8,7 @@ local function Save()
 end
 
 function WoWTools_MoveMixin.Events:Blizzard_StableUI()
-    
     if Save().disabled then
-        print(Save().disabled)
         self:Setup(StableFrame)
         self:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
     end

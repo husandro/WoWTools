@@ -156,7 +156,11 @@ local function Init()
 
         elseif d=='LeftButton' and not IsModifierKeyDown() then
             WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET)..'|r', WoWTools_DataMixin.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+            print(
+                WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET)..'|r',
+                WoWTools_DataMixin.onlyChinese and '数值' or STATUS_TEXT_VALUE
+            )
 
         elseif d=='RightButton' and IsShiftKeyDown() then
             self:send_Att_Chat()--发送信息

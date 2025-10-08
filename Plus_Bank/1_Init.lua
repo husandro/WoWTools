@@ -97,7 +97,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save().disabled= not Save().disabled and true or nil
 
                     if Save().disabled  then
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                        print(
+                            WoWTools_BankMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                            WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+                        )
                     else
                         Init()
                     end

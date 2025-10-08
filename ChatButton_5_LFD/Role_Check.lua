@@ -167,14 +167,17 @@ local function Init()
             LFDRoleCheckPopup_UpdateAcceptButton()
         end
 
-        print(WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                '|cnGREEN_FONT_COLOR:'
-                ..(WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL)
-                ..': |cfff00fff'.. SecondsToTime(Save().sec)..'|r '
-                ..(WoWTools_DataMixin.onlyChinese and '接受' or ACCEPT)..'|r',
-                '|cnWARNING_FONT_COLOR:'..'Alt '
-                ..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
-            )
+        print(
+            WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+
+            '|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL)
+            ..': |cfff00fff'.. SecondsToTime(Save().sec)..'|r '
+            ..(WoWTools_DataMixin.onlyChinese and '接受' or ACCEPT)..'|r',
+
+            '|cnWARNING_FONT_COLOR:'..'Alt '
+            ..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
+        )
 
         self:CancellORSetTime(Save().sec)
 
@@ -183,7 +186,7 @@ local function Init()
                 local t=LFDRoleCheckPopupDescriptionText:GetText()
                 if t~='' then
                     print(
-                        WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                        WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         '|cffff00ff',
                         WoWTools_TextMixin:CN(t)
                     )
@@ -248,7 +251,7 @@ local function Init()
                 then
                     self.acceptButton:Click()
                     print(
-                        WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                        WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL,
                         icon or ''
                     )
@@ -333,7 +336,7 @@ local function Init()
         local leaderGuid = info.partyGUID and select(8, C_SocialQueue.GetGroupInfo(info.partyGUID))
 
         print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+            WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
 
             info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and
                 '|T4352494:0|t'..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore)
@@ -376,8 +379,6 @@ local function Init()
             info.isWarMode and-- info.isWarMode ~= C_PvP.IsWarModeDesired() and
                 '|A:pvptalents-warmode-swords:0:0|a|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r'
             or ''
-
-            --info.questID
         )
     end)
 

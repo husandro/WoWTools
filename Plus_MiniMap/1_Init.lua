@@ -155,7 +155,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save().disabled= not Save().disabled and true or nil
                     if Save().disabled then
                         print(
-                            WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName,
+                            WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2,
                             WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                         )
                     else
@@ -178,7 +178,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     WoWTools_MinimapMixin:Init_Collection_Icon()--重置，收集图标，按钮位置
                     
                     print(
-                        WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName,
+                        WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
                     )
                 end

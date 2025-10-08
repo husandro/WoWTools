@@ -63,7 +63,10 @@ local function Init()
                     or InCombatLockdown()
                     or MerchantFrame.selectedTab~=1
                 then
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT)
+                    print(
+                        WoWTools_MerchantMixin.addName.WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
+                    )
                     return
 
                 elseif info
@@ -87,7 +90,12 @@ local function Init()
                         gruop= gruop+ 1
                         num= num+ (info.stackCount or 1)--数量
 
-                        print('|cnWARNING_FONT_COLOR:'..gruop..')|r', checkText or '', info.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
+                        print(
+                            '|cnWARNING_FONT_COLOR:'..gruop..')|r',
+                            checkText or '',
+                            info.hyperlink,
+                            C_CurrencyInfo.GetCoinTextureString(prece)
+                        )
 
                         if gruop>= 11 then
                             break
@@ -102,8 +110,12 @@ local function Init()
 
         if num > 0 then
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
-                (WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(WoWTools_DataMixin.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
+                WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+
+                (WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)
+                ..' |cnGREEN_FONT_COLOR:'..gruop..'|r'
+                ..(WoWTools_DataMixin.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
+
                 '|cnGREEN_FONT_COLOR:'..num..'|r'..(WoWTools_DataMixin.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
                 C_CurrencyInfo.GetCoinTextureString(preceTotale)
             )
@@ -179,7 +191,11 @@ Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName
                 Save().bossItems[itemID]= itemLevel
 
                 if not Save().notSellBoss then
-                    print(WoWTools_MerchantMixin.addName, WoWTools_DataMixin.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB), itemLink)
+                    print(
+                        WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_DataMixin.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB),
+                        itemLink or itemID
+                    )
                 end
 
             end

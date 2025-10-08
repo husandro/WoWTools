@@ -676,11 +676,16 @@ local function Init_TrackButton()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save().item[itemID]= not Save().item[itemID] and true or nil
-			print(WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING,
-					Save().item[itemID] and
-					('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
-					or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
-					itemLink or itemID)
+			print(
+				WoWTools_CurrencyMixin.addName..WoWTools_DataMixin.Icon.icon2,
+				WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING,
+
+				Save().item[itemID] and
+				('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
+				or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
+				
+				itemLink or itemID
+			)
 			ClearCursor()
 			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 

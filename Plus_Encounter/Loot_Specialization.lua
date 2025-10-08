@@ -312,7 +312,13 @@ local function Init()
                     self.SpceLog= loot--BOSS战时, 指定拾取, 专精, 还原, 专精拾取
                     SetLootSpecialization(indicatoSpec)
                     local _, name, _, icon, role = GetSpecializationInfoByID(indicatoSpec)
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', WoWTools_DataMixin.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                    print(
+                        WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r',
+                        WoWTools_DataMixin.Icon[role] or '',
+                        icon and '|T'..icon..':0|t' or '',
+                        name and '|cffff00ff'..WoWTools_TextMixin:CN(name) or ''
+                    )
                 end
             end
 
@@ -324,7 +330,13 @@ local function Init()
                     self.SpceLog= spec and GetSpecializationInfo(spec) or self.SpceLog
                 end
                 local _, name, _, icon, role = GetSpecializationInfoByID(self.SpceLog)
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', WoWTools_DataMixin.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                print(
+                    WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r',
+                    WoWTools_DataMixin.Icon[role] or '',
+                    icon and '|T'..icon..':0|t' or '',
+                    name and '|cffff00ff'..WoWTools_TextMixin:CN(name) or ''
+                )
                 self.SpceLog=nil
             end
         end

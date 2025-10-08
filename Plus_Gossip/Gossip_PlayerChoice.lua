@@ -79,7 +79,7 @@ local function Init()
                             end
                         else
                             print(
-                                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                                 '|cnWARNING_FONT_COLOR:',
                                 not WoWTools_DataMixin.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误'
                             )
@@ -173,7 +173,7 @@ local function Init()
                         s.time= nil
                         s:set_text()
                         print(
-                            WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                            WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                             '|cnWARNING_FONT_COLOR:',
                             WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1
                         )
@@ -204,16 +204,15 @@ local function Init()
                             C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id)--Blizzard_PlayerChoiceOptionBase.lua
                             n=n+1
                             print(
-                                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                                 '|cnGREEN_FONT_COLOR:'..n..'|r',
                                 '('..all-n..')', '|cnWARNING_FONT_COLOR:Alt'
                             )
-                            --self.parentOption:OnSelected()
                         elseif s.time then
                             s.time:Cancel()
                             s.time= nil
                             print(
-                                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                                 '|cnWARNING_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1,
                                 '|r'..n
                             )

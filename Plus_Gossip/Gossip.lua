@@ -242,12 +242,6 @@ local function Init()
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().point={self:GetPoint(1)}
             Save().point[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
     GossipButton:SetScript('OnMouseUp', ResetCursor)
@@ -307,7 +301,9 @@ local function Init()
                 if Save().movie[arg1] then
                     if Save().stopMovie then
                         MovieFrame:StopMovie()
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '对话' or ENABLE_DIALOG,
+                        print(
+                            WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                            WoWTools_DataMixin.onlyChinese and '对话' or ENABLE_DIALOG,
                             '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
                             'movieID|cnGREEN_FONT_COLOR:',
                             arg1
@@ -317,14 +313,18 @@ local function Init()
                 else
                     Save().movie[arg1]= date("%d/%m/%y %H:%M:%S")
                 end
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:movieID', arg1, ...)
+                print(
+                    WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cnGREEN_FONT_COLOR:movieID',
+                    arg1,
+                    ...
+                )
             end
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
             if Save().gossip then
                 print(
-                    WoWTools_DataMixin.Icon.icon2
-                    ..WoWTools_GossipMixin.addName,
+                    WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|n|cnWARNING_FONT_COLOR:',
                     format(WoWTools_DataMixin.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN,
                     arg1 or '',
@@ -350,7 +350,7 @@ local function Init()
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
         print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+            WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
             self.name,
             self.npc,
             WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc])
@@ -560,10 +560,11 @@ local function Create_GossipOptionCheckBox(frame, info)
         if Save().gossipOption[self.gossipOptionID] and not IsModifierKeyDown() and Save().gossip then
             C_GossipInfo.SelectOption(self.gossipOptionID)
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnGREEN_FONT_COLOR:',
                 self.name,
-                self.gossipOptionID)
+                self.gossipOptionID
+            )
         end
     end)
 
@@ -645,7 +646,7 @@ local function Create_AvailableQuestCheck(btn, info)
             end
         else
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName2,
+                WoWTools_GossipMixin.addName2..WoWTools_DataMixin.Icon.icon2,
                 '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r',
                 WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL,
                 'ID'
@@ -789,9 +790,10 @@ local function Init_Hook()
         if find then
             GossipButton.selectGissipIDTab[index]=true
             print(
-                '|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_UnitMixin:Get_NPC_Name()
-                ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cnGREEN_FONT_COLOR:'..(name or '')
-                --, index
+                WoWTools_DataMixin.Icon.icon2
+                ..'|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_UnitMixin:Get_NPC_Name()
+                ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cnGREEN_FONT_COLOR:'
+                ..(name or '')
             )
         end
     end)

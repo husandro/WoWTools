@@ -124,7 +124,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  GetValue= function() return not Save().disabled end,
                  SetValue= function()
                      Save().disabled = not Save().disabled and true or nil
-                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_GossipMixin.addName2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                     print(
+                        WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                        WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+                    )
                  end,
                  buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
@@ -132,7 +136,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                      if _G['WoWToolsGossipButton'] then
                         _G['WoWToolsGossipButton']:set_Point()
                      end
-                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+                     print(
+                        WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+                    )
                  end,
                  tooltip= WoWTools_GossipMixin.addName,
                  layout= nil,

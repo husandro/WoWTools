@@ -81,7 +81,11 @@ local function Init_Button_Menu(self, root)
     end, function()
         Save().favorites[self.itemID]= not Save().favorites[self.itemID] and true or nil
         self:set_favorite()
-        print(WoWTools_DataMixin.Icon.icon2..addName, Save().favorites[self.itemID] and self.itemID or '', WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        print(
+            addName..WoWTools_DataMixin.Icon.icon2,
+            Save().favorites[self.itemID] and self.itemID or '',
+            WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)
+        )
         Set_Gem()
     end)
     root:CreateDivider()
@@ -809,7 +813,11 @@ local function Init_Menu(self, root)
         return not Save().disableSpell
     end, function()
         Save().disableSpell= not Save().disableSpell and true or false
-        print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disableSpell), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(
+            addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_TextMixin:GetEnabeleDisable(not Save().disableSpell),
+            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+        )
     end, {})
 
     root:CreateDivider()
@@ -1167,8 +1175,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                     if Save().disabled then
                         print(
-                            WoWTools_DataMixin.Icon.icon2..addName,
-                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                            addName..WoWTools_DataMixin.Icon.icon2,
+                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                            WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+                        )
                     end
                 end
             })

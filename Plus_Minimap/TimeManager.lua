@@ -52,7 +52,10 @@ local function Init_Stopwatch_Menu(self, root)
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(
+            WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+        )
     end)
 
 
@@ -156,7 +159,10 @@ local function Init_TimeManager_Menu(self, root)
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(
+            WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+        )
     end)
 
 --重新加载
@@ -302,12 +308,6 @@ local function Init_TimeManager()
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().TimeManagerClockButtonPoint={self:GetPoint(1)}
             Save().TimeManagerClockButtonPoint[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
     btn:SetScript('OnMouseUp', ResetCursor)

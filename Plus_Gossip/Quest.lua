@@ -132,7 +132,12 @@ local function select_Reward(questID)--自动:选择奖励
     if bestItem and not IsModifierKeyDown() then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then
-            print(WoWTools_DataMixin.Icon.icon2..'|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
+            print(
+                WoWTools_DataMixin.Icon.icon2
+                ..'|cffff00ff'
+                ..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE)..'|r',
+                selectItemLink
+            )
         end
     end
 end
@@ -427,7 +432,12 @@ local function Init_Quest()
             return
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName2, self.name, self.npc, WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc]))
+        print(
+            WoWTools_GossipMixin.addName2..WoWTools_DataMixin.Icon.icon2,
+            self.name,
+            self.npc,
+            WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc])
+        )
     end)
 
     QuestFrame.sel.questIDLabel:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
@@ -542,7 +552,8 @@ local function Init_Quest()
                 end
                 local text=GetProgressText()
                 C_Timer.After(0.5, function()
-                    print(WoWTools_DataMixin.Icon.icon2,
+                    print(
+                        WoWTools_DataMixin.Icon.icon2,
                         WoWTools_QuestMixin:GetLink(questID),
                         text and '|cnGREEN_FONT_COLOR:'..text..'|r',
                         link or '',
@@ -554,7 +565,10 @@ local function Init_Quest()
         else
             if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
-                    print(WoWTools_DataMixin.Icon.icon2, WoWTools_QuestMixin:GetLink(questID))
+                    print(
+                    WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_QuestMixin:GetLink(questID)
+                )
                 end)
                 QuestButton.questSelect[questID]=true
             end
@@ -639,8 +653,14 @@ local function Init_Quest()
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
 
             C_Timer.After(0.5, function()
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_QuestMixin:GetLink(questID),
-                    (complete and '|cffff00ff' or '|cff00ffff')..WoWTools_TextMixin:CN(acceptButton:GetText() or '')..'|r'..WoWTools_DataMixin.Icon.left,
+                print(
+                    WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_QuestMixin:GetLink(questID),
+
+                    (complete and '|cffff00ff' or '|cff00ffff')
+                    ..WoWTools_TextMixin:CN(acceptButton:GetText() or '')..'|r'
+                    ..WoWTools_DataMixin.Icon.left,
+
                     itemLink or '')
             end)
             QuestButton.questSelect[questID]=true

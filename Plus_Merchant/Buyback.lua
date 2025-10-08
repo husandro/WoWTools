@@ -57,10 +57,23 @@ local function set_buyback_item()
 
     C_Timer.After(0.3, function()
         for index, itemLink in pairs(tab) do
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, index..')|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK), itemLink)
+            print(
+                WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                index..')|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK),
+                itemLink
+            )
         end
         for index, info in pairs(no) do
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, index..')|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
+            print(
+                WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+
+                index
+                ..')|cnWARNING_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)),
+
+                info[1],
+                info[2] and C_CurrencyInfo.GetCoinTextureString(info[2]) or ''
+            )
         end
     end)
 end
@@ -131,7 +144,7 @@ local function Init_Menu(self, root)
 
         C_Timer.After(0.3, function()
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 table.concat(tab, '|n'),
                 '|n',
                 allNum..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK)

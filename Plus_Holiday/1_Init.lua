@@ -80,7 +80,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_HolidayMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(
+                        WoWTools_HolidayMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                        WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+                    )
                 end,
                 buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -88,7 +92,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if WoWTools_HolidayMixin.TrackButton then
                         WoWTools_HolidayMixin.TrackButton:set_point()
                     end
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_HolidayMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(
+                        WoWTools_HolidayMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+                    )
                 end,
                 layout= nil,
                 category= nil,

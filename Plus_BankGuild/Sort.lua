@@ -95,7 +95,7 @@ local function Init_Sort()
             StopRun= nil
             IsInRun= nil
             print(
-                WoWTools_GuildBankMixin.addName,
+                WoWTools_GuildBankMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)..'|r',
                     WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
                 )
@@ -109,7 +109,6 @@ local function Init_Sort()
                 PickupGuildBankItem(currentIndex, item.indexSlot)
                 item.slot= item.indexSlot
                 find=true
-                --print(item.indexSlot, item.link)
                 break
             end
         end
@@ -117,7 +116,7 @@ local function Init_Sort()
         if not find then
             IsInRun= nil
             print(
-                WoWTools_GuildBankMixin.addName,
+                WoWTools_GuildBankMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)..'|r',
                 WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE
             )

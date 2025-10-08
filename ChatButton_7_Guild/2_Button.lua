@@ -121,7 +121,8 @@ local function Init(btn)
                     isInviete=true
 
                     if isInit then
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GuildMixin.addName,
+                        print(
+                            WoWTools_GuildMixin.addName..WoWTools_DataMixin.Icon.icon2,
                             '|cffff00ff'
                             ..(WoWTools_DataMixin.onlyChinese and '新' or NEW)..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
                             ..(WoWTools_DataMixin.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)

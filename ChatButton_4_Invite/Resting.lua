@@ -31,7 +31,9 @@ local function Init()
     end
 
     function frame:settings()
-        print(IsResting() and self.enterText or self.leaveText)
+        print(
+            IsResting() and self.enterText or self.leaveText
+        )
     end
 
     frame:SetScript("OnEvent", frame.settings)

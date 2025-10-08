@@ -27,7 +27,9 @@ local function Affix_136177()
     end
 
     if #chat>0 then
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName)
+        print(
+            WoWTools_ChallengeMixin.addName..WoWTools_DataMixin.Icon.icon2
+        )
         for _, v in pairs(chat) do
             WoWTools_ChatMixin:Chat(v)
         end
@@ -57,7 +59,9 @@ local function Chat_Affix()
     end
 
     if chat then
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName)
+        print(
+            WoWTools_ChallengeMixin.addName..WoWTools_DataMixin.Icon.icon2
+        )
         WoWTools_ChatMixin:Chat(PLAYER_DIFFICULTY5..': '..chat)
     end
 end

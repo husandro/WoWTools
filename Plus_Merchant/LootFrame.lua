@@ -10,13 +10,21 @@ local function Init()
         end
         C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
         local value= C_CVar.GetCVarBool("autoLootDefault")
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r|n', not WoWTools_DataMixin.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", WoWTools_TextMixin:GetEnabeleDisable(value))
 
         if value and not IsModifierKeyDown() then
             for i = GetNumLootItems(), 1, -1 do
                 LootSlot(i)
             end
         end
+
+        print(
+            WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+
+            '|cffff00ff|A:Cursor_lootall_128:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)
+            ..' Plus|r|n',
+            WoWTools_TextMixin:GetEnabeleDisable(value)
+        )
     end)
 
     check:SetScript('OnLeave', GameTooltip_Hide)
@@ -42,7 +50,9 @@ local function Init()
     check:SetScript('OnEvent', function()
         if IsShiftKeyDown() and not InCombatLockdown() then
             C_CVar.SetCVar("autoLootDefault", '0')
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,'|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r','|cnGREEN_FONT_COLOR:Shift|r', WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+            print(
+                WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r','|cnGREEN_FONT_COLOR:Shift|r', WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
 
         else
             if C_CVar.GetCVarBool("autoLootDefault") then

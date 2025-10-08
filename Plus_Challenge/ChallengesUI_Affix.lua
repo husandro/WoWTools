@@ -233,8 +233,12 @@ local function Init()
 
     if WoWTools_DataMixin.Player.husandro then
         local season= C_MythicPlus.GetCurrentSeason()
-        if season and season>0 and season~=WoWTools_DataMixin.affixScheduleSeason then
-            print('|cnWARNING_FONT_COLOR:需要更新赛季数据', '0_3_Data_NeedUpdate.lua' )
+        if season and season>0 and season~=WoWTools_DataMixin.affixScheduleSeason and WoWTools_DataMixin.Player.husandro then
+            print(
+                WoWTools_DataMixin.Icon.icon2
+                ..'|cnWARNING_FONT_COLOR:需要更新赛季数据',
+                '0_3_Data_NeedUpdate.lua'
+            )
         end
     end
 

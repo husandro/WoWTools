@@ -9,7 +9,10 @@ end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
     if not WoWTools_InviteMixin:Get_Leader() then--取得权限
-        print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(
+            WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS
+        )
         return
     end
     local n=0
@@ -19,7 +22,10 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         if num==40 then
             return
         elseif not IsInRaid() and num==5 and not Save().PartyToRaid then
-            print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+            print(
+                WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r')
+            )
             return
         end
 
@@ -28,7 +34,10 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
             C_PartyInfo.InviteUnit(name)
             n=n+1
 
-            print(n..')'..WoWTools_UnitMixin:GetLink(nil, guid, name, false))
+            print(
+                n..')'
+                ..WoWTools_UnitMixin:GetLink(nil, guid, name, false)
+            )
         end
     end
 end
@@ -119,7 +128,11 @@ local function Init_Menu(self, root)
             SetValue= function(s)
                 local edit= s.editBox or s:GetEditBox()
                 Save().ChannelText = string.upper(edit:GetText() or '')
-                print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
+                print(
+                    WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL,
+                    '|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r'
+                )
             end,
         })
     end)
@@ -146,7 +159,10 @@ local function Init_Menu(self, root)
     end, function()
         Save().notInvitePlus= not Save().notInvitePlus and true or nil
         if not WoWTools_InviteMixin:Init_StaticPopup() then
-            print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(
+                WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
         end
     end)
 
@@ -226,7 +242,10 @@ local function Init_Menu(self, root)
                 SetValue= function(s)
                     local edit= s.editBox or s:GetEditBox()
                     Save().SummonThxText=edit:GetText()
-                    print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2, Save().SummonThxText)
+                    print(
+                        WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        Save().SummonThxText
+                    )
                 end,
                 OnAlt=function()
                     Save().SummonThxText=nil
@@ -355,7 +374,10 @@ local function Init_Menu(self, root)
             nu..' '..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
         function(data)
             Save().InvNoFriend[data]=nil
-            print(WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}))
+            print(
+                WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true})
+            )
         end, guid)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)

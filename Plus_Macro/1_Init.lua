@@ -78,7 +78,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MacroMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(
+                        WoWTools_MacroMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                        WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
+                    )
                 end
             })
 
@@ -88,8 +92,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 if C_AddOns.IsAddOnLoaded("MacroToolkit") then
                     print(
-                        WoWTools_DataMixin.addName,
-                        WoWTools_MacroMixin.addName,
+                        WoWTools_MacroMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         WoWTools_TextMixin:GetEnabeleDisable(false), 'MacroToolkit',
                         WoWTools_DataMixin.onlyChinese and '插件' or ADDONS
                     )

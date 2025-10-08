@@ -26,7 +26,11 @@ local function Init_Options()--初始, 选项
             if not Save().disabled then
                 WoWTools_MainMenuMixin:Settings()
             else
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                print(
+                    WoWTools_MainMenuMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                    WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+                )
             end
         end
     })
@@ -54,7 +58,10 @@ local function Init_Options()--初始, 选项
         checkTooltip= WoWTools_MainMenuMixin.addName,
         checkSetValue= function()
             Save().enabledMainMenuAlpha= not Save().enabledMainMenuAlpha and true or false
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(
+                WoWTools_MainMenuMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
         end,
         sliderGetValue= function() return Save().mainMenuAlphaValue end,
         minValue= 0.1,
@@ -84,7 +91,11 @@ local function Init_Options()--初始, 选项
         SetValue= function()
             Save().frameratePlus= not Save().frameratePlus and true or nil
             if _G['WoWToolsPlusFramerateButton'] then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(Save().frameratePlus), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                print(
+                    WoWTools_MainMenuMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(Save().frameratePlus),
+                    WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+                )
             else
                 WoWTools_MainMenuMixin:Init_Framerate_Plus()
             end

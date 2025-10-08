@@ -61,7 +61,6 @@ StaticPopupDialogs['WoWTools_RestData']= {
     showAlert=true,
     acceptDelay= WoWTools_DataMixin.Player.husandro and 1 or 3,
 }
---StaticPopup_Show('WoWTools_RestData','aa', nil, function() print('c') end)
 
 
 
@@ -311,10 +310,11 @@ end})
             local edit= self.editBox or self:GetEditBox()
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName,
-                            '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
-                            s:GetText()
-                        )
+                    print(
+                        WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
+                        s:GetText()
+                    )
                     s:GetParent():Hide()
                 end
             end)

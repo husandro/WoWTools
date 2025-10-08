@@ -130,7 +130,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     return
                 end
             end
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+            print(
+                WoWTools_AddOnsMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
+            )
         end
     })
 

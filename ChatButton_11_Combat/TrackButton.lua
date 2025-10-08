@@ -177,7 +177,10 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '离开' or AFK)..text..'|r'
         save.afk.num= save.afk.num + 1
         save.afk.time= save.afk.time + sec
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CombatMixin.addName, LastText)
+        print(
+            WoWTools_CombatMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            LastText
+        )
         OnAFKTime=nil
     end
 
@@ -216,10 +219,15 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         else
             LastText='|cnWARNING_FONT_COLOR:'..LastText..'|r'
         end
-        print(WoWTools_DataMixin.addName,  WoWTools_CombatMixin.addName, WoWTools_DataMixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, save.pet.win..'/'..save.pet.num, (save.pet.capture>0 and save.pet.capture..' |T646379:0|t' or ''));
-
         PetRound={}
         OnPetTime=nil
+        print(
+            WoWTools_CombatMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE,
+            LastText,
+            save.pet.win..'/'..save.pet.num,
+            (save.pet.capture>0 and save.pet.capture..' |T646379:0|t' or '')
+        )
     end
 
     if IsInInstance() then--副本
@@ -241,7 +249,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
             ..InstanceDate.dead..'|r'
 
         print(
-            WoWTools_DataMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_CombatMixin.addName..WoWTools_DataMixin.Icon.icon2,
             WoWTools_TextMixin:CN(InstanceDate.map) or (WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE),
             text
         )
@@ -339,12 +347,6 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().textFramePoint={self:GetPoint(1)}
             Save().textFramePoint[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
 

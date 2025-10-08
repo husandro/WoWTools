@@ -44,12 +44,6 @@ local function Init()
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().frameratePoint={self:GetPoint(1)}
             Save().frameratePoint[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
     FramerateButton:SetScript("OnMouseUp", ResetCursor)

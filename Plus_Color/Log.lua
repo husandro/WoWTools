@@ -225,7 +225,6 @@ local function Init()
 						WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT,
 					function (data)
 						settings(data)
-						print(data.r, data.g, data.b)
 						return MenuResponse.Open
 					end, self.Color)
 					sub:AddInitializer(add_icon)

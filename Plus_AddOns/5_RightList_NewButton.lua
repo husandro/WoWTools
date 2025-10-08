@@ -53,7 +53,11 @@ local function Init()
             SetValue=function(newIcon, newText)
                 local name= '|T'..(newIcon or 0)..':0|t'..newText
                 if Save().buttons[name] then
-                    print(name, '|cnWARNING_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..name,
+                        '|cnWARNING_FONT_COLOR:',
+                        WoWTools_DataMixin.onlyChinese and '替换' or REPLACE
+                    )
                 end
                 Save().buttons[name]= select(4 ,WoWTools_AddOnsMixin:Get_AddListInfo())
                 WoWTools_DataMixin:Call(AddonList_Update)

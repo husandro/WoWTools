@@ -190,7 +190,11 @@ local function Init(panel)--设置 panel
             dragonriding:SetScript('OnClick',function()
                 Save().disabledDragonridingSpeed= not Save().disabledDragonridingSpeed and true or nil
                 WoWTools_AttributesMixin:Init_Dragonriding_Speed()
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledDragonridingSpeed), WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(
+                    WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledDragonridingSpeed),
+                    WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
+                )
             end)
 
             --载具，速度
@@ -200,8 +204,12 @@ local function Init(panel)--设置 panel
             vehicleSpeedCheck.text:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
             vehicleSpeedCheck:SetScript('OnClick',function()
                 Save().disabledVehicleSpeed= not Save().disabledVehicleSpeed and true or nil
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledVehicleSpeed), WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 WoWTools_AttributesMixin:Init_Vehicle_Speed()
+                print(
+                    WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledVehicleSpeed),
+                    WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
+                )
             end)
 
 
@@ -569,7 +577,11 @@ local function Init(panel)--设置 panel
             self.Text:SetText(value)
             Save().gsubText= value>0 and value or nil
             WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..value..'|r', WoWTools_DataMixin.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
+            print(
+                WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cnGREEN_FONT_COLOR:'..value..'|r',
+                WoWTools_DataMixin.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO)
+            )
         end,
         tips=nil
     })

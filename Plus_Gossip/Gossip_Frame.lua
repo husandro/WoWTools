@@ -401,10 +401,17 @@ local function Init(isShow)
     function List:delete_gossip(gossipID)
         if gossipID and PlayerDataSave()[gossipID] then
             local info=PlayerDataSave()[gossipID]
-            PlayerDataSave()[gossipID]=nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
+            PlayerDataSave()[gossipID]=nil            
             self:set_list()
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+            print(
+                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r|n',
+                gossipID,
+                info.icon,
+                info.hex,
+                info.name
+            )
         end
         self:set_all()
     end
@@ -677,33 +684,25 @@ local function Init(isShow)
     List.DeleteAllPlayerData:SetScript('OnLeave', GameTooltip_Hide)
     List.DeleteAllPlayerData:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+        )
         GameTooltip:Show()
     end)
 
-    --[[StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
-        text=WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        button1= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-        button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
-        OnAccept = function()
-            WoWToolsPlayerDate['GossipTextIcon']= {}
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
-            List:set_list()
-        end,
-    }]]
     List.DeleteAllPlayerData:SetScript('OnClick', function()
-        --StaticPopup_Show('WoWTools_Gossip_Delete_All_Player_Data')
         StaticPopup_Show('WoWTools_OK',
         WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         nil,
         {SetValue=function()
             WoWToolsPlayerDate['GossipTextIcon']= {}
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
             List:set_list()
+            print(
+                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+                format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE)
+            )
         end})
     end)
 
@@ -759,7 +758,11 @@ local function Init(isShow)
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
             List:set_list()
             if not Save().Gossip_Text_Icon_cnFont then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
+                print(
+                    WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cnGREEN_FONT_COLOR:',
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI)
+                )
             end
         end)
     --end
@@ -921,7 +924,11 @@ local function Init(isShow)
 
             List:set_list()
 
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
+            print(
+                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|n',
+                format('%s|n%s|n%s', addText, delText, existText)
+            )
 
             frame:SetText(text)
             self:GetParent():SetInstructions(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)

@@ -35,7 +35,7 @@ local function Set_Ready(timeLeft)
 
     if autoReady then
         print(
-            WoWTools_MarkerMixin.addName,
+            WoWTools_MarkerMixin.addName..WoWTools_DataMixin.Icon.icon2,
             WoWTools_MarkerMixin:Get_ReadyTextAtlas(autoReady),
             '|cffff00ffAlt', WoWTools_DataMixin.onlyChinese and '取消' or CANCEL
         )
@@ -212,7 +212,7 @@ local function Init()
             AutoReadyTime= nil
 
             print(
-                WoWTools_MarkerMixin.addName,
+                WoWTools_MarkerMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_MarkerMixin:Get_ReadyTextAtlas(),
                 '|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
             )

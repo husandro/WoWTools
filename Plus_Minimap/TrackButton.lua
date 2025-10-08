@@ -910,7 +910,11 @@ local function Init_Menu(self, root)--菜单
             return Save().questIDs[data.questID]
         end, function(data)
             Save().questIDs[data.questID]= not Save().questIDs[data.questID] and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..addName, addName2, WoWTools_QuestMixin:GetLink(data.questID))
+            print(
+                addName..WoWTools_DataMixin.Icon.icon2,
+                addName2,
+                WoWTools_QuestMixin:GetLink(data.questID)
+            )
         end, {questID=questID})
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
@@ -1075,12 +1079,6 @@ local function Init_Button()
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().pointVigentteButton={self:GetPoint(1)}
             Save().pointVigentteButton[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
 
@@ -1239,7 +1237,11 @@ local function Init_Button()
         local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
         --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
         C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
-        print(WoWTools_DataMixin.Icon.icon2..addName2,'|cffff00ff', text)
+        print(
+            addName2..WoWTools_DataMixin.Icon.icon2,
+            '|cffff00ff',
+            text
+        )
     end
     function TrackButton:set_VIGNETTES_UPDATED(init)
         if UnitOnTaxi('player') or not Save().vigentteSound then
@@ -1333,12 +1335,14 @@ local function Init_WorldFrame_Button()
         local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
         if uiMapID then
             Save().uiMapIDs[uiMapID]= not Save().uiMapIDs[uiMapID] and true or nil
+            self:set_texture()
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
-            print(WoWTools_DataMixin.Icon.icon2..addName, addName2,
+            print(
+                addName,
+                addName2,
                 name,
                 Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
-            self:set_texture()
         end
     end)
     WorldMapButton:SetScript('OnShow', WorldMapButton.set_texture)

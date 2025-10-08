@@ -52,19 +52,16 @@ function WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
             text= string.lower(text)
 
             for name, name2 in pairs(WoWTools_DataMixin.StausText) do
-                --print(string.lower(name), name2, text:find(string.lower(name)), text)
                 if text:find(string.lower(name)) then
                     if not leftText then
                         leftText= '|cffffffff'..name2..'|r'
                     elseif not bottomLeftText then
                         bottomLeftText='|cffffffff'..name2..'|r'
-                        --break
                     end
                 end
             end
             if text:find(('%+(.+)')) then--+护甲
                 leftText= leftText or WoWTools_TextMixin:sub(text:gsub('%+', ''), 1, 3, true)
-                --bottomLeftText= bottomLeftText or text:match('(.-%+)')
             end
         end
     end
@@ -398,7 +395,6 @@ function WoWTools_ItemMixin:GetTooltip(tab)
         if red and not data.red then
             local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
             local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
-            --print(leftHex, '|c'..leftHex..line.leftText)
             if ColorRed[leftHex] then-- or hex=='fefe7f3f' then
                 data.red= line.leftText
             elseif ColorRed[rightHex] then--== 'ffff2020' or rightHex=='fefe1f1f' then

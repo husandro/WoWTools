@@ -64,7 +64,8 @@ local function Init()
                         print(
                             WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
                             WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL,
-                            WoWTools_UnitMixin:GetLink(nil, guid, name, false))
+                            WoWTools_UnitMixin:GetLink(nil, guid, name, false)
+                        )
                     end
                 end
             end

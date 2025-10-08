@@ -778,7 +778,10 @@ local function Init_Menu(self, root)
 	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
 		Save().point=nil
 		self:set_point()
-		print(WoWTools_DataMixin.Icon.icon2..WoWTools_HolidayMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+		print(
+            WoWTools_HolidayMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+        )
 	end)
 
 --重新加载UI
@@ -853,12 +856,6 @@ local function Init()
             self:StopMovingOrSizing()
             Save().point={self:GetPoint(1)}
             Save().point[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
 

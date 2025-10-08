@@ -108,7 +108,12 @@ local function set_buy_item()
 
     C_Timer.After(1.5, function()
         for itemLink2, num2 in pairs(Tab) do
-            print(WoWTools_MerchantMixin.addName, WoWTools_DataMixin.onlyChinese and '正在购买' or TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
+            print(
+                WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '正在购买' or TUTORIAL_TITLE20,
+                '|cnGREEN_FONT_COLOR:'..num2..'|r',
+                itemLink2
+            )
         end
     end)
 end
@@ -171,12 +176,16 @@ local function Sell_Items(tab)
 
         gruop= gruop+ 1
         num= num+ (data.stackCount or 1)--数量
-        print('|cnWARNING_FONT_COLOR:'..gruop..')|r',  data.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
+        print(
+            WoWTools_DataMixin.Icon.icon2..'|cnWARNING_FONT_COLOR:'..gruop..')|r',
+            data.hyperlink,
+            C_CurrencyInfo.GetCoinTextureString(prece)
+        )
     end
 
     if num > 0 then
         print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+            WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
             (WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(WoWTools_DataMixin.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
             '|cnGREEN_FONT_COLOR:'..num..'|r'..(WoWTools_DataMixin.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
             C_CurrencyInfo.GetCoinTextureString(preceTotale)
@@ -262,7 +271,7 @@ local function Init_Menu_Sell(_, root)
 
     local num= #items
     local regionNum= #regents
-   
+
 --出售全部
     sub= root:CreateButton(
         sellText
@@ -272,7 +281,7 @@ local function Init_Menu_Sell(_, root)
         return MenuResponse.Open
     end)
 
-   
+
     for quality= 0 , 4 do
         name= '|T236994:0|t'
             ..select(4, WoWTools_ItemMixin:GetColor(quality))
@@ -388,7 +397,7 @@ local function Init()
             if num==0 then
                 SaveBuyItem(data.itemID, nil)
                 print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                    WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                     ..'|r',
                     select(2, C_Item.GetItemInfo(data.itemID)) or data.name or data.itemID
@@ -397,7 +406,7 @@ local function Init()
                 SaveBuyItem(data.itemID, num)
                 WoWToolsPlayerDate['SellBuyItems'].sell[data.itemID]=nil
                 print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                    WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r',
                     select(2, C_Item.GetItemInfo(data.itemID)) or data.name or data.itemID
                 )
@@ -409,7 +418,7 @@ local function Init()
         OnAlt=function(_, data)
             SaveBuyItem(data.itemID, nil)
             print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r',
                 select(2, C_Item.GetItemInfo(data.itemID)) or data.name or data.itemID
             )
@@ -541,12 +550,21 @@ local function Init()
         if infoType=='item' and itemID then
             if WoWToolsPlayerDate['SellBuyItems'].sell[itemID] then
                 WoWToolsPlayerDate['SellBuyItems'].sell[itemID]=nil
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
+                print(
+                    WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r',
+                    WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB,
+                    itemLink
+                )
             else
                 WoWToolsPlayerDate['SellBuyItems'].sell[itemID]=true
                 WoWToolsPlayerDate['SellBuyItems'].noSell[itemID]=nil
                 SaveBuyItem(itemID, nil)
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|r'..(WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
+                print(
+                    WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|r'..(WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB),
+                    itemLink
+                )
                 if _G['WoWTools_AutoSellJunkCheck'] then
                     _G['WoWTools_AutoSellJunkCheck']:set_sell_junk()--出售物品
                 end

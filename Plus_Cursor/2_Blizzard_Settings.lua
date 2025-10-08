@@ -227,10 +227,15 @@ local function Init_Cursor_Options(panel)
         local icon = select(3, WoWTools_TextureMixin:IsAtlas(texture))
         table.remove(Save().Atlas, Save().atlasIndex)
         Save().atlasIndex=1
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         WoWTools_CursorMixin:Cursor_Settings()
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultTexture)
+        print(
+            WoWTools_CursorMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
+            icon,
+            texture
+        )
     end)
 
     --添加，自定义，图片
@@ -433,10 +438,15 @@ local function Init_GCD_Options(panel)
         local icon = texture and '|T'..texture..':0|t'
         table.remove(Save().GCDTexture, Save().gcdTextureIndex)
         Save().gcdTextureIndex=1
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         WoWTools_CursorMixin:GCD_Settings(true)
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultGCDTexture)
+        print(
+            WoWTools_CursorMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
+            icon,
+            texture
+        )
     end)
 
     --添加，自定义，图片

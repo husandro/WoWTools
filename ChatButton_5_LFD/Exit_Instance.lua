@@ -43,7 +43,8 @@ local function exit_Instance()
     end
 
 
-    print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+    print(
+        WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
         WoWTools_DataMixin.onlyChinese and '离开' or LEAVE,
         WoWTools_TextMixin:CN(name) or WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,
         num
@@ -107,7 +108,8 @@ local function Init_Frame()
             WoWTools_DataMixin:PlaySound()--播放, 声音
             C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
             LFGTeleport(true)
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+            print(
+                WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_DataMixin.onlyChinese and '海岛探险' or ISLANDS_HEADER,
                 WoWTools_LFDMixin:Get_Instance_Num('island')
             )
@@ -119,7 +121,7 @@ local function Init_Frame()
                     WoWTools_CooldownMixin:Setup(PVPMatchResults.buttonContainer.leaveButton, nil, WoWToolsSave['ChatButton_LFD'].sec, nil, true, true)
                 end
                 print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                    WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND),
                     SecondsToTime(Save().sec)
                 )
@@ -156,7 +158,7 @@ local function Init()
             if d=='clicked' then
                 ExitIns=nil
                 print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                    WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..'|r',
                     WoWTools_DataMixin.onlyChinese and '离开' or LEAVE
                 )

@@ -63,7 +63,15 @@ local function set_RequestToJoinFrame(frame)
         and not IsModifierKeyDown()
         and not Save().notAutoRequestToJoinClub
     then
-        print(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName, frame.ClubName:GetText(), WoWTools_TextMixin:CN(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
+        print(
+            WoWTools_GuildMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            frame.ClubName:GetText(),
+            WoWTools_TextMixin:CN(frame.Apply:GetText()),
+            '|n',
+            text,
+            '|n|cffff00ff',
+            text2
+        )
         frame.Apply:Click()
     end
 end

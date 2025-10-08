@@ -30,13 +30,13 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                     local guid=UnitGUID(unit)
                     local line= WoWTools_UnitMixin:GetOnlineInfo(unit)
                     if line and guid then
-                        print(i..')',
-                                line,
-                                WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {faction=UnitFactionGroup(unit), reLink=true}),
-                                '|A:poi-islands-table:0:0|a',
-                                WoWTools_MapMixin:GetUnit(unit)
-                            )
-                        --find=true
+                        print(
+                            WoWTools_DataMixin.Icon.icon2..i..')',
+                            line,
+                            WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {faction=UnitFactionGroup(unit), reLink=true}),
+                            '|A:poi-islands-table:0:0|a',
+                            WoWTools_MapMixin:GetUnit(unit)
+                        )
                     end
                 end
             end
@@ -141,12 +141,6 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 if WoWTools_FrameMixin:IsInSchermo(self) then
                     Save().RoleInfoPoint={self:GetPoint(1)}
                     Save().RoleInfoPoint[2]=nil
-                else
-                    print(
-                        WoWTools_DataMixin.addName,
-                        '|cnWARNING_FONT_COLOR:',
-                        WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-                    )
                 end
             end)
             Button:SetScript('OnEnter', function(self)

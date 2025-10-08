@@ -8,11 +8,19 @@ local function Inv_All_Unit()
     local all= C_CVar.GetCVarBool('nameplateShowAll')
 
     if not WoWTools_InviteMixin:Get_Leader() then--取得权限
-        print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, '|cnWARNING_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(
+            WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            '|cnWARNING_FONT_COLOR:',
+            WoWTools_DataMixin.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS
+        )
         return
 
     elseif UnitAffectingCombat('player') and (not p or not all) then
-        print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT))
+        print(
+            WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            '|cnWARNING_FONT_COLOR:',
+            WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT
+        )
         return
     end
 
@@ -52,8 +60,7 @@ local function Inv_All_Unit()
                             C_PartyInfo.InviteUnit(name)
                             WoWTools_InviteMixin.InvPlateGuid[guid]=name
                             print(
-                                WoWTools_DataMixin.addName,
-                                '|cnGREEN_FONT_COLOR:'..n..'|r)',
+                                WoWTools_DataMixin.Icon.icon2..'|cnGREEN_FONT_COLOR:'..n..'|r)',
                                 WoWTools_DataMixin.onlyChinese and '邀请' or INVITE,
                                 WoWTools_UnitMixin:GetLink(nil, guid, name, false)
                             )
@@ -78,7 +85,12 @@ local function Inv_All_Unit()
             C_CVar.SetCVar('nameplateShowFriends', '0')
         end
         if n==1 then
-            print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, WoWTools_DataMixin.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE))
+            print(
+                WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_DataMixin.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7,
+                '|cnWARNING_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '无' or NONE
+            )
         end
     end)
 end

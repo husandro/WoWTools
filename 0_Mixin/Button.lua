@@ -329,9 +329,3 @@ function WoWTools_ButtonMixin:Menu(frame, tab)
 
     return btn
 end
---[[
-    function btn:HandlesGlobalMouseEvent(buttonName, event)
-        print(buttonName == self.ShowMenuButton)
-        return event == "GLOBAL_MOUSE_DOWN" and buttonName=='RightButton'
-    end
-]]

@@ -65,15 +65,16 @@ local function return_delete_InBox(openMailID)--删除，或退信
         WoWTools_DataMixin:Call(OpenMail_Delete)--删除，或退信 MailFrame.lua
     end
 
-    print('|cFFFF00FF'..openMailID..')|r',
+    print(
+        WoWTools_DataMixin.Icon.icon2..'|cFFFF00FF'..openMailID..')|r',
         ((icon and not itemName) and '|T'..icon..':0|t' or '')..delOrRe,
         WoWTools_UnitMixin:GetLink(nil, nil, sender, false),
         subject,
         itemName or '',
         (money and money>0) and GetMoneyString(money, true) or '',
         (CODAmount and CODAmount>0) and GetMoneyString(CODAmount, true) or '',
-        text and '|n' or '',
-        text or '')
+        text and '|n'..text or ''
+    )
 end
 
 

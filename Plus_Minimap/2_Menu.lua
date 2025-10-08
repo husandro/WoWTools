@@ -79,9 +79,12 @@ local function Init_Plus_Menu(self, root)
         return not Save().disabledInstanceDifficulty
     end, function()
         Save().disabledInstanceDifficulty= not Save().disabledInstanceDifficulty and true or nil
-            print(WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledInstanceDifficulty), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    )
+        print(
+            WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledInstanceDifficulty),
+            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+        )
+    end)
     sub:SetTooltip(function(tooltip)
         WoWTools_MinimapMixin:InstanceDifficulty_Tooltip(nil, tooltip)
     end)

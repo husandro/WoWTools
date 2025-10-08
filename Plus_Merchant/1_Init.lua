@@ -125,7 +125,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save().disabled= not Save().disabled and true or nil
                     if Save().disabled then
                         print(
-                            WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                            WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                             WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
                             WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
                         )

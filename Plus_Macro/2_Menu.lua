@@ -127,7 +127,7 @@ local PointTab={
                 return
             end
             print(
-                WoWTools_MacroMixin.addName,
+                WoWTools_MacroMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnWARNING_FONT_COLOR:'
                 ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
             )
@@ -174,7 +174,9 @@ local PointTab={
                 end
                 local name, icon = GetMacroInfo(i)
                 DeleteMacro(i)
-                print(i..') ', WoWTools_MacroMixin:GetName(name, icon))
+                print(
+                    i..') ', WoWTools_MacroMixin:GetName(name, icon)
+                )
             end
         end})
     end, {text=text})

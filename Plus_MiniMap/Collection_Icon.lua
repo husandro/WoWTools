@@ -96,9 +96,6 @@ local function Unlock_Button(btn, name)
 
 --更新位置
     btn:ClearAllPoints()
-    if db then
-        print(db.minimapPos, type(db.minimapPos))
-    end
     libDBIcon:SetButtonToPosition(btn, db and db.minimapPos or nil)
 
 --还原，显示/隐藏
@@ -898,7 +895,11 @@ local function Init_Menu(self, root)
         WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
     function()
         Init_Buttons()
-        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
+        print(
+            WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
+            WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE
+        )
         return MenuResponse.Open
     end)
 
