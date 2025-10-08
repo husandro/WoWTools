@@ -747,3 +747,10 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_AlliedRacesUI()
     self:Setup(AlliedRacesFrame)
 end
+
+
+
+
+
+    
+

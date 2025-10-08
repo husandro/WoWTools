@@ -221,3 +221,14 @@ end
 function WoWTools_MoveMixin.Frames:RolePollPopup()
     self:Setup(RolePollPopup)
 end
+
+
+function WoWTools_MoveMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
+    CatalogShopFrame.ProductContainerFrame:SetClampedToScreen(false)
+
+    self:Setup(CatalogShopFrame)
+    self:Setup(CatalogShopFrame.ModelSceneContainerFrame.MainModelScene, {frame= CatalogShopFrame})
+    self:Setup(CatalogShopFrame.ProductContainerFrame.ProductsHeader, {frame= CatalogShopFrame})
+    self:Setup(CatalogShopFrame.ProductContainerFrame, {frame= CatalogShopFrame})
+    self:Setup(CatalogShopFrame.CatalogShopDetailsFrame, {frame= CatalogShopFrame})
+end

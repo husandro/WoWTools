@@ -6205,7 +6205,10 @@
         "WARNING_FONT_COLOR_CODE",
         "QuestLogPopupDetailFrameCloseButton",
         "AddonCategoryCollapseExpandMixin",
-        "CURRENCY_BUTTON_TOOLTIP_CLICK_INSTRUCTION"
+        "CURRENCY_BUTTON_TOOLTIP_CLICK_INSTRUCTION",
+        "CatalogShopFrame",
+        "CatalogShopFrameCloseButton",
+        "CatalogShopFrameBg"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

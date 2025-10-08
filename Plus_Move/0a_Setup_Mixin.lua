@@ -117,13 +117,6 @@ local function Set_Move_Frame(frame, target, click, notSave, isAltKeyDown)
         notSave= notSave,
         isAltKeyDown= isAltKeyDown,
     }
---设置，可否到屏幕外
-    --[[if notFuori then
-        frame:SetClampedToScreen(true)
-        if target and not target.moveFrameData then
-            target:SetClampedToScreen(true)
-        end
-    end]]
 
 --设置，可移动
     frame:SetMovable(true)

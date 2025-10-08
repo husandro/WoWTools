@@ -517,5 +517,15 @@ end
 
 
 
+function WoWTools_TextureMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
+    self:SetNineSlice(CatalogShopFrame)
+    self:SetButton(CatalogShopFrameCloseButton)
+    self:HideTexture(CatalogShopFrameBg)
+    CatalogShopFrame.BackgroundContainer:SetAlpha(0.3)
+    self:SetScrollBar(CatalogShopFrame.ProductContainerFrame.ProductsScrollBoxContainer)
+    self:SetFrame(CatalogShopFrame.ProductContainerFrame.ShadowLayer, {alpha=0.7})
+    self:SetAlphaColor(CatalogShopFrame.CatalogShopDetailsFrame.Border.Border, nil, nil, 0.5)
 
---function WoWTools_TextureMixin.Frames:UIWidgetBelowMinimapContainerFrame()
+    self:SetScrollBar(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ProductsScrollBoxContainer)
+    self:SetFrame(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ShadowLayer, {alpha=0.7})
+end

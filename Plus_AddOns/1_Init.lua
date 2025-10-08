@@ -141,11 +141,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Init()
         end)
         
-        if WoWTools_DataMixin.Player.husandro then
+        --[[if WoWTools_DataMixin.Player.husandro then
             C_Timer.After(0.3, function()
             AddonList:Show()
             end)
-        end
+        end]]
     end
 
     self:UnregisterEvent(event)
