@@ -144,6 +144,7 @@ local function Set_Load_Button()--LoadButtons
         end
     end
 
+    
 
 
     for i, info in pairs(newTab) do
@@ -220,6 +221,8 @@ local function Init()
     end
 
     BottomFrame= CreateFrame('Frame', 'WoWToolsAddOnsBottomFrame', AddonListCloseButton)
+    BottomFrame.Bg= BottomFrame:CreateTexture(nil, "BACKGROUND")
+    BottomFrame.Bg:SetColorTexture(0, 0, 0, 0.5)
 
     BottomFrame:SetSize(1,1)
     BottomFrame:Hide()
@@ -231,6 +234,7 @@ local function Init()
         else
             BottomFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
         end
+        Set_Load_Button()
     end
 
 

@@ -1,5 +1,7 @@
 
-
+local function Save()
+    return WoWToolsSave['Plus_MainMenu']
+end
 
 
 
@@ -119,6 +121,35 @@ local function Init()
     end
     if all>0 then
         frame.Text2:SetText(all)
+    end
+
+
+
+
+
+--商店 FrameStrata
+    if CatalogShopFrame then
+        local menu= CreateFrame('DropdownButton', 'WoWToolsCatalogShopMenuButton', CatalogShopFrameCloseButton, 'WoWToolsMenuButtonTemplate')
+        menu:SetPoint('RIGHT', CatalogShopFrameCloseButton, 'LEFT')
+        menu:SetupMenu(function(self, root)
+            if not self:IsMouseOver() then
+                return
+            end
+            WoWTools_MenuMixin:FrameStrata(CatalogShopFrame, root, function(data)
+                return CatalogShopFrame:GetFrameStrata()==data
+            end,
+            function(data)
+                if not WoWTools_FrameMixin:IsLocked(CatalogShopFrame) then
+                    CatalogShopFrame:SetFrameStrata(data)
+                    Save().CatalogShopFrameStrata= data
+                end
+            end)
+        end)
+
+        local strata= Save().CatalogShopFrameStrata
+        if strata and CatalogShopFrame:GetFrameStrata()~=strata and not  WoWTools_FrameMixin:IsLocked(CatalogShopFrame) then
+            CatalogShopFrame:SetFrameStrata(strata)
+        end
     end
 
     Init=function()end
