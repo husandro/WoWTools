@@ -53,5 +53,6 @@
 >
 > ## 专为 WoWTools_Chinese 插件 
 > ### 收集（更新）数据
+> ### 仅限集 中文 数据
 > ### https://github.com/husandro/WoWTools_Chinese_Scanner
 ***
