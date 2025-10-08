@@ -718,7 +718,7 @@ local function Init_Button_Menu(self, root)
 
 
 --FrameStrata      
-    WoWTools_MenuMixin:FrameStrata(root, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().AbilityButton['strata'..self.name]= data

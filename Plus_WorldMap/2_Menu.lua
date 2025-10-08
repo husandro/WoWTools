@@ -151,7 +151,7 @@ local function Init_PlayerXY_Option_Menu(self, root2)
     end)
 
     --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(root, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
         if _G['WoWTools_PlayerXY_Button'] then
             return _G['WoWTools_PlayerXY_Button']:GetFrameStrata()==data
         end

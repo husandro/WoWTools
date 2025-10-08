@@ -831,16 +831,12 @@ local function Init_Menu(self, root)--菜单
 
 
 --FrameStrata    
-    sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().trackButtonStrata= data
         self:set_strata()
     end)
-    sub2:SetEnabled(not WoWTools_FrameMixin:IsLocked(self))
-    --if UnitAffectingCombat('player') then
-      --  sub2:SetEnabled(false)
-    --end
 
 --重置位置
     sub:CreateDivider()

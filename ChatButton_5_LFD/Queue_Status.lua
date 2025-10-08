@@ -520,7 +520,7 @@ local function Init_Menu(self, root)
 
 
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().queueStatusStrata= data

@@ -996,7 +996,7 @@ root:CreateDivider()
     end)
 
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().Icons.strata= data

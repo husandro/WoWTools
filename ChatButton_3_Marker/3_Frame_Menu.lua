@@ -77,7 +77,7 @@ local function Init(self, root)
 
 
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(root, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
             return frame:GetFrameStrata()==data
     end, function(data)
         Save().FrameStrata= data

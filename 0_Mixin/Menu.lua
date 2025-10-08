@@ -298,18 +298,24 @@ end, {
 
 
 --FrameStrata
-function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
-    local sub=root:CreateButton('|A:Garr_SwapIcon:0:0:|a'..(WoWTools_DataMixin.onlyChinese and '框架层' or 'Strata'), function()
+function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
+    local enable= WoWTools_FrameMixin:IsLocked(frame)~=true
+    local sub=root:CreateButton(
+        '|A:Garr_SwapIcon:0:0:|a'
+        ..(enable and '' or '|cff626262')
+        ..(WoWTools_DataMixin.onlyChinese and '框架层' or 'Strata'),
+    function()
         return MenuResponse.Refresh
     end)
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
-        sub:CreateCheckbox(
+        local sub2= sub:CreateCheckbox(
             (strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata,
             GetValue,
             SetValue,
             strata
         )
+        sub2:SetEnabled(enable)
     end
     return sub
 end

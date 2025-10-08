@@ -766,7 +766,7 @@ local function Init_Menu(self, root)
     end)
 
 --FrameStrata    
-    WoWTools_MenuMixin:FrameStrata(root, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().strata= data

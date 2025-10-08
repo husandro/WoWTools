@@ -233,4 +233,27 @@ function WoWTools_MoveMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
     self:Setup(CatalogShopFrame.CatalogShopDetailsFrame, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ProductsHeader, {frame= CatalogShopFrame})
+
+--FrameStrata
+    local menu= CreateFrame('DropdownButton', 'WoWToolsCatalogShopMenuButton', CatalogShopFrameCloseButton, 'WoWToolsMenuButtonTemplate')
+    menu:SetPoint('RIGHT', CatalogShopFrameCloseButton, 'LEFT')
+    menu:SetupMenu(function(frame, root)
+        if not frame:IsMouseOver() then
+            return
+        end
+        WoWTools_MenuMixin:FrameStrata(CatalogShopFrame, root, function(data)
+            return CatalogShopFrame:GetFrameStrata()==data
+        end,
+        function(data)
+            if not WoWTools_FrameMixin:IsLocked(CatalogShopFrame) then
+                CatalogShopFrame:SetFrameStrata(data)
+                self:Save().CatalogShopFrameStrata= data
+            end
+        end)
+    end)
+
+    local strata= self:Save().CatalogShopFrameStrata
+    if strata and CatalogShopFrame:GetFrameStrata()~=strata and not  WoWTools_FrameMixin:IsLocked(CatalogShopFrame) then
+        CatalogShopFrame:SetFrameStrata(strata)
+    end
 end

@@ -353,7 +353,7 @@ local function Init_Menu(self, root)
     end)
 
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
         if Frame then
             return Frame:GetFrameStrata()==data
         else

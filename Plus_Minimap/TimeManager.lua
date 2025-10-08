@@ -109,7 +109,7 @@ local function Init_Stopwatch_Menu(self, root)
     end)
 
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(root, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
         return StopwatchFrame:GetFrameStrata()==data
     end, function(data)
         Save().stopwatchFrameStrata= data
@@ -189,7 +189,7 @@ local function Init_TimeManager_Menu(self, root)
         end)
 
     --FrameStrata
-        WoWTools_MenuMixin:FrameStrata(root, function(data)
+        WoWTools_MenuMixin:FrameStrata(self, root, function(data)
             return TimeManagerClockButton:GetFrameStrata()==data
         end, function(data)
             Save().TimeManagerClockButtonStrata= data

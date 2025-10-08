@@ -71,7 +71,7 @@ local function Init_Spec_Menu(self, root)
         end})
 
 --FrameStrata
-        WoWTools_MenuMixin:FrameStrata(sub2, function(data)
+        WoWTools_MenuMixin:FrameStrata(self, sub2, function(data)
             return SpecFrame:GetFrameStrata()==data
         end, function(data)
             Save().specButton.strata= data
