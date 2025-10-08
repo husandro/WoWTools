@@ -231,4 +231,6 @@ function WoWTools_MoveMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
     self:Setup(CatalogShopFrame.ProductContainerFrame.ProductsHeader, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.ProductContainerFrame, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.CatalogShopDetailsFrame, {frame= CatalogShopFrame})
+    self:Setup(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame, {frame= CatalogShopFrame})
+    self:Setup(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ProductsHeader, {frame= CatalogShopFrame})
 end
