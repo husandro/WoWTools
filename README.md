@@ -34,14 +34,10 @@
 
 
 
-
-
-
-
-
 # WoWTools_Chinese
 >
 > ## WoW UI 中文化 (不完整)
+> ## 仅限欧服
 
 ## 下载
 
@@ -49,25 +45,13 @@
 >
 > ### <https://addons.wago.io/addons/wowtools-chinese>
 > ### <https://github.com/husandro/WoWTools_Chinese>
-
-## 讨论
->
-> ### https://github.com/husandro/WoWTools/discussions
 ***
-
-
-
-
-
-
-
-
 
 
 
 # WoWTools_Chinese_Scanner
 >
 > ## 专为 WoWTools_Chinese 插件 
-> ## 收集（更新）数据
-> ## https://github.com/husandro/WoWTools_Chinese_Scanner
+> ### 收集（更新）数据
+> ### https://github.com/husandro/WoWTools_Chinese_Scanner
 ***
