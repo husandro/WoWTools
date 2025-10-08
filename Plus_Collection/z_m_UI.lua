@@ -330,6 +330,10 @@ local function Init_CollectionsJournal()
 
 
 --这个有人出错
+    MountJournal.FilterDropdown:ClearAllPoints()
+    MountJournal.FilterDropdown:SetPoint('TOPRIGHT', MountJournal.LeftInset, -5, -10)
+    MountJournalSearchBox:ClearAllPoints()
+    MountJournalSearchBox:SetPoint('TOPLEFT', MountJournal.LeftInset, 15, -9)
     MountJournalSearchBox:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
 
     Init_CollectionsJournal=function()end
