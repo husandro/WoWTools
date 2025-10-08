@@ -180,7 +180,7 @@ end
 --藏品
 local function Init_CollectionsJournal()
 --坐骑
-    MountJournalSearchBox:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
+
 
     MountJournal.RightInset:ClearAllPoints()
     MountJournal.RightInset:SetWidth(400)
@@ -322,17 +322,15 @@ local function Init_CollectionsJournal()
     end
 
 
-
-
-
-
-    
     C_Timer.After(0.3, function()
         if _G['ManuscriptsJournal'] then
             WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
         end
     end)
 
+
+--这个有人出错
+    MountJournalSearchBox:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
 
     Init_CollectionsJournal=function()end
 end
