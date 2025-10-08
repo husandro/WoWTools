@@ -46,7 +46,7 @@ local function Init()
             GameTooltip:AddDoubleLine('|A:token-choice-wow:0:0|a'..WoWTools_DataMixin:MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
             GameTooltip:AddLine(' ')
         end
-        local bagAll,bankAll,numPlayer=0,0,0--帐号数据
+        local bagAll,bankAll,numPlayer= 0,0,0--帐号数据
         for guid, info in pairs(WoWTools_WoWDate or {}) do
             local tab=info.Item[122284]
             if tab and guid then
