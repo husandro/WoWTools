@@ -93,7 +93,7 @@ function WoWTools_TooltipMixin:Init_CVar()
     if WoWToolsSave['Plus_Tootips'].setCVar then
         WoWTools_TooltipMixin:Set_CVar(nil, nil, true)--设置CVar
 
-        --[[if WoWTools_DataMixin.Player.Region==5 then
+        if WoWTools_DataMixin.Player.Region==5 then
             ConsoleExec("portal TW")
             SetCVar("profanityFilter", '0')
 
@@ -104,7 +104,7 @@ function WoWTools_TooltipMixin:Init_CVar()
                 gameAccountInfo.isInCurrentRegion = true
                 return gameAccountInfo
             end
-        end]]
+        end
     end
 
 --为自已开启，功能
