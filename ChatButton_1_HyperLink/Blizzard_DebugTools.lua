@@ -127,7 +127,6 @@ local function Init()
     end
 
     hooksecurefunc(TableInspectorMixin, 'InspectTable', function(_, focusedTable, ...)
-        print(_, ...)
         set_objectType(focusedTable)
     end)
 
