@@ -81,6 +81,8 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
         frame.BorderFrame.PortraitContainer:SetSize(23,23)
     end)
 
+    self:SetNineSlice(QuestScrollFrame.CampaignTooltip, 0.5, true)
+
     self:Init_BGMenu_Frame(WorldMapFrame, {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer,
         NineSlice= WorldMapFrame.BorderFrame.NineSlice,

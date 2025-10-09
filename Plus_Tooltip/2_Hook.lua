@@ -269,7 +269,7 @@ local function Init()
 --添加任务ID
     local label= create_Quest_Label(QuestMapDetailsScrollFrame)
     --label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
-    label:SetPoint('LEFT', QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton, 'RIGHT', 2, 0)    
+    label:SetPoint('LEFT', QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton, 'RIGHT', 2, 0)
 
     WoWTools_DataMixin:Hook('QuestMapFrame_ShowQuestDetails', function(questID)
         QuestMapDetailsScrollFrame.questIDLabel:settings(questID)
@@ -457,7 +457,31 @@ local function Init()
     end
 
     --FloatingPetBattleAbilityTooltip
-    --StoryHeaderMixin:ShowTooltip() QuestScrollFrame.StoryTooltip
+    --StoryHeaderMixin:ShowTooltip()
+    --QuestScrollFrame.StoryTooltip
+
+    QuestScrollFrame.CampaignTooltip.IDLabel= QuestScrollFrame.CampaignTooltip:CreateFontString(nil, 'ARTWORK')
+    QuestScrollFrame.CampaignTooltip.IDLabel:SetFontObject('GameFontNormal')
+    QuestScrollFrame.CampaignTooltip.IDLabel:SetJustifyH('LEFT')
+    QuestScrollFrame.CampaignTooltip.IDLabel.layoutIndex= 5
+    QuestScrollFrame.CampaignTooltip.IDLabel.expand= true
+    QuestScrollFrame.CampaignTooltip.IDLabel.bottomPadding= 8
+    QuestScrollFrame.CampaignTooltip.IDLabel:SetSize(250, 0)
+    hooksecurefunc(QuestScrollFrame.CampaignTooltip, 'SetJourneyCampaign', function(self, campaign)
+        local text
+        if campaign and campaign.campaignID then
+            text= 'campaignID|cffffffff'..WoWTools_DataMixin.Icon.icon2..campaign.campaignID..'|r'
+            if campaign.chapterIDs then
+                text= text..'|nchapterIDs'
+                for index, id in pairs(campaign.chapterIDs) do
+                    text= text..'|n - '..index..') |cffffffff'..id..'|r'
+                end
+            end
+        end
+        self.IDLabel:SetText(text or '')
+        self.IDLabel:SetShown(text)
+    end)
+
     Init=function()end
 end
 
