@@ -820,19 +820,6 @@ EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(ow
     Set_Money()--钱
     Update_Challenge_Mode()
 
-    --################
-    --开启, 新手編輯模式
-    --################ LFDFrame.lua
-    if C_PlayerInfo.IsPlayerNPERestricted() then
-        EditModeManagerFrame.CanEnterEditMode = function(frame)--EditModeManager.lua
-            return TableIsEmpty(frame.FramesBlockingEditMode)
-        end
-        if Minimap then
-            Minimap:SetShown(true)
-            MinimapCluster:SetShown(true)
-        end
-    end
-
     Get_WoW_GUID_Info()--战网，好友GUID
 
     EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)

@@ -97,13 +97,13 @@ function WoWTools_TooltipMixin:Init_CVar()
             ConsoleExec("portal TW")
             SetCVar("profanityFilter", '0')
 
-            local pre = C_BattleNet.GetFriendGameAccountInfo
+            --[[local pre = C_BattleNet.GetFriendGameAccountInfo
     ---@diagnostic disable-next-line: duplicate-set-field
             C_BattleNet.GetFriendGameAccountInfo = function(...)
                 local gameAccountInfo = pre(...)
                 gameAccountInfo.isInCurrentRegion = true
                 return gameAccountInfo
-            end
+            end]]
         end
     end
 
