@@ -27,9 +27,10 @@ local P_Save={
         }
     },
     fast={
-        ['TextureAtlasViewer']=1,
-        ['WoWeuCN_Tooltips']=1,
-        ['WoWTools']=1,
+        ['TextureAtlasViewer']=true,
+        ['WoWTools']=true,
+        ['WeakAuras']=true,
+        ['WeakAurasOptions']=true,
     },
     enableAllButtn= WoWTools_DataMixin.Player.husandro,--全部禁用时，不禁用本插件
 
