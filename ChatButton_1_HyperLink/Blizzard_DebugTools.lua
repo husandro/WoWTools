@@ -109,7 +109,10 @@ local function Init()
 
     local function set_objectType(focusedTable)
         local text
+        objectTypeLabel:SetText('')
         if focusedTable then
+            info= focusedTable
+            for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
             if focusedTable.GetObjectType then
                 text= focusedTable:GetObjectType()
             end
@@ -117,12 +120,14 @@ local function Init()
                 text= (text and text..' ' or '')
                     ..format('%i|cffffffffx|r%i', focusedTable:GetSize())
             end
+            if text then
+                objectTypeLabel:SetText(text)
+            end
         end
-
-        objectTypeLabel:SetText(text or '')
     end
 
-    hooksecurefunc(TableInspectorMixin, 'InspectTable', function(_, focusedTable)
+    hooksecurefunc(TableInspectorMixin, 'InspectTable', function(_, focusedTable, ...)
+        print(_, ...)
         set_objectType(focusedTable)
     end)
 

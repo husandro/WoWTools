@@ -98,7 +98,7 @@ end
 
 --任务
 function WoWTools_MoveMixin.Frames:QuestFrame()
-    
+
     self:Setup(QuestLogPopupDetailFrame)
 
     local tab={
@@ -227,10 +227,13 @@ function WoWTools_MoveMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
     CatalogShopFrame.ProductContainerFrame:SetClampedToScreen(false)
 
     self:Setup(CatalogShopFrame)
-    self:Setup(CatalogShopFrame.ModelSceneContainerFrame.MainModelScene, {frame= CatalogShopFrame})
-    self:Setup(CatalogShopFrame.ProductContainerFrame.ProductsHeader, {frame= CatalogShopFrame})
-    self:Setup(CatalogShopFrame.ProductContainerFrame, {frame= CatalogShopFrame})
+    self:Setup(CatalogShopFrame.ForegroundContainer, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.CatalogShopDetailsFrame, {frame= CatalogShopFrame})
+    self:Setup(CatalogShopFrame.ModelSceneContainerFrame, {frame= CatalogShopFrame})
+
+    self:Setup(CatalogShopFrame.ProductContainerFrame, {frame= CatalogShopFrame})
+    self:Setup(CatalogShopFrame.ProductContainerFrame.ProductsHeader, {frame= CatalogShopFrame})
+
     self:Setup(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ProductsHeader, {frame= CatalogShopFrame})
 end
