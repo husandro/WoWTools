@@ -93,18 +93,18 @@ function WoWTools_TooltipMixin:Init_CVar()
     if WoWToolsSave['Plus_Tootips'].setCVar then
         WoWTools_TooltipMixin:Set_CVar(nil, nil, true)--设置CVar
 
-        if LOCALE_zhCN then
+        --[[if WoWTools_DataMixin.Player.Region==5 then
             ConsoleExec("portal TW")
             SetCVar("profanityFilter", '0')
 
-            --[[local pre = C_BattleNet.GetFriendGameAccountInfo
+            local pre = C_BattleNet.GetFriendGameAccountInfo
     ---@diagnostic disable-next-line: duplicate-set-field
             C_BattleNet.GetFriendGameAccountInfo = function(...)
                 local gameAccountInfo = pre(...)
                 gameAccountInfo.isInCurrentRegion = true
                 return gameAccountInfo
-            end]]
-        end
+            end
+        end]]
     end
 
 --为自已开启，功能
