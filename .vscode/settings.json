@@ -6208,7 +6208,8 @@
         "CURRENCY_BUTTON_TOOLTIP_CLICK_INSTRUCTION",
         "CatalogShopFrame",
         "CatalogShopFrameCloseButton",
-        "CatalogShopFrameBg"
+        "CatalogShopFrameBg",
+        "ChallengeMode_LoadUI"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

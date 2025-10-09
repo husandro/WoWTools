@@ -1,3 +1,8 @@
+# Custom
+*.bak
+not*
+bak
+
 # Compiled Lua sources
 luac.out
 
@@ -38,7 +43,3 @@ luac.out
 *.i*86
 *.x86_64
 *.hex
-
-# Other
-*.bak
-not*
