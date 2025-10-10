@@ -163,12 +163,12 @@ local function Update_Animation(self)
         return
     end
 
-    -- 动画从右下角到左上角
-    local xOffset = -width
-    local yOffset = height
+    -- 动画从左上角到右下角
+    local xOffset = width
+    local yOffset = -height
 
-    self.backgroundAnims.moveAnim:SetOffset(xOffset, yOffset)    -- 右下到左上
-    self.backgroundAnims.resetPos:SetOffset(-xOffset, -yOffset)    -- 回到右下
+    self.backgroundAnims.moveAnim:SetOffset(xOffset, yOffset)    -- 左上到右下
+    self.backgroundAnims.resetPos:SetOffset(-xOffset, -yOffset)  -- 回到左上
 
     -- 根据对角线长度设置动画持续时间，保证速度一致
     local distance = math.sqrt(xOffset * xOffset + yOffset * yOffset)
