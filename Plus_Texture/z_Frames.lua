@@ -74,6 +74,7 @@ end
 
 --拾取, 历史
 function WoWTools_TextureMixin.Frames:GroupLootHistoryFrame()
+    self:SetButton(GroupLootHistoryFrame.ClosePanelButton)
     self:SetNineSlice(GroupLootHistoryFrame, self.min, true)
     self:SetAlphaColor(GroupLootHistoryFrameBg)
     self:SetScrollBar(GroupLootHistoryFrame)
