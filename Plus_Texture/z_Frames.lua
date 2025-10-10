@@ -520,12 +520,21 @@ end
 function WoWTools_TextureMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
     self:SetNineSlice(CatalogShopFrame)
     self:SetButton(CatalogShopFrameCloseButton)
+
     self:HideTexture(CatalogShopFrameBg)
-    CatalogShopFrame.BackgroundContainer:SetAlpha(0.3)
+
     self:SetScrollBar(CatalogShopFrame.ProductContainerFrame.ProductsScrollBoxContainer)
     self:SetFrame(CatalogShopFrame.ProductContainerFrame.ShadowLayer, {alpha=0.7})
     self:SetAlphaColor(CatalogShopFrame.CatalogShopDetailsFrame.Border.Border, nil, nil, 0.5)
 
     self:SetScrollBar(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ProductsScrollBoxContainer)
     self:SetFrame(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ShadowLayer, {alpha=0.7})
+
+     self:Init_BGMenu_Frame(CatalogShopFrame, {
+        alpha=0.5,
+        enabled=true,
+        settings=function(_, texture, alpha)
+            CatalogShopFrame.BackgroundContainer:SetAlpha(texture and 0 or alpha or 0.5)
+        end
+     })
 end
