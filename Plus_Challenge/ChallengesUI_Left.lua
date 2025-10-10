@@ -595,9 +595,9 @@ end
 
 
 function WoWTools_ChallengeMixin:ChallengesUI_Left()
-    --Init()
+    Init()
 end
 
 function WoWTools_ChallengeMixin:ChallengesUI_Left_Menu(...)
-    --Init_Menu(...)
+    Init_Menu(...)
 end

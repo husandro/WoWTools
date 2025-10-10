@@ -554,7 +554,7 @@ sub:CreateTitle(name)
 
     root:CreateDivider()
 --战团，物品列表
-    WoWTools_DataMixin:OpenWoWItemListMenu(self, root, 'Instance')
+    --WoWTools_DataMixin:OpenWoWItemListMenu(self, root, 'Instance')
 
 
 --插入史诗钥石，打开界面

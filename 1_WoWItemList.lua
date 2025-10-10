@@ -1230,7 +1230,7 @@ local function OnEnter_BattleTexture(self)
         )
     end
 
-    local curRegion= GetCurrentRegion()
+    local curRegion= WoWTools_DataMixin.Player.Region or GetCurrentRegion()
     local region= data and data.region
     if region then
         GameTooltip:AddDoubleLine(
@@ -1654,7 +1654,6 @@ local function Init_IsMe_Menu(self, root)
         regions[info.region]= (regions[info.region] or 0)+ 1
     end
     root:CreateDivider()
-    local curRegion= GetCurrentRegion()
     for r, num in pairs(regions) do
         local isCurRegion= r==WoWTools_DataMixin.Player.Region
         sub=root:CreateButton(
@@ -1667,7 +1666,7 @@ local function Init_IsMe_Menu(self, root)
         end, {region=r, isCurRegion=isCurRegion})
 
         sub:SetTooltip(function(tootip, desc)
-            tootip:AddDoubleLine('Region', curRegion)
+            tootip:AddDoubleLine('Region', WoWTools_DataMixin.Player.Region)
             if not desc.data.isCurRegion then
                 tootip:AddLine(
                     '|cnWARNING_FONT_COLOR:'

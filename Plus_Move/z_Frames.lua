@@ -227,7 +227,7 @@ function WoWTools_MoveMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
     CatalogShopFrame.ProductContainerFrame:SetClampedToScreen(false)
 
     self:Setup(CatalogShopFrame)
-    self:Setup(CatalogShopFrame.ForegroundContainer, {frame= CatalogShopFrame})
+    --self:Setup(CatalogShopFrame.ForegroundContainer, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.CatalogShopDetailsFrame, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.ModelSceneContainerFrame, {frame= CatalogShopFrame})
 
