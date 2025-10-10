@@ -51,7 +51,7 @@ function WoWTools_AddOnsMixin:Get_AddListInfo()
             elseif stat==2 then
                 sel= sel+1
             end
-            local name=C_AddOns.GetAddOnInfo(i)
+            local name=C_AddOns.GetAddOnName(i)
             tab[name]= stat==1 and WoWTools_DataMixin.Player.GUID or i
         end
     end
@@ -74,7 +74,7 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
         if not text and not isLoaded and reason then
             text= '|cff9e9e9e'..WoWTools_TextMixin:CN(_G['ADDON_'..reason] or reason)..' ('..index
         end
-        local title= C_AddOns.GetAddOnInfo(name) or name
+        local title= select(2, C_AddOns.GetAddOnInfo(name)) or name
         local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e'
         local memo, va= self:Get_MenoryValue(name, false)--内存
         memo= memo and (' |cnWARNING_FONT_COLOR:'..memo..'|r') or ''

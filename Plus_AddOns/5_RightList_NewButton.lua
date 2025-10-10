@@ -118,7 +118,7 @@ local function Init()
             local isLoaded= C_AddOns.IsAddOnLoaded(index)
             local dema= select(2, C_AddOns.IsAddOnLoadable(index))=='DEMAND_LOADED'
             if isLoaded or dema then--已加载, 带加载
-                local title = select(2, C_AddOns.GetAddOnInfo(index))
+                local title = C_AddOns.GetAddOnTitle(index)
                 local iconTexture = C_AddOns.GetAddOnMetadata(index, "IconTexture")
                 local iconAtlas = C_AddOns.GetAddOnMetadata(index, "IconAtlas")
                 local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '

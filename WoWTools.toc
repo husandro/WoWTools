@@ -9,7 +9,7 @@
 ## X-Curse-Project-ID: 715192
 ## X-Category: Plugins
 ## IconTexture: Interface\AddOns\WoWTools\Source\Texture\WoWtools.tga
-## IconAtlas: orderhalltalents-done-glow
+###IconAtlas: orderhalltalents-done-glow
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
 ## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !LibUIDropDownMenu, LibRangeCheck-3.0
 ####AddonCompartmentFunc: WowTools_OnAddonCompartmentClick

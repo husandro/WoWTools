@@ -77,7 +77,7 @@ local function Create_Fast_Button(index)
         else
            local findIndex
             for i=1, C_AddOns.GetNumAddOns() do
-                if C_AddOns.GetAddOnInfo(i)== self.name then
+                if C_AddOns.GetAddOnName(i)== self.name then
                     findIndex= i
                     Save().fast[self.name]= i
                     self:set_tooltips()
@@ -201,15 +201,16 @@ local function Init()
 
     LeftFrame= CreateFrame("Frame", 'WoWToolsAddOnsLeftFrame', AddonListCloseButton)
     LeftFrame:SetSize(1,1)
-    LeftFrame:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT', 0, -3)
+    LeftFrame:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT', -2, -3)
 
     LeftFrame.Background= LeftFrame:CreateTexture(nil, 'BACKGROUND')
     LeftFrame.Background:SetPoint('TOPRIGHT', LeftFrame, 2, 0)
+    LeftFrame.Background:SetColorTexture(0,0,0)
 
     function LeftFrame:settings()
         self:SetScale(Save().leftListScale or 1)
         self:SetShown(not Save().hideLeftList)
-        self.Background:SetColorTexture(0,0,0, Save().Bg_Alpha or 0.3)
+        self.Background:SetAlpha(Save().bgAlpha or 0.3)
     end
 
     LeftFrame:settings()

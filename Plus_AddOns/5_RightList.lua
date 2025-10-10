@@ -50,7 +50,7 @@ local function Init_Button_Menu(self, root)
         do
             local tab= Save().buttons[self.name]
             for i=1, C_AddOns.GetNumAddOns() do
-                local name= C_AddOns.GetAddOnInfo(i)
+                local name= C_AddOns.GetAddOnName(i)
                 local value=tab[name]
                 local vType= type(value)
                 if vType=='boolean' or vType=='number' or value==WoWTools_DataMixin.Player.GUID then
@@ -336,13 +336,14 @@ local function Init()
 
     RightFrame.Background= RightFrame:CreateTexture(nil, 'BACKGROUND')
     RightFrame.Background:SetPoint('TOPLEFT', RightFrame)
+    RightFrame.Background:SetColorTexture(0,0,0)
 
     function RightFrame:settings()
         local show= not Save().hideRightList
         self:SetScale(Save().rightListScale or 1)
         self:SetShown(show)
         _G['WoWToolsAddonsNewButton']:SetShown(show)
-        self.Background:SetColorTexture(0,0,0, Save().Bg_Alpha or 0.3)
+        self.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
 
     RightFrame:settings()

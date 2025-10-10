@@ -46,7 +46,7 @@ local P_Save={
     --hideLeftList
 
     --disabledInfoPlus=true,禁用plus
-    Bg_Alpha=0.3
+    --bgAlpha=0.3
     --addonProfilerEnabled= true,--启用，CPU分析功能,默认开启
 }
 
@@ -115,6 +115,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     WoWToolsSave['Plus_AddOns']= WoWToolsSave['Plus_AddOns'] or CopyTable(P_Save)
     P_Save=nil
+    Save().Bg_Alpha= nil
 
     WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
 
@@ -145,7 +146,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         AddonList:HookScript('OnShow', function()
             Init()
         end)
-        
+
         --[[if WoWTools_DataMixin.Player.husandro then
             C_Timer.After(0.3, function()
             AddonList:Show()

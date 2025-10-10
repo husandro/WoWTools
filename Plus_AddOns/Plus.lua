@@ -28,7 +28,7 @@ local function Find_AddOn_Dependencies(find, check)--依赖，提示
             local show=false
             if find then
                 local index= frame:GetID()
-                if index== addonIndex or tab[C_AddOns.GetAddOnInfo(index)] then
+                if index== addonIndex or tab[C_AddOns.GetAddOnName(index)] then
                     show=true
                 end
             end
@@ -195,7 +195,8 @@ local function Init_Set_List(self, addonIndex)
         Create_Check(self)
     end
 
-    local name, title= C_AddOns.GetAddOnInfo(addonIndex)
+    local name = C_AddOns.GetAddOnName(addonIndex)
+	local title = C_AddOns.GetAddOnTitle(addonIndex)
     local isChecked= Save().fast[name] and true or false
     if isChecked then
         Save().fast[name]= addonIndex
@@ -309,7 +310,7 @@ local function Init()
         AddonList.DisableAllButton:SetAlpha(0.3)
         if not self.index then
             for i=1, C_AddOns.GetNumAddOns() do
-                if C_AddOns.GetAddOnInfo(i)== 'WoWTools' then
+                if C_AddOns.GetAddOnName(i)== 'WoWTools' then
                     self.index=i
                     break
                 end

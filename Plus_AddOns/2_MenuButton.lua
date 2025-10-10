@@ -93,6 +93,16 @@ local function Init_Menu(self, root)
         WoWTools_AddOnsMixin:Init_Bottom_Buttons()
     end)
 
+--仅图标
+     sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '仅图标' or (format(LFG_LIST_CROSS_FACTION, EMBLEM_SYMBOL)),
+    function()
+        return Save().load_list_onlyIcon
+    end, function()
+        Save().load_list_onlyIcon= not Save().load_list_onlyIcon and true or nil
+        WoWTools_AddOnsMixin:Init_Bottom_Buttons()
+    end)
+
 --大小
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -199,6 +209,23 @@ local function Init_Menu(self, root)
 --打开选项界面
     root:CreateDivider()
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_AddOnsMixin.addName})
+
+--BG Alpha
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()--GetValue
+        return Save().bgAlpha or 0.5
+    end, function(value)--SetValue
+        Save().bgAlpha= value
+        WoWTools_AddOnsMixin:Init_Left_Buttons()
+        WoWTools_AddOnsMixin:Init_Bottom_Buttons()
+        WoWTools_AddOnsMixin:Init_Right_Buttons()
+    end, function()--RestFunc
+        Save().bgAlpha= nil
+        WoWTools_AddOnsMixin:Init_Left_Buttons()
+        WoWTools_AddOnsMixin:Init_Bottom_Buttons()
+        WoWTools_AddOnsMixin:Init_Right_Buttons()
+    end)--onlyRoot
+
     root:CreateDivider()
 --重新加载UI
     WoWTools_MenuMixin:Reload(root)
