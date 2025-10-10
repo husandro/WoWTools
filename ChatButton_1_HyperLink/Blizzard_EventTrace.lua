@@ -119,7 +119,7 @@ local function Init_LeftList()
 
 
 --ScrollBox
-    local ScrollBox= CreateFrame('Frame', nil, EventTrace.Log, 'WowScrollBoxList')
+    local ScrollBox= CreateFrame('Frame', 'WoWToolsEventTraceScrollBox', EventTrace.Log, 'WowScrollBoxList')
     ScrollBox:SetPoint('TOPRIGHT', EventTrace, 'TOPLEFT', 5, 0)
     ScrollBox:SetPoint('BOTTOMLEFT', EventTrace, 'BOTTOMLEFT', 5, 0)
     ScrollBox.events={}
@@ -127,7 +127,7 @@ local function Init_LeftList()
     ScrollBox.width=100--宽度
 
 --ScrollBar
-    local ScrollBar= CreateFrame("EventFrame", nil, EventTrace.Log, "MinimalScrollBar")
+    local ScrollBar= CreateFrame("EventFrame", 'WoWToolsEventTraceScrollBar', EventTrace.Log, "MinimalScrollBar")
     ScrollBar:SetPoint("TOPRIGHT", ScrollBox, "TOPLEFT", -4, -6)
     ScrollBar:SetPoint("BOTTOMRIGHT", ScrollBox, "BOTTOMLEFT", -4, 6)
     WoWTools_TextureMixin:SetScrollBar(ScrollBar)
@@ -136,7 +136,12 @@ local function Init_LeftList()
     ScrollUtil.InitScrollBoxListWithScrollBar(ScrollBox, ScrollBar, ScrollBox.view)
 
 --重置
-    Refresh= WoWTools_ButtonMixin:Cbtn(EventTrace.Log, {size=size, atlas='128-RedButton-Refresh-Disabled', notLocked=true})
+    Refresh= WoWTools_ButtonMixin:Cbtn(EventTrace.Log, {
+        name='WoWToolsEventTraceRefresh',
+        size=size,
+        atlas='128-RedButton-Refresh-Disabled',
+        notLocked=true
+    })
     Refresh:SetPoint('BOTTOMRIGHT', EventTrace, 'TOPLEFT', 6, 0)
     Refresh:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -159,7 +164,12 @@ local function Init_LeftList()
     end)
 
 --暂停
-    Pause= WoWTools_ButtonMixin:Cbtn(Refresh, {size=size, icon='hide', notLocked=true})
+    Pause= WoWTools_ButtonMixin:Cbtn(Refresh, {
+        name='WoWToolsEventTracePause',
+        size=size,
+        icon='hide',
+        notLocked=true}
+    )
     Pause:SetPoint('RIGHT', Refresh, 'LEFT')
     Pause:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -200,7 +210,11 @@ local function Init_LeftList()
     Pause:set_texture()
 
 --清除
-    Clear= WoWTools_ButtonMixin:Cbtn(Refresh, {size=size, atlas='128-RedButton-Delete-Disabled', notLocked=true})
+    Clear= WoWTools_ButtonMixin:Cbtn(Refresh, {
+        name='WoWToolsEventTraceClear',
+        size=size,
+        atlas='128-RedButton-Delete-Disabled',
+        notLocked=true})
     Clear:SetPoint('RIGHT', Pause, 'LEFT')
     Clear:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -216,8 +230,9 @@ local function Init_LeftList()
         ScrollBox:settings(true)
     end)
 
---菜单
+--[[菜单
     Menu= WoWTools_ButtonMixin:Cbtn(Refresh, {
+        name= 'WoWToolsEventTraceMenu',
         atlas='GM-icon-settings-pressed',
         size=size,
         isType2=true,
@@ -234,11 +249,11 @@ local function Init_LeftList()
     end)
     Menu:SetScript('OnClick', function()
         WoWTools_ChatMixin:GetButtonForName('HyperLink'):OpenMenu()
-    end)
+    end)]]
 
 --数量
     ScrollBox.Text= WoWTools_LabelMixin:Create(Refresh, {color={r=0.5,g=0.5,b=0.5}})
-    ScrollBox.Text:SetPoint('RIGHT', Menu, 'LEFT', 0, 1)
+    ScrollBox.Text:SetPoint('RIGHT', Clear, 'LEFT', 0, 1)
 
 
 

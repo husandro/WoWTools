@@ -219,7 +219,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
     end
 
     if frame.TitleContainer then
-        Set_Move_Frame(frame.TitleContainer, frame, click, notSave, isAltKeyDown)
+        Set_Move_Frame(frame.TitleContainer, target or frame, click, notSave, isAltKeyDown)
     end
 
     if not target or not target.moveFrameData then

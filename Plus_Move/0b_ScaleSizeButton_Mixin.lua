@@ -1,3 +1,36 @@
+--[[添加 ResizeButton 按钮
+    FriendsFrame.IgnoreListWindow:ClearAllPoints()
+    FriendsFrame.IgnoreListWindow:SetPoint('TOPLEFT', FriendsFrame, 'TOPRIGHT')
+    if Save().IgnoreListWindowHeight then
+        FriendsFrame.IgnoreListWindow:SetHeight(Save().IgnoreListWindowHeight)
+    end
+    FriendsFrame.IgnoreListWindow:SetResizable(true)
+    FriendsFrame.IgnoreListWindow:SetResizeBounds(273, 104)
+    FriendsFrame.IgnoreListWindow.ResizeButton= CreateFrame('Button', nil, FriendsFrame.IgnoreListWindow, 'WoWToolsButtonTemplate')
+    FriendsFrame.IgnoreListWindow.ResizeButton:SetSize(32, 12)
+    FriendsFrame.IgnoreListWindow.ResizeButton:SetNormalAtlas('lootroll-resizehandle')
+
+ 
+    FriendsFrame.IgnoreListWindow.ResizeButton:SetPoint('TOP', FriendsFrame.IgnoreListWindow, 'BOTTOM', 0, 3)
+    FriendsFrame.IgnoreListWindow.ResizeButton:SetScript("OnMouseDown", function(btn)
+		local alwaysStartFromMouse = true;
+		btn:GetParent():StartSizing("BOTTOM", alwaysStartFromMouse);
+	end)
+	FriendsFrame.IgnoreListWindow.ResizeButton:SetScript("OnMouseUp", function(btn)
+		local p= btn:GetParent()
+        p:StopMovingOrSizing()
+        p:ClearAllPoints()
+        p:SetPoint('TOPLEFT', FriendsFrame, 'TOPRIGHT')
+        Save().IgnoreListWindowHeight= p:GetHeight()
+	end)
+    FriendsFrame.IgnoreListWindow.ResizeButton:SetScript('OnClick', nil)
+
+        
+    https://warcraft.wiki.gg/wiki/Making_resizable_frames
+    br:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+    br:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+    br:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+--]]
 
 local function Save()
     return WoWToolsSave['Plus_Move']

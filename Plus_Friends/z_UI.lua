@@ -32,8 +32,8 @@ function WoWTools_TextureMixin.Events:Blizzard_RecruitAFriend()
     self:HideTexture(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
     self:SetFrame(RecruitAFriendFrame.RewardClaiming, {alpha=0.3})
     self:SetButton(RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton, {alpha=0.5})
+
 --好友召募奖励
-    
     self:HideFrame(RecruitAFriendRewardsFrame.Border)
     self:SetButton(RecruitAFriendRewardsFrame.CloseButton)
 end
@@ -102,7 +102,6 @@ end
 
 
 
-
 function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     local function Set_RaidFrame_Button_size()
         local w= FriendsFrame:GetWidth()/2-8
@@ -138,9 +137,6 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
 
 --团队
-    if RaidFrameRaidDescription then--11.2没有了
-        RaidFrameRaidDescription:SetPoint('BOTTOMRIGHT', -15, 35)
-    end
     RaidFrame:HookScript('OnShow', function(...) Set_RaidFrame_Button_size(...) end)
 
     WoWTools_DataMixin:Hook(FriendsListButtonMixin, 'OnLoad', function(btn)
@@ -151,19 +147,21 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
 
     WoWTools_MoveMixin:Setup(FriendsFrame, {
         sizeUpdateFunc=function()
-            if RaidFrame:IsShown() and not WoWTools_FrameMixin:IsLocked(RaidFrame) then
+            if RaidFrame:IsVisible() and not WoWTools_FrameMixin:IsLocked(RaidFrame) then
                 Set_RaidFrame_Button_size()
                 WoWTools_DataMixin:Call(RaidGroupFrame_Update)
             end
         end,
         sizeRestFunc=function()
             FriendsFrame:SetSize(385, 424)
-            if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
+            if RaidFrame:IsVisible() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
                 WoWTools_DataMixin:Call(RaidGroupFrame_Update)
             end
         end
     })
+
+
 
 
 
@@ -185,6 +183,18 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
         end
 
     })
+
+--好友 屏蔽列表
+    FriendsFrame.IgnoreListWindow.CloseButton:SetFrameStrata(FriendsFrame.IgnoreListWindow.TitleContainer:GetFrameStrata())
+    FriendsFrame.IgnoreListWindow.CloseButton:SetFrameLevel(FriendsFrame.IgnoreListWindow.TitleContainer:GetFrameLevel()+1)
+    FriendsFrame.IgnoreListWindow:ClearAllPoints()
+    FriendsFrame.IgnoreListWindow:SetPoint('TOPLEFT', FriendsFrame, 'TOPRIGHT')
+    FriendsFrame.IgnoreListWindow:SetPoint('BOTTOMLEFT', FriendsFrame, 'BOTTOMRIGHT')
+    self:Setup(FriendsFrame.IgnoreListWindow, {frame=FriendsFrame})
+
+    WoWTools_TextureMixin:SetButton(FriendsFrame.IgnoreListWindow.ResizeButton)
+--通告
+    self:Setup(FriendsFrameBattlenetFrame.BroadcastFrame, {frame=FriendsFrame})
 
 end
 
@@ -232,14 +242,22 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 
     self:SetFrame(BattleTagInviteFrame.Border, {notAlpha=true})
 
-
 --好友的好友，列表
     self:HideFrame(FriendsFriendsFrame.Border, {show={[FriendsFriendsFrame.Border.Bg]=true}})
     self:SetNineSlice(FriendsFriendsFrame.ScrollFrameBorder, 0, true)
     self:SetScrollBar(FriendsFriendsFrame)
     self:SetMenu(FriendsFriendsFrameDropdown)
 
+--好友 屏蔽列表
+    self:SetNineSlice(FriendsFrame.IgnoreListWindow)
+    self:SetButton(FriendsFrame.IgnoreListWindow.CloseButton)
+    self:SetScrollBar(FriendsFrame.IgnoreListWindow)
+    self:HideTexture(FriendsFrame.IgnoreListWindow.Bg)
+    self:SetNineSlice(FriendsFrame.IgnoreListWindow.Inset)
 
+--通告
+    self:SetFrame(FriendsFrameBattlenetFrame.BroadcastFrame.Border, {alpha=0.7})
+    self:SetEditBox(FriendsFrameBattlenetFrame.BroadcastFrame.EditBox)
 
     self:Init_BGMenu_Frame(FriendsFrame, {
         settings=function(_, _, _, _, portraitAlpha)
