@@ -88,7 +88,7 @@ local function Init()
             return
         end
         if d==1 then
-            if not PaperDollFrame:IsShown() then
+            if not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
             end
         elseif d==-1 then

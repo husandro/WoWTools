@@ -250,11 +250,11 @@ local function Init_UI()
         local _, guildFactionName = UnitFactionGroup(InspectFrame.unit)
 
         InspectGuildFrame.guildName:SetText(guildName or '')
-        InspectGuildFrame.guildRealmName:SetFormattedText(INSPECT_GUILD_REALM, guildRealmName or '')
+        InspectGuildFrame.guildRealmName:SetFormattedText(WoWTools_DataMixin.onlyChinese and '服务器：%s' or INSPECT_GUILD_REALM, guildRealmName or '')
 
         if ( guildFactionName and guildNumMembers ) then
-            InspectGuildFrame.guildLevel:SetFormattedText(INSPECT_GUILD_FACTION, guildFactionName)
-            InspectGuildFrame.guildNumMembers:SetFormattedText(INSPECT_GUILD_NUM_MEMBERS, guildNumMembers)
+            InspectGuildFrame.guildLevel:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s公会' or INSPECT_GUILD_FACTION, guildFactionName)
+            InspectGuildFrame.guildNumMembers:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%d名公会成员' or INSPECT_GUILD_NUM_MEMBERS, guildNumMembers)
         end
 
         local pointFrame = InspectGuildFrame.Points
@@ -265,24 +265,6 @@ local function Init_UI()
         SetDoubleGuildTabardTextures(InspectFrame.unit, InspectGuildFrameTabardLeftIcon, InspectGuildFrameTabardRightIcon, InspectGuildFrameBanner, InspectGuildFrameBannerBorder)
     end
 end
-
---[[InspectGuildFrame.guildRealmName:SetFormattedText(INSPECT_GUILD_REALM, guildRealmName)
-    local P_InspectGuildFrame_Update= InspectGuildFrame_Update
-    function InspectGuildFrame_Update()
-        local unit= InspectFrame.unit
-        if unit and GetGuildInfo(unit) then
-            P_InspectGuildFrame_Update()
-        end
-    end]]
-
-
-
-
-    --InspectFrame:HookScript('OnShow', Set_Target_Status)
-    --WoWTools_DataMixin:Hook('InspectFrame_UnitChanged', Set_Target_Status)
-
-
-
 
 
 

@@ -159,7 +159,7 @@ function WoWTools_DurabiliyMixin:OnEnter()
     item= item or 0
     pvp= pvp or 0
     GameTooltip:AddDoubleLine(
-        (WoWTools_DataMixin.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)
+        (WoWTools_DataMixin.onlyChinese and '物品' or ITEMS)
         ..(WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
         ..(cur3==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur3) or format(' |cnWARNING_FONT_COLOR:%.2f|r/%.2f', cur3, item)),
         format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
