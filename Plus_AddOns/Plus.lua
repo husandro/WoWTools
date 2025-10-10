@@ -282,7 +282,7 @@ local function Init()
 
 
 --不禁用，本插件
-    local btn= CreateFrame('Button', 'WoWToolsAddonsNotDisableButton', AddonList, 'WoWToolsButtonTemplate')
+    local btn= CreateFrame('Button', 'WoWToolsAddonsNotDisableButton', AddonList, 'WoWToolsButtonTemplate', 0)
     btn:SetSize(18, 18)
     btn:SetPoint('LEFT', AddonList.DisableAllButton, 'RIGHT', 2,0)
     btn:SetAlpha(0.3)
@@ -290,7 +290,16 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
-        GameTooltip:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', WoWTools_DataMixin.onlyChinese and '启用' or ENABLE, ''), WoWTools_TextMixin:GetYesNo(Save().enableAllButtn))
+        local index= self:GetID()
+        GameTooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '启用' or ENABLE)
+            ..WoWTools_DataMixin.addName..WoWTools_DataMixin.Icon.left
+            ..WoWTools_TextMixin:GetYesNo(Save().enableAllButtn),
+
+            (index>0 and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '转到' or NPE_TURN)
+            ..WoWTools_DataMixin.Icon.right..(index or '')
+        )
         GameTooltip:Show()
         self:SetAlpha(1)
     end
@@ -298,36 +307,24 @@ local function Init()
         GameTooltip:Hide()
         self:SetAlpha(0.3)
         AddonList.DisableAllButton:SetAlpha(1)
-        if self.findFrame then
-            if self.findFrame.check then
-                self.findFrame.check:set_leave_alpha()
-            end
-            self.findFrame=nil
-        end
+        WoWTools_AddOnsMixin:LevelButtonTip(self)
     end)
     btn:SetScript('OnEnter', function(self)
-        self:set_tooltips()
+
         AddonList.DisableAllButton:SetAlpha(0.3)
-        if not self.index then
+        local addonIndex= self:GetID()
+
+        if addonIndex<1 then
             for i=1, C_AddOns.GetNumAddOns() do
                 if C_AddOns.GetAddOnName(i)== 'WoWTools' then
-                    self.index=i
+                    addonIndex= i
                     break
                 end
             end
         end
-        if self.index then
-            AddonList.ScrollBox:ScrollToElementDataIndex(self.index)
-            for index, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
-                if frame:GetID()==index then
-                    if frame.check then
-                        frame.check:set_enter_alpha()
-                        self.findFrame=frame
-                    end
-                    break
-                end
-            end
-        end
+        self:SetID(addonIndex)
+        WoWTools_AddOnsMixin:EnterButtonTip(self)
+        self:set_tooltips()
     end)
     function btn:set_icon()
         if Save().enableAllButtn then
@@ -336,9 +333,13 @@ local function Init()
             self:SetNormalAtlas('talents-button-reset')
         end
     end
-    btn:SetScript('OnClick', function(self)
-        Save().enableAllButtn= not Save().enableAllButtn and true or nil
-        self:set_icon()
+    btn:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            Save().enableAllButtn= not Save().enableAllButtn and true or nil
+            self:set_icon()
+        else
+            WoWTools_AddOnsMixin:FindAddon(self:GetID())
+        end
         self:set_tooltips()
     end)
     btn:set_icon()

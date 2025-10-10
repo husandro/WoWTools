@@ -64,7 +64,7 @@ local function Create_Fast_Button(index)
             WoWTools_DataMixin.Icon.left
             ..WoWTools_TextMixin:GetEnabeleDisable(nil, true),
 
-          (WoWTools_DataMixin.onlyChinese and '转向' or NPE_TURN)
+          (WoWTools_DataMixin.onlyChinese and '转到' or NPE_TURN)
             ..WoWTools_DataMixin.Icon.right
             ..self:GetID()
         )
