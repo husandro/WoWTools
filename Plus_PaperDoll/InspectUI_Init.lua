@@ -50,22 +50,22 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
     if link and not frame.itemLinkText then
         frame.itemLinkText= WoWTools_LabelMixin:Create(frame, {size=16})
         if slot==16 then
-            frame.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6, 12)
+            frame.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 2, 9)
             frame.itemLinkText.isLeft=true
         elseif slot==17 then
-            frame.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -5, 12)
+            frame.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -3, 9)
+
         elseif WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
-            frame.itemLinkText:SetPoint('RIGHT', frame, 'LEFT', -2,0)
+            frame.itemLinkText:SetPoint('RIGHT', frame, 'LEFT', -4,0)
             frame.itemLinkText.isLeft=true
         else
-            frame.itemLinkText:SetPoint('LEFT', frame, 'RIGHT', 5,0)
+            frame.itemLinkText:SetPoint('LEFT', frame, 'RIGHT', 5, 0)
         end
 
 
         frame.itemBG= frame:CreateTexture(nil, 'BACKGROUND')
         frame.itemBG:SetAtlas('ChallengeMode-guild-background')
         frame.itemBG:SetAlpha(0.7)
-        --frame.itemBG:SetVertexColor(WoWTools_DataMixin.Player.UseColor.r, WoWTools_DataMixin.Player.UseColor.g, WoWTools_DataMixin.Player.UseColor.b)
         frame.itemBG:SetPoint('TOPLEFT', frame.itemLinkText)
         frame.itemBG:SetPoint('BOTTOMRIGHT', frame.itemLinkText)
     end
@@ -83,9 +83,9 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
             local slotTexture= GetInventoryItemTexture(unit, slot)
             if slotTexture then
                 if frame.itemLinkText.isLeft then
-                    link= '|T'..slotTexture..':22|t'..link
-                else
                     link= link..'|T'..slotTexture..':22|t'
+                else
+                    link= '|T'..slotTexture..':22|t'..link
                 end
             end
         end
@@ -155,7 +155,7 @@ end
 
 
 local function Init_UI()
-    
+
 
 --显示/隐藏，按钮
     WoWTools_PaperDollMixin:Init_ShowHideButton(InspectFrame)
@@ -242,8 +242,31 @@ local function Init_UI()
     WoWTools_DataMixin:Hook('InspectPaperDollFrame_SetLevel', function()--目标,天赋 装等
         set_InspectPaperDollFrame_SetLevel()
     end)
+
+
+    --替换，原生 出错
+    function InspectGuildFrame_Update()
+        local guildPoints, guildNumMembers, guildName, guildRealmName = C_PaperDollInfo.GetInspectGuildInfo(InspectFrame.unit)
+        local _, guildFactionName = UnitFactionGroup(InspectFrame.unit)
+
+        InspectGuildFrame.guildName:SetText(guildName or '')
+        InspectGuildFrame.guildRealmName:SetFormattedText(INSPECT_GUILD_REALM, guildRealmName or '')
+
+        if ( guildFactionName and guildNumMembers ) then
+            InspectGuildFrame.guildLevel:SetFormattedText(INSPECT_GUILD_FACTION, guildFactionName)
+            InspectGuildFrame.guildNumMembers:SetFormattedText(INSPECT_GUILD_NUM_MEMBERS, guildNumMembers)
+        end
+
+        local pointFrame = InspectGuildFrame.Points
+        pointFrame.SumText:SetText(guildPoints or '')
+        local width = pointFrame.SumText:GetStringWidth() + pointFrame.LeftCap:GetWidth() + pointFrame.RightCap:GetWidth() + pointFrame.Icon:GetWidth()
+        pointFrame:SetWidth(width)
+
+        SetDoubleGuildTabardTextures(InspectFrame.unit, InspectGuildFrameTabardLeftIcon, InspectGuildFrameTabardRightIcon, InspectGuildFrameBanner, InspectGuildFrameBannerBorder)
+    end
 end
---[[替换，原生 出错 InspectGuildFrame.guildRealmName:SetFormattedText(INSPECT_GUILD_REALM, guildRealmName);
+
+--[[InspectGuildFrame.guildRealmName:SetFormattedText(INSPECT_GUILD_REALM, guildRealmName)
     local P_InspectGuildFrame_Update= InspectGuildFrame_Update
     function InspectGuildFrame_Update()
         local unit= InspectFrame.unit

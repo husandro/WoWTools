@@ -6211,7 +6211,16 @@
         "CatalogShopFrameBg",
         "ChallengeMode_LoadUI",
         "FriendsFrameUnsquelchButton_OnClick",
-        "UNIGNORE_PLAYER_BUTTON_LABEL"
+        "UNIGNORE_PLAYER_BUTTON_LABEL",
+        "INSPECT_GUILD_REALM",
+        "InspectGuildFrame",
+        "SetDoubleGuildTabardTextures",
+        "InspectGuildFrameTabardLeftIcon",
+        "InspectGuildFrameTabardRightIcon",
+        "InspectGuildFrameBanner",
+        "InspectGuildFrameBannerBorder",
+        "INSPECT_GUILD_FACTION",
+        "INSPECT_GUILD_NUM_MEMBERS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
