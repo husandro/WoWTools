@@ -19,7 +19,9 @@ function WoWTools_MoveMixin.Events:Blizzard_RecruitAFriend()
     RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
-    WoWTools_MoveMixin:Setup(RecruitAFriendRewardsFrame)--好友召募奖励
+    --RecruitAFriendFrame.RewardClaiming.NextRewardName:SetPoint('RIGHT', -13, 0)
+    --RecruitAFriendFrame.RewardClaiming.NextRewardName.Text:SetPoint('RIGHT')
+    WoWTools_MoveMixin:Setup(RecruitAFriendRewardsFrame)
     WoWTools_MoveMixin:Setup(RecruitAFriendFrame.RewardClaiming.Inset, {frame=FriendsFrame})
 end
 
@@ -223,21 +225,19 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(WhoFrame)
     self:SetMenu(WhoFrameDropdown)
 
-    if WhoFrameEditBoxInset then--11.2 没有了
-        self:HideTexture(WhoFrameEditBoxInset.Bg)
-        self:SetNineSlice(WhoFrameEditBoxInset, 0.3)
-    else
-        self:HideTexture(WhoFrameEditBox.Bg)
-        self:SetEditBox(WhoFrameEditBox)
-    end
+
+    self:HideTexture(WhoFrameEditBox.Bg)
+    self:SetEditBox(WhoFrameEditBox)
 
     self:CreateBG(WhoFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
     self:SetScrollBar(QuickJoinFrame)
 
+
+    self:SetTabButton(FriendsTabHeader)
+
     for i=1, 4 do
         self:SetTabButton(_G['FriendsFrameTab'..i])
-        self:SetTabButton(_G['FriendsTabHeaderTab'..i])
-        --self:SetFrame(_G['WhoFrameColumnHeader'..i], {notAlpha=true})
+        self:SetFrame(_G['WhoFrameColumnHeader'..i], {notAlpha=true})
     end
 
     self:SetFrame(BattleTagInviteFrame.Border, {notAlpha=true})

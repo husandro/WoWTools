@@ -6209,7 +6209,9 @@
         "CatalogShopFrame",
         "CatalogShopFrameCloseButton",
         "CatalogShopFrameBg",
-        "ChallengeMode_LoadUI"
+        "ChallengeMode_LoadUI",
+        "FriendsFrameUnsquelchButton_OnClick",
+        "UNIGNORE_PLAYER_BUTTON_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

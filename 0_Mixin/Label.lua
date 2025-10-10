@@ -13,6 +13,8 @@ SharedFonts.xml
         <OnHyperlinkEnter function="EncounterJournal_OnHyperlinkEnter"/>
     </Scripts>
 </SimpleHTML>
+
+AutoScalingFontStringMixin
 ]]
 
 

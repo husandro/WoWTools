@@ -648,6 +648,34 @@ local function Init()--好友列表, 初始化
         end
     end)
 
+
+
+--屏蔽列表 FriendsIgnoreListMixin
+        hooksecurefunc('IgnoreList_InitButton', function(btn, info)
+        if btn.indexLable then
+            btn.indexLable:SetText(btn.index or '')
+            return
+        end
+        btn:SetScript('OnDoubleClick', function()
+            WoWTools_DataMixin:Call(FriendsFrameUnsquelchButton_OnClick, FriendsFrame.IgnoreListWindow.UnignorePlayerButton)
+        end)
+        btn.indexLable= WoWTools_LabelMixin:Create(btn, {mouse=true})
+        btn.indexLable:SetPoint('RIGHT')
+        btn.indexLable:SetText(btn.index or '')
+        btn.indexLable:SetScript('OnLeave', function(region) GameTooltip:Hide() region:SetAlpha(1) end)
+        btn.indexLable:SetScript('OnEnter', function(region)
+            GameTooltip:SetOwner(region, 'ANCHOR_RIGHT')
+            GameTooltip:SetText(
+                WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)
+                ..WoWTools_DataMixin.Icon.left
+                ..(WoWTools_DataMixin.onlyChinese and '移出列表' or UNIGNORE_PLAYER_BUTTON_LABEL)
+            )
+            GameTooltip:Show()
+            region:SetAlpha(0.5)
+        end)
+    end)
+
     Init=function()end
 end
 
