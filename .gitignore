@@ -2,6 +2,11 @@
 *.bak
 not*
 bak
+.gitignore
+.gitattributes
+pkgme​​ta.yaml
+.vscode
+.github
 
 # Compiled Lua sources
 luac.out
