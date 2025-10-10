@@ -268,20 +268,6 @@ end
 
 
 
---[[local function Init_ScrollBox(frame)
-    if not frame:GetView() then
-        return
-    end
-    for _, button in pairs(frame:GetFrames()) do
-        set_Loot_Spec(button)
-    end
-end]]
-
-
-
-
-
-
 
 
 

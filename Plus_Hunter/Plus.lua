@@ -223,7 +223,7 @@ local function Init()
     --WoWTools_DataMixin:Hook(StableStabledPetButtonTemplateMixin, 'SetPet', Set_SetPet)
 
     WoWTools_DataMixin:Hook(StableFrame.StabledPetList.ScrollBox, 'Update', function(self)
-        if not self:GetView() then
+        if not self:HasView() then
             return
         end
         for _, btn in pairs(self:GetFrames() or {}) do

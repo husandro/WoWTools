@@ -37,7 +37,7 @@ end
     --[[
     local texture, item, quantity, currencyID, itemQuality, locked, isQuestItem, questID, isActive = GetLootSlotInfo(slotIndex);
     WoWTools_DataMixin:Hook(LootFrame, 'Open', function(frame)--LootFrame.lua
-        if not frame.ScrollBox:GetView() then
+        if not frame.ScrollBox:HasView() then
             return
         end
         for index, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
@@ -45,7 +45,7 @@ end
         end
     end)
     WoWTools_DataMixin:Hook(LootFrame.ScrollBox, 'SetScrollTargetOffset', function(frame)
-        if not frame:GetView() then
+        if not frame:HasView() then
             return
         end
         for index, btn in pairs(frame:GetFrames() or {}) do

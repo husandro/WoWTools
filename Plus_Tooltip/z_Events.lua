@@ -570,7 +570,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_AchievementUI()
     end)
     WoWTools_DataMixin:Hook('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
         local frame= AchievementFrameComparison.AchievementContainer.ScrollBox
-        if not frame:GetView() then
+        if not frame:HasView() then
             return
         end
         for _, button in pairs(frame:GetFrames() or {}) do

@@ -175,7 +175,7 @@ local function Init()
     end)
 
     WoWTools_DataMixin:Hook(MacroFrame.MacroSelector.ScrollBox, 'Update', function(self)
-        if not self:GetView() then
+        if not self:HasView() then
             return
         end
         for _, btn in pairs(self:GetFrames()or {}) do

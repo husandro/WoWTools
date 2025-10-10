@@ -199,14 +199,7 @@ end
 
 
 local function Init()
-	--[[WoWTools_DataMixin:Hook(ReputationFrame.ScrollBox, 'Update', function(self)
-        if not self:GetView() then
-            return
-        end
-        for _, btn in pairs(self:GetFrames()or {}) do
-            Setup(btn)
-        end
-    end)]]
+
 
 	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'Initialize', function(...)
 		Setup(...)

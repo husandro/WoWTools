@@ -29,7 +29,7 @@ local function Init()
 	end)]]--货币转移，bug
 
 	WoWTools_DataMixin:Hook(CurrencyTransferLog.ScrollBox, 'Update', function(self)
-		if not self:GetView() or Save().notPlus or WoWTools_FrameMixin:IsLocked(self:GetParent()) then
+		if not self:HasView() or Save().notPlus or WoWTools_FrameMixin:IsLocked(self:GetParent()) then
             return
         end
 

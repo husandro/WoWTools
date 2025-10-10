@@ -144,7 +144,7 @@ local function Init()
     end
     WoWTools_DataMixin:Hook(LootHistoryElementMixin, 'Init', function(...) set_LootFrame_btn(...) end)
     WoWTools_DataMixin:Hook(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
-        if not self:GetView() then
+        if not self:HasView() then
             return
         end
         for _, btn in pairs(self:GetFrames()) do

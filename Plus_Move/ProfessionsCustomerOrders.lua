@@ -16,7 +16,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
     ProfessionsCustomerOrdersFrame.MyOrdersPage:SetPoint('BOTTOMRIGHT')
 
     WoWTools_DataMixin:Hook(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.ScrollBox, 'Update', function(f)
-        if not f:GetView() then
+        if not f:HasView() then
             return
         end
         for _, btn2 in pairs(f:GetFrames() or {}) do

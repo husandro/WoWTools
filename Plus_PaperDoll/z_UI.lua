@@ -358,7 +358,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetScrollBar(ReputationFrame.ReputationDetailFrame.ScrollingDescriptionScrollBar)
 
     WoWTools_DataMixin:Hook(ReputationFrame.ScrollBox, 'Update', function(f)
-        if not f:GetView() then
+        if not f:HasView() then
             return
         end
         for _, frame in pairs(f:GetFrames() or {}) do

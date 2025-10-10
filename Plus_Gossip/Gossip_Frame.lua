@@ -249,7 +249,7 @@ local function Init(isShow)
 
 
     function List:update_list()
-        if not self:GetView() then
+        if not self:HasView() then
             return
         end
         for _, btn in pairs(self:GetFrames() or {}) do
@@ -263,7 +263,7 @@ local function Init(isShow)
         for _, data in pairs(C_GossipInfo.GetOptions() or {}) do
             tab[data.orderIndex]= data.gossipOptionID
         end
-        if not GossipFrame.GreetingPanel.ScrollBox:GetView() then
+        if not GossipFrame.GreetingPanel.ScrollBox:HasView() then
             return
         end
         for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
@@ -1087,7 +1087,7 @@ local function Init(isShow)
     Frame:SetScript('OnHide', function()
         WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         List:set_list()
-        if GossipFrame:IsShown() and GossipFrame.GreetingPanel.ScrollBox:GetView() then
+        if GossipFrame:IsShown() and GossipFrame.GreetingPanel.ScrollBox:HasView() then
            for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
                 b:UnlockHighlight()
             end

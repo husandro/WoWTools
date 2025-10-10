@@ -1,5 +1,5 @@
 local function Set_Update(frame)
-    if not frame:GetView() then
+    if not frame:HasView() then
         return
     end
 

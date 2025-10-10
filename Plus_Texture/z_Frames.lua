@@ -530,7 +530,20 @@ function WoWTools_TextureMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
     self:SetScrollBar(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ProductsScrollBoxContainer)
     self:SetFrame(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ShadowLayer, {alpha=0.7})
 
-     self:Init_BGMenu_Frame(CatalogShopFrame, {
+    WoWTools_DataMixin:Hook(CatalogShopFrame.ProductContainerFrame.ProductsScrollBoxContainer.ScrollBox, 'Update', function(frame)
+        if not frame:HasView() then
+            return
+        end
+        for _, b in pairs(frame:GetFrames() or {}) do
+            if b.BackgroundContainer and b.BackgroundContainer.Background then
+                --btn.BackgroundContainer.Background:SetAlpha(0)
+                info= b
+                for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+            end
+        end
+    end)
+
+    self:Init_BGMenu_Frame(CatalogShopFrame, {
         alpha=0.5,
         enabled=true,
         settings=function(_, texture, alpha)
@@ -538,3 +551,5 @@ function WoWTools_TextureMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
         end
      })
 end
+--CatalogShopFrame.ProductContainerFrame.ProductsScrollBoxContainer.ScrollBox.ScrollTarget.1832c2adeb0.BackgroundContainer.Background
+--CatalogShopFrame.ProductContainerFrame.ProductsScrollBoxContainer.ScrollBox.ScrollTarget.1832c2adeb0.SelectedContainer.FrameBackground

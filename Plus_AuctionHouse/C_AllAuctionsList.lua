@@ -12,7 +12,7 @@ end
 
   --双击，取消拍卖
   local function OnDoubleClick_AllAuctionsList(frame)
-    if not frame:GetView() then
+    if not frame:HasView() then
         return
     end
     for _, btn in pairs(frame:GetFrames() or {}) do
@@ -56,7 +56,7 @@ local function Init_Cancel_Button()
 
     function cancelButton:get_auctionID()
         local tab={}
-        if AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetView() then
+        if AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:HasView() then
             for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
                 if info.rowData and info.rowData.auctionID and info.rowData.timeLeftSeconds and C_AuctionHouse.CanCancelAuction(info.rowData.auctionID) then
                     table.insert(tab, info.rowData)

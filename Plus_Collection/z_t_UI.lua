@@ -269,7 +269,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
                     self:SetAlphaColor(frame.List.ScrollToBottomButton.Texture, true)
 
                     WoWTools_DataMixin:Hook(frame.List.ScrollBox, 'Update', function(frame)
-                        if not frame:GetView() then
+                        if not frame:HasView() then
                             return
                         end
                         for _, btn in pairs(frame:GetFrames() or {}) do

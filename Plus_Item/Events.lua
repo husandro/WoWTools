@@ -65,7 +65,7 @@ end
 --商站
 function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
     local function set_uptate(frame)
-        if not frame:GetView() then
+        if not frame:HasView() then
             return
         end
         for _, btn in pairs(frame:GetFrames()) do

@@ -287,7 +287,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
     --WoWTools_DataMixin:Hook(ClubFinderCommunitiesCardMixin, 'Init', function(b)
     local function Init_Update(frame)
-        if not frame:GetView() or WoWTools_FrameMixin:IsLocked(frame) then
+        if not frame:HasView() or WoWTools_FrameMixin:IsLocked(frame) then
             return
         end
         for _, btn in pairs(frame:GetFrames() or {}) do

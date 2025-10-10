@@ -10,7 +10,7 @@ end
 
 
 local function Set_BrowseResultsFrame(frame)
-    if not frame:GetView() then
+    if not frame:HasView() then
         return
     end
     for _, btn in pairs(frame:GetFrames() or {}) do
@@ -97,7 +97,7 @@ local function Init()
 
     --双击，一口价
     WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', function(frame)
-        if not frame:GetView() then
+        if not frame:HasView() then
             return
         end
         for _, btn in pairs(frame:GetFrames() or {}) do

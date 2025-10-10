@@ -271,7 +271,7 @@ end
 
 local function InviteListScrollFrame_Update()
     local frame= CalendarCreateEventInviteList.ScrollBox
-    if C_Calendar.AreNamesReady() and frame:GetView()  then
+    if C_Calendar.AreNamesReady() and frame:HasView()  then
         for index, btn in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
             local inviteInfo = C_Calendar.EventGetInvite(index)
             if inviteInfo and inviteInfo.guid then

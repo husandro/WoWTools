@@ -152,7 +152,7 @@ local function Init_ShowCommoditiesButton()
 --Blizzard_AuctionHouseSearchBar.lua
 --出售，物品，双击列表，转到购买界面
     WoWTools_DataMixin:Hook(AuctionHouseFrame.CommoditiesSellList.ScrollBox, 'Update', function(frame)
-        if not frame:GetView() then
+        if not frame:HasView() then
             return
         end
         for _, btn in pairs(frame:GetFrames() or {}) do
@@ -171,7 +171,7 @@ local function Init_ShowCommoditiesButton()
         end
     end)
     WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemSellList.ScrollBox, 'Update', function(frame)
-        if not frame:GetView() then
+        if not frame:HasView() then
             return
         end
         for _, btn in pairs(frame:GetFrames() or {}) do

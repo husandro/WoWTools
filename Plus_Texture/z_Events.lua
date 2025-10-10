@@ -1790,7 +1790,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
 
 
     WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
-        if not f:GetView() then
+        if not f:HasView() then
             return
         end
         for _, frame in pairs(f:GetFrames() or {}) do

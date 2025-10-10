@@ -502,7 +502,7 @@ local function Init()--好友列表, 初始化
     --查询, 名单列表
     local function set_WhoList_Update(scrollBox)
         scrollBox= scrollBox or WhoFrame.ScrollBox
-        if not scrollBox:GetView() then
+        if not scrollBox:HasView() then
             return
         end
 
