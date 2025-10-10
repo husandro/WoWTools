@@ -78,27 +78,6 @@ end
 
 --小，背包
 function WoWTools_MoveMixin.Frames:ContainerFrame1()
-    --[[local restPointFunc= function()
-        if not InCombatLockdown() then
-            WoWTools_DataMixin:Call('UpdateContainerFrameAnchors')
-        end
-    end
-    for slotID= 1, NUM_TOTAL_BAG_FRAMES do
-        local frame= _G['ContainerFrame'..slotID]
-        if frame then
-            if slotID==1 then
-                self:Setup(frame, {
-                    restPointFunc=restPointFunc
-                })
-            else
-                self:Setup(frame, {
-                    frame=_G['ContainerFrame1'],
-                    needSize=true,
-                    restPointFunc=restPointFunc
-                })
-            end
-        end
-    end]]
 --NUM_CONTAINER_FRAMES 11.2版本是 6， 以前是13
     for i=1, NUM_CONTAINER_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do--13 NUM_CONTAINER_FRAMES = 13;
         local frame= _G['ContainerFrame'..i]

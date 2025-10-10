@@ -118,6 +118,8 @@ function WoWTools_AddOnsMixin:FindAddon(addonIndex)
     end
     local category=  C_AddOns.GetAddOnMetadata(addonIndex, "Category")
 
+    AddonList.SearchBox:SetText("")
+
     AddonList.ScrollBox:FindElementDataByPredicate(function(elementData)
         local data= elementData:GetData()
         if not data then
