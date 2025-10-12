@@ -6220,7 +6220,12 @@
         "InspectGuildFrameBanner",
         "InspectGuildFrameBannerBorder",
         "INSPECT_GUILD_FACTION",
-        "INSPECT_GUILD_NUM_MEMBERS"
+        "INSPECT_GUILD_NUM_MEMBERS",
+        "AchievementObjectives_DisplayCriteria",
+        "CRITERIA_TYPE_ACHIEVEMENT",
+        "EVALUATION_TREE_FLAG_PROGRESS_BAR",
+        "AchievementFrameSummaryCategoriesCategory1Bar",
+        "AchievementFrameSummaryCategoriesStatusBarBar"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

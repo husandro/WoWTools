@@ -416,11 +416,24 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
 
     AchievementFrameFilterDropdown:ClearAllPoints()
     AchievementFrameFilterDropdown:SetPoint('CENTER', AchievementFrame.Header.LeftDDLInset, -2, 3)
---Search
-    --[[AchievementFrame.SearchResults:ClearAllPoints()
-    AchievementFrame.SearchResults:SetPoint('BOTTOMLEFT', 100, 8)
-    AchievementFrame.SearchResults:SetPoint('BOTTOMRIGHT', -100, 8)
-    AchievementFrame.SearchResults:SetPoint('TOP', 0, -15)]]
+
+    --[[hooksecurefunc('AchievementObjectives_DisplayCriteria', function(objectivesFrame, id)
+        if not id or not objectivesFrame or objectivesFrame:GetHeight()==0 then
+            return
+        end
+        local numCriteria = GetAchievementNumCriteria(id)
+        for i = 1, numCriteria do
+            local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, criteriaFlags, assetID, quantityString = GetAchievementCriteriaInfo(id, i);
+            if ( criteriaType == CRITERIA_TYPE_ACHIEVEMENT and assetID ) then
+            elseif ( bit.band(criteriaFlags, EVALUATION_TREE_FLAG_PROGRESS_BAR) == EVALUATION_TREE_FLAG_PROGRESS_BAR ) then
+
+            else
+            end
+        end
+    end)]]
+
+
+
 
     self:Setup(AchievementFrame, {
         minW=768,
@@ -430,6 +443,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
         end,
     })
     self:Setup(AchievementFrame.Header, {frame=AchievementFrame})
+
 --比较
     self:Setup(AchievementFrameComparisonHeader, {frame=AchievementFrame})
     self:Setup(AchievementFrameComparison, {frame=AchievementFrame})
@@ -752,5 +766,5 @@ end
 
 
 
-    
+
 

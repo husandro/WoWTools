@@ -178,7 +178,12 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
         self:HideTexture(_G['AchievementFrameSummaryCategoriesCategory'..i..'Middle'])
         self:HideTexture(_G['AchievementFrameSummaryCategoriesCategory'..i..'Left'])
         self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'FillBar'], nil, nil, 0.5)
+        local bar= _G['AchievementFrameSummaryCategoriesCategory'..i..'Bar']
+        if bar then
+            bar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--生命条，材质
+        end
     end
+    AchievementFrameSummaryCategoriesStatusBarBar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
 
 --比较
     AchievementFrameComparisonHeader:ClearAllPoints()
@@ -195,12 +200,23 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     AchievementFrameComparisonHeaderName:ClearAllPoints()
     AchievementFrameComparisonHeaderName:SetPoint('BOTTOMRIGHT', AchievementFrameCloseButton, 'TOPLEFT', 0, 25)
 
-    --AchievementFrameComparisonHeaderName:SetPoint('CENTER', 0)
     AchievementFrameComparisonHeaderName:SetTextScale(1.5)
     AchievementFrameComparisonHeaderName:SetShadowOffset(1, -1)
 --目标成就点数
     AchievementFrameComparisonHeader.Points:ClearAllPoints()
     AchievementFrameComparisonHeader.Points:SetPoint('BOTTOM', AchievementFrameComparisonHeaderName, 'TOP',0,2)
+
+--总获得
+    AchievementFrameComparison.Summary.Player.StatusBar.Bar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
+    self:HideTexture(AchievementFrameComparison.Summary.Player.StatusBar.Middle)
+    self:HideTexture(AchievementFrameComparison.Summary.Player.StatusBar.Right)
+    self:HideTexture(AchievementFrameComparison.Summary.Player.StatusBar.Left)
+
+    AchievementFrameComparison.Summary.Friend.StatusBar.Bar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
+    self:HideTexture(AchievementFrameComparison.Summary.Friend.StatusBar.Middle)
+    self:HideTexture(AchievementFrameComparison.Summary.Friend.StatusBar.Right)
+    self:HideTexture(AchievementFrameComparison.Summary.Friend.StatusBar.Left)
+
 --创建 BG
     self:CreateBG(AchievementFrameComparisonHeader, {
         point=function(icon)
