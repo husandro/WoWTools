@@ -233,12 +233,8 @@ end
 
 
 function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
-    if not frame then
-        return
-    end
-
-    name= name or frame:GetName()
-    if not name then
+    name= name or (frame and frame:GetName())
+    if not name or not frame then
         return
     end
 

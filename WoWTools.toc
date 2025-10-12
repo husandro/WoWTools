@@ -2,7 +2,7 @@
 ## Title: |cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: @project-version@
-## Notes: |A:Icon-WoW:0:0|aWoW |cffff4800Plus|r|n|A:WoWShare-TwitterLogo:0:0|a|cff00ccffhttps://www.curseforge.com/wow/addons/wowtools|r
+## Notes: |A:Icon-WoW:0:0|aWoW |cffff4800Plus|r|n|A:WoWShare-TwitterLogo:0:0|a|cff00ccffhttps://github.com/husandro/WoWTools|r
 ## SavedVariables: WoWToolsSave, WoWTools_WoWDate, WoWToolsPlayerDate
 ## DefaultState: Enabled
 ## X-Wago-ID: baND1J6o
@@ -10,7 +10,7 @@
 ## X-Category: Plugins
 ## IconTexture: Interface\AddOns\WoWTools\Source\Texture\WoWtools.tga
 ###IconAtlas: orderhalltalents-done-glow
-## X-Website https://www.curseforge.com/wow/addons/wowtools
+## X-Website https://github.com/husandro/WoWTools
 ## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !LibUIDropDownMenu, LibRangeCheck-3.0
 ####AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ####AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter

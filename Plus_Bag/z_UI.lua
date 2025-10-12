@@ -77,23 +77,23 @@ end
 
 
 --小，背包
-function WoWTools_MoveMixin.Frames:ContainerFrame1()
 --NUM_CONTAINER_FRAMES 11.2版本是 6， 以前是13
-    for i=1, NUM_CONTAINER_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do--13 NUM_CONTAINER_FRAMES = 13;
+--NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do--13 NUM_CONTAINER_FRAMES = 13
+--or i== NUM_TOTAL_BAG_FRAMES+2 then
+function WoWTools_MoveMixin.Frames:ContainerFrame1()
+    for i=1, NUM_CONTAINER_FRAMES do
         local frame= _G['ContainerFrame'..i]
         if frame then
-            if i==1 then--or i== NUM_TOTAL_BAG_FRAMES+2 then
+            if i==1 then
                 self:Setup(frame, {
-                restPointFunc=function()
-                    if not InCombatLockdown() then
-                        WoWTools_DataMixin:Call('UpdateContainerFrameAnchors')
+                    restPointFunc=function()
+                        if not InCombatLockdown() then
+                            WoWTools_DataMixin:Call('UpdateContainerFrameAnchors')
+                        end
                     end
-                end
                 })
             else
-                self:Setup(frame, {
-                    notSave=true,
-                })
+                self:Setup(frame, {notSave=true})
             end
         end
     end

@@ -1115,9 +1115,7 @@ end
 
 function WoWTools_MoveMixin:Set_SizeScale(frame)
     local name= frame and frame:GetName()
-    if not name
-        or not frame.ResizeButton
-    then
+    if not name or not frame.ResizeButton then
         return
     end
 
