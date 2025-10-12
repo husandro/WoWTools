@@ -26,7 +26,7 @@ local function exit_Instance()
     end
     local name= GetInstanceInfo()
 
-    Save_Instance_Num(name)
+    --Save_Instance_Num(name)
 
     local num= WoWTools_LFDMixin:Get_Instance_Num(name)
 
@@ -52,7 +52,7 @@ local function exit_Instance()
     ExitIns=nil
 end
 
- 
+
 
 
 
@@ -71,6 +71,10 @@ local function Init_Frame()
     frame:RegisterEvent('PVP_MATCH_COMPLETE')
 
     frame:SetScript('OnEvent', function(self, event)
+        if event=='' then
+            Save_Instance_Num()
+        end
+
         if event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--or event=='SCENARIO_COMPLETED' then--自动离开
             if Save().leaveInstance
                 and IsInLFGDungeon()
@@ -88,7 +92,7 @@ local function Init_Frame()
                         exit_Instance()
                     end)
                     StaticPopup_Show('WoWTools_LFD_ExitIns')
-                    
+
                     WoWTools_CooldownMixin:Setup(WoWTools_DataMixin:StaticPopup_FindVisible('WoWTools_LFD_ExitIns') or StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
             end
 
@@ -113,7 +117,7 @@ local function Init_Frame()
                 WoWTools_DataMixin.onlyChinese and '海岛探险' or ISLANDS_HEADER,
                 WoWTools_LFDMixin:Get_Instance_Num('island')
             )
-            
+
         elseif event=='PVP_MATCH_COMPLETE' then--离开战场
             if Save().leaveInstance then
                 WoWTools_DataMixin:PlaySound()--播放, 声音
@@ -185,7 +189,7 @@ local function Init()
         timeout=Save().sec}
 
     Init_Frame()
-    
+
     LFGDungeonReadyStatus:HookScript('OnShow', function()
         if Save().leaveInstance then
             exit_Instance()
