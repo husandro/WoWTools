@@ -37,6 +37,7 @@ local P_Save={
 
     load_list=WoWTools_DataMixin.Player.husandro,--禁用, 已加载，列表
     --load_list_top=true,
+    load_list_onlyIcon=true,
     load_list_size=22,
 
     rightListScale=1,
