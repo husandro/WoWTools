@@ -67,13 +67,16 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
         self:SetFrame(frame, {alpha=0.5})
+        self:SetButton(frame.BountyDropdown)
     end
+
     self:SetButton(WorldMapFrame.SidePanelToggle.CloseButton, {alpha=0.5})
     self:SetButton(WorldMapFrame.SidePanelToggle.OpenButton, {alpha=0.5})
 
     self:SetFrame(WorldMapFrame.NavBar.overlay, {alpha=0})
 
     WorldMapFrame.BorderFrame.PortraitContainer:SetSize(48,48)
+
     WoWTools_DataMixin:Hook(WorldMapFrame, 'Minimize', function(frame)
        frame.BorderFrame.PortraitContainer:SetSize(48,48)
     end)
@@ -91,6 +94,9 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
             WorldMapFramePortrait:SetAlpha(portraitAlpha or 1)
         end
     })
+
+
+
 end
 
 

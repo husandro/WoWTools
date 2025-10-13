@@ -34,9 +34,48 @@ local P_Save={
 
 
 
+local function Save()
+    return  WoWToolsSave['Plus_WorldMap']
+end
 
 
 
+local function Init()
+    --缩放
+    for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
+        if frame.BountyDropdown then
+
+            function frame:set_scale()
+                if not WoWTools_FrameMixin:IsLocked(self) then
+                    self:SetScale(Save().activityTrackerScale or 1)
+                end
+            end
+
+            Menu.ModifyMenu("MENU_WORLD_MAP_ACTIVITY_TRACKER", function(self, root)
+                root:CreateDivider()
+                local sub= WoWTools_MenuMixin:Scale(self, root, function()
+                    return Save().activityTrackerScale or 1
+                end, function(value)
+                    if not WoWTools_FrameMixin:IsLocked(frame) then
+                        Save().activityTrackerScale= value
+                        frame:set_scale()
+                    end
+                end)
+                sub:SetTooltip(function(tooltip)
+                    tooltip:AddLine(WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
+                end)
+            end)
+
+            if Save().activityTrackerScale then
+                frame:set_scale()
+            end
+
+            break
+        end
+    end
+
+     Init=function()end
+end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
@@ -53,19 +92,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_WorldMapMixin.addName,
                 tooltip=  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
-                GetValue= function() return not  WoWToolsSave['Plus_WorldMap'].disabled end,
+                GetValue= function() return not  Save().disabled end,
                 func= function()
-                     WoWToolsSave['Plus_WorldMap'].disabled= not  WoWToolsSave['Plus_WorldMap'].disabled and true or nil
+                     Save().disabled= not  Save().disabled and true or nil
                     print(
                         WoWTools_DataMixin.addName,
                         WoWTools_WorldMapMixin.addName,
-                        WoWTools_TextMixin:GetEnabeleDisable(not  WoWToolsSave['Plus_WorldMap'].disabled),
+                        WoWTools_TextMixin:GetEnabeleDisable(not  Save().disabled),
                         WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end
             })
 
-            if WoWToolsSave['Plus_WorldMap'].disabled then
+            if Save().disabled then
                 self:UnregisterEvent(event)
             else
                 WoWTools_WorldMapMixin:Init_Menu()--设置菜单
@@ -84,6 +123,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
                     self:UnregisterEvent(event)
                 end
+
+                Init()
             end
 
         elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
