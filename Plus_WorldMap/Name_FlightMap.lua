@@ -80,6 +80,29 @@ local function Init()
         Set_Text(...)
     end)
 
+
+
+
+
+
+
+
+
+    --飞行点，加名称
+    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(self)
+        local info= self.taxiNodeData
+        if not info or not info.nodeID then
+            return
+        end
+
+        GameTooltip:AddDoubleLine(
+            'nodeID|cffffffff'..WoWTools_DataMixin.Icon.icon2..info.nodeID,
+            info.slotIndex and 'slotIndex|cffffffff'..WoWTools_DataMixin.Icon.icon2..info.slotIndex
+        )
+
+        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+    end)
+
     Init=function()end
 end
 

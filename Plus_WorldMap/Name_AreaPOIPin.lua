@@ -106,6 +106,42 @@ local function Init()
         self.Text:SetText(text or '')
     end)
 
+
+
+
+
+
+
+
+
+
+
+    --POI提示 AreaPOIDataProvider.lua
+    --AreaPOIPinMixin:TryShowTooltip
+    WoWTools_DataMixin:Hook(AreaPoiUtil, 'TryShowTooltip', function(_, _, poiInfo)
+        local tooltip = poiInfo and GetAppropriateTooltip()
+        if not tooltip or not tooltip:IsShown() or not (poiInfo.areaPoiID or not poiInfo.widgetSetID) or WoWTools_FrameMixin:IsLocked(tooltip) then
+            return
+        end
+        if poiInfo.areaPoiID then
+            tooltip:AddLine('areaPoiID|cffffffff'..WoWTools_DataMixin.Icon.icon2..poiInfo.areaPoiID)
+        end
+        if poiInfo.widgetSetID then
+            tooltip:AddLine('widgetSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..poiInfo.widgetSetID)
+            for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
+                if widget and widget.widgetID and widget.shownState==1 then
+                    tooltip:AddLine('widgetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..widget.widgetID)
+                end
+            end
+        end
+        if poiInfo.factionID then
+            WoWTools_TooltipMixin:Set_Faction(tooltip, poiInfo.factionID)
+        end
+
+        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+    end)
+
+
     Init=function()end
 end
 

@@ -6225,7 +6225,8 @@
         "CRITERIA_TYPE_ACHIEVEMENT",
         "EVALUATION_TREE_FLAG_PROGRESS_BAR",
         "AchievementFrameSummaryCategoriesCategory1Bar",
-        "AchievementFrameSummaryCategoriesStatusBarBar"
+        "AchievementFrameSummaryCategoriesStatusBarBar",
+        "AreaPoiUtil"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -584,7 +584,9 @@ local function Create_Button(index, info)
         self.uiMapID= tables.uiMapID
 
         self.name= tables.name
-        self.nameText:SetText(tables.name=='' and ' ' or tables.name or '')
+        local name= WoWTools_TextMixin:CN(tables.name, {areaPoiID=tables.areaPoiID, isName=true}) or tables.name
+        name= name=='' and ' ' or name or ''
+        self.nameText:SetText(name)
 
 
         local text

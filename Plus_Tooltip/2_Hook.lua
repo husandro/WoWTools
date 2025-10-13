@@ -167,36 +167,7 @@ local function Init()
 
 
 
---POI提示 AreaPOIDataProvider.lua
-    WoWTools_DataMixin:Hook(AreaPOIPinMixin,'TryShowTooltip', function(self)
-        if not self.areaPoiID and not self.widgetSetID then
-            return
-        end
 
-        local uiMapID = self:GetMap() and self:GetMap():GetMapID()
-        GameTooltip:AddDoubleLine(
-            self.areaPoiID and 'areaPoiID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.areaPoiID,
-            self.widgetSetID and 'widgetSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.widgetSetID
-        )
-
-        if self.widgetSetID then
-            for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(self.widgetSetID) or {}) do
-                if widget and widget.widgetID and widget.shownState==1 then
-                    GameTooltip:AddLine('widgetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..widget.widgetID)
-                end
-            end
-        end
-
-        if uiMapID then
-            GameTooltip:AddLine('uiMapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..uiMapID)
-        end
-
-        if self.factionID then
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)
-        end
-
-        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
-    end)
 
 
 

@@ -17,8 +17,8 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:HideTexture(WorldMapFrame.BorderFrame.InsetBorderTop)
 
     WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
-
-    WoWTools_DataMixin:Hook(WorldMapFrame, 'SynchronizeDisplayState', function(frame)--最大化时，隐藏背景
+--最大化时，隐藏背景
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'SynchronizeDisplayState', function(frame)
         if frame:IsMaximized() then
             frame.BlackoutFrame:Hide()
         end
@@ -113,28 +113,37 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
     local minimizedHeight= WorldMapFrame.minimizedHeight or 534
-    --frame.questLogWidth = 333;
+    local questLogWidth= WorldMapFrame.questLogWidth or 333
 
 
     local function set_min_max_value(size)
-        local frame= WorldMapFrame
-        local isMax= frame:IsMaximized()
-
+        if WoWTools_FrameMixin:IsLocked(WorldMapFrame) then
+            return
+        end
+        local isMax= WorldMapFrame:IsMaximized()
         if isMax then
-            frame.minimizedWidth= minimizedWidth
-            frame.minimizedHeight= minimizedHeight
-            frame.BorderFrame.MaximizeMinimizeFrame:Maximize()
-            if self:Save().size[frame:GetName()] then
-                frame:UpdateMaximizedSize()
+            WorldMapFrame.minimizedWidth= minimizedWidth
+            WorldMapFrame.minimizedHeight= minimizedHeight
+            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Maximize()
+            if self:Save().size[WorldMapFrame:GetName()] then
+                WorldMapFrame:UpdateMaximizedSize()
             end
 
-        elseif size then
-            local w= size[1]-(frame.questLogWidth or 333)+2
-            frame.minimizedWidth= w
-            frame.minimizedHeight= size[2]
-            frame.BorderFrame.MaximizeMinimizeFrame:Minimize()
+        elseif size and size[1] then
+            local w= size[1] -questLogWidth +2
+            WorldMapFrame.minimizedWidth= w
+            WorldMapFrame.minimizedHeight= size[2] or minimizedHeight
+            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
         end
     end
+
+    WoWTools_DataMixin:Hook(WorldMapFrame.SidePanelToggle, 'Refresh', function()
+        local name= WorldMapFrame:GetName()
+        if self:Save().size[name] and not WorldMapFrame:IsMaximized() then
+            self:Save().size[name]= {WorldMapFrame:GetSize()}
+        end
+    end)
+
 
     WoWTools_DataMixin:Hook(WorldMapFrame, 'Minimize', function(frame)
         local name= frame:GetName()
@@ -158,15 +167,15 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     end)
 
     self:Setup(WorldMapFrame, {
-        minW=(WorldMapFrame.questLogWidth or 333)*2+37,
-        minH=WorldMapFrame.questLogWidth,
+        minW=questLogWidth*2+37,
+        minH=questLogWidth,
         sizeUpdateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
             set_min_max_value({WorldMapFrame:GetSize()})
         end,
         sizeRestFunc= function()
             WorldMapFrame.minimizedWidth= minimizedWidth
             WorldMapFrame.minimizedHeight= minimizedHeight
-            WorldMapFrame:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
+            WorldMapFrame:SetSize(minimizedWidth+ questLogWidth, minimizedHeight)
             WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
         end, sizeTooltip='|cnWARNING_FONT_COLOR:BUG|r'
     })

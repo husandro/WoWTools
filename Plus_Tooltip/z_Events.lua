@@ -249,16 +249,7 @@ end
 
 
 
---飞行点，加名称
-function WoWTools_TooltipMixin.Events:Blizzard_FlightMap()
-    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(f)
-        local info= f.taxiNodeData
-        if info then
-            GameTooltip:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
-            WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
-        end
-    end)
-end
+
 
 function WoWTools_TooltipMixin.Events:Blizzard_PlayerChoice()
     WoWTools_DataMixin:Hook(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(f)

@@ -39,12 +39,11 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
 
     local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
     local name
-    if tagInfo and tagInfo.tagID then
+    if tagInfo and tagInfo.tagID and tagInfo.tagID>0 then
         local atlas, color = WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, nil)
         local col= color and color.hex or ''
-        tooltip:AddDoubleLine(
-            col..(atlas or '')..'tagID',
-            col..tagInfo.tagID
+        tooltip:AddLine(
+            col..(atlas or '')..'tagID'..WoWTools_DataMixin.Icon.icon2..tagInfo.tagID
         )
         name= tagInfo.name
     else
