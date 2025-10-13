@@ -396,12 +396,14 @@ local function set_OnEnter_btn_tips(self)
             local verticalPadding = nil
 
             if hasName then
-                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(poiInfo.name), HIGHLIGHT_FONT_COLOR)
+                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(poiInfo.name, {areaPoiID=poiInfo.areaPoiID or self.areaPoiID, isName=true}), HIGHLIGHT_FONT_COLOR)
                 addedTooltipLine = true
             end
 
             if hasDescription then
-                GameTooltip_AddNormalLine(GameTooltip, WoWTools_TextMixin:CN(poiInfo.description))
+                local data= WoWTools_TextMixin:CN(nil, {areaPoiID=poiInfo.areaPoiID or self.areaPoiID})
+                local desc= data and data[2] or WoWTools_TextMixin:CN(poiInfo.description)
+                GameTooltip_AddNormalLine(GameTooltip, desc)
                 addedTooltipLine = true
             end
 
