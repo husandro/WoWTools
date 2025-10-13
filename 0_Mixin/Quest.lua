@@ -9,23 +9,33 @@ GetQuestAll()--所有，任务，提示
 
 WoWTools_QuestMixin={}
 
+function WoWTools_QuestMixin:IsValidQuestID(questID)
+    questID = type(questID)=='string' and tonumber(questID) or questID
+    if questID and questID>0 and questID<2e9 then
+        return true
+    end
+end
+
 function WoWTools_QuestMixin:GetID()
    return QuestInfoFrame.questLog and C_QuestLog.GetSelectedQuest() or GetQuestID()
 end
 
 function WoWTools_QuestMixin:GetName(questID)
-    if questID then
-        return WoWTools_TextMixin:CN(nil, {questID=questID, isName=true})
-            or C_TaskQuest.GetQuestInfoByQuestID(questID)
-            or C_QuestLog.GetTitleForQuestID(questID)
-            or questID
+    if not self:IsValidQuestID(questID) then
+        return
     end
+
+    return WoWTools_TextMixin:CN(nil, {questID=questID, isName=true})
+        or C_TaskQuest.GetQuestInfoByQuestID(questID)
+        or C_QuestLog.GetTitleForQuestID(questID)
+        or questID
 end
 
 function WoWTools_QuestMixin:GetLink(questID)
-    if not questID then
+    if not self:IsValidQuestID(questID) then
         return
     end
+
     local link= GetQuestLink(questID)
     if not link then
         WoWTools_DataMixin:Load({id=questID, type='quest'})
@@ -34,6 +44,7 @@ function WoWTools_QuestMixin:GetLink(questID)
         local name= WoWTools_TextMixin:CN(info.title or questID, {questID=questID, isName=true})
         link= '|cffffff00|Hquest:'..questID..':'..(info.level or -1)..':::|h['..(name or questID)..']|h|r'
     end
+
     return link
 end
 
@@ -54,12 +65,10 @@ end
 
 --QuestUtils_AddQuestRewardsToTooltip(tooltip, questID, style)
 function WoWTools_QuestMixin:GetRewardInfo(questID)
-    if not questID then
+    if not self:IsValidQuestID(questID) then
         return
     end
-    if not questID then
-        return
-    end
+
     local data, info, bestQuality
 
 --可选任务，奖励

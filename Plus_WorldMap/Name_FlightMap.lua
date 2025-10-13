@@ -79,6 +79,8 @@ local function Init()
     WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(...)
         Set_Text(...)
     end)
+
+    Init=function()end
 end
 
 

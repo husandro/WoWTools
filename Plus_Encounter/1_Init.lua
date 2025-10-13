@@ -66,19 +66,16 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('UPDATE_INSTANCE_INFO')
 panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-panel:SetScript("OnEvent", function(self, event, arg1, arg2)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or CopyTable(P_Save)
             P_Save= nil
-            
+
             Save().loot[WoWTools_DataMixin.Player.Class]= Save().loot[WoWTools_DataMixin.Player.Class] or {}--这个不能删除，不然换职业会出错
             Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
-
-            P_Save=nil
 
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
@@ -129,11 +126,5 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         C_Timer.After(2, function()
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)
-
-    elseif event=='PLAYER_ENTERING_WORLD' then
-        WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
-        --WoWTools_EncounterMixin:WorldBoss_Settings()
-        --WoWTools_EncounterMixin:InstanceBoss_Settings()
-        self:UnregisterEvent(event)
     end
 end)

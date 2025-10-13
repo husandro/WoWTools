@@ -346,10 +346,13 @@ local function Init_Menu(self, root)
     end, function()
         Save().ShowAreaPOI_Name= not Save().ShowAreaPOI_Name and true or nil
         WoWTools_WorldMapMixin:Init_AreaPOI_Name()
-    end)
+    end,sub)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        tooltip:AddLine(
+            (Save().ShowAreaPOI_Name and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        )
     end)
 
 --地下城，加名称
@@ -363,7 +366,10 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        tooltip:AddLine(
+            (Save().ShowDungeon_Name and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        )
     end)
 
 
@@ -378,12 +384,17 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示图标' or SELF_HIGHLIGHT_ICON)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        tooltip:AddLine(
+            (Save().ShowWorldQues_Name and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        )
     end)
 
-
+--重新加载UI
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_WorldMapMixin.addName})
+    sub= WoWTools_MenuMixin:Reload(root)
+--打开选项
+    WoWTools_MenuMixin:OpenOptions(sub, {name= WoWTools_WorldMapMixin.addName})
 end
 
 

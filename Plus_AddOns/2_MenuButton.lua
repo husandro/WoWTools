@@ -205,10 +205,9 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-
---打开选项界面
+--重新加载UI
     root:CreateDivider()
-    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_AddOnsMixin.addName})
+    sub=WoWTools_MenuMixin:Reload(root)
 
 --BG Alpha
     WoWTools_MenuMixin:BgAplha(sub,
@@ -226,9 +225,9 @@ local function Init_Menu(self, root)
         WoWTools_AddOnsMixin:Init_Right_Buttons()
     end)--onlyRoot
 
-    root:CreateDivider()
---重新加载UI
-    WoWTools_MenuMixin:Reload(root)
+--打开选项界面
+    sub:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_AddOnsMixin.addName})
 end
 
 

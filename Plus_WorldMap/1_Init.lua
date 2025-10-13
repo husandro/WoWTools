@@ -48,7 +48,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             P_Save= nil
 
             WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
-            --WoWTools_WorldMapMixin.addName2= WoWTools_DataMixin.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -66,7 +65,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if  WoWToolsSave['Plus_WorldMap'].disabled then
+            if WoWToolsSave['Plus_WorldMap'].disabled then
                 self:UnregisterEvent(event)
             else
                 WoWTools_WorldMapMixin:Init_Menu()--设置菜单
@@ -82,6 +81,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_WorldMapMixin:Init_Plus_SearchBox()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_FlightMap') then
+                    WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
                     self:UnregisterEvent(event)
                 end
             end
