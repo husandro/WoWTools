@@ -94,9 +94,6 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
             WorldMapFramePortrait:SetAlpha(portraitAlpha or 1)
         end
     })
-
-
-
 end
 
 
