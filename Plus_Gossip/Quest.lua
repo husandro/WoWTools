@@ -407,6 +407,12 @@ local function Init_Quest()
 
 
 
+
+
+
+
+
+
     local check= CreateFrame('CheckButton', 'WoWToolsQuestFrameNPCCheckBox', QuestFrame.TitleContainer, 'UICheckButtonArtTemplate')--禁用此npc,任务,选项
     check:SetSize(18,18)
     check:SetCheckedTexture('ChallengeMode-icon-redline')
@@ -417,14 +423,14 @@ local function Init_Quest()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetText(WoWTools_GossipMixin.addName2..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine('|cffffffff'..self.name)
-        GameTooltip:AddLine('NPC|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.npc)
+        GameTooltip:AddLine('npcID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.npc)
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(
             (WoWTools_DataMixin.onlyChinese and '自动交接任务' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, ACCEPT))
             ..': '..WoWTools_TextMixin:GetEnabeleDisable(not Save().NPC[self.npc]))
         GameTooltip:Show()
     end
-    function check:settigs()
+    function check:settings()
         local npc=WoWTools_UnitMixin:GetNpcID()
         local name= UnitName("npc")
         check.npc=npc
@@ -440,12 +446,47 @@ local function Init_Quest()
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
        self:set_tooltip()
     end)
-   
 
+--添加任务ID
+    local function set_label(label)
+        label:EnableMouse(true)
+        label:SetAlpha(0.3)
+        label:SetScript('OnLeave', function(self)
+            GameTooltip_Hide()
+            self:SetAlpha(0.3)
+        end)
+        label:SetScript('OnEnter', function(self)
+            WoWTools_SetTooltipMixin:Frame(self)
+            self:SetAlpha(1)
+        end)
 
+        function label:settings(questID)
+            questID= questID or WoWTools_QuestMixin:GetID()
+            self:SetText(questID or '')
+            self.questID= questID
+        end
+    end
 
+--世界地图，任务
+    local mapLabel= QuestMapDetailsScrollFrame:CreateFontString('WoWToolsQuestWorldMapIDLabel', 'OVERLAY', 'QuestFont')
+    mapLabel:SetPoint('LEFT', QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton, 'RIGHT', 2, 0)
+    set_label(mapLabel)
+    WoWTools_DataMixin:Hook('QuestMapFrame_ShowQuestDetails', function(questID)
+        _G['WoWToolsQuestWorldMapIDLabel']:settings(questID)
+    end)
 
+--任务框架
+    local questLable= QuestFrame:CreateFontString('WoWToolsQuestFrameIDLabel', 'OVERLAY', 'QuestFont')
+    questLable:SetPoint('RIGHT', QuestFrame.AccountCompletedNotice.AccountCompletedIcon, 'LEFT')
+    set_label(questLable)
+    --[[QuestFrame:HookScript('OnShow', function()
+        _G['WoWToolsQuestFrameIDLabel']:settings()
+    end)]]
 
+    local function Set_QuestID()
+        _G['WoWToolsQuestFrameNPCCheckBox']:settings()
+        _G['WoWToolsQuestFrameIDLabel']:settings()
+    end
 
 
 
@@ -459,7 +500,7 @@ local function Init_Quest()
 
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
-        _G['WoWToolsQuestFrameNPCCheckBox']:settigs()
+        Set_QuestID()
 
         local npc=WoWTools_UnitMixin:GetNpcID()
         if npc and Save().NPC[npc] or not Save().quest or IsModifierKeyDown() then
@@ -499,7 +540,7 @@ local function Init_Quest()
 
     --任务进度, 继续, 完成 QuestFrame.lua
     WoWTools_DataMixin:Hook('QuestFrameProgressItems_Update', function()
-        _G['WoWToolsQuestFrameNPCCheckBox']:settigs()
+        Set_QuestID()
 
         local questID= WoWTools_QuestMixin:GetID()
         local npc=WoWTools_UnitMixin:GetNpcID()
@@ -562,7 +603,7 @@ local function Init_Quest()
 
     --自动接取任务, 仅一个任务
     WoWTools_DataMixin:Hook('QuestInfo_Display', function(template, parentFrame, acceptButton)--, material, mapView)--QuestInfo.lua
-        _G['WoWToolsQuestFrameNPCCheckBox']:settigs()
+        Set_QuestID()
 
         local questID= WoWTools_QuestMixin:GetID()
         local npc=WoWTools_UnitMixin:GetNpcID()

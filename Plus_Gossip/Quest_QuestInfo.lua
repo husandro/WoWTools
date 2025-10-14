@@ -1,6 +1,7 @@
 
 --任务目标，类型提示
-local function Set_QuestInfo_Display()
+local function Init()
+WoWTools_DataMixin:Hook('QuestInfo_Display', function()
     if not WoWToolsSave['Plus_Gossip'].quest then
         return
     end
@@ -54,6 +55,9 @@ local function Set_QuestInfo_Display()
             end
         end
     end
+end)
+
+Init=function()end
 end
 
 
@@ -64,5 +68,5 @@ end
 
 
 function WoWTools_GossipMixin:Init_QuestInfo_Display()
-    WoWTools_DataMixin:Hook('QuestInfo_Display', Set_QuestInfo_Display)
+    Init()
 end

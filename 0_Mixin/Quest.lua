@@ -1,4 +1,5 @@
 --[[
+QuestUtil.
 GetRewardInfo(questID)
 GetName(questID)
 GetID()
@@ -17,7 +18,10 @@ function WoWTools_QuestMixin:IsValidQuestID(questID)
 end
 
 function WoWTools_QuestMixin:GetID()
-   return QuestInfoFrame.questLog and C_QuestLog.GetSelectedQuest() or GetQuestID()
+   local questID = QuestInfoFrame.questLog and C_QuestLog.GetSelectedQuest() or GetQuestID()
+   if questID and WoWTools_QuestMixin:IsValidQuestID(questID) then
+        return questID
+   end
 end
 
 function WoWTools_QuestMixin:GetName(questID)

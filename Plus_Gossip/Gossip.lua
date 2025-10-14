@@ -351,7 +351,7 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetText(WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine('|cffffffff'..self.name)
-        GameTooltip:AddLine('NPC|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.npc)
+        GameTooltip:AddLine('npcID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.npc)
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(
             (WoWTools_DataMixin.onlyChinese and '自动对话' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, ENABLE_DIALOG))
