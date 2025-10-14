@@ -124,6 +124,14 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     WoWTools_DataMixin:Hook(ClearButtonMixin, 'OnEnter', function(btn)
         self:SetButton(btn, {alpha=1})
     end)
+
+    WoWTools_DataMixin:Hook('UIPanelScrollFrame_OnLoad', function(frame)
+        self:SetScrollBar(frame.ScrollBar or _G[frame:GetName().."ScrollBar"])
+    end)
+    WoWTools_DataMixin:Hook('HybridScrollFrame_OnLoad', function(frame)
+        self:SetScrollBar(frame)
+    end)
+    
 end
 
     --[[WoWTools_DataMixin:Hook(ScrollBarMixin, 'OnLoad', function(bar)

@@ -200,11 +200,7 @@ function WoWTools_MoveMixin.Frames:LootFrame()
 end
 
 function WoWTools_MoveMixin.Frames:ItemTextFrame()
-    self:Setup(ItemTextFrame, {
-        sizeRestFunc=function()
-            ItemTextFrame:SetSize(338, 424)
-        end
-    })
+    self:Setup(ItemTextFrame)
 end
 
 
