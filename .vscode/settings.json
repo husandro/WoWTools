@@ -6233,7 +6233,9 @@
         "QuestInfoGroupSize",
         "QuestFrameDetailPanel",
         "QuestFrameTitleText",
-        "GossipFrameTitleText"
+        "GossipFrameTitleText",
+        "SearchBoxTemplate_OnLoad",
+        "ClearButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

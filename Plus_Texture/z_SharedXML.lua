@@ -4,8 +4,8 @@
 --菜单
 function WoWTools_TextureMixin.Events:Blizzard_Menu()
 --bar
-    WoWTools_DataMixin:Hook(MenuProxyMixin, 'OnLoad', function(menu)
-        self:SetScrollBar(menu)
+    WoWTools_DataMixin:Hook(MenuProxyMixin, 'OnLoad', function(frame)
+        self:SetScrollBar(frame)
     end)
 
 --外框
@@ -15,6 +15,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
             self:SetAlphaColor(icon, true)
         end
     end)
+
 
 --横线
     WoWTools_DataMixin:Hook(MenuVariants, 'CreateDivider', function(frame)--MenuVariants.lua
@@ -102,6 +103,7 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     WoWTools_DataMixin:Hook(MinimalSliderWithSteppersMixin, 'OnLoad', function(frame)
         self:SetSlider(frame)
     end)
+
     WoWTools_DataMixin:Hook(MinimalSliderWithSteppersMixin, 'SetEnabled', function(frame, enabled)
         local alpha= enabled and 1 or 0.3
         if frame.Back then
@@ -113,6 +115,14 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         if frame.Slider then
             frame.Slider:SetAlpha(alpha)
         end
+    end)
+
+--InputBoxTemplates.lua
+    WoWTools_DataMixin:Hook('SearchBoxTemplate_OnLoad', function(edit)
+        self:SetEditBox(edit)
+    end)
+    WoWTools_DataMixin:Hook(ClearButtonMixin, 'OnEnter', function(btn)
+        self:SetButton(btn, {alpha=1})
     end)
 end
 
