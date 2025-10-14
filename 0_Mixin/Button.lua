@@ -35,27 +35,7 @@ end
 
 
 
---[[ItemButton ItemButtonTemplate.xml
-CircularItemButtonTemplate 圆
-CircularGiantItemButtonTemplate 大圆 <Size x="54" y="54"/>
-GiantItemButtonTemplate <Size x="54" y="54"/>
-LargeItemButtonTemplate <Size x="147" y="41" /> 
-SmallItemButtonTemplate <Size x="134" y="30"/>
-<CheckButton name="SimplePopupButtonTemplate Size x="36" y="36"/>
 
-
-ItemButtonTemplate.xml
-
-local background = self:AttachTexture();
-background:SetAtlas("common-dropdown-bg");
-
-SharedButtonSmallTemplate
-AvatarButtonTemplate
-
-GarrMission_RewardsShadow
-UI-HUD-CoolDownManager-Mask
-
-]]
 --遮罩
 function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture(nil, 'OVERLAY')

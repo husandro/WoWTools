@@ -131,7 +131,7 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         local icon= select(tab.index, frame:GetRegions())
         if icon and icon:IsObjectType("Texture") then
              if not notColor then
-                WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha or 1})
+                WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
              elseif alpha then
                 icon:SetAlpha(alpha)
             end
@@ -142,7 +142,7 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         for _, icon in pairs({frame:GetRegions()}) do
             if icon:IsObjectType("Texture") and not show[icon] then
                 if not notColor then
-                    WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha= alpha or 1})
+                    WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
 
                 elseif alpha then
                     icon:SetAlpha(alpha)
@@ -377,6 +377,13 @@ end
 
 --PanelTemplates_TabResize(frame, frame:GetParent().tabPadding or 0 , nil, frame:GetParent().minTabWidth, frame:GetParent().maxTabWidth)
 --WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(self)
+function WoWTools_TextureMixin:SetCheckBox(frame, alpha)
+    local icon= frame:GetRegions()
+    if icon and icon:IsObjectType("Texture") then
+        WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
+    end
+end
+
 
 function WoWTools_TextureMixin:SetTabButton(frame, alpha)--TabSystemOwner.lua
     if not frame then

@@ -138,7 +138,7 @@ WoWTools_DataMixin.Icon={
 
 
 --[[
-disabled='talents-button-reset',
+disabled='talents-button-reset', ChallengeMode-icon-redline
 select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
 common-dropdown-icon-checkmark-yellow 黄色
 ChallengeMode-RankLineDivider

@@ -191,7 +191,8 @@ end
 NPC ID, 注意是：字符 Creature-0-1465-0-2105-448-000043F59F
 ]]
 function WoWTools_UnitMixin:GetNpcID(unit, guid)
-    guid= guid or UnitExists(unit) and  UnitGUID(unit)
+    unit= unit or 'npc'
+    guid= guid or (UnitExists(unit) and UnitGUID(unit))
     if guid then
         local zone, npc = select(5, strsplit("-", guid))
         return npc, zone

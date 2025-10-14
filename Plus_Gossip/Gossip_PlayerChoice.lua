@@ -68,7 +68,7 @@ local function Init()
             if optionFrame.optionInfo then
                 local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
                 if not optionFrame.check and enabled then
-                    optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
+                    optionFrame.check= CreateFrame('CheckButton', nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
                     optionFrame.check:SetPoint('BOTTOM' ,0, -40)
                     optionFrame.check:SetScript('OnClick', function(self3)
                         local optionInfo= self3:GetParent().optionInfo

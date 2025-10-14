@@ -104,7 +104,7 @@ local function Init_Options()
         return
     end
 
-    local sel=CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local sel=CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     sel:SetPoint('TOPLEFT', 0, -40)
     sel:SetChecked(Save().target)
     sel:SetScript('OnClick', function()
@@ -158,7 +158,7 @@ local function Init_Options()
     Frame.tipTargetTexture:SetSize(Save().w, Save().h)--设置，大小
     set_Target_Color(Frame.tipTargetTexture, false)--设置，颜色
 
-    local combatCheck=CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local combatCheck=CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     combatCheck:SetPoint('LEFT', sel.Text, 'RIGHT', 15,0)
     combatCheck:SetChecked(Save().targetInCombat)
     combatCheck:SetScript('OnClick', function()
@@ -453,7 +453,7 @@ local function Init_Options()
 
 
 
-    local sel2= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local sel2= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     sel2.Text:SetText('2) '..(WoWTools_DataMixin.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)))
     sel2:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -32)
     sel2:SetChecked(Save().creature)
@@ -484,7 +484,7 @@ local function Init_Options()
     end})
     numSize:SetPoint("LEFT", sel2.Text, 'RIGHT',15,0)
 
-    local numPostionCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local numPostionCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     numPostionCheck.Text:SetText(WoWTools_DataMixin.onlyChinese and '自定义位置' or SPELL_TARGET_CENTER_LOC)
     numPostionCheck:SetPoint('LEFT', numSize, 'RIGHT', 10,0)
     numPostionCheck:SetChecked(Save().creatureUIParent)
@@ -518,7 +518,7 @@ local function Init_Options()
 
 
 
-    local unitIsMeCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local unitIsMeCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     unitIsMeCheck.Text:SetText('3) '..(WoWTools_DataMixin.onlyChinese and '目标是'..WoWTools_DataMixin.Player.col..'你|r' or 'Target is '..WoWTools_DataMixin.Player.col..'You|r'))
     unitIsMeCheck:SetPoint('TOP', sel2, 'BOTTOM', 0, -24)
     unitIsMeCheck:SetChecked(Save().unitIsMe)
@@ -725,7 +725,7 @@ local function Init_Options()
 
 
 
-    local questCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local questCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     questCheck.Text:SetText('4) '..(WoWTools_DataMixin.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER))))
     questCheck:SetPoint('TOPLEFT', unitIsMeCheck, 'BOTTOMLEFT',0,-64)
     questCheck:SetChecked(Save().quest)
@@ -734,7 +734,7 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
-    local questAllFactionCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local questAllFactionCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     questAllFactionCheck.Text:SetFormattedText(
         '%s|A:%s:0:0|a|A:%s:0:0|a',
         WoWTools_DataMixin.onlyChinese and '所有阵营' or TRANSMOG_SHOW_ALL_FACTIONS or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, FACTION),
@@ -747,7 +747,7 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
-    local classCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local classCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     classCheck.Text:SetText(WoWTools_DataMixin.onlyChinese and '职业' or CLASS)
     classCheck:SetPoint('LEFT', questAllFactionCheck.Text, 'RIGHT',2,0)
     classCheck:SetChecked(Save().questShowPlayerClass)
@@ -756,7 +756,7 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
-    local instanceCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    local instanceCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     instanceCheck.Text:SetText(WoWTools_DataMixin.onlyChinese and '在副本里显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INSTANCE))
     instanceCheck:SetPoint('TOPLEFT', questCheck, 'BOTTOMRIGHT')
     instanceCheck:SetChecked(Save().questShowInstance)

@@ -20,7 +20,7 @@ local function Create(frame)
 		return
 	end
 
-	frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+	frame.check= CreateFrame('CheckButton', nil, frame, "InterfaceOptionsCheckButtonTemplate")
 	frame.check:SetPoint('RIGHT', frame, 'LEFT',4,0)
 	frame.check:SetScript('OnClick', function(self)
 		if self.currencyID then

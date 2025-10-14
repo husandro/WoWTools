@@ -241,7 +241,7 @@ local function Set_DungeonScore(self, dungeonScoreLink)
 	local color = C_ChallengeMode.GetDungeonScoreRarityColor(dungeonScore) or HIGHLIGHT_FONT_COLOR
 	GameTooltip_AddNormalLine(self, format(
         WoWTools_DataMixin.onlyChinese and '史诗钥石评分：|A:recipetoast-icon-star:0:0|a%s' or DUNGEON_SCORE_LINK_RATING,
-        color:WrapTextInColorCode(dungeonScore)
+        color:WrapTextInColorCode(dungeonScore..'')
     ))
 
 	GameTooltip_AddNormalLine(self, format(
@@ -253,7 +253,7 @@ local function Set_DungeonScore(self, dungeonScoreLink)
 		local bestSeasonColor = C_ChallengeMode.GetDungeonScoreRarityColor(bestSeasonScore) or HIGHLIGHT_FONT_COLOR
 		GameTooltip_AddNormalLine(self, format(
             WoWTools_DataMixin.onlyChinese and '之前的最高记录： %s|cff808080（第%d赛季）' or DUNGEON_SCORE_LINK_PREVIOUS_HIGH,
-            bestSeasonColor:WrapTextInColorCode(bestSeasonScore), bestSeasonNumber)
+            bestSeasonColor:WrapTextInColorCode(bestSeasonScore..''), bestSeasonNumber)
         )
 	end
 	GameTooltip_AddBlankLineToTooltip(self)

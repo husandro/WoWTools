@@ -150,7 +150,7 @@ local function Setup(btn, data)--factionRow, elementData)--ReputationFrame.lua
 	end
 
 	if not frame.check then
-		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+		frame.check= CreateFrame('CheckButton', nil, frame, "InterfaceOptionsCheckButtonTemplate")
 		frame.check:SetPoint('LEFT',-12,0)
 		function frame.check:get_info()
 			return self:GetParent():GetParent().elementData or {}

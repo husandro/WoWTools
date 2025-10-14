@@ -53,6 +53,8 @@ function WoWTools_TextureMixin.Frames:QuestFrame()
             QuestFrameRewardPanelBg:SetAlpha(alpha)
             QuestFrameDetailPanelBg:SetAlpha(alpha)
             QuestFrameProgressPanelBg:SetAlpha(alpha)
+
+            QuestFrameDetailPanel.SealMaterialBG:SetAlpha(alpha)
         end
     })
 end

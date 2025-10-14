@@ -14,8 +14,8 @@ local function Invite(unit)
     then
         return
     end
+
     local guid= UnitGUID(unit)
-    
     if guid and not IsPlayerInGuildFromGUID(guid) then
         OfferPetition()
     end

@@ -14,7 +14,7 @@ end
 
 --自动出售
 local function Init()
-    local AutoSellJunkCheck=CreateFrame("CheckButton", 'WoWTools_AutoSellJunkCheck', MerchantSellAllJunkButton, "InterfaceOptionsCheckButtonTemplate")
+    local AutoSellJunkCheck=CreateFrame('CheckButton', 'WoWTools_AutoSellJunkCheck', MerchantSellAllJunkButton, "InterfaceOptionsCheckButtonTemplate")
     AutoSellJunkCheck:SetSize(18,18)
     AutoSellJunkCheck:SetPoint('BOTTOMLEFT', MerchantSellAllJunkButton, -4,-5)
 

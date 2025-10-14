@@ -6226,7 +6226,14 @@
         "EVALUATION_TREE_FLAG_PROGRESS_BAR",
         "AchievementFrameSummaryCategoriesCategory1Bar",
         "AchievementFrameSummaryCategoriesStatusBarBar",
-        "AreaPoiUtil"
+        "AreaPoiUtil",
+        "GossipSharedTitleButtonMixin",
+        "GossipSharedQuestButtonMixin",
+        "QuestDetailScrollChildFrame",
+        "QuestInfoGroupSize",
+        "QuestFrameDetailPanel",
+        "QuestFrameTitleText",
+        "GossipFrameTitleText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

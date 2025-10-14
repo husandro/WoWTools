@@ -737,7 +737,7 @@ local function Init(isShow)
     --if LOCALE_zhCN or LOCALE_zhTW then
       --  Save().Gossip_Text_Icon_cnFont=nil
     --elseif WoWTools_DataMixin.onlyChinese then
-        List.font= CreateFrame("CheckButton", Name..'ListFontCheckButton', Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
+        List.font= CreateFrame('CheckButton', Name..'ListFontCheckButton', Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
         List.font:SetPoint('TOPLEFT', List.Size, 'BOTTOMLEFT', 0, -12)
         List.font:SetChecked(Save().Gossip_Text_Icon_cnFont)
         List.font.Text:SetText('修改字体')

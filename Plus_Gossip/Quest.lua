@@ -39,7 +39,7 @@ local function select_Reward(questID)--自动:选择奖励
         local frame= _G['QuestInfoRewardsFrameQuestInfoItem'..i]
         if frame and questID then
             if not frame.check then
-                frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+                frame.check=CreateFrame('CheckButton', nil, frame, "InterfaceOptionsCheckButtonTemplate")
                 frame.check:SetPoint("TOPRIGHT")
                 frame.check:SetScript('OnClick', function(self)
                     if self.questID and self.index then
@@ -293,7 +293,7 @@ local function Init_Quest()
     end
 
 
-    function QuestButton:tooltip_Show()
+    function QuestButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName2)
@@ -302,7 +302,6 @@ local function Init_Quest()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetEnabeleDisable(Save().quest),WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),WoWTools_DataMixin.Icon.right)
-        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS, WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
@@ -380,7 +379,7 @@ local function Init_Quest()
         if d=='LeftButton' then
             Save().quest= not Save().quest and true or false
             self:set_Texture()--设置，图片
-            self:tooltip_Show()
+            self:set_tooltip()
         elseif d=='RightButton' then
             MenuUtil.CreateContextMenu(self, function(...)
                 WoWTools_GossipMixin:Init_Menu_Quest(...)
@@ -392,7 +391,9 @@ local function Init_Quest()
     end)]]
 
     QuestButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_Alpha() end)
-    QuestButton:SetScript('OnEnter', QuestButton.tooltip_Show)
+    QuestButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+    end)
 
     QuestButton.questSelect={}--已选任务, 提示用
     QuestButton:set_Texture()--设置，图片
@@ -406,61 +407,40 @@ local function Init_Quest()
 
 
 
-    QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
-    QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
-    QuestFrame.sel.Text:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
-    QuestFrame.sel.questIDLabel= WoWTools_LabelMixin:Create(QuestFrame.sel, {mouse=true})--任务ID
-    QuestFrame.sel.questIDLabel:SetPoint('LEFT', QuestFrame.sel.Text, 'RIGHT', 12, 0)
-    QuestFrame.sel:SetScript("OnLeave", GameTooltip_Hide)
-    QuestFrame.sel:SetScript('OnEnter',function (self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName2)
-        if self.npc and self.name then
-            GameTooltip:AddDoubleLine(self.name, 'NPC '..self.npc)
-        else
-            GameTooltip:AddDoubleLine(NONE, 'NPC ID')
-        end
-        local questID= WoWTools_QuestMixin:GetID()
-        if questID then
-            GameTooltip:AddDoubleLine('questID', questID)
-        end
-        GameTooltip:Show()
-    end)
-    QuestFrame.sel:SetScript("OnMouseDown", function (self, d)
-        if not self.npc and self.name then
-            return
-        end
-        Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(
-            WoWTools_GossipMixin.addName2..WoWTools_DataMixin.Icon.icon2,
-            self.name,
-            self.npc,
-            WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc])
-        )
-    end)
-
-    QuestFrame.sel.questIDLabel:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
-    QuestFrame.sel.questIDLabel:SetScript('OnEnter',function (self)
-        self:SetAlpha(0.5)
-        local questID= WoWTools_QuestMixin:GetID()
-        if not questID then
-            return
-        end
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip_AddQuest(GameTooltip, questID)
+    local check= CreateFrame('CheckButton', 'WoWToolsQuestFrameNPCCheckBox', QuestFrame.TitleContainer, 'UICheckButtonArtTemplate')--禁用此npc,任务,选项
+    check:SetSize(18,18)
+    check:SetCheckedTexture('ChallengeMode-icon-redline')
+    WoWTools_TextureMixin:SetCheckBox(check, 0.5)
+    check:SetPoint("LEFT", QuestFrameTitleText)
+    check:Hide()
+    function check:set_tooltip()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_GossipMixin.addName2..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip:AddLine('|cffffffff'..self.name)
+        GameTooltip:AddLine('NPC|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.npc)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '自动交接任务' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, ACCEPT))
+            ..': '..WoWTools_TextMixin:GetEnabeleDisable(not Save().NPC[self.npc]))
         GameTooltip:Show()
+    end
+    function check:settigs()
+        local npc=WoWTools_UnitMixin:GetNpcID()
+        local name= UnitName("npc")
+        check.npc=npc
+        check.name=name
+        check:SetChecked(Save().NPC[npc])
+        check:SetShown(npc and name)
+    end
+    check:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    check:SetScript('OnEnter',function (self)
+       self:set_tooltip()
     end)
-    QuestFrame.sel.questIDLabel:SetScript('OnMouseDown',function(self)
-        local questID= WoWTools_QuestMixin:GetID()
-        if questID then
-            ChatEdit_TryInsertQuestLinkForQuestID(questID)
-            --WoWTools_ChatMixin:Chat(GetQuestLink(questID), nil, true)
-        end
+    check:SetScript("OnMouseDown", function (self)
+        Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
+       self:set_tooltip()
     end)
+   
 
 
 
@@ -479,11 +459,9 @@ local function Init_Quest()
 
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
-        local npc=WoWTools_UnitMixin:GetNpcID('npc')
-        QuestFrame.sel.npc=npc
-        QuestFrame.sel.name=UnitName("npc")
-        QuestFrame.sel:SetChecked(Save().NPC[npc])
-        QuestFrame.sel.questIDLabel:SetText(WoWTools_QuestMixin:GetID() or '')
+        _G['WoWToolsQuestFrameNPCCheckBox']:settigs()
+
+        local npc=WoWTools_UnitMixin:GetNpcID()
         if npc and Save().NPC[npc] or not Save().quest or IsModifierKeyDown() then
             return
         end
@@ -521,12 +499,10 @@ local function Init_Quest()
 
     --任务进度, 继续, 完成 QuestFrame.lua
     WoWTools_DataMixin:Hook('QuestFrameProgressItems_Update', function()
+        _G['WoWToolsQuestFrameNPCCheckBox']:settigs()
+
         local questID= WoWTools_QuestMixin:GetID()
-        local npc=WoWTools_UnitMixin:GetNpcID('npc')
-        QuestFrame.sel.npc=npc
-        QuestFrame.sel.name=UnitName("npc")
-        QuestFrame.sel:SetChecked(Save().NPC[npc])
-        QuestFrame.sel.questIDLabel:SetText(questID or '')
+        local npc=WoWTools_UnitMixin:GetNpcID()
 
         if not questID or not Save().quest or IsModifierKeyDown() or (Save().NPC[npc] and not Save().questOption[questID]) then
             return
@@ -586,12 +562,10 @@ local function Init_Quest()
 
     --自动接取任务, 仅一个任务
     WoWTools_DataMixin:Hook('QuestInfo_Display', function(template, parentFrame, acceptButton)--, material, mapView)--QuestInfo.lua
+        _G['WoWToolsQuestFrameNPCCheckBox']:settigs()
+
         local questID= WoWTools_QuestMixin:GetID()
-        local npc=WoWTools_UnitMixin:GetNpcID('npc')
-        QuestFrame.sel.npc=npc
-        QuestFrame.sel.name=UnitName("npc")
-        QuestFrame.sel:SetChecked(Save().NPC[npc])
-        QuestFrame.sel.questIDLabel:SetText(questID or '')
+        local npc=WoWTools_UnitMixin:GetNpcID()
 
         if not questID and template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
             local frame = parentFrame:GetParent():GetParent()

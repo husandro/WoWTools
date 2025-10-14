@@ -39,7 +39,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
 
 
     if not frame.sumButton then
-        frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")
+        frame.sumButton=  CreateFrame('CheckButton', nil, frame, "ChatConfigCheckButtonTemplate")
         frame.sumButton:SetPoint('RIGHT')
 
         function frame.sumButton:set_alpha()

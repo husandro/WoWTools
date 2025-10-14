@@ -349,7 +349,7 @@ local function Init_GCD_Options(panel)
     end})
     sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -20)
 
-    local checkReverse=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    local checkReverse=CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")
     checkReverse:SetChecked(Save().gcdReverse)
     checkReverse.text:SetText(WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION)
     checkReverse:SetScript('OnMouseUp', function()
@@ -358,7 +358,7 @@ local function Init_GCD_Options(panel)
     end)
     checkReverse:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
 
-    local checkDrawBling=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    local checkDrawBling=CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")
     checkDrawBling:SetChecked(Save().gcdReverse)
     checkDrawBling.text:SetText('|TInterface\\Cooldown\\star4:16|tDrawBling')
     checkDrawBling:SetScript('OnMouseUp', function()
@@ -523,9 +523,9 @@ local function Init_Options(panel)
     panel.Texture:SetPoint('TOPRIGHT', panel, 'TOP', -20, 10)
     panel.Texture:SetSize(80,80)
 
-    local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
+    local useClassColorCheck= CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
     local colorText= WoWTools_LabelMixin:Create(panel, {color={r=Save().color.r, g=Save().color.g, b=Save().color.b, a=Save().color.a}})--nil, nil, nil, {Save().color.r, Save().color.g, Save().color.b, Save().color.a})--自定义,颜色
-    local notUseColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
+    local notUseColorCheck= CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
 
     --职业颜色
     useClassColorCheck:SetPoint("BOTTOMLEFT")
@@ -606,7 +606,7 @@ local function Init_Options(panel)
     end)
 
     --随机, 图片
-    panel.randomTextureCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.randomTextureCheck= CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.randomTextureCheck:SetPoint("LEFT", notUseColorCheck.text, 'RIGHT', 10,0)
     panel.randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_DataMixin.onlyChinese and '随机图标' or 'Random '..EMBLEM_SYMBOL))
     panel.randomTextureCheck:SetChecked(Save().randomTexture)
@@ -677,7 +677,7 @@ local function Init(panel)
     )
 
 --Cursor, 启用/禁用
-    panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.cursorCheck=CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.cursorCheck:SetChecked(not Save().disabledCursor)
     panel.cursorCheck:SetPoint("TOPLEFT", 0, -35)
     panel.cursorCheck.text:SetText('1)'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE).. ' Cursor')
@@ -688,7 +688,7 @@ local function Init(panel)
     end)
 
 --GCD, 启用/禁用
-    panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    panel.gcdCheck=CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.gcdCheck:SetChecked(not Save().disabledGCD)
     panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
     panel.gcdCheck.text:SetText('2)'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE).. ' GCD')

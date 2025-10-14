@@ -11,27 +11,6 @@ end
 
 
 
---添加任务ID
-local function create_Quest_Label(frame)
-    frame.questIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, justifyH='RIGHT'})
-    frame.questIDLabel:SetAlpha(0.3)
-    frame.questIDLabel:SetScript('OnLeave', function(self)
-        GameTooltip_Hide() self:SetAlpha(0.3)
-    end)
-    frame.questIDLabel:SetScript('OnEnter', function(self)
-        WoWTools_SetTooltipMixin:Frame(self)
-        self:SetAlpha(1)
-    end)
-
-    function frame.questIDLabel:settings(questID)
-        questID= questID or WoWTools_QuestMixin:GetID()
-        local num= (questID and questID>0) and questID
-        self:SetText(num or '')
-        self.questID= num
-    end
-    return frame.questIDLabel
-end
-
 
 
 
@@ -236,21 +215,38 @@ local function Init()
 
 
 
-
 --添加任务ID
-    local label= create_Quest_Label(QuestMapDetailsScrollFrame)
-    --label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
-    label:SetPoint('LEFT', QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton, 'RIGHT', 2, 0)
+    local function create_Quest_Label(frame)
+        --frame.questIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, justifyH='RIGHT'})
+        frame.questIDLabel= frame:CreateFontString(nil, 'OVERLAY', 'QuestFont')
+        frame.questIDLabel:EnableMouse(true)
+        frame.questIDLabel:SetAlpha(0.3)
+        frame.questIDLabel:SetScript('OnLeave', function(self)
+            GameTooltip_Hide() self:SetAlpha(0.3)
+        end)
+        frame.questIDLabel:SetScript('OnEnter', function(self)
+            WoWTools_SetTooltipMixin:Frame(self)
+            self:SetAlpha(1)
+        end)
 
+        function frame.questIDLabel:settings(questID)
+            questID= questID or WoWTools_QuestMixin:GetID()
+            local num= (questID and questID>0) and questID
+            self:SetText(num or '')
+            self.questID= num
+        end
+        return frame.questIDLabel
+    end
+    local label= create_Quest_Label(QuestMapDetailsScrollFrame)
+    label:SetPoint('LEFT', QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton, 'RIGHT', 2, 0)
     WoWTools_DataMixin:Hook('QuestMapFrame_ShowQuestDetails', function(questID)
         QuestMapDetailsScrollFrame.questIDLabel:settings(questID)
     end)
 
-    label= create_Quest_Label(QuestFrameCloseButton)
-    label:SetPoint('TOPRIGHT', QuestFrameCloseButton, 'BOTTOMRIGHT')
-
-    QuestFrame:HookScript('OnShow', function()
-        QuestFrameCloseButton.questIDLabel:settings()
+    label= create_Quest_Label(QuestFrame)
+    label:SetPoint('RIGHT', QuestFrame.AccountCompletedNotice.AccountCompletedIcon, 'LEFT')
+    QuestFrame:HookScript('OnShow', function(self)
+        self.questIDLabel:settings()
     end)
 
 

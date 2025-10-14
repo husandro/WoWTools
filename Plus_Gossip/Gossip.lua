@@ -1,6 +1,6 @@
 
 local GossipButton, GButton2, NumGossipCNLabel
-
+local SelectGissipIDTab= {}--GossipFrame，显示时用
 local function Save()
     return WoWToolsSave['Plus_Gossip']
 end
@@ -287,7 +287,7 @@ local function Init()
     GossipButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_Alpha() end)
     GossipButton:SetScript('OnEnter', GossipButton.tooltip_Show)
 
-    GossipButton.selectGissipIDTab={}--GossipFrame，显示时用
+
 
     GossipButton:RegisterEvent('PLAY_MOVIE')--movieID
     GossipButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
@@ -340,45 +340,45 @@ local function Init()
 
 
     --禁用此npc闲话选项
-    GossipFrame.WoWToolsSelectNPC=CreateFrame("CheckButton", 'WowToolsGossipDisableNPCCheckButton', GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
-    GossipFrame.WoWToolsSelectNPC:SetPoint("BOTTOMLEFT",5,2)
-    GossipFrame.WoWToolsSelectNPC.Text:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
-    GossipFrame.WoWToolsSelectNPC:SetScript("OnLeave", GameTooltip_Hide)
-    GossipFrame.WoWToolsSelectNPC:SetScript("OnMouseDown", function (self, d)
-        if not self.npc and self.name then
-            return
-        end
-        Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(
-            WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
-            self.name,
-            self.npc,
-            WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc])
-        )
-    end)
-    GossipFrame.WoWToolsSelectNPC:SetScript('OnEnter',function (self)
+    local check= CreateFrame('CheckButton', 'WoWToolsGossipNPCCheckBox', GossipFrame.TitleContainer, 'UICheckButtonArtTemplate')--禁用此npc,任务,选项
+    check:SetSize(18,18)
+    check:SetCheckedTexture('ChallengeMode-icon-redline')
+    WoWTools_TextureMixin:SetCheckBox(check, 0.5)
+    check:SetPoint("LEFT", GossipFrameTitleText)
+    check:Hide()
 
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    function check:set_tooltip()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetText(WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2)
-        if self.npc and self.name then
-            GameTooltip:AddDoubleLine(self.name, self.npc and 'NPC |cnGREEN_FONT_COLOR:'..self.npc..'|r')
-        else
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '无' or NONE, 'NPC ID')
-        end
-        if self.npc  then
-            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='npc', id=self.npc, name=self.name, isPetUI=false})--取得网页，数据链接 
-        end
+        GameTooltip:AddLine('|cffffffff'..self.name)
+        GameTooltip:AddLine('NPC|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.npc)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '自动对话' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, ENABLE_DIALOG))
+            ..': '..WoWTools_TextMixin:GetEnabeleDisable(not Save().NPC[self.npc]))
         GameTooltip:Show()
+    end
+    function check:settings()
+        local npc= WoWTools_UnitMixin:GetNpcID()
+        local name= UnitName("npc")
+        self.npc=npc
+        self.name=name
+        self:SetChecked(Save().NPC[npc])
+        self:SetShown(npc and name)
+    end
+    check:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    check:SetScript("OnMouseDown", function (self)
+        Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
+        self:set_tooltip()
+    end)
+    check:SetScript('OnEnter',function (self)
+        self:set_tooltip()
     end)
 
-
-    GossipFrame:HookScript('OnShow', function (self)
+    GossipFrame:HookScript('OnShow', function ()
         WoWTools_GossipMixin.QuestButton.questSelect={}--已选任务, 提示用
-        GossipButton.selectGissipIDTab={}
-        local npc=WoWTools_UnitMixin:GetNpcID('npc')
-        self.WoWToolsSelectNPC.npc=npc
-        self.WoWToolsSelectNPC.name=UnitName("npc")
-        self.WoWToolsSelectNPC:SetChecked(Save().NPC[npc])
+        SelectGissipIDTab= {}--GossipFrame，显示时用
+        _G['WoWToolsGossipNPCCheckBox']:settings()
     end)
 
 
@@ -502,7 +502,7 @@ local function Create_GossipOptionCheckBox(frame, info)
     end
 
 
-    frame.gossipCheckBox= CreateFrame("CheckButton", nil, frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
+    frame.gossipCheckBox= CreateFrame('CheckButton', nil, frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
     frame.gossipCheckBox:SetPoint("RIGHT")
     frame.gossipCheckBox:SetSize(18, 18)
 
@@ -575,42 +575,42 @@ local function Create_GossipOptionCheckBox(frame, info)
     end
 
     function frame.gossipCheckBox:set_data(data)
-        local gossipOptionID, name, spellID, icon
-        if data then
-            gossipOptionID= data.gossipOptionID
-            icon= data.overrideIconID or data.icon
-            name= data.name
-            spellID= data.spellID
-        end
-        frame.gossipCheckBox.gossipOptionID= gossipOptionID
-        frame.gossipCheckBox.name= name
-        frame.gossipCheckBox.spellID= spellID
-        frame.gossipCheckBox.icon= icon
+        data= data or {}
+        local gossipOptionID= data.gossipOptionID
+        frame.gossipCheckBox.gossipOptionID= data.gossipOptionID
+        frame.gossipCheckBox.name= data.name or data.title
+        frame.gossipCheckBox.spellID= data.spellID
+        frame.gossipCheckBox.questID= data.questID
+        frame.gossipCheckBox.icon= data.overrideIconID or data.icon
         frame.gossipCheckBox:SetChecked(gossipOptionID and Save().gossipOption[gossipOptionID] and true or false)
         frame.gossipCheckBox:settings()
 
         frame.gossipCheckBox:SetShown(gossipOptionID and true or false)
     end
 
-    frame.gossipCheckBox:SetScript('OnHide', function(self)
-        self.gossipOptionID= nil
-        self.name= nil
-        self.spellID= nil
-        self.icon= nil
+    frame:HookScript('OnHide', function(self)
+        self.gossipCheckBox.gossipOptionID= nil
+        self.gossipCheckBox.name= nil
+        self.gossipCheckBox.spellID= nil
+        self.gossipCheckBox.icon= nil
+        self.gossipCheckBox.questID= nil
     end)
 
-    frame:HookScript('OnLeave', function(self)
-        self.gossipCheckBox:settings()
-    end)
     frame:HookScript('OnEnter', function(self)
+        self.gossipCheckBox:settings()
+        WoWTools_SetTooltipMixin:Frame(self, nil, {
+            anchor='ANCHOR_RIGHT',
+            spellID= self.gossipCheckBox.spellID,
+            questID= self.gossipCheckBox.questID
+        })
+    end)
+    frame:HookScript('OnLeave', function(self)
         self.gossipCheckBox:SetAlpha(1)
+        GameTooltip_Hide()
     end)
 
     frame.gossipCheckBox:set_data(info)
 end
-
-
-
 
 
 
@@ -627,7 +627,7 @@ local function Create_AvailableQuestCheck(btn, info)
         return
     end
 
-    btn.availableQuestCheckBox= CreateFrame("CheckButton", nil, btn, 'InterfaceOptionsCheckButtonTemplate')
+    btn.availableQuestCheckBox= CreateFrame('CheckButton', nil, btn, 'InterfaceOptionsCheckButtonTemplate')
     btn.availableQuestCheckBox:SetPoint("RIGHT", -2, 0)
     btn.availableQuestCheckBox:SetSize(18, 18)
 
@@ -654,9 +654,10 @@ local function Create_AvailableQuestCheck(btn, info)
         end
     end)
 
-    btn.availableQuestCheckBox:SetScript('OnHide', function(self)
-        self.questID= nil
-        self.text= nil
+    btn:HookScript('OnHide', function(self)
+        self.availableQuestCheckBox.questID= nil
+        self.availableQuestCheckBox.spellID= nil
+        self.availableQuestCheckBox.text= nil
     end)
 
     function btn.availableQuestCheckBox:set_data(data)
@@ -666,13 +667,42 @@ local function Create_AvailableQuestCheck(btn, info)
             text= info.title
         end
 
-        self.questID=  questID
+        self.questID= data.questID
+        self.spellID= data.spellID
         self.text= text
         self:SetShown(questID and text)
     end
 
+    btn:HookScript("OnLeave", function()
+        GameTooltip_Hide()
+    end)
+    btn:HookScript("OnEnter", function(self)
+        WoWTools_SetTooltipMixin:Frame(self, nil, {
+            anchor='ANCHOR_RIGHT',
+            spellID= self.availableQuestCheckBox.spellID,
+            questID= self.availableQuestCheckBox.questID
+        })
+    end)
+
     btn.availableQuestCheckBox:set_data(info)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -693,9 +723,8 @@ local function Init_Hook()
 
 --自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
     WoWTools_DataMixin:Hook(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
-    do
         Create_GossipOptionCheckBox(self, info)--建立，自动选取，选项
-    end
+
         Set_Gossip_Text(self, info)--自定义，对话，文本
 
         if not info
@@ -710,9 +739,9 @@ local function Init_Hook()
         local gossip= C_GossipInfo.GetOptions() or {}
         local allGossip= #gossip
         local name=info.name
-        local npc=WoWTools_UnitMixin:GetNpcID('npc')--npc是字符 不是数字
+        local npc=WoWTools_UnitMixin:GetNpcID()--npc是字符 不是数字
 
-        if IsModifierKeyDown() or not index or GossipButton.selectGissipIDTab[index] then
+        if IsModifierKeyDown() or not index or SelectGissipIDTab[index] then
             return
         end
 
@@ -775,7 +804,6 @@ local function Init_Hook()
                 end
             end
 
-
             C_GossipInfo.SelectOption(index)
             find=true
 
@@ -788,11 +816,13 @@ local function Init_Hook()
 
 
         if find then
-            GossipButton.selectGissipIDTab[index]=true
+            SelectGissipIDTab[index]=true
             print(
-                WoWTools_DataMixin.Icon.icon2
-                ..'|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_UnitMixin:Get_NPC_Name()
-                ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cnGREEN_FONT_COLOR:'
+                '|A:SpecDial_LastPip_BorderGlow:0:0|a'
+                ..WoWTools_UnitMixin:Get_NPC_Name()
+                ..WoWTools_DataMixin.Icon.icon2,
+
+               '|T'..(info.overrideIconID or info.icon or 0)..':0|t|cnGREEN_FONT_COLOR:'
                 ..(name or '')
             )
         end
@@ -819,20 +849,18 @@ local function Init_Hook()
 
 
 
-
     --自动接取任务,多个任务GossipFrameShared.lua questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial
     WoWTools_DataMixin:Hook(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
+        Create_AvailableQuestCheck(self, info)
 
         Set_Gossip_Text(self, info)--自定义，对话，文本
-
-        Create_AvailableQuestCheck(self, info)
 
         local questID=info and info.questID or self:GetID()
         if not questID or not Save().quest or IsModifierKeyDown() then
             return
         end
 
-        local npc=WoWTools_UnitMixin:GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID()
 
         if Save().questOption[questID] then--自定义
            C_GossipInfo.SelectAvailableQuest(questID)--or self:GetID()
@@ -864,9 +892,10 @@ local function Init_Hook()
     --完成已激活任务,多个任务GossipFrameShared.lua
     WoWTools_DataMixin:Hook(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
         Create_GossipOptionCheckBox(self, info)--建立，自动选取，选项
+
         Set_Gossip_Text(self, info)--自定义，对话，文本
 
-        local npc=WoWTools_UnitMixin:GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID()
 
         local questID=info.questID or self:GetID()
         if not questID or IsModifierKeyDown() then
