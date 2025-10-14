@@ -64,7 +64,7 @@ local function Init()
                     or MerchantFrame.selectedTab~=1
                 then
                     print(
-                        WoWTools_MerchantMixin.addName.WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
                     )
                     return
