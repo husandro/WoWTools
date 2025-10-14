@@ -427,7 +427,7 @@ local function Init()
     --StoryHeaderMixin:ShowTooltip()
     --QuestScrollFrame.StoryTooltip
 
-    QuestScrollFrame.CampaignTooltip.IDLabel= QuestScrollFrame.CampaignTooltip:CreateFontString(nil, 'ARTWORK')
+    QuestScrollFrame.CampaignTooltip.IDLabel= QuestScrollFrame.CampaignTooltip:CreateFontString('WoWToolsCampaignIDLabel', 'ARTWORK')
     QuestScrollFrame.CampaignTooltip.IDLabel:SetFontObject('GameFontNormal')
     QuestScrollFrame.CampaignTooltip.IDLabel:SetJustifyH('LEFT')
     QuestScrollFrame.CampaignTooltip.IDLabel.layoutIndex= 5

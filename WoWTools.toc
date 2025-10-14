@@ -167,7 +167,7 @@ Plus_Aura\0_AuraMixin.lua
 Plus_Tooltip\0_Init.lua
 Plus_Tooltip\1_Panel.lua
 Plus_Tooltip\2_Hook.lua
-Plus_Tooltip\2_Settings.lua
+Plus_Tooltip\2_AddTooltipPostCall.lua
 Plus_Tooltip\3_Set_Point.lua
 Plus_Tooltip\4_Tooltip_Init.lua
 Plus_Tooltip\f_Achievement.lua
