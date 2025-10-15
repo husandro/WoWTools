@@ -1548,9 +1548,9 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:HideTexture(LFGListFrame.EntryCreation.Inset.CustomBG)
     self:HideTexture(LFGListFrame.EntryCreation.Inset.Bg)
 
-    self:SetMenu(LFGListEntryCreationGroupDropdown)
+    --[[self:SetMenu(LFGListEntryCreationGroupDropdown)
     self:SetMenu(LFGListEntryCreationActivityDropdown)
-    self:SetMenu(LFGListEntryCreationPlayStyleDropdown)
+    self:SetMenu(LFGListEntryCreationPlayStyleDropdown)]]
     self:SetEditBox(LFGListFrame.EntryCreation.Name)
     self:SetEditBox(LFGListCreationDescription.EditBox)
     self:SetEditBox(LFGListFrame.EntryCreation.ItemLevel.EditBox)
@@ -1574,6 +1574,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
 
     self:HideTexture(RaidFinderFrameRoleBackground)
 
+    self:SetNineSlice(LFGListFrame.NothingAvailable.Inset)
 
     --右边
     self:HideFrame(PVEFrame)

@@ -730,7 +730,6 @@ local function Init_Hook()
         if not info
             or not info.gossipOptionID
             or not Save().gossip
-            or (WoWTools_DataMixin.Player.husandro and LOCALE_zhCN and NumGossipCNLabel:GetText()~='0')
         then
             return
         end

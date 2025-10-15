@@ -168,9 +168,9 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         </Anchors>
     </Frame>
     ]]
-    
-    
-    
+
+
+
     EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild.overviewDescription:SetPoint('RIGHT', 10, 0)
     EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription:SetPoint('RIGHT', 10, 0)
     EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildHeader:SetPoint('LEFT')
@@ -196,8 +196,6 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     end})
 
     self:Setup(EncounterJournalInstanceSelect.ScrollBox, {frame=EncounterJournal})
-    --self:Setup(EncounterJournalEncounterFrameInfo.LootContainer.ScrollBox, {frame=EncounterJournal})
-    --self:Setup(EncounterJournalEncounterFrameInfo.BossesScrollBox, {frame=EncounterJournal})
 end
 
 
@@ -229,6 +227,14 @@ end
 
 --冒险指南
 function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
+    self:SetTabButton(EncounterJournalMonthlyActivitiesTab)
+    self:SetNavBar(EncounterJournal)
+
+
+    self:SetTabButton(EncounterJournalDungeonTab)
+    self:SetTabButton(EncounterJournalRaidTab)
+    self:SetTabButton(EncounterJournalLootJournalTab)
+
     self:HideTexture(EncounterJournal.TopTileStreaks)
     self:SetButton(EncounterJournalCloseButton)
 
@@ -238,17 +244,31 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetScrollBar(EncounterJournalInstanceSelect)
     self:SetEditBox(EncounterJournalSearchBox)
 
+--团队副本
+    --self:SetMenu(EncounterJournalInstanceSelect.ExpansionDropdown)
+
 --首领，信息
     --self:HideFrame(EncounterJournalEncounterFrameInfo)
-    self:SetTabButton(EncounterJournalEncounterFrameInfoOverviewTab)
-    self:SetTabButton(EncounterJournalEncounterFrameInfoLootTab)
-    self:SetTabButton(EncounterJournalEncounterFrameInfoBossTab)
-    self:SetTabButton(EncounterJournalEncounterFrameInfoModelTab)
+    self:SetTabButton(EncounterJournalEncounterFrameInfoOverviewTab, 0.8)
+    self:SetTabButton(EncounterJournalEncounterFrameInfoLootTab, 0.8)
+    self:SetTabButton(EncounterJournalEncounterFrameInfoBossTab, 0.8)
+    self:SetTabButton(EncounterJournalEncounterFrameInfoModelTab, 0.8)
 --Model
     self:HideTexture(EncounterJournalEncounterFrameInfoModelFrameShadow)
     self:SetAlphaColor(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
 --BOSS, 掉落
     EncounterJournalEncounterFrameInfoClassFilterClearFrame:GetRegions():SetAlpha(0.5)--职业过滤，标题
+
+    if EncounterJournalEncounterFrameInfo.LootContainer then--11.2.5
+        --self:SetMenu(EncounterJournalEncounterFrameInfoDifficulty)
+        EncounterJournalEncounterFrameInfo.LootContainer.slotFilter:ClearAllPoints()
+        EncounterJournalEncounterFrameInfo.LootContainer.slotFilter:SetPoint('RIGHT', EncounterJournalEncounterFrameInfoDifficulty, 'LEFT', -4, 0)
+        EncounterJournalEncounterFrameInfo.LootContainer.filter:ClearAllPoints()
+        EncounterJournalEncounterFrameInfo.LootContainer.filter:SetPoint('RIGHT', EncounterJournalEncounterFrameInfo.LootContainer.slotFilter, 'LEFT', -4, 0)
+        --self:SetMenu(EncounterJournalEncounterFrameInfo.LootContainer.slotFilter)
+        --self:SetMenu(EncounterJournalEncounterFrameInfo.LootContainer.filter)
+    end
+
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
     WoWTools_DataMixin:Hook(EncounterJournalItemMixin,'Init', function(btn)
         if btn:IsVisible() and not btn.set_texture then
@@ -282,6 +302,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
     self:HideFrame(EncounterJournal.LootJournalItems)
 --重新设置专精，位置
+    --self:SetMenu(EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown)
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:ClearAllPoints()
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:SetPoint(
         'TOPRIGHT',
@@ -291,6 +312,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     )
     self:HideFrame(EncounterJournal.LootJournalItems.ItemSetsFrame)
 --套装,按钮
+
     WoWTools_DataMixin:Hook(LootJournalItemSetButtonMixin, 'Init', function(btn)
         btn.Background:SetAlpha(0.5)
         btn.Background:SetAtlas('timerunning-TopHUD-button-glow')
@@ -300,7 +322,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
     self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
 
-    
+
 --旅行者日志
     EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetColorTexture(0,0,0,0.3)
 --任务，右边列表，按钮

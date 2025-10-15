@@ -1,8 +1,8 @@
 
 local function Set_Texture(self)
-    WoWTools_TextureMixin:HideTexture(self.SlotArt)
-    WoWTools_TextureMixin:HideTexture(self.NormalTexture)--外框，方块
-    WoWTools_TextureMixin:HideTexture(self.SlotBackground, true)--背景
+    WoWTools_TextureMixin:SetAlphaColor(self.SlotArt, nil, true, 0)
+    WoWTools_TextureMixin:SetAlphaColor(self.NormalTexture, nil, true, 0)--外框，方块
+    WoWTools_TextureMixin:SetAlphaColor(self.SlotBackground, nil, true, 0)--背景
 
     if not self.IconMask then
         WoWTools_ButtonMixin:AddMask(self, false, self.Icon)
@@ -33,57 +33,45 @@ local function Set_KeyText(self)
     self.HotKey:SetTextColor(1,1,1,1)
 end
 
-local function Set_MainMenuBarPool(self)
+local function Set_MainMenuBarPool()
     local dividersPool = MainMenuBar.isHorizontal and MainMenuBar.HorizontalDividersPool or MainMenuBar.VerticalDividersPool
     if dividersPool then
         for pool in dividersPool:EnumerateActive() do
-            self:HideFrame(pool)
+            WoWTools_TextureMixin:HideFrame(pool)
         end
     end
 end
 
 
+local function Init_HooKey(btn)
+    if not btn then
+        return
+    end
+    Set_Texture(btn)
 
+    if btn.UpdateHotkeys then
+        Set_KeyText(btn)
+        WoWTools_DataMixin:Hook(btn, 'UpdateHotkeys', function(b)
+            Set_KeyText(b)
+        end)
+    end
 
+    if btn.cooldown then--缩小，冷却，字体
+        btn.cooldown:SetCountdownFont('NumberFontNormal')
+    end
 
-
-
-
-
-
-
-
-
-
-
-
+    if btn.AssistedCombatRotationFrame then
+        Set_Assisted(btn.AssistedCombatRotationFrame)
+        btn.AssistedCombatRotationFrame:HookScript('OnShow', function(frame)
+            Set_Assisted(frame)
+        end)
+    end
+end
 
 
 
 --动作条
 function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
-    local function Init_HooKey(btn)
-        if not btn then
-            return
-        end
-        if btn.UpdateHotkeys then
-            Set_KeyText(btn)
-            WoWTools_DataMixin:Hook(btn, 'UpdateHotkeys', function(b)
-                Set_KeyText(b)
-            end)
-        end
-        if btn.cooldown then--缩小，冷却，字体
-            btn.cooldown:SetCountdownFont('NumberFontNormal')
-        end
-        if btn.AssistedCombatRotationFrame then
-            Set_Assisted(btn.AssistedCombatRotationFrame)
-            btn.AssistedCombatRotationFrame:HookScript('OnShow', function(frame)
-                Set_Assisted(frame)
-            end)
-        end
-
-        Set_Texture(btn)
-    end
 
 
     for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
@@ -113,13 +101,15 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
 
 
     --WoWTools_DataMixin:Hook(MainMenuBar, 'UpdateDividers', function(bar)--主动作条 
-    Set_MainMenuBarPool(self)
+    
+    Set_MainMenuBarPool()
+    
 
     EditModeManagerFrame:HookScript('OnHide', function()
         for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
             Set_Texture(_G['ActionButton'..i])
         end
-       Set_MainMenuBarPool(self)
+       Set_MainMenuBarPool()
     end)
 
     OverrideActionBarExpBarOverlayFrameText:SetAlpha(0.3)

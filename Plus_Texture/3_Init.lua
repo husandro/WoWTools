@@ -60,7 +60,7 @@ end
 
 
 local function Set_Event_Texture(name)
-    if WoWTools_TextureMixin.Events[name] and C_AddOns.IsAddOnLoaded(name) then
+    if WoWTools_TextureMixin.Events[name] then
         do
             WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
         end
@@ -73,44 +73,11 @@ end
 
 
 
-local function Init_Texture()
-    if Save().disabledTexture then
-        return
-    end
-
-
-
-    for name in pairs(WoWTools_TextureMixin.Events) do
-        Set_Event_Texture(name)
-    end
-
-    for name in pairs(WoWTools_TextureMixin.Frames) do
-        do
-            if _G[name] then
-                WoWTools_TextureMixin.Frames[name](WoWTools_TextureMixin)
-            elseif WoWTools_DataMixin.Player.husandro then
-                print(WoWTools_TextureMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
-            end
-        end
-        WoWTools_TextureMixin.Frames[name]= nil
-    end
-
-    WoWTools_DataMixin:Hook(DropdownTextMixin, 'OnLoad', function(self)
-        WoWTools_TextureMixin:SetMenu(self)
-    end)
-    WoWTools_DataMixin:Hook(DropdownButtonMixin, 'SetupMenu', function(self)
-        WoWTools_TextureMixin:SetMenu(self)
-    end)
-
-    Init_Texture=function()end
-end
-
-
 
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -132,25 +99,45 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 WoWTools_TextureMixin.Events={}
                 WoWTools_TextureMixin.Frames={}
-
                 self:UnregisterAllEvents()
             else
-
+                if Save().disabledTexture then
+                    self:UnregisterEvent('event')
+                else
+                    self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                    for name in pairs(WoWTools_TextureMixin.Events) do
+                        if C_AddOns.IsAddOnLoaded(name) then
+                             do
+                                WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
+                            end
+                            WoWTools_TextureMixin.Events[name]= nil
+                        end
+                    end
+                end
                 WoWTools_TextureMixin:Init_Class_Power()--职业
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
                 WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
-
-                if Save().disabledTexture then
-                    self:UnregisterAllEvents()
-                end
             end
 
-        elseif WoWToolsSave then
-            Set_Event_Texture(arg1)
+        elseif WoWToolsSave and WoWTools_TextureMixin.Events[arg1] then
+            do
+                WoWTools_TextureMixin.Events[arg1](WoWTools_TextureMixin)
+            end
+            WoWTools_TextureMixin.Events[arg1]= nil
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then--需要这个事件
-        Init_Texture()
+        for name in pairs(WoWTools_TextureMixin.Frames) do
+            do
+                if _G[name] then
+                    WoWTools_TextureMixin.Frames[name](WoWTools_TextureMixin)
+
+                elseif WoWTools_DataMixin.Player.husandro then
+                    print(WoWTools_TextureMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
+                end
+            end
+            WoWTools_TextureMixin.Frames[name]= nil
+        end
         self:UnregisterEvent(event)
     end
 end)

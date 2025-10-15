@@ -283,7 +283,6 @@ function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     self:SetFrame(bar.Forward, {alpha=0.8})
     self:SetFrame(bar.Track, {alpha=0.8})
     self:SetFrame(bar.Track.Thumb, {alpha=0.8})
---EncounterJournalMonthlyActivitiesFrame.ScrollBar.Track.Thumb
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, nil, 0.6)
 
@@ -612,3 +611,19 @@ function WoWTools_TextureMixin:SetBorder(frame, alpha)
     self:SetFrame(frame, alpha)
 end
 
+
+
+function WoWTools_TextureMixin:SetNavBar(frame)
+    local naveBar= frame and (frame.NavBar or frame.navBar)
+    if not naveBar then
+        return
+    end
+
+    self:HideFrame(naveBar.overlay)
+    self:HideTexture(naveBar.InsetBorderBottom)
+    self:HideTexture(naveBar.InsetBorderRight)
+    self:HideTexture(naveBar.InsetBorderLeft)
+    self:HideTexture(naveBar.InsetBorderBottomRight)
+    self:HideTexture(naveBar.InsetBorderBottomLeft)
+    naveBar:DisableDrawLayer('BACKGROUND')
+end

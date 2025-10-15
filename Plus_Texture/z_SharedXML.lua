@@ -31,11 +31,27 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
     end)
 
     --UISliderTemplat
+
+--DropdownButton.lua
+    WoWTools_DataMixin:Hook(DropdownButtonMixin, 'OnLoad', function(frame)
+        self:SetMenu(frame)
+    end)
+--MenuTemplates.lua
+    WoWTools_DataMixin:Hook(WowStyle1FilterDropdownMixin, 'OnLoad', function(frame)
+        self:SetMenu(frame)
+    end)
+    WoWTools_DataMixin:Hook(WowStyle1DropdownMixin, 'OnLoad', function(frame)
+        self:SetMenu(frame)
+    end)
+    WoWTools_DataMixin:Hook(WowStyle2DropdownMixin, 'OnLoad', function(frame)
+        self:SetMenu(frame)
+    end)
+    WoWTools_DataMixin:Hook(WowStyle1ArrowDropdownMixin, 'OnLoad', function(frame)
+        self:SetMenu(frame)
+    end)
+
+    --WoWTools_DataMixin:Hook(DropdownTextMixin, 'OnLoad', function(frame)
 end
-
-
-
-
 
 
 
@@ -94,9 +110,10 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
 
 --NavBar
     WoWTools_DataMixin:Hook('NavBar_Initialize', function(bar)
-        self:HideFrame(bar)
+        WoWTools_TextureMixin:SetNavBar(bar:GetParent())
+        --[[self:HideFrame(bar)
         self:HideFrame(bar.overlay)
-        self:HideFrame(bar.Inset)
+        self:HideFrame(bar.Inset)]]
     end)
 
 --选项面板，Slider
@@ -131,7 +148,6 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     WoWTools_DataMixin:Hook('HybridScrollFrame_OnLoad', function(frame)
         self:SetScrollBar(frame)
     end)
-    
 end
 
     --[[WoWTools_DataMixin:Hook(ScrollBarMixin, 'OnLoad', function(bar)

@@ -15,6 +15,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
 
 --坐骑
+    --self:SetMenu(MountJournal.FilterDropdown)
     self:SetFrame(MountJournal.MountCount, {alpha=0.3})
     self:HideTexture(MountJournal.LeftInset.Bg)
     self:HideTexture(MountJournal.MountDisplay.YesMountsTex)

@@ -8,15 +8,9 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetNineSlice(WorldMapFrame.BorderFrame)
     self:HideTexture(WorldMapFrameBg)
     self:SetAlphaColor(QuestMapFrame.Background)
-    self:HideTexture(WorldMapFrame.NavBar.overlay)
-    self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottom)
-    self:HideTexture(WorldMapFrame.NavBar.InsetBorderRight)
-    self:HideTexture(WorldMapFrame.NavBar.InsetBorderLeft)
-    self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottomRight)
-    self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
-    self:HideTexture(WorldMapFrame.BorderFrame.InsetBorderTop)
+    self:SetNavBar(WorldMapFrame)
 
-    WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
+    self:HideTexture(WorldMapFrame.BorderFrame.InsetBorderTop)
 --最大化时，隐藏背景
     WoWTools_DataMixin:Hook(WorldMapFrame, 'SynchronizeDisplayState', function(frame)
         if frame:IsMaximized() then
