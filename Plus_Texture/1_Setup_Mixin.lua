@@ -618,7 +618,6 @@ function WoWTools_TextureMixin:SetNavBar(frame)
     if not naveBar then
         return
     end
-
     self:HideFrame(naveBar.overlay)
     self:HideTexture(naveBar.InsetBorderBottom)
     self:HideTexture(naveBar.InsetBorderRight)
@@ -626,4 +625,26 @@ function WoWTools_TextureMixin:SetNavBar(frame)
     self:HideTexture(naveBar.InsetBorderBottomRight)
     self:HideTexture(naveBar.InsetBorderBottomLeft)
     naveBar:DisableDrawLayer('BACKGROUND')
+end
+
+function WoWTools_TextureMixin:SetStatusBar(bar, icon, notColor)
+    notColor= WoWTools_DataMixin.Player.Class=='PRIEST' or notColor--牧师
+    if bar and bar:IsObjectType('StatusBar') then
+        if notColor then
+            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--绿色
+        else
+            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            local col= WoWTools_DataMixin.Player.UseColor
+            bar:SetStatusBarColor(col.r, col.g, col.b)
+        end
+    elseif icon and icon:IsObjectType('Texture') then
+        if notColor then
+            icon:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--绿色
+        else
+            icon:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            local col= WoWTools_DataMixin.Player.UseColor
+            icon:SetVertexColor(col.r, col.g, col.b)
+        end
+    end
+
 end

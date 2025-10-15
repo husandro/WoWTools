@@ -313,7 +313,7 @@ local function Set_Button_Texture(btn, name)
     bgAlpha, borderAlpha= bgAlpha or 0.5, borderAlpha or 0
 
     for _, region in pairs ({btn:GetRegions()}) do
-        if region:GetObjectType()=='Texture' and region~=icon then
+        if region:IsObjectType('Texture') and region~=icon then
             local text= region:GetTexture()
             if text==136430 then--OVERLAY 
                 region:SetAlpha(borderAlpha)

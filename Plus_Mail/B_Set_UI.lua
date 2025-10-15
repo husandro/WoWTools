@@ -26,7 +26,7 @@ local function Set_Inbox_btn_Point(btn, index)--设置，模板，内容，位�
     _G['MailItem'..index..'Subject']:SetPoint('RIGHT', -2, 0)
 
     for i, region in pairs({btn:GetRegions()}) do
-        if region:GetObjectType()=='Texture' then
+        if region:IsObjectType('Texture') then
             if i==3 then
                 region:ClearAllPoints()
                 region:SetPoint('BOTTOMLEFT')
@@ -165,7 +165,7 @@ local function Init()
     if SendMailCostMoneyFrame then
         local frames= {SendMailCostMoneyFrame:GetRegions()}
         for _, text in pairs(frames) do
-            if text:GetObjectType()=="FontString" and text:GetText()==SEND_MAIL_COST then
+            if text:IsObjectType('FontString') and text:GetText()==SEND_MAIL_COST then
                 text:SetText('')
                 text:Hide()
                 break
@@ -178,7 +178,7 @@ local function Init()
 
 --收件人：
     for _, region in pairs({SendMailNameEditBox:GetRegions()}) do
-        if region:GetObjectType()=='FontString' and region:GetText()==MAIL_TO_LABEL then
+        if region:IsObjectType('FontString') and region:GetText()==MAIL_TO_LABEL then
             region:SetText('')
             break
         end
@@ -192,7 +192,7 @@ local function Init()
     end)
 --主题
     for _, region in pairs({SendMailSubjectEditBox:GetRegions()}) do
-        if region:GetObjectType()=='FontString'  then
+        if region:IsObjectType('FontString')  then
             local text= region:GetText()
             if text==MAIL_SUBJECT_LABEL or text=='主题：' then
                 region:SetText('')

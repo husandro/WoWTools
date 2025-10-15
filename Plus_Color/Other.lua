@@ -28,12 +28,12 @@ local function OnColorSelect(self, r, g, b)
 
 --修改材质颜色
 	for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
-		if icon:GetObjectType()=="Texture" then
+		if icon:IsObjectType('Texture')then
 			icon:SetVertexColor(r,g,b,a)
 		end
 	end
 	for _, icon in pairs({ColorPickerFrame.Header:GetRegions()}) do
-		if icon:GetObjectType()=="Texture" then
+		if icon:IsObjectType('Texture')then
 			icon:SetVertexColor(r,g,b,a)
 		end
 	end

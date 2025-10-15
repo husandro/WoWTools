@@ -11,7 +11,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
 --外框
     WoWTools_DataMixin:Hook(MenuStyle1Mixin, 'Generate', function(frame)
         local icon= frame:GetRegions()
-        if icon and icon:GetObjectType()=="Texture" then
+        if icon and icon:IsObjectType('Texture')then
             self:SetAlphaColor(icon, true)
         end
     end)
@@ -51,14 +51,6 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
     end)
 
     --WoWTools_DataMixin:Hook(DropdownTextMixin, 'OnLoad', function(frame)
-end
-
-
-
-function WoWTools_TextureMixin.Events:CastingBarFrame()
-    WoWTools_DataMixin:Hook(CastingBarMixin, 'OnLoad', function()
-        print('function WoWTools_TextureMixin.Events:')
-    end)
 end
 
 
@@ -152,8 +144,11 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     end)
 end
 
-    --[[WoWTools_DataMixin:Hook(ScrollBarMixin, 'OnLoad', function(bar)
-        self:SetScrollBar(bar)
-    end)]]
-
+--上一页，下一页
+function WoWTools_TextureMixin.Events:Blizzard_PagedContent()
+    WoWTools_DataMixin:Hook(PagingControlsMixin, 'OnLoad', function(frame)
+        self:SetButton(frame.PrevPageButton, {alpha=1})
+        self:SetButton(frame.NextPageButton, {alpha=1})
+    end)
+end
 

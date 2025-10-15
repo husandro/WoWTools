@@ -1,8 +1,7 @@
 
 --收藏
 function WoWTools_TextureMixin.Events:Blizzard_Collections()
-    self:SetButton(WardrobeCollectionFrame.InfoButton)
-    WardrobeCollectionFrame.InfoButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
+    
     self:HideTexture(CollectionsJournal.TopTileStreaks)
     self:SetButton(CollectionsJournalCloseButton)
     self:HideTexture(CollectionsJournalBg)
@@ -19,6 +18,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetFrame(MountJournal.MountCount, {alpha=0.3})
     self:HideTexture(MountJournal.LeftInset.Bg)
     self:HideTexture(MountJournal.MountDisplay.YesMountsTex)
+    self:SetCheckBox(MountJournal.MountDisplay.ModelScene.TogglePlayer)
     self:SetAlphaColor(MountJournal.MountDisplay.ShadowOverlay, nil, nil, 0)
     self:SetAlphaColor(MountJournal.RightInset.Bg, nil, nil, 0.3)
     MountJournal.RightInset.Bg:ClearAllPoints()
@@ -75,6 +75,9 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetNineSlice(ToyBox.iconsFrame)
     ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
     self:SetAlphaColor(ToyBox.progressBar.border, nil, nil, 0.3)
+    self:SetStatusBar(ToyBox.progressBar)
+    self:SetButton(ToyBox.PagingFrame.PrevPageButton, {alpha=1})
+    self:SetButton(ToyBox.PagingFrame.NextPageButton, {alpha=1})
 
 --传家宝
     self:SetEditBox(HeirloomsJournalSearchBox)
@@ -83,13 +86,27 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
     self:SetAlphaColor(HeirloomsJournal.progressBar.border, nil, nil, 0.3)
 
+
 --物品
+    self:SetButton(WardrobeCollectionFrame.InfoButton)
+    WardrobeCollectionFrame.InfoButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
+    self:SetMenu(WardrobeCollectionFrame.ClassDropdown)
     self:SetNineSlice(WardrobeCollectionFrame.ItemsCollectionFrame)
     self:HideFrame(WardrobeCollectionFrame.ItemsCollectionFrame)
     WardrobeCollectionFrame.progressBar:DisableDrawLayer('BACKGROUND')
     self:SetAlphaColor(WardrobeCollectionFrame.progressBar.border, nil, nil, 0.3)
+    self:SetStatusBar(WardrobeCollectionFrame.progressBar)
     self:SetEditBox(WardrobeCollectionFrameSearchBox)
-
+    for _, region in pairs({WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame:GetChildren()}) do
+        if region:IsObjectType('Button') then
+            local icon= region:GetNormalTexture()
+            if icon then
+                self:SetAlphaColor(icon, true, nil, 1)
+            end
+        end
+    end
+    self:SetButton(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame.PrevPageButton, {alpha=1})
+    self:SetButton(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame.NextPageButton, {alpha=1})
 
 --套装
     self:SetScrollBar(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
@@ -98,6 +115,12 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:HideFrame(WardrobeCollectionFrame.SetsCollectionFrame.RightInset)
     self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.RightInset)
     self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
+
+--营区
+    self:SetButton(WarbandSceneJournal.IconsFrame.Icons.Controls.PagingControls.PrevPageButton, {alpha=1})
+    self:SetButton(WarbandSceneJournal.IconsFrame.Icons.Controls.PagingControls.NextPageButton, {alpha=1})
+    self:SetCheckBox(WarbandSceneJournal.IconsFrame.Icons.Controls.ShowOwned.Checkbox)
+
 
 --试衣间WardrobeFrame
     --self:SetNineSlice(WardrobeFrame)
@@ -148,19 +171,17 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         btn.Bg:SetPoint('BOTTOM', btn.special or btn.name, 0,-2)
     end)
 
+
+
 --收集
     self:Init_BGMenu_Frame(CollectionsJournal)
+
 --试衣间
     self:Init_BGMenu_Frame(WardrobeFrame, {
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', WardrobeFrameCloseButton, -23, 0)
         end
     })
-
-
-
-
-   
 
 
 

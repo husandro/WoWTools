@@ -180,7 +180,7 @@ local function initFunc()
     ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList:SetPoint('TOPLEFT', 5, -92)
     ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList:SetPoint('BOTTOMRIGHT', ProfessionsFrame.OrdersPage.BrowseFrame.OrderList, 'BOTTOMLEFT')
     for _, region in pairs({ProfessionsFrame.SpecPage.PanelFooter:GetRegions()}) do
-        if region:GetObjectType()=='Texture' then
+        if region:IsObjectType('Texture') then
             region:ClearAllPoints()
             region:SetAllPoints(ProfessionsFrame.SpecPage.PanelFooter)
             break

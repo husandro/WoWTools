@@ -2,15 +2,12 @@
 Cbtn(frame, tab)
 CreateSecureButton(tab)
 CreateMenu(frame, tab)
+
+InterfaceOptionsCheckButtonTemplate
+UICheckButtonArtTemplate
 ]]
 
 WoWTools_ButtonMixin={}
-
---[[local buttonIndex= 1
-local function get_index()
-    buttonIndex= buttonIndex+1
-    return buttonIndex
-end]]
 
 
 local TemplateSizeTab={

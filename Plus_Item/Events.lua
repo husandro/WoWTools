@@ -80,7 +80,7 @@ function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
                 end
             end
 --双击， 移队/加入购物车
-            if btn:GetObjectType()=='Button' and not btn:GetScript('OnDoubleClick') then
+            if btn:IsObjectType('Button') and not btn:GetScript('OnDoubleClick') then
                 btn:SetScript('OnDoubleClick', function(b)
                     b.ContentsContainer.CartToggleButton:Click()
                 end)

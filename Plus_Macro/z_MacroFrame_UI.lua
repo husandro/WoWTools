@@ -157,7 +157,7 @@ local function Init()
     local regions= {MacroFrame:GetRegions()}
     for index, frame in pairs(regions) do
 --标题，上升，原生看FrameStrate太低了
-        if frame:GetObjectType()=='FontString' and frame:GetText()==CREATE_MACROS then
+        if frame:IsObjectType('FontString') and frame:GetText()==CREATE_MACROS then
             if WoWTools_DataMixin.onlyChinese then
                 frame:SetText('创建宏')
             end
@@ -168,7 +168,7 @@ local function Init()
             frame:SetTexture(0)
             frame:Hide()
             local f= regions[index+1]
-            if f and f:GetObjectType()=='Texture' then
+            if f and f:IsObjectType('Texture') then
                 f:SetTexture(0)
                 f:Hide()
             end
@@ -180,7 +180,7 @@ local function Init()
     MacroFrameSelectedMacroButton:ClearAllPoints()
     MacroFrameSelectedMacroButton:SetPoint('BOTTOMLEFT', MacroFrameScrollFrame, 'TOPLEFT', 6, 12)
     local region= MacroFrameSelectedMacroButton:GetRegions()--外框
-    if region and region:GetObjectType()=='Texture' then
+    if region and region:IsObjectType('Texture') then
         region:Hide()
     end
 

@@ -1109,7 +1109,7 @@ local function Init()
     Init_Spell_Button()
 
     local region= select(3, ItemSocketingFrame:GetRegions())
-    if region:GetObjectType()=='FontString' then
+    if region:IsObjectType('FontString') then
         region:SetParent(ItemSocketingFrame.TitleContainer)
     end
 

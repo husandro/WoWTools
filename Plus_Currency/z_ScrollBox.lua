@@ -19,21 +19,36 @@ local function Create(frame)
 	if frame.check then
 		return
 	end
+	frame.Content.AccountWideIcon:SetScript('OnLeave', nil)
+	frame.Content.AccountWideIcon.Icon:SetAlpha(0.5)
 
 	frame.check= CreateFrame('CheckButton', nil, frame, "InterfaceOptionsCheckButtonTemplate")
+	function frame.check:GetCurrencyID()
+		local currencyIndex= self:GetParent().currencyIndex
+		if currencyIndex then
+			local data= C_CurrencyInfo.GetCurrencyListInfo(currencyIndex)
+			if data then
+				return data.currencyID
+			end
+		end
+	end
+
 	frame.check:SetPoint('RIGHT', frame, 'LEFT',4,0)
+	frame.check:SetAlpha(0.5)
 	frame.check:SetScript('OnClick', function(self)
-		if self.currencyID then
-			Save().tokens[self.currencyID]= not Save().tokens[self.currencyID] and true or nil
-			frame.check:SetAlpha(Save().tokens[self.currencyID] and 1 or 0.5)
+		local id= self:GetCurrencyID()
+		if id then
+			Save().tokens[id]= not Save().tokens[id] and true or nil
+			--frame.check:SetAlpha(Save().tokens[id] and 1 or 0.5)
 			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		end
 	end)
 	frame.check:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:ClearLines()
-		if self.currencyID then
-			GameTooltip:SetCurrencyByID(self.currencyID)
+		local currencyIndex= self:GetParent().currencyIndex
+		if currencyIndex then
+			GameTooltip:SetCurrencyToken(currencyIndex)
 			GameTooltip:AddLine(" ")
 		end
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING, WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
@@ -103,7 +118,9 @@ end
 
 
 local function set_Tokens_Button(self)--设置, 列表, 内容
-	Create(self)
+	if not self.check then
+		Create(self)
+	end
 
 	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity
 	if not Save().notPlus then
@@ -181,7 +198,24 @@ end
 
 
 local function Init()
-	WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
+
+	WoWTools_DataMixin:Hook(TokenEntryMixin, 'Initialize', function(frame)
+		set_Tokens_Button(frame)--设置, 列表, 内容
+	end)
+	WoWTools_DataMixin:Hook(TokenEntryMixin, 'OnLoad', function(frame)
+		Create(frame)--设置, 列表, 内容
+	end)
+
+	if TokenFrame.ScrollBox:HasView() then
+		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
+			if frame.elementData and not frame.elementData.isHeader  then
+				Create(frame)--设置, 列表, 内容
+            	set_Tokens_Button(frame)--设置, 列表, 内容
+			end
+        end
+	end
+
+	--[[WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
         if not f:HasView() then
             return
         end
@@ -190,7 +224,7 @@ local function Init()
             	set_Tokens_Button(frame)--设置, 列表, 内容
 			end
         end
-    end)
+    end)]]
 
 
 

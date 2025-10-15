@@ -1941,14 +1941,14 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
     WoWTools_DataMixin:Hook(EventTraceLogEventButtonMixin, 'OnLoad', function(frame)
         self:SetButton(frame.HideButton)
         local icon= frame:GetRegions()
-        if icon:GetObjectType()=='Texture' then
+        if icon:IsObjectType('Texture') then
             icon:SetTexture(0)
         end
         --frame.Alternate:SetAlpha(0.75)
     end)
     WoWTools_DataMixin:Hook(EventTraceFilterButtonMixin, 'Init', function(frame, elementData, hideCb)
         local icon= frame:GetRegions()
-        if icon:GetObjectType()=='Texture' then
+        if icon:IsObjectType('Texture') then
             icon:SetTexture(0)
         end
     end)

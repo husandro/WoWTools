@@ -362,7 +362,7 @@ local function Init()
     AddonList.ForceLoad:ClearAllPoints()
     AddonList.ForceLoad:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT')
     for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
-        local text= label:GetObjectType()=="FontString" and label:GetText()
+        local text= label:IsObjectType('FontString') and label:GetText()
         if text and (text==ADDON_FORCE_LOAD or text=='加载过期插件') then
             label:SetText('')
             label:ClearAllPoints()

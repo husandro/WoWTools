@@ -72,22 +72,19 @@ local function Expand_All()
 		return
 	end
 
-	do
+
 		for i=num, 1, -1 do--展开所有
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 			if info and info.isHeader and not info.isHeaderExpanded then
 				C_CurrencyInfo.ExpandCurrencyList(i, true)
 			end
 		end
-	end
 
-	do
 		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
 			if frame.elementData.isHeader and frame:IsCollapsed() then
 				frame:ToggleCollapsed()
 			end
 		end
-	end
 
 	WoWTools_CurrencyMixin:UpdateTokenFrame()
 end

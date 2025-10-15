@@ -112,7 +112,7 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
             if frame and frame:CanChangeAttribute() then
                 frame:SetWidth(w)
                 for _, r in pairs({frame:GetRegions()}) do
-                    if r:GetObjectType()=='Texture' then
+                    if r:IsObjectType('Texture') then
                         r:SetWidth(w+4)
                     end
                 end

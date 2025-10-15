@@ -65,15 +65,15 @@ local function Init_UI()
     MerchantNextPageButton:SetPoint('RIGHT', MerchantFrame.FilterDropdown, 'LEFT', 4, 0)
     MerchantNextPageButton:SetFrameStrata('HIGH')
     local label, texture= MerchantNextPageButton:GetRegions()
-    if texture and texture:GetObjectType()=='Texture' then texture:SetTexture(0) end
-    if label and label:GetObjectType()=='FontString' then label:SetText('') end
+    if texture and texture:IsObjectType('Texture') then texture:SetTexture(0) end
+    if label and label:IsObjectType('FontString') then label:SetText('') end
 
 --上一页
     MerchantPrevPageButton:ClearAllPoints()
     MerchantPrevPageButton:SetPoint('RIGHT', MerchantNextPageButton, 'LEFT',8,0)
     label, texture= MerchantPrevPageButton:GetRegions()
-    if texture and texture:GetObjectType()=='Texture' then texture:SetTexture(0) end
-    if label and label:GetObjectType()=='FontString' then label:SetText('') end
+    if texture and texture:IsObjectType('Texture') then texture:SetTexture(0) end
+    if label and label:IsObjectType('FontString') then label:SetText('') end
 
 --上页数
     MerchantPageText:ClearAllPoints()

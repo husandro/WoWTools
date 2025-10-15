@@ -93,19 +93,19 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
 
 --物品
     s= EncounterJournal.LootJournalItems:GetRegions()
-    if s:GetObjectType()=='Texture' then
+    if s:IsObjectType('Texture') then
         s:SetAllPoints()
     end
     EncounterJournal.LootJournalItems.ItemSetsFrame:SetPoint('TOPRIGHT', -22, -10)
     for _, region in pairs({EncounterJournal.LootJournalItems:GetRegions()}) do
-        if region:GetObjectType()=='Texture' then
+        if region:IsObjectType('Texture') then
             region:SetPoint('BOTTOM')
             break
         end
     end
     EncounterJournal.LootJournal.ScrollBox:SetPoint('TOPLEFT', 20, -51)
     for _, region in pairs({EncounterJournal.LootJournal:GetRegions()}) do
-        if region:GetObjectType()=='Texture' then
+        if region:IsObjectType('Texture') then
             region:SetPoint('BOTTOM')
             break
         end

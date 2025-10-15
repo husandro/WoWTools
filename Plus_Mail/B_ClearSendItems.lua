@@ -72,7 +72,7 @@ local function Init()
             btn.indexLable:SetAlpha(0.3)
             btn.indexLable:SetText(i)
             for _, region in pairs({btn:GetRegions()}) do--背景，透明度
-                if region:GetObjectType()=="Texture" then
+                if region:IsObjectType('Texture')then
                     region:SetAlpha(0.5)
                     break
                 end

@@ -6246,7 +6246,9 @@
         "WowStyle1FilterDropdownMixin",
         "WowStyle1ArrowDropdownMixin",
         "WowStyle1DropdownMixin",
-        "CastingBarMixin"
+        "CastingBarMixin",
+        "PagingControlsMixin",
+        "WarbandSceneJounalMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

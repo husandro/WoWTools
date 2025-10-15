@@ -492,7 +492,7 @@ end
 --选项
 function WoWTools_MoveMixin.Events:Blizzard_Settings_Shared()
     for _, region in pairs({SettingsPanel:GetRegions()}) do
-        if region:GetObjectType()=='Texture' then
+        if region:IsObjectType('Texture') then
             region:SetPoint('BOTTOMRIGHT', -12, 38)
         end
     end

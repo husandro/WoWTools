@@ -31,7 +31,7 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
     PVEFrameBlueBg:SetPoint('BOTTOM')
     PVEFrame.shadows:SetPoint('BOTTOM')
     for _, icon in pairs({PVEFrame.shadows:GetRegions()}) do
-        if icon:GetObjectType()=='Texture' then
+        if icon:IsObjectType('Texture') then
             icon:SetPoint('BOTTOM')
         end
     end
@@ -174,7 +174,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ChallengesUI()
     ChallengesFrame.WeeklyInfo.Child:SetPoint('BOTTOMRIGHT')
     ChallengesFrame.WeeklyInfo.Child.RuneBG:SetPoint('BOTTOMRIGHT')
     for _, region in pairs({ChallengesFrame:GetRegions()}) do
-        if region:GetObjectType()=='Texture' then
+        if region:IsObjectType('Texture') then
             region:SetPoint('BOTTOMRIGHT')
         end
     end

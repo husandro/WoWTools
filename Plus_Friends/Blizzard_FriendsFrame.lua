@@ -527,7 +527,7 @@ local function Init()--好友列表, 初始化
                 btn.Level:SetWidth(level)
                 btn.Class:SetWidth(class)
                 for _, t in pairs({btn:GetRegions()}) do
-                    if t:GetObjectType()=='Texture' then
+                    if t:IsObjectType('Texture') then
                         t:SetPoint('LEFT')
                         t:SetPoint('RIGHT')
                         break

@@ -94,9 +94,15 @@ local function Init()
 		atlas='NPE_ArrowDown',
 		name='WoWToolsFactionListExpandButton'
 	})
-    
+
 	down:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-2,0)
 	down:SetScript("OnClick", function()
+		for index=C_Reputation.GetNumFactions(), 1, -1 do
+			local data= C_Reputation.GetFactionDataByIndex(index)
+			if data and data.isHeader and data.isCollapsed then
+				C_Reputation.ExpandFactionHeader(index)
+			end
+		end
 		for index=C_Reputation.GetNumFactions(), 1, -1 do
 			local data= C_Reputation.GetFactionDataByIndex(index)
 			if data and data.isHeader and data.isCollapsed then

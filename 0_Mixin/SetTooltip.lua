@@ -337,7 +337,10 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
 
     local itemID= data.itemID
     local spellID= data.spellID
+
     local currencyID= data.currencyID
+    local currencyIndex= data.currencyIndex
+
     local achievementID= data.achievementID
 
     local questID= data.questID
@@ -388,6 +391,8 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
 
     elseif currencyID then
         tooltip:SetCurrencyByID(currencyID)
+    elseif currencyIndex then
+        tooltip:SetCurrencyToken(currencyIndex)
 
     elseif widgetSetID then
         GameTooltip_AddWidgetSet(tooltip, widgetSetID)
