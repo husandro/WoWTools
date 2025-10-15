@@ -22,7 +22,9 @@ local function Create(frame)
 	frame.Content.AccountWideIcon:SetScript('OnLeave', nil)
 	frame.Content.AccountWideIcon.Icon:SetAlpha(0.5)
 
-	frame.check= CreateFrame('CheckButton', nil, frame, "InterfaceOptionsCheckButtonTemplate")
+	frame.check= CreateFrame('CheckButton', nil, frame, "UICheckButtonArtTemplate")
+	frame.check:SetCheckedTexture('AlliedRace-UnlockingFrame-Checkmark')
+	frame.check:SetSize(16,16)
 	function frame.check:GetCurrencyID()
 		local currencyIndex= self:GetParent().currencyIndex
 		if currencyIndex then
@@ -33,7 +35,8 @@ local function Create(frame)
 		end
 	end
 
-	frame.check:SetPoint('RIGHT', frame, 'LEFT',4,0)
+	--frame.check:SetPoint('RIGHT', frame, 'LEFT',4,0)
+	frame.check:SetPoint('LEFT', frame.Content.WatchedCurrencyCheck, 'RIGHT', -2, 0)
 	frame.check:SetAlpha(0.5)
 	frame.check:SetScript('OnClick', function(self)
 		local id= self:GetCurrencyID()
@@ -44,22 +47,27 @@ local function Create(frame)
 		end
 	end)
 	frame.check:SetScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 12, -12)
 		GameTooltip:ClearLines()
 		local currencyIndex= self:GetParent().currencyIndex
 		if currencyIndex then
 			GameTooltip:SetCurrencyToken(currencyIndex)
 			GameTooltip:AddLine(" ")
 		end
-		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING, WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-		GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CurrencyMixin.addName)
+		GameTooltip:AddLine(
+			WoWTools_DataMixin.Icon.icon2
+			..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
+			..': '..(Save().indicato and '|cnGREEN_FONT_COLOR:' or '|cff626262')
+			..(WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+		)
+		
 		GameTooltip:Show()
 	end)
 	frame.check:SetScript('OnLeave', function() GameTooltip_Hide() end)
 	frame.check:SetSize(18,18)
 	frame.check:Hide()
 
-	frame:HookScript('OnEnter', function(self)
+	--[[frame:HookScript('OnEnter', function(self)
 		if WoWTools_CurrencyMixin.TrackButton then
 			for _, btn in pairs(WoWTools_CurrencyMixin.TrackButton.btn or {}) do
 				btn:SetButtonState(self.check.currencyID== btn.currencyID and 'PUSHED' or 'NORMAL')
@@ -72,7 +80,7 @@ local function Create(frame)
 				btn:SetButtonState('NORMAL')
 			end
 		end
-	end)
+	end)]]
 
 --已获取，百分比
 	frame.percentText= WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
@@ -125,7 +133,6 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity
 	if not Save().notPlus then
 		info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(self.elementData.currencyID, self.elementData.currencyIndex)
-
 	end
 
 	if not info then
@@ -138,12 +145,13 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 		return
 	end
 
+	info= self.elementData or info
 
-	self.check:SetCheckedTexture(info and info.iconFileID or 'orderhalltalents-done-glow')
-	self.check.currencyID= info.currencyID
+	--self.check:SetCheckedTexture(info and info.iconFileID or 'orderhalltalents-done-glow')
+	--self.check.currencyID= info.currencyID
 	self.check:SetChecked(Save().tokens[info.currencyID])
-	self.check:SetAlpha(Save().tokens[info.currencyID] and 1 or 0.5)
-	self.check:SetShown(true)
+	--self.check:SetAlpha(Save().tokens[info.currencyID] and 1 or 0.5)
+	self.check:SetShown(info.currencyID)
 
 
 

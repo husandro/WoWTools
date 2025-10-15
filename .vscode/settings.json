@@ -6248,7 +6248,12 @@
         "WowStyle1DropdownMixin",
         "CastingBarMixin",
         "PagingControlsMixin",
-        "WarbandSceneJounalMixin"
+        "WarbandSceneJounalMixin",
+        "CampaignHeaderMinimalMixin",
+        "CampaignHeaderDisplayMixin",
+        "CampaignOverviewMixin",
+        "CampaignLoreButtonMixin",
+        "STORY_CHAPTERS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

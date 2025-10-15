@@ -32,6 +32,9 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
             end
         end
     end
+--战役
+    self:SetScrollBar(QuestMapFrame.QuestsFrame.CampaignOverview.ScrollFrame)
+    self:SetAlphaColor(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame.Border, true)
 
 
     self:HideTexture(QuestMapFrame.QuestsTab.Background)
@@ -56,6 +59,10 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
 --任务，列表 QuestLogHeaderCodeTemplate
     WoWTools_DataMixin:Hook(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
+        self:SetFrame(btn, {alpha=0.7})
+    end)
+--战役, 列表
+    WoWTools_DataMixin:Hook(CampaignHeaderDisplayMixin, 'SetCampaign', function(btn)
         self:SetFrame(btn, {alpha=0.7})
     end)
 
@@ -201,6 +208,11 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     self:Setup(QuestMapFrame, {frame=WorldMapFrame})
     self:Setup(QuestMapFrame.DetailsFrame, {frame=WorldMapFrame})
     self:Setup(QuestMapDetailsScrollFrame, {frame=WorldMapFrame})
+
+--战役
+    QuestMapFrame.QuestsFrame.CampaignOverview.Header:SetFrameLevel(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame:GetFrameLevel()+1)
+    self:Setup(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame, {frame=WorldMapFrame})
+    
 
 
 end

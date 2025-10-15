@@ -924,6 +924,7 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_CovenantRenown()
     self:HideTexture(CovenantRenownFrame.Background)
+    self:SetButton(CovenantRenownFrame.CloseButton)
 end
 
 
@@ -1578,16 +1579,6 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
 
     --右边
     self:HideFrame(PVEFrame)
-    --[[self:HideTexture(PVEFrameLLVert)
-    self:HideTexture(PVEFrameRLVert)
-    self:HideTexture(PVEFrameBLCorner)
-    self:HideTexture(PVEFrameBottomLine)
-    self:HideTexture(PVEFrameBRCorner)
-    self:HideTexture(PVEFrameTLCorner)
-    self:HideTexture(PVEFrameTopLine)
-    self:HideTexture(PVEFrameTRCorner)
-    ]]
-
     --self:HideTexture(PVEFrameBg)--左边
 
 
@@ -1602,7 +1593,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     LFDQueueFrameTypeDropdownName:ClearAllPoints()
     LFDQueueFrameTypeDropdownName:SetPoint('BOTTOMLEFT', LFDQueueFrameRandomScrollFrame, 'TOPLEFT', 0, 15)
     LFDQueueFrameTypeDropdownName:SetWidth(LFDQueueFrameTypeDropdownName:GetStringWidth()+4)
-    --LFDQueueFrameTypeDropdownName:SetJustifyH('LEFT')
+
 
 
     self:SetMenu(LFGListFrame.SearchPanel.FilterButton)
@@ -1793,30 +1784,17 @@ end
 
 --货币
 function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
-    self:SetFrame(TokenFramePopup.Border, {alpha=0.3})
+    self:SetFrame(TokenFramePopup.Border, {alpha=1})
     self:SetButton(CurrencyTransferMenuCloseButton)
     self:SetFrame(TokenFrame)
     self:SetMenu(TokenFrame.filterDropdown)
-
     self:SetScrollBar(TokenFrame)--bug，货币转移，出错
-
     self:SetButton(TokenFramePopup['$parent.CloseButton'] or TokenFramePopup.CloseButton)
 
-
-
-
-
-    WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
-        if not f:HasView() then
-            return
-        end
-        for _, frame in pairs(f:GetFrames() or {}) do
-            if frame.Middle then
-                self:SetAlphaColor(frame.Middle, nil, nil, true)
-                self:SetAlphaColor(frame.Right, nil, nil, true)
-                self:SetAlphaColor(frame.Left, nil, nil, true)
-            end
-        end
+    WoWTools_DataMixin:Hook(TokenHeaderMixin, 'OnLoad_TokenHeaderTemplate', function(frame)
+        self:SetAlphaColor(frame.Middle, true)
+        self:SetAlphaColor(frame.Right, true)
+        self:SetAlphaColor(frame.Left, true)
     end)
 
     self:CreateBG(TokenFrame.ScrollBox, {--添加Bg
@@ -1849,6 +1827,34 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
 end
 
 
+
+
+    --[[
+	if TokenFrame.ScrollBox:HasView() then
+		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
+            self:SetAlphaColor(frame.Middle, true)
+        self:SetAlphaColor(frame.Right, true)
+        self:SetAlphaColor(frame.Left, true)
+        end
+	end
+    WoWTools_DataMixin:Hook(TokenEntryMixin, 'OnLoad', function(frame)
+		self:SetAlphaColor(frame.Middle, true)
+        self:SetAlphaColor(frame.Right, true)
+        self:SetAlphaColor(frame.Left, true)
+	end)
+
+    WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
+        if not f:HasView() then
+            return
+        end
+        for _, frame in pairs(f:GetFrames() or {}) do
+            if frame.Middle then
+                self:SetAlphaColor(frame.Middle)
+                self:SetAlphaColor(frame.Right)
+                self:SetAlphaColor(frame.Left)
+            end
+        end
+    end)]]
 
 
 --玩家, 观察角色, 界面

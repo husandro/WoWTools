@@ -147,6 +147,9 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     end)
 
 --试衣间，套装
+    self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.NextPageButton, {alpha=1})
+    self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.PrevPageButton, {alpha=1})
+    self:SetCheckBox(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox)
     for _, btn in pairs(WardrobeCollectionFrame.SetsTransmogFrame.Models or {}) do
         btn:DisableDrawLayer('BACKGROUND')
         self:HideTexture(btn.Border)

@@ -390,6 +390,24 @@ local function Init_Menu(self, root)
         )
     end)
 
+--Plus
+    root:CreateDivider()
+    sub=root:CreateCheckbox(
+        'Plus',
+    function()
+        return not Save().notPlus
+    end, function()
+        Save().notPlus= not Save().notPlus and true or nil
+        WoWTools_WorldMapMixin:Init_Plus()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
+        tooltip:AddLine(
+            (Save().notPlus and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        )
+    end)
+
 --重新加载UI
     root:CreateDivider()
     sub= WoWTools_MenuMixin:Reload(root)

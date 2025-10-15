@@ -13,9 +13,9 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     icon= icon or ''
 
     tooltip:AddDoubleLine(
-        info2.iconFileID and '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'..col..info2.iconFileID,
+       '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'..col..(info2.iconFileID or ''),
 
-        icon..'currencyID'..WoWTools_DataMixin.Icon.icon2..'|r'..col..currencyID
+        'currencyID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..currencyID..icon
     )
 
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
