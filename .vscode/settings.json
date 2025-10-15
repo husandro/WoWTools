@@ -6241,7 +6241,8 @@
         "DEFAULT_ITEM_TEXT_FRAME_WIDTH",
         "DEFAULT_ITEM_TEXT_FRAME_HEIGHT",
         "EXPANDED_ITEM_TEXT_FRAME_WIDTH",
-        "EXPANDED_ITEM_TEXT_FRAME_HEIGHT"
+        "EXPANDED_ITEM_TEXT_FRAME_HEIGHT",
+        "QuestNPCModelTextScrollFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

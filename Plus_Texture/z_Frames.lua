@@ -44,6 +44,7 @@ function WoWTools_TextureMixin.Frames:QuestFrame()
     self:SetFrame(QuestModelScene)
     self:SetAlphaColor(QuestNPCModelTextFrameBg, nil, nil, 0.3)
     self:SetScrollBar(QuestNPCModelTextScrollChildFrame)
+    self:SetScrollBar(QuestNPCModelTextScrollFrame)
 
     self:Init_BGMenu_Frame(QuestFrame, {
         enabled=true,
@@ -546,4 +547,9 @@ function WoWTools_TextureMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
             CatalogShopFrame.BackgroundContainer:SetAlpha(texture and 0 or alpha or 0.5)
         end
      })
+end
+
+function WoWTools_TextureMixin.Frames:ItemRefTooltip()
+    self:SetButton(ItemRefTooltip.CloseButton)
+    self:SetNineSlice(ItemRefTooltip, 1)
 end

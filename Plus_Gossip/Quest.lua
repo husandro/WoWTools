@@ -91,9 +91,12 @@ local function select_Reward(questID)--自动:选择奖励
             local  itemLink = GetQuestItemLink('choice', i)
             WoWTools_DataMixin:Load({id=itemLink, type='item'})
             if itemLink then
-                local amount = select(3, GetQuestItemInfo('choice', i))--钱
+                local name, _, amount = GetQuestItemInfo('choice', i)--钱
                 local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = C_Item.GetItemInfo(itemLink)
-                if Save().autoSelectReward and not(classID==19 or (classID==4 and subclassID==5) or itemLevel==1) and itemQuality and itemQuality<4 and C_Item.IsEquippableItem(itemLink) then--最高 稀有的 3                                
+                if Save().autoSelectReward
+                    and not(classID==19 or (classID==4 and subclassID==5) or itemLevel==1)
+                    and itemQuality and itemQuality<4 and (name and C_Item.IsEquippableItem(name) or not name)
+                then--最高 稀有的 3                                
                     local invSlot = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
                     if invSlot and itemLevel and itemLevel>1 then--装等
                         local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
@@ -451,6 +454,7 @@ local function Init_Quest()
     local function set_label(label)
         label:EnableMouse(true)
         label:SetAlpha(0.3)
+        label:SetShadowOffset(1, -1)
         label:SetScript('OnLeave', function(self)
             GameTooltip_Hide()
             self:SetAlpha(0.3)
@@ -468,7 +472,7 @@ local function Init_Quest()
     end
 
 --世界地图，任务
-    local mapLabel= QuestMapDetailsScrollFrame:CreateFontString('WoWToolsQuestWorldMapIDLabel', 'OVERLAY', 'QuestFont')
+    local mapLabel= QuestMapDetailsScrollFrame:CreateFontString('WoWToolsQuestWorldMapIDLabel', 'OVERLAY', 'GameFontNormal')
     mapLabel:SetPoint('LEFT', QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton, 'RIGHT', 2, 0)
     set_label(mapLabel)
     WoWTools_DataMixin:Hook('QuestMapFrame_ShowQuestDetails', function(questID)
@@ -476,7 +480,7 @@ local function Init_Quest()
     end)
 
 --任务框架
-    local questLable= QuestFrame:CreateFontString('WoWToolsQuestFrameIDLabel', 'OVERLAY', 'QuestFont')
+    local questLable= QuestFrame:CreateFontString('WoWToolsQuestFrameIDLabel', 'OVERLAY', 'GameFontNormal')
     questLable:SetPoint('RIGHT', QuestFrame.AccountCompletedNotice.AccountCompletedIcon, 'LEFT')
     set_label(questLable)
     --[[QuestFrame:HookScript('OnShow', function()

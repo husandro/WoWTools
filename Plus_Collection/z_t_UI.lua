@@ -3,12 +3,15 @@
 function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetButton(WardrobeCollectionFrame.InfoButton)
     WardrobeCollectionFrame.InfoButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
-
     self:HideTexture(CollectionsJournal.TopTileStreaks)
     self:SetButton(CollectionsJournalCloseButton)
     self:HideTexture(CollectionsJournalBg)
     self:SetButton(PetJournalTutorialButton)
     PetJournalTutorialButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
+
+    for i=1, 10 do
+        self:SetTabButton(_G['CollectionsJournalTab'..i])
+    end
 
 
 --坐骑
@@ -16,21 +19,14 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:HideTexture(MountJournal.LeftInset.Bg)
     self:HideTexture(MountJournal.MountDisplay.YesMountsTex)
     self:SetAlphaColor(MountJournal.MountDisplay.ShadowOverlay, nil, nil, 0)
-
     self:SetAlphaColor(MountJournal.RightInset.Bg, nil, nil, 0.3)
     MountJournal.RightInset.Bg:ClearAllPoints()
     MountJournal.RightInset.Bg:SetPoint('TOPLEFT', MountJournalIcon, -2, 2)
     MountJournal.RightInset.Bg:SetPoint('BOTTOMRIGHT', MountJournalLore, 2, -2)
-
-
     self:HideFrame(MountJournal.BottomLeftInset)
     self:SetNineSlice(MountJournal.BottomLeftInset)
-
-
-    self:SetScrollBar(MountJournal)
-    
+    self:SetScrollBar(MountJournal)    
     self:SetEditBox(MountJournalSearchBox)
-
     self:SetNineSlice(MountJournal.RightInset)
     self:SetNineSlice(MountJournal.LeftInset)
     if MountJournal.ToggleDynamicFlightFlyoutButton then--11.1.7
@@ -39,8 +35,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     if MountJournal.SummonRandomFavoriteSpellFrame then
         self:SetAlphaColor(MountJournal.SummonRandomFavoriteSpellFrame.Button.Border, true)
     end
-     WoWTools_DataMixin:Hook('MountJournal_InitMountButton', function(btn)
-     end)
+    --WoWTools_DataMixin:Hook('MountJournal_InitMountButton', function(btn)
+     
 --宠物
     self:HideFrame(PetJournalLoadoutBorder)
 

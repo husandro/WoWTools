@@ -59,17 +59,16 @@ end
 
 local function Init_Button()
 --未收集
-    Button= WoWTools_ButtonMixin:Menu(PaperDollFrame.TitleManagerPane, {
-        icon='hide',
-        name='WoWToolsTitleMenuButton'
-    })
-    Button.Text= WoWTools_LabelMixin:Create(Button)
+    Button= CreateFrame('DropdownButton', 'WoWToolsTitleMenuButton', PaperDollFrame.TitleManagerPane, 'WoWToolsButtonTemplate')
+    Button:SetSize(23,23)
+    Button:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    Button.tooltip= WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED
+    Button.Text= Button:CreateFontString(nil, 'ARTWORK', 'GameFontDisableSmall')
     Button.Text:SetPoint('CENTER')
     Button:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
     Button:SetPoint('TOPRIGHT', -16, 2)
     Button:SetupMenu(Init_Menu)
     Button:Hide()
-
 
     function Button:settings()
         self.Text:SetText(GetNumTitles()- #GetKnownTitles() -1)
@@ -88,14 +87,13 @@ local function Init_Button()
 
 
 --已收集数量
-
     Title= WoWTools_LabelMixin:Create(PaperDollSidebarTab2, {
         justifyH='CENTER',
         mouse=true,
         name='WoWToolsTitleNumLabel'
     })
     Title:SetPoint('BOTTOM')
-    
+
     function Title:settings()
         self:SetText(#GetKnownTitles()-1)
     end
@@ -111,17 +109,16 @@ local function Init_Button()
         self:settings()
         GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)--, WoWTools_PaperDollMixin.addName)
-        local known= #GetKnownTitles()-1
-        GameTooltip:AddDoubleLine(
-            '|cnGREEN_FONT_COLOR:'..known,
-            '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or  COLLECTED)
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)
+            .. ' |cffffffff'..#GetKnownTitles()..'|r '
+            ..(WoWTools_DataMixin.onlyChinese and '已收集' or  COLLECTED)
         )
-
-        GameTooltip:AddDoubleLine(
-            '|cnWARNING_FONT_COLOR:'..(GetNumTitles()-known),
+        --[[GameTooltip:AddDoubleLine(
+            '|cnWARNING_FONT_COLOR:'..(GetNumTitles()-known-1),
             '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
-        )
+        )]]
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)

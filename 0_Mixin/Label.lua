@@ -15,6 +15,10 @@ SharedFonts.xml
 </SimpleHTML>
 
 AutoScalingFontStringMixin
+
+
+CreateFontString(nil, 'ARTWORK', 'GameFontDisableSmall')
+
 ]]
 
 
