@@ -6245,7 +6245,8 @@
         "QuestNPCModelTextScrollFrame",
         "WowStyle1FilterDropdownMixin",
         "WowStyle1ArrowDropdownMixin",
-        "WowStyle1DropdownMixin"
+        "WowStyle1DropdownMixin",
+        "CastingBarMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -63,6 +63,32 @@ Source\Libs\LibRangeCheck-3.0.lua
 1_WoWItemList.lua
 0_Mixin\0_z_DataMixn_NeedUpdate.lua
 
+##移动框架, 缩放
+Plus_Move\0a_Setup_Mixin.lua
+Plus_Move\0b_ScaleSizeButton_Mixin.lua
+Plus_Move\1_Init.lua
+Plus_Move\2_Add_Button.lua
+Plus_Move\3_Options.lua
+Plus_Move\Professions.lua
+Plus_Move\ProfessionsCustomerOrders.lua
+Plus_Move\ClassPower.lua
+Plus_Move\z_Events.lua
+Plus_Move\z_Frames.lua
+
+##隐藏材质，透明度
+Plus_Texture\0_TextureMixin.lua
+Plus_Texture\1_Setup_Mixin.lua
+Plus_Texture\2_Init_BGMenu_Frame.lua
+Plus_Texture\3_Init.lua
+Plus_Texture\4_Options.lua
+Plus_Texture\ActionButton.lua
+Plus_Texture\ChatBubbles.lua
+Plus_Texture\ClassPower.lua
+Plus_Texture\HelpTip.lua
+Plus_Texture\z_Frames.lua
+Plus_Texture\z_Events.lua
+Plus_Texture\z_SharedXML.lua
+
 ##坐骑， Tools 主要的，
 Tools\0_ToolsButtonMixin.lua
 Tools\1_Init.lua
@@ -112,34 +138,6 @@ Tools_B5_Food\Create_Button.lua
 Tools_LL_MagePortal\LL_MagePortal.lua
 
 ##WoWPlus
-##移动框架, 缩放
-Plus_Move\0a_Setup_Mixin.lua
-Plus_Move\0b_ScaleSizeButton_Mixin.lua
-Plus_Move\1_Init.lua
-Plus_Move\2_Add_Button.lua
-Plus_Move\3_Options.lua
-Plus_Move\Professions.lua
-Plus_Move\ProfessionsCustomerOrders.lua
-Plus_Move\ClassPower.lua
-Plus_Move\z_Events.lua
-Plus_Move\z_Frames.lua
-
-##隐藏材质，透明度
-Plus_Texture\0_TextureMixin.lua
-Plus_Texture\1_Setup_Mixin.lua
-Plus_Texture\2_Init_BGMenu_Frame.lua
-Plus_Texture\3_Init.lua
-Plus_Texture\4_Options.lua
-Plus_Texture\ActionButton.lua
-Plus_Texture\ChatBubbles.lua
-Plus_Texture\ClassPower.lua
-Plus_Texture\HelpTip.lua
-Plus_Texture\z_Frames.lua
-Plus_Texture\z_Events.lua
-Plus_Texture\z_SharedXML.lua
-
-
-
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
 Plus_Item\0_ItemMixin.lua
 Plus_Item\0_SetupInfo.lua

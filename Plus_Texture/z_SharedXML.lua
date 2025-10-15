@@ -55,9 +55,11 @@ end
 
 
 
-
-
-
+function WoWTools_TextureMixin.Events:CastingBarFrame()
+    WoWTools_DataMixin:Hook(CastingBarMixin, 'OnLoad', function()
+        print('function WoWTools_TextureMixin.Events:')
+    end)
+end
 
 
 
