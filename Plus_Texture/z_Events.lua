@@ -1986,7 +1986,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
     --self:SetAlphaColor(PlayerSpellsFrameBg)
     self:SetNineSlice(PlayerSpellsFrame)
-    --self:SetTabSystem(PlayerSpellsFrame)
+    self:SetTabButton(PlayerSpellsFrame)
 
     self:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background, 0.3)--专精
     self:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
