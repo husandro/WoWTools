@@ -107,8 +107,6 @@ local function Init()
 --ID
         GameTooltip:AddDoubleLine('campaignID', '|cffffffff'..campaignID)
 --章节数量
-
-
         local count= campaign:GetChapterCount() or 0
         if count>0 then
             GameTooltip:AddLine(' ')
@@ -122,8 +120,6 @@ local function Init()
                     count
                 )
             )
-
-            
 --章节
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(WoWTools_DataMixin and '章节' or 'ChapterIDs')
@@ -135,19 +131,10 @@ local function Init()
             end
         end
         GameTooltip:Show()
-        info= campaign
-        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
     end
---列表中，标题
-    WoWTools_DataMixin:Hook(CampaignHeaderDisplayMixin, 'SetCampaign', function(self, campaignID)
-        if not self.isSetOonenter then
-            self:SetScript('OnLeave', GameTooltip_Hide)
-            self:HookScript('OnEnter', Set_Campaign_OnEnter)
-            self.isSetOonenter= true
-        end
-    end)
 
-    WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'SetMode', function(self)
+--[[按钮，添加Label, 显示 campaignID
+    local function Set_Mode(self)
         local campaign= self:GetParent().campaign
         local campaignID= campaign and campaign:GetID()
         if not self.IDLabel then
@@ -155,9 +142,35 @@ local function Init()
             self.IDLabel:SetPoint('LEFT', self, 'RIGHT', 4, 0)
         end
         self.IDLabel:SetText(campaignID or '')
+    end]]
+
+--列表中，标题
+    WoWTools_DataMixin:Hook(CampaignHeaderDisplayMixin, 'SetCampaign', function(self)
+        if not self.chapterLabel then
+            self:SetScript('OnLeave', GameTooltip_Hide)
+            self:HookScript('OnEnter', Set_Campaign_OnEnter)
+            self.chapterLabel= self:CreateFontString(nil, 'ARTWORK', 'GameFontWhite')
+            self.chapterLabel:SetPoint('RIGHT', self.CollapseButton, 'LEFT', -2, 0)
+        end
+        local text
+        if self.campaign then
+            local curIndex= (self.campaign:GetCompletedChapterCount() or 0)+1
+            local count= self.campaign:GetChapterCount() or 0
+            if count>0 then
+                text= curIndex..'/'..count
+            end
+        end
+        self.chapterLabel:SetText(text or '')
     end)
+--列表中，战役，进入 详细 按钮
+   -- WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'SetMode', Set_Mode)
     WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnLeave', GameTooltip_Hide)
     WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnEnter', Set_Campaign_OnEnter)
+
+--战役，详细中，返回按钮
+   -- WoWTools_DataMixin:Hook(QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton, 'SetMode', Set_Mode)
+    QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton:HookScript('OnLeave', GameTooltip_Hide)
+    QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton:HookScript('OnEnter', Set_Campaign_OnEnter)
 
     Init=function()end
 end
