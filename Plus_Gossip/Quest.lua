@@ -91,12 +91,13 @@ local function select_Reward(questID)--自动:选择奖励
             local  itemLink = GetQuestItemLink('choice', i)
             WoWTools_DataMixin:Load({id=itemLink, type='item'})
             if itemLink then
-                local name, _, amount = GetQuestItemInfo('choice', i)--钱
+                local amount = select(3, GetQuestItemInfo('choice', i))--钱
                 local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = C_Item.GetItemInfo(itemLink)
                 if Save().autoSelectReward
-                    and not(classID==19 or (classID==4 and subclassID==5) or itemLevel==1)
-                    and itemQuality and itemQuality<4 and (name and C_Item.IsEquippableItem(name) or not name)
-                then--最高 稀有的 3                                
+                    and not (classID==19 or (classID==4 and subclassID==5) or itemLevel==1)
+                    and itemQuality and itemQuality<4--最高 稀有的 3
+                    and not C_Item.IsCosmeticItem(itemLink)--装饰品
+                then
                     local invSlot = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
                     if invSlot and itemLevel and itemLevel>1 then--装等
                         local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
