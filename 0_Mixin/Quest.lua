@@ -45,7 +45,8 @@ function WoWTools_QuestMixin:GetLink(questID)
         WoWTools_DataMixin:Load({id=questID, type='quest'})
         local index= C_QuestLog.GetLogIndexForQuestID(questID)
         local info= index and C_QuestLog.GetInfo(index) or {}
-        local name= WoWTools_TextMixin:CN(info.title or questID, {questID=questID, isName=true})
+        local name= info.title or self:GetName(questID) or questID
+        name= WoWTools_TextMixin:CN(name, {questID=questID, isName=true})
         link= '|cffffff00|Hquest:'..questID..':'..(info.level or -1)..':::|h['..(name or questID)..']|h|r'
     end
 
