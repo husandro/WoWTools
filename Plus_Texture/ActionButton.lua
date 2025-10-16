@@ -1,16 +1,18 @@
 
 local function Set_Texture(self)
-    WoWTools_TextureMixin:SetAlphaColor(self.SlotArt, nil, true, 0)
-    WoWTools_TextureMixin:SetAlphaColor(self.NormalTexture, nil, true, 0)--外框，方块
-    WoWTools_TextureMixin:SetAlphaColor(self.SlotBackground, nil, true, 0)--背景
+    if self then
+        WoWTools_TextureMixin:HideTexture(self.SlotArt)--, nil, true, 0)
+        WoWTools_TextureMixin:HideTexture(self.NormalTexture)--, nil, true, 0)--外框，方块
+        WoWTools_TextureMixin:HideTexture(self.SlotBackground)--, nil, true, 0)--背景
 
-    if not self.IconMask then
-        WoWTools_ButtonMixin:AddMask(self, false, self.Icon)
-    else
-        self.IconMask:ClearAllPoints()
-        self.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
-        self.IconMask:SetPoint('TOPLEFT', self.Icon or self, 0.5, -0.5)
-        self.IconMask:SetPoint('BOTTOMRIGHT', self.Icon or self, -0.5, 0.5)
+        if not self.IconMask then
+            WoWTools_ButtonMixin:AddMask(self, false, self.Icon)
+        else
+            self.IconMask:ClearAllPoints()
+            self.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+            self.IconMask:SetPoint('TOPLEFT', self.Icon or self, 0.5, -0.5)
+            self.IconMask:SetPoint('BOTTOMRIGHT', self.Icon or self, -0.5, 0.5)
+        end
     end
 end
 
@@ -94,6 +96,10 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     Init_HooKey(_G['ExtraActionButton1'])
 
 
+    for i=1, 10 do
+        Set_Texture(_G['StanceButton'..i])--..'NormalTexture'])
+    end
+
     WoWTools_DataMixin:Hook(ActionBarButtonAssistedCombatRotationFrameMixin, 'OnShow', function(frame)
         Set_Assisted(frame)
     end)
@@ -101,9 +107,9 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
 
 
     --WoWTools_DataMixin:Hook(MainMenuBar, 'UpdateDividers', function(bar)--主动作条 
-    
+
     Set_MainMenuBarPool()
-    
+
 
     EditModeManagerFrame:HookScript('OnHide', function()
         for i=1, MAIN_MENU_BAR_NUM_BUTTONS do

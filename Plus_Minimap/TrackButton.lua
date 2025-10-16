@@ -1289,7 +1289,7 @@ end
 --世界地图，添加一个按钮
 local function Init_WorldFrame_Button()
     --WorldMapButton= WoWTools_ButtonMixin:Cbtn(WorldMapFrame, {size=20, name='WoWTools_Minimap_WorldTrackButton'})
-    WorldMapButton= CreateFrame('Button', 'WoWToolsMinimapWorldTrackButton', UIParent, 'WoWToolsButtonTemplate')
+    WorldMapButton= CreateFrame('Button', 'WoWToolsMinimapWorldTrackButton', WorldMapFrame, 'WoWToolsButtonTemplate')
 
     function WorldMapButton:set_texture()
         local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
