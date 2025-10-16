@@ -109,40 +109,36 @@ local function Init()
 --章节数量
         local count= campaign:GetChapterCount() or 0
         if count>0 then
+            local chapterIDs={}
+            local chapterIndex=0
+            local currentChapterID= campaign:GetCurrentChapterID()
+            for index, chapterID in pairs(campaign.chapterIDs or {}) do
+                if chapterID==currentChapterID then
+                    chapterIndex= index
+                end
+                table.insert(chapterIDs, chapterID)
+            end
+
             GameTooltip:AddLine(' ')
-            local curIndex= (campaign:GetCompletedChapterCount() or 0)+1
             GameTooltip:AddDoubleLine(
+                (WoWTools_DataMixin and '章节' or 'ChapterIDs')
+                ..' '
+                ..format('%d/%d', chapterIndex, count),
+
                 (campaign.isWarCampaign and '阵营战役' or WAR_CAMPAIGN)
-                or (WoWTools_DataMixin.onlyChinese and '战役' or CONTAINER_CAMPAIGN_PROGRESS),
-                '|cffffffff'..format(
-                    WoWTools_DataMixin.onlyChinese and '%d/%d 章' or STORY_CHAPTERS,
-                    curIndex,
-                    count
-                )
+                or (WoWTools_DataMixin.onlyChinese and '战役' or CONTAINER_CAMPAIGN_PROGRESS)
             )
 --章节
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(WoWTools_DataMixin and '章节' or 'ChapterIDs')
-            for index, chapterID in pairs(campaign.chapterIDs or {}) do
-                local col= index< curIndex and '|cff626262' or (select(2, math.modf(index/2))==0 and '|cff00ccff' or '|cffffffff')
+            for index, chapterID in pairs(chapterIDs) do
+                local col= index==chapterIndex and '|cnGREEN_FONT_COLOR:' or (index>chapterIndex and '|cffffffff') or '|cff626262'
                 GameTooltip:AddDoubleLine(
-                    col..index..')', col..chapterID
+                    col..index..')',
+                    col..chapterID
                 )
             end
         end
         GameTooltip:Show()
     end
-
---[[按钮，添加Label, 显示 campaignID
-    local function Set_Mode(self)
-        local campaign= self:GetParent().campaign
-        local campaignID= campaign and campaign:GetID()
-        if not self.IDLabel then
-            self.IDLabel= self:CreateFontString(nil, 'ARTWORK', 'GameFontWhite')
-            self.IDLabel:SetPoint('LEFT', self, 'RIGHT', 4, 0)
-        end
-        self.IDLabel:SetText(campaignID or '')
-    end]]
 
 --列表中，标题
     WoWTools_DataMixin:Hook(CampaignHeaderDisplayMixin, 'SetCampaign', function(self)
@@ -153,22 +149,23 @@ local function Init()
             self.chapterLabel:SetPoint('RIGHT', self.CollapseButton, 'LEFT', -2, 0)
         end
         local text
-        if self.campaign then
-            local curIndex= (self.campaign:GetCompletedChapterCount() or 0)+1
-            local count= self.campaign:GetChapterCount() or 0
-            if count>0 then
-                text= curIndex..'/'..count
+        local num= self.campaign and self.campaign:GetChapterCount() or 0
+        if num>0 then
+            local currentChapterID= self.campaign:GetCurrentChapterID()
+            for index, chapterID in pairs(self.campaign.chapterIDs or {}) do
+                if chapterID==currentChapterID then
+                    text= index..'/'..num
+                    break
+                end
             end
         end
         self.chapterLabel:SetText(text or '')
     end)
 --列表中，战役，进入 详细 按钮
-   -- WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'SetMode', Set_Mode)
     WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnLeave', GameTooltip_Hide)
     WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnEnter', Set_Campaign_OnEnter)
 
 --战役，详细中，返回按钮
-   -- WoWTools_DataMixin:Hook(QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton, 'SetMode', Set_Mode)
     QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton:HookScript('OnLeave', GameTooltip_Hide)
     QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton:HookScript('OnEnter', Set_Campaign_OnEnter)
 
