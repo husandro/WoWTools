@@ -103,7 +103,7 @@ local function Set_Button_Function(btn)
             self:SetAttribute("item1", nil)
         end
         self.texture:SetTexture(0)
-        btn:Hide()
+        --btn:Hide()
         --WoWTools_CooldownMixin:Setup(self)
     end)
 
