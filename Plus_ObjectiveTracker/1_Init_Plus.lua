@@ -55,9 +55,11 @@ local function Init()
         if not GameTooltip:IsShown() then
             GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
             GameTooltip:ClearLines()
+        else
+            GameTooltip:AddLine(' ')
         end
 
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'scenarioID', scenarioID)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'scenarioID', '|cnGREEN_FONT_COLOR:'..scenarioID)
         GameTooltip:Show()
     end)
 
