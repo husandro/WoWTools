@@ -42,7 +42,7 @@ local function Is_Locked(frame)
 end
 
 local function Set_Collapse(collapse, isAllCollapse)
-    if ObjectiveTrackerFrame:IsCollapsed() then
+    if ObjectiveTrackerFrame:IsCollapsed() or Is_Locked() then
         return
     end
 
@@ -68,7 +68,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub
+    local sub, sub2
     local col= Is_Locked() and '|cff828282' or ''
 
 --收起选项
@@ -81,14 +81,19 @@ local function Init_Menu(self, root)
     end)
 
 --战斗中
-    sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
+    sub2= sub:CreateCheckbox(
+        '|cnWARNING_FONT_COLOR:'
+        ..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT),
     function()
         return Save().autoHideInCombat
     end, function()
         Save().autoHideInCombat = not Save().autoHideInCombat and true or nil
         self:set_event()
     end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
+    end)
+
 
 --展开选项
     root:CreateButton(
@@ -268,7 +273,9 @@ local function Init()
     MenuButton:SetupMenu(Init_Menu)
 
     MenuButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_REGEN_DISABLED' then
+        if Is_Locked() then
+            return
+        elseif event=='PLAYER_REGEN_DISABLED' then
             if not ObjectiveTrackerFrame:IsCollapsed() then
                 ObjectiveTrackerFrame:SetCollapsed(true)
             end
