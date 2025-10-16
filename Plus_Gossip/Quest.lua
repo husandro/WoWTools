@@ -623,7 +623,7 @@ local function Init_Quest()
 
         if not questID
             and template.canHaveSealMaterial
-            and not QuestUtil.QuestTextContrastEnabled()
+            and not QuestTextContrast.IsEnabled()
             and template.questLog
         then
             local frame = parentFrame:GetParent():GetParent()

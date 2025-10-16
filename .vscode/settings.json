@@ -6257,7 +6257,8 @@
         "WorldMapBountyBoardMixin",
         "CONTAINER_CAMPAIGN_PROGRESS",
         "WAR_CAMPAIGN",
-        "PingSystemTutorialCloseButton"
+        "PingSystemTutorialCloseButton",
+        "QuestTextContrast"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
