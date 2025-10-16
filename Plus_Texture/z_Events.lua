@@ -689,8 +689,10 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice()
         self:SetEditBox(frame.Title)
     end)
 
-    self:SetButton(PlayerChoiceFrame.CloseButton, {all=true,})
-    self:SetAlphaColor(PlayerChoiceFrame.CloseButton.Border)
+    self:SetButton(PlayerChoiceFrame.CloseButton)
+    C_Timer.After(0.3, function()
+        self:HideTexture(PlayerChoiceFrame.CloseButton.Border)
+    end)
 
     PlayerChoiceFrame.Title.Middle:ClearAllPoints()
     PlayerChoiceFrame.Title.Middle:SetPoint('LEFT', PlayerChoiceFrame.Title.Left, 'RIGHT', -10,0)
@@ -939,11 +941,6 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings()
     self:SetScrollBar(SettingsPanel.Container.SettingsList)
     self:SetScrollBar(SettingsPanel.CategoryList)
 
-    self:SetNineSlice(PingSystemTutorial, 1, true)
-    self:SetNineSlice(PingSystemTutorialInset, nil, true)
-
-    self:HideTexture(PingSystemTutorialBg)
-
     self:SetTabButton(SettingsPanel.GameTab)
     self:SetTabButton(SettingsPanel.AddOnsTab)
     self:SetEditBox(SettingsPanel.SearchBox)
@@ -951,6 +948,10 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings()
     self:CreateBG(SettingsPanel.CategoryList, {isAllPoint=true, alpha=0.5, isColor=true})
     self:CreateBG(SettingsPanel.Container, {isAllPoint=true, alpha=0.5, isColor=true})
 
+    self:SetNineSlice(PingSystemTutorial, 1, true)
+    self:SetNineSlice(PingSystemTutorialInset, nil, true)
+    self:HideTexture(PingSystemTutorialBg)
+    self:SetButton(PingSystemTutorialCloseButton)
 
     self:Init_BGMenu_Frame(SettingsPanel, {isNewButton=true})
 end

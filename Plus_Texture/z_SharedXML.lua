@@ -37,14 +37,21 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
         self:SetMenu(frame)
     end)
 --MenuTemplates.lua
+    
     WoWTools_DataMixin:Hook(WowStyle1FilterDropdownMixin, 'OnLoad', function(frame)
         self:SetMenu(frame)
     end)
     WoWTools_DataMixin:Hook(WowStyle1DropdownMixin, 'OnLoad', function(frame)
         self:SetMenu(frame)
     end)
+    --样式：选项面板，菜单
     WoWTools_DataMixin:Hook(WowStyle2DropdownMixin, 'OnLoad', function(frame)
         self:SetMenu(frame)
+        local p= frame:GetParent()
+        if p.IncrementButton then
+            self:SetButton(p.IncrementButton, {alpha=1})
+            self:SetButton(p.DecrementButton, {alpha=1})
+        end
     end)
     WoWTools_DataMixin:Hook(WowStyle1ArrowDropdownMixin, 'OnLoad', function(frame)
         self:SetMenu(frame)

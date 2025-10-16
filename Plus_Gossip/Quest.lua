@@ -507,7 +507,11 @@ local function Init_Quest()
         Set_QuestID()
 
         local npc=WoWTools_UnitMixin:GetNpcID()
-        if npc and Save().NPC[npc] or not Save().quest or IsModifierKeyDown() then
+        if npc and Save().NPC[npc]
+            or not Save().quest
+            or IsModifierKeyDown()
+            or StaticPopup1:IsVisible()
+        then
             return
         end
 
@@ -549,7 +553,12 @@ local function Init_Quest()
         local questID= WoWTools_QuestMixin:GetID()
         local npc=WoWTools_UnitMixin:GetNpcID()
 
-        if not questID or not Save().quest or IsModifierKeyDown() or (Save().NPC[npc] and not Save().questOption[questID]) then
+        if not questID
+            or not Save().quest
+            or IsModifierKeyDown()
+            or (Save().NPC[npc] and not Save().questOption[questID])
+            or StaticPopup1:IsVisible()
+        then
             return
         end
 
@@ -612,7 +621,11 @@ local function Init_Quest()
         local questID= WoWTools_QuestMixin:GetID()
         local npc=WoWTools_UnitMixin:GetNpcID()
 
-        if not questID and template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
+        if not questID
+            and template.canHaveSealMaterial
+            and not QuestUtil.QuestTextContrastEnabled()
+            and template.questLog
+        then
             local frame = parentFrame:GetParent():GetParent()
             questID = frame.questID
         end
@@ -625,6 +638,8 @@ local function Init_Quest()
             or not acceptButton
             or not acceptButton:IsVisible()
             or not acceptButton:IsEnabled()
+            or WoWTools_FrameMixin:IsLocked(acceptButton)
+            or StaticPopup1:IsVisible()
         then
             return
         end

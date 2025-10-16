@@ -9,7 +9,14 @@ end
 
 
 
+local DisableGossipTab={
+    [135061]=true,-- 给我换一批研究任务吧。
+    [135603]=true,-- （英雄世界难度）我准备好接受你最难的挑战了。
+}
 
+local DisableQuestTab={
+    --[questID]=true
+}
 
 --自动，对话 [gossipID]=总数
 local AutoGossipTab={
@@ -536,6 +543,10 @@ local function Create_GossipOptionCheckBox(frame, info)
             GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetLink(self.spellID, true), 'spellID '.. self.spellID)
         end
 
+        if self.questID then
+            GameTooltip:AddDoubleLine(WoWTools_QuestMixin:GetName(self.questID), 'questID '.. self.questID)
+        end
+
 
         if showFrame and not ColorPickerFrame:IsShown() then
             _G['WoWToolsGossipTextIconOptionsList']:set_date(self.gossipOptionID)--设置，数据
@@ -726,10 +737,10 @@ local function Init_Hook()
         Create_GossipOptionCheckBox(self, info)--建立，自动选取，选项
 
         Set_Gossip_Text(self, info)--自定义，对话，文本
-
         if not info
             or not info.gossipOptionID
             or not Save().gossip
+            or StaticPopup1:IsVisible()
         then
             return
         end
@@ -749,14 +760,13 @@ local function Init_Hook()
         local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)--local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
 
 
-
 --自定义对话
         if Save().gossipOption[index] then
             C_GossipInfo.SelectOption(index)
             find=true
 
 --禁用NPC
-        elseif (npc and Save().NPC[npc]) then
+        elseif Save().NPC[npc] or DisableGossipTab[index] then
             return
 
 --自定义NPC对话
@@ -855,7 +865,11 @@ local function Init_Hook()
         Set_Gossip_Text(self, info)--自定义，对话，文本
 
         local questID=info and info.questID or self:GetID()
-        if not questID or not Save().quest or IsModifierKeyDown() then
+        if not questID
+            or not Save().quest
+            or IsModifierKeyDown()
+            or StaticPopup1:IsVisible()
+        then
             return
         end
 
@@ -864,7 +878,11 @@ local function Init_Hook()
         if Save().questOption[questID] then--自定义
            C_GossipInfo.SelectAvailableQuest(questID)--or self:GetID()
 
-        elseif WoWTools_GossipMixin.QuestButton:not_Ace_QuestTrivial(questID) or Save().NPC[npc] then--or getMaxQuest()
+        elseif
+            WoWTools_GossipMixin.QuestButton:not_Ace_QuestTrivial(questID)
+            or Save().NPC[npc]
+            or DisableQuestTab[questID]
+        then
             return
 
         else
@@ -897,14 +915,20 @@ local function Init_Hook()
         local npc=WoWTools_UnitMixin:GetNpcID()
 
         local questID=info.questID or self:GetID()
-        if not questID or IsModifierKeyDown() then
+        if not questID
+            or IsModifierKeyDown()
+            or StaticPopup1:IsVisible()
+        then
             return
 
         elseif Save().questOption[questID] then--自定义
             C_GossipInfo.SelectActiveQuest(questID)
             return
 
-        elseif not Save().quest or Save().NPC[npc] then--禁用任务, 禁用NPC
+        elseif not Save().quest--禁用
+            or Save().NPC[npc]
+            or DisableQuestTab[questID]
+        then
             return
 
         elseif C_QuestLog.IsComplete(questID) then

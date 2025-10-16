@@ -24,6 +24,7 @@ end
 function WoWTools_TextureMixin:HideTexture(object)--, notClear)
     if object and object:IsObjectType('Texture') then
         object:SetTexture(0)
+        object:SetAlpha(0)
     end
 end
 
@@ -305,6 +306,9 @@ function WoWTools_TextureMixin:SetSlider(frame)
     local slider= frame.Slider.Slider or frame.Slider
 
     self:SetAlphaColor(slider.Thumb, true)
+    self:SetAlphaColor(slider.Left, true)
+    self:SetAlphaColor(slider.Middle, true)
+    self:SetAlphaColor(slider.Right, true)
     self:SetFrame(frame.Back, {alpha=1})
     self:SetFrame(frame.Forward, {alpha=1})
 

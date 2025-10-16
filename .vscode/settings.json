@@ -6256,7 +6256,8 @@
         "STORY_CHAPTERS",
         "WorldMapBountyBoardMixin",
         "CONTAINER_CAMPAIGN_PROGRESS",
-        "WAR_CAMPAIGN"
+        "WAR_CAMPAIGN",
+        "PingSystemTutorialCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
