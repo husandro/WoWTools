@@ -84,8 +84,71 @@ local function Init()
 
 
 --战役 ID 提示 CampaignOverviewMixin
+    local function Set_Campaign_OnEnter(self)
+        local campaign= self.campaign or self:GetParent().campaign
+        local campaignID= campaign and campaign:GetID()
+        if not campaignID  then
+            return
+        end
+        if not GameTooltip:IsOwned(self) then
+            GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+            GameTooltip:ClearLines()
+        end
+--名称
+        local name= WoWTools_TextMixin:CN(campaign.name, {campaignID=campaignID, isName=true})
+        if name then
+           GameTooltip:AddLine(WoWTools_DataMixin.Icon.icon2..name)
+        end
+--中文 Description
+        local cnData= WoWTools_TextMixin:CN(nil, {campaignID=campaignID})
+        if cnData and cnData.D then
+            GameTooltip:AddLine(cnData.D, nil, nil, nil, true)
+        end
+--ID
+        GameTooltip:AddDoubleLine('campaignID', '|cffffffff'..campaignID)
+--章节数量
+
+
+        local count= campaign:GetChapterCount() or 0
+        if count>0 then
+            GameTooltip:AddLine(' ')
+            local curIndex= (campaign:GetCompletedChapterCount() or 0)+1
+            GameTooltip:AddDoubleLine(
+                (campaign.isWarCampaign and '阵营战役' or WAR_CAMPAIGN)
+                or (WoWTools_DataMixin.onlyChinese and '战役' or CONTAINER_CAMPAIGN_PROGRESS),
+                '|cffffffff'..format(
+                    WoWTools_DataMixin.onlyChinese and '%d/%d 章' or STORY_CHAPTERS,
+                    curIndex,
+                    count
+                )
+            )
+
+            
+--章节
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(WoWTools_DataMixin and '章节' or 'ChapterIDs')
+            for index, chapterID in pairs(campaign.chapterIDs or {}) do
+                local col= index< curIndex and '|cff626262' or (select(2, math.modf(index/2))==0 and '|cff00ccff' or '|cffffffff')
+                GameTooltip:AddDoubleLine(
+                    col..index..')', col..chapterID
+                )
+            end
+        end
+        GameTooltip:Show()
+        info= campaign
+        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+    end
+--列表中，标题
+    WoWTools_DataMixin:Hook(CampaignHeaderDisplayMixin, 'SetCampaign', function(self, campaignID)
+        if not self.isSetOonenter then
+            self:SetScript('OnLeave', GameTooltip_Hide)
+            self:HookScript('OnEnter', Set_Campaign_OnEnter)
+            self.isSetOonenter= true
+        end
+    end)
+
     WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'SetMode', function(self)
-        local campaign= self:GetParent().campaign      
+        local campaign= self:GetParent().campaign
         local campaignID= campaign and campaign:GetID()
         if not self.IDLabel then
             self.IDLabel= self:CreateFontString(nil, 'ARTWORK', 'GameFontWhite')
@@ -93,40 +156,8 @@ local function Init()
         end
         self.IDLabel:SetText(campaignID or '')
     end)
-    WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnLeave', function()
-        GameTooltip:Hide()
-    end)
-    WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnEnter', function(self)
-        local campaign= self:GetParent().campaign
-        local campaignID= campaign and campaign:GetID()
-        if not campaignID then
-            return
-        end
-        if not GameTooltip:IsShown() then
-            GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-            GameTooltip:ClearLines()
-        end
-        local name= WoWTools_TextMixin:CN(campaign.name, {campaignID=campaignID, isName=true})
-        if name then
-           GameTooltip:AddLine(name)
-        end
-        GameTooltip:AddLine('campaignID|cffffffff'..WoWTools_DataMixin.Icon.icon2..campaignID)
-        local chapterID= campaign:GetCurrentChapterID()
-        if chapterID then
-            GameTooltip:AddLine('chapterID|cffffffff'..WoWTools_DataMixin.Icon.icon2..chapterID)
-        end
-        local count= campaign:GetChapterCount() or 0
-        if count>0 then
-            local t= count
-            local done= campaign:GetCompletedCChapterCount() or 0
-            GameTooltip:AddLine(format(
-                WoWTools_DataMixin.onlyChinese and '%d/%d章' or STORY_CHAPTERS,
-                t-done,
-                t
-            ))
-        end
-        GameTooltip:Show()
-    end)
+    WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnLeave', GameTooltip_Hide)
+    WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnEnter', Set_Campaign_OnEnter)
 
     Init=function()end
 end

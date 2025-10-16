@@ -6253,7 +6253,10 @@
         "CampaignHeaderDisplayMixin",
         "CampaignOverviewMixin",
         "CampaignLoreButtonMixin",
-        "STORY_CHAPTERS"
+        "STORY_CHAPTERS",
+        "WorldMapBountyBoardMixin",
+        "CONTAINER_CAMPAIGN_PROGRESS",
+        "WAR_CAMPAIGN"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
