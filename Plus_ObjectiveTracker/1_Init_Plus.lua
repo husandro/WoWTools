@@ -59,7 +59,7 @@ local function Init()
             GameTooltip:AddLine(' ')
         end
 
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'scenarioID', '|cnGREEN_FONT_COLOR:'..scenarioID)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'scenarioID', '|cffffffff'..scenarioID)
         GameTooltip:Show()
     end)
 
