@@ -19,8 +19,9 @@ local function Init_Options()
     --移动
 
     WoWTools_PanelMixin:Check_Button({
-        checkName= WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , '')),
-        --tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0),
+        checkName= '|cnWARNING_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+        tooltip= '|cnWARNING_FONT_COLOR:'..('BUG'),
         GetValue= function() return Save().SavePoint end,
         SetValue=function()
             Save().SavePoint= not Save().SavePoint and true or nil
