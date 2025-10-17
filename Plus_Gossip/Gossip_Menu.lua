@@ -278,8 +278,6 @@ local function Init_Menu(self, root)
         sub2=sub:CreateButton(
             movieID,
         function(data)
-            return Save().movie[data.movieID]
-        end, function(data)
             MovieFrame_PlayMovie(MovieFrame, data.movieID)
         end, {movieID=movieID, dateTime=dateTime})
         sub2:SetTooltip(function(tooltip)

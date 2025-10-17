@@ -45,7 +45,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
 
     ProfessionsCustomerOrdersFrame.Form:HookScript('OnShow', function(f)
         local frame= f:GetParent()
-        if frame.ResizeButton.disabledSize then
+        if not frame.ResizeButton or frame.ResizeButton.disabledSize then
             return
         end
         frame.ResizeButton.setSize= false

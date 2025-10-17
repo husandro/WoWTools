@@ -150,6 +150,9 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
 
 
     WoWTools_DataMixin:Hook(WorldMapFrame, 'Minimize', function(frame)
+        if not frame.ResizeButton then
+            return
+        end
         local name= frame:GetName()
         local size= self:Save().size[name]
         if size then
@@ -163,6 +166,9 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
         frame.ResizeButton:SetShown(true)
     end)
     WoWTools_DataMixin:Hook(WorldMapFrame, 'Maximize', function(frame)
+        if not frame.ResizeButton then
+            return
+        end
         set_min_max_value()
         if self:Save().scale[frame:GetName()] then
             frame:SetScale(1)

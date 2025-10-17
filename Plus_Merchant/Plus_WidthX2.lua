@@ -415,7 +415,9 @@ local function Init_WidthX2()
 
         MerchantPageText:SetText(MerchantFrame.page..'/'..math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
 
-        MerchantFrame.ResizeButton.setSize=true
+        if MerchantFrame.ResizeButton then
+            MerchantFrame.ResizeButton.setSize=true
+        end
     end)
 
 
@@ -456,8 +458,9 @@ local function Init_WidthX2()
             index= index+1
             btn= _G['MerchantItem'..index]
         end
-
-        MerchantFrame.ResizeButton.setSize=nil
+        if MerchantFrame.ResizeButton then
+            MerchantFrame.ResizeButton.setSize=nil
+        end
     end)
 
 

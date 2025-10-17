@@ -212,7 +212,9 @@ function Init_Button(index)
 	if not frame then
 		return
 	elseif frame.CopyChatButton then
-		frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, enabled and 15 or -1)-- -2,-2
+		if frame.ResizeButton then
+			frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, enabled and 15 or -1)-- -2,-2
+		end
 		frame.CopyChatButton:SetShown(enabled)
 		return
 
@@ -230,7 +232,9 @@ function Init_Button(index)
 	WoWTools_TextureMixin:SetButton(frame.CopyChatButton, {alpha=1})
 	frame.CopyChatButton:SetAlpha(frame.ScrollBar:GetAlpha() or 0.65)
 
-	frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, 15)
+	if frame.ResizeButton then
+		frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, 15)
+	end
 	frame.CopyChatButton:SetPoint('TOP', frame.ScrollToBottomButton, 'BOTTOM', 0, -2)
 
 	frame.CopyChatButton:SetScript('OnLeave', function()

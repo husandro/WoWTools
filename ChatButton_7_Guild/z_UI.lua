@@ -256,7 +256,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
     local function set_size(frame)
         frame= frame:GetParent()
-        if WoWTools_FrameMixin:IsLocked(frame) then
+        if WoWTools_FrameMixin:IsLocked(frame) or not frame.ResizeButton then
             return
         end
 

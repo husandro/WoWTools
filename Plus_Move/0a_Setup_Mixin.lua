@@ -110,6 +110,12 @@ end
 
 
 local function Set_Move_Frame(frame, target, click, notSave, isAltKeyDown)
+    if frame:IsMovable() then
+        if WoWTools_DataMixin.Player.husandro then
+            print('移动', '|cnWARNING_FONT_COLOR:已有别的插件设置|r', frame:GetName())
+        end
+        return
+    end
 --设置，数据
     frame.moveFrameData={
         target= target and target:GetName() or nil,
@@ -182,11 +188,11 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     local target= tab.frame
     local name= tab.name or (target and target:GetName()) or (frame and frame:GetName())
-
-
+    if frame:IsMovable() then
+        return
+    end
 
     if not frame or not name or frame.moveFrameData then
-
         if WoWTools_DataMixin.Player.husandro then
             print('移动', frame, name, frame and frame.moveFrameData, '出现错误')
         end

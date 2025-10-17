@@ -553,3 +553,9 @@ function WoWTools_TextureMixin.Frames:ItemRefTooltip()
     self:SetButton(ItemRefTooltip.CloseButton)
     self:SetNineSlice(ItemRefTooltip, 1)
 end
+
+function WoWTools_TextureMixin.Frames:MovieFrame()
+    self:SetFrame(MovieFrame.CloseDialog.Border, {alpha=1})
+    self:SetButton(MovieFrame.CloseDialog.ConfirmButton, {alpha=1})
+    self:SetButton(MovieFrame.CloseDialog.ResumeButton, {alpha=1})
+end
