@@ -74,8 +74,6 @@ end
 
 --动作条
 function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
-
-
     for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
         for _, name in pairs({
             "ActionButton",
@@ -141,15 +139,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     self:HideTexture(SpellFlyout.Background.End)
     self:HideTexture(SpellFlyout.Background.HorizontalMiddle)
     self:HideTexture(SpellFlyout.Background.VerticalMiddle)
-
-
-
---Flyout
-    --WoWTools_DataMixin:Hook(SpellFlyoutPopupButtonMixin, 'OnLoad', function(btn)
 end
-
-
-
 
 
 

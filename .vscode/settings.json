@@ -6266,7 +6266,8 @@
         "QuestObjectiveTrackerMixin",
         "BonusObjectiveTrackerProgressBarMixin",
         "BonusObjectiveTracker",
-        "IsPlayerAtEffectiveMaxLevel"
+        "IsPlayerAtEffectiveMaxLevel",
+        "EssentialCooldownViewerMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

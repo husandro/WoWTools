@@ -228,6 +228,7 @@ local MacroList={
     },
     {text='@mouseover', macro='[@mouseover]'},
     {text='@cursor', macro='[@cursor]'},
+    {text='[nostance:1]', macro= '[nostance:1]', tips=WoWTools_DataMixin.onlyChinese and '姿态条' or HUD_EDIT_MODE_STANCE_BAR_LABEL},
 }
 
 
@@ -263,29 +264,20 @@ end
 
 
 
+local Spell_Macro={
 
+--MS
+    [73325]=function(name)--[信仰飞跃]ms
+        return '/cast [target=mouseover,help,exists][target=target,help,exists][target=targettarget,help,exists][target=focus,help,exists]'..name
+    end,
+    [232698]=function(name)
+        return '/cast [noform]'..name
+    end,
 
-
-
-
---自定义，职业，法术宏
---##################
-local function Get_Spell_Macro(name, spellID)
-    if spellID==6603 then--自动攻击
-        return '/startattack'
-
-
-    --MS
-    elseif spellID==73325 then--[信仰飞跃]ms
-        return '/cast [target=mouseover,help,exists][target=target,help,exists][target=targettarget,help,exists][target=focus,help,exists]'..name, name
-
-    elseif spellID==232698 then--[暗影形态]
-        return '/cast [noform]'..name, name
-
-    --SS
-    elseif spellID==6201 then--[制造治疗石]ss
+--SS
+    [6201]=function(name)--[制造治疗石]ss
         local right= C_Spell.GetSpellName(29893)--[制造灵魂之井] ss
-        local alt= C_Spell.GetSpellName(6201)--[制造治疗石] ss
+        local alt= name--[制造治疗石] ss
         local ctrl= C_Spell.GetSpellName(698)--[召唤仪式]ss
         local shift= C_Spell.GetSpellName(20707)--[灵魂石]ss
         local itemName= C_Item.GetItemInfo(5512)--[治疗石]ss
@@ -297,20 +289,28 @@ local function Get_Spell_Macro(name, spellID)
                 ..'\n/use [btn:1]'..itemName
                 ..'\n/cast [btn:2]'..right
         end
-    elseif spellID==48018--[恶魔法阵]ss
-        or spellID==48020--[恶魔法阵：传送]ss
-    then
-        local alt= C_Spell.GetSpellName(48018)
+    end,
+    [48018]=function(name)--[恶魔法阵]ss
+        local alt= name
         local spellName= C_Spell.GetSpellName(48020)
-        if alt and spellName then
+        if spellName then
             return '/cast [mod:alt,@cursor]'.. alt
                 ..'\n/cast '..spellName
         end
-    elseif spellID==755 then--[生命通道]ss
+    end,
+    [48020]=function(name)--[恶魔法阵：传送]ss
+        local alt= C_Spell.GetSpellName(48018)
+        if alt then
+            return '/cast [mod:alt,@cursor]'.. alt
+                ..'\n/cast '..name
+        end
+    end,
+    [755]=function(name)--[生命通道]ss
         return '/stopcasting\n/cast [target=pet]'..name
+    end,
 
-    --LR
-    elseif spellID==5384 then--[假死]LR
+--LR
+    [5384]=function(name)--[假死]LR
         if C_SpellBook.IsSpellInSpellBook(209997) then
             local spellName= C_Spell.GetSpellName(209997)
             if spellName then
@@ -318,60 +318,130 @@ local function Get_Spell_Macro(name, spellID)
             end
         end
         return '/petfollow\n/cast '..name
-    elseif spellID==2643--[多重射击]LR
-        or spellID==257620--[多重射击]LR
-        or spellID==187708--[削凿]LR
-    then
+    end,
+    [2643]=function(name)--[多重射击]LR
         local spellName= C_Spell.GetSpellName(186265)
         if spellName then
             return '/cancelaura '..spellName..'\n/cast '..name
         end
+    end,
+    [257620]=function(name)--[多重射击]LR
+        local spellName= C_Spell.GetSpellName(186265)
+        if spellName then
+            return '/cancelaura '..spellName..'\n/cast '..name
+        end
+    end,
+    [187708]=function(name)--[削凿]LR
+        local spellName= C_Spell.GetSpellName(186265)
+        if spellName then
+            return '/cancelaura '..spellName..'\n/cast '..name
+        end
+    end,
 
-    --FS
-    elseif spellID==212653--[闪光术]
-        or spellID==1953--[闪现术]
-        or spellID==66--[隐形术]
-        or spellID==110959--[强化隐形术]
-    then
+--FS
+    [212653]=function(name)--[闪光术]
         local cancel= C_Spell.GetSpellName(45438)--[寒冰屏障]
         local text='/stopcasting'
         if cancel then
             text= text..'\n/cancelaura '..cancel
         end
         return text..'\n/cast '..name
-
-    --FS
-    elseif spellID==190336 then--[造餐术]
-        local spellName= C_Spell.GetSpellName(190336)
-        local itemName= C_Item.GetItemNameByID(113509)
-        if spellName and itemName then
-            return '/use [btn:1]'..itemName..'\n/cast [btn:2]'..spellName
+    end,
+    [1953]=function(name)--[闪现术]
+        local cancel= C_Spell.GetSpellName(45438)--[寒冰屏障]
+        local text='/stopcasting'
+        if cancel then
+            text= text..'\n/cancelaura '..cancel
         end
-
-    elseif spellID==130 then--[缓落术]
+        return text..'\n/cast '..name
+    end,
+    [66]=function(name)--[隐形术]
+        local cancel= C_Spell.GetSpellName(45438)--[寒冰屏障]
+        local text='/stopcasting'
+        if cancel then
+            text= text..'\n/cancelaura '..cancel
+        end
+        return text..'\n/cast '..name
+    end,
+    [110959]=function(name)--[强化隐形术]
+        local cancel= C_Spell.GetSpellName(45438)--[寒冰屏障]
+        local text='/stopcasting'
+        if cancel then
+            text= text..'\n/cancelaura '..cancel
+        end
+        return text..'\n/cast '..name
+    end,
+    [190336]=function(name)--[造餐术]
+        local itemName= C_Item.GetItemNameByID(113509)
+        if itemName then
+            return '/use [btn:1]'..itemName..'\n/cast [btn:2]'..name
+        end
+    end,
+    [130]=function(name)--[缓落术]
         return '/cast '..name..'\n/cancelaura [mod:alt]'..name
+    end,
 
-
-
-    --alt@player, @cursor
-    elseif spellID==121536 --[天堂之羽]ms
-        or spellID==43265--[枯萎凋零]dk
-        or spellID==51052--[反魔法领域]
-    then
+--MS
+    [121536]=function(name)--[天堂之羽]ms
         return '/cast [mod,@player][@cursor]'..name
+    end,
+    [1706]=function(name)--[漂浮术]ms
+        return '/cast [target=mouseover,help,exists][@player]'..name..'\n/cancelaura [mod:alt]'..name
+    end,
 
 
-    --mouseover， 或自已，Alt取消BUFF
-    elseif spellID==1706 --[漂浮术]ms
-        or spellID==546--[水上行走]sm
-    then
-        return '/cast [target=mouseover,help,exists][@player]'..name
-            ..'\n/cancelaura [mod:alt]'..name
+--DK
+    [43265]=function(name)--[枯萎凋零]dk
+        return '/cast [mod,@player][@cursor]'..name
+    end,
+    [51052]=function(name)--[反魔法领域]
+        return '/cast [mod,@player][@cursor]'..name
+    end,
 
-    --喊话
+--SM
+    [546]=function(name)--[水上行走]sm
+        return '/cast [target=mouseover,help,exists][@player]'..name..'\n/cancelaura [mod:alt]'..name
+    end,
+
+--XD
+    [8921]=function(name)--月火术
+        WoWTools_DataMixin:Load({id=5487, type='spell'})
+        local spellName= PlayerUtil.GetCurrentSpecID()==104 and C_Spell.GetSpellName(5487)--104守护专精 8921/月火术 5487熊形态
+        if spellName then
+            return '/cast [nostance:1]'..spellName..'\n/cast '..name
+        end
+    end,
+    [5487]=function(name)--熊形态
+        return '/cast [nostance:1]'..name
+    end,
+    [768]=function(name)--猎豹形态
+        return '/cast [nostance:2]'..name
+    end,
+    [783]=function(name)--旅行形态
+        return '/cast [nostance:3]'..name
+    end,
+    [106839]=function(name)--迎头痛击
+        return '/focus target\n/cleartarget\n/targetenemy\n/cast '..name..'\n/target focus\n/clearfocus\n/startattack'
+    end,
+
+--自动攻击
+    [6603]=function()
+        return '/startattack'
+    end,
+}
+
+
+
+
+--自定义，职业，法术宏
+--##################
+local function Get_Spell_Macro(name, spellID)
+    local text= Spell_Macro[spellID] and Spell_Macro[spellID](name)
+    if text then
+        return text
+--喊话
     elseif SayTab[spellID] then
         return '/cast '..name..'\n/y '..(C_Spell.GetSpellLink(spellID) or name)
-
 
 
 --设置，光标，焦点， 目标，再设置焦点，
@@ -487,16 +557,15 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)
         ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
-
         if WoWTools_FrameMixin:IsLocked(MacroFrame) then
             return
         end
 
         local text=''
-        local macroText2, showName= Get_Spell_Macro(data.name, data.spellID)
+        local macroText2= Get_Spell_Macro(data.name, data.spellID)
         local macro= MacroFrameText:GetText() or ''
         if not macro:find('#showtooltip') then
-            text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
+            text= '#showtooltip '.. data.name..'\n'
         end
         if not macro:find('/targetenemy') then
             text= text..'/targetenemy [noharm][dead]\n'
@@ -517,10 +586,10 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)
 
 
 
-        local macroText2, showName= Get_Spell_Macro(name, spellID)
-        local body= '#showtooltip'..(showName and ' '..showName or '')..'\n'
-        body= body..'/targetenemy [noharm][dead]\n'
-        body= body..(macroText2 or ('/cast '..name))
+    local macroText2= Get_Spell_Macro(name, spellID)
+    local body= '#showtooltip '..name..'\n'
+    body= body..'/targetenemy [noharm][dead]\n'
+    body= body..(macroText2 or ('/cast '..name))
 
     --二级，菜单
     Sub_Menu(sub, {
@@ -791,10 +860,13 @@ local function Init_MacroList_Menu(self, root)
                 MacroFrameText:SetFocus()
             end
             return MenuResponse.Open
-        end, {macro=info.macro})
-        sub:SetTooltip(function(tooltip, description)
-            if description.data.macro then
-                tooltip:AddLine(description.data.macro, nil, nil, nil, true)
+        end, {macro=info.macro, tips=info.tips})
+        sub:SetTooltip(function(tooltip, desc)
+            if desc.data.tips then
+                tooltip:AddLine(desc.data.tips)
+            end
+            if desc.data.macro then
+                tooltip:AddLine(desc.data.macro, nil, nil, nil, true)
             end
         end)
 
@@ -808,7 +880,7 @@ local function Init_MacroList_Menu(self, root)
                 end
                 return MenuResponse.Open
             end, {text=macro.text, icon=macro.icon, tips=macro.tips})
-            
+
             sub:SetTooltip(function(tooltip, description)
                 tooltip:AddLine(description.data.tips,  nil, nil, nil, true)
             end)
