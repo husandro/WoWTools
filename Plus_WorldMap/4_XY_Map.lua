@@ -5,7 +5,7 @@ local function Save()
     return  WoWToolsSave['Plus_WorldMap']
 end
 
-local MapXYButton
+
 
 
 
@@ -90,7 +90,10 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
 
     local mapID= C_Map.GetBestMapForUnit("player")
     local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
@@ -141,16 +144,19 @@ local function Init()
         return
     end
 
-    MapXYButton=WoWTools_ButtonMixin:Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {
+    --[[btn=WoWTools_ButtonMixin:Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {
         atlas=WoWTools_DataMixin.Icon.Player:match('|A:(.-):'),
         size=22,
         isMask=true,
         name='WoWToolsMapXYButton'
-    })
+    })]]
+    
+    local btn= CreateFrame('DropdownButton', 'WoWToolsMapXYButton', WorldMapFrame.BorderFrame.TitleContainer)
+    btn:SetSize(20, 20)
+    btn:SetNormalAtlas(WoWTools_DataMixin.Icon.Player:match('|A:(.-):'))
 
 
-
-    function MapXYButton:Settings()
+    function btn:Settings()
         local isShow= Save().ShowMapXY
         self:SetShown(isShow)
 
@@ -166,8 +172,8 @@ local function Init()
     end
 
 
-    MapXYButton:SetScript('OnLeave', GameTooltip_Hide)
-    MapXYButton:SetScript('OnEnter', function(self)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
@@ -175,16 +181,17 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    MapXYButton:SetScript('OnMouseDown', function(self)
+    btn:SetupMenu(Init_Menu)
+    --[[btn:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)
+    end)]]
 
 
-    MapXYButton:SetScript('OnHide', function(self)
+    btn:SetScript('OnHide', function(self)
         self.elapsed= nil
     end)
 
-    MapXYButton:SetScript("OnUpdate", function (self, elapsed)
+    btn:SetScript("OnUpdate", function (self, elapsed)
         self.elapsed = (self.elapsed or 1) + elapsed
         if self.elapsed > 0.15 then
             self.elapsed = 0
@@ -202,47 +209,45 @@ local function Init()
             else
                 text=''
             end
-            MapXYButton.Text:SetText(text)
+            btn.Text:SetText(text)
         end
     end)
 
 
 
-    MapXYButton.edit= CreateFrame("EditBox", nil, MapXYButton, 'InputBoxTemplate')
-    MapXYButton.edit:SetHeight(22)
-    WoWTools_ColorMixin:Setup(MapXYButton.edit, {type='EditBox'})
-    MapXYButton.edit:SetAutoFocus(false)
-    MapXYButton.edit:ClearFocus()
-    MapXYButton.edit:SetPoint('LEFT', MapXYButton, 'RIGHT',2,0)
-    MapXYButton.edit.Left:SetAlpha(0.3)
-    MapXYButton.edit.Middle:SetAlpha(0.3)
-    MapXYButton.edit.Right:SetAlpha(0.3)
+    btn.edit= CreateFrame("EditBox", nil, btn, 'InputBoxTemplate')--'InputBoxVisualTemplate')--InputBoxTemplate')
+    WoWTools_TextureMixin:SetEditBox(btn.edit)
+    WoWTools_ColorMixin:Setup(btn.edit, {type='EditBox'})
+    btn.edit:SetHeight(20)
 
-    MapXYButton.edit:SetScript('OnEditFocusLost', function(self)
+    btn.edit:SetAutoFocus(false)
+    btn.edit:ClearFocus()
+    btn.edit:SetPoint('LEFT', btn, 'RIGHT', 2, 0)
+
+    btn.edit:SetScript('OnEditFocusLost', function(self)
         WoWTools_ColorMixin:Setup(self, {type='EditBox'})
     end)
 
-    MapXYButton.edit:SetScript('OnEditFocusGained', function(self)
+    btn.edit:SetScript('OnEditFocusGained', function(self)
         self:HighlightText()
         self:SetTextColor(1,1,1)
     end)
 
-    MapXYButton.edit:SetScript("OnKeyUp", function(self, key)
+    btn.edit:SetScript("OnKeyUp", function(self, key)
         if not IsControlKeyDown() or key ~= "C" then
             return
         end
         self:ClearFocus()
         print(
-            WoWTools_DataMixin.addName,
-            WoWTools_WorldMapMixin.addName,
+            WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2,
             '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
             self:GetText()
         )
     end)
 
-    MapXYButton.edit:SetScript("OnEnterPressed", Set_Map_Waypoint)--自定义，地图标记，XY
-    MapXYButton.edit:SetScript('OnLeave', GameTooltip_Hide)
-    MapXYButton.edit:SetScript('OnEnter', function(self)
+    btn.edit:SetScript("OnEnterPressed", Set_Map_Waypoint)--自定义，地图标记，XY
+    btn.edit:SetScript('OnLeave', GameTooltip_Hide)
+    btn.edit:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(
@@ -261,14 +266,14 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    MapXYButton.Text=WoWTools_LabelMixin:Create(MapXYButton, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
-    MapXYButton.Text:SetPoint('LEFT',MapXYButton.edit, 'RIGHT', 2, 0)
+    btn.Text=WoWTools_LabelMixin:Create(btn, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
+    btn.Text:SetPoint('LEFT',btn.edit, 'RIGHT', 2, 0)
 
 
 
-    MapXYButton:Settings()
+    btn:Settings()
     Init=function()
-        MapXYButton:Settings()
+        btn:Settings()
     end
 end
 

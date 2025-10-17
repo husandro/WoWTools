@@ -342,7 +342,8 @@ local function Init_Menu(self, root)
     })
     sub:CreateSpacer()
 
-    sub:CreateSpacer()--Y
+--MapXY_Y
+    sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
             return Save().MapXY_Y or -2
@@ -358,7 +359,8 @@ local function Init_Menu(self, root)
     })
     sub:CreateSpacer()
 
-    WoWTools_MenuMixin:ScaleRoot(self, sub, function()--缩放
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub, function()
         return Save().MapXYScale or 1
     end, function(value)
         Save().MapXYScale= value
@@ -388,7 +390,7 @@ local function Init_Menu(self, root)
 
 --AreaPOI名称
     sub=root:CreateCheckbox(
-        '|A:minimap-genericevent-hornicon:0:0|aAreaPOI',
+        '|cnWARNING_FONT_COLOR:|A:minimap-genericevent-hornicon:0:0|aAreaPOI',
     function()
         return Save().ShowAreaPOI_Name
     end, function()
@@ -401,6 +403,7 @@ local function Init_Menu(self, root)
             (Save().ShowAreaPOI_Name and '' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         )
+        tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
     end)
 
 --地下城，加名称
