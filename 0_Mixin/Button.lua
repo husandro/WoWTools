@@ -33,12 +33,14 @@ end
 
 
 
---遮罩
-function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
+--[[遮罩
+UI-HUD-UnitFrame-Player-Portrait-Mask
+]]
+function WoWTools_ButtonMixin:AddMask(btn, isType2, region, atlas)
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture(nil, 'OVERLAY')
 
     if not isType2 then--方形，按钮
-        btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
+        btn.IconMask:SetAtlas(atlas or 'UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
         btn.IconMask:SetPoint('TOPLEFT', region or btn, 0.5, -0.5)
         btn.IconMask:SetPoint('BOTTOMRIGHT', region or btn, -0.5, 0.5)
     else--圆形，按钮

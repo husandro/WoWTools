@@ -520,7 +520,9 @@ end
 
 --飞行地图
 function WoWTools_TextureMixin.Events:Blizzard_FlightMap()
-    self:SetNineSlice(FlightMapFrame.BorderFrame, self.min)
+    self:SetButton(FlightMapFrameCloseButton)
+    self:SetNineSlice(FlightMapFrame.BorderFrame, 0.3)
+    self:HideTexture(FlightMapFrame.BorderFrame.TopBorder)
     self:HideTexture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
     self:HideTexture(FlightMapFrameBg)
 end

@@ -64,7 +64,7 @@ function WoWTools_TextureMixin:CreateBG(frame, tab)
 
     local point= tab.point
     local isAllPoint= tab.isAllPoint
-    local alpha= tab.alpha or 0.3
+    local alpha= tab.alpha or 0.5
     local isColor= tab.isColor
     local atlas= tab.atlas or 'ChallengeMode-guild-background'
 

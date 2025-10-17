@@ -7,7 +7,6 @@ end
 
 
 
-local btn
 
 
 local function Init()
@@ -15,16 +14,9 @@ local function Init()
         return
     end
 
-    btn= WoWTools_ButtonMixin:Cbtn(nil, {
-        atlas=WoWTools_DataMixin.Icon.Player:match('|A:(.-):'),
-        --size=14,
-        name='WoWTools_PlayerXY_Button',
-        isMask=true,
-    })
-
-
-
-
+    local btn= CreateFrame('Button', 'WoWToolsPlayerXYButton', UIParent, 'WoWToolsButtonTemplate')
+    btn:SetNormalAtlas(WoWTools_DataMixin.Icon.Player:match('|A:(.-):'))
+    WoWTools_ButtonMixin:AddMask(btn, nil, nil, 'UI-HUD-UnitFrame-Player-Portrait-Mask')
 
     btn:SetMovable(true)
     btn:RegisterForDrag("RightButton")
@@ -79,17 +71,62 @@ local function Init()
     end)
 
 
+--Text
+    btn.Text= btn:CreateFontString(nil, 'ARTWORK', 'ChatFontNormal')
+    btn.Text:SetShadowOffset(1, -1)
+    WoWTools_ColorMixin:Setup(btn.Text, {type='FontString'})
 
-    btn.Text=WoWTools_LabelMixin:Create(btn, {size=Save().PlayerXYSize, color=true})
+--Background
+    WoWTools_TextureMixin:CreateBG(btn, {--isColor=true
+    point=function(bg)
+        bg:SetPoint('LEFT')
+        bg:SetPoint('TOP', btn.Text, -1, 1)
+        bg:SetPoint('BOTTOMRIGHT', btn.Text, 1.5, -1.5)
+    end})
 
-    btn:SetScript("OnHide", function(self)
-        self.elapsed= nil
-    end)
+    function btn:Settings()
+        local isShow= Save().ShowPlayerXY
+        self:SetShown(isShow)
 
+        if not isShow then
+            return
+        end
+--大小
+        self:SetScale(Save().PlayerXY_Scale or 1)
+--位置
+        self:ClearAllPoints()
+        if not Save().PlayerXYPoint then
+            self:SetPoint('BOTTOMRIGHT', WorldMapFrame, 'TOPRIGHT',-50, 5)
+        else
+            self:SetPoint(Save().PlayerXYPoint[1], UIParent, Save().PlayerXYPoint[3], Save().PlayerXYPoint[4], Save().PlayerXYPoint[5])
+        end
+--Strata
+        self:SetFrameStrata(Save().PlayerXY_Strata or 'HIGH')
+--按钮，大小
+        local size= Save().PlayerXY_Size or 23
+        self:SetSize(size, size)
+--Text 设置
+        self.Text:ClearAllPoints()
+        if Save().PlayerXY_Text_toLeft then
+            self.Text:SetPoint('RIGHT', btn, "LEFT", 0, Save().PlayerXY_TextY or -3)
+            self.Text:SetJustifyH('RIGHT')
+        else
+            self.Text:SetPoint('LEFT', btn, "RIGHT", 0, Save().PlayerXY_TextY or -3)
+            self.Text:SetJustifyH('LEFT')
+        end
+--Background
+        self.Background:SetAlpha(Save().PlayerXY_BGAlpha or 0.5)
+--延迟容限
+        self.SElapsed= Save().PlayerXY_Elapsed or 0.3
+    end
+    btn:Settings()
+
+
+    local Elapsed= 1
     btn:SetScript("OnUpdate", function(self, elapsed)
-        self.elapsed = (self.elapsed or 0.3) + elapsed
-        if self.elapsed > 0.3 then
-            self.elapsed = 0
+        Elapsed = Elapsed + elapsed
+        if Elapsed > self.SElapsed then
+            Elapsed = 0
             local x, y= WoWTools_WorldMapMixin:GetPlayerXY()--玩家当前位置
             if x and y then
                 self.Text:SetText(x.. ' '..y)
@@ -99,39 +136,8 @@ local function Init()
         end
     end)
 
-    function btn:Settings()
-        local isShow= Save().ShowPlayerXY
-        self:SetShown(isShow)
-
-        if not isShow then
-            return
-        end
-
-        self:SetScale(Save().PlayerXY_Scale or 1)
-        self:ClearAllPoints()
-        if not Save().PlayerXYPoint then
-            self:SetPoint('BOTTOMRIGHT', WorldMapFrame, 'TOPRIGHT',-50, 5)
-        else
-            self:SetPoint(Save().PlayerXYPoint[1], UIParent, Save().PlayerXYPoint[3], Save().PlayerXYPoint[4], Save().PlayerXYPoint[5])
-        end
-
-        self.Text:ClearAllPoints()
-        if Save().PlayerXY_Text_toLeft then
-            self.Text:SetPoint('RIGHT', btn, "LEFT")
-        else
-            self.Text:SetPoint('LEFT', btn, "RIGHT")
-        end
-
-        self:SetFrameStrata(Save().PlayerXY_Strata or 'HIGH')
-
-        local size= Save().PlayerXY_Size or 12
-        self:SetSize(size, size)
-    end
-
-    btn:Settings()
-
     Init=function()
-         btn:Settings()
+        _G['WoWToolsPlayerXYButton']:Settings()
     end
 end
 

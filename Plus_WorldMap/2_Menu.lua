@@ -85,8 +85,8 @@ local function Init_OnEnter(self)
     end
     GameTooltip:Show()
 
-    if _G['WoWTools_PlayerXY_Button'] then
-        _G['WoWTools_PlayerXY_Button']:SetButtonState('PUSHED')
+    if _G['WoWToolsPlayerXYButton'] then
+        _G['WoWToolsPlayerXYButton']:SetButtonState('PUSHED')
     end
 end
 
@@ -131,8 +131,7 @@ local function Init_PlayerXY_Option_Menu(self, root2)
     end)
 
     root:CreateDivider()
-
-    if self==_G['WoWTools_PlayerXY_Button'] then
+    if self==_G['WoWToolsPlayerXYButton'] then
         root= root:CreateButton(
             '|A:mechagon-projects:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '选项' or GAMEMENU_OPTIONS),
@@ -150,20 +149,54 @@ local function Init_PlayerXY_Option_Menu(self, root2)
         WoWTools_WorldMapMixin:Init_XY_Player()
     end)
 
-    --FrameStrata
+--Text Y
+    root:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(root, {
+        getValue=function()
+            return Save().PlayerXY_TextY or -3
+        end, setValue=function(value)
+            Save().PlayerXY_TextY= value
+            WoWTools_WorldMapMixin:Init_XY_Player()
+        end,
+        name= 'Y',
+        minValue=-23,
+        maxValue=23,
+        step=1,
+        bit=nil,
+    })
+
+--FrameStrata
+    root:CreateSpacer()
     WoWTools_MenuMixin:FrameStrata(self, root, function(data)
-        if _G['WoWTools_PlayerXY_Button'] then
-            return _G['WoWTools_PlayerXY_Button']:GetFrameStrata()==data
+        if _G['WoWToolsPlayerXYButton'] then
+            return _G['WoWToolsPlayerXYButton']:GetFrameStrata()==data
         end
     end, function(data)
         Save().PlayerXY_Strata= data
         WoWTools_WorldMapMixin:Init_XY_Player()
     end)
 
-    root:CreateSpacer()--Y
+--延迟容限
+    root:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(root, {
         getValue=function()
-            return Save().PlayerXY_Size or 12
+            return Save().PlayerXY_Elapsed or 0.3
+        end, setValue=function(value)
+            Save().PlayerXY_Elapsed= value
+            WoWTools_WorldMapMixin:Init_XY_Player()
+        end,
+        name= WoWTools_DataMixin.onlyChinese and '延迟' or LAG_TOLERANCE,
+        minValue=0.1,
+        maxValue=0.5,
+        step=0.01,
+        bit='%.2f',
+    })
+
+--图像大小
+    root:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(root, {
+        getValue=function()
+            return Save().PlayerXY_Size or 23
         end, setValue=function(value)
             Save().PlayerXY_Size= value
             WoWTools_WorldMapMixin:Init_XY_Player()
@@ -175,7 +208,18 @@ local function Init_PlayerXY_Option_Menu(self, root2)
         bit=nil,
     })
 
-    WoWTools_MenuMixin:ScaleRoot(self, root, function()--缩放
+--Background
+    root:CreateSpacer()
+    WoWTools_MenuMixin:BgAplha(root,
+    function()
+        return Save().PlayerXY_BGAlpha or 0.5
+    end, function(value)
+        Save().PlayerXY_BGAlpha= value
+        WoWTools_WorldMapMixin:Init_XY_Player()
+    end, nil, true)
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, root, function()
         return Save().PlayerXY_Scale or 1
     end, function(value)
         Save().PlayerXY_Scale= value
@@ -185,8 +229,12 @@ local function Init_PlayerXY_Option_Menu(self, root2)
         Save().PlayerXYPoint= nil
         Save().PlayerXY_Size= nil
         Save().PlayerXY_Text_toLeft= nil
+        Save().PlayerXY_Elapsed= nil
+        Save().PlayerXY_BGAlpha= nil
+        Save().PlayerXY_TextY= nil
         WoWTools_WorldMapMixin:Init_XY_Player()
     end)
+
 
 
 end
@@ -333,7 +381,7 @@ local function Init_Menu(self, root)
         WoWTools_WorldMapMixin:Init_XY_Player()
     end)
 
-    if _G['WoWTools_PlayerXY_Button'] then--实时玩家当前坐标，选项
+    if _G['WoWToolsPlayerXYButton'] then--实时玩家当前坐标，选项
         Init_PlayerXY_Option_Menu(self, sub)
     end
     root:CreateDivider()
@@ -455,8 +503,8 @@ local function Init()--显示地图ID
 
     MenuButton:SetScript('OnLeave', function()
         GameTooltip:Hide()
-        if _G['WoWTools_PlayerXY_Button'] then
-            _G['WoWTools_PlayerXY_Button']:SetButtonState('NORMAL')
+        if _G['WoWToolsPlayerXYButton'] then
+            _G['WoWToolsPlayerXYButton']:SetButtonState('NORMAL')
         end
     end)
     MenuButton:SetScript('OnEnter', Init_OnEnter)

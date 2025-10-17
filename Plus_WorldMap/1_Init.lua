@@ -15,7 +15,10 @@ local P_Save={
     --PlayerXY_Scale=1,
     --PlayerXY_Strata
     --PlayerXY_Text_toLeft=true,
-    --PlayerXY_Size=12
+    --PlayerXY_Size=23,
+    --PlayerXY_Elapsed=0.3,--LAG_TOLERANCE = "延迟容限";
+    --PlayerXY_BGAlpha=0.5
+    --PlayerXY_TextY=0
 
     ShowAreaPOI_Name=true,
     ShowDungeon_Name=true,

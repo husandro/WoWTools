@@ -4,13 +4,13 @@ WoWTools_WorldMapMixin={}
 
 --AreaLabelDataProvider.xml
 function WoWTools_WorldMapMixin:Create_Wolor_Font(frame, size)
-    local font= WoWTools_LabelMixin:Create(frame, {
+  return WoWTools_LabelMixin:Create(frame, {
         size=size,
         justifyH='CENTER',
         color=false,
+        notShadow=true,
         fontName='WorldMapTextFont'}
     )--WorldMapTextFont SubZoneTextFont
-    return font
 end
 
 

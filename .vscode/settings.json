@@ -6259,7 +6259,8 @@
         "WAR_CAMPAIGN",
         "PingSystemTutorialCloseButton",
         "QuestTextContrast",
-        "StanceButton3NormalTexture"
+        "StanceButton3NormalTexture",
+        "FlightMapFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
