@@ -6260,7 +6260,13 @@
         "PingSystemTutorialCloseButton",
         "QuestTextContrast",
         "StanceButton3NormalTexture",
-        "FlightMapFrameCloseButton"
+        "FlightMapFrameCloseButton",
+        "ObjectiveTrackerProgressBarMixin",
+        "ObjectiveTrackerBlockMixin",
+        "QuestObjectiveTrackerMixin",
+        "BonusObjectiveTrackerProgressBarMixin",
+        "BonusObjectiveTracker",
+        "IsPlayerAtEffectiveMaxLevel"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

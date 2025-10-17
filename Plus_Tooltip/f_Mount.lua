@@ -49,7 +49,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     elseif isForDragonriding then
         textRight= format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, WoWTools_DataMixin.onlyChinese and '驭空术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
     end
-    tooltip.textRight:SetText(textRight or '')
+    
 
     local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID, spellVisualKitID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
@@ -74,19 +74,20 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
         animID=animID,
         spellVisualKitID=spellVisualKitID,
     })
-    tooltip.text2Left:SetText(
-        isCollected
-        and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
-        or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
-    )
 
 --召唤坐骑 
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
-        print(WoWTools_DataMixin.addName, self.addName, spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(WoWTools_DataMixin.onlyChinese and '召唤坐骑' or MOUNT))
+        print(
+            self.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_SpellMixin:GetLink(spellID, true),
+            '|cnGREEN_FONT_COLOR:Alt+'..(WoWTools_DataMixin.onlyChinese and '召唤坐骑' or MOUNT)
+        )
     end
+
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
+
     tooltip:AddDoubleLine(
         col..(WoWTools_DataMixin.onlyChinese and '召唤坐骑' or MOUNT),
         col..'Alt+|A:NPE_Icon:0:0|a'
@@ -95,6 +96,14 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     if type and MountJournal and MountJournal:IsVisible() and creatureName then
         MountJournalSearchBox:SetText(creatureName)
     end
+
+    local textLeft= isCollected
+                    and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
+                    or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
+
+--嵌入式
+    tooltip:Set_TopLabel(textLeft, nil, textRight, nil)
+
     self:Set_Web_Link(tooltip, {type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
 
     WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)

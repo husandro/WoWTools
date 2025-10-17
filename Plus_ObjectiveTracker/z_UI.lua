@@ -3,8 +3,33 @@
 --任务，追踪柆
 function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
     self:SetAlphaColor(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, 0.3)
-
     self:SetButton(ObjectiveTrackerFrame.Header.MinimizeButton)
+
+    hooksecurefunc(BonusObjectiveTrackerProgressBarMixin , 'OnLoad', function(frame)
+        self:SetStatusBar(frame.Bar)
+        self:SetAlphaColor(frame.Bar.BarFrame, nil, nil, 0.3)
+        self:SetAlphaColor(frame.Bar.IconBG, nil, nil, 0.5)
+        frame.Bar.Icon:EnableMouse(true)
+        frame.Bar.Icon:SetScript('OnLeave', function(icon)
+            GameTooltip_Hide()
+            icon:GetParent():SetAlpha(1)
+        end)
+        frame.Bar.Icon:SetScript('OnEnter', function(icon)
+            local questID= icon:GetParent():GetParent().questID
+            if questID and HaveQuestRewardData(questID) then
+                WoWTools_SetTooltipMixin:Frame(frame, GameTooltip, {questID=questID})
+                icon:GetParent():SetAlpha(0.5)
+            end
+        end)
+    end)
+
+ --[[
+    WoWTools_DataMixin:Hook(QuestObjectiveTrackerMixin, 'AddProgressBar', function(_, frame, id)
+       print('a', id)
+        if frame.lastRegion then
+            self:SetStatusBar(frame.parentModule:GetProgressBar(frame.lastRegion, id))
+        end
+    end)]]
 
     self:Init_BGMenu_Frame(ObjectiveTrackerFrame,{
         alpha=0,

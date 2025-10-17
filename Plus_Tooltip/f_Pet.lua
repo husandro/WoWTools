@@ -85,6 +85,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         tooltip:AddLine('|A:NPE_Icon:0:0|aAlt |TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH))
     end
 
+--强弱
     if petType and PET_TYPE_SUFFIX[petType] then
         typeTexture= "Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType]
 
@@ -102,12 +103,10 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     if obtainable then--可得到的
         AllCollected, CollectedNum, CollectedText= WoWTools_PetBattleMixin:Collected(speciesID)
     end
-    tooltip.textLeft:SetText(CollectedNum or '')
-    tooltip.text2Left:SetText(CollectedText or '')
-    tooltip.textRight:SetText(AllCollected or '')
 
---强弱
-    tooltip.text2Right:SetText(text2Right or '')
+--嵌入式
+    tooltip:Set_TopLabel(CollectedNum, CollectedText, AllCollected, text2Right)
+
 
 --取得网页，数据链接
     self:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})

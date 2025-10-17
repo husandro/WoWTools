@@ -74,18 +74,19 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
         end
     end
 
-    tooltip.textLeft:SetText(
-        (col or '|cnGREEN_FONT_COLOR:')
-        ..numPlayer
-        ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
-    )
-    tooltip.text2Left:SetText(
-        (col or '|cnGREEN_FONT_COLOR:')
-        ..(icon~='' and icon or WoWTools_DataMixin.Icon.wow2)
-        ..WoWTools_DataMixin:MK(num, 3)
-    )
-    tooltip.textRight:SetText(col..WoWTools_DataMixin:MK(info2.quantity or 0, 3))
+    local textLeft=  (col or '|cnGREEN_FONT_COLOR:')..numPlayer..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
+    local text2Left= (col or '|cnGREEN_FONT_COLOR:')..(icon~='' and icon or WoWTools_DataMixin.Icon.wow2)..WoWTools_DataMixin:MK(num, 3)
+    local textRight= col..WoWTools_DataMixin:MK(info2.quantity or 0, 3)
 
+    if tooltip.IsEmbedded then--嵌入式
+        tooltip:AddLine(textLeft)
+        tooltip:AddLine(text2Left)
+        tooltip:AddLine(textRight)
+    else
+        tooltip.textLeft:SetText(textLeft or '')
+        tooltip.text2Left:SetText(text2Left or '')
+        tooltip.textRight:SetText(textRight or '')
+    end
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 
     --tooltip:Show()

@@ -119,10 +119,8 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         text2Right= data.D
     end]]
 
-    tooltip.textLeft:SetText(textLeft or '')
-    tooltip.text2Left:SetText(text2Left or '')
-    tooltip.textRight:SetText(textRight or '' )
-    tooltip.text2Right:SetText(text2Right or '')
+--嵌入式
+    tooltip:Set_TopLabel(textLeft, text2Left, textRight, text2Right)
 
     if not WoWToolsSave['Plus_Tootips'].disabledNPCcolor then
         local r, g, b = select(2, WoWTools_UnitMixin:GetColor(unit, nil))--颜色

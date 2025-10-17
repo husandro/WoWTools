@@ -61,6 +61,7 @@ local function Create(tooltip)
     tooltip.backgroundColor:SetPoint('TOPLEFT', 2, -2)
     tooltip.backgroundColor:SetPoint('BOTTOMRIGHT', -2, 2)
     tooltip.backgroundColor:Hide()
+
     function tooltip:Set_BG_Color(r, g, b, a)
         local show= r and g and b
         r,g,b,a= r or 1, g or 1, b or 1, a or 0.5
@@ -69,6 +70,20 @@ local function Create(tooltip)
             self.NineSlice:SetBorderColor(r,g,b,a)
         end
         self.backgroundColor:SetShown(show)
+    end
+
+    function tooltip:Set_TopLabel(textLeft, text2Left, textRight, text2Right)--嵌入式
+        if self.IsEmbedded then
+            self:AddLine(textLeft)
+            self:AddLine(text2Left)
+            self:AddLine(textRight)
+            self:AddLine(text2Right)
+        else
+            self.textLeft:SetText(textLeft or '')
+            self.text2Left:SetText(text2Left or '')
+            self.textRight:SetText(textRight or '')
+            self.text2Right:SetText(text2Right or '')
+        end
     end
 
     if not tooltip.Portrait then
