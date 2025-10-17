@@ -4,13 +4,14 @@
 --生命条提示
 --#########
 function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
-    if WoWToolsSave['Plus_Tootips'].hideHealth or WoWTools_FrameMixin:IsLocked(frame) then
-        return
-    end
-
     unit= unit or select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
 
-    if not unit or frame:GetWidth()<100 or WoWTools_FrameMixin:IsLocked(frame) then
+    if WoWToolsSave['Plus_Tootips'].hideHealth
+        or WoWTools_FrameMixin:IsLocked(frame)
+        or not unit
+        or frame:GetWidth()<100
+        or WoWTools_FrameMixin:IsLocked(frame)
+    then
         frame.text:SetText('')
         frame.textLeft:SetText('')
         frame.textRight:SetText('')
@@ -63,6 +64,10 @@ end
 
 --生命条提示
 local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnitHealth', function(tooltip)
+    if WoWToolsSave['Plus_Tootips'].hideHealth then
+        return
+    end
+
     GameTooltipStatusBar.text= WoWTools_LabelMixin:Create(GameTooltipStatusBar, {justifyH='CENTER'})
     GameTooltipStatusBar.text:SetPoint('TOP', GameTooltipStatusBar, 'BOTTOM')--生命条
     GameTooltipStatusBar.textLeft = WoWTools_LabelMixin:Create(GameTooltipStatusBar, {justifyH='LEFT'})
@@ -72,6 +77,9 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
     GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
         WoWTools_TooltipMixin:Set_HealthBar_Unit(self)
     end)
+    WoWTools_TextureMixin:SetStatusBar(GameTooltipStatusBar)
+
+    Init=function()end
 end
 
 
@@ -80,7 +88,5 @@ end
 
 
 function WoWTools_TooltipMixin:Init_StatusBar()
-    if not WoWToolsSave['Plus_Tootips'].hideHealth then
-        Init()
-    end
+    Init()
 end
