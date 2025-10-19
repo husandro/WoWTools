@@ -396,9 +396,9 @@ end
 --WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(self)
 function WoWTools_TextureMixin:SetCheckBox(frame, alpha)
     if frame then
-        local icon= frame:GetNormalTexture()
+        local icon= frame.GetNormalTexture and frame:GetNormalTexture()
         if icon then
-         WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
+            WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
         else
             icon= frame.GetRegions and frame:GetRegions()
             if icon and icon:IsObjectType("Texture") then

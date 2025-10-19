@@ -208,6 +208,12 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             if not r and colorTexture then
                 r,g,b= colorTexture:GetVertexColor()
             end
+            
+            --[[for _, icon in pairs ({check:GetRegions()}) do
+                if icon and icon:IsObjectType('Texture') then
+                    icon:SetVertexColor(r,g,b)
+                end
+            end]]
 
         elseif swatch then
             nineSlice= swatch.NineSlice
