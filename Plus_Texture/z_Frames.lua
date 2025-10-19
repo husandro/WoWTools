@@ -94,7 +94,27 @@ end
 
 --频道, 设置
 function WoWTools_TextureMixin.Frames:ChatConfigFrame()
+    self:SetUIButton(ChatConfigFrameDefaultButton)
+    self:SetUIButton(ChatConfigFrameRedockButton)
+    self:SetUIButton(ChatConfigFrameOkayButton)
 
+    self:SetUIButton(CombatLogDefaultButton)
+    self:SetUIButton(ChatConfigFrameOkayButton)
+    self:SetUIButton(ChatConfigCombatSettingsFiltersCopyFilterButton)
+    self:SetUIButton(ChatConfigCombatSettingsFiltersAddFilterButton)
+    self:SetUIButton(ChatConfigCombatSettingsFiltersDeleteButton)
+
+    self:SetUIButton(TextToSpeechFramePanelContainer.PlaySampleButton)
+    self:SetUIButton(TextToSpeechFramePanelContainer.PlaySampleAlternateButton)
+    self:SetCheckBox(TextToSpeechFramePanelContainer.PlaySoundSeparatingChatLinesCheckButton)
+    self:SetCheckBox(TextToSpeechFramePanelContainer.PlayActivitySoundWhenNotFocusedCheckButton)
+    self:SetCheckBox(TextToSpeechFramePanelContainer.AddCharacterNameToSpeechCheckButton)
+    self:SetCheckBox(TextToSpeechFramePanelContainer.NarrateMyMessagesCheckButton)
+    self:SetCheckBox(TextToSpeechFramePanelContainer.UseAlternateVoiceForSystemMessagesCheckButton)
+    self:SetSlider(TextToSpeechFramePanelContainer.AdjustRateSlider)
+    self:SetSlider(TextToSpeechFramePanelContainer.AdjustVolumeSlider)
+    self:SetButton(ChatConfigMoveFilterUpButton, {alpha=1})
+    self:SetButton(ChatConfigMoveFilterDownButton, {alpha=1})
 
     self:SetNineSlice(ChatConfigChatSettingsLeft)
 

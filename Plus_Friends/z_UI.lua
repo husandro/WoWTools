@@ -83,6 +83,9 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_RaidFrame()
+    self:SetUIButton(RaidFrameConvertToRaidButton)
+    self:SetUIButton(RaidFrameRaidInfoButton)
+
     self:HideTexture(RaidInfoDetailHeader)
     self:SetButton(RaidInfoCloseButton)
     self:SetFrame(RaidInfoFrame.Border, {show={[RaidInfoFrame.Border.Bg]=true}})
@@ -168,6 +171,7 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
 
 
 --好友的好友，列表
+
     FriendsFriendsFrame.ScrollFrameBorder:SetPoint('BOTTOMRIGHT', -25, 55)
     WoWTools_DataMixin:Hook('FriendsFriends_InitButton', function(btn)
         if not btn:GetScript('OnDoubleClick') then
@@ -177,6 +181,8 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
             end)
         end
     end)
+
+
     WoWTools_MoveMixin:Setup(FriendsFriendsFrame, {
         minW=295,
         minH=157,
@@ -242,11 +248,19 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 
     self:SetFrame(BattleTagInviteFrame.Border, {notAlpha=true})
 
+
+
 --好友的好友，列表
+    self:SetUIButton(FriendsFrameAddFriendButton)
+    self:SetUIButton(FriendsFrameSendMessageButton)
     self:HideFrame(FriendsFriendsFrame.Border, {show={[FriendsFriendsFrame.Border.Bg]=true}})
     self:SetNineSlice(FriendsFriendsFrame.ScrollFrameBorder, 0, true)
     self:SetScrollBar(FriendsFriendsFrame)
     self:SetMenu(FriendsFriendsFrameDropdown)
+
+    
+--近期往来
+    self:SetScrollBar(RecentAlliesFrame.List)
 
 --好友 屏蔽列表
     self:SetNineSlice(FriendsFrame.IgnoreListWindow)
@@ -259,6 +273,13 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetFrame(FriendsFrameBattlenetFrame.BroadcastFrame.Border, {alpha=0.7})
     self:SetEditBox(FriendsFrameBattlenetFrame.BroadcastFrame.EditBox)
 
+
+--查询
+    self:SetUIButton(WhoFrameWhoButton)
+    self:SetUIButton(WhoFrameAddFriendButton)
+    self:SetUIButton(WhoFrameGroupInviteButton)
+--快速加入
+    self:SetUIButton(QuickJoinFrame.JoinQueueButton)
     self:Init_BGMenu_Frame(FriendsFrame, {
         settings=function(_, _, _, _, portraitAlpha)
             FriendsFrameIcon:SetAlpha(portraitAlpha or 1)

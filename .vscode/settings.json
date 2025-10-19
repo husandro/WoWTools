@@ -6282,7 +6282,16 @@
         "NavBar_AddButton",
         "SettingsAdvancedQualityControlsMixin",
         "SettingsKeybindingSectionMixin",
-        "SettingsExpandableSectionMixin"
+        "SettingsExpandableSectionMixin",
+        "GameMenuFrameMixin",
+        "ThreeSliceButtonMixin",
+        "UIButtonMixin",
+        "ClassSpecContentFrameMixin",
+        "MagicButton_OnLoad",
+        "UIButtonFitToTextBehaviorMixin",
+        "RecentAlliesFrame",
+        "ChatConfigMoveFilterUpButton",
+        "ChatConfigMoveFilterDownButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

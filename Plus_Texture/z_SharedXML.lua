@@ -158,7 +158,7 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     end)
 
     --WoWTools_DataMixin:Hook(UIMenuButtonStretchMixin, 'OnShow', function(btn)
-
+--导航条
     WoWTools_DataMixin:Hook('NavBar_AddButton', function(frame)
         local navButton= frame.navList[#frame.navList]
         if navButton then
@@ -170,6 +170,19 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         end
     end)
     --WoWTools_DataMixin:Hook('NavBar_Initialize', function(frame)
+    WoWTools_DataMixin:Hook(UIButtonMixin, 'InitButton', function(btn)
+        self:SetUIButton(btn)
+    end)
+    WoWTools_DataMixin:Hook(ThreeSliceButtonMixin, 'InitButton', function(btn)
+        self:SetUIButton(btn)
+    end)
+    WoWTools_DataMixin:Hook('MagicButton_OnLoad', function(btn)
+        self:SetUIButton(btn)
+    end)
+
+    WoWTools_DataMixin:Hook(UIButtonFitToTextBehaviorMixin, 'SetTextToFit', function(btn, text)
+        print(text)
+    end)
 end
 
 

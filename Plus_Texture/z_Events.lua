@@ -1263,7 +1263,13 @@ end
 
 
 --主菜单
-function WoWTools_TextureMixin.Events:Blizzard_GameMenu()
+function WoWTools_TextureMixin.Events:Blizzard_GameMenu()--MainMenuFrameMixin GameMenuFrameMixin
+    WoWTools_DataMixin:Hook(GameMenuFrame, 'InitButtons', function(frame)
+        for btn in frame.buttonPool:EnumerateActive() do
+            WoWTools_TextureMixin:SetUIButton(btn)
+        end
+    end)
+
     self:HideFrame(GameMenuFrame.Header)
     GameMenuFrame.Header.Text:ClearAllPoints()
     GameMenuFrame.Header.Text:SetPoint('TOP', 0 ,-24)
@@ -1290,6 +1296,8 @@ end
 
 --聊天设置
 function WoWTools_TextureMixin.Events:Blizzard_Channels()
+    self:SetUIButton(ChannelFrame.NewButton)
+    self:SetUIButton(ChannelFrame.SettingsButton)
     self:SetButton(ChannelFrameCloseButton)
     self:HideFrame(ChannelFrame)
 
@@ -2075,6 +2083,17 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     --PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
     --PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
     --PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
+
+ 
+
+--新建 天赋，配置
+    self:SetFrame(ClassTalentLoadoutCreateDialog.Border, {alpha=1})
+    self:SetEditBox(ClassTalentLoadoutCreateDialog.NameControl.EditBox)
+--导入，天赋，配置
+    self:SetFrame(ClassTalentLoadoutImportDialog.Border, {alpha=1})
+    self:SetEditBox(ClassTalentLoadoutImportDialog.ImportControl.InputContainer.EditBox)
+    self:SetEditBox(ClassTalentLoadoutImportDialog.NameControl.EditBox)
+    self:SetFrame(ClassTalentLoadoutImportDialog.ImportControl.InputContainer, {alpha=1})
 
     PlayerSpellsFrame.TalentsFrame.BottomBar:SetAlpha(0)
     PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.ExpandedContainer.Background:SetAlpha(0.2)

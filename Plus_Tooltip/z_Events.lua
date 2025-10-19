@@ -407,7 +407,6 @@ end
 
 --天赋 ClassTalentSpecTabMixin
 function WoWTools_TooltipMixin.Events:Blizzard_PlayerSpells()
-
     WoWTools_DataMixin:Hook(PlayerSpellsFrame.SpecFrame, 'UpdateSpecFrame', function(btn)
         if not C_SpecializationInfo.IsInitialized() then
             return

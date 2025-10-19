@@ -31,7 +31,7 @@ local function Create_Texture_Tips(btn, data)--atlas, coord)
         btn.Texture= btn:CreateTexture(nil, 'BORDER')
         btn.Texture:SetSize(26, 26)--200, 36
         btn.Texture:SetPoint('RIGHT', btn, 'LEFT', 6,0)
-        WoWTools_TextureMixin:SetUIButton(btn)
+        
     end
     if btn.Texture then
         if data and data[1] then
@@ -81,6 +81,7 @@ local function Init()
         end)
         frame.reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
         Create_Texture_Tips(frame.reload, 'BattleBar-SwapPetIcon')
+        WoWTools_TextureMixin:SetUIButton(frame.reload)
     end
     --end
 
@@ -95,6 +96,7 @@ local function Init()
 
 --Blizzard_GameMenu/Standard/GameMenuFrame.lua
     WoWTools_DataMixin:Hook(GameMenuFrame, 'InitButtons', function(self)
+        
         for btn in self.buttonPool:EnumerateActive() do
             local data= dataButton[btn:GetText()]
             Create_Texture_Tips(btn, data)
@@ -107,6 +109,7 @@ local function Init()
         function()
             WoWTools_DataMixin:Reload()
         end)
+        WoWTools_TextureMixin:SetUIButton(btn)
 
         Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})
     end)
