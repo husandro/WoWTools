@@ -193,6 +193,9 @@ end
     self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
     self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
     self:SetEditBox(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
+    self:SetCheckBox(ClubFinderGuildFinderFrame.OptionsList.TankRoleFrame.Checkbox)
+    self:SetCheckBox(ClubFinderGuildFinderFrame.OptionsList.HealerRoleFrame.Checkbox)
+    self:SetCheckBox(ClubFinderGuildFinderFrame.OptionsList.DpsRoleFrame.Checkbox)
 
 
     self:HideTexture(CommunitiesFrame.TopTileStreaks)

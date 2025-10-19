@@ -15,6 +15,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
 --坐骑
     --self:SetMenu(MountJournal.FilterDropdown)
+    self:SetUIButton(MountJournalMountButton)
     self:SetFrame(MountJournal.MountCount, {alpha=0.3})
     self:HideTexture(MountJournal.LeftInset.Bg)
     self:HideTexture(MountJournal.MountDisplay.YesMountsTex)
@@ -39,6 +40,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     --WoWTools_DataMixin:Hook('MountJournal_InitMountButton', function(btn)
      
 --宠物
+    self:SetUIButton(PetJournalSummonButton)
+    self:SetUIButton(PetJournalFindBattle)
     self:HideFrame(PetJournalLoadoutBorder)
 
     self:HideTexture(PetJournalPetCardInset.Bg)

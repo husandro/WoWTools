@@ -938,11 +938,31 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings_Shared()
     --[[WoWTools_DataMixin:Hook(SettingsCheckboxWithButtonControlMixin, 'OnLoad', function(frame)
         self:SetUIButton(frame.Button)
     end)]]
+--Checkbox
     WoWTools_DataMixin:Hook(SettingsCheckboxMixin, 'OnLoad', function(frame)
         self:SetCheckBox(frame)
     end)
+--快捷键，按钮
+    WoWTools_DataMixin:Hook(KeyBindingButtonMixin, 'OnLoad', function(btn)
+        self:SetFrame(btn, {alpha=1})
+    end)
+    WoWTools_DataMixin:Hook(CustomBindingButtonMixin, 'OnLoad', function(btn)
+        self:SetFrame(btn, {alpha=1})
+    end)
+--最左边，标题
+    WoWTools_DataMixin:Hook(SettingsCategoryListHeaderMixin, 'Init', function(frame)
+        self:SetAlphaColor(frame.Background, true)
+    end)
+--快捷键，标题
+    WoWTools_DataMixin:Hook(SettingsExpandableSectionMixin, 'OnLoad', function(frame)
+        self:SetFrame(frame.Button, {alpha=1})
+    end)
 end
 
+function WoWTools_TextureMixin.Events:Blizzard_SettingsDefinitions_Frame()
+    --
+
+end
 
 function WoWTools_TextureMixin.Events:Blizzard_Settings()
     self:SetUIButton(SettingsPanel.CloseButton)
@@ -967,6 +987,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings()
     self:SetButton(PingSystemTutorialCloseButton)
 
     self:Init_BGMenu_Frame(SettingsPanel, {isNewButton=true})
+
+    self:SetFrame(SettingsPanel.Container.SettingsList.Header, {alpha=1})
 end
 
 
@@ -1557,6 +1579,12 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetButton(LFGDungeonReadyStatusCloseButton)
 
     self:SetScrollBar(LFDQueueFrameSpecific)
+    self:SetCheckBox(LFDQueueFrameRoleButtonTank.checkButton)
+    self:SetCheckBox(LFDQueueFrameRoleButtonLeader.checkButton)
+    self:SetCheckBox(LFDQueueFrameRoleButtonHealer.checkButton)
+    self:SetCheckBox(LFDQueueFrameRoleButtonDPS.checkButton)
+    self:SetUIButton(LFDQueueFrameFindGroupButton)
+    self:SetUIButton(RaidFinderFrameFindRaidButton)
 
 
     self:SetNineSlice(LFGListFrame.EntryCreation.Inset)

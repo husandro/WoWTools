@@ -156,6 +156,20 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     WoWTools_DataMixin:Hook('UIPanelButton_OnLoad', function(btn)
         self:SetUIButton(btn)
     end)
+
+    --WoWTools_DataMixin:Hook(UIMenuButtonStretchMixin, 'OnShow', function(btn)
+
+    WoWTools_DataMixin:Hook('NavBar_AddButton', function(frame)
+        local navButton= frame.navList[#frame.navList]
+        if navButton then
+            local icon = navButton:GetNormalTexture()
+            if icon then
+                self:SetAlphaColor(icon, true)
+            end
+            self:SetAlphaColor(navButton.arrowUp, true)
+        end
+    end)
+    --WoWTools_DataMixin:Hook('NavBar_Initialize', function(frame)
 end
 
 

@@ -354,6 +354,7 @@ local function Init_Options()
     end)
 
     menu.edit= CreateFrame("EditBox", nil, menu, 'InputBoxTemplate')--EditBox
+    WoWTools_TextureMixin:SetEditBox(menu.edit)
     menu.edit:SetPoint("TOPLEFT", menu, 'BOTTOMLEFT',22,-2)
 	menu.edit:SetSize(420,22)
 	menu.edit:SetAutoFocus(false)

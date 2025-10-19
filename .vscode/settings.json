@@ -6274,7 +6274,15 @@
         "DefaultTooltipMixin",
         "UIPanelButton_OnLoad",
         "ScrollingEdit_OnLoad",
-        "ActionBarMixin"
+        "ActionBarMixin",
+        "UIMenuButtonStretchMixin",
+        "KeyBindingButtonMixin",
+        "CustomBindingButtonMixin",
+        "PetJournalSummonButton",
+        "NavBar_AddButton",
+        "SettingsAdvancedQualityControlsMixin",
+        "SettingsKeybindingSectionMixin",
+        "SettingsExpandableSectionMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
