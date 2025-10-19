@@ -178,12 +178,13 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
         self:HideTexture(_G['AchievementFrameSummaryCategoriesCategory'..i..'Middle'])
         self:HideTexture(_G['AchievementFrameSummaryCategoriesCategory'..i..'Left'])
         self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'FillBar'], nil, nil, 0.5)
-        local bar= _G['AchievementFrameSummaryCategoriesCategory'..i..'Bar']
-        if bar then
-            bar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--生命条，材质
-        end
+        self:SetStatusBar(nil, _G['AchievementFrameSummaryCategoriesCategory'..i..'Bar'])
+        --if bar then
+            --bar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--生命条，材质
+        --end
     end
-    AchievementFrameSummaryCategoriesStatusBarBar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
+    self:SetStatusBar(nil, AchievementFrameSummaryCategoriesStatusBarBar)
+    --AchievementFrameSummaryCategoriesStatusBarBar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
 
 --比较
     AchievementFrameComparisonHeader:ClearAllPoints()
@@ -207,12 +208,13 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     AchievementFrameComparisonHeader.Points:SetPoint('BOTTOM', AchievementFrameComparisonHeaderName, 'TOP',0,2)
 
 --总获得
-    AchievementFrameComparison.Summary.Player.StatusBar.Bar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
+    self:SetStatusBar(nil, AchievementFrameComparison.Summary.Player.StatusBar.Bar)
+    --AchievementFrameComparison.Summary.Player.StatusBar.Bar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
     self:HideTexture(AchievementFrameComparison.Summary.Player.StatusBar.Middle)
     self:HideTexture(AchievementFrameComparison.Summary.Player.StatusBar.Right)
     self:HideTexture(AchievementFrameComparison.Summary.Player.StatusBar.Left)
 
-    AchievementFrameComparison.Summary.Friend.StatusBar.Bar:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
+    self:SetStatusBar(nil, AchievementFrameComparison.Summary.Friend.StatusBar.Bar)--:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')
     self:HideTexture(AchievementFrameComparison.Summary.Friend.StatusBar.Middle)
     self:HideTexture(AchievementFrameComparison.Summary.Friend.StatusBar.Right)
     self:HideTexture(AchievementFrameComparison.Summary.Friend.StatusBar.Left)
@@ -263,8 +265,13 @@ end
 
 
 
-
-
+function WoWTools_TextureMixin.Events:Blizzard_GameTooltip()
+    WoWTools_DataMixin:Hook('GameTooltip_ShowStatusBar', function(tooltip)
+        for bar in tooltip.statusBarPool:EnumerateActive() do
+            self:SetStatusBar(bar)
+        end
+    end)
+end
 
 
 

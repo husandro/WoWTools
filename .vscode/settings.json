@@ -6291,7 +6291,8 @@
         "UIButtonFitToTextBehaviorMixin",
         "RecentAlliesFrame",
         "ChatConfigMoveFilterUpButton",
-        "ChatConfigMoveFilterDownButton"
+        "ChatConfigMoveFilterDownButton",
+        "GameTooltip_ShowStatusBar"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
