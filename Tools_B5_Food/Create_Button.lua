@@ -118,13 +118,13 @@ local function Set_Button_Function(btn)
         elseif event=='GET_ITEM_INFO_RECEIVED' then
             if arg1==self.itemID and arg2 then
                 self:set_attribute()
-                self:UnregisterEvent('event')
+                self:UnregisterEvent(event)
             end
 
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_attribute()
             self.isSetAttributeInCombat=nil
-            self:UnregisterEvent('event')
+            self:UnregisterEvent(event)
 
         elseif event=='PLAYER_REGEN_DISABLED' then
             self:StopMovingOrSizing()

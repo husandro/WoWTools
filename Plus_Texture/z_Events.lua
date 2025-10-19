@@ -933,11 +933,22 @@ end
 
 
 
+--选项面板
+function WoWTools_TextureMixin.Events:Blizzard_Settings_Shared()
+    --[[WoWTools_DataMixin:Hook(SettingsCheckboxWithButtonControlMixin, 'OnLoad', function(frame)
+        self:SetUIButton(frame.Button)
+    end)]]
+    WoWTools_DataMixin:Hook(SettingsCheckboxMixin, 'OnLoad', function(frame)
+        self:SetCheckBox(frame)
+    end)
+end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_Settings()
+    self:SetUIButton(SettingsPanel.CloseButton)
+    self:SetUIButton(SettingsPanel.Container.SettingsList.Header.DefaultsButton)
+
     self:SetButton(SettingsPanel.ClosePanelButton)
-    --self:SetNineSlice(SettingsPanel)
     self:HideFrame(SettingsPanel.Bg)
     self:HideFrame(SettingsPanel)
     self:SetScrollBar(SettingsPanel.Container.SettingsList)

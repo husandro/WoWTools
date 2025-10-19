@@ -6267,7 +6267,14 @@
         "BonusObjectiveTrackerProgressBarMixin",
         "BonusObjectiveTracker",
         "IsPlayerAtEffectiveMaxLevel",
-        "EssentialCooldownViewerMixin"
+        "EssentialCooldownViewerMixin",
+        "SettingsCheckboxWithButtonControlMixin",
+        "SettingsCheckboxMixin",
+        "UIPanelButtonMixin",
+        "DefaultTooltipMixin",
+        "UIPanelButton_OnLoad",
+        "ScrollingEdit_OnLoad",
+        "ActionBarMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -37,6 +37,9 @@ panel:RegisterEvent("PLAYER_ENTERING_WORLD")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+            if C_AddOns.IsAddOnLoaded('ElvUI') then
+                return
+            end
 
             WoWToolsSave['Plus_Container']= WoWToolsSave['Plus_Container'] or {}
 

@@ -36,8 +36,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
     WoWTools_DataMixin:Hook(DropdownButtonMixin, 'OnLoad', function(frame)
         self:SetMenu(frame)
     end)
---MenuTemplates.lua
-    
+
+--MenuTemplates.lua    
     WoWTools_DataMixin:Hook(WowStyle1FilterDropdownMixin, 'OnLoad', function(frame)
         self:SetMenu(frame)
     end)
@@ -59,9 +59,6 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
 
     --WoWTools_DataMixin:Hook(DropdownTextMixin, 'OnLoad', function(frame)
 end
-
-
-
 
 
 
@@ -143,13 +140,24 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         self:SetButton(btn, {alpha=1})
     end)
 
+
+    WoWTools_DataMixin:Hook('ScrollingEdit_OnLoad', function(frame)
+        self:SetEditBox(frame)
+    end)
+    WoWTools_DataMixin:Hook('ScrollFrame_OnLoad', function(frame)
+        self:SetScrollBar(frame.ScrollBar)
+    end)
     WoWTools_DataMixin:Hook('UIPanelScrollFrame_OnLoad', function(frame)
         self:SetScrollBar(frame.ScrollBar or _G[frame:GetName().."ScrollBar"])
     end)
     WoWTools_DataMixin:Hook('HybridScrollFrame_OnLoad', function(frame)
         self:SetScrollBar(frame)
     end)
+    WoWTools_DataMixin:Hook('UIPanelButton_OnLoad', function(btn)
+        self:SetUIButton(btn)
+    end)
 end
+
 
 --上一页，下一页
 function WoWTools_TextureMixin.Events:Blizzard_PagedContent()

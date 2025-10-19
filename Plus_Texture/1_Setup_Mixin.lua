@@ -340,6 +340,15 @@ function WoWTools_TextureMixin:SetButton(btn, tab)
 end
 
 
+function WoWTools_TextureMixin:SetUIButton(btn, alpha)
+    alpha= alpha or 1
+    self:SetAlphaColor(btn.Left, nil, nil, alpha)
+    self:SetAlphaColor(btn.Right, nil, nil, alpha)
+    self:SetAlphaColor(btn.Middle, nil, nil, alpha)
+    self:SetAlphaColor(btn.Center, nil, nil, alpha)
+    
+end
+
 --下拉，菜单 set_Menu
 function WoWTools_TextureMixin:SetMenu(frame)
     if frame then
@@ -381,9 +390,16 @@ end
 --PanelTemplates_TabResize(frame, frame:GetParent().tabPadding or 0 , nil, frame:GetParent().minTabWidth, frame:GetParent().maxTabWidth)
 --WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(self)
 function WoWTools_TextureMixin:SetCheckBox(frame, alpha)
-    local icon= frame:GetRegions()
-    if icon and icon:IsObjectType("Texture") then
-        WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
+    if frame then
+        local icon= frame:GetNormalTexture()
+        if icon then
+         WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
+        else
+            icon= frame.GetRegions and frame:GetRegions()
+            if icon and icon:IsObjectType("Texture") then
+                WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
+            end
+        end
     end
 end
 

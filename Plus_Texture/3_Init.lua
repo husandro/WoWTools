@@ -102,7 +102,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
                 if Save().disabledTexture then
-                    self:UnregisterEvent('event')
+                    self:UnregisterEvent(event)
                 else
                     self:RegisterEvent('PLAYER_ENTERING_WORLD')
                     for name in pairs(WoWTools_TextureMixin.Events) do

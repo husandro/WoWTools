@@ -49,6 +49,7 @@ local function Init_Options()
         GetValue= function() return not Save().disabledTexture end,
         SetValue= function()
             Save().disabledTexture= not Save().disabledTexture and true or nil
+            print('b',  Save().disabledTexture)
         end,
         buttonText= WoWTools_DataMixin.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()

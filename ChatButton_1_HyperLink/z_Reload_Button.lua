@@ -31,6 +31,7 @@ local function Create_Texture_Tips(btn, data)--atlas, coord)
         btn.Texture= btn:CreateTexture(nil, 'BORDER')
         btn.Texture:SetSize(26, 26)--200, 36
         btn.Texture:SetPoint('RIGHT', btn, 'LEFT', 6,0)
+        WoWTools_TextureMixin:SetUIButton(btn)
     end
     if btn.Texture then
         if data and data[1] then
@@ -51,7 +52,6 @@ local function Create_Texture_Tips(btn, data)--atlas, coord)
         r, g, b= 1, 1, 1
     end
     font:SetTextColor(r or 1, g or 0.82, b or 0)
-
 end
 
 

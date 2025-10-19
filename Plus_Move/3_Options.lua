@@ -1,11 +1,7 @@
---添加控制面板
-
-
 local function Save()
     return WoWToolsSave['Plus_Move']
 end
 
-local Layout
 
 
 
@@ -13,38 +9,64 @@ local Layout
 
 
 
-local function Init_Options()
-    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
-    --移动
 
-    WoWTools_PanelMixin:Check_Button({
-        checkName= '|cnWARNING_FONT_COLOR:'
-            ..(WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
-        tooltip= '|cnWARNING_FONT_COLOR:'..('BUG'),
-        GetValue= function() return Save().SavePoint end,
-        SetValue=function()
-            Save().SavePoint= not Save().SavePoint and true or nil
-        end,
-        buttonText= WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-        buttonFunc= function()
-            StaticPopupDialogs[WoWTools_MoveMixin.addName..'MoveZoomClearPoint']= {
-                text = WoWTools_MoveMixin.addName..'|n|n'
-                ..(WoWTools_DataMixin.onlyChinese and '保存位置' or (Save()..CHOOSE_LOCATION:gsub(CHOOSE , ''))),
-                button1 = '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-                button2 = WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
-                whileDead=true, hideOnEscape=true, exclusive=true, acceptDelay=1,
-                OnAccept=function()
-                    Save().point={}
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MoveMixin.addName, WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-                end,
-            }
-            StaticPopup_Show(WoWTools_MoveMixin.addName..'MoveZoomClearPoint')
-        end,
-        layout= Layout,
-        category=WoWTools_MoveMixin.Category,
+
+local function Init()
+    local Layout
+    WoWTools_MoveMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+        name=WoWTools_MoveMixin.addName,
+        disabled= Save().disabled,
     })
 
+    WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
+        tooltip= WoWTools_MoveMixin.addName,
+        GetValue= function() return not Save().disabled end,
+        category= WoWTools_MoveMixin.Category,
+        SetValue= function()
+            Save().disabled= not Save().disabled and true or nil
+            print(
+                WoWTools_MoveMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
+        end
+    })
+
+    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
+
+    local sub=  WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , '')),
+        tooltip= WoWTools_MoveMixin.addName,
+        GetValue= function() return Save().SavePoint end,
+        category= WoWTools_MoveMixin.Category,
+        SetValue= function()
+            Save().SavePoint= not Save().SavePoint and true or nil
+        end
+    })
+
+
+    WoWTools_PanelMixin:OnlyButton({
+        buttonText= WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+        SetValue= function()
+           StaticPopup_Show('WoWTools_OK',
+            (WoWTools_DataMixin.onlyChinese and '保存位置' or (Save()..CHOOSE_LOCATION:gsub(CHOOSE , '')))
+            ..'|n|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+            nil,
+            {SetValue=function()
+                Save().point={}
+                print(
+                    WoWTools_MoveMixin.addName..WoWTools_DataMixin.Icon.icon2, 
+                    WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                )
+            end})
+        end,
+        tooltip=WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION,
+        layout= Layout,
+        category= WoWTools_MoveMixin.Category
+    }, sub)
 
 
     WoWTools_DataMixin:Check_Slider({
@@ -70,52 +92,11 @@ local function Init_Options()
     })
 
 
-    Init_Options=function()end
-end
-
-
-
-
-
-
-
-
-
-
-
-local function Init_Add()
-    WoWTools_MoveMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-        name=WoWTools_MoveMixin.addName,
-        disabled= Save().disabled,
-    })
-
-    WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-        tooltip= WoWTools_MoveMixin.addName,
-        GetValue= function() return not Save().disabled end,
-        category= WoWTools_MoveMixin.Category,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MoveMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-
-    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-        Init_Options()
-    else
-        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-            if arg1=='Blizzard_Settings' then
-                Init_Options()
-                EventRegistry:UnregisterCallback(arg1, owner)
-            end
-        end)
-    end
-
-    Init_Add=function()end
+    Init=function()end
 end
 
 
 
 function WoWTools_MoveMixin:Init_Options()
-    Init_Add()
+    Init()
 end

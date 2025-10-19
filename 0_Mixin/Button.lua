@@ -262,9 +262,14 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     else
         btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-
     end
     
+    if isCheck then
+        WoWTools_TextureMixin:SetCheckBox(btn)
+    elseif isUI then
+        WoWTools_TextureMixin:SetUIButton(btn)
+    end
+
     return btn
 end
 
