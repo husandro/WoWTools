@@ -99,13 +99,14 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:SetUIButton(ChatConfigFrameOkayButton)
 
     self:SetUIButton(CombatLogDefaultButton)
-    self:SetUIButton(ChatConfigFrameOkayButton)
     self:SetUIButton(ChatConfigCombatSettingsFiltersCopyFilterButton)
     self:SetUIButton(ChatConfigCombatSettingsFiltersAddFilterButton)
     self:SetUIButton(ChatConfigCombatSettingsFiltersDeleteButton)
 
     self:SetUIButton(TextToSpeechFramePanelContainer.PlaySampleButton)
     self:SetUIButton(TextToSpeechFramePanelContainer.PlaySampleAlternateButton)
+    self:SetUIButton(TextToSpeechDefaultButton)
+    self:SetCheckBox(TextToSpeechCharacterSpecificButton)
     self:SetCheckBox(TextToSpeechFramePanelContainer.PlaySoundSeparatingChatLinesCheckButton)
     self:SetCheckBox(TextToSpeechFramePanelContainer.PlayActivitySoundWhenNotFocusedCheckButton)
     self:SetCheckBox(TextToSpeechFramePanelContainer.AddCharacterNameToSpeechCheckButton)
@@ -113,6 +114,8 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:SetCheckBox(TextToSpeechFramePanelContainer.UseAlternateVoiceForSystemMessagesCheckButton)
     self:SetSlider(TextToSpeechFramePanelContainer.AdjustRateSlider)
     self:SetSlider(TextToSpeechFramePanelContainer.AdjustVolumeSlider)
+    
+
     self:SetButton(ChatConfigMoveFilterUpButton, {alpha=1})
     self:SetButton(ChatConfigMoveFilterDownButton, {alpha=1})
 
