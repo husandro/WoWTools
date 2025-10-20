@@ -9,7 +9,7 @@ end
 
 
 function WoWTools_DataMixin:Hook(obj, ...)
-    if obj and (obj.IsForbidden and not obj:IsForbidden() or not obj.IsForbidden) then
+    if obj then--and type(obj.IsForbidden and not obj:IsForbidden() or not obj.IsForbidden) then
         hooksecurefunc(obj, ...)
     elseif WoWTools_DataMixin.Player.husandro then
         print('not Hook有保护', obj, ...)
