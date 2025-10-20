@@ -74,7 +74,7 @@ end
 
 --动作条
 function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
-    for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
+    for i=1, 12 do
         for _, name in pairs({
             "ActionButton",
             "MultiBarBottomLeftButton",
