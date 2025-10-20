@@ -1,11 +1,5 @@
 function WoWTools_DataMixin:Call(func, ...)
-    if type(func)=='string' then
-        if _G[func] then
-            securecallfunction(func, ...)
-        else
-            print('Call 没有发现', func, ...)
-        end
-    elseif func then
+    if func then
         securecallfunction(func, ...)
     elseif WoWTools_DataMixin.Player.husandro then
         print('Call 没有发现', func, ...)
@@ -15,11 +9,7 @@ end
 
 
 function WoWTools_DataMixin:Hook(obj, ...)
-    if type(obj)=='string' and not _G[obj] or not obj then
-        if WoWTools_DataMixin.Player.husandro then
-            print('notHook字符', obj, ...)
-        end
-    elseif obj and (obj.IsForbidden and not obj:IsForbidden() or not obj.IsForbidden) then
+    if obj and (obj.IsForbidden and not obj:IsForbidden() or not obj.IsForbidden) then
         hooksecurefunc(obj, ...)
     elseif WoWTools_DataMixin.Player.husandro then
         print('not Hook有保护', obj, ...)
