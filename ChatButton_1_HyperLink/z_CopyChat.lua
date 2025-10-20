@@ -299,7 +299,7 @@ local function Init()
 			end
 		end)
 	elseif ChatFrame_OnLoad then --11.2.7没有了
-		WoWTools_DataMixin:Hook(ChatFrame_OnLoad, function(frame)
+		WoWTools_DataMixin:Hook('ChatFrame_OnLoad', function(frame)
 			local index = frame:GetName():match("(%d+)")
 			if index then
 				Init_Button(index)
