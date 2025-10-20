@@ -26,6 +26,7 @@ local MicroButtonNames = {
     'MainMenuMicroButton',
     'HelpMicroButton',
     'StoreMicroButton',
+    'HousingMicroButton',
     'MainMenuBarBackpackButton',--背包
 }
 

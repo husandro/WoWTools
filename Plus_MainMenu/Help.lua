@@ -46,7 +46,7 @@ local function Init()
 
     --添加版本号 MainMenuBar.lua
     WoWTools_DataMixin:Hook('MainMenuBarPerformanceBarFrame_OnEnter', function()
-        if not MainMenuMicroButton.hover or KeybindFrames_InQuickKeybindMode() then
+        if not MainMenuMicroButton.hover or KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         GameTooltip:AddLine(' ')
@@ -94,7 +94,7 @@ local function Init()
 
 --Blizzard_GameMenu/Standard/GameMenuFrame.lua
     MainMenuMicroButton:HookScript('OnClick', function(_, d)
-         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not issecure() then
+         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not Kiosk.IsEnabled() then
             if C_AddOns.GetNumAddOns() > 0 then
                 local func= GenerateFlatClosure(ShowUIPanel, AddonList, nil, G_GameMenuFrameContextKey)
                 if func then
@@ -107,7 +107,7 @@ local function Init()
 
     MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
     MainMenuMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
 

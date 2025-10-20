@@ -39,6 +39,7 @@ end
     self:SetButton(CommunitiesFrameCloseButton)
     self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MinimizeButton)
     self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MaximizeButton)
+    self:SetMenu(CommunitiesFrame.StreamDropdown)
 
     --self:SetNineSlice(CommunitiesFrame, true)
 

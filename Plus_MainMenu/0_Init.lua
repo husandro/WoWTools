@@ -46,6 +46,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_MainMenuMixin:Init_Store()--商店
                 WoWTools_MainMenuMixin:Init_Help()--帮助
                 WoWTools_MainMenuMixin:Init_Bag()--背包
+                WoWTools_MainMenuMixin:HousingMicro()--住宅信息板
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                     WoWTools_MainMenuMixin:Init_Options()--初始, 选项

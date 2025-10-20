@@ -490,7 +490,7 @@ Plus_Target\numFrame.lua
 
 
 ##主菜单，增强
-Plus_MainMenu\0_MainMenu.lua
+Plus_MainMenu\0_Init.lua
 Plus_MainMenu\1_Options.lua
 Plus_MainMenu\2_Setings.lua
 Plus_MainMenu\3_Framerate.lua
@@ -506,6 +506,7 @@ Plus_MainMenu\PlayerSpells.lua
 Plus_MainMenu\Professions.lua
 Plus_MainMenu\Quest.lua
 Plus_MainMenu\Store.lua
+Plus_MainMenu\HousingMicro.lua
 
 
 ##鼠标 Mouse https://wago.io/CVmKEpl6E

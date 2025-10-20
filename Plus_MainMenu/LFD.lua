@@ -27,7 +27,7 @@ local function Init()
     frame:SetScript('OnEvent', frame.settings)
 
     LFDMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
 
@@ -72,14 +72,14 @@ local function Init()
 
 
     LFDMicroButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not Kiosk.IsEnabled() then
             PVEFrame_ToggleFrame("PVPUIFrame", LFGListPVPStub)
         end
     end)
 
     LFDMicroButton:EnableMouseWheel(true)
     LFDMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         if d==1 then

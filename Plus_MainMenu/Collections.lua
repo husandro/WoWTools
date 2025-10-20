@@ -13,8 +13,8 @@
 
 
 local function Init()
-    CollectionsMicroButton:HookScript('OnEnter', function(self)
-        if KeybindFrames_InQuickKeybindMode() then
+    CollectionsMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
 
@@ -44,14 +44,14 @@ local function Init()
     end)
 
     CollectionsMicroButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not Kiosk.IsEnabled() then
             WoWTools_DataMixin:Call(ToggleCollectionsJournal, 2)
         end
     end)
 
     CollectionsMicroButton:EnableMouseWheel(true)
     CollectionsMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         if d==1 then

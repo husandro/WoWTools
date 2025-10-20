@@ -6293,7 +6293,13 @@
         "ChatConfigMoveFilterUpButton",
         "ChatConfigMoveFilterDownButton",
         "GameTooltip_ShowStatusBar",
-        "TextToSpeechCharacterSpecificButton"
+        "TextToSpeechCharacterSpecificButton",
+        "MainActionBar",
+        "ChatFrameMixin",
+        "EventSchedulerBaseLabelMixin",
+        "HousingDashboardFrame",
+        "HousingDashboardFrameCloseButton",
+        "HousingMicroButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

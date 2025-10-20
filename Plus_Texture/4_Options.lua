@@ -49,7 +49,6 @@ local function Init_Options()
         GetValue= function() return not Save().disabledTexture end,
         SetValue= function()
             Save().disabledTexture= not Save().disabledTexture and true or nil
-            print('b',  Save().disabledTexture)
         end,
         buttonText= WoWTools_DataMixin.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
@@ -62,7 +61,15 @@ local function Init_Options()
 
 
 
-
+    WoWTools_PanelMixin:OnlyCheck({
+        name= 'UIButton',
+        tooltip= WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
+        category= Category,
+        GetValue= function() return Save().UIButton end,
+        SetValue= function()
+            Save().UIButton= not Save().UIButton and true or nil
+        end
+    }, sub)
 
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)

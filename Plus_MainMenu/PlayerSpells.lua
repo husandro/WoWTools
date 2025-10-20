@@ -66,7 +66,7 @@ local function Init()
     PlayerSpellsMicroButton:HookScript('OnEnter', function(self)
         self.Portrait:SetShown(false)
         self.Texture2:SetShown(false)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         local a, b
@@ -137,7 +137,7 @@ local function Init()
     end)
 
     PlayerSpellsMicroButton:HookScript('OnClick', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() or d~='RightButton' then
+        if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() or d~='RightButton' or Kiosk.IsEnabled() then
             return
         end
         WoWTools_LoadUIMixin:SpellBook(2, nil)
@@ -145,7 +145,7 @@ local function Init()
 
     PlayerSpellsMicroButton:EnableMouseWheel(true)
     PlayerSpellsMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() then
+        if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() or Kiosk.IsEnabled() then
             return
         end
         if d==1 then--上

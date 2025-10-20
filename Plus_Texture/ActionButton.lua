@@ -36,7 +36,8 @@ local function Set_KeyText(self)
 end
 
 local function Set_MainMenuBarPool()
-    local dividersPool = MainMenuBar.isHorizontal and MainMenuBar.HorizontalDividersPool or MainMenuBar.VerticalDividersPool
+    local mainBar= MainActionBar or MainMenuBar--MainMenuBar 11.2.7没有了
+    local dividersPool = mainBar.isHorizontal and mainBar.HorizontalDividersPool or mainBar.VerticalDividersPool
     if dividersPool then
         for pool in dividersPool:EnumerateActive() do
             WoWTools_TextureMixin:HideFrame(pool)
@@ -124,15 +125,17 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
         OverrideActionBarExpBarOverlayFrameText:SetAlpha(1)
     end)
 
-    self:SetFrame(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=0.5})
-    self:SetFrame(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=0.5})
-    WoWTools_ColorMixin:Setup(MainMenuBar.ActionBarPageNumber.Text, {type='FontString'})
+    local mainBar= MainActionBar or MainMenuBar--MainMenuBar 11.2.7没有了
 
-    if MainMenuBar.EndCaps then
-        self:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, true, nil, nil)
-        self:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, nil)
+    self:SetFrame(mainBar.ActionBarPageNumber.UpButton, {alpha=0.5})
+    self:SetFrame(mainBar.ActionBarPageNumber.DownButton, {alpha=0.5})
+    WoWTools_ColorMixin:Setup(mainBar.ActionBarPageNumber.Text, {type='FontString'})
+
+    if mainBar.EndCaps then
+        self:SetAlphaColor(mainBar.EndCaps.LeftEndCap, true, nil, nil)
+        self:SetAlphaColor(mainBar.EndCaps.RightEndCap, true, nil, nil)
     end
-    self:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0)
+    self:SetAlphaColor(mainBar.BorderArt, nil, nil, 0)
 
 
     self:HideTexture(SpellFlyout.Background.Start)

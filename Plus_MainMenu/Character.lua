@@ -45,7 +45,7 @@ local function Init()
     --C_Timer.After(2, function() frame:settings() end)
 
     CharacterMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
 
@@ -77,14 +77,14 @@ local function Init()
 
 
     CharacterMicroButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not Kiosk.IsEnabled() then
             ToggleCharacter("ReputationFrame")
         end
     end)
 
     CharacterMicroButton:EnableMouseWheel(true)
     CharacterMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         if d==1 then

@@ -6,7 +6,7 @@
 
 local function Init()
     ProfessionMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
 
@@ -52,7 +52,7 @@ local function Init()
     end)
 
     ProfessionMicroButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not Kiosk.IsEnabled() then
             local fishing= select(4, GetProfessions())
             if fishing and fishing>0 then
                 local skillLine = select(7, GetProfessionInfo(fishing))
@@ -70,7 +70,7 @@ local function Init()
 
     ProfessionMicroButton:EnableMouseWheel(true)
     ProfessionMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         local prof1, prof2= GetProfessions()

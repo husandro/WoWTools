@@ -2302,3 +2302,30 @@ end
 
 
 
+function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
+    self:SetButton(HousingDashboardFrameCloseButton)
+    self:SetNineSlice(HousingDashboardFrame)
+    self:SetFrame(HousingDashboardFrame, {alpha=0})
+    self:SetUIButton(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.NoHouseButton)
+    self:SetAlphaColor(HousingDashboardFrame.HouseInfoTabButton.Icon, true)
+    self:SetAlphaColor(HousingDashboardFrame.CatalogTabButton.Icon, true)
+    self:SetScrollBar(HousingDashboardFrame.CatalogContent.OptionsContainer)
+    HousingDashboardFrame.CatalogContent.TempDisclaimer.DisclaimerText:SetAlpha(0.3)
+
+    WoWTools_TextureMixin:Init_BGMenu_Frame(HousingDashboardFrame, {
+        --enabled=true,
+        --isNewButton=true,
+        alpha=0.5,
+        nineSliceAlpha=0,
+        portraitAlpha=0.5,
+        settings=function(_, textureName, alphaValue)--设置内容时，调用
+            HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background:SetAlpha(math.max(alphaValue, 0.5))
+            local alpha= textureName and 0 or alphaValue or 1
+            HousingDashboardFrame.CatalogContent.PreviewBackground:SetAlpha(alpha)
+            HousingDashboardFrame.CatalogContent.Background:SetAlpha(alpha)
+            HousingDashboardFrame.CatalogContent.Categories.Background:SetAlpha(alpha)
+            HousingDashboardFrame.CatalogContent.Categories.TopBorder:SetAlpha(alpha)
+            HousingDashboardFrame.CatalogContent.OverlayDecorations.Divider:SetAlpha(alpha)
+        end
+    })
+end

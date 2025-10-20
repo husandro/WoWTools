@@ -60,7 +60,7 @@ local function Init()
     C_Timer.After(2, function() frame:settings() end)
 
     GuildMicroButton:HookScript('OnEnter', function(self)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         if IsInGuild() then

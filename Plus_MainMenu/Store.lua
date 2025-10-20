@@ -38,7 +38,7 @@ local function Init()
     C_Timer.After(2, function() frame:settings() end)
 
     StoreMicroButton:HookScript('OnEnter', function(self)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         C_WowTokenPublic.UpdateMarketPrice()
@@ -94,7 +94,7 @@ local function Init()
 
     StoreMicroButton:EnableMouseWheel(true)
     StoreMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() or not AccountStoreFrame then
+        if KeybindFrames_InQuickKeybindMode() or not AccountStoreFrame or Kiosk.IsEnabled() then
             return
         end
         if AccountStoreFrame and not AccountStoreFrame:IsShown() then

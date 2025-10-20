@@ -30,7 +30,7 @@ local function Init()
     C_Timer.After(2, function() frame:settings() end)
 
     QuestLogMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
         GameTooltip:AddLine(' ')

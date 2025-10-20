@@ -71,7 +71,7 @@ local function Init_Button_Menu(self, root)
 
 --替换
     root:CreateDivider()
-    local some, sel, tab= select(2, WoWTools_AddOnsMixin:Get_AddListInfo())
+    local some, sel= select(2, WoWTools_AddOnsMixin:Get_AddListInfo())
     sub=root:CreateButton(
         '|A:ShipMission_ShipFollower-Lock-Rare:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)

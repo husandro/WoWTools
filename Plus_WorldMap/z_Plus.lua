@@ -83,13 +83,15 @@ local function Init()
 
 
 
---战役 ID 提示 CampaignOverviewMixin
+--[[战役 ID 提示 CampaignOverviewMixin
     local function Set_Campaign_OnEnter(self)
         local campaign= self.campaign or self:GetParent().campaign
         local campaignID= campaign and campaign:GetID()
         if not campaignID  then
             return
         end
+        --QuestScrollFrame.CampaignTooltip
+        
         if not GameTooltip:IsOwned(self) then
             GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
             GameTooltip:ClearLines()
@@ -143,10 +145,16 @@ local function Init()
 --列表中，标题
     WoWTools_DataMixin:Hook(CampaignHeaderDisplayMixin, 'SetCampaign', function(self)
         if not self.chapterLabel then
-            self:SetScript('OnLeave', GameTooltip_Hide)
+            self:HookScript('OnLeave', function()
+                if QuestScrollFrame.CampaignTooltip then
+                    QuestScrollFrame.CampaignTooltip:SetShown(false)
+                end
+                GameTooltip:Hide()
+            end)
             self:HookScript('OnEnter', Set_Campaign_OnEnter)
             self.chapterLabel= self:CreateFontString(nil, 'ARTWORK', 'GameFontWhite')
             self.chapterLabel:SetPoint('RIGHT', self.CollapseButton, 'LEFT', -2, 0)
+            print(self.CollapseButton)
         end
         local text
         local num= self.campaign and self.campaign:GetChapterCount() or 0
@@ -162,12 +170,18 @@ local function Init()
         self.chapterLabel:SetText(text or '')
     end)
 --列表中，战役，进入 详细 按钮
-    WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnLeave', GameTooltip_Hide)
+    WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnLeave', function()
+        if QuestScrollFrame.CampaignTooltip then
+            QuestScrollFrame.CampaignTooltip:SetShown(false)
+        end
+        GameTooltip:Hide()
+    end)
     WoWTools_DataMixin:Hook(CampaignLoreButtonMixin, 'OnEnter', Set_Campaign_OnEnter)
 
 --战役，详细中，返回按钮
     QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton:HookScript('OnLeave', GameTooltip_Hide)
     QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton:HookScript('OnEnter', Set_Campaign_OnEnter)
+    ]]
 
     Init=function()end
 end

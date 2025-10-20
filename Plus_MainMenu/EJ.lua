@@ -71,7 +71,7 @@ local function Init()
     C_Timer.After(2, function() frame:settings() end)
 
     EJMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
 
@@ -117,7 +117,7 @@ local function Init()
 
 
     EJMicroButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not Kiosk.IsEnabled() then
             EncounterJournal_LoadUI()
             do
                 if not EncounterJournal:IsShown() then--suggestTab
@@ -130,7 +130,7 @@ local function Init()
 
     EJMicroButton:EnableMouseWheel(true)
     EJMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
             return
         end
 

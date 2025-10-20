@@ -87,6 +87,17 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     self:SetNineSlice(QuestScrollFrame.CampaignTooltip, 0.5, true)
 
+--事件
+    if QuestMapFrame.EventsFrame then--11.2.7才有
+        self:SetFrame(QuestMapFrame.EventsFrame, {alpha=0})
+        self:SetScrollBar(QuestMapFrame.EventsFrame)
+        self:HideTexture(QuestMapFrame.EventsFrame.BorderFrame.Border)
+        self:SetAlphaColor(QuestMapFrame.EventsFrame.ScrollBox.Background, nil, true)
+        WoWTools_DataMixin:Hook(EventSchedulerBaseLabelMixin, 'Init', function(frame)
+            self:SetAlphaColor(frame.Background, true)
+        end)
+    end
+
     self:Init_BGMenu_Frame(WorldMapFrame, {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer,
         NineSlice= WorldMapFrame.BorderFrame.NineSlice,

@@ -3,6 +3,7 @@
 local P_Save={
     --disabled=true,
     --disabledTexture=true,
+    UIButton=WoWTools_DataMixin.Player.husandro,
     alpha= 0.5,
 
     --disabledChatBubble=true,--禁用，聊天泡泡
