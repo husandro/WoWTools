@@ -776,6 +776,9 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingDashboard()
     self:Setup(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame, {frame=HousingDashboardFrame})
 end
 
+function WoWTools_MoveMixin.Events:Blizzard_HousingBulletinBoard()
+    self:Setup(HousingBulletinBoardFrame)
+end
 
 
 
