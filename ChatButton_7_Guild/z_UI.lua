@@ -48,6 +48,7 @@ end
 --公会，页面
     self:SetUIButton(CommunitiesFrame.InviteButton)
     self:SetUIButton(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton)
+    self:SetUIButton(CommunitiesFrame.CommunitiesControlFrame.CommunitiesSettingsButton)
     self:SetMenu(CommunitiesFrame.GuildMemberListDropdown)
     self:SetCheckBox(CommunitiesFrame.MemberList.ShowOfflineButton)
     self:SetStatusBar(CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar, CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar.Progress)
@@ -119,6 +120,8 @@ end
 
 --角色名称邀请你加入
     self:SetNineSlice(CommunitiesFrame.ClubFinderInvitationFrame.InsetFrame)
+    self:SetUIButton(CommunitiesFrame.ClubFinderInvitationFrame.AcceptButton)
+    self:SetUIButton(CommunitiesFrame.ClubFinderInvitationFrame.DeclineButton)
 
 
 --公会设置
@@ -203,7 +206,9 @@ end
     self:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame)
     self:SetAlphaColor(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
     self:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
+    WoWTools_ButtonMixin:AddMask(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, true)
     self:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
+    WoWTools_ButtonMixin:AddMask(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, true)
 
 --公会查找器
     self:HideTexture(ClubFinderGuildFinderFrame.InsetFrame.Bg)
@@ -220,6 +225,10 @@ end
     self:SetUIButton(ClubFinderGuildFinderFrame.GuildCards.ThirdCard.RequestJoin)
     self:SetButton(ClubFinderGuildFinderFrame.GuildCards.PreviousPage, {alpha=1})
     self:SetButton(ClubFinderGuildFinderFrame.GuildCards.NextPage, {alpha=1})
+    self:HideFrame(ClubFinderGuildFinderFrame.ClubFinderSearchTab, {index=1})
+    WoWTools_ButtonMixin:AddMask(ClubFinderGuildFinderFrame.ClubFinderSearchTab, true)
+    self:HideFrame(ClubFinderGuildFinderFrame.ClubFinderPendingTab, {index=1})
+    WoWTools_ButtonMixin:AddMask(ClubFinderGuildFinderFrame.ClubFinderPendingTab, true)
 
 
     self:HideTexture(CommunitiesFrame.TopTileStreaks)
@@ -230,6 +239,7 @@ end
 
 --这个会，弹出菜单
     CommunitiesFrame.CommunitiesListDropdown:SetFrameStrata('HIGH')
+    self:SetMenu(CommunitiesFrame.CommunitiesListDropdown)
 
 --BG
     self:Init_BGMenu_Frame(CommunitiesFrame)

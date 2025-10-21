@@ -180,6 +180,10 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         self:SetUIButton(btn)
     end)
 
+    WoWTools_DataMixin:Hook('DynamicResizeButton_Resize', function(btn)
+        self:SetButton(btn, {alpha=1})
+    end)
+
     --WoWTools_DataMixin:Hook(UIButtonFitToTextBehaviorMixin, 'SetTextToFit', function(btn, text)
 end
 

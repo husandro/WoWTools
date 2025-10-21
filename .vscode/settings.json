@@ -6325,7 +6325,8 @@
         "PrimaryProfession1StatusBarRank",
         "ArchaeologyFrameSummaryPagePrevPageButton",
         "ArchaeologyFrameSummaryPageNextPageButton",
-        "ArchaeologyFrameRankBarBar"
+        "ArchaeologyFrameRankBarBar",
+        "DynamicResizeButton_Resize"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
