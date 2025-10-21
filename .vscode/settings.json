@@ -6305,7 +6305,8 @@
         "C_HousingCatalog",
         "StaticPopup1Button1",
         "StaticPopup1ExtraButton",
-        "Separator"
+        "Separator",
+        "ChatConfigChatSettingsLeftCheckbox9Check"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

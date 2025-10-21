@@ -158,13 +158,15 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
 
 
 
-    local function hook_texture(colorTexture, nineSlice, font)
+    local function hook_texture(colorTexture, nineSlice, font, checkBox)
         if not colorTexture or colorTexture.isset_hook then
             return
         end
 
+        
         colorTexture.BottomEdge= nineSlice and nineSlice.BottomEdge or nil
         colorTexture.font= font
+        colorTexture.checkBox= checkBox
 
         WoWTools_DataMixin:Hook(colorTexture, 'SetVertexColor', function(f, r2, g2, b2, a2)
             if r2 and r2 and b2 then
@@ -173,6 +175,9 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
                 end
                 if f.font then
                     f.font:SetTextColor(r2, g2, b2)
+                end
+                if f.checkBox then
+                    f.checkBox:SetVertexColor(r2, g2, b2, a2 or 1)
                 end
             end
         end)
@@ -193,11 +198,14 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     local function set_NinelSlice(name, index, value)
         local check = _G[name..'Checkbox'..index]--ChatConfigChatSettingsLeft Checkbox 1 CheckText
         local swatch = _G[name..'Swatch'..index]--CombatConfigColorsUnit ColorsSwatch 2 Text
+        local box=_G[name..'Checkbox'..index..'Check']
+
         local colorTexture, nineSlice, font, r, g, b
 
         if check then
             nineSlice= check.NineSlice
             font= _G[name..'Checkbox'..index.."CheckText"]
+
             if value and value.type and CHATCONFIG_SELECTED_FILTER then
                 r, g, b = GetMessageTypeColor(value.type)
             end
@@ -208,12 +216,6 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             if not r and colorTexture then
                 r,g,b= colorTexture:GetVertexColor()
             end
-            
-            --[[for _, icon in pairs ({check:GetRegions()}) do
-                if icon and icon:IsObjectType('Texture') then
-                    icon:SetVertexColor(r,g,b)
-                end
-            end]]
 
         elseif swatch then
             nineSlice= swatch.NineSlice
@@ -224,17 +226,24 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             colorTexture=_G[name..'Swatch'..index.."ColorSwatchNormalTexture"]
         end
 
+        r,g,b= r or 1, g or 1, b or 1
 
+        local boxIcon= box and box:GetRegions()
+        boxIcon= boxIcon and boxIcon:IsObjectType('texture') and boxIcon or nil
+        if boxIcon then
+            boxIcon:SetVertexColor(r,g,b)
+        end
 
         if nineSlice then
             nineSlice:SetVertexColor(0,0,0,0)
-            nineSlice.BottomEdge:SetVertexColor(r or 1, g or 1, b or 1, 1)
-        end
-        if font then
-            font:SetTextColor(r or 1, g or 1, b or 1)
+            nineSlice.BottomEdge:SetVertexColor(r,g,b)
         end
 
-        hook_texture(colorTexture, nineSlice, font)
+        if font then
+            font:SetTextColor(r,g,b)
+        end
+
+        hook_texture(colorTexture, nineSlice, font, boxIcon)
     end
 
     local function settings(frame)

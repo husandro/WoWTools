@@ -1541,10 +1541,10 @@ function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
                 self:SetNineSlice(edit, 1)
             end
 
-            self:SetUIButton(_G['StaticPopup'..i..'Button1'])
+            --[[self:SetUIButton(_G['StaticPopup'..i..'Button1'])
             self:SetUIButton(_G['StaticPopup'..i..'Button2'])
             self:SetUIButton(_G['StaticPopup'..i..'Button3'])
-            self:SetUIButton(_G['StaticPopup'..i..'ExtraButton'])
+            self:SetUIButton(_G['StaticPopup'..i..'ExtraButton'])]]
 
             if _G['StaticPopup'..i] then
                 self:SetAlphaColor(_G['StaticPopup'..i].Separator, true)
