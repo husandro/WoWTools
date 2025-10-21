@@ -5,7 +5,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
     self:SetAlphaColor(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, 0.3)
     self:SetButton(ObjectiveTrackerFrame.Header.MinimizeButton)
 
-    hooksecurefunc(BonusObjectiveTrackerProgressBarMixin , 'OnLoad', function(frame)
+    WoWTools_DataMixin:Hook(BonusObjectiveTrackerProgressBarMixin , 'OnLoad', function(frame)
         self:SetStatusBar(frame.Bar)
         self:SetAlphaColor(frame.Bar.BarFrame, nil, nil, 0.3)
         self:SetAlphaColor(frame.Bar.IconBG, nil, nil, 0.5)

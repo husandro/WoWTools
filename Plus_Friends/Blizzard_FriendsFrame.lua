@@ -651,7 +651,7 @@ local function Init()--好友列表, 初始化
 
 
 --屏蔽列表 FriendsIgnoreListMixin
-        hooksecurefunc('IgnoreList_InitButton', function(btn, info)
+        WoWTools_DataMixin:Hook('IgnoreList_InitButton', function(btn, info)
         if btn.indexLable then
             btn.indexLable:SetText(btn.index or '')
             return

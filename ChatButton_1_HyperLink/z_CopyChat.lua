@@ -291,7 +291,7 @@ local function Init()
 		end
 	end
 
-	if ChatFrameMixin and ChatFrameMixin.OnLoad then
+	if ChatFrameMixin then
 		WoWTools_DataMixin:Hook(ChatFrameMixin, 'OnLoad', function(frame)
 			local index = frame:GetName():match("(%d+)")
 			if index then

@@ -333,7 +333,7 @@ end
 function WoWTools_EncounterMixin:Init_UI_ListInstances()
     --WoWTools_DataMixin:Hook('EncounterJournal_ListInstances', function()Init_ListInstances)
     --EncounterInstanceButtonTemplate
-    hooksecurefunc(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)
+    WoWTools_DataMixin:Hook(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)
         Init_ListInstances(frame)
     end)
 end

@@ -399,7 +399,7 @@ local function Init()
     QuestScrollFrame.CampaignTooltip.IDLabel.expand= true
     QuestScrollFrame.CampaignTooltip.IDLabel.bottomPadding= 8
     QuestScrollFrame.CampaignTooltip.IDLabel:SetSize(250, 0)
-    hooksecurefunc(QuestScrollFrame.CampaignTooltip, 'SetJourneyCampaign', function(self, campaign)
+    WoWTools_DataMixin:Hook(QuestScrollFrame.CampaignTooltip, 'SetJourneyCampaign', function(self, campaign)
         local text
         if campaign and campaign.campaignID then
             text= 'campaignID|cffffffff'..WoWTools_DataMixin.Icon.icon2..campaign.campaignID..'|r'

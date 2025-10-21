@@ -215,7 +215,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ZoneAbility()
 
     set_button(ZoneAbilityFrame)
 
-    hooksecurefunc(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
+    WoWTools_DataMixin:Hook(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
        set_button(frame)
     end)
 

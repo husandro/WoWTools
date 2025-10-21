@@ -6,13 +6,23 @@ function WoWTools_DataMixin:Call(func, ...)
     end
 end
 
-
-
 function WoWTools_DataMixin:Hook(obj, ...)
-    if obj then--and type(obj.IsForbidden and not obj:IsForbidden() or not obj.IsForbidden) then
-        hooksecurefunc(obj, ...)
-    elseif WoWTools_DataMixin.Player.husandro then
-        print('not Hook有保护', obj, ...)
+    if obj then
+        local t= type(obj)
+        if t=='table' then
+            if obj.IsForbidden and obj:IsForbidden() or not t.IsForbidden then
+                hooksecurefunc(obj, ...)
+                return
+            end
+        elseif t=='string' then
+            if _G[obj] then
+                hooksecurefunc(obj, ...)
+                return
+            end
+        end
+    end
+    if WoWTools_DataMixin.Player.husandro then
+        print('not Hook', type(obj), obj, ...)
     end
 end
 

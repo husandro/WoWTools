@@ -174,7 +174,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ZoneAbility()
 
     self:SetAlphaColor(ZoneAbilityFrame.Style, nil, nil, 0.3)
 
-    hooksecurefunc(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
+    WoWTools_DataMixin:Hook(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(frame)
         for btn in frame.SpellButtonContainer:EnumerateActive() do
             if not btn.IconMask then
                 Set_Texture(btn)

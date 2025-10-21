@@ -190,7 +190,7 @@ end
 
 
 
---hooksecurefunc(AddonListEntryMixin, 'OnLoad', function()
+--WoWTools_DataMixin:Hook(AddonListEntryMixin, 'OnLoad', function()
 
 
 

@@ -92,7 +92,7 @@ local function Init()--预创建队伍增强
 
 
 --显示，更多，副本，列表
-    hooksecurefunc('LFGListEntryCreation_SetupGroupDropdown', function(self)
+    WoWTools_DataMixin:Hook('LFGListEntryCreation_SetupGroupDropdown', function(self)
         if not self.useMoreButton then
                 if self.useMoreButton then
                 return

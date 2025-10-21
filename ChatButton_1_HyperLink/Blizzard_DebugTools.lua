@@ -124,11 +124,11 @@ local function Init()
         end
     end
 
-    hooksecurefunc(TableInspectorMixin, 'InspectTable', function(_, focusedTable, ...)
+    WoWTools_DataMixin:Hook(TableInspectorMixin, 'InspectTable', function(_, focusedTable, ...)
         set_objectType(focusedTable)
     end)
 
-    hooksecurefunc(TableAttributeDisplay, 'InspectTable', function(_, focusedTable)--self.focusedTable= focusedTable
+    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'InspectTable', function(_, focusedTable)--self.focusedTable= focusedTable
         set_objectType(focusedTable)
     end)
 
