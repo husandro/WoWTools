@@ -6301,7 +6301,9 @@
         "HousingDashboardFrameCloseButton",
         "HousingMicroButton",
         "HousingFramesUtil",
-        "HousingBulletinBoardFrame"
+        "HousingBulletinBoardFrame",
+        "BaseHousingCatalogCategoryMixin",
+        "C_HousingCatalog"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -763,6 +763,52 @@ function WoWTools_MoveMixin.Events:Blizzard_AlliedRacesUI()
 end
 
 
+--住宅信息
+--[[
+
+function BaseHousingCatalogMixin:SetCatalogData(catalogEntries, retainCurrentPosition)
+	if not catalogEntries or #catalogEntries == 0 then
+		self:ClearCatalogData();
+		return;
+	end
+
+	local lastTemplate = nil;
+	local catalogElements = {};
+	for _, catalogEntry in ipairs(catalogEntries) do
+		local elementData = catalogEntry;
+
+		-- Bundle entries have a list of decor entries
+		if catalogEntry.decorEntries then
+			elementData.templateKey = "CATALOG_ENTRY_BUNDLE";
+		else
+			if lastTemplate == "CATALOG_ENTRY_BUNDLE" then
+				-- Add a divider after all the bundles
+				table.insert(catalogElements, { templateKey = "CATALOG_ENTRY_BUNDLE_DIVIDER" });
+			end
+
+			elementData = {
+				entryID = catalogEntry,
+			};
+
+			local entryType = catalogEntry.entryType;
+			if entryType == Enum.HousingCatalogEntryType.Decor then
+				elementData.templateKey = "CATALOG_ENTRY_DECOR";
+			elseif entryType == Enum.HousingCatalogEntryType.Room then
+				elementData.templateKey = "CATALOG_ENTRY_ROOM";
+			else
+				assertsafe(false, ("Unexpected catalog entry type: %s"):format(entryType));
+			end
+		end
+
+		if elementData.templateKey then
+			lastTemplate = elementData.templateKey;
+			table.insert(catalogElements, elementData);
+		end
+	end
+
+	self:SetCatalogElements(catalogElements, retainCurrentPosition);
+end
+]]
 
 function WoWTools_MoveMixin.Events:Blizzard_HousingDashboard()
     HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background:ClearAllPoints()
@@ -774,6 +820,18 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingDashboard()
         HousingDashboardFrame:SetSize(814, 544)
     end})
     self:Setup(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame, {frame=HousingDashboardFrame})
+
+--[[HousingCatalogCategoriesMixin
+    
+    hooksecurefunc(HousingCatalogCategoryMixin, 'Init', function(frame, info)
+        if not frame.numLabel then
+            frame.numLabel= frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
+            frame.numLabel:SetPoint('TOP', frame, 'BOTTOM', 0, 20)
+            info =frame
+            --for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+        end
+        --frame.numLabel:SetText('222')
+    end)]]
 end
 
 function WoWTools_MoveMixin.Events:Blizzard_HousingBulletinBoard()
