@@ -353,6 +353,10 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     end
 
     self:SetEditBox(ChatFrame1EditBox)
+    self:SetAlphaColor(ChatFrame1EditBoxFocusMid, nil, nil, 0.3)
+    self:SetAlphaColor(ChatFrame1EditBoxFocusRight, nil, nil, 0.3)
+    self:SetAlphaColor(ChatFrame1EditBoxFocusLeft, nil, nil, 0.3)
+    self:SetButton(ChatFrame1EditBoxLanguage, {alpha=1})
     self:HideFrame(ChatFrame1ButtonFrame)
     self:HideTexture(ChatFrame1LeftTexture)
     self:HideTexture(ChatFrame1TopTexture)

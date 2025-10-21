@@ -6326,7 +6326,14 @@
         "ArchaeologyFrameSummaryPagePrevPageButton",
         "ArchaeologyFrameSummaryPageNextPageButton",
         "ArchaeologyFrameRankBarBar",
-        "DynamicResizeButton_Resize"
+        "DynamicResizeButton_Resize",
+        "ChatFrame1EditBoxFocusMid",
+        "ChatFrame1EditBoxFocusRight",
+        "ChatFrame1EditBoxFocusLeft",
+        "ChatFrame1EditBoxLeft",
+        "ChatFrame1EditBoxRight",
+        "ChatFrame1EditBoxMid",
+        "ChatFrame1EditBoxLanguage"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

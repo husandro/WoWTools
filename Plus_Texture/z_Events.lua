@@ -1758,6 +1758,8 @@ function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     self:HideTexture(ChallengesFrame.WeeklyInfo.Child.RuneBG)
 
 --钥匙插入，界面
+    self:SetAlphaColor(ChallengesKeystoneFrame.Divider, true)
+    self:SetUIButton(ChallengesKeystoneFrame.StartButton)
     self:SetButton(ChallengesKeystoneFrame.CloseButton)
     self:HideFrame(ChallengesKeystoneFrame, {index=1})
     self:HideTexture(ChallengesKeystoneFrame.InstructionBackground)
