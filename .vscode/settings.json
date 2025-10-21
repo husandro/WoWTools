@@ -6302,7 +6302,10 @@
         "HousingFramesUtil",
         "HousingBulletinBoardFrame",
         "BaseHousingCatalogCategoryMixin",
-        "C_HousingCatalog"
+        "C_HousingCatalog",
+        "StaticPopup1Button1",
+        "StaticPopup1ExtraButton",
+        "Separator"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

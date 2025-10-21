@@ -655,15 +655,7 @@ end
 
 function WoWTools_TextureMixin:SetStatusBar(bar, icon, notColor)
     notColor= WoWTools_DataMixin.Player.Class=='PRIEST' or notColor--牧师
-    if bar and bar:IsObjectType('StatusBar') then
-        if notColor then
-            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--绿色
-        else
-            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-            local col= WoWTools_DataMixin.Player.UseColor
-            bar:SetStatusBarColor(col.r, col.g, col.b)
-        end
-    elseif icon and icon:IsObjectType('Texture') then
+    if icon and icon:IsObjectType('Texture') then
         if notColor then
             icon:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--绿色
         else
@@ -671,6 +663,24 @@ function WoWTools_TextureMixin:SetStatusBar(bar, icon, notColor)
             local col= WoWTools_DataMixin.Player.UseColor
             icon:SetVertexColor(col.r, col.g, col.b)
         end
+    elseif bar and bar:IsObjectType('StatusBar') then
+        if notColor then
+            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--绿色
+        else
+            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            local col= WoWTools_DataMixin.Player.UseColor
+            bar:SetStatusBarColor(col.r, col.g, col.b)
+        end
     end
 
+    if bar then
+        self:SetAlphaColor(bar.BarFrame, nil, nil, 0.3)
+        self:SetAlphaColor(bar.IconBG, nil, nil, 0.5)
+        self:SetAlphaColor(bar.border, nil, nil, 0.3)
+        self:HideTexture(bar.BG)
+        self:SetAlphaColor(bar.IconBG, nil, nil, 0.5)
+        self:SetAlphaColor(bar.Middle, nil, nil, 0.3)
+        self:SetAlphaColor(bar.Left, nil, nil, 0.3)
+        self:SetAlphaColor(bar.Right, nil, nil, 0.3)
+    end
 end

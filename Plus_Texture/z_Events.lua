@@ -1528,23 +1528,27 @@ end
 
 
 
---对话框 11.2没了
-function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Frame()
-    self:SetFrame(StaticPopup1.Border, {notAlpha=true})
-    self:SetAlphaColor(StaticPopup1.Border.Bg, true)
-end
-
---11.2才有
 function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
     for i=1, 4 do
         local p= _G['StaticPopup'..i]
         if p then
+
             self:SetFrame(p.BG, {notAlpha=true})
-        end
-        local edit= _G['StaticPopup'..i..'EditBox']
-        if edit then
-            self:SetEditBox(edit)
-            self:SetNineSlice(edit, 1)
+
+            local edit= _G['StaticPopup'..i..'EditBox']
+            if edit then
+                self:SetEditBox(edit)
+                self:SetNineSlice(edit, 1)
+            end
+
+            self:SetUIButton(_G['StaticPopup'..i..'Button1'])
+            self:SetUIButton(_G['StaticPopup'..i..'Button2'])
+            self:SetUIButton(_G['StaticPopup'..i..'Button3'])
+            self:SetUIButton(_G['StaticPopup'..i..'ExtraButton'])
+
+            if _G['StaticPopup'..i] then
+                self:SetAlphaColor(_G['StaticPopup'..i].Separator, true)
+            end
         end
     end
 end
@@ -2074,8 +2078,9 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
     if PlayerSpellsFrame.SpellBookFrame.SettingsDropdown then--11.1.7
         self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.SettingsDropdown.Icon, true, nil, nil)
-        self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.AssistedCombatRotationSpellFrame.Button.Border, nil, nil,  true)
     end
+    self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.AssistedCombatRotationSpellFrame.Button.Border, nil, nil,  true)
+
 
 
 
@@ -2093,7 +2098,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     --PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
     --PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
 
- 
+
 
 --新建 天赋，配置
     self:SetFrame(ClassTalentLoadoutCreateDialog.Border, {alpha=1})
