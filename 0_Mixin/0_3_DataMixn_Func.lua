@@ -2,27 +2,28 @@ function WoWTools_DataMixin:Call(func, ...)
     if func then
         securecallfunction(func, ...)
     elseif WoWTools_DataMixin.Player.husandro then
-        print('Call 没有发现', func, ...)
+        print('Call没有发现', func, ...)
     end
 end
-
+--CanAccessObject(obj)
 function WoWTools_DataMixin:Hook(obj, ...)
-    if obj then
-        local t= type(obj)
+    local t= type(obj)
+    local o= t=='string' and _G[obj] or (t=='table' and obj)
+    if o then
+        t= type(o)
         if t=='table' then
-            if obj.IsForbidden and obj:IsForbidden() or not t.IsForbidden then
+            if (not o.IsForbidden or not o:IsForbidden()) then
                 hooksecurefunc(obj, ...)
                 return
-            end
-        elseif t=='string' then
-            if _G[obj] then
-                hooksecurefunc(obj, ...)
+            elseif WoWTools_DataMixin.Player.husandro then
+                print('|cnWARNING_FONT_COLOR:被保护|r', obj, ...)
                 return
             end
         end
-    end
-    if WoWTools_DataMixin.Player.husandro then
-        print('not Hook', type(obj), obj, ...)
+        hooksecurefunc(obj, ...)
+
+    elseif WoWTools_DataMixin.Player.husandro then
+        print('|cnWARNING_FONT_COLOR:Hook没发现|r', t, obj, ...)
     end
 end
 

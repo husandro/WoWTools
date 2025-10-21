@@ -276,8 +276,8 @@ local function Init()--设置标记, 框架
 
 
 
-
-    WoWTools_DataMixin:Hook(PingListenerFrame, 'SetupCooldownTimer', function(self)--冷却，时间
+--这个是被保护
+    hooksecurefunc(PingListenerFrame, 'SetupCooldownTimer', function(self)--冷却，时间
         if MakerFrame.ping:IsShown() then
             local cooldownDuration = (self.cooldownInfo.endTimeMs / 1000) - GetTime()
             for _, name in pairs(PingButtons) do

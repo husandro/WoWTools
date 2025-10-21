@@ -5,7 +5,7 @@ end
 
 
 local function IsLocked()
-	return WoWTools_FrameMixin:IsLocked(CurrencyTransferMenu) or issecure()
+	return WoWTools_FrameMixin:IsLocked(CurrencyTransferMenu)
 end
 
 --货币，转移

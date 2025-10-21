@@ -141,7 +141,7 @@ local function Init_Menu(self, root)
     sub2:CreateButton(
         WoWTools_DataMixin.onlyChinese and '测试' or 'Test',
     function()
-        if issecure() then
+        if InCombatLockdown() then
             return
         end
         local value= C_CVar.GetCVar('guildMemberNotify')
@@ -188,7 +188,7 @@ local function Init_Menu(self, root)
             or C_CVar.GetCVar('Sound_MasterVolume')=='0'
             or C_CVar.GetCVar('Sound_DialogVolume')=='0'
             or not C_CVar.GetCVarBool('Sound_EnableDialog')
-            or issecure()
+            or InCombatLockdown()
         ) and '|cff9e9e9e' or ''
 
     sub=root:CreateCheckbox(

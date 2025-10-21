@@ -33,7 +33,7 @@ function WoWTools_LoadUIMixin:Journal(index, tab)--加载，收藏，UI
     if not CollectionsJournal then
         CollectionsJournal_LoadUI()
     end
-    if not index or issecure() then
+    if not index or InCombatLockdown()then
         return
     end
 

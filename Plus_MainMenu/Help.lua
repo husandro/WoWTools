@@ -69,7 +69,7 @@ local function Init()
 
         GameTooltip:AddLine(' ')
 
-        local bat= InCombatLockdown() or issecure() 
+        local bat= InCombatLockdown()
 
         GameTooltip:AddLine(
             (GenerateFlatClosure(SettingsPanel.Open, SettingsPanel) and '|cffffffff' or'|cff828282')
