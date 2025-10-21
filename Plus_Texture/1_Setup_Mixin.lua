@@ -657,17 +657,17 @@ function WoWTools_TextureMixin:SetStatusBar(bar, icon, notColor)
     notColor= WoWTools_DataMixin.Player.Class=='PRIEST' or notColor--牧师
     if icon and icon:IsObjectType('Texture') then
         if notColor then
-            icon:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--绿色
+            icon:SetAtlas('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health')--绿色
         else
-            icon:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            icon:SetAtlas('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health-Status')
             local col= WoWTools_DataMixin.Player.UseColor
             icon:SetVertexColor(col.r, col.g, col.b)
         end
     elseif bar and bar:IsObjectType('StatusBar') then
         if notColor then
-            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health')--绿色
+            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health')--绿色
         else
-            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            bar:SetStatusBarTexture('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health-Status')
             local col= WoWTools_DataMixin.Player.UseColor
             bar:SetStatusBarColor(col.r, col.g, col.b)
         end

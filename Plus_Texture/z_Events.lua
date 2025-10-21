@@ -840,16 +840,21 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI()
+    self:SetButton(ArchaeologyFrameInfoButton)
+    self:SetButton(ArchaeologyFrameSummaryPagePrevPageButton, {alpha=1})
+    self:SetButton(ArchaeologyFrameSummaryPageNextPageButton, {alpha=1})
     self:SetButton(ArchaeologyFrameCloseButton)
     self:SetNineSlice(ArchaeologyFrameInset)
     self:HideTexture(ArchaeologyFrameBg)
     self:HideTexture(ArchaeologyFrameInset.Bg)
-    self:HideTexture(ArchaeologyFrameRankBarBackground)
+
     self:SetAlphaColor(ArchaeologyFrameRaceFilterMiddle, nil, nil, 0.3)
     self:SetAlphaColor(ArchaeologyFrameRaceFilterLeft, nil, nil, 0.3)
     self:SetAlphaColor(ArchaeologyFrameRaceFilterRight, nil, nil, 0.3)
 
-    self:SetAlphaColor(ArchaeologyFrameRankBarBorder)
+    self:SetAlphaColor(ArchaeologyFrameRankBarBorder, nil, nil, 0.3)
+    self:HideTexture(ArchaeologyFrameRankBarBackground)
+    self:SetStatusBar(ArchaeologyFrameRankBarBar)
 
     self:Init_BGMenu_Frame(ArchaeologyFrame, {
         enabled=true,
@@ -2231,17 +2236,29 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     PrimaryProfession2.bg:SetAtlas('delves-affix-mask')
     PrimaryProfession2.bg:SetAllPoints(PrimaryProfession2Icon)
 
-    self:HideTexture(PrimaryProfession1SpellButtonBottomNameFrame)
-    self:HideTexture(PrimaryProfession2SpellButtonBottomNameFrame)
+    local name='PrimaryProfession'
+    for i=1, 2 do
+        self:HideTexture(_G[name..i..'SpellButtonBottomNameFrame'])
+        WoWTools_ButtonMixin:AddMask(_G[name..i..'SpellButtonTop'], nil, _G[name..i..'SpellButtonTopIconTexture'])
+        WoWTools_ButtonMixin:AddMask(_G[name..i..'SpellButtonBottom'], nil, _G[name..i..'SpellButtonBottomIconTexture'])
+        local font= _G[name..i..'StatusBarRank']
+        if font then
+            font:ClearAllPoints()
+            font:SetPoint('BOTTOM', 0, -5)
+        end
+    end
 
-    self:HideTexture(SecondaryProfession1SpellButtonLeftNameFrame)
-    self:HideTexture(SecondaryProfession1SpellButtonRightNameFrame)
-
-    self:HideTexture(SecondaryProfession2SpellButtonLeftNameFrame)
-    self:HideTexture(SecondaryProfession2SpellButtonRightNameFrame)
-
-    self:HideTexture(SecondaryProfession3SpellButtonLeftNameFrame)
-    self:HideTexture(SecondaryProfession3SpellButtonRightNameFrame)
+    name='SecondaryProfession'
+    for i=1, 3 do
+        WoWTools_ButtonMixin:AddMask(_G[name..i..'SpellButtonLeft'], nil, _G[name..i..'SpellButtonLeftIconTexture'])
+        WoWTools_ButtonMixin:AddMask(_G[name..i..'SpellButtonRight'], nil, _G[name..i..'SpellButtonRightIconTexture'])
+        self:HideTexture(_G[name..i..'SpellButtonLeftNameFrame'])
+        local font= _G[name..i..'StatusBarRank']
+        if font then
+            font:ClearAllPoints()
+            font:SetPoint('BOTTOM', 0, -5)
+        end
+    end
 end
 
 

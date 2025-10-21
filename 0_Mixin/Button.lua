@@ -37,6 +37,10 @@ end
 UI-HUD-UnitFrame-Player-Portrait-Mask
 ]]
 function WoWTools_ButtonMixin:AddMask(btn, isType2, region, atlas)
+    if not btn then
+        return
+    end
+
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture(nil, 'OVERLAY')
 
     if not isType2 then--方形，按钮

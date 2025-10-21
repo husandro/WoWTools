@@ -354,8 +354,11 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetFrame(ReputationFrame.ReputationDetailFrame.Border)
     self:SetButton(ReputationFrame.ReputationDetailFrame.CloseButton)
     self:SetAlphaColor(ReputationFrame.ReputationDetailFrame.Divider)
-
     self:SetScrollBar(ReputationFrame.ReputationDetailFrame.ScrollingDescriptionScrollBar)
+    self:SetUIButton(ReputationFrame.ReputationDetailFrame.ViewRenownButton)
+    self:SetCheckBox(ReputationFrame.ReputationDetailFrame.AtWarCheckbox)
+    self:SetCheckBox(ReputationFrame.ReputationDetailFrame.MakeInactiveCheckbox)
+    self:SetCheckBox(ReputationFrame.ReputationDetailFrame.WatchFactionCheckbox)
 
     WoWTools_DataMixin:Hook(ReputationFrame.ScrollBox, 'Update', function(f)
         if not f:HasView() then
