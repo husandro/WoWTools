@@ -111,7 +111,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
 
 
     EditModeManagerFrame:HookScript('OnHide', function()
-        for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
+        for i=1, 12 do--MAIN_MENU_BAR_NUM_BUTTONS
             Set_Texture(_G['ActionButton'..i])
         end
        Set_MainMenuBarPool()
