@@ -283,7 +283,7 @@ local function Init()
                 end
                 local actionType, ID, subType = GetActionInfo(self.action)
                 if actionType and ID then
-                    if actionType=='spell' or actionType =="companion" then
+                    --[[if actionType=='spell' or actionType =="companion" then
                         WoWTools_TooltipMixin:Set_Spell(GameTooltip, ID)--法术
                         GameTooltip:AddDoubleLine(
                             'action|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.action,
@@ -295,7 +295,8 @@ local function Init()
                             'action|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.action,
                             subType and 'subType|cffffffff'..WoWTools_DataMixin.Icon.icon2..subType
                         )
-                    else
+                    else]]
+                    --if actionType~='spell' and actionType~='item' then
                         GameTooltip:AddDoubleLine(
                             'action|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.action,
                             'ID|cffffffff'..WoWTools_DataMixin.Icon.icon2..ID
@@ -304,7 +305,7 @@ local function Init()
                             actionType and 'actionType|cffffffff'..WoWTools_DataMixin.Icon.icon2..actionType,
                             subType and 'subType|cffffffff'..WoWTools_DataMixin.Icon.icon2..subType
                         )
-                    end
+                    --end
                     WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
                 end
             end)

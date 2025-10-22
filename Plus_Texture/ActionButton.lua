@@ -117,16 +117,24 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
        Set_MainMenuBarPool()
     end)
 
-    OverrideActionBarExpBarOverlayFrameText:SetAlpha(0.3)
+    OverrideActionBarExpBarOverlayFrameText:SetAlpha(0.5)
     OverrideActionBarExpBar:HookScript('OnLeave', function()
-        OverrideActionBarExpBarOverlayFrameText:SetAlpha(0.3)
+        OverrideActionBarExpBarOverlayFrameText:SetAlpha(0.5)
     end)
     OverrideActionBarExpBar:HookScript('OnEnter', function()
         OverrideActionBarExpBarOverlayFrameText:SetAlpha(1)
     end)
+    self:SetFrame(OverrideActionBarExpBar, {index=1, alpha=0.3})
+    self:SetStatusBar(OverrideActionBarExpBar)
+    OverrideActionBarExpBar:SetHeight(12)
+
+    --WoWTools_DataMixin:Hook(StatusTrackingBarContainerMixin, 'InitializeBars', function()
+        
+--货币，XP，追踪，最下面BAR
+    --self:SetAlphaColor(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.1)
+    --self:SetAlphaColor(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.1)
 
     local mainBar= MainActionBar or MainMenuBar--MainMenuBar 11.2.7没有了
-
     self:SetFrame(mainBar.ActionBarPageNumber.UpButton, {alpha=0.5})
     self:SetFrame(mainBar.ActionBarPageNumber.DownButton, {alpha=0.5})
     WoWTools_ColorMixin:Setup(mainBar.ActionBarPageNumber.Text, {type='FontString'})

@@ -539,7 +539,7 @@ local function Init_Spell_Button()
                 local icon= C_Spell.GetSpellTexture(spell)
                 self:SetAttribute("type", "spell")
                 self:SetAttribute("spell", name or spell)
-                self:SetAttribute("action", nil)
+                self:SetAttribute('action', nil)
                 self.texture:SetTexture(icon or 0)
                 spellID=spell
                 break
@@ -550,8 +550,8 @@ local function Init_Spell_Button()
             local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
             local actionType, spell = GetActionInfo(slot)
             if actionType== "spell" and spell then--and ActionTab[spell] then
-                self:SetAttribute("type", "action")
-                self:SetAttribute("action", slot)
+                self:SetAttribute("type", 'action')
+                self:SetAttribute('action', slot)
                 self:SetAttribute("spell", nil)
                 self.texture:SetTexture(GetActionTexture(slot) or 0)
                 action= slot

@@ -17,7 +17,6 @@ function WoWTools_DataMixin:Hook(obj, ...)
                 return
             elseif WoWTools_DataMixin.Player.husandro then
                 print('|cnWARNING_FONT_COLOR:被保护|r', obj, ...)
-                return
             end
         end
         hooksecurefunc(obj, ...)

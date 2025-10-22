@@ -279,6 +279,10 @@ function WoWTools_MoveMixin.Events:Blizzard_MailFrame()
         WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
         WoWTools_MoveMixin:Setup(OpenMailFrame)
     end
+
+    self:SetButton(InboxPrevPageButton)
+    self:SetUIButton(OpenAllMail)
+    self:SetButton(InboxNextPageButton)
 end
 
 

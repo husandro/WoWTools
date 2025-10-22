@@ -210,8 +210,12 @@ WoWTools_DataMixin.ChallengesSpellTabs={
 
     [541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.5
 
-    [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'}
-
+    [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'},
+    --[556]= {ins=945, name='执政团之座'},
+    --[557]= {},
+    --[558]= {},
+    --[559]= {},
+    --[560]= {},
 
 }
 

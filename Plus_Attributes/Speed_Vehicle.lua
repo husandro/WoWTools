@@ -12,8 +12,10 @@ local function Init()
 
     for _, name in pairs({
         'MainMenuBarVehicleLeaveButton',--没有车辆，界面
-        'OverrideActionBarLeaveFrameLeaveButton',--有车辆，界面
         'MainMenuBarVehicleLeaveButton',--Taxi, 移动, 速度
+        'OverrideActionBarLeaveFrameLeaveButton',--有车辆，界面
+        'MainActionBarVehicleLeaveButton',--没有车辆，界面
+        'MainActionBarVehicleLeaveButton',--Taxi, 移动, 速度
     }) do
         local frame= _G[name]
         if frame then
