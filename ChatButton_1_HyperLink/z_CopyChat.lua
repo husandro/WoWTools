@@ -222,7 +222,7 @@ function Init_Button(index)
 		return
 	end
 
-	frame.CopyChatButton= CreateFrame('Button', 'WoWToolsChatCopyButton'..index, frame)
+	frame.CopyChatButton= CreateFrame('Button', 'WoWToolsChatCopyButton'..index, frame, nil, index)
 
 	frame.CopyChatButton:SetNormalAtlas('poi-workorders')
     frame.CopyChatButton:SetPushedAtlas('PetList-ButtonSelect')
@@ -264,7 +264,7 @@ function Init_Button(index)
 
 	frame.CopyChatButton:SetScript('OnMouseDown', function(self, d)
 		if d~='RightButton' then
-			Get_Text(self:GetParent():GetName():match('%d+') or '1')
+			Get_Text(self:GetID())
 		else
 			MenuUtil.CreateContextMenu(self, Init_Menu)
 		end
