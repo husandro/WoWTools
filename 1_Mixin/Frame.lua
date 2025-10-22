@@ -72,7 +72,7 @@ end
 function WoWTools_FrameMixin:ScaleFrame(frame, delta, value, func)
     local n= value
     if WoWTools_FrameMixin.IsLocked(frame) then
-        print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)..'|r')
     end
     if IsAltKeyDown() then
         n= n or 1

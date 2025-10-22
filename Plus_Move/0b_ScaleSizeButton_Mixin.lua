@@ -923,7 +923,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             initFunc=initFunc
         })
         if WoWTools_DataMixin.Player.husandro then
-            print(WoWTools_MoveMixin.addName, '|cff9e9e9e'..tostring(issecure())..'|r', target:GetName(), '|cnWARNING_FONT_COLOR:不能执行')
+            print(WoWTools_MoveMixin.addName, '|cff9e9e9e'..tostring(issecure())..'|r', target:GetName(), '|cnWARNING_FONT_COLOR:不能执行|r')
         end
     else
         if size then
@@ -933,7 +933,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             initFunc(btn)
         end
         if WoWTools_DataMixin.Player.husandro then
-            print(WoWTools_MoveMixin.addName, '|cff9e9e9e'..tostring(issecure())..'|r', target:GetName(), '|cnGREEN_FONT_COLOR:执行')
+            print(WoWTools_MoveMixin.addName, '|cff9e9e9e'..tostring(issecure())..'|r', target:GetName(), '|cnGREEN_FONT_COLOR:执行|r')
         end
     end
 end
