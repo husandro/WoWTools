@@ -1364,6 +1364,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EditMode()
     self:SetMenu(EditModeManagerFrame.LayoutDropdown)
 
     self:SetFrame(EditModeSystemSettingsDialog.Border)
+    self:SetUIButton(EditModeSystemSettingsDialog.Buttons.RevertChangesButton)
     self:SetButton(EditModeSystemSettingsDialog.CloseButton)
 end
 
