@@ -25,43 +25,42 @@ Source\Libs\LibDBIcon-1.0.lua
 Source\Libs\LibRangeCheck-3.0.lua
 
 ##主要function，不能删除
-0_Mixin\0_1_DataMixin.lua
-0_Mixin\0_2_DataMixin_WoW.lua
-0_Mixin\0_3_DataMixn_Func.lua
+0_Data\1_DataMixin.lua
+0_Data\2_DataMixin_WoW.lua
+0_Data\3_DataMixn_Func.lua
+0_Data\4_DataMixn_NeedUpdate.lua
 
-
-0_Mixin\StaticPopupDialogs.lua
-0_Mixin\Button.lua
-0_Mixin\Cooldown.lua
-0_Mixin\Durabiliy.lua
-0_Mixin\EditBox.lua
-0_Mixin\Frame.lua
-0_Mixin\Group.lua
-0_Mixin\ItemLocation.lua
-0_Mixin\Key.lua
-0_Mixin\Label.lua
-0_Mixin\LoadUI.lua
-0_Mixin\Map.lua
-0_Mixin\Menu.lua
-0_Mixin\Quest.lua
-0_Mixin\Random.lua
+1_Mixin\StaticPopupDialogs.lua
+1_Mixin\Button.lua
+1_Mixin\Cooldown.lua
+1_Mixin\Durabiliy.lua
+1_Mixin\EditBox.lua
+1_Mixin\Frame.lua
+1_Mixin\Group.lua
+1_Mixin\ItemLocation.lua
+1_Mixin\Key.lua
+1_Mixin\Label.lua
+1_Mixin\LoadUI.lua
+1_Mixin\Map.lua
+1_Mixin\Menu.lua
+1_Mixin\Quest.lua
+1_Mixin\Random.lua
 ##美服，欧服，服器语言，提示
-0_Mixin\Realm.lua
-0_Mixin\Text.lua
-0_Mixin\Time.lua
-0_Mixin\SetTooltip.lua
-0_Mixin\SetTooltip_Faction.lua
-0_Mixin\PanelMixin.lua
+1_Mixin\Realm.lua
+1_Mixin\Text.lua
+1_Mixin\Time.lua
+1_Mixin\SetTooltip.lua
+1_Mixin\SetTooltip_Faction.lua
+1_Mixin\PanelMixin.lua
 
 ##模板
-1_Template\Button.xml
-1_Template\PlayerFrame.xml
-1_Template\ChallengeAffix.xml
+2_Template\Button.xml
+2_Template\PlayerFrame.xml
+2_Template\ChallengeAffix.xml
 
 ##控制
-0_Panel.lua
-1_WoWItemList.lua
-0_Mixin\0_z_DataMixn_NeedUpdate.lua
+0_Data\z_Panel.lua
+0_Data\z_WoWItemList.lua
 
 ##移动框架, 缩放
 Plus_Move\0a_Setup_Mixin.lua
