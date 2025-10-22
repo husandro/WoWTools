@@ -1,6 +1,6 @@
 --EventRegistry:TriggerEvent("PerksProgram.UpdateCartShown", showCart)
 --EventRegistry:RegisterCallback("PerksProgram.UpdateCartShown", self.OnShoppingCartVisibilityUpdated, self);
-
+--TimerunningUtil.TimerunningEnabledForPlayer(),--1=幻境新生：潘达利亚 
 WoWTools_DataMixin= {
     addName= '|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
     onlyChinese= LOCALE_zhCN and true or false,
@@ -14,7 +14,7 @@ WoWTools_DataMixin= {
     LeftButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp',
     RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp',
     ExpansionLevel= GetExpansionLevel() or 1,--版本数据
-    --Is_Timerunning= TimerunningUtil.TimerunningEnabledForPlayer(),--1=幻境新生：潘达利亚 
+
     StausText={},--属性，截取表 API_Panel.lua
     UnitItemLevel={},
 }
