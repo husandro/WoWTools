@@ -319,6 +319,11 @@ function WoWTools_TextureMixin:SetSlider(frame)
         self:SetAlphaColor(frame.Left, true)
         self:SetAlphaColor(frame.Middle, true)
         self:SetAlphaColor(frame.Right, true)
+
+        if frame.Slider.Slider then
+            self:SetFrame(frame.Slider.Back, {alpha=1})
+            self:SetFrame(frame.Slider.Forward, {alpha=1})
+        end
     end
 end
 

@@ -1020,9 +1020,6 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
 		self:SetFrame(frame.Bar, {alpha=0.2, index=1})
 	end
 
-    if not CooldownViewerSettings then--冷却设置 11.2.5
-        return
-    end
 
     self:SetButton(CooldownViewerSettingsCloseButton)
     self:SetButton(CooldownViewerSettings.SettingsDropdown, {alpha=1})
@@ -1039,6 +1036,8 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
     for _, tabButton in ipairs(CooldownViewerSettings.TabButtons) do
         self:HideTexture(tabButton.Background)
 	end
+
+    self:SetUIButton(CooldownViewerSettings.UndoButton)
 
     --CooldownViewerSettingsCategoryMixin 标题
     --CooldownViewerSettingsItemMixin 追踪的状态栏
@@ -1366,6 +1365,11 @@ function WoWTools_TextureMixin.Events:Blizzard_EditMode()
     self:SetFrame(EditModeSystemSettingsDialog.Border)
     self:SetUIButton(EditModeSystemSettingsDialog.Buttons.RevertChangesButton)
     self:SetButton(EditModeSystemSettingsDialog.CloseButton)
+
+    self:SetAlphaColor(EditModeManagerFrame.AccountSettings.Expander.Divider, true)
+    self:SetUIButton(EditModeManagerFrame.RevertAllChangesButton)
+    self:SetUIButton(EditModeManagerFrame.SaveChangesButton)
+    --self:SetButton(EditModeManagerFrame.GridSpacingSlider.Slider.Back, {alpha=1})
 end
 
 
