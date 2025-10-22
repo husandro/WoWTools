@@ -233,7 +233,7 @@ end
 
 
 --信箱
-function WoWTools_TextureMixin.Frames:MailFrame()
+function WoWTools_TextureMixin.Events:Blizzard_MailFrame()
     --self:SetNineSlice(MailFrame)
     self:HideFrame(MailFrame)
     self:SetButton(MailFrameCloseButton)
@@ -264,6 +264,10 @@ function WoWTools_TextureMixin.Frames:MailFrame()
     self:HideFrame(InboxFrame)
     self:SetScrollBar(OpenMailScrollFrame)
 
+    self:SetButton(InboxPrevPageButton)
+    self:SetUIButton(OpenAllMail)
+    self:SetButton(InboxNextPageButton)
+
     self:Init_BGMenu_Frame(MailFrame)
 end
 
@@ -279,10 +283,6 @@ function WoWTools_MoveMixin.Events:Blizzard_MailFrame()
         WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
         WoWTools_MoveMixin:Setup(OpenMailFrame)
     end
-
-    self:SetButton(InboxPrevPageButton)
-    self:SetUIButton(OpenAllMail)
-    self:SetButton(InboxNextPageButton)
 end
 
 
