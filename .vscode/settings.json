@@ -6336,7 +6336,9 @@
         "ChatFrame1EditBoxLanguage",
         "CompanionInfoGLine",
         "PlayerIsTimerunning",
-        "StatusTrackingBarContainerMixin"
+        "StatusTrackingBarContainerMixin",
+        "EditModeCheckButtonMixin",
+        "EditModeManagerSettingCheckButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -1369,6 +1369,29 @@ function WoWTools_TextureMixin.Events:Blizzard_EditMode()
     self:SetAlphaColor(EditModeManagerFrame.AccountSettings.Expander.Divider, true)
     self:SetUIButton(EditModeManagerFrame.RevertAllChangesButton)
     self:SetUIButton(EditModeManagerFrame.SaveChangesButton)
+    self:SetAlphaColor(EditModeSystemSettingsDialog.Buttons.Divider, true)
+
+    self:SetCheckBox(EditModeManagerFrame.ShowGridCheckButton.Button)
+    self:SetCheckBox(EditModeManagerFrame.EnableSnapCheckButton.Button)
+    self:SetCheckBox(EditModeManagerFrame.EnableAdvancedOptionsCheckButton.Button)
+
+    local set= EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild
+    for _, f in pairs(set.BasicOptionsContainer:GetLayoutChildren() or {}) do
+        self:SetCheckBox(f.Button)
+    end
+    for _, f in pairs(set.AdvancedOptionsContainer.FramesContainer:GetLayoutChildren() or {}) do
+        self:SetCheckBox(f.Button)
+    end
+    for _, f in pairs(set.AdvancedOptionsContainer.CombatContainer:GetLayoutChildren() or {}) do
+        self:SetCheckBox(f.Button)
+    end
+    for _, f in pairs(set.AdvancedOptionsContainer.MiscContainer:GetLayoutChildren() or {}) do
+        self:SetCheckBox(f.Button)
+    end
+    WoWTools_DataMixin:Hook(EditModeSettingCheckboxMixin, 'SetupSetting', function(f)
+        self:SetCheckBox(f.Button)
+    end)
+
     --self:SetButton(EditModeManagerFrame.GridSpacingSlider.Slider.Back, {alpha=1})
 end
 
@@ -2358,4 +2381,16 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
             HousingDashboardFrame.CatalogContent.OverlayDecorations.Divider:SetAlpha(alpha)
         end
     })
+end
+
+
+--颜色选择器
+function WoWTools_TextureMixin.Frames:ColorPickerFrame()
+    self:SetUIButton(ColorPickerFrame.Footer.OkayButton)
+    self:SetUIButton(ColorPickerFrame.Footer.CancelButton)
+    if WoWToolsSave['Plus_Color'] and WoWToolsSave['Plus_Color'].disabled then
+        self:SetFrame(ColorPickerFrame.Header, {alpha=1})
+        self:SetFrame(ColorPickerFrame.Border, {alpha=1})
+        self:SetEditBox(ColorPickerFrame.Content.HexBox)
+    end
 end
