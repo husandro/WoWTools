@@ -59,7 +59,7 @@ local function Init()
         )
         GameTooltip:AddLine(
             (
-                (bat or TimerunningUtil.TimerunningEnabledForPlayer() or not WoWTools_DataMixin.Player.IsMaxLevel)
+                (bat or PlayerIsTimerunning() or not WoWTools_DataMixin.Player.IsMaxLevel)
                 and '|cff626262' or '|cffffffff'
             )
             ..(WoWTools_DataMixin.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS)

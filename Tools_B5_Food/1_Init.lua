@@ -109,7 +109,7 @@ function WoWTools_FoodMixin:Get_Item_Valid(itemID)
         local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
         if save.class[classID]
             and save.class[classID][subClassID]
-            and (TimerunningUtil.TimerunningEnabledForPlayer()
+            and (PlayerIsTimerunning()
                     or (save.onlyMaxExpansion
                         and (PaneIDs[itemID] or WoWTools_DataMixin.ExpansionLevel==expacID)
                         or not save.onlyMaxExpansion

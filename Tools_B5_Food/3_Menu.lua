@@ -299,7 +299,7 @@ local function Init_Menu(self, root)
     end)
 
 --仅当前版本物品
-    if not TimerunningUtil.TimerunningEnabledForPlayer() then--时光
+    if not PlayerIsTimerunning() then--时光
         sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)), function()
             return Save().onlyMaxExpansion
         end, function()

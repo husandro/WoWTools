@@ -1343,7 +1343,7 @@ local function Init_Menu(self, root)
 --副本，列表
         Init_Scenarios_Menu(root)--场景
 
-        if not TimerunningUtil.TimerunningEnabledForPlayer() then
+        if not PlayerIsTimerunning() then
             Init_Follower_Specific_Menu(root, 'follower')--追随者，副本
         end
 

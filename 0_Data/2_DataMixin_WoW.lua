@@ -714,7 +714,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         WoWTools_WoWDate[guid].battleTag= WoWTools_DataMixin.Player.BattleTag-- or WoWTools_WoWDate[guid].battleTag
     end
 
-    local isTimerunning= TimerunningUtil.TimerunningEnabledForPlayer()
+    local isTimerunning= PlayerIsTimerunning()
     for guid2, tab in pairs(WoWTools_WoWDate) do--清除不是本周数据
         if tab.Keystone.week ~=WoWTools_DataMixin.Player.Week then
             WoWTools_WoWDate[guid2].Keystone={week=WoWTools_DataMixin.Player.Week}

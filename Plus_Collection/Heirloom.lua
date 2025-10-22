@@ -19,7 +19,7 @@ local ListButton
 
 
 local function Init()
-    if TimerunningUtil.TimerunningEnabledForPlayer() then
+    if PlayerIsTimerunning() then
         Init=function()end
         return
     elseif  Save().hideHeirloom then--10.2.7

@@ -97,7 +97,7 @@ end
 
 
 function WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)
-    if (not WoWTools_DataMixin.Player.IsMaxLevel and not WoWTools_DataMixin.Player.husandro) then--不是，最高等级时，退出
+    if not WoWTools_DataMixin.Player.IsMaxLevel and not WoWTools_DataMixin.Player.husandro then--不是，最高等级时，退出
         return
     end
 
@@ -218,7 +218,7 @@ end
 
 
 function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，提示
-    if (not WoWTools_DataMixin.Player.IsMaxLevel and not WoWTools_DataMixin.Player.husandro) or TimerunningUtil.TimerunningEnabledForPlayer() then--不是，最高等级时，退出
+    if not WoWTools_DataMixin.Player.IsMaxLevel and not WoWTools_DataMixin.Player.husandro then--不是，最高等级时，退出
         return
     end
 

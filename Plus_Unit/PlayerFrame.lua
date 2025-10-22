@@ -438,7 +438,7 @@ local function Create_keystoneFrame(frame)
         end
         self.Text:SetText(text or '')
         self:SetShown(
-            (WoWTools_DataMixin.Player.IsMaxLevel and not TimerunningUtil.TimerunningEnabledForPlayer())
+            (WoWTools_DataMixin.Player.IsMaxLevel and not PlayerIsTimerunning())
             or WoWTools_DataMixin.Player.husandro
         )
     end

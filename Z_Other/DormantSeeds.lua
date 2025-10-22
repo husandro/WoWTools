@@ -1,5 +1,5 @@
 --梦境之种
-if TimerunningUtil.TimerunningEnabledForPlayer() then
+if PlayerIsTimerunning() then
     return
 end
 

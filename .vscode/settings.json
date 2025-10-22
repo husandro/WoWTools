@@ -6333,7 +6333,9 @@
         "ChatFrame1EditBoxLeft",
         "ChatFrame1EditBoxRight",
         "ChatFrame1EditBoxMid",
-        "ChatFrame1EditBoxLanguage"
+        "ChatFrame1EditBoxLanguage",
+        "CompanionInfoGLine",
+        "PlayerIsTimerunning"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

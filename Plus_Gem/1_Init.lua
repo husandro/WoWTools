@@ -325,7 +325,7 @@ function Set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 local level= C_Item.GetDetailedItemLevelInfo(info.hyperlink) or 0
                 local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
                 if classID==3
-                    and (TimerunningUtil.TimerunningEnabledForPlayer() or (WoWTools_DataMixin.Player.IsMaxLevel and WoWTools_DataMixin.ExpansionLevel== expacID or not WoWTools_DataMixin.Player.IsMaxLevel))--最高等级
+                    and (PlayerIsTimerunning() or (WoWTools_DataMixin.Player.IsMaxLevel and WoWTools_DataMixin.ExpansionLevel== expacID or not WoWTools_DataMixin.Player.IsMaxLevel))--最高等级
                 then
                     local tab={
                         info= info,
@@ -345,7 +345,7 @@ function Set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                         table.insert(gemRight, tab)
                     else
                         local type
-                        if TimerunningUtil.TimerunningEnabledForPlayer() then
+                        if PlayerIsTimerunning() then
                             local date= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, index=2})
                             type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
                         else
@@ -628,7 +628,7 @@ local function Init_ItemSocketingFrame_Update()
     local numSockets = GetNumSockets() or 0
     CurTypeGemTab={}
     local itemEquipLoc
-    if TimerunningUtil.TimerunningEnabledForPlayer() then
+    if PlayerIsTimerunning() then
         local link, itemID= select(2, ItemSocketingDescription:GetItem())
         itemEquipLoc= itemID and select(4, C_Item.GetItemInfoInstant(itemID))
         if itemEquipLoc then
@@ -660,7 +660,7 @@ local function Init_ItemSocketingFrame_Update()
                 btn.type=WoWTools_LabelMixin:Create(btn)
                 btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
                 btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
-                if TimerunningUtil.TimerunningEnabledForPlayer() then
+                if PlayerIsTimerunning() then
                     btn.qualityTexture:SetPoint('CENTER')
                     btn.qualityTexture:SetSize(46,46)--40
                 else
@@ -718,7 +718,7 @@ local function Init_ItemSocketingFrame_Update()
             local left, right= WoWTools_ItemMixin:SetGemStats(nil, gemLink)
             local atlas
             if gemLink then
-                if TimerunningUtil.TimerunningEnabledForPlayer() then
+                if PlayerIsTimerunning() then
                     local quality= C_Item.GetItemQualityByID(gemLink)--C_Item.GetItemQualityColor(quality)
                     atlas= WoWTools_DataMixin.Icon[quality]
                 else

@@ -232,7 +232,7 @@ local function Get_Items(self)--取得背包物品信息
                                     return
                                 end
                             end
-                        --[[elseif TimerunningUtil.TimerunningEnabledForPlayer() and (info.itemID>=219256 and info.itemID<=219282) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
+                        --[[elseif PlayerIsTimerunning() and (info.itemID>=219256 and info.itemID<=219282) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
                             Set_Att(self, bag, slot, info.iconFileID, info.itemID)
                             return]]
                         end

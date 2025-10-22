@@ -21,7 +21,7 @@ function WoWTools_MerchantMixin:CheckSellItem(itemID, itemLink, quality, isBound
         return WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM
     end
 
-    if not TimerunningUtil.TimerunningEnabledForPlayer() and not Save().notSellBoss and itemLink then
+    if not PlayerIsTimerunning() and not Save().notSellBoss and itemLink then
         local level= Save().bossItems[itemID]
         if level then
             local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))

@@ -898,6 +898,8 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
     self:SetButton(DelvesCompanionConfigurationFrame.CloseButton)
+    self:SetUIButton(DelvesCompanionConfigurationFrame.CompanionConfigShowAbilitiesButton)
+    self:SetAlphaColor(CompanionInfoGLine, true)
     self:SetNineSlice(DelvesCompanionConfigurationFrame)
     self:HideFrame(DelvesCompanionConfigurationFrame.Border)
     self:HideTexture(DelvesCompanionConfigurationFrame.Bg)
