@@ -233,7 +233,7 @@ end
 
 
 
---if not WoWTools_DataMixin.Player.IsMaxLevel or WoWTools_DataMixin.Is_Timerunning then return end
+--if not WoWTools_DataMixin.Player.IsMaxLevel or TimerunningUtil.TimerunningEnabledForPlayer() then return end
 --https://wago.tools/db2/SpellFlyout?locale=zhCN
 --Interface\\AddOns\\WoWTools\\Source\\Texture\\WoW\\0.tga
 WoWTools_DataMixin.FlyoutID={

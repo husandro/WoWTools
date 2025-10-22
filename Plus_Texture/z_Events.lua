@@ -1818,6 +1818,7 @@ end
 
 --地下堡
 function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
+    self:SetUIButton(DelvesDashboardFrame.ButtonPanelLayoutFrame.CompanionConfigButtonPanel.CompanionConfigButton)
     self:HideTexture(DelvesDashboardFrame.DashboardBackground)
     self:HideTexture(DelvesDashboardFrame.ThresholdBar.BarBackground)
     self:SetAlphaColor(DelvesDashboardFrame.ThresholdBar.BarBorder, nil, nil, 0.3)

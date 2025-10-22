@@ -1,5 +1,5 @@
 --拍卖行, 受限模式
-if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
+if GameLimitedMode_IsActive() or TimerunningUtil.TimerunningEnabledForPlayer() then
     WoWTools_AuctionHouseMixin.disabled=true
     return
 end
@@ -65,7 +65,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().hideSellPet= Save().hideSellPet or {}
             Save().sellItemQualiy= Save().sellItemQualiy or 1--物品列表，检测有效物品
 
-            if PlayerGetTimerunningSeasonID() then
+            if TimerunningUtil.TimerunningEnabledForPlayer() then
                 WoWTools_AuctionHouseMixin.disabled= true
                 self:UnregisterAllEvents()
                 return

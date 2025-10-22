@@ -41,7 +41,7 @@ function WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
     local leftText, bottomLeftText
     if itemLink then
         local dateInfo
-        if WoWTools_DataMixin.Is_Timerunning then
+        if TimerunningUtil.TimerunningEnabledForPlayer() then
             dateInfo= self:GetTooltip({hyperLink=itemLink, index=3})--物品提示，信息
         else
             dateInfo= self:GetTooltip({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息

@@ -91,7 +91,7 @@ local function Init()
     })
     wow:SetPoint('RIGHT', btn, 'LEFT')
 
-    if WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
+    if WoWTools_DataMixin.Player.IsMaxLevel then
         local key =WoWTools_ButtonMixin:Cbtn(btn, {size=22})--所有角色,挑战
         key:SetPoint('RIGHT', wow, 'LEFT')
         key:SetNormalTexture(4352494)

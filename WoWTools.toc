@@ -15,7 +15,6 @@
 ####AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ####AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
-##以Mixin.lua为结尾，请不要关，其它功能可能会调用
 
 ##调用库，不能删除
 Source\Libs\LibStub.lua
@@ -26,9 +25,11 @@ Source\Libs\LibRangeCheck-3.0.lua
 
 ##主要function，不能删除
 0_Data\1_DataMixin.lua
+0_Data\z_Panel.lua
 0_Data\2_DataMixin_WoW.lua
 0_Data\3_DataMixn_Func.lua
 0_Data\4_DataMixn_NeedUpdate.lua
+0_Data\z_WoWItemList.lua
 
 1_Mixin\StaticPopupDialogs.lua
 1_Mixin\Button.lua
@@ -57,10 +58,6 @@ Source\Libs\LibRangeCheck-3.0.lua
 2_Template\Button.xml
 2_Template\PlayerFrame.xml
 2_Template\ChallengeAffix.xml
-
-##控制
-0_Data\z_Panel.lua
-0_Data\z_WoWItemList.lua
 
 ##移动框架, 缩放
 Plus_Move\0a_Setup_Mixin.lua
@@ -143,8 +140,6 @@ Plus_Item\0_SetupInfo.lua
 Plus_Item\1_Init.lua
 Plus_Item\Events.lua
 Plus_Item\Frames.lua
-
-
 ##颜色选择器
 Plus_Color\0_ColorMixin.lua
 Plus_Color\1_Init.lua
@@ -158,8 +153,6 @@ Plus_Color\CODE.lua
 ##光环
 Plus_Aura\0_AuraMixin.lua
 ##Plus_Aura\0_Init.lua
-
-
 ##鼠标，提示
 Plus_Tooltip\0_Init.lua
 Plus_Tooltip\1_Panel.lua
@@ -177,7 +170,6 @@ Plus_Tooltip\f_Item.lua
 Plus_Tooltip\f_Mount.lua
 Plus_Tooltip\f_Pet.lua
 Plus_Tooltip\f_Pet_BattlePet.lua
-
 Plus_Tooltip\f_Quest.lua
 Plus_Tooltip\f_Spell.lua
 Plus_Tooltip\f_Unit_NPC.lua
@@ -187,10 +179,7 @@ Plus_Tooltip\f.StatusBar.lua
 Plus_Tooltip\z_CVar_Set.lua
 Plus_Tooltip\z_Events.lua
 
-
-
 ##小地图，增强
-
 Plus_MiniMap\1_Init.lua
 Plus_MiniMap\2_Menu.lua
 Plus_MiniMap\2_Menu_Garrison.lua
@@ -222,7 +211,6 @@ Plus_PaperDoll\Tab3.lua
 Plus_PaperDoll\TrackButton_PaperDool.lua
 Plus_PaperDoll\z_UI.lua
 
-
 ##声望面板
 Plus_Faction\0_FactionMixin.lua
 Plus_Faction\1_Faction.lua
@@ -233,7 +221,6 @@ Plus_Faction\ScrollBox_Plus.lua
 Plus_Faction\z_CHAT_MSG.lua
 Plus_Faction\z_CovenantRenown.lua
 Plus_Faction\z_MajorFactionRenownFrame.lua
-
 
 ##货币面板
 Plus_Currency\0_CurrencyMixin.lua
@@ -247,7 +234,6 @@ Plus_Currency\z_ItemInteractionFrame.lua
 Plus_Currency\z_Max_Tooltip.lua
 Plus_Currency\z_ScrollBox.lua
 
-
 ##属性
 Plus_Attributes\0_Init.lua
 Plus_Attributes\1_Setup.lua
@@ -259,13 +245,11 @@ Plus_Attributes\Speed_Dragonriding.lua
 Plus_Attributes\Speed_Target.lua
 Plus_Attributes\Speed_Vehicle.lua
 
-
 ##任务框，增强
 Plus_ObjectiveTracker\0_ObjectiveMixin.lua
 Plus_ObjectiveTracker\1_Init_Plus.lua
 Plus_ObjectiveTracker\2_Menu.lua
 Plus_ObjectiveTracker\z_UI.lua
-
 
 ##战团藏品
 Plus_Collection\0_CollectedMixin.lua
@@ -317,8 +301,6 @@ Plus_Friends\Blizzard_QuickJoin.lua
 Plus_Friends\Blizzard_RaidFrame.lua
 Plus_Friends\Blizzard_RaidUI.lua
 Plus_Friends\z_UI.lua
-
-
 ##卖买
 Plus_Merchant\0_MerchantMixin.lua
 Plus_Merchant\1_Init.lua
@@ -332,8 +314,6 @@ Plus_Merchant\Buyback.lua
 Plus_Merchant\Plus_WidthX2.lua
 Plus_Merchant\Plus_ItemInfo.lua
 
-
-
 ##银行
 Plus_Bank\1_Init.lua
 Plus_Bank\2_Menu.lua
@@ -344,8 +324,6 @@ Plus_Bank\Plus_In.lua
 Plus_Bank\Plus_Money.lua
 Plus_Bank\z_UI.lua
 Plus_Bank\WoWData.lua
-
-
 ##公会银行
 Plus_BankGuild\0_GuildBankMixin.lua
 Plus_BankGuild\1_Init.lua
@@ -361,15 +339,11 @@ Plus_BankGuild\Item_In_Out.lua
 ##Plus_BankGuild\Menu.lua
 ##Plus_BankGuild\Plus_TabButton_Menu.lua
 
-
-
 ##容器
 Plus_Bag\0_BagMixin.lua
 Plus_Bag\1_Init_Bag.lua
 Plus_Bag\Container_Menu.lua
 Plus_Bag\z_UI.lua
-
-
 
 ##自动对话，任务
 Plus_Gossip\1_Init.lua
@@ -383,8 +357,6 @@ Plus_Gossip\Quest.lua
 Plus_Gossip\Quest_Menu.lua
 Plus_Gossip\Quest_QuestInfo.lua
 Plus_Gossip\Gossip_Menu_Move.lua
-
-
 
 
 ##冒险指南, 增强
@@ -401,8 +373,6 @@ Plus_Encounter\Right_AllInfo.lua
 Plus_Encounter\Spell_Boss.lua
 Plus_Encounter\UI_ListInstances.lua
 Plus_Encounter\z_UI.lua
-
-
 ##史诗钥石地下城, 挑战增强
 Plus_Challenge\0_ChallengeMixin.lua
 Plus_Challenge\1_Init.lua
@@ -420,8 +390,6 @@ Plus_Challenge\z_AvailableRewards.lua
 Plus_Challenge\z_Say_ChallengeComplete.lua
 Plus_Challenge\z_Is_HuSandro.lua
 Plus_Challenge\z_Chat_Affix.lua
-
-
 ##邮件，增加
 Plus_Mail\1_mail.lua
 Plus_Mail\2_Menu.lua
@@ -432,8 +400,6 @@ Plus_Mail\B_Set_UI.lua
 Plus_Mail\History_SendNameList.lua
 Plus_Mail\Item_FastButton.lua
 Plus_Mail\PlayerName_List.lua
-
-
 ##拍卖行
 Plus_AuctionHouse\0_AuctionHouseMixin.lua
 Plus_AuctionHouse\1_Init.lua
@@ -444,8 +410,6 @@ Plus_AuctionHouse\B_Sell_Menu.lua
 Plus_AuctionHouse\B_Sell_Other.lua
 Plus_AuctionHouse\C_AllAuctionsList.lua
 Plus_AuctionHouse\z_AccountStore.lua
-
-
 ##宠物对战
 Plus_PetBattle\0_PetBattleMixin.lua
 Plus_PetBattle\1_Init.lua
@@ -453,8 +417,6 @@ Plus_PetBattle\2_Blizzard_Settings.lua
 Plus_PetBattle\Click_To_Move.lua
 Plus_PetBattle\TypeButton.lua
 Plus_PetBattle\PetBattle_AbilityButton.lua
-
-
 ##插件，方案
 Plus_AddOns\0_AddOnsMixin.lua
 Plus_AddOns\1_Init.lua
@@ -473,12 +435,8 @@ Plus_Holiday\1_Init.lua
 Plus_Holiday\Calendar_Uptate.lua
 Plus_Holiday\CreateEvent_Plus.lua
 Plus_Holiday\TrackButton.lua
-
-
 ##镶嵌宝石
 Plus_Gem\1_Init.lua
-
-
 ##目标指示
 Plus_Target\1_Init.lua
 Plus_Target\2_Blizzard_Settings.lua
@@ -486,8 +444,6 @@ Plus_Target\targetFrame.lua
 Plus_Target\questFrame.lua
 Plus_Target\isMeFrame.lua
 Plus_Target\numFrame.lua
-
-
 ##主菜单，增强
 Plus_MainMenu\0_Init.lua
 Plus_MainMenu\1_Options.lua
@@ -506,8 +462,6 @@ Plus_MainMenu\Professions.lua
 Plus_MainMenu\Quest.lua
 Plus_MainMenu\Store.lua
 ##Plus_MainMenu\HousingMicro.lua
-
-
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
 Plus_Cursor\1_Init.lua
 Plus_Cursor\2_Blizzard_Settings.lua
@@ -535,8 +489,6 @@ Plus_Macro\MacroButton_Plus.lua
 Plus_Macro\NewEmptyButton.lua
 Plus_Macro\Select_Button.lua
 Plus_Macro\z_MacroFrame_UI.lua
-
-
 ##专业按钮
 Plus_Professions\0_Professions.lua
 Plus_Professions\ArchaeologyUI.lua
@@ -544,8 +496,6 @@ Plus_Professions\ProfessionsBook.lua
 Plus_Professions\ProfessionsFrame_Button.lua
 Plus_Professions\ProfessionsFrame.lua
 Plus_Professions\TrainerUI.lua
-
-
 ##仅限猎人加载，专门，宠物管理，增强
 Plus_Hunter\0_HunterMixin.lua
 Plus_Hunter\1_Init.lua
@@ -554,8 +504,6 @@ Plus_Hunter\All_List.lua
 Plus_Hunter\Plus.lua
 Plus_Hunter\Tooltips.lua
 Plus_Hunter\UI.lua
-
-
 ##其它
 Z_Other\0_Init.lua
 ##美酒节 Brewfest
@@ -571,8 +519,6 @@ Z_Other\DormantSeeds.lua
 Z_Other\Talking.lua
 ##为职业菜单，添加颜色，图标
 Z_Other\ClassMenuColor.lua
-
-
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关

@@ -161,6 +161,7 @@ end
 
 
 local Frame= CreateFrame('Frame')
+Frame:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')
 Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName)--encounterID, itemID, itemLink, quantity, playerName, classFileName
     if event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
         if IsInInstance() and  (playerName and playerName:find(WoWTools_DataMixin.Player.Name) or not IsInGroup()) then
@@ -217,10 +218,5 @@ end)
 
 --自动出售
 function WoWTools_MerchantMixin:Init_Auto_Sell_Junk()
-    if not PlayerGetTimerunningSeasonID() then
-        C_Timer.After(2.2, function()
-            Frame:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')
-        end)
-    end
     Init()
 end

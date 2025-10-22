@@ -73,7 +73,7 @@ local function Init_Menu(_, root)
             HeirloomsJournal:FullRefreshIfVisible()
         end
     end)
-    sub:SetEnabled(not WoWTools_DataMixin.Is_Timerunning)
+    sub:SetEnabled(not TimerunningUtil.TimerunningEnabledForPlayer())
 
     sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '全职业' or ALL_CLASSES,

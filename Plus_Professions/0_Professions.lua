@@ -1,11 +1,5 @@
 WoWTools_ProfessionMixin={}
 
-if PlayerGetTimerunningSeasonID() then
-    return
-end
-
-
-
 local P_Save={
     setButton=true,
     --disabledClassTrainer=true,--隐藏，全学，按钮
@@ -38,11 +32,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         WoWToolsSave['Plus_Professions']= WoWToolsSave['Plus_Professions'] or CopyTable(P_Save)
         P_Save= nil
-
-        if PlayerGetTimerunningSeasonID() then
-            self:UnregisterAllEvents()
-            return
-        end
 
         WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
 

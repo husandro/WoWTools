@@ -151,7 +151,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     local upLevel, downLevel
     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
     if itemLinkPlayer then
-        if WoWTools_DataMixin.Is_Timerunning then
+        if TimerunningUtil.TimerunningEnabledForPlayer() then
             local numItem, numPlayer= 0, 0
             for _, num in pairs(C_Item.GetItemStats(itemLink) or {}) do
                 numItem= numItem +num
@@ -193,7 +193,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     else
         upLevel=true
     end
-    if upLevel or downLevel or WoWTools_DataMixin.Is_Timerunning then
+    if upLevel or downLevel or TimerunningUtil.TimerunningEnabledForPlayer() then
         return (upLevel and '|cnGREEN_FONT_COLOR:' or (downLevel and '|cnWARNING_FONT_COLOR:') or  '|cffffffff')
                 ..itemLevel..'|r'
     end
@@ -396,7 +396,7 @@ local function Get_Info(tab)
     end
     --setIDItem= setID and true or ((itemQuality==Enum.ItemQuality.Legendary or itemQuality==Enum.ItemQuality.Artifact) and itemQuality) or nil
 
-    local lowerVer= not WoWTools_DataMixin.Is_Timerunning and expacID< WoWTools_DataMixin.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
+    local lowerVer= not TimerunningUtil.TimerunningEnabledForPlayer() and expacID< WoWTools_DataMixin.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
 
     local sellItem
     if tab.bag and containerInfo and not containerInfo.isLocked then
@@ -509,7 +509,7 @@ local function Get_Info(tab)
     elseif classID==2 or classID==4 then
         if C_Item.IsCosmeticItem(itemLink) then--装饰品
             bottomLeftText= get_has_text(select(2, WoWTools_CollectedMixin:Item(itemLink, nil, nil, true)))
-        elseif WoWTools_DataMixin.Is_Timerunning then
+        elseif TimerunningUtil.TimerunningEnabledForPlayer() then
 
             local stat= WoWTools_ItemMixin:GetItemStats(itemLink)
             for i=1 ,4 do

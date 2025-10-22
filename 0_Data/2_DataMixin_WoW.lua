@@ -714,14 +714,15 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         WoWTools_WoWDate[guid].battleTag= WoWTools_DataMixin.Player.BattleTag-- or WoWTools_WoWDate[guid].battleTag
     end
 
+    local isTimerunning= TimerunningUtil.TimerunningEnabledForPlayer()
     for guid2, tab in pairs(WoWTools_WoWDate) do--清除不是本周数据
         if tab.Keystone.week ~=WoWTools_DataMixin.Player.Week then
             WoWTools_WoWDate[guid2].Keystone={week=WoWTools_DataMixin.Player.Week}
         end
-        if tab.Instance.week~=WoWTools_DataMixin.Player.Week or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
+        if tab.Instance.week~=WoWTools_DataMixin.Player.Week or (isTimerunning and tab.Keystone.day and tab.Keystone.day~=day) then
             WoWTools_WoWDate[guid2].Instance={ins={}, day=day}
         end
-        if (tab.Worldboss.week~=WoWTools_DataMixin.Player.Week) or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
+        if (tab.Worldboss.week~=WoWTools_DataMixin.Player.Week) or (isTimerunning and tab.Keystone.day and tab.Keystone.day~=day) then
             WoWTools_WoWDate[guid2].Worldboss={boss={}, day=day}
         end
 
@@ -797,7 +798,7 @@ end)
 
 EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(owner)
 
-    if  WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
+    if  WoWTools_DataMixin.Player.IsMaxLevel then
         Get_Info_Challenge()--挑战
     end
 

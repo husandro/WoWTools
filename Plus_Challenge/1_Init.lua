@@ -1,11 +1,3 @@
-if PlayerGetTimerunningSeasonID() then
-    WoWTools_DataMixin.ChallengesSpellTabs={}
-    WoWTools_DataMixin.affixSchedule={}
-    return
-end
-
-
-
 local P_Save= {
     --hideIns=true,--隐藏，副本，挑战，信息
     --insScale=0.8,--副本，缩放
@@ -123,12 +115,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or CopyTable(P_Save)
             P_Save=nil
 
-            if PlayerGetTimerunningSeasonID() then
+            --[[if PlayerGetTimerunningSeasonID() then
                 self:UnregisterAllEvents()
                 WoWTools_DataMixin.ChallengesSpellTabs={}
                 WoWTools_DataMixin.affixSchedule={}
                 return
-            end
+            end]]
 
             WoWTools_ChallengeMixin.addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
 

@@ -1,6 +1,3 @@
-if PlayerGetTimerunningSeasonID() then
-    return
-end
 
 local function Save()
     return WoWToolsSave['Plus_Professions']

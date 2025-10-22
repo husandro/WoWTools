@@ -38,8 +38,8 @@ local P_Save={
             [2]=true,--药剂
             [3]=true,--合计
             [5]=true,--食物
-            [7]=WoWTools_DataMixin.Is_Timerunning,
-            [8]=WoWTools_DataMixin.Is_Timerunning,--其它
+            --[7]=false,
+            --[8]=false,--其它
         },
         [15]={
             [4]=true,
@@ -109,7 +109,7 @@ function WoWTools_FoodMixin:Get_Item_Valid(itemID)
         local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
         if save.class[classID]
             and save.class[classID][subClassID]
-            and (WoWTools_DataMixin.Is_Timerunning
+            and (TimerunningUtil.TimerunningEnabledForPlayer()
                     or (save.onlyMaxExpansion
                         and (PaneIDs[itemID] or WoWTools_DataMixin.ExpansionLevel==expacID)
                         or not save.onlyMaxExpansion

@@ -332,51 +332,42 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGIN')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event=='ADDON_LOADED' then
-        if arg1== 'WoWTools' then
-            
-            WoWToolsSave['WoWTools_Settings']= WoWToolsSave['WoWTools_Settings'] or CopyTable(P_Save)
-            P_Save= nil
-
-            WoWTools_DataMixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese
-
-            Save().useColor= Save().useColor or 1
-            Save().useCustomColorTab= Save().useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
-            Set_Color()--自定义，颜色
-
-            Init_Options()
-
-            WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()--PlayerIsTimerunning()
-
-
-            if WoWTools_DataMixin.onlyChinese then
-                WoWTools_DataMixin.Player.Language= {
-                    layer='位面',
-                    key='关键词',
-                }
-            end
-
-            WoWTools_DataMixin.StausText={
-                [ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 2, true),
-                [ITEM_MOD_CRIT_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
-                [ITEM_MOD_MASTERY_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 2, true),
-                [ITEM_MOD_VERSATILITY]= WoWTools_DataMixin.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 2, true),
-                [ITEM_MOD_CR_AVOIDANCE_SHORT]= WoWTools_DataMixin.onlyChinese and '闪' or WoWTools_TextMixin:sub(STAT_AVOIDANCE, 1, 2, true),
-                [ITEM_MOD_CR_LIFESTEAL_SHORT]= WoWTools_DataMixin.onlyChinese and '吸' or WoWTools_TextMixin:sub(STAT_LIFESTEAL, 1, 2, true),
-                [ITEM_MOD_CR_SPEED_SHORT]=WoWTools_DataMixin.onlyChinese and '速' or WoWTools_TextMixin:sub(SPEED, 1,2,true),
-                --[ITEM_MOD_EXTRA_ARMOR_SHORT]= WoWTools_DataMixin.onlyChinese and '护' or WoWTools_TextMixin:sub(ARMOR, 1,2,true)
-            }
-
-            self:UnregisterEvent(event)
-        end
-
-    elseif event=='PLAYER_LOGIN' then
-        WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()
-        self:UnregisterEvent(event)
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    WoWToolsSave['WoWTools_Settings']= WoWToolsSave['WoWTools_Settings'] or CopyTable(P_Save)
+    P_Save= nil
+
+    WoWTools_DataMixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese
+
+    Save().useColor= Save().useColor or 1
+    Save().useCustomColorTab= Save().useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
+    Set_Color()--自定义，颜色
+
+    Init_Options()
+
+    if WoWTools_DataMixin.onlyChinese then
+        WoWTools_DataMixin.Player.Language= {
+            layer='位面',
+            key='关键词',
+        }
+    end
+
+    WoWTools_DataMixin.StausText={
+        [ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 2, true),
+        [ITEM_MOD_CRIT_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
+        [ITEM_MOD_MASTERY_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 2, true),
+        [ITEM_MOD_VERSATILITY]= WoWTools_DataMixin.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 2, true),
+        [ITEM_MOD_CR_AVOIDANCE_SHORT]= WoWTools_DataMixin.onlyChinese and '闪' or WoWTools_TextMixin:sub(STAT_AVOIDANCE, 1, 2, true),
+        [ITEM_MOD_CR_LIFESTEAL_SHORT]= WoWTools_DataMixin.onlyChinese and '吸' or WoWTools_TextMixin:sub(STAT_LIFESTEAL, 1, 2, true),
+        [ITEM_MOD_CR_SPEED_SHORT]=WoWTools_DataMixin.onlyChinese and '速' or WoWTools_TextMixin:sub(SPEED, 1,2,true),
+        --[ITEM_MOD_EXTRA_ARMOR_SHORT]= WoWTools_DataMixin.onlyChinese and '护' or WoWTools_TextMixin:sub(ARMOR, 1,2,true)
+    }
+
+    self:UnregisterEvent(event)
 end)
 
 
