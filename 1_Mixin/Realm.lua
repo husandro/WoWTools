@@ -7,10 +7,6 @@ if WoWTools_DataMixin.Player.Region~=1 and WoWTools_DataMixin.Player.Region~=3 t
     WoWTools_RealmMixin.Get_Region=function()end
     return
 end
---[[
-WoWTools_RealmMixin:Get_Region(realm, guid, unit, disabled)
-WoWTools_DataMixin.Player.Language={layer=, size=, key=}
-]]
 
 
 

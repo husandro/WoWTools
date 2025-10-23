@@ -60,7 +60,7 @@ local function Init(frame)
         end)
         print(
             WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
-            WoWTools_DataMixin.Player.Language.key,
+            WoWTools_DataMixin.Language.key,
             WoWTools_DataMixin.onlyChinese and '颜色' or COLOR,
             '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..'|r'
         )

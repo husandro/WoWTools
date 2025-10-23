@@ -60,9 +60,9 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local reason=UnitPhaseReason(unit)
         if reason then
             if reason==0 then
-                textLeft= (WoWTools_DataMixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..textLeft
+                textLeft= (WoWTools_DataMixin.onlyChinese and '不同了阶段' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS, '', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..textLeft
             elseif reason==1 then
-                textLeft= (WoWTools_DataMixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Player.layer))..textLeft
+                textLeft= (WoWTools_DataMixin.onlyChinese and '不在同位面' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS,'', WoWTools_DataMixin.Player.layer))..textLeft
             elseif reason==2 then--战争模
                 textLeft= (isWarModeDesired and (WoWTools_DataMixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (WoWTools_DataMixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..textLeft
             elseif reason==3 then
@@ -244,7 +244,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 --位面ID, 战争模式
                     lineLeft:SetText(
                         WoWTools_DataMixin.Player.Layer
-                        and '|A:nameplates-holypower2-on:0:0|a'..WoWTools_DataMixin.Player.Language.layer..' '..WoWTools_DataMixin.Player.Layer
+                        and WoWTools_DataMixin.Language.layer..WoWTools_DataMixin.Icon.icon2..WoWTools_DataMixin.Player.Layer
                         or ' '
                     )
                     local lineRight= _G[tooltipName..'TextRight'..i]

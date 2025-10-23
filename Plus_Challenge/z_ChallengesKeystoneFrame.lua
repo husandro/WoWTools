@@ -104,7 +104,7 @@ local function UI_Party_Info()--队友位置
                 if reason==0 then--不同了阶段
                     text= text ..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',  MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..'|r'
                 elseif reason==1 then--不在同位面
-                    text= text ..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Player.Language.layer))..'|r'
+                    text= text ..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Language.layer))..'|r'
                 elseif reason==2 then--战争模式
                     text= text ..(C_PvP.IsWarModeDesired() and '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
                 elseif reason==3 then

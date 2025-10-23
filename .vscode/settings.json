@@ -6338,7 +6338,8 @@
         "PlayerIsTimerunning",
         "StatusTrackingBarContainerMixin",
         "EditModeCheckButtonMixin",
-        "EditModeManagerSettingCheckButtonMixin"
+        "EditModeManagerSettingCheckButtonMixin",
+        "LFGListRemoveHeadersWithoutChildren"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

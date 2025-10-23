@@ -114,7 +114,7 @@ local function Add_Initializer(btn, desc)
 
             if select(2, GetLFGProposal())==self.dungeonID then
                 r,g,b= 1,0,1
-                atlas= 'quest-legendary-turnin'
+                atlas= 'QuestLegendary'
 
             elseif GetLFGQueueStats(desc.data.type, self.dungeonID) then
                 r,g,b= 0,1,0
@@ -136,6 +136,7 @@ local function Add_Initializer(btn, desc)
         self:SetScript('OnUpdate', nil)
         self.dungeonID= nil
         self.elapsed=nil
+
     end)
 end
 
@@ -172,7 +173,7 @@ local function Get_Follower_Specific_List(type)
 
 	for _, dungeonID in ipairs(GetLFDChoiceOrder() or {}) do
 		if not lockMap[dungeonID] or not lockMap[dungeonID].hideEntry then
-            local isDungeonHeader = dungeonID < 0
+            local isDungeonHeader = LFGIsIDHeader(dungeonID)--dungeonID<0
 
 			local isLFGFollowerDungeon = dungeonID >= 0 and C_LFGInfo.IsLFGFollowerDungeon(dungeonID);
 			if (isFollowerFrameSelected and (isLFGFollowerDungeon or isDungeonHeader))
@@ -189,6 +190,7 @@ end
 
 
 --LFGIsIDHeader(id)
+
 
 --追随者，副本
 local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
@@ -217,47 +219,51 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
 
     local find=0
 
+    local title
     for _, dungeonID in pairs(followerList) do
-        local info =C_LFGInfo.GetDungeonInfo(dungeonID)
-        --local name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isRandomTimewalker, mapName, minGear, isScalingDungeon = GetLFGDungeonInfo(dungeonID);
-        if info and info.name then
-            local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
-            if (isAvailableForAll or not hid2eIfNotJoinable) then
+        --local name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isRandomTimewalker, mapName, minGear, isScalingDungeon = GetLFGDungeonInfo(dungeonID)
+        if LFGIsIDHeader(dungeonID) then
+            title= GetLFGDungeonInfo(dungeonID)
 
-
-                if isAvailableForPlayer then
-                    local reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
-                    sub2= sub:CreateButton(
-                        '|T'..(info.iconID or 0)..':0|t'
-                        ..WoWTools_TextMixin:CN(info.name)
-                        ..reward
-                        ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
-
-                    function(data)
-                        if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
-                            LeaveSingleLFG(LE_LFG_CATEGORY_LFD, data.dungeonID)
-                        else
-                            LFDQueueFrame_SetTypeInternal(data.listType)--follower, specific
-                            LFDQueueFrame_SetType(data.dungeonID)
-                            LFDQueueFrame_Join()
-                            WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, WoWTools_TextMixin:CN(data.dungeonName), nil)--设置图标, 点击,提示
-                        end
-                        return MenuResponse.Open
-                    end, {
-                        dungeonID=dungeonID,
-                        dungeonName=info.name,
-                        type=LE_LFG_CATEGORY_LFD,
-                        rewardIndex= rewardIndex,
-                        rewardType= rewardType,
-                        rewardArg= rewardArg,
-                        listType= listType,
-                    })
-                    sub2:SetTooltip(Set_Tooltip)
-
-                    sub2:AddInitializer(Add_Initializer)
-
-                    find=find+1
+        else
+            local info = C_LFGInfo.GetDungeonInfo(dungeonID)
+            local isAvailableForAll, _, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
+            if info and info.name and (isAvailableForAll or not hid2eIfNotJoinable) then
+                if title then
+                    sub:CreateTitle(WoWTools_TextMixin:CN(title))
+                    title= nil
                 end
+                local reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
+                sub2= sub:CreateButton(
+                    '|T'..(info.iconID or 0)..':0|t'
+                    ..WoWTools_TextMixin:CN(info.name)
+                    ..reward
+                    ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
+
+                function(data)
+                    if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
+                        LeaveSingleLFG(LE_LFG_CATEGORY_LFD, data.dungeonID)
+                    else
+                        LFDQueueFrame_SetTypeInternal(data.listType)--follower, specific
+                        LFDQueueFrame_SetType(data.dungeonID)
+                        LFDQueueFrame_Join()
+                        WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, WoWTools_TextMixin:CN(data.dungeonName), nil)--设置图标, 点击,提示
+                    end
+                    return MenuResponse.Open
+                end, {
+                    dungeonID=dungeonID,
+                    dungeonName=info.name,
+                    type=LE_LFG_CATEGORY_LFD,
+                    rewardIndex= rewardIndex,
+                    rewardType= rewardType,
+                    rewardArg= rewardArg,
+                    listType= listType,
+                })
+                sub2:SetTooltip(Set_Tooltip)
+
+                sub2:AddInitializer(Add_Initializer)
+
+                find=find+1
             end
 
         end

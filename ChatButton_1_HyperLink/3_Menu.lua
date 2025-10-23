@@ -61,7 +61,7 @@ local function Init_Menu(self, root)
 
 --关键词, 内容颜色，和频道名称替换
     sub2=sub:CreateCheckbox(
-        WoWTools_DataMixin.Player.Language.key,
+        WoWTools_DataMixin.Language.key,
     function()
         return not Save().disabledKeyColor
     end, function()
@@ -74,7 +74,7 @@ local function Init_Menu(self, root)
 
 --设置关键词
     sub2:CreateButton(
-        '|A:mechagon-projects:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, WoWTools_DataMixin.Player.Language.key)),
+        '|A:mechagon-projects:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, WoWTools_DataMixin.Language.key)),
     function()
         if not WoWTools_HyperLink.Category then
             WoWTools_PanelMixin:Open()

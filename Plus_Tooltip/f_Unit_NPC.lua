@@ -103,11 +103,11 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         Set_BrannBronzebeard(tooltip, unit, npc, self.iconSize)
         if zone or npc then
             tooltip:AddDoubleLine(
-                zone and WoWTools_DataMixin.Player.Language.layer..WoWTools_DataMixin.Icon.icon2..zone,
+                zone and zone..WoWTools_DataMixin.Language.layer,
                 npc and 'npcID'..WoWTools_DataMixin.Icon.icon2..npc
             )
 
-            WoWTools_DataMixin.Player.Layer=zone
+            WoWTools_DataMixin.Player.Layer=zone--字符
         end
         self:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
     end

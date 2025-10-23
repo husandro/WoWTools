@@ -36,7 +36,7 @@ local function Init_OnEnter(self)
 
 --位面
     if WoWTools_DataMixin.Player.Layer then
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Player.Language.layer, '|cffffffff'..WoWTools_DataMixin.Player.Layer)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Language.layer, '|cffffffff'..WoWTools_DataMixin.Player.Layer)
     end
 
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")--地图信息
@@ -73,6 +73,28 @@ local function Init_OnEnter(self)
                 end
             end
         end
+
+        local quests= C_QuestLog.GetQuestsOnMap(uiMapID)
+        local num= quests and #quests or 0
+        if num>0 then
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(
+                '|A:worldquest-tracker-questmarker:0:0|a'
+                ..(WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)
+                ..' #|cffffffff'..num
+            )
+            for index, tab in pairs(quests) do
+                local questID= tab.questID
+                if questID then
+                    GameTooltip:AddDoubleLine(
+                        index..')',
+                        (C_QuestLog.IsComplete(questID) and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
+                        ..(WoWTools_QuestMixin:GetName(questID) or questID)
+                    )
+                end
+            end
+        end
+
         local x,y = WoWTools_WorldMapMixin:GetPlayerXY()--玩家当前位置
         if x and y then
             local playerCursorMapName

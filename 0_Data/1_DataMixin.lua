@@ -17,6 +17,7 @@ WoWTools_DataMixin= {
 
     StausText={},--属性，截取表 API_Panel.lua
     UnitItemLevel={},
+    Language={}
 }
 
 --[[
@@ -86,7 +87,7 @@ WoWTools_DataMixin.Player={
     BattleTag= battleTag,
     Faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
     Layer= nil, --位面数字
-    Language={},--多语言，文本
+    --Language={},--多语言，文本
 }
 for realmIndex, realmName in pairs(GetAutoCompleteRealms() or {}) do
     WoWTools_DataMixin.Player.Realms[realmName]=realmIndex
@@ -153,52 +154,52 @@ ChallengeMode-RankLineDivider
 
 
 if LOCALE_zhCN then
-    WoWTools_DataMixin.Player.Language= {
+    WoWTools_DataMixin.Language= {
         layer='位面',
         key='关键词',
     }
 elseif LOCALE_zhTW then
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer='位面',
         key='關鍵詞',
     }
 elseif LOCALE_koKR then
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer='층',
         key='키워드',
     }
 elseif LOCALE_frFR then
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer='Couche',
         key='Mots clés',
     }
 elseif LOCALE_deDE then
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer='Schicht',
         key='Schlüsselwörter',
     }
 elseif LOCALE_esES or LOCALE_esMX then--西班牙语
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer='Capa',
         key='Palabras clave',
     }
 elseif LOCALE_ruRU then
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer='слой',
         key='Ключевые слова',
     }
 elseif LOCALE_ptBR then--葡萄牙语
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer='Camada',
         key='Palavras-chave',
     }
 elseif LOCALE_itIT then
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer='Strato',
         key='Parole chiave',
     }
 else
-    WoWTools_DataMixin.Player.Language={
+    WoWTools_DataMixin.Language={
         layer= 'Layer',
         key='Key words',
     }

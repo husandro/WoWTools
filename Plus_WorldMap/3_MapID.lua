@@ -11,27 +11,30 @@ local Frame
 
 
 local function Set_Text()
-    local m=''
+    local m
     local story, achievementID
 
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
-    m= uiMapID or m
+    
     if uiMapID then
-        m='|A:poi-islands-table:0:0|a'..m
-        local uiMapGroupID=C_Map.GetMapGroupID(uiMapID)
-        if uiMapGroupID then
-            m='g'..uiMapGroupID..'  '..m
-        end
         local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
         if areaPoiIDs then
             for _,areaPoiID in pairs(areaPoiIDs) do
                 local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
                 if poiInfo and (poiInfo.areaPoiID or poiInfo.tooltipWidgetSet) and poiInfo.atlasName then
-                    m='|A:'..poiInfo.atlasName..':0:0|a'..m
+                    m=(m or '')..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
             end
         end
-        if IsInInstance() then
+
+        local uiMapGroupID=C_Map.GetMapGroupID(uiMapID)
+        if uiMapGroupID then
+            m=(m and m..' ' or '')..'g'..uiMapGroupID
+        end
+
+        m=(m or '')..'|A:poi-islands-table:0:0|a'..uiMapID
+
+        --[[if IsInInstance() then
             local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
             if instanceID then
                 m=INSTANCE..instanceID..'  '..m
@@ -39,12 +42,20 @@ local function Set_Text()
                     m=(WoWTools_DataMixin.onlyChinese and '随机' or 'Random')..LfgDungeonID..'  '..m
                 end
             end
+        end]]
+
+        local quests= C_QuestLog.GetQuestsOnMap(uiMapID)
+        local num= quests and #quests or 0
+        if num>0 then
+            m= (m and m..' ' or '').. '|A:worldquest-tracker-questmarker:0:0|a'..num
         end
     end
 
     if WoWTools_DataMixin.Player.Layer then
-        m = WoWTools_DataMixin.Player.Layer..' '..m
+        m = (m and m..' ' or '').. '|A:Ping_Wheel_Icon_OnMyWay_Small:0:0|a'..WoWTools_DataMixin.Player.Layer
     end
+    Frame.Text:SetText(m or '')
+
 
     achievementID = C_QuestLog.GetZoneStoryInfo(uiMapID)--当前地图，故事任务
     if achievementID then
@@ -58,10 +69,6 @@ local function Set_Text()
             story= '|T'..icon..':0|t'..story
         end
     end
-
-    Frame.Text:SetText(m)
-
-
     Frame.storyText:SetText(story or '')
     Frame.storyText.achievementID= achievementID or nil
 end
