@@ -17,6 +17,7 @@ local function Set_Text()
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
     m= uiMapID or m
     if uiMapID then
+        m='|A:poi-islands-table:0:0|a'..m
         local uiMapGroupID=C_Map.GetMapGroupID(uiMapID)
         if uiMapGroupID then
             m='g'..uiMapGroupID..'  '..m
@@ -73,16 +74,15 @@ end
 
 
 local function Init()
-    Frame= CreateFrame('Frame', nil, _G['WoWTools_PlusWorldMap_MenuButton'])
+    Frame= CreateFrame('Frame', 'WoWToolsWorldMapMapIDFrame', _G['WoWTools_PlusWorldMap_MenuButton'])
     Frame:SetPoint('LEFT')
     Frame:SetSize(1,1)
 
     Frame.Text=WoWTools_LabelMixin:Create(Frame, {copyFont= WorldMapFrameTitleText})
     Frame.Text:SetPoint('RIGHT', Frame, 'LEFT', -2, 0)
 
-    Frame.storyText=WoWTools_LabelMixin:Create(Frame)--, {copyFont=WorldMapFrameTitleText})
+    Frame.storyText=WoWTools_LabelMixin:Create(Frame)
     Frame.storyText:SetPoint('RIGHT', Frame.Text, 'LEFT', -2, 0)
-    --Frame.storyText:SetPoint('BOTTOM', WoWTools_PlusWorldMap_MenuButton, 'TOP', 0, 2)
     Frame.storyText:EnableMouse(true)
     Frame.storyText:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     Frame.storyText:SetScript('OnEnter', function(self)

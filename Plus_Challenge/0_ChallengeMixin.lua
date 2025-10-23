@@ -1,5 +1,8 @@
 WoWTools_ChallengeMixin={}
-
+--[[
+name, id, timeLimit, texture, backgroundTexture, mapID = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+journalInstanceID = C_EncounterJournal.GetInstanceForGameMap(mapID)
+]]
 
 
 

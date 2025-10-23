@@ -31,19 +31,22 @@ end
 
 local function Init_OnEnter(self)
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-    GameTooltip:ClearLines()
-    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
+    GameTooltip:SetText(WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
     GameTooltip:AddLine(' ')
-    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Player.Language.layer, WoWTools_DataMixin.Player.Layer or (WoWTools_DataMixin.onlyChinese and '无' or NONE))--位面
+
+--位面
+    if WoWTools_DataMixin.Player.Layer then
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Player.Language.layer, '|cffffffff'..WoWTools_DataMixin.Player.Layer)
+    end
 
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")--地图信息
     if uiMapID then
         local info = C_Map.GetMapInfo(uiMapID)
         if info then
-            GameTooltip:AddDoubleLine(info.name, 'mapID '..info.mapID or uiMapID)--地图ID
+            GameTooltip:AddDoubleLine(info.name, 'mapID|A:poi-islands-table:0:0|a|cffffffff'..(info.mapID or uiMapID))--地图ID
             local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
             if uiMapGroupID then
-                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g |cffffffff'..uiMapGroupID)
             end
         end
         local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
@@ -51,19 +54,22 @@ local function Init_OnEnter(self)
             for _,areaPoiID in pairs(areaPoiIDs) do
                 local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
                 if poiInfo and (poiInfo.areaPoiID or poiInfo.tooltipWidgetSet) then
-                    GameTooltip:AddDoubleLine((poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
-                    .. poiInfo.name
-                    ..(poiInfo.tooltipWidgetSet and ' widgetSetID '..poiInfo.tooltipWidgetSet or ''),
-                    'areaPoiID '..(poiInfo.areaPoiID or NONE))
+                    GameTooltip:AddDoubleLine(
+                        (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
+                        .. poiInfo.name
+                        ..(poiInfo.tooltipWidgetSet and ' widgetSetID |cffffffff'..poiInfo.tooltipWidgetSet or ''),
+
+                        poiInfo.areaPoiID and 'areaPoiID |cffffffff'..poiInfo.areaPoiID
+                    )
                 end
             end
         end
         if IsInInstance() then--副本数据
             local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
             if instanceID then
-                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, instanceID)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, '|cffffffff'..instanceID)
                 if LfgDungeonID then
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, LfgDungeonID)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, '|cffffffff'..LfgDungeonID)
                 end
             end
         end
@@ -77,9 +83,9 @@ local function Init_OnEnter(self)
             end
             GameTooltip:AddLine(' ')
             if playerCursorMapName then
-                GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.Player..playerCursorMapName, 'XY: '..x..' '..y)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.Player..playerCursorMapName, 'XY: |cffffffff'..x..' '..y)
             else
-                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, WoWTools_DataMixin.Icon.Player)), 'XY: '..x..' '..y)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, WoWTools_DataMixin.Icon.Player)), 'XY: |cffffffff'..x..' '..y)
             end
         end
     end
@@ -485,7 +491,10 @@ end
 
 
 local function Init()--显示地图ID
-    local MenuButton= WoWTools_ButtonMixin:Menu(WorldMapFrame.BorderFrame.TitleContainer, {name='WoWTools_PlusWorldMap_MenuButton'})
+    local MenuButton= CreateFrame('DropdownButton', 'WoWTools_PlusWorldMap_MenuButton', WorldMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenuButtonTemplate')
+    --[[WoWTools_ButtonMixin:Menu(WorldMapFrame.BorderFrame.TitleContainer, {
+        name='WoWTools_PlusWorldMap_MenuButton'
+    })]]
 
     if C_AddOns.IsAddOnLoaded('Mapster') then
         C_Timer.After(2, function()

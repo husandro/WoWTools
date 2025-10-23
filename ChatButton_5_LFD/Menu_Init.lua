@@ -175,7 +175,9 @@ local function Get_Follower_Specific_List(type)
             local isDungeonHeader = dungeonID < 0
 
 			local isLFGFollowerDungeon = dungeonID >= 0 and C_LFGInfo.IsLFGFollowerDungeon(dungeonID);
-			if (isFollowerFrameSelected and (isLFGFollowerDungeon or isDungeonHeader)) or (not isFollowerFrameSelected and not isLFGFollowerDungeon) then
+			if (isFollowerFrameSelected and (isLFGFollowerDungeon or isDungeonHeader))
+                or (not isFollowerFrameSelected and not isLFGFollowerDungeon)
+            then
 				table.insert(list, dungeonID)
 			end
 		end
@@ -1250,7 +1252,6 @@ local function Init_Menu(self, root)
         tooltip=function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
         end
-    
     })
     sub:CreateSpacer()
 
@@ -1343,11 +1344,11 @@ local function Init_Menu(self, root)
 --副本，列表
         Init_Scenarios_Menu(root)--场景
 
-        if not PlayerIsTimerunning() then
+        --if not PlayerIsTimerunning() then
             Init_Follower_Specific_Menu(root, 'follower')--追随者，副本
-        end
+        --end
 
-        --Init_Follower_Specific_Menu(root, 'specific')--指定地下城
+        Init_Follower_Specific_Menu(root, 'specific')--指定地下城
 
         set_Party_Menu_List(root)--随机
 
