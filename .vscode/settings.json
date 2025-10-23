@@ -6339,7 +6339,8 @@
         "StatusTrackingBarContainerMixin",
         "EditModeCheckButtonMixin",
         "EditModeManagerSettingCheckButtonMixin",
-        "LFGListRemoveHeadersWithoutChildren"
+        "LFGListRemoveHeadersWithoutChildren",
+        "ACHIEVEMENT_BUTTON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

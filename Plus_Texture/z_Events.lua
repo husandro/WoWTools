@@ -91,7 +91,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetEditBox(AchievementFrame.SearchBox)
     AchievementFrame.SearchBox:ClearAllPoints()
     AchievementFrame.SearchBox:SetPoint('LEFT', AchievementFrame.Header.PointBorder, 'RIGHT')
-    AchievementFrame.SearchBox:SetPoint('RIGHT', AchievementFrameCloseButton, 'LEFT', -23, 0)
+    AchievementFrame.SearchBox:SetPoint('RIGHT', AchievementFrameCloseButton, 'LEFT', -46, 0)
     AchievementFrame.SearchPreviewContainer:SetPoint('RIGHT', AchievementFrame.SearchBox)
     for i=1, 5 do
         AchievementFrame.SearchPreviewContainer['SearchPreview'..i]:SetPoint('RIGHT')

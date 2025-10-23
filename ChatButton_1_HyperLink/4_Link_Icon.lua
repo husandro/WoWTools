@@ -516,7 +516,7 @@ end
 --地图标记xy, 格式 60.10 70.50
 --|cffffff00|Hworldmap:84:7222:2550|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a Map Pin Location]|h|r
 local function Waypoint(text)
-    local uiMapID= WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
+    local uiMapID= WoWTools_WorldMapMixin:GetMapID()
     if uiMapID and C_Map.CanSetUserWaypointOnMap(uiMapID) then
         local x, y= text:match('(%d+%.%d%d) (%d+%.%d%d)')
         if x and y then

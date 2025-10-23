@@ -1,6 +1,10 @@
 WoWTools_WorldMapMixin={}
 
 
+function WoWTools_WorldMapMixin:GetMapID()
+    return WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
+end
+
 
 --AreaLabelDataProvider.xml
 function WoWTools_WorldMapMixin:Create_Wolor_Font(frame, size)

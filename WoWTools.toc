@@ -29,6 +29,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Data\2_DataMixin_WoW.lua
 0_Data\3_DataMixn_Func.lua
 0_Data\4_DataMixn_NeedUpdate.lua
+0_Data\5_MapIDAchievements.lua
 0_Data\z_WoWItemList.lua
 
 1_Mixin\StaticPopupDialogs.lua
@@ -519,6 +520,7 @@ Z_Other\DormantSeeds.lua
 Z_Other\Talking.lua
 ##为职业菜单，添加颜色，图标
 Z_Other\ClassMenuColor.lua
+Z_Other\Achievements.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关

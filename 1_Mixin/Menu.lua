@@ -22,8 +22,7 @@ OpenSpellBook(root, tab)--天赋和法术书
 OpenDragonriding(root)
 OpenOptions(root, tab)
 
-SetNumButton(sub, num)
-SetScrollButton(root, maxCharacters)
+WoWTools_MenuMixin:SetScrollMode(root)
 Set_Specialization
 
 
