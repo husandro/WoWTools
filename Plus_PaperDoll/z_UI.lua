@@ -329,6 +329,8 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
         end
     end)
     self:SetScrollBar(PaperDollFrame.EquipmentManagerPane)
+    self:SetUIButton(PaperDollFrameEquipSet)
+    self:SetUIButton(PaperDollFrameSaveSet)
 
 
 

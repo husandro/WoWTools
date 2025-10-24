@@ -124,7 +124,7 @@ https://wago.io/meD8JMW3C
 C_MythicPlus.GetCurrentSeason()
 https://wago.tools/db2/MapChallengeMode?locale=zhCN
 ]]
-WoWTools_DataMixin.ChallengesSpellTabs={
+WoWTools_ChallengesSpellData={
     [399]= {spell=393256, ins=1202, name='红玉', spellName='利爪防御者之路', spellDes='传送到|cff00ccff红玉新生法池|r的入口。'},--传送到红玉新生法池的入口。 利爪防御者之路
     [400]= {spell=393262, ins=1198, name='诺库德', spellName='啸风平原之路', spellDes='|cff00ccff传送至诺库德阻击战|r的入口。'},--传送至诺库德阻击战的入口。 啸风平原之路
     [401]= {spell=393279, ins=1203, name='魔馆', spellName='奥秘之路',  spellDes='传送至|cff00ccff碧蓝魔馆|r的入口。'},--传送至碧蓝魔馆的入口。 奥秘之路
@@ -221,8 +221,8 @@ WoWTools_DataMixin.ChallengesSpellTabs={
 
 --双法术，
 if WoWTools_DataMixin.Player.Faction=='Alliance' then
-    WoWTools_DataMixin.ChallengesSpellTabs[353].spell= 445418 --围攻伯拉勒斯
-    WoWTools_DataMixin.ChallengesSpellTabs[247].spell= 467553 --暴富矿区
+    WoWTools_ChallengesSpellData[353].spell= 445418 --围攻伯拉勒斯
+    WoWTools_ChallengesSpellData[247].spell= 467553 --暴富矿区
 end
 
 

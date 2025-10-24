@@ -33,7 +33,6 @@ local function Init()
     mask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     mask:SetPoint('CENTER',0,-1)
     mask:SetSize(19, 24)
-    --mask:SetAllPoints(PlayerSpellsMicroButton.Portrait)
     PlayerSpellsMicroButton.Portrait:AddMaskTexture(mask)
 
     mask= PlayerSpellsMicroButton:CreateMaskTexture(nil, 'BORDER', nil, 4)
@@ -99,12 +98,13 @@ local function Init()
 
         if InCombatLockdown() then
             GameTooltip:Show()
+            return
         end
 
-        GameTooltip:AddLine(' ')
+        --GameTooltip:AddLine(' ')
         local col= '|cffffffff'
 
-        GameTooltip:AddLine(
+        --[[GameTooltip:AddLine(
             col..(WoWTools_DataMixin.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
@@ -118,30 +118,26 @@ local function Init()
             col..(WoWTools_DataMixin.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
-        )
+        )]]
         GameTooltip:AddLine(
             col..(WoWTools_DataMixin.onlyChinese and '点击施法' or CLICK_BIND_MODE)..'|r'
-            ..'Alt+'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
-        if CooldownViewerSettings then--11.2.5
-            GameTooltip:AddLine(
-                col..(WoWTools_DataMixin.onlyChinese and '冷却设置' or COOLDOWN_VIEWER_SETTINGS_TITLE)..'|r'
-                ..'Alt+'
-                ..WoWTools_DataMixin.Icon.mid
-                ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
-            )
-        end
+        GameTooltip:AddLine(
+            col..(WoWTools_DataMixin.onlyChinese and '冷却设置' or COOLDOWN_VIEWER_SETTINGS_TITLE)..'|r'
+            ..WoWTools_DataMixin.Icon.mid
+            ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+        )
         GameTooltip:Show()
     end)
 
-    PlayerSpellsMicroButton:HookScript('OnClick', function(_, d)
+    --[[PlayerSpellsMicroButton:HookScript('OnClick', function(_, d)
         if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() or d~='RightButton' or Kiosk.IsEnabled() then
             return
         end
-        WoWTools_LoadUIMixin:SpellBook(2, nil)
-    end)
+        --WoWTools_LoadUIMixin:SpellBook(2, nil)
+    end)]]
 
     PlayerSpellsMicroButton:EnableMouseWheel(true)
     PlayerSpellsMicroButton:HookScript('OnMouseWheel', function(_, d)
@@ -149,6 +145,14 @@ local function Init()
             return
         end
         if d==1 then--上
+            if not ClickBindingFrame or not ClickBindingFrame:IsShown() then
+                ToggleClickBindingFrame()
+            end
+        else
+            WoWTools_DataMixin:Call(ShowUIPanel, CooldownViewerSettings)
+        end
+    end)
+        --[[if d==1 then--上
             if IsAltKeyDown() then
                 if not ClickBindingFrame or not ClickBindingFrame:IsShown() then
                     ToggleClickBindingFrame()
@@ -159,13 +163,13 @@ local function Init()
         elseif d==-1 then
             if IsAltKeyDown() and CooldownViewerSettings then
                 if not CooldownViewerSettings:IsShown() then
-                    CooldownViewerSettings:SetShown(true)
+                    
                 end
             else
                 WoWTools_LoadUIMixin:SpellBook(3, nil)
             end
-        end
-    end)
+        end]]
+    
 
     Init=function()end
 end

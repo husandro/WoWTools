@@ -400,7 +400,7 @@ end
 
 
 local function SetUp(self)
-    local insTab= WoWTools_DataMixin.ChallengesSpellTabs[self.mapID]
+    local insTab= WoWTools_ChallengesSpellData[self.mapID]
 
     if not insTab or not insTab.spell then
         return
@@ -419,8 +419,8 @@ local function SetUp(self)
     local nameText = C_ChallengeMode.GetMapUIInfo(self.mapID)--名称
     self.nameLable.name= nameText
 
-    if WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.ChallengesSpellTabs[self.mapID] then
-        nameText= WoWTools_DataMixin.ChallengesSpellTabs[self.mapID].name
+    if WoWTools_DataMixin.onlyChinese and WoWTools_ChallengesSpellData[self.mapID] then
+        nameText= WoWTools_ChallengesSpellData[self.mapID].name
     else
         nameText=nameText:match('%((.+)%)') or nameText
         nameText=nameText:match('%（(.+)%）') or nameText

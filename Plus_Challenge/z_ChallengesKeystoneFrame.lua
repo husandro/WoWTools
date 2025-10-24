@@ -153,7 +153,7 @@ local function Set_SlotKeystoneSay()
     end
 
 
-    local journalInstanceID= WoWTools_DataMixin.ChallengesSpellTabs[mapChallengeModeID] and WoWTools_DataMixin.ChallengesSpellTabs[mapChallengeModeID].ins
+    local journalInstanceID= WoWTools_ChallengesSpellData[mapChallengeModeID] and WoWTools_ChallengesSpellData[mapChallengeModeID].ins
     if journalInstanceID then
         name = select(8, EJ_GetInstanceInfo(journalInstanceID)) or ('|Hjournal:0:'..journalInstanceID..':23|h['..name..']|h')
     end

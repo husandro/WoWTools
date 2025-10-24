@@ -196,6 +196,14 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     end})
 
     self:Setup(EncounterJournalInstanceSelect.ScrollBox, {frame=EncounterJournal})
+
+
+    if EncounterJournal.TutorialsFrame then--11.2.7才有
+        local icon= EncounterJournal.TutorialsFrame.Contents:GetRegions()
+        if icon and icon:IsObjectType('Texture') then
+            icon:SetPoint('BOTTOMRIGHT', -27, 27)
+        end
+    end
 end
 
 
@@ -337,5 +345,8 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
     self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton)
     self:Init_BGMenu_Frame(EncounterJournal)
+
+
+
 end
 

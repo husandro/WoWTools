@@ -6340,7 +6340,9 @@
         "EditModeCheckButtonMixin",
         "EditModeManagerSettingCheckButtonMixin",
         "LFGListRemoveHeadersWithoutChildren",
-        "ACHIEVEMENT_BUTTON"
+        "ACHIEVEMENT_BUTTON",
+        "PaperDollFrameEquipSet",
+        "PaperDollFrameSaveSet"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

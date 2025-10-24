@@ -1,6 +1,33 @@
+local function Get_FlyoutNum(flyoutID)
+    local numSlots= flyoutID and select(3, GetFlyoutInfo(flyoutID)) or 0
+    if numSlots<=0 then
+        return ''
+    end
+
+    local num=0
+    for slot= 1, numSlots do
+        local isKnown2 = select(3, GetFlyoutSlotInfo(flyoutID, slot))
+        if isKnown2 then
+            num= num+1
+        end
+    end
+
+    return num..'/'..numSlots
+end
+
+
+
+
+
+
+
 
 
 local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
     local sub
     local name, _, numSlots2= GetFlyoutInfo(self.flyoutID)
     if not name or not numSlots2 then
@@ -50,22 +77,20 @@ end
 
 local function Init_All_Flyout()
 
-    local y= -145
+    local y= -105
     for _, data in pairs(WoWTools_DataMixin.FlyoutID) do--1024 MAX_SPELLS
 
-        local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {
+        local btn= WoWTools_ButtonMixin:Menu(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {
             atlas= data.isRaid and 'Raid',
             texture=not data.isRaid and 519384,
             size=32
         })
 
-        btn:SetPoint('TOPLEFT', 22, y)
+        btn.isRaid= data.isRaid
+        btn.flyoutID= data.flyoutID
 
-        btn:SetScript('OnClick', function(self)
-            MenuUtil.CreateContextMenu(self, function(...)
-                Init_Menu(...)
-            end)
-        end)
+        btn:SetPoint('TOPLEFT', 18, y)
+        btn:SetupMenu(Init_Menu)
 
         btn:SetScript('OnLeave', GameTooltip_Hide)-- function(self) self:SetAlpha(isKnown and 0.1 or 0.5) GameTooltip:Hide() end)
         btn:SetScript('OnEnter', function(self)
@@ -73,7 +98,7 @@ local function Init_All_Flyout()
             GameTooltip:ClearLines()
 
             local spells={}
-            for _, spellinfo in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
+            for _, spellinfo in pairs(WoWTools_ChallengesSpellData) do
                 if spellinfo.spell then
                     spells[spellinfo.spell]=true
                 end
@@ -103,7 +128,7 @@ local function Init_All_Flyout()
                             ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)
                             ..'('..slot
                             ..(spells[spellID] and ''
-                                or (WoWTools_DataMixin.Player.husandro and '|A:UI-LFG-PendingMark:0:0|a' or '')--为挑战数据，标记是否有数据，需要更新
+                                or ((WoWTools_DataMixin.Player.husandro and not self.isRaid) and '|A:UI-LFG-PendingMark:0:0|a' or '')--为挑战数据，标记是否有数据，需要更新
                             )
                         )
                     else
@@ -127,33 +152,16 @@ local function Init_All_Flyout()
         btn.ver:SetPoint('TOP', btn, 'BOTTOM', 0, 2)
         WoWTools_TextureMixin:GetWoWLog(data.ver, btn.ver)
 
-
         function btn:set_text()
-            local numSlots= select(3, GetFlyoutInfo(self.flyoutID)) or 0
-            local num=0
-            for slot= 1, numSlots do
-                local isKnown2 = select(3, GetFlyoutSlotInfo(self.flyoutID, slot))
-                if isKnown2 then
-                    num= num+1
-                end
-            end
-
-            btn.Text:SetText(
-                (num==numSlots and '|cnGREEN_FONT_COLOR:' or '')
-                .. num..'/'..numSlots
-            )
+            btn.Text:SetText(Get_FlyoutNum(self.flyoutID))
         end
 
-
-
-        btn.flyoutID= data.flyoutID
-
+        btn:SetScript('OnShow', function(self)
+            self:set_text()
+        end)
         btn:set_text()
 
-        btn:SetScript('OnShow', btn.set_text)
-
         y= y-52
-
     end
 end
 
@@ -170,15 +178,30 @@ end
 
 local function Init()
     WoWTools_DataMixin:Hook(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+        if not frame.spellBookItemInfo then
+            return
+        end
+        local r,g,b=1,1,1
+        local flyoutText
+        if frame:IsFlyout() then--if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
+            r,g,b= 1,0,1
+            if not frame.TextContainer.FlyoutText then
+                frame.TextContainer.FlyoutText= frame.TextContainer:CreateFontString(nil, 'OVERLAY', 'SystemFont_Med1')
+                frame.TextContainer.FlyoutText:SetPoint('BOTTOMLEFT', frame.TextContainer.Name,'TOPLEFT', 2,2)
+                frame.TextContainer.FlyoutText:SetTextColor(SPELLBOOK_FONT_COLOR:GetRGB())
+            end
+            flyoutText= Get_FlyoutNum(frame.spellBookItemInfo.actionID)
+        end
+        frame.Button.Arrow:SetVertexColor(r,g,b)
+        frame.Button.Border:SetVertexColor(r,g,b)
         frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
-        if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
-            frame.Button.Arrow:SetVertexColor(1,0,1)
-            frame.Button.Border:SetVertexColor(1,0,1)
-        else
-            frame.Button.Arrow:SetVertexColor(1,1,1)
-            frame.Button.Border:SetVertexColor(1,1,1)
+        if frame.TextContainer.FlyoutText then
+            frame.TextContainer.FlyoutText:SetText(flyoutText or '')
         end
     end)
+
+
+
 
     Init_All_Flyout()
 

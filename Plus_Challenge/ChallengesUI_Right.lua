@@ -64,7 +64,7 @@ local function Set_Text()--所有记录
         local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
         if name then
             if WoWTools_DataMixin.onlyChinese then
-                name= WoWTools_DataMixin.ChallengesSpellTabs[tab.mapID] and WoWTools_DataMixin.ChallengesSpellTabs[tab.mapID].name or name
+                name= WoWTools_ChallengesSpellData[tab.mapID] and WoWTools_ChallengesSpellData[tab.mapID].name or name
             end
             weekText= weekText and weekText..'|n' or ''
             local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
@@ -201,7 +201,7 @@ local function History_Tooltip(self)
         local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
         if name then
             if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
-                name= WoWTools_DataMixin.ChallengesSpellTabs[tab.mapID] and WoWTools_DataMixin.ChallengesSpellTabs[tab.mapID].name or name
+                name= WoWTools_ChallengesSpellData[tab.mapID] and WoWTools_ChallengesSpellData[tab.mapID].name or name
             end
             local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
             local text2= tab.c..'/'..tab.t

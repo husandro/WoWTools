@@ -44,7 +44,7 @@ end
     local find
     for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do
         local name, mapID  = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-        if mapID and name and not WoWTools_DataMixin.ChallengesSpellTabs[mapID] then
+        if mapID and name and not WoWTools_ChallengesSpellData[mapID] then
             data[name]= mapID
             find=true
         end
@@ -60,7 +60,7 @@ end
         dataIndex = dataIndex + 1;
         local mapID= data[name]
         if mapID then
-            WoWTools_DataMixin.ChallengesSpellTabs[mapID]={ins= instanceID}
+            WoWTools_ChallengesSpellData[mapID]={ins= instanceID}
         end
         instanceID, name = EJ_GetInstanceByIndex(dataIndex, false)
     end
@@ -117,7 +117,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --[[if PlayerGetTimerunningSeasonID() then
                 self:UnregisterAllEvents()
-                WoWTools_DataMixin.ChallengesSpellTabs={}
+                WoWTools_ChallengesSpellData={}
                 WoWTools_DataMixin.affixSchedule={}
                 return
             end]]
@@ -143,7 +143,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             else
 
-                for _, tab in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
+                for _, tab in pairs(WoWTools_ChallengesSpellData) do
                     WoWTools_DataMixin:Load({id=tab.spell, type='spell'})
                 end
 

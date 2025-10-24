@@ -820,7 +820,9 @@ end
 
 --点击，施法
 function WoWTools_TextureMixin.Events:Blizzard_ClickBindingUI()
-    --self:SetButton(ClickBindingFrameCloseButton)
+    self:SetButton(ClickBindingFrame.TutorialButton)
+    self:SetCheckBox(ClickBindingFrame.EnableMouseoverCastCheckbox)
+    self:SetButton(ClickBindingFrameCloseButton)
     self:SetNineSlice(ClickBindingFrame, 1, true)
     self:SetScrollBar(ClickBindingFrame)
     self:SetAlphaColor(ClickBindingFrameBg)

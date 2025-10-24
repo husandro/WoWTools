@@ -103,7 +103,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
 
     for i=1, #self.maps do
         local frame = self.DungeonIcons[i]
-        local data= WoWTools_DataMixin.ChallengesSpellTabs[frame.mapID]
+        local data= WoWTools_ChallengesSpellData[frame.mapID]
 
         local spellID= data and data.spell
 
