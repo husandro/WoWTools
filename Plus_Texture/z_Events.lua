@@ -2101,6 +2101,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
     self:SetEditBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
     self:SetMenu(PlayerSpellsFrame.TalentsFrame.LoadSystem.Dropdown)
+    self:SetUIButton(PlayerSpellsFrame.TalentsFrame.ApplyButton)
 
 
     self:HideTexture(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
