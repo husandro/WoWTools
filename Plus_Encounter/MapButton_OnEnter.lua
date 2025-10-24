@@ -11,7 +11,7 @@ local function Init()
         end
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(link or name, (dungeonAreaMapID and 'UiMapID|cnGREEN_FONT_COLOR:'..dungeonAreaMapID..'|r' or '')..(mapID and ' mapID|cnGREEN_FONT_COLOR:'..mapID..'|r' or ''))
+        GameTooltip:AddDoubleLine(link or name, (dungeonAreaMapID and 'dungeonAreaMapID|cnGREEN_FONT_COLOR:'..dungeonAreaMapID..'|r' or '')..(mapID and ' mapID|cnGREEN_FONT_COLOR:'..mapID..'|r' or ''))
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(description, nil,nil,nil, true)
         GameTooltip:AddLine(' ')

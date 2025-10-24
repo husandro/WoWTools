@@ -20,7 +20,7 @@ end
 local function Set_Map_Waypoint(self)
     local mapID = WorldMapFrame.mapID
     if not mapID then
-        print(WoWTools_DataMixin.onlyChinese and '没有找到MapID' or "Not found MapID")
+        print(WoWTools_DataMixin.onlyChinese and '没有找到uiMapID' or "Not found uiMapID")
         return
     elseif not C_Map.CanSetUserWaypointOnMap(mapID) then
         print(WoWTools_DataMixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map")

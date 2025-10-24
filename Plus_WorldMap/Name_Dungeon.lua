@@ -30,7 +30,7 @@ local function Init()
         local name, description, _, _, _, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.journalInstanceID)
 
         if mapID and mapID>0 then
-            tooltip:AddLine('mapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..mapID)
+            tooltip:AddLine('instanceID|cffffffff'..WoWTools_DataMixin.Icon.icon2..mapID)
         end
 
         tooltip:AddLine('journalInstanceID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.journalInstanceID)

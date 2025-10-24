@@ -208,7 +208,7 @@ local function Create(button)
         GameTooltip:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
         GameTooltip:AddDoubleLine(
             dungeonAreaMapID and dungeonAreaMapID>0 and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
-            mapID and 'mapID |cnGREEN_FONT_COLOR:'..mapID
+            mapID and 'instanceID |cnGREEN_FONT_COLOR:'..mapID
         )
         if self.mapChallengeModeID then
             GameTooltip:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)

@@ -977,13 +977,11 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings_Shared()
     end)
 end
 
-function WoWTools_TextureMixin.Events:Blizzard_SettingsDefinitions_Frame()
-    --
-
-end
+--function WoWTools_TextureMixin.Events:Blizzard_SettingsDefinitions_Frame()
 
 function WoWTools_TextureMixin.Events:Blizzard_Settings()
     self:SetUIButton(SettingsPanel.CloseButton)
+    self:SetUIButton(SettingsPanel.ApplyButton)
     self:SetUIButton(SettingsPanel.Container.SettingsList.Header.DefaultsButton)
 
     self:SetButton(SettingsPanel.ClosePanelButton)
@@ -2387,13 +2385,8 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
 end
 
 
---颜色选择器
-function WoWTools_TextureMixin.Frames:ColorPickerFrame()
-    self:SetUIButton(ColorPickerFrame.Footer.OkayButton)
-    self:SetUIButton(ColorPickerFrame.Footer.CancelButton)
-    if WoWToolsSave['Plus_Color'] and WoWToolsSave['Plus_Color'].disabled then
-        self:SetFrame(ColorPickerFrame.Header, {alpha=1})
-        self:SetFrame(ColorPickerFrame.Border, {alpha=1})
-        self:SetEditBox(ColorPickerFrame.Content.HexBox)
-    end
+
+--教程
+function WoWTools_TextureMixin.Events:Blizzard_TutorialManager()
+    self:SetFrame(TutorialDoubleKey_Frame)
 end

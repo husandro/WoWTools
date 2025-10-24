@@ -1,5 +1,5 @@
 
-WoWTools_MapIDAchievements = {
+WoWTools_MapIDAchievementData = {
 [998] = {
 6740,
 6882,

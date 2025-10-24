@@ -23,6 +23,9 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetScrollBar(QuestMapDetailsScrollFrame)
 
     self:SetFrame(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, {alpha=0})
+    self:SetUIButton(QuestMapFrame.QuestsFrame.DetailsFrame.AbandonButton)
+    self:SetUIButton(QuestMapFrame.QuestsFrame.DetailsFrame.ShareButton)
+    self:SetUIButton(QuestMapFrame.QuestsFrame.DetailsFrame.TrackButton)
 --共享，两边, 材质
     for _, icon in pairs({QuestMapFrame.QuestsFrame.DetailsFrame.ShareButton:GetRegions()}) do
         if icon:IsObjectType("Texture") then

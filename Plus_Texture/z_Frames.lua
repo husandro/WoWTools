@@ -601,3 +601,14 @@ function WoWTools_TextureMixin.Frames:MovieFrame()
     self:SetButton(MovieFrame.CloseDialog.ConfirmButton, {alpha=1})
     self:SetButton(MovieFrame.CloseDialog.ResumeButton, {alpha=1})
 end
+
+--颜色选择器
+function WoWTools_TextureMixin.Frames:ColorPickerFrame()
+    self:SetUIButton(ColorPickerFrame.Footer.OkayButton)
+    self:SetUIButton(ColorPickerFrame.Footer.CancelButton)
+    if WoWToolsSave['Plus_Color'] and WoWToolsSave['Plus_Color'].disabled then
+        self:SetFrame(ColorPickerFrame.Header, {alpha=1})
+        self:SetFrame(ColorPickerFrame.Border, {alpha=1})
+        self:SetEditBox(ColorPickerFrame.Content.HexBox)
+    end
+end

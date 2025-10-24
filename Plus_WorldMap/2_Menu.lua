@@ -43,7 +43,7 @@ local function Init_OnEnter(self)
     if uiMapID then
         local info = C_Map.GetMapInfo(uiMapID)
         if info then
-            GameTooltip:AddDoubleLine(info.name, 'mapID|A:poi-islands-table:0:0|a|cffffffff'..(info.mapID or uiMapID))--地图ID
+            GameTooltip:AddDoubleLine(info.name, 'uiMapID|A:poi-islands-table:0:0|a|cffffffff'..(info.mapID or uiMapID))--地图ID
             local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
             if uiMapGroupID then
                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g |cffffffff'..uiMapGroupID)
