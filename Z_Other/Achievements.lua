@@ -7,7 +7,7 @@ local addName
 
 
 local function Get_InstanceID()
-    local instanceID= select(8, GetInstanceInfo()) 
+    local instanceID= select(8, GetInstanceInfo())
     return instanceID
 end
 
@@ -27,7 +27,7 @@ local function Get_List_Tab(instanceID)
 
             table.insert(tab, {
                 text= (index<10 and '  ' or '')
-                    ..'|cffffffff00'
+                    ..'|cffffffff'
                     ..index..')|r '
                     ..'|T'..(icon or 0)..':0|t'
                     ..(completed and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
@@ -80,34 +80,53 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 --列表
     local instanceID= Get_InstanceID()
+    local tab= Get_List_Tab(instanceID)
+    local sub
+    if tab then
+        root:CreateDivider()
+        for _, d in pairs(tab) do
+            sub= root:CreateButton(
+                d.text,
+            function(desc)
+                WoWTools_LoadUIMixin:Achievement(desc.achievementID)
+                return MenuResponse.Open
+            end, {achievementID=d.achievementID})
+            WoWTools_SetTooltipMixin:Set_Menu(sub)
+        end
+        WoWTools_MenuMixin:SetScrollMode(root)
 
-    for mapID in pairs(WoWTools_MapIDAchievementData) do
-       local insName= EJ_GetInstanceInfo(mapID)
-       if insName then
-            local tab, count= Get_List_Tab(mapID)
-            if tab then
-                local col=(instanceID==mapID and '|cffff00ff' or '|cffffffff')
+        root:CreateDivider()
+        sub= root:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '全部' or ALL,
+        function()
+            return MenuResponse.Open
+        end)
+    else
+        sub= root
+    end
+
+    for insID in pairs(WoWTools_MapIDAchievementData) do
+        if instanceID~=insID then
+            local data, count= Get_List_Tab(insID)
+            if data then
     --标题
-                local sub= root:CreateButton(
-                    col
-                    ..WoWTools_TextMixin:CN(insName)
-                    ..'|r '
-                    ..(count or ''),
+                local sub2= root:CreateButton(
+                    insID..(count and ' '..count or ''),
                 function()
                     return MenuResponse.Open
-                end, {instanceID= instanceID})
+                end)
     --列表
-                for _, d in pairs(tab) do
-                    local sub2= sub:CreateButton(
+                for _, d in pairs(data) do
+                    local sub3= sub2:CreateButton(
                         d.text,
                     function(desc)
                         WoWTools_LoadUIMixin:Achievement(desc.achievementID)
                         return MenuResponse.Refresh
                     end, {achievementID=d.achievementID})
-                    WoWTools_SetTooltipMixin:Set_Menu(sub2)
+                    WoWTools_SetTooltipMixin:Set_Menu(sub3)
                 end
     --滚动条
-                WoWTools_MenuMixin:SetScrollMode(sub)
+                WoWTools_MenuMixin:SetScrollMode(sub2)
             end
         end
     end
