@@ -83,7 +83,6 @@ local function Init_Menu(self, root)
     local tab= Get_List_Tab(instanceID)
     local sub
     if tab then
-        root:CreateDivider()
         for _, d in pairs(tab) do
             sub= root:CreateButton(
                 d.text,
@@ -110,7 +109,7 @@ local function Init_Menu(self, root)
             local data, count= Get_List_Tab(insID)
             if data then
     --标题
-                local sub2= root:CreateButton(
+                local sub2= sub:CreateButton(
                     insID..(count and ' '..count or ''),
                 function()
                     return MenuResponse.Open
@@ -131,7 +130,7 @@ local function Init_Menu(self, root)
         end
     end
 
-    WoWTools_MenuMixin:SetScrollMode(root)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 end
 
 
