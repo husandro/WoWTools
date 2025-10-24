@@ -81,7 +81,7 @@ local function Init_All_Flyout()
 
             local name, description, numSlots2= GetFlyoutInfo(self.flyoutID)
             GameTooltip:AddLine(name, 1,1,1)
-            GameTooltip:AddLine(description, nil,nil,nil,true)
+            GameTooltip:AddLine(description, nil, nil, nil, true)
             GameTooltip:AddLine(' ')
 
             for slot= 1, numSlots2 do
