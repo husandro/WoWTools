@@ -149,7 +149,7 @@ local function Init()
     function btn:set_text()
         local instanceID= Get_InstanceID()
         local conut= select(2, Get_List_Tab(instanceID))
-        self.Text:SetText(conut or '0')
+        self.Text:SetText((instanceID and '' or '|cff626262')..(conut or '0'))
         self:SetWidth(math.max(self.Text:GetStringWidth()+4 , 23))
     end
     btn:SetScript('OnLeave', function() GameTooltip:Hide() end)
