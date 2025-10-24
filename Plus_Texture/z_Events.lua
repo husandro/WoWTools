@@ -2366,19 +2366,19 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     HousingDashboardFrame.CatalogContent.TempDisclaimer.DisclaimerText:SetAlpha(0.3)
 
     WoWTools_TextureMixin:Init_BGMenu_Frame(HousingDashboardFrame, {
-        --enabled=true,
-        --isNewButton=true,
         alpha=0.5,
         nineSliceAlpha=0,
         portraitAlpha=0.5,
         settings=function(_, textureName, alphaValue)--设置内容时，调用
-            HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background:SetAlpha(math.max(alphaValue, 0.5))
             local alpha= textureName and 0 or alphaValue or 1
-            HousingDashboardFrame.CatalogContent.PreviewBackground:SetAlpha(alpha)
-            HousingDashboardFrame.CatalogContent.Background:SetAlpha(alpha)
-            HousingDashboardFrame.CatalogContent.Categories.Background:SetAlpha(alpha)
-            HousingDashboardFrame.CatalogContent.Categories.TopBorder:SetAlpha(alpha)
-            HousingDashboardFrame.CatalogContent.OverlayDecorations.Divider:SetAlpha(alpha)
+            self:SetAlphaColor(HousingDashboardFrame.CatalogContent.PreviewFrame.PreviewBackground, nil, true, alpha)
+            self:SetAlphaColor(HousingDashboardFrame.CatalogContent.Background, nil, true, alpha)
+            self:SetAlphaColor(HousingDashboardFrame.CatalogContent.Categories.Background, nil, true, alpha)
+            self:SetAlphaColor(HousingDashboardFrame.CatalogContent.Categories.TopBorder, nil, true, alpha)
+            self:SetAlphaColor(HousingDashboardFrame.CatalogContent.Divider, nil, nil, alpha)
+
+            alpha= math.max(alphaValue, 0.5)
+            self:SetAlphaColor(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background, nil, true, alpha)
         end
     })
 end
