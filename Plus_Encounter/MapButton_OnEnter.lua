@@ -11,14 +11,19 @@ local function Init()
         end
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(link or name, (dungeonAreaMapID and 'dungeonAreaMapID|cnGREEN_FONT_COLOR:'..dungeonAreaMapID..'|r' or '')..(mapID and ' mapID|cnGREEN_FONT_COLOR:'..mapID..'|r' or ''))
+        GameTooltip:AddDoubleLine(
+            link or name,
+
+            (dungeonAreaMapID and 'uiMapID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..dungeonAreaMapID..'|r' or '')
+            ..(mapID and ' instanceID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..mapID..'|r' or '')
+        )
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(description, nil,nil,nil, true)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(bgImage and '|T'..bgImage..':26|t'..bgImage, loreImage and '|T'..loreImage..':26|t'..loreImage)
         GameTooltip:AddDoubleLine(buttonImage1 and '|T'..buttonImage1..':26|t'..buttonImage1, buttonImage2 and '|T'..buttonImage2..':26|t'..buttonImage2)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
+        --GameTooltip:AddLine(' ')
+        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
         GameTooltip:Show()
     end)
 end

@@ -35,8 +35,8 @@ local function Init()
 
         tooltip:AddLine('journalInstanceID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.journalInstanceID)
 
-        if dungeonAreaMapID and dungeonAreaMapID>0 and mapID~=dungeonAreaMapID then
-            tooltip:AddLine('dungeonAreaMapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..dungeonAreaMapID)
+        if dungeonAreaMapID and dungeonAreaMapID>0 then
+            tooltip:AddLine('uiMapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..dungeonAreaMapID)
         end
 
         local cn= WoWTools_TextMixin:CN(name)

@@ -82,6 +82,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetButton(ToyBox.PagingFrame.NextPageButton, {alpha=1})
 
 --传家宝
+    self:SetButton(HeirloomsJournal.PagingFrame.NextPageButton, {alpha=1})
+    self:SetButton(HeirloomsJournal.PagingFrame.PrevPageButton, {alpha=1})
     self:SetEditBox(HeirloomsJournalSearchBox)
     self:HideFrame(HeirloomsJournal.iconsFrame)
     self:SetNineSlice(HeirloomsJournal.iconsFrame)

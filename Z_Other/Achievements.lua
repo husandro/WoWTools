@@ -100,20 +100,24 @@ local function Init_Menu(self, root)
         end
         WoWTools_MenuMixin:SetScrollMode(root)
 
+        if self.isAutoHide then
+            return
+        end
+
         root:CreateDivider()
         sub= root:CreateButton(
             WoWTools_DataMixin.onlyChinese and '全部' or ALL,
         function()
             return MenuResponse.Open
         end)
+
+    elseif self.isAutoHide then
+        return
     else
         sub= root
+
     end
 
-    if self.isAutoHide then
-        WoWTools_MenuMixin:SetScrollMode(sub)
-        return
-    end
 
     for insID in pairs(WoWTools_MapIDAchievementData) do
         if self.instanceID~=insID then
@@ -121,7 +125,7 @@ local function Init_Menu(self, root)
             if data then
     --标题
                 local sub2= sub:CreateButton(
-                    insID..(count and ' '..count or ''),
+                     insID..(count and ' '..count or ''),
                 function()
                     return MenuResponse.Open
                 end)
@@ -162,7 +166,7 @@ local function Create_Button(frame, isAutoHide, point)
 
     frame.achievementButton.isAutoHide= isAutoHide
 
-    frame.achievementButton.Text= frame.achievementButton:CreateFontString(nil, 'ARTWORK', 'GameFontWhite')
+    frame.achievementButton.Text= frame.achievementButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
     frame.achievementButton.Text:SetPoint('CENTER')
 
     function frame.achievementButton:set_text()
@@ -224,6 +228,7 @@ local function Init_Achievement()
         self.instanceID= Get_InstanceID()
         self:set_text()
     end)
+
     Init_Achievement= function()end
 end
 
@@ -231,22 +236,33 @@ end
 
 
 local function Init_EncounterJournal()
-    WoWTools_DataMixin:Hook(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)
+--列表， 添加按钮
+    local function Init_Box(frame)
         if not frame:HasView() then
             return
         end
         for _, btn in pairs(frame:GetFrames() or {}) do
             do
                 if not btn.achievementButton then
-                    Create_Button(btn, true, function(b) b:SetPoint('TOPRIGHT', 0, 2) end)
+                    Create_Button(btn, true, function(b) b:SetPoint('TOPRIGHT', 0, 3) end)
                 end
             end
             btn.achievementButton.instanceID = btn.instanceID and select(10, EJ_GetInstanceInfo(btn.instanceID)) or nil
             btn.achievementButton:set_text()
         end
+    end
+    EncounterJournal.instanceSelect:HookScript('OnShow', function(frame)
+        Init_Box(frame.ScrollBox)
+    end)
+    WoWTools_DataMixin:Hook(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)
+        Init_Box(frame)
     end)
 
-    WoWTools_DataMixin:Hook('EncounterJournal_OpenJournal', function()
+--SearchBox,右边，添加一个按按钮
+    Create_Button(EncounterJournalSearchBox, true, function(btn) btn:SetPoint('RIGHT', EncounterJournalSearchBox, 'LEFT', -8, 0) end)
+    WoWTools_DataMixin:Hook('EncounterJournal_DisplayInstance', function(instanceID)
+        EncounterJournalSearchBox.achievementButton.instanceID=  instanceID and select(10, EJ_GetInstanceInfo(instanceID)) or nil
+        EncounterJournalSearchBox.achievementButton:set_text()
     end)
 
     Init_EncounterJournal=function()end

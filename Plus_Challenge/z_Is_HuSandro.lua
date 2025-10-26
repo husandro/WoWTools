@@ -123,14 +123,14 @@ local function Init()
     end
 
 
-    EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    --[[EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
         if arg1=='Blizzard_ChallengesUI' then
             C_Timer.After(0.3, function()
                 ChallengesKeystoneFrame:Show()
             end)
             EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
         end
-    end)
+    end)]]
 
 
     Init=function()end
