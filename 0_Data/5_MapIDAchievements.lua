@@ -1,4 +1,11 @@
-
+--[[
+数据来源
+https://wago.tools/db2/Achievement?locale=zhCN
+[Instance_ID]={
+    ID,
+    ...
+}
+]]
 WoWTools_MapIDAchievementData = {
 [998] = {
 6740,
