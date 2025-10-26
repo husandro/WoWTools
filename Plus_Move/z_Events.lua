@@ -454,6 +454,10 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
             self:Set_SizeScale(f)
         end
     end)
+
+--Search 结果
+    AchievementFrame.SearchResults:SetPoint('TOP', 0, -14)
+    self:Setup(AchievementFrame.SearchResults, {frame=AchievementFrame})
 end
 
 

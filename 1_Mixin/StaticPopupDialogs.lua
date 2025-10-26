@@ -325,7 +325,6 @@ end})
                 --s:HighlightText()
             end)
             edit:SetMaxLetters(0)
-            edit:SetWidth(self:GetWidth())
             edit:SetFocus()
         end,
         OnHide= function(self)
@@ -348,7 +347,7 @@ end})
             self:GetParent():Hide()
         end,
         hasEditBox = true,
-        --editBoxWidth = 320,
+        editBoxWidth = 320,
         timeout = 0,
         whileDead=true, hideOnEscape=true, exclusive=true,
     }

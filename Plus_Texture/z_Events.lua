@@ -92,11 +92,15 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     AchievementFrame.SearchBox:ClearAllPoints()
     AchievementFrame.SearchBox:SetPoint('LEFT', AchievementFrame.Header.PointBorder, 'RIGHT')
     AchievementFrame.SearchBox:SetPoint('RIGHT', AchievementFrameCloseButton, 'LEFT', -46, 0)
+--Search 列表
     AchievementFrame.SearchPreviewContainer:SetPoint('RIGHT', AchievementFrame.SearchBox)
     for i=1, 5 do
         AchievementFrame.SearchPreviewContainer['SearchPreview'..i]:SetPoint('RIGHT')
     end
+--Search 结果
     self:SetScrollBar(AchievementFrame.SearchResults)
+    self:SetButton(AchievementFrame.SearchResults.CloseButton, {alpha=1})
+    self:SetFrame(AchievementFrame.SearchResults, {alpha=1})
 
 
 --Tab
