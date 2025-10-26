@@ -104,11 +104,15 @@ local function Init_Menu(self, root)
 
     local instanceID= Get_InstanceID()
     if instanceID and instanceID~=self.instanceID then
-        tab= Get_List_Tab(instanceID)
+
+        local count
+        tab, count= Get_List_Tab(instanceID)
         if tab then
             root:CreateDivider()
+
             local sub= root:CreateButton(
-                GetInstanceInfo() or instanceID,
+                (GetInstanceInfo() or instanceID)
+                ..(count and ' '..count or ''),
             function()
                 return MenuResponse.Open
             end)
@@ -211,12 +215,13 @@ local function Init_EncounterJournal()
         end
     end
     EncounterJournal.instanceSelect.ScrollBox:HookScript('OnShow', function(frame)
-        C_Timer.After(0.1, function() Init_Box(frame) end)
+        C_Timer.After(0.1, function()
+            Init_Box(frame)
+        end)
     end)
     WoWTools_DataMixin:Hook(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)
         Init_Box(frame)
     end)
-   --WoWTools_DataMixin:Hook('EncounterJournal_ListInstances', function(frame)
 
 --SearchBox,右边，添加一个按按钮
     Create_Button(EncounterJournalSearchBox, function(btn) btn:SetPoint('RIGHT', EncounterJournalSearchBox, 'LEFT', -8, 0) end)
