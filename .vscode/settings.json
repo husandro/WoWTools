@@ -6344,7 +6344,8 @@
         "PaperDollFrameEquipSet",
         "PaperDollFrameSaveSet",
         "TutorialDoubleKey_Frame",
-        "EncounterJournal_OnLoad"
+        "EncounterJournal_OnLoad",
+        "EncounterJournal_DisplayInstance"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
