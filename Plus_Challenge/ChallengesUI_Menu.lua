@@ -81,10 +81,9 @@ local function Init_Menu(self, root)
 
 
 --传送门
-    name= '|A:WarlockPortal-Yellow-32x32:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '传送门' or SPELLS)
     sub= root:CreateCheckbox(
-    name,
+        '|A:WarlockPortal-Yellow-32x32:0:0|a|cnWARNING_FONT_COLOR:'
+        ..(WoWTools_DataMixin.onlyChinese and '传送门' or SPELLS),
     function()
         return not Save().hidePort
     end, function()
@@ -92,12 +91,11 @@ local function Init_Menu(self, root)
         WoWTools_ChallengeMixin:ChallengesUI_Porta()
     end)
     sub:SetTooltip(function(tooltip)
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         if WoWTools_DataMixin.onlyChinese then
-            tooltip:AddDoubleLine('提示：', '|cnWARNING_FONT_COLOR:如果出现错误，请禁用此功能')
-            --tooltip:AddDoubleLine('战斗中', '|cnWARNING_FONT_COLOR:不能关闭，窗口')
+            GameTooltip_AddErrorLine(tooltip,'不能打开: '..MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"))
         else
-            tooltip:AddDoubleLine(LABEL_NOTE, '|cnWARNING_FONT_COLOR:If you get error, please disable this')
-            tooltip:AddDoubleLine(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, '|cnWARNING_FONT_COLOR:Cannot close window')
+            GameTooltip_AddErrorLine(tooltip, 'Cannot: '..MicroButtonTooltipText(BINDING_NAME_TOGGLEGROUPFINDER, "TOGGLEGROUPFINDER"))
         end
     end)
     sub:SetEnabled(not isInCombat)
@@ -115,8 +113,8 @@ local function Init_Menu(self, root)
     end)
 
 --sub 提示
-    sub:CreateSpacer()
-    sub:CreateTitle(name)
+    sub:CreateDivider()
+    --sub:CreateTitle(name)
     WoWTools_MenuMixin:Reload(sub)--重新加载UI
 
 

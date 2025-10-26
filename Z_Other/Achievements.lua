@@ -12,15 +12,17 @@ local function Get_InstanceID()
 end
 
 local function Get_List_Tab(instanceID)
-    local mapData= WoWTools_MapIDAchievementData[instanceID]
+    local mapData= instanceID and WoWTools_MapIDAchievementData[instanceID]
     local to= mapData and #mapData or 0
     if to==0 then
         return
     end
 
     table.sort(mapData)
+
     local tab={}
-    local c= 0
+    local co= 0
+    to= 0
     for index, achievementID in pairs(mapData) do
         local id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
         if name then
@@ -39,12 +41,17 @@ local function Get_List_Tab(instanceID)
             })
 
             if completed then
-                c=c+1
+                co=co+1
             end
+            to= to+1
         end
     end
 
-    return tab, c..'/'..to
+    if to==0 then
+        return
+    end
+
+    return tab, (co==to and '|cnGREEN_FONT_COLOR:' or '')..co..'/'..to
 end
 
 
@@ -79,8 +86,7 @@ local function Init_Menu(self, root)
     })
     root:CreateDivider()
 --列表
-    local instanceID= Get_InstanceID()
-    local tab= Get_List_Tab(instanceID)
+    local tab= Get_List_Tab(self.instanceID)
     local sub
     if tab then
         for _, d in pairs(tab) do
@@ -104,8 +110,13 @@ local function Init_Menu(self, root)
         sub= root
     end
 
+    if self.isAutoHide then
+        WoWTools_MenuMixin:SetScrollMode(sub)
+        return
+    end
+
     for insID in pairs(WoWTools_MapIDAchievementData) do
-        if instanceID~=insID then
+        if self.instanceID~=insID then
             local data, count= Get_List_Tab(insID)
             if data then
     --标题
@@ -135,28 +146,46 @@ end
 
 
 
-local function Init()
-    local btn= CreateFrame('DropdownButton', 'WoWToolsAchievementsMenuButton', AchievementFrameCloseButton)--, 'WoWToolsMenuButtonTemplate')
-    btn:SetSize(23,23)
-    btn:SetPoint('RIGHT', AchievementFrameCloseButton, 'LEFT', -2, 0)
-    btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-    btn:SetPushedAtlas('PetList-ButtonSelect')
-    btn:SetHighlightAtlas('PetList-ButtonHighlight')
-    btn.Text= btn:CreateFontString(nil, 'ARTWORK', 'GameFontWhite')
-    btn.Text:SetPoint('CENTER')
 
-    function btn:set_text()
-        local instanceID= Get_InstanceID()
-        local conut= select(2, Get_List_Tab(instanceID))
-        self.Text:SetText((instanceID and '' or '|cff626262')..(conut or '0'))
+
+
+
+
+
+
+
+
+
+
+local function Create_Button(frame, isAutoHide, point)
+    frame.achievementButton= CreateFrame('DropdownButton', 'WoWToolsAchievementsMenuButton', frame)
+
+    frame.achievementButton.isAutoHide= isAutoHide
+
+    frame.achievementButton.Text= frame.achievementButton:CreateFontString(nil, 'ARTWORK', 'GameFontWhite')
+    frame.achievementButton.Text:SetPoint('CENTER')
+
+    function frame.achievementButton:set_text()
+        local conut= select(2, Get_List_Tab(self.instanceID))
+        self.Text:SetText(conut or '...')
         self:SetWidth(math.max(self.Text:GetStringWidth()+4 , 23))
+        if self.isAutoHide then
+            self:SetShown(conut)
+        end
     end
-    btn:SetScript('OnLeave', function() GameTooltip:Hide() end)
-    btn:SetScript('OnEnter', function(self)
-        local instanceID= Get_InstanceID()
+
+    point(frame.achievementButton)
+
+    frame.achievementButton:SetSize(23,23)
+    frame.achievementButton:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    frame.achievementButton:SetPushedAtlas('PetList-ButtonSelect')
+    frame.achievementButton:SetHighlightAtlas('PetList-ButtonHighlight')
+
+    frame.achievementButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
+    frame.achievementButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
-        local tab, count= Get_List_Tab(instanceID)
+        local tab, count= Get_List_Tab(self.instanceID)
         GameTooltip:AddDoubleLine(
             addName..(count and ' |cffffffff'..count or ''),
             WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE
@@ -169,14 +198,14 @@ local function Init()
         end
         GameTooltip:Show()
     end)
-    btn:SetScript('OnShow', function(self)
-        self:set_text()
-    end)
-    btn:SetScript('OnHide', function(self)
+    frame.achievementButton:SetScript('OnHide', function(self)
         self.Text:SetText('')
     end)
-    btn:SetupMenu(Init_Menu)
-    btn:set_text()
+
+    frame.achievementButton:SetupMenu(Init_Menu)
+
+
+end
 
 
 
@@ -187,7 +216,15 @@ local function Init()
 
 
 
-    Init= function()end
+
+local function Init_Achievement()
+    Create_Button(AchievementFrameCloseButton, false, function(btn) btn:SetPoint('RIGHT', AchievementFrameCloseButton, 'LEFT', -2, 0) end)
+
+    AchievementFrameCloseButton.achievementButton:SetScript('OnShow', function(self)
+        self.instanceID= Get_InstanceID()
+        self:set_text()
+    end)
+    Init_Achievement= function()end
 end
 
 
@@ -199,84 +236,17 @@ local function Init_EncounterJournal()
             return
         end
         for _, btn in pairs(frame:GetFrames() or {}) do
-            local journalInstanceID= btn.instanceID
-            local instanceID = journalInstanceID and select(10, EJ_GetInstanceInfo(journalInstanceID))
-            local mapData= instanceID and WoWTools_MapIDAchievementData[instanceID]
-            if not btn.AchievButton and mapData then
-                btn.AchievButton= CreateFrame('DropdownButton', 'WoWToolsAchievementsMenuButton', btn)
-                btn.AchievButton:SetSize(23,23)
-                btn.AchievButton:SetPoint('TOPRIGHT', 0, 2)
-                btn.AchievButton:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-                btn.AchievButton:SetPushedAtlas('PetList-ButtonSelect')
-                btn.AchievButton:SetHighlightAtlas('PetList-ButtonHighlight')
-                btn.AchievButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
-                btn.AchievButton:SetScript('OnEnter', function(self)
-                    GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-                    GameTooltip:ClearLines()
-                    local tab, conut= Get_List_Tab(self.instanceID)
-
-                    GameTooltip:AddDoubleLine(
-                        addName..(conut and ' |cffffffff'..conut or ''),
-                        WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE
-                    )
-
-                    if tab then
-                        GameTooltip:AddLine(' ')
-                        for _, data in pairs(tab) do
-                            GameTooltip:AddLine(data.text)
-                        end
-                    end
-                    GameTooltip:Show()
-                end)
---设置，菜单
-                btn.AchievButton:SetupMenu(function(self, root)
-                    if not self:IsMouseOver() or not self.instanceID then
-                        return
-                    end
---列表
-                    local tab, conut= Get_List_Tab(self.instanceID)
---打开选项界面
-                    WoWTools_MenuMixin:OpenOptions(root, {
-                        name=addName..(conut and ' '..conut or ''),
-                        category=WoWTools_OtherMixin.Category
-                    })
-
-                    if tab then
-                        root:CreateDivider()
-                        for _, d in pairs(tab) do
-                            local sub= root:CreateButton(
-                                d.text,
-                            function(desc)
-                                WoWTools_LoadUIMixin:Achievement(desc.achievementID)
-                                return MenuResponse.Open
-                            end, {achievementID=d.achievementID})
-                            WoWTools_SetTooltipMixin:Set_Menu(sub)
-                        end
-                        WoWTools_MenuMixin:SetScrollMode(root)
-                    end
-                end)
-
-                btn.AchievButton.Text= btn.AchievButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
-                btn.AchievButton.Text:SetPoint('CENTER')
-            end
-
-
-            if btn.AchievButton then
-                if btn.AchievButton.Text then
-                    local c= 0
-                    if mapData then
-                        for _, achievementID in pairs(mapData) do
-                            if not select(4, GetAchievementInfo(achievementID)) then
-                                c= c+1
-                            end
-                        end
-                    end
-                    btn.AchievButton.Text:SetText(c)
+            do
+                if not btn.achievementButton then
+                    Create_Button(btn, true, function(b) b:SetPoint('TOPRIGHT', 0, 2) end)
                 end
-                btn.AchievButton:SetShown(mapData and true or false)
-                btn.AchievButton.instanceID= instanceID
             end
+            btn.achievementButton.instanceID = btn.instanceID and select(10, EJ_GetInstanceInfo(btn.instanceID)) or nil
+            btn.achievementButton:set_text()
         end
+    end)
+
+    WoWTools_DataMixin:Hook('EncounterJournal_OpenJournal', function()
     end)
 
     Init_EncounterJournal=function()end
@@ -318,7 +288,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         else
             if C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
-                Init()
+                Init_Achievement()
             end
             if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
                 Init_EncounterJournal()
@@ -326,7 +296,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif arg1=='Blizzard_AchievementUI' and WoWToolsSave then
-        Init()
+        Init_Achievement()
         if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
             self:UnregisterEvent(event)
         end

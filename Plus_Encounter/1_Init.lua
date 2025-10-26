@@ -36,7 +36,7 @@ local function Init_EncounterJournal()--冒险指南界面
     WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精
 
 
-    --[[if not Save().hideEncounterJournal and Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
+    if not Save().hideEncounterJournal and Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
         local max= EJ_GetNumTiers()
         if max then
             local tier= math.min(Save().EncounterJournalTier, max)
@@ -49,7 +49,7 @@ local function Init_EncounterJournal()--冒险指南界面
     --记录上次选择版本
     WoWTools_DataMixin:Hook('EJ_SelectTier', function(tier)
         Save().EncounterJournalTier=tier
-    end)]]
+    end)
 
     Init_EncounterJournal=function()end
 end

@@ -396,14 +396,16 @@ Blizzard_SharedMapDataProviders/DungeonEntranceDataProvider.lua
 
 EncounterJournal_DisplayInstance
 ]]
-function WoWTools_LoadUIMixin:JournalInstance(difficultyID, journalID, difficultyID)
-    if not AdventureGuideUtil.IsAvailable()
-        or not journalID
+function WoWTools_LoadUIMixin:JournalInstance( journalType, journalInstanceID, difficultyID)
+    --[[if not AdventureGuideUtil.IsAvailable()
+        or not journalInstanceID
         or (InCombatLockdown() and (not EncounterJournal or not EncounterJournal:IsShown()))
     then
         return
+    end]]
+    if journalInstanceID then
+        AdventureGuideUtil.OpenJournalLink(journalType or 0, journalInstanceID, difficultyID or 23)
     end
-    AdventureGuideUtil.OpenJournalLink(difficultyID or 0, journalID, difficultyID or 23)
 end
     --[[do
         EncounterJournal_LoadUI()

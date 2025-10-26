@@ -34,6 +34,13 @@ end
 
 
 local function Set_OnEnter(self)
+    if not self.journalInstanceID and self.mapID then
+        local mapID = select(6, C_ChallengeMode.GetMapUIInfo(self.mapID))
+        if mapID then
+            self.journalInstanceID = C_EncounterJournal.GetInstanceForGameMap(mapID)
+        end
+    end
+
     local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self.mapID)
     if intimeInfo then
         GameTooltip:AddLine(' ')
@@ -314,7 +321,7 @@ local function Create_Label(frame)
     end)
     frame:SetScript('OnMouseDown', function(self)
         if not Save().hideIns then
-            WoWTools_LoadUIMixin:JournalInstance(16, self.journalInstanceID)
+            WoWTools_LoadUIMixin:JournalInstance(nil, self.journalInstanceID, nil)
         end
     end)
 end
