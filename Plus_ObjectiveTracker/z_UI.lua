@@ -2,6 +2,12 @@
 
 --任务，追踪柆
 function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
+    for frame in pairs(WoWTools_ObjectiveTabs) do
+        if _G[frame] and _G[frame].Header then
+            self:SetFrame(_G[frame].Header, {alpha=1})
+            self:SetFrame(_G[frame].Header.MinimizeButton, {alpha=1, index=1})
+        end
+    end
     self:SetAlphaColor(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, 0.3)
     self:SetButton(ObjectiveTrackerFrame.Header.MinimizeButton)
 
@@ -47,7 +53,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
             end
 
             Set_Collapsed(ObjectiveTrackerFrame:IsCollapsed())
-          
+
             WoWTools_DataMixin:Hook(ObjectiveTrackerFrame, 'SetCollapsed', function(_, collapsed)
                Set_Collapsed(collapsed)
             end)

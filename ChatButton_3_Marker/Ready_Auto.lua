@@ -175,7 +175,7 @@ local function Init()
 
         local difficultyName, _, _, _, _, _, toggleDifficultyID = GetDifficultyInfo(difficultyID)
         if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
-            difficultyName=  WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID) or difficultyName
+            difficultyName=  WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID) or difficultyName
             ReadyCheckFrameText:SetFormattedText(
                 (WoWTools_DataMixin.onlyChinese and "%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:" or READY_CHECK_MESSAGE..'|n'..RAID_DIFFICULTY..': ')
                 ..difficultyName..'|r', '')

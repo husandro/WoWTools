@@ -6,19 +6,8 @@
 local function Save()
     return WoWToolsSave['ObjectiveTracker']
 end
---[[
-ScenarioObjectiveTracker,
-UIWidgetObjectiveTracker,
-CampaignQuestObjectiveTracker,	
-QuestObjectiveTracker,
-AdventureObjectiveTracker,
-AchievementObjectiveTracker,
-MonthlyActivitiesObjectiveTracker,
-ProfessionsRecipeTracker,
-BonusObjectiveTracker,
-WorldQuestObjectiveTracker,
-]]
-local ObjectiveTabs={
+
+WoWTools_ObjectiveTabs={
     ['ScenarioObjectiveTracker']=false,
 
     ['QuestObjectiveTracker']=true,
@@ -46,7 +35,7 @@ local function Set_Collapse(collapse, isAllCollapse)
         return
     end
 
-    for frame, isCheck in pairs(ObjectiveTabs) do
+    for frame, isCheck in pairs(WoWTools_ObjectiveTabs) do
         frame= _G[frame]
         if frame:IsVisible()
             and not Is_Locked(frame)
@@ -173,7 +162,7 @@ local function Init_Menu(self, root)
         bit='%.2f',
     })
     sub:CreateSpacer()
-    
+
 
 
 
@@ -341,7 +330,7 @@ function WoWTools_ObjectiveMixin:Init_Menu()
 end
 
 --[[function WoWTools_ObjectiveMixin:Get_ObjectiveTab()
-    return ObjectiveTabs
+    return WoWTools_ObjectiveTabs
 end
 -移动
     WoWTools_MoveMixin:Setup(ObjectiveTrackerFrame.Header, {

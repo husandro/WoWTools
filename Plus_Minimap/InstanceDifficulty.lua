@@ -12,102 +12,37 @@ MinimapCluster.InstanceDifficulty.Guild.Border
 
 
 
---InstanceDifficulty.lua
-local function InstanceDifficulty_Update(self)
-    local isChallengeMode= self.ChallengeMode:IsShown()
-    local tooltip, color, name
-    local frame
-
-    if self.Guild:IsShown() then
-        frame = self.Guild
-    elseif isChallengeMode then
-        frame = self.ChallengeMode
-    elseif self.Default:IsShown() then
-        frame = self.Default
-    end
-
-    local difficultyID
-    if isChallengeMode then--挑战
-        tooltip, color, name= WoWTools_MapMixin:GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
-
-    elseif IsInInstance() then
-        difficultyID = select(3, GetInstanceInfo())
-        tooltip, color, name= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID)
-    end
-
-    if frame and color then
-        frame.Background:SetVertexColor(color.r, color.g, color.b)
-    end
-
-    if not self.labelType then
-        self.labelType= WoWTools_LabelMixin:Create(self, {color=true, level=22, alpha=0.5})
-        self.labelType:SetPoint('TOP', self, 'BOTTOM', 0, 4)
-    end
-
-    self.labelType:SetText(name and WoWTools_TextMixin:sub(name, 3, 7) or '')
-    self.tooltip= tooltip
-end
-
-
 
 
 local function InstanceDifficulty_Tooltip(tooltip, difficultyID)
     difficultyID = difficultyID or select(3,  GetInstanceInfo())
-    local tab={
+    local difficultyIDName= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID)
+    for _, ID in pairs({
         DifficultyUtil.ID.Raid40,
         DifficultyUtil.ID.RaidLFR,
-        DifficultyUtil.ID.DungeonNormal,
+        DifficultyUtil.ID.DungeonNormal,--1
         DifficultyUtil.ID.DungeonHeroic,
-        DifficultyUtil.ID.DungeonMythic,
+        DifficultyUtil.ID.DungeonMythic,--23
         DifficultyUtil.ID.DungeonChallenge,
         DifficultyUtil.ID.RaidTimewalker,
         25,
         205,--Seguace (5)LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城"
         208,
         220,
-    }
-    for _, ID in pairs(tab) do
-        local text, color= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
-        tooltip:AddDoubleLine(
-            (ID==difficultyID and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight) or '')
-            ..text
-            ..(ID==difficultyID and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or ''),
-
-            (color and color.hex or '')..ID
-        )
+    }) do
+        local text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
+        if text then
+            if ID==difficultyID or difficultyIDName==text then
+                tooltip:AddLine(text..'|A:common-icon-rotateright:0:0|a difficultyID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..difficultyID)
+            else
+                tooltip:AddLine(text)
+            end
+        end
     end
 end
 
 
 
-
-local function InstanceDifficulty_OnEnter(self)
-    if not IsInInstance() then
-        return
-    end
-
-    GameTooltip:SetOwner(MinimapCluster, "ANCHOR_LEFT")
-    GameTooltip:ClearLines()
-    --name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID
-    local instanceName, _, difficultyID, difficultyName, maxPlayers= GetInstanceInfo()
-    difficultyName= WoWTools_TextMixin:CN(difficultyName)
-    if difficultyName and maxPlayers then
-        difficultyName= difficultyName..(maxPlayers and ' ('..maxPlayers..')' or '')..' '..(difficultyID or '')
-    end
-
-    GameTooltip:AddDoubleLine(WoWTools_TextMixin:CN(instanceName), difficultyName)
-    GameTooltip:AddLine(self.tooltip)
-    GameTooltip:AddLine(' ')
-   
-    InstanceDifficulty_Tooltip(GameTooltip, difficultyID)
-
-    GameTooltip:AddLine(' ')
-    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MinimapMixin.addName)
-    GameTooltip:Show()
-    if self.labelType then
-        self.labelType:SetAlpha(1)
-    end
-end
 
 
 
@@ -120,6 +55,9 @@ local function Init()
         return
     end
 
+    btn.labelType= WoWTools_LabelMixin:Create(btn, {color=true, level=22, alpha=0.5})
+    btn.labelType:SetPoint('TOP', btn, 'BOTTOM', 0, 4)
+
     WoWTools_ColorMixin:Setup(btn.Default.Border, {type='Texture'})
     WoWTools_ColorMixin:Setup(btn.Guild.Border, {type='Texture'})
     WoWTools_ColorMixin:Setup(btn.ChallengeMode.Border, {type='Texture'})
@@ -127,13 +65,66 @@ local function Init()
     WoWTools_LabelMixin:Create(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
     btn.Default.Text:SetShadowOffset(1,-1)
 
-    WoWTools_DataMixin:Hook(btn, 'Update', InstanceDifficulty_Update)
+--InstanceDifficulty.lua
+    WoWTools_DataMixin:Hook(btn, 'Update', function(self)
+        local isChallengeMode= self.ChallengeMode:IsShown()
+        local difficultyName, color, name, tip
 
-    btn:HookScript('OnEnter', InstanceDifficulty_OnEnter)
-    btn:HookScript('OnLeave', function(self)
-        if self.labelType then
-            self.labelType:SetAlpha(0.5)
+        local frame
+
+        if self.Guild:IsShown() then
+            frame = self.Guild
+        elseif isChallengeMode then
+            frame = self.ChallengeMode
+        elseif self.Default:IsShown() then
+            frame = self.Default
         end
+
+        local difficultyID
+        if isChallengeMode then--挑战
+            difficultyName, color= WoWTools_MapMixin:GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
+
+        elseif IsInInstance() then
+            difficultyID = select(3, GetInstanceInfo())
+            difficultyName, color= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID)
+        end
+
+        if difficultyName then
+            name= difficultyName:match('|cff......(.-)|r') or difficultyName
+            name= WoWTools_TextMixin:sub(name, 3, 7)
+            tip= difficultyName..WoWTools_DataMixin.Icon.icon2..'difficultyID|cffffffff'..difficultyID
+        end
+
+        if frame and frame.Background and color then
+            frame.Background:SetVertexColor(color.r, color.g, color.b)
+        end
+        self.labelType:SetText(name or '')
+    end)
+
+
+
+    btn:HookScript('OnEnter', function(self)
+        local instanceName, _, difficultyID, difficultyName, maxPlayers= GetInstanceInfo()
+        if not instanceName then
+            return
+        end
+        if not GameTooltip:IsShown() then
+            GameTooltip:SetOwner(MinimapCluster, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            difficultyName= WoWTools_TextMixin:CN(difficultyName)
+            if difficultyName and maxPlayers then
+                difficultyName= difficultyName..(maxPlayers and ' ('..maxPlayers..')' or '')..' '..(difficultyID or '')
+            end
+
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..WoWTools_TextMixin:CN(instanceName), difficultyName)
+        end
+        GameTooltip:AddLine(' ')
+        InstanceDifficulty_Tooltip(GameTooltip, difficultyID)
+        GameTooltip:Show()
+        self.labelType:SetAlpha(1)
+    end)
+    btn:HookScript('OnLeave', function(self)
+        self.labelType:SetAlpha(0.5)
         GameTooltip:Hide()
     end)
 

@@ -17,11 +17,11 @@ function WoWTools_ChallengeMixin:GetRewardText(type)--得到，周奖励，信�
     local text
     for _, info in pairs(C_WeeklyRewards.GetActivities(type) or {}) do
         if info.level and info.level>=0 and info.type==type then
-            text= (text and text..'/' or '')
-            ..(info.type==Enum.WeeklyRewardChestThresholdType.Raid
+            text= (text and text..'/' or '')..info.level
+            --[[..(info.type==Enum.WeeklyRewardChestThresholdType.Raid
                 and WoWTools_MapMixin:GetDifficultyColor(nil, info.level)
                 or info.level
-            )
+            )]]
         end
     end
     if text=='0/0/0' then
