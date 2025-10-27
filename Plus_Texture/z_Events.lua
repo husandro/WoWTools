@@ -298,6 +298,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetTabButton(AuctionHouseFrameBuyTab)
     self:SetTabButton(AuctionHouseFrameSellTab)
     self:SetTabButton(AuctionHouseFrameAuctionsTab)
+    self:SetButton(AuctionHouseFrame.SearchBar.FavoritesSearchButton, {alpha=1})
     self:SetFrame(AuctionHouseFrame.SearchBar.FilterButton, {alpha= 0.3})
 
     self:SetNineSlice(AuctionHouseFrame.CategoriesList)
@@ -312,10 +313,11 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetNineSlice(AuctionHouseFrameAuctionsFrame.SummaryList)
 
 --购买
+    self:SetEditBox(BidAmountGold)
+    self:SetEditBox(BidAmountSilver)
     self:SetNineSlice(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay)
     self:SetNineSlice(AuctionHouseFrame.CommoditiesBuyFrame.ItemList)
     self:SetScrollBar(AuctionHouseFrame.CommoditiesBuyFrame.ItemList)
-
 
     self:SetNineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList)
     self:SetScrollBar(AuctionHouseFrame.BrowseResultsFrame.ItemList)
@@ -326,7 +328,8 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
 
     self:SetEditBox(AuctionHouseFrame.SearchBar.SearchBox)
 
-
+--出售, 商品
+    self:SetButton(AuctionHouseFrame.CommoditiesSellFrame.PostButton, {alpha=1})
     self:SetNineSlice(AuctionHouseFrame.CommoditiesSellList)
     self:SetScrollBar(AuctionHouseFrame.CommoditiesSellList)
     self:SetNineSlice(AuctionHouseFrame.CommoditiesSellFrame)
@@ -340,6 +343,9 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
     self:SetEditBox(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput.InputBox)
 
+--出售，物品
+    self:SetCheckBox(AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton)
+    self:SetButton(AuctionHouseFrame.ItemSellFrame.PostButton, {alpha=1})
     self:SetNineSlice(AuctionHouseFrame.ItemSellList)
     self:SetScrollBar(AuctionHouseFrame.ItemSellList)
 
@@ -354,7 +360,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
     self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
 
-    --拍卖，所在物品，页面
+--拍卖，所在物品，页面
     self:SetEditBox(AuctionHouseFrameAuctionsFrameBidsTab)
     self:SetEditBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
     self:SetFrame(AuctionHouseFrameAuctionsFrameGold, {alpha=0.3})
@@ -362,16 +368,17 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetNineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay)
     self:SetNineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList)
 
-    --时光
+--时光
     self:SetScrollBar(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
     self:SetNineSlice(AuctionHouseFrame.WoWTokenResults)
-    --购买
+--购买
+    self:SetButton(AuctionHouseFrame.ItemBuyFrame.ItemList.RefreshFrame.RefreshButton, {alpha=1})
     self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay)
     self:SetScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
     self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList)
 
 
-    --目录，列表
+--目录，列表
     local Alpha
     WoWTools_DataMixin:Hook('AuctionHouseFilterButton_SetUp', function(btn)
         if btn.NormalTexture then

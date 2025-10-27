@@ -141,7 +141,9 @@ function WoWTools_ItemMixin:GetItemStats(link)--取得，物品，次属性，�
         table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_EXTRA_ARMOR_SHORT], value=info['ITEM_MOD_EXTRA_ARMOR_SHORT'] or 1, index=2})
         num= num +1
     end]]
-    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
+    table.sort(tab, function(a,b)
+        return a.value>b.value and a.index== b.index
+    end)
     return tab
 end
 

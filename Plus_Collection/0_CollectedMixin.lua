@@ -51,7 +51,7 @@ function WoWTools_CollectedMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--�
         if isCollected==true then
             if icon then
                 if isSelf then
-                    text= format('|A:%s:0:0|a', 'common-icon-checkmark')
+                    text='|A:common-icon-checkmark:0:0|a'--绿色√
                 else
                     text= '|A:Adventures-Checkmark:0:0|a'--黄色√
                 end

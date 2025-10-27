@@ -145,29 +145,9 @@ end
 
 
 --拍卖行
-function WoWTools_ItemMixin.Events:Blizzard_AuctionHouseUI()
-    --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
-    WoWTools_DataMixin:Hook(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
-        WoWTools_ItemMixin:SetupInfo(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
-    end)
+--function WoWTools_ItemMixin.Events:Blizzard_AuctionHouseUI()
 
-    WoWTools_DataMixin:Hook(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
-        local itemKey = browseResult.itemKey
-        local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey) or {}
-        if itemKeyInfo.isCommodity then
-            WoWTools_ItemMixin:SetupInfo(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
-        else
-            WoWTools_ItemMixin:SetupInfo(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
-        end
 
-        if not self.countLable then
-            self.countLable= WoWTools_LabelMixin:Create(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay)
-            self.countLable:SetPoint('BOTTOM', self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay, 'TOP', 0,1)
-        end
-        local count= WoWTools_ItemMixin:GetCount(itemKey.itemID)
-        self.countLable:SetText(count or '')
-    end)
-end
 
 
 
@@ -182,8 +162,8 @@ function WoWTools_ItemMixin.Events:Blizzard_ItemInteractionUI()
 
     ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
     ItemInteractionFrame.Tip:SetScript('OnHide', ItemInteractionFrame.Tip.ClearLines)
-    WoWTools_DataMixin:Hook(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)
-        local itemInteractionFrame = self:GetParent():GetParent()
+    WoWTools_DataMixin:Hook(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(frame)
+        local itemInteractionFrame = frame:GetParent():GetParent()
         local itemLocation = itemInteractionFrame:GetItemLocation()
         local itemLink
         local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
@@ -191,17 +171,17 @@ function WoWTools_ItemMixin.Events:Blizzard_ItemInteractionUI()
             itemInteractionFrame.Tip:SetItemInteractionItem()
             itemLink= select(2, itemInteractionFrame.Tip:GetItem())
         end
-        WoWTools_ItemMixin:SetItemStats(self, itemLink, {}) --设置，物品，次属性，表
+        WoWTools_ItemMixin:SetItemStats(frame, itemLink, {}) --设置，物品，次属性，表
     end)
-    WoWTools_DataMixin:Hook(ItemInteractionFrame.ItemConversionFrame.ItemConversionInputSlot, 'RefreshIcon', function(self)
-        local itemInteractionFrame = self:GetParent():GetParent()
+    WoWTools_DataMixin:Hook(ItemInteractionFrame.ItemConversionFrame.ItemConversionInputSlot, 'RefreshIcon', function(frame)
+        local itemInteractionFrame = frame:GetParent():GetParent()
         local itemLocation = itemInteractionFrame:GetItemLocation()
         local itemLink
         local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
         if show then
             itemLink= C_Item.GetItemLink(itemLocation)
         end
-        WoWTools_ItemMixin:SetItemStats(self, itemLink, {}) --设置，物品，次属性，表
+        WoWTools_ItemMixin:SetItemStats(frame, itemLink, {}) --设置，物品，次属性，表
     end)
 end
 

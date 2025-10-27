@@ -293,9 +293,13 @@ end
 
 
 --拍卖行
+--Shared
+--Blizzard_AuctionHouseTableBuilder.lua
 function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
     AuctionHouseFrame.CategoriesList:SetPoint('BOTTOM', AuctionHouseFrame.MoneyFrameBorder.MoneyFrame, 'TOP',0,2)
+    AuctionHouseFrame.BrowseResultsFrame.ItemList.HeaderContainer:SetPoint('RIGHT')
     AuctionHouseFrame.BrowseResultsFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
+
     AuctionHouseFrameAuctionsFrame.SummaryList.Background:SetPoint('BOTTOM')
     AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background:SetPoint('BOTTOMRIGHT')
     AuctionHouseFrameAuctionsFrame.BidsList.Background:SetPoint('BOTTOMRIGHT')
@@ -304,7 +308,10 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
     AuctionHouseFrame.WoWTokenResults.Background:SetPoint('BOTTOMRIGHT')
     AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.Background:SetPoint('BOTTOM')
     AuctionHouseFrame.CommoditiesBuyFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
+
+    AuctionHouseFrame.ItemBuyFrame.ItemList.HeaderContainer:SetPoint('RIGHT')
     AuctionHouseFrame.ItemBuyFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
+
     AuctionHouseFrame.ItemBuyFrame.ItemDisplay:SetPoint('RIGHT',-3, 0)
     AuctionHouseFrame.ItemBuyFrame.ItemDisplay.Background:SetPoint('RIGHT')
 
