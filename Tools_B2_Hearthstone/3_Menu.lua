@@ -26,7 +26,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '绑定位置' or SPELL_TARGET_CENTER_LOC, function()
         return Save().showBindName
     end, function()
-        Save().showBindName= not Save().showBindName and true or nil
+        Save().showBindName= not Save().showBindName and true or false
         self:set_location()--显示, 炉石, 绑定位置
     end)
     sub2:SetTooltip(function(tooltip)
@@ -36,7 +36,7 @@ local function Init_Menu(self, root)
     sub2:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '截取名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHORT, NAME), function()
         return Save().showBindNameShort
     end, function()
-        Save().showBindNameShort= not Save().showBindNameShort and true or nil
+        Save().showBindNameShort= not Save().showBindNameShort and true or false
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
@@ -64,7 +64,7 @@ local function Init_Menu(self, root)
         end})
         return MenuResponse.Open
     end, {name=name})
-    
+
 
 --全部清除
     name= '|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
