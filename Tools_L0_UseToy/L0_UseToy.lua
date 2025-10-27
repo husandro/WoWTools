@@ -135,7 +135,11 @@ local function Remove_Toy(itemID)--移除
     elseif ToyButton.itemID==itemID then
         ToyButton:Init_Random(Save().lockedToy)
     end
-    print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
+    print(
+        addName..WoWTools_DataMixin.Icon.icon2,
+        WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
+        WoWTools_ItemMixin:GetLink(itemID)
+    )
 end
 
 

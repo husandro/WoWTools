@@ -1545,11 +1545,11 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
         OverlayPlayerCastingBarFrame,
     }) do
         if frame then
-            self:SetFrame(frame)
-            --[[self:SetAlphaColor(frame.Border)
+            --self:SetFrame(frame, {show={frame.Icon}})
+            self:SetAlphaColor(frame.Border)
             self:SetAlphaColor(frame.Background)
             self:SetAlphaColor(frame.TextBorder)
-            self:SetAlphaColor(frame.Shine)]]
+            self:SetAlphaColor(frame.Shine)
         end
     end
 

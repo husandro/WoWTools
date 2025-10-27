@@ -74,24 +74,26 @@ end
 
 
 
-local function Init(ToyButton)
-    if not ToyButton then
+local function Init(btn)
+    if not btn then
         Init=function()end
         return
     end
-    ToyButton:SetAttribute("type1", "macro")
 
-    ToyButton.text=WoWTools_LabelMixin:Create(ToyButton, {size=10, color=true, justifyH='CENTER'})
-    ToyButton.text:SetPoint('TOP', ToyButton, 'BOTTOM',0, 5)
+    --btn:SetAttribute("type1", "macro")
+    btn:SetAttribute("type1", "toy")
 
-    ToyButton.textureModifier= ToyButton:CreateTexture(nil, 'OVERLAY', nil, 2)
-    ToyButton.textureModifier:SetAllPoints()
-    ToyButton.textureModifier:AddMaskTexture(ToyButton.IconMask)
+    btn.text=WoWTools_LabelMixin:Create(btn, {size=10, color=true, justifyH='CENTER'})
+    btn.text:SetPoint('TOP', btn, 'BOTTOM',0, 5)
 
-    ToyButton.typeItems={}
+    btn.textureModifier= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
+    btn.textureModifier:SetAllPoints()
+    btn.textureModifier:AddMaskTexture(btn.IconMask)
+
+    btn.typeItems={}
 
     for _, data in pairs(ModifiedMenuTab) do
-        local icon= ToyButton:CreateTexture(nil,'BORDER', nil, 1)
+        local icon= btn:CreateTexture(nil,'BORDER', nil, 1)
         icon:SetSize(10, 10)
         icon:SetTexture(data.icon)
 
@@ -103,11 +105,11 @@ local function Init(ToyButton)
             icon:SetPoint('TOPLEFT',2,-2)
         end
 
-        ToyButton.IconMask:SetSize(10,10)
-        ToyButton.IconMask:SetPoint('CENTER', icon)
-        icon:AddMaskTexture(ToyButton.IconMask)
+        btn.IconMask:SetSize(10,10)
+        btn.IconMask:SetPoint('CENTER', icon)
+        icon:AddMaskTexture(btn.IconMask)
 
-        ToyButton.typeItems[data.itemID]= true
+        btn.typeItems[data.itemID]= true
     end
 
 
@@ -118,7 +120,7 @@ local function Init(ToyButton)
 
 
     --设置 Alt Shift Ctrl
-    function ToyButton:set_alt()
+    function btn:set_alt()
         self.isAltEvent=nil
         if not self:CanChangeAttribute() then
             self.isAltEvent=true
@@ -140,26 +142,25 @@ local function Init(ToyButton)
             elseif itemName then
                 self:SetAttribute(data.type.."-type1", "item")
                 self:SetAttribute(data.type.."-item1",  itemName)
-            else
-
-                self.isAltEvent=true
             end
-            if not 
+
+            self.isAltEvent= self.isAltEvent or not (toyName and itemName)
         end
+
         if self.isAltEvent then
             self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
         end
     end
 
 
-    function ToyButton:get_modifier_index()
+    function btn:get_modifier_index()
         return
             IsAltKeyDown() and 1
             or (IsControlKeyDown() and 2)
             or (IsShiftKeyDown() and 3)
     end
 
-    function ToyButton:set_textureModifier(down)
+    function btn:set_textureModifier(down)
         local itemID, icon, isDesaturated
         if GameTooltip:IsOwned(self) then
             if down==1 then
@@ -181,12 +182,12 @@ local function Init(ToyButton)
 
 
     --取得，炉石, 绑定位置
-    function ToyButton:get_location()
+    function btn:get_location()
         return WoWTools_TextMixin:CN(GetBindLocation())
     end
 
     --显示, 炉石, 绑定位置
-    function ToyButton:set_location()
+    function btn:set_location()
         local text
         if Save().showBindName then
             text= self:get_location()
@@ -198,14 +199,14 @@ local function Init(ToyButton)
     end
 
     --提示, 炉石, 绑定位置，文本
-    function ToyButton:set_tooltip_location(tooltip)
+    function btn:set_tooltip_location(tooltip)
         if tooltip.textLeft then
             tooltip.textLeft:SetText(self:get_location() or '')
         end
     end
 
     --CD
-    function ToyButton:set_cool(itemID)
+    function btn:set_cool(itemID)
         WoWTools_CooldownMixin:SetFrame(self, {itemID=itemID or self.itemID})--主图标冷却
     end
 
@@ -221,7 +222,7 @@ local function Init(ToyButton)
 
 
 
-    ToyButton:SetScript('OnEvent', function(self, event, arg1, arg2)
+    btn:SetScript('OnEvent', function(self, event, arg1, arg2)
         if event=='ITEM_DATA_LOAD_RESULT' then
             if arg1 and arg2 then--success then
                 if self.typeItems[arg1] then
@@ -279,7 +280,7 @@ local function Init(ToyButton)
 
 
 --Tooltip
-    function ToyButton:set_tooltip()
+    function btn:set_tooltip()
         self.elapsed= 0
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
@@ -301,9 +302,9 @@ local function Init(ToyButton)
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
             GameTooltip:AddDoubleLine(
                 WoWTools_DataMixin.onlyChinese and '随机' or 'Random',
-                (ToyButton.Locked_Value and '' or '|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r')
-                ..(ToyButton.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')
-                ..(ToyButton.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
+                (btn.Locked_Value and '' or '|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r')
+                ..(btn.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')
+                ..(btn.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
                 ..WoWTools_DataMixin.Icon.mid
             )
 
@@ -339,7 +340,7 @@ local function Init(ToyButton)
 
 
 
-    ToyButton:SetScript("OnEnter",function(self)
+    btn:SetScript("OnEnter",function(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltip()
         local Elapsed=1
@@ -363,7 +364,7 @@ local function Init(ToyButton)
         self:set_textureModifier(1)
     end)
 
-    ToyButton:SetScript("OnLeave",function(self)
+    btn:SetScript("OnLeave",function(self)
         GameTooltip:Hide()
         self:SetScript('OnUpdate',nil)
         self:Get_Random_Value()
@@ -371,16 +372,16 @@ local function Init(ToyButton)
         self:set_textureModifier()
     end)
 
-    ToyButton:SetScript("OnMouseDown", function(_, d)
+    btn:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            WoWTools_HearthstoneMixin:Setup_Menu()
+            WoWTools_HearthstoneMixin:Setup_Menu(self)
         end
     end)
 
-    ToyButton:SetScript("OnMouseUp", function(self, d)
+    btn:SetScript("OnMouseUp", function(self, d)
         self:Get_Random_Value()
     end)
-    ToyButton:SetScript('OnMouseWheel', function(self)
+    btn:SetScript('OnMouseWheel', function(self)
         self.Selected_Value=nil
         self:Get_Random_Value()
     end)
@@ -395,9 +396,9 @@ local function Init(ToyButton)
 
 
 
-    Mixin(ToyButton, WoWTools_RandomMixin)
+    Mixin(btn, WoWTools_RandomMixin)
 
-    function ToyButton:Get_Random_Data()--取得数据库, {数据1, 数据2, 数据3, ...}
+    function btn:Get_Random_Data()--取得数据库, {数据1, 数据2, 数据3, ...}
         local tab={}
         for itemID in pairs(Save().items) do
             if PlayerHasToy(itemID) then
@@ -407,7 +408,7 @@ local function Init(ToyButton)
         return tab
     end
 
-    function ToyButton:Set_Random_Value(itemID)--设置，随机值
+    function btn:Set_Random_Value(itemID)--设置，随机值
         self.is_Random_Eevent=nil
         if not self:CanChangeAttribute() then
             self.is_Random_Eevent=true
@@ -415,24 +416,26 @@ local function Init(ToyButton)
             return
         end
 
-        local toyName=select(2, C_ToyBox.GetToyInfo(itemID)) or C_Item.GetItemNameByID(itemID)
+        --[[local toyName=select(2, C_ToyBox.GetToyInfo(itemID)) or C_Item.GetItemNameByID(itemID)
         if not toyName then
             self.is_Random_Eevent=true
             self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
             return
-        end
+        end]]
 
         self.itemID=itemID
-        self:SetAttribute("macrotext1",  '/usetoy '..toyName)
+        --self:SetAttribute("macrotext1",  '/usetoy '..toyName)
+        self:SetAttribute("toy1",  itemID)
+
         self.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 134414)
 
         self:set_cool()
     end
-    function ToyButton:Set_OnlyOneValue_Random()--当数据 <=1 时，设置值
+    function btn:Set_OnlyOneValue_Random()--当数据 <=1 时，设置值
         self:Set_Random_Value(self.Selected_Value or self.Locked_Value or self.Random_List[1] or 200869)--欧恩牌清淡饮水角
     end
 
-    ToyButton:Init_Random(Save().lockedToy)--初始
+    btn:Init_Random(Save().lockedToy)--初始
 
 
 
@@ -441,16 +444,16 @@ local function Init(ToyButton)
 
 
 
-    
 
-    function ToyButton:set_event()
+
+    function btn:set_event()
         if self:IsVisible() then
             self:RegisterEvent('HEARTHSTONE_BOUND')
             self:RegisterEvent('TOYS_UPDATED')
             self:RegisterEvent('NEW_TOY_ADDED')
             self:RegisterEvent('UI_MODEL_SCENE_INFO_UPDATED')
             self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-            
+
             self:Get_Random_Value()
         else
             self:UnregisterAllEvents()
@@ -458,8 +461,8 @@ local function Init(ToyButton)
         end
     end
 
-    ToyButton:SetScript('OnShow', function(self) self:set_event() end)
-    ToyButton:SetScript('OnHide', function(self) self:set_event() end)
+    btn:SetScript('OnShow', function(self) self:set_event() end)
+    btn:SetScript('OnHide', function(self) self:set_event() end)
 
 
 
@@ -474,10 +477,10 @@ local function Init(ToyButton)
 
 
     --C_Timer.After(4, function()
-    ToyButton:set_alt()
-    ToyButton:set_location()
-    ToyButton:Get_Random_Value()
-    ToyButton:set_event()
+    btn:set_alt()
+    btn:set_location()
+    btn:Get_Random_Value()
+    btn:set_event()
 
     Init=function()end
 end
@@ -500,7 +503,7 @@ end
 
 
 function WoWTools_HearthstoneMixin:Init_Button()
-    Init(self.ToyButton)
+    Init(WoWTools_ToolsMixin:Get_ButtonForName('Hearthstone'))
 end
 
 

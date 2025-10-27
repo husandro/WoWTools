@@ -32,7 +32,7 @@ local P_Save={
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -47,16 +47,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_HearthstoneMixin.addName='|A:delves-bountiful:0:0|a'..(WoWTools_DataMixin.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
-            WoWTools_HearthstoneMixin.ToyButton= WoWTools_ToolsMixin:CreateButton({
+            WoWTools_ToolsMixin:CreateButton({
                 name='Hearthstone',
                 tooltip= WoWTools_HearthstoneMixin.addName,
-                --isMenu=true,
             })
 
 
-            if not WoWTools_HearthstoneMixin.ToyButton then
+            if not WoWTools_ToolsMixin:Get_ButtonForName('Hearthstone') then
                 self:UnregisterAllEvents()
             else
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 for itemID, _ in pairs(WoWToolsSave['Tools_Hearthstone'].items) do
                     WoWTools_DataMixin:Load({id=itemID, type='item'})
@@ -73,7 +73,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWTools_HearthstoneMixin.ToyButton then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_HearthstoneMixin:Init_Button()
         self:UnregisterEvent(event)
     end
