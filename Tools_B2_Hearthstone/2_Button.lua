@@ -131,7 +131,7 @@ local function Init(ToyButton)
         for _, data in pairs(ModifiedMenuTab) do
             itemName= C_Item.GetItemNameByID(data.itemID)
             toyName= select(2, C_ToyBox.GetToyInfo(data.itemID))
-            if toyName then
+            if toyName or not itemName then
                 --[[self:SetAttribute(data.type.."-type1", "macro")
                 self:SetAttribute(data.type.."-macrotext1",  '/usetoy '..toyName)]]
                 self:SetAttribute(data.type.."-type1", "toy")
@@ -141,8 +141,10 @@ local function Init(ToyButton)
                 self:SetAttribute(data.type.."-type1", "item")
                 self:SetAttribute(data.type.."-item1",  itemName)
             else
+
                 self.isAltEvent=true
             end
+            if not 
         end
         if self.isAltEvent then
             self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
