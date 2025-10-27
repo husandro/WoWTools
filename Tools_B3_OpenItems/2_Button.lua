@@ -28,18 +28,22 @@ local Event_Unit={
 
 
 
-local function Init(OpenButton)
+local function Init()
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('OpenItems')
+    if not btn then
+        return
+    end
 
-    OpenButton.count=WoWTools_LabelMixin:Create(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
-    OpenButton.count:SetPoint('BOTTOMRIGHT')
-    OpenButton.noText= '|A:talents-button-reset:0:0|a'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
-    OpenButton.useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(WoWTools_DataMixin.onlyChinese and '使用' or USE)
+    btn.count=WoWTools_LabelMixin:Create(btn, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
+    btn.count:SetPoint('BOTTOMRIGHT')
+    btn.noText= '|A:talents-button-reset:0:0|a'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+    btn.useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(WoWTools_DataMixin.onlyChinese and '使用' or USE)
 
-    WoWTools_KeyMixin:Init(OpenButton, function() return Save().KEY end)
+    WoWTools_KeyMixin:Init(btn, function() return Save().KEY end)
 
-    Mixin(OpenButton, WoWTools_ItemLocationMixin)
+    Mixin(btn, WoWTools_ItemLocationMixin)
 
-    function OpenButton:set_tooltips()
+    function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         local bagID, slotIndex= self:GetBagAndSlot()
@@ -79,7 +83,7 @@ local function Init(OpenButton)
     end
 
 
-    OpenButton:SetScript("OnEnter",  function(self)
+    btn:SetScript("OnEnter",  function(self)
         WoWTools_OpenItemMixin:Get_Item()
         WoWTools_KeyMixin:SetTexture(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
@@ -102,7 +106,7 @@ local function Init(OpenButton)
             end
         end)
     end)
-    OpenButton:SetScript("OnLeave",function(self)
+    btn:SetScript("OnLeave",function(self)
         GameTooltip_Hide()
         ResetCursor()
         WoWTools_OpenItemMixin:Get_Item()
@@ -111,7 +115,7 @@ local function Init(OpenButton)
     end)
 
 
-    OpenButton:SetScript("OnMouseDown", function(self,d)
+    btn:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
             if self:IsValid() and self:GetItemID()==itemID then
@@ -127,7 +131,7 @@ local function Init(OpenButton)
         if (d=='RightButton' and not key) then
             WoWTools_OpenItemMixin:Setup_Menu()
         else
-            if d=='LeftButton' and not key and OpenButton.IsEquipItem and not PaperDollFrame:IsVisible() then
+            if d=='LeftButton' and not key and btn.IsEquipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
             end
             if MerchantFrame:IsShown() and MerchantFrame:CanChangeAttribute() then
@@ -142,7 +146,7 @@ local function Init(OpenButton)
         end
     end)
 
-    OpenButton:SetScript('OnMouseWheel',function(self, d)
+    btn:SetScript('OnMouseWheel',function(self, d)
         if IsModifierKeyDown() then
             return
         end
@@ -153,18 +157,18 @@ local function Init(OpenButton)
             self:settings()
         end
     end)
-    OpenButton:SetScript('OnShow', function(self)
+    btn:SetScript('OnShow', function(self)
         self:settings()
         WoWTools_OpenItemMixin:Get_Item()
     end)
 
-    OpenButton:SetScript('OnHide', function(self)
+    btn:SetScript('OnHide', function(self)
         self:settings()
     end)
 
 
 
-    OpenButton:SetScript('OnEvent', function(self, event)
+    btn:SetScript('OnEvent', function(self, event)
 
         if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
             C_Timer.After(1, function()
@@ -208,10 +212,10 @@ local function Init(OpenButton)
 
 
 
-    OpenButton:RegisterEvent('PLAYER_MAP_CHANGED')
-    OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    btn:RegisterEvent('PLAYER_MAP_CHANGED')
+    btn:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-    function OpenButton:settings()
+    function btn:settings()
         self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
                         or not self:IsVisible()
                         or C_PetBattles.IsInBattle()
@@ -243,9 +247,9 @@ local function Init(OpenButton)
 
 
 --设置捷键
-    function OpenButton:set_key(isDisabled)
+    function btn:set_key(isDisabled)
         if Save().KEY then
-            WoWTools_KeyMixin:Setup(OpenButton,
+            WoWTools_KeyMixin:Setup(self,
                 self.isDisabled
                 or not self:IsValid()
                 or IsMounted()
@@ -258,28 +262,27 @@ local function Init(OpenButton)
     end
 
 --是否已绑定KEY
-    function OpenButton:get_key()
+    function btn:get_key()
         local key= Save().KEY
         if key then
             local col= GetBindingByKey(key)==self:GetName()..':LeftButton' and '|cnGREEN_FONT_COLOR:' or '|cff828282'
             return col..(WoWTools_DataMixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|r'
         end
     end
-    
 
 --冷却条
-    function OpenButton:set_cooldown()
+    function btn:set_cooldown()
         local start, duration, enable
         if self:IsValid() then
-            start, duration, enable = OpenButton:GetItemCooldown()
+            start, duration, enable = self:GetItemCooldown()
             self.texture:SetDesaturated(not enable)
         end
-        WoWTools_CooldownMixin:Setup(OpenButton, start, duration, nil, true,nil, true)
+        WoWTools_CooldownMixin:Setup(self, start, duration, nil, true,nil, true)
     end
 
 
 --禁用当物品
-    function OpenButton:set_disabled_current_item()
+    function btn:set_disabled_current_item()
         if self:IsValid() then
             local itemID= self:GetItemID()
             if itemID then
@@ -296,9 +299,11 @@ local function Init(OpenButton)
 
 
 
-    OpenButton:settings()
+    btn:settings()
 
     WoWTools_OpenItemMixin:Get_Item()
+
+    Init=function()end
 end
 
 
@@ -314,5 +319,5 @@ end
 
 
 function WoWTools_OpenItemMixin:Init_Button()
-    Init(self.OpenButton)
+    Init(WoWTools_ToolsMixin:Get_ButtonForName('OpenItems'))
 end

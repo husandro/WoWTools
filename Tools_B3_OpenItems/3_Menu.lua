@@ -337,7 +337,10 @@ end
 
 
 function WoWTools_OpenItemMixin:Setup_Menu()
-    MenuUtil.CreateContextMenu(self.OpenButton, function(...) Init_Menu(...) end)
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('OpenItems')
+    if btn then
+        MenuUtil.CreateContextMenu(btn, Init_Menu)
+    end
 end
 
 function WoWTools_OpenItemMixin:Edit_Item(...)

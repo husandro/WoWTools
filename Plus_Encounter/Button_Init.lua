@@ -215,7 +215,7 @@ end]]
         for guid, info in pairs(WoWTools_WoWDate or {}) do
             if guid and info then
                 local find
-                for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
+                for bossName, tab in pairs(info.Instance.ins) do----ins={[instanceID]={[difficultyID]=已击杀数}}
                     local text
                     for difficultyName, killed in pairs(tab) do
                         text= (text and text..' ' or '')..difficultyName..killed

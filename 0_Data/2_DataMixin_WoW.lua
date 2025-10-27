@@ -15,7 +15,7 @@ WoWTools_WoWDate[guid]= {--默认数据
 
     Keystone={week=WoWTools_DataMixin.Player.Week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
 
-    Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
+    Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[instanceID]={[difficultyID]=已击杀数}}
     Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss={[name]=worldBossID}}}
     Rare={day=day, boss={[name]=guid}},--稀有 
     Time={},--{totalTime=总游戏时间, levelTime=当前等级时间, upData=更新时间}总游戏时间
@@ -440,9 +440,10 @@ end)
 
 --副本, 世界BOSS
 EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()--encounterID, encounterName)
-    local tab={}--已杀世界BOSS
+--已杀世界BOSS
+    local tab={}
     for i=1, GetNumSavedWorldBosses() do--{week=周数, boss={[name]=worldBossID}}}
-        local bossName, worldBossID, reset=GetSavedWorldBossInfo(i)
+        local bossName, worldBossID, reset= GetSavedWorldBossInfo(i)
         if bossName and (not reset or reset>0) then
             tab[bossName] = worldBossID
             if WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[bossName] then--清除稀有怪
@@ -456,19 +457,20 @@ EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()--
         day= date('%x'),
         boss=tab
     }
-
+--副本
     tab={}
-    for i=1, GetNumSavedInstances() do--副本
-        local name, _, reset, difficulty, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
-        if name and reset and reset>0 and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 and difficultyName then
+    for i=1, GetNumSavedInstances() do
+        local name, _, reset, difficulty, _, _, _, _, _, difficultyName, numEncounters, encounterProgress, _, instanceID = GetSavedInstanceInfo(i)
+        if name and reset and reset>0 and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 and instanceID and difficulty then
 
             local killed = encounterProgress ..'/'..numEncounters;
-            killed = encounterProgress ==numEncounters and '|cnGREEN_FONT_COLOR:'..killed..'|r' or killed
-            difficultyName=WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficulty)
+            killed = encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..killed..'|r' or killed
 
-            tab[name] = tab[name] or {}
-
-            tab[name][difficultyName]=killed
+            --difficultyName= WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficulty)
+            --tab[name] = tab[name] or {}
+            --tab[name][difficultyName]=killed
+            tab[instanceID]= tab[instanceID] or {}
+            tab[instanceID][difficulty]=killed
         end
     end
     WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Instance = {
@@ -680,7 +682,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
             Keystone={week=WoWTools_DataMixin.Player.Week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
 
-            Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
+            Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[instanceID]={[difficultyID]=已击杀数}}
             Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss={[name]=worldBossID}}}
             Rare={day=day, boss={}},--稀有 [name]=guid
             Time={},--{totalTime=总游戏时间, levelTime=当前等级时间, upData=更新时间}总游戏时间

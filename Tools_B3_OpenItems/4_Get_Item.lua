@@ -260,6 +260,9 @@ end
 
 
 function WoWTools_OpenItemMixin:Get_Item()
-    Get_Items(self.OpenButton)--取得背包物品信息
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('OpenItems')
+    if btn then
+        Get_Items(btn)--取得背包物品信息
+    end
 end
 

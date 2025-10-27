@@ -180,7 +180,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -190,19 +190,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_OpenItemMixin.addName= '|A:BonusLoot-Chest:0:0|a'..(WoWTools_DataMixin.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
 
-            WoWTools_OpenItemMixin.OpenButton= WoWTools_ToolsMixin:CreateButton({
+            WoWTools_ToolsMixin:CreateButton({
                 name='OpenItems',
                 tooltip=WoWTools_OpenItemMixin.addName,
             })
 
-            if WoWTools_OpenItemMixin.OpenButton then
-                self:UnregisterEvent(event)
-            else
-                self:UnregisterAllEvents()
+            if WoWTools_ToolsMixin:Get_ButtonForName('OpenItems') then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
+            self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWTools_OpenItemMixin.OpenButton then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_OpenItemMixin:Init_Button()
         self:UnregisterEvent(event)
     end

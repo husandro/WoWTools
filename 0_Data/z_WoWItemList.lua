@@ -503,7 +503,7 @@ TypeTabs= {
         local data, num= CreateDataProvider(), 0
         local guid= Frame.guid
         local info= guid and WoWTools_WoWDate[Frame.guid]
-        for insName, tab in pairs(info and info.Instance.ins or {}) do--[名字]={[难度]=已击杀数}
+        for insName, tab in pairs(info and info.Instance.ins or {}) do--{[instanceID]={[difficultyID]=已击杀数}}
             local text
             for difficuly, killNum in pairs(tab) do
                 text= (text and text..' ' or '')..WoWTools_MapMixin:GetDifficultyColor(difficuly)..killNum
@@ -1943,7 +1943,7 @@ local function Init_List(showListType, isShow)
             GameTooltip:SetOwner(Frame, "ANCHOR_TOPLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(
-                '|A:'..self.texture:GetAtlas()..':0:0|a'..self.tooltip..WoWTools_DataMixin.Icon.left
+                '|A:'..self.texture:GetAtlas()..':0:0|a'..self.tip..WoWTools_DataMixin.Icon.left
                 ..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             )
             GameTooltip:Show()
@@ -1980,7 +1980,7 @@ local function Init_List(showListType, isShow)
                         StaticPopup_Show('WoWTools_OK',
                             '|A:bags-button-autosort-up:0:0|a'
                             ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|A:'..atlas..':0:0|a'
-                            ..self.tooltip
+                            ..self.tip
                             ..'|n|n'
                             ..(wowData.battleTag or '')
                             ..'|n'
@@ -1994,7 +1994,7 @@ local function Init_List(showListType, isShow)
                         return MenuResponse.Open
                     end)
                     sub:SetTooltip(function(tooltip)
-                        tooltip:AddLine(self.tooltip)
+                        tooltip:AddLine(self.tip)
                         tooltip:AddLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}))
                     end)
                     sub:SetEnabled(clear_wow and true or false)
@@ -2007,7 +2007,7 @@ local function Init_List(showListType, isShow)
                     function()
                          StaticPopup_Show('WoWTools_OK',
                             '|A:'..atlas..':0:0|a'
-                            ..self.tooltip
+                            ..self.tip
                             ..'|n|n|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                             ..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER)),
                             nil,
@@ -2019,7 +2019,7 @@ local function Init_List(showListType, isShow)
                         return MenuResponse.Open
                     end)
                     sub:SetTooltip(function(tooltip)
-                        tooltip:AddLine(self.tooltip)
+                        tooltip:AddLine(self.tip)
                         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                     end)
                     sub:SetEnabled(clear_all and true or false)

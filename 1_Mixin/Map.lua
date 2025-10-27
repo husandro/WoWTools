@@ -103,8 +103,13 @@ end
 }]]
 
 --副本，难道，颜色
-function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
+function WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID)--DifficultyUtil.lua
     local colorRe, name
+    
+    local n= difficultyID and GetDifficultyInfo(difficultyID)
+
+    difficultyName= difficultyName or n
+
     if difficultyID and difficultyID>0 then
         local color= {
             ['经典']= {name= WoWTools_DataMixin.onlyChinese and '经典' or LAYOUT_STYLE_CLASSIC, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
@@ -118,10 +123,11 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
             ['pvp']= {name= 'PvP', hex='|cffff4800', r=1, g=0, b=0},
             ['追随']= {name= WoWTools_DataMixin.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
             ['地下堡']= {name= WoWTools_DataMixin.onlyChinese and '地下堡' or DELVES_LABEL, hex='|cffedd100', r=0.93, g=0.82, b=0, a=1},
-            ['团本剧情']={name= WoWTools_DataMixin.onlyChinese and '团本剧情' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RAID, QUEST_CLASSIFICATION_QUESTLINE), hex='|cffaaffaa', r=0.67, g=1.00, b=0.67}
+            ['团本剧情']={name= WoWTools_DataMixin.onlyChinese and '剧情团队' or PLAYER_DIFFICULTY_STORY_RAID, hex='|cffaaffaa', r=0.67, g=1.00, b=0.67}
 
-        } or {}
-        local type={
+        }
+
+        local typeTab={
             [1]= '普通',--DifficultyUtil.ID.DungeonNormal
             [2]='英雄',--DifficultyUtil.ID.DungeonHeroic
             [3]='普通',--DifficultyUtil.ID.Raid10Normal
@@ -153,7 +159,7 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
             [38]='普通',--Normal	scenario	
             [39]='英雄',--Heroic	scenario	displayHeroic
             [40]='史诗',--Mythic	scenario	displayMythic
-            [45]='pvp',--PvP	scenario	displayHeroic
+            [45]='PvP',--PvP	scenario	displayHeroic
             [147]='普通',--Normal	scenario	Warfronts
             [149]='英雄',--Heroic	scenario	displayHeroic Warfronts
             [150]='普通',--Normal	party	
@@ -169,20 +175,24 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
             [208]='地下堡',
             [220]='团本剧情',--DifficultyUtil.ID.RaidStory
         }
-        name= type[difficultyID]
+        name= typeTab[difficultyID]
+
         if name then
             local tab= color[name]
             if tab then
-                string= tab.hex..tab.name..'|r'
+                difficultyName= tab.hex..(WoWTools_DataMixin.onlyChinese and name or difficultyName)..'|r'
                 colorRe= tab
             end
         end
     end
-    return  string,
+
+ 
+
+    return difficultyName,
             colorRe or (
                 WoWTools_DataMixin.Player.UseColor or {r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b=WoWTools_DataMixin.Player.b, hex=WoWTools_DataMixin.Player.col}
             ),
-            WoWTools_DataMixin.onlyChinese and name or (difficultyID and GetDifficultyInfo(difficultyID))
+            WoWTools_DataMixin.onlyChinese and name or n
 end
 
 

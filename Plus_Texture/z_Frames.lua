@@ -487,6 +487,9 @@ end
 
 --商人
 function WoWTools_TextureMixin.Frames:MerchantFrame()
+    self:SetButton(MerchantNextPageButton, {alpha=1})
+    self:SetButton(MerchantPrevPageButton, {alpha=1})
+
     self:SetScrollBar(MerchantFrame)
     --self:SetNineSlice(MerchantFrame)
     self:HideFrame(MerchantFrame)
