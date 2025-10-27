@@ -24,7 +24,7 @@ local function Get_List_Tab(instanceID)
     local co= 0
     to= 0
     for index, achievementID in pairs(mapData) do
-        local id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
+        local _, name, _, completed, _, _, _, _, flags, icon, _, isGuild, wasEarnedByMe = GetAchievementInfo(achievementID)
         if name then
 
             table.insert(tab, {
