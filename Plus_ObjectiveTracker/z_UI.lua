@@ -5,11 +5,12 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
     for frame in pairs(WoWTools_ObjectiveTabs) do
         if _G[frame] and _G[frame].Header then
             self:SetFrame(_G[frame].Header, {alpha=1})
-            self:SetFrame(_G[frame].Header.MinimizeButton, {alpha=1, index=1})
+            self:SetFrame(_G[frame].Header.MinimizeButtonObjectiveTrackerFrame.Header.MinimizeButton, {alpha=1, index=1})
         end
     end
+    self:SetFrame(ObjectiveTrackerFrame.Header.MinimizeButton, {alpha=1, index=1})
+
     self:SetAlphaColor(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, 0.3)
-    self:SetButton(ObjectiveTrackerFrame.Header.MinimizeButton)
 
     WoWTools_DataMixin:Hook(BonusObjectiveTrackerProgressBarMixin , 'OnLoad', function(frame)
         self:SetStatusBar(frame.Bar)
