@@ -41,21 +41,26 @@ end
 
 
 
+--[[
+name, id, timeLimit, texture, backgroundTexture, mapID = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+journalInstanceID = C_EncounterJournal.GetInstanceForGameMap(mapID)
+]]
 
 
 
 --挑战，数据
-local function Set_Button_ChallengData(button)
+local function Set_Button_ChallengData(instanceID)
     local challengeText, challengeText2
-    local instanceName= button.tooltipTitle or button.name:GetText()
     local CurMaphallengeModeID
 
     for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
 
-        WoWTools_DataMixin:Load({type='mapChallengeModeID',mapChallengeModeID })
+        WoWTools_DataMixin:Load({type='mapChallengeModeID', mapChallengeModeID })
 
-        local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-        if name==instanceName or name:find(instanceName) then
+        local mapID= select(6, C_ChallengeMode.GetMapUIInfo(mapChallengeModeID))
+        local journalInstanceID = mapID and C_EncounterJournal.GetInstanceForGameMap(mapID)
+
+        if journalInstanceID==instanceID then
             CurMaphallengeModeID= mapChallengeModeID--挑战,地图ID
             local nu, all, leavel, runScore= 0, 0, 0, 0
             for _,v in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do--挑战,全部, 次数
@@ -86,9 +91,8 @@ local function Set_Button_ChallengData(button)
             if intimeInfo then
                 leavel= intimeInfo.level
             end
-            if all>0 then
-                local text
-                text= '|cff00ff00'..nu..'|r/'..all
+            --if all>0 then
+                local text= '|cff00ff00'..nu..'|r/'..all
                 ..'|n'..'|T4352494:0|t'..leavel
                 ..'|n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
                 ..(affix and '|n'..affix or '')
@@ -102,7 +106,7 @@ local function Set_Button_ChallengData(button)
                 else
                     challengeText2= text
                 end
-            end
+            --end
         end
     end
     return challengeText, challengeText2, CurMaphallengeModeID
@@ -197,27 +201,38 @@ local function Create(button)
         if Save().hideEncounterJournal or not self.instanceID then
             return
         end
-        local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.instanceID)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        if name then
-            local cnName=WoWTools_TextMixin:CN(name, true)
-            GameTooltip:AddDoubleLine(cnName or name, cnName and name..' ')
+        local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.instanceID)--journalInstanceID
+
+        if not name then
+            return
         end
 
-        GameTooltip:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+
+        local cnName=WoWTools_TextMixin:CN(name)
+
         GameTooltip:AddDoubleLine(
-            dungeonAreaMapID and dungeonAreaMapID>0 and 'uiMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
-            mapID and 'instanceID |cnGREEN_FONT_COLOR:'..mapID
+            WoWTools_DataMixin.Icon.icon2..cnName,
+            cnName and cnName~=name and name..' '
         )
+
+        GameTooltip:AddDoubleLine(
+            'journalInstanceID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.instanceID,
+            loreImage and '|T'..loreImage..':0|t|cffffffff'..loreImage
+        )
+
+        GameTooltip:AddDoubleLine(
+            mapID and 'instanceID|cffffffff'..WoWTools_DataMixin.Icon.icon2..mapID or ' ',
+            dungeonAreaMapID and dungeonAreaMapID>0 and 'uiMapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..dungeonAreaMapID
+        )
+
         if self.mapChallengeModeID then
-            GameTooltip:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)
+            GameTooltip:AddLine( 'mapChallengeModeID:|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.mapChallengeModeID)
         end
-        GameTooltip:AddLine(' ')
-        if WoWTools_EncounterMixin:GetInstanceData(self, true) then--界面,击杀,数据
-            GameTooltip:AddLine(' ')
-        end
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
+
+        WoWTools_EncounterMixin:GetInstanceData(self, true)--界面,击杀,数据
+
         GameTooltip:Show()
         self.Favorites2:set_alpha()
     end)
@@ -299,7 +314,7 @@ local function Init_ListInstances(frame)
             button.tipsText:SetText(WoWTools_EncounterMixin:GetInstanceData(button) or '')
 
 --挑战，数据
-            local challengeText, challengeText2, CurMaphallengeModeID= Set_Button_ChallengData(button)
+            local challengeText, challengeText2, CurMaphallengeModeID= Set_Button_ChallengData(button.instanceID)
             button.challengeText:SetText(challengeText or '')
             button.challengeText2:SetText(challengeText2 or '')
 
@@ -324,14 +339,11 @@ end
 
 
 
-
-
-
-
-
+--EncounterJournal_DisplayInstance
+--EncounterJournal_ListInstances
 
 function WoWTools_EncounterMixin:Init_UI_ListInstances()
-    --WoWTools_DataMixin:Hook('EncounterJournal_ListInstances', function()Init_ListInstances)
+    --WoWTools_DataMixin:Hook('EncounterJournal_DisplayInstance', function(...) Init_DisplayInstance(...) end)
     --EncounterInstanceButtonTemplate
     WoWTools_DataMixin:Hook(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)
         Init_ListInstances(frame)

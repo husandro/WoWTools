@@ -551,7 +551,7 @@ local function Init()--好友列表, 初始化
                     local index= self.index
                     local info = index and C_FriendList.GetWhoInfo(index)
                     if info and info.fullName then
-                        GameTooltip:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight))
+                        GameTooltip:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or '|A:common-icon-rotateright:0:0|a')
                                     ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, info.filename) or '')
                                     ..self.col
                                     ..info.fullName
@@ -596,7 +596,7 @@ local function Init()--好友列表, 初始化
 
                 if info.fullName then
                     if info.fullName== WoWTools_DataMixin.Player.Name then
-                        btn.Name:SetText(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
+                        btn.Name:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
                     else
                         local nameText= WoWTools_UnitMixin:GetIsFriendIcon(nil, nil, info.fullName)--检测, 是否好友
                         if nameText then

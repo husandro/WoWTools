@@ -98,7 +98,7 @@ local function Add_Initializer(btn, desc)
     if not btn.leftTexture then
         btn.leftTexture = btn:AttachTexture()
         btn.leftTexture:SetSize(20, 20)
-        btn.leftTexture:SetAtlas(WoWTools_DataMixin.Icon.toRight)
+        btn.leftTexture:SetAtlas('common-icon-rotateright')
         btn.leftTexture:SetPoint("LEFT")
         btn.leftTexture:SetAlpha(0)
         btn.fontString:SetPoint('LEFT', btn.leftTexture, 'RIGHT')
@@ -118,7 +118,7 @@ local function Add_Initializer(btn, desc)
 
             elseif GetLFGQueueStats(desc.data.type, self.dungeonID) then
                 r,g,b= 0,1,0
-                atlas= WoWTools_DataMixin.Icon.toRight
+                atlas= 'common-icon-rotateright'
             end
             if atlas then
                 self.leftTexture:SetAtlas(atlas)

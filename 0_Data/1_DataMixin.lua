@@ -109,7 +109,7 @@ WoWTools_DataMixin.Icon={
     wow2='|A:glues-characterSelect-iconShop-hover:0:0|a',--'|A:questlog-questtypeicon-account:0:0|a',--,--'|A:tokens-WoW-generic-regular:0:0|a',
     net2= '|A:gmchat-icon-blizz:0:0|a',--'|A:Battlenet-ClientIcon-App:0:0|a',--'|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32)
     toLeft='common-icon-rotateleft',--向左
-    toRight='common-icon-rotateright',--向右
+    --toRight='common-icon-rotateright',--向右
 
 --Blizzard_FrameXMLBase/Constants.lua
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON CreateAtlasMarkup(GetMicroIconForRole("TANK"), 16, 16) 

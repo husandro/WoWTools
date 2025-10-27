@@ -230,8 +230,8 @@ local function Create_instanceFrame(frame)
             }
             for _, ID in pairs(tab) do
                 text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
-                text= ID==dungeonID and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..text..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or text
-                GameTooltip:AddLine((text==self.name and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight) or '')..text..(text==self.name and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or ''))
+                text= ID==dungeonID and '|A:common-icon-rotateright:0:0|a'..text..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or text
+                GameTooltip:AddLine((text==self.name and '|A:common-icon-rotateright:0:0|a' or '')..text..(text==self.name and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or ''))
             end
 
             GameTooltip:Show()
@@ -275,7 +275,7 @@ local function Create_instanceFrame(frame)
         }
         for index, ID in pairs(tab) do
             text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
-            text= ID==dungeonID and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..text..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or text
+            text= ID==dungeonID and '|A:common-icon-rotateright:0:0|a'..text..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or text
             local set
             if index==3 then
                 set= ((UnitIsGroupLeader("player") or not IsInGroup()) and dungeonID~=ID and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')

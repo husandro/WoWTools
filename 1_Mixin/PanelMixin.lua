@@ -113,7 +113,7 @@ function WoWTools_PanelMixin:ReloadButton(tab)
     end
     if tab.restTips then
         local needReload= WoWTools_LabelMixin:Create(tab.panel)
-        needReload:SetText(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
+        needReload:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
         needReload:SetPoint('BOTTOMRIGHT')
         needReload:SetTextColor(0,1,0)
     end
@@ -180,7 +180,7 @@ function WoWTools_PanelMixin:Slider(frame, tab)--WoWTools_PanelMixin:Slider(fram
             GameTooltip:AddLine('|A:bags-greenarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '最大' or MAXIMUM)..': '..tab.max)
             GameTooltip:AddLine('Setp: '..tab.setp)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_DataMixin.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..f:GetValue())
+            GameTooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..f:GetValue())
             GameTooltip:Show()
         end)
     end

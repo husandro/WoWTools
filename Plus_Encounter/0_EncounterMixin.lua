@@ -28,22 +28,14 @@ end
 
 
 
-local function Set_WorldData_Tooltip(self)
-    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-    GameTooltip:ClearLines()
-    GameTooltip:AddDoubleLine(format('%s %s',
-        WoWTools_DataMixin.onlyChinese and '世界BOSS/稀有 ' or format('%s/%s', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHANNEL_CATEGORY_WORLD, BOSS), GARRISON_MISSION_RARE),
-        WoWTools_TextMixin:GetShowHide(WoWToolsSave['Adventure_Journal'].showWorldBoss)
-    ), WoWTools_DataMixin.Icon.left)
-
-    GameTooltip:AddLine(' ')
+local function Set_WorldData_Tooltip()
     for guid, info in pairs(WoWTools_WoWDate or {}) do
-        local find
-        local text, num= nil, 0
+        local text, find, num= nil, false, 0
+
         for bossName in pairs(info.Worldboss.boss) do--世界BOSS
             num=num+1
             text= text and text..' ' or '   '
-            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))
+            text= text..'|cffffffff'..num..')|r|cnWARNING_FONT_COLOR:'..WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))..'|r'
         end
         if text then
             GameTooltip:AddLine(text, nil,nil,nil, true)
@@ -54,12 +46,13 @@ local function Set_WorldData_Tooltip(self)
         for bossName, _ in pairs(info.Rare.boss) do--稀有怪
             num= num+1
             text= text and text..' ' or ''
-            text= text..'(|cnGREEN_FONT_COLOR:'..num..'|r)'.. WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))
+            text= text..'(|cffffffff'..num..'|r)|cnWARNING_FONT_COLOR:'.. WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))..'|r'
         end
         if text then
             GameTooltip:AddLine(text, nil,nil,nil, true)
             find=true
         end
+
         if find then
             GameTooltip:AddDoubleLine(
                 WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true}),
@@ -67,18 +60,8 @@ local function Set_WorldData_Tooltip(self)
             )
         end
     end
-    if self.instanceID then
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('instanceID', self.instanceID)
-    end
-    GameTooltip:Show()
 end
 
-
---所有角色已击杀世界BOSS提示
-function WoWTools_EncounterMixin:GetWorldData(frame)
-    Set_WorldData_Tooltip(frame)
-end
 
 
 
@@ -108,21 +91,27 @@ local function GetInstanceData(frame, showTips)
         return
     end
 
-    if instanceID==1205 or instanceID==1192 or instanceID==1028 or instanceID==822 or instanceID==557 or instanceID==322 then--世界BOSS
+    if instanceID==1205
+        or instanceID==1192
+        or instanceID==1028
+        or instanceID==822
+        or instanceID==557
+        or instanceID==322
+        or instanceID==2774
+    then--世界BOSS
         if showTips then
-            Set_WorldData_Tooltip(frame)--角色世界BOSS提示            
-            find=true
+            Set_WorldData_Tooltip(frame)--角色世界BOSS提示
         else
             for guid, info in pairs(WoWTools_WoWDate or {}) do--世界BOSS
                 if guid==WoWTools_DataMixin.Player.GUID then
                     local num=0
-                    for bossName, worldBossID in pairs(info.Worldboss.boss) do
+                    for bossName in pairs(info.Worldboss.boss) do
                         num= num+1
                         text= text and text..' ' or ''
                         if num>2 and  select(2, math.modf(num / 3))==0 then
                             text=text..'|n'
                         end
-                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))
+                        text= text..'|cffffffff'..num..'|r)|cnWARNING_FONT_COLOR:'..WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))..'|r'
                     end
                     break
                 end

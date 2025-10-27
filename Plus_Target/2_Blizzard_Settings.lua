@@ -111,7 +111,7 @@ local function Init_Options()
         Save().target= not Save().target and true or nil
         WoWTools_TargetMixin:Set_All_Init()
     end)
-    sel.Text:SetText('1) '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET))
+    sel.Text:SetText('1) |A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET))
     sel.Text:SetTextColor( Save().targetColor.r, Save().targetColor.g, Save().targetColor.b, Save().targetColor.a)
     sel.Text:EnableMouse(true)
     sel.Text:SetScript('OnMouseDown', function(self2, d)
@@ -493,7 +493,11 @@ local function Init_Options()
         Save().creatureUIParent= not Save().creatureUIParent and true or nil
         WoWTools_TargetMixin:Set_All_Init()
         if not Save().creatureUIParent and not Save().target then
-            print('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要启用‘1) '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..'目标’' or 'Need to enable the \"1) '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..WoWTools_TargetMixin.addName..'\"'))
+            print('|cnWARNING_FONT_COLOR:'..(
+                WoWTools_DataMixin.onlyChinese
+                    and '需要启用‘1) '..'|A:common-icon-rotateright:0:0|a'..'目标’'
+                    or ('Need to enable the \"1) |Acommon-icon-rotateright:0:0|a'..WoWTools_TargetMixin.addName..'\"')
+            ))
         end
     end)
 

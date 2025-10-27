@@ -107,7 +107,7 @@ function WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)
     tooltip= tooltip or GameTooltip
     local find
     for head, tab in pairs(GetActivities()) do
-        tooltip:AddLine(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..head)
+        tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..head)
         for index, info in pairs(tab) do
             if info.unlocked then
                 local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)

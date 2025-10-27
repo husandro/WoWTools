@@ -255,7 +255,7 @@ local function Init_Menu(self, root)
                             col
                             ..(
                                 WoWTools_UnitMixin:GetIsFriendIcon(nil, desc.data.guid, desc.data.name)
-                                or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)
+                                or '|A:common-icon-rotateright:0:0|a'
                             )
                             ..(WoWTools_UnitMixin:GetRaceIcon(nil, desc.data.guid, nil) or '')
                             ..msg.text.. (player and ' |cnGREEN_FONT_COLOR:*|r' or '')

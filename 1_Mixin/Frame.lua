@@ -238,7 +238,7 @@ function WoWTools_FrameMixin:HelpFrame(tab)--WoWTools_FrameMixin:HelpFrame({fram
             tab.frame.HelpTips:SetNormalAtlas(tab.atlas or WoWTools_DataMixin.Icon.toLeft)
         else--left
             tab.frame.HelpTips:SetPoint('BOTTOMRIGHT', tab.topoint or tab.frame, 'BOTTOMLEFT',0, tab.y or -10)
-            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or WoWTools_DataMixin.Icon.toRight)
+            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or 'common-icon-rotateright')
         end
         if tab.color then
             SetItemButtonNormalTextureVertexColor(tab.frame.HelpTips, tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)

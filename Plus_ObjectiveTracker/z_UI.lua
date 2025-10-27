@@ -3,9 +3,9 @@
 --任务，追踪柆
 function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
     for frame in pairs(WoWTools_ObjectiveTabs) do
-        if _G[frame] and _G[frame].Header then
+        if _G[frame] then
             self:SetFrame(_G[frame].Header, {alpha=1})
-            self:SetFrame(_G[frame].Header.MinimizeButtonObjectiveTrackerFrame.Header.MinimizeButton, {alpha=1, index=1})
+            self:SetFrame(_G[frame].Header.MinimizeButton, {alpha=1, index=1})
         end
     end
     self:SetFrame(ObjectiveTrackerFrame.Header.MinimizeButton, {alpha=1, index=1})
