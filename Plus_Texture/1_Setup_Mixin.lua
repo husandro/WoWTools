@@ -353,10 +353,15 @@ end
 function WoWTools_TextureMixin:SetUIButton(btn, alpha)
     if Save().UIButton and btn then
         alpha= alpha or 1
-        self:SetAlphaColor(btn.Left, nil, nil, alpha)
-        self:SetAlphaColor(btn.Right, nil, nil, alpha)
-        self:SetAlphaColor(btn.Middle, nil, nil, alpha)
-        self:SetAlphaColor(btn.Center, nil, nil, alpha)
+        if btn.Left and btn.Right then
+            self:SetAlphaColor(btn.Left, nil, nil, alpha)
+            self:SetAlphaColor(btn.Right, nil, nil, alpha)
+            self:SetAlphaColor(btn.Middle, nil, nil, alpha)
+            self:SetAlphaColor(btn.Center, nil, nil, alpha)
+        else
+            local icon= btn:GetNormalTexture()
+            self:SetAlphaColor(icon, nil, nil, alpha)
+        end
     end
 end
 

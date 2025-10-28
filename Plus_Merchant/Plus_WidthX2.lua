@@ -309,8 +309,25 @@ local function ResizeButton2_Menu(self, root)
     end, function()
         Save().notItemInfo= not Save().notItemInfo and true or nil
         WoWTools_MerchantMixin:Update_MerchantFrame()
-
     end)
+
+--[[无法使用物品，alpha
+    sub= root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '无法使用' or MOUNT_JOURNAL_FILTER_UNUSABLE)
+        ..' '..(Save().notIsUsableAlpha or 1),
+    function()
+        return MenuResponse.Open
+    end)
+    WoWTools_MenuMixin:BgAplha(sub, function()
+        return Save().notIsUsableAlpha or 1
+    end, function(value)
+        Save().notIsUsableAlpha= value
+        WoWTools_MerchantMixin:Update_MerchantFrame()
+    end, function()
+        Save().notIsUsableAlpha= nil
+        WoWTools_MerchantMixin:Update_MerchantFrame()
+    end, true)]]
+
 end
 
 

@@ -33,7 +33,7 @@ local P_Save={
 
     Gossip_Text_Icon_Size=14,
 
-    Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
+    --Gossip_Text_Icon_cnFont=nil,--仅限，外文, 修该字体
 
     --delvesDifficultyMaxLevel=nil,--地下堡指定难度
 }

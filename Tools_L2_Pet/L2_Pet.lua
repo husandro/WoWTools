@@ -9,7 +9,6 @@ local P_Save={
 }
 
 
-local button
 local function Save()
     return WoWToolsSave['Tools_Daisy']
 end
@@ -39,7 +38,10 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
 
 
     if not frame.sumButton then
-        frame.sumButton=  CreateFrame('CheckButton', nil, frame, "ChatConfigCheckButtonTemplate")
+        frame.sumButton= CreateFrame('CheckButton', nil, frame, 'UICheckButtonArtTemplate')--"ChatConfigCheckButtonTemplate")
+        WoWTools_TextureMixin:SetCheckBox(frame.sumButton)
+
+        frame.sumButton:SetSize(18,18)
         frame.sumButton:SetPoint('RIGHT')
 
         function frame.sumButton:set_alpha()
@@ -160,13 +162,14 @@ end
 
 --初始
 local function Init()
-    if not button then
+    local btn =WoWTools_ToolsMixin:Get_ButtonForName('SummonPet')
+    if not btn then
         return
     end
-    button.Text=WoWTools_LabelMixin:Create(button, {size=10, color=true})-- size,nil,nil, true)
-    button.Text:SetPoint('BOTTOM',0 , -2)
+    btn.Text=WoWTools_LabelMixin:Create(btn, {size=10, color=true})-- size,nil,nil, true)
+    btn.Text:SetPoint('BOTTOM',0 , -2)
 
-    function button:set_pets_date(tabs)
+    function btn:set_pets_date(tabs)
         for speciesID, info in pairs(tabs or {}) do
             local num = C_PetJournal.GetNumCollectedInfo(speciesID) or 0
             if num>0 then
@@ -191,7 +194,7 @@ local function Init()
         end
     end
 
-    function button:init_pets_data()
+    function btn:init_pets_data()
         self.Pets={}
         self.NumPet=0
 
@@ -205,11 +208,11 @@ local function Init()
         self:set_name()
     end
 
-    function button:get_speciesID_data()
+    function btn:get_speciesID_data()
         return self.Pets[Save().speciesID] or {}
     end
 
-    function button:set_auto_summon_tips()
+    function btn:set_auto_summon_tips()
         if Save().autoSummon then
             self:LockHighlight()
             --self.border:SetAtlas('bag-border')
@@ -219,7 +222,7 @@ local function Init()
         end
     end
 
-    function button:can_summon()
+    function btn:can_summon()
         return not (
                 IsStealthed()
                 or IsMounted()
@@ -233,7 +236,7 @@ local function Init()
     )
     end
 
-    function button:summoned_pet()--召唤信息
+    function btn:summoned_pet()--召唤信息
         local info= self:get_speciesID_data()
         if not info.petID then
             return
@@ -249,7 +252,7 @@ local function Init()
         end
     end
 
-    function button:set_name()
+    function btn:set_name()
         local name
         local petID = C_PetJournal.GetSummonedPetGUID()
         if petID then
@@ -262,7 +265,7 @@ local function Init()
         self.Text:SetText(WoWTools_TextMixin:sub(name, 2, 5) or "")
     end
 
-    function button:set_event()
+    function btn:set_event()
         self:UnregisterAllEvents()
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
         if WoWTools_MapMixin:IsInPvPArea() then
@@ -287,7 +290,7 @@ local function Init()
         end
     end
 
-    button:SetScript('OnClick', function(self, d)
+    btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             local petID= self:get_speciesID_data().petID
             if petID then
@@ -302,11 +305,11 @@ local function Init()
     end)
 
 
-    button:SetScript('OnMouseWheel', function()
+    btn:SetScript('OnMouseWheel', function()
         C_PetJournal.SummonRandomPet(true)
    end)
 
-   button:SetScript('OnEnter', function(self)
+   btn:SetScript('OnEnter', function(self)
         local info= self:get_speciesID_data()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
@@ -322,9 +325,9 @@ local function Init()
         GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end)
-    button:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
 
-    button:SetScript('OnEvent', function(self, event, arg1)
+    btn:SetScript('OnEvent', function(self, event, arg1)
         if event=='UNIT_AURA' or event=='PLAYER_STOPPED_MOVING' then
             self:summoned_pet()
         elseif event=='COMPANION_UPDATE' and arg1=='CRITTER' then
@@ -349,11 +352,13 @@ local function Init()
         end
     end)
 
-    button.NumPet=0
-    button.Pets={}
+    btn.NumPet=0
+    btn.Pets={}
+
     C_Timer.After(2, function()
-        button:init_pets_data()
-        button:set_auto_summon_tips()
+        local b= WoWTools_ToolsMixin:Get_ButtonForName('SummonPet')
+        b:init_pets_data()
+        b:set_auto_summon_tips()
     end)
 
     Init=function()end
@@ -383,25 +388,24 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            
+
             WoWToolsSave['Tools_Daisy']= WoWToolsSave['Tools_Daisy'] or CopyTable(P_Save)
             P_Save= nil
+
             Save().speciesID= Save().speciesID or 2780
 
             addName= '|T3150958:0|t'..(WoWTools_DataMixin.onlyChinese and '黛西' or 'Daisy')
 
-            button= WoWTools_ToolsMixin:CreateButton({
+            WoWTools_ToolsMixin:CreateButton({
                 name='SummonPet',
                 tooltip=addName,
             })
 
-            if button then
+            if WoWTools_ToolsMixin:Get_ButtonForName('SummonPet') then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    WoWTools_DataMixin:Hook('PetJournal_InitPetButton', function(...)
-                        Init_PetJournal_InitPetButton(...)
-                    end)
+                    WoWTools_DataMixin:Hook('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
                     self:UnregisterEvent(event)
                 end
 
@@ -411,9 +415,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-            WoWTools_DataMixin:Hook('PetJournal_InitPetButton', function(...)
-                Init_PetJournal_InitPetButton(...)
-            end)
+            WoWTools_DataMixin:Hook('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
             self:UnregisterEvent(event)
         end
 

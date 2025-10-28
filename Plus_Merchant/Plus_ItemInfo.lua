@@ -149,9 +149,6 @@ end
 
 
 local function Create_Label(btn)
-    if btn.buyItemNum then
-        return
-    end
 
 --索引
     btn.IndexLable= WoWTools_LabelMixin:Create(btn, {size=10})
@@ -194,22 +191,27 @@ local function Set_Item_Info()
     local page= isMerce and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     local numItem= isMerce and numMerchantNumItems or numBuybackItems
 
-    local showItemInfo= not Save().notItemInfo
+    local showItemInfo= not Save().notItemInfo--物品信息
+    local notIsUsableAlpha= Save().notIsUsableAlpha or 1--无法使用物品，alpha
 
     for i=1, page do
         local index = isMerce and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
 
         local btn= _G["MerchantItem"..i]
 
-
         if not btn then
             break
         end
 
         local stats, spellID, num, itemID, itemLink, itemName
-        Create_Label(btn)
 
-        if index<= numItem and showItemInfo then
+        if not btn.buyItemNum then
+            Create_Label(btn)
+        end
+
+        local isValueItem= index<= numItem
+
+        if isValueItem and showItemInfo then
             if isMerce then
                 itemID= GetMerchantItemID(index)
                 itemLink=  GetMerchantItemLink(index)
@@ -221,7 +223,6 @@ local function Set_Item_Info()
 
 --自动购买， 数量
             num=(not Save().notAutoBuy and itemID) and WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]
-            --num= num and num..'|T236994:0|t' or ''
             num= num and num..'|A:Perks-ShoppingCart:0:0|a' or ''
 
 --包里，银行
@@ -254,7 +255,7 @@ local function Set_Item_Info()
                     itemName= itemName:match('%- (.+)') or itemName
                 end
                 if itemName~=itemButton.name then
-                    _G["MerchantItem"..i.."Name"]:SetText(itemName);
+                    _G["MerchantItem"..i.."Name"]:SetText(itemName)
                 end
             end
         end
@@ -270,6 +271,17 @@ local function Set_Item_Info()
             _G["MerchantItem"..i..'ItemButton'],
             {merchant=showItemInfo and {slot=index, buyBack= not isMerce} or nil}
         )
+
+--无法使用物品，alpha
+        --[[local alpha=1
+        if isValueItem and isMerce and notIsUsableAlpha<1 then
+            local info= C_MerchantFrame.GetItemInfo(i)
+            if info and not info.isUsable then
+                print(info.name)
+                alpha= notIsUsableAlpha
+            end
+        end
+        btn:SetAlpha(alpha)]]
     end
 
 --回购，物品，信息
@@ -327,13 +339,9 @@ local function Init_SetItem_Info()
 
 
 --物品信息
-    WoWTools_DataMixin:Hook('MerchantFrame_UpdateMerchantInfo', function()
-        Set_Item_Info()
-    end)
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateMerchantInfo', Set_Item_Info)
 
-    WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', function()
-        Set_Item_Info()
-    end)
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', Set_Item_Info)
 
 
 
@@ -446,10 +454,10 @@ end
 
 --堆叠,数量,框架 StackSplitFrame.lua
 local function Init_StackSplitFrame()
-    StackSplitFrame.restButton=WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size=22})--重置
-    StackSplitFrame.restButton:SetPoint('TOP')
-    StackSplitFrame.restButton:SetNormalAtlas('characterundelete-RestoreButton')
-    StackSplitFrame.restButton:SetScript('OnMouseDown', function(self)
+    local rest= CreateFrame('Button', 'WoWToolsStackSplitFrameRestButton', StackSplitFrame, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size=22})--重置
+    rest:SetPoint('TOP')
+    rest:SetNormalAtlas('characterundelete-RestoreButton')
+    rest:SetScript('OnClick', function(self)
         local f= self:GetParent()
         f.split= f.minSplit
         f.LeftButton:SetEnabled(false)
@@ -457,49 +465,50 @@ local function Init_StackSplitFrame()
         f:UpdateStackText()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
-    StackSplitFrame.restButton:SetScript('OnEnter', function(self)
+    rest:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
+        GameTooltip:SetText(WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET)
         GameTooltip:Show()
     end)
-    StackSplitFrame.restButton:SetScript('OnLeave', GameTooltip_Hide)
+    rest:SetScript('OnLeave', GameTooltip_Hide)
 
-    StackSplitFrame.MaxButton=WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size={40,20}})
-    StackSplitFrame.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
-    StackSplitFrame.MaxButton:SetPoint('LEFT', StackSplitFrame.restButton, 'RIGHT')
-    StackSplitFrame.MaxButton:SetScript('OnMouseDown', function(self)
+    local maxButton= CreateFrame('Button', 'WoWToolsStackSplitFrameMaxButton', StackSplitFrame, 'WoWToolsButtonTemplate')--WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size={40,20}})
+    --maxButton:SetSize(40, 20)
+
+    maxButton:SetNormalFontObject('NumberFontNormalYellow')
+    maxButton:SetPoint('LEFT', rest, 'RIGHT')
+    maxButton:SetScript('OnClick', function(self)
         local f= self:GetParent()
         f.split=f.maxStack
         f:UpdateStackText()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
 
-    StackSplitFrame.MetaButton=WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size={40,20}})
-    StackSplitFrame.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
-    StackSplitFrame.MetaButton:SetPoint('RIGHT', StackSplitFrame.restButton, 'LEFT')
-    StackSplitFrame.MetaButton:SetScript('OnMouseDown', function(self)
+   local meta= CreateFrame('Button', 'WoWToolsStackSplitFrameMetaButton', StackSplitFrame, 'WoWToolsButtonTemplate')--WoWTools_ButtonMixin:Cbtn(StackSplitFrame, {size={40,20}})
+   meta:SetNormalFontObject('NumberFontNormalYellow')
+   meta:SetPoint('RIGHT', rest, 'LEFT')
+   meta:SetScript('OnMouseDown', function(self)
         local f= self:GetParent()
         f.split=floor(f.maxStack/2)
         f:UpdateStackText()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
 
-    StackSplitFrame.editBox=CreateFrame('EditBox', nil, StackSplitFrame)--输入框
-    StackSplitFrame.editBox:SetSize(100, 23)
-    StackSplitFrame.editBox:SetPoint('TOPLEFT', 38, -18)
-    StackSplitFrame.editBox:SetTextColor(0,1,0)
-    StackSplitFrame.editBox:SetAutoFocus(false)
-    StackSplitFrame.editBox:ClearFocus()
-    StackSplitFrame.editBox:SetFontObject("ChatFontNormal")
-    StackSplitFrame.editBox:SetMultiLine(false)
-    StackSplitFrame.editBox:SetNumeric(true)
-    --StackSplitFrame.editBox:SetScript('OnEditFocusLost', function(self) self:SetText('') end)
-    StackSplitFrame.editBox:SetScript("OnEscapePressed",function(self) self:ClearFocus() end)
-    StackSplitFrame.editBox:SetScript('OnEnterPressed', function(self) self:ClearFocus() end)
-    StackSplitFrame.editBox:SetScript('OnHide', function(self) self:SetText('') self:ClearFocus() end)
-    StackSplitFrame.editBox:SetScript('OnTextChanged',function(self, userInput)
+    local edit=CreateFrame('EditBox', 'WoWToolsStackSplitFrameEditBox', StackSplitFrame)--输入框
+    edit:SetSize(100, 23)
+    edit:SetPoint('TOPLEFT', 38, -18)
+    edit:SetTextColor(0,1,0)
+    edit:SetAutoFocus(false)
+    edit:ClearFocus()
+    edit:SetFontObject("ChatFontNormal")
+    edit:SetMultiLine(false)
+    edit:SetNumeric(true)
+    --edit:SetScript('OnEditFocusLost', function(self) self:SetText('') end)
+    edit:SetScript("OnEscapePressed",function(self) self:ClearFocus() end)
+    edit:SetScript('OnEnterPressed', function(self) self:ClearFocus() end)
+    edit:SetScript('OnHide', function(self) self:SetText('') self:ClearFocus() end)
+    edit:SetScript('OnTextChanged',function(self, userInput)
         if not userInput then
             return
         end
@@ -529,9 +538,34 @@ local function Init_StackSplitFrame()
         self:UpdateStackSplitFrame(self.maxStack)
     end)
 
+
     WoWTools_DataMixin:Hook(StackSplitFrame, 'OpenStackSplitFrame', function(self)
-        self.MaxButton:SetText(self.maxStack)
-        self.MetaButton:SetText(floor(self.maxStack/2))
+        _G['WoWToolsStackSplitFrameMaxButton']:SetText(self.maxStack)
+        _G['WoWToolsStackSplitFrameMetaButton']:SetText(floor(self.maxStack/2))
+    end)
+
+--缩放
+    local menu= CreateFrame('DropdownButton', 'WoWToolsStackSplitFrameMenuButton', StackSplitFrame, 'WoWToolsMenuButtonTemplate')
+    menu:SetSize(16,16)
+    menu:SetNormalAtlas('mechagon-projects')
+    menu:SetPoint('TOPLEFT', 5, 0)
+    function menu:set_scale()
+        self:GetParent():SetScale(Save().StackSplitScale or 1)
+    end
+    menu:set_scale()
+    menu:SetupMenu(function(self, root)
+        WoWTools_MenuMixin:Scale(self, root, function()
+            return Save().StackSplitScale or 1
+        end, function(value)
+            Save().StackSplitScale= value
+            self:set_scale()
+        end)
+--打开选项界面
+        root:CreateDivider()
+        WoWTools_MenuMixin:OpenOptions(root, {
+            name=WoWTools_MerchantMixin.addName,
+            name2='|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus'))
+        })
     end)
 
     Init_StackSplitFrame=function()end

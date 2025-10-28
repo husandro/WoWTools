@@ -1,5 +1,6 @@
 --GossipFrame
 function WoWTools_TextureMixin.Frames:GossipFrame()
+    self:SetUIButton(GossipFrame.GreetingPanel.GoodbyeButton)
     self:SetButton(GossipFrameCloseButton)
     --self:SetNineSlice(GossipFrame, true)
     self:HideTexture(GossipFrameBg)
@@ -21,6 +22,8 @@ end
 
 --任务
 function WoWTools_TextureMixin.Frames:QuestFrame()
+    self:SetUIButton(QuestFrameAcceptButton)
+    self:SetUIButton(QuestFrameDeclineButton)
     self:HideFrame(QuestFrame)
     --self:SetNineSlice(QuestFrame)
     self:SetScrollBar(QuestFrame)

@@ -111,7 +111,7 @@ local function Init(isShow)
     tinsert (UISpecialFrames, Name)
     Frame:Hide()
 
-    List = CreateFrame("Frame", Name..'List', Frame, "WowScrollBoxList")
+    List = CreateFrame("Frame", 'WoWToolsGossipTextIconOptionsList', Frame, "WowScrollBoxList")
 
 
 

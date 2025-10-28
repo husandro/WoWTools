@@ -6357,7 +6357,8 @@
         "PLAYER_DIFFICULTY_STORY_RAID",
         "BonusRollLootWonFrame_OnLoad",
         "AlertContainerMixin",
-        "AchievementUtil"
+        "AchievementUtil",
+        "MOUNT_JOURNAL_FILTER_UNUSABLE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

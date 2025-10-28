@@ -19,6 +19,7 @@ local P_Save={
     repairItems={date=date('%x'), player=0, guild=0, num=0},
 
     --notItemInfo=true,--禁用物品信息
+    --notIsUsableAlpha=0.5,--无法使用物品，alpha
     --ShowBackground=false,--显示背景
 }
 

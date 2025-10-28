@@ -26,7 +26,7 @@ local P_Save={
     --point
     isShowBackground=WoWTools_DataMixin.Player.husandro,
 
-    bgAlpha= 0.75,
+    bgAlpha= 0.5,
     borderAlpha=0,
 }
 

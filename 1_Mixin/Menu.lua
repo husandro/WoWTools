@@ -247,9 +247,9 @@ end
 --[[
 --缩放
 WoWTools_MenuMixin:Scale(self, root, function()
-    return Save.scale
+    return Save().scale or 1
 end, function(value)
-    Save.scale= value
+    Save().scale= value
     self:set_scale()
 end)
 ]]

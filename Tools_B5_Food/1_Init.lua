@@ -28,7 +28,7 @@ local P_Save={
     --isShowBackground=WoWTools_DataMixin.Player.husandro,--背景--旧数据
     --onlyMaxExpansion=true,--仅本版本物品
     borderAlpha= 0,
-    bgAlpha=0.75,
+    bgAlpha=0.5,
     olnyUsaItem=true,
     numLine=12,
     autoWho=WoWTools_DataMixin.Player.husandro,
@@ -197,9 +197,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == 'PLAYER_ENTERING_WORLD' then
-        WoWTools_FoodMixin:Set_AltSpell()
         WoWTools_FoodMixin:Init_Button()
-        WoWTools_FoodMixin:Init_Check()
         self:UnregisterEvent(event)
 
     elseif event=='BAG_UPDATE_DELAYED' then

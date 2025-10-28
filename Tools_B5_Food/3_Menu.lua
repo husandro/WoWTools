@@ -38,7 +38,7 @@ local function AltSpell_Menu(_, root)
 
         end, function(data)
             Save().spells[WoWTools_DataMixin.Player.Class][data.type]= not Save().spells[WoWTools_DataMixin.Player.Class][data.type] and data.spellID or nil
-            WoWTools_FoodMixin:Set_AltSpell()
+            WoWTools_FoodMixin:Init_Button()
 
         end, {type=string.lower(tab.type), spellID=tab.spellID})
 
@@ -69,7 +69,7 @@ local function AltSpell_Menu(_, root)
 
                             end, function(data)
                                 Save().spells[WoWTools_DataMixin.Player.Class][data.type]= Save().spells[WoWTools_DataMixin.Player.Class][data.type]~= data.spellID and data.spellID or nil
-                                WoWTools_FoodMixin:Set_AltSpell()
+                                WoWTools_FoodMixin:Init_Button()
 
                             end, {type=string.lower(tab.type), spellID=spellData.spellID})
 
@@ -289,7 +289,7 @@ local function Init_Menu(self, root)
         if Save().autoWho then
             WoWTools_FoodMixin:Check_Items()
         end
-        WoWTools_FoodMixin.CheckFrame:set_event()
+        self.CheckFrame:set_event()
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '事件' or EVENTS_LABEL)
@@ -522,7 +522,6 @@ local function Init_Menu(self, root)
 
     Check_All_Menu(self, root, nil)
 
-    
     AltSpell_Menu(self, root)
 end
 
@@ -540,5 +539,5 @@ end
 
 
 function WoWTools_FoodMixin:Init_Menu(btn)
-    MenuUtil.CreateContextMenu(btn, function(...) Init_Menu(...) end)
+    MenuUtil.CreateContextMenu(btn, Init_Menu)
 end

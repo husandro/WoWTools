@@ -34,10 +34,6 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 
 --local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
 function WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
-    if not frame or not frame:IsVisible() then
-        return
-    end
-    
     local leftText, bottomLeftText
     if itemLink then
         local dateInfo
@@ -66,7 +62,7 @@ function WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
         end
     end
 
-    if frame then
+    if frame and frame:IsVisible() then
         if leftText and not frame.leftText then
             frame.leftText= WoWTools_LabelMixin:Create(frame, {size=10})
             frame.leftText:SetPoint('LEFT')
@@ -82,6 +78,7 @@ function WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
             frame.bottomLeftText:SetText(bottomLeftText or '')
         end
     end
+
     return leftText, bottomLeftText
 end
 

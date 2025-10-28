@@ -126,9 +126,8 @@ Tools_L4_UsaItems\UI_Spell.lua
 Tools_L4_UsaItems\UI_Toy.lua
 ##食物
 Tools_B5_Food\1_Init.lua
-Tools_B5_Food\2_Main_Button.lua
+Tools_B5_Food\2_Init_Button.lua
 Tools_B5_Food\3_Menu.lua
-Tools_B5_Food\Button_AltKey.lua
 Tools_B5_Food\Create_Button.lua
 
 ##法师传送门

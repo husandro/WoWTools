@@ -218,7 +218,9 @@ local function Init_KeyButton(index, type)
     end
 
     local button=  Create_Button(index)
-    if not button then return end
+    if not button then
+        return
+    end
     button.type=type--fishing archaeology
     button.spellID= spellID
     button.spellID2= spellID2

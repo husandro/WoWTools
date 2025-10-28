@@ -10,6 +10,33 @@ end
 
 
 
+local function Set_AltSpell()
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('Food')
+    if not btn or not btn:CanChangeAttribute() then
+        return
+    end
+
+    local item, alt, ctrl, shift
+    local tab= Save().spells[WoWTools_DataMixin.Player.Class]
+    if tab then
+        item, alt, ctrl, shift= tab.item, tab.alt, tab.ctrl, tab.shift
+    end
+
+    btn.itemID= item or 5512--治疗石
+
+    btn:SetAttribute('alt-spell1', (alt and C_Spell.GetSpellName(alt) or alt or nil))
+    btn.alt= alt
+
+
+    btn:SetAttribute('ctrl-spell1', (ctrl and C_Spell.GetSpellName(ctrl) or ctrl) or nil)
+    btn.ctrl= ctrl
+
+    btn:SetAttribute('shift-type1', 'spell')
+    btn:SetAttribute('shift-spell1', (shift and C_Spell.GetSpellName(shift) or shift) or nil)
+    btn.shift= shift
+end
+
+
 
 
 local function Add_Item(info)
@@ -18,7 +45,7 @@ local function Add_Item(info)
         link= info.itemLink or itemLink,
         itemID=info.itemID,
         name= WoWTools_TextMixin:CN(itemName, {itemID=info.itemID, isName=true}),
-        color= {ITEM_QUALITY_COLORS[itemRarity].color:GetRGBA()},
+        color= {ITEM_QUALITY_COLORS[itemRarity or 1].color:GetRGBA()},
         texture= itemTexture,
         count=C_Item.GetItemCount(info.itemID, true, true, true, true),
         OnShow=function(self, data)
@@ -50,19 +77,37 @@ end
 
 local function Init()
     local btn= WoWTools_ToolsMixin:Get_ButtonForName('Food')
+    if not btn then
+        return
+    end
+
+    btn.CheckFrame= CreateFrame('Frame')
+    function btn.CheckFrame:set_event()
+        self:UnregisterAllEvents()
+        if Save().autoWho then
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+        end
+    end
+    btn.CheckFrame:SetScript('OnEvent', function(self, event)
+        WoWTools_FoodMixin:Check_Items()--检查,物品
+        if event=='PLAYER_REGEN_ENABLED' then
+            self:UnregisterEvent(event)
+        end
+    end)
+    btn.CheckFrame:set_event()
+
     btn.RePoint={btn:GetPoint(1)}
     btn.texture:SetTexture(538745)
 
 --显示背景 Background
     WoWTools_TextureMixin:CreateBG(btn, {
-        point=function(texture)
-            texture:SetPoint('BOTTOMRIGHT', 1 , 1)
-            texture:SetPoint('TOP', btn, 1 , 1)
-            texture:SetPoint('LEFT', btn, -1 , -1)
+        point=function(bg)
+            bg:SetPoint('BOTTOMRIGHT', 1 , 1)
+            bg:SetPoint('TOP', btn, 1 , 1)
+            bg:SetPoint('LEFT', btn, -1 , -1)
         end}
     )
     function btn:set_background()
-        --self.Background:SetShown(Save().isShowBackground)
         self.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
 
@@ -145,7 +190,7 @@ local function Init()
     btn:SetScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
             if not self:CanChangeAttribute() then
-                print(WoWTools_FoodMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                print(WoWTools_FoodMixin.addName..WoWTools_DataMixin.Icon.icon2, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 WoWTools_FoodMixin:Check_Items(true)
             end
@@ -249,7 +294,12 @@ local function Init()
     btn:settings()
     btn:set_attribute()
 
-    Init=function()end
+
+    Set_AltSpell()
+
+    Init=function()
+        Set_AltSpell()
+    end
 end
 
 
@@ -257,3 +307,4 @@ end
 function WoWTools_FoodMixin:Init_Button()
     Init()
 end
+

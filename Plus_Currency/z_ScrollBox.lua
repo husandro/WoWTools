@@ -24,7 +24,7 @@ local function Create(frame)
 
 	frame.check= CreateFrame('CheckButton', nil, frame, "UICheckButtonArtTemplate")
 	frame.check:SetCheckedTexture('AlliedRace-UnlockingFrame-Checkmark')
-	frame.check:SetSize(16,16)
+	frame.check:SetSize(18,18)
 	function frame.check:GetCurrencyID()
 		local currencyIndex= self:GetParent().currencyIndex
 		if currencyIndex then

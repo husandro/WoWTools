@@ -1584,10 +1584,11 @@ function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
                 self:SetEditBox(edit)
                 self:SetNineSlice(edit, 1)
             end
-
-            self:SetUIButton(_G['StaticPopup'..i..'Button1'])
-            self:SetUIButton(_G['StaticPopup'..i..'Button2'])
-            self:SetUIButton(_G['StaticPopup'..i..'Button3'])
+            --标准按钮
+            self:SetUIButton(p:GetButton1())
+            self:SetUIButton(p:GetButton2())
+            self:SetUIButton(p:GetButton3())--_G['StaticPopup'..i..'Button3'])
+            self:SetUIButton(p:GetButton4())
             self:SetUIButton(_G['StaticPopup'..i..'ExtraButton'])
 
             if _G['StaticPopup'..i] then

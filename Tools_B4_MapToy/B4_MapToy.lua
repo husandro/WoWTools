@@ -36,7 +36,6 @@ end
 
 
 local addName
-local ToyButton
 
 local P_Save={
     no={
@@ -295,9 +294,11 @@ end
 
 
 local function Init()
-
-
-    function ToyButton:set_tooltips()
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('MapToy')
+    if not btn then
+        return
+    end
+    function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         if self.itemID then
@@ -312,14 +313,14 @@ local function Init()
     end
 
 --CD 主图标冷却
-    function ToyButton:set_cool()
+    function btn:set_cool()
         WoWTools_CooldownMixin:SetFrame(self, {
             itemID=self.itemID,
             spellID=self.spellID,
         })
     end
 
-    function ToyButton:set_texture()
+    function btn:set_texture()
         local icon
         if self.itemID then
             icon= C_Item.GetItemIconByID(self.itemID)
@@ -334,7 +335,7 @@ local function Init()
         end
     end
 
-    function ToyButton:Set_Random_Value(itemID, achievements, isLocked)--设置，随机值
+    function btn:Set_Random_Value(itemID, achievements, isLocked)--设置，随机值
         --local name=C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
         if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -363,7 +364,7 @@ local function Init()
         self:set_cool()
     end
 
-    function ToyButton:Cerca_Toy()
+    function btn:Cerca_Toy()
         if self.isLocked or not self:CanChangeAttribute() then
             return
         end
@@ -381,11 +382,11 @@ local function Init()
 
 
 
-    ToyButton:SetScript('OnLeave', function(self)
+    btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:SetScript('OnUpdate',nil)
     end)
-    ToyButton:SetScript('OnEnter', function(self)
+    btn:SetScript('OnEnter', function(self)
         self:set_cool()
         self:set_tooltips()
         local Elapsed= 2
@@ -401,7 +402,7 @@ local function Init()
         end)
     end)
 
-    ToyButton:SetScript('OnMouseDown', function(self, d)
+    btn:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then
             MenuUtil.CreateContextMenu(self, Init_Menu)
         elseif d=='LeftButton' then
@@ -409,13 +410,15 @@ local function Init()
         end
     end)
 
-    ToyButton:SetScript("OnEvent", function(self, event)
+    btn:SetScript("OnEvent", function(self, event)
         self:Cerca_Toy()
         self:UnregisterEvent(event)
     end)
 
-    ToyButton:Cerca_Toy()
-    ToyButton:set_texture()
+    btn:Cerca_Toy()
+    btn:set_texture()
+
+    Init=function()end
 end
 
 
@@ -459,14 +462,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  })
              end)
 
-            ToyButton= (not Save().disabled and not Save().no[WoWTools_DataMixin.Player.GUID])
-                and WoWTools_ToolsMixin:CreateButton({
+            if not Save().disabled and not Save().no[WoWTools_DataMixin.Player.GUID] then
+                WoWTools_ToolsMixin:CreateButton({
                     name='MapToy',
                     tooltip=addName,
                     disabledOptions=true
                 })
+            end
 
-            if ToyButton then
+            if WoWTools_ToolsMixin:Get_ButtonForName('MapToy') then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 for _, info in pairs(Tab) do
@@ -484,25 +488,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         self:UnregisterEvent(event)
     end
 end)
-        --[[local find
-        local notHasToy
-        for _, info in pairs(Tab) do
-            local new= Is_Completed(info)
-
-            if new.hasToy~=false--没收集
-                and new.num>0--没完成，数量
-                or new.isNotChecked--没数据
-            then
-                find=true
-            end
-            if new.hasToy~=true then
-                notHasToy=true
-            end
-        end
-
-        if find==nil then
-            if not notHasToy and Save().autoAddDisabled then
-                Save().no[WoWTools_DataMixin.Player.GUID]=true
-                return
-            end
-        end]]

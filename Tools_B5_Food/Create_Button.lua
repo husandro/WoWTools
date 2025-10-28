@@ -15,7 +15,15 @@ local Buttons={}
 
 
 
-local function Set_Button_Function(btn)
+function WoWTools_FoodMixin:Set_Button_Function(btn)
+    if InCombatLockdown() then
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, arg1)
+            self:Set_Button_Function(btn)
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end)
+        return
+    end
+
     btn:SetAttribute("type1", "item")
     btn.count= WoWTools_LabelMixin:Create(btn, {size=12, color={r=1,g=1,b=1}})--10, nil,nil, true)
     btn.count:SetPoint('BOTTOMRIGHT', -4,4)
@@ -26,7 +34,7 @@ local function Set_Button_Function(btn)
         local icon, name
         if self.itemID then
             icon= C_Item.GetItemIconByID(self.itemID)
-            name=  C_Item.GetItemNameByID(self.itemID)
+            name= C_Item.GetItemNameByID(self.itemID)
         end
         self.texture:SetTexture(icon or 0)
 
@@ -161,7 +169,7 @@ local function Create_Button(index)
         isSecure=true,
     })
 
-    Set_Button_Function(btn)
+    WoWTools_FoodMixin:Set_Button_Function(btn)
 
     btn:SetScript("OnLeave", function(self)
         GameTooltip_Hide()
@@ -231,19 +239,20 @@ end
 --检查,物品
 local IsChecking
 function WoWTools_FoodMixin:Check_Items(isPrint)
-    if IsChecking then--正在查询
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('Food')
+    if IsChecking or not btn then--正在查询
         return
     elseif InCombatLockdown() then
-        if self.CheckFrame then
-            self.CheckFrame.isCheckInCombat=true
-            self.CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
+        if btn.CheckFrame then
+            btn.CheckFrame.isCheckInCombat=true
+            btn.CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
         return
     end
     IsChecking=true
 
 
-    local btn= WoWTools_ToolsMixin:Get_ButtonForName('Food')
+
     local new={}
     local items={}
 
@@ -329,36 +338,3 @@ end
 
 
 
-
-local function Init()
-    WoWTools_FoodMixin.CheckFrame= CreateFrame('Frame')
-
-    function WoWTools_FoodMixin.CheckFrame:set_event()
-        self:UnregisterAllEvents()
-        if Save().autoWho then
-            self:RegisterEvent('BAG_UPDATE_DELAYED')
-        end
-    end
-
-    WoWTools_FoodMixin.CheckFrame:SetScript('OnEvent', function(self, event)
-        WoWTools_FoodMixin:Check_Items()--检查,物品
-        if event=='PLAYER_REGEN_ENABLED' then
-            self:UnregisterEvent(event)
-        end
-    end)
-
-    WoWTools_FoodMixin.CheckFrame:set_event()
-
-    Init=function()end
-end
-
-
-
-
-function WoWTools_FoodMixin:Set_Button_Function(btn)
-    Set_Button_Function(btn)
-end
-
-function WoWTools_FoodMixin:Init_Check()
-    Init()
-end

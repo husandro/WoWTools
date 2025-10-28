@@ -173,7 +173,7 @@ end)
 
 --副本，难道，颜色
 function WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID)--DifficultyUtil.lua
-    difficultyName= GetDifficultyInfo(difficultyID) or difficultyName
+    difficultyName= difficultyID and GetDifficultyInfo(difficultyID) or difficultyName
     difficultyName= WoWTools_TextMixin:CN(difficultyName)
 
     local colorRe, name
