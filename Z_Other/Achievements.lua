@@ -132,7 +132,7 @@ end
 local function Create_Button(frame, point)
     frame.achievementButton= CreateFrame('DropdownButton', 'WoWToolsAchievementsMenuButton', frame)
 
-    frame.achievementButton.Text= frame.achievementButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+    frame.achievementButton.Text= frame.achievementButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')
     frame.achievementButton.Text:SetPoint('CENTER')
 
     function frame.achievementButton:set_text()

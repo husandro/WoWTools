@@ -132,72 +132,19 @@ end
 
 
 
---EncounterInstanceButtonTemplate
+--[[
+EncounterInstanceButtonTemplate
+QuestTitleFontBlackShadow
+]]
+
 local function Init_Button(btn)
---界面,击杀,数据
-    btn.tipsText=WoWTools_LabelMixin:Create(btn, {size=WoWTools_DataMixin.onlyChinese and 12 or 10, copyFont= not WoWTools_DataMixin.onlyChinese and btn.name or nil})
-    btn.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
-    btn.tipsText:SetJustifyH('RIGHT')
-
---挑战，数据
-    btn.challengeText= WoWTools_LabelMixin:Create(btn, {size=WoWTools_DataMixin.onlyChinese and 12 or 10})
-    btn.challengeText:SetPoint('BOTTOMLEFT',4,4)
-    btn.challengeText2= WoWTools_LabelMixin:Create(btn, {size=WoWTools_DataMixin.onlyChinese and 12 or 10})
-    btn.challengeText2:SetPoint('BOTTOMLEFT', btn.challengeText, 'BOTTOMRIGHT')
-
---收藏
-    btn.Favorites2=WoWTools_ButtonMixin:Cbtn(btn, {atlas='PetJournal-FavoritesIcon', size=25, isType2=true})
-    btn.Favorites2.border:SetTexture(0)
-    btn.Favorites2:SetPoint('TOPLEFT', -8, 8)
-    btn.Favorites2:EnableMouse(true)
-    btn.Favorites2:SetScript('OnLeave', function(self)
-        self:set_alpha()
-        GameTooltip:Hide()
-    end)
-    btn.Favorites2:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.right)
-        GameTooltip:Show()
-        self:set_alpha()
-    end)
-    btn.Favorites2:SetScript('OnClick', function(self, d)
-        if d=='RightButton' then
---收藏,菜单
-            MenuUtil.CreateContextMenu(self, Init_Fvorite_Menu)
-
-        elseif d=='LeftButton' then
-            self:setup()
-        end
-    end)
-
-    function btn.Favorites2:setup()
-        local isSaved= self:get_save()
-        local insID= self:GetParent().instanceID
-        if insID then
-            Save().favorites[WoWTools_DataMixin.Player.GUID][insID]= not isSaved and true or nil
-            self:set_alpha()
-        end
-    end
-    function btn.Favorites2:set_alpha()
-        local isSaved= self:get_save()
-        self:SetAlpha((isSaved or GameTooltip:IsOwned(self) or GameTooltip:IsOwned(self:GetParent())) and 1 or 0)
-    end
-    function btn.Favorites2:get_save()
-        Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
-        return Save().favorites[WoWTools_DataMixin.Player.GUID][self:GetParent().instanceID]
-    end
-
-
-
+    WoWTools_TextureMixin:SetFrame(btn, {index=5, alpha=1})
 
     btn:HookScript('OnEnter', function(self)
         if Save().hideEncounterJournal or not self.instanceID then
             return
         end
+
         local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.instanceID)--journalInstanceID
 
         if not name then
@@ -238,9 +185,68 @@ local function Init_Button(btn)
         GameTooltip:Hide()
     end)
 
+--界面,击杀,数据
+    btn.tipsText= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')
+    --WoWTools_LabelMixin:Create(btn, {size=WoWTools_DataMixin.onlyChinese and 12 or 10, copyFont= not WoWTools_DataMixin.onlyChinese and btn.name or nil})
+    btn.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
+    btn.tipsText:SetJustifyH('RIGHT')
 
-    --当前, KEY地图,ID
-    btn.KeyTexture= btn:CreateTexture(nil, 'OVERLAY')
+--挑战，数据
+    btn.challengeText= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')--WoWTools_LabelMixin:Create(btn, {size=WoWTools_DataMixin.onlyChinese and 12 or 10})
+    btn.challengeText:SetPoint('BOTTOMLEFT',4,4)
+    btn.challengeText2= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')-- WoWTools_LabelMixin:Create(btn, {size=WoWTools_DataMixin.onlyChinese and 12 or 10})
+    btn.challengeText2:SetPoint('BOTTOMLEFT', btn.challengeText, 'BOTTOMRIGHT')
+
+--收藏
+    btn.Favorites2= CreateFrame('Button', nil, btn)
+    WoWTools_ButtonMixin:Cbtn(btn, {btn=btn.Favorites2, atlas='PetJournal-FavoritesIcon', size=25, isType2=true})
+    btn.Favorites2.border:SetTexture(0)
+    btn.Favorites2:SetPoint('TOPLEFT', -8, 8)
+    btn.Favorites2:EnableMouse(true)
+    btn.Favorites2:SetScript('OnLeave', function(self)
+        self:set_alpha()
+        GameTooltip:Hide()
+    end)
+    btn.Favorites2:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.right)
+        GameTooltip:Show()
+        self:set_alpha()
+    end)
+    btn.Favorites2:SetScript('OnClick', function(self, d)
+        if d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, Init_Fvorite_Menu)
+
+        elseif d=='LeftButton' then
+            self:setup()
+        end
+    end)
+    function btn.Favorites2:setup()
+        local isSaved= self:get_save()
+        local insID= self:GetParent().instanceID
+        if insID then
+            Save().favorites[WoWTools_DataMixin.Player.GUID][insID]= not isSaved and true or nil
+        end
+        self:set_alpha()
+    end
+    function btn.Favorites2:set_alpha()
+        local isSaved= self:get_save()
+        if isSaved then
+            self:GetHighlightTexture():SetVertexColor(0,1,0)
+        else
+            self:GetHighlightTexture():SetVertexColor(1,1,1)
+        end
+        self:SetAlpha((isSaved or GameTooltip:IsOwned(self) or GameTooltip:IsOwned(self:GetParent())) and 1 or 0)
+    end
+    function btn.Favorites2:get_save()
+        Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
+        return Save().favorites[WoWTools_DataMixin.Player.GUID][self:GetParent().instanceID]
+    end
+
+--当前, KEY地图,ID
+    btn.KeyTexture= btn:CreateTexture(nil, 'ARTWORK')
     btn.KeyTexture:SetPoint('TOPLEFT', -4, -2)
     btn.KeyTexture:SetSize(26,26)
     btn.KeyTexture:SetAtlas('common-icon-checkmark')
@@ -260,17 +266,16 @@ local function Init_Button(btn)
         self.label:SetAlpha(0.3)
     end)
 
-
 --当前KEY，等级
-    btn.KeyTexture.label=WoWTools_LabelMixin:Create(btn, {r=1, g=1, b=1})
+    btn.KeyTexture.label=btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')--WoWTools_LabelMixin:Create(btn, {r=1, g=1, b=1})
     btn.KeyTexture.label:SetPoint('TOP', btn.KeyTexture, -2, -10)
-
     function btn:clear_data()
         self.tipsText:SetText('')
         self.challengeText:SetText('')
         self.challengeText2:SetText('')
         self.KeyTexture:SetShown(false)
         self.KeyTexture.label:SetText('')
+        self.Favorites2:Hide()
     end
 
     function btn:settings()
@@ -290,12 +295,10 @@ local function Init_Button(btn)
 
 --收藏
         self.Favorites2:set_alpha()
-        self.Favorites2:SetShown(self.instanceID)
+        self.Favorites2:SetShown(true)
     end
 
     btn:settings()
-
-    WoWTools_TextureMixin:SetFrame(btn, {index=5, alpha=1})
 end
 
 
@@ -319,20 +322,19 @@ end
 local function Init_ListInstances(frame)
     if not frame:HasView() then
         return
-
-    elseif Save().hideEncounterJournal then
-        for _, btn in pairs(frame:GetFrames() or {}) do
-            if btn.clear_data then
-               btn:clear_data()
-            end
-        end
-        return
     end
 
+    local hide= Save().hideEncounterJournal
     for _, btn in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
-        if btn and btn.instanceID then --and btn.tooltipTitle--btn.bgImage:GetTexture() btn.name:GetText()
-            if not btn.settings then
+        if btn and btn.instanceID then
+            if hide then
+                if btn.clear_data then
+                    btn:clear_data()
+                end
+
+            elseif not btn.settings then
                 Init_Button(btn)
+
             else
                 btn:settings()
             end
