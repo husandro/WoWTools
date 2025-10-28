@@ -90,26 +90,19 @@ local function Init_Menu(self, root)
         return
     end
 
---打开选项界面
-    WoWTools_MenuMixin:OpenOptions(root, {
-        name=addName,
-        category=WoWTools_OtherMixin.Category
-    })
-    root:CreateDivider()
 --列表
     local tab= Get_List_Tab(self.instanceID)
     if tab then
         Set_Menu(root, tab)
     end
 
+    root:CreateDivider()
+
     local instanceID= Get_InstanceID()
     if instanceID and instanceID~=self.instanceID then
-
         local count
         tab, count= Get_List_Tab(instanceID)
         if tab then
-            root:CreateDivider()
-
             local sub= root:CreateButton(
                 (GetInstanceInfo() or instanceID)
                 ..(count and ' '..count or ''),
@@ -119,6 +112,12 @@ local function Init_Menu(self, root)
             Set_Menu(sub, tab)
         end
     end
+
+--打开选项界面
+    WoWTools_MenuMixin:OpenOptions(root, {
+        name=addName,
+        category=WoWTools_OtherMixin.Category
+    })
 end
 
 

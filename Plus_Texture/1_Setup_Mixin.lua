@@ -93,13 +93,11 @@ function WoWTools_TextureMixin:HideFrame(frame, tab)
     else
         if tab.index then
             local icon= select(tab.index, frame:GetRegions())
-            if icon and icon:IsObjectType("Texture") then
-                icon:SetTexture(0)
-            end
+            self:HideTexture(icon)
         else
             for _, icon in pairs({frame:GetRegions()}) do
-                if icon:IsObjectType("Texture") and not tab.show[icon] then
-                    icon:SetTexture(0)
+                if not tab.show[icon] then
+                    self:HideTexture(icon)
                 end
             end
         end
@@ -131,23 +129,25 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
     elseif tab and tab.index then
         local icon= select(tab.index, frame:GetRegions())
         if icon and icon:IsObjectType("Texture") then
-             if not notColor then
+            self:SetAlphaColor(icon, nil, notColor, alpha)
+             --[[if not notColor then
                 WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
              elseif alpha then
                 icon:SetAlpha(alpha)
-            end
+            end]]
         end
 
     else
         local show= tab.show or {}
         for _, icon in pairs({frame:GetRegions()}) do
             if icon:IsObjectType("Texture") and not show[icon] then
-                if not notColor then
+                self:SetAlphaColor(icon, nil, notColor, alpha)
+                --[[if not notColor then
                     WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
 
                 elseif alpha then
                     icon:SetAlpha(alpha)
-                end
+                end]]
             end
         end
     end
