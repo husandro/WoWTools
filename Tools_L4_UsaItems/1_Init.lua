@@ -88,8 +88,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-           WoWToolsSave['Tools_UseItems']= WoWToolsSave['Tools_UseItems'] or P_Tabs
-
+        WoWToolsSave['Tools_UseItems']= WoWToolsSave['Tools_UseItems'] or P_Tabs
 --禁用，Tools模块，退出
 
             if WoWTools_ToolsMixin:Get_MainButton() then

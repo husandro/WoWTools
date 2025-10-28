@@ -28,7 +28,7 @@ local P_Save={
     --isShowBackground=WoWTools_DataMixin.Player.husandro,--背景--旧数据
     --onlyMaxExpansion=true,--仅本版本物品
     borderAlpha= 0,
-    bgAlpha=0,
+    bgAlpha=0.75,
     olnyUsaItem=true,
     numLine=12,
     autoWho=WoWTools_DataMixin.Player.husandro,
@@ -101,7 +101,7 @@ local PaneIDs={
 function WoWTools_FoodMixin:Get_Item_Valid(itemID)
     local save= Save()
     if itemID
-        and itemID~=self.Button.itemID
+        and itemID~= WoWTools_ToolsMixin:Get_ButtonForName('Food').itemID
         and not save.noUseItems[itemID]
         and (PaneIDs[itemID] or not save.addItems[itemID])
         and (save.olnyUsaItem and C_Item.GetItemSpell(itemID) or not save.olnyUsaItem)
@@ -165,7 +165,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_FoodMixin.addName= '|A:Food:0:0|a'..(WoWTools_DataMixin.onlyChinese and '食物' or POWER_TYPE_FOOD)
 
-            WoWTools_FoodMixin.Button= WoWTools_ToolsMixin:CreateButton({
+            WoWTools_ToolsMixin:CreateButton({
                 name='Food',
                 tooltip=WoWTools_FoodMixin.addName,
                 isMoveButton=true,
@@ -176,17 +176,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         tooltip=WoWTools_FoodMixin.addName,
                         buttonText= WoWTools_DataMixin.onlyChinese and '还原位置' or RESET_POSITION,
                         SetValue= function()
+                            local btn= WoWTools_ToolsMixin:Get_ButtonForName('Food')
                             Save().point=nil
-                            if WoWTools_FoodMixin.Button and not WoWTools_FrameMixin:IsLocked(WoWTools_FoodMixin.Button) then
-                                Save().point=nil
-                                WoWTools_FoodMixin.Button:set_point()
+                            if btn and not WoWTools_FrameMixin:IsLocked(btn) then
+                                btn:set_point()
                             end
                         end
                     }, initializer)
                 end
             })
 
-            if WoWTools_FoodMixin.Button then
+            if WoWTools_ToolsMixin:Get_ButtonForName('Food') then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 if Save().autoLogin or Save().autoWho  then

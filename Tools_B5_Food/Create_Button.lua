@@ -154,7 +154,7 @@ end
 
 local function Create_Button(index)
     local name= 'WoWToolsFoodListButton'..index
-    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_FoodMixin.Button, {
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_ToolsMixin:Get_ButtonForName('Food'), {
         setID=index,
         name= name,
         isType2=true,
@@ -201,7 +201,7 @@ local function Create_Button(index)
 
     function btn:set_point()
         self:ClearAllPoints()
-        self:SetPoint('RIGHT', _G[Buttons[self:GetID()-1]] or WoWTools_FoodMixin.Button, 'LEFT')
+        self:SetPoint('RIGHT', _G[Buttons[self:GetID()-1]] or WoWTools_ToolsMixin:Get_ButtonForName('Food'), 'LEFT')
     end
 
 
@@ -243,9 +243,10 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     IsChecking=true
 
 
-
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('Food')
     local new={}
     local items={}
+
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local itemID= C_Container.GetContainerItemID(bag, slot)
@@ -260,8 +261,9 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     table.sort(new)
 
     items={}
+
     for itemID in pairs(Save().addItems) do
-        if WoWTools_FoodMixin.Button.itemID~=itemID and (Save().addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0) then
+        if btn.itemID~=itemID and (Save().addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0) then
             table.insert(items, itemID)
         end
     end
@@ -271,35 +273,35 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     end
 
     for index, itemID in pairs(new) do
-        local btn= _G[Buttons[index]] or Create_Button(index)--创建
-        btn.itemID= itemID
-        btn:settings()
-        btn:set_attribute()
-        btn:set_point()
+        local b= _G[Buttons[index]] or Create_Button(index)--创建
+        b.itemID= itemID
+        b:settings()
+        b:set_attribute()
+        b:set_point()
 
-        if not btn:IsShown() then
-            btn:set_event()
-            btn:Show()
+        if not b:IsShown() then
+            b:set_event()
+            b:Show()
         end
     end
 
     local num= #new
     for i=Save().numLine, num, Save().numLine do
-        local btn= _G[Buttons[i]]
-        if btn then
-            btn:ClearAllPoints()
-            btn:SetPoint('BOTTOM', _G[Buttons[i-Save().numLine]] or WoWTools_FoodMixin.Button, 'TOP')
-            self.Button.Background:SetPoint('TOP', btn, 1, 1)
+        local b= _G[Buttons[i]]
+        if b then
+            b:ClearAllPoints()
+            b:SetPoint('BOTTOM', _G[Buttons[i-Save().numLine]] or btn, 'TOP')
+            btn.Background:SetPoint('TOP', btn, 1, 1)
         end
     end
-    self.Button.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[num-1]] or self.Button, -1, -1)
+    btn.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[num-1]] or btn, -1, -1)
 
 
     for i= num+1 , #Buttons do
         _G[Buttons[i]]:SetShown(false)
     end
 
-    WoWTools_FoodMixin.Button:settings()
+    btn:settings()
 
     if isPrint then
         print(

@@ -40,5 +40,5 @@ end
 
 
 function WoWTools_FoodMixin:Set_AltSpell()
-    Init(self.Button)
+    Init()
 end

@@ -48,7 +48,8 @@ end
 
 
 
-local function Init(btn)
+local function Init()
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('Food')
     btn.RePoint={btn:GetPoint(1)}
     btn.texture:SetTexture(538745)
 
@@ -247,10 +248,12 @@ local function Init(btn)
     WoWTools_FoodMixin:Set_Button_Function(btn)
     btn:settings()
     btn:set_attribute()
+
+    Init=function()end
 end
 
 
 
 function WoWTools_FoodMixin:Init_Button()
-    Init(self.Button)
+    Init()
 end

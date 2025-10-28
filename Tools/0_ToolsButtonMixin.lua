@@ -436,3 +436,6 @@ end
 function WoWTools_ToolsMixin:Get_ButtonForName(name)
     return _G[Name..name]
 end
+function WoWTools_ToolsMixin:Is_EnableAddForName(name)
+    return not Save().disabledADD[name]
+end
