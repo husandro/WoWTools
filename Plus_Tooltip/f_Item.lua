@@ -460,7 +460,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     --setItemCooldown(tooltip, itemID)--物品冷却
     self:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
-    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
     --tooltip:Show()
 end
 

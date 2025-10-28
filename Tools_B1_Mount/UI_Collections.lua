@@ -36,7 +36,7 @@ local function Init_UI_Menu(self, root)
         return
     end
 
-    local name, spellID, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
+    local name, spellID, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isSteadyFlight = C_MountJournal.GetMountInfoByID(mountID)
     spellID= spellID or self.spellID
 
     if not name then
@@ -50,8 +50,7 @@ local function Init_UI_Menu(self, root)
         end
 
         col= (
-            (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding)
-            --or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding)
+            (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isSteadyFlight)
             or not isCollected
             or shouldHideOnChar
             or (isFactionSpecific and faction~=WoWTools_MountMixin.faction)
@@ -77,8 +76,8 @@ local function Init_UI_Menu(self, root)
                     end
                     removeTable(data.type, data.spellID)--移除, 表里, 其他同样的项目
                 end
-                WoWTools_MountMixin.MountButton:settings()
-                WoWTools_DataMixin:Call(MountJournal_UpdateMountList)
+                 WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
+                WoWTools_DataMixin:Call('MountJournal_UpdateMountList')
             end, setData
         )
         WoWTools_MountMixin:Set_Mount_Sub_Options(sub, setData)
@@ -142,8 +141,8 @@ local function Updata_MountJournal_FullUpdate(self)
     MountJournal_FullUpdate=New_MountJournal_FullUpdate--过滤，列表，Func
 
     MountJournal.FilterDropdown:Reset()
-    WoWTools_DataMixin:Call(MountJournal_SetUnusableFilter, true)
-    WoWTools_DataMixin:Call(MountJournal_FullUpdate, MountJournal)
+    WoWTools_DataMixin:Call('MountJournal_SetUnusableFilter', true)
+    WoWTools_DataMixin:Call('MountJournal_FullUpdate', MountJournal)
     C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true)
 
     self.ResetButton:SetShown(true)
@@ -246,25 +245,27 @@ local function Init()
             return
         end
         local text
-        for _, type in pairs(MountType) do
-            local ID=Save().Mounts[type][frame.spellID]
+        for _, name in pairs(MountType) do
+            local ID= Save().Mounts[name][frame.spellID]
             if ID then
                 text= text and text..'|n' or ''
-                if type==FLOOR then
+                if name==FLOOR and type(ID)=='table' then
                     local num=0
-                    for _, _ in pairs(ID) do
+                    for _ in pairs(ID) do
                         num=num+1
                     end
                     text=text..'|cnGREEN_FONT_COLOR:'..num..'|r'
                 end
-                text= text..WoWTools_TextMixin:CN(type)
+                text= text..WoWTools_TextMixin:CN(name)
             end
         end
          if not frame.WoWToolsButton then--建立，图标，菜单
-            frame.WoWToolsButton=WoWTools_ButtonMixin:Cbtn(frame, {
+            frame.WoWToolsButton= CreateFrame('DropdownButton', nil, frame, 'WoWToolsMenuButtonTemplate')
+            frame.WoWToolsButton:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga')
+            --[[WoWTools_ButtonMixin:Cbtn(frame, {
                 atlas='orderhalltalents-done-glow',
                 size=22
-            })
+            })]]
             frame.WoWToolsButton:SetPoint('BOTTOMRIGHT')
             frame.WoWToolsButton:SetAlpha(0)
             frame.WoWToolsButton:SetScript('OnEnter', function(self)
@@ -274,7 +275,7 @@ local function Init()
             frame.WoWToolsButton:SetScript('OnClick', function(self)
                 MenuUtil.CreateContextMenu(self, Init_UI_Menu)--界面，菜单
             end)
-            frame:HookScript('OnLeave', function(self)self.WoWToolsButton:SetAlpha(0) end)
+            frame:HookScript('OnLeave', function(self) self.WoWToolsButton:SetAlpha(0) end)
             frame:HookScript('OnEnter', function(self) self.WoWToolsButton:SetAlpha(1) end)
             frame.WoWToolsText=WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})--nil, frame.name, nil,nil,nil,'RIGHT')
             frame.WoWToolsText:SetPoint('TOPRIGHT',0,-2)
@@ -316,8 +317,8 @@ local function Init()
         frame:set_text()
         MountJournal.FilterDropdown:Reset()
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true)
-        WoWTools_DataMixin:Call(MountJournal_SetUnusableFilter,true)
-        WoWTools_DataMixin:Call(MountJournal_FullUpdate, MountJournal)
+        WoWTools_DataMixin:Call('MountJournal_SetUnusableFilter',true)
+        WoWTools_DataMixin:Call('MountJournal_FullUpdate', MountJournal)
         self:Hide()
         self:GetParent():rest_type()
     end)

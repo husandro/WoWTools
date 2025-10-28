@@ -100,7 +100,7 @@ local function Init()
             info.slotIndex and 'slotIndex|cffffffff'..WoWTools_DataMixin.Icon.icon2..info.slotIndex
         )
 
-        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+        WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', GameTooltip)
     end)
 
     Init=function()end

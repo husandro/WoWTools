@@ -52,7 +52,7 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         if frame.view:GetStride()~= value then
             frame.view:SetStride(value)
             if frame:IsVisible() then
-                WoWTools_DataMixin:Call(EncounterJournal_ListInstances)
+                WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
             end
         end
     end)

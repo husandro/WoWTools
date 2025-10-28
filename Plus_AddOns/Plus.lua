@@ -347,7 +347,7 @@ local function Init()
     AddonList.DisableAllButton:HookScript('OnClick', function()
         if Save().enableAllButtn then
             C_AddOns.EnableAddOn('WoWTools')
-            WoWTools_DataMixin:Call(AddonList_Update)
+            WoWTools_DataMixin:Call('AddonList_Update')
         end
     end)
 
@@ -403,7 +403,7 @@ local function Init()
                 end
             end
         end
-        WoWTools_DataMixin:Call(AddonList_Update)
+        WoWTools_DataMixin:Call('AddonList_Update')
     end)
 
 

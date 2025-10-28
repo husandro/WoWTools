@@ -130,9 +130,7 @@ local function Init_Menu(self, root)
             nil,
             {SetValue=function()
                 Save().Pets={[2780]=true}
-                if PetJournal_UpdatePetList then
-                    WoWTools_DataMixin:Call(PetJournal_UpdatePetList)
-                end
+                WoWTools_DataMixin:Call('PetJournal_UpdatePetList')
             end})
             return MenuResponse.Open
         end)

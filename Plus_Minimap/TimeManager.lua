@@ -217,7 +217,7 @@ local function Init_TimeManager_Menu(self, root)
     function()
         return StopwatchFrame:IsShown()
     end, function()
-        WoWTools_DataMixin:Call(Stopwatch_Toggle)
+        WoWTools_DataMixin:Call('Stopwatch_Toggle')
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
@@ -341,7 +341,7 @@ local function Init_TimeManager()
     btn:EnableMouseWheel(true)
     btn:HookScript('OnMouseWheel', function(self, d)
         Save().TimeManagerClockButtonScale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().TimeManagerClockButtonScale, nil)
-        WoWTools_DataMixin:Call(TimeManagerClockButton_UpdateTooltip)
+        WoWTools_DataMixin:Call('TimeManagerClockButton_UpdateTooltip')
     end)
     function btn:set_scale()
         self:SetScale(Save().TimeManagerClockButtonScale or 1)
@@ -354,7 +354,7 @@ local function Init_TimeManager()
     btn:SetPushedAtlas('auctionhouse-nav-button-select')
     btn:HookScript('OnLeave', ResetCursor)
     btn:HookScript('OnEnter', function()
-        WoWTools_DataMixin:Call(TimeManagerClockButton_UpdateTooltip)
+        WoWTools_DataMixin:Call('TimeManagerClockButton_UpdateTooltip')
     end)
 
 
@@ -477,7 +477,7 @@ local function Init_StopwatchFrame()
         Save().showStopwatchFrame=nil
     end)
     if Save().showStopwatchFrame and not StopwatchFrame:IsShown() then
-        WoWTools_DataMixin:Call(Stopwatch_Toggle)
+        WoWTools_DataMixin:Call('Stopwatch_Toggle')
     end
 
 
@@ -499,7 +499,7 @@ local function Init_StopwatchFrame()
         elseif d=='LeftButton' then
             if Save().StopwatchOnClickPause then
                 do
-                    WoWTools_DataMixin:Call(StopwatchPlayPauseButton_OnClick, StopwatchPlayPauseButton)--开始/暂停
+                    WoWTools_DataMixin:Call('StopwatchPlayPauseButton_OnClick', StopwatchPlayPauseButton)--开始/暂停
                 end
             end
         elseif d=='RightButton' then
@@ -628,7 +628,7 @@ local function Init()
             MenuUtil.CreateContextMenu(self, Init_TimeManager_Menu)
 
         elseif d=='LeftButton' then
-            WoWTools_DataMixin:Call(TimeManager_Toggle)
+            WoWTools_DataMixin:Call('TimeManager_Toggle')
         end
     end)
 

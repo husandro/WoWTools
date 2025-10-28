@@ -42,7 +42,7 @@ local function Init()
         end, function()
             Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
             WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精, 事件
-            WoWTools_DataMixin:Call(EncounterJournal_ListInstances)
+            WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
             self:set_icon()
         end)
 
@@ -65,7 +65,7 @@ local function Init()
         if d=='LeftButton' then
             Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
             WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
-            WoWTools_DataMixin:Call(EncounterJournal_ListInstances)
+            WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
             self:set_icon()
         elseif d=='RightButton' then
             Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil

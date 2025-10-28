@@ -154,14 +154,14 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
         sizeUpdateFunc=function()
             if RaidFrame:IsVisible() and not WoWTools_FrameMixin:IsLocked(RaidFrame) then
                 Set_RaidFrame_Button_size()
-                WoWTools_DataMixin:Call(RaidGroupFrame_Update)
+                WoWTools_DataMixin:Call('RaidGroupFrame_Update')
             end
         end,
         sizeRestFunc=function()
             FriendsFrame:SetSize(385, 424)
             if RaidFrame:IsVisible() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
-                WoWTools_DataMixin:Call(RaidGroupFrame_Update)
+                WoWTools_DataMixin:Call('RaidGroupFrame_Update')
             end
         end
     })

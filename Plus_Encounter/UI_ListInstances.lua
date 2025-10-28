@@ -29,7 +29,7 @@ local function Init_Fvorite_Menu(self, root)
         nil,
         {SetValue=function()
             Save().favorites={}
-            WoWTools_DataMixin:Call(EncounterJournal_ListInstances)
+            WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
         end})
         return MenuResponse.Open
     end)

@@ -894,7 +894,7 @@ local function Init_Menu(self, root)
         Save().gemLoc={
             [WoWTools_DataMixin.Player.Class]={}
         }
-        WoWTools_DataMixin:Call(ItemSocketingFrame_Update)
+        WoWTools_DataMixin:Call('ItemSocketingFrame_Update')
         return MenuResponse.Refresh
     end)
 

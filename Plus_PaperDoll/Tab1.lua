@@ -59,7 +59,7 @@ local function Init()
 
 
     LabelPvE:SetScript('OnMouseDown', function()
-        WoWTools_DataMixin:Call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab1, 1)
     end)
     LabelPvE:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -77,7 +77,7 @@ local function Init()
 
 
     LabelPvP:SetScript('OnMouseDown', function()
-        WoWTools_DataMixin:Call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab1, 1)
     end)
     LabelPvP:SetScript('OnLeave', function(self)
         GameTooltip:Hide()

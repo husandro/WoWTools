@@ -6354,7 +6354,10 @@
         "ITEM_MOD_ATTACK_POWER_SHORT",
         "LargeMoneyInputFrameMixin",
         "LargeMoneyInputBoxMixin",
-        "PLAYER_DIFFICULTY_STORY_RAID"
+        "PLAYER_DIFFICULTY_STORY_RAID",
+        "BonusRollLootWonFrame_OnLoad",
+        "AlertContainerMixin",
+        "AchievementUtil"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

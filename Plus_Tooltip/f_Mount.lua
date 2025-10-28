@@ -106,6 +106,6 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
 
     self:Set_Web_Link(tooltip, {type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
 
-    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
 end
 

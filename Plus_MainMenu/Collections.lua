@@ -45,7 +45,7 @@ local function Init()
 
     CollectionsMicroButton:HookScript('OnClick', function(_, d)
         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not Kiosk.IsEnabled() then
-            WoWTools_DataMixin:Call(ToggleCollectionsJournal, 2)
+            WoWTools_DataMixin:Call('ToggleCollectionsJournal', 2)
         end
     end)
 
@@ -56,11 +56,11 @@ local function Init()
         end
         if d==1 then
             if not MountJournal or not MountJournal:IsShown() then
-                WoWTools_DataMixin:Call(ToggleCollectionsJournal, 1)
+                WoWTools_DataMixin:Call('ToggleCollectionsJournal', 1)
             end
         elseif d==-1 then
             if not ToyBox or not ToyBox:IsShown() then
-                WoWTools_DataMixin:Call(ToggleCollectionsJournal, 3)
+                WoWTools_DataMixin:Call('ToggleCollectionsJournal', 3)
             end
         end
     end)

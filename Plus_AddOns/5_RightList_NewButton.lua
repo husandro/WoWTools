@@ -60,7 +60,7 @@ local function Init()
                     )
                 end
                 Save().buttons[name]= select(4 ,WoWTools_AddOnsMixin:Get_AddListInfo())
-                WoWTools_DataMixin:Call(AddonList_Update)
+                WoWTools_DataMixin:Call('AddonList_Update')
             end
         })
     end)

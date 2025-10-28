@@ -84,7 +84,7 @@ local function Init_Button_Menu(self, root)
             nil,
             {SetValue=function()
                 Save().buttons[data.name]= select(4, WoWTools_AddOnsMixin:Get_AddListInfo())
-                WoWTools_DataMixin:Call(AddonList_Update)
+                WoWTools_DataMixin:Call('AddonList_Update')
             end}
         )
 
@@ -114,7 +114,7 @@ local function Init_Button_Menu(self, root)
                         if data.name==n then
                             Save().buttons[n]= nil
                             Save().buttons['|T'..(newIcon or 0)..':0|t'..newText]= new
-                            WoWTools_DataMixin:Call(AddonList_Update)
+                            WoWTools_DataMixin:Call('AddonList_Update')
                             return
                         end
                     end
@@ -133,7 +133,7 @@ local function Init_Button_Menu(self, root)
             nil,
             {SetValue=function()
                 Save().buttons[self.name]=nil
-                WoWTools_DataMixin:Call(AddonList_Update)
+                WoWTools_DataMixin:Call('AddonList_Update')
             end}
         )
     end, {name=self.name})

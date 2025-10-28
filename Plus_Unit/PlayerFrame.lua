@@ -571,7 +571,7 @@ end
         end
     end)
     if IsInRaid() then
-        WoWTools_DataMixin:Call(PlayerFrame_UpdateGroupIndicator)
+        WoWTools_DataMixin:Call('PlayerFrame_UpdateGroupIndicator')
     end
 
 

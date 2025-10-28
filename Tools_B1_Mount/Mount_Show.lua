@@ -1,7 +1,4 @@
 --坐骑秀
-
-local Frame
-
 local function Save()
     return WoWToolsSave['Tools_Mounts']
 end
@@ -9,8 +6,8 @@ end
 
 
 
-local function Init(btn)
-    Frame=CreateFrame('Frame', 'WoWToolsToolsMountFrame', btn)
+local function Init()
+    local Frame=CreateFrame('Frame', 'WoWToolsToolsMountFrame', WoWTools_ToolsMixin:Get_ButtonForName('Mount'), nil)
     Frame:SetAllPoints()
     Frame:Hide()
 
@@ -126,6 +123,8 @@ local function Init(btn)
 
     Frame:set_evnet()
     Frame:rest()
+
+    Init=function()end
 end
 
 
@@ -138,5 +137,5 @@ end
 
 
 function WoWTools_MountMixin:Init_Mount_Show()
-    Init(self.MountButton)
+    Init()
 end

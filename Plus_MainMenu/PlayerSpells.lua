@@ -149,7 +149,7 @@ local function Init()
                 ToggleClickBindingFrame()
             end
         else
-            WoWTools_DataMixin:Call(ShowUIPanel, CooldownViewerSettings)
+            WoWTools_DataMixin:Call('ShowUIPanel', CooldownViewerSettings)
         end
     end)
         --[[if d==1 then--上

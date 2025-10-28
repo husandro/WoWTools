@@ -86,28 +86,28 @@ end
 
 local function checkMount()--检测坐骑
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
-    for _, type in pairs(MountType) do
-        if XD and XD[type] then
-            MountTab[type]={XD[type]}
+    for _, name in pairs(MountType) do
+        if XD and XD[name] then
+            MountTab[name]={XD[name]}
 
 
         --[[elseif index<=3 and not OkMount and ShiJI then
             MountTab[type]={ShiJI}]]
 
         else
-            MountTab[type]= {}
-            for spellID, tab in pairs(Save().Mounts[type] or {}) do
+            MountTab[name]= {}
+            for spellID, tab in pairs(Save().Mounts[name] or {}) do
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
                     local isFactionSpecific, faction, shouldHideOnChar, isCollected= select(8, C_MountJournal.GetMountInfoByID(mountID))
                     if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==WoWTools_MountMixin.faction) then
-                        if type==FLOOR then
-                            if uiMapID and tab[uiMapID] and not XD then
-                                table.insert(MountTab[type], spellID)
+                        if name==FLOOR then
+                            if uiMapID and type(tab)=='table' and tab[uiMapID] and not XD then
+                                table.insert(MountTab[name], spellID)
                             end
                         else
-                            table.insert(MountTab[type], spellID)
+                            table.insert(MountTab[name], spellID)
                         end
                     end
                 end
@@ -336,19 +336,20 @@ local function Set_Item_Spell_Edit(info)
             end,
             SetValue = function(_, data, tab, text)
                 Save().Mounts[FLOOR][data.spellID]= tab
-                WoWTools_MountMixin.MountButton:settings()
-                if MountJournal_UpdateMountList then WoWTools_DataMixin:Call(MountJournal_UpdateMountList) end
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, C_Spell.GetSpellLink(data.spellID), '|n', text)
+                WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
+                WoWTools_DataMixin:Call('MountJournal_UpdateMountList')
+                print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, C_Spell.GetSpellLink(data.spellID), '|n', text)
 
             end,
             OnAlt = function(_, data)
                 Save().Mounts[FLOOR][data.spellID]=nil
                 checkMount()--检测坐骑
-                setClickAtt(WoWTools_MountMixin.MountButton)--设置 Click属性
-                if MountJournal_UpdateMountList then WoWTools_DataMixin:Call(MountJournal_UpdateMountList) end
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, data.link)
+                setClickAtt(WoWTools_ToolsMixin:Get_ButtonForName('Mount'))--设置 Click属性
+                WoWTools_DataMixin:Call('MountJournal_UpdateMountList')
+                print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, data.link)
             end
         })
+        return
     end
 
 
@@ -381,13 +382,13 @@ local function Set_Item_Spell_Edit(info)
         end,
         SetValue = function(_, data)
             Save().Mounts[data.type][data.ID]=true
-            WoWTools_MountMixin.MountButton:settings()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_DataMixin.onlyChinese and '添加' or ADD, data.link)
+             WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
+            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '添加' or ADD, data.link)
         end,
         OnAlt = function(_, data)
             Save().Mounts[data.type][data.ID]=nil
-            WoWTools_MountMixin.MountButton:settings()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, data.link)
+             WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
+            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, data.link)
         end,
     })
 end
@@ -404,7 +405,17 @@ end
 
 
 
-local function Init(btn)
+
+
+
+
+
+
+
+
+
+local function Init()
+    local btn= WoWTools_ToolsMixin:Get_ButtonForName('Mount')
     WoWTools_KeyMixin:Init(btn, function() return Save().KEY end)
 
 
@@ -562,8 +573,6 @@ local function Init(btn)
         end
     end)
 
-    Init=function()end
-end
 
 
 
@@ -574,7 +583,11 @@ end
 
 
 
-local function Init_Event(btn)
+
+
+
+
+
     btn:RegisterEvent('PLAYER_REGEN_DISABLED')
     btn:RegisterEvent('PLAYER_REGEN_ENABLED')
     btn:RegisterEvent('SPELLS_CHANGED')
@@ -658,8 +671,9 @@ local function Init_Event(btn)
         end
     end)
 
+    WoWTools_MountMixin:Init_Mount_Show()--坐骑秀
 
-    Init_Event=function()end
+    Init=function()end
 end
 
 
@@ -674,10 +688,17 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
 function WoWTools_MountMixin:Init_Button()
-    Init(self.MountButton)
-    Init_Event(self.MountButton)
-    WoWTools_MountMixin:Init_Mount_Show()--坐骑秀
+    Init()
 end
 
 function WoWTools_MountMixin:Set_Item_Spell_Edit(...)

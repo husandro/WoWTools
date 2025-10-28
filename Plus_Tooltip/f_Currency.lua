@@ -90,5 +90,5 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 
     --tooltip:Show()
-    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
 end

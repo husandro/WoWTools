@@ -75,7 +75,7 @@ local function Init_Auto_Repair()
                 end
                 RepairSave().guild=RepairSave().guild+Co
                 RepairSave().num=RepairSave().num+1
-                WoWTools_DataMixin:Call(MerchantFrame_Update)
+                WoWTools_DataMixin:Call('MerchantFrame_Update')
                 print(
                     WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r',
@@ -94,7 +94,7 @@ local function Init_Auto_Repair()
                         '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST)..'|r',
                         C_CurrencyInfo.GetCoinTextureString(Co)
                     )
-                    WoWTools_DataMixin:Call(MerchantFrame_Update)
+                    WoWTools_DataMixin:Call('MerchantFrame_Update')
                 else
                     print(
                         WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,

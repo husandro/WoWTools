@@ -97,7 +97,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
         self:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 
-    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
     --tooltip:Show()
 end
 

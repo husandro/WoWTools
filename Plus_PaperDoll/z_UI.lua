@@ -154,10 +154,10 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
         minH=424,
         sizeUpdateFunc=function()
             if PaperDollFrame.EquipmentManagerPane:IsVisible() then
-                WoWTools_DataMixin:Call(PaperDollEquipmentManagerPane_Update)
+                WoWTools_DataMixin:Call('PaperDollEquipmentManagerPane_Update')
             end
             if PaperDollFrame.TitleManagerPane:IsVisible() then
-                WoWTools_DataMixin:Call(PaperDollTitlesPane_Update)
+                WoWTools_DataMixin:Call('PaperDollTitlesPane_Update')
             end
             --[[if CharacterHeadSlot:IsVisible() then
                 Set_Slot_Point()

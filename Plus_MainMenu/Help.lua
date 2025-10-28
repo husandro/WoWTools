@@ -130,7 +130,7 @@ local function Init()
                     HideUIPanel(GameMenuFrame)
                 end
             end
-            WoWTools_DataMixin:Call(ShowMacroFrame)
+            WoWTools_DataMixin:Call('ShowMacroFrame')
         end
     end)
 

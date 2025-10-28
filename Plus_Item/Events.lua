@@ -223,11 +223,15 @@ function WoWTools_ItemMixin.Events:Blizzard_FrameXML()
         WoWTools_ItemMixin:SetItemStats(lootFrame, data.itemLink, {point=lootFrame.Icon})
     end)
 
-        --拾取时, 弹出, 物品提示，信息, 战利品
-    --AlertFrameSystems.lua
+--拾取时, 弹出, 物品提示，信息, 战利品
+--GroupLootFrame.xml
+--AlertFrameSystems.lua
     WoWTools_DataMixin:Hook('DungeonCompletionAlertFrameReward_SetRewardItem', function(frame, itemLink)--,texture
         WoWTools_ItemMixin:SetItemStats(frame, frame.itemLink or itemLink , {point=frame.texture})
     end)
+
+--BonusRollLootWonFrame
+--hooksecurefunc(AlertContainerMixin, 'OnLoad', function()
     WoWTools_DataMixin:Hook('LootWonAlertFrame_SetUp', function(frame)
         WoWTools_ItemMixin:SetItemStats(frame, frame.hyperlink, {point= frame.lootItem.Icon})
     end)

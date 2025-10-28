@@ -43,8 +43,8 @@ local function set_Use_Spell_Button(btn, spellID)
                     Save().Mounts[SPELLS][self.spellID]= not Save().Mounts[SPELLS][self.spellID] and true or nil
                     self:set_tooltips()
                     self:set_alpha()
-                    WoWTools_MountMixin.MountButton:settings()
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
+                     WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
+                    print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
                 end
             else
                 WoWTools_MountMixin:Init_Menu_Spell(self)

@@ -1227,7 +1227,7 @@ local function Init()
         for _, name in pairs(Buttons) do
             _G[Name..name]:Settings()
         end
-        WoWTools_DataMixin:Call(PetBattleFrame_UpdateAllActionButtons, PetBattleFrame)
+        WoWTools_DataMixin:Call('PetBattleFrame_UpdateAllActionButtons', PetBattleFrame)
     end
 end
 

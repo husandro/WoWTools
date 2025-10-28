@@ -592,7 +592,7 @@ local function Init_Quest()
                     )
                 end)
             end
-            WoWTools_DataMixin:Call(QuestGoodbyeButton_OnClick)
+            WoWTools_DataMixin:Call('QuestGoodbyeButton_OnClick')
         else
             if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
@@ -603,7 +603,7 @@ local function Init_Quest()
                 end)
                 QuestButton.questSelect[questID]=true
             end
-            WoWTools_DataMixin:Call(QuestProgressCompleteButton_OnClick)
+            WoWTools_DataMixin:Call('QuestProgressCompleteButton_OnClick')
         end
     end)
 
@@ -702,7 +702,7 @@ local function Init_Quest()
         end
 
         if acceptButton==QuestFrameCompleteQuestButton then
-            WoWTools_DataMixin:Call(QuestRewardCompleteButton_OnClick)
+            WoWTools_DataMixin:Call('QuestRewardCompleteButton_OnClick')
         elseif acceptButton:IsEnabled() and acceptButton:IsVisible() then
             acceptButton:Click()
         end

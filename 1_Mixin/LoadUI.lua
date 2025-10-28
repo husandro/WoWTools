@@ -164,8 +164,8 @@ function WoWTools_LoadUIMixin:ToggleLandingPage()
             ToggleMajorFactionRenown(Constants.MajorFactionsConsts.PLUNDERSTORM_MAJOR_FACTION_ID)
             return
         elseif frame:IsInGarrisonMode() then
-            WoWTools_DataMixin:Call(GarrisonLandingPage_Toggle, frame)
-            WoWTools_DataMixin:Call(GarrisonMinimap_HideHelpTip, frame)
+            WoWTools_DataMixin:Call('GarrisonLandingPage_Toggle', frame)
+            WoWTools_DataMixin:Call('GarrisonMinimap_HideHelpTip', frame)
             return
         end
     end
@@ -356,32 +356,27 @@ end
 
 
 
-
 --打开成就
 -- AchievementObjectiveTrackerMixin:OnBlockHeaderClick
+--AchievementFrameAchievements.selection ~= achievementID
 function WoWTools_LoadUIMixin:Achievement(achievementID)
-    do
-        if not AchievementFrame then
-            AchievementFrame_LoadUI()
-        end
+    if not achievementID then
+        return
     end
 
-    if achievementID then
-        if not AchievementFrame:IsShown() then
-            AchievementFrame_ToggleAchievementFrame()
-            AchievementFrame_SelectAchievement(achievementID);
-        else
-            if AchievementFrameAchievements.selection ~= achievementID then
-                AchievementFrame_SelectAchievement(achievementID)
-            else
-                AchievementFrame_ToggleAchievementFrame()
-            end
-        end
+    if not AchievementFrame then
+        WoWTools_DataMixin:Call('AchievementFrame_LoadUI')
     end
+
+    if not AchievementFrame:IsShown() then
+        WoWTools_DataMixin:Call('AchievementFrame_ToggleAchievementFrame')
+    end
+
+    WoWTools_DataMixin:Call('AchievementFrame_SelectAchievement', achievementID)
 end
 
 
-
+--AchievementFrame_SelectAchievement(6779)
 --[[
 战斗中，打不开
 journalType 0=Instance, 1=Encounter, 2=Section.
@@ -391,10 +386,10 @@ difficulty DifficultyID of the instance.
 AdventureGuideUtil.lua
 https://warcraft.wiki.gg/wiki/DifficultyID
 Blizzard_SharedMapDataProviders/DungeonEntranceDataProvider.lua
-
 |Hjournal:1:2568:23|h[虚空石畸体]|h
-
 EncounterJournal_DisplayInstance
+EncounterJournal_OpenJournal(nil, journalInstanceID)
+WoWTools_DataMixin:Call(ToggleEncounterJournal)
 ]]
 function WoWTools_LoadUIMixin:JournalInstance( journalType, journalInstanceID, difficultyID)
     if not AdventureGuideUtil.IsAvailable()
@@ -403,18 +398,5 @@ function WoWTools_LoadUIMixin:JournalInstance( journalType, journalInstanceID, d
     then
         return
     end
-    
     AdventureGuideUtil.OpenJournalLink(journalType or 0, journalInstanceID, difficultyID or 23)
 end
-    --[[do
-        EncounterJournal_LoadUI()
-    end
-    if journalInstanceID then
-        do
-            if not EncounterJournal:IsShown() then
-                WoWTools_DataMixin:Call(ToggleEncounterJournal)
-            end
-        end
-        EncounterJournal_OpenJournal(nil, journalInstanceID)
-    end
-end]]

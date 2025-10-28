@@ -241,7 +241,7 @@ local function Init()
 
         if btn2 then
             btn2.checkButton:SetChecked(true)
-            WoWTools_DataMixin:Call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
+            WoWTools_DataMixin:Call('RolePollPopupRoleButtonCheckButton_OnClick', btn2.checkButton, btn2)
             WoWTools_CooldownMixin:Setup(self, nil, Save().sec, nil, true)--冷却条
             self.aceTime=C_Timer.NewTimer(Save().sec, function()
                 if self.acceptButton:IsEnabled()
@@ -512,7 +512,7 @@ local function Init()
 --确定，进入副本
         if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
             StaticPopupSpecial_Show(LFGDungeonReadyPopup)
-            WoWTools_DataMixin:Call(LFGDungeonReadyPopup_Update)
+            WoWTools_DataMixin:Call('LFGDungeonReadyPopup_Update')
         end
     end)
 

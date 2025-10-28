@@ -148,7 +148,7 @@ local function Init_Friends_Menu(self, root)
         return not Save().disabledFriendPlus
     end, function()
         Save().disabledFriendPlus= not Save().disabledFriendPlus and true or nil
-        WoWTools_DataMixin:Call(FriendsList_Update, true)
+        WoWTools_DataMixin:Call('FriendsList_Update', true)
     end)
 
     root:CreateDivider()
@@ -397,7 +397,7 @@ local function Init()--好友列表, 初始化
                     text
                 )
             else
-                WoWTools_DataMixin:Call(FriendsFrame_CheckBattlenetStatus)
+                WoWTools_DataMixin:Call('FriendsFrame_CheckBattlenetStatus')
             end
 
 
@@ -657,7 +657,7 @@ local function Init()--好友列表, 初始化
             return
         end
         btn:SetScript('OnDoubleClick', function()
-            WoWTools_DataMixin:Call(FriendsFrameUnsquelchButton_OnClick, FriendsFrame.IgnoreListWindow.UnignorePlayerButton)
+            WoWTools_DataMixin:Call('FriendsFrameUnsquelchButton_OnClick', FriendsFrame.IgnoreListWindow.UnignorePlayerButton)
         end)
         btn.indexLable= WoWTools_LabelMixin:Create(btn, {mouse=true})
         btn.indexLable:SetPoint('RIGHT')

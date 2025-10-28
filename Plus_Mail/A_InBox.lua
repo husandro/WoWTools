@@ -62,7 +62,7 @@ local function return_delete_InBox(openMailID)--删除，或退信
         InboxFrame.openMailID= openMailID
         OpenMailFrame.itemName= (itemCount and itemCount>0) and itemName or nil
         OpenMailFrame.money= money
-        WoWTools_DataMixin:Call(OpenMail_Delete)--删除，或退信 MailFrame.lua
+        WoWTools_DataMixin:Call('OpenMail_Delete')--删除，或退信 MailFrame.lua
     end
 
     print(
@@ -340,7 +340,7 @@ local function Create_Unit_Button(btn, i)
             OpenMailSender.Name:SetText(self.playerName or self.sender)
             OpenMailSubject:SetText(self.subject)
             InboxFrame.openMailID= self.openMailID
-            WoWTools_DataMixin:Call(OpenMail_Reply)--回复
+            WoWTools_DataMixin:Call('OpenMail_Reply')--回复
         end
         self:SetAlpha(1)
     end)
@@ -408,7 +408,7 @@ local function Create_Unit_Button(btn, i)
     btn.outItemOrMoney= WoWTools_ButtonMixin:Cbtn(btn, {size={22, 20}, atlas='Cursor_OpenHand_32'})
     btn.outItemOrMoney:SetPoint('RIGHT', btn.DeleteButton, 'LEFT', -22, 0)
     btn.outItemOrMoney:SetScript('OnClick', function(self)
-        WoWTools_DataMixin:Call(InboxFrame_OnModifiedClick, self:GetParent(), self.openMailID)
+        WoWTools_DataMixin:Call('InboxFrame_OnModifiedClick', self:GetParent(), self.openMailID)
     end)
     btn.outItemOrMoney:SetScript('OnLeave' ,function(self)
         self:GetParent().enterTipTexture:SetShown(false)

@@ -32,13 +32,13 @@ local function Settings()
 
     WoWTools_PaperDollMixin:Init_Status_Plus()--属性，增强
 
-    WoWTools_DataMixin:Call(PaperDollFrame_SetLevel)
-    WoWTools_DataMixin:Call(PaperDollFrame_UpdateStats)
+    WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
+    WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
 
     for _, slot in pairs(WoWTools_PaperDollMixin.ItemButtons) do
         local btn2= _G[slot]
         if btn2 then
-            WoWTools_DataMixin:Call(PaperDollItemSlotButton_Update, btn2)
+            WoWTools_DataMixin:Call('PaperDollItemSlotButton_Update', btn2)
         end
     end
 
@@ -47,8 +47,8 @@ local function Settings()
         InspectFrame:set_status_label()--目标，属性
         InspectFrame.ShowHideButton:settings()
         if InspectFrame:IsShown() then
-            WoWTools_DataMixin:Call(InspectPaperDollFrame_UpdateButtons)--InspectPaperDollFrame.lua
-            WoWTools_DataMixin:Call(InspectPaperDollFrame_SetLevel)--目标,天赋 装等
+            WoWTools_DataMixin:Call('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
+            WoWTools_DataMixin:Call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
         end
     end
     PaperDollItemsFrame.ShowHideButton:settings()

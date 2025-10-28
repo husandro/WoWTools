@@ -125,8 +125,8 @@ function WoWTools_ObjectiveMixin:Clear_Achievement(isPrint)
             )
         end
     end
-    if num>0 and AchievementFrame and AchievementFrame:IsVisible() and AchievementFrameAchievements_ForceUpdate then
-        WoWTools_DataMixin:Call(AchievementFrameAchievements_ForceUpdate)
+    if num>0 and AchievementFrame and AchievementFrame:IsVisible() then
+        WoWTools_DataMixin:Call('AchievementFrameAchievements_ForceUpdate')
     end
 end
 

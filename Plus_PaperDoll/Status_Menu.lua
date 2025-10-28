@@ -55,7 +55,7 @@ end
 
 
 local function Data_Save()
-    WoWTools_DataMixin:Call(PaperDollFrame_UpdateStats)
+    WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
     Save().PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
 end
 
@@ -441,7 +441,7 @@ local function Init_Menu(self, root)
         {SetValue=function()
             PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
             Save().PAPERDOLL_STATCATEGORIES=nil
-            WoWTools_DataMixin:Call(PaperDollFrame_UpdateStats)
+            WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
         end})
         return MenuResponse.Open
     end, {name=name})
@@ -470,7 +470,7 @@ local function Init_Menu(self, root)
             return Save().itemLevelBit==data.bit
         end, function(data)
             Save().itemLevelBit= data.bit
-            WoWTools_DataMixin:Call(PaperDollFrame_UpdateStats)
+            WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
             return MenuResponse.Refresh
         end, {bit=i})
     end

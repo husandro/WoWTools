@@ -41,7 +41,7 @@ local function Setup_Frame(name)
             WoWTools_MoveMixin:Save().scale[btn.name]=nil
             if frame:CanChangeAttribute() then
                 frame:SetScale(1)
-                WoWTools_DataMixin:Call(PlayerFrame_UpdateArt, PlayerFrame)
+                WoWTools_DataMixin:Call('PlayerFrame_UpdateArt', PlayerFrame)
             end
         end
     })

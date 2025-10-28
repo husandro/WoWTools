@@ -138,7 +138,7 @@ local function Init()
             WoWTools_TooltipMixin:Set_Faction(tooltip, poiInfo.factionID)
         end
 
-        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+        WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
     end)
 
 

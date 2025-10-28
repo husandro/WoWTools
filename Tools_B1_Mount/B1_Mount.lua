@@ -118,14 +118,6 @@ end
 
 
 
-local function Init()
-  
-
-    Init=function()end
-end
-
-
-
 
 
 local panel= CreateFrame("Frame")
@@ -144,13 +136,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save().Mounts= P_Mouts_Tab
             end
 
-
-            WoWTools_MountMixin.MountButton= WoWTools_ToolsMixin:CreateButton({
+            WoWTools_ToolsMixin:CreateButton({
                 name='Mount',
                 tooltip=WoWTools_MountMixin.addName,
             })
 
-            if WoWTools_MountMixin.MountButton then
+            if WoWTools_ToolsMixin:Get_ButtonForName('Mount') then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                  for type, tab in pairs(Save().Mounts) do

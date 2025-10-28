@@ -65,11 +65,11 @@ local function Init(btn)
     function btn:set_OnMouseDown()
         if self.dungeonID then
             if self.type==LE_LFG_CATEGORY_LFD then
-                WoWTools_DataMixin:Call(LFDQueueFrame_SetType, self.dungeonID)
-                WoWTools_DataMixin:Call(LFDQueueFrame_Join)
+                WoWTools_DataMixin:Call('LFDQueueFrame_SetType', self.dungeonID)
+                WoWTools_DataMixin:Call('LFDQueueFrame_Join')
             elseif self.type==LE_LFG_CATEGORY_RF then
-                WoWTools_DataMixin:Call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
-                WoWTools_DataMixin:Call(RaidFinderQueueFrame_Join)
+                WoWTools_DataMixin:Call('RaidFinderQueueFrame_SetRaid', self.dungeonID)
+                WoWTools_DataMixin:Call('RaidFinderQueueFrame_Join')
             elseif self.type==LE_LFG_CATEGORY_SCENARIO then
 
             end

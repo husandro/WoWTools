@@ -111,7 +111,7 @@ local function Create_Fast_Button(index)
             else
                 C_AddOns.EnableAddOn(self.name)
             end
-            WoWTools_DataMixin:Call(AddonList_Update)
+            WoWTools_DataMixin:Call('AddonList_Update')
             self:set_tooltips()
         else
            WoWTools_AddOnsMixin:FindAddon(self:GetID())

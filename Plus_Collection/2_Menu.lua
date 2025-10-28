@@ -10,9 +10,9 @@ local function Refresh_Pet()
     WoWTools_CollectionMixin:Init_Pet()
     if PetJournal and PetJournal:IsVisible() then
         do
-            WoWTools_DataMixin:Call(PetJournal_OnHide, PetJournal)
+            WoWTools_DataMixin:Call('PetJournal_OnHide', PetJournal)
         end
-        WoWTools_DataMixin:Call(PetJournal_OnShow, PetJournal)
+        WoWTools_DataMixin:Call('PetJournal_OnShow', PetJournal)
         --WoWTools_DataMixin:Call(PetJournal_UpdateAll)
     end
 end

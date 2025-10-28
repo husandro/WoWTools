@@ -63,11 +63,11 @@ local function ClearAll_Menu(root, type, index)
             {SetValue=function()
                 Save().Mounts[data.type]={}
                 print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName,
+                    WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     data.name,
                     WoWTools_TextMixin:CN(data.type)
                 )
-                WoWTools_MountMixin.MountButton:settings()
+                 WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
             end})
             return MenuResponse.Open
         end, {type=type, name=name})
@@ -127,13 +127,13 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
 
     root:CreateDivider()
     root:CreateCheckbox(
-        '|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE),
+        WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
     function()
         return Save().Mounts[data.type][data.itemID or data.spellID]
     end, function()
         Save().Mounts[data.type][data.itemID or data.spellID]= not Save().Mounts[data.type][data.itemID or data.spellID] and true or nil
 
-        WoWTools_MountMixin.MountButton:settings()
+         WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
     end)
 
 
@@ -307,8 +307,8 @@ local function Init_Menu_Spell(_, sub)
     sub2=sub:CreateButton(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT, function()
         if IsControlKeyDown() then
             Save().Mounts[SPELLS]= WoWTools_MountMixin:P_Mouts_Tab()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
-            WoWTools_MountMixin.MountButton:settings()
+            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, '|cnGREEN_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+             WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
         else
             return MenuResponse.Open
         end

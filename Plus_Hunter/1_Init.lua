@@ -54,7 +54,7 @@ local function Init()
                     C_AddOns.LoadAddOn('Blizzard_StableUI')
                 end
                 if not UIPanelWindows['StableFrame'] then
-                    WoWTools_DataMixin:Call(StableFrame, 'OnLoad', StableFrame)
+                    WoWTools_DataMixin:Call('StableFrame', 'OnLoad', StableFrame)
                 end
                 On_Show()
             end

@@ -62,7 +62,7 @@ local function Init()
                     (data.iconID and '|T'..data.iconID..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..data.iconID or ' '),
                     data.actionID and 'actionID|cffffffff'..WoWTools_DataMixin.Icon.icon2..data.actionID
                 )
-                WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, self)
+                WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', self)
             end
         end
     end)
@@ -247,7 +247,7 @@ local function Init()
                     (WoWTools_DataMixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)),
                     WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(questID))
                 )
-                WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+                WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', GameTooltip)
             end
         end
     end)
@@ -265,7 +265,7 @@ local function Init()
     WoWTools_DataMixin:Hook('GameTooltip_AddWidgetSet', function(tooltip, uiWidgetSetID)
         if uiWidgetSetID then
             tooltip:AddLine('widgetSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..uiWidgetSetID)
-            WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+            WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
         end
     end)
 
@@ -306,7 +306,7 @@ local function Init()
                             subType and 'subType|cffffffff'..WoWTools_DataMixin.Icon.icon2..subType
                         )
                     --end
-                    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+                    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', GameTooltip)
                 end
             end)
         end
@@ -365,7 +365,7 @@ local function Init()
             '|c'..select(4,  C_Item.GetItemQualityColor(quality))..WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC'] or '')
         )
 
-        WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+        WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
     end)
 
 --商店

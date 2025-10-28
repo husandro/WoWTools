@@ -1,7 +1,14 @@
 function WoWTools_DataMixin:Call(func, ...)
-    if func then
+    if type(func)=='string' then
+        if _G[func] then
+            securecallfunction(_G[func], ...)
+            return
+        end
+    elseif func then
         securecallfunction(func, ...)
-    elseif WoWTools_DataMixin.Player.husandro then
+        return
+    end
+    if WoWTools_DataMixin.Player.husandro then
         print('Call没有发现', func, ...)
     end
 end

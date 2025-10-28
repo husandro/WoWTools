@@ -60,5 +60,5 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
         ..format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)
     )
 
-    WoWTools_DataMixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
 end
