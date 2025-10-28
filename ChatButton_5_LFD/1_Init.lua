@@ -41,7 +41,7 @@ local function Init(btn)
     btn.leaveInstance=btn:CreateTexture(nil, 'ARTWORK', nil, 1)
     btn.leaveInstance:SetPoint('BOTTOMLEFT',4, 0)
     btn.leaveInstance:SetSize(12,12)
-    btn.leaveInstance:SetAtlas(WoWTools_DataMixin.Icon.toLeft)
+    btn.leaveInstance:SetAtlas('common-icon-rotateleft')
     btn.leaveInstance:Hide()
 
 

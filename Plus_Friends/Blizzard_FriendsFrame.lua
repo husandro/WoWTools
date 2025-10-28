@@ -596,7 +596,7 @@ local function Init()--好友列表, 初始化
 
                 if info.fullName then
                     if info.fullName== WoWTools_DataMixin.Player.Name then
-                        btn.Name:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
+                        btn.Name:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|A:common-icon-rotateleft:0:0|a')
                     else
                         local nameText= WoWTools_UnitMixin:GetIsFriendIcon(nil, nil, info.fullName)--检测, 是否好友
                         if nameText then

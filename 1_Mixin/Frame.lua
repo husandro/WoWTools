@@ -235,7 +235,7 @@ function WoWTools_FrameMixin:HelpFrame(tab)--WoWTools_FrameMixin:HelpFrame({fram
         tab.frame.HelpTips= WoWTools_ButtonMixin:Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
         if tab.point=='right' then
             tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0, tab.y or -10)
-            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or WoWTools_DataMixin.Icon.toLeft)
+            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or 'common-icon-rotateleft')
         else--left
             tab.frame.HelpTips:SetPoint('BOTTOMRIGHT', tab.topoint or tab.frame, 'BOTTOMLEFT',0, tab.y or -10)
             tab.frame.HelpTips:SetNormalAtlas(tab.atlas or 'common-icon-rotateright')

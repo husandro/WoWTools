@@ -121,7 +121,7 @@ local function Create_potFrame(frame)
 
 --目标，图像
             if UnitIsUnit(self.tt, self.unit) then--队员，选中他自已
-                self.Portrait:SetAtlas(WoWTools_DataMixin.Icon.toLeft)
+                self.Portrait:SetAtlas('common-icon-rotateleft')
 
             elseif UnitIsUnit(self.tt, 'player') then--我
                 self.Portrait:SetAtlas('auctionhouse-icon-favorite')

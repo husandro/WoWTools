@@ -179,7 +179,7 @@ local function Set_List_Button(btn, displayData)
                             ..name--名称
                             ..(info.limitedTimeSet and '|A:socialqueuing-icon-clock:0:0|a' or '')--限时套装
                             ..' '..info.setID
-                            --..(info.setID==btn.setID and ' '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or '')
+                            --..(info.setID==btn.setID and ' '..'|A:common-icon-rotateleft:0:0|a' or '')
                 tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
             end
             patch= patch or (info.patchID and info.patchID>0 and 'v'..(info.patchID/10000))

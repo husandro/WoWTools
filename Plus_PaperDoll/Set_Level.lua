@@ -55,7 +55,7 @@ local function Init()
         GameTooltip:AddLine(' ')
         for _, info2 in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
             local col= info2.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-            GameTooltip:AddDoubleLine((info2.alreadyOn and '|A:common-icon-rotateright:0:0|a' or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or '')..col..' ID '.. info2.id, col..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info2.completed))
+            GameTooltip:AddDoubleLine((info2.alreadyOn and '|A:common-icon-rotateright:0:0|a' or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and '|A:common-icon-rotateleft:0:0|a' or '')..col..' ID '.. info2.id, col..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info2.completed))
         end
 
         GameTooltip:Show()

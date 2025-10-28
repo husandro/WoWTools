@@ -204,7 +204,7 @@ local function creatd_button(index, parent)
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
             GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT)..'|A:common-icon-rotateright:0:0|a', 'Alt+'..WoWTools_DataMixin.Icon.left)
             GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a', 'Alt+'..WoWTools_DataMixin.Icon.mid)
-            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft), 'Alt+'..WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)..'|A:common-icon-rotateleft:0:0|a', 'Alt+'..WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
         end
     end
