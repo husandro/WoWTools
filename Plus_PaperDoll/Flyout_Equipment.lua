@@ -179,7 +179,7 @@ local function Settings(itemButton)
                 local location = button.location
                 slot= itemButton:GetID()
                 if location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-                    local player, bank, bags, _, slot2, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
+                    local _, _, bags, _, slot2, bag = EquipmentManager_UnpackLocation(location)
                     --[[if ( voidStorage and voidSlot ) then
                         itemLink = GetVoidItemHyperlinkString(voidSlot)
                     else]]if ( not bags and slot2) then
@@ -211,7 +211,12 @@ local function Init()
         local itemButton = EquipmentFlyoutFrame.button
         Settings(itemButton)
     end)
-   WoWTools_DataMixin:Hook('EquipmentFlyout_Show', Settings)
+
+    WoWTools_DataMixin:Hook('EquipmentFlyout_Show', function(...)
+            Settings(...)
+    end)
+
+   Init=function()end
 end
 
 

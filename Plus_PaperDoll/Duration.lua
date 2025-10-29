@@ -2,7 +2,7 @@
 local function Save()
     return WoWToolsSave['Plus_PaperDoll']
 end
-local Frame
+
 
 
 
@@ -13,7 +13,7 @@ local Frame
 
 
 local function Init()
-    Frame= CreateFrame('Frame', nil, PaperDollItemsFrame)
+    local Frame= CreateFrame('Frame', 'WoWToolsPaperDollAllDurationFrame', PaperDollItemsFrame)
     Frame:SetSize(1, 1)
     Frame:SetPoint('RIGHT', CharacterLevelText, 'LEFT')
 
@@ -47,6 +47,8 @@ local function Init()
     Frame:SetScript('OnShow', Frame.settings)
     Frame:SetScript('OnHide', Frame.settings)
     Frame:SetScript('OnEvent', Frame.set_text)
+
+    Init=function()end
 end
 
 
@@ -64,5 +66,7 @@ function WoWTools_PaperDollMixin:Init_Duration()
 end
 
 function WoWTools_PaperDollMixin:Set_Duration()
-    Frame:settings()
+    if _G['WoWToolsPaperDollAllDurationFrame'] then
+        _G['WoWToolsPaperDollAllDurationFrame']:settings()
+    end
 end

@@ -1,23 +1,59 @@
 --显示服务器名称
-local Label
 
 
 
 
 
-local function Init_Label()
-    local frame= CreateFrame("Frame", nil, PaperDollItemsFrame)
+
+local function Settings()
+    local text
+    if not WoWToolsSave['Plus_PaperDoll'].hide then
+        local ser=GetAutoCompleteRealms() or {}
+
+        local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm, nil, nil)
+
+        local num= #ser
+
+        text= (num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r ' or '')
+                ..WoWTools_DataMixin.Player.Realm
+                ..(server and ' '..server.col or '')
+    end
+
+    _G['WoWToolsPaperDollRealmLabel']:SetText(text or '')
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    local frame= CreateFrame("Frame", 'WoWToolsPaperDollRealmFrame', PaperDollItemsFrame)
     frame:SetSize(1,1)
     frame:SetPoint('LEFT', CharacterFrame.TitleContainer, 22,0)
     frame:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
     frame:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
 
 
-    Label= WoWTools_LabelMixin:Create(frame, {
-        name='WoWToolsServerInfoText',
+    local Label= frame:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'GameFontNormalSmall')
+    if GameLimitedMode_IsActive() then
+        Label:SetTextColor(1,0.28,0)
+    end
+    --[[WoWTools_LabelMixin:Create(frame, {
+        name='WoWToolsPaperDollRealmLabel',
         color= GameLimitedMode_IsActive() and {r=0,g=1,b=1} or {r=1,g=1,b=1},
         mouse=true,
-    })
+    })]]
 
     Label:SetPoint('LEFT')
     --Label:SetAlpha(1)
@@ -65,28 +101,18 @@ local function Init_Label()
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
+
+    Settings()
+
+    Init=function()
+        Settings()
+    end
 end
 
 
 
 
 
-
-
-
-local function Settings()
-    local ser=GetAutoCompleteRealms() or {}
-
-    local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm, nil, nil)
-
-    local num= #ser
-
-    local text= (num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r ' or '')
-            ..WoWTools_DataMixin.Player.Realm
-            ..(server and ' '..server.col or '')
-
-    Label:SetText(text or '')
-end
 
 
 
@@ -99,15 +125,5 @@ end
 
 --显示服务器名称
 function WoWTools_PaperDollMixin:Init_ServerInfo()
-    Init_Label()
-    Settings()
-end
-
-
-function WoWTools_PaperDollMixin:Settings_ServerInfo()
-    if WoWToolsSave['Plus_PaperDoll'].hide then
-        Label:SetText('')
-    else
-        Settings()
-    end
+    Init()
 end

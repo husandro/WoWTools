@@ -193,6 +193,7 @@ Plus_MiniMap\Zoom.lua
 Plus_MiniMap\Collection_Icon.lua
 
 ##角色面板
+Plus_PaperDoll\0_PaperDollMixin.lua
 Plus_PaperDoll\1_Init.lua
 Plus_PaperDoll\Duration.lua
 Plus_PaperDoll\Flyout_Equipment.lua
