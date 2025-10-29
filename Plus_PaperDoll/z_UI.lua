@@ -288,11 +288,13 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
         CharacterModelScene.ControlFrame:SetShown(false)
     end)
 
---角色，物品栏
+--角色，物品栏 CharacterTrinket0SlotFrame
     for _, name in pairs(WoWTools_PaperDollMixin.ItemButtons) do
-        self:HideFrame(_G[name])
+        self:HideTexture(_G[name..'Frame'])
+        self:HideTexture(_G[name..'NormalTexture'])
     end
-
+    CharacterMainHandSlot:DisableDrawLayer('BACKGROUND')
+    CharacterSecondaryHandSlot:DisableDrawLayer('BACKGROUND')
 
 --Tab
     self:SetTabButton(CharacterFrameTab1)

@@ -6358,7 +6358,8 @@
         "BonusRollLootWonFrame_OnLoad",
         "AlertContainerMixin",
         "AchievementUtil",
-        "MOUNT_JOURNAL_FILTER_UNUSABLE"
+        "MOUNT_JOURNAL_FILTER_UNUSABLE",
+        "CharacterTrinket1SlotFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
