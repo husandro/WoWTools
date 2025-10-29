@@ -30,7 +30,7 @@ local function Get_List_Tab(instanceID)
             local itemID= C_AchievementInfo.GetRewardItemID(achievementID)
             local itemIcon= itemID and C_Item.GetItemIconByID(itemID)
            WoWTools_DataMixin:Load(itemID, 'item')
-            
+
 
             table.insert(tab, {
                 text= (index<10 and '  ' or '')
@@ -189,18 +189,175 @@ end
 
 
 
+ --[[local menu= CreateFrame('DropdownButton', 'WoWToolsAchievementMenu', AchievementFrameFilterDropdown ,'WoWToolsMenuButtonTemplate')
+    menu:SetPoint('RIGHT', AchievementFrameFilterDropdown, 'LEFT', 2, 0)
+    menu:SetupMenu(function(_, root)
+        local sub= root:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '已完成' or CRITERIA_COMPLETED,
+        function()
+            return MenuResponse.Open
+        end)
+        WoWTools_MenuMixin:ScaleRoot(sub, function()
+            return Save().completedAlpha or 0
+        end, function(value)
+            Save().completedAlpha=value
+        end, function()
+            Save().completedAlpha= nil
+        end)
+    end)]]
+
+local function Set_Icon(self, achievementID)
+    self.achievementID= achievementID
+    local texture= select(10, GetAchievementInfo(achievementID))
+    self:SetNormalTexture(texture or 0)
+end
+--已完成，背景 alpha
+local function Set_AchievementTemplate(self, show)
+    local alpha= Save().completedAlpha or 0
+    alpha= (self.completed and not self:IsSelected() and not show) and alpha or 1
+
+    WoWTools_TextureMixin:SetFrame(self, {alpha=alpha, notColor=true})
+    self.Shield.Icon:SetAlpha(alpha)--点数，外框
+end
 
 
 local function Init_Achievement()
-    Create_Button(AchievementFrameCloseButton, function(btn) btn:SetPoint('RIGHT', AchievementFrameCloseButton, 'LEFT', -2, 0) end)
+--选中，提示
+    local back= CreateFrame('Button', 'WoWToolsAchievementBackButton', AchievementFrameFilterDropdown, 'WoWToolsButtonTemplate')
+    back:SetSize(20,20)
+    back:SetPoint('LEFT', AchievementFrameFilterDropdown, 'RIGHT', 2, 0)
+    back:SetNormalTexture(0)--'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga')
+    WoWTools_ButtonMixin:AddMask(back)
+    back:SetScript('OnLeave', GameTooltip_Hide)
+    back:SetScript('OnEnter', function(self)
+        if self.achievementID then
+            WoWTools_SetTooltipMixin:Frame(self)
+        end
+    end)
+    back:SetScript('OnClick', function(self)
+        WoWTools_LoadUIMixin:Achievement(self.achievementID)
+    end)
+
+--点击，提示
+    local next= CreateFrame('Button', 'WoWToolsAchievementNextButton', AchievementFrameFilterDropdown, 'WoWToolsButtonTemplate')
+    next:SetSize(20,20)
+    next:SetPoint('LEFT', back, 'RIGHT')
+    next:SetNormalTexture(0)--'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga')
+    WoWTools_ButtonMixin:AddMask(next)
+    next:SetScript('OnLeave', GameTooltip_Hide)
+    next:SetScript('OnEnter', function(self)
+        if self.achievementID then
+            WoWTools_SetTooltipMixin:Frame(self)
+        end
+    end)
+    next:SetScript('OnClick', function(self)
+        WoWTools_LoadUIMixin:Achievement(self.achievementID)
+    end)
+
+
+
+
+
+--选中，提示
+    WoWTools_DataMixin:Hook('AchievementFrame_SelectAchievement', function(achievementID)
+        Set_Icon(_G['WoWToolsAchievementBackButton'], achievementID)
+    end)
+--点击，提示
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnClick', function(self)
+        Set_Icon(_G['WoWToolsAchievementNextButton'], self.id)
+    end)
+
+
+
+--已完成，背景 alpha
+    Menu.ModifyMenu("MENU_ACHIEVEMENT_FILTER", function(_, root)
+        root:CreateDivider()
+        local sub= root:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '已完成' or CRITERIA_COMPLETED,
+        function()
+            return MenuResponse.Open
+        end)
+
+        WoWTools_MenuMixin:BgAplha(sub, function()
+            return Save().completedAlpha or 0
+        end, function(value)
+            Save().completedAlpha=value
+        end, function()
+            Save().completedAlpha= nil
+        end, true)
+
+--打开选项界面
+        WoWTools_MenuMixin:OpenOptions(sub, {
+            name=addName,
+            category=WoWTools_OtherMixin.Category
+        })
+    end)
+
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'Init', function(btn)
+        Set_AchievementTemplate(btn, nil)
+
+        local text
+        local isCompleted= select(4, GetAchievementInfo(btn.id))
+        if not isCompleted then
+            local numCriteria = GetAchievementNumCriteria(btn.id) or 0
+            if numCriteria>0 then
+                local completed=0
+                for index=1, numCriteria do
+                    if select(3, GetAchievementCriteriaInfo(btn.id, index)) then
+                        completed= completed+1
+                    end
+                end
+                text= completed..'/'..numCriteria
+            end
+        end
+        if text and not btn.completedLable then
+            btn.completedLable= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlightSmall2')
+            btn.completedLable:SetPoint('LEFT', btn.PlusMinus, 'RIGHT', 4, 2)
+        end
+        if btn.completedLable then
+            btn.completedLable:SetText(text or "")
+        end
+
+        if isCompleted then
+            btn.Icon.frame:SetVertexColor(0,1,0)
+        else
+            btn.Icon.frame:SetVertexColor(1,1,1)
+        end
+
+
+    end)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnEnter', function(btn)
+        Set_AchievementTemplate(btn, true)
+    end)
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLeave', function(btn)
+        Set_AchievementTemplate(btn, nil)
+    end)
+
+
+
+
+--副本成就提示
+    Create_Button(AchievementFrameCloseButton, function(btn)
+        btn:SetPoint('RIGHT', next, 'LEFT', 2, 0)
+    end)
 
     AchievementFrameCloseButton.achievementButton:SetScript('OnShow', function(self)
         self.instanceID= Get_InstanceID()
         self:set_text()
     end)
 
-    Init_Achievement= function()end
+    Init_Achievement=function()end
 end
+
+
+
+
+
+
+
+
+
+
 
 
 

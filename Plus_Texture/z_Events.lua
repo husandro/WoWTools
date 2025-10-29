@@ -75,7 +75,6 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
-
     self:HideFrame(AchievementFrame, {show={[AchievementFrame.Background]=true}})
     self:SetMenu(AchievementFrameFilterDropdown)
 
@@ -91,7 +90,12 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetEditBox(AchievementFrame.SearchBox)
     AchievementFrame.SearchBox:ClearAllPoints()
     AchievementFrame.SearchBox:SetPoint('LEFT', AchievementFrame.Header.PointBorder, 'RIGHT')
-    AchievementFrame.SearchBox:SetPoint('RIGHT', AchievementFrameCloseButton, 'LEFT', -46, 0)
+    AchievementFrame.SearchBox:SetPoint('RIGHT', -45, 0)
+
+--关闭按键
+    AchievementFrameCloseButton:ClearAllPoints()
+    AchievementFrameCloseButton:SetPoint('TOPRIGHT', -5, 8)
+
 --Search 列表
     AchievementFrame.SearchPreviewContainer:SetPoint('RIGHT', AchievementFrame.SearchBox)
     for i=1, 5 do
@@ -133,23 +137,15 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetNineSlice(AchievementFrameAchievements)
     WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLoad', function(f)
         self:SetNineSlice(f)
+--更改，选中，移过，提示为绿色
+         for _, region in pairs({f.Highlight:GetRegions()}) do
+            if region:IsObjectType('Texture') then
+                region:SetVertexColor(0,1,0)
+            end
+        end
     end)
 
-    local function Set_AchievementTemplate(f, show)
-        local alpha= (f.completed and not f:IsSelected() and not show) and 0 or 1
-        self:SetFrame(f, {alpha=alpha, notColor=true})
---点数，外框
-        f.Shield.Icon:SetAlpha(alpha)
-    end
-    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'Init', function(f)
-        Set_AchievementTemplate(f, nil)
-    end)
-    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnEnter', function(f)
-        Set_AchievementTemplate(f, true)
-    end)
-    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLeave', function(f)
-        Set_AchievementTemplate(f, nil)
-    end)
+
 
 --总览
     self:SetNineSlice(AchievementFrameSummary)
@@ -158,11 +154,11 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 --近期成就
     self:SetAlphaColor(AchievementFrameSummaryAchievementsHeaderHeader, nil, nil, 0.5)
     WoWTools_DataMixin:Hook('AchievementFrameSummaryAchievement_OnLoad', function(f)
-        self:SetAlphaColor(f.Background, nil, true, 0)
+        --self:SetAlphaColor(f.Background, nil, true, 0)
 
-        f:HookScript('OnLeave', function(f2)
+        --[[f:HookScript('OnLeave', function(f2)
             self:SetAlphaColor(f2.Background, nil, true, 0)
-        end)
+        end)]]
 
         self:SetNineSlice(f)
     end)
@@ -245,12 +241,12 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetScrollBar(AchievementFrameComparison.StatContainer)
 
     self:Init_BGMenu_Frame(AchievementFrame, {
-        isNewButton=AchievementFrame.Header,
+        isNewButton=AchievementFrame,
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
         end,
         bgPoint=function(icon)
-            icon:SetPoint('TOPLEFT', -3, 33)
+            icon:SetPoint('TOPLEFT', 10, 33)
             icon:SetPoint('BOTTOMRIGHT', 0, 2)
         end
     })

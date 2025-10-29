@@ -359,6 +359,7 @@ end
 --打开成就
 -- AchievementObjectiveTrackerMixin:OnBlockHeaderClick
 --AchievementFrameAchievements.selection ~= achievementID
+--CanShowAchievementUI()
 function WoWTools_LoadUIMixin:Achievement(achievementID)
     if not achievementID then
         return
@@ -368,11 +369,12 @@ function WoWTools_LoadUIMixin:Achievement(achievementID)
         WoWTools_DataMixin:Call('AchievementFrame_LoadUI')
     end
 --136243
+
     if not AchievementFrame:IsShown() then
         WoWTools_DataMixin:Call('AchievementFrame_ToggleAchievementFrame')
     end
 
-    WoWTools_DataMixin:Call('AchievementFrame_SelectAchievement', achievementID)
+    WoWTools_DataMixin:Call('AchievementFrame_SelectAchievement', achievementID, true)
 end
 
 

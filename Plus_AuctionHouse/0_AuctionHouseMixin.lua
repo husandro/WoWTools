@@ -5,17 +5,24 @@ function WoWTools_AuctionHouseMixin:GetItemLink(rowData)
     if not rowData then
         return
     end
+    local itemKey= rowData.itemKey
+
     local itemLink= rowData.itemLink
-    local itemID, isPet
-    itemID= rowData.itemID or (rowData and rowData.itemKey and rowData.itemKey.itemID)
+    local itemID= rowData.itemID or (itemKey and itemKey.itemID) or nil
     if not itemLink and rowData.auctionID then
         local priceInfo = C_AuctionHouse.GetAuctionInfoByID(rowData.auctionID) or {}
         itemLink= priceInfo.itemLink or priceInfo.battlePetLink
     end
+    if not itemLink and itemKey then
+        local data= C_TooltipInfo.GetItemKey(itemKey.itemID, itemKey.itemLevel, itemKey.itemSuffix, C_AuctionHouse.GetItemKeyRequiredLevel(itemKey))
+        itemLink= data and data.hyperlink
+    end
     if not itemLink and itemID then
         itemLink= WoWTools_ItemMixin:GetLink(itemID)
     end
-    isPet= rowData and rowData.itemKey and rowData.itemKey.battlePetSpeciesID and rowData.itemKey.battlePetSpeciesID>0
+    local battlePetSpeciesID= rowData.battlePetSpeciesID or (itemKey and itemKey.battlePetSpeciesID) or 0
+    local isPet= battlePetSpeciesID>0
+
     return itemLink, itemID, isPet
 end
 

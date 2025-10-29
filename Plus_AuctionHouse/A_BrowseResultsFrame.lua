@@ -16,10 +16,12 @@ local function Set_BrowseResultsFrame(frame)
         local text
         local stats
         local itemKey= btn.rowData.itemKey
+
 --itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
         local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)
         if itemKeyInfo then
             local classID= C_Item.GetItemInfoInstant(itemKeyInfo.itemID)
+            local itemLink= WoWTools_AuctionHouseMixin:GetItemLink(btn.rowData)
 --宠物
             local isCollectedAll
             text, isCollectedAll= select(3, WoWTools_PetBattleMixin:Collected(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
@@ -50,7 +52,7 @@ local function Set_BrowseResultsFrame(frame)
             end
 --显示, 宝石, 属性
             if not text and classID==3 then
-                local t1, t2= WoWTools_ItemMixin:SetGemStats(nil, WoWTools_AuctionHouseMixin:GetItemLink(btn.rowData))
+                local t1, t2= WoWTools_ItemMixin:SetGemStats(nil, itemLink)
                 if t1 then
                     text= t1..(t2 and ' '..t2 or '')
                 end
@@ -71,17 +73,15 @@ local function Set_BrowseResultsFrame(frame)
                 end
             end
 --属性
-            if itemKeyInfo.isEquipment then-- (classID==2 or classID==4) then
-                local itemLink= btn.rowData.itemLink
-                if not itemLink then
-                    local data= C_TooltipInfo.GetItemKey(itemKey.itemID, itemKey.itemLevel, itemKey.itemSuffix, C_AuctionHouse.GetItemKeyRequiredLevel(itemKey))
-                    itemLink= data and data.hyperlink
+            if itemKeyInfo.isEquipment and itemLink then
+                for _, tab in pairs(WoWTools_ItemMixin:GetItemStats(itemLink) or {}) do
+                    stats= (stats and stats..' ' or '')..tab.text
                 end
-                if itemLink then
-                    for _, tab in pairs(WoWTools_ItemMixin:GetItemStats(itemLink) or {}) do
-                        stats= (stats and stats..' ' or '')..tab.text
-                    end
-                end
+            end
+--宝石插槽
+            local numSockets= C_Item.GetItemNumSockets(itemLink or itemKeyInfo.itemID) or 0--MAX_NUM_SOCKETS
+            for n= 1, numSockets do
+                text= (stats or '')..'|A:socket-cogwheel-closed:0:0|a'
             end
         end
 

@@ -6359,7 +6359,9 @@
         "AlertContainerMixin",
         "AchievementUtil",
         "MOUNT_JOURNAL_FILTER_UNUSABLE",
-        "CharacterTrinket1SlotFrame"
+        "CharacterTrinket1SlotFrame",
+        "AchievementFrame_FindDisplayedAchievement",
+        "AchievementMetaCriteriaMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
