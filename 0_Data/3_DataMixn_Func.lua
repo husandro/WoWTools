@@ -56,44 +56,44 @@ end
 
 
 
-
-function WoWTools_DataMixin:Load(tab)--WoWTools_DataMixin:Load({id=, type=''})--加载 item quest spell, uiMapID
-    if not tab or not tab.id then
+--加载 quest spell item itemLocation challengeMap club
+function WoWTools_DataMixin:Load(id, loadType)
+    if not id or not loadType then
         return
     end
-    if tab.type=='quest' then --WoWTools_DataMixin:Load({id=, type='quest'})
-        if not HaveQuestData(tab.id) then
-            C_QuestLog.RequestLoadQuestByID(tab.id)
+
+    if loadType=='quest' then
+        if not HaveQuestData(id) then
+            C_QuestLog.RequestLoadQuestByID(id)
         end
-        if not HaveQuestRewardData(tab.id) then
-            C_TaskQuest.RequestPreloadRewardData(tab.id)
+        if not HaveQuestRewardData(id) then
+            C_TaskQuest.RequestPreloadRewardData(id)
         end
 
-    elseif tab.type=='spell' then--WoWTools_DataMixin:Load({id=, type='spell'})
-        local spellID= tab.id
-        if type(tab.id)=='string' then
-            spellID= (C_Spell.GetSpellInfo(tab.id) or {}).spellID
+    elseif loadType=='spell' then
+        local spellID= id
+        if type(id)=='string' then
+            spellID= (C_Spell.GetSpellInfo(id) or {}).spellID
         end
         if spellID and not C_Spell.IsSpellDataCached(spellID) then
             C_Spell.RequestLoadSpellData(spellID)
         end
 
-    elseif tab.type=='item' then--WoWTools_DataMixin:Load({id=, type='item'})
-        local item= tab.itemLink or tab.id-- tab.id or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
-        if item and not C_Item.IsItemDataCachedByID(item) then
-            C_Item.RequestLoadItemDataByID(item)
-        end
-    elseif tab.type=='itemLocation' then
-        if not C_Item.IsItemDataCached(tab.id) then
-            C_Item.RequestLoadItemData(tab.id)
+    elseif loadType=='item' then
+        if not C_Item.IsItemDataCachedByID(id) then
+            C_Item.RequestLoadItemDataByID(id)
         end
 
-    elseif tab.type=='mapChallengeModeID' then--WoWTools_DataMixin:Load({id=, type='mapChallengeModeID'})
-        C_ChallengeMode.RequestLeaders(tab.id)
+    elseif loadType=='itemLocation' then
+        if not C_Item.IsItemDataCached(id) then
+            C_Item.RequestLoadItemData(id)
+        end
 
-    elseif tab.typ=='club' then--WoWTools_DataMixin:Load({id=, type='club'})
-        return C_ClubFinder.RequestPostingInformationFromClubId(tab.id)
-        --C_Club.RequestTickets(tab.id)
+    elseif loadType=='challengeMap' then
+        C_ChallengeMode.RequestLeaders(id)
+
+    elseif id=='club' then
+        return C_ClubFinder.RequestPostingInformationFromClubId(id)
     end
 end
 
@@ -130,10 +130,10 @@ local spellLoadTab={
 
 
 for _, itemID in pairs(itemLoadTab) do
-    WoWTools_DataMixin:Load({id=itemID, type='item'})
+   WoWTools_DataMixin:Load(itemID, 'item')
 end
 for _, spellID in pairs(spellLoadTab) do
-    WoWTools_DataMixin:Load({id=spellID, type='spell'})
+   WoWTools_DataMixin:Load(spellID, 'spell')
 end
 
 

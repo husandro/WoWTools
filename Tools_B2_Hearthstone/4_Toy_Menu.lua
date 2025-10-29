@@ -43,7 +43,7 @@ local function Init_Menu_Toy(self, root)
     local sub, sub2, name, toyName, icon
     local index=0
     for itemID in pairs(Save().items) do
-        WoWTools_DataMixin:Load({id=itemID, type='item'})
+       WoWTools_DataMixin:Load(itemID, 'item')
 
         toyName, icon = select(2, C_ToyBox.GetToyInfo(itemID))
         index= index+ 1

@@ -15,7 +15,7 @@ function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
         local spellID= overrideSpellID or flyoutSpellID
         local col= not isKnown2 and '|cnWARNING_FONT_COLOR:' or (select(2, math.modf(slot/2))==0 and '|cffffffff') or ''
         if spellID then
-            WoWTools_DataMixin:Load({id=spellID, type='spell'})
+           WoWTools_DataMixin:Load(spellID, 'spell')
             local name2= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
             local icon= C_Spell.GetSpellTexture(spellID)
 

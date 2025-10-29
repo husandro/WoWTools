@@ -85,11 +85,11 @@ local function select_Reward(questID)--自动:选择奖励
     if Save().questRewardCheck[questID] and Save().questRewardCheck[questID]<=numQuests then
         bestItem= Save().questRewardCheck[questID]
         selectItemLink= GetQuestItemLink('choice', Save().questRewardCheck[questID])
-        WoWTools_DataMixin:Load({id=selectItemLink, type='item'})
+       WoWTools_DataMixin:Load(selectItemLink, 'item')
     else
         for i = 1, numQuests do
             local  itemLink = GetQuestItemLink('choice', i)
-            WoWTools_DataMixin:Load({id=itemLink, type='item'})
+           WoWTools_DataMixin:Load(itemLink, 'item')
             if itemLink then
                 local amount = select(3, GetQuestItemInfo('choice', i))--钱
                 local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = C_Item.GetItemInfo(itemLink)
@@ -667,7 +667,7 @@ local function Init_Quest()
 
         local spellRewards = C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}--QuestInfo.lua QuestInfo_ShowRewards()
         for _, spellID in pairs(spellRewards) do
-            WoWTools_DataMixin:Load({id=spellID, type='spell'})
+           WoWTools_DataMixin:Load(spellID, 'spell')
             local spellLink= C_Spell.GetSpellLink(spellID)
             itemLink= itemLink.. (spellLink or (' spellID'..spellID))
         end

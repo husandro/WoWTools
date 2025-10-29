@@ -11,7 +11,7 @@ function WoWTools_SpellMixin:GetLink(spellID, isCN)
     if spellID then
         local link= C_Spell.GetSpellLink(spellID)
         if not link then
-            WoWTools_DataMixin:Load({id=spellID, type='spell'})
+           WoWTools_DataMixin:Load(spellID, 'spell')
             link=format('|cff28a3ff|Hspell:%d:0|h[%d]|h|r', spellID, spellID)
         end
         if isCN then
@@ -33,7 +33,7 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
 -- -2147483648 to 2147483647
     local col, name, desc, cool
 
-    WoWTools_DataMixin:Load({id=spellID, type='spell'})
+   WoWTools_DataMixin:Load(spellID, 'spell')
 
     local mountID = C_MountJournal.GetMountFromSpell(spellID)
     if mountID then--坐骑

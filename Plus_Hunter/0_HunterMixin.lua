@@ -6,7 +6,7 @@ WoWTools_HunterMixin={}
 function WoWTools_HunterMixin:GetAbilitieIconForTab(tab, line, size)
     local text=''
     for _, spellID in pairs(tab or {}) do
-        WoWTools_DataMixin:Load({id=spellID, type='spell'})
+       WoWTools_DataMixin:Load(spellID, 'spell')
         local texture= C_Spell.GetSpellTexture(spellID)
         if texture and texture>0 then
             text= format('%s%s|T%d:%d|t', text, line and text~='' and '|n' or '', texture, size or 0)

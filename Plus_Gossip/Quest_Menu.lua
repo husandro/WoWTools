@@ -64,7 +64,7 @@ local function Init_Menu(self, root)
 
 --子目录，自动:选择奖励
     for questID, index in pairs(Save().questRewardCheck) do
-        WoWTools_DataMixin:Load({id=questID, type='quest'})
+       WoWTools_DataMixin:Load(questID, 'quest')
         sub2=sub:CreateCheckbox(
             WoWTools_QuestMixin:GetName(questID)..' |cnGREEN_FONT_COLOR:'..index,
         function(data)
@@ -103,7 +103,7 @@ local function Init_Menu(self, root)
 
 --子目录，自定义任务
     for questID, text in pairs(Save().questOption) do
-        WoWTools_DataMixin:Load({type='quest', di=questID})
+        WoWTools_DataMixin:Load(questID, 'quest')
         sub2=sub:CreateCheckbox(
             WoWTools_QuestMixin:GetName(questID),
         function(data)

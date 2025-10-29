@@ -20,7 +20,7 @@ local function Get_Text_Table()
             if data then
                 icon= icon or data.iconID
                 spellID=data.spellID
-                WoWTools_DataMixin:Load({id=spellID, type='spell'})
+               WoWTools_DataMixin:Load(spellID, 'spell')
             end
             if icon then
                 allTab[icon]= {
@@ -30,7 +30,7 @@ local function Get_Text_Table()
             end
 
         elseif item then
-            WoWTools_DataMixin:Load({id=item, type='item'})
+           WoWTools_DataMixin:Load(item, 'item')
             local itemID= C_Item.GetItemInfoInstant(item)
             local icon= C_Item.GetItemIconByID(item)
             if icon then

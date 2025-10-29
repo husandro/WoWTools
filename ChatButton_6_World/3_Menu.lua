@@ -55,7 +55,7 @@ local function Add_Menu(self, root, name, channelNumber)
     local clubId=name:match('Community:(%d+)')
 
     if clubId then
-        WoWTools_DataMixin:Load({id=clubId, type='club'})
+       WoWTools_DataMixin:Load(clubId, 'club')
     end
 
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称

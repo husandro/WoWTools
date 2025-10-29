@@ -103,7 +103,7 @@ end
 
 --[[local overrideSpellID = FindSpellOverrideByID(spellID)
 if overrideSpellID and overrideSpellID~=spellID then
-    WoWTools_DataMixin:Load({id=overrideSpellID, type='spell'})--加载 item quest spell
+   WoWTools_DataMixin:Load(overrideSpellID, 'spell')--加载 item quest spell
     local link= C_Spell.GetSpellLink(overrideSpellID)
     if link then
 

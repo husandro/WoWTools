@@ -83,7 +83,7 @@ local function UpdateButtonState(frame)--技能提示
         return
     end
 
-    WoWTools_DataMixin:Load({id=frame:GetParent().spellID, type='spell'})
+   WoWTools_DataMixin:Load(frame:GetParent().spellID, 'spell')
 
     frame:HookScript("OnEnter", function(self)
         local p= self:GetParent()

@@ -94,8 +94,7 @@ end
 
 
 local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
-    WoWTools_DataMixin:Load({type='item', id=itemID})
-
+    WoWTools_DataMixin:Load(itemID, 'item')
 
     local sub=root:CreateButton(
         (numUse and '|cnGREEN_FONT_COLOR:'..numUse..'=|r ' or '')

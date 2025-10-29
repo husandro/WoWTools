@@ -255,7 +255,7 @@ local function setClickAtt(self)--设置 Click属性
                 end
             end
         else
-            WoWTools_DataMixin:Load({id=spellID, type='spell'})
+           WoWTools_DataMixin:Load(spellID, 'spell')
             self.Combat=true
         end
 
@@ -274,7 +274,7 @@ local function setClickAtt(self)--设置 Click属性
             end
             self:SetAttribute('unit', nil)
         else
-            WoWTools_DataMixin:Load({id=self.itemID, type='item'})
+           WoWTools_DataMixin:Load(self.itemID, 'item')
             self.Combat=true
         end
     else

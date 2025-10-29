@@ -158,7 +158,7 @@ local function Init(btn)
     btn.spellTexture.spellID= spellID
     btn.spellTexture:SetShown(spellID and true or false)
     if spellID then
-        WoWTools_DataMixin:Load({id=spellID, type='spell'})
+       WoWTools_DataMixin:Load(spellID, 'spell')
         SetPortraitToTexture(btn.spellTexture, C_Spell.GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
     end
 end

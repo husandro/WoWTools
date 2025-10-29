@@ -192,7 +192,7 @@ local function Create_Activities_SubLable(frame, head, index, last)
             link= C_WeeklyRewards.GetExampleRewardItemHyperlinks(self.id)
         end
         if link and link~='' then
-            WoWTools_DataMixin:Load({id=link, type='item'})
+           WoWTools_DataMixin:Load(link, 'item')
             return link
         end
     end

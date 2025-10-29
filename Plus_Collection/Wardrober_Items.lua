@@ -355,7 +355,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                 if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
                     local link= get_Link_Item_Type_Source(model.visualInfo.sourceID, 'illusion')--select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
                     if link then
-                        WoWTools_DataMixin:Load({id=link, type='item'})--加载 item quest spell
+                       WoWTools_DataMixin:Load(link, 'item')--加载 item quest spell
                         --visualInfo={isHideVisual=, visualID=, isCollected=, sourceID=, icon=, isUsable=}
                         table.insert(itemLinks, {
                             link= link,
@@ -370,7 +370,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                         local link= get_Link_Item_Type_Source(sources[index],'item')--WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index])
                         if link and not findLinks[link] then
                             --sources[index]= {sourceType=3, visualID=1, isCollected=, isValidSourceForPlayer, categoryID, isHideVisual, quality, invType, sourceID, playerCanCollect, inventorySlot, itemID, itemModID, name, canDisplayerOnPlayer}
-                            WoWTools_DataMixin:Load({id=link, type='item'})--加载 item quest spell
+                           WoWTools_DataMixin:Load(link, 'item')--加载 item quest spell
                             table.insert(itemLinks, {
                                 link=link,
                                 sourceID=sources[index],

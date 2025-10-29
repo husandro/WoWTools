@@ -29,7 +29,7 @@ end
 
 
 for _, spellID in pairs(SpellsTab) do
-    WoWTools_DataMixin:Load({id=spellID, type='spell'})
+   WoWTools_DataMixin:Load(spellID, 'spell')
 end
 
 

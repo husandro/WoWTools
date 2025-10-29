@@ -39,11 +39,11 @@ local ModifiedMenuTab={
 }
 
 for _, data in pairs(ModifiedMenuTab) do
-    WoWTools_DataMixin:Load({id=data.itemID, type='item'})
+   WoWTools_DataMixin:Load(data.itemID, 'item')
 end
 
 for itemID in pairs(P_Items) do
-    WoWTools_DataMixin:Load({id=itemID, type='item'})
+   WoWTools_DataMixin:Load(itemID, 'item')
 end
 
 

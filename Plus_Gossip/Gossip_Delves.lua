@@ -63,7 +63,7 @@ local function Init_OnShow(self)
 
             for _, reward in ipairs(option.rewards or {}) do
                 if reward.rewardType == Enum.GossipOptionRewardType.Item and reward.id then
-                    WoWTools_DataMixin:Load({type='item', id=reward.id})
+                    WoWTools_DataMixin:Load(reward.id, 'item')
                     print(
                         WoWTools_HyperLink:CN_Link(
                             WoWTools_ItemMixin:GetLink(reward.id) or C_Item.GetItemNameByID(reward.id),

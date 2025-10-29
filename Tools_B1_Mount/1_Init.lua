@@ -144,9 +144,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if WoWTools_ToolsMixin:Get_ButtonForName('Mount') then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-                 for type, tab in pairs(Save().Mounts) do
+                 for name, tab in pairs(Save().Mounts) do
                     for ID in pairs(tab) do
-                        WoWTools_DataMixin:Load({id=ID, type= type==ITEMS and 'item' or 'spell'})
+                       WoWTools_DataMixin:Load(ID,  name==ITEMS and 'item' or 'spell')
                     end
                 end
 

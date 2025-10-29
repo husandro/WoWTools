@@ -1,14 +1,5 @@
 
 local addName
-local P_Save={
-    disabled=true,
-    --Point
-    --scale
-}
-
-local button
-WoWTools_DataMixin:Load({id=33976, type='item'})--美酒节赛羊
-
 
 local function Save()
     return WoWToolsSave['Other_Brewfest']
@@ -23,38 +14,37 @@ end
 --初始
 --####
 local function Init()
-    if Save().disabled then
-        return
-    end
+    local btn= CreateFrame('Button', 'WoWToolsBrewfestButton', UIParent, 'WoWToolsButtonTemplate')
+    btn:SetSize(48, 48)
+    btn:SetNormalTexture('132248')
+    --WoWTools_ButtonMixin:Cbtn(UIParent, {size=48, texture=132248})
+    btn:SetShown(false)
 
-    button= WoWTools_ButtonMixin:Cbtn(UIParent, {size=48, texture=132248})
-    button:SetShown(false)
+    btn.topText= WoWTools_LabelMixin:Create(btn, {size=22})--debuff
+    btn.centerText= WoWTools_LabelMixin:Create(btn, {size=22})--持续，时间
+    btn.speedText= WoWTools_LabelMixin:Create(btn, {size=16})--移动，速度
+    btn.itemText= WoWTools_LabelMixin:Create(btn, {size=16})--物品，数量
+    btn.timeText= WoWTools_LabelMixin:Create(btn, {size=16})--坐骑，剩余，时间
+    btn.rightText= WoWTools_LabelMixin:Create(btn, {size=16})--本次，物品，收入
 
-    button.topText= WoWTools_LabelMixin:Create(button, {size=22})--debuff
-    button.centerText= WoWTools_LabelMixin:Create(button, {size=22})--持续，时间
-    button.speedText= WoWTools_LabelMixin:Create(button, {size=16})--移动，速度
-    button.itemText= WoWTools_LabelMixin:Create(button, {size=16})--物品，数量
-    button.timeText= WoWTools_LabelMixin:Create(button, {size=16})--坐骑，剩余，时间
-    button.rightText= WoWTools_LabelMixin:Create(button, {size=16})--本次，物品，收入
+    btn.topText:SetPoint('BOTTOM', btn, 'TOP')
+    btn.centerText:SetPoint('CENTER')
 
-    button.topText:SetPoint('BOTTOM', button, 'TOP')
-    button.centerText:SetPoint('CENTER')
+    btn.speedText:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
+    btn.itemText:SetPoint('TOPLEFT', btn.speedText, 'BOTTOMLEFT')
+    btn.timeText:SetPoint('TOPLEFT', btn.itemText, 'BOTTOMLEFT')
+    btn.rightText:SetPoint('LEFT', btn, 'RIGHT')
 
-    button.speedText:SetPoint('TOPLEFT', button, 'BOTTOMLEFT')
-    button.itemText:SetPoint('TOPLEFT', button.speedText, 'BOTTOMLEFT')
-    button.timeText:SetPoint('TOPLEFT', button.itemText, 'BOTTOMLEFT')
-    button.rightText:SetPoint('LEFT', button, 'RIGHT')
+    btn.leftTexture= btn:CreateTexture()
+    btn.leftTexture:SetPoint('RIGHT', btn, 'LEFT')
+    btn.leftTexture:SetSize(48,48)
+    btn.leftTexture:SetTexture(132622)
+    btn.leftTexture:SetShown(false)
 
-    button.leftTexture= button:CreateTexture()
-    button.leftTexture:SetPoint('RIGHT', button, 'LEFT')
-    button.leftTexture:SetSize(48,48)
-    button.leftTexture:SetTexture(132622)
-    button.leftTexture:SetShown(false)
-
-    button:SetScript('OnShow', function(self)
+    btn:SetScript('OnShow', function(self)
         self.item= C_Item.GetItemCount(37829, true, false, true)
     end)
-    button:SetScript('OnHide', function(self)
+    btn:SetScript('OnHide', function(self)
         local num= C_Item.GetItemCount(37829, true, false, true)
         if self.item and self.item<num then
             print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_ItemMixin:GetLink(37829), self.item)
@@ -62,35 +52,29 @@ local function Init()
         self.item=nil
     end)
 
-    function button.leftTexture:set_tipSound()
+    function btn.leftTexture:set_tipSound()
         if self:GetParent():IsVisible() then
             WoWTools_DataMixin:PlaySound()
         end
     end
-    button.leftTexture:SetScript('OnShow', button.leftTexture.set_tipSound)
-    button.leftTexture:SetScript('OnHide', button.leftTexture.set_tipSound)
+    btn.leftTexture:SetScript('OnShow', btn.leftTexture.set_tipSound)
+    btn.leftTexture:SetScript('OnHide', btn.leftTexture.set_tipSound)
 
-    button:RegisterForDrag("RightButton")
-    button:SetMovable(true)
-    button:SetClampedToScreen(true)
+    btn:RegisterForDrag("RightButton")
+    btn:SetMovable(true)
+    btn:SetClampedToScreen(true)
 
-    button:SetScript("OnDragStart", button.StartMoving)
-    button:SetScript("OnDragStop", function(self)
+    btn:SetScript("OnDragStart", btn.StartMoving)
+    btn:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().Point={self:GetPoint(1)}
             Save().Point[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
-    button:SetScript("OnMouseUp", ResetCursor)
-    button:SetScript('OnMouseDown', function(self, d)
+    btn:SetScript("OnMouseUp", ResetCursor)
+    btn:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             self:set_Shown()
         elseif d=='RightButton' then
@@ -98,10 +82,10 @@ local function Init()
         end
     end)
 
-    function button:set_Scale()
+    function btn:set_Scale()
         self:SetScale(Save().scale or 1)
     end
-    button:SetScript('OnMouseWheel', function(self, d)--缩放
+    btn:SetScript('OnMouseWheel', function(self, d)--缩放
         local sacle= Save().scale or 1
         if d==1 then
             sacle= sacle+0.05
@@ -116,7 +100,7 @@ local function Init()
         print(WoWTools_DataMixin.Icon.icon2..addName, (WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
     end)
 
-    function button:set_Point()
+    function btn:set_Point()
         if Save().Point then
             self:SetPoint(Save().Point[1], UIParent, Save().Point[3], Save().Point[4], Save().Point[5])
         else
@@ -124,7 +108,7 @@ local function Init()
         end
     end
 
-    function button:set_Shown()
+    function btn:set_Shown()
         local info= C_UnitAuras.GetPlayerAuraBySpellID(42992)
                 or C_UnitAuras.GetPlayerAuraBySpellID(42993)
                 or C_UnitAuras.GetPlayerAuraBySpellID(42994)
@@ -152,7 +136,7 @@ local function Init()
         self:set_ItmeNum()
     end
 
-    function button:set_ItmeNum()
+    function btn:set_ItmeNum()
         local num = C_Item.GetItemCount(37829, true, false, true)
         self.itemText:SetText(num>0 and '|T133784:0|t'..num or '')
         self.leftTexture:SetShown(C_Item.GetItemCount(33797)>0 and true or false)
@@ -160,7 +144,7 @@ local function Init()
         self.rightText:SetText(num>0 and '|T133784:0|t'..num or '')
     end
 
-    function button:set_Event()
+    function btn:set_Event()
         if IsInInstance() then
             self:UnregisterEvent('UNIT_AURA')
             self:UnregisterEvent('BAG_UPDATE_DELAYED')
@@ -172,8 +156,8 @@ local function Init()
         self:set_Shown()
     end
 
-    button:RegisterEvent('PLAYER_ENTERING_WORLD')
-    button:SetScript('OnEvent', function(self, event, _, arg2)
+    btn:RegisterEvent('PLAYER_ENTERING_WORLD')
+    btn:SetScript('OnEvent', function(self, event, _, arg2)
         if event=='PLAYER_ENTERING_WORLD' then
             self:set_Event()
         elseif event=='UNIT_AURA' then
@@ -193,7 +177,7 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnUpdate', function(self, elapsed)
+    btn:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed > 0.3 then
             local info= C_UnitAuras.GetPlayerAuraBySpellID(43880) or C_UnitAuras.GetPlayerAuraBySpellID(43883)
@@ -223,7 +207,7 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnClick', function(_, d)
+    btn:SetScript('OnClick', function(_, d)
         if d=='LeftButton' and IsShiftKeyDown() then
             local macroId = CreateMacro('Ram', 236912, '/click ExtraActionButton1')
             print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '创建宏' or CREATE_MACROS, 'Ram',
@@ -231,7 +215,7 @@ local function Init()
             )
         end
     end)
-    button:SetScript('OnEnter', function(self)
+    btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:SetSpellByID(self.spellId or 43883)
@@ -245,14 +229,14 @@ local function Init()
         GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end)
-    button:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
 
-    button:set_Scale()
-    button:set_Point()
-    button:set_Event()
+    btn:set_Scale()
+    btn:set_Point()
+    btn:set_Event()
 
     Init=function()
-        button:SetShown( not Save().disabled)
+        btn:SetShown( not Save().disabled)
     end
 end
 
@@ -266,45 +250,55 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if arg1~= 'WoWTools' then
-        return
-    end
-        
-    WoWToolsSave['Other_Brewfest']= WoWToolsSave['Other_Brewfest'] or CopyTable(P_Save)
-    P_Save= nil
-    
-    --添加控制面板
-    addName= '|T132248:0|t'..(WoWTools_DataMixin.onlyChinese and '美酒节赛羊' or WoWTools_TextMixin:CN(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true}) or 'Brewfest')
+    if event=='ADDON_LOADED' then
+        if arg1== 'WoWTools' then
 
-    WoWTools_PanelMixin:Check_Button({
-        checkName= addName,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or false
-            Init()
-        end,
-        buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
-        buttonFunc= function()
-            Save().Point=nil
-            if button then
-                button:ClearAllPoints()
-                button:set_Point()
+            WoWToolsSave['Other_Brewfest']= WoWToolsSave['Other_Brewfest'] or {disabled=true}
+
+--添加控制面板
+            addName= '|T132248:0|t'..(WoWTools_DataMixin.onlyChinese and '美酒节赛羊' or WoWTools_TextMixin:CN(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true}) or 'Brewfest')
+
+            WoWTools_PanelMixin:Check_Button({
+                checkName= addName,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or false
+                    if not Save().disabled then
+                        Init()
+                    else
+                        print(addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    end
+                end,
+                buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save().Point=nil
+                    if _G['WoWToolsBrewfestButton'] then
+                        _G['WoWToolsBrewfestButton']:ClearAllPoints()
+                        _G['WoWToolsBrewfestButton']:set_Point()
+                    end
+                    print(addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip=function()
+                    return WoWTools_DataMixin.onlyChinese and '节日: 美酒节（赛羊）'
+                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
+                            CALENDAR_FILTER_HOLIDAYS,
+                            WoWTools_TextMixin:CN(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true})
+                            or ''
+                        )
+                end,
+                layout= WoWTools_OtherMixin.Layout,
+                category= WoWTools_OtherMixin.Category,
+            })
+
+            if not Save().disabled then
+                WoWTools_DataMixin:Load(33976, 'item')--美酒节赛羊
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
-            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
-        end,
-        tooltip=function()
-            return WoWTools_DataMixin.onlyChinese and '节日: 美酒节（赛羊）'
-                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
-                    CALENDAR_FILTER_HOLIDAYS,
-                    WoWTools_TextMixin:CN(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true})
-                    or ''
-                )
-        end,
-        layout= WoWTools_OtherMixin.Layout,
-        category= WoWTools_OtherMixin.Category,
-    })
+            self:UnregisterEvent(event)
+        end
 
-    
-    Init()
-    self:UnregisterEvent(event)
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        Init()
+        self:UnregisterEvent(event)
+    end
 end)

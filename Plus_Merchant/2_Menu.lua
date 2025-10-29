@@ -106,7 +106,7 @@ local function Buyback_Menu(_, root)
     num=0
     for itemID in pairs(WoWToolsPlayerDate['SellBuyItems'].noSell) do
         num= num+1
-        WoWTools_DataMixin:Load({id=itemID, type='item'})
+       WoWTools_DataMixin:Load(itemID, 'item')
         local itemName= WoWTools_ItemMixin:GetName(itemID)
         sub2= sub:CreateCheckbox(
             itemName,
@@ -305,7 +305,7 @@ local function Init_Menu(self, root)
     for itemLink, itemLevel in pairs(Save().bossItems) do
         num=num+1
         local itemID= WoWTools_ItemMixin:GetItemID(itemLink)
-        WoWTools_DataMixin:Load({id=itemID, type='item', itemLink=itemLink})
+       WoWTools_DataMixin:Load(itemLink or itemID, 'item')
         sub2=sub:CreateCheckbox(
             num..') '
             ..'|T'..(C_Item.GetItemIconByID(itemLink) or 0)..':0|t'

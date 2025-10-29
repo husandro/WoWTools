@@ -59,7 +59,7 @@ local function Set_Button_ChallengData(instanceID)
 
     for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
 
-        WoWTools_DataMixin:Load({type='mapChallengeModeID', mapChallengeModeID })
+        WoWTools_DataMixin:Load(mapChallengeModeID, 'challengeMap')
 
         local mapID= select(6, C_ChallengeMode.GetMapUIInfo(mapChallengeModeID))
         local journalInstanceID = mapID and C_EncounterJournal.GetInstanceForGameMap(mapID)

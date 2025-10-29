@@ -26,6 +26,11 @@ local function Get_List_Tab(instanceID)
     for index, achievementID in pairs(mapData) do
         local _, name, _, completed, _, _, _, _, flags, icon, _, isGuild, wasEarnedByMe = GetAchievementInfo(achievementID)
         if name then
+--奖励
+            local itemID= C_AchievementInfo.GetRewardItemID(achievementID)
+            local itemIcon= itemID and C_Item.GetItemIconByID(itemID)
+           WoWTools_DataMixin:Load(itemID, 'item')
+            
 
             table.insert(tab, {
                 text= (index<10 and '  ' or '')
@@ -35,6 +40,7 @@ local function Get_List_Tab(instanceID)
                     ..(completed and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
                     ..WoWTools_TextMixin:CN(name)
                     ..'|r'
+                    ..(itemIcon and '|T'..itemIcon..':0|t' or '')
                     ..(wasEarnedByMe and WoWTools_DataMixin.Icon.Player or '')--此角色，是否完成
                     ..((isGuild or flags==0x4000) and '|A:communities-guildbanner-background:0:0|a' or '' ),--公会成就
                 achievementID= achievementID,

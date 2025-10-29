@@ -73,7 +73,7 @@ TypeTabs= {
         local wowData= WoWTools_WoWDate[Frame.guid]
         local data, num= CreateDataProvider(), 0
         for itemID, tab in pairs(wowData and wowData.Item or {}) do
-            WoWTools_DataMixin:Load({id=itemID, type='item'})
+           WoWTools_DataMixin:Load(itemID, 'item')
 
             local name, cnName
             if isFind then
@@ -174,7 +174,7 @@ TypeTabs= {
         local wowData= WoWTools_WoWDate[Frame.guid]
         local data, num= CreateDataProvider(), 0
         for itemID, tab in pairs(wowData and wowData.Bank or {}) do
-            WoWTools_DataMixin:Load({id=itemID, type='item'})
+           WoWTools_DataMixin:Load(itemID, 'item')
 
             local name, cnName
             if isFind then

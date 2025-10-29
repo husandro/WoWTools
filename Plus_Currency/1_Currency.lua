@@ -112,8 +112,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				end
 
 			else
-				for itemID, _ in pairs(Save().item) do
-					WoWTools_DataMixin:Load({id=itemID, type='item'})--加载 item quest spell
+				for itemID in pairs(Save().item) do
+					WoWTools_DataMixin:Load(itemID, 'item')--加载 item quest spell
 				end
 
 

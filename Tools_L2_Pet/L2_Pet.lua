@@ -22,7 +22,7 @@ local PetsList={
  }
 
 for _, info in pairs(PetsList) do
-    WoWTools_DataMixin:Load({id=info.auraID, type='spell'})
+   WoWTools_DataMixin:Load(info.auraID, 'spell')
 end
 
 
