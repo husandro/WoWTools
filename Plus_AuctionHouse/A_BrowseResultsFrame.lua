@@ -77,11 +77,11 @@ local function Set_BrowseResultsFrame(frame)
                 for _, tab in pairs(WoWTools_ItemMixin:GetItemStats(itemLink) or {}) do
                     stats= (stats and stats..' ' or '')..tab.text
                 end
-            end
 --宝石插槽
-            local numSockets= C_Item.GetItemNumSockets(itemLink or itemKeyInfo.itemID) or 0--MAX_NUM_SOCKETS
-            for n= 1, numSockets do
-                text= (stats or '')..'|A:socket-cogwheel-closed:0:0|a'
+                local numSockets= C_Item.GetItemNumSockets(itemLink or itemKeyInfo.itemID) or 0--MAX_NUM_SOCKETS
+                for n= 1, numSockets do
+                    text= (stats or '')..'|A:socket-cogwheel-closed:0:0|a'
+                end
             end
         end
 

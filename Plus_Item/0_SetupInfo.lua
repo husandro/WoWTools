@@ -144,10 +144,12 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     if not itemLevel or itemLevel==1 then
         return
     end
+
     local invSlot = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
     if not invSlot then
         return itemLevel
     end
+
     local upLevel, downLevel
     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
     if itemLinkPlayer then
