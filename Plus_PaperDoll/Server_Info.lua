@@ -48,6 +48,8 @@ local function Init()
     local Label= frame:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'GameFontNormalSmall')
     if GameLimitedMode_IsActive() then
         Label:SetTextColor(1,0.28,0)
+    else
+        WoWTools_ColorMixin:Setup(Label)
     end
     --[[WoWTools_LabelMixin:Create(frame, {
         name='WoWToolsPaperDollRealmLabel',
@@ -56,6 +58,7 @@ local function Init()
     })]]
 
     Label:SetPoint('LEFT')
+    
     --Label:SetAlpha(1)
 
     Label:SetScript("OnLeave",function(self) GameTooltip:Hide() self:SetAlpha(1) end)
