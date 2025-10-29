@@ -14,7 +14,7 @@ local function Settings()
 
         local num= #ser
 
-        text= (num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r ' or '')
+        text= (num>1 and num..' ' or '')
                 ..WoWTools_DataMixin.Player.Realm
                 ..(server and ' '..server.col or '')
     end

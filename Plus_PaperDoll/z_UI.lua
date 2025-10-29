@@ -1,6 +1,17 @@
+local function Save()
+    return WoWToolsSave['Plus_PaperDoll']
+end
+
+
+
+
+
+
+
 function WoWTools_MoveMixin.Frames:GearManagerPopupFrame()
     self:Setup(GearManagerPopupFrame, {frame=CharacterFrame})
 end
+
 
 
 
@@ -72,16 +83,16 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', TokenFrame , -22, 2)
 
 
-
-    --[[local function Set_Slot_Point()
-        if WoWTools_FrameMixin:IsLocked(CharacterFrame) then
+    local function Set_Button_Point()
+        if not CharacterFrame:IsVisible() or WoWTools_FrameMixin:IsLocked(CharacterFrame) then
             return
         end
 
         local w, h= CharacterFrame:GetSize()--366 * 337   (40+4)*8
-        local scale= CharacterHeadSlot:GetScale() or 1
-        local line= math.max(2, (h- (37*8*scale)- 60-32)/7)
-        CharacterHeadSlot:SetPoint('TOPLEFT', CharacterFrame, 8, -60)
+        local scale= Save().itemSlotScale or 1
+        local line= math.max(0, (h-60-32-37*8*scale)/8)
+
+        --CharacterHeadSlot
         CharacterNeckSlot:SetPoint('TOPLEFT', CharacterHeadSlot, 'BOTTOMLEFT', 0, -line)
         CharacterShoulderSlot:SetPoint('TOPLEFT', CharacterNeckSlot, 'BOTTOMLEFT', 0, -line)
         CharacterBackSlot:SetPoint('TOPLEFT', CharacterShoulderSlot, 'BOTTOMLEFT', 0, -line)
@@ -104,10 +115,10 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
         CharacterSecondaryHandSlot:SetPoint('LEFT', CharacterMainHandSlot,'RIGHT', math.max(5, line), 0)
     end
 
-    WoWTools_DataMixin:Hook(CharacterHeadSlot, 'SetScale', function()
-        Set_Slot_Point()
+    CharacterFrame:HookScript('OnSizeChanged', function(frame)
+        Set_Button_Point()
     end)
-]]
+
 
 
     CharacterMainHandSlot:ClearAllPoints()
@@ -129,12 +140,9 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
         if size then
             f:SetSize(size[1], size[2])
         end
-        --Set_Slot_Point()
     end)
 
-    local function Save()
-        return WoWToolsSave['Plus_PaperDoll']
-    end
+
     local function settings()
         local scale= Save().itemSlotScale or 1
         for _, slot in pairs(WoWTools_PaperDollMixin.ItemButtons) do
@@ -159,9 +167,6 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
             if PaperDollFrame.TitleManagerPane:IsVisible() then
                 WoWTools_DataMixin:Call('PaperDollTitlesPane_Update')
             end
-            --[[if CharacterHeadSlot:IsVisible() then
-                Set_Slot_Point()
-            end]]
         end,
         sizeStopFunc=function()
             if CharacterFrame.Expanded then
@@ -169,7 +174,6 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
             else
                 self:Save().size['CharacterFrameCollapse']={CharacterFrame:GetSize()}
             end
-            --Set_Slot_Point()
         end,
         sizeRestFunc=function()
             if not WoWTools_FrameMixin:IsLocked(CharacterFrame) then
@@ -200,12 +204,18 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
             end, function(value)
                 Save().itemSlotScale= value
                 settings()
+                Set_Button_Point()
+
             end, function()
                 Save().itemSlotScale= 1
                 settings()
+                Set_Button_Point()
             end)
         end,
     })
+
+    CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
+    CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
 
     self:Setup(TokenFrame, {frame=CharacterFrame})
     self:Setup(TokenFramePopup, {frame=CharacterFrame})
@@ -256,33 +266,28 @@ end
 function WoWTools_TextureMixin.Frames:CharacterFrame()
 
     self:SetButton(CharacterFrameCloseButton)
-    self:SetNineSlice(CharacterFrameInset, self.min, true)
-    --self:SetNineSlice(CharacterFrame)
-    self:SetNineSlice(CharacterFrameInsetRight, self.min, true)
-
     self:HideTexture(CharacterFrameBg)
-    self:HideTexture(CharacterFrameInset.Bg)
-
     self:HideTexture(CharacterFrame.TopTileStreaks)
 
-    self:HideTexture(PaperDollInnerBorderBottom)
+    self:HideFrame(CharacterModelScene)
+    --[[self:HideTexture(PaperDollInnerBorderBottom)
     self:HideTexture(PaperDollInnerBorderRight)
     self:HideTexture(PaperDollInnerBorderLeft)
     self:HideTexture(PaperDollInnerBorderTop)
-
     self:HideTexture(PaperDollInnerBorderTopLeft)
     self:HideTexture(PaperDollInnerBorderTopRight)
     self:HideTexture(PaperDollInnerBorderBottomLeft)
     self:HideTexture(PaperDollInnerBorderBottomRight)
-
-    self:HideTexture(PaperDollInnerBorderBottom2)
-    self:HideTexture(CharacterFrameInsetRight.Bg)
+    self:HideTexture(PaperDollInnerBorderBottom2)]]
 
     self:HideTexture(PaperDollSidebarTabs.DecorRight)
     self:HideTexture(PaperDollSidebarTabs.DecorLeft)
 
+    self:SetNineSlice(CharacterFrameInset)
+    self:HideTexture(CharacterFrameInset.Bg)
 
     self:SetNineSlice(CharacterFrameInsetRight)
+    self:HideTexture(CharacterFrameInsetRight.Bg)
 
     PaperDollFrame:HookScript('OnShow', function()
         CharacterModelScene.ControlFrame:SetShown(false)
@@ -387,8 +392,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
 
 --BG, 菜单
     --CharacterFrame.PortraitContainer:SetPoint('TOPLEFT', -3, 3)
-    CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
-    CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
+
     self:Init_BGMenu_Frame(CharacterFrame)
 end
 

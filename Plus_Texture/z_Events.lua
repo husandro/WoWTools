@@ -1891,6 +1891,7 @@ end
 
 --货币
 function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
+    self:SetButton(TokenFrame.CurrencyTransferLogToggleButton, {alpha=1})
     self:SetFrame(TokenFramePopup.Border, {alpha=1})
     self:SetButton(CurrencyTransferMenuCloseButton)
     self:SetFrame(TokenFrame)
