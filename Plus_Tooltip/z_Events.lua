@@ -424,7 +424,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerSpells()
                 frame.specIconBorder:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
                 frame.specIconBorder:SetSize(32,32)
 
-                frame.specIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, size=18, copyFont=frame.RoleName})
+                frame.specIDLabel= frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormalMed2') --WoWTools_LabelMixin:Create(frame, {mouse=true, size=18, copyFont=frame.RoleName})
                 frame.specIDLabel:SetPoint('LEFT', frame.specIcon, 'RIGHT', 12, 0)
                 frame.specIDLabel:SetScript('OnLeave', function(s) s:SetAlpha(1) GameTooltip_Hide() end)
                 frame.specIDLabel:SetScript('OnEnter', function(s)
@@ -434,10 +434,13 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerSpells()
                     if specIndex then
                         local specID, name, _, icon= GetSpecializationInfo(specIndex)
                         if specID then
-                            GameTooltip:AddDoubleLine(WoWTools_TextMixin:CN(name), icon and '|T'..icon..':0|t'..icon)
                             GameTooltip:AddDoubleLine(
-                                'specID'..WoWTools_DataMixin.Icon.icon2..(specID or ''),
-                                'Index '..(specIndex or '')
+                                WoWTools_TextMixin:CN(name),
+                                icon and '|T'..icon..':0|t|cffffffff'..icon
+                            )
+                            GameTooltip:AddDoubleLine(
+                                'specID|cffffffff'..WoWTools_DataMixin.Icon.icon2..specID,
+                                'Index |cffffffff'..(specIndex or '')
                             )
                         end
                     end

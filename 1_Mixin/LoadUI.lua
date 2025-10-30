@@ -361,14 +361,13 @@ end
 --AchievementFrameAchievements.selection ~= achievementID
 --CanShowAchievementUI()
 function WoWTools_LoadUIMixin:Achievement(achievementID)
-    if not achievementID then
+    if not achievementID or not C_AchievementInfo.IsValidAchievement(achievementID) then
         return
     end
 
     if not AchievementFrame then
         WoWTools_DataMixin:Call('AchievementFrame_LoadUI')
     end
---136243
 
     if not AchievementFrame:IsShown() then
         WoWTools_DataMixin:Call('AchievementFrame_ToggleAchievementFrame')

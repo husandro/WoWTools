@@ -6,9 +6,25 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
         return
     end
 
-    tooltip:AddLine(' ')
-    local _, name, points, completed, _, _, _, _, flags, icon, _, isGuild = GetAchievementInfo(achievementID)
+    local _, name, points, completed, _, _, _, _, flags, icon, rewardText, isGuild = GetAchievementInfo(achievementID)
+--奖励
+    if rewardText then
+        tooltip:AddLine(' ')
+        local itemID= C_AchievementInfo.GetRewardItemID(achievementID)
+        local itemIcon
+        if itemID then
+            WoWTools_DataMixin:Load(itemID, 'item')
+            itemIcon= C_Item.GetItemIconByID(itemID) or select(5, C_Item.GetItemInfoInstant(itemID))
+        end
+        tooltip:AddLine(
+            (itemIcon and '|T'..itemIcon..':0|t' or '')
+            ..WoWTools_TextMixin:CN(rewardText),
+            1, 1, 1, true
+        )
+    end
 
+    tooltip:AddLine(' ')
+--id icon    
     tooltip:AddDoubleLine(
         icon and '|T'..icon..':'..self.iconSize..'|t|cffffffff'..icon or ' ',
 
@@ -17,7 +33,6 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
         ..(flags==0x20000 and '|cff00ccff'..WoWTools_DataMixin.Icon.wow2 or '|cffffffff')
         ..achievementID
     )
-
 --点数
     local textLeft= points..(WoWTools_DataMixin.onlyChinese and '点' or RESAMPLE_QUALITY_POINT)
 --否是完成

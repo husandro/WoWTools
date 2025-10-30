@@ -25,11 +25,12 @@ local function Get_List_Tab(instanceID)
     to= 0
     for index, achievementID in pairs(mapData) do
         local _, name, _, completed, _, _, _, _, flags, icon, _, isGuild, wasEarnedByMe = GetAchievementInfo(achievementID)
-        if name then
+
+        if name then-- and icon~=136243 then
 --奖励
             local itemID= C_AchievementInfo.GetRewardItemID(achievementID)
             local itemIcon= itemID and C_Item.GetItemIconByID(itemID)
-           WoWTools_DataMixin:Load(itemID, 'item')
+            WoWTools_DataMixin:Load(itemID, 'item')
 
 
             table.insert(tab, {
@@ -323,7 +324,35 @@ local function Init_Achievement()
         else
             btn.Icon.frame:SetVertexColor(1,1,1)
         end
-
+--奖励提示
+        local itemID= C_AchievementInfo.GetRewardItemID(btn.id)
+        local icon
+        if itemID then
+            WoWTools_DataMixin:Load(itemID, 'item')
+            icon= C_Item.GetItemIconByID(itemID) or select(5, C_Item.GetItemInfoInstant(itemID))
+        end
+        if icon and not btn.RewardTexture then
+            btn.RewardTexture= btn.Icon:CreateTexture(nil, 'ARTWORK')
+            --btn.RewardTexture:SetPoint('LEFT', btn.Icon, 'RIGHT')
+            btn.RewardTexture:SetPoint('LEFT', btn.Reward)
+            btn.RewardTexture:SetSize(23,23)
+            btn.RewardTexture:EnableMouse(true)
+            btn.RewardTexture:SetScript('OnLeave', function(self)
+                GameTooltip:Hide()
+                self:SetAlpha(1)
+            end)
+            btn.RewardTexture:SetScript('OnEnter', function(self)
+                if self.itemID then
+                    WoWTools_SetTooltipMixin:Frame(self)
+                    self:SetAlpha(0.5)
+                end
+            end)
+        end
+        if btn.RewardTexture then
+            btn.RewardTexture.itemID= itemID
+            btn.RewardTexture:SetTexture(icon or 0)
+            btn.RewardTexture:SetShown(icon)
+        end
 
     end)
     WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnEnter', function(btn)
