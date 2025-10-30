@@ -6361,7 +6361,10 @@
         "MOUNT_JOURNAL_FILTER_UNUSABLE",
         "CharacterTrinket1SlotFrame",
         "AchievementFrame_FindDisplayedAchievement",
-        "AchievementMetaCriteriaMixin"
+        "AchievementMetaCriteriaMixin",
+        "ClassResourceBarMixin",
+        "DruidComboPointBarMixin",
+        "DruidComboPointMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

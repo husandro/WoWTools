@@ -1,4 +1,4 @@
---职业
+--职业 1WARRIOR 2PALADIN 3HUNTER 4ROGUE 5PRIEST 6DEATHKNIGHT 7SHAMAN 8MAGE 9WARLOCK 10MONK 11DRUID 12DEMONHUNTER 13EVOKER
 local function Save()
     return WoWToolsSave['Plus_Texture'] or {}
 end
@@ -81,29 +81,23 @@ end
 
 
 
----DRUID
+---DRUID ClassResourceBarMixin:UpdateMaxPower()
 local function XD()
-
-    local function set_DruidComboPointBarFrame(frame)
-        for btn, _ in pairs(frame or {}) do
-            WoWTools_TextureMixin:HideTexture(btn.BG_Active)
-            WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
-            set_Num_Texture(btn)
+    WoWTools_DataMixin:Hook(DruidComboPointBarFrame, 'UpdateMaxPower', function(frame)
+        for btn in frame.classResourceButtonPool:EnumerateActive() do
+            if not btn.numTexture then
+                set_Num_Texture(btn)
+                WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+                WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
+            end
         end
-    end
-
-
-    set_DruidComboPointBarFrame(DruidComboPointBarFrame.classResourceButtonPool.activeObjects)
+    end)
 
     for _, btn in pairs(ClassNameplateBarFeralDruidFrame.classResourceButtonTable) do
         WoWTools_TextureMixin:HideTexture(btn.BG_Active)
         WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
         set_Num_Texture(btn)
     end
-
-    DruidComboPointBarFrame:HookScript('OnEvent', function(self)
-        set_DruidComboPointBarFrame(self.classResourceButtonPool.activeObjects)
-    end)
 end
 
 
