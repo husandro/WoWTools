@@ -107,7 +107,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
 
     --WoWTools_DataMixin:Hook(MainMenuBar, 'UpdateDividers', function(bar)--主动作条 
 
-    Set_MainMenuBarPool()
+    C_Timer.After(0.3, Set_MainMenuBarPool)
 
 
     EditModeManagerFrame:HookScript('OnHide', function()

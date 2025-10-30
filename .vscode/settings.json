@@ -6364,7 +6364,9 @@
         "AchievementMetaCriteriaMixin",
         "ClassResourceBarMixin",
         "DruidComboPointBarMixin",
-        "DruidComboPointMixin"
+        "DruidComboPointMixin",
+        "DK",
+        "ArcaneChargeMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

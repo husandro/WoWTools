@@ -1,4 +1,7 @@
---职业 1WARRIOR 2PALADIN 3HUNTER 4ROGUE 5PRIEST 6DEATHKNIGHT 7SHAMAN 8MAGE 9WARLOCK 10MONK 11DRUID 12DEMONHUNTER 13EVOKER
+--[[
+职业 1WARRIOR 2PALADIN 3HUNTER 4ROGUE 5PRIEST 6DEATHKNIGHT 7SHAMAN 8MAGE 9WARLOCK 10MONK 11DRUID 12DEMONHUNTER 13EVOKER
+ClassResourceBarMixin:UpdateMaxPower()
+]]
 local function Save()
     return WoWToolsSave['Plus_Texture'] or {}
 end
@@ -26,16 +29,12 @@ end
 
 
 
+local function Init()
+    if not Save().classPowerNum then
+        return
+    end
 
-
-
-
-
-
-
-
---PALADIN QS
-local function QS()
+--2 PALADIN QS 骑士
     WoWTools_TextureMixin:SetAlphaColor(PaladinPowerBarFrame.Background, nil, nil,0.3)
     WoWTools_TextureMixin:SetAlphaColor(PaladinPowerBarFrame.ActiveTexture, nil, nil, 0.3)
     PaladinPowerBarFrame.Background:SetShown(false)
@@ -60,55 +59,12 @@ local function QS()
         self.Background:SetShown(false)
         self.ActiveTexture:SetShown(false)
     end)
-end
-
-
-
-
---MAGE 法师
-local function FS()
-    for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
-        WoWTools_TextureMixin:HideTexture(mage.ArcaneBG)
-    end
-
-    if ClassNameplateBarMageFrame and ClassNameplateBarMageFrame.classResourceButtonTable then
-        for _, mage in pairs(ClassNameplateBarMageFrame.classResourceButtonTable) do
-            WoWTools_TextureMixin:HideTexture(mage.ArcaneBG)
-        end
-    end
-end
-
-
-
-
----DRUID ClassResourceBarMixin:UpdateMaxPower()
-local function XD()
-    WoWTools_DataMixin:Hook(DruidComboPointBarFrame, 'UpdateMaxPower', function(frame)
-        for btn in frame.classResourceButtonPool:EnumerateActive() do
-            if not btn.numTexture then
-                set_Num_Texture(btn)
-                WoWTools_TextureMixin:HideTexture(btn.BG_Active)
-                WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
-            end
-        end
-    end)
-
-    for _, btn in pairs(ClassNameplateBarFeralDruidFrame.classResourceButtonTable) do
-        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
-        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
-        set_Num_Texture(btn)
-    end
-end
 
 
 
 
 
-
-
-
---ROGUE
-local function DZ()
+--4 ROGUE 盗贼
     WoWTools_DataMixin:Hook(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
         C_Timer.After(0.5, function()
             for _, btn in pairs(self.classResourceButtonTable or {}) do
@@ -127,7 +83,37 @@ local function DZ()
             end
         end)
     end)
-end
+
+
+
+
+
+
+--6 DEATHKNIGHT 死亡骑士
+    for _, btn in pairs(RuneFrame.Runes or {}) do
+        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
+    end
+
+    for _, btn in pairs(DeathKnightResourceOverlayFrame.Runes or {}) do
+        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
+    end
+
+
+
+
+
+
+
+--7 SHAMAN 萨满
+    for btn in TotemFrame.totemPool:EnumerateActive() do
+        WoWTools_TextureMixin:SetAlphaColor(btn.Border, nil, nil, 0.3)
+    end
+
+    WoWTools_DataMixin:Hook(TotemButtonMixin, 'OnLoad', function(self)
+        WoWTools_TextureMixin:SetAlphaColor(self.Border, nil, nil, 0.3)
+    end)
 
 
 
@@ -136,11 +122,39 @@ end
 
 
 
+--8 MAGE 法师
+    WoWTools_DataMixin:Hook(MageArcaneChargesFrame, 'UpdateMaxPower', function(self)
+        for btn in self.classResourceButtonPool:EnumerateActive() do
+            if not btn.numTexture then
+                set_Num_Texture(btn)
+                WoWTools_TextureMixin:HideTexture(btn.ArcaneBG)
+                WoWTools_TextureMixin:SetAlphaColor(btn.ArcaneBGShadow, true)
+--背景
+                btn.ArcaneBGShadow:SetSize(btn.ArcaneBGShadow:GetWidth()-6, btn.ArcaneBGShadow:GetHeight()-6)
+                WoWTools_DataMixin:Hook(btn, 'SetActive', function(b)
+                    b.ArcaneBGShadow:SetAlpha(b.isActive and 1 or 0)
+                end)
+            end
+        end
+    end)
+    for _, btn in pairs(ClassNameplateBarMageFrame.classResourceButtonTable) do
+        set_Num_Texture(btn)
+        WoWTools_TextureMixin:HideTexture(btn.ArcaneBG)
+        WoWTools_TextureMixin:SetAlphaColor(btn.ArcaneBGShadow, true)
+        btn.ArcaneBGShadow:SetSize(btn.ArcaneBGShadow:GetWidth()-6, btn.ArcaneBGShadow:GetHeight()-6)
+        WoWTools_DataMixin:Hook(btn, 'SetActive', function(b)
+            b.ArcaneBGShadow:SetAlpha(b.isActive and 1 or 0)
+        end)
+    end
 
 
---MONK
-local function WS()
 
+
+
+
+
+
+--10 MONK 武僧
     local function set_MonkHarmonyBarFrame(btn)
         if btn then
             WoWTools_TextureMixin:HideTexture(btn.Chi_BG_Active)
@@ -175,7 +189,6 @@ local function WS()
             end
         end
     end)
-end
 
 
 
@@ -184,38 +197,22 @@ end
 
 
 
-
-
-
---DEATHKNIGHT
-local function DK()
-
-    for _, btn in pairs(RuneFrame.Runes or {}) do
-        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
-        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
-    end
-
-    for _, btn in pairs(DeathKnightResourceOverlayFrame.Runes or {}) do
-        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
-        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
-    end
-end
-
-
-
-
-
-
---SHAMAN
-local function SM()
-    for btn in TotemFrame.totemPool:EnumerateActive() do
-        WoWTools_TextureMixin:SetAlphaColor(btn.Border, nil, nil, 0.3)
-    end
-
-    WoWTools_DataMixin:Hook(TotemButtonMixin, 'OnLoad', function(self)
-        WoWTools_TextureMixin:SetAlphaColor(self.Border, nil, nil, 0.3)
+--11 DRUID
+    WoWTools_DataMixin:Hook(DruidComboPointBarFrame, 'UpdateMaxPower', function(frame)
+        for btn in frame.classResourceButtonPool:EnumerateActive() do
+            if not btn.numTexture then
+                set_Num_Texture(btn)
+                WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+                WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
+            end
+        end
     end)
-end
+
+    for _, btn in pairs(ClassNameplateBarFeralDruidFrame.classResourceButtonTable) do
+        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
+        set_Num_Texture(btn)
+    end
 
 
 
@@ -224,39 +221,17 @@ end
 
 
 
---EVOKER EssenceFramePlayer.lua
-local function EV()
+
+--13 EVOKER 龙人 唤魔者
     for _, btn in pairs(EssencePlayerFrame.classResourceButtonTable or {}) do
         WoWTools_TextureMixin:SetAlphaColor(btn.EssenceFillDone.CircBGActive, true)
         set_Num_Texture(btn, nil, false)
     end
-end
 
 
 
 
 
-
-
-
-
-
-
-
-local function Init()
-    if not Save().classPowerNum then
-        return
-    end
-
-
-    QS()
-    FS()
-    XD()
-    DZ()
-    WS()
-    DK()
-    SM()
-    C_Timer.After(2, EV)
 
     Init=function()end
 end
