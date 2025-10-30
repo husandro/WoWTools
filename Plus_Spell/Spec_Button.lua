@@ -319,27 +319,19 @@ local function Init()
     end
 
     function SpecFrame:set_point()
-      self:ClearAllPoints()
+        self:ClearAllPoints()
+
         if Save().specButton.isUIParent then
             local p= Save().specButton.point
             if p and p[1] then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-
-            --[[elseif PlayerSpellsFrame and PlayerSpellsFrame:IsVisible() then
-                self:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -self.numSpec*10-2, 0)
-            else]]
+            else
                 self:SetPoint('CENTER', -150, 150)
             end
-
             self:SetParent(UIParent)
             self:set_strata()
 
         elseif PlayerSpellsFrame then
-            --[[self:SetParent(PlayerSpellsFrame)
-            self:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -self.numSpec*10-18, 0)
-            self:SetFrameStrata('HIGH')
-            self:SetParent(PlayerSpellsFrame.TalentsFrame)
-            self:SetPoint('BOTTOM', PlayerSpellsFrame.TalentsFrame.ApplyButton, 'TOP', -self.numSpec*10-18, 25)]]
             self:SetParent(PlayerSpellsFrame.TalentsFrame)
             self:SetPoint('TOP', PlayerSpellsFrame.TalentsFrame.ApplyButton, 'BOTTOM', -self.numSpec*10-18, 0)
 

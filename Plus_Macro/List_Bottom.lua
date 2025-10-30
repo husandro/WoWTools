@@ -420,6 +420,9 @@ local Spell_Macro={
     [783]=function(name)--旅行形态
         return '/cast [nostance:3]'..name
     end,
+    [24858]=function(name)--枭兽形态
+        return '/cast [nostance:4]'..name
+    end,
     [106839]=function(name)--迎头痛击
         return '/focus target\n/cleartarget\n/targetenemy\n/cast '..name..'\n/target focus\n/clearfocus\n/startattack'
     end,
