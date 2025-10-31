@@ -1474,15 +1474,18 @@ end
 
 
 
-
+--举报
 function WoWTools_TextureMixin.Events:Blizzard_ReportFrame()
     self:SetFrame(ReportFrame)
     self:SetFrame(ReportFrame.Border)
     self:HideTexture(ReportFrame.BottomInset)
     self:HideTexture(ReportFrame.TopInset)
-    self:SetFrame(ReportFrame.CloseButton, {notAlpha=true})
-
+    self:SetButton(ReportFrame.CloseButton)
+    self:SetMenu(ReportFrame.ReportingMajorCategoryDropdown)
     self:SetScrollBar(ReportFrame.Comment)
+    self:SetAlphaColor(ReportFrame.BottomInsetEdge, true)
+    self:SetEditBox(ReportFrame.Comment.EditBox)
+    self:SetUIButton(ReportFrame.ReportButton)
 end
 
 
@@ -2364,6 +2367,18 @@ function WoWTools_TextureMixin.Events:Blizzard_AlliedRacesUI()
 end
 
 
+--教程
+function WoWTools_TextureMixin.Events:Blizzard_TutorialManager()
+    self:SetFrame(TutorialDoubleKey_Frame)
+end
+
+--住房 11.2.7
+function WoWTools_TextureMixin.Events:Blizzard_HousingBulletinBoard()
+    self:SetButton(HousingBulletinBoardFrame.CloseButton)
+    self:SetAlphaColor(HousingBulletinBoardFrame.GearDropdown.Icon, true)
+    self:SetScrollBar(HousingBulletinBoardFrame.ResidentsTab)
+    self:HideTexture(HousingBulletinBoardFrame.Background)
+end
 
 function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     self:SetButton(HousingDashboardFrameCloseButton)
@@ -2393,9 +2408,12 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     })
 end
 
+function WoWTools_TextureMixin.Events:Blizzard_HousingCharter()
+    self:SetAlphaColor(HousingCharterFrame.Background)
+end
 
-
---教程
-function WoWTools_TextureMixin.Events:Blizzard_TutorialManager()
-    self:SetFrame(TutorialDoubleKey_Frame)
+--住宅区登记表 11.2.7
+function WoWTools_TextureMixin.Events:Blizzard_HousingCreateNeighborhood()
+    self:SetEditBox(HousingCreateNeighborhoodCharterFrame.NeighborhoodNameEditBox)
+    self:SetAlphaColor(HousingCreateNeighborhoodCharterFrame.Background)
 end
