@@ -398,7 +398,7 @@ local function Init_Button()
 
         local infoType, _, itemLink= GetCursorInfo()
         if infoType == "item" and itemLink then
-            local texture= C_Item.GetItemIconByID(itemLink)
+            local texture= select(5, C_Item.GetItemInfoInstant(itemLink))
             if texture then
                 self:SetNormalTexture(texture)
                 GameTooltip:SetHyperlink(itemLink)

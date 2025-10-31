@@ -263,7 +263,7 @@ local function setClickAtt(self)--设置 Click属性
 
     elseif self.itemID then
         name= C_Item.GetItemNameByID(self.itemID)
-        icon= C_Item.GetItemIconByID(self.itemID)
+        icon= select(5, C_Item.GetItemInfoInstant(self.itemID))
         if name then
             if PlayerHasToy(self.itemID) then
                 self:SetAttribute("type1", "macro")

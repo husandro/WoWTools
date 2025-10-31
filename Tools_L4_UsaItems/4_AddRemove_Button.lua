@@ -50,7 +50,7 @@ local function Init()
             local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
             local type = slot and 'equip' or 'item'
             local text = slot and (WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP) or (WoWTools_DataMixin.onlyChinese and '物品' or ITEMS)
-            local icon = C_Item.GetItemIconByID(itemLink)
+            local icon = select(5, C_Item.GetItemInfoInstant(itemLink))
             StaticPopup_Show('WoWToolsUseItemsADD', text , (icon and '|T'..icon..':0|t' or '')..itemLink, {type=type, name=itemLink, ID=itemID})
             ClearCursor()
 

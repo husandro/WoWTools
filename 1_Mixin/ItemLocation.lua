@@ -178,7 +178,7 @@ function WoWTools_ItemLocationMixin:GetItemTexture()
 	if self:IsValid() then
 		local itemID= self:itemID()
 		if itemID then
-			texture= C_Item.GetItemIconByID(itemID)
+			texture= select(5, C_Item.GetItemInfoInstant(itemID))
 		end
 	end
 	texture= texture or 0

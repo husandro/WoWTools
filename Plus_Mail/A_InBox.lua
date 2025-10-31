@@ -170,7 +170,7 @@ local function eventEnter(self, get)--enter 提示，删除，或退信，按钮
             local itemIndexLink= GetInboxItemLink(self.openMailID, itemIndex)
             if itemIndexLink then
                 local texture, count = select(3, GetInboxItem(self.openMailID, itemIndex))
-                texture = texture or C_Item.GetItemIconByID(itemIndexLink)
+                texture = texture or select(5, C_Item.GetItemInfoInstant(itemIndexLink))
                 allCount= allCount+ (count or 1)
                 GameTooltip:AddLine((itemIndex<10 and ' ' or '')..itemIndex..') '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
             end

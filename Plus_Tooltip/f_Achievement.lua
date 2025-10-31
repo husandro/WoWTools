@@ -14,7 +14,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
         local itemIcon
         if itemID then
             WoWTools_DataMixin:Load(itemID, 'item')
-            itemIcon= C_Item.GetItemIconByID(itemID) or select(5, C_Item.GetItemInfoInstant(itemID))
+            itemIcon= select(5, C_Item.GetItemInfoInstant(itemID))
         end
         tooltip:AddLine(
             (itemIcon and '|T'..itemIcon..':0|t' or '')

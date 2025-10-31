@@ -338,10 +338,10 @@ local function Init_Menu_Item(_, sub)
        WoWTools_DataMixin:Load(itemID, 'item')
         index= index+1
 
-        icon='|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'
+        icon='|T'..(select(5, C_Item.GetItemInfoInstant(itemID)) or 0)..':0|t'
         num= C_Item.GetItemCount(itemID, false, true, true) or 0
 
-        local name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'
+        local name= icon
                     ..(WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID: '..itemID))
                     ..(num==0 and '|cff9e9e9e' or '|cffffffff')..' x'..num..'|r'
 
@@ -423,7 +423,7 @@ local function Init_Menu(self, root)
             elseif indexType==ITEMS then
                 if self.itemID then
                     itemID=self.itemID
-                    icon=C_Item.GetItemIconByID(self.itemID)
+                    icon=select(5, C_Item.GetItemInfoInstant(self.itemID))
                 end
             end
             icon= icon or 0

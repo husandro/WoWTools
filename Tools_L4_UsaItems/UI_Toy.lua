@@ -43,7 +43,7 @@ local function Create_Button(btn)--标记, 是否已选取
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         GameTooltip:AddLine(' ')
 
-        local icon= C_Item.GetItemIconByID(itemID)
+        local icon= select(5, C_Item.GetItemInfoInstant(itemID))
         local find=WoWTools_UseItemsMixin:Find_Type('item', itemID)
         GameTooltip:AddDoubleLine(
             (icon and '|T'..icon..':0|t' or '')..(C_ToyBox.GetToyLink(itemID) or itemID)..' '..WoWTools_TextMixin:GetEnabeleDisable(find),

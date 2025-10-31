@@ -33,7 +33,7 @@ function WoWTools_FoodMixin:Set_Button_Function(btn)
     function btn:set_attribute()
         local icon, name
         if self.itemID then
-            icon= C_Item.GetItemIconByID(self.itemID)
+            icon= select(5, C_Item.GetItemInfoInstant(self.itemID))
             name= C_Item.GetItemNameByID(self.itemID)
         end
         self.texture:SetTexture(icon or 0)
@@ -197,7 +197,7 @@ local function Create_Button(index)
     btn:SetScript('OnMouseDown',function(self, d)
         if d=='RightButton' and self:CanChangeAttribute() then
             MenuUtil.CreateContextMenu(self, function(f, root)
-                root:CreateButton('|T'..(C_Item.GetItemIconByID(f.itemID) or 0)..':0|t'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE), function()
+                root:CreateButton('|T'..(select(5, C_Item.GetItemInfoInstant(f.itemID)) or 0)..':0|t'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE), function()
                     Save().noUseItems[self.itemID]=true
                     Save().addItems[self.itemID]=nil
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_FoodMixin.addName, WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))

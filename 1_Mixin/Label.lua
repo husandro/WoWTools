@@ -184,7 +184,7 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
             local itemQuality= C_Item.GetItemQualityByID(tab.id)
 
             if (showAll or tab.show or num>0) and itemQuality>=1 then
-                local icon= C_Item.GetItemIconByID(tab.id)
+                local icon= select(5, C_Item.GetItemInfoInstant(tab.id))
                 local name=showName and C_Item.GetItemNameByID(tab.id)
                 text= ((icon and icon>0) and '|T'..icon..':0|t' or '')
                     ..(name and name..' |cnGREEN_FONT_COLOR:x|r' or '')

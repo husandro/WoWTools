@@ -87,7 +87,7 @@ local function Set_Alt_Menu(root, itemID)
     local sub
     root:CreateDivider()
     for _, info in pairs(ModifiedMenuTab) do
-        sub=root:CreateCheckbox(info.type..'|T'..(C_Item.GetItemIconByID(info.itemID) or 0)..':0|t',
+        sub=root:CreateCheckbox(info.type..'|T'..(select(5, C_Item.GetItemInfoInstant(info.itemID)) or 0)..':0|t',
             function(data)
                 return Save()[data.type]== data.itemID2
             end, function(data)
@@ -488,7 +488,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
             GameTooltip:AddLine(' ')
             local itemID=self:get_itemID()
-            local icon= C_Item.GetItemIconByID(itemID)
+            local icon= select(5, C_Item.GetItemInfoInstant(itemID))
             GameTooltip:AddDoubleLine(
                 (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
                 WoWTools_TextMixin:GetEnabeleDisable(Save().items[itemID])..WoWTools_DataMixin.Icon.left
@@ -735,7 +735,7 @@ local function Init()
         self.itemID=itemID
         --self:SetAttribute('item1', name)
         self:SetAttribute('toy1', itemID)
-        self.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 0)
+        self.texture:SetTexture(select(5, C_Item.GetItemInfoInstant(itemID) or 0))
         self:set_cool()
         self.text:SetText(self.Random_Numeri>0 and self.Random_Numeri or '')
     end

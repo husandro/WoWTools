@@ -60,7 +60,7 @@ local qualityToIconBorderAtlas = AUCTION_HOUSE_ITEM_QUALITY_ICON_BORDER_ATLASES 
 --物品
 local function Get_Item(itemID)
 	local text, name
-	local icon= C_Item.GetItemIconByID(itemID)
+	local icon= select(5, C_Item.GetItemInfoInstant(itemID))
 	local num= C_Item.GetItemCount(itemID , true, true, true, true)
 	local bag= C_Item.GetItemCount(itemID)
 	local itemQuality
@@ -632,7 +632,7 @@ local function Init_TrackButton()
 						('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 					or ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
 			)
-			self:set_texture(C_Item.GetItemIconByID(itemID))
+			self:set_texture(select(5, C_Item.GetItemInfoInstant(itemID)))
 		else
 			local canFrame= Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
 			GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CurrencyMixin.addName)

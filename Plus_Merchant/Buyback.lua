@@ -237,7 +237,7 @@ local function Init()
                 self.texture:SetAtlas('bags-button-autosort-up')
             else
                 GameTooltip:AddDoubleLine(name, (WoWTools_DataMixin.onlyChinese and '添加' or ADD)..WoWTools_DataMixin.Icon.left)
-                local icon= C_Item.GetItemIconByID(itemID)
+                local icon= select(5, C_Item.GetItemInfoInstant(itemID))
                 if icon then
                     self.texture:SetTexture(icon)
                 end

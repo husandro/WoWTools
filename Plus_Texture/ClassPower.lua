@@ -73,16 +73,16 @@ local function Init()
                 WoWTools_TextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
                 set_Num_Texture(btn)
             end
-            if ClassNameplateBarRogueFrame and ClassNameplateBarRogueFrame.classResourceButtonTable then
-                for _, btn in pairs(ClassNameplateBarRogueFrame.classResourceButtonTable) do
-                    WoWTools_TextureMixin:HideTexture(btn.BGActive)
-                    WoWTools_TextureMixin:HideTexture(btn.BGInactive)
-                    WoWTools_TextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
-                    set_Num_Texture(btn)
-                end
-            end
         end)
     end)
+    if ClassNameplateBarRogueFrame and ClassNameplateBarRogueFrame.classResourceButtonTable then
+        for _, btn in pairs(ClassNameplateBarRogueFrame.classResourceButtonTable) do
+            WoWTools_TextureMixin:HideTexture(btn.BGActive)
+            WoWTools_TextureMixin:HideTexture(btn.BGInactive)
+            WoWTools_TextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
+            set_Num_Texture(btn)
+        end
+    end
 
 
 
@@ -149,9 +149,26 @@ local function Init()
 
 
 
+--9 WARLOCK 术士 WoWTools_DataMixin:Hook(WarlockPowerFrame, 'UpdateMaxPower', function(self)
+    for btn in WarlockPowerFrame.classResourceButtonPool:EnumerateActive() do
+        set_Num_Texture(btn)
+        WoWTools_TextureMixin:SetAlphaColor(btn.Background, true)
+        WoWTools_DataMixin:Hook(btn, 'Update', function(b)
+            local isShow= b.fillAmount>0
+            b.Background:SetAlpha(isShow and 0 or 0.5)
+            b.numTexture:SetAlpha(isShow and 0 or 1)
+        end)
+    end
 
-
-
+    for _, btn in pairs(ClassNameplateBarWarlockFrame.classResourceButtonTable) do
+        set_Num_Texture(btn)
+        WoWTools_TextureMixin:SetAlphaColor(btn.Background, true)
+        WoWTools_DataMixin:Hook(btn, 'Update', function(b)
+            local isShow= b.fillAmount>0
+            b.Background:SetAlpha(isShow and 0 or 0.5)
+            b.numTexture:SetAlpha(isShow and 0 or 1)
+        end)
+    end
 
 
 --10 MONK 武僧

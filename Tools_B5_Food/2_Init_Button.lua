@@ -24,15 +24,15 @@ local function Set_AltSpell()
 
     btn.itemID= item or 5512--治疗石
 
-    btn:SetAttribute('alt-spell1', (alt and C_Spell.GetSpellName(alt) or alt or nil))
+    btn:SetAttribute('alt-spell1', alt and C_Spell.GetSpellName(alt) or alt or nil)
     btn.alt= alt
 
 
-    btn:SetAttribute('ctrl-spell1', (ctrl and C_Spell.GetSpellName(ctrl) or ctrl) or nil)
+    btn:SetAttribute('ctrl-spell1', ctrl and C_Spell.GetSpellName(ctrl) or ctrl or nil)
     btn.ctrl= ctrl
 
     btn:SetAttribute('shift-type1', 'spell')
-    btn:SetAttribute('shift-spell1', (shift and C_Spell.GetSpellName(shift) or shift) or nil)
+    btn:SetAttribute('shift-spell1', shift and C_Spell.GetSpellName(shift) or shift or nil)
     btn.shift= shift
 end
 
@@ -291,11 +291,9 @@ local function Init()
     btn:set_background()
 
     WoWTools_FoodMixin:Set_Button_Function(btn)
+    Set_AltSpell()
     btn:settings()
     btn:set_attribute()
-
-
-    Set_AltSpell()
 
     Init=function()
         Set_AltSpell()

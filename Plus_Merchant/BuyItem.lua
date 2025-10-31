@@ -468,7 +468,7 @@ local function Init()
 
         local infoType, itemIDorIndex, itemLink = GetCursorInfo()
         if infoType=='item' and itemIDorIndex and itemLink then
-            local icon= C_Item.GetItemIconByID(itemLink)
+            local icon= select(5, C_Item.GetItemInfoInstant(itemLink))
             local name= '|T'..(icon or 0)..':0|t'..itemLink
             if WoWToolsPlayerDate['SellBuyItems'].sell[itemIDorIndex] then
                 GameTooltip:AddDoubleLine(

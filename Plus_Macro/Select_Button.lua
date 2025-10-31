@@ -32,7 +32,7 @@ local function Get_Text_Table()
         elseif item then
            WoWTools_DataMixin:Load(item, 'item')
             local itemID= C_Item.GetItemInfoInstant(item)
-            local icon= C_Item.GetItemIconByID(item)
+            local icon= select(5, C_Item.GetItemInfoInstant(item))
             if icon then
                 allTab[icon]={
                     name=WoWTools_ItemMixin:GetName(itemID) or item,

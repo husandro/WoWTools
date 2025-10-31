@@ -77,7 +77,7 @@ local function Create_Button(btn)--标记, 是否已选取
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HearthstoneMixin.addName)
         GameTooltip:AddLine(' ')
         local itemID=self:get_itemID()
-        local icon= C_Item.GetItemIconByID(itemID)
+        local icon= select(5, C_Item.GetItemInfoInstant(itemID))
         GameTooltip:AddDoubleLine(
             (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
             WoWTools_TextMixin:GetEnabeleDisable(Save().items[itemID])..WoWTools_DataMixin.Icon.left

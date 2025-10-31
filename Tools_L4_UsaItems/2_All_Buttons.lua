@@ -64,7 +64,7 @@ local function Set_Equip_Slot(btn)--装备
     if name and slotItemID~=btn.itemID and btn:GetAttribute('item2')~=name then
         btn:SetAttribute('item2', name)
         btn.slotEquipName=name
-        local icon = C_Item.GetItemIconByID(slotItemID)
+        local icon = select(5, C_Item.GetItemInfoInstant(slotItemID))
         if icon and not btn.slotTexture then--装备前的物品,提示
             btn.slotequipedTexture=btn:CreateTexture(nil, 'OVERLAY')
             btn.slotequipedTexture:SetPoint('BOTTOMRIGHT',-7,9)
@@ -267,7 +267,7 @@ local function Init()
         local name ,icon
         if Has_ItemSpell(itemID) then
             name = C_Item.GetItemNameByID(itemID)
-            icon = C_Item.GetItemIconByID(itemID)
+            icon = select(5, C_Item.GetItemInfoInstant(itemID))
             if name and icon then
                 local btn= WoWTools_ToolsMixin:CreateButton({
                     name='UsaItems_ItemID_'..itemID,
@@ -294,7 +294,7 @@ local function Init()
         if C_Item.GetItemCount(itemID)>0 then
             name = C_Item.GetItemNameByID(itemID)
             local itemEquipLoc, icon2 = select(4, C_Item.GetItemInfoInstant(itemID))
-            icon =icon2 or C_Item.GetItemIconByID(itemID)
+            icon =icon2 or select(5, C_Item.GetItemInfoInstant(itemID))
             local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
 
             if name and icon and slot then

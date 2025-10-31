@@ -22,7 +22,7 @@ WoWTools_DataMixin:Hook('QuestInfo_Display', function()
                     if desc then
                         local itemName= desc:match('%d+/%d+ (.-) |A') or desc:match('%d+/%d+ (.+)')
                         if itemName then
-                            icon = C_Item.GetItemIconByID(itemName)
+                            icon = select(5, C_Item.GetItemInfoInstant(itemName))
                         end
                     end
                     icon= icon or 134400

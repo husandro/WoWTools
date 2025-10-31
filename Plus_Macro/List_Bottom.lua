@@ -760,7 +760,7 @@ local function Init_Equip_Menu(self, root)
             name= itemLink and C_Item.GetItemNameByID(itemLink)
             if itemLink and name then
 
-                icon= C_Item.GetItemIconByID(itemLink)
+                icon= select(5, C_Item.GetItemInfoInstant(itemLink))
                 spellID= select(2, C_Item.GetItemSpell(itemLink))
 
                WoWTools_DataMixin:Load(spellID, 'spell')

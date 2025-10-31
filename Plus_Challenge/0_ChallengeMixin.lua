@@ -111,7 +111,7 @@ function WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)
         for index, info in pairs(tab) do
             if info.unlocked then
                 local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
-                local texture= itemLink and C_Item.GetItemIconByID(itemLink)
+                local texture= itemLink and select(5, C_Item.GetItemInfoInstant(itemLink))
                 local itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink)
                 tooltip:AddLine(
                     '   '..index..') '
@@ -270,7 +270,7 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
             local text
             local itemLink= label:Get_ItemLink()
             if itemLink then
-                local texture= C_Item.GetItemIconByID(itemLink)
+                local texture= select(5, C_Item.GetItemInfoInstant(itemLink))
                 local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink)
                 text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
                 text= text..((itemLevel and itemLevel>0) and itemLevel or '')..format('|A:%s:0:0|a', 'common-icon-checkmark')..((info.level and info.level>0) and info.level or '')

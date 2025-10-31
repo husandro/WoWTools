@@ -308,7 +308,7 @@ local function Init_Menu(self, root)
        WoWTools_DataMixin:Load(itemLink or itemID, 'item')
         sub2=sub:CreateCheckbox(
             num..') '
-            ..'|T'..(C_Item.GetItemIconByID(itemLink) or 0)..':0|t'
+            ..'|T'..(select(5, C_Item.GetItemInfoInstant(itemLink)) or 0)..':0|t'
             ..itemLink
             ..('['..itemLevel..']'),
         function(data)

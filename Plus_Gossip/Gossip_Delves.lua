@@ -69,7 +69,7 @@ local function Init_OnShow(self)
                             WoWTools_ItemMixin:GetLink(reward.id) or C_Item.GetItemNameByID(reward.id),
                             {isName=true}
                         )
-                        or ('|T'..(C_Item.GetItemIconByID(reward.id) or 0)..':0|t'),
+                        or ('|T'..(select(5, C_Item.GetItemInfoInstant(reward.id)) or 0)..':0|t'),
                         ' x'..(reward.quantity or 1)
                     )
                 end

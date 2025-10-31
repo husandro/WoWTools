@@ -69,7 +69,7 @@ local function Init()
         for _, itemID in pairs(ItemTab) do
             local link= WoWTools_ItemMixin:GetLink(itemID)
             local icon
-            icon= C_Item.GetItemIconByID(itemID)
+            icon= select(5, C_Item.GetItemInfoInstant(itemID))
             icon= icon and '|T'..icon..':0|t' or ''
             local num
             num= C_Item.GetItemCount(itemID)

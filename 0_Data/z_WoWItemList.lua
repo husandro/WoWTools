@@ -110,7 +110,7 @@ TypeTabs= {
         itemName, _, itemQuality, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
 
         itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
-        itemTexture= itemTexture or C_Item.GetItemIconByID(itemID)
+        itemTexture= itemTexture or select(5, C_Item.GetItemInfoInstant(itemID))
 
         r,g,b= C_Item.GetItemQualityColor(itemQuality or data.quality or 1)
 
@@ -208,7 +208,7 @@ TypeTabs= {
         local itemName, itemTexture, itemAtlas, count, r, g, b
         local name, _, _, _, _, _, _, _, _, texture= C_Item.GetItemInfo(itemID)
         itemName= WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}) or itemID
-        itemTexture= texture or C_Item.GetItemIconByID(itemID)
+        itemTexture= texture or select(5, C_Item.GetItemInfoInstant(itemID))
         r,g,b= C_Item.GetItemQualityColor(data.quality or 1)
         if data.num>1 then
             count= WoWTools_DataMixin:MK(data.num, 3)..'|A:Banker:0:0|a'

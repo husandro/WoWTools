@@ -323,7 +323,7 @@ local function Init()
     function btn:set_texture()
         local icon
         if self.itemID then
-            icon= C_Item.GetItemIconByID(self.itemID)
+            icon= select(5, C_Item.GetItemInfoInstant(self.itemID))
         elseif self.spellID then
             icon= C_Spell.GetSpellTexture(self.spellID)
         end

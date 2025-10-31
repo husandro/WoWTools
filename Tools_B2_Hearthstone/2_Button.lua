@@ -315,7 +315,7 @@ local function Init(btn)
                 local itemID= get_not_cooldown_toy(self)
                 if itemID then
                     GameTooltip:AddDoubleLine(
-                        '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':32|t|cnGREEN_FONT_COLOR:'
+                        '|T'..(select(5, C_Item.GetItemInfoInstant(itemID)) or 0)..':32|t|cnGREEN_FONT_COLOR:'
                         ..(WoWTools_DataMixin.onlyChinese and '发现就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BATTLE_PET_SOURCE_11, READY)),
                         WoWTools_DataMixin.Icon.right
                     )
@@ -427,7 +427,7 @@ local function Init(btn)
         --self:SetAttribute("macrotext1",  '/usetoy '..toyName)
         self:SetAttribute("toy1",  itemID)
 
-        self.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 134414)
+        self.texture:SetTexture(select(5, C_Item.GetItemInfoInstant(itemID)) or 134414)
 
         self:set_cool()
     end

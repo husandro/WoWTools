@@ -482,7 +482,7 @@ if not PlayerIsTimerunning() then
             gem.gemLink= gemLink
             local icon
             if gemLink then
-                icon = C_Item.GetItemIconByID(gemLink) or select(5, C_Item.GetItemInfoInstant(gemLink))
+                icon = select(5, C_Item.GetItemInfoInstant(gemLink))
             end
             if icon then
                 gem:SetTexture(icon)

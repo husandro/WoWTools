@@ -402,7 +402,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                             local info = C_TransmogCollection.GetIllusionInfo(illusionID)
                             icon= info and info.icon
                         end
-                        icon= icon or C_Item.GetItemIconByID(tab.link)
+                        icon= icon or select(5, C_Item.GetItemInfoInstant(tab.link))
                         if icon then
                             btn:SetNormalTexture(icon)
                         else

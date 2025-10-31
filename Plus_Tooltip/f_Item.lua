@@ -377,7 +377,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         )
     end
 
-    itemTexture= itemTexture or C_Item.GetItemIconByID(itemID or itemLink)
+    itemTexture= itemTexture or select(5, C_Item.GetItemInfoInstant(itemID or itemLink))
 
 --itemID,  图标
     tooltip:AddDoubleLine(

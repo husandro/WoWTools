@@ -29,7 +29,7 @@ local function Get_List_Tab(instanceID)
         if name then-- and icon~=136243 then
 --奖励
             local itemID= C_AchievementInfo.GetRewardItemID(achievementID)
-            local itemIcon= itemID and C_Item.GetItemIconByID(itemID)
+            local itemIcon= itemID and select(5, C_Item.GetItemInfoInstant(itemID))
             WoWTools_DataMixin:Load(itemID, 'item')
 
 
@@ -329,7 +329,7 @@ local function Init_Achievement()
         local icon
         if itemID then
             WoWTools_DataMixin:Load(itemID, 'item')
-            icon= C_Item.GetItemIconByID(itemID) or select(5, C_Item.GetItemInfoInstant(itemID))
+            icon= select(5, C_Item.GetItemInfoInstant(itemID))
         end
         if icon and not btn.RewardTexture then
             btn.RewardTexture= btn.Icon:CreateTexture(nil, 'ARTWORK')

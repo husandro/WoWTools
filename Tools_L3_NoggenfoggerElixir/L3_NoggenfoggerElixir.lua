@@ -197,7 +197,7 @@ local function Init()
     end
 
 
-    button.texture:SetTexture(C_Item.GetItemIconByID(ItemID) or 134863)
+    button.texture:SetTexture(select(5, C_Item.GetItemInfoInstant(ItemID)) or 134863)
     button.count=WoWTools_LabelMixin:Create(button, {size=12, color={r=1,g=1,b=1}})--10,nil,nil,true)
     button.count:SetPoint('BOTTOMRIGHT')
 

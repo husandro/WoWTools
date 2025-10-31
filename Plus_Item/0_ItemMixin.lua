@@ -536,7 +536,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
                 name= col2..name..'|r'
             end
         end
-        name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'..name--(name:match('|c........(.+)|r') or name)
+        name= '|T'..(select(5, C_Item.GetItemInfoInstant(itemID)) or 0)..':0|t'..name
     end
 
 
