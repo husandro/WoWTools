@@ -802,6 +802,8 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_HousingCreateNeighborhood()
     self:Setup(HousingCreateNeighborhoodCharterFrame)
 end
-
+function WoWTools_MoveMixin.Events:Blizzard_HousingCornerstone()
+    self:Setup(HousingCornerstoneVisitorFrame)
+end
 
 

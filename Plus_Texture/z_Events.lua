@@ -2372,12 +2372,18 @@ function WoWTools_TextureMixin.Events:Blizzard_TutorialManager()
     self:SetFrame(TutorialDoubleKey_Frame)
 end
 
---住房 11.2.7
+--住房 查找器 11.2.7
 function WoWTools_TextureMixin.Events:Blizzard_HousingBulletinBoard()
     self:SetButton(HousingBulletinBoardFrame.CloseButton)
     self:SetAlphaColor(HousingBulletinBoardFrame.GearDropdown.Icon, true)
     self:SetScrollBar(HousingBulletinBoardFrame.ResidentsTab)
     self:HideTexture(HousingBulletinBoardFrame.Background)
+    self:SetAlphaColor(HousingBulletinBoardFrame.Footer)
+end
+function WoWTools_TextureMixin.Events:Blizzard_HousingCornerstone()
+    self:SetButton(HousingCornerstoneVisitorFrameCloseButton)
+    self:SetAlphaColor(HousingCornerstoneVisitorFrame.Background)
+    self:SetButton(HousingCornerstoneVisitorFrame.GearDropdown, {alpha=1})
 end
 
 function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
