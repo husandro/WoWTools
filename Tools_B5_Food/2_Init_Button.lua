@@ -111,8 +111,6 @@ local function Init()
         self.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
 
-
-
     function btn:set_strata()
         self:SetFrameStrata(Save().strata or 'MEDIUM')
     end
@@ -202,7 +200,7 @@ local function Init()
 
 
     function btn:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
         GameTooltip:ClearLines()
         local itemID, itemLink = self:get_tooltip_item()
         if itemID and itemLink then
@@ -249,20 +247,14 @@ local function Init()
         --self.elapsed=nil
     end)
 
-    --[[function btn:set_update(elapsed)
-        self.elapsed= (self.elapsed or 1) +elapsed
-        if self.elapsed>=1 then
-            self.elapsed=0
-            self:set_tooltip()
-        end
-    end]]
+
     btn:SetScript("OnEnter",function(self)
         if self.alt or self.ctrl or self.shift then
-            local Elapsed= 1
+            local e= 1
             self:SetScript('OnUpdate', function(s, elapsed)
-                Elapsed= (Elapsed or 1) + elapsed
-                if Elapsed>=1 then
-                    Elapsed=0
+                e= (e or 1) + elapsed
+                if e>=1 then
+                    e=0
                     s:set_tooltip()
                 end
             end)

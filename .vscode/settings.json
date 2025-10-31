@@ -6368,7 +6368,10 @@
         "DK",
         "ArcaneChargeMixin",
         "WarlockShardMixin",
-        "ClassNameplateBarWarlockFrame"
+        "ClassNameplateBarWarlockFrame",
+        "PaladinPowerBarRune",
+        "RuneFrameMixin",
+        "ClassNameplateBarDracthyrFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

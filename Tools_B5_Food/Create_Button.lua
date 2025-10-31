@@ -10,22 +10,17 @@ local Buttons={}
 
 
 
-
-
-
-
-
-function WoWTools_FoodMixin:Set_Button_Function(btn)
+local function Set_Script(btn)
     if InCombatLockdown() then
-        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, arg1)
-            self:Set_Button_Function(btn)
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+            WoWTools_FoodMixin:Set_Button_Function(btn)
             EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
         end)
         return
     end
 
     btn:SetAttribute("type1", "item")
-    btn.count= WoWTools_LabelMixin:Create(btn, {size=12, color={r=1,g=1,b=1}})--10, nil,nil, true)
+    btn.count= WoWTools_LabelMixin:Create(btn, {size=12, color={r=1,g=1,b=1}})
     btn.count:SetPoint('BOTTOMRIGHT', -4,4)
     btn.numCount=0
     btn.enableCooldown=true
@@ -33,6 +28,7 @@ function WoWTools_FoodMixin:Set_Button_Function(btn)
     function btn:set_attribute()
         local icon, name
         if self.itemID then
+            WoWTools_DataMixin:Load(self.itemID, 'item')
             icon= select(5, C_Item.GetItemInfoInstant(self.itemID))
             name= C_Item.GetItemNameByID(self.itemID)
         end
@@ -111,7 +107,7 @@ function WoWTools_FoodMixin:Set_Button_Function(btn)
             self:SetAttribute("item1", nil)
         end
         self.texture:SetTexture(0)
-        --WoWTools_CooldownMixin:Setup(self)
+        WoWTools_CooldownMixin:Setup(self)
     end)
 
     btn:SetScript("OnEvent", function(self, event, arg1, arg2)
@@ -169,9 +165,21 @@ local function Create_Button(index)
         isSecure=true,
     })
 
-    WoWTools_FoodMixin:Set_Button_Function(btn)
+    Set_Script(btn)
+
+    function btn:set_tooltip()
+        WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {
+            owner=WoWTools_ToolsMixin:Get_ButtonForName('Food'),
+            anchor='ANCHOR_RIGHT',
+            itemID=self.itemID,
+            tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
+                ..(self:CanChangeAttribute() and '' or '|cff9e9e9e')
+                ..(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.right,
+        })
+    end
 
     btn:SetScript("OnLeave", function(self)
+        self:SetScript('OnUpdate', nil)
         GameTooltip_Hide()
         WoWTools_BagMixin:Find()
         self:set_cool()
@@ -179,18 +187,19 @@ local function Create_Button(index)
         self:set_count()
         self:set_desaturated()
     end)
+
     btn:SetScript('OnEnter', function(self)
-        local can= self:CanChangeAttribute()
-        WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {
-            itemID=self.itemID,
-            tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
-                ..(can and '' or '|cff9e9e9e')
-                ..(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.right,
-        })
+        local e= 1
+        self:SetScript('OnUpdate', function(s, elapsed)
+            e= (e or 1) + elapsed
+            if e>=1 then
+                e=0
+                s:set_tooltip()
+            end
+        end)
+
         self:settings()
-        if can then
-            self:set_attribute()
-        end
+        self:set_attribute()
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
 
@@ -251,8 +260,6 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     end
     IsChecking=true
 
-
-
     local new={}
     local items={}
 
@@ -295,16 +302,16 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     end
 
     local num= #new
+    btn.Background:SetPoint('TOP', btn, 1, 1)
     for i=Save().numLine, num, Save().numLine do
         local b= _G[Buttons[i]]
         if b then
             b:ClearAllPoints()
             b:SetPoint('BOTTOM', _G[Buttons[i-Save().numLine]] or btn, 'TOP')
-            btn.Background:SetPoint('TOP', btn, 1, 1)
+            btn.Background:SetPoint('TOP', b, 1, 1)
         end
     end
     btn.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[num-1]] or btn, -1, -1)
-
 
     for i= num+1 , #Buttons do
         _G[Buttons[i]]:SetShown(false)
@@ -331,10 +338,6 @@ end
 
 
 
-
-
-
-
-
-
-
+function WoWTools_FoodMixin:Set_Button_Function(btn)
+    Set_Script(btn)
+end

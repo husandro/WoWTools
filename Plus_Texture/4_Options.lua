@@ -124,13 +124,13 @@ local function Init_Options()
         tooltip= tooltip,
         checkSetValue= function()
             Save().classPowerNum= not Save().classPowerNum and true or false
-            WoWTools_MoveMixin:Init_Class_Power()--职业
+            WoWTools_TextureMixin:Init_Class_Power()--职业
         end,
         sliderGetValue= function()
-            local s= Save().classPowerNumSize or 12
+            local s= Save().classPowerNumSize or 23
             if type(s)~='number' then
-                s= 12
-                Save().classPowerNumSize=12
+                s= 23
+                Save().classPowerNumSize=23
             end
             return s or 12
         end,
@@ -141,7 +141,7 @@ local function Init_Options()
             if value2 then
                 local value3= WoWTools_DataMixin:GetFormatter1to10(value2, 6, 64)
                 Save().classPowerNumSize= value3
-                WoWTools_MoveMixin:Init_Class_Power()--职业
+                WoWTools_TextureMixin:Init_Class_Power()--职业
             end
         end,
         layout= Layout,

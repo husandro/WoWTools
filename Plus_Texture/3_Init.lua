@@ -11,7 +11,7 @@ local P_Save={
     chatBubbleSacal= 0.85,
 
     classPowerNum= WoWTools_DataMixin.Player.husandro,--职业，显示数字
-    classPowerNumSize= 12,
+    classPowerNumSize= 23,
 
     --disabledMainMenu= not WoWTools_DataMixin.Player.husandro, --主菜单，颜色，透明度
     --disabledHelpTip=true,--隐藏所有教程

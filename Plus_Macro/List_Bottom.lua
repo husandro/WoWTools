@@ -551,11 +551,19 @@ end
 local function Create_Spell_Menu(root, spellID, icon, name, index)
    WoWTools_DataMixin:Load(spellID, 'spell')
 
+   local indexCol= index
+   for _, spell in pairs(C_AssistedCombat.GetRotationSpells() or {}) do
+        if spellID==spell then
+            indexCol='|cffff00ff'..index..'|r'
+            break
+        end
+   end
+
     local macroText= Get_Spell_Macro(name, spellID)
     local info=  {name=name, spellID=spellID, icon=icon, tooltip=macroText}
 
     local sub=root:CreateButton(
-        index..' '
+        indexCol..' '
         ..Find_SpellMacro(spellID)
         ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
