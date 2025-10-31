@@ -133,6 +133,7 @@ local function Init()
                 btn.ArcaneBGShadow:SetSize(btn.ArcaneBGShadow:GetWidth()-6, btn.ArcaneBGShadow:GetHeight()-6)
                 WoWTools_DataMixin:Hook(btn, 'SetActive', function(b)
                     b.ArcaneBGShadow:SetAlpha(b.isActive and 1 or 0)
+                    b.numTexture:SetAlpha(b.isActive and 0 or 1)
                 end)
             end
         end
@@ -144,6 +145,7 @@ local function Init()
         btn.ArcaneBGShadow:SetSize(btn.ArcaneBGShadow:GetWidth()-6, btn.ArcaneBGShadow:GetHeight()-6)
         WoWTools_DataMixin:Hook(btn, 'SetActive', function(b)
             b.ArcaneBGShadow:SetAlpha(b.isActive and 1 or 0)
+            b.numTexture:SetAlpha(b.isActive and 0 or 1)
         end)
     end
 
