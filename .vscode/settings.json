@@ -6377,7 +6377,8 @@
         "HousingCornerstoneVisitorFrame",
         "HousingCornerstoneVisitorFrameCloseButton",
         "HouseFinderFrame",
-        "HouseFinderFrameCloseButton"
+        "HouseFinderFrameCloseButton",
+        "HouseFinderFrameBg"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

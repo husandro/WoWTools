@@ -774,7 +774,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AlliedRacesUI()
 end
 
 
-
+ --11.2.7
 function WoWTools_MoveMixin.Events:Blizzard_HousingDashboard()
     HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background:ClearAllPoints()
     HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background:SetAllPoints(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame)
@@ -786,7 +786,7 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingDashboard()
     end})
     self:Setup(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame, {frame=HousingDashboardFrame})
 end
---住房 11.2.7
+--住房
 function WoWTools_MoveMixin.Events:Blizzard_HousingBulletinBoard()
     HousingBulletinBoardFrame.ResidentsTab:SetPoint('BOTTOMRIGHT')
     self:Setup(HousingBulletinBoardFrame, {
@@ -799,7 +799,8 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_HousingCharter()
     self:Setup(HousingCharterFrame)
 end
---住宅区登记表 11.2.7
+
+--住宅区登记表
 function WoWTools_MoveMixin.Events:Blizzard_HousingCreateNeighborhood()
     self:Setup(HousingCreateNeighborhoodCharterFrame)
 end
@@ -809,11 +810,14 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingCornerstone()
 end
 
 --住宅搜索器
-function WoWTools_MoveMixin.Events:Blizzard_HousingHouseFinde()
+function WoWTools_MoveMixin.Events:Blizzard_HousingHouseFinder()
+    HouseFinderFrame.HouseFinderMapCanvasFrame:SetPoint('BOTTOMRIGHT')
+    HouseFinderFrame.NeighborhoodListFrame:SetPoint('BOTTOM')
     self:Setup(HouseFinderFrame,  {
     sizeRestFunc=function()
         HouseFinderFrame:SetSize(954, 489)
     end})
+    self:Setup(HouseFinderFrame.PlotInfoFrame, {frame=HouseFinderFrame})
 end
 
 

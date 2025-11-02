@@ -2424,11 +2424,22 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingCreateNeighborhood()
     self:SetAlphaColor(HousingCreateNeighborhoodCharterFrame.Background)
 end
 --住宅搜索器
-function WoWTools_TextureMixin.Events:Blizzard_HousingHouseFinde()
+function WoWTools_TextureMixin.Events:Blizzard_HousingHouseFinder()
     self:SetButton(HouseFinderFrameCloseButton)
-    self:SetNineSlice(HouseFinderFrame.NineSlice)
+    self:SetNineSlice(HouseFinderFrame)
+
     self:SetEditBox(HouseFinderFrame.NeighborhoodListFrame.BNetFriendSearchBox)
     self:SetButton(HouseFinderFrame.NeighborhoodListFrame.RefreshButton, {alpa=1})
+    self:SetAlphaColor(HouseFinderFrame.NeighborhoodListFrame.NeighborhoodTitleBG, true)
+    self:HideTexture(HouseFinderFrame.NeighborhoodListFrame.NeighborhoodListBG)
+    self:HideFrame(HouseFinderFrame.NeighborhoodListFrame.ListBottomGradient)
+    self:SetScrollBar(HouseFinderFrame.NeighborhoodListFrame.ScrollFrame)
 
-    self:HideText(HouseFinderFrameBg)
+    self:HideTexture(HouseFinderFrame.TopTileStreaks)
+    self:HideTexture(HouseFinderFrame.WoodBorderFrame.Border)
+
+    self:SetUIButton(HouseFinderFrame.PlotInfoFrame.VisitHouseButton)
+    self:SetAlphaColor(HouseFinderFrame.PlotInfoFrame.BackButton.Icon, true)
+    self:SetAlphaColor(HouseFinderFrame.PlotInfoFrame.PlotTitleBG, true)
+    self:HideTexture(HouseFinderFrameBg)
 end
