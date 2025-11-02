@@ -2384,18 +2384,37 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingCornerstone()
     self:SetButton(HousingCornerstoneVisitorFrameCloseButton)
     self:SetAlphaColor(HousingCornerstoneVisitorFrame.Background)
     self:SetButton(HousingCornerstoneVisitorFrame.GearDropdown, {alpha=1})
+
+    self:SetButton(HousingCornerstonePurchaseFrameCloseButton)
+    self:SetNineSlice(HousingCornerstonePurchaseFrame.MoneyFrameBackdrop)
+
+    self:SetButton(HousingCornerstoneHouseInfoFrameCloseButton)
+    self:SetAlphaColor(HousingCornerstoneHouseInfoFrame.GearDropdown.Icon, true)
 end
 
 function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     self:SetButton(HousingDashboardFrameCloseButton)
     self:SetNineSlice(HousingDashboardFrame)
     self:SetFrame(HousingDashboardFrame, {alpha=0})
-    self:SetUIButton(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.NoHouseButton)
+    
     self:SetAlphaColor(HousingDashboardFrame.HouseInfoTabButton.Icon, true)
     self:SetAlphaColor(HousingDashboardFrame.CatalogTabButton.Icon, true)
     self:SetScrollBar(HousingDashboardFrame.CatalogContent.OptionsContainer)
     HousingDashboardFrame.CatalogContent.TempDisclaimer.DisclaimerText:SetAlpha(0.3)
 
+    self:SetUIButton(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.NoHouseButton)
+    
+    self:SetAlphaColor(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.Background, nil, nil, 0.3)
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpLeftButton, {alpha=1})
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.LeftButton, {alpha=1})
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.RightButton, {alpha=1})
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpRightButton, {alpha=1})
+    self:SetCheckBox(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.WatchFavorButton)
+
+    hooksecurefunc(HousingUpgradeFrameMixin, 'OnShow', function(frame)
+
+        self:SetAlphaColor(frame.Background)
+    end)
     WoWTools_TextureMixin:Init_BGMenu_Frame(HousingDashboardFrame, {
         alpha=0.5,
         nineSliceAlpha=0,
@@ -2407,6 +2426,7 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
             self:SetAlphaColor(HousingDashboardFrame.CatalogContent.Categories.Background, nil, true, alpha)
             self:SetAlphaColor(HousingDashboardFrame.CatalogContent.Categories.TopBorder, nil, true, alpha)
             self:SetAlphaColor(HousingDashboardFrame.CatalogContent.Divider, nil, nil, alpha)
+            self:SetAlphaColor(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.Background, nil, nil, alpha)
 
             alpha= math.max(alphaValue, 0.5)
             self:SetAlphaColor(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background, nil, true, alpha)
@@ -2442,4 +2462,25 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingHouseFinder()
     self:SetAlphaColor(HouseFinderFrame.PlotInfoFrame.BackButton.Icon, true)
     self:SetAlphaColor(HouseFinderFrame.PlotInfoFrame.PlotTitleBG, true)
     self:HideTexture(HouseFinderFrameBg)
+end
+
+function WoWTools_TextureMixin.Events:Blizzard_HousingHouseSettings()
+    self:SetButton(HousingHouseSettingsFrame.CloseButton)
+    for _, option in pairs(HousingHouseSettingsFrame.PlotAccess.accessOptions or {}) do
+        self:SetCheckBox(option.Checkbox)
+    end
+        for _, option in pairs(HousingHouseSettingsFrame.HouseAccess.accessOptions or {}) do
+        self:SetCheckBox(option.Checkbox)
+    end
+end
+
+--function WoWTools_TextureMixin.Events:Blizzard_HousingControls()
+function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
+    self:SetScrollBar(HouseEditorFrame.StoragePanel.OptionsContainer)
+    self:HideTexture(HouseEditorFrame.StoragePanel.Categories.Background)
+    self:HideTexture(HouseEditorFrame.StoragePanel.Background)
+    self:HideTexture(HouseEditorFrame.StoragePanel.HeaderBackground)
+
+    self:SetAlphaColor(HouseEditorFrame.StoragePanel.CollapseButton.Icon, nil, nil, 0.5)
+    self:SetAlphaColor(HouseEditorFrame.StorageButton.Icon, nil, nil, 0.5)
 end

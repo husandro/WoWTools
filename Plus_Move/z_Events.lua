@@ -807,6 +807,8 @@ end
 
 function WoWTools_MoveMixin.Events:Blizzard_HousingCornerstone()
     self:Setup(HousingCornerstoneVisitorFrame)
+    self:Setup(HousingCornerstonePurchaseFrame)
+    self:Setup(HousingCornerstoneHouseInfoFrame)
 end
 
 --住宅搜索器
@@ -820,4 +822,47 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingHouseFinder()
     self:Setup(HouseFinderFrame.PlotInfoFrame, {frame=HouseFinderFrame})
 end
 
+function WoWTools_MoveMixin.Events:Blizzard_HousingHouseSettings()
+    self:Setup(HousingHouseSettingsFrame)
+end
 
+--function WoWTools_MoveMixin.Events:Blizzard_HousingControls()
+function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
+    --[[local btn= CreateFrame('Button', 'HouseEditorFrameStoragePanelMoveButton',HouseEditorFrame.StoragePanel, 'WoWToolsButtonTemplate')
+    btn:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
+    btn:SetPoint('TOP', HouseEditorFrame.StoragePanel)
+    btn:SetMovable(true)
+    btn:RegisterForDrag("RightButton")
+    btn:SetScript("OnDragStart", function()
+        HouseEditorFrame.StoragePanel:StartMoving()
+    end)
+    btn:SetScript("OnDragStop", function()
+        HouseEditorFrame.StoragePanel:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(HouseEditorFrame.StoragePanel) then
+            local name= 'HouseEditorFrameStoragePanel'
+            self:Save().point[name]= {HouseEditorFrame.StoragePanel:GetPoint(1)}
+            self:Save().point[name][2]= nil
+        end
+    end)]]
+
+
+    HouseEditorFrame.StoragePanel:SetMovable(true)
+    HouseEditorFrame.StoragePanel:SetClampedToScreen(false)
+    HouseEditorFrame.StoragePanel:SetScript("OnDragStart", function(frame)
+        frame:StartMoving()
+    end)
+    HouseEditorFrame.StoragePanel:SetScript("OnDragStop", function(frame)
+        frame:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(frame) then
+            self:Save().point['HouseEditorFrameStoragePanel']= {frame:GetPoint(1)}
+            self:Save().point['HouseEditorFrameStoragePanel'][2]= nil
+        end
+    end)
+
+    local p= self:Save().point['HouseEditorFrameStoragePanel']
+    if p and p[1] then
+        HouseEditorFrame.StoragePanel:SetPoint(p[1], HouseEditorFrame, p[3], p[4], p[5])
+    end
+
+end
+--HouseEditorFrame.StoragePanel.SearchBox

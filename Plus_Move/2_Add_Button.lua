@@ -261,6 +261,12 @@ end
 
 
 
+
+
+
+
+
+
 local function Init()
     SetupButton(ZoneAbilityFrame)
 
@@ -284,6 +290,8 @@ local function Init()
             WoWTools_MoveMixin:SetPoint(QueueStatusButton)--小眼睛, 
         end)
     end)
+
+    Init=function()end
 end
 
 

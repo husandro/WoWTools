@@ -25,7 +25,7 @@ local P_Save={
     --disabledNPCTalking=true,--禁用，隐藏NPC发言    
     --disabledTalkingPringText=true,--禁用，隐藏NPC发言，文本
 
-    --not_Add_Reload_Button=true,--添加 RELOAD 按钮
+    not_Add_Reload_Button= not WoWTools_DataMixin.Player.husandro,--添加 RELOAD 按钮
     autoHideTableAttributeDisplay=true,--自动关闭，Fstack
 
     --hideEventTracePlus=true 隐藏 EventTrace Plus
