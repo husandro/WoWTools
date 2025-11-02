@@ -6375,7 +6375,9 @@
         "HousingCreateNeighborhoodCharterFrame",
         "HousingCharterFrame",
         "HousingCornerstoneVisitorFrame",
-        "HousingCornerstoneVisitorFrameCloseButton"
+        "HousingCornerstoneVisitorFrameCloseButton",
+        "HouseFinderFrame",
+        "HouseFinderFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -795,6 +795,7 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingBulletinBoard()
     end
     })
 end
+
 function WoWTools_MoveMixin.Events:Blizzard_HousingCharter()
     self:Setup(HousingCharterFrame)
 end
@@ -802,8 +803,17 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_HousingCreateNeighborhood()
     self:Setup(HousingCreateNeighborhoodCharterFrame)
 end
+
 function WoWTools_MoveMixin.Events:Blizzard_HousingCornerstone()
     self:Setup(HousingCornerstoneVisitorFrame)
+end
+
+--住宅搜索器
+function WoWTools_MoveMixin.Events:Blizzard_HousingHouseFinde()
+    self:Setup(HouseFinderFrame,  {
+    sizeRestFunc=function()
+        HouseFinderFrame:SetSize(954, 489)
+    end})
 end
 
 

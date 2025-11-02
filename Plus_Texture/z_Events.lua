@@ -2423,3 +2423,12 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingCreateNeighborhood()
     self:SetEditBox(HousingCreateNeighborhoodCharterFrame.NeighborhoodNameEditBox)
     self:SetAlphaColor(HousingCreateNeighborhoodCharterFrame.Background)
 end
+--住宅搜索器
+function WoWTools_TextureMixin.Events:Blizzard_HousingHouseFinde()
+    self:SetButton(HouseFinderFrameCloseButton)
+    self:SetNineSlice(HouseFinderFrame.NineSlice)
+    self:SetEditBox(HouseFinderFrame.NeighborhoodListFrame.BNetFriendSearchBox)
+    self:SetButton(HouseFinderFrame.NeighborhoodListFrame.RefreshButton, {alpa=1})
+
+    self:HideText(HouseFinderFrameBg)
+end
