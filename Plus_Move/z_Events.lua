@@ -853,22 +853,18 @@ function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
     HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStart", function(frame)
         frame:GetParent():StartMoving()
     end)
-    
+     HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStop", function(frame)
+        local p=frame:GetParent()
+        p:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(p) then
+            self:Save().point['HouseEditorFrameStoragePanel']= {p:GetPoint(1)}
+            self:Save().point['HouseEditorFrameStoragePanel'][2]= nil
+        end
+    end)
 
 
     HouseEditorFrame.StoragePanel:SetMovable(true)
     HouseEditorFrame.StoragePanel:SetClampedToScreen(false)
-    HouseEditorFrame.StoragePanel:RegisterForDrag("RightButton")
-    HouseEditorFrame.StoragePanel:SetScript("OnDragStart", function(frame)
-        frame:StartMoving()
-    end)
-    HouseEditorFrame.StoragePanel:SetScript("OnDragStop", function(frame)
-        frame:StopMovingOrSizing()
-        if WoWTools_FrameMixin:IsInSchermo(frame) then
-            self:Save().point['HouseEditorFrameStoragePanel']= {frame:GetPoint(1)}
-            self:Save().point['HouseEditorFrameStoragePanel'][2]= nil
-        end
-    end)
 
     local p= self:Save().point['HouseEditorFrameStoragePanel']
     if p and p[1] then
