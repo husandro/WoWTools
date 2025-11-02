@@ -846,8 +846,19 @@ function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
     end)]]
 
 
+
+    HouseEditorFrame.StoragePanel.InputBlocker:SetMovable(true)
+    HouseEditorFrame.StoragePanel.InputBlocker:SetClampedToScreen(false)
+    HouseEditorFrame.StoragePanel.InputBlocker:RegisterForDrag("RightButton")
+    HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStart", function(frame)
+        frame:GetParent():StartMoving()
+    end)
+    
+
+
     HouseEditorFrame.StoragePanel:SetMovable(true)
     HouseEditorFrame.StoragePanel:SetClampedToScreen(false)
+    HouseEditorFrame.StoragePanel:RegisterForDrag("RightButton")
     HouseEditorFrame.StoragePanel:SetScript("OnDragStart", function(frame)
         frame:StartMoving()
     end)

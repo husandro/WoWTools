@@ -2396,25 +2396,22 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     self:SetButton(HousingDashboardFrameCloseButton)
     self:SetNineSlice(HousingDashboardFrame)
     self:SetFrame(HousingDashboardFrame, {alpha=0})
-    
+
     self:SetAlphaColor(HousingDashboardFrame.HouseInfoTabButton.Icon, true)
     self:SetAlphaColor(HousingDashboardFrame.CatalogTabButton.Icon, true)
     self:SetScrollBar(HousingDashboardFrame.CatalogContent.OptionsContainer)
     HousingDashboardFrame.CatalogContent.TempDisclaimer.DisclaimerText:SetAlpha(0.3)
 
     self:SetUIButton(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.NoHouseButton)
-    
+
     self:SetAlphaColor(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.Background, nil, nil, 0.3)
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpLeftButton, {alpha=1})
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.LeftButton, {alpha=1})
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.RightButton, {alpha=1})
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpRightButton, {alpha=1})
     self:SetCheckBox(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.WatchFavorButton)
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TeleportToHouseButton, {alpha=1})
 
-    hooksecurefunc(HousingUpgradeFrameMixin, 'OnShow', function(frame)
-
-        self:SetAlphaColor(frame.Background)
-    end)
     WoWTools_TextureMixin:Init_BGMenu_Frame(HousingDashboardFrame, {
         alpha=0.5,
         nineSliceAlpha=0,
