@@ -2488,6 +2488,6 @@ function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
 
     self:SetButton(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.CloseButton)
     self:SetScrollBar(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList)
-    --self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Background)
+    self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Background)
     self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Header)
 end
