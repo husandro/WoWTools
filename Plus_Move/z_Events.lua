@@ -827,37 +827,103 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingHouseSettings()
 end
 
 --function WoWTools_MoveMixin.Events:Blizzard_HousingControls()
+
+--编辑住宅
 function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
-    HouseEditorFrame.StoragePanel.InputBlocker:SetMovable(true)
-    HouseEditorFrame.StoragePanel.InputBlocker:SetClampedToScreen(false)
-    HouseEditorFrame.StoragePanel.InputBlocker:RegisterForDrag("RightButton")
-    HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStart", function(frame)
-        frame:GetParent():StartMoving()
-    end)
-    --[[HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStop", function(frame)
-        local p=frame:GetParent()
-        p:StopMovingOrSizing()
-        if WoWTools_FrameMixin:IsInSchermo(p) then
-            self:Save().point['HouseEditorFrameStoragePanel']= {p:GetPoint(1)}
-            self:Save().point['HouseEditorFrameStoragePanel'][2]= nil
-        end
-    end)]]
+    HouseEditorFrame.StoragePanel.InputBlocker:ClearAllPoints()--HouseEditorStorageFrameTemplate
+    WoWTools_TextureMixin:CreateBG(HouseEditorFrame.StoragePanel, {isColor=true, isAllpoint=true, alpha=0.5})
 
-
-    HouseEditorFrame.StoragePanel:SetMovable(true)
-    HouseEditorFrame.StoragePanel:SetClampedToScreen(false)
-    HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStop", function(p)
-        p:StopMovingOrSizing()
-        if WoWTools_FrameMixin:IsInSchermo(p) then
-            self:Save().point['HouseEditorFrameStoragePanel']= {p:GetPoint(1)}
-            self:Save().point['HouseEditorFrameStoragePanel'][2]= nil
-        end
-    end)
-
-    local p= self:Save().point['HouseEditorFrameStoragePanel']
+    local p= self:Save().point['HouseEditorFrame']
     if p and p[1] then
+        HouseEditorFrame.StoragePanel:ClearAllPoints()
         HouseEditorFrame.StoragePanel:SetPoint(p[1], HouseEditorFrame, p[3], p[4], p[5])
     end
+    HouseEditorFrame.StoragePanel:SetMovable(true)
+    HouseEditorFrame.StoragePanel:SetClampedToScreen(false)
+    HouseEditorFrame.StoragePanel:RegisterForDrag('LeftButton', 'RightButton')
+    HouseEditorFrame.StoragePanel:SetScript('OnMouseUp', function()
+        ResetCursor()
+    end)
+    HouseEditorFrame.StoragePanel:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    HouseEditorFrame.StoragePanel:SetScript("OnDragStart", function(frame)
+        frame:StartMoving()
+    end)
+    HouseEditorFrame.StoragePanel:SetScript("OnDragStop", function(frame)
+        ResetCursor()
+        frame:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(frame) then
+            self:Save().point['HouseEditorFrame']= {frame:GetPoint(1)}
+            self:Save().point['HouseEditorFrame'][2]= nil
+        end
+    end)
 
+--菜单
+    local menu= CreateFrame('DropdownButton', 'WoWToolsHouseEditorFrameMenuButton', HouseEditorFrame.StoragePanel.SearchBox, 'WoWToolsMenuButtonTemplate')
+    menu:SetPoint('RIGHT', HouseEditorFrame.StoragePanel.SearchBox, 'LEFT', -4, 0)
+    function menu:set_scale()
+        local s= WoWTools_MoveMixin:Save().scale['HouseEditorFrame'] or 1
+        HouseEditorFrame.StoragePanel:SetScale(s)
+    end
+    menu:set_scale()
+    menu:SetupMenu(function(frame, root)
+ --缩放
+        WoWTools_MenuMixin:ScaleRoot(frame, root, function()
+            return self:Save().scale['HouseEditorFrame'] or 1
+        end, function(value)
+            self:Save().scale['HouseEditorFrame']= value
+            frame:set_scale()
+        end, function()
+--重置缩放
+            self:Save().scale['HouseEditorFrame']= nil
+            frame:set_scale()
+--重置位置
+            if self:Save().point['HouseEditorFrame'] then
+                self:Save().point['HouseEditorFrame']= nil
+                HouseEditorFrame.StoragePanel:ClearAllPoints()
+                HouseEditorFrame.StoragePanel:SetPoint('LEFT', 0, 150)--<Anchor point="LEFT" x="0" y="150"/> Blizzard_HouseEditor.xml
+            end
+            if self:Save().point['ExteriorCustomizationModeFrame'] then
+                self:Save().point['ExteriorCustomizationModeFrame']= nil
+                HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:ClearAllPoints()
+                HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:SetPoint('TOPLEFT', HouseEditorFrame.ExteriorCustomizationModeFrame , 'LEFT', 80, -200)--<Anchor point="TOPLEFT" relativePoint="LEFT" x="80" y="200"/>
+            end
+        end)
+    end)
+    HouseEditorFrame.StoragePanel.SearchBox:SetPoint('TOPLEFT', 43, -20)--<Anchor point="TOPLEFT" x="20" y="-20"/>]]
+
+
+    p= self:Save().point['ExteriorCustomizationModeFrame']
+    if p and p[1] then
+        HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:ClearAllPoints()
+        HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:SetPoint(p[1], HouseEditorFrame.ExteriorCustomizationModeFrame, p[3], p[4], p[5])
+    end
+    HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:SetMovable(true)
+    HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:SetClampedToScreen(false)
+    HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:RegisterForDrag('LeftButton', 'RightButton')
+    HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:SetScript('OnMouseUp', function()
+        ResetCursor()
+    end)
+    HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:SetScript("OnDragStart", function(frame)
+        frame:StartMoving()
+    end)
+    HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList:SetScript("OnDragStop", function(parent)
+        ResetCursor()
+        parent:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(parent) then
+            self:Save().point['ExteriorCustomizationModeFrame']= {parent:GetPoint(1)}
+            self:Save().point['ExteriorCustomizationModeFrame'][2]= nil
+        end
+    end)
+    
+    
 end
---HouseEditorFrame.StoragePanel.SearchBox
+

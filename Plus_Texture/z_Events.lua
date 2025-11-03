@@ -2480,4 +2480,14 @@ function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
 
     self:SetAlphaColor(HouseEditorFrame.StoragePanel.CollapseButton.Icon, nil, nil, 0.5)
     self:SetAlphaColor(HouseEditorFrame.StorageButton.Icon, nil, nil, 0.5)
+
+    self:HideTexture(HouseEditorFrame.ModeBar.BookendRight)
+    self:HideTexture(HouseEditorFrame.ModeBar.BookendLeft)
+    self:HideTexture(HouseEditorFrame.ModeBar.Background)
+    self:HideTexture(HouseEditorFrame.ModeBar.GradientBackground)
+
+    self:SetButton(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.CloseButton)
+    self:SetScrollBar(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList)
+    --self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Background)
+    self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Header)
 end

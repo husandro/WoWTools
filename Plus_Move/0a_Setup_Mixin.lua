@@ -153,10 +153,10 @@ local function Set_Move_Frame(frame, target, click, notSave, isAltKeyDown)
     frame:HookScript("OnMouseUp", function()
         ResetCursor()
     end)
---还原光标
+--[[还原光标
     frame:HookScript("OnLeave", function()
         ResetCursor()
-    end)
+    end)]]
 end
 
 
