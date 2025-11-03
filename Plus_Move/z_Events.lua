@@ -828,43 +828,31 @@ end
 
 --function WoWTools_MoveMixin.Events:Blizzard_HousingControls()
 function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
-    --[[local btn= CreateFrame('Button', 'HouseEditorFrameStoragePanelMoveButton',HouseEditorFrame.StoragePanel, 'WoWToolsButtonTemplate')
-    btn:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
-    btn:SetPoint('TOP', HouseEditorFrame.StoragePanel)
-    btn:SetMovable(true)
-    btn:RegisterForDrag("RightButton")
-    btn:SetScript("OnDragStart", function()
-        HouseEditorFrame.StoragePanel:StartMoving()
-    end)
-    btn:SetScript("OnDragStop", function()
-        HouseEditorFrame.StoragePanel:StopMovingOrSizing()
-        if WoWTools_FrameMixin:IsInSchermo(HouseEditorFrame.StoragePanel) then
-            local name= 'HouseEditorFrameStoragePanel'
-            self:Save().point[name]= {HouseEditorFrame.StoragePanel:GetPoint(1)}
-            self:Save().point[name][2]= nil
-        end
-    end)]]
-
-
-
     HouseEditorFrame.StoragePanel.InputBlocker:SetMovable(true)
     HouseEditorFrame.StoragePanel.InputBlocker:SetClampedToScreen(false)
     HouseEditorFrame.StoragePanel.InputBlocker:RegisterForDrag("RightButton")
     HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStart", function(frame)
         frame:GetParent():StartMoving()
     end)
-     HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStop", function(frame)
+    --[[HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStop", function(frame)
         local p=frame:GetParent()
         p:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(p) then
             self:Save().point['HouseEditorFrameStoragePanel']= {p:GetPoint(1)}
             self:Save().point['HouseEditorFrameStoragePanel'][2]= nil
         end
-    end)
+    end)]]
 
 
     HouseEditorFrame.StoragePanel:SetMovable(true)
     HouseEditorFrame.StoragePanel:SetClampedToScreen(false)
+    HouseEditorFrame.StoragePanel.InputBlocker:SetScript("OnDragStop", function(p)
+        p:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(p) then
+            self:Save().point['HouseEditorFrameStoragePanel']= {p:GetPoint(1)}
+            self:Save().point['HouseEditorFrameStoragePanel'][2]= nil
+        end
+    end)
 
     local p= self:Save().point['HouseEditorFrameStoragePanel']
     if p and p[1] then

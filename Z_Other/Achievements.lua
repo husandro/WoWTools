@@ -190,28 +190,16 @@ end
 
 
 
- --[[local menu= CreateFrame('DropdownButton', 'WoWToolsAchievementMenu', AchievementFrameFilterDropdown ,'WoWToolsMenuButtonTemplate')
-    menu:SetPoint('RIGHT', AchievementFrameFilterDropdown, 'LEFT', 2, 0)
-    menu:SetupMenu(function(_, root)
-        local sub= root:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '已完成' or CRITERIA_COMPLETED,
-        function()
-            return MenuResponse.Open
-        end)
-        WoWTools_MenuMixin:ScaleRoot(sub, function()
-            return Save().completedAlpha or 0
-        end, function(value)
-            Save().completedAlpha=value
-        end, function()
-            Save().completedAlpha= nil
-        end)
-    end)]]
+
 
 local function Set_Icon(self, achievementID)
     self.achievementID= achievementID
     local texture= select(10, GetAchievementInfo(achievementID))
     self:SetNormalTexture(texture or 0)
 end
+
+
+
 --已完成，背景 alpha
 local function Set_AchievementTemplate(self, show)
     local alpha= Save().completedAlpha or 0
@@ -294,72 +282,201 @@ local function Init_Achievement()
         })
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLoad', function(btn)
+--完成 目标数量
+        btn.completedLable= btn.Icon:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')
+        btn.completedLable:SetPoint('LEFT', btn.PlusMinus, 'RIGHT', 4,1)
+        btn.completedLable:EnableMouse(true)
+        btn.completedLable:SetScript('OnLeave', function(self)
+            Set_AchievementTemplate(self:GetParent():GetParent(), false)
+            self:SetAlpha(1)
+            GameTooltip:Hide()
+        end)
+        btn.completedLable:SetScript('OnEnter', function(self)
+            Set_AchievementTemplate(self:GetParent():GetParent(), true)
+            self:SetAlpha(0.5)
+            GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '进度' or PVP_PROGRESS_REWARDS_HEADER)
+            GameTooltip:Show()
+        end)
+--是否是统计成就
+        btn.statisticTexture= btn.Icon:CreateTexture(nil, 'ARTWORK')
+        btn.statisticTexture:SetAtlas('racing')
+        btn.statisticTexture:SetPoint('LEFT', btn.completedLable, 'RIGHT', 4, -1)
+        btn.statisticTexture:SetSize(20,20)
+        btn.statisticTexture:EnableMouse(true)
+        btn.statisticTexture:SetScript('OnLeave', function(self)
+            Set_AchievementTemplate(self:GetParent():GetParent())
+            self:SetAlpha(1)
+            GameTooltip:Hide()
+        end)
+        btn.statisticTexture:SetScript('OnEnter', function(self)
+            Set_AchievementTemplate(btn, true)
+            self:SetAlpha(0.5)
+            GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '统计' or STATISTICS)
+            GameTooltip:Show()
+        end)
+--是否是此角色完成 wasEarnedByMe
+        btn.byMeTexture= btn.Icon:CreateTexture(nil, 'ARTWORK')
+        btn.byMeTexture:SetAtlas(WoWTools_DataMixin.Icon.Player:match('|A:(.-):'))
+        btn.byMeTexture:SetSize(20,20)
+        btn.byMeTexture:SetPoint('TOPLEFT', btn.PlusMinus, 'BOTTOMLEFT')
+        btn.byMeTexture:SetScript('OnLeave', function(self)
+            Set_AchievementTemplate(self:GetParent():GetParent(), false)
+            self:SetAlpha(1)
+            GameTooltip:Hide()
+        end)
+        btn.byMeTexture:SetScript('OnEnter', function(self)
+            Set_AchievementTemplate(self:GetParent():GetParent(), true)
+            self:SetAlpha(0.5)
+            GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '完成：|cffffffff我|r' or format(STATISTICS, COMBATLOG_FILTER_STRING_ME))
+            GameTooltip:Show()
+        end)
+--奖励提示
+        btn.rewardTexture= btn.Icon:CreateTexture(nil, 'ARTWORK')
+        btn.rewardTexture:SetPoint('TOPLEFT', btn.byMeTexture, 'BOTTOMLEFT')
+        btn.rewardTexture:SetSize(20,20)
+        btn.rewardTexture:EnableMouse(true)
+        btn.rewardTexture:SetScript('OnLeave', function(self)
+            Set_AchievementTemplate(self:GetParent():GetParent(), false)
+            GameTooltip:Hide()
+            self:SetAlpha(1)
+        end)
+        btn.rewardTexture:SetScript('OnEnter', function(self)
+            Set_AchievementTemplate(self:GetParent():GetParent(), true)
+            if self.itemID then
+                WoWTools_SetTooltipMixin:Frame(self)
+                self:SetAlpha(0.5)
+            end
+        end)
+--成就ID提示
+        btn.idLabel= btn.Shield:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')--WoWTools_LabelMixin:Create(btn.Shield)
+        btn.idLabel:SetPoint('TOP', btn.Shield.Icon)
+--点击，Tooltip, 超连接
+        btn.Shield:SetScript('OnLeave', function(self)
+            Set_AchievementTemplate(self:GetParent(), false)
+            self:SetAlpha(1)
+            GameTooltip_Hide()
+        end)
+        btn.Shield:SetScript('OnEnter', function(self)
+            Set_AchievementTemplate(self:GetParent(), true)
+            local achievementID= self:GetParent().id
+            if achievementID then
+                GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+                GameTooltip:ClearLines()
+                GameTooltip:SetAchievementByID(achievementID)
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddDoubleLine(
+                    '|A:communities-icon-chat:0:0|a'
+                    ..(WoWTools_DataMixin.onlyChinese and '说' or SAY)
+                    ..WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_DataMixin.Icon.left
+                )
+                GameTooltip:Show()
+            end
+            self:SetAlpha(0.5)
+        end)
+
+        btn.Shield:SetScript('OnMouseUp', function(f) f:SetAlpha(0.5) end)
+        btn.Shield:SetScript('OnMouseDown', function(f) f:SetAlpha(0.3) end)
+        btn.Shield:SetScript('OnClick', function(f)
+            local achievementID= f:GetParent().id
+            local achievementLink = achievementID and GetAchievementLink(achievementID)
+            if achievementLink then
+                WoWTools_ChatMixin:Chat(achievementLink)
+            end
+        end)
+        btn.Shield:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    end)
+
     WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'Init', function(btn)
         Set_AchievementTemplate(btn, nil)
 
-        local text
-        local isCompleted= select(4, GetAchievementInfo(btn.id))
-        if not isCompleted then
-            local numCriteria = GetAchievementNumCriteria(btn.id) or 0
-            if numCriteria>0 then
-                local completed=0
-                for index=1, numCriteria do
-                    if select(3, GetAchievementCriteriaInfo(btn.id, index)) then
-                        completed= completed+1
+--完成 目标数量
+        local id, _, _, isCompleted, _, _, _, _, flags, _, rewardText, _, wasEarnedByMe, _, isStatistic= GetAchievementInfo(btn.id)
+        id= id or btn.id or -1
+        flags= flags or 0
+
+        local numCriteria = not isCompleted and GetAchievementNumCriteria(id) or 0
+        local completedText
+        if numCriteria>0 then
+            local c, bar
+            for i = 1, numCriteria do
+                local _, _, completed, _, _, _, flags2, _, quantityString = GetAchievementCriteriaInfo(id, i)
+                if not completed then
+                    if ( bit.band(flags2, EVALUATION_TREE_FLAG_PROGRESS_BAR) == EVALUATION_TREE_FLAG_PROGRESS_BAR ) then
+                        if quantityString then
+                            bar = (bar and bar..' ' or '')..quantityString
+                        end
+                    else
+                        c = (c or 0)+1
                     end
                 end
-                text= completed..'/'..numCriteria
             end
+            completedText= (c and c..'/'..numCriteria or '')..(c and ' ' or '')..(bar or '')
         end
-        if text and not btn.completedLable then
-            btn.completedLable= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlightSmall2')
-            btn.completedLable:SetPoint('LEFT', btn.PlusMinus, 'RIGHT', 4, 2)
-        end
-        if btn.completedLable then
-            btn.completedLable:SetText(text or "")
-        end
+        btn.completedLable:SetText(completedText or "")
 
+--成就图标外框，完成颜色提示
         if isCompleted then
             btn.Icon.frame:SetVertexColor(0,1,0)
         else
             btn.Icon.frame:SetVertexColor(1,1,1)
         end
+
 --奖励提示
-        local itemID= C_AchievementInfo.GetRewardItemID(btn.id)
-        local icon
+        local itemID= C_AchievementInfo.GetRewardItemID(id)
+        local itemIcon
         if itemID then
             WoWTools_DataMixin:Load(itemID, 'item')
-            icon= select(5, C_Item.GetItemInfoInstant(itemID))
+            itemIcon= select(5, C_Item.GetItemInfoInstant(itemID))
         end
-        if icon and not btn.RewardTexture then
-            btn.RewardTexture= btn.Icon:CreateTexture(nil, 'ARTWORK')
-            --btn.RewardTexture:SetPoint('LEFT', btn.Icon, 'RIGHT')
-            btn.RewardTexture:SetPoint('LEFT', btn.Reward)
-            btn.RewardTexture:SetSize(23,23)
-            btn.RewardTexture:EnableMouse(true)
-            btn.RewardTexture:SetScript('OnLeave', function(self)
-                GameTooltip:Hide()
-                self:SetAlpha(1)
-            end)
-            btn.RewardTexture:SetScript('OnEnter', function(self)
-                if self.itemID then
-                    WoWTools_SetTooltipMixin:Frame(self)
-                    self:SetAlpha(0.5)
-                end
-            end)
+        if not itemID and rewardText and rewardText~='' then
+            local name= rewardText:match(SCENARIO_BONUS_REWARD..'(.+)')
+            if name then
+                WoWTools_DataMixin:Load(name, 'item')
+                itemID, _, _, _, itemIcon= C_Item.GetItemInfoInstant(name)
+            end
         end
-        if btn.RewardTexture then
-            btn.RewardTexture.itemID= itemID
-            btn.RewardTexture:SetTexture(icon or 0)
-            btn.RewardTexture:SetShown(icon)
-        end
+        btn.rewardTexture.itemID= itemID
+        btn.rewardTexture:SetTexture(itemIcon or 0)
+        btn.rewardTexture:SetShown(itemIcon)
 
+--成就ID提示
+        if bit.band(flags, ACHIEVEMENT_FLAGS_ACCOUNT) == ACHIEVEMENT_FLAGS_ACCOUNT then
+            btn.idLabel:SetText(WoWTools_DataMixin.Icon.net2..'|cff00ccff'..id..'|r')
+        else
+            btn.idLabel:SetText(id)
+        end
+--是否是此角色完成 wasEarnedByMe
+        btn.byMeTexture:SetShown(wasEarnedByMe)
+--是否是统计成就
+        btn.statisticTexture:SetShown(isStatistic)
+    end)
+
+
+
+
+
+
+    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLeave', function(btn)
+        Set_AchievementTemplate(btn, false)
     end)
     WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnEnter', function(btn)
         Set_AchievementTemplate(btn, true)
-    end)
-    WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'OnLeave', function(btn)
-        Set_AchievementTemplate(btn, nil)
     end)
 
 
@@ -375,8 +492,91 @@ local function Init_Achievement()
         self:set_text()
     end)
 
-    Init_Achievement=function()end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    WoWTools_DataMixin:Hook('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
+        local frame= AchievementFrameComparison.AchievementContainer.ScrollBox
+        if not frame:HasView() then
+            return
+        end
+        for _, button in pairs(frame:GetFrames() or {}) do
+            if not button.OnEnter then
+                button:SetScript('OnLeave', GameTooltip_Hide)
+                button:SetScript('OnEnter', function(f)
+                    if f.id then
+                        GameTooltip:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                        GameTooltip:ClearLines()
+                        GameTooltip:SetAchievementByID(f.id)
+                        GameTooltip:Show()
+                    end
+                end)
+                if button.Player and button.Player.Icon and not button.Player.idText then
+                    button.Player.idText= WoWTools_LabelMixin:Create(button.Player)
+                    button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
+                end
+            end
+            if button.Player and button.Player.idText then
+                local flags= button.id and select(9, GetAchievementInfo(button.id))
+                if flags==0x20000 then
+                    button.Player.idText:SetText(WoWTools_DataMixin.Icon.net2..'|cffff00ff'..button.id..'|r')
+                else
+                    button.Player.idText:SetText(button.id or '')
+                end
+            end
+        end
+    end)
+    WoWTools_DataMixin:Hook('AchievementFrameComparison_SetUnit', function(unit)--比较成就
+        local text= WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true})--玩家信息图标
+        if text~='' then
+            AchievementFrameComparisonHeaderName:SetText(text)
+        end
+    end)
+    if AchievementFrameComparisonHeaderPortrait then
+        AchievementFrameComparisonHeader:EnableMouse(true)
+        AchievementFrameComparisonHeader:HookScript('OnLeave', GameTooltip_Hide)
+        AchievementFrameComparisonHeader:HookScript('OnEnter', function()
+            local unit= AchievementFrameComparisonHeaderPortrait.unit
+            if unit then
+                GameTooltip:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                GameTooltip:ClearLines()
+                GameTooltip:SetUnit(unit)
+                GameTooltip:Show()
+            end
+        end)
+    end
+    if Save().AchievementFrameFilterDropDown then--保存，过滤
+        AchievementFrame_SetFilter(Save().AchievementFrameFilterDropDown)
+    end
+    WoWTools_DataMixin:Hook('AchievementFrame_SetFilter', function(value)
+        Save().AchievementFrameFilterDropDown = value
+    end)
+
+
+
+
+
+
+  Init_Achievement=function()end
 end
+
+
+
+
+
 
 
 

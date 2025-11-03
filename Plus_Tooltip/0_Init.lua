@@ -156,6 +156,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Tootips']= WoWToolsSave['Plus_Tootips'] or CopyTable(P_Save)
             P_Save= nil
+            Save().AchievementFrameFilterDropDown= nil
 
             WoWTools_TooltipMixin:Init_Category()
             WoWTools_TooltipMixin:Init_WoWHeadText()

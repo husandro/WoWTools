@@ -34,7 +34,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
         ..achievementID
     )
 --点数
-    local textLeft= points..(WoWTools_DataMixin.onlyChinese and '点' or RESAMPLE_QUALITY_POINT)
+    local textLeft= (points or 0)..(WoWTools_DataMixin.onlyChinese and '点' or RESAMPLE_QUALITY_POINT)
 --否是完成
     local text2Left= completed
                     and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已完成' or CRITERIA_COMPLETED)
