@@ -7,6 +7,7 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingBulletinBoard()
     self:HideTexture(HousingBulletinBoardFrame.Background)
     self:SetAlphaColor(HousingBulletinBoardFrame.Footer)
 end
+--住宅信息板
 function WoWTools_TextureMixin.Events:Blizzard_HousingCornerstone()
     self:SetButton(HousingCornerstoneVisitorFrameCloseButton)
     self:SetAlphaColor(HousingCornerstoneVisitorFrame.Background)
@@ -18,7 +19,7 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingCornerstone()
     self:SetButton(HousingCornerstoneHouseInfoFrameCloseButton)
     self:SetAlphaColor(HousingCornerstoneHouseInfoFrame.GearDropdown.Icon, true)
 end
-
+--住宅信息板
 function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     self:SetButton(HousingDashboardFrameCloseButton)
     self:SetNineSlice(HousingDashboardFrame)
@@ -117,4 +118,7 @@ function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
     self:SetScrollBar(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList)
     --self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Background)
     self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Header)
+
+
 end
+

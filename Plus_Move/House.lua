@@ -174,7 +174,7 @@ end
 
 
 
-
+--住宅信息板
 function WoWTools_MoveMixin.Events:Blizzard_HousingCornerstone()
     self:Setup(HousingCornerstoneVisitorFrame)
     self:Setup(HousingCornerstonePurchaseFrame)
