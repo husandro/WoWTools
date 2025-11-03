@@ -18,9 +18,15 @@ local function Set_AltSpell()
 
     local item, alt, ctrl, shift
     local tab= Save().spells[WoWTools_DataMixin.Player.Class]
+
     if tab then
         item, alt, ctrl, shift= tab.item, tab.alt, tab.ctrl, tab.shift
     end
+
+    WoWTools_DataMixin:Load(item, 'item')
+    WoWTools_DataMixin:Load(alt, 'spell')
+    WoWTools_DataMixin:Load(ctrl, 'spell')
+    WoWTools_DataMixin:Load(shift, 'spell')
 
     btn.itemID= item or 5512--治疗石
 

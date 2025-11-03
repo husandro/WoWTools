@@ -6389,7 +6389,8 @@
         "STATISTICS",
         "SCENARIO_BONUS_REWARD",
         "ACHIEVEMENT_FLAGS_ACCOUNT",
-        "ACHIEVEMENT_FLAGS_HAS_PROGRESS_BAR"
+        "ACHIEVEMENT_FLAGS_HAS_PROGRESS_BAR",
+        "HousingControlsFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

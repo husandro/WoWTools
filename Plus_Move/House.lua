@@ -1,9 +1,13 @@
-local function Set_Move(frame, name)
+local function Set_Move(frame, name, isFuoriScreen)
     if not frame then
         return
     end
 
     frame.saveName= name
+
+    if isFuoriScreen then
+        frame:SetClampedToScreen(false)
+    end
 
     local p= WoWTools_MoveMixin:Save().point[name]
     if p and p[1] then
@@ -12,7 +16,6 @@ local function Set_Move(frame, name)
     end
 
     frame:SetMovable(true)
-    frame:SetClampedToScreen(false)
     frame:RegisterForDrag('LeftButton', 'RightButton')
     frame:SetScript('OnMouseUp', function()
         ResetCursor()
@@ -47,12 +50,14 @@ function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
     HouseEditorFrame.StoragePanel.InputBlocker:ClearAllPoints()--HouseEditorStorageFrameTemplate
     WoWTools_TextureMixin:CreateBG(HouseEditorFrame.StoragePanel, {isColor=true, isAllpoint=true, alpha=0.5})
 --编辑住宅器
-    Set_Move(HouseEditorFrame.StoragePanel, 'HouseStorage')
+    Set_Move(HouseEditorFrame.StoragePanel, 'HouseStorage', true)
 
 --编辑住宅外观
-    Set_Move(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList, 'HouseExterior')
+    Set_Move(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList, 'HouseExterior', true)
 
-    Set_Move(HouseEditorFrame.ModeBar, 'HouseBar')
+    
+
+    Set_Move(HouseEditorFrame.ModeBar, 'HouseBar', false)
 
 --菜单
     local menu= CreateFrame('DropdownButton', 'WoWToolsHouseEditorFrameMenuButton', HouseEditorFrame.StoragePanel.SearchBox, 'WoWToolsMenuButtonTemplate')
@@ -208,4 +213,7 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingHouseSettings()
     self:Setup(HousingHouseSettingsFrame)
 end
 
---function WoWTools_MoveMixin.Events:Blizzard_HousingControls()
+function WoWTools_MoveMixin.Events:Blizzard_HousingControls()
+    self:Setup(HousingControlsFrame, {notZoom=true})
+    HousingControlsFrame:SetClampedToScreen(true)
+end
