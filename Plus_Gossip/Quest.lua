@@ -811,13 +811,13 @@ local function Init_Quest()
     end)
     menu:SetScript('OnEvent', function(self)
         PlayTextTab={}
+        C_VoiceChat.StopSpeakingText()
         self:UnregisterAllEvents()
     end)
     menu:set_texture()
 
     QuestInfoDescriptionText:HookScript('OnShow', function(self)
-        _G['WoWToolsQuestPlayTextMenuButton']:SetParent(self:GetParent())
-        print('a')
+        _G['WoWToolsQuestPlayTextMenuButton']:SetParent(self:GetParent())        
         Play_QuestDescription()
     end)
 
