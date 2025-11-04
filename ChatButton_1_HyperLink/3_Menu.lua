@@ -382,10 +382,9 @@ local function Init_Menu(self, root)
         (isInBat and '|cff828282' or '')
         ..'|A:chatframe-button-icon-TTS:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
-        --return C_CVar.GetCVarBool('textToSpeech')
     function ()
         if not InCombatLockdown() then
-            C_CVar.SetCVar("textToSpeech", C_CVar.GetCVar('textToSpeech')=='0' and '1' or '0' )
+            C_CVar.SetCVar('textToSpeech', C_CVar.GetCVarBool('textToSpeech') and '0' or '1' )
         end
         return MenuResponse.Open
     end)

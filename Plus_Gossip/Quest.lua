@@ -148,12 +148,44 @@ end
 
 
 
+--文本转语音
+local PlayTextTab={}
+local function Get_QuestDescription()
+    local desc
+    if ( QuestInfoFrame.questLog ) then
+        desc = GetQuestLogQuestText()
+    else
+        desc = GetQuestText()
+    end
+    if desc and desc~='' then
+        return desc
+    end
+end
+local function Play_QuestDescription()
+    local desc= Save().questPlayText and Get_QuestDescription()
+    if desc and not PlayTextTab[desc] then
+        WoWTools_DataMixin:PlayText(desc)
+        PlayTextTab[desc]=true
+    end
+end
+local function Test_PlayQuestDescription()
+    PlayTextTab={}
+    if Save().questPlayText then
+        if Get_QuestDescription() then
+            Play_QuestDescription()
+        else
+            WoWTools_DataMixin:PlayText(WoWTools_DataMixin.onlyChinese and '这是段文字转语音的样本' or TEXT_TO_SPEECH_SAMPLE_TEXT)
+        end
+    else
+        C_VoiceChat.StopSpeakingText()
+    end
+    _G['WoWToolsQuestPlayTextMenuButton']:set_texture()
+end
 
+local function Create_PlayButton(name, point)
 
-
-
-
-
+    
+end
 
 
 
@@ -418,9 +450,9 @@ local function Init_Quest()
 
 
 
+   
 
-
-
+    
     local check= CreateFrame('CheckButton', 'WoWToolsQuestFrameNPCCheckBox', QuestFrame.TitleContainer, 'UICheckButtonArtTemplate')--禁用此npc,任务,选项
     check:SetSize(18,18)
     check:SetCheckedTexture('ChallengeMode-icon-redline')
@@ -454,6 +486,10 @@ local function Init_Quest()
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
        self:set_tooltip()
     end)
+
+
+
+
 
 --添加任务ID
     local function set_label(label)
@@ -616,12 +652,11 @@ local function Init_Quest()
 
 
 
-
-
-
     --自动接取任务, 仅一个任务
     WoWTools_DataMixin:Hook('QuestInfo_Display', function(template, parentFrame, acceptButton)--, material, mapView)--QuestInfo.lua
         Set_QuestID()
+
+        
 
         local questID= WoWTools_QuestMixin:GetID()
         local npc=WoWTools_UnitMixin:GetNpcID()
@@ -711,6 +746,84 @@ local function Init_Quest()
             acceptButton:Click()
         end
     end)
+
+
+
+
+--文本转语音
+    local menu= CreateFrame('DropdownButton','WoWToolsQuestPlayTextMenuButton', QuestFrame, 'WoWToolsButtonTemplate')
+    menu:SetFrameStrata('HIGH')
+    menu:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    menu:SetSize(18,18)
+    menu:SetAlpha(0.5)
+    menu:SetPoint('TOPRIGHT', QuestInfoDescriptionText)
+    --menu:SetPoint('LEFT', check, 'RIGHT', 2, 0)
+    menu.tooltip= WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH
+    function menu:set_texture()
+        local isEnabled= Save().questPlayText
+        self:SetNormalAtlas(isEnabled and 'voicechat-channellist-icon-STT-off' or 'ChallengeMode-icon-redline')
+    end
+    function menu:set_alpha()
+        self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.5)
+    end
+    menu:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        root:CreateCheckbox(
+            (WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
+        function()
+            return Save().questPlayText
+        end, function()
+            Save().questPlayText= not Save().questPlayText and true or nil
+            Test_PlayQuestDescription()
+        end)
+
+        root:CreateDivider()
+--文本转语音
+        local sub=root:CreateButton(
+            (InCombatLockdown() and '|cff828282' or '')
+            ..'|A:chatframe-button-icon-TTS:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
+        function ()
+            if not InCombatLockdown() then
+                C_CVar.SetCVar('textToSpeech', C_CVar.GetCVarBool('textToSpeech') and '0' or '1' )
+            end
+            return MenuResponse.Open
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine('/tts')
+        end)
+        sub:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '显示',
+        function()
+            WoWTools_DataMixin:Call('ToggleTextToSpeechFrame')
+        end)
+--打开选项界面
+        WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GossipMixin.addName})
+    end)
+
+    menu:SetScript('OnShow', function(self)
+        if Save().questPlayText then
+            self:RegisterEvent('PLAYER_STARTED_MOVING')
+        end
+    end)
+    menu:SetScript('OnEvent', function(self)
+        PlayTextTab={}
+        self:UnregisterAllEvents()
+    end)
+    menu:set_texture()
+
+    QuestInfoDescriptionText:HookScript('OnShow', function(self)
+        _G['WoWToolsQuestPlayTextMenuButton']:SetParent(self:GetPrent())
+        print('a')
+        Play_QuestDescription()
+    end)
+
+
+    Init_Quest=function()
+        Test_PlayQuestDescription()
+    end
 end
 
 

@@ -6390,7 +6390,10 @@
         "SCENARIO_BONUS_REWARD",
         "ACHIEVEMENT_FLAGS_ACCOUNT",
         "ACHIEVEMENT_FLAGS_HAS_PROGRESS_BAR",
-        "HousingControlsFrame"
+        "HousingControlsFrame",
+        "QuestInfo_ShowDescriptionText",
+        "TextToSpeech_Speak",
+        "TEXT_TO_SPEECH_SAMPLE_TEXT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -166,6 +166,16 @@ local function Init_Menu(self, root)
         )
     end)
 
+--文本转语音
+    root:CreateCheckbox(
+        (WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
+    function()
+        return Save().questPlayText
+    end, function()
+        Save().questPlayText= not Save().questPlayText and true or nil
+        WoWTools_GossipMixin:Init_Quest()
+    end)
+
 
 --追踪
     root:CreateDivider()
@@ -216,6 +226,6 @@ end
 
 
 
-function  WoWTools_GossipMixin:Init_Menu_Quest(frame, root)
-    Init_Menu(frame, root)
+function  WoWTools_GossipMixin:Init_Menu_Quest(...)
+    Init_Menu(...)
 end

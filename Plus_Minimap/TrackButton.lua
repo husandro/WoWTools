@@ -862,7 +862,7 @@ local function Init_Menu(self, root)--菜单
             self:set_VIGNETTES_UPDATED(true)
             self:set_event()
             if Save().vigentteSound then
-                self:speak_Text(WoWTools_DataMixin.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
+                WoWTools_DataMixin:PlayText(WoWTools_DataMixin.onlyChinese and '这是段文字转语音的样本' or TEXT_TO_SPEECH_SAMPLE_TEXT)
             end
         end
     end)
@@ -1197,19 +1197,6 @@ local function Init_Button()
 
 
 
-    --播放声音
-    function TrackButton:speak_Text(text)
-        local ttsVoices= C_VoiceChat.GetTtsVoices() or {}
-        local voiceID= ttsVoices.voiceID or C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard)
-        local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
-        --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
-        C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
-        print(
-            addName2..WoWTools_DataMixin.Icon.icon2,
-            '|cffff00ff',
-            text
-        )
-    end
     function TrackButton:set_VIGNETTES_UPDATED(init)
         if UnitOnTaxi('player') or not Save().vigentteSound then
             self.SpeakTextTab=nil
@@ -1229,7 +1216,7 @@ local function Init_Button()
                         self.SpeakTextTab[info.name]=nil
                     elseif not self.SpeakTextTab[info.name] then
                         if not find then
-                            self:speak_Text(info.name)
+                            WoWTools_DataMixin:PlayText(info.name)--播放声音
                             find=true
                         end
                         self.SpeakTextTab[info.name]=true

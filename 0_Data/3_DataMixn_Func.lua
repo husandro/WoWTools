@@ -282,7 +282,23 @@ function WoWTools_DataMixin:PlaySound(soundKitID, setPlayerSound)--播放, 声�
     return success, voHandle
 end
 
+--TextToSpeech_Speak(questDescription, ttsVoices)
+function WoWTools_DataMixin:PlayText(text)
+    if not text or text=='' then
+        return
+    end
 
+    local volume = C_TTSSettings.GetSpeechVolume() or 0
+    volume= volume==0 and 50 or volume
+
+    C_VoiceChat.SpeakText(
+        C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard),
+        text,
+        Enum.VoiceTtsDestination.QueuedLocalPlayback,
+		C_TTSSettings.GetSpeechRate(),
+		volume
+    )
+end
 
 
 
