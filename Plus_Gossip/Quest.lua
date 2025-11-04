@@ -815,7 +815,7 @@ local function Init_Quest()
     menu:set_texture()
 
     QuestInfoDescriptionText:HookScript('OnShow', function(self)
-        _G['WoWToolsQuestPlayTextMenuButton']:SetParent(self:GetPrent())
+        _G['WoWToolsQuestPlayTextMenuButton']:SetParent(self:GetParent())
         print('a')
         Play_QuestDescription()
     end)
