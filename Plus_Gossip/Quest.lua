@@ -753,6 +753,7 @@ local function Init_Quest()
 --文本转语音
     local menu= CreateFrame('DropdownButton','WoWToolsQuestPlayTextMenuButton', QuestFrame, 'WoWToolsButtonTemplate')
     menu:SetFrameStrata('HIGH')
+    menu:SetFrameLevel(999)
     menu:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     menu:SetSize(18,18)
     menu:SetAlpha(0.5)
