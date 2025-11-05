@@ -6396,7 +6396,9 @@
         "TEXT_TO_SPEECH_SAMPLE_TEXT",
         "SLASH_TEXTTOSPEECH_STOP",
         "TEXT_TO_SPEECH_CONFIG",
-        "SLASH_STOPWATCH_PARAM_STOP4"
+        "SLASH_STOPWATCH_PARAM_STOP4",
+        "OBJECTIVES_TRACKER_LABEL",
+        "GreetingText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

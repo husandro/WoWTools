@@ -19,13 +19,13 @@ local P_Save={
 
     quest= true,
     questOption={},
-    questRewardCheck={},--{任务ID= index}
-    questPlayText= WoWTools_DataMixin.Player.husandro,
-    --questPlayTextStopMove=true,
+    questRewardCheck={},--{任务ID= index}    
     --autoSortQuest=  WoWTools_DataMixin.Player.husandro,--仅显示当前地图任务
     autoSelectReward= WoWTools_DataMixin.Player.husandro,--自动选择奖励
     showAllQuestNum= WoWTools_DataMixin.Player.husandro,--显示所有任务数量
     
+    questPlayText= WoWTools_DataMixin.Player.husandro,
+    --questPlayTextStopMove=true,
 
     scale=1,
     --strata='MEDIUM',

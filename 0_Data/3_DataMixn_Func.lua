@@ -292,7 +292,7 @@ function WoWTools_DataMixin:PlayText(text)
     volume= volume==0 and 50 or volume
 
     C_VoiceChat.SpeakText(
-        C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard),
+        C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard) or 0,
         text,
         Enum.VoiceTtsDestination.QueuedLocalPlayback,
 		C_TTSSettings.GetSpeechRate(),
