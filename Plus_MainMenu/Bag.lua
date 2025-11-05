@@ -74,21 +74,22 @@ local function Init()
 
             local notIsShiftkeyDown= not IsShiftKeyDown()
             for index, info in pairs(tab) do
+                local money= info.num or 0
+                money= math.modf(money/10000)
                 GameTooltip:AddDoubleLine(
                     WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
-                    C_CurrencyInfo.GetCoinTextureString(info.num)
+                    WoWTools_DataMixin:MK(money, 3)..'|A:Coin-Gold:0:0|a'--C_CurrencyInfo.GetCoinTextureString(info.num)
                 )
                 if index>=3 and notIsShiftkeyDown then
                     break
                 end
             end
 
-            local left= numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
+            local left= format(CHARACTER_CUSTOMIZATION_CHOICE_NAME_AND_ID, numPlayer, WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)--%d %s
             GameTooltip:AddDoubleLine(
-                numPlayer>3 and notIsShiftkeyDown and '|cnGREEN_FONT_COLOR:<|A:NPE_Icon:0:0|aShift+'..left..'>' or
+                numPlayer>3 and notIsShiftkeyDown and '|cnGREEN_FONT_COLOR:<'..left..'|A:NPE_Icon:0:0|aShift+>' or
                 '|cnGREEN_FONT_COLOR:'..left,
-                --(WoWTools_DataMixin.onlyChinese and '总计' or TOTAL)
-                WoWTools_DataMixin.Icon.wow2..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_DataMixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
+                '|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_DataMixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
             )
         end
 
@@ -176,17 +177,17 @@ local function Init()
         end
     end)
 
-    --收起，背包小按钮
-    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
+--收起，背包小按钮
+    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") and not InCombatLockdown() then--MainMenuBarBagButtons.lua
         C_CVar.SetCVar("expandBagBar", '0')
     end
 
     --if not MainMenuBarBackpackButton.OnClick then
-    MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
+    --[[MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
             ToggleAllBags()
         end
-    end)
+    end)]]
 
     MainMenuBarBackpackButton:EnableMouseWheel(true)
     MainMenuBarBackpackButton:SetScript('OnMouseWheel', function(_, d)
