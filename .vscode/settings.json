@@ -6393,7 +6393,10 @@
         "HousingControlsFrame",
         "QuestInfo_ShowDescriptionText",
         "TextToSpeech_Speak",
-        "TEXT_TO_SPEECH_SAMPLE_TEXT"
+        "TEXT_TO_SPEECH_SAMPLE_TEXT",
+        "SLASH_TEXTTOSPEECH_STOP",
+        "TEXT_TO_SPEECH_CONFIG",
+        "SLASH_STOPWATCH_PARAM_STOP4"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

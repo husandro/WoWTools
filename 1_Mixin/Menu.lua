@@ -864,6 +864,50 @@ end
 
 
 
+
+
+
+--文本转语音
+function WoWTools_MenuMixin:TTsMenu(root)
+
+    local sub= root:CreateCheckbox(
+        (InCombatLockdown() and '|cff828282' or '')
+        ..'|A:chatframe-button-icon-TTS:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
+    function()
+        return C_CVar.GetCVarBool('textToSpeech')
+    end, function()
+        if not InCombatLockdown() then
+            C_CVar.SetCVar('textToSpeech', C_CVar.GetCVarBool('textToSpeech') and '0' or '1' )
+        end
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('/tts')
+    end)
+    sub:AddInitializer(function(btn)
+        btn:RegisterEvent('CVAR_UPDATE')
+        btn:SetScript('OnEvent', function(b, _, cvarName, value)
+            if cvarName=='textToSpeech' then
+                b.leftTexture2:SetShown(value=='1')
+            end
+        end)
+        btn:SetScript('OnHide', function(b)
+            b:UnregisterEvent('CVAR_UPDATE')
+        end)
+    end)
+
+    sub:CreateButton(
+        (ChatConfigFrame:IsShown() and '|cff626262' or '')
+        ..(WoWTools_DataMixin.onlyChinese and '文字转语音选项' or TEXT_TO_SPEECH_CONFIG),
+    function()
+        WoWTools_DataMixin:Call('ToggleTextToSpeechFrame')
+    end)
+
+end
+
+
+
 function WoWTools_MenuMixin:SetGridMode(sub, num)
     if num and num>maxMenuButton then
         sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/maxMenuButton))

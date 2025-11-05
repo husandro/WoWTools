@@ -65,7 +65,7 @@ local function Init(btn)
 
     function btn:set_OnMouseDown()
         Save().linkIcon= not Save().linkIcon and true or false
-        WoWTools_HyperLink:Init_Link_Icon(self)
+        WoWTools_HyperLink:Init_Link_Icon()
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
         print(
             WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
@@ -78,7 +78,7 @@ local function Init(btn)
 
 
     WoWTools_HyperLink:Init_Button_Menu(btn)
-    WoWTools_HyperLink:Init_Link_Icon(btn)--超链接，图标
+    WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
     WoWTools_HyperLink:Init_Event_Sound(btn)--播放, 事件声音
     WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
     WoWTools_HyperLink:Init_Welcome()--欢迎加入

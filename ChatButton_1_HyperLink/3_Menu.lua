@@ -377,8 +377,9 @@ local function Init_Menu(self, root)
 
 
 --文本转语音   
+    WoWTools_MenuMixin:TTsMenu(root)
     root:CreateDivider()
-    sub=root:CreateButton(
+    --[[sub=root:CreateButton(
         (isInBat and '|cff828282' or '')
         ..'|A:chatframe-button-icon-TTS:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
@@ -390,7 +391,7 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('/tts')
-    end)
+    end)]]
 
 
 

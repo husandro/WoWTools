@@ -359,6 +359,7 @@ Plus_Gossip\Gossip_TextData.lua
 Plus_Gossip\Quest.lua
 Plus_Gossip\Quest_Menu.lua
 Plus_Gossip\Quest_QuestInfo.lua
+Plus_Gossip\Quest_PlayText.lua
 Plus_Gossip\Gossip_Menu_Move.lua
 
 

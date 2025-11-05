@@ -649,8 +649,11 @@ local function Set_HyperLlinkIcon(btn)
 
     Set_AddMessage(DEFAULT_CHAT_FRAME, enable)
 
-    btn.texture:SetAtlas(enable and 'orderhalltalents-done-glow' or 'voicechat-icon-STT-on')
-    btn.texture:SetDesaturated(not enable)
+    local btn= WoWTools_ChatMixin:GetButtonForName('HyperLink')
+    if btn then
+        btn.texture:SetAtlas(enable and 'orderhalltalents-done-glow' or 'voicechat-icon-STT-on')
+        btn.texture:SetDesaturated(not enable)
+    end
 end
 
 
@@ -658,7 +661,19 @@ end
 
 
 
-local function Init(btn)
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
 --是否有，聊天中时间戳
     IsShowTimestamps= C_CVar.GetCVar('showTimestamps')~='none'
 
@@ -680,13 +695,13 @@ local function Init(btn)
 
 --CVar 名称
     WoWTools_DataMixin:Hook('ChatConfigFrame_OnChatDisabledChanged', function()
-        Set_HyperLlinkIcon(btn)
+        Set_HyperLlinkIcon()
     end)
 
-    Set_HyperLlinkIcon(btn)
+    Set_HyperLlinkIcon()
 
-    Init=function(self)
-        Set_HyperLlinkIcon(self)
+    Init=function()
+        Set_HyperLlinkIcon()
     end
 end
 
@@ -695,9 +710,9 @@ end
 
 
 --超链接，图标
-function WoWTools_HyperLink:Init_Link_Icon(btn)
+function WoWTools_HyperLink:Init_Link_Icon()
     self:Link_Icon_Settings()
-    Init(btn)
+    Init()
 end
 
 function WoWTools_HyperLink:Link_Icon_Settings()
