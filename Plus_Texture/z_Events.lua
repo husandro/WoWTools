@@ -716,6 +716,10 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice()
     PlayerChoiceFrame.Title.Middle:SetPoint('LEFT', PlayerChoiceFrame.Title.Left, 'RIGHT', -10,0)
     PlayerChoiceFrame.Title.Middle:SetPoint('RIGHT', PlayerChoiceFrame.Title.Right, 'LEFT', 10, 0)
 
+    hooksecurefunc(PlayerChoiceBaseOptionButtonFrameTemplateMixin, 'OnLoad', function(frame)
+        self:SetUIButton(frame.Button)
+    end)
+
     self:Init_BGMenu_Frame(PlayerChoiceFrame, {isNewButton=true})
 end
 

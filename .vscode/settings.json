@@ -6399,7 +6399,9 @@
         "SLASH_STOPWATCH_PARAM_STOP4",
         "OBJECTIVES_TRACKER_LABEL",
         "GreetingText",
-        "CHARACTER_CUSTOMIZATION_CHOICE_NAME_AND_ID"
+        "CHARACTER_CUSTOMIZATION_CHOICE_NAME_AND_ID",
+        "PlayerChoiceBaseOptionButtonFrameTemplateMixin",
+        "EventSchedulerOngoingEntryMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
