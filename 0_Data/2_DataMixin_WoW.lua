@@ -716,6 +716,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
     local isTimerunning= PlayerIsTimerunning()
     for guid2, tab in pairs(WoWTools_WoWDate) do--清除不是本周数据
+
+        GetPlayerInfoByGUID(guid2)--加载数据
+
         if tab.Keystone.week ~=WoWTools_DataMixin.Player.Week then
             WoWTools_WoWDate[guid2].Keystone={week=WoWTools_DataMixin.Player.Week}
         end

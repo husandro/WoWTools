@@ -1075,7 +1075,7 @@ local function Settings_Right_Button(btn, data)
     local r,g,b= col.r, col.g, col.b
     local isNotBattle= data.battleTag~=WoWTools_DataMixin.Player.BattleTag
 --玩家，图标
-    btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
+    btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true}) or '')
 
 --玩家等级
     btn.PlayerLevelText:SetText(data.playerLevel~=GetMaxLevelForPlayerExpansion() and data.playerLevel or '')
