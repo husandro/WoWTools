@@ -8,7 +8,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
 
     local _, name, points, completed, _, _, _, _, flags, icon, rewardText, isGuild = GetAchievementInfo(achievementID)
 --奖励
-    if rewardText then
+    if rewardText and rewardText~='' then
         tooltip:AddLine(' ')
         local itemID= C_AchievementInfo.GetRewardItemID(achievementID)
         local itemIcon
@@ -19,7 +19,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
         tooltip:AddLine(
             (itemIcon and '|T'..itemIcon..':0|t' or '')
             ..WoWTools_TextMixin:CN(rewardText),
-            1, 1, 1, true
+            0, 0.8, 1, true
         )
     end
 

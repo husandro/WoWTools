@@ -38,7 +38,18 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.RightButton, {alpha=1})
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpRightButton, {alpha=1})
     self:SetCheckBox(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.WatchFavorButton)
+    
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TeleportToHouseButton, {alpha=1})
+    HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TeleportToHouseButton:HookScript('OnEnter', function()
+        WoWTools_TooltipMixin:Set_Spell(GameTooltip, 1233637)--https://www.wowhead.com/cn/spell=1233637/传送回家
+    end)
+    HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.ClipFrame:EnableMouseWheel(true)
+    HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.ClipFrame:SetScript('OnMouseWheel', function(frame, d)
+        local parent= frame:GetParent()
+        local b= d==1 and parent.LeftButton or parent.RightButton
+        b:OnMouseDown()
+    end)
+
 
     WoWTools_TextureMixin:Init_BGMenu_Frame(HousingDashboardFrame, {
         alpha=0.5,

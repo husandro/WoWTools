@@ -24,7 +24,7 @@ local function Get_List_Tab(instanceID)
     local co= 0
     to= 0
     for index, achievementID in pairs(mapData) do
-        local _, name, _, completed, _, _, _, _, flags, icon, _, isGuild, wasEarnedByMe = GetAchievementInfo(achievementID)
+        local _, name, _, completed, _, _, _, _, flags, icon, rewardText, isGuild, wasEarnedByMe = GetAchievementInfo(achievementID)
 
         if name then-- and icon~=136243 then
 --奖励
@@ -43,7 +43,8 @@ local function Get_List_Tab(instanceID)
                     ..'|r'
                     ..(itemIcon and '|T'..itemIcon..':0|t' or '')
                     ..(wasEarnedByMe and WoWTools_DataMixin.Icon.Player or '')--此角色，是否完成
-                    ..((isGuild or flags==0x4000) and '|A:communities-guildbanner-background:0:0|a' or '' ),--公会成就
+                    ..((isGuild or flags==0x4000) and '|A:communities-guildbanner-background:0:0|a' or '' )
+                    ..(rewardText and rewardText~='' and '|A:VignetteLoot:0:0|a' or ''),
                 achievementID= achievementID,
             })
 
@@ -623,6 +624,10 @@ local function Init_EncounterJournal()
 
     Init_EncounterJournal=function()end
 end
+
+
+
+
 
 
 

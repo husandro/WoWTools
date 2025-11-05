@@ -81,6 +81,8 @@ local function Init()
         end
     end)
 
+    Init=function()end
+end
 
 
 --[[战役 ID 提示 CampaignOverviewMixin
@@ -154,7 +156,6 @@ local function Init()
             self:HookScript('OnEnter', Set_Campaign_OnEnter)
             self.chapterLabel= self:CreateFontString(nil, 'ARTWORK', 'GameFontWhite')
             self.chapterLabel:SetPoint('RIGHT', self.CollapseButton, 'LEFT', -2, 0)
-            print(self.CollapseButton)
         end
         local text
         local num= self.campaign and self.campaign:GetChapterCount() or 0
@@ -183,8 +184,6 @@ local function Init()
     QuestMapFrame.QuestsFrame.CampaignOverview.Header.BackButton:HookScript('OnEnter', Set_Campaign_OnEnter)
     ]]
 
-    Init=function()end
-end
 
 
 

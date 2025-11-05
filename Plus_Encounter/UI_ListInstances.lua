@@ -246,9 +246,9 @@ local function Init_Button(btn)
     end
 
 --当前, KEY地图,ID
-    btn.KeyTexture= btn:CreateTexture(nil, 'ARTWORK')
-    btn.KeyTexture:SetPoint('TOPLEFT', -4, -2)
-    btn.KeyTexture:SetSize(26,26)
+    btn.KeyTexture= btn:CreateTexture(nil, 'ARTWORK', nil, 6)
+    btn.KeyTexture:SetPoint('LEFT', btn.Favorites2, 'RIGHT')
+    btn.KeyTexture:SetSize(23,23)
     btn.KeyTexture:SetAtlas('common-icon-checkmark')
     btn.KeyTexture:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) self.label:SetAlpha(1) end)
     btn.KeyTexture:SetScript('OnEnter', function(self)
@@ -267,8 +267,8 @@ local function Init_Button(btn)
     end)
 
 --当前KEY，等级
-    btn.KeyTexture.label=btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')--WoWTools_LabelMixin:Create(btn, {r=1, g=1, b=1})
-    btn.KeyTexture.label:SetPoint('TOP', btn.KeyTexture, -2, -10)
+    btn.KeyTexture.label=btn:CreateFontString(nil, 'ARTWORK', 'GameFontWhite', 7)--WoWTools_LabelMixin:Create(btn, {r=1, g=1, b=1})
+    btn.KeyTexture.label:SetPoint('TOP', btn.KeyTexture, 7, -8)
     function btn:clear_data()
         self.tipsText:SetText('')
         self.challengeText:SetText('')

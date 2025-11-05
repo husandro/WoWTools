@@ -66,7 +66,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     end)
 --战役, 列表
     WoWTools_DataMixin:Hook(CampaignHeaderDisplayMixin, 'SetCampaign', function(btn)
-        self:SetFrame(btn, {alpha=0.7})
+        self:SetAlphaColor(btn.Background, nil, true)
     end)
 
     for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do

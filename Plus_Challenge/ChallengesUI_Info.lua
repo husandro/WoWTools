@@ -204,7 +204,6 @@ local function Create_Label(frame)
 
 
 --分数，最佳
-
     frame.scoreLable=WoWTools_LabelMixin:Create(Frame, {size=10, mouse=true})
     frame.scoreLable:SetPoint('BOTTOMLEFT', frame, 0, 24)
     frame.scoreLable:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
@@ -408,7 +407,6 @@ end
 
 local function SetUp(self)
     local insTab= WoWTools_ChallengesSpellData[self.mapID]
-
     if not insTab or not insTab.spell then
         return
     end

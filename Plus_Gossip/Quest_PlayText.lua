@@ -55,6 +55,18 @@ local function Player_Text()
 end
 
 
+local function Player_GossipText(text)
+    if not text
+        or text==''
+        or not Save().questPlayText
+        or PlayTextTab[text]
+    then
+        return
+    end
+
+    WoWTools_DataMixin:PlayText(text)
+    PlayTextTab[text]=true
+end
 
 
 
@@ -109,6 +121,9 @@ function WoWTools_GossipMixin:Init_QuestPlayTextMenu(_, root)
         WoWTools_DataMixin:PlayText(Get_Text())
         return MenuResponse.Open
     end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(Get_Text(), nil, nil, nil, true)
+    end)
     sub:CreateButton(
         '|A:common-dropdown-icon-stop:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP4),
@@ -131,19 +146,19 @@ local function Init()
     menu:SetFrameStrata('HIGH')
     menu:SetFrameLevel(999)
     menu:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-    menu:SetSize(18,18)
-    menu:SetAlpha(0.5)
+    menu:SetSize(16,16)
+
     menu.tooltip= WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH
+
     function menu:set_point(parent)
-        self:SetPoint('BOTTOMLEFT', parent, 'TOPRIGHT', -9, 9)
         self:SetParent(parent:GetParent())
+        self:SetPoint('TOPRIGHT', parent, 'TOPLEFT', 4, 8)
     end
     function menu:set_texture()
-        local isEnabled= Save().questPlayText
-        self:SetNormalAtlas(isEnabled and 'voicechat-channellist-icon-STT-off' or 'ChallengeMode-icon-redline')
+        self:SetNormalAtlas(Save().questPlayText and 'voicechat-icon-STT' or 'voicechat-icon-STT-mute')
     end
     function menu:set_alpha()
-        self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.5)
+        self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
     end
     menu:SetupMenu(function(self, root)
         if not self:IsMouseOver() then
@@ -152,10 +167,8 @@ local function Init()
 
         WoWTools_GossipMixin:Init_QuestPlayTextMenu(self, root)
 
-        root:CreateDivider()
-
-
 --打开选项界面
+        root:CreateDivider()
         WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GossipMixin.addName})
     end)
 
@@ -172,7 +185,7 @@ local function Init()
         self:UnregisterAllEvents()
     end)
     menu:set_texture()
-
+    menu:set_alpha()
 
 
 
@@ -183,6 +196,7 @@ local function Init()
         menu:set_point(self)
         Player_Text()
     end)
+
     QuestInfoRewardText:HookScript('OnShow', function(self)
         menu:set_point(self)
         Player_Text()
@@ -194,6 +208,11 @@ local function Init()
     GreetingText:HookScript('OnShow', function(self)
         menu:set_point(self)
         Player_Text()
+    end)
+
+    hooksecurefunc(GossipGreetingTextMixin, 'Setup', function(self, text)
+        menu:set_point(self.GreetingText)
+        Player_GossipText(text)
     end)
 
 

@@ -408,10 +408,6 @@ local function Init()
 
 --打开，自定义，对话，文本，按钮
     GButton2= CreateFrame('Button', 'WoWToolsOpenGossipIconTextButton', GossipFrame, 'WoWToolsButtonTemplate')
-    --[[WoWTools_ButtonMixin:Cbtn(GossipFrame, {
-        size=20,
-        name='WoWToolsOpenGossipIconTextButton'
-    })]]
 
     GButton2:SetAlpha(0.3)
     GButton2:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip:Hide() end)
@@ -512,7 +508,6 @@ local function Create_GossipOptionCheckBox(btn, info)
     btn.gossipCheckBox:SetPoint("RIGHT")
     btn.gossipCheckBox:SetSize(18, 18)
 
-    --btn.gossipCheckBox.Text:ClearAllPoints()
     btn.gossipCheckBox.Text= btn.gossipCheckBox:CreateFontString(nil, 'ARTWORK', 'QuestFont')
     btn.gossipCheckBox.Text:SetPoint('RIGHT', btn.gossipCheckBox, 'LEFT')
     
