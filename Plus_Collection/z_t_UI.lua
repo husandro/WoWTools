@@ -101,14 +101,14 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
     self:SetStatusBar(WardrobeCollectionFrame.progressBar)
     self:SetEditBox(WardrobeCollectionFrameSearchBox)
-    for _, region in pairs({WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame:GetChildren()}) do
+    --[[for _, region in pairs({WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame:GetChildren()}) do
         if region:IsObjectType('Button') then
             local icon= region:GetNormalTexture()
             if icon then
                 self:SetAlphaColor(icon, true, nil, 1)
             end
         end
-    end
+    end]]
     self:SetButton(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame.PrevPageButton, 1)
     self:SetButton(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame.NextPageButton, 1)
 
