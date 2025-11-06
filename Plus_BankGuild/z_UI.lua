@@ -12,7 +12,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
     self:SetAlphaColor(GuildBankFrame.TopBorder, nil, nil, 0.3)
     self:SetAlphaColor(GuildBankFrame.BottomBorder, nil, nil, 0.3)]]
 
-    self:SetButton(GuildBankFrame.CloseButton, {all=true,})
+    self:SetButton(GuildBankFrame.CloseButton, {all=true})
 
     for i=1, 4 do
         self:SetTabButton(_G['GuildBankFrameTab'..i])

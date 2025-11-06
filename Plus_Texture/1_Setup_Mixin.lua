@@ -329,12 +329,17 @@ end
 
 
 --设置，按钮
-function WoWTools_TextureMixin:SetButton(btn, tab)
+function WoWTools_TextureMixin:SetButton(btn, tabOrAlpha)
     if not btn then
         return
     end
-    tab= tab or {}
-    tab.alpha=tab.alpha or 0.5
+    local tab
+    if not tabOrAlpha or type(tabOrAlpha)=='number' then
+        tab= {alpha=tabOrAlpha or 0.5}
+    else
+        tab= tabOrAlpha
+        tab.alpha=tab.alpha or 0.5
+    end
     if not tab.show then
         tab.show= {}
         local p= btn:GetPushedTexture()

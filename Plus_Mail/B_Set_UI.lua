@@ -275,9 +275,9 @@ function WoWTools_TextureMixin.Events:Blizzard_MailFrame()
     self:HideFrame(InboxFrame)
     self:SetScrollBar(OpenMailScrollFrame)
 
-    self:SetButton(InboxPrevPageButton, {alpha=1})
+    self:SetButton(InboxPrevPageButton, 1)
     self:SetUIButton(OpenAllMail)
-    self:SetButton(InboxNextPageButton, {alpha=1})
+    self:SetButton(InboxNextPageButton, 1)
 
     self:Init_BGMenu_Frame(MailFrame)
 end

@@ -49,8 +49,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
         self:SetMenu(frame)
         local p= frame:GetParent()
         if p.IncrementButton then
-            self:SetButton(p.IncrementButton, {alpha=1})
-            self:SetButton(p.DecrementButton, {alpha=1})
+            self:SetButton(p.IncrementButton, 1)
+            self:SetButton(p.DecrementButton, 1)
         end
     end)
     WoWTools_DataMixin:Hook(WowStyle1ArrowDropdownMixin, 'OnLoad', function(frame)
@@ -137,7 +137,7 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         self:SetEditBox(edit)
     end)
     WoWTools_DataMixin:Hook(ClearButtonMixin, 'OnEnter', function(btn)
-        self:SetButton(btn, {alpha=1})
+        self:SetButton(btn, 1)
     end)
 
 
@@ -181,7 +181,7 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     end)
 
     WoWTools_DataMixin:Hook('DynamicResizeButton_Resize', function(btn)
-        self:SetButton(btn, {alpha=1})
+        self:SetButton(btn, 1)
     end)
 
     --WoWTools_DataMixin:Hook(UIButtonFitToTextBehaviorMixin, 'SetTextToFit', function(btn, text)
@@ -202,8 +202,8 @@ end
 --上一页，下一页
 function WoWTools_TextureMixin.Events:Blizzard_PagedContent()
     WoWTools_DataMixin:Hook(PagingControlsMixin, 'OnLoad', function(frame)
-        self:SetButton(frame.PrevPageButton, {alpha=1})
-        self:SetButton(frame.NextPageButton, {alpha=1})
+        self:SetButton(frame.PrevPageButton, 1)
+        self:SetButton(frame.NextPageButton, 1)
     end)
 end
 

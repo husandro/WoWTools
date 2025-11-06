@@ -33,7 +33,7 @@ function WoWTools_TextureMixin.Events:Blizzard_RecruitAFriend()
     self:HideTexture(RecruitAFriendFrame.RecruitList.Header.Background)
     self:HideTexture(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
     self:SetFrame(RecruitAFriendFrame.RewardClaiming, {alpha=0.3})
-    self:SetButton(RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton, {alpha=0.5})
+    self:SetButton(RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton, 0.5)
 
 --好友召募奖励
     self:HideFrame(RecruitAFriendRewardsFrame.Border)

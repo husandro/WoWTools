@@ -119,8 +119,8 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:SetSlider(TextToSpeechFramePanelContainer.AdjustVolumeSlider)
     
 
-    self:SetButton(ChatConfigMoveFilterUpButton, {alpha=1})
-    self:SetButton(ChatConfigMoveFilterDownButton, {alpha=1})
+    self:SetButton(ChatConfigMoveFilterUpButton, 1)
+    self:SetButton(ChatConfigMoveFilterDownButton, 1)
 
     self:SetNineSlice(ChatConfigChatSettingsLeft)
 
@@ -359,7 +359,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:SetAlphaColor(ChatFrame1EditBoxFocusMid, nil, nil, 0.3)
     self:SetAlphaColor(ChatFrame1EditBoxFocusRight, nil, nil, 0.3)
     self:SetAlphaColor(ChatFrame1EditBoxFocusLeft, nil, nil, 0.3)
-    self:SetButton(ChatFrame1EditBoxLanguage, {alpha=1})
+    self:SetButton(ChatFrame1EditBoxLanguage, 1)
     self:HideFrame(ChatFrame1ButtonFrame)
     self:HideTexture(ChatFrame1LeftTexture)
     self:HideTexture(ChatFrame1TopTexture)
@@ -402,8 +402,8 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:HideFrame(DressUpFrameInset)
 
     self:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
-    self:SetButton(DressUpFrame.MaxMinButtonFrame.MinimizeButton, {all=true,})
-    self:SetButton(DressUpFrame.MaxMinButtonFrame.MaximizeButton, {all=true,})
+    self:SetButton(DressUpFrame.MaxMinButtonFrame.MinimizeButton, {all=true})
+    self:SetButton(DressUpFrame.MaxMinButtonFrame.MaximizeButton, {all=true})
     self:SetButton(DressUpFrameCloseButton)
 
     self:SetButton(DressUpFrameCancelButton)
@@ -490,8 +490,8 @@ end
 
 --商人
 function WoWTools_TextureMixin.Frames:MerchantFrame()
-    self:SetButton(MerchantNextPageButton, {alpha=1})
-    self:SetButton(MerchantPrevPageButton, {alpha=1})
+    self:SetButton(MerchantNextPageButton, 1)
+    self:SetButton(MerchantPrevPageButton, 1)
 
     self:SetScrollBar(MerchantFrame)
     --self:SetNineSlice(MerchantFrame)
@@ -604,8 +604,8 @@ end
 
 function WoWTools_TextureMixin.Frames:MovieFrame()
     self:SetFrame(MovieFrame.CloseDialog.Border, {alpha=1})
-    self:SetButton(MovieFrame.CloseDialog.ConfirmButton, {alpha=1})
-    self:SetButton(MovieFrame.CloseDialog.ResumeButton, {alpha=1})
+    self:SetButton(MovieFrame.CloseDialog.ConfirmButton, 1)
+    self:SetButton(MovieFrame.CloseDialog.ResumeButton, 1)
 end
 
 --颜色选择器

@@ -11,7 +11,7 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_HousingCornerstone()
     self:SetButton(HousingCornerstoneVisitorFrameCloseButton)
     self:SetAlphaColor(HousingCornerstoneVisitorFrame.Background)
-    self:SetButton(HousingCornerstoneVisitorFrame.GearDropdown, {alpha=1})
+    self:SetButton(HousingCornerstoneVisitorFrame.GearDropdown, 1)
 
     self:SetButton(HousingCornerstonePurchaseFrameCloseButton)
     self:SetNineSlice(HousingCornerstonePurchaseFrame.MoneyFrameBackdrop)
@@ -33,13 +33,13 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     self:SetUIButton(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.NoHouseButton)
 
     self:SetAlphaColor(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.Background, nil, nil, 0.3)
-    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpLeftButton, {alpha=1})
-    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.LeftButton, {alpha=1})
-    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.RightButton, {alpha=1})
-    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpRightButton, {alpha=1})
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpLeftButton, 1)
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.LeftButton, 1)
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.RightButton, 1)
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpRightButton, 1)
     self:SetCheckBox(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.WatchFavorButton)
     
-    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TeleportToHouseButton, {alpha=1})
+    self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TeleportToHouseButton, 1)
     HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TeleportToHouseButton:HookScript('OnEnter', function()
         WoWTools_TooltipMixin:Set_Spell(GameTooltip, 1233637)--https://www.wowhead.com/cn/spell=1233637/传送回家
     end)

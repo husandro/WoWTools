@@ -74,8 +74,8 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
         self:SetButton(frame.BountyDropdown)
     end
 
-    self:SetButton(WorldMapFrame.SidePanelToggle.CloseButton, {alpha=0.5})
-    self:SetButton(WorldMapFrame.SidePanelToggle.OpenButton, {alpha=0.5})
+    self:SetButton(WorldMapFrame.SidePanelToggle.CloseButton, 0.5)
+    self:SetButton(WorldMapFrame.SidePanelToggle.OpenButton, 0.5)
 
     self:SetFrame(WorldMapFrame.NavBar.overlay, {alpha=0})
 
