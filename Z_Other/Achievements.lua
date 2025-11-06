@@ -218,7 +218,8 @@ end
 
 local function Init_Achievement()
 --选中，提示
-    local back= CreateFrame('Button', 'WoWToolsAchievementBackButton', AchievementFrameFilterDropdown, 'WoWToolsButtonTemplate')
+    local back= CreateFrame('Button', 'WoWToolsAchievementBackButton', AchievementFrame, 'WoWToolsButtonTemplate')
+    back:SetFrameStrata('HIGH')
     back:SetSize(20,20)
     back:SetPoint('LEFT', AchievementFrameFilterDropdown, 'RIGHT', 2, 0)
     back:SetNormalTexture(0)--'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga')
@@ -234,7 +235,8 @@ local function Init_Achievement()
     end)
 
 --点击，提示
-    local next= CreateFrame('Button', 'WoWToolsAchievementNextButton', AchievementFrameFilterDropdown, 'WoWToolsButtonTemplate')
+    local next= CreateFrame('Button', 'WoWToolsAchievementNextButton', AchievementFrame, 'WoWToolsButtonTemplate')
+    next:SetFrameStrata('HIGH')
     next:SetSize(20,20)
     next:SetPoint('LEFT', back, 'RIGHT')
     next:SetNormalTexture(0)--'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga')
