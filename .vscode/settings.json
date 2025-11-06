@@ -6401,7 +6401,12 @@
         "GreetingText",
         "CHARACTER_CUSTOMIZATION_CHOICE_NAME_AND_ID",
         "PlayerChoiceBaseOptionButtonFrameTemplateMixin",
-        "EventSchedulerOngoingEntryMixin"
+        "EventSchedulerOngoingEntryMixin",
+        "QuestInfoQuestType",
+        "QUEST_TEMPLATE_DETAIL",
+        "QUEST_TEMPLATE_LOG",
+        "QUEST_TEMPLATE_REWARD",
+        "QUEST_TEMPLATE_MAP_DETAILS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

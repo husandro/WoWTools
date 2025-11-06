@@ -98,6 +98,12 @@ end
 
 --任务
 function WoWTools_MoveMixin.Frames:QuestFrame()
+    --QuestFrame <Size x="338" y="496"/>
+    QuestDetailScrollFrame:HookScript('OnSizeChanged', function(_, w)
+        QUEST_TEMPLATE_DETAIL.contentWidth=w-25--275
+        QUEST_TEMPLATE_LOG.contentWidth= w-15--285
+        QUEST_TEMPLATE_REWARD.contentWidth= w-15--285
+    end)
 
     self:Setup(QuestLogPopupDetailFrame)
 
@@ -130,8 +136,7 @@ function WoWTools_MoveMixin.Frames:QuestFrame()
         sizeRestFunc=function()
             QuestFrame:SetSize(338, 496)
         end
-    })
-
+    })   
 end
 
 --新内容

@@ -194,6 +194,11 @@ end
 
 
 local function Set_Icon(self, achievementID)
+    if achievementID==_G['WoWToolsAchievementBackButton'].achievementID
+        or achievementID==_G['WoWToolsAchievementNextButton'].achievementID
+    then
+        return
+    end
     self.achievementID= achievementID
     local texture= select(10, GetAchievementInfo(achievementID))
     self:SetNormalTexture(texture or 0)

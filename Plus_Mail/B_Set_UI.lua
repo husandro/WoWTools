@@ -216,6 +216,9 @@ local function Init()
         end
     end)
 
+    --12.2.7 中 会重叠
+    SendMailSendMoneyButton:SetPoint('TOPLEFT', SendMailMoney,'TOPRIGHT', 7, 12)--<Anchor point="TOPLEFT" relativeTo="SendMailMoney" relativePoint="TOPRIGHT" x="0" y="12"/>
+
     Init=function()end
 end
 
@@ -248,25 +251,33 @@ function WoWTools_TextureMixin.Events:Blizzard_MailFrame()
     self:HideFrame(SendMailMoneyInset)
     self:SetNineSlice(SendMailMoneyInset)
     self:HideFrame(SendMailMoneyBg)
+    self:SetUIButton(SendMailMailButton)
+    self:SetUIButton(SendMailCancelButton)
 
     self:SetScrollBar(SendMailScrollFrame)
     self:SetFrame(SendMailMoneyGold, {alpha=0.5, show={[SendMailMoneyGold.texture]=true}})
     self:SetFrame(SendMailMoneySilver, {alpha=0.5, show={[SendMailMoneySilver.texture]=true}})
     self:SetFrame(SendMailMoneyCopper, {alpha=0.5, show={[SendMailMoneyCopper.texture]=true}})
 
-    self:SetNineSlice(OpenMailFrame)
-    self:HideFrame(OpenMailFrame)
-    OpenMailFrameBg:SetColorTexture(0,0,0, 0.5)
+    self:SetNineSlice(OpenMailFrame, 0.5)
+    self:SetFrame(OpenMailFrame, {alpha=0.5})
     self:HideFrame(OpenMailFrameInset)
     self:SetNineSlice(OpenMailFrameInset)
     self:SetButton(OpenMailFrameCloseButton)
+    self:SetUIButton(OpenMailReplyButton)
+    self:SetUIButton(OpenMailDeleteButton)
+    self:SetUIButton(OpenMailCancelButton)
+    self:SetCheckBox(SendMailSendMoneyButton)
+    self:SetCheckBox(SendMailCODButton)
+    self:SetEditBox(SendMailNameEditBox)
+    self:SetEditBox(SendMailSubjectEditBox)
 
     self:HideFrame(InboxFrame)
     self:SetScrollBar(OpenMailScrollFrame)
 
-    self:SetButton(InboxPrevPageButton)
+    self:SetButton(InboxPrevPageButton, {alpha=1})
     self:SetUIButton(OpenAllMail)
-    self:SetButton(InboxNextPageButton)
+    self:SetButton(InboxNextPageButton, {alpha=1})
 
     self:Init_BGMenu_Frame(MailFrame)
 end

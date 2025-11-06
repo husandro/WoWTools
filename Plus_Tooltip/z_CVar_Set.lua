@@ -9,11 +9,11 @@ function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
         },
         {   name='nameplateOccludedAlphaMult',
             value='0.15',
-            msg=WoWTools_DataMixin.onlyChinese and '不在视野里, 姓名板透明度' or (SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..'Alpha'),
+            msg=WoWTools_DataMixin.onlyChinese and '不在视野里, 姓名板透明度' or (SPELL_FAILED_LINE_OF_SIGHT..' ('..SHOW_TARGET_CASTBAR_IN_V_KEY..') '..'Alpha'),
         },
         {   name='dontShowEquipmentSetsOnItems',
             value='0',
-            msg=WoWTools_DataMixin.onlyChinese and '显法装备方案' or EQUIPMENT_SETS:format(SHOW),
+            msg=WoWTools_DataMixin.onlyChinese and '显法装备方案' or format(EQUIPMENT_SETS, SHOW),
         },
         {   name='UberTooltips',
             value='1',
@@ -21,7 +21,7 @@ function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
         },
         {   name="alwaysCompareItems",
              value= "1",
-             msg= WoWTools_DataMixin.onlyChinese and '总是比较装备' or ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
+             msg= WoWTools_DataMixin.onlyChinese and '总是比较装备' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALWAYS, COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS))
         },
         {   name="profanityFilter",
             value= '0',

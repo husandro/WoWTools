@@ -151,7 +151,7 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
             end
 
         elseif size and size[1] then
-            local w= size[1] -questLogWidth +2
+            local w= size[1] -questLogWidth-- +2
             WorldMapFrame.minimizedWidth= w
             WorldMapFrame.minimizedHeight= size[2] or minimizedHeight
             WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
