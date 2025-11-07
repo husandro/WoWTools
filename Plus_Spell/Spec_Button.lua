@@ -323,12 +323,12 @@ local function Init()
 
         if Save().specButton.isUIParent then
             local p= Save().specButton.point
+            self:SetParent(UIParent)
             if p and p[1] then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
             else
-                self:SetPoint('CENTER', -150, 150)
+                self:SetPoint('CENTER', UIParent, -150, 150)
             end
-            self:SetParent(UIParent)
             self:set_strata()
 
         elseif PlayerSpellsFrame then

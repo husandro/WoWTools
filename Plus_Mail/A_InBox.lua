@@ -433,9 +433,9 @@ local function Create_Unit_Button(btn, i)
         self.typeText:SetText('')
         self.outItemOrMoney:SetShown(false)
         self.DeleteButton:SetShown(false)
-        WoWTools_ItemMixin:SetupInfo(btn, {})
+        WoWTools_ItemMixin:SetupInfo(self)
     end
-   
+
 end
 
 
@@ -474,7 +474,7 @@ local function Init_InboxFrame_Update()
             local isCOD = CODAmount and CODAmount>0
             local isAuctionHouse= invoiceType~=nil or sender==BUTTON_LAG_AUCTIONHOUSE--拍卖行
             local isSelf= sender==WoWTools_DataMixin.Player.Name
-            
+
             if hasItem and hasItem>1 then
                 btn.countLable:SetText('|cffffd100'..hasItem..'|r')
                 btn.countLable:SetShown(true)
@@ -522,7 +522,7 @@ local function Init_InboxFrame_Update()
                     text= WoWTools_DataMixin.onlyChinese and '可取' or WITHDRAW
                 end
             end
-            
+
 
             if bid>0 or deposit>0 or consignment>0 then
                 text= text..get_Money(bid + deposit - consignment)
@@ -542,7 +542,7 @@ local function Init_InboxFrame_Update()
             btn.outItemOrMoney.openMailID= btn.index
             btn.outItemOrMoney:SetShown((money or hasItem) and not isCOD)
 
-            WoWTools_ItemMixin:SetupInfo(btn, {itemLink=firstItemLink})
+            WoWTools_ItemMixin:SetupInfo(btn, firstItemLink and {itemLink=firstItemLink} or nil)
             btn:GetParent():SetAlpha(1)
         end
     end
@@ -712,9 +712,8 @@ local function Set_OpenMail_Update()
     for i=1, ATTACHMENTS_MAX_RECEIVE do--物品，信息
         btn = OpenMailFrame.OpenMailAttachments[i]
         if btn and btn:IsShown() then
-            WoWTools_ItemMixin:SetupInfo(btn, {
-                itemLink= (not hide and HasInboxItem(InboxFrame.openMailID, i)) and GetInboxItemLink(InboxFrame.openMailID, i)
-            })
+           local itemLink= (not hide and HasInboxItem(InboxFrame.openMailID, i)) and GetInboxItemLink(InboxFrame.openMailID, i) or nil
+            WoWTools_ItemMixin:SetupInfo(btn, itemLink and {itemLink= itemLink} or nil)
         end
     end
 end

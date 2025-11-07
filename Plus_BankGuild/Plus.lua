@@ -30,9 +30,7 @@ local function Init_Button()
                 btn.indexText:SetPoint('CENTER')
 --物品信息
                 WoWTools_DataMixin:Hook(btn, 'SetMatchesSearch', function(self)
-                    WoWTools_ItemMixin:SetupInfo(self, {
-                        guidBank= Save().plusItem and {tab=GetCurrentGuildBankTab(), slot=self:GetID()} or nil
-                    })
+                    WoWTools_ItemMixin:SetupInfo(self, Save().plusItem and {guidBank= {tab=GetCurrentGuildBankTab(), slot=self:GetID()}} or nil)
                 end)
             end
             btn.indexText:SetText(showIndex and slotID or '')

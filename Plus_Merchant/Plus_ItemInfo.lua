@@ -192,7 +192,7 @@ local function Set_Item_Info()
     local numItem= isMerce and numMerchantNumItems or numBuybackItems
 
     local showItemInfo= not Save().notItemInfo--物品信息
-    local notIsUsableAlpha= Save().notIsUsableAlpha or 1--无法使用物品，alpha
+    --local notIsUsableAlpha= Save().notIsUsableAlpha or 1--无法使用物品，alpha
 
     for i=1, page do
         local index = isMerce and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
@@ -268,8 +268,7 @@ local function Set_Item_Info()
         btn.stats.spellID= spellID
 --提示
         WoWTools_ItemMixin:SetupInfo(
-            _G["MerchantItem"..i..'ItemButton'],
-            {merchant=showItemInfo and {slot=index, buyBack= not isMerce} or nil}
+            _G["MerchantItem"..i..'ItemButton'], showItemInfo and {merchant={slot=index, buyBack= not isMerce} or nil}
         )
 
 --无法使用物品，alpha

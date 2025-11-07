@@ -532,7 +532,8 @@ local function Init()
     for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
         if (btn) then
             WoWTools_DataMixin:Hook(btn, 'RefreshIcon', function(self)
-                WoWTools_ItemMixin:SetupInfo(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
+                local tab= (self.itemLink or self.itemLocation) and {itemLink=self.itemLink, itemLocation= self.itemLocation} or nil
+                WoWTools_ItemMixin:SetupInfo(self, tab)
             end)
         end
     end
