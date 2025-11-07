@@ -158,7 +158,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
                     or 'Button'
   --template
     local template= tab.template
-            or (isSecure and 'SecureActionButtonTemplate')
+            or (isSecure and 'SecureActionButtonTemplate')--SecureHandlerClickTemplate SecureHandlerTemplates.xml
             or (isUI and 'UIPanelButtonTemplate')
             or (isCheck and 'UICheckButtonTemplate')--32x32
 
