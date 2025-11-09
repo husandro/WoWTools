@@ -458,10 +458,10 @@ local function Init_ItemInfo()
         end
     end
 
-    WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'InitItemLocation', Settings)
+    --WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'InitItemLocation', Settings)
     WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'Init', Settings)
     WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'Refresh', Settings)
-    WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'RefreshItemInfo', Settings)
+    --WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'RefreshItemInfo', Settings)
     --WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'OnEnter', Settings)
 
     Init_ItemInfo=function()end

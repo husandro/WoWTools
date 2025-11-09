@@ -249,7 +249,6 @@ local function Create_Label(frame, tab)
     frame.setIDItem:SetPoint('TOPLEFT', -4, 4)
     frame.setIDItem:SetPoint('BOTTOMRIGHT', 4, -4)
     frame.setIDItem:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
-    frame.setIDItem:Hide()
 
     if frame.Count then
         frame.Count:ClearAllPoints()
