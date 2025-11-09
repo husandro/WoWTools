@@ -233,7 +233,7 @@ local function Init_Options()
     end)
 
 
-    local sliderX = WoWTools_PanelMixin:Slider(Frame, {min=-250, max=250, value=Save().x, setp=1, w= 100,
+    local sliderX = WoWTools_SliderMixin:CSlider(Frame, {min=-250, max=250, value=Save().x, setp=1, w= 100,
     text= 'X',
     func=function(self2, value)
         value= math.floor(value)
@@ -243,7 +243,7 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end})
     sliderX:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT',0, -12)
-    local sliderY = WoWTools_PanelMixin:Slider(Frame, {min=-250, max=250, value=Save().y, setp=1, w= 100, color=true,
+    local sliderY = WoWTools_SliderMixin:CSlider(Frame, {min=-250, max=250, value=Save().y, setp=1, w= 100, color=true,
     text= 'Y',
     func=function(self2, value)
         value= math.floor(value)
@@ -253,7 +253,7 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end})
     sliderY:SetPoint("LEFT", sliderX, 'RIGHT',15,0)
-    local sliderW = WoWTools_PanelMixin:Slider(Frame, {min=10, max=100, value=Save().w, setp=1, w= 100,
+    local sliderW = WoWTools_SliderMixin:CSlider(Frame, {min=10, max=100, value=Save().w, setp=1, w= 100,
     text= 'W',
     func=function(self2, value)
         value= math.floor(value)
@@ -264,7 +264,7 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end})
     sliderW:SetPoint("LEFT", sliderY, 'RIGHT',15,0)
-    local sliderH = WoWTools_PanelMixin:Slider(Frame, {min=10, max=100, value=Save().h, setp=1, w= 100, color=true,
+    local sliderH = WoWTools_SliderMixin:CSlider(Frame, {min=10, max=100, value=Save().h, setp=1, w= 100, color=true,
     text= 'H',
     func=function(self2, value)
         value= math.floor(value)
@@ -278,7 +278,7 @@ local function Init_Options()
 
 
 
-    local sliderScale = WoWTools_PanelMixin:Slider(Frame, {min=0.2, max=4, value=Save().scale or 1, setp=0.1, w= 100,
+    local sliderScale = WoWTools_SliderMixin:CSlider(Frame, {min=0.2, max=4, value=Save().scale or 1, setp=0.1, w= 100,
     text= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
     func=function(self2, value)
         value= tonumber(format('%.1f', value))
@@ -291,7 +291,7 @@ local function Init_Options()
     })
     sliderScale:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0,-16)
 
-    local sliderElapsed = WoWTools_PanelMixin:Slider(Frame, {min=0.3, max=1.5, value=Save().elapsed or 0.5, setp=0.1, w= 100, color=true,
+    local sliderElapsed = WoWTools_SliderMixin:CSlider(Frame, {min=0.3, max=1.5, value=Save().elapsed or 0.5, setp=0.1, w= 100, color=true,
     text= WoWTools_DataMixin.onlyChinese and '速度' or SPEED,
     func=function(self2, value)
         value= tonumber(format('%.1f', value))
@@ -474,7 +474,7 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
-    local numSize = WoWTools_PanelMixin:Slider(Frame, {min=8, max=72, value=Save().creatureFontSize, setp=1, w=100, color=true,
+    local numSize = WoWTools_SliderMixin:CSlider(Frame, {min=8, max=72, value=Save().creatureFontSize, setp=1, w=100, color=true,
     text= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
     func=function(self2, value)--字体大小
         value= math.floor(value)
@@ -679,7 +679,7 @@ local function Init_Options()
 
     menuUnitIsMe:set_icon()
 
-    local unitIsMeX = WoWTools_PanelMixin:Slider(Frame, {min=-250, max=250, value=Save().unitIsMeX, setp=1, w= 100,
+    local unitIsMeX = WoWTools_SliderMixin:CSlider(Frame, {min=-250, max=250, value=Save().unitIsMeX, setp=1, w= 100,
     text= 'X',
     func=function(self2, value)
         value= math.floor(value)
@@ -689,7 +689,7 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end})
     unitIsMeX:SetPoint("TOPLEFT", unitIsMeCheck, 'BOTTOMRIGHT',0, -12)
-    local unitIsMeY = WoWTools_PanelMixin:Slider(Frame, {min=-250, max=250, value=Save().unitIsMeY, setp=1, w= 100, color=true,
+    local unitIsMeY = WoWTools_SliderMixin:CSlider(Frame, {min=-250, max=250, value=Save().unitIsMeY, setp=1, w= 100, color=true,
     text= 'Y',
     func=function(self2, value)
         value= math.floor(value)
@@ -700,7 +700,7 @@ local function Init_Options()
     end})
     unitIsMeY:SetPoint("LEFT", unitIsMeX, 'RIGHT',15,0)
 
-    local unitIsMeSize = WoWTools_PanelMixin:Slider(Frame, {min=2, max=64, value=Save().unitIsMeSize, setp=1, w= 100, color=false,
+    local unitIsMeSize = WoWTools_SliderMixin:CSlider(Frame, {min=2, max=64, value=Save().unitIsMeSize, setp=1, w= 100, color=false,
     text= WoWTools_DataMixin.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
     func=function(self2, value)
         value= math.floor(value)
@@ -802,7 +802,7 @@ local function Init()
         disabled= Save().disabled
     })
 
-    WoWTools_PanelMixin:ReloadButton({panel=Frame, addName= WoWTools_TargetMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+    WoWTools_ButtonMixin:ReloadButton({panel=Frame, addName= WoWTools_TargetMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
         disabledfunc=function()
             Save().disabled= not Save().disabled and true or nil
 

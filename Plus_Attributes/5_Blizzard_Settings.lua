@@ -155,7 +155,7 @@ local function Init(panel)--设置 panel
             current.name= info.name
 
             --位数，bit
-            local sliderBit=WoWTools_PanelMixin:Slider(panel, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
+            local sliderBit=WoWTools_SliderMixin:CSlider(panel, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
                 text= WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '位数' or 'bit'),
                 func=function(self, value)
                     value= math.floor(value)
@@ -302,7 +302,7 @@ local function Init(panel)--设置 panel
     end)
 
     --bar, 宽度
-    local sliderX=WoWTools_PanelMixin:Slider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.x, setp=1, color=nil,
+    local sliderX=WoWTools_SliderMixin:CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.x, setp=1, color=nil,
         text='X',
         func=function(self, value)
             value= math.floor(value)
@@ -317,7 +317,7 @@ local function Init(panel)--设置 panel
     sliderX.text= text
 
     --bar, 宽度
-    local sliderY= WoWTools_PanelMixin:Slider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.y, setp=1, color=true,
+    local sliderY= WoWTools_SliderMixin:CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.y, setp=1, color=true,
         text='Y', func=function(self, value, userInput)
             value= math.floor(value)
             self:SetValue(value)
@@ -391,7 +391,7 @@ local function Init(panel)--设置 panel
     end)
 
     --位数，bit
-    local sliderBit= WoWTools_PanelMixin:Slider(panel, {w=100 ,h=20, min=0, max=3, value=Save().bit or 0, setp=1, color=nil,
+    local sliderBit= WoWTools_SliderMixin:CSlider(panel, {w=100 ,h=20, min=0, max=3, value=Save().bit or 0, setp=1, color=nil,
         text=(WoWTools_DataMixin.onlyChinese and '位数' or 'bit'),
         func=function(self, value)
             value= math.ceil(value)
@@ -505,7 +505,7 @@ local function Init(panel)--设置 panel
     end)
 
     --bar, 宽度
-    local barWidth= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=-119, max=250, value=Save().barWidth, setp=1, color=nil,
+    local barWidth= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=-119, max=250, value=Save().barWidth, setp=1, color=nil,
         text=WoWTools_DataMixin.onlyChinese and '宽' or WIDE,
         func=function(self, value)
             value= math.floor(value)
@@ -518,7 +518,7 @@ local function Init(panel)--设置 panel
     barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
 
     --bar, x
-    local barX= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=-250, max=250, value=Save().barX, setp=1, color=true,
+    local barX= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=-250, max=250, value=Save().barX, setp=1, color=true,
         text='X',
         func=function(self, value)
             value= math.floor(value)
@@ -541,7 +541,7 @@ local function Init(panel)--设置 panel
     end)
 
     --间隔，上下
-    local slider= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=-5, max=10, value=Save().vertical, setp=0.1, color=nil,
+    local slider= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=-5, max=10, value=Save().vertical, setp=0.1, color=nil,
         text='|T450907:0|t|T450905:0|t',
         func=function(self, value)
             value= tonumber(format('%.1f', value))
@@ -555,7 +555,7 @@ local function Init(panel)--设置 panel
     slider:SetPoint("TOPLEFT", barToLeft, 'BOTTOMLEFT', 0,-80)
 
     --间隔，左右
-    local slider2= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=-0.1, max=40, value=Save().horizontal, setp=0.1, color=true,
+    local slider2= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=-0.1, max=40, value=Save().horizontal, setp=0.1, color=true,
         text='|T450908:0|t|T450906:0|t',
         func=function(self, value)
             value= tonumber(format('%.1f', value))
@@ -569,7 +569,7 @@ local function Init(panel)--设置 panel
     slider2:SetPoint("LEFT", slider, 'RIGHT', 10,0)
 
     --文本，截取
-    local slider3= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=0, max=20, value=Save().gsubText or 0, setp=1, color=nil,
+    local slider3= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=0, max=20, value=Save().gsubText or 0, setp=1, color=nil,
         text=WoWTools_DataMixin.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT,
         func=function(self, value, userInput)
             value= math.floor(value)
@@ -629,7 +629,7 @@ local function Init(panel)--设置 panel
     end)
 
     --缩放
-    local slider4= WoWTools_PanelMixin:Slider(panel, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
+    local slider4= WoWTools_SliderMixin:CSlider(panel, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
         text=WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
         func=function(self, value)
             value= tonumber(format('%.1f', value)) or 1
@@ -643,7 +643,7 @@ local function Init(panel)--设置 panel
     slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
 
 
-    local sliderButtonAlpha = WoWTools_PanelMixin:Slider(panel, {min=0, max=1, value=Save().buttonAlpha or 0.3, setp=0.1, color=true,
+    local sliderButtonAlpha = WoWTools_SliderMixin:CSlider(panel, {min=0, max=1, value=Save().buttonAlpha or 0.3, setp=0.1, color=true,
     text=WoWTools_DataMixin.onlyChinese and '专精透明度' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Alpha'),
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -656,7 +656,7 @@ local function Init(panel)--设置 panel
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
-    local sliderButtonScale = WoWTools_PanelMixin:Slider(panel, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
+    local sliderButtonScale = WoWTools_SliderMixin:CSlider(panel, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
     text=WoWTools_DataMixin.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
     func=function(self, value)
         value= tonumber(format('%.01f', value))

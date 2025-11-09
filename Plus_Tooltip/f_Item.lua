@@ -68,7 +68,19 @@ end
 
 
 
-
+local function Get_SlotLevel(slot)
+    local level
+    for _, slotID in ipairs(slot) do
+        local itemLink= GetInventoryItemLink('player', slotID)
+        if itemLink then
+            local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or 0
+            if itemLevel>1 then
+                level= (not level or itemLevel<level) and itemLevel or level
+            end
+        end
+    end
+    return level or 0
+end
 
 
 local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
@@ -77,9 +89,9 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
     itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
     if itemLevel and itemLevel>1 then
 --比较装等
-        local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
-        if slot then
-            local slotTexture= select(2, WoWTools_ItemMixin:GetEquipSlotIcon(slot))
+        local slot= {WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}
+        if slot[1] then
+            local slotTexture= select(2, WoWTools_ItemMixin:GetEquipSlotIcon(slot[1]))
             if slotTexture then
                 tooltip.Portrait:SetTexture(slotTexture)
                 tooltip.Portrait:SetShown(true)
@@ -87,25 +99,25 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
 --栏位
             tooltip:AddDoubleLine(
                 (WoWTools_TextMixin:CN(_G[itemEquipLoc]) or '')..' |cffffffff'..(itemEquipLoc or ''),
-                ( WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' |cffffffff'..slot
+                ( WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' |cffffffff'..slot[1]
             )
 
-            local slotLink=GetInventoryItemLink('player', slot)
+            local slotItemLevel= Get_SlotLevel(slot)
+
             local text
-            if slotLink then
-                local slotItemLevel= C_Item.GetDetailedItemLevelInfo(slotLink)
-                if slotItemLevel then
-                    local num=itemLevel-slotItemLevel
-                    if num>0 then
-                        text=itemLevel..'|A:bags-greenarrow:0:0|a'..'|cnGREEN_FONT_COLOR:+'..num..'|r'
-                    elseif num<0 then
-                        text=itemLevel..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..'|cnWARNING_FONT_COLOR:'..num..'|r'
-                    end
+            if slotItemLevel>0 then
+                local num=itemLevel-slotItemLevel
+                if num>0 then
+                    text=itemLevel..'|A:bags-greenarrow:0:0|a'..'|cnGREEN_FONT_COLOR:+'..num..'|r'
+                elseif num<0 then
+                    text=itemLevel..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..'|cnWARNING_FONT_COLOR:'..num..'|r'
                 end
             else
                 text=itemLevel..'|A:bags-greenarrow:0:0|a'
             end
+
             text= col..(text or itemLevel)..'|r'
+
             textLeft=text
         end
     end

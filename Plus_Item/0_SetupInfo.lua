@@ -105,10 +105,12 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
         return itemLevel
     end
 
+    local isTimerunning= PlayerIsTimerunning()
+
     local upLevel, downLevel
     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
     if itemLinkPlayer then
-        if PlayerIsTimerunning() then
+        if isTimerunning then
             local numItem, numPlayer= 0, 0
             for _, num in pairs(C_Item.GetItemStats(itemLink) or {}) do
                 numItem= numItem +num
@@ -150,7 +152,8 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     else
         upLevel=true
     end
-    if upLevel or downLevel or PlayerIsTimerunning() then
+
+    if upLevel or downLevel or isTimerunning then
         return (upLevel and '|cnGREEN_FONT_COLOR:' or (downLevel and '|cnWARNING_FONT_COLOR:') or  '|cffffffff')
                 ..itemLevel..'|r'
     end
@@ -213,7 +216,7 @@ local function Create_Label(frame, tab)
         tab.size= Save().size or 10
     end
 
-    local font= Save().font or 'ChatFontNormal'--'SystemFont_Shadow_Small_Outline'
+    local font= 'ChatFontNormal'--'SystemFont_Shadow_Small_Outline'
     local layer= 'OVERLAY'
 
 --右边

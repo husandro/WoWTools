@@ -714,7 +714,7 @@ local function Init(isShow)
 
 
     --图标大小, 设置
-    List.Size= WoWTools_PanelMixin:Slider(Frame, {min=8, max=72, value=Save().Gossip_Text_Icon_Size, setp=1, color=false, w=255,
+    List.Size= WoWTools_SliderMixin:CSlider(Frame, {min=8, max=72, value=Save().Gossip_Text_Icon_Size, setp=1, color=false, w=255,
         text= WoWTools_DataMixin.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
         func=function(frame, value)
             value= math.modf(value)

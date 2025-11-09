@@ -116,7 +116,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
             
 
-            WoWTools_PanelMixin:ReloadButton({panel=self, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            WoWTools_ButtonMixin:ReloadButton({panel=self, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save().disabled = not Save().disabled and true or nil
                     if not Save().disabled then

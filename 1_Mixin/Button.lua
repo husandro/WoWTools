@@ -317,3 +317,81 @@ function WoWTools_ButtonMixin:Menu(frame, tab)
 
     return btn
 end
+
+
+
+
+--重新加载UI, 重置, 按钮
+function WoWTools_ButtonMixin:ReloadButton(tab)
+    local rest= self:Cbtn(tab.panel, {isUI=true, size=25})
+    rest:SetNormalAtlas('bags-button-autosort-up')
+    rest:SetPushedAtlas('bags-button-autosort-down')
+    rest:SetPoint('TOPRIGHT',0,8)
+    rest.addName=tab.addName
+    rest.func=tab.clearfunc
+    rest.clearTips=tab.clearTips
+    rest:SetScript('OnClick', function(frame)
+        StaticPopup_Show('WoWTools_RestData',
+        (frame.addName or '')..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+        nil, frame.func)
+    end)
+    rest:SetScript('OnLeave', GameTooltip_Hide)
+    rest:SetScript('OnEnter', function(frame)
+        GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(frame.clearTips or (WoWTools_DataMixin.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, frame.addName)
+        GameTooltip:Show()
+    end)
+
+    local reload
+    if tab.reload then
+        reload= self:Cbtn(tab.panel, {isUI=true, size=25})
+        reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
+        reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
+        reload:SetPoint('TOPLEFT',-12, 8)
+        reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
+        reload.addName=tab.addName
+        reload:SetScript('OnLeave', GameTooltip_Hide)
+        reload:SetScript('OnEnter', function(frame)
+            GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, frame.addName)
+            GameTooltip:Show()
+        end)
+    end
+    if tab.disabledfunc then
+        local check=self:Cbtn(tab.panel, {
+            isCheck=true,
+            text=WoWTools_TextMixin:GetEnabeleDisable(true),
+            isRightText=true,
+        })
+        --check.Text:SetText(WoWTools_TextMixin:GetEnabeleDisable(true))
+        check:SetChecked(tab.checked)
+        if reload then
+            check:SetPoint('LEFT', reload, 'RIGHT')
+        else
+            check:SetPoint('TOPLEFT',-12, 8)
+        end
+        check:SetScript('OnClick', tab.disabledfunc)
+        check:SetScript('OnLeave', GameTooltip_Hide)
+        check.addName= tab.addName
+        check:SetScript('OnEnter', function(frame)
+            GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, frame.addName)
+            GameTooltip:Show()
+        end)
+    end
+    if tab.restTips then
+        local needReload= WoWTools_LabelMixin:Create(tab.panel)
+        needReload:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..'|A:common-icon-rotateleft:0:0|a')
+        needReload:SetPoint('BOTTOMRIGHT')
+        needReload:SetTextColor(0,1,0)
+    end
+end

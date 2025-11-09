@@ -182,11 +182,8 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
             setID= select(16 , C_Item.GetItemInfo(link))--套装
             if setID and not frame.setIDItem then
                 frame.setIDItem= frame:CreateTexture()
-                frame.setIDItem:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                --frame.setIDItem:SetPoint('TOPLEFT', -4, 3)
-                --frame.setIDItem:SetPoint('BOTTOMRIGHT', 4, -3)
+                frame.setIDItem:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
                 frame.setIDItem:SetAllPoints(point)
-                --frame.setIDItem:SetAlpha(0.75)
             end
         end
 
@@ -549,30 +546,6 @@ end
 
 
 
-
-
-
-
---[[
-	if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemIDOrLink) then
-		button.IconOverlay:SetAtlas("AzeriteIconFrame");
-
-	elseif C_Item.IsCorruptedItem(itemIDOrLink) then
-		button.IconOverlay:SetAtlas("Nzoth-inventory-icon");
-
-	elseif C_Item.IsCosmeticItem(itemIDOrLink) then
-		button.IconOverlay:SetAtlas("CosmeticIconFrame");
-
-	elseif C_Soulbinds.IsItemConduitByItemInfo(itemIDOrLink) then
-		button.IconOverlay:SetAtlas("ConduitIconFrame");
-
-		if button.IconOverlay2 then
-			button.IconOverlay2:SetAtlas("ConduitIconFrame-Corners");
-			button.IconOverlay2:Show();
-		end
-	elseif C_Item.IsCurioItem(itemIDOrLink) then
-		button.IconOverlay:SetAtlas("delves-curios-icon-border");
-]]
 
 
 

@@ -98,16 +98,18 @@ local function select_Reward(questID)--自动:选择奖励
                     and itemQuality and itemQuality<4--最高 稀有的 3
                     and not C_Item.IsCosmeticItem(itemLink)--装饰品
                 then
-                    local invSlot = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
-                    if invSlot and itemLevel and itemLevel>1 then--装等
-                        local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
-                        if itemLinkPlayer then
-                            local lv=C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
-                            if lv and lv>1 and itemLevel-lv>0 and (bestLevel and bestLevel<lv or not bestLevel) then
-                                bestLevel=lv
-                                bestItem = i
-                                selectItemLink=itemLink
-                                upItem=true
+                    if itemLevel and itemLevel>1 then
+                        for _, invSlot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do
+                            local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
+                            if itemLinkPlayer then
+                                local lv=C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
+                                if lv and lv>1 and itemLevel-lv>0 and (bestLevel and bestLevel<lv or not bestLevel) then
+                                    bestLevel= lv
+                                    bestItem = i
+                                    selectItemLink=itemLink
+                                    upItem=true
+                                    break
+                                end
                             end
                         end
                     end
@@ -133,6 +135,7 @@ local function select_Reward(questID)--自动:选择奖励
             end
         end
     end
+
     if bestItem and not IsModifierKeyDown() then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then

@@ -69,9 +69,8 @@ local function set_ROLL_Check(frame, notPrint)
     end
 
     local itemID, _, _, itemEquipLoc, _, classID, subclassID = C_Item.GetItemInfoInstant(link)
-    local slot=WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)--比较装等
-    if slot then
-        local slotLink=GetInventoryItemLink('player', slot)
+    for _, slot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do--比较装等
+        local slotLink= GetInventoryItemLink('player', slot)
         if slotLink then
             local slotItemLevel= C_Item.GetDetailedItemLevelInfo(slotLink) or 0
             local itemLevel= C_Item.GetDetailedItemLevelInfo(link)
@@ -82,12 +81,10 @@ local function set_ROLL_Check(frame, notPrint)
                     return
                 end
             end
-        --else--没有装备
-            --set_RollOnLoot(rollID, 1, link)
-            --return
         end
+    end
 
-    elseif classID==15 and subclassID==2 then--宠物物品
+    if classID==15 and subclassID==2 then--宠物物品
         set_RollOnLoot(rollID, 1, link, notPrint)
         return
 

@@ -15,7 +15,7 @@ local function Init_Panel()
 
 --字体
     WoWTools_PanelMixin:OnlySlider({
-        name= WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE,
+        name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
         GetValue= function() return Save().size or 10 end,
         minValue= 6,
         maxValue= 18,
@@ -26,7 +26,6 @@ local function Init_Panel()
             Save().size= value2 or 10
         end
     })
-
 
     Init_Panel=function()end
 end
