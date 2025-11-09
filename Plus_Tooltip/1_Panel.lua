@@ -328,6 +328,8 @@ local function Init_Panel()
                 }) end,
         category= Category
     })
+
+    Init_Panel=function()end
 end
     --[[root= WoWTools_PanelMixin:OnlyCheck({
         name= (WoWTools_DataMixin.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
@@ -377,7 +379,7 @@ function WoWTools_TooltipMixin:Init_Category()
         category= Category,
         func= function()
             Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_DataMixin.addName, self.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(self.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end

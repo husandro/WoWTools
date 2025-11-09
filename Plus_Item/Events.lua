@@ -71,12 +71,12 @@ function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
         for _, btn in pairs(frame:GetFrames()) do
             if btn.itemID then
                 local itemLink= WoWTools_ItemMixin:GetLink(btn.itemID)
-                WoWTools_ItemMixin:SetupInfo(btn.ContentsContainer, itemLink and {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12} or nil)
+                WoWTools_ItemMixin:SetupInfo(btn.ContentsContainer, itemLink and {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=2} or nil)
             elseif btn.GetItemInfo then--10.2
                 local itemInfo=btn:GetItemInfo()
                 if itemInfo then
                     local itemLink= WoWTools_ItemMixin:GetLink(itemInfo.itemID)
-                    WoWTools_ItemMixin:SetupInfo(btn.ContentsContainer, itemLink and {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12} or nil)
+                    WoWTools_ItemMixin:SetupInfo(btn.ContentsContainer, itemLink and {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=2} or nil)
                 end
             end
 --双击， 移队/加入购物车
@@ -90,7 +90,7 @@ function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
         if PerksProgramFrame.GetFrozenItemFrame then
             local f= PerksProgramFrame:GetFrozenItemFrame()
             if f then
-                WoWTools_ItemMixin:SetupInfo(f.FrozenButton, f.FrozenButton.itemID and {itemLink=WoWTools_ItemMixin:GetLink(f.FrozenButton.itemID), size=12} or nil)
+                WoWTools_ItemMixin:SetupInfo(f.FrozenButton, f.FrozenButton.itemID and {itemLink=WoWTools_ItemMixin:GetLink(f.FrozenButton.itemID), size=2} or nil)
             end
         end
     end

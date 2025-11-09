@@ -96,7 +96,11 @@ TypeTabs= {
             end
         end
         data:SetSortComparator(function(v1, v2)
-            return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
+            if not v1 or not v2 then
+                return false
+            else
+                return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
+            end
         end)
         return data, WoWTools_DataMixin:MK(num, 3)
     end,
@@ -196,7 +200,11 @@ TypeTabs= {
             end
         end
         data:SetSortComparator(function(v1, v2)
-            return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
+            if not v1 or not v2 then
+                return false
+            else
+                return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
+            end
         end)
         return data, WoWTools_DataMixin:MK(num, 3)
     end,
@@ -274,7 +282,11 @@ TypeTabs= {
             end
         end
         data:SetSortComparator(function(v1, v2)
-            return v1.currencyID>v2.currencyID
+            if not v1 or not v2 then
+                return false
+            else
+                return v1.currencyID>v2.currencyID
+            end
         end)
         return data, WoWTools_DataMixin:MK(num, 3)
     end,
@@ -356,9 +368,12 @@ TypeTabs= {
             isAccunt= true,
             money=account,
         })
-
         data:SetSortComparator(function(v1, v2)
-            return v1.isAccunt or v1.money> v2.money
+            if not v1 or not v2 then
+                return false
+            else
+                return v1.isAccunt or v1.money> v2.money
+            end
         end)
 
         return data, WoWTools_DataMixin:MK(num/10000, 3)
@@ -435,7 +450,11 @@ TypeTabs= {
         end
 
         data:SetSortComparator(function(v1, v2)
-            return v1.totalTime> v2.totalTime
+            if not v1 or not v2 then
+                return false
+            else
+                return v1.totalTime> v2.totalTime
+            end
         end)
 
         return data, WoWTools_TimeMixin:SecondsToFullTime(num)
@@ -2129,7 +2148,7 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
         )
         if s.tip then
             if type(s.tip)=='function' then
-                s.tooltip(GameTooltip, s)
+                s.tip(GameTooltip, s)
             else
                 GameTooltip:AddLine(s.tip)
             end

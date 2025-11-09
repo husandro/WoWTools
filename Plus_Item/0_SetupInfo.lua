@@ -190,12 +190,13 @@ end
 
 
 local function Set_Label(label, tab)
-    local size= tab.size or 10
+    local font
     if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
-        label:SetFont('Fonts\\ARHei.ttf', size, 'OUTLINE')
+        font= 'Fonts\\ARHei.ttf'
     else
-        label:SetFontHeight(size)
+        font= label:GetFont()
     end
+    label:SetFont(font, tab.size, 'OUTLINE')
     label:SetTextColor(1,1,1,1)
 end
 
@@ -206,8 +207,13 @@ end
 
 local function Create_Label(frame, tab)
     tab= tab or {}
+    if tab.size then
+        tab.size= tab.size + (Save().size or 10)
+    else
+        tab.size= Save().size or 10
+    end
 
-    local font= 'SystemFont_Shadow_Small_Outline'
+    local font= Save().font or 'ChatFontNormal'--'SystemFont_Shadow_Small_Outline'
     local layer= 'OVERLAY'
 
 --右边
