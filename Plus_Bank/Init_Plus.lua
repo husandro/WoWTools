@@ -451,12 +451,10 @@ local function Init_ItemInfo()
 
     local function Settings(self)
         if C_Bank.AreAnyBankTypesViewable() then
-            WoWTools_ItemMixin:SetupInfo(self, {
-                bag={
-                    bag= self:GetBankTabID(),
-                    slot= self:GetContainerSlotID()
-                }
-            })
+            local bag= self:GetBankTabID() or -1
+            local slot= self:GetContainerSlotID() or -1
+            local hasItem= C_Container.HasContainerItem(bag, slot)
+            WoWTools_ItemMixin:SetupInfo(self, hasItem and {bag={bag=bag, slot=slot}} or nil)
         end
     end
 
