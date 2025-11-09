@@ -98,7 +98,7 @@ local function Init_Options()
 
 
 
-    WoWTools_DataMixin:OnlySlider({
+    WoWTools_PanelMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
         GetValue= function() return Save().chatBubbleSacal or 0.85 end,
         minValue= 0.3,
@@ -118,7 +118,7 @@ local function Init_Options()
 
 
 
-    WoWTools_DataMixin:Check_Slider({
+    WoWTools_PanelMixin:Check_Slider({
         checkName= (WoWTools_DataMixin.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
         checkGetValue= function() return Save().classPowerNum end,
         tooltip= tooltip,

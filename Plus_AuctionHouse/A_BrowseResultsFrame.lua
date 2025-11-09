@@ -243,6 +243,9 @@ local function Init()
     Init=function()end
 end
 
+function WoWTools_ItemMixin.Events:Blizzard_AuctionHouseUI()
+    
+end
 
 function WoWTools_AuctionHouseMixin:Init_BrowseResultsFrame()
     Init()

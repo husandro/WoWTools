@@ -32,6 +32,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Data\5_MapIDAchievements.lua
 0_Data\z_WoWItemList.lua
 
+1_Mixin\PanelMixin.lua
 1_Mixin\StaticPopupDialogs.lua
 1_Mixin\Button.lua
 1_Mixin\Cooldown.lua
@@ -47,13 +48,12 @@ Source\Libs\LibRangeCheck-3.0.lua
 1_Mixin\Menu.lua
 1_Mixin\Quest.lua
 1_Mixin\Random.lua
-##美服，欧服，服器语言，提示
-1_Mixin\Realm.lua
 1_Mixin\Text.lua
 1_Mixin\Time.lua
 1_Mixin\SetTooltip.lua
 1_Mixin\SetTooltip_Faction.lua
-1_Mixin\PanelMixin.lua
+##美服，欧服，服器语言，提示
+1_Mixin\Realm.lua
 
 ##模板
 2_Template\Button.xml

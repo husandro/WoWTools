@@ -1582,22 +1582,31 @@ function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
         if p then
 
             self:SetFrame(p.BG, {notAlpha=true})
+            self:SetAlphaColor(p.Separator, true)
 
             local edit= _G['StaticPopup'..i..'EditBox']
             if edit then
                 self:SetEditBox(edit)
                 self:SetNineSlice(edit, 1)
             end
-            --标准按钮
+
             self:SetUIButton(p:GetButton1())
             self:SetUIButton(p:GetButton2())
-            self:SetUIButton(p:GetButton3())--_G['StaticPopup'..i..'Button3'])
+            self:SetUIButton(p:GetButton3())
             self:SetUIButton(p:GetButton4())
             self:SetUIButton(_G['StaticPopup'..i..'ExtraButton'])
 
-            if _G['StaticPopup'..i] then
-                self:SetAlphaColor(_G['StaticPopup'..i].Separator, true)
-            end
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameGoldLeft'], true)
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameGoldMiddle'], true)
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameGoldRight'], true)
+
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameSilverLeft'], true)
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameSilverMiddle'], true)
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameSilverRight'], true)
+
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameCopperLeft'], true)
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameCopperMiddle'], true)
+            self:SetAlphaColor(_G['StaticPopup'..i..'MoneyInputFrameCopperRight'], true)
         end
     end
 end

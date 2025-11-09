@@ -55,7 +55,7 @@ local function Init_Panel()
         end
     })
 
-    WoWTools_DataMixin:OnlySlider({
+    WoWTools_PanelMixin:OnlySlider({
         name= 'X',
         GetValue= function() return Save().cursorX or 0 end,
         minValue= -240,
@@ -71,7 +71,7 @@ local function Init_Panel()
     }, root)
    
 
-    WoWTools_DataMixin:OnlySlider({
+    WoWTools_PanelMixin:OnlySlider({
         name= 'Y',
         GetValue= function() return Save().cursorY or 0 end,
         minValue= -240,
@@ -147,7 +147,7 @@ local function Init_Panel()
         end
     }, root)
 ]]
-    WoWTools_DataMixin:OnlySlider({
+    WoWTools_PanelMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_BAGS_SIZE,
         GetValue= function() return Save().modelSize or 100 end,
         minValue= 40,
@@ -162,7 +162,7 @@ local function Init_Panel()
         end
     }, root)
 
-    WoWTools_DataMixin:OnlySlider({
+    WoWTools_PanelMixin:OnlySlider({
         name= 'X',
         GetValue= function() return Save().modelX or 0 end,
         minValue= -240,
@@ -177,7 +177,7 @@ local function Init_Panel()
         end
     }, root)
 
-    WoWTools_DataMixin:OnlySlider({
+    WoWTools_PanelMixin:OnlySlider({
         name= 'Y',
         GetValue= function() return Save().modelY or -24 end,
         minValue= -240,
@@ -192,7 +192,7 @@ local function Init_Panel()
         end
     }, root)
 
-    WoWTools_DataMixin:OnlySlider({
+    WoWTools_PanelMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
         GetValue= function() return Save().modelFacing or -24 end,
         minValue= -1,
@@ -254,7 +254,7 @@ local function Init_Panel()
 
 
 
-    WoWTools_DataMixin:OnlySlider({
+    WoWTools_PanelMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
         GetValue= function() return Save().iconSize or 0 end,
         minValue= 0,

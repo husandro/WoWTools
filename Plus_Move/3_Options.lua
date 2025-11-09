@@ -69,7 +69,7 @@ local function Init()
     }, sub)
 
 
-    WoWTools_DataMixin:Check_Slider({
+    WoWTools_PanelMixin:Check_Slider({
         checkName= WoWTools_DataMixin.onlyChinese and '移动时Frame透明' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'),
         checkGetValue= function() return not Save().notMoveAlpha end,
         checkTooltip= WoWTools_DataMixin.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),

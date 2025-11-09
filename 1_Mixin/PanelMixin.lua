@@ -14,8 +14,8 @@ WoWTools_PanelMixin:OnlyButton(tab)
 WoWTools_PanelMixin:OnlyMenu(tab)
 WoWTools_PanelMixin:CheckMenu(tab, root)
 WoWTools_PanelMixin:Check_Button(tab)
-WoWTools_DataMixin:Check_Slider(tab)
-WoWTools_DataMixin:OnlySlider(tab)
+WoWTools_PanelMixin:Check_Slider(tab)
+WoWTools_PanelMixin:OnlySlider(tab)
 
 
 sub:AddSearchTags(bindingName)
@@ -484,7 +484,7 @@ end
 
 
 
-function WoWTools_DataMixin:Check_Slider(tab, root)
+function WoWTools_PanelMixin:Check_Slider(tab, root)
     local layout= tab.layout or Layout
     local checkSetting=Settings.RegisterProxySetting(
         tab.category or Category,
@@ -534,7 +534,7 @@ end
 
 
 --添加，划动条
-function WoWTools_DataMixin:OnlySlider(tab, root)
+function WoWTools_PanelMixin:OnlySlider(tab, root)
     local setting = Settings.RegisterProxySetting(
         tab.category or Category,
         Set_VariableIndex(),

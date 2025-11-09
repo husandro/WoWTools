@@ -6406,7 +6406,9 @@
         "QUEST_TEMPLATE_DETAIL",
         "QUEST_TEMPLATE_LOG",
         "QUEST_TEMPLATE_REWARD",
-        "QUEST_TEMPLATE_MAP_DETAILS"
+        "QUEST_TEMPLATE_MAP_DETAILS",
+        "StaticPopup1MoneyInputFrameGold",
+        "GUILD_DUP_RANK"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
