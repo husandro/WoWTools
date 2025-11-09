@@ -23,7 +23,7 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
 local ITEM_SPELL_KNOWN= ITEM_SPELL_KNOWN
 
-local size= 10--字体大小
+--local size= 10--字体大小
 
 local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
         ['INVTYPE_WEAPON']= true,
@@ -189,8 +189,15 @@ end
 
 
 
-
-
+local function Set_Label(label, tab)
+    local size= tab.size or 10
+    if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
+        label:SetFont('Fonts\\ARHei.ttf', size, 'OUTLINE')
+    else
+        label:SetFontHeight(size)
+    end
+    label:SetTextColor(1,1,1,1)
+end
 
 
 
@@ -198,43 +205,50 @@ end
 
 
 local function Create_Label(frame, tab)
-    local labelInfo={
-        size=tab.size or size,
-        color=tab.color or {r=1, g=1, b=1},
-    }
+    tab= tab or {}
 
-    --local font= Save().fontName or 'Gamefont'
+    local font= 'SystemFont_Shadow_Small_Outline'
+    local layer= 'OVERLAY'
 
-    frame.topLeftText= WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.topLeftText:SetPoint('TOPLEFT', tab.point or frame)
+--右边
+    frame.topRightText= frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.topRightText:SetPoint('TOPRIGHT', tab.point or frame, 2, 1)
+    Set_Label(frame.topRightText, tab)
+    frame.topRightText:SetJustifyH('RIGHT')
 
-    frame.leftText=WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.leftText:SetPoint('LEFT', tab.point or frame)
+    frame.rightText= frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.rightText:SetPoint('RIGHT', tab.point or frame, 2, 0)
+    Set_Label(frame.rightText, tab)
+    frame.rightText:SetJustifyH('RIGHT')
 
-    frame.bottomLeftText=WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.bottomLeftText:SetPoint('BOTTOMLEFT', tab.point or frame)
+    frame.bottomRightText= frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.bottomRightText:SetPoint('BOTTOMRIGHT', tab.point or frame, 2, -1)
+    Set_Label(frame.bottomRightText, tab)
+    frame.bottomRightText:SetJustifyH('RIGHT')
 
+--左边
+    frame.topLeftText= frame:CreateFontString(nil, layer, font) --WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.topLeftText:SetPoint('TOPLEFT', tab.point or frame, -2, 1)
+    Set_Label(frame.topLeftText, tab)
 
-    frame.topRightText=WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.topRightText:SetPoint('TOPRIGHT', tab.point or frame, 2,0)
+    frame.leftText= frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.leftText:SetPoint('LEFT', tab.point or frame, -2, 0)
+    Set_Label(frame.leftText, tab)
 
-    frame.rightText=WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.rightText:SetPoint('RIGHT', tab.point or frame)
-
-    frame.bottomRightText=WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.bottomRightText:SetPoint('BOTTOMRIGHT', tab.point or frame)
-
+    frame.bottomLeftText=frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.bottomLeftText:SetPoint('BOTTOMLEFT', tab.point or frame, -2, -1)
+    Set_Label(frame.bottomLeftText, tab)
 
     frame.setIDItem=frame:CreateTexture()
     frame.setIDItem:SetPoint('TOPLEFT', -4, 4)
     frame.setIDItem:SetPoint('BOTTOMRIGHT', 4, -4)
     frame.setIDItem:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
+    frame.setIDItem:Hide()
 
     if frame.Count then
         frame.Count:ClearAllPoints()
         frame.Count:SetPoint('BOTTOMRIGHT')
     end
-
 end
 
 local function Clear_Label(frame)
@@ -764,7 +778,7 @@ end
 
 
 function WoWTools_ItemMixin:SetupInfo(frame, tab)
-    if not frame or not frame:IsVisible() then
+    if not frame then
         return
 
     elseif not tab then
