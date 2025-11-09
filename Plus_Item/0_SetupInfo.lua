@@ -789,10 +789,13 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
     elseif not tab then
         Clear_Label(frame)
         return
-
+    elseif frame.isSetItemInfo then
+        return
     elseif not frame.topRightText then
         Create_Label(frame, tab)
     end
+
+    frame.isSetItemInfo=true
 
     local topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem= Get_Info(tab or {})
 
@@ -817,6 +820,7 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
     if frame.Count and frame.Count:GetText()=='1000' then
         frame.Count:SetText('1k')
     end
+    frame.isSetItemInfo= nil
 end
 
 

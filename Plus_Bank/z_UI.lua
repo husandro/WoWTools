@@ -36,6 +36,8 @@ function WoWTools_TextureMixin.Frames:BankFrame()
 
 --TabSettingsMenu
     self:SetIconSelectFrame(BankPanel.TabSettingsMenu)
+    self:SetUIButton(BankPanel.TabSettingsMenu.BorderBox.OkayButton)
+    self:SetUIButton(BankPanel.TabSettingsMenu.BorderBox.CancelButton)
 
 --button
     WoWTools_DataMixin:Hook(BankPanelItemButtonMixin, 'OnLoad', function(btn)

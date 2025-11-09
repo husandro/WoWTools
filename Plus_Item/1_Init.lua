@@ -42,7 +42,7 @@ local function Init_Panel()
     for _, tab in pairs({
         {name= 'bag', tip= WoWTools_DataMixin.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL},
     }) do
-
+        
     end
 
     Init_Panel=function()end
