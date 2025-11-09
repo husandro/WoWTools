@@ -1,5 +1,5 @@
 local function Save()
-    return WoWToolsSave['Plus_ItemInfo'] or {}
+    return WoWToolsSave['Plus_ItemInfo']
 end
 
 
@@ -14,7 +14,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or {}
-            P_Save= nil
 
             WoWTools_ItemMixin.addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 

@@ -7,6 +7,9 @@ WoWTools_ItemMixin:SetupInfo(itemButton, {
     point= region,
 })
 ]]
+local function Save()
+    return WoWToolsSave['Plus_ItemInfo']
+end
 
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
@@ -200,8 +203,9 @@ local function Create_Label(frame, tab)
         color=tab.color or {r=1, g=1, b=1},
     }
 
+    --local font= Save().fontName or 'Gamefont'
 
-    frame.topLeftText=WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.topLeftText= WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.topLeftText:SetPoint('TOPLEFT', tab.point or frame)
 
     frame.leftText=WoWTools_LabelMixin:Create(frame, labelInfo)
