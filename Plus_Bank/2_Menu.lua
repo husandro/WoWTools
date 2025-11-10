@@ -56,10 +56,35 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
---重新加载UI
     sub:CreateDivider()
-    WoWTools_MenuMixin:Reload(sub)
-
+    for _, tab in pairs({
+        {value='bankAutoDepositReagents', name=WoWTools_DataMixin.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL},
+        {value='bankConfirmTabCleanUp', name=WoWTools_DataMixin.onlyChinese and '你确定要自动整理你的物品吗？|n该操作会影响所有的标签。' or BANK_CONFIRM_CLEANUP_PROMPT},
+    })do
+        sub2= sub:CreateCheckbox(
+            tab.value,
+        function(data)
+            return C_CVar.GetCVarBool(data.value)
+        end, function(data)
+            if not InCombatLockdown() then
+                C_CVar.SetCVar(data.value, C_CVar.GetCVarBool(data.value) and '0' or '1')
+            end
+        end, tab)
+        sub2:AddInitializer(function(btn, desc)
+            btn:RegisterEvent('CVAR_UPDATE')
+            btn:SetScript('OnEvent', function(b, _, cvarName, value)
+                if cvarName==desc.data.value then
+                    b.leftTexture2:SetShown(value=='1')
+                end
+            end)
+            btn:SetScript('OnHide', function(b)
+                b:UnregisterEvent('CVAR_UPDATE')
+            end)
+        end)
+        sub2:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(desc.data.name)
+        end)
+    end
 
 
 
@@ -69,7 +94,8 @@ local function Init_Menu(self, root)
 --转化为联合的大包
     root:CreateSpacer()
     sub=root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED,
+        '|cnWARNING_FONT_COLOR:'
+        ..(WoWTools_DataMixin.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED),
     function()
         return Save().allBank
     end, function()
@@ -84,6 +110,9 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+        GameTooltip_AddErrorLine(tooltip,
+            WoWTools_DataMixin.onlyChinese and '“物品信息”同时打，会卡' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)..': '..(TICKET_TYPE3 or 'Bug'))
+        )
     end)
 
 
@@ -129,11 +158,12 @@ local function Init_Menu(self, root)
 
 
 
---打开选项界面
+
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
 --重新加载UI
-    WoWTools_MenuMixin:Reload(sub)
+    WoWTools_MenuMixin:Reload(root)
+--打开选项界面
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
 end
 
 

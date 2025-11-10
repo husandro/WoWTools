@@ -5,6 +5,7 @@ function WoWTools_TextureMixin.Frames:BankFrame()
     self:SetUIButton(BankPanel.MoneyFrame.DepositButton)
     self:SetUIButton(BankPanel.PurchasePrompt.TabCostFrame.PurchaseButton)
     self:SetButton(BankFrameCloseButton)
+    self:SetCheckBox(BankPanel.AutoDepositFrame.IncludeReagentsCheckbox)
 
 --下面Tab
     self:SetTabButton(BankFrame)

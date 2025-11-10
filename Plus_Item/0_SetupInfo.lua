@@ -325,7 +325,7 @@ local function Get_Info(tab)
         end
 
     elseif tab.bag then
-        containerInfo = C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
+        containerInfo = C_Container.GetContainerItemInfo(tab.bag.bag or -1, tab.bag.slot or -1)
         if containerInfo then
             itemLink= containerInfo.hyperlink
             itemID= containerInfo.itemID
@@ -791,14 +791,17 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
 
     elseif not tab then
         Clear_Label(frame)
+        frame._isSetItemInfo= nil
         return
-    elseif frame.isSetItemInfo then
+    elseif frame._isSetItemInfo then
         return
-    elseif not frame.topRightText then
-        Create_Label(frame, tab)
     end
 
-    frame.isSetItemInfo=true
+    frame._isSetItemInfo=true
+
+    if not frame.topRightText then
+        Create_Label(frame, tab)
+    end
 
     local topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem= Get_Info(tab or {})
 
@@ -823,7 +826,8 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
     if frame.Count and frame.Count:GetText()=='1000' then
         frame.Count:SetText('1k')
     end
-    frame.isSetItemInfo= nil
+
+    frame._isSetItemInfo= nil
 end
 
 
