@@ -81,7 +81,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-			WoWToolsSave['Currency2']= WoWToolsSave['Currency2'] or CopyTable(P_Save)
+			WoWToolsSave['Currency2']= WoWToolsSave['Currency2'] or P_Save
 			P_Save=nil
 
 			WoWTools_CurrencyMixin.addName= '|A:bags-junkcoin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '货币' or TOKENS)

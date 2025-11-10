@@ -43,9 +43,10 @@ local P_Save={
             speed=10,
         }
     },
+    no={},--禁用
 }
 
-
+local Layout
 local function Save()
     return WoWToolsSave['Plus_Texture']
 end
@@ -60,14 +61,174 @@ end
 
 
 
-local function Set_Event_Texture(name)
-    if WoWTools_TextureMixin.Events[name] then
-        do
-            WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
+
+
+
+local function Init_Panel()
+    local sub
+    local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
+
+
+    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
+
+    sub=WoWTools_PanelMixin:Check_Button({
+        checkName= WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER,
+        GetValue= function() return not Save().disabledTexture end,
+        SetValue= function()
+            Save().disabledTexture= not Save().disabledTexture and true or nil
+        end,
+        buttonText= WoWTools_DataMixin.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
+        buttonFunc= function()
+            WoWTools_PanelMixin:Open(nil, ('|A:Forge-ColorSwatch:0:0|a'..WoWTools_DataMixin.Player.UseColor.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)))
+        end,
+        tooltip= '|A:Forge-ColorSwatch:0:0|a'..WoWTools_DataMixin.Player.UseColor.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR),
+        layout= Layout,
+        category= WoWTools_TextureMixin.Category
+    })
+
+
+
+    WoWTools_PanelMixin:OnlyCheck({
+        name= 'UIButton',
+        tooltip= tooltip,
+        category= WoWTools_TextureMixin.Category,
+        GetValue= function() return Save().UIButton end,
+        SetValue= function()
+            Save().UIButton= not Save().UIButton and true or nil
         end
-        WoWTools_TextureMixin.Events[name]= nil
+    }, sub)
+
+
+    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
+
+
+
+
+
+
+
+
+
+    sub= WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_DataMixin.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+        tooltip= (WoWTools_DataMixin.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
+                ..'|n|n'..((WoWTools_DataMixin.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. WoWTools_TextMixin:GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
+                ..'|n'..((WoWTools_DataMixin.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. WoWTools_TextMixin:GetShowHide(C_CVar.GetCVarBool("chatBubblesParty")))
+                ..'\n\n'..tooltip,
+        category= WoWTools_TextureMixin.Category,
+        GetValue= function() return not Save().disabledChatBubble end,
+        SetValue= function()
+            Save().disabledChatBubble= not Save().disabledChatBubble and true or nil
+            WoWTools_TextureMixin:Init_Chat_Bubbles()
+        end
+    })
+
+
+
+    WoWTools_PanelMixin:OnlySlider({
+        name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
+        GetValue= function() return Save().chatBubbleSacal or 0.85 end,
+        minValue= 0.3,
+        maxValue= 1,
+        setp= 0.1,
+        tooltip= WoWTools_TextureMixin.addName,
+        category= WoWTools_TextureMixin.Category,
+        SetValue= function(_, _, value2)
+            if not value2 then return end
+            Save().chatBubbleSacal= WoWTools_DataMixin:GetFormatter1to10(value2, 0.3, 1)
+            WoWTools_TextureMixin:Init_Chat_Bubbles()
+        end
+    }, sub)
+
+
+
+
+
+
+    WoWTools_PanelMixin:Check_Slider({
+        checkName= (WoWTools_DataMixin.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
+        checkGetValue= function() return Save().classPowerNum end,
+        tooltip= tooltip,
+        checkSetValue= function()
+            Save().classPowerNum= not Save().classPowerNum and true or false
+            WoWTools_TextureMixin:Init_Class_Power()--职业
+        end,
+        sliderGetValue= function()
+            local s= Save().classPowerNumSize or 23
+            if type(s)~='number' then
+                s= 23
+                Save().classPowerNumSize=23
+            end
+            return s
+        end,
+        minValue= 6,
+        maxValue= 64,
+        step= 1,
+        sliderSetValue= function(_, _, value2)
+            if value2 then
+                local value3= WoWTools_DataMixin:GetFormatter1to10(value2, 6, 64)
+                Save().classPowerNumSize= value3
+                WoWTools_TextureMixin:Init_Class_Power()--职业
+            end
+        end,
+        layout= Layout,
+        category= WoWTools_TextureMixin.Category,
+    })
+
+
+
+    WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_DataMixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS),
+        tooltip='HelpTip'..'\n\n'..tooltip,
+        category= WoWTools_TextureMixin.Category,
+        GetValue= function() return not Save().disabledHelpTip end,
+        SetValue= function()
+            Save().disabledHelpTip= not Save().disabledHelpTip and true or nil
+            WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
+        end
+    })
+
+
+
+    local function Add_Options(name)
+        WoWTools_PanelMixin:OnlyCheck({
+            name= name:gsub('Blizzard_', ''),
+            tooltip= tooltip,
+            category= WoWTools_TextureMixin.Category,
+            Value= not Save().no[name],
+            GetValue= function() return not Save().no[name] end,
+            SetValue= function()
+                Save().no[name]= not Save().no[name] and true or nil
+            end
+        })
     end
+
+    WoWTools_PanelMixin:Header(Layout, 'Event')
+    for name in pairs(WoWTools_TextureMixin.Events) do
+        Add_Options(name)
+    end
+
+    WoWTools_PanelMixin:Header(Layout, 'Frame')
+    for name in pairs(WoWTools_TextureMixin.Frames) do
+        Add_Options(name)
+    end
+
+
+
+    Init_Panel=function()end
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -79,15 +240,15 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or CopyTable(P_Save)
+            WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
 
             Save().Bg= Save().Bg or P_Save.Bg
             Save().Bg.Anims= Save().Bg.Anims or P_Save.Bg.Anims
+            Save().no= Save().no or {}
 
             P_Save= nil
 
@@ -95,7 +256,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 
-            WoWTools_TextureMixin:Init_Options()
+            WoWTools_TextureMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+                name= WoWTools_TextureMixin.addName,
+                disabled= Save().disabled,
+            })
+
+            WoWTools_PanelMixin:OnlyCheck({
+                name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                category= WoWTools_TextureMixin.Category,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    Init_Panel()
+                end
+            })
 
             if Save().disabled then
                 WoWTools_TextureMixin.Events={}
@@ -109,35 +284,45 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     for name in pairs(WoWTools_TextureMixin.Events) do
                         if C_AddOns.IsAddOnLoaded(name) then
                              do
-                                WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
+                                if not Save().no[name] then
+                                    WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
+                                end
                             end
-                            WoWTools_TextureMixin.Events[name]= nil
+                            WoWTools_TextureMixin.Events[name]= {}
                         end
                     end
                 end
+
                 WoWTools_TextureMixin:Init_Class_Power()--职业
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
                 WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
             end
 
-        elseif WoWToolsSave and WoWTools_TextureMixin.Events[arg1] then
-            do
-                WoWTools_TextureMixin.Events[arg1](WoWTools_TextureMixin)
+        elseif WoWToolsSave then
+            if WoWTools_TextureMixin.Events[arg1] then
+                do
+                    if not Save().no[arg1] then
+                        WoWTools_TextureMixin.Events[arg1](WoWTools_TextureMixin)
+                    end
+                end
+                WoWTools_TextureMixin.Events[arg1]= {}
             end
-            WoWTools_TextureMixin.Events[arg1]= nil
+            if arg1=='Blizzard_Settings' then
+                Init_Panel()
+            end
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then--需要这个事件
+    elseif event=='PLAYER_ENTERING_WORLD' then--需要这个事件
         for name in pairs(WoWTools_TextureMixin.Frames) do
             do
-                if _G[name] then
+                if _G[name] and not Save().no[name] then
                     WoWTools_TextureMixin.Frames[name](WoWTools_TextureMixin)
 
                 elseif WoWTools_DataMixin.Player.husandro then
                     print(WoWTools_TextureMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
                 end
             end
-            WoWTools_TextureMixin.Frames[name]= nil
+            WoWTools_TextureMixin.Frames[name]= {}
         end
         self:UnregisterEvent(event)
     end

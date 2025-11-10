@@ -441,7 +441,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['Tools_MapToy']= WoWToolsSave['Tools_MapToy'] or CopyTable(P_Save)
+            WoWToolsSave['Tools_MapToy']= WoWToolsSave['Tools_MapToy'] or P_Save
             P_Save= nil
 
             addName= '|A:Taxi_Frame_Yellow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)

@@ -669,7 +669,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or CopyTable(P_Save)
+            WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or P_Save
             P_Save=nil
 
             WoWToolsPlayerDate['GroupMouseUpText']= WoWToolsPlayerDate['GroupMouseUpText']

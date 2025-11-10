@@ -125,7 +125,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['ChatButton_LFD']=  WoWToolsSave['ChatButton_LFD'] or CopyTable(P_Save)
+    WoWToolsSave['ChatButton_LFD']=  WoWToolsSave['ChatButton_LFD'] or P_Save
     P_Save= nil
 
     WoWToolsSave['ChatButton_LFD'].sec= WoWToolsSave['ChatButton_LFD'].sec or 5

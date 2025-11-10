@@ -554,7 +554,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButton_Say']= WoWToolsSave['ChatButton_Say'] or CopyTable(P_Save)
+            WoWToolsSave['ChatButton_Say']= WoWToolsSave['ChatButton_Say'] or P_Save
             Save().text= Save().text or (WoWTools_DataMixin.onlyChinese and '说' or SAY)
             P_Save=nil
 

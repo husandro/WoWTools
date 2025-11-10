@@ -90,7 +90,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     if arg1== 'WoWTools' then
 
-        WoWToolsSave['Plus_Target']= WoWToolsSave['Plus_Target'] or CopyTable(P_Save)
+        WoWToolsSave['Plus_Target']= WoWToolsSave['Plus_Target'] or P_Save
         P_Save= nil
 
         WoWToolsPlayerDate['TargetTexture']= WoWToolsPlayerDate['TargetTexture'] or {}

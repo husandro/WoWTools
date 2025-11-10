@@ -24,7 +24,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_MainMenu']= WoWToolsSave['Plus_MainMenu'] or CopyTable(P_Save)
+            WoWToolsSave['Plus_MainMenu']= WoWToolsSave['Plus_MainMenu'] or P_Save
             P_Save= nil
 
             WoWTools_MainMenuMixin.addName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL, 'Plus'))

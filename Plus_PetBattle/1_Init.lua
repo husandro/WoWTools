@@ -71,7 +71,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_PetBattle2']= WoWToolsSave['Plus_PetBattle2'] or CopyTable(P_Save)
+            WoWToolsSave['Plus_PetBattle2']= WoWToolsSave['Plus_PetBattle2'] or P_Save
             P_Save= nil
 
             WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)

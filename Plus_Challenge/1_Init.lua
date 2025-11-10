@@ -112,7 +112,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or CopyTable(P_Save)
+            WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
             P_Save=nil
 
             --[[if PlayerGetTimerunningSeasonID() then

@@ -71,7 +71,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or CopyTable(P_Save)
+            WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or P_Save
             P_Save= nil
 
             Save().loot[WoWTools_DataMixin.Player.Class]= Save().loot[WoWTools_DataMixin.Player.Class] or {}--这个不能删除，不然换职业会出错

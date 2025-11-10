@@ -338,7 +338,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['WoWTools_Settings']= WoWToolsSave['WoWTools_Settings'] or CopyTable(P_Save)
+    WoWToolsSave['WoWTools_Settings']= WoWToolsSave['WoWTools_Settings'] or P_Save
     P_Save= nil
 
     WoWTools_DataMixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese

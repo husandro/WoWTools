@@ -315,7 +315,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             addName= '|T134863:0|t'..(WoWTools_DataMixin.onlyChinese and '诺格弗格药剂' or ItemName)
 
-            WoWToolsSave['NoggenfoggerElixir']= WoWToolsSave['NoggenfoggerElixir'] or CopyTable(P_Save)
+            WoWToolsSave['NoggenfoggerElixir']= WoWToolsSave['NoggenfoggerElixir'] or P_Save
             P_Save= nil
 
             button= WoWTools_ToolsMixin:CreateButton({

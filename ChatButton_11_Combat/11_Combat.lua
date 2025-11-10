@@ -32,7 +32,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or CopyTable(P_Save)
+    WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or P_Save
     P_Save=nil
 
     WoWTools_CombatMixin.addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))

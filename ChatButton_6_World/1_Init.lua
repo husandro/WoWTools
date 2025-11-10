@@ -205,7 +205,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButtonWorldChannel']= WoWToolsSave['ChatButtonWorldChannel'] or CopyTable(P_Save)
+            WoWToolsSave['ChatButtonWorldChannel']= WoWToolsSave['ChatButtonWorldChannel'] or P_Save
             
             Save().myChatFilterPlayers= Save().myChatFilterPlayers or {}
             Save().userChatFilterTab= Save().userChatFilterTab or {}

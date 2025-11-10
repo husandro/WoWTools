@@ -105,7 +105,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or CopyTable(P_Save)
+            WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
             P_Save=nil
 
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}

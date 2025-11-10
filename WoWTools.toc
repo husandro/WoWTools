@@ -66,7 +66,6 @@ Plus_Move\0a_Setup_Mixin.lua
 Plus_Move\0b_ScaleSizeButton_Mixin.lua
 Plus_Move\1_Init.lua
 Plus_Move\2_Add_Button.lua
-Plus_Move\3_Options.lua
 Plus_Move\Professions.lua
 Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
@@ -79,7 +78,6 @@ Plus_Texture\0_TextureMixin.lua
 Plus_Texture\1_Setup_Mixin.lua
 Plus_Texture\2_Init_BGMenu_Frame.lua
 Plus_Texture\3_Init.lua
-Plus_Texture\4_Options.lua
 Plus_Texture\ActionButton.lua
 Plus_Texture\ChatBubbles.lua
 Plus_Texture\ClassPower.lua

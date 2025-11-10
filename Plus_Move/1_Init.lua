@@ -21,8 +21,10 @@ local P_Save={
 
     UIPanelWindows={},
     Esc={['CooldownViewerSettings']=false},--1=移除, 2=添加
+    no={},--禁用
 }
 
+local Layout
 local function Save()
     return WoWToolsSave['Plus_Move']
 end
@@ -31,57 +33,101 @@ end
 
 
 
+local function Init_Panel()
+    local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
+    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
+
+    local sub=  WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , '')),
+        tooltip= WoWTools_MoveMixin.addName,
+        GetValue= function() return Save().SavePoint end,
+        category= WoWTools_MoveMixin.Category,
+        SetValue= function()
+            Save().SavePoint= not Save().SavePoint and true or nil
+        end
+    })
+
+
+    WoWTools_PanelMixin:OnlyButton({
+        buttonText= WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+        SetValue= function()
+           StaticPopup_Show('WoWTools_OK',
+            (WoWTools_DataMixin.onlyChinese and '保存位置' or (Save()..CHOOSE_LOCATION:gsub(CHOOSE , '')))
+            ..'|n|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+            nil,
+            {SetValue=function()
+                Save().point={}
+                print(
+                    WoWTools_MoveMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                )
+            end})
+        end,
+        tooltip=(WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION)..'|n|n'..tooltip,
+        layout= Layout,
+        category= WoWTools_MoveMixin.Category
+    }, sub)
+
+
+    WoWTools_PanelMixin:Check_Slider({
+        checkName= WoWTools_DataMixin.onlyChinese and '移动时Frame透明' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'),
+        checkGetValue= function() return not Save().notMoveAlpha end,
+        checkTooltip= WoWTools_DataMixin.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
+        checkSetValue= function()
+            Save().notMoveAlpha= not Save().notMoveAlpha and true or nil
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MoveMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+
+        sliderGetValue= function() return Save().alpha or 0.5 end,
+        minValue= 0,
+        maxValue= 0.9,
+        step= 0.1,
+        sliderSetValue= function(_, _, value2)
+            if value2 then
+                Save().alpha= WoWTools_DataMixin:GetFormatter1to10(value2, 0, 1)
+            end
+        end,
+        layout= Layout,
+        category= WoWTools_MoveMixin.Category,
+    })
 
 
 
-local function Init()
-    WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
-    WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
+    local function Add_Options(name)
+        WoWTools_PanelMixin:OnlyCheck({
+            name= name:gsub('Blizzard_', ''),
+            tooltip= tooltip,
+            category= WoWTools_TextureMixin.Category,
+            Value= not Save().no[name],
+            GetValue= function() return not Save().no[name] end,
+            SetValue= function()
+                Save().no[name]= not Save().no[name] and true or nil
+            end
+        })
+    end
 
+    WoWTools_PanelMixin:Header(Layout, 'Event')
     for name in pairs(WoWTools_MoveMixin.Events) do
-        if C_AddOns.IsAddOnLoaded(name) then
-            do
-                WoWTools_MoveMixin.Events[name](WoWTools_MoveMixin)
-            end
-            WoWTools_MoveMixin.Events[name]=nil
-        end
+        Add_Options(name)
     end
 
-
- 
-
-
+    WoWTools_PanelMixin:Header(Layout, 'Frame')
     for name in pairs(WoWTools_MoveMixin.Frames) do
-        do
-            if _G[name] then
-                WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)
-            elseif WoWTools_DataMixin.Player.husandro then
-                print(WoWTools_MoveMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
-            end
-        end
-        WoWTools_MoveMixin.Frames[name]= nil
+        Add_Options(name)
     end
 
-   do
-        for name in ipairs(UIPanelWindows) do
-            if _G[name] and not _G[name].moveFrameData and not _G[name].ResizeButton then
-                WoWTools_MoveMixin:Setup(_G[name])
-                if WoWTools_DataMixin.Player.husandro then
-                    print(WoWTools_MoveMixin.addName, '没有添加', name)
-                end
-            end
-        end
-    end
-
-
-    WoWTools_DataMixin:Hook('UpdateUIPanelPositions', function(currentFrame)
-        if Save().SavePoint then
-            WoWTools_MoveMixin:SetPoint(currentFrame)
-        end
-    end)
-
-    Init=function()end
+    Init_Panel=function()end
 end
+
+
+
+
+
+
+
+
 
 
 
@@ -89,38 +135,93 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Move']= WoWToolsSave['Plus_Move'] or CopyTable(P_Save)
+            WoWToolsSave['Plus_Move']= WoWToolsSave['Plus_Move'] or P_Save
 
             Save().UIPanelWindows= Save().UIPanelWindows or P_Save.UIPanelWindows
             Save().Esc= Save() or P_Save.Esc
+            Save().no= Save().no or {}
 
             P_Save= nil
 
             WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
 
-            WoWTools_MoveMixin:Init_Options()
+            WoWTools_MoveMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+                name=WoWTools_MoveMixin.addName,
+                disabled= Save().disabled,
+            })
+
+            WoWTools_PanelMixin:OnlyCheck({
+                name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                GetValue= function() return not Save().disabled end,
+                category= WoWTools_MoveMixin.Category,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    Init_Panel()
+                end
+            })
 
             if Save().disabled then
                 WoWTools_MoveMixin.Events={}
                 WoWTools_MoveMixin.Frames={}
                 self:UnregisterAllEvents()
+            else
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
+                WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
+                for name in pairs(WoWTools_MoveMixin.Events) do
+                    if C_AddOns.IsAddOnLoaded(name) then
+                        if not Save().no[name] then
+                            WoWTools_MoveMixin.Events[name](WoWTools_MoveMixin)
+                        end
+                        WoWTools_MoveMixin.Events[name]={}
+                    end
+                end
             end
 
-        elseif WoWTools_MoveMixin.Events[arg1] and WoWToolsSave then
-            do
-                WoWTools_MoveMixin.Events[arg1](WoWTools_MoveMixin)
+        elseif WoWToolsSave then
+            if WoWTools_MoveMixin.Events[arg1] then
+                if not Save().no[arg1] then
+                    WoWTools_MoveMixin.Events[arg1](WoWTools_MoveMixin)
+                end
+                WoWTools_MoveMixin.Events[arg1]={}
             end
-            WoWTools_MoveMixin.Events[arg1]= nil
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
-        Init()
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        for name in pairs(WoWTools_MoveMixin.Frames) do
+            if _G[name] and not Save().no[name] then
+                WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)
+            elseif WoWTools_DataMixin.Player.husandro then
+                print(WoWTools_MoveMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
+            end
+            WoWTools_MoveMixin.Frames[name]= {}
+        end
+
+        for name in ipairs(UIPanelWindows) do
+            if _G[name]
+                and not _G[name]:IsMovable()
+                and not _G[name].moveFrameData
+                and not _G[name].ResizeButton
+            then
+                WoWTools_MoveMixin:Setup(_G[name])
+                if WoWTools_DataMixin.Player.husandro then
+                    print(WoWTools_MoveMixin.addName, '没有添加', name)
+                end
+            end
+        end
+
+        WoWTools_DataMixin:Hook('UpdateUIPanelPositions', function(currentFrame)
+            if Save().SavePoint then
+                WoWTools_MoveMixin:SetPoint(currentFrame)
+            end
+        end)
+
         self:UnregisterEvent(event)
     end
 end)

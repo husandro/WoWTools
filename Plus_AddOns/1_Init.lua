@@ -114,7 +114,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['Plus_AddOns']= WoWToolsSave['Plus_AddOns'] or CopyTable(P_Save)
+    WoWToolsSave['Plus_AddOns']= WoWToolsSave['Plus_AddOns'] or P_Save
     P_Save=nil
     Save().Bg_Alpha= nil
 

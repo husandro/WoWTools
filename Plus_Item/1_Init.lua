@@ -6,13 +6,9 @@ local Category, Layout
 
 
 local function Init_Panel()
-    if Save().disabled then
-        return
-    end
-
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
-    local tooltip= '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 
 --字体
     WoWTools_PanelMixin:OnlySlider({
@@ -30,7 +26,7 @@ local function Init_Panel()
 
     local function Add_Options(name)
         WoWTools_PanelMixin:OnlyCheck({
-            name= name,
+            name= name:gsub('Blizzard_', ''),
             tooltip= tooltip,
             category= Category,
             Value= not Save().no[name],
