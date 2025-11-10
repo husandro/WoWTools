@@ -12,10 +12,6 @@ CONTAINER_OFFSET_X = -4;
 
 --背包 Bg FlatPanelBackgroundTemplate
 function WoWTools_TextureMixin.Frames:ContainerFrame1()
-    if C_AddOns.IsAddOnLoaded('ElvUI') then
-        return
-    end
-
     local function set_script(frame)
         WoWTools_DataMixin:Hook(frame, 'UpdateItems', function(f)
             for _, btn in f:EnumerateValidItems() do
