@@ -52,6 +52,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 1_Mixin\Time.lua
 1_Mixin\SetTooltip.lua
 1_Mixin\SetTooltip_Faction.lua
+1_Mixin\Aura.lua
 1_Mixin\PanelMixin.lua
 ##美服，欧服，服器语言，提示
 1_Mixin\Realm.lua
@@ -151,12 +152,9 @@ Plus_Color\Select_Color.lua
 Plus_Color\Other.lua
 Plus_Color\CODE.lua
 
-##光环
-Plus_Aura\0_AuraMixin.lua
-##Plus_Aura\0_Init.lua
 ##鼠标，提示
-Plus_Tooltip\0_Init.lua
-Plus_Tooltip\1_Panel.lua
+Plus_Tooltip\0_TooltipMixin.lua
+Plus_Tooltip\1_Init.lua
 Plus_Tooltip\2_Hook.lua
 Plus_Tooltip\2_AddTooltipPostCall.lua
 Plus_Tooltip\3_Set_Point.lua

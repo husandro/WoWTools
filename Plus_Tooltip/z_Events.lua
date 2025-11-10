@@ -1,9 +1,4 @@
 
-local function Save()
-    return WoWToolsSave['Plus_Tootips']
-end
-
-
 
 --专业
 --lizzard_Professions.lua

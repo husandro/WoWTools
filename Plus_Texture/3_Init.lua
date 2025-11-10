@@ -215,7 +215,6 @@ local function Init_Panel()
     end
 
 
-
     Init_Panel=function()end
 end
 
@@ -261,16 +260,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 disabled= Save().disabled,
             })
 
-            WoWTools_PanelMixin:OnlyCheck({
-                name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
-                category= WoWTools_TextureMixin.Category,
+            WoWTools_PanelMixin:Check_Button({
+                checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
                     Init_Panel()
-                end
+                end,
+                buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                buttonFunc= function()
+                    StaticPopup_Show('WoWTools_RestData',
+                        WoWTools_TextureMixin.addName
+                        ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                        nil,
+                    function()
+                        WoWToolsSave['Plus_Texture']= nil
+                        WoWTools_DataMixin:Reload()
+                    end)
+                end,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                layout= Layout,
+                category= WoWTools_TextureMixin.Category,
             })
+
 
             if Save().disabled then
                 WoWTools_TextureMixin.Events={}
@@ -296,6 +308,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_TextureMixin:Init_Class_Power()--职业
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
                 WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                    Init_Panel()
+                end
             end
 
         elseif WoWToolsSave then

@@ -1,10 +1,32 @@
---添加新控制面板 Blizzard_Settings
+local P_Save={
+    setDefaultAnchor=true,--指定点
+    --AnchorPoint={},--指定点，位置
+    --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
 
+    setCVar=WoWTools_DataMixin.Player.husandro,
+    ShowOptionsCVarTips=WoWTools_DataMixin.Player.husandro,--显示选项中的CVar
+    inCombatDefaultAnchor=true,
+    ctrl= WoWTools_DataMixin.Player.husandro,--取得网页，数据链接
+
+    --模型
+    modelSize=100,--大小
+    --modelLeft=true,--左边
+    modelX= 0,
+    modelY= -15,
+    modelFacing= -0.3,--方向
+    showModelFileID=WoWTools_DataMixin.Player.husandro,--显示，文件ID
+    --WidgetSetID=848,--自定义，监视 WidgetSetID
+    --disabledNPCcolor=true,--禁用NPC颜色
+    --hideHealth=true,----生命条提示
+    --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体>
+
+    no={}--禁用
+}
+local Category, Layout
 local function Save()
     return WoWToolsSave['Plus_Tootips']
 end
 
-local Category, Layout
 
 
 
@@ -35,19 +57,17 @@ end
 
 
 local function Init_Panel()
-    local addName= WoWTools_TooltipMixin.addName
-
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
     local root
 
 
     root= WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         GetValue= function() return Save().setDefaultAnchor end,
         category= Category,
         SetValue= function()
-            Save().setDefaultAnchor= not Save().setDefaultAnchor and true or nil
+            Save().setDefaultAnchor= not Save().setDefaultAnchor and true or false
             if Save().setDefaultAnchor then
                 Save().setAnchor=nil
             end
@@ -61,7 +81,7 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
@@ -69,7 +89,7 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     }, root)
-   
+
 
     WoWTools_PanelMixin:OnlySlider({
         name= 'Y',
@@ -77,7 +97,7 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
@@ -85,11 +105,11 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     }, root)
-    
+
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         GetValue= function() return Save().cursorRight end,
         category= Category,
         SetValue= function()
@@ -97,15 +117,15 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     }, root)
-    
+
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         GetValue= function() return Save().inCombatDefaultAnchor end,
         category= Category,
         SetValue= function()
-            Save().inCombatDefaultAnchor= not Save().inCombatDefaultAnchor and true or nil
+            Save().inCombatDefaultAnchor= not Save().inCombatDefaultAnchor and true or false
             set_Cursor_Tips()
         end
     }, root)
@@ -115,7 +135,7 @@ local function Init_Panel()
 
     root= WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '模型' or MODEL,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         GetValue= function() return not Save().hideModel end,
         category= Category,
         SetValue= function()
@@ -126,7 +146,7 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         GetValue= function() return Save().modelLeft end,
         category= Category,
         SetValue= function()
@@ -153,7 +173,7 @@ local function Init_Panel()
         minValue= 40,
         maxValue= 300,
         setp= 1,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
@@ -168,7 +188,7 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
@@ -183,7 +203,7 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
@@ -198,7 +218,7 @@ local function Init_Panel()
         minValue= -1,
         maxValue= 1,
         setp= 0.1,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
@@ -209,7 +229,7 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         GetValue= function() return not Save().disabledNPCcolor end,
         category= Category,
         SetValue= function()
@@ -219,12 +239,12 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '生命值' or HEALTH,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         GetValue= function() return not Save().hideHealth end,
         category= Category,
         SetValue= function()
             Save().hideHealth= not Save().hideHealth and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName,  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2,  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 
@@ -236,10 +256,10 @@ local function Init_Panel()
         category= Category,
         SetValue= function()
             Save().UNIT_POPUP_RIGHT_CLICK= not Save().UNIT_POPUP_RIGHT_CLICK and true or nil
-            print(WoWTools_TooltipMixin.addName,  WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            print(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2,  WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
         end
     })
-    
+
     WoWTools_PanelMixin:OnlyCheck({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|A:NPE_Icon:0:0|aCtrl+Shift', WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         tooltip= 'wowhead.com|nraider.io',
@@ -260,7 +280,7 @@ local function Init_Panel()
         minValue= 0,
         maxValue= 32,
         setp= 1,
-        tooltip= addName,
+        tooltip= WoWTools_TooltipMixin.addName,
         category= Category,
         SetValue= function(_, _, value2)
             if value2 then
@@ -307,10 +327,12 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:OnlyMenu({
         SetValue= function(value)
-            if value==1 then
-                C_CVar.SetCVar("ActionButtonUseKeyDown", '1')
-            else
-                C_CVar.SetCVar("ActionButtonUseKeyDown", '0')
+            if not InCombatLockdown() then
+                if value==1 then
+                    C_CVar.SetCVar("ActionButtonUseKeyDown", '1')
+                else
+                    C_CVar.SetCVar("ActionButtonUseKeyDown", '0')
+                end
             end
         end,
         GetOptions= function()
@@ -331,55 +353,184 @@ local function Init_Panel()
 
     Init_Panel=function()end
 end
-    --[[root= WoWTools_PanelMixin:OnlyCheck({
-        name= (WoWTools_DataMixin.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
-        tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
-        GetValue= function() return Save().ShowOptionsCVarTips end,
-        category= Category,
-        SetValue= function()
-            Save().ShowOptionsCVarTips= not Save().ShowOptionsCVarTips and true or nil
-            if not WoWTools_TooltipMixin:Init_CVar_Tooltip_Value() then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().ShowOptionsCVarTips), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--初始
+local function Init()
+
+
+    WoWTools_TooltipMixin:Init_StatusBar()--生命条提示
+    WoWTools_TooltipMixin:Init_Hook()
+    WoWTools_TooltipMixin:Init_BattlePet()
+    WoWTools_TooltipMixin:Init_Settings()
+    WoWTools_TooltipMixin:Init_SetPoint()
+    WoWTools_TooltipMixin:Init_CVar()
+
+    WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
+
+--移除，<右键点击设置框体> 替换原生
+    if not Save().UNIT_POPUP_RIGHT_CLICK then
+        function UnitFrame_UpdateTooltip (self)
+            GameTooltip_SetDefaultAnchor(GameTooltip, self);
+            if ( GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip) ) then
+                self.UpdateTooltip = UnitFrame_UpdateTooltip;
+            else
+                self.UpdateTooltip = nil;
             end
         end
-    })]]
+    end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_TooltipMixin.Events:Blizzard_Settings()
-    Init_Panel()
+    Init=function()end
 end
 
 
 
 
 
-function WoWTools_TooltipMixin:Init_Category()
-    Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-        name=self.addName,
-        disabled=Save().disabled
-    })
 
 
-    WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-        tooltip= self.addName,
-        GetValue= function() return not Save().disabled end,
-        category= Category,
-        func= function()
-            Save().disabled= not Save().disabled and true or nil
-            print(self.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
+--Save().WidgetSetID = Save().WidgetSetID or 0
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+
+
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== 'WoWTools' then
+
+            WoWToolsSave['Plus_Tootips']= WoWToolsSave['Plus_Tootips'] or P_Save
+            Save().no= Save().no or {}
+            WoWTools_TooltipMixin.iconSize= Save().iconSize or 0
+            P_Save= nil
+            --Save().AchievementFrameFilterDropDown= nil
+
+            Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+                name=WoWTools_TooltipMixin.addName,
+                disabled= Save().disabled
+            })
+
+            WoWTools_PanelMixin:Check_Button({
+                checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    Init_Panel()
+                end,
+                buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                buttonFunc= function()
+                    StaticPopup_Show('WoWTools_RestData',
+                        WoWTools_TooltipMixin.addName
+                        ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                        nil,
+                    function()
+                        WoWToolsSave['Plus_Tootips']= nil
+                        WoWTools_DataMixin:Reload()
+                    end)
+                end,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                layout= Layout,
+                category= Category,
+            })
+
+            WoWTools_TooltipMixin:Init_WoWHeadText()
+
+            if Save().disabled then
+                WoWTools_TooltipMixin.Events= {}
+                self:UnregisterEvent(event)
+
+            else
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('PLAYER_LEAVING_WORLD')
+
+                for name in pairs(WoWTools_TooltipMixin.Events)do
+                    if C_AddOns.IsAddOnLoaded(name) then
+                        if not Save().no[name] then
+                            WoWTools_TooltipMixin.Events[name](WoWTools_TooltipMixin)
+                        end
+                        WoWTools_TooltipMixin.Events[name]= {}
+                    end
+                end
+
+                EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
+                    for name in pairs(WoWTools_TooltipMixin.Frames)do
+                        if _G[name] and not Save().no[name] then
+                            WoWTools_TooltipMixin.EveFramesnts[name](WoWTools_TooltipMixin)
+                        elseif WoWTools_DataMixin.Player.husandro then
+                            print('Tooltip Frames 没有发现|cnWARNING_FONT_COLOR:', name)
+                        end
+                        WoWTools_TooltipMixin.Frames[name]= {}
+                    end
+                    EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
+                end)
+
+                Init()--初始
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                    Init_Panel()
+                end
+            end
+
+
+
+        elseif WoWToolsSave then
+
+            if WoWTools_TooltipMixin.Events[arg1] then
+                if not Save().no[arg1] then
+                    WoWTools_TooltipMixin.Events[arg1](WoWTools_TooltipMixin)
+                end
+                WoWTools_TooltipMixin.Events[arg1]={}
+            end
+
+            if arg1=='Blizzard_Settings' then
+                Init_Panel()
+            end
         end
-    })
-end
+
+
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if Save().setCVar and Save().graphicsViewDistance and not InCombatLockdown() then
+            C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)--https://wago.io/ZtSxpza28
+            Save().graphicsViewDistance=nil
+        end
+
+    elseif event=='PLAYER_LEAVING_WORLD' then
+        if Save().setCVar then
+            if not InCombatLockdown() then
+                Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
+                SetCVar("graphicsViewDistance", 0)
+            else
+                Save().graphicsViewDistance=nil
+            end
+        end
+    end
+end)

@@ -67,6 +67,8 @@ local function Init_WoWHeadText()
     end
 
     WoWTools_TooltipMixin.WoWHead= WoWHead
+
+    Init_WoWHeadText=function()end
 end
 
 

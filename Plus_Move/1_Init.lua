@@ -79,7 +79,6 @@ local function Init_Panel()
             Save().notMoveAlpha= not Save().notMoveAlpha and true or nil
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_MoveMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-
         sliderGetValue= function() return Save().alpha or 0.5 end,
         minValue= 0,
         maxValue= 0.9,
@@ -99,7 +98,7 @@ local function Init_Panel()
         WoWTools_PanelMixin:OnlyCheck({
             name= name:gsub('Blizzard_', ''),
             tooltip= tooltip,
-            category= WoWTools_TextureMixin.Category,
+            category= WoWTools_MoveMixin.Category,
             Value= not Save().no[name],
             GetValue= function() return not Save().no[name] end,
             SetValue= function()
@@ -155,16 +154,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 disabled= Save().disabled,
             })
 
-            WoWTools_PanelMixin:OnlyCheck({
-                name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+            WoWTools_PanelMixin:Check_Button({
+                checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
                 GetValue= function() return not Save().disabled end,
-                category= WoWTools_MoveMixin.Category,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
                     Init_Panel()
-                end
+                end,
+                buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                buttonFunc= function()
+                    StaticPopup_Show('WoWTools_RestData',
+                        WoWTools_MoveMixin.addName
+                        ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                        nil,
+                    function()
+                        WoWToolsSave['Plus_Move']= nil
+                        WoWTools_DataMixin:Reload()
+                    end)
+                end,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                layout= Layout,
+                category= WoWTools_MoveMixin.Category,
             })
+
 
             if Save().disabled then
                 WoWTools_MoveMixin.Events={}
@@ -172,8 +184,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
                 WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
                 WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
+
                 for name in pairs(WoWTools_MoveMixin.Events) do
                     if C_AddOns.IsAddOnLoaded(name) then
                         if not Save().no[name] then
@@ -182,18 +196,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         WoWTools_MoveMixin.Events[name]={}
                     end
                 end
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                    Init_Panel()
+                end
             end
 
         elseif WoWToolsSave then
+
             if WoWTools_MoveMixin.Events[arg1] then
                 if not Save().no[arg1] then
                     WoWTools_MoveMixin.Events[arg1](WoWTools_MoveMixin)
                 end
                 WoWTools_MoveMixin.Events[arg1]={}
             end
+
+            if arg1=='Blizzard_Settings' then
+                Init_Panel()
+            end
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
+
         for name in pairs(WoWTools_MoveMixin.Frames) do
             if _G[name] and not Save().no[name] then
                 WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)

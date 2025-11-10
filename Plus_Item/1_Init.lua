@@ -74,16 +74,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 disabled=Save().disabled
             })
 
-            WoWTools_PanelMixin:OnlyCheck({
-                name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-                tooltip= WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
+            WoWTools_PanelMixin:Check_Button({
+                checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
                 GetValue= function() return not Save().disabled end,
-                category= Category,
-                func= function()
+                SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_ItemMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
+                    Init_Panel()
+                end,
+                buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                buttonFunc= function()
+                    StaticPopup_Show('WoWTools_RestData',
+                        WoWTools_ItemMixin.addName
+                        ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                        nil,
+                    function()
+                        WoWToolsSave['Plus_ItemInfo']= nil
+                        WoWTools_DataMixin:Reload()
+                    end)
+                end,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                layout= Layout,
+                category= Category,
             })
+
 
             if Save().disabled then
                 WoWTools_ItemMixin.Events= {}
@@ -100,10 +113,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif WoWToolsSave then
 
-            if arg1=='Blizzard_Settings' then
-                Init_Panel()
-            end
-
             if WoWTools_ItemMixin.Events[arg1] then
                 do
                     if not not Save().no[arg1] then
@@ -111,6 +120,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end
                 WoWTools_ItemMixin.Events[arg1]= {}
+            end
+
+            if arg1=='Blizzard_Settings' then
+                Init_Panel()
             end
         end
 

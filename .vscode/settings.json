@@ -6409,7 +6409,8 @@
         "QUEST_TEMPLATE_MAP_DETAILS",
         "StaticPopup1MoneyInputFrameGold",
         "GUILD_DUP_RANK",
-        "TICKET_TYPE3"
+        "TICKET_TYPE3",
+        "ADDON_LIST_RESET_TO_DEFAULT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
