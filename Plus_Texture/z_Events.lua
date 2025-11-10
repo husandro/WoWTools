@@ -295,7 +295,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetTabButton(AuctionHouseFrameSellTab)
     self:SetTabButton(AuctionHouseFrameAuctionsTab)
     self:SetButton(AuctionHouseFrame.SearchBar.FavoritesSearchButton, 1)
-    self:SetFrame(AuctionHouseFrame.SearchBar.FilterButton, 0.3)
+    self:SetFrame(AuctionHouseFrame.SearchBar.FilterButton)
 
     self:SetNineSlice(AuctionHouseFrame.CategoriesList)
     self:SetScrollBar(AuctionHouseFrame.CategoriesList)
