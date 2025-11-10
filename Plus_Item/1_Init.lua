@@ -86,19 +86,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 category= Category,
                 func= function()
                     Save().disabled= not Save().disabled and true or nil
-                    Init_Panel()
+                    print(WoWTools_ItemMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
             if Save().disabled then
-                for name in pairs(WoWTools_ItemMixin.Events) do
-                    WoWTools_ItemMixin.Events[name]= {}
-                end
-
-                for name in pairs(WoWTools_ItemMixin.Frames) do
-                   WoWTools_ItemMixin.Frames[name]= {}
-                end
-
+                WoWTools_ItemMixin.Events= {}
+                WoWTools_ItemMixin.Frames= {}
                 self:UnregisterEvent(event)
 
             else
