@@ -37,7 +37,6 @@ local function Init_Panel()
             GetValue= function() return not Save().no[name] end,
             SetValue= function()
                 Save().no[name]= not Save().no[name] and true or nil
-                print(name)
             end
         })
     end
