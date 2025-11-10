@@ -9,10 +9,6 @@ end
 
 
 local function Init()
-    if Save().disabled then
-        return
-    end
-
     local btn= WoWTools_DataMixin:CreateWoWItemListButton(ContainerFrameCombinedBags.CloseButton, {
         name='WoWToolsCombinedBagsWoWButton',
         type='Item',
@@ -32,12 +28,14 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_ENTERING_WORLD")
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            if C_AddOns.IsAddOnLoaded('ElvUI') then
+
+            if _G['ElvUI_ContainerFrame'] then
+                self:UnregisterEvent(event)
                 return
             end
 
@@ -51,18 +49,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    Init()
+
                     if Save().disabled then
                         print(
                             WoWTools_BagMixin.addName..WoWTools_DataMixin.Icon.icon2,
                             WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
                             WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                         )
+                    else
+                         Init()
                     end
                 end,
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,
             })
+
+            if not Save().disabled then
+                self:RegisterEvent("PLAYER_ENTERING_WORLD")
+            end
+            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then

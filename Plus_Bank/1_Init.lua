@@ -84,6 +84,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
+            
+
             WoWToolsSave['Plus_Bank2']= WoWToolsSave['Plus_Bank2'] or CopyTable(P_Save)
             P_Save=nil
 
@@ -91,6 +93,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Bank']= nil
 
             WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(WoWTools_DataMixin.onlyChinese and '银行' or BANK)
+
+
+            if _G['ElvUI_BankContainerFrame'] then
+                self:UnregisterAllEvents()
+                return
+            end
 
 --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
