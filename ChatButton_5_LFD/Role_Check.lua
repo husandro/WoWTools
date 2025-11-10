@@ -479,8 +479,10 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    Menu.ModifyMenu("MENU_QUEUE_STATUS_FRAME", function(_, root)
-        WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root)--显示 LFGDungeonReadyDialog
+    Menu.ModifyMenu("MENU_QUEUE_STATUS_FRAME", function(self, root)
+        if self:IsMouseOver() then
+            WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root)--显示 LFGDungeonReadyDialog
+        end
     end)
 
 

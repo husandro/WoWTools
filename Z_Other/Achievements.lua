@@ -267,7 +267,10 @@ local function Init_Achievement()
 
 
 --已完成，背景 alpha
-    Menu.ModifyMenu("MENU_ACHIEVEMENT_FILTER", function(_, root)
+    Menu.ModifyMenu("MENU_ACHIEVEMENT_FILTER", function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
         root:CreateDivider()
         local sub= root:CreateButton(
             WoWTools_DataMixin.onlyChinese and '已完成' or CRITERIA_COMPLETED,

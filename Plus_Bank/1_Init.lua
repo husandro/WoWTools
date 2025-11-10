@@ -39,7 +39,10 @@ end
 
 
 local function Init_Open_Menu()
-    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
+    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
         local sub= root:CreateCheckbox(
             (IsOpend and '' or '|cff606060')
             ..(WoWTools_DataMixin.onlyChinese and '银行' or BANK)

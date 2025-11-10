@@ -174,7 +174,11 @@ end
 
 
 --设置菜单
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
     local sub, sub2, name, info
 
     root:CreateDivider()
@@ -191,102 +195,89 @@ local function Init_Menu(_, root)
 
 
 
- local Num={
-    Totale=0,
-    All=0,
-    Complete=0,
-    Incomplete=0,
-    Trivial=0,
-    QuestFrequency={},
-    QuestClassification={}
-}
+    local Num={
+        Totale=0,
+        All=0,
+        Complete=0,
+        Incomplete=0,
+        Trivial=0,
+        QuestFrequency={},
+        QuestClassification={}
+    }
 
-for index=1 , C_QuestLog.GetNumQuestLogEntries() do
-    info=C_QuestLog.GetInfo(index)
-    if info and info.questID  and C_QuestLog.CanAbandonQuest(info.questID) then
+    for index=1 , C_QuestLog.GetNumQuestLogEntries() do
+        info=C_QuestLog.GetInfo(index)
+        if info and info.questID  and C_QuestLog.CanAbandonQuest(info.questID) then
 
-        Num.All= Num.All+1
+            Num.All= Num.All+1
 
---frequency 数量
-        if info.frequency then
-            Num.QuestFrequency[info.frequency]= (Num.QuestFrequency[info.frequency] or 0)+1
-        end
---classification 数量
-        if info.questClassification	then
-            Num.QuestClassification[info.questClassification]= (Num.QuestClassification[info.questClassification] or 0)+1
-        end
---完成数量
-        if C_QuestLog.IsComplete(info.questID) then
-            Num.Complete= Num.Complete+1
-        else
-            Num.Incomplete= Num.Incomplete+1
-        end
---低等任务
-        if C_QuestLog.IsQuestTrivial(info.questID) then
-            Num.Trivial= Num.Trivial+1
-        end
---加载数据
-        if info then
-            WoWTools_DataMixin:Load(info.questID, 'quest')
+    --frequency 数量
+            if info.frequency then
+                Num.QuestFrequency[info.frequency]= (Num.QuestFrequency[info.frequency] or 0)+1
+            end
+    --classification 数量
+            if info.questClassification	then
+                Num.QuestClassification[info.questClassification]= (Num.QuestClassification[info.questClassification] or 0)+1
+            end
+    --完成数量
+            if C_QuestLog.IsComplete(info.questID) then
+                Num.Complete= Num.Complete+1
+            else
+                Num.Incomplete= Num.Incomplete+1
+            end
+    --低等任务
+            if C_QuestLog.IsQuestTrivial(info.questID) then
+                Num.Trivial= Num.Trivial+1
+            end
+    --加载数据
+            if info then
+                WoWTools_DataMixin:Load(info.questID, 'quest')
+            end
         end
     end
-end
 
-for _, tab in pairs(AbandoList) do
-    if tab.name=='-' then
-        sub:CreateDivider()
-    else
-        local num
-        if tab.enum then
-            num= Num[tab.type][Enum[tab.type][tab.enum]]
+    for _, tab in pairs(AbandoList) do
+        if tab.name=='-' then
+            sub:CreateDivider()
         else
-            num= Num[tab.type]
+            local num
+            if tab.enum then
+                num= Num[tab.type][Enum[tab.type][tab.enum]]
+            else
+                num= Num[tab.type]
+            end
+
+            num= num or 0
+
+            name= (tab.enum and Color(tab.enum) or Color(tab.type) or '|cffffffff')
+                ..tab.name
+                ..' |r#'
+                ..(num==0 and '|cff626262' or '|cffffffff')
+                ..num
+                ..'|r'
+
+            sub2=sub:CreateButton(
+                name,
+            function(data)
+                StaticPopup_Show("WoWTools_WORLDMAP_ABANDONQUEST",
+                    data.name..(data.enum and '\n\nEnum.'..data.type..tab.enum or ''),
+                    nil,
+                    data
+                )
+            end,{
+                name=name,
+                type=tab.type,
+                enum=tab.enum,
+                num= num,
+            })
+
+        sub2:SetTooltip(function(tooltip, desc)
+                QuestList_Tooltip(tooltip, desc.data)
+        end)
         end
-
-        num= num or 0
-
-        name= (tab.enum and Color(tab.enum) or Color(tab.type) or '|cffffffff')
-            ..tab.name
-            ..' |r#'
-            ..(num==0 and '|cff626262' or '|cffffffff')
-            ..num
-            ..'|r'
-
-        sub2=sub:CreateButton(
-            name,
-        function(data)
-            StaticPopup_Show("WoWTools_WORLDMAP_ABANDONQUEST",
-                data.name..(data.enum and '\n\nEnum.'..data.type..tab.enum or ''),
-                nil,
-                data
-            )
-        end,{
-            name=name,
-            type=tab.type,
-            enum=tab.enum,
-            num= num,
-        })
-
-       sub2:SetTooltip(function(tooltip, desc)
-            QuestList_Tooltip(tooltip, desc.data)
-       end)
     end
-end
---滚动条
-WoWTools_MenuMixin:SetScrollMode(sub)
-
-
-
-
-
-
-
-
-
-
-
-
-
+    --滚动条
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
 --CVar
     root:CreateDivider()
@@ -296,45 +287,16 @@ WoWTools_MenuMixin:SetScrollMode(sub)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
     end)
-
-    if WoWTools_MenuMixin:CheckInCombat(sub) then
-        return
-    end
-    local tab={
-        'questPOI',
-        'showQuestObjectivesInLog',
-        'autoQuestWatch',
-        'scrollToLogQuest',
-        '-',
-        'displayQuestID',
-        'displayInternalOnlyStatus',
-        'showReadyToRecord',
-    }
-    
-    local col= InCombatLockdown() and '|cff626262' or ''
-    for _, var in pairs(tab) do
-        if var=='-' then
-            sub:CreateDivider()
-        else
-            sub2=sub:CreateCheckbox(
-                col..var,
-            function(data)
-                return C_CVar.GetCVarBool(data.var)
-            end, function(data)
-                if not InCombatLockdown() then
-                    C_CVar.SetCVar(data.var, C_CVar.GetCVarBool(data.var) and 0 or 1)
-                end
-            end, {var=var})
-            sub2:SetTooltip(function(tooltip, description)
-                if description.data.var=='scrollToLogQuest' then
-                    tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
-                end
-                tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT, WoWTools_TextMixin:GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
-                tooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
-            end)
-        end
-    end
+    WoWTools_MenuMixin:CVar(sub, 'questPOI')
+    WoWTools_MenuMixin:CVar(sub, 'showQuestObjectivesInLog')
+    WoWTools_MenuMixin:CVar(sub, 'autoQuestWatch')
+    WoWTools_MenuMixin:CVar(sub, 'scrollToLogQuest')
 end
+    --[[sub:CreateDivider()
+    WoWTools_MenuMixin:CVar(sub, 'displayQuestID')
+    WoWTools_MenuMixin:CVar(sub, 'displayInternalOnlyStatus')
+    WoWTools_MenuMixin:CVar(sub, 'showReadyToRecord')]]
+
 
 
 

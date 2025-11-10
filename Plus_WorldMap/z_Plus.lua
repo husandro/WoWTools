@@ -19,6 +19,9 @@ local function Init()
             end
 
             Menu.ModifyMenu("MENU_WORLD_MAP_ACTIVITY_TRACKER", function(self, root)
+                if not self:IsMouseOver() then
+                    return
+                end
                 root:CreateDivider()
                 local sub= WoWTools_MenuMixin:Scale(self, root, function()
                     return Save().activityTrackerScale or 1

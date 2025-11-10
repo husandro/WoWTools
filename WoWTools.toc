@@ -281,7 +281,6 @@ Plus_WorldMap\Name_Dungeon.lua
 Plus_WorldMap\Name_FlightMap.lua
 Plus_WorldMap\Name_WorldQuest.lua
 Plus_WorldMap\z_Plus_Menu.lua
-Plus_WorldMap\z_Plus_SearchBox.lua
 Plus_WorldMap\z_Plus.lua
 Plus_WorldMap\z_UI.lua
 

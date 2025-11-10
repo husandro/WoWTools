@@ -12,10 +12,11 @@ end
 
 ]]
 --玩家，添加，列表
-local function Init_Menu(_, root, data)
+local function Init_Menu(self, root, data)
     if
+        not self:IsMouseOver()
         --not Save().myChatFilter
-            not data.chatTarget
+        or not data.chatTarget
         or data.which~='FRIEND'
         or data.chatTarget==WoWTools_DataMixin.Player.Name_Realm
         or WoWTools_UnitMixin:GetIsFriendIcon(nil, nil, data.chatTarget)

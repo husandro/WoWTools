@@ -322,8 +322,10 @@ local function Init()
 	end)
 
 
-	Menu.ModifyMenu("MENU_FCF_TAB", function(...)
-		Init_Menu(...)
+	Menu.ModifyMenu("MENU_FCF_TAB", function(self, ...)
+		if self:IsMouseOver() then
+			Init_Menu(self, ...)
+		end
 	end)
 
 

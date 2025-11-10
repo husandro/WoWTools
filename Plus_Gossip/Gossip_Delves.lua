@@ -96,8 +96,8 @@ end
 
 
 
-local function Init_Menu(_, root)
-    local options = DelvesDifficultyPickerFrame:GetOptions();
+local function Init_Menu(self, root)
+    local options = self:IsMouseOver() and DelvesDifficultyPickerFrame:GetOptions()
     if not options then
         return;
     end

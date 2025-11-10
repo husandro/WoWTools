@@ -42,7 +42,10 @@ end
 
 
 local function Init()
-    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
+    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
         local sub= root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '兽栏' or STABLE_STABLED_PET_LIST_LABEL
             ..WoWTools_DataMixin.Icon.icon2,

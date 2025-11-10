@@ -89,7 +89,12 @@ local function Init()
     WoWTools_MinimapMixin:Init_Minimap_Zoom()--缩放数值, 缩小化地图
 
 --CVar 镇民
-    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(_, root)
+    Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        root:CreateDivider()
+
         local sub=root:CreateCheckbox(
             (InCombatLockdown() and '|cff606060' or '')
             ..(WoWTools_DataMixin.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT)

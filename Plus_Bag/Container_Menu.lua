@@ -7,6 +7,9 @@
 
 local function Init()
     Menu.ModifyMenu("MENU_CONTAINER_FRAME", function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
         local frame= self:GetParent()
         local bagID = frame:GetBagID()
 
@@ -81,7 +84,11 @@ local function Init()
 
 
 
-    Menu.ModifyMenu("MENU_CONTAINER_FRAME_COMBINED", function(_, root)
+    Menu.ModifyMenu("MENU_CONTAINER_FRAME_COMBINED", function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+
         local sub
         root:CreateDivider()
 
@@ -94,20 +101,45 @@ local function Init()
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('C_Container.SetSortBagsRightToLeft')
-            tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
+            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetSortBagsRightToLeft')
+        end)
+
+        sub= root:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '将战利品放入最左边的背包' or REVERSE_NEW_LOOT_TEXT,
+        function()
+            return C_Container.GetInsertItemsLeftToRight()
+        end, function()
+            C_Container.SetInsertItemsLeftToRight(not C_Container.GetInsertItemsLeftToRight())
+            return MenuResponse.Close
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetInsertItemsLeftToRight')
         end)
 
         sub= root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
-        C_Container.GetBackpackAutosortDisabled, function()
+        function()
+            return C_Container.GetBackpackAutosortDisabled()
+        end, function()
             C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('C_Container.SetBackpackAutosortDisabled')
-            tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
+            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetBackpackAutosortDisabled')
         end)
+
+        sub= root:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '禁用出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER),
+        function()
+            return C_Container.GetBackpackSellJunkDisabled()
+        end, function()
+            C_Container.SetBackpackSellJunkDisabled(not C_Container.GetBackpackSellJunkDisabled() and true or false)
+            return MenuResponse.Close
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetBackpackSellJunkDisabled')
+        end)
+
     end)
 
 

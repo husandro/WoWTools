@@ -241,7 +241,7 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
 
     local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
     sub2:SetEnabled(not isLocked)
-    
+
     return sub, sub2
 end
 --[[
@@ -869,44 +869,67 @@ end
 
 --文本转语音
 function WoWTools_MenuMixin:TTsMenu(root)
+    local sub= self:CVar(root, 'textToSpeech', '|A:chatframe-button-icon-TTS:0:0|a'..(WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH), '/tts')
+    if sub then
+        sub:CreateButton(
+            (ChatConfigFrame:IsShown() and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '文字转语音选项' or TEXT_TO_SPEECH_CONFIG),
+        function()
+            WoWTools_DataMixin:Call('ToggleTextToSpeechFrame')
+        end)
+    end
+end
+
+--仅支持 0 1
+function WoWTools_MenuMixin:CVar(root, name, showName, tooltip, func)
+    local value, defaultValue= C_CVar.GetCVarInfo(name)
+    if not value then
+        if WoWTools_DataMixin.Player.husandro then
+            print('|cnWARNING_FONT_COLOR:CVar|r', '没有发现')
+        end
+        return
+    end
 
     local sub= root:CreateCheckbox(
-        (InCombatLockdown() and '|cff828282' or '')
-        ..'|A:chatframe-button-icon-TTS:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
+        (InCombatLockdown() and '|cff626262' or '')
+        ..(showName or name),
     function()
-        return C_CVar.GetCVarBool('textToSpeech')
+        return C_CVar.GetCVarBool(name)
     end, function()
         if not InCombatLockdown() then
-            C_CVar.SetCVar('textToSpeech', C_CVar.GetCVarBool('textToSpeech') and '0' or '1' )
+            C_CVar.SetCVar(name, C_CVar.GetCVarBool(name) and '0' or '1')
         end
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('/tts')
     end)
     sub:AddInitializer(function(btn)
         btn:RegisterEvent('CVAR_UPDATE')
-        btn:SetScript('OnEvent', function(b, _, cvarName, value)
-            if cvarName=='textToSpeech' then
-                b.leftTexture2:SetShown(value=='1')
+        btn:SetScript('OnEvent', function(b, _, cvarName)
+            if cvarName==name then
+                C_Timer.After(0.3, function()
+                    local show= C_CVar.GetCVarBool(cvarName)
+                    if b.leftTexture2 then
+                        b.leftTexture2:SetShown(show)
+                    end
+                    if func then
+                        func(show)
+                    end
+                end)
             end
         end)
         btn:SetScript('OnHide', function(b)
             b:UnregisterEvent('CVAR_UPDATE')
         end)
     end)
-
-    sub:CreateButton(
-        (ChatConfigFrame:IsShown() and '|cff626262' or '')
-        ..(WoWTools_DataMixin.onlyChinese and '文字转语音选项' or TEXT_TO_SPEECH_CONFIG),
-    function()
-        WoWTools_DataMixin:Call('ToggleTextToSpeechFrame')
+    sub:SetTooltip(function(tip)
+        tip:AddLine(tooltip, nil, nil, nil, true)
+        if defaultValue then
+            if tooltip then
+                tip:AddLine(' ')
+            end
+            tip:AddLine((WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT)..': '..WoWTools_TextMixin:GetYesNo(tonumber(defaultValue)==1))
+        end
     end)
-
+    return sub
 end
-
-
 
 function WoWTools_MenuMixin:SetGridMode(sub, num)
     if num and num>maxMenuButton then
