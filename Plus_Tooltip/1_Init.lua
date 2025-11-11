@@ -417,7 +417,7 @@ end
 --初始
 local function Init()
     WoWTools_DataMixin:Hook("GameTooltip_SetDefaultAnchor", function(frame, parent)
-        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and InCombatLockdown()) then
+        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and UnitAffectingCombat('player')) then
             frame:ClearAllPoints()
             frame:SetOwner(
                 parent,
