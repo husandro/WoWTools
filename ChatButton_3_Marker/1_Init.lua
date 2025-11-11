@@ -174,6 +174,8 @@ local function Init(btn)
     WoWTools_MarkerMixin:Init_Ready_Tips_Button()--队员,就绪,提示信息
     WoWTools_MarkerMixin:Init_Tank_Healer()--设置队伍标记
     WoWTools_MarkerMixin:Init_AutoReady()
+
+    Init=function()end
 end
 
 

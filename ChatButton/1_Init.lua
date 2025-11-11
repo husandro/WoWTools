@@ -279,7 +279,7 @@ end
     })]]
 
 local function Init()
-    local btn= CreateFrame('DropdownButton', 'WoWToolsChatButtonMainButton')
+    local btn= CreateFrame('DropdownButton', 'WoWToolsChatButtonMainButton', UIParent)
 
     WoWTools_ChatMixin:Set_Button_Script(btn)
     btn:SetHighlightAtlas('WoWShare-Highlight')
