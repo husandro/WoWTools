@@ -390,7 +390,7 @@ Plus_Challenge\z_Say_ChallengeComplete.lua
 Plus_Challenge\z_Is_HuSandro.lua
 Plus_Challenge\z_Chat_Affix.lua
 ##邮件，增加
-Plus_Mail\1_mail.lua
+Plus_Mail\1_Init.lua
 Plus_Mail\2_Menu.lua
 Plus_Mail\A_InBox.lua
 Plus_Mail\B_ClearSendItems.lua

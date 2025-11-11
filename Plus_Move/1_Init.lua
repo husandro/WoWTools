@@ -126,7 +126,53 @@ end
 
 
 
+local function Init()
+    WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
+    WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
 
+    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+        Init_Panel()
+    end
+
+    for name in pairs(WoWTools_MoveMixin.Events) do
+        if C_AddOns.IsAddOnLoaded(name) then
+            if not Save().no[name] then
+                WoWTools_MoveMixin.Events[name](WoWTools_MoveMixin)
+            end
+            WoWTools_MoveMixin.Events[name]={}
+        end
+    end
+
+    for name in pairs(WoWTools_MoveMixin.Frames) do
+        if _G[name] and not Save().no[name] then
+            WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)
+        elseif WoWTools_DataMixin.Player.husandro then
+            print(WoWTools_MoveMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
+        end
+        WoWTools_MoveMixin.Frames[name]= {}
+    end
+
+    for name in ipairs(UIPanelWindows) do
+        if _G[name]
+            and not _G[name]:IsMovable()
+            and not _G[name].moveFrameData
+            and not _G[name].ResizeButton
+        then
+            WoWTools_MoveMixin:Setup(_G[name])
+            if WoWTools_DataMixin.Player.husandro then
+                print(WoWTools_MoveMixin.addName, '没有添加', name)
+            end
+        end
+    end
+
+    WoWTools_DataMixin:Hook('UpdateUIPanelPositions', function(currentFrame)
+        if Save().SavePoint then
+            WoWTools_MoveMixin:SetPoint(currentFrame)
+        end
+    end)
+
+    Init=function()end
+end
 
 
 
@@ -184,22 +230,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-                WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
-                WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
-
-                for name in pairs(WoWTools_MoveMixin.Events) do
-                    if C_AddOns.IsAddOnLoaded(name) then
-                        if not Save().no[name] then
-                            WoWTools_MoveMixin.Events[name](WoWTools_MoveMixin)
-                        end
-                        WoWTools_MoveMixin.Events[name]={}
-                    end
-                end
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                    Init_Panel()
-                end
             end
 
         elseif WoWToolsSave then
@@ -217,35 +247,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-
-        for name in pairs(WoWTools_MoveMixin.Frames) do
-            if _G[name] and not Save().no[name] then
-                WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)
-            elseif WoWTools_DataMixin.Player.husandro then
-                print(WoWTools_MoveMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
-            end
-            WoWTools_MoveMixin.Frames[name]= {}
-        end
-
-        for name in ipairs(UIPanelWindows) do
-            if _G[name]
-                and not _G[name]:IsMovable()
-                and not _G[name].moveFrameData
-                and not _G[name].ResizeButton
-            then
-                WoWTools_MoveMixin:Setup(_G[name])
-                if WoWTools_DataMixin.Player.husandro then
-                    print(WoWTools_MoveMixin.addName, '没有添加', name)
-                end
-            end
-        end
-
-        WoWTools_DataMixin:Hook('UpdateUIPanelPositions', function(currentFrame)
-            if Save().SavePoint then
-                WoWTools_MoveMixin:SetPoint(currentFrame)
-            end
-        end)
-
+        Init()
         self:UnregisterEvent(event)
     end
 end)
