@@ -329,6 +329,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent("PLAYER_LOGOUT")
                 self:RegisterEvent('CHAT_MSG_SYSTEM')
                 Init()
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end

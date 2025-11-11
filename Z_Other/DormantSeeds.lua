@@ -9,7 +9,7 @@ if WoWTools_DataMixin.Player.Level<70 then
 end
 
 local P_Save={
-    disabled= not WoWTools_DataMixin.Player.husandro,
+    disabled= true,
     scale= WoWTools_DataMixin.Player.husandro and 0.85 or 1,
 }
 
@@ -37,9 +37,7 @@ end
 
 
 local function Init()
-    if Save().disabled then
-        return
-    end
+
 
     Button= WoWTools_ButtonMixin:Cbtn(nil, {size=22})
 
@@ -310,7 +308,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         checkName= addName,
         GetValue= function() return not Save().disabled end,
         SetValue= function()
-            Save().disabled = not Save().disabled and true or nil
+            Save().disabled = not Save().disabled and true or false
             Init()
         end,
         buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
@@ -328,8 +326,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         category= WoWTools_OtherMixin.Category,
     })
 
-    Init()
-
+    if not Save().disabled then
+        Init()
+    end
+    self:SetScript('OnEvent', nil)
     self:UnregisterEvent(event)
 end)
 

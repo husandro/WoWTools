@@ -395,6 +395,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
             else
                 Tab={}
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
             end
 
@@ -407,6 +408,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Init_Button(tab)
         end
         Tab={}
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

@@ -101,11 +101,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
             WoWTools_TargetMixin:Blizzard_Settings()
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
 
     elseif arg1=='Blizzard_Settings' and WoWToolsSave then
         WoWTools_TargetMixin:Blizzard_Settings()
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

@@ -318,13 +318,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['NoggenfoggerElixir']= WoWToolsSave['NoggenfoggerElixir'] or P_Save
             P_Save= nil
 
-            button= WoWTools_ToolsMixin:CreateButton({
-                name='NoggenfoggerElixir',
-                tooltip=addName,
-            })
+            button= WoWTools_ToolsMixin:CreateButton({name='NoggenfoggerElixir', tooltip=addName})
 
             if button then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end

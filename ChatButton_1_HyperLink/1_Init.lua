@@ -129,6 +129,8 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 if C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
                     WoWTools_HyperLink:Blizzard_EventTrace()
                 end
+            else
+                self:SetScript('OnEvent', nil)
             end
 
         elseif arg1=='Blizzard_Settings' and WoWToolsSave then

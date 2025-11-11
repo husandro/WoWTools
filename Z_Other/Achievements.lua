@@ -672,6 +672,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         if Save().disabled or not WoWTools_MapIDAchievementData then
             WoWTools_MapIDAchievementData={}
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         else
             if C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
@@ -685,6 +686,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif arg1=='Blizzard_AchievementUI' and WoWToolsSave then
         Init_Achievement()
         if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
 
@@ -692,6 +694,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
        Init_EncounterJournal()
 
         if C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
     end

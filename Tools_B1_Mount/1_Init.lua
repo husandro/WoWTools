@@ -161,16 +161,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_MountMixin.faction= WoWTools_DataMixin.Player.Faction=='Horde' and 0 or (WoWTools_DataMixin.Player.Faction=='Alliance' and 1)
 
             else
+                self:SetScript('OnEvent', nil)
                 self:UnregisterAllEvents()
             end
 
-        elseif arg1=='Blizzard_Collections' then--收藏
+        elseif arg1=='Blizzard_Collections' and WoWToolsSave then--收藏
             WoWTools_MountMixin:Init_MountJournal()
             if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
                 self:UnregisterEvent(event)
             end
 
-        elseif arg1=='Blizzard_PlayerSpells' then--法术书
+        elseif arg1=='Blizzard_PlayerSpells' and WoWToolsSave then--法术书
             WoWTools_MountMixin:Init_UI_SpellBook_Menu()--法术书，选项
             if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
                 self:UnregisterEvent(event)

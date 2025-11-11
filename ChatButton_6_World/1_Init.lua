@@ -200,31 +200,30 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
             WoWToolsSave['ChatButtonWorldChannel']= WoWToolsSave['ChatButtonWorldChannel'] or P_Save
-            
+
             Save().myChatFilterPlayers= Save().myChatFilterPlayers or {}
             Save().userChatFilterTab= Save().userChatFilterTab or {}
             Save().lastName= Save().lastName or P_Save.world
 
             P_Save=nil
 
-
             WoWTools_WorldMixin.addName= '|A:tokens-WoW-generic-regular:0:0|a'..(WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL)
 
             if WoWTools_ChatMixin:CreateButton('World', WoWTools_WorldMixin.addName) then
-                self:UnregisterEvent(event)
-            else--禁用Chat Button
-                self:UnregisterAllEvents()
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            else
+                self:SetScript('OnEvent', nil)
             end
-
+            self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         Init()
         self:UnregisterEvent(event)
     end

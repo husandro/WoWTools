@@ -48,7 +48,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
@@ -72,10 +72,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             if WoWToolsSave['Plus_Spell'].disabled then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterAllEvents()
 
-            elseif C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
-                Blizzard_PlayerSpells()
+            else
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
+                    Blizzard_PlayerSpells()
+                end
             end
 
         elseif arg1=='Blizzard_Settings' and WoWToolsSave then
@@ -93,7 +97,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_SpellMixin:Init_Spec_Button()
         WoWTools_SpellMixin:Init_Spell_Flyout()
         WoWTools_SpellMixin:Init_ActionButton_UpdateRange()--法术按键, 颜色

@@ -192,6 +192,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if Save().autoLogin or Save().autoWho  then
                     self:RegisterEvent('BAG_UPDATE_DELAYED')
                 end
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end

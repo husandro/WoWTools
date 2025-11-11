@@ -582,6 +582,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         })
 
         if Save().disabled then
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         else
             if C_AddOns.IsAddOnLoaded('Blizzard_ScrappingMachineUI') then
@@ -592,6 +593,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif arg1=='Blizzard_ScrappingMachineUI' and WoWToolsSave then--分解 ScrappingMachineFrame
         Init()
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

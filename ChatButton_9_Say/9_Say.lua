@@ -531,6 +531,8 @@ local function Init()
     SayButton:settings(Save().type, Save().text, Save().name, Save().isWoW)
     set_chatBubbles_Tips() --提示，聊天泡泡，开启/禁用
     set_numWhisper_Tips()--最后密语,数量, 提示
+
+    Init=function()end
 end
 
 
@@ -576,6 +578,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
                 end
 
                 Init()
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end

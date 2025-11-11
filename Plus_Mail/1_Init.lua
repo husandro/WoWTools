@@ -267,21 +267,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
                             WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                         )
-                    else
-                        Init()
                     end
-
+                    Init()
                 end
             })
 
-            if not Save().disabled then
+            if not Save().disabled then                
                 self:RegisterEvent('MAIL_SHOW')
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end
 
     elseif event=='MAIL_SHOW' then
         Init()
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

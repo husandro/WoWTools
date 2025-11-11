@@ -70,7 +70,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
 
-            --添加控制面板
+--添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_MacroMixin.addName,
                 tooltip= ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
@@ -87,25 +87,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled  then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
-
             else
-                if C_AddOns.IsAddOnLoaded("MacroToolkit") then
-                    print(
-                        WoWTools_MacroMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                        WoWTools_TextMixin:GetEnabeleDisable(false), 'MacroToolkit',
-                        WoWTools_DataMixin.onlyChinese and '插件' or ADDONS
-                    )
-                end
-
                 if C_AddOns.IsAddOnLoaded('Blizzard_MacroUI') then
                     Init()
                     self:UnregisterEvent(event)
                 end
-
                 self:RegisterEvent("PLAYER_LOGOUT")
             end
-
 
         elseif arg1=='Blizzard_MacroUI' and WoWToolsSave then
             if InCombatLockdown() then

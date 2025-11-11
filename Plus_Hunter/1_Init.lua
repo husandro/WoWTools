@@ -114,12 +114,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save().disabled then
                 self:RegisterEvent('PET_STABLE_SHOW')
                 Init()
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end
 
     elseif event=='PET_STABLE_SHOW' then
         On_Show()
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

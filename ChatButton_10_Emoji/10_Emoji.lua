@@ -635,6 +635,6 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             Init()
         end
         self:UnregisterEvent(event)
+        self:SetScript('OnEvent', nil)
     end
-    
 end)

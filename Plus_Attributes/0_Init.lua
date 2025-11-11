@@ -114,7 +114,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 frame=self,
                 disabled= Save().disabled,
             })
-            
 
             WoWTools_ButtonMixin:ReloadButton({panel=self, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
@@ -144,6 +143,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     WoWTools_AttributesMixin:Init_Options(self)
                     self:UnregisterEvent(event)
                 end
+            else
+                self:SetScript('OnEvent', nil)
             end
 
         elseif arg1=='Blizzard_Settings' then

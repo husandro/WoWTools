@@ -104,10 +104,6 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-panel:RegisterEvent('CHALLENGE_MODE_START')
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -115,16 +111,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
             P_Save=nil
 
-            --[[if PlayerGetTimerunningSeasonID() then
-                self:UnregisterAllEvents()
-                WoWTools_ChallengesSpellData={}
-                WoWTools_DataMixin.affixSchedule={}
-                return
-            end]]
-
             WoWTools_ChallengeMixin.addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
 
-            --添加控制面板
+--添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_ChallengeMixin.addName,
                 GetValue= function() return not Save().disabled end,
@@ -139,9 +128,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                self:UnregisterAllEvents()
+                self:SetScript('OnEvent', nil)
+                self:UnregisterEvent(event)
 
             else
+                self:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('CHALLENGE_MODE_START')
 
                 for _, tab in pairs(WoWTools_ChallengesSpellData) do
                    WoWTools_DataMixin:Load(tab.spell, 'spell')
@@ -169,7 +162,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='CHALLENGE_MODE_START' then --赏金, 说 Bounty
         WoWTools_ChallengeMixin:Chat_Affix()
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
         WoWTools_ChallengeMixin:AvailableRewards() --打开周奖励时，提示拾取专精
 

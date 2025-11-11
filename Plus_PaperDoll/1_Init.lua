@@ -66,8 +66,6 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-panel:RegisterEvent('SOCKET_INFO_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -94,11 +92,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                self:UnregisterAllEvents()
+                self:SetScript('OnEvent', nil)
             else
                 Init()
-                self:UnregisterEvent(event)
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('SOCKET_INFO_UPDATE')
             end
+            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then

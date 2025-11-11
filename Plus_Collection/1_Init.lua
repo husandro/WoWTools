@@ -19,8 +19,14 @@ local function Init()
     WoWTools_CollectionMixin:Init_Wardrober_Items()--幻化,物品 5
     WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
     WoWTools_CollectionMixin:Init_Options()
-    return true
+    Init=function()end
 end
+
+
+
+
+
+
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
@@ -31,10 +37,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Collection']= WoWToolsSave['Plus_Collection'] or P_Save
             P_Save=nil
-            
+
             WoWTools_CollectionMixin.addName= '|A:UI-HUD-MicroMenu-Collections-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战团收藏' or COLLECTIONS)
 
-            --添加控制面板
+--添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_CollectionMixin.addName,
                 GetValue= function() return not Save().disabled end,
@@ -49,22 +55,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
             else
                 WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表 a
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                    if Init() then
-                        Init=function()end
-                    end
+                    Init()
+                    self:SetScript('OnEvent', nil)
                     self:UnregisterEvent(event)
                 end
             end
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-            if Init() then
-                Init=function()end
-            end
+            Init()
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
     end

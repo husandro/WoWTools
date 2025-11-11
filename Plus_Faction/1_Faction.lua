@@ -62,6 +62,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				if C_AddOns.IsAddOnLoaded('Blizzard_CovenantRenown') then
 					WoWTools_FactionMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
 				end
+			else
+				self:SetScript('OnEvent', nil)
 			end
 
 		elseif arg1=='Blizzard_MajorFactions' and WoWToolsSave then

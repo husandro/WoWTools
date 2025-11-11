@@ -74,6 +74,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
             else
                 WoWTools_WorldMapMixin:Init_Menu()--设置菜单
@@ -90,11 +91,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_FlightMap') then
                     WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
+                    self:SetScript('OnEvent', nil)
                     self:UnregisterEvent(event)
                 end
             end
 
-        elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
+        elseif arg1=='Blizzard_FlightMap' and WoWToolsSave then--飞行点，加名称
             WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
             self:UnregisterEvent(event)
         end

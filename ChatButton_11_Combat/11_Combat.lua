@@ -37,8 +37,6 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
     WoWTools_CombatMixin.addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
 
-
-
     local notData= not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time.totalTime
                 or not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time.upData
 
@@ -60,5 +58,6 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         RequestTimePlayed()
     end
 
+    self:SetScript('OnEvent', nil)
     self:UnregisterEvent(event)
 end)

@@ -1184,15 +1184,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
 
             elseif C_AddOns.IsAddOnLoaded('Blizzard_ItemSocketingUI') then
                 Init()
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_ItemSocketingUI' and WoWToolsSave then
             Init()
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
     end

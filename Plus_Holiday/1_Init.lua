@@ -102,6 +102,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                self:SetScript('OnEvent', nil)
                self:UnregisterAllEvents()
             else
                 if C_AddOns.IsAddOnLoaded('Blizzard_Calendar') then

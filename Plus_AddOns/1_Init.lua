@@ -147,13 +147,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         AddonList:HookScript('OnShow', function()
             Init()
         end)
-
-        --[[if WoWTools_DataMixin.Player.husandro then
-            C_Timer.After(0.3, function()
-            AddonList:Show()
-            end)
-        end]]
     end
 
+    self:SetScript('OnEvent', nil)
     self:UnregisterEvent(event)
 end)

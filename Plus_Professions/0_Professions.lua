@@ -47,6 +47,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         })
 
         if Save().disabled then
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         else
             if C_AddOns.IsAddOnLoaded("Blizzard_TrainerUI") then
@@ -61,8 +62,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if C_AddOns.IsAddOnLoaded("Blizzard_ProfessionsBook") then
                 WoWTools_ProfessionMixin:Init_ProfessionsBook()--专业书
             end
-
-
         end
 
     elseif arg1== 'Blizzard_TrainerUI' and WoWToolsSave then

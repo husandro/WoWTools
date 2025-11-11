@@ -49,14 +49,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                     WoWTools_MainMenuMixin:Init_Options()--初始, 选项
+                    self:SetScript('OnEvent', nil)
                     self:UnregisterEvent(event)
                 end
+            else
+                self:SetScript('OnEvent', nil)
             end
 
             WoWTools_MainMenuMixin:Init_Framerate_Plus()--系统，fts
 
         elseif arg1=='Blizzard_Settings' and WoWToolsSave then
             WoWTools_MainMenuMixin:Init_Options()--初始, 选项
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
     end

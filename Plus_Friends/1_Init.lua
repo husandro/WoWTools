@@ -43,8 +43,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterAllEvents()
-
             else
                 WoWTools_FriendsMixin:Blizzard_QuickJoin()
                 WoWTools_FriendsMixin:Blizzard_RaidFrame()

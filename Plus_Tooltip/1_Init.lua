@@ -503,6 +503,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 WoWTools_TooltipMixin.Events= {}
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
 
             else

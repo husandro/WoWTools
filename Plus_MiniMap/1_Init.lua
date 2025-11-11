@@ -182,7 +182,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                     Save().Icons.point=nil
                     WoWTools_MinimapMixin:Init_Collection_Icon()--重置，收集图标，按钮位置
-                    
+
                     print(
                         WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
@@ -191,8 +191,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterAllEvents()
-
             else
                 Init()
 

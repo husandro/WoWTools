@@ -208,6 +208,8 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
     if WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName) then
         Init(WoWTools_ChatMixin:GetButtonForName('Markers'))
+    else
+        self:SetScript('OnEvent', nil)
     end
 
     self:UnregisterEvent(event)

@@ -49,11 +49,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_UnitMixin:Init_Options()
 
             if Save().disabled then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterAllEvents()
             else
+
                 Init()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                    self:SetScript('OnEvent', nil)
                     self:UnregisterEvent(event)
                 end
             end

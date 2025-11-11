@@ -54,11 +54,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             if not WoWTools_ToolsMixin:Get_ButtonForName('Hearthstone') then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterAllEvents()
             else
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-                for itemID, _ in pairs(WoWToolsSave['Tools_Hearthstone'].items) do
+                for itemID in pairs(WoWToolsSave['Tools_Hearthstone'].items) do
                    WoWTools_DataMixin:Load(itemID, 'item')
                 end
 

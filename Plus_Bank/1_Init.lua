@@ -78,13 +78,11 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("BANKFRAME_OPENED")
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-
-            
 
             WoWToolsSave['Plus_Bank2']= WoWToolsSave['Plus_Bank2'] or P_Save
             P_Save=nil
@@ -94,9 +92,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(WoWTools_DataMixin.onlyChinese and '银行' or BANK)
 
-
             if _G['ElvUI_BankContainerFrame'] then
-                self:UnregisterAllEvents()
+                self:SetScript('OnEvent', nil)
+                self:UnregisterEvent(event)
                 return
             end
 
@@ -120,15 +118,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                self:UnregisterAllEvents()
+                self:SetScript('OnEvent', nil)
             else
-                self:UnregisterEvent(event)
+                self:RegisterEvent('BANKFRAME_OPENED')
                 Init_Open_Menu()
             end
+            self:UnregisterEvent(event)
         end
 
     elseif event=='BANKFRAME_OPENED' then
         Init()
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

@@ -66,6 +66,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save().disabled then
                 self:RegisterEvent("PLAYER_ENTERING_WORLD")
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end

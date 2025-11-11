@@ -96,17 +96,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
 
             elseif C_AddOns.IsAddOnLoaded('Blizzard_GuildBankUI') then
-                if Init() then
-                    Init=function()end
-                end
+                Init()
+                self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_GuildBankUI' and WoWToolsSave then
             Init()
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
     end

@@ -692,6 +692,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('GROUP_ROSTER_UPDATE')
 
                 self:RegisterEvent('CVAR_UPDATE')
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end

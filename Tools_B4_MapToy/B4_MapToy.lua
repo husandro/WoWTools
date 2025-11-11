@@ -479,12 +479,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         GetAchievementCategory(achievementID)
                     end
                 end
+            else
+                self:SetScript('OnEvent', nil)
             end
             self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         Init()
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

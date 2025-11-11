@@ -83,6 +83,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if WoWToolsSave['Plus_PetBattle2'].disabled then
                 WoWTools_PetBattleMixin:Set_Options()
+                self:SetScript('OnEvent', nil)
                 self:UnregisterAllEvents()
 
             else

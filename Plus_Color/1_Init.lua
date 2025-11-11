@@ -80,7 +80,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -111,21 +111,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			if Save().disabled then
 				WoWTools_ColorMixin:Init_CODE()
+				self:SetScript('OnEvent', nil)
 				self:UnregisterAllEvents()
 
 			else
+				self:RegisterEvent('PLAYER_ENTERING_WORLD')
 				ColorPickerFrame:SetScript('OnEvent', Set_Event)--原生，去掉，在框架外，会自动关闭
 
 				ColorPickerFrame:HookScript('OnShow', function()
 					Init()
 				end)
 				self:UnregisterEvent(event)
-
 			end
         end
 
-	elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+	elseif event=='PLAYER_ENTERING_WORLD' then
 		Show_ClorFrame()
+		self:SetScript('OnEvent', nil)
 		self:UnregisterEvent(event)
     end
 end)
