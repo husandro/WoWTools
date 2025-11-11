@@ -155,9 +155,7 @@ Plus_Color\CODE.lua
 ##鼠标，提示
 Plus_Tooltip\0_TooltipMixin.lua
 Plus_Tooltip\1_Init.lua
-Plus_Tooltip\2_Hook.lua
 Plus_Tooltip\2_AddTooltipPostCall.lua
-Plus_Tooltip\3_Set_Point.lua
 Plus_Tooltip\4_Tooltip_Init.lua
 Plus_Tooltip\f_Achievement.lua
 Plus_Tooltip\f_Aura.lua
@@ -174,9 +172,10 @@ Plus_Tooltip\f_Spell.lua
 Plus_Tooltip\f_Unit_NPC.lua
 Plus_Tooltip\f_Unit_Player.lua
 Plus_Tooltip\f_URL.lua
-Plus_Tooltip\f.StatusBar.lua
+Plus_Tooltip\z.StatusBar.lua
 Plus_Tooltip\z_CVar_Set.lua
 Plus_Tooltip\z_Events.lua
+Plus_Tooltip\z_Frames.lua
 
 ##小地图，增强
 Plus_MiniMap\1_Init.lua

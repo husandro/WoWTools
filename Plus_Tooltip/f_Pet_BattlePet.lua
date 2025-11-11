@@ -1,6 +1,3 @@
-
-
-
 --宠物面板提示
 function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQuality, maxHealth, power, speed, customName)
     speciesID= speciesID and tonumber(speciesID) or -1
@@ -111,42 +108,4 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
 
     --tooltip:Show()
     WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
-end
-
-
-
-
-
---###########
---宠物面板提示
---###########
-local function Init_BattlePet()
-    WoWTools_DataMixin:Hook("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
-        WoWTools_TooltipMixin:Set_Battle_Pet(BattlePetTooltip, ...)
-    end)
-
-    WoWTools_DataMixin:Hook('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
-        WoWTools_TooltipMixin:Set_Battle_Pet(FloatingBattlePetTooltip, ...)
-    end)
-
-    WoWTools_DataMixin:Hook(GameTooltip, "SetCompanionPet", function(self, petGUID)--设置宠物信息
-        local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
-        WoWTools_TooltipMixin:Set_Pet(self, speciesID)--宠物
-    end)
-
-    --[[WoWTools_DataMixin:Hook('GameTooltip_AddQuestRewardsToTooltip', function(self, questID)--世界任务ID GameTooltip_AddQuest
-        WoWTools_TooltipMixin:Set_Quest(self, questID)
-    end)]]
-
-    Init_BattlePet=function()end
-end
-
-
-
-
-
-
-
-function WoWTools_TooltipMixin:Init_BattlePet()
-    Init_BattlePet()
 end

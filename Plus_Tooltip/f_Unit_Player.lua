@@ -308,9 +308,6 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     if tooltip.StatusBar then
         tooltip.StatusBar:SetStatusBarColor(r,g,b)
     end
-    --else
-        --self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
-    --end]]
 
     self:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 

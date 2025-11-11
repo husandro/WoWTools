@@ -1,9 +1,5 @@
-
-
---#########
 --生命条提示
---#########
-function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
+local function Set_HealthBar_Unit(frame, unit)
     unit= unit or select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
 
     if WoWToolsSave['Plus_Tootips'].hideHealth
@@ -75,7 +71,7 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
     GameTooltipStatusBar.textRight = WoWTools_LabelMixin:Create(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
     GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
     GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
-        WoWTools_TooltipMixin:Set_HealthBar_Unit(self)
+        Set_HealthBar_Unit(self)
     end)
     WoWTools_TextureMixin:SetStatusBar(GameTooltipStatusBar)
 

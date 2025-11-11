@@ -57,6 +57,8 @@ end
 
 
 local function Init_Panel()
+    local reloadText= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
     local root
 
@@ -239,12 +241,12 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '生命值' or HEALTH,
-        tooltip= WoWTools_TooltipMixin.addName,
+        tooltip= reloadText,
         GetValue= function() return not Save().hideHealth end,
         category= Category,
         SetValue= function()
             Save().hideHealth= not Save().hideHealth and true or nil
-            print(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2,  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            WoWTools_TooltipMixin:Init_StatusBar()
         end
     })
 
@@ -256,7 +258,7 @@ local function Init_Panel()
         category= Category,
         SetValue= function()
             Save().UNIT_POPUP_RIGHT_CLICK= not Save().UNIT_POPUP_RIGHT_CLICK and true or nil
-            print(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2,  WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            print(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), reloadText)
         end
     })
 
@@ -351,6 +353,35 @@ local function Init_Panel()
         category= Category
     })
 
+
+
+
+
+
+
+    
+    local function Add_Options(name)
+        WoWTools_PanelMixin:OnlyCheck({
+            name= name:gsub('Blizzard_', ''),
+            tooltip= reloadText,
+            category= Category,
+            Value= not Save().no[name],
+            GetValue= function() return not Save().no[name] end,
+            SetValue= function()
+                Save().no[name]= not Save().no[name] and true or nil
+            end
+        })
+    end
+
+    WoWTools_PanelMixin:Header(Layout, 'Event')
+    for name in pairs(WoWTools_TooltipMixin.Events) do
+        Add_Options(name)
+    end
+
+    WoWTools_PanelMixin:Header(Layout, 'Frame')
+    for name in pairs(WoWTools_TooltipMixin.Frames) do
+        Add_Options(name)
+    end
     Init_Panel=function()end
 end
 
@@ -385,13 +416,20 @@ end
 
 --初始
 local function Init()
-
+    WoWTools_DataMixin:Hook("GameTooltip_SetDefaultAnchor", function(frame, parent)
+        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and UnitAffectingCombat('player')) then
+            frame:ClearAllPoints()
+            frame:SetOwner(
+                parent,
+                Save().cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT',
+                Save().cursorX or 0,
+                Save().cursorY or 0
+            )
+        end
+    end)
 
     WoWTools_TooltipMixin:Init_StatusBar()--生命条提示
-    WoWTools_TooltipMixin:Init_Hook()
-    WoWTools_TooltipMixin:Init_BattlePet()
     WoWTools_TooltipMixin:Init_Settings()
-    WoWTools_TooltipMixin:Init_SetPoint()
     WoWTools_TooltipMixin:Init_CVar()
 
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
@@ -411,6 +449,8 @@ local function Init()
 
     Init=function()end
 end
+
+
 
 
 
@@ -484,7 +524,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
                     for name in pairs(WoWTools_TooltipMixin.Frames)do
                         if _G[name] and not Save().no[name] then
-                            WoWTools_TooltipMixin.EveFramesnts[name](WoWTools_TooltipMixin)
+                            WoWTools_TooltipMixin.Frames[name](WoWTools_TooltipMixin)
                         elseif WoWTools_DataMixin.Player.husandro then
                             print('Tooltip Frames 没有发现|cnWARNING_FONT_COLOR:', name)
                         end
