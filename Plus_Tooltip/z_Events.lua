@@ -531,146 +531,10 @@ end
 
 
 
-
-
-
-
-function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
---装备，对比，提示
-    for i=1, 2 do
-        local tooltip= _G['ShoppingTooltip'..i]
-        tooltip.Portrait2= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-        tooltip.Portrait2:SetPoint('TOPRIGHT',-2, -3)
-        tooltip.Portrait2:SetSize(40,40)
-        tooltip:HookScript('OnShow', function(t)
-            local data= t:GetPrimaryTooltipData()--{dataInstanceID type isAzeriteItem guid isAzeriteEmpoweredItem isCorruptedItem, lines}
-            local itemLink= data and data.guid and C_Item.GetItemLinkByGUID(data.guid)
-            local atlas, isUp
-            if itemLink then
-                if itemLink== select(2, GameTooltip:GetItem()) then
-                    atlas='QuestNormal'
-                elseif itemLink==GetInventoryItemLink('player', 11) or itemLink==GetInventoryItemLink('player', 13) then
-                    atlas='Adventures-Target-Indicator'
-                    isUp=true
-                elseif itemLink==GetInventoryItemLink('player', 12) or itemLink==GetInventoryItemLink('player', 14) then
-                    atlas='Adventures-Target-Indicator'
-                end
-            end
-
-            t.Portrait2:SetAtlas(atlas or WoWTools_DataMixin.Icon.Player:match('|A:(.-):') or 'QuestArtifactTurnin')
-
-            if isUp then
-                t.Portrait2:SetTexCoord(0,1,1,0)
-            else
-                t.Portrait2:SetTexCoord(0,1,0,1)
-            end
-        end)
-    end
-    
---宠物，技能书，提示
-    WoWTools_DataMixin:Hook(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)
-        if unit==Enum.SpellBookSpellBank.Pet and slot then
-            local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet) or {}
-            if data.spellID then
-                WoWTools_TooltipMixin:Set_Spell(self, data.spellID)
-            elseif data.actionID then
-                self:AddDoubleLine(
-                    (data.iconID and '|T'..data.iconID..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..data.iconID or ' '),
-                    data.actionID and 'actionID|cffffffff'..WoWTools_DataMixin.Icon.icon2..data.actionID
-                )
-                WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', self)
-            end
-        end
-    end)
-
---GameTooltip_AddQuest    
-    WoWTools_DataMixin:Hook('GameTooltip_AddQuest', function(self, questIDArg)
-        local questID = self.questID or questIDArg
-        if questID and HaveQuestData(questID) then
-            WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID)
-        end
-    end)
-
-    
---添加 WidgetSetID
-    WoWTools_DataMixin:Hook('GameTooltip_AddWidgetSet', function(tooltip, uiWidgetSetID)
-        if uiWidgetSetID then
-            tooltip:AddLine('widgetSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..uiWidgetSetID)
-            WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
-        end
-    end)
-end
-
-
-
-
-
-
-
---选项 SettingsTooltip
-function WoWTools_TooltipMixin.Events:Blizzard_Settings_Shared()
-    SettingsTooltip:HookScript('OnShow', function(tooltip)--选项面板，值提示
-        local frame= tooltip:GetOwner():GetParent()
-
-        for i=1, 4 do
-            if frame.GetSetting or frame.GetData then
-                break
-            else
-                frame= frame:GetParent()
-            end
-        end
-
-        local setting= frame.GetSetting and frame:GetSetting()
-        local data= frame.GetData and frame.GetData()
-
-        if not setting and data and data.data then
-            setting= data.data.cbSetting or data.data.setitings
-        end
-
-        local variable= setting and setting.variable and tostring(setting.variable)
-
-        if not variable then
-            return
-        end
-
-        if IsAltKeyDown() then
-            WoWTools_TooltipMixin:Show_URL(nil, nil, nil, variable)
-            return
-        end
-
-        local variableType= setting.variableType and tostring(setting.variableType) or type(setting.variableType)
-
-        local value= C_CVar.GetCVarInfo(variable) or ''
-
-        tooltip:AddLine(' ')
-        tooltip:AddLine(
-            'variable'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..variable
-        )
-        tooltip:AddLine(
-            'variableType'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..variableType.. '|r '..tostring(value)
-        )
-        tooltip:AddLine(
-            '|cnGREEN_FONT_COLOR:Alt'..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
-        )
-        tooltip:Show()
-    end)
-end
-
-
-
-
-
-
-
-
-
-
-
-
 --商店
 function WoWTools_TooltipMixin.Events:Blizzard_AccountStore()
-    WoWTools_DataMixin:Hook(AccountStoreBaseCardMixin, 'OnEnter', function(self)
-        local info= self.itemInfo
+    WoWTools_DataMixin:Hook(AccountStoreBaseCardMixin, 'OnEnter', function(frame)
+        local info= frame.itemInfo
         if not info or not info.id then
             return
         end
@@ -703,14 +567,14 @@ end
 function WoWTools_TooltipMixin.Events:Blizzard_OverrideActionBar()
     for i= 1, NUM_OVERRIDE_BUTTONS do
         if _G['OverrideActionBarButton'..i] then
-            WoWTools_DataMixin:Hook(_G['OverrideActionBarButton'..i], 'SetTooltip', function(self)
-                if not self.action then
+            WoWTools_DataMixin:Hook(_G['OverrideActionBarButton'..i], 'SetTooltip', function(frame)
+                if not frame.action then
                     return
                 end
-                local actionType, ID, subType = GetActionInfo(self.action)
+                local actionType, ID, subType = GetActionInfo(frame.action)
                 if actionType and ID then
                         GameTooltip:AddDoubleLine(
-                            'action|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.action,
+                            'action|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.action,
                             'ID|cffffffff'..WoWTools_DataMixin.Icon.icon2..ID
                         )
                         GameTooltip:AddDoubleLine(
@@ -731,31 +595,31 @@ end
 
 --挑战, AffixID Blizzard_ScenarioObjectiveTracker.lua
 function WoWTools_TooltipMixin.Events:Blizzard_ObjectiveTracker()
-    WoWTools_DataMixin:Hook(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
-        if self.affixID then
-            local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
+    WoWTools_DataMixin:Hook(ScenarioChallengeModeAffixMixin, 'OnEnter', function(frame)
+        if frame.affixID then
+            local name, description, filedataid = C_ChallengeMode.GetAffixInfo(frame.affixID)
             GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
             GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
             GameTooltip:AddDoubleLine(
                 filedataid and '|T'..filedataid..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..filedataid,
-                'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.affixID
+                'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.affixID
             )
-            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=frame.affixID, name=name, isPetUI=false})--取得网页，数据链接
             GameTooltip:Show()
         end
     end)
 
     if ScenarioChallengeModeBlock and ScenarioChallengeModeBlock.Affixes and ScenarioChallengeModeBlock.Affixes[1] then--11.2.7没发现
-        ScenarioChallengeModeBlock.Affixes[1]:HookScript('OnEnter', function(self)
-            if self.affixID then
-                local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
+        ScenarioChallengeModeBlock.Affixes[1]:HookScript('OnEnter', function(frame)
+            if frame.affixID then
+                local name, description, filedataid = C_ChallengeMode.GetAffixInfo(frame.affixID)
                 GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
                 GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
                 GameTooltip:AddDoubleLine(
                     filedataid and '|T'..filedataid..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..filedataid,
-                    'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.affixID
+                    'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.affixID
                 )
-                WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+                WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=frame.affixID, name=name, isPetUI=false})--取得网页，数据链接
                 GameTooltip:Show()
             end
         end)

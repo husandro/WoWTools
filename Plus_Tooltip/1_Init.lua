@@ -417,7 +417,7 @@ end
 --初始
 local function Init()
     WoWTools_DataMixin:Hook("GameTooltip_SetDefaultAnchor", function(frame, parent)
-        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and UnitAffectingCombat('player')) then
+        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and InCombatLockdown()) then
             frame:ClearAllPoints()
             frame:SetOwner(
                 parent,
@@ -429,7 +429,6 @@ local function Init()
     end)
 
     WoWTools_TooltipMixin:Init_StatusBar()--生命条提示
-    WoWTools_TooltipMixin:Init_Settings()
     WoWTools_TooltipMixin:Init_CVar()
 
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
@@ -462,8 +461,6 @@ end
 --Save().WidgetSetID = Save().WidgetSetID or 0
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then

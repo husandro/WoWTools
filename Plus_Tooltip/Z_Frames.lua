@@ -1,45 +1,45 @@
 --声望
 function WoWTools_TooltipMixin.Frames:ReputationFrame()
 
-    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
-        if self.elementData and self.elementData.factionID then
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowStandardTooltip', function(frame)
+        if frame.elementData and frame.elementData.factionID then
+            self:Set_Faction(GameTooltip, frame.elementData.factionID)
         end
     end)
-    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
-        if self.elementData and self.elementData.factionID then
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(frame)
+        if frame.elementData and frame.elementData.factionID then
+            self:Set_Faction(GameTooltip, frame.elementData.factionID)
         end
     end)
-    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
-        if self.elementData and self.elementData.factionID then
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(frame)
+        if frame.elementData and frame.elementData.factionID then
+            self:Set_Faction(GameTooltip, frame.elementData.factionID)
         end
     end)
-    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
-        if self.elementData and self.elementData.factionID then
-            WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+    WoWTools_DataMixin:Hook(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(frame)
+        if frame.elementData and frame.elementData.factionID then
+            self:Set_Faction(EmbeddedItemTooltip, frame.elementData.factionID)
         end
     end)
 
-    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowStandardTooltip', function(self)
-        if self.elementData and self.elementData.factionID then
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowStandardTooltip', function(frame)
+        if frame.elementData and frame.elementData.factionID then
+            self:Set_Faction(GameTooltip, frame.elementData.factionID)
         end
     end)
-    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowMajorFactionRenownTooltip', function(self)
-        if self.elementData and self.elementData.factionID then
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowMajorFactionRenownTooltip', function(frame)
+        if frame.elementData and frame.elementData.factionID then
+            self:Set_Faction(GameTooltip, frame.elementData.factionID)
         end
     end)
-    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowFriendshipReputationTooltip', function(self)
-        if self.elementData and self.elementData.factionID then
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowFriendshipReputationTooltip', function(frame)
+        if frame.elementData and frame.elementData.factionID then
+            self:Set_Faction(GameTooltip, frame.elementData.factionID)
         end
     end)
-    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowParagonRewardsTooltip', function(self)
-        if self.elementData and self.elementData.factionID then
-            WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+    WoWTools_DataMixin:Hook(ReputationSubHeaderMixin, 'ShowParagonRewardsTooltip', function(frame)
+        if frame.elementData and frame.elementData.factionID then
+            self:Set_Faction(EmbeddedItemTooltip, frame.elementData.factionID)
         end
     end)
 
@@ -51,13 +51,13 @@ function WoWTools_TooltipMixin.Frames:ReputationFrame()
             mouse=true,
     })
     factionIDText:SetPoint('BOTTOM', ReputationFrame.ReputationDetailFrame, 'TOP')
-    factionIDText:SetScript('OnLeave', function(self)
+    factionIDText:SetScript('OnLeave', function(frame)
         GameTooltip:Hide()
-        self:SetAlpha(1)
+        frame:SetAlpha(1)
     end)
-    factionIDText:SetScript('OnEnter', function(self)
-        WoWTools_SetTooltipMixin:Faction(self)
-        self:SetAlpha(0.5)
+    factionIDText:SetScript('OnEnter', function(frame)
+        WoWTools_SetTooltipMixin:Faction(frame)
+        frame:SetAlpha(0.5)
     end)
     function factionIDText:settings()
         local selectedFactionIndex = C_Reputation.GetSelectedFaction();
@@ -93,7 +93,7 @@ function WoWTools_TooltipMixin.Frames:QuestFrame()
     QuestScrollFrame.CampaignTooltip.IDLabel.expand= true
     QuestScrollFrame.CampaignTooltip.IDLabel.bottomPadding= 8
     QuestScrollFrame.CampaignTooltip.IDLabel:SetSize(250, 0)
-    WoWTools_DataMixin:Hook(QuestScrollFrame.CampaignTooltip, 'SetJourneyCampaign', function(self, campaign)
+    WoWTools_DataMixin:Hook(QuestScrollFrame.CampaignTooltip, 'SetJourneyCampaign', function(frame, campaign)
         local text
         if campaign and campaign.campaignID then
             text= 'campaignID|cffffffff'..WoWTools_DataMixin.Icon.icon2..campaign.campaignID..'|r'
@@ -104,21 +104,19 @@ function WoWTools_TooltipMixin.Frames:QuestFrame()
                 end
             end
         end
-        self.IDLabel:SetText(text or '')
-        self.IDLabel:SetShown(text)
+        frame.IDLabel:SetText(text or '')
+        frame.IDLabel:SetShown(text)
     end)
 
-    
-
 --任务日志 显示ID
-    WoWTools_DataMixin:Hook("QuestMapLogTitleButton_OnEnter", function(self)
-        local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
-        local questID= info and info.questID or self.questID
+    WoWTools_DataMixin:Hook("QuestMapLogTitleButton_OnEnter", function(frame)
+        local info= frame.questLogIndex and C_QuestLog.GetInfo(frame.questLogIndex)
+        local questID= info and info.questID or frame.questID
         if not questID  or not HaveQuestData(questID) then
             return
         end
 
-        WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID, info)--任务
+        self:Set_Quest(GameTooltip, questID, info)--任务
 
         if IsInGroup() then
             local n=GetNumGroupMembers()
@@ -202,9 +200,9 @@ end
 
 --试衣间 DressUpFrames.lua
 function WoWTools_TooltipMixin.Frames:DressUpFrame()
-    WoWTools_DataMixin:Hook(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)
-        if self.transmogID then
-            GameTooltip:AddLine('transmogID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.transmogID)
+    WoWTools_DataMixin:Hook(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(frame)
+        if frame.transmogID then
+            GameTooltip:AddLine('transmogID|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.transmogID)
             GameTooltip:Show()
         end
     end)
@@ -212,47 +210,6 @@ end
 
 
 
---战斗宠物，技能 SharedPetBattleTemplates.lua  SharedPetBattleAbilityTooltipTemplate
---PetBattlePrimaryAbilityTooltip
---PetJournalPrimaryAbilityTooltip
---FloatingPetBattleAbilityTooltip
-function WoWTools_TooltipMixin.Frames:BattlePetTooltip()
-    WoWTools_DataMixin:Hook('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo)
-        local abilityID = abilityInfo:GetAbilityID()
-        if not abilityID then
-            if self.WoWToolsLabel then
-                self.WoWToolsLabel:SetText('')
-            end
-            return
-        end
-
-        local _, name, icon = C_PetBattles.GetAbilityInfoByID(abilityID)
-        if not self.WoWToolsLabel then
-            self.WoWToolsLabel= WoWTools_LabelMixin:Create(self)
-            self.WoWToolsLabel:SetPoint('TOP', self, 'BOTTOM')
-        end
-
-        self.WoWToolsLabel:SetText(
-            'abilityID '..abilityID
-            ..(icon and '  |T'..icon..':'..WoWTools_TooltipMixin.iconSize..'|t'..icon or '')
-            ..(self:Save().ctrl and not UnitAffectingCombat('player') and '  |A:NPE_Icon:0:0|aCtrl+Shift|TInterface\\AddOns\\WoWTools\\Source\\Texture\\Wowhead.tga:0|t' or '')
-        )
-
-        WoWTools_TooltipMixin:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
-    end)
-
---宠物面板提示
-    WoWTools_DataMixin:Hook("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
-        WoWTools_TooltipMixin:Set_Battle_Pet(BattlePetTooltip, ...)
-    end)
-    WoWTools_DataMixin:Hook('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
-        WoWTools_TooltipMixin:Set_Battle_Pet(FloatingBattlePetTooltip, ...)
-    end)
-    WoWTools_DataMixin:Hook(GameTooltip, "SetCompanionPet", function(self, petGUID)--设置宠物信息
-        local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
-        WoWTools_TooltipMixin:Set_Pet(self, speciesID)--宠物
-    end)
-end
 
 
 
@@ -261,8 +218,8 @@ end
 
 
 function WoWTools_TooltipMixin.Frames:WarbandSceneEntryMixin()
-    WoWTools_DataMixin:Hook(WarbandSceneEntryMixin, 'OnEnter', function(self)
-        local warbandSceneID= self.warbandSceneInfo and self.warbandSceneInfo.warbandSceneID
+    WoWTools_DataMixin:Hook(WarbandSceneEntryMixin, 'OnEnter', function(frame)
+        local warbandSceneID= frame.warbandSceneInfo and frame.warbandSceneInfo.warbandSceneID
         if not warbandSceneID then
             return
         end
@@ -270,14 +227,14 @@ function WoWTools_TooltipMixin.Frames:WarbandSceneEntryMixin()
 
         tooltip:AddDoubleLine(
             'warbandSceneID |cffffffff'..WoWTools_DataMixin.Icon.icon2..warbandSceneID,
-            self.warbandSceneInfo.sourceType and 'sourceType|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.warbandSceneInfo.sourceType
+            frame.warbandSceneInfo.sourceType and 'sourceType|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.warbandSceneInfo.sourceType
         )
 
-        local quality= self.warbandSceneInfo.quality or 1
-        local atlas= self.warbandSceneInfo.textureKit or ''
+        local quality= frame.warbandSceneInfo.quality or 1
+        local atlas= frame.warbandSceneInfo.textureKit or ''
 
         tooltip:AddDoubleLine(
-            '|A:'..atlas..':'..WoWTools_TooltipMixin.iconSize..':'..WoWTools_TooltipMixin.iconSize..'|a'..atlas,
+            '|A:'..atlas..':'..self.iconSize..':'..self.iconSize..'|a'..atlas,
             '|c'..select(4,  C_Item.GetItemQualityColor(quality))..WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC'] or '')
         )
 

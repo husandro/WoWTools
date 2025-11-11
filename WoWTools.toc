@@ -155,8 +155,7 @@ Plus_Color\CODE.lua
 ##鼠标，提示
 Plus_Tooltip\0_TooltipMixin.lua
 Plus_Tooltip\1_Init.lua
-Plus_Tooltip\2_AddTooltipPostCall.lua
-Plus_Tooltip\4_Tooltip_Init.lua
+Plus_Tooltip\2_Create.lua
 Plus_Tooltip\f_Achievement.lua
 Plus_Tooltip\f_Aura.lua
 Plus_Tooltip\f_Azerite.lua
