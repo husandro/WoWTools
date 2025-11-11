@@ -171,6 +171,7 @@ Plus_Tooltip\f_Spell.lua
 Plus_Tooltip\f_Unit_NPC.lua
 Plus_Tooltip\f_Unit_Player.lua
 Plus_Tooltip\f_URL.lua
+Plus_Tooltip\z_Tooltip.lua
 Plus_Tooltip\z.StatusBar.lua
 Plus_Tooltip\z_CVar_Set.lua
 Plus_Tooltip\z_Events.lua
@@ -521,9 +522,10 @@ Z_Other\Achievements.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
-ChatButton\0_0_ChatMixin.lua
-ChatButton\0_1_Button_ChatMixin.lua
-ChatButton\0_2_Init_Button.lua
+ChatButton\0_ChatMixin.lua
+ChatButton\1_Init.lua
+ChatButton\2_Buttons.lua
+
 ##超链接， 欢迎, 一些其他功能
 ChatButton_1_HyperLink\0_HyperLinkMixin.lua
 ChatButton_1_HyperLink\1_Init.lua

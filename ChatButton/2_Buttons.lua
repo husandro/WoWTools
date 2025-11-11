@@ -1,6 +1,6 @@
 local AddList={}--插件表，所有，选项用 {name=name, tooltip=tooltip})
 local Buttons={}--存放所有, 按钮 {btn1, btn2,}
-local ChatButton
+
 local Name= 'WoWToolsChatMenuButton_'
 
 
@@ -9,13 +9,12 @@ local function Save()
 end
 
 
-local AnchorMenu={--菜单位置
-    {"TOPLEFT",  "BOTTOMLEFT"},--下
-    {"BOTTOMLEFT",  "TOPLEFT"},--上
-    {"TOPRIGHT",  "TOPLEFT"},--左
-    {"TOPLEFT",  "TOPRIGHT"},--右
-}
-
+WoWTools_ChatMixin.AnchorMenuTab={--菜单位置
+        {"TOPLEFT",  "BOTTOMLEFT"},--下
+        {"BOTTOMLEFT",  "TOPLEFT"},--上
+        {"TOPRIGHT",  "TOPLEFT"},--左
+        {"TOPLEFT",  "TOPRIGHT"},--右
+    }
 local AnchorTooltip={
     'ANCHOR_LEFT',
     'ANCHOR_LEFT',
@@ -104,74 +103,6 @@ end
 
 
 
-function WoWTools_ChatMixin:Init()
-    if Save().disabled then
-        return
-    end
-
-
-    ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {
-        name='WoWToolsChatButtonMainButton',
-        icon='hide',
-        frameType='DropdownButton',
-    })
-
-    --[[ChatButton.texture= ChatButton:CreateTexture(nil, 'BORDER')
-    ChatButton.texture:SetPoint('CENTER')
-    ChatButton.texture:SetSize(10,10)
-    ChatButton.texture:SetTexture(WoWTools_DataMixin.Icon.icon)]]
-
-
-    ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
-
-
-    function ChatButton:set_backgroud()
-        local btn1= Buttons[1] and _G[Name..Buttons[1]]
-        if not btn1 then
-            self.Background:SetAlpha(0)
-            return
-        end
-
-        local btn2= _G[Name..Buttons[#Buttons]]
-
-
-
-        self.Background:ClearAllPoints()
-
-        self.Background:SetPoint('BOTTOMLEFT', btn1, -2, -2)
-
-        local w= 30+ 4
-        if Save().isVertical then
-            self.Background:SetPoint('TOPLEFT', btn2, -2, 2)
-            self.Background:SetWidth(w)
-        else
-            self.Background:SetPoint('BOTTOMRIGHT', btn2, 2, -2)
-            self.Background:SetHeight(w+1)
-        end
-
-        local r,g,b,a= 0, 0, 0, Save().bgAlpha or 0
-        if Save().bgUseClassColor then
-            r,g,b= WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b
-        end
-        self.Background:SetColorTexture(r,g,b,a)
-    end
-
-    function ChatButton:set_menu_anchor()
-        local point= AnchorMenu[Save().anchorMenuIndex or 1]
-        self:SetMenuAnchor(AnchorUtil.CreateAnchor(point[1], self, point[2]))
-    end
-
-    Set_Button_Script(ChatButton)
-
-    return ChatButton
-end
-
-
-
-
-
-
-
 
 
 
@@ -205,14 +136,14 @@ local function Set_Button(btn)
 
         self:ClearAllPoints()
 
-        local parent=  Buttons[index-1] and _G[Name..Buttons[index-1]] or ChatButton
+        local parent=  Buttons[index-1] and _G[Name..Buttons[index-1]] or _G['WoWToolsChatButtonMainButton']
         if Save().isVertical then--方向, 竖
             self:SetPoint('BOTTOM', parent, 'TOP', 0, s)
         else
             self:SetPoint('LEFT', parent, 'RIGHT', s, 0)
         end
 
-        local point= AnchorMenu[Save().anchorMenuIndex or 1]
+        local point= WoWTools_ChatMixin.AnchorMenuTab[Save().anchorMenuIndex or 1]
         self:SetMenuAnchor(AnchorUtil.CreateAnchor(point[1], self, point[2]))
 
         self.border:SetAlpha(Save().borderAlpha or 0.3)
@@ -237,7 +168,7 @@ end
 
 
 function WoWTools_ChatMixin:CreateButton(name, addName)
-    if not ChatButton then
+    if not _G['WoWToolsChatButtonMainButton'] then
         return
     end
 
@@ -247,13 +178,13 @@ function WoWTools_ChatMixin:CreateButton(name, addName)
         return
     end
 
-    local btn= CreateFrame("DropdownButton", Name..name, ChatButton, nil, #Buttons+1)
+    local btn= CreateFrame("DropdownButton", Name..name, _G['WoWToolsChatButtonMainButton'], nil, #Buttons+1)
 
     table.insert(Buttons, name)
 
     Set_Button(btn)
 
-    ChatButton:set_backgroud()
+    _G['WoWToolsChatButtonMainButton']:set_backgroud()
 
     return btn
 end
@@ -267,23 +198,20 @@ end
 
 
 
+function WoWTools_ChatMixin:Set_Button_Script(btn)
+    Set_Button_Script(btn)
+end
 
+function WoWTools_ChatMixin:GetNameText()
+    return Name
+end
 
-
-function WoWTools_ChatMixin:Get_AnchorMenu()
-    return AnchorMenu
+function WoWTools_ChatMixin:GetButtons()
+    return Buttons
 end
 
 function WoWTools_ChatMixin:GetAllAddList()
     return AddList
-end
-
-function WoWTools_ChatMixin:Set_All_Buttons()
-    for _, name in pairs(Buttons) do
-        _G[Name..name]:SetAllSettings()
-    end
-    ChatButton:set_backgroud()
-    ChatButton:set_menu_anchor()
 end
 
 function WoWTools_ChatMixin:Open_SettingsPanel(root, name)
@@ -292,7 +220,6 @@ function WoWTools_ChatMixin:Open_SettingsPanel(root, name)
         name=name or self.addName
     })
 end
-
 function WoWTools_ChatMixin:GetButtonForName(name)
     return _G[Name..name]
 end

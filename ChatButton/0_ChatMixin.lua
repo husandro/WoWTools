@@ -1,4 +1,6 @@
-WoWTools_ChatMixin={}
+WoWTools_ChatMixin={
+
+}
 
 
 

@@ -3,8 +3,9 @@
 
     <Button name="WoWToolsButtonTemplate" virtual="true">
         <Size x="23" y="23"/>
-        <PushedTexture atlas="PetList-ButtonSelect"/>
-        <HighlightTexture atlas="PetList-ButtonHighlight"/>
+        <PushedTexture atlas="newplayertutorial-drag-cursor"/>
+        <HighlightTexture atlas="WoWShare-Highlight"/>
+        
         <Scripts>
             <OnLoad>
                 self:EnableMouseWheel(true)

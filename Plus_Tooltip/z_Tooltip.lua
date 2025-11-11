@@ -131,13 +131,7 @@ end
 
 
 
-
-
-
-
-
-
-function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
+function WoWTools_TooltipMixin.Frames:ShoppingTooltip1()
 --装备，对比，提示
     for i=1, 2 do
         local tooltip= _G['ShoppingTooltip'..i]
@@ -168,7 +162,19 @@ function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
             end
         end)
     end
+end
 
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
 --宠物，技能书，提示
     WoWTools_DataMixin:Hook(GameTooltip, 'SetSpellBookItem', function(frame, slot, unit)
         if unit==Enum.SpellBookSpellBank.Pet and slot then
