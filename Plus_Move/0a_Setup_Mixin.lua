@@ -64,10 +64,21 @@ local function Set_OnDragStart(self, d)
     then
         local frame= _G[data.target] or self
         if frame and frame:IsMovable() and not WoWTools_FrameMixin:IsLocked(frame) then
+--保护
+            if frame:IsProtected() then
+                frame._moveOwnerID= EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_DISABLED", function(owner)
+                    ResetCursor()
+                    frame:StopMovingOrSizing()
+                    frame._moveOwnerID= nil
+                    EventRegistry:UnregisterCallback('PLAYER_REGEN_DISABLED', owner)
+                end)
+            end
+
             frame:StartMoving()
         end
     end
 end
+
 
 local function Set_OnDragStop(self)
     local data= self.moveFrameData
@@ -77,6 +88,11 @@ local function Set_OnDragStop(self)
     ResetCursor()
 
     frame:StopMovingOrSizing()
+--保护，清除
+    if frame._moveOwnerID then
+        EventRegistry:UnregisterCallback('PLAYER_REGEN_DISABLED', frame._moveOwnerID)
+        frame._moveOwnerID= nil
+    end
 
     if not data.notSave and WoWTools_FrameMixin:IsInSchermo(frame) then
         Save().point[name]= {frame:GetPoint(1)}

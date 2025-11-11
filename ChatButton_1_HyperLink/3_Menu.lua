@@ -379,22 +379,20 @@ local function Init_Menu(self, root)
 --文本转语音   
     WoWTools_MenuMixin:TTsMenu(root)
     root:CreateDivider()
-    --[[sub=root:CreateButton(
-        (isInBat and '|cff828282' or '')
-        ..'|A:chatframe-button-icon-TTS:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
-    function ()
-        if not InCombatLockdown() then
-            C_CVar.SetCVar('textToSpeech', C_CVar.GetCVarBool('textToSpeech') and '0' or '1' )
+
+
+
+--颜色选择器    
+    root:CreateButton(
+        '|A:colorblind-colorwheel:0:0|a'..(WoWTools_DataMixin.onlyChinese and '颜色选择器' or COLOR_PICKER),
+    function()
+        if ColorPickerFrame:IsShown() then
+            ColorPickerFrame:Hide()
+        else
+            WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
         end
         return MenuResponse.Open
     end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('/tts')
-    end)]]
-
-
-
 
 
 
@@ -500,29 +498,6 @@ local function Init_Menu(self, root)
         Save().disabedFrameStackPlus= not Save().disabedFrameStackPlus and true or nil
         WoWTools_HyperLink:Blizzard_DebugTools()
     end)
-
-
-
-
-
-
-
-
---颜色选择器    
-    root:CreateButton(
-        '|A:colorblind-colorwheel:0:0|a'..(WoWTools_DataMixin.onlyChinese and '颜色选择器' or COLOR_PICKER),
-    function()
-        if ColorPickerFrame:IsShown() then
-            ColorPickerFrame:Hide()
-        else
-            WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
-        end
-        return MenuResponse.Open
-    end)
-
-
-
-
 
 
 

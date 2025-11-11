@@ -55,7 +55,7 @@ function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
 --编辑住宅外观
     Set_Move(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList, 'HouseExterior', true)
 
-    
+    Set_Move(HouseEditorFrame.StorageButton, 'HouseStorageButton', false)
 
     Set_Move(HouseEditorFrame.ModeBar, 'HouseBar', false)
 
