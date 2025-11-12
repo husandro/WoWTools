@@ -26,12 +26,8 @@ text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
 local ShowTextFrame
 function WoWTools_TextMixin:ShowText(data, headerText, tab)
     if not ShowTextFrame then
-        ShowTextFrame= WoWTools_FrameMixin:Create(nil, {
-        name='WoWToolsShowTextEditBoxFrame'
-        })
-        ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateFrame(ShowTextFrame, {
-            isLink=true
-        })
+        ShowTextFrame= WoWTools_FrameMixin:Create(nil, {name='WoWToolsShowTextEditBoxFrame'})
+        ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateFrame(ShowTextFrame, {isLink=true})
         ShowTextFrame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
         ShowTextFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
 
@@ -52,7 +48,7 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
     local text
     if type(data)=='table' then
         for _, str in pairs(data) do
-            text= text and text..'\n' or ''
+            text= text and text..'|n' or ''
             text= text.. str
         end
     else
