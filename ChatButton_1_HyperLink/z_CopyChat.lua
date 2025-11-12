@@ -122,8 +122,6 @@ local function Get_Text(index)
 		table.insert(tab, currentMsg)
 	end
 
-	
-
 	WoWTools_TextMixin:ShowText(
 		tab,
 		_G['ChatFrame'..index..'Tab']:GetText()

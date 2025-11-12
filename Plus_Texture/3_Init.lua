@@ -219,8 +219,6 @@ end
 
 
 local function Init()
-
-
     for name, func in pairs(WoWTools_TextureMixin.Frames) do
         if _G[name] and not Save().no[name] then
             func(WoWTools_TextureMixin)
