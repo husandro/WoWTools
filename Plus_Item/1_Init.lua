@@ -139,7 +139,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             else
                 Init_Panel()
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                Init()
+                --self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
 
         elseif WoWToolsSave and WoWTools_ItemMixin.Events[arg1] then
@@ -149,8 +150,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_ItemMixin.Events[arg1]= nil
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' then
+    --[[elseif event=='PLAYER_ENTERING_WORLD' then
         Init()
-        self:UnregisterEvent(event)
+        self:UnregisterEvent(event)]]
     end
 end)

@@ -127,6 +127,11 @@ end
 
 
 
+
+
+
+
+
 local function Init()
     WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
     WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
@@ -175,9 +180,13 @@ end
 
 
 
+
+
+
+
+
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -223,11 +232,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 WoWTools_MoveMixin.Events={}
                 WoWTools_MoveMixin.Frames={}
-                self:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterEvent(event)
                 self:SetScript('OnEvent', nil)
             else
                 Init_Panel()
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                Init()
+                --self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
 
         elseif WoWToolsSave then
@@ -240,8 +250,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' then
-        Init()
-        self:UnregisterEvent(event)
+    --elseif event=='PLAYER_ENTERING_WORLD' then
+        --Init()
+        --self:UnregisterEvent(event)
     end
 end)

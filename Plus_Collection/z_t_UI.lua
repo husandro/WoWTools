@@ -1,7 +1,7 @@
 
 --收藏
 function WoWTools_TextureMixin.Events:Blizzard_Collections()
-    
+
     self:HideTexture(CollectionsJournal.TopTileStreaks)
     self:SetButton(CollectionsJournalCloseButton)
     self:HideTexture(CollectionsJournalBg)
@@ -27,7 +27,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     MountJournal.RightInset.Bg:SetPoint('BOTTOMRIGHT', MountJournalLore, 2, -2)
     self:HideFrame(MountJournal.BottomLeftInset)
     self:SetNineSlice(MountJournal.BottomLeftInset)
-    self:SetScrollBar(MountJournal)    
+    self:SetScrollBar(MountJournal)
     self:SetEditBox(MountJournalSearchBox)
     self:SetNineSlice(MountJournal.RightInset)
     self:SetNineSlice(MountJournal.LeftInset)
@@ -38,7 +38,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         self:SetAlphaColor(MountJournal.SummonRandomFavoriteSpellFrame.Button.Border, true)
     end
     --WoWTools_DataMixin:Hook('MountJournal_InitMountButton', function(btn)
-     
+
 --宠物
     self:SetUIButton(PetJournalSummonButton)
     self:SetUIButton(PetJournalFindBattle)
@@ -355,7 +355,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
             self:HideFrame(frame.GroupPicker.Top)
             self:HideFrame(frame.GroupPicker.List)
         end
-    end    
+    end
 
 
 
@@ -378,7 +378,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
         self:HideTexture(SoulshapesJournalProgressBar.border)
         SoulshapesJournalProgressBar:DisableDrawLayer('BACKGROUND')
-        
+
         for i=1, 7 do
             local bar= _G['ManuscriptsJournalMount'..i..'Bar']
             if bar then
