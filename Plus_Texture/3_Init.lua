@@ -50,7 +50,7 @@ local P_Save={
 local function Save()
     return WoWToolsSave['Plus_Texture']
 end
-
+local Layout
 
 
 
@@ -63,36 +63,8 @@ end
 
 
 local function Init_Panel()
-    local Layout, sub
+    local sub
     local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-
-    WoWTools_TextureMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-        name= WoWTools_TextureMixin.addName,
-        disabled= Save().disabled,
-    })
-
-    WoWTools_PanelMixin:Check_Button({
-        checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            Init_Panel()
-        end,
-        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-        buttonFunc= function()
-            StaticPopup_Show('WoWTools_RestData',
-                WoWTools_TextureMixin.addName
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
-                nil,
-            function()
-                WoWToolsSave['Plus_Texture']= nil
-                WoWTools_DataMixin:Reload()
-            end)
-        end,
-        tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
-        layout= Layout,
-        category= WoWTools_TextureMixin.Category,
-    })
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 
@@ -294,7 +266,33 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 
-            Init_Panel()
+            WoWTools_TextureMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+                name= WoWTools_TextureMixin.addName,
+                disabled= Save().disabled,
+            })
+
+            WoWTools_PanelMixin:Check_Button({
+                checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    Init_Panel()
+                end,
+                buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                buttonFunc= function()
+                    StaticPopup_Show('WoWTools_RestData',
+                        WoWTools_TextureMixin.addName
+                        ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                        nil,
+                    function()
+                        WoWToolsSave['Plus_Texture']= nil
+                        WoWTools_DataMixin:Reload()
+                    end)
+                end,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                layout= Layout,
+                category= WoWTools_TextureMixin.Category,
+            })
 
             if Save().disabled then
                 WoWTools_TextureMixin.Events={}
@@ -302,6 +300,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
                 self:SetScript('OnEvent', nil)
             else
+                Init_Panel()
                 WoWTools_TextureMixin:Init_Class_Power()--职业
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
                 WoWTools_TextureMixin:Init_HelpTip()--隐藏教程

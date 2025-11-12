@@ -24,7 +24,7 @@ local P_Save={
     no={},--禁用
 }
 
-
+local Layout
 local function Save()
     return WoWToolsSave['Plus_Move']
 end
@@ -34,37 +34,8 @@ end
 
 
 local function Init_Panel()
-    local Layout
+
     local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-
-    WoWTools_MoveMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-        name=WoWTools_MoveMixin.addName,
-        disabled= Save().disabled,
-    })
-
-    WoWTools_PanelMixin:Check_Button({
-        checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            Init_Panel()
-        end,
-        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-        buttonFunc= function()
-            StaticPopup_Show('WoWTools_RestData',
-                WoWTools_MoveMixin.addName
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
-                nil,
-            function()
-                WoWToolsSave['Plus_Move']= nil
-                WoWTools_DataMixin:Reload()
-            end)
-        end,
-        tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
-        layout= Layout,
-        category= WoWTools_MoveMixin.Category,
-    })
-
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
@@ -221,7 +192,33 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
 
-            Init_Panel()
+            WoWTools_MoveMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+                name=WoWTools_MoveMixin.addName,
+                disabled= Save().disabled,
+            })
+
+            WoWTools_PanelMixin:Check_Button({
+                checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    Init_Panel()
+                end,
+                buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                buttonFunc= function()
+                    StaticPopup_Show('WoWTools_RestData',
+                        WoWTools_MoveMixin.addName
+                        ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                        nil,
+                    function()
+                        WoWToolsSave['Plus_Move']= nil
+                        WoWTools_DataMixin:Reload()
+                    end)
+                end,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                layout= Layout,
+                category= WoWTools_MoveMixin.Category,
+            })
 
             if Save().disabled then
                 WoWTools_MoveMixin.Events={}
@@ -229,6 +226,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent('ADDON_LOADED')
                 self:SetScript('OnEvent', nil)
             else
+                Init_Panel()
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
 

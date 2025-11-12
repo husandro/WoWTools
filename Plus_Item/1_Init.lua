@@ -1,7 +1,7 @@
 local function Save()
     return WoWToolsSave['Plus_ItemInfo']
 end
-
+local Category, Layout
 
 
 
@@ -10,33 +10,7 @@ end
 local function Init_Panel()
     local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 
-    local Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-        name=WoWTools_ItemMixin.addName,
-        disabled=Save().disabled
-    })
 
-    WoWTools_PanelMixin:Check_Button({
-        checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            Init_Panel()
-        end,
-        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-        buttonFunc= function()
-            StaticPopup_Show('WoWTools_RestData',
-                WoWTools_ItemMixin.addName
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
-                nil,
-            function()
-                WoWToolsSave['Plus_ItemInfo']= nil
-                WoWTools_DataMixin:Reload()
-            end)
-        end,
-        tooltip= tooltip,
-        layout= Layout,
-        category= Category,
-    })
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
@@ -130,8 +104,33 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().no= Save().no or {}
 
             WoWTools_ItemMixin.addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
+            Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+                name=WoWTools_ItemMixin.addName,
+                disabled=Save().disabled
+            })
 
-            Init_Panel()
+            WoWTools_PanelMixin:Check_Button({
+                checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    Init_Panel()
+                end,
+                buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                buttonFunc= function()
+                    StaticPopup_Show('WoWTools_RestData',
+                        WoWTools_ItemMixin.addName
+                        ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                        nil,
+                    function()
+                        WoWToolsSave['Plus_ItemInfo']= nil
+                        WoWTools_DataMixin:Reload()
+                    end)
+                end,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                layout= Layout,
+                category= Category,
+            })
 
             if Save().disabled then
                 WoWTools_ItemMixin.Events= {}
@@ -139,6 +138,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
             else
+                Init_Panel()
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
 

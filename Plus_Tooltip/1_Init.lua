@@ -469,7 +469,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().no= Save().no or {}
             WoWTools_TooltipMixin.iconSize= Save().iconSize or 0
             P_Save= nil
-            --Save().AchievementFrameFilterDropDown= nil
 
             Category, Layout= WoWTools_PanelMixin:AddSubCategory({
                 name=WoWTools_TooltipMixin.addName,
