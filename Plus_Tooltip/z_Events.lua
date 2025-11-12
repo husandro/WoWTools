@@ -625,3 +625,55 @@ function WoWTools_TooltipMixin.Events:Blizzard_ObjectiveTracker()
         end)
     end
 end
+
+
+function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
+--Blizzard_HousingCatalogEntry.lua
+    WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
+        --btn.Favorites=CreateFrame('')
+
+        btn.InfoText:SetFontObject('GameFontWhite')--有点大
+        btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
+        btn.placementCostLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
+
+    end)
+    WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
+        local placementCost, r,g,b
+        if btn:HasValidData() then
+
+            --[[if ContentTrackingUtil.IsContentTrackingEnabled() then--追踪当前可用
+                if C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then
+                    if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then--<按住Shift点击停止追踪>
+                        
+                    else
+                        
+                    end
+                else--追踪功能对此物品不可用
+                    
+                end
+            end]]
+
+            if btn:IsBundleEntry() then
+            elseif btn:IsInMarketView() then
+            else
+                local q= btn.entryInfo.quantity or 0
+                local a= 0 + (btn.entryInfo.remainingRedeemable or 0)
+                if a>0 then
+
+                    btn.InfoText:SetText(
+                        (q==a and '|cff828282' or '')..(q..'/'..a)
+                    )
+                    btn.InfoText:SetShown(true)
+                    placementCost= btn.entryInfo.placementCost
+                end
+                --info= btn.entryInfo
+                --for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+            end
+            r,g,b= WoWTools_ItemMixin:GetColor(btn.entryInfo.quality)
+        end
+
+        btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
+        btn.placementCostLabel:SetText(placementCost and placementCost..'|A:House-Decor-budget-icon:0:0|a' or '')
+    end)
+
+end

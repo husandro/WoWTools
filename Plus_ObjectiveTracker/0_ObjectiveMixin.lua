@@ -3,7 +3,7 @@ WoWTools_ObjectiveMixin={}
 
 --清除，全部，按钮
 function WoWTools_ObjectiveMixin:Add_ClearAll_Button(frame, tooltip, func)
-    if WoWTools_FrameMixin:IsLocked(frame) then
+    if not frame or WoWTools_FrameMixin:IsLocked(frame) then
         return
     end
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas='bags-button-autosort-up', alpha=0.2})
@@ -246,6 +246,30 @@ function WoWTools_ObjectiveMixin:Clear_MonthlyActivities(isPring)
                   print(num..') ',
                     C_PerksActivities.GetPerksActivityChatLink(perksActivityID) or perksActivityID
                 )
+            end
+        end
+    end
+end
+
+
+--[[清除, 收藏
+Enum.ContentTrackingType={
+0	Appearance
+1	Mount
+2	Achievement
+3	Decor
+}
+]]
+function WoWTools_ObjectiveMixin:Clear_ContentTracking(isPring, trackableType)
+    local num= 0
+    trackableType= trackableType or Enum.ContentTrackingType.Decor or 3
+    for _, trackableID in pairs(C_ContentTracking.GetTrackedIDs(trackableType) or {}) do
+        local title= C_ContentTracking.GetTitle(trackableType, trackableID)
+        if title then
+            C_ContentTracking.StopTracking(trackableType, trackableID, Enum.ContentTrackingStopType.Manual)
+            num= num+1
+            if isPring then
+                print(num..') ', title, 'type'..trackableType, 'id'..trackableID)
             end
         end
     end

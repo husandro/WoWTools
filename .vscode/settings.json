@@ -6410,7 +6410,14 @@
         "StaticPopup1MoneyInputFrameGold",
         "GUILD_DUP_RANK",
         "TICKET_TYPE3",
-        "ADDON_LIST_RESET_TO_DEFAULT"
+        "ADDON_LIST_RESET_TO_DEFAULT",
+        "AdventureObjectiveTracker",
+        "HousingCatalogEntryMixin",
+        "Blizzard_HousingCatalogUtil",
+        "ContentTrackingUtil",
+        "CONTENT_TRACKING_UNTRACKABLE_TOOLTIP_PROMPT",
+        "CONTENT_TRACKING_UNTRACK_TOOLTIP_PROMPT",
+        "CONTENT_TRACKING_TRACKABLE_TOOLTIP_PROMPT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
