@@ -60,6 +60,7 @@ local function removeChatJunk(currentMsg)
 	end
 
 	currentMsg = string.gsub(currentMsg, "|T.-|t", "")
+	currentMsg = string.gsub(currentMsg, "|A.-|a", "")
 
 	return currentMsg
 end
@@ -116,10 +117,12 @@ local function Get_Text(index)
 				currentMsg = RGBTableToColorCode(ChatTypeInfo.GUILD) .. currentMsg
 			end
 		end
+		currentMsg= tostring(currentMsg)
 
 		table.insert(tab, currentMsg)
 	end
 
+	
 
 	WoWTools_TextMixin:ShowText(
 		tab,
@@ -188,6 +191,7 @@ local function Init_Menu(frame, root)
 	end, function()
 		Save().copyChatSetText= not Save().copyChatSetText and true or nil
 	end)
+
 
 --打开，选项面板
 	sub:CreateDivider()

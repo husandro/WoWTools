@@ -88,6 +88,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:HideFrame(HeirloomsJournal.iconsFrame)
     self:SetNineSlice(HeirloomsJournal.iconsFrame)
     HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
+    self:SetStatusBar(HeirloomsJournal.progressBar)
     self:SetAlphaColor(HeirloomsJournal.progressBar.border, nil, nil, 0.3)
 
 

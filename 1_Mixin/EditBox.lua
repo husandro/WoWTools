@@ -158,11 +158,9 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
 
 
     scrollFrame.editBox= CreateFrame('EditBox', nil, scrollFrame)--, 'SearchBoxTemplate')
-    --scrollFrame.editBox:SetMaxLetters(100000)
     scrollFrame.editBox:SetAutoFocus(false)
     scrollFrame.editBox:ClearFocus()
     scrollFrame.editBox:SetFontObject('ChatFontNormal')
-   -- scrollFrame.editBox:SetTextColor(1,1,1)
     scrollFrame.editBox:SetPoint('TOPLEFT', scrollFrame, 'TOPLEFT')
     scrollFrame.editBox:SetPoint('BOTTOMRIGHT', scrollFrame, 'BOTTOMRIGHT')
 
@@ -178,7 +176,6 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
     scrollFrame.editBox:SetFrameLevel(level+2)
     scrollFrame.editBox:SetScript('OnUpdate', function(s, elapsed) ScrollingEdit_OnUpdate(s, elapsed, s:GetParent()) end)
     scrollFrame.editBox:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
-
 
     scrollFrame.editBox.Instructions= WoWTools_LabelMixin:Create(scrollFrame.editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
     scrollFrame.editBox.Instructions:SetPoint('TOPLEFT')
@@ -207,7 +204,7 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
 
 --超链接
     if isLink then
-        scrollFrame.editBox:SetHyperlinksEnabled(true)
+        scrollFrame.editBox:SetHyperlinksEnabled(false)
         scrollFrame.editBox:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
         scrollFrame.editBox:SetScript('OnHyperlinkEnter', function(s, link)
             if link then
@@ -221,8 +218,6 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
             SetItemRef(link, text2, s, nil)
         end)
     end
-
-
 
     scrollFrame:SetScrollChild(scrollFrame.editBox)
 

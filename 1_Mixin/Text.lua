@@ -23,15 +23,19 @@ end
 text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
 
 ]]
-local ShowTextFrame
-function WoWTools_TextMixin:ShowText(data, headerText, tab)
-    if not ShowTextFrame then
-        ShowTextFrame= WoWTools_FrameMixin:Create(nil, {name='WoWToolsShowTextEditBoxFrame'})
-        ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateFrame(ShowTextFrame, {isLink=true})
-        ShowTextFrame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
-        ShowTextFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
 
-        ShowTextFrame:SetScript('OnHide', function(f)
+function WoWTools_TextMixin:ShowText(data, headerText, tab)
+    tab= tab or {}
+    local onHide= tab.onHide
+
+    local frame= _G['WoWToolsShowTextEditBoxFrame']
+    if not frame then
+        frame= WoWTools_FrameMixin:Create(nil, {name='WoWToolsShowTextEditBoxFrame'})
+        frame.ScrollBox=WoWTools_EditBoxMixin:CreateFrame(frame, {isLink=true})
+        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
+        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
+
+        frame:SetScript('OnHide', function(f)
             if f.onHide then
                 do
                     f.onHide(f.ScrollBox:GetText())
@@ -40,10 +44,10 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
             end
             f.ScrollBox:SetText('')
         end)
-        ShowTextFrame:SetFrameStrata('HIGH')
+        frame:SetFrameStrata('HIGH')
     end
 
-    local onHide= tab and tab.onHide or nil
+
 
     local text
     if type(data)=='table' then
@@ -54,14 +58,16 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
     else
         text= data
     end
-    ShowTextFrame.ScrollBox:SetText(text or '')
-    ShowTextFrame.Header:Setup(headerText or '' )
-    ShowTextFrame.onHide= onHide
-    ShowTextFrame:SetShown(true)
 
-    --ShowTextFrame.ScrollBox.editBox:SetCursorPosition(1)
-    ShowTextFrame.ScrollBox.ScrollBar:ScrollToEnd()
-    ShowTextFrame:Raise()
+    frame.ScrollBox:SetText(text or '')
+    frame.Header:Setup(headerText or '' )
+    frame.onHide= onHide
+
+    frame:SetShown(true)
+
+    --frame.ScrollBox.editBox:SetCursorPosition(1)
+    frame.ScrollBox.ScrollBar:ScrollToEnd()
+    frame:Raise()
 end
 
 
@@ -135,7 +141,7 @@ function WoWTools_TextMixin:sub(text, size, letterSize, lower)
     if not text or text=='' or not size or size==0  then
         return text
     end
-    
+
     text= self:CN(text)
 
     if not text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符

@@ -540,9 +540,12 @@ local function ClubFinder(link)
             ..link
     end
 end
-
-
 --[[
+local function Housing(link)
+    print(link)
+end
+
+
 社区 |HclubTicket:WMo42zSmYP|h[Unisciti a: asdfasd]|h
 CommunitiesHyperlink.lua CommunitiesHyperlink_OnEvent
 ]]
@@ -577,8 +580,7 @@ local function New_AddMessage(self, s, ...)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
 
     s=s:gsub('|Hperksactivity:.-]|h', Perksactivity)
-
-
+    --s=s:gsub('|Hhousing:.-]|h', Housing)
 
     s=s:gsub('|HclubFinder:.-]|h', ClubFinder)
     --s=s:gsub('|HclubTicket:.-]|h', ClubTicket)
