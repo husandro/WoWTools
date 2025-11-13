@@ -694,18 +694,20 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
 
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'AddTooltipTrackingLines', function(btn, tooltip)
-        local info= btn:HasValidData() and btn.entryInfo
-        if not info or not info.enterID then
+        if not btn:HasValidData() then
             return
         end
-        
+        tooltip:AddLine(" ")
         tooltip:AddDoubleLine(
-            info.iconTexture and '|T'..info.iconTexture..':0|t|cffffffff'..info.iconTexture or ' ', 
-            (info.enterID.recordID and 'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..info.enterID.recordID or '')
+            'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.entryID.recordID,
+            btn.entryInfo.iconTexture and '|T'..btn.entryInfo.iconTexture..':'..(btn.entryInfo.size*2)..'|t|cffffffff'..btn.entryInfo.iconTexture
+        )
+        tooltip:AddDoubleLine(
+            'asset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.asset,
+            'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.uiModelSceneID
         )
         tooltip:Show()
-
+        info= btn.entryInfo
         for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
-
     end)
 end

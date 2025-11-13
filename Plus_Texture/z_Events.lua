@@ -1650,6 +1650,8 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetNineSlice(LFGListFrame.CategorySelection.Inset)
     self:HideTexture(LFGListFrame.CategorySelection.Inset.Bg)
     self:HideTexture(LFGListFrame.CategorySelection.Inset.CustomBG)
+    self:SetUIButton(LFGListFrame.CategorySelection.FindGroupButton)
+    self:SetUIButton(LFGListFrame.CategorySelection.StartGroupButton)
 
     self:SetFrame(LFGDungeonReadyDialog.Border, {alpha= 0.3})
     self:SetButton(LFGDungeonReadyDialogCloseButton)
@@ -1670,14 +1672,29 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetNineSlice(LFGListFrame.EntryCreation.Inset)
     self:HideTexture(LFGListFrame.EntryCreation.Inset.CustomBG)
     self:HideTexture(LFGListFrame.EntryCreation.Inset.Bg)
-
-    --[[self:SetMenu(LFGListEntryCreationGroupDropdown)
-    self:SetMenu(LFGListEntryCreationActivityDropdown)
-    self:SetMenu(LFGListEntryCreationPlayStyleDropdown)]]
-    self:SetEditBox(LFGListFrame.EntryCreation.Name)
-    self:SetEditBox(LFGListCreationDescription.EditBox)
+    self:SetUIButton(LFGListFrame.EntryCreation.ListGroupButton)
+    self:SetUIButton(LFGListFrame.EntryCreation.CancelButton)
     self:SetEditBox(LFGListFrame.EntryCreation.ItemLevel.EditBox)
     self:SetEditBox(LFGListFrame.EntryCreation.VoiceChat.EditBox)
+    self:SetMenu(LFGListEntryCreationGroupDropdown)
+    self:SetMenu(LFGListEntryCreationActivityDropdown)
+    self:SetMenu(LFGListEntryCreationPlayStyleDropdown)
+    self:SetEditBox(LFGListFrame.EntryCreation.Name)
+    self:SetFrame(LFGListCreationDescription, {alpha=1})
+    self:SetCheckBox(LFGListFrame.EntryCreation.ItemLevel.CheckButton)
+    self:SetCheckBox(LFGListFrame.EntryCreation.VoiceChat.CheckButton)
+    self:SetCheckBox(LFGListFrame.EntryCreation.PrivateGroup.CheckButton)
+    self:SetCheckBox(LFGListFrame.EntryCreation.CrossFactionGroup.CheckButton)
+   
+    self:SetCheckBox(LFGListFrame.EntryCreation.PvpItemLevel.CheckButton)
+    self:SetEditBox(LFGListFrame.EntryCreation.PvpItemLevel.EditBox)
+    self:SetCheckBox(LFGListFrame.EntryCreation.PVPRating.CheckButton)
+    self:SetEditBox(LFGListFrame.EntryCreation.PVPRating.EditBox)
+
+
+    
+
+
 
     self:SetAlphaColor(LFGListFrameMiddleMiddle)
     self:SetAlphaColor(LFGListFrameMiddleLeft)
@@ -1691,6 +1708,20 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
 
     self:SetScrollBar(LFGListFrame.ApplicationViewer)
     self:SetNineSlice(LFGListFrame.ApplicationViewer.Inset)
+    self:SetAlphaColor(LFGListFrame.ApplicationViewer.InfoBackground)
+    self:SetUIButton(LFGListFrame.ApplicationViewer.BrowseGroupsButton)
+    self:SetUIButton(LFGListFrame.ApplicationViewer.RemoveEntryButton)
+    self:SetButton(LFGListFrame.ApplicationViewer.RefreshButton, {alpha=1})
+    self:SetUIButton(LFGListFrame.ApplicationViewer.EditButton)
+    
+
+    self:SetUIButton(LFGListFrame.SearchPanel.ScrollBox.StartGroupButton)
+    self:SetUIButton(LFGListFrame.SearchPanel.BackToGroupButton)
+    self:SetUIButton(LFGListFrame.SearchPanel.BackButton)
+    self:SetUIButton(LFGListFrame.SearchPanel.SignUpButton)
+    self:SetButton(LFGListFrame.SearchPanel.RefreshButton, {alpha=1})
+    
+
 
     self:SetAlphaColor(RaidFinderQueueFrameBackground)
     self:SetMenu(RaidFinderQueueFrameSelectionDropdown)

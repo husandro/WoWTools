@@ -193,8 +193,8 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     end
 
 --SetPushedAtlas, SetHighlightAtlas  
-    local pushedAtlas= 'newplayertutorial-drag-cursor'--'PetList-ButtonSelect'--'auctionhouse-nav-button-select'
-    local highlightAtlas= 'WoWShare-Highlight'-- 'PetList-ButtonHighlight'--auctionhouse-nav-button-select'
+    local pushedAtlas= 'PetList-ButtonSelect'--'newplayertutorial-drag-cursor'--''--'auctionhouse-nav-button-select'
+    local highlightAtlas= 'PetList-ButtonHighlight'--'WoWShare-Highlight'-- ''--auctionhouse-nav-button-select'
 
 --圆形，按钮
     if isType2 then

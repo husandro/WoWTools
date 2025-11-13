@@ -119,7 +119,7 @@ local function Init_Menu(self, root)
             WoWTools_ObjectiveMixin:Clear_ProfessionsRecipe()
             WoWTools_ObjectiveMixin:Clear_Quest()
             WoWTools_ObjectiveMixin:Clear_WorldQuest()
-            WoWTools_ObjectiveMixin:Clear_ContentTracking(false, Enum.ContentTrackingType.Decor)
+            WoWTools_ObjectiveMixin:Clear_ContentTracking()
         end}
 )
     end)

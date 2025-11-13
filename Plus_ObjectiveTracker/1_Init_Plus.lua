@@ -267,7 +267,7 @@ local function Init()
         AdventureObjectiveTracker,
         WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES,
     function()
-        WoWTools_ObjectiveMixin:Clear_ContentTracking(true, Enum.ContentTrackingType.Decor)
+        WoWTools_ObjectiveMixin:Clear_ContentTracking(true)
     end)
     
 
