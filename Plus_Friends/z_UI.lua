@@ -203,7 +203,6 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     WoWTools_TextureMixin:SetButton(FriendsFrame.IgnoreListWindow.ResizeButton)
 --通告
     self:Setup(FriendsFrameBattlenetFrame.BroadcastFrame, {frame=FriendsFrame})
-
 end
 
 
@@ -221,7 +220,6 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:HideTexture(FriendsFrameInset.Bg)
     self:SetScrollBar(FriendsListFrame)
     self:CreateBG(FriendsListFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
-    self:SetFrame(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
     self:SetButton(FriendsFrameCloseButton)
     self:SetMenu(FriendsFrameStatusDropdown, {alpha=1})
     self:HideTexture(FriendsFrameStatusDropdown.Background)
@@ -258,7 +256,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(FriendsFriendsFrame)
     self:SetMenu(FriendsFriendsFrameDropdown)
 
-    
+
 --近期往来
     self:SetScrollBar(RecentAlliesFrame.List)
 
@@ -270,8 +268,10 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetNineSlice(FriendsFrame.IgnoreListWindow.Inset)
 
 --通告
+    self:SetFrame(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
     self:SetFrame(FriendsFrameBattlenetFrame.BroadcastFrame.Border, {alpha=0.7})
     self:SetEditBox(FriendsFrameBattlenetFrame.BroadcastFrame.EditBox)
+    self:SetButton(FriendsFrameBattlenetFrame.ContactsMenuButton, {alpha=1})
 
 
 --查询
@@ -281,9 +281,9 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 --快速加入
     self:SetUIButton(QuickJoinFrame.JoinQueueButton)
     self:Init_BGMenu_Frame(FriendsFrame, {
-        settings=function(_, _, _, _, portraitAlpha)
-            FriendsFrameIcon:SetAlpha(portraitAlpha or 1)
-        end})
+    settings=function(_, _, _, _, portraitAlpha)
+        FriendsFrameIcon:SetAlpha(portraitAlpha or 1)
+    end})
 end
 
 
