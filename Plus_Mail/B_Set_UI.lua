@@ -80,11 +80,6 @@ end
 
 
 
-local function Init()
-    
-    Init=function()end
-end
-
 
 
 

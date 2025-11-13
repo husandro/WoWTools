@@ -128,7 +128,7 @@ local function Init()
     WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
 
     for name, func in pairs(WoWTools_MoveMixin.Events) do
-        if C_AddOns.IsAddOnLoaded(name) then
+        if C_AddOns.IsAddOnLoaded(name) and func then
             if not Save().no[name] then
                 func(WoWTools_MoveMixin)
             end
