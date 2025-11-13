@@ -265,12 +265,9 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE)
 
-    root:CreateSpacer()
 --打开选项界面
-    sub= WoWTools_MenuMixin:OpenOptions(root, {
-        category= WoWTools_PetBattleMixin.Category,
-        name= WoWTools_PetBattleMixin.addName3
-    })
+    root:CreateSpacer()
+    sub= WoWTools_PetBattleMixin:OpenOptions(root, WoWTools_PetBattleMixin.addName3)
 
 --缩放
     WoWTools_MenuMixin:Scale(self, sub, function()

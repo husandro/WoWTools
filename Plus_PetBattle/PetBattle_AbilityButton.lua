@@ -729,10 +729,7 @@ local function Init_Button_Menu(self, root)
 
 --打开选项界面
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {
-        category= WoWTools_PetBattleMixin.Category,
-        name= WoWTools_PetBattleMixin.addName6
-    })
+    sub= WoWTools_PetBattleMixin:OpenOptions(root, WoWTools_PetBattleMixin.addName6)
 
 --重置
     sub:CreateButton(

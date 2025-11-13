@@ -41,27 +41,15 @@ local P_Save={
 
 
 
-local function Blizzard_Collections()
+local function Init()
     PetJournal:HookScript('OnShow', function()
         WoWTools_PetBattleMixin:TypeButton_SetShown()
     end)
     PetJournal:HookScript('OnHide', function()
         WoWTools_PetBattleMixin:TypeButton_SetShown()
     end)
-    Blizzard_Collections=function()end
+    Init=function()end
 end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -82,37 +70,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_PetBattleMixin:Init_Options()
 
             if WoWToolsSave['Plus_PetBattle2'].disabled then
-                WoWTools_PetBattleMixin:Set_Options()
                 self:SetScript('OnEvent', nil)
-                self:UnregisterAllEvents()
+                self:UnregisterEvent(event)
 
             else
                 WoWTools_PetBattleMixin:Set_TypeButton()--宠物，类型
                 WoWTools_PetBattleMixin:Init_AbilityButton()--宠物对战，技能按钮
                 WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
 
-                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                    WoWTools_PetBattleMixin:Set_Options()
-                end
-
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    Blizzard_Collections()
+                    Init()
+                    self:SetScript('OnEvent', nil)
+                    self:UnregisterEvent(event)
                 end
             end
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-            Blizzard_Collections()
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                self:UnregisterEvent(event)
-            end
-
-        elseif arg1=='Blizzard_Settings' and WoWToolsSave then
-            WoWTools_PetBattleMixin:Set_Options()
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                self:UnregisterEvent(event)
-            end
+            Init()
+            self:SetScript('OnEvent', nil)
+            self:UnregisterEvent(event)
         end
     end
 end)

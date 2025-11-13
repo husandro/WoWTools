@@ -206,10 +206,7 @@ local function Init_Menu(self, root)
 
 --打开选项界面
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {
-        category= WoWTools_PetBattleMixin.Category,
-        name= WoWTools_PetBattleMixin.addName4
-    })
+    sub= WoWTools_PetBattleMixin:OpenOptions(root, WoWTools_PetBattleMixin.addName4)
 
 --总是显示
     sub2=sub:CreateCheckbox(

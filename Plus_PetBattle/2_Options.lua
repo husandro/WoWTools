@@ -11,11 +11,7 @@ local Category, Layout
 
 
 
-local function Init()
-    if Save().disabled then
-        return
-    end
-
+local function Init_Panel()
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
     local category
@@ -102,7 +98,7 @@ local function Init()
     }, category)
 
 
-    Init=function()end
+    Init_Panel=function()end
 end
 
 
@@ -110,27 +106,56 @@ end
 
 
 
-local function Init_Panel()
+
+
+
+
+
+
+
+local function Init()
     Category, Layout= WoWTools_PanelMixin:AddSubCategory({
         name=WoWTools_PetBattleMixin.addName,
         disabled= Save().disabled,
     })
 
-    WoWTools_PetBattleMixin.Category= Category
-
-    WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-        tooltip= WoWTools_PetBattleMixin.addName,
+    WoWTools_PanelMixin:Check_Button({
+        checkName= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
         GetValue= function() return not Save().disabled end,
-        category= Category,
-        func= function()
+        SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            WoWTools_PetBattleMixin:Set_Options()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
+            Init_Panel()
+        end,
+        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+        buttonFunc= function()
+            StaticPopup_Show('WoWTools_RestData',
+                WoWTools_PetBattleMixin.addName
+                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                nil,
+            function()
+                WoWToolsSave['Plus_PetBattle2']= nil
+                WoWTools_DataMixin:Reload()
+            end)
+        end,
+        tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+        layout= Layout,
+        category= Category,
     })
 
-    Init_Panel=function()end
+    if not Save().disabled then
+        if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+            Init_Panel()
+        else
+            EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+                if arg1=='Blizzard_Settings' then
+                    Init_Panel()
+                    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+                end
+            end)
+        end
+    end
+
+    Init=function()end
 end
 
 
@@ -147,9 +172,13 @@ end
 
 
 function WoWTools_PetBattleMixin:Init_Options()
-    Init_Panel()
-end
-function WoWTools_PetBattleMixin:Set_Options()
     Init()
 end
 
+--打开选项界面
+function WoWTools_PetBattleMixin:OpenOptions(root, name)
+    return WoWTools_MenuMixin:OpenOptions(root, {
+            category=Category,
+            name= name
+        })
+end

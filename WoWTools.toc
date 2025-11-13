@@ -412,7 +412,7 @@ Plus_AuctionHouse\z_AccountStore.lua
 ##宠物对战
 Plus_PetBattle\0_PetBattleMixin.lua
 Plus_PetBattle\1_Init.lua
-Plus_PetBattle\2_Blizzard_Settings.lua
+Plus_PetBattle\2_Options.lua
 Plus_PetBattle\Click_To_Move.lua
 Plus_PetBattle\TypeButton.lua
 Plus_PetBattle\PetBattle_AbilityButton.lua
