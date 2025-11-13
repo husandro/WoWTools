@@ -630,8 +630,6 @@ end
 function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 --Blizzard_HousingCatalogEntry.lua
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
-        --btn.Favorites=CreateFrame('')
-
         btn.InfoText:SetFontObject('GameFontWhite')--有点大
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
         btn.placementCostLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
