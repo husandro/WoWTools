@@ -149,7 +149,7 @@ local function creatd_button(index, parent)
     btn.level=WoWTools_LabelMixin:Create(btn)
     btn.level:SetPoint('TOPRIGHT')
     btn.type= WoWTools_LabelMixin:Create(btn)
-    btn.type:SetPoint('LEFT', btn, 'RIGHT')
+    btn.type:SetPoint('BOTTOM', btn, 'TOP')
     btn.favorite= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
     btn.favorite:SetSize(17,17)
     btn.favorite:SetAtlas('auctionhouse-icon-favorite')
@@ -645,7 +645,14 @@ local function Init_ItemSocketingFrame_Update()
         end
     end
 
-    for i, btn in ipairs(ItemSocketingFrame.Sockets) do--插槽，名称
+    
+    local Sockets={
+            ItemSocketingSocket1 or ItemSocketingFrame.SocketingContainer.Socket1,
+            ItemSocketingSocket2 or ItemSocketingFrame.SocketingContainer.Socket2,
+            ItemSocketingSocket3 or ItemSocketingFrame.SocketingContainer.Socket3
+        }
+
+    for i, btn in ipairs(Sockets) do--插槽，名称
         if ( i <= numSockets ) then
             local name= GetSocketTypes(i)
             name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
@@ -753,20 +760,20 @@ local function Init_ItemSocketingFrame_Update()
     end
 
     if numSockets==1 then--宝石，位置
-        ItemSocketingSocket1:ClearAllPoints()
-        ItemSocketingSocket1:SetPoint('BOTTOM', 0, 33)
+        Sockets[1]:ClearAllPoints()
+        Sockets[1]:SetPoint('BOTTOM', 0, 33)
     elseif numSockets==2 then
-        ItemSocketingSocket1:ClearAllPoints()
-        ItemSocketingSocket1:SetPoint('BOTTOM', -60, 33)
-        ItemSocketingSocket2:ClearAllPoints()
-        ItemSocketingSocket2:SetPoint('BOTTOM', 60, 33)
+        Sockets[1]:ClearAllPoints()
+        Sockets[1]:SetPoint('BOTTOM', -60, 33)
+        Sockets[2]:ClearAllPoints()
+        Sockets[2]:SetPoint('BOTTOM', 60, 33)
     elseif numSockets==3 then
-        ItemSocketingSocket1:ClearAllPoints()
-        ItemSocketingSocket1:SetPoint('BOTTOMLEFT', 50, 33)
-        ItemSocketingSocket2:ClearAllPoints()
-        ItemSocketingSocket2:SetPoint('BOTTOM', 0, 33)
-        ItemSocketingSocket3:ClearAllPoints()
-        ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
+        Sockets[1]:ClearAllPoints()
+        Sockets[1]:SetPoint('BOTTOMLEFT', 50, 33)
+        Sockets[2]:ClearAllPoints()
+        Sockets[2]:SetPoint('BOTTOM', 0, 33)
+        Sockets[3]:ClearAllPoints()
+        Sockets[3]:SetPoint('BOTTOMRIGHT', -50, 33)
     end
 
     Set_Gem()
@@ -1092,12 +1099,23 @@ local function Init()
     Frame:SetScript('OnEvent', function() Set_Gem() end)
     Frame:set_event()
 
-    ItemSocketingSocket3Left:ClearAllPoints()
-    ItemSocketingSocket2Left:ClearAllPoints()
-    ItemSocketingSocket1Left:ClearAllPoints()
-    ItemSocketingSocket1Right:ClearAllPoints()
-    ItemSocketingSocket2Right:ClearAllPoints()
-    ItemSocketingSocket3Right:ClearAllPoints()
+    if ItemSocketingSocket3Left then--11.2.7 没有了 改为  ItemSocketingFrame.SocketingContainer.Socket1
+        ItemSocketingSocket3Left:ClearAllPoints()
+        ItemSocketingSocket2Left:ClearAllPoints()
+        ItemSocketingSocket1Left:ClearAllPoints()
+        ItemSocketingSocket1Right:ClearAllPoints()
+        ItemSocketingSocket2Right:ClearAllPoints()
+        ItemSocketingSocket3Right:ClearAllPoints()
+    else
+        for i=1, 3 do
+            local slot= ItemSocketingFrame.SocketingContainer['Socket'..i]--11.2.7才有
+            if slot then
+                WoWTools_TextureMixin:HideFrame(slot, {index=2})
+                WoWTools_TextureMixin:HideTexture(slot.RightFiligree)
+                WoWTools_TextureMixin:HideTexture(slot.LeftFiligree)
+            end
+        end
+    end
     ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
     ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
 
