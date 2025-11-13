@@ -139,7 +139,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
             else
-                Init_Panel()
+                do
+                    Init_Panel()
+                end
                 Init()
                 --self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
