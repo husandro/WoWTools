@@ -39,39 +39,6 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
-    --[[local sub=  WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , '')),
-        tooltip= WoWTools_MoveMixin.addName,
-        GetValue= function() return Save().SavePoint end,
-        category= WoWTools_MoveMixin.Category,
-        SetValue= function()
-            Save().SavePoint= not Save().SavePoint and true or nil
-        end
-    })
-
-
-    WoWTools_PanelMixin:OnlyButton({
-        buttonText= WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-        SetValue= function()
-           StaticPopup_Show('WoWTools_OK',
-            (WoWTools_DataMixin.onlyChinese and '保存位置' or (Save()..CHOOSE_LOCATION:gsub(CHOOSE , '')))
-            ..'|n|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-            nil,
-            {SetValue=function()
-                Save().point={}
-                print(
-                    WoWTools_MoveMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                    WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION,
-                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                )
-            end})
-        end,
-        tooltip=(WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION)..'|n|n'..tooltip,
-        layout= Layout,
-        category= WoWTools_MoveMixin.Category
-    }, sub)]]
-
-
 
     WoWTools_PanelMixin:Check_Button({
         checkName= WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , '')),
@@ -88,7 +55,7 @@ local function Init_Panel()
             function()
                 Save().point={}
                 WoWTools_DataMixin:Reload()
-                
+
             end)
         end,
         tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
