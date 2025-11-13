@@ -44,7 +44,6 @@ local function Init()
     frame:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
     frame:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
 
-
     local Label= frame:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'GameFontNormalSmall')
     if GameLimitedMode_IsActive() then
         Label:SetTextColor(1,0.28,0)

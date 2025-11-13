@@ -202,9 +202,9 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     local target= tab.frame
     local name= tab.name or (target and target:GetName()) or (frame and frame:GetName())
-    --if frame:IsMovable() then
 
-    if not frame or not name or frame.moveFrameData then
+
+    if not frame or not name or frame.moveFrameData then-- or frame:IsMovable() then
         if WoWTools_DataMixin.Player.husandro then
             print('移动', frame, name, frame and frame.moveFrameData, '出现错误')
         end

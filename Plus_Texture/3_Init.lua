@@ -248,6 +248,13 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
+local function Clear_Frame()
+    WoWTools_TextureMixin.Events={}
+    WoWTools_TextureMixin.Frames={}
+    panel:UnregisterEvent('ADDON_LOADED')
+    panel:SetScript('OnEvent', nil)
+end
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -259,6 +266,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().no= Save().no or {}
 
             P_Save= nil
+
+            if C_AddOns.IsAddOnLoaded('ElvUI') then
+                Clear_Frame()
+                return
+            end
 
             WoWToolsPlayerDate['BGTexture']= WoWToolsPlayerDate['BGTexture'] or {}
 
@@ -293,10 +305,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                WoWTools_TextureMixin.Events={}
-                WoWTools_TextureMixin.Frames={}
-                self:UnregisterEvent(event)
-                self:SetScript('OnEvent', nil)
+                Clear_Frame()
             else
                 Init_Panel()
 
@@ -304,12 +313,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
                 WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
 
-
                 if Save().disabledTexture then
                     self:UnregisterEvent(event)
                 else
                     Init()
-                    --self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 end
             end
 
@@ -321,9 +328,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_TextureMixin.Events[arg1]= nil
             end
         end
-
-    --elseif event=='PLAYER_ENTERING_WORLD' then--需要这个事件
-        --Init()
-        --self:UnregisterEvent(event)
     end
 end)

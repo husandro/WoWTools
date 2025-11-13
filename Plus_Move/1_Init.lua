@@ -39,7 +39,7 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
-    local sub=  WoWTools_PanelMixin:OnlyCheck({
+    --[[local sub=  WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , '')),
         tooltip= WoWTools_MoveMixin.addName,
         GetValue= function() return Save().SavePoint end,
@@ -69,8 +69,32 @@ local function Init_Panel()
         tooltip=(WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION)..'|n|n'..tooltip,
         layout= Layout,
         category= WoWTools_MoveMixin.Category
-    }, sub)
+    }, sub)]]
 
+
+
+    WoWTools_PanelMixin:Check_Button({
+        checkName= WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , '')),
+        GetValue= function() return not Save().SavePoint end,
+        SetValue= function()
+            Save().SavePoint= not Save().SavePoint and true or nil
+        end,
+        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION),
+        buttonFunc= function()
+            StaticPopup_Show('WoWTools_RestData',
+                WoWTools_MoveMixin.addName
+                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                nil,
+            function()
+                Save().point={}
+                WoWTools_DataMixin:Reload()
+                
+            end)
+        end,
+        tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+        layout= Layout,
+        category= WoWTools_MoveMixin.Category,
+    })
 
     WoWTools_PanelMixin:Check_Slider({
         checkName= WoWTools_DataMixin.onlyChinese and '移动时Frame透明' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'),
@@ -187,6 +211,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -198,6 +223,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().no= Save().no or {}
 
             P_Save= nil
+
 
             WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
 
@@ -232,7 +258,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 WoWTools_MoveMixin.Events={}
                 WoWTools_MoveMixin.Frames={}
-                self:UnregisterEvent(event)
+                self:UnregisterEvent('ADDON_LOADED')
                 self:SetScript('OnEvent', nil)
             else
                 Init_Panel()

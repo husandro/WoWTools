@@ -324,7 +324,7 @@ local function Init_TrackButton()--添加装备管理框
         elseif WoWTools_DataMixin.Player.husandro then
             self:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
         else
-            self:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
+            self:SetPoint('CENTER', UIParent)
         end
     end
 
