@@ -650,7 +650,9 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             else
                 C_ContentTracking.StartTracking(Enum.ContentTrackingType.Decor, recordID)
             end
-            b.texture:SetDesaturated(not C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID))
+            local isTrackable = C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID)
+            b.texture:SetDesaturated(not isTrackable)
+            b.texture:SetAlpha(isTrackable and 1 or 0.5)
         end)
     end)
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
