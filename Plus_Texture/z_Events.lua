@@ -1105,22 +1105,24 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_ExpansionLandingPage()
-    local function SetOverlayFrame(frame)
-        if not frame then
-            return
+    if not _G['ElvUI'] then
+        local function SetOverlayFrame(frame)
+            if not frame then
+                return
+            end
+            self:HideFrame(frame, {show={[frame.Background]=1}})
+            self:SetScrollBar(frame.MajorFactionList)
+            self:SetButton(frame.CloseButton)
+            self:HideFrame(frame.ScrollFadeOverlay)
         end
-        self:HideFrame(frame, {show={[frame.Background]=1}})
-        self:SetScrollBar(frame.MajorFactionList)
-        self:SetButton(frame.CloseButton)
-        self:HideFrame(frame.ScrollFadeOverlay)
+
+
+        SetOverlayFrame(ExpansionLandingPage.overlayFrame)
+
+        WoWTools_DataMixin:Hook(ExpansionLandingPage, 'RefreshExpansionOverlay', function(frame)
+            SetOverlayFrame(frame.overlayFrame)
+        end)
     end
-
-
-    SetOverlayFrame(ExpansionLandingPage.overlayFrame)
-
-    WoWTools_DataMixin:Hook(ExpansionLandingPage, 'RefreshExpansionOverlay', function(frame)
-        SetOverlayFrame(frame.overlayFrame)
-    end)
 
     self:Init_BGMenu_Frame(ExpansionLandingPage, {
         isNewButton=true,

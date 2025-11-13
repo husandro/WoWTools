@@ -635,25 +635,30 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.InfoText:SetFontObject('GameFontWhite')--有点大
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
         btn.placementCostLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
+        btn.trackableButton= CreateFrame('Button', nil, btn,'WoWToolsButtonTemplate')
+        btn.trackableButton:SetPoint('TOPLEFT')
+        btn.trackableButton.texture= btn.trackableButton:CreateTexture()
+        btn.trackableButton.texture:SetAllPoints()
+        btn.trackableButton.texture:SetAtlas('')
+
 
     end)
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
         local placementCost, r,g,b
+        local isTrackable= nil
         if btn:HasValidData() then
-
-            --[[if ContentTrackingUtil.IsContentTrackingEnabled() then--追踪当前可用
-                if C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then
+            if ContentTrackingUtil.IsContentTrackingEnabled() then--追踪当前可用
+                if C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then--追踪功能对此物品可用
                     if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then--<按住Shift点击停止追踪>
-                        
+                        isTrackable= 1
                     else
-                        
+                        isTrackable= 0
                     end
-                else--追踪功能对此物品不可用
-                    
                 end
-            end]]
+            end
 
             if btn:IsBundleEntry() then
+                --self.InfoText:SetText(self.bundleEntryInfo.quantity)
             elseif btn:IsInMarketView() then
             else
                 local q= btn.entryInfo.quantity or 0
