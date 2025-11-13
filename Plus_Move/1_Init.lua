@@ -42,7 +42,7 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:Check_Button({
         checkName= WoWTools_DataMixin.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , '')),
-        GetValue= function() return not Save().SavePoint end,
+        GetValue= function() return Save().SavePoint end,
         SetValue= function()
             Save().SavePoint= not Save().SavePoint and true or nil
         end,
