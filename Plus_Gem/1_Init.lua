@@ -645,7 +645,7 @@ local function Init_ItemSocketingFrame_Update()
         end
     end
 
-    
+
     local Sockets={
             ItemSocketingSocket1 or ItemSocketingFrame.SocketingContainer.Socket1,
             ItemSocketingSocket2 or ItemSocketingFrame.SocketingContainer.Socket2,
@@ -1034,47 +1034,6 @@ end
 
 
 
-local function Set_Move(self)
-    if Save().disabled then
-         self:Setup(ItemSocketingFrame)
-
-    else
-        ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
-
-        ItemSocketingScrollChild:ClearAllPoints()
-        ItemSocketingScrollChild:SetPoint('TOPLEFT')
-        ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
-
-        ItemSocketingDescription:ClearAllPoints()
-        ItemSocketingDescription:SetAllPoints()
-        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
-
-        self:Setup(ItemSocketingFrame, {
-        minW=338,
-        minH=424,
-        sizeRestFunc=function()
-            ItemSocketingFrame:SetSize(338, 424)
-            Set_Gem()
-            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
-        end, sizeUpdateFunc=function()
-            Set_Gem()
-            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
-        end})
-    end
-
-    self:Setup(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
-    self:Setup(ItemSocketingFrameInset, {frame=ItemSocketingFrame})
-    self:Setup(ItemSocketingScrollFrame, {frame=ItemSocketingFrame})
-
-    Set_Move= function()end
-end
-
---镶嵌宝石，界面
-function WoWTools_MoveMixin.Events:Blizzard_ItemSocketingUI()
-    Set_Move(self)
-end
-
-
 
 
 
@@ -1131,7 +1090,6 @@ local function Init()
         region:SetParent(ItemSocketingFrame.TitleContainer)
     end
 
-    Set_Move(WoWTools_MoveMixin)
 
 
 --Plus_Tooltip 加上的
@@ -1169,52 +1127,93 @@ end
 
 
 
+local function Load_Init()
+    if Save().disabled then
+        return
+    end
+
+    if C_AddOns.IsAddOnLoaded('Blizzard_ItemSocketingUI') then
+        Init()
+    else
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_ItemSocketingUI' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+    end
+    Load_Init=function()end
+end
+
+
+
 
 
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== 'WoWTools' then
-            WoWToolsSave['Plus_Gem']= WoWToolsSave['Plus_Gem'] or P_Save
-            P_Save=nil
-
-            addName= '|T4555592:0|t'..(WoWTools_DataMixin.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
-
-            --添加控制面板
-            WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                GetValue= function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled = not Save().disabled and true or nil
-
-                    Init()
-
-                    if Save().disabled then
-                        print(
-                            addName..WoWTools_DataMixin.Icon.icon2,
-                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                            WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
-                        )
-                    end
-                end
-            })
-
-            if Save().disabled then
-                self:SetScript('OnEvent', nil)
-                self:UnregisterEvent(event)
-
-            elseif C_AddOns.IsAddOnLoaded('Blizzard_ItemSocketingUI') then
-                Init()
-                self:SetScript('OnEvent', nil)
-                self:UnregisterEvent(event)
-            end
-
-        elseif arg1=='Blizzard_ItemSocketingUI' and WoWToolsSave then
-            Init()
-            self:SetScript('OnEvent', nil)
-            self:UnregisterEvent(event)
-        end
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    WoWToolsSave['Plus_Gem']= WoWToolsSave['Plus_Gem'] or P_Save
+    P_Save=nil
+
+    addName= '|T4555592:0|t'..(WoWTools_DataMixin.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
+
+--添加控制面板
+    WoWTools_PanelMixin:OnlyCheck({
+        name= addName,
+        GetValue= function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled = not Save().disabled and true or nil
+            Load_Init()
+            if Save().disabled then
+                print(
+                    addName..WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                    WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+                )
+            end
+        end
+    })
+
+    Load_Init()
+
+    self:SetScript('OnEvent', nil)
+    self:UnregisterEvent(event)
 end)
+
+
+
+
+
+
+
+
+--镶嵌宝石，界面
+function WoWTools_MoveMixin.Events:Blizzard_ItemSocketingUI()
+    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
+    ItemSocketingScrollChild:ClearAllPoints()
+    ItemSocketingScrollChild:SetPoint('TOPLEFT')
+    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
+    ItemSocketingDescription:ClearAllPoints()
+    ItemSocketingDescription:SetAllPoints()
+    ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
+
+    self:Setup(ItemSocketingFrame, {
+        minW=338,
+        minH=424,
+    sizeRestFunc=function()
+        ItemSocketingFrame:SetSize(338, 424)
+        Set_Gem()
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
+    end, sizeUpdateFunc=function()
+        Set_Gem()
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
+    end})
+    self:Setup(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
+    self:Setup(ItemSocketingFrameInset, {frame=ItemSocketingFrame})
+    self:Setup(ItemSocketingScrollFrame, {frame=ItemSocketingFrame})
+end

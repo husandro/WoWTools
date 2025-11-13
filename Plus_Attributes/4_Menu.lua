@@ -75,10 +75,7 @@ local function Init_Menu(self, root)
     end
 
 --选项
-    sub=WoWTools_MenuMixin:OpenOptions(root, {
-        name= WoWTools_AttributesMixin.addName,
-        category=WoWTools_AttributesMixin.Category,
-    })
+    sub=WoWTools_AttributesMixin:Open_Options(root)
 
 
 --显示背景

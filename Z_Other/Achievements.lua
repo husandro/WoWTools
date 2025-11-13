@@ -659,7 +659,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save().disabled= not Save().disabled and true or nil
                 if Save().disabled then
                     print(
-                        addName.WoWTools_DataMixin.Icon.icon2,
+                        addName..WoWTools_DataMixin.Icon.icon2,
                         WoWTools_TextMixin:GetEnabeleDisable(Save().disabled),
                         WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )

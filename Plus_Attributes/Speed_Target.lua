@@ -60,12 +60,7 @@ local function Init_Menu(self, root)
 
 --选项
     root:CreateDivider()
-
-
-    WoWTools_MenuMixin:OpenOptions(root, {
-        name= WoWTools_AttributesMixin.addName,
-        category=WoWTools_AttributesMixin.Category,
-    })
+    WoWTools_AttributesMixin:Open_Options(root)
 
 end
 

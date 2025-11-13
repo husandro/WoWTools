@@ -21,47 +21,36 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== 'WoWTools' then
-
-            WoWToolsSave['Plus_MainMenu']= WoWToolsSave['Plus_MainMenu'] or P_Save
-            P_Save= nil
-
-            WoWTools_MainMenuMixin.addName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL, 'Plus'))
-
-            WoWTools_MainMenuMixin:Init_Category()
-
-            if not WoWToolsSave['Plus_MainMenu'].disabled then
-                WoWTools_MainMenuMixin:Settings()
-                WoWTools_MainMenuMixin:Init_Character()--角色
-                WoWTools_MainMenuMixin:Init_Professions()--专业
-                WoWTools_MainMenuMixin:Init_Talent()--天赋
-                WoWTools_MainMenuMixin:Init_Achievement()--成就
-                WoWTools_MainMenuMixin:Init_Quest()--任务
-                WoWTools_MainMenuMixin:Init_Guild()--公会
-                WoWTools_MainMenuMixin:Init_LFD()--地下城查找器
-                WoWTools_MainMenuMixin:Init_Collections()--收藏
-                WoWTools_MainMenuMixin:Init_EJ()--冒险指南
-                WoWTools_MainMenuMixin:Init_Store()--商店
-                WoWTools_MainMenuMixin:Init_Help()--帮助
-                WoWTools_MainMenuMixin:Init_Bag()--背包
-                --WoWTools_MainMenuMixin:HousingMicro()--住宅信息板
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                    WoWTools_MainMenuMixin:Init_Options()--初始, 选项
-                    self:SetScript('OnEvent', nil)
-                    self:UnregisterEvent(event)
-                end
-            else
-                self:SetScript('OnEvent', nil)
-            end
-
-            WoWTools_MainMenuMixin:Init_Framerate_Plus()--系统，fts
-
-        elseif arg1=='Blizzard_Settings' and WoWToolsSave then
-            WoWTools_MainMenuMixin:Init_Options()--初始, 选项
-            self:SetScript('OnEvent', nil)
-            self:UnregisterEvent(event)
-        end
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    WoWToolsSave['Plus_MainMenu']= WoWToolsSave['Plus_MainMenu'] or P_Save
+    P_Save= nil
+
+    WoWTools_MainMenuMixin.addName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL, 'Plus'))
+
+    WoWTools_MainMenuMixin:Init_Options()
+
+    if not WoWToolsSave['Plus_MainMenu'].disabled then
+        WoWTools_MainMenuMixin:Settings()
+        WoWTools_MainMenuMixin:Init_Character()--角色
+        WoWTools_MainMenuMixin:Init_Professions()--专业
+        WoWTools_MainMenuMixin:Init_Talent()--天赋
+        WoWTools_MainMenuMixin:Init_Achievement()--成就
+        WoWTools_MainMenuMixin:Init_Quest()--任务
+        WoWTools_MainMenuMixin:Init_Guild()--公会
+        WoWTools_MainMenuMixin:Init_LFD()--地下城查找器
+        WoWTools_MainMenuMixin:Init_Collections()--收藏
+        WoWTools_MainMenuMixin:Init_EJ()--冒险指南
+        WoWTools_MainMenuMixin:Init_Store()--商店
+        WoWTools_MainMenuMixin:Init_Help()--帮助
+        WoWTools_MainMenuMixin:Init_Bag()--背包
+        --WoWTools_MainMenuMixin:HousingMicro()--住宅信息板
+    end
+
+    WoWTools_MainMenuMixin:Init_Framerate_Plus()--系统，fts
+
+    self:SetScript('OnEvent', nil)
+    self:UnregisterEvent(event)
 end)

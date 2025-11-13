@@ -4,7 +4,7 @@ local function Save()
     return WoWToolsSave['Plus_Attributes'] or {}
 end
 local Frame=CreateFrame('Frame')
-
+local Category
 
 
 
@@ -701,7 +701,7 @@ end
 
 
 local function Init()
-    WoWTools_AttributesMixin.Category= WoWTools_PanelMixin:AddSubCategory({--添加控制面板
+    Category= WoWTools_PanelMixin:AddSubCategory({--添加控制面板
         name=WoWTools_AttributesMixin.addName,
         frame=Frame,
         disabled= Save().disabled,
@@ -752,4 +752,11 @@ end
 
 function WoWTools_AttributesMixin:Init_Options()
     Init()
+end
+
+function WoWTools_AttributesMixin:Open_Options(root)
+    return WoWTools_MenuMixin:OpenOptions(root, {
+            name= WoWTools_AttributesMixin.addName,
+            category=Category,
+        })
 end

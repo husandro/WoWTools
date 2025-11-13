@@ -1,11 +1,19 @@
---添加控制面板
-
 local function Save()
     return WoWToolsSave['Plus_MainMenu']
 end
 
-
 local Category, Layout
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -115,6 +123,9 @@ local function Init_Options()--初始, 选项
         end
     })
     initializer:SetParentInitializer(initializer2, function() if Save().frameratePlus then return true else return false end end)
+
+
+    Init_Options= function()end
 end
 
 
@@ -123,14 +134,43 @@ end
 
 
 
-function WoWTools_MainMenuMixin:Init_Category()
+
+
+
+
+
+
+
+
+
+
+local function Init()
     Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-            name= self.addName,
-            disabled= Save().disabled and not Save().frameratePlus,
-        })
+        name= WoWTools_MainMenuMixin.addName,
+        disabled= Save().disabled and not Save().frameratePlus,
+    })
+
+    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+        Init_Options()
+    else
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_Settings' then
+                Init_Options()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+    end
+
+    Init=function()end
 end
+
+
+
+
+
 
 
 function WoWTools_MainMenuMixin:Init_Options()
-    Init_Options()
+    Init()
 end
+
