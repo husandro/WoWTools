@@ -6,28 +6,7 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init()
-
-	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnLoad', function(frame)
+local function Create_Frame(frame)
 		frame.Content.AccountWideIcon:SetScale(0.6)
 --
 		frame.completed= WoWTools_LabelMixin:Create(frame.ParagonIcon, {size=10})
@@ -71,6 +50,36 @@ local function Init()
 		frame.check:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.3) end)
 		frame.check:SetSize(18,22)
 		frame.check:SetCheckedTexture('orderhalltalents-done-glow')
+end
+
+
+
+
+
+
+
+
+local function Setup(btn, data)--factionRow, elementData)--ReputationFrame.lua
+	
+
+	--frame.AccountWideIcon:SetShown(data.isAccountWide)--战团
+end
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+
+	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnLoad', function(frame)
+		Create_Frame(frame)
 	end)
 
 
@@ -80,27 +89,27 @@ local function Init()
 
 
 	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'Initialize', function(btn, data)--factionRow, elementData)--ReputationFrame.lua
+		
 		data= data or btn.elementData
 		local factionID = data.factionID --or btn.factionIndex
 		local frame = btn.Content
 
-		if Save().notPlus or not frame or factionID==0 then
-			if frame then
-				frame.Name:SetTextColor(1,1,1)
-			--显示为经验条
+		if not frame then
+			return
+		elseif Save().notPlus or factionID==0 then
+			frame.Name:SetTextColor(1,1,1)
 				frame.watchedIcon:SetShown(false)
-			--完成次数
 				frame.completed:SetText('')
-			--等级
 				frame.levelText:SetText('')
-			--图标
 				frame.texture:SetTexture(0)
-
 				frame.check:SetShown(false)
-			end
 			return
 		end
 
+		if not btn.completed then
+			Create_Frame(btn)
+		end
+		
 		local bar = frame.ReputationBar
 
 		local barColor, levelText, texture, atlas,isCapped
