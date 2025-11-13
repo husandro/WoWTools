@@ -635,27 +635,32 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.InfoText:SetFontObject('GameFontWhite')--有点大
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
         btn.placementCostLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
-        btn.trackableButton= CreateFrame('Button', nil, btn,'WoWToolsButtonTemplate')
-        btn.trackableButton:SetPoint('TOPLEFT')
-        btn.trackableButton.texture= btn.trackableButton:CreateTexture()
+        btn.trackableButton= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
+        btn.trackableButton:SetSize(18,18)
+        btn.trackableButton:SetPoint('TOPLEFT', 3., -2)
+        btn.trackableButton.texture= btn.trackableButton:CreateTexture(nil, 'BORDER')
         btn.trackableButton.texture:SetAllPoints()
         btn.trackableButton.texture:SetAtlas('Waypoint-MapPin-Untracked')
-
-
+        btn.trackableButton:SetScript('OnLeave', GameTooltip_Hide)
+        btn.trackableButton.tooltip=WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING
+        btn.trackableButton:SetScript('OnClick', function(b)
+            local recordID= b:GetParent().entryInfo.entryID.recordID
+            if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID) then
+                C_ContentTracking.StopTracking(Enum.ContentTrackingType.Decor, recordID, Enum.ContentTrackingStopType.Manual)
+            else
+                C_ContentTracking.StartTracking(Enum.ContentTrackingType.Decor, recordID)
+            end
+            b.texture:SetDesaturated(not C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID))
+        end)
     end)
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
         local placementCost, r,g,b
         local isTrackable= nil
         if btn:HasValidData() then
-            if ContentTrackingUtil.IsContentTrackingEnabled() then--追踪当前可用
-                if C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then--追踪功能对此物品可用
-                    if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then--<按住Shift点击停止追踪>
-                        btn.trackableButton.texture:SetDesaturated(true)
-                    else
-                        btn.trackableButton.texture:SetDesaturated(false)
-                    end
-                end
-                isTrackable= true
+            if ContentTrackingUtil.IsContentTrackingEnabled() and --追踪当前可用
+                C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--追踪功能对此物品可用
+            then
+                isTrackable= C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--<按住Shift点击停止追踪>
             end
 
             if btn:IsBundleEntry() then
@@ -665,7 +670,6 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                 local q= btn.entryInfo.quantity or 0
                 local a= 0 + (btn.entryInfo.remainingRedeemable or 0)
                 if a>0 then
-
                     btn.InfoText:SetText(
                         (q==a and '|cff828282' or '')..(q..'/'..a)
                     )
@@ -680,7 +684,9 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
         btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
         btn.placementCostLabel:SetText(placementCost and placementCost..'|A:House-Decor-budget-icon:0:0|a' or '')
-        btn.trackableButton:SetShown(isTrackable)
+        btn.trackableButton:SetShown(isTrackable~=nil)
+        btn.trackableButton.texture:SetDesaturated(isTrackable==false)
+        btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.5)
     end)
 
 end

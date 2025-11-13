@@ -268,6 +268,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             P_Save= nil
 
             if C_AddOns.IsAddOnLoaded('ElvUI') then
+           
                 Clear_Frame()
                 return
             end

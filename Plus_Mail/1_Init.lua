@@ -215,7 +215,6 @@ local function Init()--SendMailNameEditBox
     WoWTools_MailMixin:Init_InBox()--收信箱，物品，提示
 
 --UI Plus
-    WoWTools_MailMixin:Init_UI()
     WoWTools_MailMixin:Init_Edit_Letter_Num()--字数
     WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
 

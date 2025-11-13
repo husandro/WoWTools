@@ -81,6 +81,87 @@ end
 
 
 local function Init()
+    
+    Init=function()end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--信箱
+function WoWTools_TextureMixin.Events:Blizzard_MailFrame()
+    --self:SetNineSlice(MailFrame)
+    self:HideFrame(MailFrame)
+    self:SetButton(MailFrameCloseButton)
+    self:SetTabButton(MailFrameTab1)
+    self:SetTabButton(MailFrameTab2)
+
+    self:HideFrame(MailFrameInset)
+    self:SetNineSlice(MailFrameInset)
+
+    self:HideFrame(SendMailFrame)
+    self:HideFrame(SendMailMoneyFrame)
+    self:HideFrame(SendMailMoneyInset)
+    self:SetNineSlice(SendMailMoneyInset)
+    self:HideFrame(SendMailMoneyBg)
+    self:SetUIButton(SendMailMailButton)
+    self:SetUIButton(SendMailCancelButton)
+
+    self:SetScrollBar(SendMailScrollFrame)
+    self:SetFrame(SendMailMoneyGold, {alpha=0.5, show={[SendMailMoneyGold.texture]=true}})
+    self:SetFrame(SendMailMoneySilver, {alpha=0.5, show={[SendMailMoneySilver.texture]=true}})
+    self:SetFrame(SendMailMoneyCopper, {alpha=0.5, show={[SendMailMoneyCopper.texture]=true}})
+
+    self:SetNineSlice(OpenMailFrame, 0.5)
+    self:SetFrame(OpenMailFrame, {alpha=0.5})
+    self:HideFrame(OpenMailFrameInset)
+    self:SetNineSlice(OpenMailFrameInset)
+    self:SetButton(OpenMailFrameCloseButton)
+    self:SetUIButton(OpenMailReplyButton)
+    self:SetUIButton(OpenMailDeleteButton)
+    self:SetUIButton(OpenMailCancelButton)
+    self:SetCheckBox(SendMailSendMoneyButton)
+    self:SetCheckBox(SendMailCODButton)
+    self:SetEditBox(SendMailNameEditBox)
+    self:SetEditBox(SendMailSubjectEditBox)
+
+    self:HideFrame(InboxFrame)
+    self:SetScrollBar(OpenMailScrollFrame)
+
+    self:SetButton(InboxPrevPageButton, 1)
+    self:SetUIButton(OpenAllMail)
+    self:SetButton(InboxNextPageButton, 1)
+
+    self:Init_BGMenu_Frame(MailFrame)
+end
+
+
+
+
+
+
+--[[邮件
+function WoWTools_MoveMixin.Events:Blizzard_MailFrame()
+    if Save().disabled then
+        WoWTools_MoveMixin:Setup(MailFrame)
+        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
+        WoWTools_MoveMixin:Setup(OpenMailFrame)
+    end
+end]]
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_MailFrame()--收信箱，物品，提示
     if Save().INBOXITEMS_TO_DISPLAY then
         INBOXITEMS_TO_DISPLAY= Save().INBOXITEMS_TO_DISPLAY
         Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
@@ -218,86 +299,4 @@ local function Init()
 
     --12.2.7 中 会重叠
     SendMailSendMoneyButton:SetPoint('TOPLEFT', SendMailMoney,'TOPRIGHT', 7, 12)--<Anchor point="TOPLEFT" relativeTo="SendMailMoney" relativePoint="TOPRIGHT" x="0" y="12"/>
-
-    Init=function()end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---信箱
-function WoWTools_TextureMixin.Events:Blizzard_MailFrame()
-    --self:SetNineSlice(MailFrame)
-    self:HideFrame(MailFrame)
-    self:SetButton(MailFrameCloseButton)
-    self:SetTabButton(MailFrameTab1)
-    self:SetTabButton(MailFrameTab2)
-
-    self:HideFrame(MailFrameInset)
-    self:SetNineSlice(MailFrameInset)
-
-    self:HideFrame(SendMailFrame)
-    self:HideFrame(SendMailMoneyFrame)
-    self:HideFrame(SendMailMoneyInset)
-    self:SetNineSlice(SendMailMoneyInset)
-    self:HideFrame(SendMailMoneyBg)
-    self:SetUIButton(SendMailMailButton)
-    self:SetUIButton(SendMailCancelButton)
-
-    self:SetScrollBar(SendMailScrollFrame)
-    self:SetFrame(SendMailMoneyGold, {alpha=0.5, show={[SendMailMoneyGold.texture]=true}})
-    self:SetFrame(SendMailMoneySilver, {alpha=0.5, show={[SendMailMoneySilver.texture]=true}})
-    self:SetFrame(SendMailMoneyCopper, {alpha=0.5, show={[SendMailMoneyCopper.texture]=true}})
-
-    self:SetNineSlice(OpenMailFrame, 0.5)
-    self:SetFrame(OpenMailFrame, {alpha=0.5})
-    self:HideFrame(OpenMailFrameInset)
-    self:SetNineSlice(OpenMailFrameInset)
-    self:SetButton(OpenMailFrameCloseButton)
-    self:SetUIButton(OpenMailReplyButton)
-    self:SetUIButton(OpenMailDeleteButton)
-    self:SetUIButton(OpenMailCancelButton)
-    self:SetCheckBox(SendMailSendMoneyButton)
-    self:SetCheckBox(SendMailCODButton)
-    self:SetEditBox(SendMailNameEditBox)
-    self:SetEditBox(SendMailSubjectEditBox)
-
-    self:HideFrame(InboxFrame)
-    self:SetScrollBar(OpenMailScrollFrame)
-
-    self:SetButton(InboxPrevPageButton, 1)
-    self:SetUIButton(OpenAllMail)
-    self:SetButton(InboxNextPageButton, 1)
-
-    self:Init_BGMenu_Frame(MailFrame)
-end
-
-
-
-
-
-
---邮件
-function WoWTools_MoveMixin.Events:Blizzard_MailFrame()
-    if Save().disabled then
-        WoWTools_MoveMixin:Setup(MailFrame)
-        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
-        WoWTools_MoveMixin:Setup(OpenMailFrame)
-    end
-end
-
-
-
-function WoWTools_MailMixin:Init_UI()--收信箱，物品，提示
-    Init()
 end
