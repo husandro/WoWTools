@@ -640,7 +640,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.trackableButton:SetPoint('TOPLEFT', 3., -2)
         btn.trackableButton.texture= btn.trackableButton:CreateTexture(nil, 'BORDER')
         btn.trackableButton.texture:SetAllPoints()
-        btn.trackableButton.texture:SetAtlas('Waypoint-MapPin-Untracked')
+        btn.trackableButton.texture:SetAtlas('Waypoint-MapPin-Tracked')
         btn.trackableButton:SetScript('OnLeave', GameTooltip_Hide)
         btn.trackableButton.tooltip=WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING
         btn.trackableButton:SetScript('OnClick', function(b)
