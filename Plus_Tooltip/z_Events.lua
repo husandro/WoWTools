@@ -639,7 +639,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.trackableButton:SetPoint('TOPLEFT')
         btn.trackableButton.texture= btn.trackableButton:CreateTexture()
         btn.trackableButton.texture:SetAllPoints()
-        btn.trackableButton.texture:SetAtlas('')
+        btn.trackableButton.texture:SetAtlas('Waypoint-MapPin-Untracked')
 
 
     end)
@@ -650,11 +650,12 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             if ContentTrackingUtil.IsContentTrackingEnabled() then--追踪当前可用
                 if C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then--追踪功能对此物品可用
                     if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID) then--<按住Shift点击停止追踪>
-                        isTrackable= 1
+                        btn.trackableButton.texture:SetDesaturated(true)
                     else
-                        isTrackable= 0
+                        btn.trackableButton.texture:SetDesaturated(false)
                     end
                 end
+                isTrackable= true
             end
 
             if btn:IsBundleEntry() then
@@ -679,6 +680,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
         btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
         btn.placementCostLabel:SetText(placementCost and placementCost..'|A:House-Decor-budget-icon:0:0|a' or '')
+        btn.trackableButton:SetShown(isTrackable)
     end)
 
 end
