@@ -691,4 +691,21 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.5)
     end)
 
+
+
+    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'AddTooltipTrackingLines', function(btn, tooltip)
+        local info= btn:HasValidData() and btn.entryInfo
+        if not info or not info.enterID then
+            return
+        end
+        
+        tooltip:AddDoubleLine(
+            info.iconTexture and '|T'..info.iconTexture..':0|t|cffffffff'..info.iconTexture or ' ', 
+            (info.enterID.recordID and 'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..info.enterID.recordID or '')
+        )
+        tooltip:Show()
+
+        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+
+    end)
 end

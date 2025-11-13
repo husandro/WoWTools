@@ -1,12 +1,13 @@
 function WoWTools_TooltipMixin.Events:TooltipDataProcessor()
 
-    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
+    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip, data)
         if not tooltip.textLeft then
             WoWTools_TooltipMixin:Set_Init_Item(tooltip)--创建，设置，内容
         end
         if tooltip==ItemRefTooltip then
             WoWTools_TooltipMixin:Set_Init_Item(tooltip, true)--创建，设置，内容
         end
+        print(data.id, data.type)
     end)
 
 --物品 0
