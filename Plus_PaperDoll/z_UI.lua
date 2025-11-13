@@ -359,7 +359,6 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
 --声望
     self:SetScrollBar(ReputationFrame)
     self:SetMenu(ReputationFrame.filterDropdown)
-
     self:SetFrame(ReputationFrame.ReputationDetailFrame.Border)
     self:SetButton(ReputationFrame.ReputationDetailFrame.CloseButton)
     self:SetAlphaColor(ReputationFrame.ReputationDetailFrame.Divider)
@@ -368,6 +367,14 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetCheckBox(ReputationFrame.ReputationDetailFrame.AtWarCheckbox)
     self:SetCheckBox(ReputationFrame.ReputationDetailFrame.MakeInactiveCheckbox)
     self:SetCheckBox(ReputationFrame.ReputationDetailFrame.WatchFactionCheckbox)
+    WoWTools_DataMixin:Hook(ReputationBarMixin, 'UpdateBarProgressText', function(f)
+        if not f.isSetTuexrue then
+            self:SetStatusBar(f)
+            self:SetAlphaColor(f.LeftTexture, nil, nil, 0.5)
+            self:SetAlphaColor(f.RightTexture, nil, nil, 0.5)
+            f.isSetTuexrue=true
+        end
+    end)
 
     WoWTools_DataMixin:Hook(ReputationFrame.ScrollBox, 'Update', function(f)
         if not f:HasView() then
