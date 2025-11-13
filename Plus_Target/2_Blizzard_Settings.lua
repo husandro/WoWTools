@@ -100,15 +100,11 @@ end
 
 
 local function Init_Options()
-    if Save().disabled then
-        return
-    end
-
     local sel=CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     sel:SetPoint('TOPLEFT', 0, -40)
     sel:SetChecked(Save().target)
     sel:SetScript('OnClick', function()
-        Save().target= not Save().target and true or nil
+        Save().target= not Save().target and true or false
         WoWTools_TargetMixin:Set_All_Init()
     end)
     sel.Text:SetText('1) |A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET))
@@ -162,7 +158,7 @@ local function Init_Options()
     combatCheck:SetPoint('LEFT', sel.Text, 'RIGHT', 15,0)
     combatCheck:SetChecked(Save().targetInCombat)
     combatCheck:SetScript('OnClick', function()
-        Save().targetInCombat= not Save().targetInCombat and true or nil
+        Save().targetInCombat= not Save().targetInCombat and true or false
         WoWTools_TargetMixin:Set_All_Init()
     end)
     combatCheck.Text:EnableMouse(true)
@@ -470,7 +466,7 @@ local function Init_Options()
         GameTooltip:Show()
     end)
     sel2:SetScript('OnClick', function()
-        Save().creature= not Save().creature and true or nil
+        Save().creature= not Save().creature and true or false
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
@@ -735,7 +731,7 @@ local function Init_Options()
     questCheck:SetPoint('TOPLEFT', unitIsMeCheck, 'BOTTOMLEFT',0,-64)
     questCheck:SetChecked(Save().quest)
     questCheck:SetScript('OnClick', function()
-        Save().quest= not Save().quest and true or nil
+        Save().quest= not Save().quest and true or false
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
@@ -757,7 +753,7 @@ local function Init_Options()
     classCheck:SetPoint('LEFT', questAllFactionCheck.Text, 'RIGHT',2,0)
     classCheck:SetChecked(Save().questShowPlayerClass)
     classCheck:SetScript('OnClick', function()
-        Save().questShowPlayerClass= not Save().questShowPlayerClass and true or nil
+        Save().questShowPlayerClass= not Save().questShowPlayerClass and true or false
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
@@ -806,7 +802,7 @@ local function Init()
         disabledfunc=function()
             Save().disabled= not Save().disabled and true or nil
 
-            Init()
+            Init_Options()
             WoWTools_TargetMixin:Set_All_Init()
 
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), Save().disabled and (WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
@@ -815,11 +811,20 @@ local function Init()
         clearfunc= function() WoWToolsSave['Plus_Target']=nil WoWTools_DataMixin:Reload() end}
     )
 
-    Init_Options()
-
-    Init=function()
-        Init_Options()
+    if not Save().disabled then
+        if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+            Init_Options()
+        else
+            EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+                if arg1=='Blizzard_Settings' then
+                    Init_Options()
+                    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+                end
+            end)
+        end
     end
+
+    Init=function()end
 end
 
 
@@ -834,6 +839,6 @@ end
 
 
 
-function WoWTools_TargetMixin:Blizzard_Settings()
+function WoWTools_TargetMixin:Init_Options()
     Init()
 end
