@@ -82,6 +82,7 @@ local function Init()
             elseif WoWTools_DataMixin.Player.husandro then
                 print('物品信息，没有发现Frames', name)
             end
+            WoWTools_ItemMixin.Frames[name]= nil
         end
     end
     WoWTools_ItemMixin.Frames={}
