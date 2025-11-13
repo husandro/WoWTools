@@ -73,23 +73,6 @@ end
 
 
 
---####
---初始
---####
-local function Init()
-    do
-        WoWTools_AttributesMixin:Create_Button()
-    end
-    WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-
-    WoWTools_AttributesMixin:Init_Dragonriding_Speed()--驭空术UI，速度
-    WoWTools_AttributesMixin:Init_Vehicle_Speed()--载具，移动，速度
-    WoWTools_AttributesMixin:Init_Target_Speed()--目标，移动，速度
-
-    Init=function()end
-end
-
-
 
 
 
@@ -98,7 +81,6 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -109,51 +91,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
 
-            WoWTools_AttributesMixin.Category= WoWTools_PanelMixin:AddSubCategory({--添加控制面板
-                name=WoWTools_AttributesMixin.addName,
-                frame=self,
-                disabled= Save().disabled,
-            })
+            WoWTools_AttributesMixin:Init_Options()
 
-            WoWTools_ButtonMixin:ReloadButton({panel=self, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
-                disabledfunc=function()
-                    Save().disabled = not Save().disabled and true or nil
-                    if not Save().disabled then
-                        Init()
-                        WoWTools_AttributesMixin:Init_Options()
-                    else
-                        print(
-                            WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                            WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
-                        )
-                        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-                    end
-                end,
-                clearfunc= function()
-                    WoWToolsSave['Plus_Attributes']=nil
-                    WoWTools_DataMixin:Reload()
-                end
-            })
-
-            if not Save().disabled then
-                self:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                    WoWTools_AttributesMixin:Init_Options(self)
-                    self:UnregisterEvent(event)
-                end
-            else
+            if Save().disabled then
                 self:SetScript('OnEvent', nil)
+            else
+                self:RegisterEvent("PLAYER_ENTERING_WORLD")
             end
-
-        elseif arg1=='Blizzard_Settings' then
-            WoWTools_AttributesMixin:Init_Options(self)
             self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-        Init()
+        do
+            WoWTools_AttributesMixin:Create_Button()
+        end
+        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
+
+        WoWTools_AttributesMixin:Init_Dragonriding_Speed()--驭空术UI，速度
+        WoWTools_AttributesMixin:Init_Vehicle_Speed()--载具，移动，速度
+        WoWTools_AttributesMixin:Init_Target_Speed()--目标，移动，速度
+
+
         self:UnregisterEvent(event)
+        self:SetScript('OnEvent', nil)
     end
 end)

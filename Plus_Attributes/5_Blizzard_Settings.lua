@@ -3,6 +3,7 @@
 local function Save()
     return WoWToolsSave['Plus_Attributes'] or {}
 end
+local Frame=CreateFrame('Frame')
 
 
 
@@ -12,23 +13,13 @@ end
 
 
 
-
-
-
-
-
-local function Init(panel)--设置 panel
-    if Save().disabled then
-        return
-    end
-
-
+local function Init_Options()--设置 Frame
     local last, check, findTank, findDps
     local Tabs= WoWTools_AttributesMixin:Get_Tabs()
 
     for index, info in pairs(Tabs) do
         if info.dps and not findDps then
-            check=WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--四属性, 仅限DPS
+            check=WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--四属性, 仅限DPS
             check:SetChecked(Save().onlyDPS)
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if WoWTools_DataMixin.onlyChinese then
@@ -44,7 +35,7 @@ local function Init(panel)--设置 panel
             last=check
 
         elseif info.tank and not findTank then
-            local text= WoWTools_LabelMixin:Create(panel)
+            local text= WoWTools_LabelMixin:Create(Frame)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if WoWTools_DataMixin.onlyChinese then
                 text:SetText("仅限"..INLINE_TANK_ICON)
@@ -55,7 +46,7 @@ local function Init(panel)--设置 panel
             last= text
         end
 
-        check= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--禁用, 启用
+        check= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--禁用, 启用
         check:SetChecked(not Save().tab[info.name].hide)
         if info.name=='STATUS' or info.name=='SPEED' or info.name=='LIFESTEAL' then
             if last then
@@ -139,7 +130,7 @@ local function Init(panel)--设置 panel
         end
 
         if info.name=='STATUS' then--主属性, 使用bar
-            local current= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
+            local current= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
             current:SetChecked(Save().tab[info.name].bar)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
             current.text:SetText(WoWTools_DataMixin.Player.col..'Bar')
@@ -155,7 +146,7 @@ local function Init(panel)--设置 panel
             current.name= info.name
 
             --位数，bit
-            local sliderBit=WoWTools_SliderMixin:CSlider(panel, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
+            local sliderBit=WoWTools_SliderMixin:CSlider(Frame, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
                 text= WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '位数' or 'bit'),
                 func=function(self, value)
                     value= math.floor(value)
@@ -172,7 +163,7 @@ local function Init(panel)--设置 panel
 
         elseif info.name=='SPEED' then--速度, 当前速度, 选项
 --目标移动速度
-            local targetCheck= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
+            local targetCheck= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
             targetCheck:SetChecked(Save().showTargetSpeed)
             targetCheck:SetPoint('LEFT', text, 'RIGHT',2, 0)
             targetCheck.text:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET))
@@ -182,7 +173,7 @@ local function Init(panel)--设置 panel
             end)
 
             --驭空术UI，速度
-            local dragonriding= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
+            local dragonriding= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
             dragonriding:SetChecked(not Save().disabledDragonridingSpeed)
             --dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
             dragonriding:SetPoint('TOPLEFT', text, 'BOTTOMLEFT', 0, -2)
@@ -198,7 +189,7 @@ local function Init(panel)--设置 panel
             end)
 
             --载具，速度
-            local vehicleSpeedCheck= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
+            local vehicleSpeedCheck= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
             vehicleSpeedCheck:SetChecked(not Save().disabledVehicleSpeed)
             vehicleSpeedCheck:SetPoint('LEFT', dragonriding.text, 'RIGHT',2,0)
             vehicleSpeedCheck.text:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
@@ -214,7 +205,7 @@ local function Init(panel)--设置 panel
 
 
         elseif info.name=='VERSATILITY' then--全能5
-            local check2=WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--仅防卫
+            local check2=WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--仅防卫
             check2:SetChecked(Save().tab['VERSATILITY'].onlyDefense)
             check2:SetPoint('LEFT', text, 'RIGHT',2,0)
             check2.text:SetText((WoWTools_DataMixin.onlyChinese and '仅防御' or format(LFG_LIST_CROSS_FACTION, DEFENSE)))
@@ -237,7 +228,7 @@ local function Init(panel)--设置 panel
             end)
             check2.name= info.name
 
-            check2.A=WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--双属性 22/18%
+            check2.A=WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--双属性 22/18%
             check2.A:SetChecked(Save().tab['VERSATILITY'].damageAndDefense)
             check2.A:SetPoint('LEFT', check2.text, 'RIGHT',2,0)
             check2.A.text:SetText('22/18%')
@@ -264,7 +255,7 @@ local function Init(panel)--设置 panel
 
 
 
-    local text= WoWTools_LabelMixin:Create(panel, {size=26})--26)--Text
+    local text= WoWTools_LabelMixin:Create(Frame, {size=26})--26)--Text
     text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -30)
     --text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
     text:SetText(WoWTools_DataMixin.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
@@ -302,7 +293,7 @@ local function Init(panel)--设置 panel
     end)
 
     --bar, 宽度
-    local sliderX=WoWTools_SliderMixin:CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.x, setp=1, color=nil,
+    local sliderX=WoWTools_SliderMixin:CSlider(Frame, {w=120 ,h=20, min=-5, max=5, value=Save().font.x, setp=1, color=nil,
         text='X',
         func=function(self, value)
             value= math.floor(value)
@@ -317,7 +308,7 @@ local function Init(panel)--设置 panel
     sliderX.text= text
 
     --bar, 宽度
-    local sliderY= WoWTools_SliderMixin:CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.y, setp=1, color=true,
+    local sliderY= WoWTools_SliderMixin:CSlider(Frame, {w=120 ,h=20, min=-5, max=5, value=Save().font.y, setp=1, color=true,
         text='Y', func=function(self, value, userInput)
             value= math.floor(value)
             self:SetValue(value)
@@ -330,8 +321,8 @@ local function Init(panel)--设置 panel
     sliderY:SetPoint("LEFT", sliderX, 'RIGHT', 2, 0)
     sliderY.text= text
 
-    local notTextCheck= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
-    notTextCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -32)
+    local notTextCheck= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
+    notTextCheck:SetPoint("TOPLEFT", Frame, 'TOP', 0, -32)
     notTextCheck.text:SetText(WoWTools_DataMixin.onlyChinese and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
     notTextCheck:SetChecked(Save().notText)
     notTextCheck:SetScript('OnMouseDown', function()
@@ -339,7 +330,7 @@ local function Init(panel)--设置 panel
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
     end)
 
-    local textColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)--数值text, 颜色
+    local textColor= WoWTools_LabelMixin:Create(Frame, {size=20})--20)--数值text, 颜色
     textColor:SetPoint('LEFT', notTextCheck.text,'RIGHT', 5, 0)
     textColor:EnableMouse(true)
     textColor:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
@@ -371,7 +362,7 @@ local function Init(panel)--设置 panel
     end)
 
 
-    check= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
+    check= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
     check:SetPoint("TOPLEFT", notTextCheck, 'BOTTOMLEFT')
     check.text:SetText((WoWTools_DataMixin.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
     check:SetChecked(Save().toLeft)
@@ -381,7 +372,7 @@ local function Init(panel)--设置 panel
     end)
 
 
-    local check5= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--使用，数值
+    local check5= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--使用，数值
     check5:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
     check5.text:SetText((WoWTools_DataMixin.onlyChinese and '数值' or STATUS_TEXT_VALUE)..' 2K')
     check5:SetChecked(Save().useNumber)
@@ -391,7 +382,7 @@ local function Init(panel)--设置 panel
     end)
 
     --位数，bit
-    local sliderBit= WoWTools_SliderMixin:CSlider(panel, {w=100 ,h=20, min=0, max=3, value=Save().bit or 0, setp=1, color=nil,
+    local sliderBit= WoWTools_SliderMixin:CSlider(Frame, {w=100 ,h=20, min=0, max=3, value=Save().bit or 0, setp=1, color=nil,
         text=(WoWTools_DataMixin.onlyChinese and '位数' or 'bit'),
         func=function(self, value)
             value= math.ceil(value)
@@ -404,7 +395,7 @@ local function Init(panel)--设置 panel
     sliderBit:SetPoint("LEFT", check5.text, 'RIGHT', 6,0)
 
 
-    local barValueText= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--增加,减少,值
+    local barValueText= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--增加,减少,值
     barValueText:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT')
     barValueText.text:SetText(WoWTools_DataMixin.onlyChinese and '增益' or BENEFICIAL)
     barValueText:SetChecked(Save().setMaxMinValue)
@@ -422,20 +413,20 @@ local function Init(panel)--设置 panel
             end)
         end
     end)
-    panel.barGreenColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)
-    panel.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
-    panel.barGreenColor:EnableMouse(true)
-    panel.barGreenColor:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-    panel.barGreenColor:SetScript('OnEnter', function(self)
+    Frame.barGreenColor= WoWTools_LabelMixin:Create(Frame, {size=20})--20)
+    Frame.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
+    Frame.barGreenColor:EnableMouse(true)
+    Frame.barGreenColor:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
+    Frame.barGreenColor:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS, WoWTools_DataMixin.Icon.left..self.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
-    panel.barGreenColor:SetText('+12')
-    WoWTools_ColorMixin:HEXtoRGB(Save().greenColor, panel.barGreenColor)--设置, panel.barGreenColor. r g b hex
-    panel.barGreenColor:SetScript('OnMouseDown', function(self)
+    Frame.barGreenColor:SetText('+12')
+    WoWTools_ColorMixin:HEXtoRGB(Save().greenColor, Frame.barGreenColor)--设置, Frame.barGreenColor. r g b hex
+    Frame.barGreenColor:SetScript('OnMouseDown', function(self)
         local setR, setG, setB, setA
         local R,G,B,A= self.r, self.g, self.b, self.a
         local function func()
@@ -454,20 +445,20 @@ local function Init(panel)--设置 panel
         )
     end)
 
-    panel.barRedColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)
-    panel.barRedColor:SetPoint('LEFT', panel.barGreenColor,'RIGHT', 2, 0)
-    panel.barRedColor:EnableMouse(true)
-    panel.barRedColor:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-    panel.barRedColor:SetScript('OnEnter', function(self)
+    Frame.barRedColor= WoWTools_LabelMixin:Create(Frame, {size=20})--20)
+    Frame.barRedColor:SetPoint('LEFT', Frame.barGreenColor,'RIGHT', 2, 0)
+    Frame.barRedColor:EnableMouse(true)
+    Frame.barRedColor:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
+    Frame.barRedColor:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS, WoWTools_DataMixin.Icon.left..self.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
-    panel.barRedColor:SetText('-12')
-    WoWTools_ColorMixin:HEXtoRGB(Save().redColor, panel.barRedColor)--设置, panel.barRedColor. r g b hex
-    panel.barRedColor:SetScript('OnMouseDown', function(self)
+    Frame.barRedColor:SetText('-12')
+    WoWTools_ColorMixin:HEXtoRGB(Save().redColor, Frame.barRedColor)--设置, Frame.barRedColor. r g b hex
+    Frame.barRedColor:SetScript('OnMouseDown', function(self)
         local setR, setG, setB, setA
         local R,G,B,A= self.r, self.g, self.b, self.a
         local function func()
@@ -486,7 +477,7 @@ local function Init(panel)--设置 panel
         )
     end)
 
-    local check2= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar
+    local check2= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--bar
     check2:SetPoint("TOPLEFT", barValueText, 'BOTTOMLEFT',0,-62)
     check2.text:SetText('Bar')
     check2:SetChecked(Save().bar)
@@ -495,7 +486,7 @@ local function Init(panel)--设置 panel
         WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
     end)
 
-    local check3= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar，图片，样式2
+    local check3= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--bar，图片，样式2
     check3:SetPoint("LEFT", check2.text, 'RIGHT', 6, 0)
     check3.text:SetText((WoWTools_DataMixin.onlyChinese and '格式' or FORMATTING).. ' 2')
     check3:SetChecked(Save().barTexture2)
@@ -505,7 +496,7 @@ local function Init(panel)--设置 panel
     end)
 
     --bar, 宽度
-    local barWidth= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=-119, max=250, value=Save().barWidth, setp=1, color=nil,
+    local barWidth= WoWTools_SliderMixin:CSlider(Frame, {w=120, h=20, min=-119, max=250, value=Save().barWidth, setp=1, color=nil,
         text=WoWTools_DataMixin.onlyChinese and '宽' or WIDE,
         func=function(self, value)
             value= math.floor(value)
@@ -518,7 +509,7 @@ local function Init(panel)--设置 panel
     barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
 
     --bar, x
-    local barX= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=-250, max=250, value=Save().barX, setp=1, color=true,
+    local barX= WoWTools_SliderMixin:CSlider(Frame, {w=120, h=20, min=-250, max=250, value=Save().barX, setp=1, color=true,
         text='X',
         func=function(self, value)
             value= math.floor(value)
@@ -531,7 +522,7 @@ local function Init(panel)--设置 panel
     barX:SetPoint("TOPLEFT", barWidth.Low, 'BOTTOMLEFT', 0, -10)
 
 
-    local barToLeft= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar 向左
+    local barToLeft= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--bar 向左
     barToLeft:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT')
     barToLeft.text:SetText(WoWTools_DataMixin.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)
     barToLeft:SetChecked(Save().barToLeft)
@@ -541,7 +532,7 @@ local function Init(panel)--设置 panel
     end)
 
     --间隔，上下
-    local slider= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=-5, max=10, value=Save().vertical, setp=0.1, color=nil,
+    local slider= WoWTools_SliderMixin:CSlider(Frame, {w=120, h=20, min=-5, max=10, value=Save().vertical, setp=0.1, color=nil,
         text='|T450907:0|t|T450905:0|t',
         func=function(self, value)
             value= tonumber(format('%.1f', value))
@@ -555,7 +546,7 @@ local function Init(panel)--设置 panel
     slider:SetPoint("TOPLEFT", barToLeft, 'BOTTOMLEFT', 0,-80)
 
     --间隔，左右
-    local slider2= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=-0.1, max=40, value=Save().horizontal, setp=0.1, color=true,
+    local slider2= WoWTools_SliderMixin:CSlider(Frame, {w=120, h=20, min=-0.1, max=40, value=Save().horizontal, setp=0.1, color=true,
         text='|T450908:0|t|T450906:0|t',
         func=function(self, value)
             value= tonumber(format('%.1f', value))
@@ -569,7 +560,7 @@ local function Init(panel)--设置 panel
     slider2:SetPoint("LEFT", slider, 'RIGHT', 10,0)
 
     --文本，截取
-    local slider3= WoWTools_SliderMixin:CSlider(panel, {w=120, h=20, min=0, max=20, value=Save().gsubText or 0, setp=1, color=nil,
+    local slider3= WoWTools_SliderMixin:CSlider(Frame, {w=120, h=20, min=0, max=20, value=Save().gsubText or 0, setp=1, color=nil,
         text=WoWTools_DataMixin.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT,
         func=function(self, value, userInput)
             value= math.floor(value)
@@ -588,8 +579,8 @@ local function Init(panel)--设置 panel
     slider3:SetPoint("TOPLEFT", slider, 'BOTTOMLEFT', 0,-24)
 
 
-    local checkStrupper= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar，图片，样式2
-    local checkStrlower= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar，图片，样式2
+    local checkStrupper= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--bar，图片，样式2
+    local checkStrlower= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})--bar，图片，样式2
     checkStrupper:SetPoint("LEFT", slider3, 'RIGHT')
     checkStrupper.text:SetText('ABC')--大写
     checkStrupper:SetChecked(Save().strupper)
@@ -629,7 +620,7 @@ local function Init(panel)--设置 panel
     end)
 
     --缩放
-    local slider4= WoWTools_SliderMixin:CSlider(panel, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
+    local slider4= WoWTools_SliderMixin:CSlider(Frame, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
         text=WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
         func=function(self, value)
             value= tonumber(format('%.1f', value)) or 1
@@ -643,7 +634,7 @@ local function Init(panel)--设置 panel
     slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
 
 
-    local sliderButtonAlpha = WoWTools_SliderMixin:CSlider(panel, {min=0, max=1, value=Save().buttonAlpha or 0.3, setp=0.1, color=true,
+    local sliderButtonAlpha = WoWTools_SliderMixin:CSlider(Frame, {min=0, max=1, value=Save().buttonAlpha or 0.3, setp=0.1, color=true,
     text=WoWTools_DataMixin.onlyChinese and '专精透明度' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Alpha'),
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -656,7 +647,7 @@ local function Init(panel)--设置 panel
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
-    local sliderButtonScale = WoWTools_SliderMixin:CSlider(panel, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
+    local sliderButtonScale = WoWTools_SliderMixin:CSlider(Frame, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
     text=WoWTools_DataMixin.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
     func=function(self, value)
         value= tonumber(format('%.01f', value))
@@ -670,7 +661,7 @@ local function Init(panel)--设置 panel
     sliderButtonScale:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0,-24)
 
 
-    local restPosti= WoWTools_ButtonMixin:Cbtn(panel, {size=20, atlas='characterundelete-RestoreButton'})--重置
+    local restPosti= WoWTools_ButtonMixin:Cbtn(Frame, {size=20, atlas='characterundelete-RestoreButton'})--重置
     restPosti:SetPoint('BOTTOMRIGHT')
     restPosti:SetScript('OnClick', function()
         Save().point=nil
@@ -685,7 +676,7 @@ local function Init(panel)--设置 panel
     end)
 
 
-    local checkHidePet= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
+    local checkHidePet= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
     checkHidePet:SetPoint('BOTTOMLEFT')
     checkHidePet.text:SetText(WoWTools_DataMixin.onlyChinese and '自动隐藏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
     checkHidePet:SetChecked(Save().hideInPetBattle)
@@ -695,6 +686,56 @@ local function Init(panel)--设置 panel
         _G['WoWToolsAttributesButton']:settings()
     end)
 
+    Init_Options=function()end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    WoWTools_AttributesMixin.Category= WoWTools_PanelMixin:AddSubCategory({--添加控制面板
+        name=WoWTools_AttributesMixin.addName,
+        frame=Frame,
+        disabled= Save().disabled,
+    })
+
+    WoWTools_ButtonMixin:ReloadButton({panel=Frame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+        disabledfunc=function()
+            Save().disabled = not Save().disabled and true or nil
+            print(
+                WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
+            )
+        end,
+        clearfunc= function()
+            WoWToolsSave['Plus_Attributes']=nil
+            WoWTools_DataMixin:Reload()
+        end
+    })
+
+    if Save().disabled then
+        Init_Options=function()end
+    else
+        if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+            Init_Options()
+        else
+            EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+                if arg1=='Blizzard_Settings' then
+                    Init_Options()
+                    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+                end
+            end)
+        end
+    end
 
     Init=function()end
 end
@@ -709,6 +750,6 @@ end
 
 
 
-function WoWTools_AttributesMixin:Init_Options(panel)
-    Init(panel)
+function WoWTools_AttributesMixin:Init_Options()
+    Init()
 end
