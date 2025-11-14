@@ -6418,7 +6418,9 @@
         "CONTENT_TRACKING_UNTRACKABLE_TOOLTIP_PROMPT",
         "CONTENT_TRACKING_UNTRACK_TOOLTIP_PROMPT",
         "CONTENT_TRACKING_TRACKABLE_TOOLTIP_PROMPT",
-        "HousingCatalogDecorEntryMixin"
+        "HousingCatalogDecorEntryMixin",
+        "TraitUtil",
+        "DragonridingUtil"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -134,15 +134,23 @@ local function Init_Menu(self, root)
 	end)
 
 --Plus
-	root:CreateCheckbox(
+	sub=root:CreateCheckbox(
 		'UI Plus',
 	function()
 	return not Save().notPlus
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
-		WoWTools_FactionMixin:UpdatList()
-		self:settings()
+		WoWTools_FactionMixin:Init_Plus()
 	end)
+	sub:SetTooltip(function (tooltip)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+	end)
+
+--重新加载UI
+	root:CreateDivider()
+    WoWTools_MenuMixin:Reload(root)
+--打开选项界面
+	WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_FactionMixin.addName})
 end
 
 
@@ -193,15 +201,6 @@ local function Init()
 			_G['WoWToolsFactionTrackMainButton']:SetButtonState("NORMAL")
 		end
 	end)
-
-
-	function btn:settings()
-		if _G['WoWToolsFactionListExpandButton'] then
-			_G['WoWToolsFactionListExpandButton']:SetShown(not Save().notPlus)
-		end
-	end
-
-    --btn:settings()
 end
 
 

@@ -119,29 +119,21 @@ end
 
 
 
---加载，Trait，UI
+--[[加载，Trait，UI
 function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)
-    GenericTraitUI_LoadUI()
-    securecallfunction(GenericTraitFrame.SetSystemID, GenericTraitFrame, systemID)
-    securecallfunction(GenericTraitFrame.SetTreeID, GenericTraitFrame, treeID)
-    ToggleFrame(GenericTraitFrame)
+    TraitUtil.OpenTraitFrame(treeID)
+
+    --WoWTools_DataMixin:Call('GenericTraitUI_LoadUI')
+    --securecallfunction(GenericTraitFrame.SetSystemID, GenericTraitFrame, systemID)
+    --securecallfunction(GenericTraitFrame.SetTreeID, GenericTraitFrame, treeID)
+    --ToggleFrame(GenericTraitFrame)
 end
-
-
-
-
-
-
-
-
-
-
 
 --Blizzard_DragonflightLandingPage.lua
 --驭空术
 function WoWTools_LoadUIMixin:Dragonriding()
     self:GenericTraitUI(Enum.ExpansionLandingPageType.Dragonflight, Constants.MountDynamicFlightConsts.TREE_ID)
-end
+end]]
 
 
 

@@ -599,7 +599,7 @@ end
 
 
 
---驭空术，return 名称，点数
+--[[驭空术，return 名称，点数 11.2.7 没有了
 function WoWTools_MenuMixin:GetDragonriding()
     local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
     if dragonridingConfigID then
@@ -612,27 +612,34 @@ function WoWTools_MenuMixin:GetDragonriding()
                 num
         end
     end
+end]]
 
-end
-
---驭空术
+--驭空术 TraitUtil.OpenTraitFrame(Constants.MountDynamicFlightConsts.TREE_ID)
 function WoWTools_MenuMixin:OpenDragonriding(root)
     local configID = C_Traits.GetConfigIDByTreeID(Constants.MountDynamicFlightConsts.TREE_ID);
     local uiWidgetSetID = configID and C_Traits.GetTraitSystemWidgetSetID(configID) or nil
 
     local sub= root:CreateButton(
             '|A:dragonriding-barbershop-icon-protodrake:0:0|a'
-            ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
-            ..(self:GetDragonriding() or ''),
+            ..((InCombatLockdown() or not DragonridingUtil.IsDragonridingUnlocked()) and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE),
+            --..(self:GetDragonriding() or ''),
         function()
-            WoWTools_LoadUIMixin:GenericTraitUI(--加载，Trait，UI
+            if not DragonridingUtil.IsDragonridingTreeOpen() then
+                GenericTraitUI_LoadUI()
+                GenericTraitFrame:SetConfigIDBySystemID(Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID)
+                GenericTraitFrame:SetTreeID(Constants.MountDynamicFlightConsts.TREE_ID)
+            end
+            if GenericTraitFrame then
+                ToggleFrame(GenericTraitFrame)
+            end
+            --[[WoWTools_LoadUIMixin:GenericTraitUI(--加载，Trait，UI
                 Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID,
                 Constants.MountDynamicFlightConsts.TREE_ID
-            )
+            )]]
             return MenuResponse.Refresh
         end,
-        {widgetSetID=uiWidgetSetID, tooltip=WoWTools_DataMixin.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE}
+        {widgetSetID=uiWidgetSetID}--, tooltip=WoWTools_DataMixin.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE}
     )
     WoWTools_SetTooltipMixin:Set_Menu(sub)
 

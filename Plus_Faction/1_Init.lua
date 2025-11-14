@@ -81,7 +81,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == 'PLAYER_ENTERING_WORLD' then
 		WoWTools_FactionMixin:Init_Button()
-		WoWTools_FactionMixin:Init_ScrollBox_Plus()
+		WoWTools_FactionMixin:Init_Plus()
 		WoWTools_FactionMixin:Init_Chat_MSG()
 		WoWTools_FactionMixin:Init_TrackButton()
 		self:UnregisterEvent(event)

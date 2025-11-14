@@ -520,10 +520,10 @@ local function Init_Menu(self, root)
 
 --设置捷键
     sub:CreateSpacer()
-    local text2, num2= WoWTools_MenuMixin:GetDragonriding()--驭空术
+    --local text2, num2= WoWTools_MenuMixin:GetDragonriding()--驭空术 11.2.7 没有了
     WoWTools_KeyMixin:SetMenu(self, sub, {
         icon='|A:NPE_ArrowDown:0:0|a',
-        name=WoWTools_MountMixin.addName..(num2 and num2>0 and text2 or ''),
+        name=WoWTools_MountMixin.addName,--..(num2 and num2>0 and text2 or ''),
         key=Save().KEY,
         GetKey=function(key)
             Save().KEY=key

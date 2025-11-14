@@ -1,8 +1,11 @@
---界面, 增强
-
 local function Save()
 	return WoWToolsSave['Plus_Faction']
 end
+
+
+
+
+
 
 
 
@@ -80,6 +83,9 @@ end
 
 
 local function Init()
+	if Save().notPlus then
+		return
+	end
 
 	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnLoad', function(btn)
 		Create_Frame(btn)
@@ -91,7 +97,7 @@ local function Init()
 		data= data or btn.elementData
 		local factionID = data.factionID --or btn.factionIndex
 
-		if Save().notPlus or factionID==0 then
+		if factionID==0 then
 			if btn.clear_all then
 				btn:clear_all()
 			end
@@ -411,9 +417,9 @@ local function Init()
 	end)
 
 
-
-
-	Init=function()end
+	Init=function()
+		WoWTools_FactionMixin:UpdatList()
+	end
 end
 
 
@@ -428,6 +434,6 @@ end
 
 
 
-function WoWTools_FactionMixin:Init_ScrollBox_Plus()
+function WoWTools_FactionMixin:Init_Plus()
    Init()
 end

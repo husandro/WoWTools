@@ -56,7 +56,7 @@ local function Init_GarrisonList()
     garrisonType= Enum.ExpansionLandingPageType.WarWithin,
     --garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
     disabled= not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_WAR_WITHIN),
-    check= function() return ExpansionLandingPage and ExpansionLandingPage:IsShown() end,
+    --check= function() return ExpansionLandingPage and ExpansionLandingPage:IsShown() end,
     atlas= 'warwithin-landingbutton-up',
     --tooltip= WoWTools_DataMixin.onlyChinese and '点击这里显示卡兹阿加概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
     func= function()
@@ -130,26 +130,29 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
 
 --宏伟宝库
     local hasRewar= C_WeeklyRewards.HasAvailableRewards()
-    sub=root:CreateCheckbox(
+    sub=root:CreateButton(
         (hasRewar and '|cnGREEN_FONT_COLOR:' or '')
         ..'|A:gficon-chest-evergreen-greatvault-collect:0:0|a'..(WoWTools_DataMixin.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
         ..(hasRewar and '|A:BonusLoot-Chest:0:0|a' or ''),
+    --function()
+        --return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
     function()
-        return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
-    end, WoWTools_LoadUIMixin.WeeklyRewards)
+        WoWTools_LoadUIMixin.WeeklyRewards()
+        return MenuResponse.Open
+    end)
     sub:SetTooltip(function(tooltip)
         WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)--周奖励，提示
     end)
 
 
 
---驭空术
+
     --[[local DRAGONRIDING_INTRO_QUEST_ID = 68798;
     local DRAGONRIDING_ACCOUNT_ACHIEVEMENT_ID = 15794;
     local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
     local DRAGONRIDING_TREE_ID = 672;]]
 
-    local numDragonriding=''
+    --[[local numDragonriding=''
     local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1)
     if dragonridingConfigID then
         local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false)
@@ -163,8 +166,11 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
     function()
         return GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(Enum.ExpansionLandingPageType.Dragonflight)
     end, function()
-        WoWTools_LoadUIMixin:Dragonriding()
-    end)
+        TraitUtil.OpenTraitFrame(Constants.MountDynamicFlightConsts.TREE_ID)
+    end)]]
+
+--驭空术
+    WoWTools_MenuMixin:OpenDragonriding(root)
 
     do
         if not GarrisonList then
@@ -187,11 +193,12 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
             end
             local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas or ''
 
-            sub=root:CreateCheckbox(
+            sub=root:CreateButton(
                 format('|A:%s:0:0|a%s%s%s', atlas, info.name, num, num2),
-            info.check or function(data)
-                return GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==data.garrisonType
-            end, function(data)
+            --info.check or function(data)
+                --return GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==data.garrisonType
+            --end, 
+            function(data)
                 if data.func then
                     data.func()
                 else
@@ -201,6 +208,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
                         ShowGarrisonLandingPage(data.garrisonType)
                     end
                 end
+                return MenuResponse.Open
             end, {
                 garrisonType= info.garrisonType,
                 tooltip= info.tooltip,

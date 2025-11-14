@@ -674,7 +674,7 @@ end
 --欲龙术
 function WoWTools_TextureMixin.Events:Blizzard_GenericTraitUI()
     self:HideFrame(GenericTraitFrame)
-    self:SetButton(GenericTraitFrame.CloseButton, {all=true, alpha=1})
+    self:SetButton(GenericTraitFrame.CloseButton)
     self:SetNineSlice(GenericTraitFrame)
 
     self:Init_BGMenu_Frame(GenericTraitFrame, {isNewButton=true,

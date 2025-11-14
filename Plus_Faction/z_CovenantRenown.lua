@@ -87,6 +87,10 @@ local function Set_Covenant_Button(frame, covenantID)
 
 
 local function Init(frame)
+    if C_Covenants.GetActiveCovenantID()==0 then
+        return
+    end
+
     frame.CovenantButtons={}
     for covenantID=1, 4 do
         Set_Covenant_Button(frame, covenantID)
