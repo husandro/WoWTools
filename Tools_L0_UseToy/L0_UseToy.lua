@@ -503,11 +503,16 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
                 self:set_tooltips()
                 self:set_alpha()
             else
-                MenuUtil.CreateContextMenu(self, function(...) Init_Menu_Toy(...) end)
+                MenuUtil.CreateContextMenu(self, Init_Menu_Toy)
             end
         end)
-        btn.useToy:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha() end)
-        btn.useToy:SetScript('OnEnter', btn.useToy.set_tooltips)
+        btn.useToy:SetScript('OnLeave', function(self)
+            GameTooltip:Hide()
+            self:set_alpha()
+        end)
+        btn.useToy:SetScript('OnEnter', function(self)
+            self:set_tooltips()
+        end)
     end
     btn.useToy:set_alpha()
 end
@@ -539,11 +544,6 @@ end
 local function Init()
     WoWTools_KeyMixin:Init(ToyButton, function() return Save().KEY end)
 
-
-    --[[ToyButton:SetAttribute("type1", "item")
-    ToyButton:SetAttribute("alt-type1", "item")
-    ToyButton:SetAttribute("shift-type1", "item")
-    ToyButton:SetAttribute("ctrl-type1", "item")]]
     ToyButton:SetAttribute("type1", "toy")
     ToyButton:SetAttribute("alt-type1", "toy")
     ToyButton:SetAttribute("shift-type1", "toy")
@@ -678,9 +678,7 @@ local function Init()
 
     ToyButton:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            MenuUtil.CreateContextMenu(self, function(...)
-                Init_Menu(...)
-            end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
@@ -726,16 +724,15 @@ local function Init()
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         end
-        local name=C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
+        local name= C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
         if not name then
             self.is_Random_Eevent=true
             self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
             return
         end
         self.itemID=itemID
-        --self:SetAttribute('item1', name)
         self:SetAttribute('toy1', itemID)
-        self.texture:SetTexture(select(5, C_Item.GetItemInfoInstant(itemID) or 0))
+        self.texture:SetTexture(select(5, C_Item.GetItemInfoInstant(itemID)) or 0)
         self:set_cool()
         self.text:SetText(self.Random_Numeri>0 and self.Random_Numeri or '')
     end
@@ -760,27 +757,38 @@ local function Init()
             self:Get_Random_Value()
         else
             self:UnregisterAllEvents()
-            WoWTools_CooldownMixin:SetFrame(self)--主图标冷却
         end
+        WoWTools_CooldownMixin:SetFrame(self)--主图标冷却
     end
 
-    ToyButton:SetScript('OnShow', ToyButton.set_event)
-    ToyButton:SetScript('OnHide', ToyButton.set_event)
+    ToyButton:SetScript('OnShow', function(self)
+        self:set_event()
+    end)
+    ToyButton:SetScript('OnHide', function(self)
+        self:set_event()
+    end)
     ToyButton:set_event()
-
-
-
-
-
-
-
-
-
     ToyButton:set_alt()
-
     C_Timer.After(4, function()
         ToyButton:Get_Random_Value()
     end)
+
+
+
+
+
+
+    if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+        WoWTools_DataMixin:Hook('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+    else
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_Collections' then
+                WoWTools_DataMixin:Hook('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+    end
+
     Init=function()end
 end
 
@@ -814,8 +822,6 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -823,9 +829,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Tools_UseToy']= WoWToolsSave['Tools_UseToy'] or P_Save
             P_Save= nil
 
-
             addName='|A:collections-icon-favorites:0:0|a'..(WoWTools_DataMixin.onlyChinese and '随机玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, TOY))
-
 
             ToyButton= WoWTools_ToolsMixin:CreateButton({
                 name='UseToy',
@@ -841,26 +845,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 Set_Alt_Table()
 
-                if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    WoWTools_DataMixin:Hook('ToySpellButton_UpdateButton', function(...)
-                        setToySpellButton_UpdateButton(...)
-                    end)
-                    self:UnregisterEvent(event)
-                end
             else
                 self:SetScript('OnEvent', nil)
-                self:UnregisterAllEvents()
+                self:UnregisterEvent(event)
             end
-
-        elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-           WoWTools_DataMixin:Hook('ToySpellButton_UpdateButton', function(...)
-                setToySpellButton_UpdateButton(...)
-            end)
-            self:UnregisterEvent(event)
         end
 
     elseif event == 'PLAYER_ENTERING_WORLD' then
         Init()--初始
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

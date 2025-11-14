@@ -659,33 +659,35 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         local placementCost, r,g,b
         local isTrackable= nil
         if btn:HasValidData() then
-            if ContentTrackingUtil.IsContentTrackingEnabled() and --追踪当前可用
-                C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--追踪功能对此物品可用
-            then
-                isTrackable= C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--<按住Shift点击停止追踪>
-            end
+            isTrackable= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
+                and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--追踪功能对此物品可用
+                and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--正在追踪
+            r,g,b= WoWTools_ItemMixin:GetColor(btn.entryInfo.quality)
+            placementCost= btn.entryInfo.placementCost
 
             if btn:IsBundleEntry() then
                 --self.InfoText:SetText(self.bundleEntryInfo.quantity)
             elseif btn:IsInMarketView() then
             else
-                local q= btn.entryInfo.quantity or 0
-                local a= 0 + (btn.entryInfo.remainingRedeemable or 0)
-                if a>0 then
+                local n= btn.entryInfo.numPlaced or 0--已放置
+                local q=  btn.entryInfo.numStored or 0--储存空间
+                if n>0 or q>0 then
                     btn.InfoText:SetText(
-                        (q==a and '|cff828282' or '')..(q..'/'..a)
+                        (n==0 and '|cff606060' or '|cffffffff')
+                        ..n..'|r/'
+                        ..(q==0 and '|cff606060' or '|cffffffff')
+                        ..q
                     )
-                    btn.InfoText:SetShown(true)
-                    placementCost= btn.entryInfo.placementCost
                 end
-                --info= btn.entryInfo
-                --for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+
+                info= btn.entryInfo
+                for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
             end
-            r,g,b= WoWTools_ItemMixin:GetColor(btn.entryInfo.quality)
         end
 
         btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
         btn.placementCostLabel:SetText(placementCost and placementCost..'|A:House-Decor-budget-icon:0:0|a' or '')
+
         btn.trackableButton:SetShown(isTrackable~=nil)
         btn.trackableButton.texture:SetDesaturated(isTrackable==false)
         btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.5)
