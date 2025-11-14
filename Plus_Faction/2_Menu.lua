@@ -64,11 +64,11 @@ local function Init_Menu(self, root)
 	end)
 
 --指定
-	num=0
 	local new={}
 	for factionID in pairs(Save().factions) do
 		table.insert(new, factionID)
 	end
+	num= #new
 	table.sort(new)
 
 	sub=root:CreateCheckbox(
@@ -82,10 +82,7 @@ local function Init_Menu(self, root)
 		WoWTools_FactionMixin:UpdatList()
 	end)
 
-
 --指定，列表
-
-
 	for _, factionID in pairs(new) do
 		sub2=sub:CreateCheckbox(
 			WoWTools_FactionMixin:GetName(factionID),
@@ -96,7 +93,6 @@ local function Init_Menu(self, root)
 			WoWTools_FactionMixin:UpdatList()
 		end, {factionID=factionID})
 		WoWTools_SetTooltipMixin:FactionMenu(sub2)
-		num= num+1
 	end
 
 	if num>1 then
