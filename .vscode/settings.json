@@ -6420,7 +6420,9 @@
         "CONTENT_TRACKING_TRACKABLE_TOOLTIP_PROMPT",
         "HousingCatalogDecorEntryMixin",
         "TraitUtil",
-        "DragonridingUtil"
+        "DragonridingUtil",
+        "ScrollingHousingCatalogMixin",
+        "PanelResizeButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

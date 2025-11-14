@@ -198,8 +198,8 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
         local num= WoWTools_DataMixin:MK(s:GetNumLetters() or 0, 1)
         s.Instructions2:SetText(num..' - '..line)
     end)
-    scrollFrame:HookScript('OnSizeChanged', function(s)
-        s.editBox:SetWidth(s:GetWidth()-23)
+    scrollFrame:HookScript('OnSizeChanged', function(s, w)
+        s.editBox:SetWidth(w-23)
     end)
 
 --超链接

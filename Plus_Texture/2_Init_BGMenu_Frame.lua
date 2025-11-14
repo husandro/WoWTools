@@ -767,7 +767,9 @@ local function Init_Menu(self, root, isSub)
     })
     sub:CreateSpacer()
 
-
+    if self.addMenu then
+        self:addMenu(root)
+    end
 
 --分开设置, 全部列表
     Add_Frame_Menu(self, sub)
@@ -998,6 +1000,8 @@ end
 --记录 [BGName]
 local function Set_Frame_Menu(frame, tab)
 
+    frame.addMenu= tab.addMenu
+
     if tab.menuTag then
         Menu.ModifyMenu(tab.menuTag, function(_, root)
             Init_Menu(frame, root, true)
@@ -1133,7 +1137,7 @@ end
 --[[
 WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
     name=名称,
-    enabled=true,
+    enabled=true,仅限
     
     alpha=0,--默认alpha
     nineSliceAlpha=tab.nineSliceAlpha,
@@ -1144,6 +1148,7 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
 
     notAnims=true,
     menuTag='MENU_FCF_TAB',--菜单中，添加子菜单
+    addMenu(frame, root),
     PortraitContainer=Frame.PortraitContainer,
 
     isNewButton=true,
@@ -1162,13 +1167,22 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
 
     local name=  frame:GetName()
 
+    if not name and tab.name and not WoWTools_FrameMixin:IsLocked(frame) then
+        function frame:GetName()
+            return tab.name
+        end
+        name= tab.name
+    end
+
+
     if (
             WoWToolsSave['Plus_Texture'].disabledTexture
             --or WoWToolsSave['Plus_Texture'].disabedBG
         ) and not tab.enabled
 
         or not frame
-        or not name or name==''
+        or not name
+        or name==''
     then
         self:SetNineSlice(tab.NineSlice or frame)
         return

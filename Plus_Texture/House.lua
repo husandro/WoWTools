@@ -38,7 +38,7 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.RightButton, 1)
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TrackFrame.JumpRightButton, 1)
     self:SetCheckBox(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.WatchFavorButton)
-    
+
     self:SetButton(HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TeleportToHouseButton, 1)
     HousingDashboardFrame.HouseInfoContent.ContentFrame.HouseUpgradeFrame.TeleportToHouseButton:HookScript('OnEnter', function()
         WoWTools_TooltipMixin:Set_Spell(GameTooltip, 1233637)--https://www.wowhead.com/cn/spell=1233637/传送回家
@@ -101,6 +101,7 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingHouseFinder()
 end
 
 function WoWTools_TextureMixin.Events:Blizzard_HousingHouseSettings()
+    self:SetAlphaColor(HousingHouseSettingsFrame.Background)
     self:SetButton(HousingHouseSettingsFrame.CloseButton)
     for _, option in pairs(HousingHouseSettingsFrame.PlotAccess.accessOptions or {}) do
         self:SetCheckBox(option.Checkbox)
@@ -110,15 +111,41 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingHouseSettings()
     end
 end
 
---function WoWTools_TextureMixin.Events:Blizzard_HousingControls()
-function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
-    self:SetScrollBar(HouseEditorFrame.StoragePanel.OptionsContainer)
-    self:HideTexture(HouseEditorFrame.StoragePanel.Categories.Background)
-    self:HideTexture(HouseEditorFrame.StoragePanel.Background)
-    self:HideTexture(HouseEditorFrame.StoragePanel.HeaderBackground)
 
+function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
+    HouseEditorFrame.StoragePanel.InputBlocker:DisableDrawLayer('BACKGROUND')--按钮，背景 HouseEditorStorageFrameTemplate
+
+    self:SetScrollBar(HouseEditorFrame.StoragePanel.OptionsContainer)
     self:SetAlphaColor(HouseEditorFrame.StoragePanel.CollapseButton.Icon, nil, nil, 0.5)
     self:SetAlphaColor(HouseEditorFrame.StorageButton.Icon, nil, nil, 0.5)
+    self:SetAlphaColor(HouseEditorFrame.StoragePanel.HeaderBackground)
+
+    HouseEditorFrame.StoragePanel.ResizeButton:SetHighlightTexture('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight')
+    HouseEditorFrame.StoragePanel.ResizeButton:SetPushedTexture('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down')
+
+    self:SetButton(HouseEditorFrame.StoragePanel.ResizeButton, {alpha=1})
+    HouseEditorFrame.StoragePanel.ResizeButton:SetAlpha(0.5)
+    HouseEditorFrame.StoragePanel.ResizeButton:HookScript('OnLeave', function(b) b:SetAlpha(0.5) end)
+    HouseEditorFrame.StoragePanel.ResizeButton:HookScript('OnEnter', function(b) b:SetAlpha(1) end)
+
+    self:Init_BGMenu_Frame(HouseEditorFrame.StoragePanel, {
+        name='HouseEditorStoragePanel',
+        enabled=true,
+        isNewButton=true,
+        newButtonPoint=function(btn)
+            btn:SetPoint('TOPLEFT')
+        end,
+        settings=function(_, texture, alpha)
+            alpha= texture and 0 or alpha or 0.5
+            self:SetAlphaColor(HouseEditorFrame.StoragePanel.Background, nil, nil, alpha)
+            self:SetAlphaColor(HouseEditorFrame.StoragePanel.Categories.Background, nil, nil, alpha)
+            self:SetAlphaColor(HouseEditorFrame.StoragePanel.Categories.TopBorder, nil, nil, alpha)
+            HouseEditorFrame.StoragePanel.ResizeButton:SetNormalTexture(texture and 0 or 'Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up')
+        end,
+        addMenu=function(frame, root)
+
+        end,
+    })
 
     self:HideTexture(HouseEditorFrame.ModeBar.BookendRight)
     self:HideTexture(HouseEditorFrame.ModeBar.BookendLeft)
@@ -130,6 +157,5 @@ function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
     --self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Background)
     self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Header)
 
-
 end
-
+--

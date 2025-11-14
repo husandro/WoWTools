@@ -547,11 +547,10 @@ local function Init_WidthX2()
     end)
 
 
-    MerchantFrame:HookScript('OnSizeChanged', function(self)
+    MerchantFrame:HookScript('OnSizeChanged', function(self, w)
         if not self:IsVisible() or not self.ResizeButton2.isMovingToRight then
             return
         end
-        local w= self:GetWidth()
         local line= Save().numLine or 5
 
         local numMerchantItems= GetMerchantNumItems()

@@ -1,16 +1,11 @@
 
-local function Save()
-    return WoWToolsSave['Plus_Texture'] or {}
-end
-
-
 
 function WoWTools_TextureMixin:SetColorTexture(object, tab)
     if object then
         tab= tab or {}
         tab.isColorTexture=true
         tab.type=object:GetObjectType()
-        tab.alpha= tab.alpha or self.alpha or self.min or Save().alpha or 0.5
+        tab.alpha= tab.alpha or self.alpha or self.min or self:Save().alpha or 0.5
         WoWTools_ColorMixin:Setup(object, tab)
     end
 end
@@ -356,7 +351,7 @@ end
 
 
 function WoWTools_TextureMixin:SetUIButton(btn, alpha)
-    if Save().UIButton and btn then
+    if self:Save().UIButton and btn then
         alpha= alpha or 1
         if btn.Left and btn.Right then
             self:SetAlphaColor(btn.Left, nil, nil, alpha)

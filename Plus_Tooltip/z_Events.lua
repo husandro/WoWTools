@@ -679,9 +679,6 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                         ..q
                     )
                 end
-
-                info= btn.entryInfo
-                for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
             end
         end
 
@@ -705,9 +702,22 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             btn.entryInfo.iconTexture and '|T'..btn.entryInfo.iconTexture..':'..(btn.entryInfo.size*2)..'|t|cffffffff'..btn.entryInfo.iconTexture
         )
         tooltip:AddDoubleLine(
-            'asset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.asset,
-            'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.uiModelSceneID
+            'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.uiModelSceneID,
+            btn.entryInfo.asset and 'asset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.asset
         )
         tooltip:Show()
     end)
+
+    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'OnLoad', function(frame)
+        frame.numItemLabel= frame:CreateFontString(nil, nil, 'GameFontWhite')
+        frame.numItemLabel:SetPoint('LEFT', frame.CategoryText, 'RIGHT', 4, 0)
+    end)
+
+    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'SetCatalogElements', function(frame)
+        frame.numItemLabel:SetText(frame.ScrollBox:GetDataProviderSize() or '')
+    end)
+    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'ClearCatalogData', function(frame)
+        frame.numItemLabel:SetText('')
+    end)
+    
 end

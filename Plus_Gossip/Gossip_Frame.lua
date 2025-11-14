@@ -839,8 +839,8 @@ local function Init(isShow)
     List.DataFrame.Bg:SetAllPoints()
     List.DataFrame.Bg:SetColorTexture(0.3, 0.3, 0.3)]]
 
-    List:SetScript('OnSizeChanged', function(self, width)
-        self.DataFrame:SetPoint('BOTTOMRIGHT', width, 8)
+    List:SetScript('OnSizeChanged', function(self, w)
+        self.DataFrame:SetPoint('BOTTOMRIGHT', w, 8)
     end)
 
     List.DataFrame.CloseButton= CreateFrame('Button', Name..'OutInScrollFrameCloseButton', List.DataFrame, 'UIPanelCloseButton')

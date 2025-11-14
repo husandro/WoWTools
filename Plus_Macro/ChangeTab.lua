@@ -39,7 +39,7 @@ local function Init()
     MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 30)
 
 --宏列表，按钮宽，数量
-    MacroFrame.MacroSelector:HookScript('OnSizeChanged', function(self)--Blizzard_ScrollBoxSelector.lua
+    MacroFrame.MacroSelector:HookScript('OnSizeChanged', function(self, w)--Blizzard_ScrollBoxSelector.lua
         if InCombatLockdown() then
             EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
                 Set_OnSizeChanged(self)

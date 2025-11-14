@@ -25,6 +25,9 @@ WoWTools_TextureMixin={
     Frames={},
     min=0.5,
     tabAlpha= 0.75,
+    Save=function()
+        return WoWToolsSave['Plus_Texture'] or {}
+    end,
 }
 
 function WoWTools_TextureMixin:SetBG(frame, tab)

@@ -45,9 +45,9 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     EncounterJournalInstanceSelect.ScrollBar:ClearAllPoints()
     EncounterJournalInstanceSelect.ScrollBar:SetPoint('TOPRIGHT', EncounterJournalInstanceSelect.ScrollBox, 0 ,-6)
     EncounterJournalInstanceSelect.ScrollBar:SetPoint('BOTTOMRIGHT', EncounterJournalInstanceSelect.ScrollBox, 0 , 6)
-    EncounterJournalInstanceSelect.ScrollBox:HookScript('OnSizeChanged', function(frame) --EncounterInstanceButtonTemplate Size x="174" y="96"
+    EncounterJournalInstanceSelect.ScrollBox:HookScript('OnSizeChanged', function(frame, w) --EncounterInstanceButtonTemplate Size x="174" y="96"
         local spacing= frame.view:GetHorizontalSpacing()--15
-        local value= frame:GetWidth() / (174+ spacing)
+        local value= w / (174+ spacing)
         value= math.max(1, math.modf(value))
         if frame.view:GetStride()~= value then
             frame.view:SetStride(value)

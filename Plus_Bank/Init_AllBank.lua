@@ -431,6 +431,7 @@ local function Init_Move()
     if BankFrame.ResizeButton then
         BankFrame.ResizeButton.setSize= Save().allBank
     end
+
     Init_Move=function()
         if BankFrame.ResizeButton then
             BankFrame.ResizeButton.setSize= Save().allBank
@@ -452,7 +453,9 @@ end
 
 
 function WoWTools_MoveMixin.Frames:BankFrame()
-    Init_Move()--移动，银行
+    C_Timer.After(0.3, function()
+        Init_Move()--移动，银行
+    end)
 end
 
 
