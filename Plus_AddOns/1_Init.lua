@@ -87,9 +87,6 @@ local function Init()
     WoWTools_AddOnsMixin:Init_Right_Buttons()
     WoWTools_AddOnsMixin:Init_Left_Buttons()
     WoWTools_AddOnsMixin:Init_Info_Plus()
-
-
-
     Init=function()end
 end
 

@@ -167,7 +167,6 @@ local function Set_Load_Button()--LoadButtons
     local isTop= Save().load_list_top
 
 
-
     for i, info in pairs(newTab) do
        local btn= Create_Button(i)
 
@@ -190,8 +189,7 @@ local function Set_Load_Button()--LoadButtons
        if not (info.atlas or info.texture) then
             local name= info.name or ''
             name= name:gsub('[^%a]', ''):gsub('^Lib', '')
-            name= WoWTools_TextMixin:gsub(name, 1, 2)
-            name= name:lower()
+            name= WoWTools_TextMixin:sub(name, 1, 2, true)
             btn.Text:SetText(name)
        else
             btn.Text:SetText("")
