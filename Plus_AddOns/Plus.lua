@@ -59,9 +59,11 @@ end
 
 
 
-
+--MinimalCheckboxArtTemplate
 local function Create_Check(frame)
     frame.check=CreateFrame('CheckButton', nil, frame, "InterfaceOptionsCheckButtonTemplate")
+    WoWTools_TextureMixin:SetCheckBox(frame.check)
+
 
     frame.check:SetSize(20,20)--Fast，选项
     frame.check:SetPoint('RIGHT', frame.Status, 'LEFT')

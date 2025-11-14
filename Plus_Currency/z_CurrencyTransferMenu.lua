@@ -15,9 +15,9 @@ local function Init()
 	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenu.TitleContainer:GetFrameLevel()+2)
 
 --有时会有BUG, 加个 重新加载UI 按钮
-	local reload= CreateFrame('Button', nil, CurrencyTransferLogCloseButton, 'WoWToolsButtonTemplate')
+	local reload= CreateFrame('Button', nil, CurrencyTransferMenuCloseButton, 'WoWToolsButtonTemplate')
     reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
-    reload:SetPoint('RIGHT', CurrencyTransferLogCloseButton, 'LEFT', -2, 0)
+    reload:SetPoint('RIGHT', CurrencyTransferMenuCloseButton, 'LEFT', -2, 0)
     reload.tooltip=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
     reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
 

@@ -19,7 +19,7 @@ local function Create(frame)
 	frame.Content.AccountWideIcon:SetScript('OnLeave', nil)
 	frame.Content.AccountWideIcon.Icon:SetAlpha(0.5)
 
-	frame.check= CreateFrame('CheckButton', nil, frame, "UICheckButtonArtTemplate")
+	frame.check= CreateFrame('CheckButton', nil, frame, "MinimalCheckboxArtTemplate")
 	frame.check:SetCheckedTexture('AlliedRace-UnlockingFrame-Checkmark')
 	frame.check:SetSize(18,18)
 	function frame.check:GetCurrencyID()

@@ -22,6 +22,9 @@ function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
     self:SetButton(AddonListCloseButton)
     self:SetAlphaColor(AddonList.Performance.Divider, true)
 
+    WoWTools_DataMixin:Hook(AddonListEntryMixin, 'OnLoad', function(frame)
+        self:SetCheckBox(frame.Enabled)
+    end)
 
     self:Init_BGMenu_Frame(AddonList, {
         isNewButton=true,
