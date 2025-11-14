@@ -17,7 +17,7 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-	
+
 	local sub, sub2, num
 --追踪
 	sub=root:CreateCheckbox(
@@ -26,6 +26,7 @@ local function Init_Menu(self, root)
 		return Save().btn
 	end, function()
 		Save().btn= not Save().btn and true or nil
+		WoWTools_FactionMixin:UpdatList()
 		WoWTools_FactionMixin:Init_TrackButton()
 		print(
 			WoWTools_FactionMixin.addName..WoWTools_DataMixin.Icon.icon2,
@@ -70,9 +71,9 @@ local function Init_Menu(self, root)
 		return Save().indicato
 	end, function()
 		Save().indicato= not Save().indicato and true or nil
-		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_FactionMixin:UpdatList()
 	end)
-	
+
 
 --指定，列表
 	num=0
@@ -89,26 +90,19 @@ local function Init_Menu(self, root)
 			return Save().factions[data.factionID]
 		end, function(data)
 			Save().factions[data.factionID]= not Save().factions[data.factionID] and true or nil
-			WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+			WoWTools_FactionMixin:UpdatList()
 		end, {factionID=factionID})
 		WoWTools_SetTooltipMixin:FactionMenu(sub2)
-		--[[sub2:SetOnEnter(function(btn, description)
-			btn.factionID= description.data.factionID
-			WoWTools_SetTooltipMixin:Faction(btn)
-		end)
-		sub2:SetOnLeave(function(btn)
-			btn.factionID=nil
-			WoWTools_SetTooltipMixin:Hide()
-		end)]]
 		num= num+1
 	end
 
 	if num>1 then
 		WoWTools_MenuMixin:SetScrollMode(sub)
 --全部清除
+		sub:CreateDivider()
 		WoWTools_MenuMixin:ClearAll(sub, function()
 			Save().factions={}
-			WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+			WoWTools_FactionMixin:UpdatList()
 		end)
 	end
 
@@ -146,7 +140,7 @@ local function Init_Menu(self, root)
 	return not Save().notPlus
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
-		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_FactionMixin:UpdatList()
 		self:settings()
 	end)
 end

@@ -252,3 +252,10 @@ function WoWTools_FactionMixin:Find(factionID, name)--选中提示
         end
     end
 end
+
+
+function WoWTools_FactionMixin:UpdatList()
+    if ReputationFrame and ReputationFrame:IsVisible() then
+        WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+    end
+end

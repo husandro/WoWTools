@@ -84,7 +84,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 		WoWTools_FactionMixin:Init_ScrollBox_Plus()
 		WoWTools_FactionMixin:Init_Chat_MSG()
 		WoWTools_FactionMixin:Init_TrackButton()
-		WoWTools_FactionMixin:Init_Other_Button()
 		self:UnregisterEvent(event)
     end
 end)

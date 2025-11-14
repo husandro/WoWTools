@@ -293,7 +293,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().btnstr= not Save().btnstr and true or false
 		self:set_Shown()
-		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_FactionMixin:UpdatList()
 	end)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
@@ -314,7 +314,7 @@ local function Init_Menu(self, root)
 				btn:set_text_point()
 			end
 		end
-		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_FactionMixin:UpdatList()
 	end)
 
 --上
@@ -336,7 +336,7 @@ local function Init_Menu(self, root)
 				end
 			end
 		end
-		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_FactionMixin:UpdatList()
 	end)
 
 --隐藏名称
@@ -346,14 +346,14 @@ local function Init_Menu(self, root)
 		return Save().onlyIcon
 	end, function()
 		Save().onlyIcon= not Save().onlyIcon and true or nil
-		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_FactionMixin:UpdatList()
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(
 			WoWTools_DataMixin.onlyChinese and '仅显示有图标声望'
 			or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL))
 		)
-		WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_FactionMixin:UpdatList()
 	end)
 
 --缩放
