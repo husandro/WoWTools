@@ -61,8 +61,8 @@ function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
     Set_Move(HouseEditorFrame.ModeBar, 'HouseBar', false)
 
 --菜单
-    local menu= CreateFrame('DropdownButton', 'WoWToolsHouseEditorFrameMenuButton', HouseEditorFrame.StoragePanel.SearchBox, 'WoWToolsMenuButtonTemplate')
-    menu:SetPoint('RIGHT', HouseEditorFrame.StoragePanel.SearchBox, 'LEFT', -4, 0)
+    local menu= CreateFrame('DropdownButton', 'WoWToolsHouseEditorFrameMenuButton', HouseEditorFrame.StoragePanel, 'WoWToolsMenuButtonTemplate')
+    menu:SetPoint('RIGHTLEFT', 23, 0)
     function menu:set_scale()
         local s= WoWTools_MoveMixin:Save().scale['HouseStorage'] or 1
         HouseEditorFrame.StoragePanel:SetScale(s)
