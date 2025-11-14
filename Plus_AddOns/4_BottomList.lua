@@ -126,11 +126,11 @@ local function Set_Load_Button()--LoadButtons
     local newTab={}
     local isOnlyIcon= Save().load_list_onlyIcon
 
-    local groupTab={}
+    local _GroupTab={}
     for i=1, C_AddOns.GetNumAddOns() do
         local group = C_AddOns.GetAddOnMetadata(i, "Group")
-        if not C_AddOns.GetAddOnDependencies(i) and not groupTab[group] then
-            groupTab[group]=1
+        if not C_AddOns.GetAddOnDependencies(i) and not _GroupTab[group] then
+            _GroupTab[group]=1
 
             local texture = C_AddOns.GetAddOnMetadata(i, "IconTexture")
             local atlas = C_AddOns.GetAddOnMetadata(i, "IconAtlas")
@@ -153,8 +153,7 @@ local function Set_Load_Button()--LoadButtons
             end
         end
     end
-
-    groupTab=nil
+    _GroupTab=nil
 
     local addNum= #newTab
     local isShow= Save().load_list and addNum>0
