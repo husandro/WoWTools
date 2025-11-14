@@ -55,6 +55,7 @@ local function Create_Frame(btn)
 		self:SetAlpha(0.3)
 	end)
 	btn.check:SetSize(18,22)
+	btn.check:SetAlpha(0.3)
 	btn.check:SetCheckedTexture('orderhalltalents-done-glow')
 	WoWTools_TextureMixin:SetCheckBox(btn.check)
 
@@ -190,7 +191,6 @@ local function Init()
 
 		btn.check:SetShown(Save().btn and Save().indicato)
 		btn.check:SetChecked(Save().factions[factionID])
-		btn.check:SetAlpha(0.3)
 	end)
 
 
@@ -368,6 +368,7 @@ local function Init()
 		Template='SearchBoxTemplate'
 	})
 
+
 	editBox:SetPoint('RIGHT', up, 'LEFT', -6, 0)
 	editBox:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
 
@@ -375,7 +376,7 @@ local function Init()
 		local show= self:GetText() ~= ""
 		self.Instructions:SetShown(not show)
 		local hasfocus= self:HasFocus()
-		self:SetAlpha((show or hasfocus) and 1 or 0.3)
+		--self:SetAlpha((show or hasfocus) and 1 or 0.3)
 
 		if hasfocus then
 			Init_Search(ReputationFrame)
@@ -389,7 +390,7 @@ local function Init()
 
 	editBox:SetScript('OnEditFocusGained', function(self)
 		ReputationFrame.Update= Init_Search
-		self:SetAlpha(1)
+		--self:SetAlpha(1)
 		if self:GetText()~='' then
 			Init_Search(ReputationFrame)
 		end
@@ -408,7 +409,7 @@ local function Init()
 		local p= self:GetParent()
 		p:SetText('')
 		p:ClearFocus()
-		p:SetAlpha(0.3)
+		--p:SetAlpha(0.3)
 		self:Hide()
 	end)
 
