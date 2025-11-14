@@ -148,9 +148,8 @@ local function Set_Left_Buttons()
     local newTab={}
     local max= C_AddOns.GetNumAddOns()
     for name, index in pairs(Save().fast) do
-        index= type(index)=='number' and index or 1
         if C_AddOns.DoesAddOnExist(name) then
-            table.insert(newTab, {name=name, index=index})
+            table.insert(newTab, {name=name, index= type(index)=='number' and index or 1})
         else
             Save().fast[name]= nil
         end
