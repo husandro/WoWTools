@@ -456,7 +456,7 @@ local function Get_Info(tab)
         end
         topRightText= WoWTools_TextMixin:sub(subclassID==9 and itemType or itemSubType, 2,3)
         if lowerVer then--低版本
-            topRightText= '|cff9e9e9e'..topRightText..'|r'
+            topRightText= '|cff626262'..topRightText..'|r'
         else
             bottomLeftText, topLeftText= WoWTools_ItemMixin:SetGemStats(nil, itemLink)
         end
@@ -471,7 +471,7 @@ local function Get_Info(tab)
                 topRightText= WoWTools_TextMixin:sub(itemSubType==OTHER and itemType or itemSubType, 2,3, true)
             end
             if lowerVer then--低版本
-                topRightText= '|cff9e9e9e'..topRightText..'|r'
+                topRightText= '|cff626262'..topRightText..'|r'
             end
         end
         if dateInfo.text[ITEM_SPELL_KNOWN] then--"已经学会"

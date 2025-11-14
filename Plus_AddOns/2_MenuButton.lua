@@ -27,7 +27,7 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateCheckbox(
-        (num==0 and '|cff9e9e9e' or '')
+        (num==0 and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '快捷键列表 ' or 'Solution List ')
         ..num,
     function()
@@ -51,7 +51,7 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
 
     sub:CreateButton(
-        (num==0 and '|cff9e9e9e' or '')
+        (num==0 and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
     function()
         StaticPopup_Show('WoWTools_OK',
@@ -137,7 +137,7 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateCheckbox(
-        (num==0 and '|cff9e9e9e' or '')
+        (num==0 and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '方案列表 ' or 'Solution List ')
         ..num,
     function()
@@ -161,7 +161,7 @@ local function Init_Menu(self, root)
 
     sub:CreateDivider()
     sub:CreateButton(
-        (num==0 and '|cff9e9e9e' or '')
+        (num==0 and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
     function()
         StaticPopup_Show('WoWTools_OK',

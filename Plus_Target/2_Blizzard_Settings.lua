@@ -798,7 +798,7 @@ local function Init()
         disabled= Save().disabled
     })
 
-    WoWTools_ButtonMixin:ReloadButton({panel=Frame, addName= WoWTools_TargetMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+    WoWTools_PanelMixin:ReloadButton({panel=Frame, addName= WoWTools_TargetMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
         disabledfunc=function()
             Save().disabled= not Save().disabled and true or nil
 

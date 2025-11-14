@@ -54,7 +54,7 @@ local function Init_UI_Menu(self, root)
             or not isCollected
             or shouldHideOnChar
             or (isFactionSpecific and faction~=WoWTools_MountMixin.faction)
-        ) and '|cff9e9e9e' or ''
+        ) and '|cff626262' or ''
 
 
         local setData= {type=type, spellID=spellID, mountID=mountID, name=name, icon='|T'..(icon or 0)..':0|t'}

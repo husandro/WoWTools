@@ -671,7 +671,7 @@ local function Init_Options()--设置 Frame
     restPosti:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine((not Save().point and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION))
+        GameTooltip:AddLine((not Save().point and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION))
         GameTooltip:Show()
     end)
 
@@ -707,7 +707,7 @@ local function Init()
         disabled= Save().disabled,
     })
 
-    WoWTools_ButtonMixin:ReloadButton({panel=Frame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+    WoWTools_PanelMixin:ReloadButton({panel=Frame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
         disabledfunc=function()
             Save().disabled = not Save().disabled and true or nil
             print(

@@ -38,10 +38,10 @@ local function Init_Auto_Repair()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), WoWTools_TextMixin:GetEnabeleDisable(not Save().notAutoRepairAll))
         if CanGuildBankRepair() then
             local m= GetGuildBankMoney() or 0
-            local col= m==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
+            local col= m==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:'
             GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..C_CurrencyInfo.GetCoinTextureString(m))
         else
-            GameTooltip:AddDoubleLine('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
+            GameTooltip:AddDoubleLine('|cff626262'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff626262'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
         end
         GameTooltip:Show()
     end
@@ -148,7 +148,7 @@ local function Init()
             self:SetFormattedText('|A:%s:0:0|a', 'talents-button-reset')
         else
             local co = GetGuildBankMoney() or 0
-            local col= co==0 and '|cff9e9e9e' or (repairAllCost> co and '|cnWARNING_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
+            local col= co==0 and '|cff626262' or (repairAllCost> co and '|cnWARNING_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
             self:SetText(
                 col
                 ..(WoWTools_DataMixin:MK(co/10000, 0))
@@ -189,7 +189,7 @@ local function Init()
             return
         end
         local co = GetRepairAllCost()--显示，修理所有，金钱
-        local col= co==0 and '|cff9e9e9e' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnWARNING_FONT_COLOR:'
+        local col= co==0 and '|cff626262' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnWARNING_FONT_COLOR:'
         self:SetText(col..WoWTools_DataMixin:MK(co/10000, 0)..'|A:auctionhouse-icon-coin-gold:8:8|a')
 
 --修理一件
@@ -201,7 +201,7 @@ local function Init()
             end
         end
         MerchantRepairItemButton.Text:SetText(
-            (num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num
+            (num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:')..num
             ..WoWTools_DurabiliyMixin:Get(true)
         )
     end

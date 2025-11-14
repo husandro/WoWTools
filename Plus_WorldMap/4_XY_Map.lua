@@ -99,7 +99,7 @@ local function Init_Menu(self, root)
     local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
 
     root:CreateButton(
-        (can and '' or '|cff9e9e9e')
+        (can and '' or '|cff626262')
         ..'|A:Waypoint-MapPin-ChatIcon:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '分享' or SOCIAL_SHARE_TEXT),
     function()
@@ -109,7 +109,7 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     root:CreateButton(
-        (WorldMapFrame.mapID==MapUtil.GetDisplayableMapForPlayer() and '|cff9e9e9e' or '')
+        (WorldMapFrame.mapID==MapUtil.GetDisplayableMapForPlayer() and '|cff626262' or '')
         ..WoWTools_DataMixin.Icon.Player
         ..(WoWTools_DataMixin.onlyChinese and '返回当前地图' or
         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PREVIOUS, REFORGE_CURRENT), WORLD_MAP)

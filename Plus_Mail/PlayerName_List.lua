@@ -87,7 +87,7 @@ local function Init_WoW(root)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
                 sub=root:CreateButton(
                     WoWTools_UnitMixin:GetPlayerInfo(nil, wowInfo.playerGuid, nil, {reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
-                    ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))
+                    ..(wowInfo.isOnline and '' or ('|cff626262'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))
                     ..(wow.isFavorite and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
                 function(data)
                     WoWTools_MailMixin:SetSendName(nil, data.guid)
@@ -137,7 +137,7 @@ local function Init_Friend(root)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
                 root:CreateButton(
                     WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, level=game.level, faction=game.faction})
-                    ..(game.connected and '' or ('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))),
+                    ..(game.connected and '' or ('|cff626262'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))),
                 function(data)
                     WoWTools_MailMixin:SetSendName(nil, data.guid)
                     return MenuResponse.Open
@@ -183,7 +183,7 @@ local function Init_Guild(root)
             local text= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, level=lv})--角色信息
 
             if not isOnline then
-                text= text..'|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                text= text..'|cff626262'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
             end
 
             if rankIndex == 0 then
@@ -242,7 +242,7 @@ local function Init_Club(root, clubID)
                 local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                 local  text= WoWTools_UnitMixin:GetPlayerInfo(nil, tab.guid, nil, {reName=true, reRealm=true, faction=faction, level=tab.level})--角色信息
                 if not tab.zone then
-                    text= text..'|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                    text= text..'|cff626262'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
                 end
                 if tab.role == Enum.ClubRoleIdentifier.Owner or tab.role == Enum.ClubRoleIdentifier.Leader then
                     text= text.."|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t"

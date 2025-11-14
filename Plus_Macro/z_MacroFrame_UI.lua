@@ -100,7 +100,7 @@ local function Init()
     MacroFrameCharLimitText:SetAlpha(0.75)
     MacroFrameText:HookScript('OnTextChanged', function(self)
         local num=self:GetNumLetters() or 0
-        MacroFrameCharLimitText:SetFormattedText((num==255 and '|cff9e9e9e' or '')..num..'/255')
+        MacroFrameCharLimitText:SetFormattedText((num==255 and '|cff626262' or '')..num..'/255')
     end)
 
 --设置，焦点
@@ -144,10 +144,10 @@ local function Init()
     	local numAccountMacros, numCharacterMacros
         numAccountMacros, numCharacterMacros = GetNumMacros()
         numAccountMacros= numAccountMacros or 0
-        numAccountMacros= numAccountMacros==MAX_ACCOUNT_MACROS and '|cff9e9e9e'..numAccountMacros or numAccountMacros
+        numAccountMacros= numAccountMacros==MAX_ACCOUNT_MACROS and '|cff626262'..numAccountMacros or numAccountMacros
 
         numCharacterMacros= numCharacterMacros or 0
-        numCharacterMacros= numCharacterMacros==MAX_CHARACTER_MACROS and '|cff9e9e9e'..numCharacterMacros or numCharacterMacros
+        numCharacterMacros= numCharacterMacros==MAX_CHARACTER_MACROS and '|cff626262'..numCharacterMacros or numCharacterMacros
 
         MacroFrameTab1.label:SetText(numAccountMacros..'/'..MAX_ACCOUNT_MACROS)
         MacroFrameTab2.label:SetText(numCharacterMacros..'/'..MAX_CHARACTER_MACROS)

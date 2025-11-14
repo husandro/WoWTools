@@ -59,7 +59,7 @@ local function Save_Macro_Menu(frame, root)
 
         header= '|T'..(icon or 134400)..':0|t'.. (name and name:gsub(' ', '') or '')..(spellName or spellID or '')..(itemName or itemLink or '')
         sub=root:CreateCheckbox(
-            ((not body or body=='') and '|cff9e9e9e' or '')
+            ((not body or body=='') and '|cff626262' or '')
             ..(WoWTools_DataMixin.onlyChinese and '保存' or SAVE)
             ..' '..header,
         function(data)
@@ -214,7 +214,7 @@ local function Init()
     Button:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT',2 ,0)
     Button:SetScript('OnLeave', GameTooltip_Hide)
     function Button:set_Tooltips()
-        local col= WoWTools_MacroMixin:IsCanCreateNewMacro() and '' or '|cff9e9e9e'
+        local col= WoWTools_MacroMixin:IsCanCreateNewMacro() and '' or '|cff626262'
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(col..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left, WoWTools_DataMixin.Icon.right..col..(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))

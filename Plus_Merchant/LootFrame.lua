@@ -35,7 +35,7 @@ local function Init()
         GameTooltip:AddLine('|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r')
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT)..': '..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
-        local col= InCombatLockdown() and '|cff9e9e9e'
+        local col= InCombatLockdown() and '|cff626262'
         GameTooltip:AddDoubleLine((col or '')..(WoWTools_DataMixin.onlyChinese and '拾取时' or PROC_EVENT512_DESC:format(ITEM_LOOT)),
             (col or '|cnGREEN_FONT_COLOR:')..'Shift|r '..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
         GameTooltip:Show()

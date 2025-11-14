@@ -366,7 +366,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 find= find+1
 
             else
-                sub2=sub:CreateButton('     |cff9e9e9e'..WoWTools_TextMixin:CN(name)..' |r', function()
+                sub2=sub:CreateButton('     |cff626262'..WoWTools_TextMixin:CN(name)..' |r', function()
                     return MenuResponse.Open
                 end, {
                     dungeonID= dungeonID,
@@ -547,7 +547,7 @@ local function set_Party_Menu_List(root2)
             end
 
         else
-            local sub=root:CreateButton('   |cff9e9e9e'..WoWTools_TextMixin:CN(name)..' |r', function()
+            local sub=root:CreateButton('   |cff626262'..WoWTools_TextMixin:CN(name)..' |r', function()
                 return MenuResponse.Open
             end, {
                 dungeonID=dungeonID,
@@ -725,7 +725,7 @@ local function set_Raid_Menu_List(root2)
                     local bossName, texture, isKilled = GetLFGDungeonEncounterInfo(dungeonID, encounterIndex)
                     if isKilled then
                         killNum= killNum+1
-                        killText= killText..' |cff9e9e9ex|r'
+                        killText= killText..' |cff626262x|r'
                     else
                         killText= killText..' '..encounterIndex
                     end
@@ -743,7 +743,7 @@ local function set_Raid_Menu_List(root2)
             sub=root:CreateButton(
                 ((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName)) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
                 ..(modifiedIcon or '')
-                ..(isKillAll and '|cff9e9e9e' or '')
+                ..(isKillAll and '|cff626262' or '')
                 ..WoWTools_TextMixin:CN(dungeonName)--名称
                 ..reward
                 ..killText,
@@ -780,7 +780,7 @@ local function set_Raid_Menu_List(root2)
             find= find+1
 
         else
-            sub=root:CreateButton((modifiedIcon or '')..'|cff9e9e9e'..WoWTools_TextMixin:CN(dungeonName)..' |r', function()
+            sub=root:CreateButton((modifiedIcon or '')..'|cff626262'..WoWTools_TextMixin:CN(dungeonName)..' |r', function()
                 return MenuResponse.Open
              end, {modifiedDesc=modifiedDesc, dungeonID=dungeonID}
             )
@@ -1043,7 +1043,7 @@ local function Init_Menu(self, root)
     end)
 
     sub2:CreateButton(
-        (Save().tipsFramePoint and '' or '|cff9e9e9e')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
+        (Save().tipsFramePoint and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
     function()
         Save().tipsFramePoint=nil
         if _G['WoWToolsChatToolsLFDTooltipButton'] then
@@ -1383,7 +1383,7 @@ local function Init_Menu(self, root)
             if self.elapsed>1.2 then
                 self.elapsed=0
                 local queueNum= WoWTools_LFDMixin:Leave_All_LFG(true)
-                self.fontString:SetText((queueNum==0 and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES)..' '..queueNum)
+                self.fontString:SetText((queueNum==0 and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES)..' '..queueNum)
             end
         end)
         btn:SetScript('OnHide', function(self)
@@ -1395,7 +1395,7 @@ local function Init_Menu(self, root)
 
 --离开地下堡
     sub:CreateButton(
-        (WoWTools_MapMixin:IsInDelve() and '' or '|cff9e9e9e')
+        (WoWTools_MapMixin:IsInDelve() and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE),
     function()
         if WoWTools_MapMixin:IsInDelve() then
@@ -1414,7 +1414,7 @@ local function Init_Menu(self, root)
 
 --离开副本
     sub2=sub:CreateButton(
-        (select(10, GetInstanceInfo()) and '' or '|cff9e9e9e')
+        (select(10, GetInstanceInfo()) and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '离开副本' or INSTANCE_LEAVE),
     function()
         if select(10, GetInstanceInfo()) then
@@ -1440,7 +1440,7 @@ local function Init_Menu(self, root)
 
 --离开载具
     sub:CreateButton(
-        (CanExitVehicle() and '' or '|cff9e9e9e')--UnitControllingVehicle("player"
+        (CanExitVehicle() and '' or '|cff626262')--UnitControllingVehicle("player"
         ..(WoWTools_DataMixin.onlyChinese and '离开载具' or BINDING_NAME_VEHICLEEXIT),
     function()
         WoWTools_DataMixin:Call('VehicleExit')

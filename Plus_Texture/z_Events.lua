@@ -1941,8 +1941,35 @@ end
 --货币
 function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetButton(TokenFrame.CurrencyTransferLogToggleButton, 1)
+
     self:SetFrame(TokenFramePopup.Border, {alpha=1})
+    self:SetUIButton(TokenFramePopup.CurrencyTransferToggleButton)
+    self:SetCheckBox(TokenFramePopup.InactiveCheckbox)
+    self:SetCheckBox(TokenFramePopup.BackpackCheckbox)
+--货币转移, 记录
+    self:SetButton(CurrencyTransferLogCloseButton)
+    self:SetNineSlice(CurrencyTransferLog)
+    self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
+    self:SetNineSlice(CurrencyTransferLogInset, nil, true)
+    self:SetScrollBar(CurrencyTransferLog)
+--货币转移
     self:SetButton(CurrencyTransferMenuCloseButton)
+    self:SetUIButton(CurrencyTransferMenu.Content.ConfirmButton)
+    self:SetUIButton(CurrencyTransferMenu.Content.CancelButton)
+    self:SetUIButton(CurrencyTransferMenu.Content.AmountSelector.MaxQuantityButton)
+    self:SetAlphaColor(CurrencyTransferMenu.Content.TransactionDivider)
+        self:SetNineSlice(CurrencyTransferMenu)
+    self:SetAlphaColor(CurrencyTransferMenu.TransactionDivider)
+    self:HideTexture(CurrencyTransferMenuBg)
+    self:SetNineSlice(CurrencyTransferMenuInset)
+    if CurrencyTransferMenu.AmountSelector then--11.2 没有了
+        self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
+        self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
+    else
+        self:SetEditBox(CurrencyTransferMenu.Content.AmountSelector.InputBox)
+        self:SetMenu(CurrencyTransferMenu.Content.SourceSelector.Dropdown)
+    end
+
     self:SetFrame(TokenFrame)
     self:SetMenu(TokenFrame.filterDropdown)
     self:SetScrollBar(TokenFrame)--bug，货币转移，出错
@@ -1961,26 +1988,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     })
 
 
---货币转移
-    self:SetButton(CurrencyTransferLogCloseButton)
-    self:SetNineSlice(CurrencyTransferLog)
-    self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
-    self:SetNineSlice(CurrencyTransferLogInset, nil, true)
-    self:SetScrollBar(CurrencyTransferLog)
 
-    self:SetNineSlice(CurrencyTransferMenu)
-    self:SetAlphaColor(CurrencyTransferMenu.TransactionDivider)
-    self:HideTexture(CurrencyTransferMenuBg)
-    self:SetNineSlice(CurrencyTransferMenuInset)
-
-
-    if CurrencyTransferMenu.AmountSelector then--11.2 没有了
-        self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
-        self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
-    else
-        self:SetEditBox(CurrencyTransferMenu.Content.AmountSelector.InputBox)
-        self:SetMenu(CurrencyTransferMenu.Content.SourceSelector.Dropdown)
-    end
 end
 
 

@@ -18,7 +18,7 @@ end
 function WoWTools_CurrencyMixin:MenuList_Item(_, root)
 	local sub, sub2, num
 	sub=root:CreateCheckbox(
-		(Save().Hide and '|cff9e9e9e' or'')..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS),
+		(Save().Hide and '|cff626262' or'')..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS),
 	function ()
 		return not Save().disabledItemTrack
 	end, function()
@@ -248,8 +248,9 @@ local function Init_Menu(self, root)
 	end
 	table.sort(new)
 	sub=root:CreateCheckbox(
-		(Save().Hide and '|cff9e9e9e' or '')
-		..(WoWTools_DataMixin.onlyChinese and '指定货币' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TOKENS))..(num==0 and '|cff9e9e9e ' or ' ')..num,
+		(Save().Hide and '|cff626262' or '')
+		..(WoWTools_DataMixin.onlyChinese and '指定货币' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TOKENS))
+		..(num==0 and '|cff626262 ' or ' ')..num,
 	function()
 		return Save().indicato
 	end, function()
@@ -317,7 +318,7 @@ local function Init_Menu(self, root)
 
 --达到上限
 	root:CreateDivider()
-	root:CreateCheckbox(
+	sub=root:CreateCheckbox(
 		'|A:communities-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '达到上限' or CAPPED),
 	function ()
 		return not Save().hideCurrencyMax
@@ -335,22 +336,27 @@ local function Init_Menu(self, root)
 		end
 	end)
 	sub:SetTooltip(function (tooltip)
+		tooltip:AddLine('CURRENCY_DISPLAY_UPDATE')
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
 	end)
 
 
 --Plus
-	root:CreateCheckbox(
+	sub=root:CreateCheckbox(
 		'UI Plus',
 	function()
 		return not Save().notPlus
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
-		WoWTools_CurrencyMixin:UpdateTokenFrame()
-		_G['WoWToolsPlusCurrencyMenuButton']:settings()
+		WoWTools_CurrencyMixin:Init_Plus()
+	end)
+	sub:SetTooltip(function (tooltip)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 	end)
 
+--重新加载UI
 	root:CreateDivider()
+    WoWTools_MenuMixin:Reload(root)
     WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_CurrencyMixin.addName})
 end
 

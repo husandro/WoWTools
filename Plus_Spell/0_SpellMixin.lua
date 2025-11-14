@@ -60,7 +60,7 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
             end
         else
             desc= (desc or '')..'|A:Islands-QuestBangDisable:0:0|a'
-            col='|cff9e9e9e'
+            col='|cff626262'
         end
     end
     name= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})

@@ -662,7 +662,7 @@ local function Init(panel)
         disabled= Save().disabledCursor and  Save().disabledGCD,
     })
 
-    WoWTools_ButtonMixin:ReloadButton({
+    WoWTools_PanelMixin:ReloadButton({
         panel=panel,
         addName=WoWTools_CursorMixin.addName,
         restTips=true,

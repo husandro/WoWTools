@@ -30,7 +30,7 @@ local function Set_Add_All_Player_Filter()
                 print(
                     WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     WoWTools_DataMixin.onlyChinese and '屏蔽' or IGNORE,
-                    '|cff9e9e9e'..index..'|r',
+                    '|cff626262'..index..'|r',
                     WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true, reName=true, reRealm=true})
                 )
             end
@@ -138,7 +138,7 @@ local function Init_Filter_Menu(self, root)
             local name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil,{reName=true, reRealm=true})
             name= name=='' and guid or name
 
-            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. WoWTools_DataMixin:MK(num, 3)..'|r', function(data)
+            sub3=sub2:CreateButton('|cff626262'..index..')|r '..name..' |cff626262#'.. WoWTools_DataMixin:MK(num, 3)..'|r', function(data)
                 local player= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reName=true, reRealm=true, reLink=true})
                 if Save().myChatFilterPlayers[data.guid] then
                     print(
@@ -149,7 +149,7 @@ local function Init_Filter_Menu(self, root)
                 else
                     print(
                         WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                        '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
+                        '|cff626262'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
                         player
                     )
                 end
@@ -239,7 +239,7 @@ local function Init_Filter_Menu(self, root)
             end
         end
 
-        sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(playerName or text).. ' |cff9e9e9e'..strlenutf8(text)..'|r', function(data)
+        sub2=sub:CreateButton('|cff626262'..index..')|r '..(playerName or text).. ' |cff626262'..strlenutf8(text)..'|r', function(data)
             WoWTools_ChatMixin:Say(nil, data.name)
             return MenuResponse.Refresh
         end, {data=tab, text=text, name=playerName2})

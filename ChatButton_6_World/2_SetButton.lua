@@ -111,7 +111,7 @@ local function Init(btn)
     function btn:Get_Channel_Color(name, value)
         value= value or self:Check_Channel(name)
         if value==0 then
-            return '|cff9e9e9e'
+            return '|cff626262'
         elseif value==2 then
             return '|cnWARNING_FONT_COLOR:'
         else

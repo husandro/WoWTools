@@ -461,7 +461,7 @@ local function Init()
         end
 
         if text then
-            text= (totalEncounters==dead and '|cff9e9e9e' or '|cffffffff')
+            text= (totalEncounters==dead and '|cff626262' or '|cffffffff')
                 ..(WoWTools_DataMixin.onlyChinese and '首领：' or BOSSES)
                 ..format(WoWTools_DataMixin.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, totalEncounters)
                 ..'|r|n|n'

@@ -19,9 +19,9 @@ local function Get_Garrison_List_Num(followerType)
             all = all + 1
         end
         if all==0 then
-            text= ''--format('|cff9e9e9e%d/%d|r', num, all)
+            text= ''--format('|cff626262%d/%d|r', num, all)
         elseif num==0 then
-            text= format('|cff9e9e9e%d|r/%d', num, all)
+            text= format('|cff626262%d|r/%d', num, all)
         elseif all==num then
             text= format('|cffff00ff%d/%d|r', num, all)..format('|A:%s:0:0|a', 'common-icon-checkmark')
         else
@@ -158,7 +158,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
         local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false)
         local num = treeCurrencies and treeCurrencies[1] and treeCurrencies[1].quantity
         if num then
-            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
+            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
         end
     end
     root:CreateCheckbox(

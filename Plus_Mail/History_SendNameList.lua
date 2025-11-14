@@ -148,7 +148,7 @@ local function Init_Menu(self, root)
     for index, name in pairs(Save().lastSendPlayerList) do
         sub2=sub:CreateCheckbox(
             (
-                WoWTools_MailMixin:GetRealmInfo(name) and '|cff9e9e9e'
+                WoWTools_MailMixin:GetRealmInfo(name) and '|cff626262'
                 or (name==WoWTools_DataMixin.Player.Name_Realm and '|cff00ff00')
                 or ''
             )

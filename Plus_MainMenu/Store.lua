@@ -112,9 +112,9 @@ local function Init()
             GameTooltip:AddDoubleLine(
                 WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true}),
 
-                '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)
+                '|A:Banker:0:0|a'..(tab.bank==0 and '|cff626262'..tab.bank..'|r' or tab.bank)
                 ..' '
-                ..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag)
+                ..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff626262'..tab.bag..'|r' or tab.bag)
             )
             all= all +tab.bag +tab.bank
         end

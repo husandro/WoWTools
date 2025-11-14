@@ -221,7 +221,7 @@ local function Init()
         GameTooltip:SetSpellByID(self.spellId or 43883)
         GameTooltip:AddLine(' ')
         local macro= select(3, GetMacroInfo('Ram'))
-        local col= (macro and macro:find('ExtraActionButton1')) and '|cff9e9e9e' or ''
+        local col= (macro and macro:find('ExtraActionButton1')) and '|cff626262' or ''
         GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '创建宏"' or CREATE_MACROS), col..'Shift+'..WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(col..'/click ExtraActionButton1')
         GameTooltip:AddLine(' ')

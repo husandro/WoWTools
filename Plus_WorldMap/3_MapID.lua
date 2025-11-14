@@ -63,7 +63,7 @@ local function Set_Text()
         story, _, completed, _, _, _, _, _, icon= select(2, GetAchievementInfo(achievementID))
         story= WoWTools_TextMixin:CN(story) or achievementID
         if completed then
-            story= '|cff9e9e9e'..story..'|r'
+            story= '|cff626262'..story..'|r'
         end
         if icon then
             story= '|T'..icon..':0|t'..story

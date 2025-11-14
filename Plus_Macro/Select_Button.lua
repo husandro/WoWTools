@@ -179,7 +179,7 @@ local function Init_Menu(_, root)
             if text and text:find('#showtooltip') then
                 tooltip:AddLine('|cnGREEN_FONT_COLOR:#showtooltip')
             else
-                tooltip:AddLine('|cff9e9e9e:#showtooltip')
+                tooltip:AddLine('|cff626262:#showtooltip')
             end
         end)
     end

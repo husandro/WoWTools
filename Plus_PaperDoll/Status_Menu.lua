@@ -429,7 +429,7 @@ local function Init_Menu(self, root)
     end, {name=name})
 
 --还原
-    name= (Save().PAPERDOLL_STATCATEGORIES and '' or '|cff9e9e9e')
+    name= (Save().PAPERDOLL_STATCATEGORIES and '' or '|cff626262')
         ..'|A:uitools-icon-refresh:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
     sub:CreateButton(

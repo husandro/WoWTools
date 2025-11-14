@@ -153,7 +153,7 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
     if mountID then
         creatureName, _, _, _, isUsable, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
         if not isCollected then--没收集
-            col= '|cff9e9e9e'
+            col= '|cff626262'
         elseif not isUsable then--不可用
             col= '|cnWARNING_FONT_COLOR:'
         end
@@ -208,7 +208,7 @@ local function Init_Menu_Mount(root, type, name)
     local tab2=WoWTools_MountMixin:Get_MountTab(type)
    WoWTools_DataMixin:Load(tab2[1], 'spell')
     local num= WoWTools_MountMixin:Get_Table_Num(type)--检测,表里的数量
-    local col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
+    local col= num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:'
 
     local sub= Set_Mount_Menu(root, type, tab2[1], (WoWTools_DataMixin.onlyChinese and name or WoWTools_TextMixin:CN(type))..' '..col..num, nil)
 
@@ -235,7 +235,7 @@ local function Init_Menu_ShiftAltCtrl(root, type)
     local tab2=WoWTools_MountMixin:Get_MountTab(type)
    WoWTools_DataMixin:Load(tab2[1], 'spell')
     local num= WoWTools_MountMixin:Get_Table_Num(type)--检测,表里的数量
-    local col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
+    local col= num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:'
 
     local sub= Set_Mount_Menu(root, type, tab2[1], type..' '..col..num, nil)
 
@@ -278,7 +278,7 @@ local function Init_Menu_Spell(_, sub)
         index= index+1
 
         icon='|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
-        col= (C_SpellBook.IsSpellInSpellBook(spellID) and '' or '|cff9e9e9e')
+        col= (C_SpellBook.IsSpellInSpellBook(spellID) and '' or '|cff626262')
 
         sub2=sub:CreateButton(
             index..') '
@@ -343,7 +343,7 @@ local function Init_Menu_Item(_, sub)
 
         local name= icon
                     ..(WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID: '..itemID))
-                    ..(num==0 and '|cff9e9e9e' or '|cffffffff')..' x'..num..'|r'
+                    ..(num==0 and '|cff626262' or '|cffffffff')..' x'..num..'|r'
 
         sub2=sub:CreateButton(
             index..') '..name,
@@ -428,7 +428,7 @@ local function Init_Menu(self, root)
             end
             icon= icon or 0
             num= WoWTools_MountMixin:Get_Table_Num(indexType)--检测,表里的数量
-            col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
+            col= num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:'
 
             sub=root:CreateButton('|T'..icon..':0|t'..(WoWTools_DataMixin.onlyChinese and tab.name or indexType).. col..' '.. num..'|r', function()
                 return MenuResponse.Open
@@ -492,7 +492,7 @@ local function Init_Menu(self, root)
         tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, WoWTools_DataMixin.Icon.mid)
     end)
 
-    sub2=sub:CreateButton('|T'..FRIENDS_TEXTURE_AFK..':0|t'..(UnitIsAFK('player') and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '暂离' or 'AFK'), function()
+    sub2=sub:CreateButton('|T'..FRIENDS_TEXTURE_AFK..':0|t'..(UnitIsAFK('player') and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '暂离' or 'AFK'), function()
         WoWTools_ChatMixin:SendText(SLASH_CHAT_AFK1)
         return MenuResponse.Open
     end)

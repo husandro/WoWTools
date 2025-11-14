@@ -65,7 +65,7 @@ local function Init_Menu(self, root)
 
     sub=root:CreateButton(
         WoWTools_DataMixin.Icon.left
-        ..(WoWTools_InviteMixin:Get_Leader() and '' or '|cff9e9e9e')
+        ..(WoWTools_InviteMixin:Get_Leader() and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7),
     function()
         WoWTools_InviteMixin:Inv_All_Unit()
@@ -95,7 +95,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 
-    sub=root:CreateCheckbox((IsInInstance() and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))..'|A:poi-traveldirections-arrow2:0:0|a', function()
+    sub=root:CreateCheckbox((IsInInstance() and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))..'|A:poi-traveldirections-arrow2:0:0|a', function()
         return Save().InvTar
     end, function()
         Save().InvTar= not Save().InvTar and true or nil
@@ -305,7 +305,7 @@ local function Init_Menu(self, root)
     end)
 
     for _, key in pairs({'Shift', 'Ctrl', 'Alt'}) do
-        col= (Save().focusKey== key or not self:CanChangeAttribute()) and '|cff9e9e9e' or ''
+        col= (Save().focusKey== key or not self:CanChangeAttribute()) and '|cff626262' or ''
         sub2=sub:CreateCheckbox(format('%s%s + %s', col, key, WoWTools_DataMixin.Icon.left), function(data)
             return Save().focusKey== data
         end, function(data)

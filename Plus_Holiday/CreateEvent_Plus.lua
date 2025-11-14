@@ -73,7 +73,7 @@ local function Init_WoW_Menu(_, root)
             end
 
             if not wowInfo.isOnline then
-                text= text..'|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                text= text..'|cff626262'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
             end
 
             sub=root:CreateCheckbox(
@@ -132,7 +132,7 @@ local function Init_Friend_Menu(_, root)
                     text= text..' |cnGREEN_FONT_COLOR:'..game.area..'|r'
                 end
             elseif not game.connected then
-                text= text..'|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                text= text..'|cff626262'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
             end
 
             if game.afk then
@@ -196,7 +196,7 @@ local function Init_Guild_Menu(_, root)
             text= rankName and text..' '..rankName..(rankIndex or '') or text
 
             if not isOnline then
-                text= text..'|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                text= text..'|cff626262'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
             end
 
             if status==1 then

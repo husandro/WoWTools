@@ -139,11 +139,11 @@ function WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)
             if seasonPlayed>0 then
                 local best=''
                 if seasonBest>0 and seasonBest~=rating then
-                    best= '|cff9e9e9e'..seasonBest..'|r '
+                    best= '|cff626262'..seasonBest..'|r '
                 end
                 text= ' ('..best..'|cnGREEN_FONT_COLOR:'..seasonWon..'|r/'..seasonPlayed..')'
             end
-            text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff9e9e9e' or ' |cffffffff')..rating..'|r' ..text
+            text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff626262' or ' |cffffffff')..rating..'|r' ..text
             tooltip:AddLine(text)
             find=true
         end
@@ -305,11 +305,11 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
                 if seasonPlayed>0 then
                     local best=''
                     if seasonBest>0 and seasonBest~=rating then
-                        best= '|cff9e9e9e'..seasonBest..'|r '
+                        best= '|cff626262'..seasonBest..'|r '
                     end
                     text= ' ('..best..'|cnGREEN_FONT_COLOR:'..seasonWon..'|r/'..seasonPlayed..')'
                 end
-                text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff9e9e9e' or ' |cffffffff')..rating..'|r' ..text
+                text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff626262' or ' |cffffffff')..rating..'|r' ..text
 
                 local head= CONQUEST_SIZE_STRINGS[i]
 

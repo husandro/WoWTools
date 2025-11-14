@@ -469,7 +469,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
             if self:Save().size[CommunitiesMode_GetName()] then
                 return ''
             else
-                return '|cff9e9e9e'
+                return '|cff626262'
             end
         end,
     })

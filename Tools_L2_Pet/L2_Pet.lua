@@ -108,7 +108,7 @@ local function Init_Menu(self, root)
     for speciesID in pairs(Save().Pets) do
         local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
         sub=root:CreateRadio(
-            (C_PetJournal.GetNumCollectedInfo(speciesID)==0 and '|cff9e9e9e' or '')
+            (C_PetJournal.GetNumCollectedInfo(speciesID)==0 and '|cff626262' or '')
             ..('|T'..(speciesIcon or 0)..':0|t'..(speciesName or speciesID)),
         function(data)
             return data.speciesID==Save().speciesID

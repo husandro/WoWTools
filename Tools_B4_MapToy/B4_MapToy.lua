@@ -146,7 +146,7 @@ local function Init_Menu(self, root)
     for _, info in pairs(Tab) do
         local new= Is_Completed(info)
 
-        local col=  new.isNotChecked==nil and new.num==0 and '|cff9e9e9e'
+        local col=  new.isNotChecked==nil and new.num==0 and '|cff626262'
                     or (new.hasToy==false and '|cnWARNING_FONT_COLOR:')
                     or ''
 
@@ -154,7 +154,7 @@ local function Init_Menu(self, root)
 
         local num=(new.isNotChecked==nil and
                     (new.num>0 and ' |cnGREEN_FONT_COLOR:')
-                    or (new.name==0 and ' |cff9e9e9e')
+                    or (new.name==0 and ' |cff626262')
                     or ' '
                 )
                 ..(new.isNotChecked==nil and new.num or '')
@@ -174,7 +174,7 @@ local function Init_Menu(self, root)
         for index, tab in pairs(new.data) do
             sub2=sub:CreateButton(
                 index..') '
-                ..(tab.wasEarnedByMe==true and '|cff9e9e9e' or '')
+                ..(tab.wasEarnedByMe==true and '|cff626262' or '')
                 ..'|T'..(tab.icon or 0)..':0|t'
                 ..(WoWTools_TextMixin:CN(tab.name) or tab.achievementID)
                 ..(tab.wasEarnedByMe==true and '|A:common-icon-checkmark:0:0|a' or ''),

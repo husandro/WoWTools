@@ -515,7 +515,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
         if not disableCount then
             local num= C_Item.GetItemCount(itemID, true, false, true, true) or 0
             if num==0 then
-                col='|cff9e9e9e'
+                col='|cff626262'
             else
                 cool= WoWTools_CooldownMixin:GetText(nil, itemID)
             end
@@ -672,19 +672,19 @@ function WoWTools_ItemMixin:GetCount(itemID, tab)
 
     local text
     if zoro or wow>0 then
-        text= (wow==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_DataMixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a'
+        text= (wow==0 and '|cff626262' or '|cff00ccff')..WoWTools_DataMixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a'
     end
     if zoro or net>0 then
         text= (text and text..' ' or '')
-            ..(net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_DataMixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a'--..CreateAtlasMarkup("questlog-questtypeicon-account", 18, 18)--|A:questlog-questtypeicon-account:0:0|a'
+            ..(net==0 and '|cff626262' or '|cff00ccff')..WoWTools_DataMixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a'--..CreateAtlasMarkup("questlog-questtypeicon-account", 18, 18)--|A:questlog-questtypeicon-account:0:0|a'
     end
     if zoro or bank>0 then
         text= (text and text..' ' or '')
-            ..(bank==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_DataMixin:MK(bank, 3)..'|r|A:Banker:0:0|a'
+            ..(bank==0 and '|cff626262' or '|cffffffff')..WoWTools_DataMixin:MK(bank, 3)..'|r|A:Banker:0:0|a'
     end
     if zoro or bag>0 then
         text= (text and text..' ' or '')
-            ..(bag==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_DataMixin:MK(bag, 3)..'|r|A:bag-main:0:0|a'
+            ..(bag==0 and '|cff626262' or '|cffffffff')..WoWTools_DataMixin:MK(bag, 3)..'|r|A:bag-main:0:0|a'
     end
 
     return

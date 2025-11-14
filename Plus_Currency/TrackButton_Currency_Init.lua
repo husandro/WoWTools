@@ -280,7 +280,7 @@ local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
         if self.itemID then
             GameTooltip:SetItemByID(self.itemID)
             GameTooltip:AddLine(' ')
-            local col= C_Item.GetItemCount(self.itemID)==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
+            local col= C_Item.GetItemCount(self.itemID)==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:'
             if self.itemButtonUse then
                 GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM), WoWTools_DataMixin.Icon.left)
             end

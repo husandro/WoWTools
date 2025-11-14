@@ -17,7 +17,7 @@ local function get_durabiliy_color(cur, max)
     local text= format('%i%%', value)
     local icon
     if value<=0 then
-        text= '|cff9e9e9e'..text..'|r'
+        text= '|cff626262'..text..'|r'
         icon= '|A:Warfronts-BaseMapIcons-Empty-Armory-Minimap:0:0|a'
     elseif value<30 then
         text= '|cnWARNING_FONT_COLOR:'..text..'|r'
@@ -151,7 +151,7 @@ function WoWTools_DurabiliyMixin:OnEnter()
     GameTooltip:AddLine(' ')
     GameTooltip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '耐久度' or DURABILITY)..' ('..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
-         '('..(num>0 and '|cnWARNING_FONT_COLOR:' or '|cff9e9e9e')..num..'|r) '..(WoWTools_DataMixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
+         '('..(num>0 and '|cnWARNING_FONT_COLOR:' or '|cff626262')..num..'|r) '..(WoWTools_DataMixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
     )
 
     local item, cur3, pvp= GetAverageItemLevel()

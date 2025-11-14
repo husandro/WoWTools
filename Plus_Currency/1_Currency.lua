@@ -34,7 +34,7 @@ local function Init()
 	WoWTools_CurrencyMixin:Init_Other_Button()
 	WoWTools_CurrencyMixin:Init_Currency_Transfer()--货币，转移
 	WoWTools_CurrencyMixin:Init_TrackButton()
-	WoWTools_CurrencyMixin:Init_ScrollBox_Plus()
+	WoWTools_CurrencyMixin:Init_Plus()
 	WoWTools_CurrencyMixin:Init_MaxTooltip()
 
 	WoWTools_DataMixin:Hook(TokenFrame, 'Update', function(frame)

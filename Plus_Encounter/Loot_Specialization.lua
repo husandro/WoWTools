@@ -87,7 +87,7 @@ local function Init_All_Class(_, root, num)
             if n>0 then
                 sub:CreateDivider()
                 name= '|A:bags-button-autosort-up:0:0|a'
-                    ..(n==0 and '|cff9e9e9e' or '')
+                    ..(n==0 and '|cff626262' or '')
                     ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..n
                 sub:CreateButton(
                     name,
@@ -108,7 +108,7 @@ local function Init_All_Class(_, root, num)
 
     root:CreateDivider()
     name= '|A:bags-button-autosort-up:0:0|a'
-        ..(num==0 and '|cff9e9e9e' or '')
+        ..(num==0 and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..num
     root:CreateButton(
         name,
@@ -175,7 +175,7 @@ local function Init_Menu(self, root)
         end
     end
     sub=root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '职业' or CLASS)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        (WoWTools_DataMixin.onlyChinese and '职业' or CLASS)..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return MenuResponse.Open
     end)

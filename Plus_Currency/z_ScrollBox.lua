@@ -16,9 +16,6 @@ end
 
 
 local function Create(frame)
-	if frame.check then
-		return
-	end
 	frame.Content.AccountWideIcon:SetScript('OnLeave', nil)
 	frame.Content.AccountWideIcon.Icon:SetAlpha(0.5)
 
@@ -35,14 +32,12 @@ local function Create(frame)
 		end
 	end
 
-	--frame.check:SetPoint('RIGHT', frame, 'LEFT',4,0)
 	frame.check:SetPoint('LEFT', frame.Content.WatchedCurrencyCheck, 'RIGHT', -2, 0)
 	frame.check:SetAlpha(0.5)
 	frame.check:SetScript('OnClick', function(self)
 		local id= self:GetCurrencyID()
 		if id then
 			Save().tokens[id]= not Save().tokens[id] and true or nil
-			--frame.check:SetAlpha(Save().tokens[id] and 1 or 0.5)
 			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		end
 	end)
@@ -60,27 +55,12 @@ local function Create(frame)
 			..': '..(Save().indicato and '|cnGREEN_FONT_COLOR:' or '|cff626262')
 			..(WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 		)
-		
+
 		GameTooltip:Show()
 	end)
 	frame.check:SetScript('OnLeave', function() GameTooltip_Hide() end)
 	frame.check:SetSize(18,18)
-	frame.check:Hide()
-
-	--[[frame:HookScript('OnEnter', function(self)
-		if WoWTools_CurrencyMixin.TrackButton then
-			for _, btn in pairs(WoWTools_CurrencyMixin.TrackButton.btn or {}) do
-				btn:SetButtonState(self.check.currencyID== btn.currencyID and 'PUSHED' or 'NORMAL')
-			end
-		end
-	end)
-	frame:HookScript('OnLeave', function()
-		if WoWTools_CurrencyMixin.TrackButton then
-			for _, btn in pairs(WoWTools_CurrencyMixin.TrackButton.btn or {}) do
-				btn:SetButtonState('NORMAL')
-			end
-		end
-	end)]]
+	WoWTools_TextureMixin:SetCheckBox(frame.check)
 
 --已获取，百分比
 	frame.percentText= WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
@@ -130,11 +110,8 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 		Create(self)
 	end
 
-	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity
-	if not Save().notPlus then
-		info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(self.elementData.currencyID, self.elementData.currencyIndex)
-	end
-
+	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(self.elementData.currencyID, self.elementData.currencyIndex)
+	
 	if not info then
 		self.check:SetShown(false)
 		self.Content.Count:SetTextColor(1,1,1)
@@ -147,12 +124,8 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 
 	info= self.elementData or info
 
-	--self.check:SetCheckedTexture(info and info.iconFileID or 'orderhalltalents-done-glow')
-	--self.check.currencyID= info.currencyID
 	self.check:SetChecked(Save().tokens[info.currencyID])
-	--self.check:SetAlpha(Save().tokens[info.currencyID] and 1 or 0.5)
-	self.check:SetShown(info.currencyID)
-
+	self.check:SetShown(info.currencyID and not Save().Hide and Save().indicato)
 
 
 	local accountWide
@@ -206,39 +179,26 @@ end
 
 
 local function Init()
+	if Save().notPlus then
+		return
+	end
 
-	WoWTools_DataMixin:Hook(TokenEntryMixin, 'Initialize', function(frame)
-		set_Tokens_Button(frame)--设置, 列表, 内容
-	end)
 	WoWTools_DataMixin:Hook(TokenEntryMixin, 'OnLoad', function(frame)
 		Create(frame)--设置, 列表, 内容
 	end)
 
+	WoWTools_DataMixin:Hook(TokenEntryMixin, 'Initialize', function(frame)
+		set_Tokens_Button(frame)--设置, 列表, 内容
+	end)
+
+
 	if TokenFrame.ScrollBox:HasView() then
 		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
 			if frame.elementData and not frame.elementData.isHeader  then
-				Create(frame)--设置, 列表, 内容
             	set_Tokens_Button(frame)--设置, 列表, 内容
 			end
         end
 	end
-
-	--[[WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
-        if not f:HasView() then
-            return
-        end
-        for _, frame in pairs(f:GetFrames() or {}) do
-			if not frame.elementData.isHeader then
-            	set_Tokens_Button(frame)--设置, 列表, 内容
-			end
-        end
-    end)]]
-
-
-
-
-
-
 
 
 --弹出框，增加，货币信息
@@ -254,7 +214,7 @@ local function Init()
 	end)
 	WoWTools_DataMixin:Hook(TokenFrame, 'UpdatePopup', function(_, btn)
 		TokenFramePopup.Name.currencyID= btn.elementData.currencyID
-		TokenFramePopup.Name:SetText(not Save().notPlus and WoWTools_CurrencyMixin:GetName(btn.elementData.currencyID) or '')
+		TokenFramePopup.Name:SetText(WoWTools_CurrencyMixin:GetName(btn.elementData.currencyID) or '')
 	end)
 
 
@@ -262,6 +222,6 @@ local function Init()
 end
 
 
-function WoWTools_CurrencyMixin:Init_ScrollBox_Plus()
+function WoWTools_CurrencyMixin:Init_Plus()
   	Init()
 end

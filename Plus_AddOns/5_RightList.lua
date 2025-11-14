@@ -205,7 +205,7 @@ local function Create_Button(index)
         self.Text:SetFormattedText(
             '%s %s%d|r/%s%d|r',
             self.name,
-            load==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:',
+            load==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:',
             load,
             load==all and '|cnGREEN_FONT_COLOR:' or '',
             all

@@ -86,7 +86,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
         )
     end
 
-    local col= can and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
+    local col= can and '|cnGREEN_FONT_COLOR:' or '|cff626262'
 
     tooltip:AddDoubleLine(
         col..(WoWTools_DataMixin.onlyChinese and '召唤坐骑' or MOUNT),

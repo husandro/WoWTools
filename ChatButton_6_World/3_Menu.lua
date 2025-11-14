@@ -177,14 +177,14 @@ local function Add_Menu(self, root, name, channelNumber)
 
 --屏蔽
     local value= self:Check_Channel(name)
-    local col= value==1 and '' or '|cff9e9e9e'
+    local col= value==1 and '' or '|cff626262'
     sub:CreateButton(col..(WoWTools_DataMixin.onlyChinese and '屏蔽' or IGNORE), function(data)
         self:Set_Join(data, nil, nil, true)--加入,移除,屏蔽
         return MenuResponse.Close
     end, name)
 
 --加入
-    col= value==1 and '|cff9e9e9e' or ''
+    col= value==1 and '|cff626262' or ''
     sub:CreateButton(col..(WoWTools_DataMixin.onlyChinese and '加入' or CHAT_JOIN), function(data)
         self:Set_Join(data, true)
         return MenuResponse.Close

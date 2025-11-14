@@ -142,7 +142,7 @@ function WoWTools_ItemLocationMixin:GetItemCount()
 	end
 	count= count or 0
 
-	local text= count>0 and ' x'..count or ' |cff9e9e9ex0|r'
+	local text= count>0 and ' x'..count or ' |cff626262x0|r'
 	return count or 0, text
 end
 

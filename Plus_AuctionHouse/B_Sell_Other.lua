@@ -304,7 +304,7 @@ local function Update_Total_Price(frame)
             if unitPrice> vendorPrice then
                 local x= unitPrice/vendorPrice
                 if x<5 then
-                    col= '|cff9e9e9e'
+                    col= '|cff626262'
                 elseif x<10 then
                     col= '|cffffffff'
                 elseif x<50 then

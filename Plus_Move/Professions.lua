@@ -232,13 +232,13 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
     end,
     sizeRestTooltipColorFunc=function()
         if ProfessionsUtil.IsCraftingMinimized() then
-            return Save().size[name..'Mini'] and '' or '|cff9e9e9e'
+            return Save().size[name..'Mini'] and '' or '|cff626262'
         elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-            return Save().size[name..'Spec'] and '' or '|cff9e9e9e'
+            return Save().size[name..'Spec'] and '' or '|cff626262'
         elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-            return Save().size[name..'Order'] and '' or '|cff9e9e9e'
+            return Save().size[name..'Order'] and '' or '|cff626262'
         else
-            return Save().size[name..'Normal'] and '' or '|cff9e9e9e'
+            return Save().size[name..'Normal'] and '' or '|cff626262'
         end
     end,
     sizeStopFunc=function()

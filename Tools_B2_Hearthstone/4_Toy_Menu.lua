@@ -60,7 +60,7 @@ local function Init_Menu_Toy(self, root)
         local has= PlayerHasToy(itemID)
         local isLoked= Save().lockedToy==itemID
         sub=root:CreateCheckbox(
-            (isLoked and '|cnGREEN_FONT_COLOR:' or (has and '' or '|cff9e9e9e'))
+            (isLoked and '|cnGREEN_FONT_COLOR:' or (has and '' or '|cff626262'))
             ..index..') '..icon
             ..name
             ..(isLoked and '|A:AdventureMapIcon-Lock:0:0|a' or '')--锁定
@@ -78,7 +78,7 @@ local function Init_Menu_Toy(self, root)
         sub:SetTooltip(Set_Menu_Tooltip)
 
         sub2=sub:CreateCheckbox(
-            (has and '' or '|cff9e9e9e')
+            (has and '' or '|cff626262')
             ..icon
             ..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)..'|A:AdventureMapIcon-Lock:0:0|a',
         function(data)

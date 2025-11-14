@@ -79,7 +79,7 @@ local function Init(btn)
             end
             local class=UnitClass('player')
             if not classText:find(class) then
-                classText= '|cff9e9e9e'..classText..'|r'
+                classText= '|cff626262'..classText..'|r'
             end
         end
     end

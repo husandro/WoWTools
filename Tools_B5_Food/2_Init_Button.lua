@@ -216,7 +216,7 @@ local function Init()
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(WoWTools_DataMixin.onlyChinese and '查询' or WHO), WoWTools_DataMixin.Icon.mid)
+            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '查询' or WHO), WoWTools_DataMixin.Icon.mid)
 
             GameTooltip:AddLine(' ')
             if self.alt then
@@ -232,7 +232,7 @@ local function Init()
                 GameTooltip:AddLine(' ')
             end
             GameTooltip:AddDoubleLine(
-                (Save().onlyMaxExpansion and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')
+                (Save().onlyMaxExpansion and '|cnGREEN_FONT_COLOR:' or '|cff626262')
                 ..(WoWTools_DataMixin.onlyChinese and '仅当前版本物品'
                     or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL))
                 ),

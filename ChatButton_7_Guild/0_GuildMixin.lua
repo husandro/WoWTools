@@ -111,7 +111,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
             GameTooltip:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
         end
 
-        local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
+        local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff626262'
 
         GameTooltip:AddDoubleLine(
             col..(WoWTools_DataMixin.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON),
@@ -144,7 +144,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
             )
 
 
-        col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
+        col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff626262'
 
         name= col..tab.name..'|r'
 

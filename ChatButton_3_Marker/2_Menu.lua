@@ -221,7 +221,7 @@ local function Init_Menu(self, root)
 
     local sub, sub2
     sub=root:CreateCheckbox(
-        (Save().tank==0 and Save().healer==0 and '|cff9e9e9e' or '')
+        (Save().tank==0 and Save().healer==0 and '|cff626262' or '')
         ..'|A:mechagon-projects:0:0|a'
         ..((WoWTools_DataMixin.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))
         ..WoWTools_DataMixin.Icon.TANK..WoWTools_DataMixin.Icon.HEALER
@@ -245,7 +245,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateCheckbox(
         (WoWTools_MapMixin:IsInPvPArea()
-        or (InCombatLockdown()) and '|cff9e9e9e' or '')
+        or (InCombatLockdown()) and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
         return  _G['WoWToolsChatButtonMarkersFrame'] and  _G['WoWToolsChatButtonMarkersFrame']:IsShown()
@@ -281,7 +281,7 @@ local function Init_Menu(self, root)
         end
     end)
     sub:CreateButton(
-        (_G['WoWToolsChatMarkersReadyInfoButton'] and _G['WoWToolsChatMarkersReadyInfoButton']:IsShown() and '' or '|cff9e9e9e')
+        (_G['WoWToolsChatMarkersReadyInfoButton'] and _G['WoWToolsChatMarkersReadyInfoButton']:IsShown() and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
     ), function()
         local btn= _G['WoWToolsChatMarkersReadyInfoButton']
@@ -289,7 +289,7 @@ local function Init_Menu(self, root)
             btn:set_Hide()
         end
     end)
-    sub:CreateButton((Save().groupReadyTipsPoint and '' or '|cff9e9e9e')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION), function()
+    sub:CreateButton((Save().groupReadyTipsPoint and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save().groupReadyTipsPoint=nil
         local btn= _G['WoWToolsChatMarkersReadyInfoButton']
         if btn then

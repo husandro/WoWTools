@@ -112,7 +112,7 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
-    name= (isInCombat and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+    name= (isInCombat and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
     sub2=sub:CreateButton(
         name,
     function()
@@ -207,7 +207,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateButton(
         '|T'..FRIENDS_TEXTURE_AFK..':0|t'
-        ..(UnitIsAFK('player') and '|cff9e9e9e' or '')
+        ..(UnitIsAFK('player') and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '暂离' or 'AFK'),
     function()
         WoWTools_ChatMixin:SendText(SLASH_CHAT_AFK1)

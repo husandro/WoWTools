@@ -147,7 +147,7 @@ local function Init(btn)
     function btn:set_tooltip()
         self:set_owner()
         if not IsInGuild() then
-            GameTooltip:AddLine('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddLine('|cff626262'..(WoWTools_DataMixin.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..WoWTools_DataMixin.Icon.left)
         else
             WoWTools_GuildMixin:Load_Club(nil)--加载，Club,数据
         end

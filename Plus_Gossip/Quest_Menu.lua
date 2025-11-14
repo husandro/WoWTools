@@ -49,7 +49,7 @@ local function Init_Menu(self, root)
     end
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, CHOOSE)))
-        ..(num==0 and ' |cff9e9e9e' or ' ')
+        ..(num==0 and ' |cff626262' or ' ')
         ..num,
     function()
         return Save().autoSelectReward
@@ -91,7 +91,7 @@ local function Init_Menu(self, root)
     end
     sub=root:CreateButton(
         '     '..(WoWTools_DataMixin.onlyChinese and '自定义任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, QUESTS_LABEL))
-        ..(num==0 and ' |cff9e9e9e' or ' ')
+        ..(num==0 and ' |cff626262' or ' ')
         ..num,
     function()
         return MenuResponse.Open
@@ -128,7 +128,7 @@ local function Init_Menu(self, root)
 --共享任务
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        (IsInGroup() and '' or '|cff9e9e9e')
+        (IsInGroup() and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '共享任务' or SHARE_QUEST)
         ..'|A:groupfinder-waitdot:0:0|a',
     function()

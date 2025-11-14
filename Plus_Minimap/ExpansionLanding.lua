@@ -8,7 +8,7 @@ end
 
 function WoWTools_MinimapMixin:ExpansionLanding_Menu(_, root)
     root:CreateCheckbox(
-        (ExpansionLandingPageMinimapButton and '' or '|cff9e9e9e')
+        (ExpansionLandingPageMinimapButton and '' or '|cff626262')
         ..'|A:dragonflight-landingbutton-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '隐藏要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
     function()
         return Save().hideExpansionLandingPageMinimapButton

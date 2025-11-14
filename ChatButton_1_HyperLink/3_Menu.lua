@@ -189,7 +189,7 @@ local function Init_Menu(self, root)
             or C_CVar.GetCVar('Sound_DialogVolume')=='0'
             or not C_CVar.GetCVarBool('Sound_EnableDialog')
             or InCombatLockdown()
-        ) and '|cff9e9e9e' or ''
+        ) and '|cff626262' or ''
 
     sub=root:CreateCheckbox(
         col

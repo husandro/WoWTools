@@ -173,7 +173,7 @@ local function Set_List_Button(btn, displayData)
 
                 local isCollected= collect== numAll--是否已收
 
-                local tip= (collect==0 and '|cff9e9e9e'..collect..'|r' or collect)
+                local tip= (collect==0 and '|cff626262'..collect..'|r' or collect)
                             ..'/'..numAll--收集数量
                             ..' '..meno..(not isCollected and ' ' or '')
                             ..name--名称

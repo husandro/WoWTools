@@ -115,7 +115,7 @@ local PointTab={
 
 --删除，通用宏
     num, num2= GetNumMacros()
-    text= (WoWTools_DataMixin.onlyChinese and '通用宏' or GENERAL_MACROS)..(num==0 and ' |cff9e9e9e#' or ' #')..num
+    text= (WoWTools_DataMixin.onlyChinese and '通用宏' or GENERAL_MACROS)..(num==0 and ' |cff626262#' or ' #')..num
     sub:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text,
     function(data)
@@ -151,7 +151,7 @@ local PointTab={
             WoWTools_DataMixin.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,
             WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
         )
-        ..(num2==0 and ' |cff9e9e9e#' or ' #')..num2
+        ..(num2==0 and ' |cff626262#' or ' #')..num2
 
     sub:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text,
@@ -218,12 +218,12 @@ local function Create_Button(name)
             GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         else
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MacroMixin.addName)
-            local col= self:find_text() and '|cff9e9e9e' or ''
+            local col= self:find_text() and '|cff626262' or ''
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(col..self.text..(self.tip or ''), WoWTools_DataMixin.Icon.left)
             if self.text2 then
                 GameTooltip:AddLine(' ')
-                col= self:find_text(true) and '|cff9e9e9e' or ''
+                col= self:find_text(true) and '|cff626262' or ''
             end
             GameTooltip:AddDoubleLine(col..self.text2..(self.tip2 or ''), WoWTools_DataMixin.Icon.right)
         end

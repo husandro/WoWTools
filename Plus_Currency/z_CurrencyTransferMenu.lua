@@ -10,10 +10,16 @@ end
 
 --货币，转移
 local function Init()
-	--不能点击，关闭按钮
-
+--不能点击，关闭按钮
 	CurrencyTransferLogCloseButton:SetFrameLevel(CurrencyTransferLog.TitleContainer:GetFrameLevel()+2)
 	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenu.TitleContainer:GetFrameLevel()+2)
+
+--有时会有BUG, 加个 重新加载UI 按钮
+	local reload= CreateFrame('Button', nil, CurrencyTransferLogCloseButton, 'WoWToolsButtonTemplate')
+    reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
+    reload:SetPoint('RIGHT', CurrencyTransferLogCloseButton, 'LEFT', -2, 0)
+    reload.tooltip=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+    reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
 
 	--[[WoWTools_DataMixin:Hook(CurrencyTransferLogEntryMixin, 'Initialize', function(self, elementData)
 		local name= WoWTools_UnitMixin:GetPlayerInfo(nil, elementData.sourceCharacterGUID, nil, {reName=true, reRealm=true})

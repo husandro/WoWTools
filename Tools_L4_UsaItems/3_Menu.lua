@@ -21,7 +21,7 @@ local function Init_Menu(_, root)
         num= #Save()[type]
         sub=root:CreateButton(
             text
-            ..(num==0 and ' |cff9e9e9e' or ' |cnGREEN_FONT_COLOR:')
+            ..(num==0 and ' |cff626262' or ' |cnGREEN_FONT_COLOR:')
             ..num,
         function(data)
             if data.type=='item' then

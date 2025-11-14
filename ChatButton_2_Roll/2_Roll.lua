@@ -203,7 +203,7 @@ local function Init_Menu(self, root)
         local tabNew={}
         for _, tab in pairs(RollTab) do
             if not tabNew[tab.name] then
-                --col=tabNew[tab.name] and '|cff9e9e9e' or ''
+                --col=tabNew[tab.name] and '|cff626262' or ''
                 icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
                 sub=root:CreateButton(
                     '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
@@ -270,7 +270,7 @@ local function Init()
             GameTooltip:AddLine(' ')
             local tabNew={}
             for _, tab in pairs(RollTab) do
-                local col=tabNew[tab.name] and '|cff9e9e9e' or ''
+                local col=tabNew[tab.name] and '|cff626262' or ''
                 local icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
                 GameTooltip:AddLine(
                     col

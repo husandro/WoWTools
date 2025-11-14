@@ -418,7 +418,7 @@ end)
 function WoWTools_MenuMixin:RestPoint(frame, root, point, SetValue)
     local sub= root:CreateButton(
         '|A:characterundelete-RestoreButton:0:0|a'
-        ..(point and '' or '|cff9e9e9e')
+        ..(point and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
         SetValue
     )
@@ -451,7 +451,7 @@ end
 function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
     local sub=root:CreateButton(
         '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'
-        ..(InCombatLockdown() and IsInInstance() and '|cff9e9e9e' or '')--e.IsEncouter_Start
+        ..(InCombatLockdown() and IsInInstance() and '|cff626262' or '')--e.IsEncouter_Start
         ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
     function(data)
         if data and IsControlKeyDown() or not data then
@@ -607,7 +607,7 @@ function WoWTools_MenuMixin:GetDragonriding()
         local num= treeCurrencies[1] and treeCurrencies[1].quantity
         if num and num>=0 then
             return '|T'..(select(4, C_Traits.GetTraitCurrencyInfo(2563)) or 4728198)..':0|t'
-                ..(num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num..'|r',
+                ..(num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:')..num..'|r',
 
                 num
         end

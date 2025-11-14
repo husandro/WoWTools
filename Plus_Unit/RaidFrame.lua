@@ -165,7 +165,7 @@ local function Init()--设置,团队
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
+        local col= UnitAffectingCombat('player') and '|cff626262' or ''
         GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().raidFrameScale or 1), col..'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self:SetAlpha(1)

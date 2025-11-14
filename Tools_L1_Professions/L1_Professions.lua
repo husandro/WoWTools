@@ -250,10 +250,10 @@ local function Init_KeyButton(index, type)
         local isKeyValid= WoWTools_KeyMixin:IsKeyValid(self)
         local isInCombat= not self:CanChangeAttribute()
         GameTooltip:AddDoubleLine(
-            (isInCombat and '|cnWARNING_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
+            (isInCombat and '|cnWARNING_FONT_COLOR:' or (isKeyValid and '|cff626262') or '')
             ..(WoWTools_DataMixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKEY()..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
 
-            (isInCombat and '|cnWARNING_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
+            (isInCombat and '|cnWARNING_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '解除键位' or UNBIND)
         )
         GameTooltip:Show()

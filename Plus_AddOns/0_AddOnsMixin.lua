@@ -72,10 +72,10 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
         local vType= type(value)
         local text= vType=='string' and WoWTools_UnitMixin:GetPlayerInfo(nil, value, nil)
         if not text and not isLoaded and reason then
-            text= '|cff9e9e9e'..WoWTools_TextMixin:CN(_G['ADDON_'..reason] or reason)..' ('..index
+            text= '|cff626262'..WoWTools_TextMixin:CN(_G['ADDON_'..reason] or reason)..' ('..index
         end
         local title= select(2, C_AddOns.GetAddOnInfo(name)) or name
-        local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e'
+        local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff626262'
         local memo, va= self:Get_MenoryValue(name, false)--内存
         memo= memo and (' |cnWARNING_FONT_COLOR:'..memo..'|r') or ''
         table.insert(newTab, {

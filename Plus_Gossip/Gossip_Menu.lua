@@ -102,7 +102,7 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(
         '     '
         ..(WoWTools_DataMixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))
-        ..(num==0 and ' |cff9e9e9e' or ' ')
+        ..(num==0 and ' |cff626262' or ' ')
         ..num,
     function()
         return MenuResponse.Open
@@ -147,7 +147,7 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE))
         ..WoWTools_DataMixin.Icon.mid
-        ..((num+num2)==0 and '|cff9e9e9e' or '')
+        ..((num+num2)==0 and '|cff626262' or '')
         ..(num..'/'..num2),
     function()
         return not Save().not_Gossip_Text_Icon
@@ -160,7 +160,7 @@ local function Init_Menu(self, root)
 
 --对话替换, 打开自定义, Frame
     sub:CreateButton(
-        '|A:mechagon-projects:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '|A:mechagon-projects:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..(num==0 and ' |cff626262' or ' ')..num,
     function ()
         WoWTools_GossipMixin:Init_Options_Frame()
         return MenuResponse.Open
@@ -173,7 +173,7 @@ local function Init_Menu(self, root)
     end
     sub:CreateDivider()
     sub:CreateCheckbox(
-        (WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        (WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT)..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return not Save().notGossipPlayerData
     end, function()
@@ -191,7 +191,7 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(WoWTools_DataMixin.onlyChinese and '禁用NPC' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, 'NPC'))..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '     '..(WoWTools_DataMixin.onlyChinese and '禁用NPC' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, 'NPC'))..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return MenuResponse.Open
     end)
@@ -229,7 +229,7 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '     '..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE)..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return MenuResponse.Open
     end)
@@ -269,7 +269,7 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(WoWTools_DataMixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '     '..(WoWTools_DataMixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU)..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return MenuResponse.Open
     end)

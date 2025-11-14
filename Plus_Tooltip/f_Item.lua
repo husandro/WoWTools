@@ -226,7 +226,7 @@ local function Set_keystonee(tooltip, itemLink)
 
     for index, info in pairs(new) do
         tooltip:AddDoubleLine(
-            (info.weekNum==0 and '|cff9e9e9e0|r' or info.weekNum or '')
+            (info.weekNum==0 and '|cff6262620|r' or info.weekNum or '')
             ..(info.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.weekMythicPlus..') ' or '')
             ..WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true})
             ..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.score, false, nil)..(WoWTools_ChallengeMixin:KeystoneScorsoColor(info.score,true)),
@@ -321,8 +321,8 @@ local function Set_Item_Num(tooltip, itemID)
             tooltip:AddDoubleLine(
                 WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
 
-                (info.bank==0 and '|cff9e9e9e' or col)..WoWTools_DataMixin:MK(info.bank, 3)..'|r|A:Banker:0:0|a '
-                ..(info.bag==0 and '|cff9e9e9e' or col)..WoWTools_DataMixin:MK(info.bag, 3)..'|r|A:bag-main:0:0|a'
+                (info.bank==0 and '|cff626262' or col)..WoWTools_DataMixin:MK(info.bank, 3)..'|r|A:Banker:0:0|a '
+                ..(info.bag==0 and '|cff626262' or col)..WoWTools_DataMixin:MK(info.bag, 3)..'|r|A:bag-main:0:0|a'
             )
 
             if index>2 and not IsShiftKeyDown() then

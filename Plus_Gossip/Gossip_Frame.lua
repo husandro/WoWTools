@@ -224,7 +224,7 @@ local function Init(isShow)
                 end
 --GossipFrame 有多少已设置
                 self.chat.Text:SetFormattedText('%s%d',
-                    gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e', 
+                    gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff626262', 
                     gossipNum
                 )
 
@@ -608,7 +608,7 @@ local function Init(isShow)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName , WoWTools_GossipMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine((self.hex and format('|c%s|r', self.hex) or '')..(WoWTools_DataMixin.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), WoWTools_DataMixin.Icon.left)
-        local col= (not self.hex or self.hex=='ff000000') and '|cff9e9e9e' or ''
+        local col= (not self.hex or self.hex=='ff000000') and '|cff626262' or ''
         GameTooltip:AddDoubleLine(format('%s%s', col, WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end

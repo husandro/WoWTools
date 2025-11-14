@@ -36,7 +36,7 @@ local function Player_Sell_Menu(_, root)
     sub=root:CreateCheckbox(
         '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM))
-        ..(num==0 and '|cff9e9e9e' or '')
+        ..(num==0 and '|cff626262' or '')
         ..' #'..num,
     function()
         return not Save().notSellCustom
@@ -261,7 +261,7 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '品质：|cff9e9e9e粗糙' or format(PROFESSIONS_CRAFTING_QUALITY, '|cff9e9e9e'..ITEM_QUALITY0_DESC))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '品质：|cff626262粗糙' or format(PROFESSIONS_CRAFTING_QUALITY, '|cff626262'..ITEM_QUALITY0_DESC))
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
     end)
 
@@ -288,7 +288,7 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(
         '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '出售首领掉落' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB,TRANSMOG_SOURCE_1))
-        ..(num==0 and '|cff9e9e9e' or '')
+        ..(num==0 and '|cff626262' or '')
         ..' #'..num,
     function()
         return not Save().notSellBoss

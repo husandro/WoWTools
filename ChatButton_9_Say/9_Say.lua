@@ -234,7 +234,7 @@ local function Init_Menu(self, root)
         for index, tab in pairs(Save().WhisperTab) do
             local playerName= WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {faction=tab.faction, reName=true, reRealm=true})
             playerName= playerName=='' and tab.name or playerName
-            sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and WoWTools_DataMixin.Icon.wow2 or '')..(playerName or ' '), function(data)
+            sub2=sub:CreateButton('|cff626262'..index..')|r '..(tab.wow and WoWTools_DataMixin.Icon.wow2 or '')..(playerName or ' '), function(data)
                 WoWTools_ChatMixin:Say(nil, data.name, data.wow)
                 self:settings(SLASH_WHISPER1, WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, data.name, data.wow)
                 return MenuResponse.Open
@@ -247,7 +247,7 @@ local function Init_Menu(self, root)
                     local player= msg.player and msg.player~=WoWTools_DataMixin.Player.Name_Realm and msg.player
 
                     if msg.type then--发送
-                        tooltip:AddLine((player and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')..msg.time..' |A:voicechat-icon-textchat-silenced:0:0|a'..msg.text..'|r')
+                        tooltip:AddLine((player and '|cnGREEN_FONT_COLOR:' or '|cff626262')..msg.time..' |A:voicechat-icon-textchat-silenced:0:0|a'..msg.text..'|r')
                     else--接收
                         tooltip:AddDoubleLine(
                             col..msg.time,
@@ -272,7 +272,7 @@ local function Init_Menu(self, root)
 
             sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '显示' or SHOW, function(data)
                 col= select(5, WoWTools_UnitMixin:GetColor(nil, data.guid)) or '|cffffffff'
-                local text= '|cff9e9e9e'
+                local text= '|cff626262'
                             ..WoWTools_DataMixin.Player.Name_Realm
                             ..'|r'..WoWTools_DataMixin.Icon.Player
                             ..' <-> '
@@ -284,7 +284,7 @@ local function Init_Menu(self, root)
                 for _, msg in pairs(data.msg) do
                     text= text and text..'|n' or ''
                     if msg.type then--发送
-                        text= text..'|cff9e9e9e'..msg.time..' '..(msg.player or WoWTools_DataMixin.Player.Name_Realm)..': '..msg.text..'|r'
+                        text= text..'|cff626262'..msg.time..' '..(msg.player or WoWTools_DataMixin.Player.Name_Realm)..': '..msg.text..'|r'
                         if msg.player and msg.player~=WoWTools_DataMixin.Player.Name_Realm then
                             playerList[msg.player]= true
                             text=text..' |cnGREEN_FONT_COLOR:*|r'
@@ -300,7 +300,7 @@ local function Init_Menu(self, root)
 
                 for player in pairs(playerList) do
                     text=text
-                        ..'|n|cff9e9e9e'
+                        ..'|n|cff626262'
                         ..player..'|r <-> '
                         ..(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil) or '')
                         ..col
@@ -326,7 +326,7 @@ local function Init_Menu(self, root)
                 else
                     print(
                         addName..WoWTools_DataMixin.Icon.icon2,
-                        '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
+                        '|cff626262'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
                         WoWTools_UnitMixin:GetLink(data.unit, data.guid, data.name, false)
                     )
                 end

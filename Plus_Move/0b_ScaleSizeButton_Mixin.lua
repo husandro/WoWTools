@@ -511,7 +511,7 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        (Save().point[name] and '' or '|cff9e9e9e')
+        (Save().point[name] and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
     function()
         return Save().point[name]
@@ -704,7 +704,7 @@ local function Set_Tooltip(self)
         if self.sizeRestTooltipColorFunc then
             col=self.sizeRestTooltipColorFunc(self)
         end
-        col=col or (Save().size[name] and '' or '|cff9e9e9e')
+        col=col or (Save().size[name] and '' or '|cff626262')
 
         local w, h
         w= math.modf(target:GetWidth())
@@ -923,7 +923,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             initFunc=initFunc
         })
         if WoWTools_DataMixin.Player.husandro then
-            print(WoWTools_MoveMixin.addName, '|cff9e9e9e'..tostring(issecure())..'|r', target:GetName(), '|cnWARNING_FONT_COLOR:不能执行|r')
+            print(WoWTools_MoveMixin.addName, '|cff626262'..tostring(issecure())..'|r', target:GetName(), '|cnWARNING_FONT_COLOR:不能执行|r')
         end
     else
         if size then
@@ -933,7 +933,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             initFunc(btn)
         end
         if WoWTools_DataMixin.Player.husandro then
-            print(WoWTools_MoveMixin.addName, '|cff9e9e9e'..tostring(issecure())..'|r', target:GetName(), '|cnGREEN_FONT_COLOR:执行|r')
+            print(WoWTools_MoveMixin.addName, '|cff626262'..tostring(issecure())..'|r', target:GetName(), '|cnGREEN_FONT_COLOR:执行|r')
         end
     end
 end

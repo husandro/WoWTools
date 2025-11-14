@@ -219,7 +219,7 @@ local function Init()--设置标记, 框架
             GameTooltip:ClearLines()
             if self.action then
                 GameTooltip:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
-                GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS), 1,1,1)
+                GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(not UnitExists('target') and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS), 1,1,1)
                 GameTooltip:AddLine(
                     WoWTools_DataMixin.Icon.right
                     ..WoWTools_DataMixin.Icon.Player
@@ -243,7 +243,7 @@ local function Init()--设置标记, 框架
                 end
                 local guid= UnitExists('target') and UnitGUID('target')
                 local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
+                GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(not UnitExists('target') and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
                             ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
                 )
 

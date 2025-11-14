@@ -410,7 +410,7 @@ local function Init_Button()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName3)
         GameTooltip:AddLine(' ')
-        local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
+        local col= UnitAffectingCombat('player') and '|cff626262' or ''
         GameTooltip:AddDoubleLine(
             (Get_Lock_ClickToMove_Value() and '|cff828282' or col)
             ..CVarNameTabs['autoInteract']

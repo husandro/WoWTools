@@ -396,7 +396,7 @@ local function Init_Menu(self, root)
     end)
 
     for index, channel in pairs(Channels) do
-        sub2:CreateCheckbox('|cff9e9e9e'..index..'|r '..(WoWTools_TextMixin:CN(_G[channel]) or channel), function(data)
+        sub2:CreateCheckbox('|cff626262'..index..'|r '..(WoWTools_TextMixin:CN(_G[channel]) or channel), function(data)
             return not Save().Channels[data]
         end, function(data)
             Save().Channels[data]= not Save().Channels[data] and true or nil
@@ -445,7 +445,7 @@ local function Init_Menu(self, root)
 
     sub:CreateDivider()
     sub:CreateButton(
-        (Save().Point and '' or '|cff9e9e9e')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
+        (Save().Point and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
     function()
         Save().Point=nil
         if Frame then

@@ -26,7 +26,7 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), WoWTools_TextMixin:GetEnabeleDisable(not Save().notSellJunk))
         if not Save().notSellJunk then
-            GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r'))
+            GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff626262'..(WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r'))
         end
         GameTooltip:Show()
     end
@@ -143,7 +143,7 @@ local function Init()
             return
         end
         local num= C_MerchantFrame.GetNumJunkItems() or 0
-        MerchantSellAllJunkButton.Text:SetText((num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num)
+        MerchantSellAllJunkButton.Text:SetText((num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:')..num)
     end)
 end
 
