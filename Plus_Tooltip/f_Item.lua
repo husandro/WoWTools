@@ -53,12 +53,8 @@ local function Set_Value_Text(line)
 end
 
 local function Set_Value(tooltip)
-    if not WoWTools_DataMixin.onlyChinese then
-        return
-    end
-
-    local name= tooltip:GetName()
-     for i=5, tooltip:NumLines() or 0, 1 do
+    local name= tooltip:GetName() or 'GameTooltip'
+    for i=5, tooltip:NumLines() or 0, 1 do
         Set_Value_Text(_G[name..'TextLeft'..i])
         Set_Value_Text(_G[name..'TextRight'..i])
     end
@@ -166,13 +162,59 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
 end
 
 
+--GetCombatRatingBonusForCombatRatingValue(, value)
+--[ITEM_MOD_CR_MULTISTRIKE_SHORT]= CR_MULTISTRIKE,--12 溅射
+local StatsFunc={
+    ['ITEM_MOD_VERSATILITY']= CR_VERSATILITY_DAMAGE_DONE,--全能 29
+
+    ['ITEM_MOD_HASTE_RATING_SHORT']= CR_HASTE_MELEE,--急速 18
+    ['ITEM_MOD_MASTERY_RATING_SHORT']= CR_MASTERY,--精通 26
+    ['ITEM_MOD_CRIT_RATING_SHORT']= CR_CRIT_MELEE,--爆击 9
+
+    ['ITEM_MOD_CR_AVOIDANCE_SHORT']= CR_AVOIDANCE,--闪避 21
+    ['ITEM_MOD_CR_LIFESTEAL_SHORT']= CR_LIFESTEAL,--吸血 17
+    ['ITEM_MOD_CR_SPEED_SHORT']= CR_SPEED,--加速 14
+    ['ITEM_MOD_BLOCK_RATING_SHORT']= CR_BLOCK,--格挡 5
+    ['ITEM_MOD_PARRY_RATING_SHORT'] = CR_PARRY,--招架 4
+}
 
 
 
 
+local function Set_ItemStatus(tooltip, itemLink, itemID, itemQuality)
+    local stats= C_Item.GetItemStats(itemLink)
 
+    local find
+    for stat, va in pairs(stats) do
+        local value= nil
+        if StatsFunc[stat] then
+            value= GetCombatRatingBonusForCombatRatingValue(StatsFunc[stat], va)
+            if value then
+                value= format('%.2f%%', value)
+            end
+        end
+        stats[stat]= value
+        find= find or value
+    end
+    if not find then
+        return
+    end
 
+    local name= tooltip:GetName() or 'GameTooltip'
 
+    for i=5, tooltip:NumLines() or 0, 1 do
+        local line= _G[name..'TextLeft'..i]
+        local text= line:GetText()
+
+        for stat, value in pairs(stats) do
+            if text:find('%+.+ '.._G[stat]) then
+                line:SetText(text.. ' '..value)
+                stats[stat]= nil
+                break
+            end
+        end
+    end
+end
 
 
 
@@ -411,7 +453,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 --装备
     if classID==2 or classID==4 then
         textLeft, text2Left= Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
-
+        Set_ItemStatus(tooltip, itemLink, itemID, itemQuality)
 --炉石
     elseif itemID==6948 then
         textLeft= WoWTools_TextMixin:CN(GetBindLocation())

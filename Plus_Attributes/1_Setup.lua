@@ -320,7 +320,7 @@ end
 local function set_HASTE_Text(frame)
     local haste
     if Save().useNumber then
-        haste= GetCombatRating(CR_HASTE_MELEE)
+        haste= GetCombatRating(CR_HASTE_MELEE)--CR_HASTE_RANGED CR_HASTE_SPELL
     else
         haste = GetHaste()
     end

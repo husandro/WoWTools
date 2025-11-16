@@ -1198,9 +1198,13 @@ function WoWTools_MoveMixin.Events:Blizzard_ItemSocketingUI()
     ItemSocketingScrollChild:ClearAllPoints()
     ItemSocketingScrollChild:SetPoint('TOPLEFT')
     ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
+
     ItemSocketingDescription:ClearAllPoints()
     ItemSocketingDescription:SetAllPoints()
-    ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
+
+    ItemSocketingFrame:HookScript('OnSizeChanged', function()
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
+    end)
 
     self:Setup(ItemSocketingFrame, {
         minW=338,
