@@ -522,6 +522,9 @@ function WoWTools_TextureMixin.Frames:MerchantFrame()
 
     self:SetAlphaColor(StackSplitFrame.SingleItemSplitBackground, true)
     self:SetAlphaColor(StackSplitFrame.MultiItemSplitBackground, true)
+    self:SetUIButton(StackSplitFrame.OkayButton)
+    self:SetUIButton(StackSplitFrame.CancelButton)
+
     self:HideFrame(MerchantRepairItemButton, {index=1})
     self:HideFrame(MerchantRepairAllButton, {index=1})
     self:HideFrame(MerchantGuildBankRepairButton, {index=1})

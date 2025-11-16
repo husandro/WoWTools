@@ -64,7 +64,17 @@ local function Init_Menu(self, root)
     end)
     WoWTools_MenuMixin:CVar(sub, 'bankConfirmTabCleanUp', nil, WoWTools_DataMixin.onlyChinese and '你确定要自动整理你的物品吗？|n该操作会影响所有的标签。' or BANK_CONFIRM_CLEANUP_PROMPT)
 
-
+    sub2= sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
+    function()
+        return C_Container.GetBankAutosortDisabled()
+    end, function()
+        C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
+        return MenuResponse.Close
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('C_Container.SetBankAutosortDisabled')
+    end)
 
 
 
@@ -138,18 +148,7 @@ local function Init_Menu(self, root)
 
 
 
-    root:CreateDivider()
-    sub= root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
-    function()
-        return C_Container.GetBankAutosortDisabled() ()
-    end, function()
-        C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
-        return MenuResponse.Close
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetBankAutosortDisabled')
-    end)
+
 
     root:CreateDivider()
 --重新加载UI

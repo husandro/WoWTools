@@ -357,7 +357,6 @@ end
 
 
 
-
 local function Init_WardrobeFrame()
     WoWTools_MoveMixin:Setup(WardrobeFrame, {
     minW=965, minH=606,

@@ -1,7 +1,6 @@
 
 --收藏
 function WoWTools_TextureMixin.Events:Blizzard_Collections()
-
     self:HideTexture(CollectionsJournal.TopTileStreaks)
     self:SetButton(CollectionsJournalCloseButton)
     self:HideTexture(CollectionsJournalBg)
@@ -128,7 +127,42 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
 
 --试衣间WardrobeFrame
-    --self:SetNineSlice(WardrobeFrame)
+    for _, name in pairs({
+    'HeadButton',
+    'ShoulderButton',
+    'SecondaryShoulderButton',
+    'BackButton',
+    'ChestButton',
+    'ShirtButton',
+    'TabardButton',
+    'WristButton',
+
+    'HandsButton',
+    'WaistButton',
+    'LegsButton',
+    'FeetButton',
+
+    'MainHandButton',
+    'MainHandEnchantButton',
+    'SecondaryHandButton',
+    'SecondaryHandEnchantButton',
+    }) do
+        local btn= WardrobeTransmogFrame[name]
+        if btn then
+            self:HideTexture(btn.Border)
+            WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
+        end
+    end
+
+
+    WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetText('')
+    WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetScript('OnLeave', GameTooltip_Hide)
+    WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '两侧肩膀使用不同的幻化外观' or TRANSMOGRIFY_RIGHT_SHOULDER)
+        GameTooltip:Show()
+    end)
+
     self:HideFrame(WardrobeFrame)
     self:HideFrame(WardrobeTransmogFrame)
     self:SetNineSlice(WardrobeTransmogFrame.Inset)

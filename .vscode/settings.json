@@ -6425,7 +6425,9 @@
         "PanelResizeButtonMixin",
         "CR_HASTE_RANGED",
         "ITEM_MOD_CR_MULTISTRIKE_SHORT",
-        "ITEM_MOD_PARRY_RATING_SHORT"
+        "ITEM_MOD_PARRY_RATING_SHORT",
+        "TRANSMOGRIFY_RIGHT_SHOULDER",
+        "BagItemAutoSortButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

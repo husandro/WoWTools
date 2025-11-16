@@ -16,8 +16,11 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
         return
     end
 
+    self:SetButton(BagItemAutoSortButton, {alpha=1})
+
     local function set_script(frame)
         WoWTools_DataMixin:Hook(frame, 'UpdateItems', function(f)
+            local bg= self:Save().bagBorderAlpha or 0.3
             for _, btn in f:EnumerateValidItems() do
                 if not btn.isSetTexture then
                     self:SetAlphaColor(btn.ItemSlotBackground, nil, nil, 0)
@@ -27,7 +30,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
                 end
 
                 if f:GetID()<= NUM_TOTAL_BAG_FRAMES+1 then--银行，自定义
-                    btn.NormalTexture:SetAlpha(btn.hasItem and 0 or 0.3)
+                    btn.NormalTexture:SetAlpha(btn.hasItem and 0 or bg)
                 end
                 btn.icon:SetAlpha(btn.hasItem and 1 or 0)
             end
@@ -61,6 +64,26 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:Init_BGMenu_Frame(ContainerFrameCombinedBags, {
         settings=function(icon, texture, alpha)
             icon:GetParent().Bg:SetAlpha(texture and 0 or alpha or 1)
+        end,
+        addMenu=function(frame, root)
+            root:CreateSpacer()
+            WoWTools_MenuMixin:CreateSlider(root, {
+                getValue=function()
+                        return self:Save().bagBorderAlpha or 0.3
+                    end,
+                setValue=function(value)
+                        self:Save().bagBorderAlpha = value
+                        if frame.AddItemsForRefresh and not InCombatLockdown() then
+                            frame:AddItemsForRefresh()
+                        end
+                    end,
+                name='Border',
+                minValue=0,
+                maxValue=1,
+                step=0.01,
+                bit='%.2f',
+            })
+            root:CreateSpacer()
         end
     })
 end
