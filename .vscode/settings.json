@@ -6443,7 +6443,8 @@
         "CharacterBag1Slot",
         "CharacterBag2Slot",
         "CharacterBag3Slot",
-        "DropDownList1"
+        "DropDownList1",
+        "ItemEventListener"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

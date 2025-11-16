@@ -34,16 +34,6 @@ end
 
 
 
-local function recipeLearned(recipeSpellID)--是否已学配方
-    return C_TradeSkillUI.IsRecipeProfessionLearned(recipeSpellID)
-    --local info= C_TradeSkillUI.GetRecipeInfo(recipeSpellID)
-    --return info and info.learned
-end
-
-
-
-
-
 
 
 
@@ -52,28 +42,36 @@ end
 
 
 --增加 [潘达利亚工程学: 地精滑翔器] recipeID 126392
---[诺森德工程学: 氮气推进器] ricipeID 109099
-local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
-    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save().hide or not link or not isPaperDollItemSlot then
-
-
-        if self.engineering  then
-            self.engineering:SetShown(false)
+--[诺森德工程学: 氮气推进器] ricipeID 55016
+local function set_Engineering(btn, slot, link, use, isPaperDollItemSlot)
+    if not (
+            (slot==15 and C_TradeSkillUI.IsRecipeProfessionLearned(126392))
+            or (slot==6 and C_TradeSkillUI.IsRecipeProfessionLearned(55016))
+        )
+        or use
+        or Save().hide
+        or not link
+        or not isPaperDollItemSlot
+    then
+        if btn.engineering  then
+            btn.engineering:SetShown(false)
         end
         return
     end
 
-    if not self.engineering then
-        local h=self:GetHeight()/3
-        self.engineering=WoWTools_ButtonMixin:Cbtn(self, {size=h, texture='136243'})
+    if not btn.engineering then
+        local h=btn:GetHeight()/3
+        btn.engineering=CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(btn, {size=h, texture=136243})
+        btn.engineering:SetSize(h, h)
+        btn.engineering:SetNormalTexture(136243)
         if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
-            self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
+            btn.engineering:SetPoint('TOPLEFT', btn, 'TOPRIGHT', 8, 0)
         else
-            self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
+            btn.engineering:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -8, 0)
         end
-        self.engineering.spell= slot==15 and 126392 or 55016
+        btn.engineering.spell= slot==15 and 126392 or 55016
 
-        self.engineering:SetScript('OnMouseDown' ,function(frame, d)
+        btn.engineering:SetScript('OnMouseDown' ,function(frame, d)
             if d=='LeftButton' then
                 local n=C_Item.GetItemCount(90146, true, false, true, false)
                 if n==0 then
@@ -97,7 +95,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
                 --OpenProfessionUIToSkillLine(parentTradeSkillID)
             end
         end)
-        self.engineering:SetScript('OnEnter' ,function(frame)
+        btn.engineering:SetScript('OnEnter' ,function(frame)
                 GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:SetSpellByID(frame.spell)
@@ -106,9 +104,9 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
                 GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需求' or NEED), (WoWTools_DataMixin.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP)..')')
                 GameTooltip:Show()
         end)
-        self.engineering:SetScript('OnLeave',GameTooltip_Hide)
+        btn.engineering:SetScript('OnLeave',GameTooltip_Hide)
     end
-    self.engineering:SetShown(true)
+    btn.engineering:SetShown(true)
 end
 
 
@@ -150,24 +148,26 @@ local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         end
     end
 end
-local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，按钮
+
+local function set_no_Enchant(btn, slot, find, isPaperDollItemSlot)--附魔，按钮
     if not subClassToSlot[slot] then
         return
     end
+
     local tab
     if not find and not Save().hide and isPaperDollItemSlot then
         tab=get_no_Enchant_Bag(slot)--取得，物品，bag, slot
-        if tab and not self.noEnchant then
-            local h=self:GetHeight()/3
-            self.noEnchant= WoWTools_ButtonMixin:Cbtn(self, {size=h, isSecure=true})
-            self.noEnchant:SetAttribute("type", "item")
-            self.noEnchant.slot= slot
+        if tab and not btn.noEnchant then
+            local h=btn:GetHeight()/3
+            btn.noEnchant= WoWTools_ButtonMixin:Cbtn(btn, {size=h, isSecure=true})
+            btn.noEnchant:SetAttribute("type", "item")
+            btn.noEnchant.slot= slot
             if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
-                self.noEnchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
+                btn.noEnchant:SetPoint('LEFT', btn, 'RIGHT', 8, 0)
             else
-                self.noEnchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
+                btn.noEnchant:SetPoint('RIGHT', btn, 'LEFT', -8, 0)
             end
-            self.noEnchant:SetScript('OnMouseDown', function()
+            btn.noEnchant:SetScript('OnMouseDown', function()
                 if MerchantFrame:IsVisible() then
                     MerchantFrame:SetShown(false)
                 end
@@ -175,50 +175,56 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
                     MailFrame:SetShown(false)
                 end
             end)
-            self.noEnchant:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
-            self.noEnchant:SetScript('OnEnter' ,function(self2)
-                if self2.tab then
-                    GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+            btn.noEnchant:SetScript('OnLeave',function(self)
+                GameTooltip:Hide()
+                self:SetAlpha(1)
+                WoWTools_BagMixin:Find()
+            end)
+            btn.noEnchant:SetScript('OnEnter' ,function(self)
+                if self.tab then
+                    local bagID= self.tab.bag
+                    local slotID= self.tab.slot
+                    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
-                    GameTooltip:SetBagItem(self2.tab.bag, self2.tab.slot)
+                    GameTooltip:SetBagItem(bagID, slotID)
                     if not self:CanChangeAttribute() then
                         GameTooltip:AddLine(' ')
                         GameTooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
                     end
                     GameTooltip:Show()
-                    self2:SetAlpha(0.3)
+                    WoWTools_BagMixin:Find(true, {bag={bag=slotID, slot=slotID}})
                 end
+                self:SetAlpha(0.3)
             end)
 
-            self.noEnchant:SetScript('OnShow', function(self2)
-                self2:RegisterEvent('BAG_UPDATE_DELAYED')
+            btn.noEnchant:SetScript('OnShow', function(self)
+                self:RegisterEvent('BAG_UPDATE_DELAYED')
             end)
-            self.noEnchant:SetScript('OnHide', function(self2)
-                self2:UnregisterEvent('BAG_UPDATE_DELAYED')
+            btn.noEnchant:SetScript('OnHide', function(self)
+                self:UnregisterEvent('BAG_UPDATE_DELAYED')
             end)
-            self.noEnchant:RegisterEvent('BAG_UPDATE_DELAYED')
-            self.noEnchant:SetScript('OnEvent', function(self2)
-                if self2:CanChangeAttribute() then
-                    local tab2=get_no_Enchant_Bag(self2.slot)--取得，物品，bag, slot
+            btn.noEnchant:RegisterEvent('BAG_UPDATE_DELAYED')
+            btn.noEnchant:SetScript('OnEvent', function(self)
+                if self:CanChangeAttribute() then
+                    local tab2=get_no_Enchant_Bag(self.slot)--取得，物品，bag, slot
                     if tab2 then
-                        self2:SetAttribute("item", tab2.bag..' '..tab2.slot)
+                        self:SetAttribute("item", tab2.bag..' '..tab2.slot)
                     end
-                    self2.tab= tab2
+                    self.tab= tab2
                 end
             end)
 
-            local texture= self.noEnchant:CreateTexture(nil, 'OVERLAY')
+            local texture= btn.noEnchant:CreateTexture(nil, 'OVERLAY')
             texture:SetAllPoints()
             texture:SetAtlas('bags-icon-addslots')
         end
     end
-    if self.noEnchant then
-        self.noEnchant.tab=tab
-        if tab and self.noEnchant:CanChangeAttribute() then
-            self.noEnchant:SetAttribute("item", tab.bag..' '..tab.slot)
-        end
-        if not WoWTools_FrameMixin:IsLocked(self.noEnchant) then
-            self.noEnchant:SetShown(tab and true or false)
+
+    if btn.noEnchant then
+        btn.noEnchant.tab=tab
+        if not InCombatLockdown() then
+            btn.noEnchant:SetAttribute("item", tab and tab.bag..' '..tab.slot or nil)
+            btn.noEnchant:SetShown(tab and true or false)
         end
     end
 end
@@ -236,7 +242,134 @@ end
 
 
 
-local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
+
+
+
+
+
+
+--宝石信息
+local function Set_Item_Gem(self, link, isLeftSlot)
+
+    if not PlayerIsTimerunning() then
+        if not Save().hide and link then--宝石
+            local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
+            for n=1, numSockets do
+                local gemLink= select(2, C_Item.GetItemGem(link, n))
+            WoWTools_DataMixin:Load(gemLink, 'item')
+
+                local gem= self['gem'..n]
+                if not gem then
+                    gem=self:CreateTexture()
+                    gem.index= n
+                    gem:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
+                    gem:EnableMouse(true)
+                    gem:SetScript('OnLeave',function(frame) GameTooltip:Hide() frame:SetAlpha(1) end)
+                    gem:SetScript('OnEnter' ,function(frame)
+                        if frame.gemLink then
+                            GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:SetHyperlink(frame.gemLink)
+                            GameTooltip:Show()
+                            frame:SetAlpha(0.3)
+                        end
+                    end)
+
+                    if isLeftSlot then--左边插曹
+                        if n==1 then
+                            gem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 8, 0)
+                        else
+                            gem:SetPoint('LEFT',  self['gem'..n-1], 'RIGHT')
+                        end
+                    else
+                        if n==1 then
+                            gem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', -8, 0)
+                        else
+                            gem:SetPoint('RIGHT',  self['gem'..n-1], 'LEFT')
+                        end
+                    end
+                    self['gem'..n]= gem
+                end
+                gem.gemLink= gemLink
+                local icon
+                if gemLink then
+                    icon = select(5, C_Item.GetItemInfoInstant(gemLink))
+                end
+                if icon then
+                    gem:SetTexture(icon)
+                else
+                    gem:SetAtlas(gemLink and 'Islands-QuestDisable' or 'FlightPath')--'socket-hydraulic-background')
+                end
+                gem:SetShown(true)
+                --local x= isLeftSlot and 8 or -8--左边插曹
+                --x= isLeftSlot and x+ 12.3 or x- 12.3--左边插曹
+            end
+            for n=numSockets+1, MAX_NUM_SOCKETS do
+                local gem= self['gem'..n]
+                if gem then
+                    gem:SetShown(false)
+                end
+            end
+        else
+            for n=1, MAX_NUM_SOCKETS do
+                local gem= self['gem'..n]
+                if gem then
+                    gem:SetShown(false)
+                end
+            end
+        end
+
+    elseif not Save().hide and self.SocketDisplay:IsShown() and link then
+        for index, frame in pairs(self.SocketDisplay.Slots) do
+            if frame and frame:IsShown() then
+                local gemID = C_Item.GetItemGemID(link, index)
+                frame.gemID= gemID
+                if not frame:IsMouseEnabled() then
+                    frame:EnableMouse(true)
+                    frame:SetScript('OnLeave', function(f) GameTooltip:Hide() f:SetScale(1) end)
+                    frame:SetScript('OnEnter', function(f)
+                        if f.gemID then
+                            GameTooltip:SetOwner(f, "ANCHOR_LEFT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:SetItemByID(f.gemID)
+                            GameTooltip:Show()
+                        end
+                        f:SetScale(1.3)
+                    end)
+                    self.SocketDisplay:ClearAllPoints()
+                    if isLeftSlot then
+                        self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT', 8, 0)
+                    else
+                        self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT', -8, 0)
+                    end
+                    frame:SetSize(14, 14)
+                    frame:SetFrameStrata('HIGH')
+                    frame.Slot:ClearAllPoints()
+                    frame.Slot:SetPoint('CENTER')
+                    frame.Slot:SetSize(13, 13)
+                end
+                local atlas
+                if gemID then
+                    local quality= C_Item.GetItemQualityByID(gemID)--C_Item.GetItemQualityColor(quality)
+                    atlas= WoWTools_DataMixin.Icon[quality]
+                end
+                frame.Slot:SetAtlas(atlas or 'character-emptysocket')
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
     if Save().hide then
         link= nil
     end
@@ -249,19 +382,19 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         enchant, use, pvpItem, upgradeItem, createItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr], dateInfo.text[upgradeStr], dateInfo.text[ITEM_CREATED_BY_Str]
     end
 
-    if enchant and not self.enchant then--附魔
-        local h=self:GetHeight()/3
-        self.enchant= self:CreateTexture()
-        self.enchant:SetSize(h,h)
+    if enchant and not btn.enchant then--附魔
+        local h=btn:GetHeight()/3
+        btn.enchant= btn:CreateTexture()
+        btn.enchant:SetSize(h,h)
         if isLeftSlot then
-            self.enchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
+            btn.enchant:SetPoint('LEFT', btn, 'RIGHT', 8, 0)
         else
-            self.enchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
+            btn.enchant:SetPoint('RIGHT', btn, 'LEFT', -8, 0)
         end
-        self.enchant:SetTexture(463531)
-        self.enchant:EnableMouse(true)
-        self.enchant:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
-        self.enchant:SetScript('OnEnter' ,function(self2)
+        btn.enchant:SetTexture(463531)
+        btn.enchant:EnableMouse(true)
+        btn.enchant:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
+        btn.enchant:SetScript('OnEnter' ,function(self2)
             if self2.tips then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
@@ -271,33 +404,33 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             end
         end)
     end
-    if self.enchant then
-        self.enchant.tips= enchant
-        self.enchant:SetShown(enchant and true or false)
+    if btn.enchant then
+        btn.enchant.tips= enchant
+        btn.enchant:SetShown(enchant and true or false)
     end
 
-    set_no_Enchant(self, slot, enchant and true or false, isPaperDollItemSlot)--附魔，按钮
+    set_no_Enchant(btn, slot, enchant and true or false, isPaperDollItemSlot)--附魔，按钮
 
     use=  link and select(2, C_Item.GetItemSpell(link))--物品是否可使用
-    if use and not self.use  then
-        local h=self:GetHeight()/3
-        self.use= self:CreateTexture()
-        self.use:SetSize(h,h)
+    if use and not btn.use  then
+        local h=btn:GetHeight()/3
+        btn.use= btn:CreateTexture()
+        btn.use:SetSize(h,h)
         if isLeftSlot then
-            self.use:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
+            btn.use:SetPoint('TOPLEFT', btn, 'TOPRIGHT', 8, 0)
         else
-            self.use:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
+            btn.use:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -8, 0)
         end
-        self.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
-        self.use:EnableMouse(true)
-        --[[self.use:SetScript('OnMouseDown', function(f)
+        btn.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
+        btn.use:EnableMouse(true)
+        --[[btn.use:SetScript('OnMouseDown', function(f)
             local info=C_TradeSkillUI.GetRecipeInfo(f.spellID)
             if info and info.recipeID then
                 WoWTools_LoadUIMixin:Professions(info.recipeID)
             end
         end)]]
-        self.use:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
-        self.use:SetScript('OnEnter' ,function(self2)
+        btn.use:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
+        btn.use:SetScript('OnEnter' ,function(self2)
             if self2.spellID then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
@@ -307,25 +440,25 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             end
         end)
     end
-    if self.use then
-        self.use.spellID= use
-        self.use:SetShown(use and true or false)
+    if btn.use then
+        btn.use.spellID= use
+        btn.use:SetShown(use and true or false)
     end
-    set_Engineering(self, slot, link, use, isPaperDollItemSlot)--地精滑翔,氮气推进器
+    set_Engineering(btn, slot, link, use, isPaperDollItemSlot)--地精滑翔,氮气推进器
 
-    if pvpItem and not self.pvpItem then--提示PvP装备
-        local h=self:GetHeight()/3
-        self.pvpItem=self:CreateTexture(nil,'OVERLAY',nil,7)
-        self.pvpItem:SetSize(h,h)
+    if pvpItem and not btn.pvpItem then--提示PvP装备
+        local h=btn:GetHeight()/3
+        btn.pvpItem=btn:CreateTexture(nil,'OVERLAY',nil,7)
+        btn.pvpItem:SetSize(h,h)
         if isLeftSlot then
-            self.pvpItem:SetPoint('LEFT', self, 'RIGHT', -2.5,0)
+            btn.pvpItem:SetPoint('LEFT', btn, 'RIGHT', -2.5,0)
         else
-            self.pvpItem:SetPoint('RIGHT', self, 'LEFT', 2.5,0)
+            btn.pvpItem:SetPoint('RIGHT', btn, 'LEFT', 2.5,0)
         end
-        self.pvpItem:SetAtlas('pvptalents-warmode-swords')
-        self.pvpItem:EnableMouse(true)
-        self.pvpItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
-        self.pvpItem:SetScript('OnEnter', function(self2)
+        btn.pvpItem:SetAtlas('pvptalents-warmode-swords')
+        btn.pvpItem:EnableMouse(true)
+        btn.pvpItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
+        btn.pvpItem:SetScript('OnEnter', function(self2)
             if self2.tips then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
@@ -335,20 +468,20 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             end
         end)
     end
-    if self.pvpItem then
-        self.pvpItem.tips= pvpItem
-        self.pvpItem:SetShown(pvpItem and true or false)
+    if btn.pvpItem then
+        btn.pvpItem.tips= pvpItem
+        btn.pvpItem:SetShown(pvpItem and true or false)
     end
 
-    if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
+    if upgradeItem and not btn.upgradeItem then--"升级：%s/%s"
         if isLeftSlot then
-            self.upgradeItem= WoWTools_LabelMixin:Create(self, {color={r=0,g=1,b=0}, mouse=true})
-            self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
+            btn.upgradeItem= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}, mouse=true})
+            btn.upgradeItem:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT',1,0)
         else
-            self.upgradeItem= WoWTools_LabelMixin:Create(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
-            self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',2,0)
+            btn.upgradeItem= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
+            btn.upgradeItem:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT',2,0)
         end
-        self.upgradeItem:SetScript('OnEnter', function(self2)
+        btn.upgradeItem:SetScript('OnEnter', function(self2)
             if self2.tips then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
@@ -357,10 +490,10 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
                 self2:SetAlpha(0.3)
             end
         end)
-        self.upgradeItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
+        btn.upgradeItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
     end
-    if self.upgradeItem then
-        self.upgradeItem.tips=upgradeItem
+    if btn.upgradeItem then
+        btn.upgradeItem.tips=upgradeItem
         local upText
         if upgradeItem then
             local min, max= upgradeItem:match('(%d+)/(%d+)')
@@ -373,23 +506,23 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
                 end
             end
         end
-        self.upgradeItem:SetText(upText or '')
+        btn.upgradeItem:SetText(upText or '')
     end
 
     local upgradeItemText
     local upText= upgradeItem and upgradeItem:match('(.-)%d+/%d+')--"升级：%s %s/%s"
     if upText then
         upgradeItemText= strlower(WoWTools_TextMixin:sub(upText,1,3, true))
-        if not self.upgradeItemText then
-            local h= self:GetHeight()/3
+        if not btn.upgradeItemText then
+            local h= btn:GetHeight()/3
             if isLeftSlot then
-                self.upgradeItemText= WoWTools_LabelMixin:Create(self, {color={r=0,g=1,b=0}, mouse=true})
-                self.upgradeItemText:SetPoint('LEFT', self, 'RIGHT',h+8,0)
+                btn.upgradeItemText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}, mouse=true})
+                btn.upgradeItemText:SetPoint('LEFT', btn, 'RIGHT',h+8,0)
             else
-                self.upgradeItemText= WoWTools_LabelMixin:Create(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
-                self.upgradeItemText:SetPoint('RIGHT', self, 'LEFT',-h-8,0)
+                btn.upgradeItemText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
+                btn.upgradeItemText:SetPoint('RIGHT', btn, 'LEFT',-h-8,0)
             end
-            self.upgradeItemText:SetScript('OnEnter', function(self2)
+            btn.upgradeItemText:SetScript('OnEnter', function(self2)
                 if self2.tips then
                     GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
@@ -398,31 +531,31 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
                     self2:SetAlpha(0.3)
                 end
             end)
-            self.upgradeItemText:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
+            btn.upgradeItemText:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
         end
-        self.upgradeItemText.tips= upgradeItem
+        btn.upgradeItemText.tips= upgradeItem
         local quality = GetInventoryItemQuality(unit, slot)--颜色
         local hex = quality and select(4, C_Item.GetItemQualityColor(quality))
         if hex then
             upgradeItemText= '|c'..hex..upgradeItemText..'|r'
         end
     end
-    if  self.upgradeItemText then--"升级：%s %s/%s"
-        self.upgradeItemText:SetText(upgradeItemText or '')
+    if  btn.upgradeItemText then--"升级：%s %s/%s"
+        btn.upgradeItemText:SetText(upgradeItemText or '')
     end
 
 
 
 
-    if createItem and not self.createItem then--"|cff00ff00<由%s制造>|r" ITEM_CREATED_BY 
+    if createItem and not btn.createItem then--"|cff00ff00<由%s制造>|r" ITEM_CREATED_BY 
         if isLeftSlot then
-            self.createItem= WoWTools_LabelMixin:Create(self, {color={r=0,g=1,b=0}, mouse=true})
-            self.createItem:SetPoint('LEFT', self, 'RIGHT',1,0)
+            btn.createItem= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}, mouse=true})
+            btn.createItem:SetPoint('LEFT', btn, 'RIGHT',1,0)
         else
-            self.createItem= WoWTools_LabelMixin:Create(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
-            self.createItem:SetPoint('RIGHT', self, 'LEFT',2,0)
+            btn.createItem= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
+            btn.createItem:SetPoint('RIGHT', btn, 'LEFT',2,0)
         end
-        self.createItem:SetScript('OnEnter', function(self2)
+        btn.createItem:SetScript('OnEnter', function(self2)
             if self2.tips then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
@@ -431,121 +564,15 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
                 self2:SetAlpha(0.3)
             end
         end)
-        self.createItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
+        btn.createItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
     end
-    if self.createItem then
-        self.createItem.tips=createItem
-        self.createItem:SetText(createItem and '|A:communities-icon-notification:10:10|a' or '')
-    end
-
-
-
-if not PlayerIsTimerunning() then
-    if not Save().hide and link then--宝石
-        local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
-        for n=1, numSockets do
-            local gemLink= select(2, C_Item.GetItemGem(link, n))
-           WoWTools_DataMixin:Load(gemLink, 'item')
-
-            local gem= self['gem'..n]
-            if not gem then
-                gem=self:CreateTexture()
-                gem.index= n
-                gem:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
-                gem:EnableMouse(true)
-                gem:SetScript('OnLeave',function(frame) GameTooltip:Hide() frame:SetAlpha(1) end)
-                gem:SetScript('OnEnter' ,function(frame)
-                    if frame.gemLink then
-                        GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-                        GameTooltip:ClearLines()
-                        GameTooltip:SetHyperlink(frame.gemLink)
-                        GameTooltip:Show()
-                        frame:SetAlpha(0.3)
-                    end
-                end)
-
-                if isLeftSlot then--左边插曹
-                    if n==1 then
-                        gem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 8, 0)
-                    else
-                        gem:SetPoint('LEFT',  self['gem'..n-1], 'RIGHT')
-                    end
-                else
-                    if n==1 then
-                        gem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', -8, 0)
-                    else
-                        gem:SetPoint('RIGHT',  self['gem'..n-1], 'LEFT')
-                    end
-                end
-                self['gem'..n]= gem
-            end
-            gem.gemLink= gemLink
-            local icon
-            if gemLink then
-                icon = select(5, C_Item.GetItemInfoInstant(gemLink))
-            end
-            if icon then
-                gem:SetTexture(icon)
-            else
-                gem:SetAtlas(gemLink and 'Islands-QuestDisable' or 'FlightPath')--'socket-hydraulic-background')
-            end
-            gem:SetShown(true)
-            --local x= isLeftSlot and 8 or -8--左边插曹
-            --x= isLeftSlot and x+ 12.3 or x- 12.3--左边插曹
-        end
-        for n=numSockets+1, MAX_NUM_SOCKETS do
-            local gem= self['gem'..n]
-            if gem then
-                gem:SetShown(false)
-            end
-        end
-    else
-        for n=1, MAX_NUM_SOCKETS do
-            local gem= self['gem'..n]
-            if gem then
-                gem:SetShown(false)
-            end
-        end
+    if btn.createItem then
+        btn.createItem.tips=createItem
+        btn.createItem:SetText(createItem and '|A:communities-icon-notification:10:10|a' or '')
     end
 
-elseif not Save().hide and self.SocketDisplay:IsShown() and link then
-    for index, frame in pairs(self.SocketDisplay.Slots) do
-        if frame and frame:IsShown() then
-            local gemID = C_Item.GetItemGemID(link, index)
-            frame.gemID= gemID
-            if not frame:IsMouseEnabled() then
-                frame:EnableMouse(true)
-                frame:SetScript('OnLeave', function(f) GameTooltip:Hide() f:SetScale(1) end)
-                frame:SetScript('OnEnter', function(f)
-                    if f.gemID then
-                        GameTooltip:SetOwner(f, "ANCHOR_LEFT")
-                        GameTooltip:ClearLines()
-                        GameTooltip:SetItemByID(f.gemID)
-                        GameTooltip:Show()
-                    end
-                    f:SetScale(1.3)
-                end)
-                self.SocketDisplay:ClearAllPoints()
-                if isLeftSlot then
-                    self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT', 8, 0)
-                else
-                    self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT', -8, 0)
-                end
-                frame:SetSize(14, 14)
-                frame:SetFrameStrata('HIGH')
-                frame.Slot:ClearAllPoints()
-                frame.Slot:SetPoint('CENTER')
-                frame.Slot:SetSize(13, 13)
-            end
-            local atlas
-            if gemID then
-                local quality= C_Item.GetItemQualityByID(gemID)--C_Item.GetItemQualityColor(quality)
-                atlas= WoWTools_DataMixin.Icon[quality]
-            end
-            frame.Slot:SetAtlas(atlas or 'character-emptysocket')
-        end
-    end
-end
+--宝石信息
+    Set_Item_Gem(btn, link, isLeftSlot)
 
 
     local du, min, max
@@ -555,28 +582,28 @@ end
             du=min/max*100
         end
     end
-    if not self.du and du and isPaperDollItemSlot then
-        self.du= CreateFrame('StatusBar', nil, self)
+    if not btn.du and du and isPaperDollItemSlot then
+        btn.du= CreateFrame('StatusBar', nil, btn)
         local wq= slot==16 or slot==17 or slot==18--武器
         if wq then
-            self.du:SetPoint('TOP', self, 'BOTTOM')
+            btn.du:SetPoint('TOP', btn, 'BOTTOM')
         elseif isLeftSlot then
-            self.du:SetPoint('RIGHT', self, 'LEFT', -1.5,0)
+            btn.du:SetPoint('RIGHT', btn, 'LEFT', -1.5,0)
         else
-            self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
+            btn.du:SetPoint('LEFT', btn, 'RIGHT', 2.5,0)
         end
         if wq then
-            self.du:SetOrientation('HORIZONTAL')
-            self.du:SetSize(self:GetHeight(),4)--h37
+            btn.du:SetOrientation('HORIZONTAL')
+            btn.du:SetSize(btn:GetHeight(),4)--h37
         else
-            self.du:SetOrientation("VERTICAL")
-            self.du:SetSize(4, self:GetHeight())--h37
+            btn.du:SetOrientation("VERTICAL")
+            btn.du:SetSize(4, btn:GetHeight())--h37
         end
-        self.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        self.du:EnableMouse(true)
-        self.du:SetMinMaxValues(0, 100)
-        self.du:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(self2. du and 1 or 0) end)
-        self.du:SetScript('OnEnter', function(self2)
+        btn.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        btn.du:EnableMouse(true)
+        btn.du:SetMinMaxValues(0, 100)
+        btn.du:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(self2. du and 1 or 0) end)
+        btn.du:SetScript('OnEnter', function(self2)
             if self2.du then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
@@ -585,26 +612,26 @@ end
                 self2:SetAlpha(0.3)
             end
         end)
-        self.du.texture= self.du:CreateTexture(nil, "BACKGROUND")
-        self.du.texture:SetAllPoints(self.du)
-        self.du.texture:SetColorTexture(1,0,0)
-        self.du.texture:SetAlpha(0.3)
+        btn.du.texture= btn.du:CreateTexture(nil, "BACKGROUND")
+        btn.du.texture:SetAllPoints()
+        btn.du.texture:SetColorTexture(1,0,0)
+        btn.du.texture:SetAlpha(0.3)
     end
-    if self.du then
+    if btn.du then
         if du then
             if du and du >70 then
-                self.du:SetStatusBarColor(0,1,0)
+                btn.du:SetStatusBarColor(0,1,0)
             elseif du and du >30 then
-                self.du:SetStatusBarColor(1,1,0)
+                btn.du:SetStatusBarColor(1,1,0)
             else
-                self.du:SetStatusBarColor(1,0,0)
+                btn.du:SetStatusBarColor(1,0,0)
             end
         end
-        self.du:SetValue(du or 0)
-        self.du.du=du
-        self.du.min= min
-        self.du.max= max
-        self.du:SetAlpha(du and 1 or 0)
+        btn.du:SetValue(du or 0)
+        btn.du.du=du
+        btn.du.min= min
+        btn.du.max= max
+        btn.du:SetAlpha(du and 1 or 0)
     end
 end
 
