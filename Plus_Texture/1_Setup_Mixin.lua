@@ -104,7 +104,11 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
     if not frame or not frame.GetRegions then
         return
     end
-    tab=tab or {}
+    if type(tab)=='number' then
+        tab={alpha=tab}
+    else
+        tab=tab or {}
+    end
 
     local notColor= tab.notColor
     local alpha= tab.notAlpha and 1 or tab.alpha or self.min
@@ -335,6 +339,7 @@ function WoWTools_TextureMixin:SetButton(btn, tabOrAlpha)
         tab= tabOrAlpha
         tab.alpha=tab.alpha or 0.5
     end
+
     if not tab.show then
         tab.show= {}
         local p= btn:GetPushedTexture()

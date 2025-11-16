@@ -326,7 +326,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetEditBox(AuctionHouseFrame.SearchBar.SearchBox)
 
 --出售, 商品
-    self:SetButton(AuctionHouseFrame.CommoditiesSellFrame.PostButton, 1)
+    self:SetButton(AuctionHouseFrame.CommoditiesSellFrame.PostButton, {alpha=1})
     self:SetNineSlice(AuctionHouseFrame.CommoditiesSellList)
     self:SetScrollBar(AuctionHouseFrame.CommoditiesSellList)
     self:SetNineSlice(AuctionHouseFrame.CommoditiesSellFrame)
@@ -342,7 +342,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
 
 --出售，物品
     self:SetCheckBox(AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton)
-    self:SetButton(AuctionHouseFrame.ItemSellFrame.PostButton, 1)
+    self:SetButton(AuctionHouseFrame.ItemSellFrame.PostButton, {alpha=1})
     self:SetNineSlice(AuctionHouseFrame.ItemSellList)
     self:SetScrollBar(AuctionHouseFrame.ItemSellList)
 
@@ -369,7 +369,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetScrollBar(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
     self:SetNineSlice(AuctionHouseFrame.WoWTokenResults)
 --购买
-    self:SetButton(AuctionHouseFrame.ItemBuyFrame.ItemList.RefreshFrame.RefreshButton, 1)
+    self:SetButton(AuctionHouseFrame.ItemBuyFrame.ItemList.RefreshFrame.RefreshButton, {alpha=1})
     self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay)
     self:SetScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
     self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList)
@@ -855,8 +855,8 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI()
     self:SetButton(ArchaeologyFrameInfoButton)
-    self:SetButton(ArchaeologyFrameSummaryPagePrevPageButton, 1)
-    self:SetButton(ArchaeologyFrameSummaryPageNextPageButton, 1)
+    self:SetButton(ArchaeologyFrameSummaryPagePrevPageButton, {alpha=1})
+    self:SetButton(ArchaeologyFrameSummaryPageNextPageButton, {alpha=1})
     self:SetButton(ArchaeologyFrameCloseButton)
     self:SetNineSlice(ArchaeologyFrameInset)
     self:HideTexture(ArchaeologyFrameBg)
@@ -1034,7 +1034,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
 
 
     self:SetButton(CooldownViewerSettingsCloseButton)
-    self:SetButton(CooldownViewerSettings.SettingsDropdown, 1)
+    self:SetButton(CooldownViewerSettings.SettingsDropdown, {alpha=1})
     self:SetEditBox(CooldownViewerSettings.SearchBox)
     self:SetNineSlice(CooldownViewerSettings)
 
