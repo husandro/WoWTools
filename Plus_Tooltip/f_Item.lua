@@ -162,9 +162,17 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
 end
 
 
---GetCombatRatingBonusForCombatRatingValue(, value)
---[ITEM_MOD_CR_MULTISTRIKE_SHORT]= CR_MULTISTRIKE,--12 溅射
-local StatsFunc={
+
+
+
+
+
+
+
+
+
+
+local StatsValue={
     ['ITEM_MOD_VERSATILITY']= CR_VERSATILITY_DAMAGE_DONE,--全能 29
 
     ['ITEM_MOD_HASTE_RATING_SHORT']= CR_HASTE_MELEE,--急速 18
@@ -177,18 +185,15 @@ local StatsFunc={
     ['ITEM_MOD_BLOCK_RATING_SHORT']= CR_BLOCK,--格挡 5
     ['ITEM_MOD_PARRY_RATING_SHORT'] = CR_PARRY,--招架 4
 }
-
-
-
-
-local function Set_ItemStatus(tooltip, itemLink, itemID, itemQuality)
+--次属性 %值
+local function Set_ItemStatus(tooltip, itemLink)
     local stats= C_Item.GetItemStats(itemLink)
 
     local find
     for stat, va in pairs(stats) do
         local value= nil
-        if StatsFunc[stat] then
-            value= GetCombatRatingBonusForCombatRatingValue(StatsFunc[stat], va)
+        if StatsValue[stat] then
+            value= GetCombatRatingBonusForCombatRatingValue(StatsValue[stat], va)
             if value then
                 value= format('%.2f%%', value)
             end
@@ -215,6 +220,13 @@ local function Set_ItemStatus(tooltip, itemLink, itemID, itemQuality)
         end
     end
 end
+
+
+
+
+
+
+
 
 
 
@@ -453,7 +465,10 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 --装备
     if classID==2 or classID==4 then
         textLeft, text2Left= Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
-        Set_ItemStatus(tooltip, itemLink, itemID, itemQuality)
+--次属性 %值
+        if not PlayerIsTimerunning() then
+            Set_ItemStatus(tooltip, itemLink)
+        end
 --炉石
     elseif itemID==6948 then
         textLeft= WoWTools_TextMixin:CN(GetBindLocation())

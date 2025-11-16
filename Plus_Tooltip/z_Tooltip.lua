@@ -145,6 +145,9 @@ function WoWTools_TooltipMixin.Frames:ShoppingTooltip1()
 --装备，对比，提示
     for i=1, 2 do
         local tooltip= _G['ShoppingTooltip'..i]
+
+        WoWTools_TextureMixin:SetFrame(tooltip.CompareHeader, {alpha=1})--11.2.7才有
+
         tooltip.Portrait2= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
         tooltip.Portrait2:SetPoint('TOPRIGHT',-2, -3)
         tooltip.Portrait2:SetSize(40,40)
