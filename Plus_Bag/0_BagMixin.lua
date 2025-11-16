@@ -28,6 +28,7 @@ end
 
 --查询，背包里物品，itemName，itemLink，itemID，itemLocation，merchantIndex，BuybackIndex，itemKey，bag，guidBank，lootIndex
 function WoWTools_BagMixin:Find(find, tab)
+
     if not IsBagOpen(Enum.BagIndex.Backpack) and not IsBagOpen(NUM_TOTAL_EQUIPPED_BAG_SLOTS) then
         return
     end

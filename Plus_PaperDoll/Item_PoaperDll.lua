@@ -49,7 +49,6 @@ local function set_Engineering(btn, slot, link, use, isPaperDollItemSlot)
             or (slot==6 and C_TradeSkillUI.IsRecipeProfessionLearned(55016))
         )
         or use
-        or Save().hide
         or not link
         or not isPaperDollItemSlot
     then
@@ -101,7 +100,7 @@ local function set_Engineering(btn, slot, link, use, isPaperDollItemSlot)
                 GameTooltip:SetSpellByID(frame.spell)
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '商业技能' or TRADESKILLS), WoWTools_DataMixin.Icon.right)
-                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需求' or NEED), (WoWTools_DataMixin.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP)..')')
+                --GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需求' or NEED), (WoWTools_DataMixin.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP)..')')
                 GameTooltip:Show()
         end)
         btn.engineering:SetScript('OnLeave',GameTooltip_Hide)
@@ -155,7 +154,7 @@ local function set_no_Enchant(btn, slot, find, isPaperDollItemSlot)--附魔，�
     end
 
     local tab
-    if not find and not Save().hide and isPaperDollItemSlot then
+    if find and isPaperDollItemSlot then
         tab=get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         if tab and not btn.noEnchant then
             local h=btn:GetHeight()/3
@@ -192,7 +191,7 @@ local function set_no_Enchant(btn, slot, find, isPaperDollItemSlot)--附魔，�
                         GameTooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
                     end
                     GameTooltip:Show()
-                    WoWTools_BagMixin:Find(true, {bag={bag=slotID, slot=slotID}})
+                    WoWTools_BagMixin:Find(true, {bag={bag=bagID, slot=slotID}})
                 end
                 self:SetAlpha(0.3)
             end)
@@ -252,7 +251,7 @@ end
 local function Set_Item_Gem(self, link, isLeftSlot)
 
     if not PlayerIsTimerunning() then
-        if not Save().hide and link then--宝石
+        if link then--宝石
             local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
             for n=1, numSockets do
                 local gemLink= select(2, C_Item.GetItemGem(link, n))
@@ -319,7 +318,7 @@ local function Set_Item_Gem(self, link, isLeftSlot)
             end
         end
 
-    elseif not Save().hide and self.SocketDisplay:IsShown() and link then
+    elseif self.SocketDisplay:IsShown() and link then
         for index, frame in pairs(self.SocketDisplay.Slots) do
             if frame and frame:IsShown() then
                 local gemID = C_Item.GetItemGemID(link, index)
@@ -369,10 +368,98 @@ end
 
 
 
+
+
+
+
+
+--耐久度
+local function Set_Item_Durability(btn, link, slot, isPaperDollItemSlot, isLeftSlot)
+    local du, min, max
+    if link then
+        min, max=GetInventoryItemDurability(slot)
+        if min and max and max>0 then
+            du=min/max*100
+        end
+    end
+    if not btn.du and du and isPaperDollItemSlot then
+        btn.du= CreateFrame('StatusBar', nil, btn)
+        local wq= slot==16 or slot==17 or slot==18--武器
+        if wq then
+            btn.du:SetPoint('TOP', btn, 'BOTTOM')
+        elseif isLeftSlot then
+            btn.du:SetPoint('RIGHT', btn, 'LEFT', -1.5,0)
+        else
+            btn.du:SetPoint('LEFT', btn, 'RIGHT', 2.5,0)
+        end
+        if wq then
+            btn.du:SetOrientation('HORIZONTAL')
+            btn.du:SetSize(btn:GetHeight(),4)--h37
+        else
+            btn.du:SetOrientation("VERTICAL")
+            btn.du:SetSize(4, btn:GetHeight())--h37
+        end
+        btn.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        btn.du:EnableMouse(true)
+        btn.du:SetMinMaxValues(0, 100)
+        btn.du:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(self2. du and 1 or 0) end)
+        btn.du:SetScript('OnEnter', function(self2)
+            if self2.du then
+                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.onlyChinese and '耐久度 %d / %d' or DURABILITY_TEMPLATE, min,  max), format('%i%%', self2.du))
+                GameTooltip:Show()
+                self2:SetAlpha(0.3)
+            end
+        end)
+        btn.du.texture= btn.du:CreateTexture(nil, "BACKGROUND")
+        btn.du.texture:SetAllPoints()
+        btn.du.texture:SetColorTexture(1,0,0)
+        btn.du.texture:SetAlpha(0.3)
+    end
+    if btn.du then
+        if du then
+            if du and du >70 then
+                btn.du:SetStatusBarColor(0,1,0)
+            elseif du and du >30 then
+                btn.du:SetStatusBarColor(1,1,0)
+            else
+                btn.du:SetStatusBarColor(1,0,0)
+            end
+        end
+        btn.du:SetValue(du or 0)
+        btn.du.du=du
+        btn.du.min= min
+        btn.du.max= max
+        btn.du:SetAlpha(du and 1 or 0)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
     if Save().hide then
         link= nil
     end
+
     local enchant, use, pvpItem, upgradeItem, createItem
     local unit = (not isPaperDollItemSlot and InspectFrame) and InspectFrame.unit or 'player'
     local isLeftSlot= WoWTools_PaperDollMixin:Is_Left_Slot(slot)
@@ -409,7 +496,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
         btn.enchant:SetShown(enchant and true or false)
     end
 
-    set_no_Enchant(btn, slot, enchant and true or false, isPaperDollItemSlot)--附魔，按钮
+    set_no_Enchant(btn, slot, not enchant and link, isPaperDollItemSlot)--附魔，按钮
 
     use=  link and select(2, C_Item.GetItemSpell(link))--物品是否可使用
     if use and not btn.use  then
@@ -423,12 +510,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
         end
         btn.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
         btn.use:EnableMouse(true)
-        --[[btn.use:SetScript('OnMouseDown', function(f)
-            local info=C_TradeSkillUI.GetRecipeInfo(f.spellID)
-            if info and info.recipeID then
-                WoWTools_LoadUIMixin:Professions(info.recipeID)
-            end
-        end)]]
+
         btn.use:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
         btn.use:SetScript('OnEnter' ,function(self2)
             if self2.spellID then
@@ -573,66 +655,8 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
 
 --宝石信息
     Set_Item_Gem(btn, link, isLeftSlot)
-
-
-    local du, min, max
-    if link then
-        min, max=GetInventoryItemDurability(slot)
-        if min and max and max>0 then
-            du=min/max*100
-        end
-    end
-    if not btn.du and du and isPaperDollItemSlot then
-        btn.du= CreateFrame('StatusBar', nil, btn)
-        local wq= slot==16 or slot==17 or slot==18--武器
-        if wq then
-            btn.du:SetPoint('TOP', btn, 'BOTTOM')
-        elseif isLeftSlot then
-            btn.du:SetPoint('RIGHT', btn, 'LEFT', -1.5,0)
-        else
-            btn.du:SetPoint('LEFT', btn, 'RIGHT', 2.5,0)
-        end
-        if wq then
-            btn.du:SetOrientation('HORIZONTAL')
-            btn.du:SetSize(btn:GetHeight(),4)--h37
-        else
-            btn.du:SetOrientation("VERTICAL")
-            btn.du:SetSize(4, btn:GetHeight())--h37
-        end
-        btn.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        btn.du:EnableMouse(true)
-        btn.du:SetMinMaxValues(0, 100)
-        btn.du:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(self2. du and 1 or 0) end)
-        btn.du:SetScript('OnEnter', function(self2)
-            if self2.du then
-                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.onlyChinese and '耐久度 %d / %d' or DURABILITY_TEMPLATE, min,  max), format('%i%%', self2.du))
-                GameTooltip:Show()
-                self2:SetAlpha(0.3)
-            end
-        end)
-        btn.du.texture= btn.du:CreateTexture(nil, "BACKGROUND")
-        btn.du.texture:SetAllPoints()
-        btn.du.texture:SetColorTexture(1,0,0)
-        btn.du.texture:SetAlpha(0.3)
-    end
-    if btn.du then
-        if du then
-            if du and du >70 then
-                btn.du:SetStatusBarColor(0,1,0)
-            elseif du and du >30 then
-                btn.du:SetStatusBarColor(1,1,0)
-            else
-                btn.du:SetStatusBarColor(1,0,0)
-            end
-        end
-        btn.du:SetValue(du or 0)
-        btn.du.du=du
-        btn.du.min= min
-        btn.du.max= max
-        btn.du:SetAlpha(du and 1 or 0)
-    end
+--耐久度
+    Set_Item_Durability(btn, link, slot, isPaperDollItemSlot, isLeftSlot)
 end
 
 
@@ -648,7 +672,8 @@ end
 
 
 local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
-    if not frame.slotText and not Save().hide and not isEquipped then
+    local show= not Save().hide
+    if not frame.slotText and show and not isEquipped then
         frame.slotText=WoWTools_LabelMixin:Create(frame, {color=true, justifyH='CENTER', mouse=true})
         frame.slotText:EnableMouse(true)
         frame.slotText:SetAlpha(0.3)
@@ -672,7 +697,7 @@ local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
         frame.slotText.slot= slot
         frame.slotText.name= frame:GetName()
         frame.slotText:SetText(slot)
-        frame.slotText:SetShown(not Save().hide and not isEquipped)
+        frame.slotText:SetShown(show and not isEquipped)
     end
 end
 
@@ -693,17 +718,18 @@ local function Init()
             return
         end
         if PaperDoll_IsEquippedSlot(slot) then
+            local show= not Save().hide
             local textureName = GetInventoryItemTexture("player", slot)
-            local hasItem = textureName ~= nil
-            local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
+            local hasItem = textureName ~= nil and show
+            local link= hasItem and GetInventoryItemLink('player', slot) or nil--装等                
             if slot~=4 and slot~=19 then
                 set_Item_Tips(self, slot, link, true)
-                WoWTools_ItemMixin:SetItemStats(self, not Save().hide and link or nil, {point=self.icon})
+                WoWTools_ItemMixin:SetItemStats(self, link, {point=self.icon})
                 WoWTools_PaperDollMixin:Settings_Tab3()
                 WoWTools_PaperDollMixin:Settings_Tab1()
             end
             set_Slot_Num_Label(self, slot, link and true or nil)--栏位
-            self.icon:SetAlpha((hasItem or Save().hide) and 1 or 0.3)--图标透明度
+            self.icon:SetAlpha((hasItem or not show) and 1 or 0.3)--图标透明度
 
         elseif InventSlot_To_ContainerSlot[slot] then
             local numFreeSlots, numAllSlots, slot2
