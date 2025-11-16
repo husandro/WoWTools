@@ -15,11 +15,11 @@ end
 --CanAccessObject(obj)
 function WoWTools_DataMixin:Hook(obj, ...)
     local t= type(obj)
-    local o= t=='string' and _G[obj] or (t=='table' and obj)
+    local o= t=='string' and _G[obj] or obj
     if o then
         t= type(o)
         if t=='table' then
-            if (not o.IsForbidden or not o:IsForbidden()) then
+            if (not o.IsForbidden or not select(2, o:IsForbidden())) then
                 hooksecurefunc(obj, ...)
                 return
             elseif WoWTools_DataMixin.Player.husandro then

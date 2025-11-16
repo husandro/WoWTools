@@ -66,10 +66,30 @@ end
 
 --容器，背包
 function WoWTools_ItemMixin.Frames:ContainerFrame1()
+
+    local function Set_BagInfo(frame)
+        print('aaaaaaa')
+        for _, itemButton in frame:EnumerateValidItems() do
+            if itemButton.hasItem then
+                local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
+                WoWTools_ItemMixin:SetupInfo(itemButton, {bag={bag=bagID, slot=slotID}})
+            else
+                WoWTools_ItemMixin:SetupInfo(itemButton)
+            end
+        end
+    end
+--ContainerFrame1 到 13 11.2版本是 6
+    for bagID= 1, NUM_CONTAINER_FRAMES do--NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do--6
+        WoWTools_DataMixin:Hook(_G['ContainerFrame'..bagID], 'UpdateItems', Set_BagInfo)
+    end
+--ContainerFrameCombinedBags
+    WoWTools_DataMixin:Hook(ContainerFrameCombinedBags, 'UpdateItems', Set_BagInfo)
+
+
     if C_AddOns.IsAddOnLoaded("Bagnon") then
         local itemButton = Bagnon.ItemSlot or Bagnon.Item
-        if (itemButton) and (itemButton.Update)  then
-            WoWTools_DataMixin:Hook(itemButton, 'Update', function(frame)
+        if itemButton and itemButton.Update then
+            hooksecurefunc(itemButton, 'Update', function(frame)
                 local slot, bag= frame:GetSlotAndBagID()
                 if slot and bag then
                     local slotID, bagID= frame:GetSlotAndBagID()
@@ -77,7 +97,6 @@ function WoWTools_ItemMixin.Frames:ContainerFrame1()
                 end
             end)
         end
-
 
     elseif C_AddOns.IsAddOnLoaded("Baggins") then
         WoWTools_DataMixin:Hook(_G['Baggins'], 'UpdateItemButton', function(_, _, button, bagID, slotID)
@@ -99,25 +118,6 @@ function WoWTools_ItemMixin.Frames:ContainerFrame1()
             end
             WoWTools_DataMixin:Hook(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
         end
-
-    else
-
-        local function Set_BagInfo(frame)
-            for _, itemButton in frame:EnumerateValidItems() do
-                if itemButton.hasItem then
-                    local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
-                    WoWTools_ItemMixin:SetupInfo(itemButton, {bag={bag=bagID, slot=slotID}})
-                else
-                    WoWTools_ItemMixin:SetupInfo(itemButton)
-                end
-            end
-        end
---ContainerFrame1 到 13 11.2版本是 6
-        for bagID= 1, NUM_CONTAINER_FRAMES do--NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do--6
-            WoWTools_DataMixin:Hook(_G['ContainerFrame'..bagID], 'UpdateItems', Set_BagInfo)
-        end
---ContainerFrameCombinedBags
-        WoWTools_DataMixin:Hook(ContainerFrameCombinedBags, 'UpdateItems', Set_BagInfo)
     end
 end
 --[[

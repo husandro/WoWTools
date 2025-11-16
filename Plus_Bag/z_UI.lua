@@ -118,7 +118,13 @@ end
 --NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do--13 NUM_CONTAINER_FRAMES = 13
 --or i== NUM_TOTAL_BAG_FRAMES+2 then
 function WoWTools_MoveMixin.Frames:ContainerFrame1()
-    if C_AddOns.IsAddOnLoaded('Blizzmove') then return end
+    if C_AddOns.IsAddOnLoaded('Blizzmove') then
+        print(self.addName..WoWTools_DataMixin.Icon.icon2,
+            format(WoWTools_DataMixin.onlyChinese and '|cffff0000与%s发生冲突！|r' or ALREADY_BOUND, 'Blizzmove'),
+            'ContainerFrame1', WoWTools_TextMixin:GetEnabeleDisable(false)
+        )
+        return
+    end
 
     for i=1, NUM_CONTAINER_FRAMES do
         local frame= _G['ContainerFrame'..i]
