@@ -68,7 +68,6 @@ end
 function WoWTools_ItemMixin.Frames:ContainerFrame1()
 
     local function Set_BagInfo(frame)
-        print('aaaaaaa')
         for _, itemButton in frame:EnumerateValidItems() do
             if itemButton.hasItem then
                 local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
@@ -85,7 +84,7 @@ function WoWTools_ItemMixin.Frames:ContainerFrame1()
 --ContainerFrameCombinedBags
     WoWTools_DataMixin:Hook(ContainerFrameCombinedBags, 'UpdateItems', Set_BagInfo)
 
-
+--其它插件
     if C_AddOns.IsAddOnLoaded("Bagnon") then
         local itemButton = Bagnon.ItemSlot or Bagnon.Item
         if itemButton and itemButton.Update then
