@@ -20,7 +20,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
 
     local function set_script(frame)
         WoWTools_DataMixin:Hook(frame, 'UpdateItems', function(f)
-            local bg= self:Save().bagBorderAlpha or 0.3
+            local bg= self:Save().bagBorderAlpha or 0.2
             for _, btn in f:EnumerateValidItems() do
                 if not btn.isSetTexture then
                     self:SetAlphaColor(btn.ItemSlotBackground, nil, nil, 0)
@@ -39,17 +39,54 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
         self:SetButton(frame.CloseButton)
     end
 
+    local function Refresh_Bag(frame)
+        if InCombatLockdown() or not frame.AddItemsForRefresh then
+            return
+        end
+        if ContainerFrameCombinedBags and ContainerFrameCombinedBags:IsVisible() and ContainerFrameCombinedBags.AddItemsForRefresh then
+            ContainerFrameCombinedBags:AddItemsForRefresh()
+        end
+        for bagID= 1, NUM_CONTAINER_FRAMES do--NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do--6
+        local f= _G['ContainerFrame'..bagID]
+            if f and f:IsVisible() and f.AddItemsForRefresh then
+                f:AddItemsForRefresh()
+            end
+        end
+    end
+
+    local function Set_BGMenu(frame)
+        frame.Bg:SetFrameStrata('LOW')
+        set_script(frame)
+        self:Init_BGMenu_Frame(frame, {
+            settings=function(icon, texture, alpha)
+                icon:GetParent().Bg:SetAlpha(texture and 0 or alpha or 1)
+            end,
+            addMenu=function(f, root)
+                root:CreateSpacer()
+                WoWTools_MenuMixin:CreateSlider(root, {
+                    getValue=function()
+                            return self:Save().bagBorderAlpha or 0.2
+                        end,
+                    setValue=function(value)
+                            self:Save().bagBorderAlpha = value
+                            Refresh_Bag(f)
+                        end,
+                    name='Border',
+                    minValue=0,
+                    maxValue=1,
+                    step=0.01,
+                    bit='%.2f',
+                })
+                root:CreateSpacer()
+            end
+        })
+    end
+
 --ContainerFrame1 到 13 11.2版本是 6
     for bagID= 1, NUM_CONTAINER_FRAMES do--NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do--6
         local frame= _G['ContainerFrame'..bagID]
         if frame then
-            frame.Bg:SetFrameStrata('LOW')
-            self:Init_BGMenu_Frame(frame, {
-                settings=function(icon, texture, alpha)
-                    icon:GetParent().Bg:SetAlpha(texture and 0 or alpha or 1)
-                end
-            })
-            set_script(frame)
+            Set_BGMenu(frame)
         end
     end
     self:HideFrame(ContainerFrame1MoneyFrame.Border)
@@ -58,34 +95,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:HideFrame(ContainerFrameCombinedBags.MoneyFrame.Border)
     self:HideFrame(BackpackTokenFrame.Border)
     self:SetEditBox(BagItemSearchBox)
-    set_script(ContainerFrameCombinedBags)
-
-
-    self:Init_BGMenu_Frame(ContainerFrameCombinedBags, {
-        settings=function(icon, texture, alpha)
-            icon:GetParent().Bg:SetAlpha(texture and 0 or alpha or 1)
-        end,
-        addMenu=function(frame, root)
-            root:CreateSpacer()
-            WoWTools_MenuMixin:CreateSlider(root, {
-                getValue=function()
-                        return self:Save().bagBorderAlpha or 0.3
-                    end,
-                setValue=function(value)
-                        self:Save().bagBorderAlpha = value
-                        if frame.AddItemsForRefresh and not InCombatLockdown() then
-                            frame:AddItemsForRefresh()
-                        end
-                    end,
-                name='Border',
-                minValue=0,
-                maxValue=1,
-                step=0.01,
-                bit='%.2f',
-            })
-            root:CreateSpacer()
-        end
-    })
+    Set_BGMenu(ContainerFrameCombinedBags)
 end
 
 

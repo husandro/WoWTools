@@ -187,11 +187,11 @@ local function Init()
     end
 
     --if not MainMenuBarBackpackButton.OnClick then
-    --[[MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+    MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not InCombatLockdown() then--and not C_CVar.GetCVarBool("combinedBags") then
             ToggleAllBags()
         end
-    end)]]
+    end)
 
     MainMenuBarBackpackButton:EnableMouseWheel(true)
     MainMenuBarBackpackButton:SetScript('OnMouseWheel', function(_, d)
