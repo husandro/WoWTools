@@ -205,7 +205,7 @@ function WoWTools_LoadUIMixin:WeeklyRewards()
     if not WeeklyRewardsFrame then
         WeeklyRewards_LoadUI()
     end
-    
+
     if WeeklyRewardsFrame and WeeklyRewardsFrame:IsVisible()then
         WeeklyRewardsFrame:Hide()
     else
@@ -320,7 +320,7 @@ function WoWTools_LoadUIMixin:SpellBook(index, spellID)
     if InCombatLockdown() then
         return
     end
-    
+
     do
         if not PlayerSpellsFrame then
             PlayerSpellsFrame_LoadUI();

@@ -1,5 +1,10 @@
---界面, 副本击杀
---Blizzard_EncounterJournal.lua
+--[[
+界面, 副本击杀
+Blizzard_EncounterJournal.lua
+name, id, timeLimit, texture, backgroundTexture, mapID = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+journalInstanceID = C_EncounterJournal.GetInstanceForGameMap(mapID)
+]]
+
 
 local function Save()
     return WoWToolsSave['Adventure_Journal']
@@ -39,12 +44,6 @@ local function Init_Fvorite_Menu(self, root)
 end
 
 
-
-
---[[
-name, id, timeLimit, texture, backgroundTexture, mapID = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-journalInstanceID = C_EncounterJournal.GetInstanceForGameMap(mapID)
-]]
 
 
 

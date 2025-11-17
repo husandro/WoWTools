@@ -124,6 +124,7 @@ local function Init_Menu(self, root)
 --打开选项界面
     WoWTools_MenuMixin:OpenOptions(root, {
         name=addName,
+        name2= self.name,
         category=WoWTools_OtherMixin.Category
     })
 end
@@ -161,9 +162,12 @@ local function Create_Button(frame, point)
     frame.achievementButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
+        
         local tab, count= Get_List_Tab(self.instanceID)
+        
         GameTooltip:AddDoubleLine(
-            addName..WoWTools_DataMixin.Icon.icon2..(count and '|cffffffff'..count or ''),
+            (self.name or addName)
+            ..WoWTools_DataMixin.Icon.icon2..(count and '|cffffffff'..count or ''),
             WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE
         )
         if tab then
@@ -612,7 +616,12 @@ local function Init_EncounterJournal()
             if not btn.achievementButton then
                 Create_Button(btn, function(b) b:SetPoint('TOPRIGHT', 0, 3) end)
             end
-            btn.achievementButton.instanceID = btn.instanceID and select(10, EJ_GetInstanceInfo(btn.instanceID)) or nil
+            local name, _, instanceID
+            if btn.instanceID then
+                name, _, _, _, _, _, _, _, _, instanceID= EJ_GetInstanceInfo(btn.instanceID)--journalInstanceID
+            end
+            btn.achievementButton.instanceID = instanceID
+            btn.achievementButton.name=  name
             btn.achievementButton:set_text()
         end
     end

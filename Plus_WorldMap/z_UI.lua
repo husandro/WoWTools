@@ -7,7 +7,6 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     self:SetNineSlice(WorldMapFrame.BorderFrame)
     self:HideTexture(WorldMapFrameBg)
-    self:SetAlphaColor(QuestMapFrame.Background)
     self:SetNavBar(WorldMapFrame)
 
     self:HideTexture(WorldMapFrame.BorderFrame.InsetBorderTop)
@@ -19,9 +18,10 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     end)
 
 
-
     self:SetScrollBar(QuestMapDetailsScrollFrame)
 
+    self:SetAlphaColor(QuestMapFrame.Background)
+    self:SetUIButton(QuestMapFrame.QuestsFrame.DetailsFrame.BackFrame.BackButton)
     self:SetFrame(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, {alpha=0})
     self:SetUIButton(QuestMapFrame.QuestsFrame.DetailsFrame.AbandonButton)
     self:SetUIButton(QuestMapFrame.QuestsFrame.DetailsFrame.ShareButton)
@@ -39,7 +39,6 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetScrollBar(QuestMapFrame.QuestsFrame.CampaignOverview.ScrollFrame)
     self:SetAlphaColor(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame.Border, true)
 
-
     self:HideTexture(QuestMapFrame.QuestsTab.Background)
     self:HideTexture(QuestMapFrame.QuestsTab.SelectedTexture)
 
@@ -48,7 +47,19 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetFrame(QuestMapFrame.MapLegend.BorderFrame, {alpha=0})
     self:HideTexture(QuestMapFrame.MapLegendTab.Background)
 
-
+--事件
+    if QuestMapFrame.EventsFrame then--11.2.7才有
+        self:SetFrame(QuestMapFrame.EventsFrame, {alpha=0})
+        self:SetScrollBar(QuestMapFrame.EventsFrame)
+        self:HideTexture(QuestMapFrame.EventsFrame.BorderFrame.Border)
+        self:SetAlphaColor(QuestMapFrame.EventsFrame.ScrollBox.Background, nil, true)
+        WoWTools_DataMixin:Hook(EventSchedulerOngoingEntryMixin, 'Init', function(frame)
+            self:SetAlphaColor(frame.Background, true)
+        end)
+        WoWTools_DataMixin:Hook(EventSchedulerBaseLabelMixin, 'Init', function(frame)
+            self:SetAlphaColor(frame.Background, true)
+        end)
+    end
 
     self:SetFrame(QuestScrollFrame.BorderFrame, {alpha=0})
     self:SetScrollBar(QuestScrollFrame)
@@ -90,19 +101,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     self:SetNineSlice(QuestScrollFrame.CampaignTooltip, 0.5, true)
 
---事件
-    if QuestMapFrame.EventsFrame then--11.2.7才有
-        self:SetFrame(QuestMapFrame.EventsFrame, {alpha=0})
-        self:SetScrollBar(QuestMapFrame.EventsFrame)
-        self:HideTexture(QuestMapFrame.EventsFrame.BorderFrame.Border)
-        self:SetAlphaColor(QuestMapFrame.EventsFrame.ScrollBox.Background, nil, true)
-        WoWTools_DataMixin:Hook(EventSchedulerOngoingEntryMixin, 'Init', function(frame)
-            self:SetAlphaColor(frame.Background, true)
-        end)
-        WoWTools_DataMixin:Hook(EventSchedulerBaseLabelMixin, 'Init', function(frame)
-            self:SetAlphaColor(frame.Background, true)
-        end)
-    end
+
 
     self:Init_BGMenu_Frame(WorldMapFrame, {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer,

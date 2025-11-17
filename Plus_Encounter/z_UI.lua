@@ -256,8 +256,8 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     --self:SetMenu(EncounterJournalInstanceSelect.ExpansionDropdown)
 
 --首领，信息
-    self:HideFrame(EncounterJournalEncounterFrameInfo)
-    
+    --self:HideFrame(EncounterJournalEncounterFrameInfo)
+
     --self:SetTabButton(EncounterJournalEncounterFrameInfoOverviewTab, 0.8)
     --self:SetTabButton(EncounterJournalEncounterFrameInfoLootTab, 0.8)
     --self:SetTabButton(EncounterJournalEncounterFrameInfoBossTab, 0.8)
