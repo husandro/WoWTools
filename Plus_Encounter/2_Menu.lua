@@ -35,7 +35,7 @@ local function Init_Menu(self, root)
         WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     end)
 
---专精拾取
+--[[专精拾取
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
     function()
@@ -54,7 +54,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().lootScale= nil
         WoWTools_DataMixin:Call('EncounterJournal_Refresh')
-    end)
+    end)]]
 
 --打开选项界面
     root:CreateDivider()
