@@ -139,7 +139,7 @@ end
 
 
 local function Create_Button(frame, point)
-    frame.achievementButton= CreateFrame('DropdownButton', 'WoWToolsAchievementsMenuButton', frame)
+    frame.achievementButton= CreateFrame('DropdownButton', 'WoWToolsEJAchievementsMenuButton', frame)
 
     frame.achievementButton.Text= frame.achievementButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')
     frame.achievementButton.Text:SetPoint('CENTER')
@@ -162,9 +162,9 @@ local function Create_Button(frame, point)
     frame.achievementButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
-        
+
         local tab, count= Get_List_Tab(self.instanceID)
-        
+
         GameTooltip:AddDoubleLine(
             (self.name or addName)
             ..WoWTools_DataMixin.Icon.icon2..(count and '|cffffffff'..count or ''),
@@ -183,8 +183,6 @@ local function Create_Button(frame, point)
     end)
 
     frame.achievementButton:SetupMenu(Init_Menu)
-
-
 end
 
 
