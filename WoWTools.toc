@@ -364,7 +364,7 @@ Plus_Encounter\1_Init.lua
 Plus_Encounter\2_Menu.lua
 Plus_Encounter\Item_Boss.lua
 Plus_Encounter\Item_Sets.lua
-Plus_Encounter\Loot_Specialization.lua
+Plus_Encounter\z_LootSpec.lua
 Plus_Encounter\MapButton_OnEnter.lua
 Plus_Encounter\Model_Boss.lua
 Plus_Encounter\MonthlyActivities.lua

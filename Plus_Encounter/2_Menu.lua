@@ -42,7 +42,7 @@ local function Init_Menu(self, root)
         return not Save().hideLootSpec
     end, function()
         Save().hideLootSpec= not Save().hideLootSpec and true or nil
-        WoWTools_EncounterMixin:Init_Specialization_Loot()
+        WoWTools_EncounterMixin:Init_LootSpec()
     end)
 
 --打开选项界面

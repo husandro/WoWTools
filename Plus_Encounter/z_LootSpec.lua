@@ -35,13 +35,14 @@ local function Init_Button(btn)
             btn.specButtons[index].classID= classInfo.classID
             btn.specButtons[index].classFile= classInfo.classFile
             btn.specButtons[index].name= classInfo.name
-            btn.specButtons[index].settings= function(self, data)
+            btn.specButtons[index].settings= function(self, data)--{bossID index link rootSectionID, desctiption, name}
                 local icon
                 local alpha= 1
 
                 icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, self.classFile, {reAtlas=true})
                 self.texture:SetAtlas(icon)
                 self.texture:SetAlpha(alpha or 0.5)
+                print(data.name)
             end
             index= index+1
         end
@@ -181,6 +182,6 @@ end
 
 
 
-function WoWTools_EncounterMixin:Init_Specialization_Loot()
+function WoWTools_EncounterMixin:Init_LootSpec()
     Init()
 end

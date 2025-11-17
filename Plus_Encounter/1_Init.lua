@@ -33,7 +33,7 @@ local function Init_EncounterJournal()--冒险指南界面
     WoWTools_EncounterMixin:Init_ItemSets() --战利品, 套装, 收集数
     WoWTools_EncounterMixin:Init_Model_Boss()--BOSS模型 
     WoWTools_EncounterMixin:Init_Spell_Boss()--技能提示
-    WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精
+    WoWTools_EncounterMixin:Init_LootSpec()--BOSS战时, 指定拾取, 专精
 
 
     if not Save().hideEncounterJournal and Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
