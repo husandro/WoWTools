@@ -5,6 +5,74 @@ end
 
 
 
+
+
+local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+    local sub
+
+--Plus
+    root:CreateCheckbox(
+        'Plus',
+    function()
+        return not Save().hideEncounterJournal
+    end, function()
+        Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
+        --WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精, 事件
+        WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
+        self:set_icon()
+    end)
+
+--信息
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '信息' or INFO,
+    function()
+        return not Save().hideEncounterJournal_All_Info_Text
+    end, function()
+        Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
+        WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
+    end)
+
+--专精拾取
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
+    function()
+        return not Save().hideLootSpec
+    end, function()
+        Save().hideLootSpec= not Save().hideLootSpec and true or nil
+        WoWTools_EncounterMixin:Init_Specialization_Loot()
+    end)
+
+--打开选项界面
+    root:CreateDivider()
+    WoWTools_MenuMixin:Reload(root)
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_EncounterMixin.addName,})
+--重新加载UI
+    
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     local btn= WoWTools_ButtonMixin:Menu(EncounterJournalCloseButton, {--按钮, 总开关
         name='WoWToolsAdventureJournalMenuButton',
@@ -30,50 +98,9 @@ local function Init()
         GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
-    btn:SetupMenu(function(self, root)
-        if not self:IsMouseOver() then
-            return
-        end
-        local sub
-        root:CreateCheckbox(
-            'Plus',
-        function()
-            return not Save().hideEncounterJournal
-        end, function()
-            Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
-            WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精, 事件
-            WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
-            self:set_icon()
-        end)
+    btn:SetupMenu(Init_Menu)
 
-        root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '信息' or INFO,
-        function()
-            return not Save().hideEncounterJournal_All_Info_Text
-        end, function()
-            Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
-            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-        end)
 
---打开选项界面
-        root:CreateDivider()
-        sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_EncounterMixin.addName,})
---重新加载UI
-        WoWTools_MenuMixin:Reload(sub)
-    end)
-    --[[btn:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
-            WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
-            WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
-            self:set_icon()
-        elseif d=='RightButton' then
-            Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
-            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-        end
-        self:set_Tooltips()
-    end)]]
-    
     function btn:set_icon()
         if Save().hideEncounterJournal then
             self:SetNormalAtlas('talents-button-reset')

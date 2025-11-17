@@ -73,8 +73,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or P_Save
             P_Save= nil
+            Save().loot= nil--旧数据
 
-            Save().loot[WoWTools_DataMixin.Player.Class]= Save().loot[WoWTools_DataMixin.Player.Class] or {}--这个不能删除，不然换职业会出错
             Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
 
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
