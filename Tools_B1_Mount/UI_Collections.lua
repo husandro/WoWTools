@@ -260,7 +260,7 @@ local function Init()
             end
         end
          if not frame.WoWToolsButton then--建立，图标，菜单
-            frame.WoWToolsButton= CreateFrame('DropdownButton', nil, frame, 'WoWToolsMenuButtonTemplate')
+            frame.WoWToolsButton= CreateFrame('DropdownButton', nil, frame, 'WoWToolsMenuTemplate')
             frame.WoWToolsButton:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga')
             --[[WoWTools_ButtonMixin:Cbtn(frame, {
                 atlas='orderhalltalents-done-glow',

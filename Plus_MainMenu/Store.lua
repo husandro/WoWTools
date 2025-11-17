@@ -129,7 +129,7 @@ local function Init()
 
 --商店 FrameStrata
     if CatalogShopFrame then
-        local menu= CreateFrame('DropdownButton', 'WoWToolsCatalogShopMenuButton', CatalogShopFrameCloseButton, 'WoWToolsMenuButtonTemplate')
+        local menu= CreateFrame('DropdownButton', 'WoWToolsCatalogShopMenuButton', CatalogShopFrameCloseButton, 'WoWToolsMenuTemplate')
         menu:SetPoint('RIGHT', CatalogShopFrameCloseButton, 'LEFT')
         menu:SetupMenu(function(self, root)
             if not self:IsMouseOver() then

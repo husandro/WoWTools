@@ -513,7 +513,7 @@ end
 
 
 local function Init()--显示地图ID
-    local MenuButton= CreateFrame('DropdownButton', 'WoWTools_PlusWorldMap_MenuButton', WorldMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenuButtonTemplate')
+    local MenuButton= CreateFrame('DropdownButton', 'WoWTools_PlusWorldMap_MenuButton', WorldMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenuTemplate')
     --[[WoWTools_ButtonMixin:Menu(WorldMapFrame.BorderFrame.TitleContainer, {
         name='WoWTools_PlusWorldMap_MenuButton'
     })]]

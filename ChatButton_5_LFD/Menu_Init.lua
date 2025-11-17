@@ -95,18 +95,20 @@ end
 
 
 local function Add_Initializer(btn, desc)
-    if not btn.leftTexture then
+    --if not btn.leftTexture then
         btn.leftTexture = btn:AttachTexture()
-        btn.leftTexture:SetSize(20, 20)
         btn.leftTexture:SetAtlas('common-icon-rotateright')
+        btn.leftTexture:SetSize(20, 20)
         btn.leftTexture:SetPoint("LEFT")
-        btn.leftTexture:SetAlpha(0)
         btn.fontString:SetPoint('LEFT', btn.leftTexture, 'RIGHT')
-    end
+        --btn.leftTexture:SetAlpha(0)
+    --end
+
     btn.dungeonID= desc.data.dungeonID
 
+    btn.elapsed= 1
     btn:SetScript("OnUpdate", function(self, elapsed)
-        self.elapsed= (self.elapsed or 0.5) +elapsed
+        self.elapsed= self.elapsed +elapsed
         if self.elapsed>0.5 then
             self.elapsed=0
             local r,g,b= 1, 1, 1
@@ -122,8 +124,10 @@ local function Add_Initializer(btn, desc)
             end
             if atlas then
                 self.leftTexture:SetAtlas(atlas)
+            else
+                self.leftTexture:SetTexture(0)
             end
-            self.leftTexture:SetAlpha(atlas and 1 or 0)
+            --self.leftTexture:SetAlpha(atlas and 1 or 0)
             self.fontString:SetTextColor(r,g,b)
 
             if GameTooltip:IsOwned(self) then
@@ -136,7 +140,6 @@ local function Add_Initializer(btn, desc)
         self:SetScript('OnUpdate', nil)
         self.dungeonID= nil
         self.elapsed=nil
-
     end)
 end
 
@@ -192,7 +195,7 @@ end
 --LFGIsIDHeader(id)
 
 
---追随者，副本
+--追随者，副本 specific follower
 local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
 	local followerList= Get_Follower_Specific_List(listType)
 
@@ -209,8 +212,13 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
 
     sub= root:CreateButton(
         header..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..num,
-    function()
+    function(data)
+        PVEFrame_ShowFrame("GroupFinderFrame", LFDParentFrame)--RaidFinderFrame
+        LFDQueueFrame_SetType(data.listType)
         return MenuResponse.Open
+    end, {listType=listType})
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.Icon.left..MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"))
     end)
 
     if num==0 then
@@ -519,7 +527,7 @@ local function set_Party_Menu_List(root2)
                 ..reward
                 ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
 
-            function(data)
+            function(data, ...)
                 if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
                     LeaveSingleLFG(LE_LFG_CATEGORY_LFD, data.dungeonID)
                 else
@@ -671,8 +679,16 @@ local function set_Raid_Menu_List(root2)
     local root=root2
     if not isMaxLevel or num==0 then
         root= root:CreateButton(
-            header..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..num
-        )
+            header..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..num,
+        function()
+            if C_LFGInfo.IsLFREnabled() and (not RaidFinderFrame or not RaidFinderFrame:IsShown()) then
+                PVEFrame_ToggleFrame("GroupFinderFrame", RaidFinderFrame)
+            end
+            return MenuResponse.Open
+        end)
+        root:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.Icon.left..MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"))
+        end)
     end
 
     if num==0 then

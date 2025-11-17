@@ -64,6 +64,9 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
     LFGListFrame.EntryCreation.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
     LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
 
+--免费试玩账号无法使用该功能
+    LFGListFrame.NothingAvailable.Inset.CustomBG:SetPoint('BOTTOMRIGHT', -15, 0)
+
     WoWTools_DataMixin:Hook('PVEFrame_ShowFrame', function()
         if Is_Locked() then
             return

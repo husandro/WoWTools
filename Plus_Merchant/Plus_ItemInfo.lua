@@ -544,7 +544,7 @@ local function Init_StackSplitFrame()
     end)
 
 --缩放
-    local menu= CreateFrame('DropdownButton', 'WoWToolsStackSplitFrameMenuButton', StackSplitFrame, 'WoWToolsMenuButtonTemplate')
+    local menu= CreateFrame('DropdownButton', 'WoWToolsStackSplitFrameMenuButton', StackSplitFrame, 'WoWToolsMenuTemplate')
     menu:SetSize(16,16)
     menu:SetNormalAtlas('mechagon-projects')
     menu:SetPoint('TOPLEFT', 5, 0)

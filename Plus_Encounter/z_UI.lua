@@ -346,8 +346,5 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
     self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton)
     self:Init_BGMenu_Frame(EncounterJournal)
-
-
-
 end
 

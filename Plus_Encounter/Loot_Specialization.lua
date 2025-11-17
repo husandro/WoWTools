@@ -21,9 +21,7 @@ local function set_Loot_Spec_Texture(self)
         local specID=Save().loot[WoWTools_DataMixin.Player.Class][self.dungeonEncounterID]
         local icon= specID and select(4, GetSpecializationInfoByID(specID))
         self.texture:SetTexture(icon or 'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-        self:SetAlpha(icon and 1 or 0.3)
-    else
-        self.texture:SetTexture(0)
+        self.texture:SetAlpha(icon and 1 or 0.3)
     end
     self:SetShown(self.dungeonEncounterID)
 end
@@ -142,7 +140,7 @@ local function Init_Menu(self, root)
     for specIndex= 1, GetNumSpecializations() do
         local specID, name, _ , icon= GetSpecializationInfo(specIndex)
         if icon and specID and name then
-            sub=root:CreateCheckbox(
+            sub=root:CreateRadio(
                 '|T'..(icon or 0)..':0|t'
                 ..WoWTools_DataMixin.Player.col
                 ..WoWTools_TextMixin:CN(name)
@@ -156,6 +154,7 @@ local function Init_Menu(self, root)
                     Save().loot[WoWTools_DataMixin.Player.Class][data.dungeonEncounterID]=nil
                 end
                 set_Loot_Spec_Texture(self)
+                return MenuResponse.Refresh
             end, {dungeonEncounterID= self.dungeonEncounterID, specID=specID})
             sub:SetTooltip(function(tooltip, description)
                 tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, description.data.specID)
@@ -224,35 +223,6 @@ end
 
 
 
-
-
-local function set_Loot_Spec(button)
-    if not button.LootButton then
-        button.LootButton= WoWTools_ButtonMixin:Menu(button, {isType2=true, size=26, icon='hide'})
-        button.LootButton:SetPoint('LEFT', button, 'RIGHT', -3, 0)
-        button.LootButton:SetupMenu(Init_Menu)
-
-        if not button.OnEnter then
-            button:SetScript('OnLeave', GameTooltip_Hide)
-            button:SetScript('OnEnter', Button_OnEnter)
-        else
-            button:HookScript('OnEnter', Button_OnEnter)
-        end
-    end
-
-    local name, _, journalEncounterID, _, _, _, dungeonEncounterID
-    if button.encounterID then
-        name, _, journalEncounterID, _, _, _, dungeonEncounterID= EJ_GetEncounterInfo(button.encounterID)
-    end
-
-    button.LootButton.dungeonEncounterID= dungeonEncounterID
-    button.LootButton.journalEncounterID= journalEncounterID
-    button.LootButton.name= name
-
-    set_Loot_Spec_Texture(button.LootButton)
-
-    button.LootButton:SetShown(not Save().hideEncounterJournal and dungeonEncounterID)
-end
 
 
 
@@ -327,9 +297,54 @@ local function Init()
             end
         end
     end)
+
 --BOSS 列表
-    WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(btn)
-        set_Loot_Spec(btn)
+    WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(btn, data)--{data={bossID index link rootSectionID, desctiption, name} }
+        if not Save().hideEncounterJournal or not data or not data.bossID then
+            if btn.LootButton then
+                btn.LootButton:SetShown(false)
+            end
+        end
+        
+        if not btn.LootButton then
+            btn.LootButton= CreateFrame('DropdownButton', nil, btn, 'WoWToolsMenu2Template')
+                --WoWTools_ButtonMixin:Menu(btn, {isType2=true, size=26, icon='hide'})
+            btn.LootButton:SetPoint('LEFT', btn, 'RIGHT', -5, 0)
+            btn.LootButton:SetupMenu(Init_Menu)
+            btn.LootButton:SetScript('OnHide', function(self)
+                self.texture:SetTexture(0)
+                self.dungeonEncounterID= nil
+                self.journalEncounterID= nil
+                self.name=nil
+            end)
+            if not btn:GetScript('OnEnter') then
+                btn:SetScript('OnLeave', GameTooltip_Hide)
+                btn:SetScript('OnEnter', Button_OnEnter)
+            else
+                btn:HookScript('OnEnter', Button_OnEnter)
+            end
+
+            btn.indexLabel= btn:CreateFontString(nil, nil, 'GameFontNormalMed3')
+            btn.indexLabel:SetPoint('RIGHT', btn.LootButton, 'LEFT', -2, 0)
+            btn.indexLabel:SetTextColor(0.827, 0.659, 0.463)
+        end
+
+        local name, _, journalEncounterID, _, _, _, dungeonEncounterID, index
+
+        if btn.encounterID  then
+            name, _, journalEncounterID, _, _, _, dungeonEncounterID= EJ_GetEncounterInfo(btn.encounterID)--data.bossID
+            index= data and data.index
+        end
+
+        btn.LootButton.dungeonEncounterID= dungeonEncounterID
+        btn.LootButton.journalEncounterID= journalEncounterID
+        btn.LootButton.name= name
+
+        set_Loot_Spec_Texture(btn.LootButton)
+
+        btn.LootButton:SetShown(dungeonEncounterID)
+        btn.indexLabel:SetText(index or '')
+
     end)
 
     --[[WoWTools_DataMixin:Hook(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(...)

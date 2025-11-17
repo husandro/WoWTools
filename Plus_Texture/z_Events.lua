@@ -1641,6 +1641,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     --地下城和团队副本
     self:SetButton(PVEFrameCloseButton)
     self:HideTexture(PVEFrame.TopTileStreaks)--最上面
+    
     --self:SetNineSlice(PVEFrame)
     self:SetEditBox(LFGListFrame.SearchPanel.SearchBox)
     self:SetScrollBar(LFGListFrame.SearchPanel)
