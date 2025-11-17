@@ -1,7 +1,11 @@
 local P_Save={
     wowBossKill={},
-    loot= {},--[WoWTools_DataMixin.Player.Class]= {}
+    --loot= {},--[WoWTools_DataMixin.Player.Class]= {}
     favorites={},--副本收藏 WoWTools_DataMixin.Player.GUID= {}
+    
+--拾取专精
+    LootSpec= {},
+    --lootScale=1,
 }
 
 

@@ -6444,7 +6444,8 @@
         "CharacterBag2Slot",
         "CharacterBag3Slot",
         "DropDownList1",
-        "ItemEventListener"
+        "ItemEventListener",
+        "EncounterJournal_Refresh"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

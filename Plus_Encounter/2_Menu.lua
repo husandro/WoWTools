@@ -20,8 +20,8 @@ local function Init_Menu(self, root)
         return not Save().hideEncounterJournal
     end, function()
         Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
-        --WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精, 事件
-        WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
+        --WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
+        WoWTools_DataMixin:Call(EncounterJournal_Refresh)
         self:set_icon()
     end)
 
@@ -36,13 +36,24 @@ local function Init_Menu(self, root)
     end)
 
 --专精拾取
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
     function()
         return not Save().hideLootSpec
     end, function()
         Save().hideLootSpec= not Save().hideLootSpec and true or nil
         WoWTools_EncounterMixin:Init_LootSpec()
+        WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+    end)
+
+    WoWTools_MenuMixin:ScaleRoot(self, sub, function()
+        return Save().lootScale or 1
+    end, function(value)
+        Save().lootScale= value
+        WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+    end, function()
+        Save().lootScale= nil
+        WoWTools_DataMixin:Call('EncounterJournal_Refresh')
     end)
 
 --打开选项界面
@@ -50,7 +61,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:Reload(root)
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_EncounterMixin.addName,})
 --重新加载UI
-    
+
 end
 
 
