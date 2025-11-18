@@ -21,70 +21,332 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:IsMouseOver() or not self.journalInstanceID then
+    local encounterID = self:IsMouseOver() and self:GetParent().encounterID
+    if not encounterID then
         return
     end
-    local sub
-    local curID= PlayerUtil.GetCurrentSpecID()
-    local dungeonEncounterID= select(7, EJ_GetEncounterInfo(self.journalInstanceID))
+
+    local sub, sub2
+    local bossName, _, _, _, _, _, dungeonEncounterID= EJ_GetEncounterInfo(encounterID)
+    if not dungeonEncounterID then
+        return
+    end
+
+    local curID= PlayerUtil.GetCurrentSpecID() or 0
+    local sex= self.classFile== WoWTools_DataMixin.Player.Class and WoWTools_DataMixin.Player.Sex or nil
+    local col= select(5, WoWTools_UnitMixin:GetColor(nil, nil, self.classFile)) or ''
 
     for specIndex= 1, C_SpecializationInfo.GetNumSpecializationsForClassID(self.classID) or 0 do
-         local specID, name, _ , icon= GetSpecializationInfo(specIndex)
+        local specID, name, desc, icon, role= GetSpecializationInfoForClassID(self.classID, specIndex, sex)
         if icon and specID and name then
+
             sub=root:CreateRadio(
                 '|T'..(icon or 0)..':0|t'
-                ..WoWTools_DataMixin.Player.col
+                ..(WoWTools_DataMixin.Icon[role] or '')
+                ..col
                 ..WoWTools_TextMixin:CN(name)
-                ..(curID==specID and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
+                ..(curID==specID and '|A:auctionhouse-icon-favorite:0:0|a' or '')
+                ..' '..specID,
             function(data)
-                    local d= Save().LootSpec[dungeonEncounterID]
-                    return d and d[WoWTools_DataMixin.Player.Class]==data.specID
+                    return WoWToolsPlayerDate['LootSpec'][dungeonEncounterID] and WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[self.classFile]==data.specID
 
             end, function(data)
-                Save().LootSpec[dungeonEncounterID]= Save().LootSpec[dungeonEncounterID] or {}
-                Save().LootSpec[dungeonEncounterID][self.classFile]= data.specID
-                self.settings(self)
+                WoWToolsPlayerDate['LootSpec'][dungeonEncounterID]= WoWToolsPlayerDate['LootSpec'][dungeonEncounterID] or {
+                    class={},
+                    encounterID= encounterID,
+                    index= self.index,
+                }
+                if WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[self.classFile]==data.specID then
+                    WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[self.classFile]= nil
+                else
+                    WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[self.classFile]= data.specID
+                end
+                self:settings()
                 return MenuResponse.Refresh
-            end, {dungeonEncounterID= self.dungeonEncounterID, specID=specID})
-            sub:SetTooltip(function(tooltip, description)
-                tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, description.data.specID)
+            end, {specID=specID, desc=desc})
+
+            sub:SetTooltip(function(tooltip, desc2)
+                tooltip:AddLine(WoWTools_TextMixin:CN(desc2.data.desc), nil, nil, nil, true)
             end, {specID= specID, })
         end
     end
+
+
+
+
+
+
+
+
+
+
+--清除 Boss 所有职业
+    root:CreateDivider()
+    local classTab={}
+    local classNum=0
+    if WoWToolsPlayerDate['LootSpec'][dungeonEncounterID] then
+        for _ in pairs(WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class) do
+            classNum= classNum+1
+        end
+        classTab= WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class
+    end
+
+    bossName= WoWTools_TextMixin:CN(bossName) or dungeonEncounterID
+    sub=root:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..bossName
+        ..' #'..classNum,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            bossName
+            ..'|n'..(self:GetParent().link or encounterID)
+            ..'|n|n|A:bags-button-autosort-up:0:0|a|cnWARNING_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+            nil,
+            {SetValue=function()
+                WoWToolsPlayerDate['LootSpec'][dungeonEncounterID]= nil
+                WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+            end}
+        )
+    end)
+    sub:SetTooltip(function(tooltip)
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+    end)
+
+--清除 Boss 所有职业, 列表
+    for className, specID in pairs(classTab) do
+        local _, name, desc, icon, role = GetSpecializationInfoByID(specID)
+        sub2=sub:CreateCheckbox(
+            (select(5, WoWTools_UnitMixin:GetColor(nil, nil, className)) or '')
+            ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, className) or '')
+            ..'|T'..(icon or 0)..':0|t'
+            ..(WoWTools_DataMixin.Icon[role] or '')
+            ..(WoWTools_TextMixin:CN(name) or specID),
+        function(d)
+            return WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[d.className]
+        end, function(d)
+            if not WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[d.className] then
+                WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[d.className]= d.specID
+            else
+                WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[d.className]= nil
+            end
+            WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+        end, {className=className, specID=specID, desc=desc})
+        sub2:SetTooltip(function(tooltip, d)
+            tooltip:AddLine(d.data.desc)
+        end)
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--当前职业，列表
+    local classSpecTab={}
+    for id, data in pairs(WoWToolsPlayerDate['LootSpec']) do
+        local specID= data.class[self.classFile]
+        if specID then
+            local boss, _, _, _, _, instanceID= EJ_GetEncounterInfo(data.encounterID)
+            local insName= instanceID and WoWTools_TextMixin:CN(EJ_GetInstanceInfo(instanceID)) or ''
+
+            table.insert(classSpecTab, {
+                dungeonEncounterID= id,
+                specID= specID,
+                instanceID= instanceID or 0,
+                insName= insName,
+                bossName= boss,
+                bossIcon=  select(5, EJ_GetCreatureInfo(1, data.encounterID)),
+
+                class= data.class,
+                encounterID= data.encounterID,
+                index= data.index or 0
+            })
+
+        end
+    end
+
+--清除. 当前职业
+    local classIcon= col
+        ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, self.classFile) or '')
+        ..(WoWTools_TextMixin:CN(self.className) or self.classFile)
+    sub=root:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..classIcon
+        ..' #'..#classSpecTab,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            classIcon
+            ..'|n|n|A:bags-button-autosort-up:0:0|a|cnWARNING_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+            nil,
+            {SetValue=function()
+                for id in pairs(WoWToolsPlayerDate['LootSpec']) do
+                    WoWToolsPlayerDate['LootSpec'][id].class[self.classFile]=nil
+                end
+                WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+            end}
+        )
+    end)
+    sub:SetTooltip(function(tooltip)
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+    end)
+
+
+--清除. 当前职业，列表
+    table.sort(classSpecTab, function(a,b)
+        if a.instanceID==b.instanceID then
+            return a.index< b.index
+        else
+            return a.instanceID> b.instanceID
+        end
+    end)
+
+    local pInstanceID
+    for _, data in pairs(classSpecTab) do
+--是否是当前副本
+        local col2= EncounterJournal.instanceID==data.instanceID and '|cff00ccff'
+        --为不同副本，加分隔 
+        if pInstanceID~=data.instanceID then
+            sub:CreateTitle((col2 or '')..(data.insName or ' '))
+            pInstanceID= data.instanceID
+        end
+
+        sub2= sub:CreateCheckbox(
+            (col2 or '|cffff00ff')..data.index..'|r'
+--转精，图标，名称
+            ..'|T'..(select(4, GetSpecializationInfoByID(data.specID)) or 0)..':0|t'
+            ..'|T'..(data.bossIcon or "Interface\\EncounterJournal\\UI-EJ-BOSS-Default")..':0:0|t'
+--副本名称
+            ..(data.bossName or data.encounterID),
+        function(d)
+                return WoWToolsPlayerDate['LootSpec'][d.dungeonEncounterID] and WoWToolsPlayerDate['LootSpec'][d.dungeonEncounterID].class[self.classFile]
+        end, function(d)
+            WoWToolsPlayerDate['LootSpec'][d.dungeonEncounterID].class[self.classFile]= not WoWToolsPlayerDate['LootSpec'][d.dungeonEncounterID].class[self.classFile] and d.specID or nil
+--转到 副本
+            if EncounterJournal.instanceID~= d.instanceID then
+                WoWTools_DataMixin:Call('EncounterJournal_DisplayInstance', d.instanceID)
+            end
+            if (EncounterJournal.encounterID ~= d.encounterID) then
+                WoWTools_DataMixin:Call('EncounterJournal_DisplayEncounter', d.encounterID)
+            end
+
+            WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+        end, data)
+
+        sub2:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine('encounterID|n|cffffffff'..desc.data.dungeonEncounterID)
+            if desc.data.bossIcon then
+                	local textureSettings = {
+                        width = 128,
+                        height = 64,
+                    };
+                tooltip:AddTexture(desc.data.bossIcon, textureSettings)
+            end
+        end)
+    end
+
+    WoWTools_MenuMixin:SetScrollMode(sub)
+
+
+
+
+
+
+
+
+
+
+
+
+
+--全部清除
+    sub=root:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+    function()
+       StaticPopup_Show('WoWTools_OK',
+        WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2
+        ..'|n|n|A:bags-button-autosort-up:0:0|a|cnWARNING_FONT_COLOR:'
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        nil,
+        {SetValue=function()
+            WoWToolsPlayerDate['LootSpec']={}
+            WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+        end})
+    end)
+    sub:SetTooltip(function(tooltip)
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '全部' or ALL)
+    end)
 end
 
 
 
 
 
+
+
+
+
+
+
+
+
+--按钮，列表
 local function Init_Button(btn)
     btn.specButtons={}
+    local isOnlyClass= Save().lootOnlyClass
 
     local index= 0
-
+    local level= btn:GetFrameLevel()+5
     for class= 1, GetNumClasses() do
-        local classInfo = C_CreatureInfo.GetClassInfo(class)
-        if classInfo and classInfo.classFile then
-            local s= 20
-            btn.specButtons[index]= CreateFrame('DropdownButton', nil, btn, 'WoWToolsMenu2Template')
-            btn.specButtons[index]:SetSize(s,s)
-            btn.specButtons[index]:SetFrameStrata('HIGH')
-            btn.specButtons[index]:SetPoint('BOTTOMRIGHT', (-index*s)-5, -8)
-            btn.specButtons[index].classID= classInfo.classID
-            btn.specButtons[index].classFile= classInfo.classFile
-            btn.specButtons[index].name= classInfo.name
+        local classInfo = C_CreatureInfo.GetClassInfo(class) or {}
+        local isCurClass= classInfo.classFile==WoWTools_DataMixin.Player.Class
 
-            btn.specButtons[index].settings= function(self)--{bossID index link rootSectionID, desctiption, name}
-            print(self.name, self.classFile)
-                if not self.journalEncounterID then
-                    return
-                end
-                --print(self.journalInstanceID )
+        if classInfo.classFile and (isCurClass or not isOnlyClass) then
+            local s= 16
+            btn.specButtons[classInfo.classID]= CreateFrame('DropdownButton', nil, btn, 'WoWToolsMenu2Template')
 
-                local  dungeonEncounterID= select(7, EJ_GetEncounterInfo(self.journalInstanceID))
+            local b= btn.specButtons[classInfo.classID]
+            b:SetSize(s,s)
+            b:SetFrameLevel(level)
 
-                local data= dungeonEncounterID and Save().LootSpec[dungeonEncounterID]
-                local lootSpecID= data and data[WoWTools_DataMixin.Player.Class]
+            local x= index +1
+--当前职业，放到最前
+            if isCurClass then
+                x=0
+            else
+                index= index+1
+            end
+            b:SetPoint('BOTTOMRIGHT', (-x*(s+2))-5, -8)
+--职业，背景颜色
+            b.texture2= b:CreateTexture(nil, 'BACKGROUND', nil, -1)
+            b.texture2:SetPoint('TOPLEFT', b, -1, 4)
+            b.texture2:SetPoint('BOTTOMRIGHT', b, 1, -1)
+            b.texture2:SetAtlas('groupfinder-icon-class-color-'..classInfo.classFile)
+--tooltip
+            b.tooltip= (WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                    ..(select(5, WoWTools_UnitMixin:GetColor(nil, nil, classInfo.classFile)) or '')
+                        ..((WoWTools_UnitMixin:GetClassIcon(nil, nil, classInfo.classFile) or '')
+                        ..(WoWTools_TextMixin:CN(classInfo.className) or classInfo.classFile))
+            b.classID= classInfo.classID
+            b.classFile= classInfo.classFile
+            b.className= classInfo.className
+--settings
+            function b:settings()
+                local encounterID= self:GetParent().encounterID
+                local  dungeonEncounterID= select(7, EJ_GetEncounterInfo(encounterID))
+
+                local data= WoWToolsPlayerDate['LootSpec'][dungeonEncounterID]
+                local lootSpecID= data and data.class[self.classFile]
+
                 local icon= lootSpecID and select(4, GetSpecializationInfoByID(lootSpecID))
 
                 if icon then
@@ -93,17 +355,15 @@ local function Init_Button(btn)
                     self.texture:SetAtlas(WoWTools_UnitMixin:GetClassIcon(nil, nil, self.classFile, {reAtlas=true}) or '')
                 end
 
-                self.texture:SetAlpha(icon and 1 or 0.5)
+                self:SetAlpha(icon and 1 or 0.3)
+                self.texture2:SetShown(icon)
             end
 
-            btn.specButtons[index]:SetupMenu(Init_Menu)
-            index= index+1
+            b:SetupMenu(Init_Menu)
         end
     end
 
-    btn.indexLabel= btn:CreateFontString(nil, nil, 'GameFontNormalMed3')
-    btn.indexLabel:SetPoint('TOPRIGHT', -5, -5)
-    btn.indexLabel:SetTextColor(0.827, 0.659, 0.463)
+
 end
 
 
@@ -118,8 +378,8 @@ end
 
 --设置拾取专精
 local function Set_LootSpec(self, encounterID)
-    local data= Save().LootSpec[encounterID]
-    local lootSpecID= data and data[WoWTools_DataMixin.Player.Class]
+    local data= WoWToolsPlayerDate['LootSpec'][encounterID]
+    local lootSpecID= data and data.class[WoWTools_DataMixin.Player.Class]
     local logID
 
     if lootSpecID then
@@ -185,12 +445,13 @@ end
 
 
 local function Init()
-    Save().LootSpec= Save().LootSpec or {}
+    WoWToolsPlayerDate['LootSpec']= WoWToolsPlayerDate['LootSpec'] or {}
 
 
     if Save().hideLootSpec then
         return
     end
+
 
     local frame= CreateFrame('Frame', 'WoWToolsEJLootFrame')
 
@@ -211,6 +472,8 @@ local function Init()
         end
     end)
 
+
+
 --BOSS 列表
     WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)--{data={bossID index link rootSectionID, desctiption, name} }
         if not self.specButtons then
@@ -219,21 +482,23 @@ local function Init()
 
         local scale= Save().lootScale or 1
         local show= not Save().hideLootSpec
+
         for _, btn in pairs(self.specButtons) do
-            btn.journalEncounterID= data.bossID
             if show then
-                
-                --info= data
-                --for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
-                btn.settings(btn)
+                btn:settings()
                 btn:SetScale(scale)
+                btn.index= data.index
             end
             btn:SetShown(show)
         end
-        self.indexLabel:SetText(show and data.index or '')
     end)
 
 
+    if WoWTools_DataMixin.Player.husandro then
+        C_Timer.After(0.3, function()
+            WoWTools_LoadUIMixin:JournalInstance(nil, 1271)
+        end)
+    end
 
     Init=function()
         _G['WoWToolsEJLootFrame']:set_event()
@@ -244,5 +509,6 @@ end
 
 
 function WoWTools_EncounterMixin:Init_LootSpec()
+
     Init()
 end

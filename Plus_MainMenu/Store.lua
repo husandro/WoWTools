@@ -93,7 +93,7 @@ local function Init()
 
 
     StoreMicroButton:EnableMouseWheel(true)
-    StoreMicroButton:HookScript('OnMouseWheel', function(_, d)
+    StoreMicroButton:HookScript('OnMouseWheel', function()
         if KeybindFrames_InQuickKeybindMode() or not AccountStoreFrame or Kiosk.IsEnabled() then
             return
         end

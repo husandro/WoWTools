@@ -1,20 +1,12 @@
 local P_Save={
-    wowBossKill={},
+    --wowBossKill={},
     --loot= {},--[WoWTools_DataMixin.Player.Class]= {}
     favorites={},--副本收藏 WoWTools_DataMixin.Player.GUID= {}
-    
+
 --拾取专精
     LootSpec= {},
     --lootScale=1,
 }
-
-
-
-
-
-
-
-
 
 local function Save()
     return WoWToolsSave['Adventure_Journal']
@@ -24,20 +16,21 @@ end
 
 
 
---################
---冒险指南界面初始化
---################
-local function Init_EncounterJournal()--冒险指南界面
+
+
+
+
+local function Init()--冒险指南界面
     WoWTools_EncounterMixin:Button_Init()
     WoWTools_EncounterMixin:Init_EncounterJournalItemMixin()--Boss, 战利品, 信息
-    WoWTools_EncounterMixin:Init_mapButton_OnEnter()
+    WoWTools_EncounterMixin:Init_Plus()
     WoWTools_EncounterMixin:Init_UI_ListInstances()--界面, 副本击杀
     WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     WoWTools_EncounterMixin:Init_MonthlyActivities()--贸易站
     WoWTools_EncounterMixin:Init_ItemSets() --战利品, 套装, 收集数
     WoWTools_EncounterMixin:Init_Model_Boss()--BOSS模型 
     WoWTools_EncounterMixin:Init_Spell_Boss()--技能提示
-    --WoWTools_EncounterMixin:Init_LootSpec()--BOSS战时, 指定拾取, 专精
+    WoWTools_EncounterMixin:Init_LootSpec()--BOSS战时, 指定拾取, 专精
 
 
     if not Save().hideEncounterJournal and Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
@@ -55,7 +48,7 @@ local function Init_EncounterJournal()--冒险指南界面
         Save().EncounterJournalTier=tier
     end)
 
-    Init_EncounterJournal=function()end
+    Init=function()end
 end
 
 
@@ -68,16 +61,21 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('UPDATE_INSTANCE_INFO')
-panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or P_Save
             P_Save= nil
-            Save().loot= nil--旧数据
+
+            if Save().wowBossKill then--旧数据
+                Save().loot= nil
+                WoWToolsPlayerDate['BossKilled']= Save().wowBossKill
+                Save().wowBossKill= nil
+            end
+
+            WoWToolsPlayerDate['BossKilled']= WoWToolsPlayerDate['BossKilled'] or {}
 
             Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
 
@@ -89,6 +87,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
+                    Init()
                     print(
                         WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
@@ -97,38 +96,39 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
+--为了保存击杀数据，保持这个开启
+            self:RegisterEvent('BOSS_KILL')
+
             if Save().disabled then
                 self:UnregisterAllEvents()
+                self:SetScript('OnEvent', nil)
             else
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
-                    Init_EncounterJournal()--冒险指南界面
+                    Init()--冒险指南界面
                     self:UnregisterEvent(event)
                 end
             end
 
-            self:RegisterEvent('BOSS_KILL')
 
         elseif arg1=='Blizzard_EncounterJournal' and WoWToolsSave then---冒险指南
-            Init_EncounterJournal()--冒险指南界面
+            Init()--冒险指南界面
             self:UnregisterEvent(event)
         end
 
-    elseif event=='BOSS_KILL' then--记录，没删除
-        if arg1 then
-            Save().wowBossKill[arg1]= Save().wowBossKill[arg1] and Save().wowBossKill[arg1] +1 or 1--Boss击杀数量
+    elseif arg1 then
+        local num=  (WoWToolsPlayerDate['BossKilled'][arg1] or 0)+ 1
+        WoWToolsPlayerDate['BossKilled'][arg1]= num--Boss击杀数量
+        if not Save().hideEncounterJournal then
+            print(
+                WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
+
+                '|cnWARNING_FONT_COLOR:'..(WoWTools_TextMixin:CN(arg2) or arg1)..'|r',
+
+                format(WoWTools_DataMixin.onlyChinese and '%s（%d次）' or REAGENT_COST_CONSUME_CHARGES,
+                    WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED,
+                    num)
+            )
         end
-
-    elseif event=='UPDATE_INSTANCE_INFO' then
-        C_Timer.After(2, function()
-            --WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数据
-            --WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
-            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-        end)
-
-    elseif event=='WEEKLY_REWARDS_UPDATE' then
-        C_Timer.After(2, function()
-            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-        end)
     end
 end)

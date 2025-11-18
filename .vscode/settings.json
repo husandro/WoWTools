@@ -6445,7 +6445,10 @@
         "CharacterBag3Slot",
         "DropDownList1",
         "ItemEventListener",
-        "EncounterJournal_Refresh"
+        "EncounterJournal_Refresh",
+        "EncounterJournal_DisplayEncounter",
+        "REAGENT_COST_CONSUME_CHARGES",
+        "LFG_LIST_BOSSES_DEFEATED"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

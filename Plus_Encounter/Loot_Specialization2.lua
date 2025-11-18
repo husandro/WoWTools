@@ -219,7 +219,7 @@ local function Button_OnEnter(self)
         GameTooltip:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2 or ' ', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID)
         if dungeonEncounterID then
             GameTooltip:AddDoubleLine('dungeonEncounterID: |cffff00ff'..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
-            local numKill=Save().wowBossKill[dungeonEncounterID]
+            local numKill=WoWToolsPlayerDate['BossKilled'][dungeonEncounterID]
             if numKill then
                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
             end

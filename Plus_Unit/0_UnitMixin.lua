@@ -381,28 +381,17 @@ end
 
 --职业图标 groupfinder-icon-emptyslot'
 function WoWTools_UnitMixin:GetClassIcon(unit, guid, classFilename, tab)
-    tab= tab or {}
-
-    local reAtlas= tab.reAtlas
-    local size= tab.size or 0
-
-    if not classFilename then
-        if unit then
-            classFilename= UnitClassBase(unit)
-        elseif guid then
-            classFilename= select(2, GetPlayerInfoByGUID(guid))
-        end
+    local reAtlas, size= false, 0
+    if tab then
+        reAtlas= tab.reAtlas
+        size= tab.size or 0
     end
-
+    classFilename= classFilename
+        or (unit and UnitClassBase(unit))
+        or (guid and select(2, GetPlayerInfoByGUID(guid)))
     if classFilename then
-        --if classFilename=='EVOKER' then
-            --classFilename='UI-HUD-UnitFrame-Player-Portrait-ClassIcon-Evoker'--'classicon-evoker'--UI-HUD-UnitFrame-Player-Portrait-ClassIcon-Evoker
-        classFilename= 'groupfinder-icon-class-'..classFilename
-        if reAtlas then
-            return classFilename
-        else
-            return '|A:'..classFilename ..':'..size..':'..size..'|a'
-        end
+        local atlas= 'groupfinder-icon-class-'..classFilename:lower()
+        return reAtlas and atlas or ('|A:'..atlas ..':'..size..':'..size..'|a')
     end
 end
 

@@ -11,18 +11,18 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-    local sub
+    local sub, sub2
 
 --Plus
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         'Plus',
     function()
         return not Save().hideEncounterJournal
     end, function()
         Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
-        --WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
-        WoWTools_DataMixin:Call(EncounterJournal_Refresh)
-        self:set_icon()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --信息
@@ -35,7 +35,7 @@ local function Init_Menu(self, root)
         WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     end)
 
---[[专精拾取
+--专精拾取
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
     function()
@@ -45,7 +45,27 @@ local function Init_Menu(self, root)
         WoWTools_EncounterMixin:Init_LootSpec()
         WoWTools_DataMixin:Call('EncounterJournal_Refresh')
     end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('ENCOUNTER_START')
+    end)
 
+    sub2=sub:CreateCheckbox(
+        format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 
+            WoWTools_DataMixin.Player.col..
+            (WoWTools_UnitMixin:GetClassIcon(nil, nil, self.classFile) or '')
+            ..WoWTools_TextMixin:CN(UnitClass('player'), nil)
+        ),
+    function()
+        return Save().lootOnlyClass
+    end, function()
+        Save().lootOnlyClass= not Save().lootOnlyClass and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+--按钮，缩放
+    sub:CreateSpacer()
     WoWTools_MenuMixin:ScaleRoot(self, sub, function()
         return Save().lootScale or 1
     end, function(value)
@@ -54,7 +74,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().lootScale= nil
         WoWTools_DataMixin:Call('EncounterJournal_Refresh')
-    end)]]
+    end)
 
 --打开选项界面
     root:CreateDivider()
@@ -85,12 +105,14 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(EncounterJournalCloseButton, {--按钮, 总开关
+    local btn= CreateFrame('DropdownButton', 'WoWToolsAdventureJournalMenuButton', EncounterJournalCloseButton, 'WoWToolsMenuTemplate')
+    
+    --[[WoWTools_ButtonMixin:Menu(EncounterJournalCloseButton, {--按钮, 总开关
         name='WoWToolsAdventureJournalMenuButton',
         size=23,
-        icon='hide',
+        texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
 
-    })
+    })]]
 
     btn:SetPoint('RIGHT', EncounterJournalCloseButton, 'LEFT')
 
@@ -101,26 +123,16 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, WoWTools_TextMixin:GetEnabeleDisable(not Save().hideEncounterJournal).. WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '奖励' or QUEST_REWARDS, WoWTools_TextMixin:GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
-    end]]
+    end
     btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetText(WoWTools_EncounterMixin.addName)
         GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
-    end)
+    end)]]
     btn:SetupMenu(Init_Menu)
 
-
-    function btn:set_icon()
-        if Save().hideEncounterJournal then
-            self:SetNormalAtlas('talents-button-reset')
-        else
-            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-        end
-        WoWTools_TextureMixin:SetButton(btn)
-    end
-    btn:set_icon()
 
 
     local wow= WoWTools_DataMixin:CreateWoWItemListButton(btn, {

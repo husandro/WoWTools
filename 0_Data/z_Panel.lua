@@ -84,8 +84,19 @@ local function Init_Options()
         buttonText= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= playerHeader,
         SetValue= function()
-            WoWToolsPlayerDate= {}
-            WoWTools_DataMixin:Reload()
+            StaticPopup_Show('WoWTools_RestData',
+                WoWTools_DataMixin.Icon.wow2
+                ..playerHeader
+                ..'|n|n|cnGREEN_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
+                nil,
+                function()
+                    WoWToolsPlayerDate= {}
+                    WoWTools_DataMixin:Reload()
+                end
+            )
+
+            
         end,
         tooltip=function()
             local text

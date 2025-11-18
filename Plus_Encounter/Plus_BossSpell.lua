@@ -30,7 +30,7 @@ end
 
 
 
-local function SetBullets(object, description, hideBullets)
+local function SetBullets(object, description)
     if Save().hideEncounterJournal then
         return
     end

@@ -384,7 +384,7 @@ EncounterJournal_DisplayInstance
 EncounterJournal_OpenJournal(nil, journalInstanceID)
 WoWTools_DataMixin:Call(ToggleEncounterJournal)
 ]]
-function WoWTools_LoadUIMixin:JournalInstance( journalType, journalInstanceID, difficultyID)
+function WoWTools_LoadUIMixin:JournalInstance(journalType, journalInstanceID, difficultyID)
     if not AdventureGuideUtil.IsAvailable()
         or not journalInstanceID
         or (InCombatLockdown() and (not EncounterJournal or not EncounterJournal:IsShown()))
