@@ -1,11 +1,12 @@
 local P_Save={
-    --wowBossKill={},
-    --loot= {},--[WoWTools_DataMixin.Player.Class]= {}
     favorites={},--副本收藏 WoWTools_DataMixin.Player.GUID= {}
 
 --拾取专精
     LootSpec= {},
     --lootScale=1,
+
+    isSaveTier=WoWTools_DataMixin.Player.husandro,--保存改变
+    --EncounterJournalTier=9, 内容
 }
 
 local function Save()
@@ -27,21 +28,48 @@ local function Init()--冒险指南界面
     WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     WoWTools_EncounterMixin:Init_LootSpec()--BOSS战时, 指定拾取, 专精
 
+    --[[if WoWTools_DataMixin.Player.husandro then
+        C_Timer.After(0.3, function()
+            WoWTools_LoadUIMixin:JournalInstance(nil, 1271)
+        end)
+    end]]
 
-    if not Save().hideEncounterJournal and Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
+
+--记录上次选择版本
+C_Timer.After(0.3, function()
+    if Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
         local max= EJ_GetNumTiers()
         if max then
             local tier= math.min(Save().EncounterJournalTier, max)
-            if tier~= max then
-                EJ_SelectTier(tier)
-            end
+            EJ_SelectTier(tier)
         end
     end
 
-    --记录上次选择版本
     WoWTools_DataMixin:Hook('EJ_SelectTier', function(tier)
-        Save().EncounterJournalTier=tier
+        Save().EncounterJournalTier= Save().isSaveTier and tier or nil
     end)
+
+    Menu.ModifyMenu("MENU_EJ_EXPANSION", function(_, root)
+        root:CreateDivider()
+        local sub=root:CreateCheckbox(
+           (WoWTools_DataMixin.onlyChinese and '保存' or SAVE),
+        function()
+            return Save().isSaveTier
+        end, function()
+            Save().isSaveTier= not Save().isSaveTier and true or false
+            Save().EncounterJournalTier= Save().isSaveTier and EJ_GetCurrentTier() or nil
+        end)
+        sub:SetTooltip(function(tooltip)
+            local tier= Save().EncounterJournalTier or EJ_GetCurrentTier() or 1
+            local name= EJ_GetTierInfo(tier)
+            tooltip:AddLine(WoWTools_DataMixin.Icon.icon2..WoWTools_TextMixin:CN(name)..' tier|cffffffff '..tier)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅限：重载时' or format(LFG_LIST_CROSS_FACTION, RELOADUI))
+        end)
+    end)
+end)
+
+
+
 
     Init=function()end
 end
@@ -112,7 +140,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
 
     elseif arg1 then
-        local num=  (WoWToolsPlayerDate['BossKilled'][arg1] or 0)+ 1
+        local num= (WoWToolsPlayerDate['BossKilled'][arg1] or 0)+ 1
         WoWToolsPlayerDate['BossKilled'][arg1]= num--Boss击杀数量
         if not Save().hideEncounterJournal then
             print(

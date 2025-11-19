@@ -318,43 +318,44 @@ end
 
 
 
-local function Init_ListInstances(frame)
-    if not frame:HasView() then
+
+
+
+
+--[[
+WoWTools_DataMixin:Hook('EncounterJournal_DisplayInstance', function(...) Init_DisplayInstance(...) end)
+EncounterInstanceButtonTemplate
+EncounterJournal_DisplayInstance
+EncounterJournal_ListInstances
+]]
+local function Init()
+    if Save().hidePlusInstanceList then
         return
     end
 
-    local hide= Save().hideEncounterJournal
-    for _, btn in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
-        if btn and btn.instanceID then
-            if hide then
-                if btn.clear_data then
-                    btn:clear_data()
+    local function Init_ListInstances(frame)
+        if not frame:HasView() then
+            return
+        end
+
+        local hide= Save().hideEncounterJournal
+        for _, btn in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
+            if btn and btn.instanceID then
+                if hide then
+                    if btn.clear_data then
+                        btn:clear_data()
+                    end
+
+                elseif not btn.settings then
+                    Init_Button(btn)
+
+                else
+                    btn:settings()
                 end
-
-            elseif not btn.settings then
-                Init_Button(btn)
-
-            else
-                btn:settings()
             end
         end
     end
-end
 
-
-
-
-
-
-
-
-
---EncounterJournal_DisplayInstance
---EncounterJournal_ListInstances
-
-function WoWTools_EncounterMixin:Init_ListInstances()
-    --WoWTools_DataMixin:Hook('EncounterJournal_DisplayInstance', function(...) Init_DisplayInstance(...) end)
-    --EncounterInstanceButtonTemplate
     WoWTools_DataMixin:Hook(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)
         Init_ListInstances(frame)
     end)
@@ -363,4 +364,14 @@ function WoWTools_EncounterMixin:Init_ListInstances()
             Init_ListInstances(frame)
         end)
     end)
+
+    Init=function()end
+end
+
+
+
+
+
+function WoWTools_EncounterMixin:Init_ListInstances()
+    Init()
 end

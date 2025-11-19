@@ -494,11 +494,7 @@ local function Init()
     end)
 
 
-    if WoWTools_DataMixin.Player.husandro then
-        C_Timer.After(0.3, function()
-            WoWTools_LoadUIMixin:JournalInstance(nil, 1271)
-        end)
-    end
+
 
     Init=function()
         _G['WoWToolsEJLootFrame']:set_event()

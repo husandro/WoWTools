@@ -23,35 +23,35 @@ local function Get_List_Tab(instanceID)
     local tab={}
     local co= 0
     to= 0
+    local isInGuild= IsInGuild()
     for index, achievementID in pairs(mapData) do
-        local _, name, _, completed, _, _, _, _, flags, icon, rewardText, isGuild, wasEarnedByMe = GetAchievementInfo(achievementID)
+        local _, name, _, completed, _, _, _, _, _, icon, rewardText, isGuild, wasEarnedByMe = GetAchievementInfo(achievementID)
 
-        if name then-- and icon~=136243 then
+        if name and icon~=136243 then-- and icon~=136243 then
+        --isGuild= isGuild or flags==0x4000
 --奖励
             local itemID= C_AchievementInfo.GetRewardItemID(achievementID)
             local itemIcon= itemID and select(5, C_Item.GetItemInfoInstant(itemID))
             WoWTools_DataMixin:Load(itemID, 'item')
-
-
             table.insert(tab, {
                 text= (index<10 and '  ' or '')
                     ..'|cffffffff'
                     ..index..')|r '
                     ..'|T'..(icon or 0)..':0|t'
-                    ..(completed and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
+                    ..(isGuild and not isInGuild and '|cff626262' or (completed and '|cnGREEN_FONT_COLOR:') or '|cffffffff')
                     ..WoWTools_TextMixin:CN(name)
                     ..'|r'
-                    ..(itemIcon and '|T'..itemIcon..':0|t' or '')
+                    ..(itemIcon and '|T'..itemIcon..':0|t' or (rewardText and rewardText~='' and '|A:VignetteLoot:0:0|a') or '')
                     ..(wasEarnedByMe and WoWTools_DataMixin.Icon.Player or '')--此角色，是否完成
-                    ..((isGuild or flags==0x4000) and '|A:communities-guildbanner-background:0:0|a' or '' )
-                    ..(rewardText and rewardText~='' and '|A:VignetteLoot:0:0|a' or ''),
+                    ..(isGuild and '|A:communities-guildbanner-background:0:0|a' or '' ),
                 achievementID= achievementID,
             })
-
-            if completed then
-                co=co+1
+            if isInGuild or not isGuild then
+                if completed then--不在公会时，不显示公会成就
+                    co=co+1
+                end
+                to= to+1
             end
-            to= to+1
         end
     end
 
@@ -82,10 +82,11 @@ local function Set_Menu(root, tab)
     for _, d in pairs(tab) do
         local sub= root:CreateButton(
             d.text,
-        function(desc)
-            WoWTools_LoadUIMixin:Achievement(desc.achievementID)
+        function(data)
+            WoWTools_LoadUIMixin:Achievement(data.achievementID)
             return MenuResponse.Open
         end, {achievementID=d.achievementID})
+
         WoWTools_SetTooltipMixin:Set_Menu(sub)
     end
     WoWTools_MenuMixin:SetScrollMode(root)
@@ -439,7 +440,7 @@ local function Init_Achievement()
                     end
                 end
             end
-            completedText= (c and c..'/'..numCriteria or '')..(c and ' ' or '')..(bar or '')
+            completedText= (c and numCriteria>1 and c..'/'..numCriteria..' ' or '')..(bar or '')
         end
         btn.completedLable:SetText(completedText or "")
 

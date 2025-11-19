@@ -362,11 +362,10 @@ Plus_Gossip\Gossip_Menu_Move.lua
 Plus_Encounter\0_EncounterMixin.lua
 Plus_Encounter\1_Init.lua
 Plus_Encounter\2_Menu.lua
-Plus_Encounter\Plus_BossItem.lua
 Plus_Encounter\Plus.lua
-Plus_Encounter\z_ListInstances.lua
-Plus_Encounter\z_LootSpec.lua
-Plus_Encounter\z_Right_Info.lua
+Plus_Encounter\ListInstances.lua
+Plus_Encounter\LootSpec.lua
+Plus_Encounter\Right_Info.lua
 Plus_Encounter\z_UI.lua
 ##史诗钥石地下城, 挑战增强
 Plus_Challenge\0_ChallengeMixin.lua

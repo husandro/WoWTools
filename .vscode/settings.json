@@ -6448,7 +6448,8 @@
         "EncounterJournal_Refresh",
         "EncounterJournal_DisplayEncounter",
         "REAGENT_COST_CONSUME_CHARGES",
-        "LFG_LIST_BOSSES_DEFEATED"
+        "LFG_LIST_BOSSES_DEFEATED",
+        "SAVE_CHANGES"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -1,3 +1,7 @@
+local function Save()
+    return WoWToolsSave['Adventure_Journal']
+end
+
 local ITEM_CLASSES_ALLOWED= format(ITEM_CLASSES_ALLOWED, '(.+)')
 local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 
@@ -215,7 +219,7 @@ end
 
 
 local function Init()
-    if WoWToolsSave['Adventure_Journal'].hideEncounterJournal then
+    if Save().hideEncounterJournal then
         return
     end
 
@@ -602,6 +606,10 @@ local function Init()
             hideSet=true
         })
     end)
+
+
+
+
 
 
 

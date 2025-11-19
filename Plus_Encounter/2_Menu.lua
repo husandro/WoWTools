@@ -25,14 +25,16 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
---信息
-    root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '信息' or INFO,
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '副本列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, 'List'),
     function()
-        return not Save().hideEncounterJournal_All_Info_Text
+        return not Save().hidePlusInstanceList
     end, function()
-        Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
-        WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
+        Save().hidePlusInstanceList= not Save().hidePlusInstanceList and true or nil
+        WoWTools_EncounterMixin:Init_ListInstances()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --专精拾取
@@ -74,6 +76,16 @@ local function Init_Menu(self, root)
     end, function()
         Save().lootScale= nil
         WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+    end)
+
+--信息
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '信息' or INFO,
+    function()
+        return not Save().hideEncounterJournal_All_Info_Text
+    end, function()
+        Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
+        WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     end)
 
 --打开选项界面
