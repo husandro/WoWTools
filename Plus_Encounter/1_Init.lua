@@ -26,7 +26,6 @@ local function Init()--冒险指南界面
     WoWTools_EncounterMixin:Init_Plus()
     WoWTools_EncounterMixin:Init_UI_ListInstances()--界面, 副本击杀
     WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-    WoWTools_EncounterMixin:Init_MonthlyActivities()--贸易站
     WoWTools_EncounterMixin:Init_ItemSets() --战利品, 套装, 收集数
     WoWTools_EncounterMixin:Init_Model_Boss()--BOSS模型 
     WoWTools_EncounterMixin:Init_Spell_Boss()--技能提示

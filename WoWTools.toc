@@ -367,7 +367,6 @@ Plus_Encounter\Plus_Sets.lua
 
 Plus_Encounter\Plus.lua
 Plus_Encounter\Plus_BossModel.lua
-Plus_Encounter\Plus_MonthlyActivities.lua
 Plus_Encounter\Plus_BossSpell.lua
 Plus_Encounter\Plus_ListInstances.lua
 
