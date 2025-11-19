@@ -3,7 +3,7 @@ local addName
 
 local P_Items={
     [122129]=true,[169347]=true,[174873]=true,[140160]=true,[180873]=true,[188699]=true,[38301]=true,
-    [147843]=true,[174830]=true,[32782]=true,[37254]=true,[186702]=true,[186686]=true,[64456]=true,
+    [174830]=true,[32782]=true,[37254]=true,[186702]=true,[186686]=true,[64456]=true,
     [174924]=true,[169865]=true,[187139]=true,[183901]=true,[44719]=true,[188701]=true,[183988]=true,
     [141331]=true,[118937]=true,[88566]=true,[68806]=true,[104262]=true,[141862]=true,[127668]=true,
     [128807]=true,[103685]=true,[134031]=true,[127659]=true,[166678]=true,[86571]=true,[133511]=true,
@@ -32,6 +32,7 @@ local P_Items={
     [224552]=true,--洞穴探索者的火炬
     [228914]=true,--爱蛛者眼镜
     [245567]=true,--卡雷什记忆水晶
+    [147843]=true,--赛拉的备用斗篷
 }
 local ModifiedTab={
     --[[[69775]='Alt',--维库饮水角
