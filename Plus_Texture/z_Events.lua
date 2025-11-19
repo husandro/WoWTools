@@ -897,6 +897,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ScrappingMachineUI()
     self:SetNineSlice(ScrappingMachineFrameInset)
     self:HideTexture(ScrappingMachineFrame.TopTileStreaks)
     self:SetButton(ScrappingMachineFrameCloseButton)
+    self:SetFrame(ScrappingMachineFrame.ItemSlots, {index=1, alpha=1})
 end
 
 

@@ -30,6 +30,7 @@ function WoWTools_DataMixin:Hook(obj, ...)
 
     elseif WoWTools_DataMixin.Player.husandro then
         print('|cnWARNING_FONT_COLOR:Hook没发现|r', t, obj, ...)
+        hooksecurefunc(obj, ...)
     end
 end
 

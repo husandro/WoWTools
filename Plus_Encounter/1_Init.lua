@@ -7,6 +7,9 @@ local P_Save={
 
     isSaveTier=WoWTools_DataMixin.Player.husandro,--保存改变
     --EncounterJournalTier=9, 内容
+
+    --hideInsList=false,--界面, 副本击杀
+    --insListScale=1,
 }
 
 local function Save()

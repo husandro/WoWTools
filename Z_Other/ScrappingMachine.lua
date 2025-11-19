@@ -142,7 +142,6 @@ local ButtonList={
             end
         end
     },{
-
         name='AddItem',
         texture=135995,
         tooltip=WoWTools_DataMixin.onlyChinese and '添加装备' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, BAG_FILTER_EQUIPMENT),
@@ -163,13 +162,12 @@ local ButtonList={
                 end
             end
         end
-    --[[},{
-        name='ItemBag',
-        atlas='bag-main',
-        tooltip=WoWTools_DataMixin.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL,
-        click=function(self)
-            MenuUtil.CreateContextMenu(self, Init_BagList_Menu)
-        end]]
+    },
+    {
+        name='ClearItem',
+        atlas='bags-button-autosort-up',
+        tooltip=(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        click=function() C_ScrappingMachineUI.RemoveAllScrapItems() end
     },{
         name='AddAll',
         atlas='communities-chat-icon-plus',
@@ -192,16 +190,6 @@ local ButtonList={
             end
         end
     },
-
-
-    {name='-'},
-
-    {
-        name='ClearItem',
-        atlas='bags-button-autosort-up',
-        tooltip=(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
-        click=function() C_ScrappingMachineUI.RemoveAllScrapItems() end
-    }
 }
 
 
@@ -447,14 +435,7 @@ local function Init_Button()
 
 
 
-for index, info in pairs(ButtonList) do
-    if info.name~='-' then
-        --[[local btn=WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {
-            name= 'WoWToolsScrapping'..info.name..'Button',
-            size=23,
-            atlas=info.atlas,
-            texture=info.texture,
-        })]]
+    for index, info in pairs(ButtonList) do
         local btn= CreateFrame('Button', 'WoWToolsScrapping'..info.name..'Button', ScrappingMachineFrame, 'WoWToolsButtonTemplate')
 
         if info.atlas then
@@ -463,11 +444,16 @@ for index, info in pairs(ButtonList) do
             btn:SetNormalTexture(info.texture)
         end
 
-
         btn.tooltip= (info.texture and format('|T%d:0|t', info.texture) or format('|A:%s:0:0|a', info.atlas))..info.tooltip
         btn.click= info.click
 
-        btn:SetPoint('TOP', ItemsButton, 'BOTTOM', 0, -(index*23))
+        if info.name=='AddAll' then
+            btn:SetPoint('LEFT', ScrappingMachineFrame.ScrapButton, 'RIGHT', 2, 0)
+        elseif info.name=='ClearItem' then
+            btn:SetPoint('LEFT', ScrappingMachineFrame.ScrapButton, 'RIGHT', 30, 0)
+        else
+            btn:SetPoint('TOP', ItemsButton, 'BOTTOM', 0, -(index*23))
+        end
         btn:SetScript('OnLeave', function()
             GameTooltip:Hide()
         end)
@@ -485,14 +471,13 @@ for index, info in pairs(ButtonList) do
             self:click()
         end)
     end
-end
 
-ButtonList={}
+    ButtonList=nil
 
-WoWTools_DataMixin:Hook(ScrappingMachineFrame, 'UpdateScrapButtonState', function()
-    _G['WoWToolsScrappingClearItemButton']:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
-    _G['WoWToolsScrappingAddAllButton']:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
-end)
+    WoWTools_DataMixin:Hook(ScrappingMachineFrame, 'UpdateScrapButtonState', function()
+        _G['WoWToolsScrappingClearItemButton']:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.5)
+        _G['WoWToolsScrappingAddAllButton']:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.5)
+    end)
 
     Init_Button=function()end
 end

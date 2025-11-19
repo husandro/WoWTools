@@ -24,18 +24,31 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
-
+--副本列表
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '副本列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, 'List'),
     function()
-        return not Save().hidePlusInstanceList
+        return not Save().hideInsList
     end, function()
-        Save().hidePlusInstanceList= not Save().hidePlusInstanceList and true or nil
+        Save().hideInsList= not Save().hideInsList and true or nil
         WoWTools_EncounterMixin:Init_ListInstances()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
+
+--副本列表，缩放
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:ScaleRoot(self, sub, function()
+        return Save().insListScale or 1
+    end, function(value)
+        Save().insListScale= value
+        WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
+    end, function()
+        Save().insListScale= nil
+        WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
+    end)
+
 
 --专精拾取
     sub=root:CreateCheckbox(
@@ -49,10 +62,11 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('ENCOUNTER_START')
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     sub2=sub:CreateCheckbox(
-        format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 
+        format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
             WoWTools_DataMixin.Player.col..
             (WoWTools_UnitMixin:GetClassIcon(nil, nil, self.classFile) or '')
             ..WoWTools_TextMixin:CN(UnitClass('player'), nil)
@@ -118,7 +132,7 @@ end
 
 local function Init()
     local btn= CreateFrame('DropdownButton', 'WoWToolsAdventureJournalMenuButton', EncounterJournalCloseButton, 'WoWToolsMenuTemplate')
-    
+
     --[[WoWTools_ButtonMixin:Menu(EncounterJournalCloseButton, {--按钮, 总开关
         name='WoWToolsAdventureJournalMenuButton',
         size=23,

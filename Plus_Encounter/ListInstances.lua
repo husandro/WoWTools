@@ -295,6 +295,11 @@ local function Init_Button(btn)
 --收藏
         self.Favorites2:set_alpha()
         self.Favorites2:SetShown(true)
+
+        local scale= Save().insListScale or 1
+        self.tipsText:SetScale(scale)
+        self.challengeText:SetScale(scale)
+        self.challengeText2:SetScale(scale)
     end
 
     btn:settings()
@@ -329,7 +334,7 @@ EncounterJournal_DisplayInstance
 EncounterJournal_ListInstances
 ]]
 local function Init()
-    if Save().hidePlusInstanceList then
+    if Save().hideInsList then
         return
     end
 

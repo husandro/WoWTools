@@ -223,7 +223,7 @@ local function Init_Menu(self, root)
             (col2 or '|cffff00ff')..data.index..'|r'
 --转精，图标，名称
             ..'|T'..(select(4, GetSpecializationInfoByID(data.specID)) or 0)..':0|t'
-            ..'|T'..(data.bossIcon or "Interface\\EncounterJournal\\UI-EJ-BOSS-Default")..':0:0|t'
+            ..'|T'..(data.bossIcon or "Interface\\EncounterJournal\\UI-EJ-BOSS-Default")..':40:22|t'
 --副本名称
             ..(data.bossName or data.encounterID),
         function(d)
@@ -328,8 +328,8 @@ local function Init_Button(btn)
             b:SetPoint('BOTTOMRIGHT', (-x*(s+2))-5, -8)
 --职业，背景颜色
             b.texture2= b:CreateTexture(nil, 'BACKGROUND', nil, -1)
-            b.texture2:SetPoint('TOPLEFT', b, -1, 4)
-            b.texture2:SetPoint('BOTTOMRIGHT', b, 1, -1)
+            b.texture2:SetPoint('TOPLEFT', b, -1, 1)
+            b.texture2:SetPoint('BOTTOMRIGHT', b, 1, -2)
             b.texture2:SetAtlas('groupfinder-icon-class-color-'..classInfo.classFile)
 --tooltip
             b.tooltip= (WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)

@@ -111,25 +111,7 @@ local function Create_BossButtonList(btn)
         GameTooltip:Show()
     end)
 end
---BOSS 列表 按钮
-WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)
-    if not data.bossID then
-        return
-    end
 
-    if not self.indexLabel then
-        Create_BossButtonList(self)
-    end
-
-    self.indexLabel:SetText(data.index or '')
-    local encounterID= select(7, EJ_GetEncounterInfo(data.bossID))
-    local numKill=WoWToolsPlayerDate['BossKilled'][encounterID] or 0
-    if numKill>0 then
-        self.killedLabel:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, numKill)
-    else
-        self.killedLabel:SetText('')
-    end
-end)
 
 
 
@@ -222,6 +204,40 @@ local function Init()
     if Save().hideEncounterJournal then
         return
     end
+
+
+--BOSS 列表 按钮
+    WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)
+        if not data.bossID then
+            return
+        end
+
+        if not self.indexLabel then
+            Create_BossButtonList(self)
+        end
+
+        self.indexLabel:SetText(data.index or '')
+        local encounterID= select(7, EJ_GetEncounterInfo(data.bossID))
+        local numKill=WoWToolsPlayerDate['BossKilled'][encounterID] or 0
+        if numKill>0 then
+            self.killedLabel:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, numKill)
+        else
+            self.killedLabel:SetText('')
+        end
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --综述,小地图提示
     EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', GameTooltip_Hide)
