@@ -352,7 +352,7 @@ end
 --EncounterJournal_DisplayInstance
 --EncounterJournal_ListInstances
 
-function WoWTools_EncounterMixin:Init_UI_ListInstances()
+function WoWTools_EncounterMixin:Init_ListInstances()
     --WoWTools_DataMixin:Hook('EncounterJournal_DisplayInstance', function(...) Init_DisplayInstance(...) end)
     --EncounterInstanceButtonTemplate
     WoWTools_DataMixin:Hook(EncounterJournal.instanceSelect.ScrollBox, 'Update', function(frame)

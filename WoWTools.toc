@@ -363,13 +363,8 @@ Plus_Encounter\0_EncounterMixin.lua
 Plus_Encounter\1_Init.lua
 Plus_Encounter\2_Menu.lua
 Plus_Encounter\Plus_BossItem.lua
-Plus_Encounter\Plus_Sets.lua
-
 Plus_Encounter\Plus.lua
-Plus_Encounter\Plus_BossModel.lua
-Plus_Encounter\Plus_BossSpell.lua
-Plus_Encounter\Plus_ListInstances.lua
-
+Plus_Encounter\z_ListInstances.lua
 Plus_Encounter\z_LootSpec.lua
 Plus_Encounter\z_Right_Info.lua
 Plus_Encounter\z_UI.lua

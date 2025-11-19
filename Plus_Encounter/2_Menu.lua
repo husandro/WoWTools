@@ -175,7 +175,7 @@ local function Init()
     Init=function()end
 end
 
-function WoWTools_EncounterMixin:Button_Init()
+function WoWTools_EncounterMixin:Init_Menu()
     Init()
 end
 
