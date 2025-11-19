@@ -166,6 +166,7 @@ sub:CreateSpacer()
 function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValue)
     local isLocked= WoWTools_FrameMixin:IsLocked(frame)
     root:CreateSpacer()
+    local sub2
     local sub= self:CreateSlider(root, {
         getValue=GetValue,
         setValue=SetValue,
@@ -177,26 +178,25 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
         tooltip=function(tooltip) tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE) end,
     })
     sub:SetEnabled(not isLocked)
-    root:CreateSpacer()
 
-    sub=root:CreateButton(
-        '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-    function(data)
-        if not WoWTools_FrameMixin:IsLocked(frame) then
-            if data.setValue then
-                data.setValue(1)
-            end
-            if data.resetValue then
+
+    if ResetValue then
+        root:CreateSpacer()
+        sub2=root:CreateButton(
+            '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+        function(data)
+            if not WoWTools_FrameMixin:IsLocked(frame) then
                 data.resetValue()
             end
-        end
-        return MenuResponse.Refresh
-    end, {setValue=SetValue, resetValue=ResetValue})
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..': 1')
-    end)
+            return MenuResponse.Refresh
+        end, {resetValue=ResetValue})
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..': 1')
+        end)
+        sub2:SetEnabled(not isLocked)
+    end
 
-    return sub
+    return sub, sub2
 end
 
 
@@ -345,18 +345,15 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
         step=0.01,
         bit='%.2f',
     })
-    sub:CreateSpacer()
 
-    if not onlyRoot then
+    if not onlyRoot and RestFunc then
+        sub:CreateSpacer()
         sub:CreateButton(
             '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
         function(data)
-            data.SetValue(0.5)
-            if data.RestFunc then
-                data.RestFunc()
-            end
+            data.RestFunc()
             return MenuResponse.Refresh
-        end, {SetValue=SetValue, RestFunc=RestFunc})
+        end, {RestFunc=RestFunc})
     end
     return sub, sub2
 end

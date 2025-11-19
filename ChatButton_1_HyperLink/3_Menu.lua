@@ -380,7 +380,8 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:TTsMenu(root)
     root:CreateDivider()
 
-
+--表情，按钮
+    WoWTools_HyperLink:EmojiButton_Menu(self, root, false)
 
 --颜色选择器    
     root:CreateButton(

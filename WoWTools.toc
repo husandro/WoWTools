@@ -534,6 +534,7 @@ ChatButton_1_HyperLink\z_Reload_Button.lua
 ChatButton_1_HyperLink\z_Talking.lua
 ChatButton_1_HyperLink\z_Welcome.lua
 ChatButton_1_HyperLink\z_CopyChat.lua
+ChatButton_1_HyperLink\z_Emoji.lua
 
 ##ROLL
 ChatButton_2_Roll\2_Roll.lua

@@ -218,7 +218,7 @@ local function Init_Menu(self, root)
 --放到聊天框左边
 
     sub=root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '聊天框左边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_CHAT_FRAME_LABEL, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT),
+        WoWTools_DataMixin.onlyChinese and '聊天框' or HUD_EDIT_MODE_CHAT_FRAME_LABEL,
     function()
         return Save().setChatFrameLeft
     end, function()

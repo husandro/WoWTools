@@ -6449,7 +6449,10 @@
         "EncounterJournal_DisplayEncounter",
         "REAGENT_COST_CONSUME_CHARGES",
         "LFG_LIST_BOSSES_DEFEATED",
-        "SAVE_CHANGES"
+        "SAVE_CHANGES",
+        "MAXEMOTEINDEX",
+        "EMOTE1_TOKEN",
+        "EMOTE_MESSAGE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
