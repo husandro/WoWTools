@@ -39,11 +39,17 @@ local function Init_Frame()
 
     Button=CreateFrame('DropdownButton', 'WoWToolsMoveEmojiButton', UIParent, 'WoWToolsMenuTemplate')
     Button:RegisterForMouse('LeftButtonDown', "LeftButtonUp")
+    Button:SetNormalTexture(0)
+    Button:SetMovable(true)
+    Button:RegisterForDrag("RightButton")
+    Button:SetScript('OnMouseDown', function(self, d)
+        if d=='RightButton' then
+            --self:SetMovable
+            -- frame:StopMovingOrSizing()
+            --StartMoving()
+        end
+    end)
     --Button:SetNormalTexture(0)
-
-    function Button:set_point()
-
-    end
 
     function Button:settings()
         local p= Save().emojiPoint
@@ -53,10 +59,13 @@ local function Init_Frame()
         else
             self:SetPoint('BOTTOM', WoWTools_ChatMixin:GetButtonForName('HyperLink'), 'TOP', 0, 10)
         end
-        self:SetShown()
+        self:SetShown(Save().emojiUIParent)
     end
 
-    Button:settings(Save().emojiUIParent)
+    Button:settings()
+    Button:SetupMenu(function(self, root)
+        WoWTools_HyperLink:EmojiButton_Menu(self, root, true)
+    end)
 
     Init_Frame=function()
         Button:settings()
@@ -203,7 +212,7 @@ local function Init_Button()
         btn:GetNormalTexture():SetAlpha(alpha)
 
         if isUIParent then
-            btn:SetPoint('LEFT', Button, 'RIGHT', 0, (index-1)*w)
+            btn:SetPoint('LEFT', Button, 'RIGHT', (index-1)*w, 0)
         else
             btn:SetPoint('BOTTOM', ChatFrameMenuButton, 'TOP', 0, (index-1)*w)
         end
