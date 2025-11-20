@@ -64,7 +64,7 @@ local function Init_Frame()
 
     Button:settings()
     Button:SetupMenu(function(self, root)
-        WoWTools_HyperLink:EmojiButton_Menu(self, root, true)
+        WoWTools_HyperLink:EmojiButton_Menu(self, root)
     end)
 
     Init_Frame=function()
@@ -353,6 +353,6 @@ end
 function WoWTools_HyperLink:Init_EmojiButton()
     Init()
 end
-function WoWTools_HyperLink:EmojiButton_Menu(frame, root, isRoot)
-    Init_Menu(frame, root, isRoot)
+function WoWTools_HyperLink:EmojiButton_Menu(...)
+    Init_Menu(...)
 end

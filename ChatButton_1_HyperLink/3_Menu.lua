@@ -381,7 +381,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 
 --表情，按钮
-    WoWTools_HyperLink:EmojiButton_Menu(self, root, false)
+    WoWTools_HyperLink:EmojiButton_Menu(self, root)
 
 --颜色选择器    
     root:CreateButton(
