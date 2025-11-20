@@ -88,14 +88,10 @@ local function Init()
     end
 
 
-    
+
     WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
     WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
-    WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
-    WoWTools_HyperLink:Init_Welcome()--欢迎加入
-    WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
-    WoWTools_HyperLink:Init_EmojiButton()
-    WoWTools_HyperLink:Init_CopyChat()
+
 
 
     Init=function()end
@@ -108,31 +104,40 @@ end
 
 
 
-
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
-    if arg1~= 'WoWTools' then
-        return
+    if event=='ADDON_LOADED' then
+        if arg1== 'WoWTools' then
+
+            WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
+            P_Save=nil
+
+
+            WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
+            WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
+            WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
+
+            WoWTools_HyperLink.addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
+
+
+            if WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName) then
+                Init()
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')--需要这个，表情，中文化，需要这个
+            else
+
+                self:SetScript('OnEvent', nil)
+            end
+            self:UnregisterEvent(event)
+        end
+
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
+        WoWTools_HyperLink:Init_Welcome()--欢迎加入
+        WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
+        WoWTools_HyperLink:Init_EmojiButton()
+        WoWTools_HyperLink:Init_CopyChat()
     end
-
-    WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
-    P_Save=nil
-
-
-    WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
-    WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
-    WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
-
-    WoWTools_HyperLink.addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
-
-
-    if WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName) then
-
-        Init()
-    end
-    self:UnregisterEvent(event)
-    self:SetScript('OnEvent', nil)
 end)
 

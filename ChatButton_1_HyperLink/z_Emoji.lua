@@ -2,34 +2,33 @@ local function Save()
     return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 local Button
+local Buttons={}
 
 
---[[
-EmoteList = {
-	"WAVE",
-	"BOW",
-	"DANCE",
-	"APPLAUD",
-	"BEG",
-	"CHICKEN",
-	"CRY",
-	"EAT",
-	"FLEX",
-	"KISS",
-	"LAUGH",
-	"POINT",
-	"ROAR",
-	"RUDE",
-	"SALUTE",
-	"SHY",
-	"TALK",
-	"STAND",
-	"SIT",
-	"SLEEP",
-	"KNEEL",
-	"LEAN",
+local List = {
+	["WAVE"]="招",
+	["BOW"]="鞠",
+	["DANCE"]="跳",
+	["APPLAUD"]="鼓",
+	["BEG"]="乞",
+	["CHICKEN"]="鸡",
+	["CRY"]="哭",
+	["EAT"]="吃",
+	["FLEX"]="强",
+	["KISS"]="吻",
+	["LAUGH"]="笑",
+	["POINT"]="指",
+	["ROAR"]="咆",
+	["RUDE"]="粗",
+	["SALUTE"]="敬",
+	["SHY"]="羞",
+	["TALK"]="谈",
+	["STAND"]="站",
+	["SIT"]="坐",
+	["SLEEP"]="睡",
+	["KNEEL"]="跪",
+	["LEAN"]="靠",
 }
-]]
 
 
 local function Init_Frame()
@@ -37,35 +36,75 @@ local function Init_Frame()
         return
     end
 
-    Button=CreateFrame('DropdownButton', 'WoWToolsMoveEmojiButton', UIParent, 'WoWToolsMenuTemplate')
-    Button:RegisterForMouse('LeftButtonDown', "LeftButtonUp")
-    Button:SetNormalTexture(0)
+    Button= CreateFrame('Button', 'WoWToolsMoveEmojiButton', UIParent, 'WoWToolsButtonTemplate')
+
+    function Button:set_texture()
+        if #Save().emoji==0  or GameTooltip:IsOwned(self) then
+            self:SetNormalAtlas('newplayerchat-chaticon-newcomer')
+        else
+            self:SetNormalTexture(0)
+        end
+    end
+    Button:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:set_texture()
+    end)
+    Button:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText('|A:newplayerchat-chaticon-newcomer:0:0|a'..(WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE))
+        GameTooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
+            ,'Alt+'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
+        )
+        GameTooltip:Show()
+        self:set_texture()
+    end)
+
     Button:SetMovable(true)
     Button:RegisterForDrag("RightButton")
     Button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
-            --self:SetMovable
-            -- frame:StopMovingOrSizing()
-            --StartMoving()
+            if IsAltKeyDown() then
+                SetCursor('UI_MOVE_CURSOR')
+            end
+        else
+            MenuUtil.CreateContextMenu(self, function(_, root)
+                WoWTools_HyperLink:EmojiButton_Menu(self, root)
+            end)
         end
     end)
-    --Button:SetNormalTexture(0)
+    Button:SetScript('OnDragStart', function(self)
+        if IsAltKeyDown() then
+            self:StartMoving()
+        end
+    end)
+    Button:SetScript('OnDragStop', function(self)
+        self:StopMovingOrSizing()
+        ResetCursor()
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().emojiPoint= {self:GetPoint(1)}
+            Save().emojiPoint[2]= nil
+        end
+    end)
+
 
     function Button:settings()
-        local p= Save().emojiPoint
-        self:ClearAllPoints()
-        if p and p[1] then
-            self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-        else
-            self:SetPoint('BOTTOM', WoWTools_ChatMixin:GetButtonForName('HyperLink'), 'TOP', 0, 10)
+        local show= Save().emojiUIParent
+        if show then
+            local p= Save().emojiPoint
+            self:ClearAllPoints()
+            if p and p[1] then
+                self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+            else
+                self:SetPoint('BOTTOM', WoWTools_ChatMixin:GetButtonForName('HyperLink'), 'TOP', 0, 10)
+            end
+            self:SetFrameStrata(Save().emojiStrata or 'MEDIUM')
         end
-        self:SetShown(Save().emojiUIParent)
+        self:SetShown(show)
+        self:set_texture()
     end
 
     Button:settings()
-    Button:SetupMenu(function(self, root)
-        WoWTools_HyperLink:EmojiButton_Menu(self, root)
-    end)
 
     Init_Frame=function()
         Button:settings()
@@ -103,35 +142,42 @@ end
 
 
 
-local Buttons={}
 
 
 
 
 
 
-local function Create_Button(index, w, h)
+
+local function Create_Button(index, w)
     Buttons[index]= CreateFrame('Button', 'WoWToolsEmojiButton'..index, ChatFrameMenuButton, 'WoWToolsButtonTemplate')
 
     local btn=Buttons[index]
 
-    btn:SetSize(w,h)
+    btn:SetSize(w,w)
     btn:SetNormalAtlas('chatframe-button-up')
     btn:SetPushedAtlas('chatframe-button-down')
     btn:SetHighlightTexture('Interface\\Buttons\\UI-Common-MouseHilight')
-    WoWTools_ColorMixin:Setup(btn:GetNormalTexture(), {type='Texture'})
-    WoWTools_ColorMixin:Setup(btn:GetPushedTexture(), {type='Texture'})
 
-    btn.lable= btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
-    btn.lable:SetPoint('CENTER')
-    WoWTools_ColorMixin:Setup(btn.lable, {type='FontString'})
+    local icon= btn:GetNormalTexture()
+    icon:ClearAllPoints()
+    WoWTools_ColorMixin:Setup(icon, {type='Texture'})
+    
+    icon=btn:GetPushedTexture()
+    icon:ClearAllPoints()
+    WoWTools_ColorMixin:Setup(icon, {type='Texture'})
+
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
+    btn.text:SetPoint('CENTER')
+    WoWTools_ColorMixin:Setup(btn.text, {type='FontString'})
 
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)
-        if WoWToolsSave['ChatButton'].disabledTooltiip then--禁用提示
+        local isUIParent= Save().emojiUIParent
+        if WoWToolsSave['ChatButton'].disabledTooltiip and not Save().emojiUIParent then--禁用提示
             return
         end
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+        GameTooltip:SetOwner(self, isUIParent and 'ANCHOR_LEFT' or "ANCHOR_BOTTOMRIGHT")
         GameTooltip:SetText(Get_EmojiName(self.value))
         GameTooltip:Show()
     end)
@@ -153,13 +199,6 @@ end
 
 
 
-local function Set_Button(self, isUIParent, scale, alpha)
-    
-end
-
-
-
-
 
 
 
@@ -168,53 +207,58 @@ local function Init_Button()
 
     Init_Frame()
 
-    local index=1
+    local index= 1
 
-    local w,h= ChatFrameMenuButton:GetSize()
+    local w= ChatFrameMenuButton:GetWidth() or 32
     local isUIParent= Save().emojiUIParent
     local scale= Save().emojiScale or 1
     local alpha= Save().emojiAlpha or 0.5
+    local fontScale= Save().emojiFontScale or 1
+    local line= Save().emojiLine or 1
 
-    for _, value in ipairs(Save().emoji) do
+    for _, value in pairs(Save().emoji) do
         local btn= Buttons[index]
         if not btn then
-            btn= Create_Button(index, w, h)
+            btn= Create_Button(index, w)
         else
             btn:ClearAllPoints()
         end
 
         btn.value= value
 
-        local name
-        if WoWTools_DataMixin.onlyChinese then
-            name = Get_EmojiName(value)
-            name= WoWTools_TextMixin:CN(name)
-            name= name:gsub('/', '')
-        else
-            name= value
+        local name = WoWTools_DataMixin.onlyChinese and List[value]
+        if not name then
+            if LOCALE_koKR or LOCALE_zhTW or LOCALE_zhCN then
+                name= Get_EmojiName(value)
+                name= name:gsub('/', '')
+            end
+            name= name or value
+            WoWTools_TextMixin:sub(name, 1, 2)
         end
-        btn.lable:SetText(WoWTools_TextMixin:sub(name, 1, 2))
+
+        btn.text:SetText(name)
+        btn.text:SetScale(fontScale)
 
         local x= isUIParent and 0 or 2.5
         local icon= btn:GetNormalTexture()
-        icon:ClearAllPoints()
         icon:SetPoint('TOPLEFT', x, -x)
         icon:SetPoint('BOTTOMRIGHT', -x, x)
+        icon:SetAlpha(alpha)
+
         icon= btn:GetPushedTexture()
-        icon:ClearAllPoints()
         icon:SetPoint('TOPLEFT', x, -x)
         icon:SetPoint('BOTTOMRIGHT', -x, x)
 
-        btn:SetParent(isUIParent and UIParent or ChatFrameMenuButton)
-
+        btn:SetParent(isUIParent and Button or ChatFrameMenuButton)
         btn:SetScale(scale)
-
-        btn:GetNormalTexture():SetAlpha(alpha)
-
         if isUIParent then
-            btn:SetPoint('LEFT', Button, 'RIGHT', (index-1)*w, 0)
+            if index>1 and select(2, math.modf((index-1)/line))==0 then
+                btn:SetPoint('BOTTOM', Buttons[index-line], 'TOP')
+            else
+                btn:SetPoint('LEFT', Buttons[index-1] or Button, 'RIGHT')
+            end
         else
-            btn:SetPoint('BOTTOM', ChatFrameMenuButton, 'TOP', 0, (index-1)*w)
+            btn:SetPoint('BOTTOM', Buttons[index-1] or ChatFrameMenuButton, 'TOP')
         end
 
         btn:SetShown(true)
@@ -236,7 +280,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub
+    local sub, sub2
     local isRoot= self==Button
 
     if not isRoot then
@@ -291,7 +335,7 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
 
 --自定义位置
-    sub:CreateCheckbox(
+    sub2= sub:CreateCheckbox(
         'UIParent',
     function()
         return Save().emojiUIParent
@@ -299,6 +343,24 @@ local function Init_Menu(self, root)
         Save().emojiUIParent= not Save().emojiUIParent and true or nil
         Init_Button()
     end)
+
+    --字体缩放
+    sub2:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub2, {
+        getValue=function()
+            return Save().emojiLine or 1
+        end,
+        setValue=function(value)
+            Save().emojiLine= value
+            if Save().emojiUIParent then
+                Init_Button()
+            end
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
+        minValue=1,
+        maxValue=math.max(#EmoteList, #Buttons),
+        step=1,
+    })
 
 
 --背景, 透明度
@@ -310,6 +372,23 @@ local function Init_Menu(self, root)
         Init_Button()
     end, nil, true)
 
+--字体缩放
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().emojiFontScale or 1
+        end,
+        setValue=function(value)
+            Save().emojiFontScale= value
+            Init_Button()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE,
+        minValue=0.2,
+        maxValue=4,
+        step=0.05,
+        bit='%0.2f',
+    })
+
 --缩放
     WoWTools_MenuMixin:ScaleRoot(self, sub, function()
         return Save().emojiScale or 1
@@ -320,6 +399,10 @@ local function Init_Menu(self, root)
         Save().emoji={'DANCE'}
         Save().emojiScale= nil
         Save().emojiAlpha= nil
+        Save().emojiFontScale= nil
+        Save().emojiPoint= nil
+        Save().emojiUIParent= nil
+        Save().emojiLine= nil
         Init_Button()
     end)
 end

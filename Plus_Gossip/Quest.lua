@@ -383,6 +383,9 @@ local function Init()
             Save().quest= not Save().quest and true or false
             self:set_Texture()--设置，图片
             self:set_tooltip()
+            if not Save().quest then
+                C_VoiceChat.StopSpeakingText()
+            end
         elseif d=='RightButton' then
             MenuUtil.CreateContextMenu(self, function(...)
                 WoWTools_GossipMixin:Init_Menu_Quest(...)
