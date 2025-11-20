@@ -6452,7 +6452,9 @@
         "SAVE_CHANGES",
         "MAXEMOTEINDEX",
         "EMOTE1_TOKEN",
-        "EMOTE_MESSAGE"
+        "EMOTE_MESSAGE",
+        "EncounterJournalSuggestFrameNextButton",
+        "EncounterJournalSuggestFramePrevButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

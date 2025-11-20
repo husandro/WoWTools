@@ -235,8 +235,10 @@ end
 
 
 
-local function Init_Menu(self, root, isRoot)
+local function Init_Menu(self, root)
     local sub
+    local isRoot= self==Button
+
     if not isRoot then
         root= root:CreateButton(
             '|A:newplayerchat-chaticon-newcomer:0:0|a'

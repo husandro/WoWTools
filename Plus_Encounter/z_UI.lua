@@ -251,6 +251,9 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetNineSlice(EncounterJournalInset)
     self:SetScrollBar(EncounterJournalInstanceSelect)
     self:SetEditBox(EncounterJournalSearchBox)
+--推荐玩法
+    self:SetButton(EncounterJournalSuggestFramePrevButton, {alpha=1})
+    self:SetButton(EncounterJournalSuggestFrameNextButton, {alpha=1})
 
 --团队副本
     --self:SetMenu(EncounterJournalInstanceSelect.ExpansionDropdown)
