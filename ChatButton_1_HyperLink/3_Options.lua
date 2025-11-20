@@ -13,7 +13,19 @@ end
 
 
 --local Category, Layout
-local function Init(frame)
+local function Init()
+    if not C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_Settings' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
+
+    local frame= CreateFrame('Frame')
+
     local Category= WoWTools_PanelMixin:AddSubCategory({
         name= WoWTools_HyperLink.addName,
         frame=frame,
@@ -160,6 +172,6 @@ end
 
 
 
-function WoWTools_HyperLink:Blizzard_Settings(panel)
-    Init(panel)
+function WoWTools_HyperLink:Blizzard_Settings()
+    Init()
 end

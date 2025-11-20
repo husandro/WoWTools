@@ -204,7 +204,7 @@ local function Init_Menu(self, root)
             WoWTools_DataMixin:PlaySound()--播放, 声音
         end
 
-        WoWTools_HyperLink:Init_Event_Sound(self)
+        WoWTools_HyperLink:Init_Event_Sound()
     end)
 
     sub:SetTooltip(function(tooltip)
@@ -419,7 +419,7 @@ local function Init_Menu(self, root)
         return not Save().hideEventTracePlus
     end, function()
         Save().hideEventTracePlus= not Save().hideEventTracePlus and true or nil
-        WoWTools_HyperLink:Blizzard_EventTrace()
+        WoWTools_HyperLink:Init_EventTrace()
         if Save().hideEventTracePlus then
             print(
                 WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2,
@@ -440,7 +440,7 @@ local function Init_Menu(self, root)
                 '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开始' or START)
                 or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清队' or CLEAR_ALL))
             )
-        WoWTools_HyperLink:Blizzard_EventTrace()
+        WoWTools_HyperLink:Init_EventTrace()
     end)
 
     local tab= WoWTools_HyperLink:Get_EventTrace_Print_Tab()
@@ -497,7 +497,7 @@ local function Init_Menu(self, root)
         return not Save().disabedFrameStackPlus
     end, function()
         Save().disabedFrameStackPlus= not Save().disabedFrameStackPlus and true or nil
-        WoWTools_HyperLink:Blizzard_DebugTools()
+        WoWTools_HyperLink:Init_DebugTools()
     end)
 
 
@@ -550,6 +550,6 @@ end
 
 
 
-function WoWTools_HyperLink:Init_Button_Menu(btn)
-    btn:SetupMenu(Init_Menu)
+function WoWTools_HyperLink:Init_Menu()
+    WoWTools_ChatMixin:GetButtonForName('HyperLink'):SetupMenu(Init_Menu)
 end

@@ -53,7 +53,13 @@ end
 
 
 
-local function Init(btn)
+local function Init()
+    local btn= WoWTools_ChatMixin:GetButtonForName('HyperLink')
+    WoWTools_HyperLink:Init_EventTrace()
+    WoWTools_HyperLink:Blizzard_Settings()
+    WoWTools_HyperLink:Init_DebugTools()
+    WoWTools_HyperLink:Init_Menu()
+
     btn.eventSoundTexture= btn:CreateTexture(nil,'OVERLAY')
     btn.eventSoundTexture:SetPoint('BOTTOMLEFT',4, 4)
     btn.eventSoundTexture:SetSize(12,12)
@@ -82,9 +88,9 @@ local function Init(btn)
     end
 
 
-    WoWTools_HyperLink:Init_Button_Menu(btn)
+    
     WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
-    WoWTools_HyperLink:Init_Event_Sound(btn)--播放, 事件声音
+    WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
     WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
     WoWTools_HyperLink:Init_Welcome()--欢迎加入
     WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
@@ -107,48 +113,26 @@ local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
-    if event=='ADDON_LOADED' then
-        if arg1== 'WoWTools' then
-
-            WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
-            P_Save=nil
-
-
-            WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
-            WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
-            WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
-
-            WoWTools_HyperLink.addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
-
-
-            if WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName) then
-                Init(WoWTools_ChatMixin:GetButtonForName('HyperLink'))
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                    WoWTools_HyperLink:Blizzard_Settings(self)
-                end
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
-                    WoWTools_HyperLink:Blizzard_DebugTools()
-                end
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
-                    WoWTools_HyperLink:Blizzard_EventTrace()
-                end
-            else
-                self:SetScript('OnEvent', nil)
-            end
-
-        elseif arg1=='Blizzard_Settings' and WoWToolsSave then
-            WoWTools_HyperLink:Blizzard_Settings(self)
-
-
-        elseif arg1=='Blizzard_DebugTools' and WoWToolsSave then--FSTACK Blizzard_DebugTools.lua
-            WoWTools_HyperLink:Blizzard_DebugTools()
-
-        elseif arg1=='Blizzard_EventTrace' and WoWToolsSave then
-            WoWTools_HyperLink:Blizzard_EventTrace()
-        end
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
+    P_Save=nil
+
+
+    WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
+    WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
+    WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
+
+    WoWTools_HyperLink.addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
+
+
+    if WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName) then
+
+        Init()
+    end
+    self:UnregisterEvent(event)
+    self:SetScript('OnEvent', nil)
 end)
 

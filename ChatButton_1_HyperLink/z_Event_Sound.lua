@@ -151,6 +151,6 @@ end
 
 
 
-function WoWTools_HyperLink:Init_Event_Sound(btn)
-    Init(btn)
+function WoWTools_HyperLink:Init_Event_Sound()
+    Init(WoWTools_ChatMixin:GetButtonForName('HyperLink'))
 end

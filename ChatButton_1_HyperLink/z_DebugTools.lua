@@ -10,16 +10,20 @@ end
 
 
 local function Init()
-    if Save().disabedFrameStackPlus or not C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
+    if Save().disabedFrameStackPlus then
         return
     end
 
+    if not C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_DebugTools' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
 
-
-   --[[local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {
-        size=26,
-        name='WoWToolsHyperLinkTableAttributeDisplayButton',
-    })]]
     local btn= CreateFrame('Button', 'WoWToolsHyperLinkTableAttributeDisplayButton', TableAttributeDisplay, 'WoWToolsButtonTemplate')
     btn:SetSize(26, 26)
     btn:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
@@ -144,6 +148,6 @@ end
 
 
 --fstack 增强 TableAttributeDisplay
-function WoWTools_HyperLink:Blizzard_DebugTools()
+function WoWTools_HyperLink:Init_DebugTools()
     Init()
 end

@@ -348,6 +348,8 @@ local function Init_LeftList()
             ScrollBox:settings()
         end
     end)
+
+    Init_LeftList= function()end
 end
 
 
@@ -476,7 +478,7 @@ local function Init_EditBox()
     end)
 
 
-
+    Init_Plus=function()end
 end
 
 
@@ -498,9 +500,20 @@ end
 
 --Plus
 local function Init_Plus()
-    if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') or Save().hideEventTracePlus then
+    if Save().hideEventTracePlus then
         return
     end
+
+    if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_EventTrace' then
+                Init_Plus()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
+
 --上面 EditBox
     Init_EditBox()
 --左边列表
@@ -565,7 +578,7 @@ end
 
 
 
-local function Init_Print()
+local function Init()
     if not Save().eventTracePrint then
         return
     end
@@ -624,7 +637,7 @@ local function Init_Print()
 
     Frame:set_event()
 
-    Init_Print= function()
+    Init= function()
         Frame:set_event()
     end
 end
@@ -633,11 +646,11 @@ end
 
 
 
+                
 
 
-
-function WoWTools_HyperLink:Blizzard_EventTrace()
-    Init_Print()
+function WoWTools_HyperLink:Init_EventTrace()
+    Init()
     Init_Plus()
 end
 

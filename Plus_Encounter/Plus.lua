@@ -519,7 +519,7 @@ local function Init()
         local model= EncounterJournal.encounter.info.model
         if not model.creatureDisplayIDText then
             model.creatureDisplayIDText= model:CreateFontString(nil, nil, 'QuestTitleFontBlackShadow')
-            model.creatureDisplayIDText:SetPoint('BOTTOM', model.imageTitle, 'TOP', 0 , 20)
+            model.creatureDisplayIDText:SetPoint('BOTTOM', model.imageTitle, 'TOP', 0 , 15)
         end
         if EncounterJournal.iconImage  then
             text= text..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'|n'

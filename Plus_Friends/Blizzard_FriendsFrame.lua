@@ -169,7 +169,7 @@ end
 --处理，好友，在线信息
 local function Set_Friend_Event(self, _, friendIndex)
 --战斗中，不显示，好友，提示
-    if (not Save().showInCombatFriendInfo and UnitAffectingCombat('player') and IsInInstance()) then
+    if (not Save().showInCombatFriendInfo and InCombatLockdown() and IsInInstance()) then
         self.tips=nil
         return
     end
@@ -696,5 +696,5 @@ end
 
 
 function WoWTools_FriendsMixin:Blizzard_FriendsFrame()
-    C_Timer.After(3, Init)
+    C_Timer.After(6, Init)
 end
