@@ -52,23 +52,6 @@ C_Timer.After(0.3, function()
         Save().EncounterJournalTier= Save().isSaveTier and tier or nil
     end)
 
-    Menu.ModifyMenu("MENU_EJ_EXPANSION", function(_, root)
-        root:CreateDivider()
-        local sub=root:CreateCheckbox(
-           (WoWTools_DataMixin.onlyChinese and '保存' or SAVE),
-        function()
-            return Save().isSaveTier
-        end, function()
-            Save().isSaveTier= not Save().isSaveTier and true or false
-            Save().EncounterJournalTier= Save().isSaveTier and EJ_GetCurrentTier() or nil
-        end)
-        sub:SetTooltip(function(tooltip)
-            local tier= Save().EncounterJournalTier or EJ_GetCurrentTier() or 1
-            local name= EJ_GetTierInfo(tier)
-            tooltip:AddLine(WoWTools_DataMixin.Icon.icon2..WoWTools_TextMixin:CN(name)..' tier|cffffffff '..tier)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅限：重载时' or format(LFG_LIST_CROSS_FACTION, RELOADUI))
-        end)
-    end)
 end)
 
 

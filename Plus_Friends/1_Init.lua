@@ -17,7 +17,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+--panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -43,25 +43,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                self:SetScript('OnEvent', nil)
-                self:UnregisterAllEvents()
+                self:UnregisterEvent(event)
+            self:SetScript('OnEvent', nil)
             else
                 WoWTools_FriendsMixin:Blizzard_QuickJoin()
                 WoWTools_FriendsMixin:Blizzard_RaidFrame()
+                WoWTools_FriendsMixin:Blizzard_FriendsFrame()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_RaidUI') then
                     WoWTools_FriendsMixin:Blizzard_RaidUI()
                     self:UnregisterEvent(event)
+                    self:SetScript('OnEvent', nil)
                 end
             end
 
         elseif arg1=='Blizzard_RaidUI' and WoWToolsSave then
             WoWTools_FriendsMixin:Blizzard_RaidUI()
             self:UnregisterEvent(event)
+            self:SetScript('OnEvent', nil)
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
-        WoWTools_FriendsMixin:Blizzard_FriendsFrame()
-        self:UnregisterEvent(event)
+    --elseif event=='LOADING_SCREEN_DISABLED' then
+        --WoWTools_FriendsMixin:Blizzard_FriendsFrame()
+        --self:UnregisterEvent(event)
     end
 end)

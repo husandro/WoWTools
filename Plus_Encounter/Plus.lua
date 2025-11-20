@@ -519,8 +519,7 @@ local function Init()
         local model= EncounterJournal.encounter.info.model
         if not model.creatureDisplayIDText then
             model.creatureDisplayIDText= model:CreateFontString(nil, nil, 'QuestTitleFontBlackShadow')
-            --WoWTools_LabelMixin:Create(self, {size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
-            model.creatureDisplayIDText:SetPoint('BOTTOM', model.imageTitle, 'TOP', 0 , 10)
+            model.creatureDisplayIDText:SetPoint('BOTTOM', model.imageTitle, 'TOP', 0 , 20)
         end
         if EncounterJournal.iconImage  then
             text= text..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'|n'

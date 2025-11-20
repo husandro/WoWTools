@@ -102,6 +102,26 @@ local function Init_Menu(self, root)
         WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     end)
 
+--记录上次选择版本
+    root:CreateDivider()
+    local tier= Save().EncounterJournalTier or EJ_GetCurrentTier() or 1
+    local tierName= EJ_GetTierInfo(tier)
+    sub=root:CreateCheckbox(
+        WoWTools_TextMixin:CN(tierName) or 'EJ Tier',
+    function()
+        return Save().isSaveTier
+    end, function()
+        Save().isSaveTier= not Save().isSaveTier and true or false
+        Save().EncounterJournalTier= Save().isSaveTier and EJ_GetCurrentTier() or nil
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '保存改动' or EDIT_TICKET)
+        tooltip:AddLine(' ')
+        tooltip:AddLine('EJ Tier|cffffffff '..tier)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅限：重载时' or format(LFG_LIST_CROSS_FACTION, RELOADUI))
+    end)
+
+
 --打开选项界面
     root:CreateDivider()
     WoWTools_MenuMixin:Reload(root)
@@ -112,7 +132,26 @@ end
 
 
 
+--[[
 
+Menu.ModifyMenu("MENU_EJ_EXPANSION", function(_, root)
+    root:CreateDivider()
+    local sub=root:CreateCheckbox(
+        (WoWTools_DataMixin.onlyChinese and '保存' or SAVE),
+    function()
+        return Save().isSaveTier
+    end, function()
+        Save().isSaveTier= not Save().isSaveTier and true or false
+        Save().EncounterJournalTier= Save().isSaveTier and EJ_GetCurrentTier() or nil
+    end)
+    sub:SetTooltip(function(tooltip)
+        local tier= Save().EncounterJournalTier or EJ_GetCurrentTier() or 1
+        local name= EJ_GetTierInfo(tier)
+        tooltip:AddLine(WoWTools_DataMixin.Icon.icon2..WoWTools_TextMixin:CN(name)..' tier|cffffffff '..tier)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅限：重载时' or format(LFG_LIST_CROSS_FACTION, RELOADUI))
+    end)
+end)
+]]
 
 
 

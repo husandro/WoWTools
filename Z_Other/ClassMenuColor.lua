@@ -119,7 +119,7 @@ for specID, classID in pairs(tab) do
                 local colorText=
                     '|T'..icon..':0|t'
                     ..'|c'..hex
-                    ..name
+                    ..WoWTools_TextMixin:CN(name)
                     ..'|r'
                     ..(role and _G['INLINE_'..role..'_ICON'] or '')
                 classTabs[name..(specID==251 and '251' or '')]= colorText--251 DEATHKNIGHT 冰霜
@@ -192,9 +192,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-        if not WoWTools_ChineseMixin then
-            Init()
-        end
+        Init()
         self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end

@@ -696,5 +696,5 @@ end
 
 
 function WoWTools_FriendsMixin:Blizzard_FriendsFrame()
-    Init()
+    C_Timer.After(3, Init)
 end
