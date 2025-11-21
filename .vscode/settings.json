@@ -6459,7 +6459,9 @@
         "EMOTE454_TOKEN",
         "EMOTE455_TOKEN",
         "EMOTE449_TOKEN",
-        "ChatFrameUtil"
+        "ChatFrameUtil",
+        "COMMAND",
+        "SLASH_COMMAND"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
