@@ -1118,7 +1118,7 @@ local function Init()
             self:set_tooltip()
 
         elseif d=='LeftButton' then
-            MenuUtil.CreateContextMenu(self, function(...) Init_Menu(...) end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
             self:set_tooltip()
         end
     end)
@@ -1126,17 +1126,17 @@ local function Init()
     Button:EnableMouseWheel(true)
     Button:SetScript('OnMouseWheel', function(self, d)
         if IsAltKeyDown() then
+            if not WoWTools_FrameMixin:IsLocked(self) then
+                Save().Icons.hideFrame= d==-1
+                self:set_frame()
+            end
+        else
             if not InCombatLockdown() then
                 if d==1 then
                     WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT))
                 else
                     WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
                 end
-            end
-        else
-            if not WoWTools_FrameMixin:IsLocked(self) then
-                Save().Icons.hideFrame= d==-1
-                self:set_frame()
             end
         end
     end)
@@ -1184,18 +1184,24 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddLine(
             '|cffffd100'..WoWTools_DataMixin.Icon.icon2
-            ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL))
+            ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL)
+            ..'|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'
+        )
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
-            WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
-            WoWTools_DataMixin.Icon.left..(InCombatLockdown() and '' or WoWTools_DataMixin.Icon.right),
+            (WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)..WoWTools_DataMixin.Icon.left,
+
+            (InCombatLockdown() and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            ..WoWTools_DataMixin.Icon.right,
+
             1,1,1,1,1,1
         )
         GameTooltip:AddDoubleLine(--显示/隐藏
             (WoWTools_FrameMixin:IsLocked(self) and '|cff626262' or '')
             ..WoWTools_TextMixin:GetShowHide(nil, true),
-            WoWTools_DataMixin.Icon.mid,
+            'Alt+'..WoWTools_DataMixin.Icon.mid,
             1,1,1,1,1,1
         )
 
@@ -1208,7 +1214,7 @@ local function Init()
         GameTooltip:AddDoubleLine(
             (InCombatLockdown() and '|cff626262' or '')
             ..(WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')),
-            'Alt+'..WoWTools_DataMixin.Icon.mid,
+            WoWTools_DataMixin.Icon.mid,
             1,1,1,1,1,1
         )
         GameTooltip:Show()

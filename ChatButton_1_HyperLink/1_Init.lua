@@ -34,12 +34,12 @@ local P_Save={
     showCopyChatButton=true,--显示 复制聊天 按钮
     --copyChatSetText=nil,--处理，文本
 
-    Emote={
+    --[[Emote={
         emoji={
             'DANCE'
         },
         voice={},
-    }
+    }]]
 }
 
 local function Save()
@@ -89,12 +89,8 @@ local function Init()
         end
     end
 
-
-
     WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
     WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
-
-
 
     Init=function()end
 end
@@ -116,7 +112,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
             P_Save=nil
             Save().emoji= nil
-            Save().Emote= Save().Emote or {emoji={'DANCE'}, voice={}}
+            --Save().Emote= Save().Emote or {emoji={'DANCE'}, voice={}}
 
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
             WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
@@ -139,7 +135,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
         WoWTools_HyperLink:Init_Welcome()--欢迎加入
         WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
-        WoWTools_HyperLink:Init_EmojiButton()
+        --WoWTools_HyperLink:Init_EmojiButton()
         WoWTools_HyperLink:Init_CopyChat()
     end
 end)

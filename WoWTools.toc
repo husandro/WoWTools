@@ -521,6 +521,7 @@ ChatButton\0_ChatMixin.lua
 ChatButton\1_Init.lua
 ChatButton\2_Buttons.lua
 
+
 ##超链接， 欢迎, 一些其他功能
 ChatButton_1_HyperLink\0_HyperLinkMixin.lua
 ChatButton_1_HyperLink\1_Init.lua
@@ -534,7 +535,7 @@ ChatButton_1_HyperLink\z_Reload_Button.lua
 ChatButton_1_HyperLink\z_Talking.lua
 ChatButton_1_HyperLink\z_Welcome.lua
 ChatButton_1_HyperLink\z_CopyChat.lua
-ChatButton_1_HyperLink\z_Emoji.lua
+
 
 ##ROLL
 ChatButton_2_Roll\2_Roll.lua
@@ -597,3 +598,5 @@ ChatButton_11_Combat\11_Combat.lua
 ChatButton_11_Combat\CombatButton.lua
 ChatButton_11_Combat\Menu.lua
 ChatButton_11_Combat\TrackButton.lua
+
+ChatButton\z_Emote.lua

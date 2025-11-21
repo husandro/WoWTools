@@ -39,13 +39,8 @@ local function Init_Frame()
 
     Button= CreateFrame('Button', 'WoWToolsChatEmoteButton', UIParent, 'WoWToolsButtonTemplate')
 
-    --[[WoWTools_TextureMixin:CreateBG(Button, {isColor=true, point=function(icon)
-        icon:SetPoint('BOTTOMRIGHT', -1, 1)
-    end})]]
     Button.Background=Button:CreateTexture(nil, 'BACKGROUND')
     Button.Background:SetColorTexture(0,0,0)
-    --Button.Background:SetPoint('BOTTOMLEFT', Button, 'BOTTOMRIGHT', -1, -1)
-
 
     Button:SetClampedToScreen(true)
 
@@ -56,6 +51,7 @@ local function Init_Frame()
             self:SetNormalTexture(0)
         end
     end
+
     Button:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:set_texture()
@@ -71,7 +67,6 @@ local function Init_Frame()
         GameTooltip:Show()
         self:set_texture()
     end)
-
     Button:SetMovable(true)
     Button:RegisterForDrag("RightButton")
     Button:SetScript('OnMouseDown', function(self, d)
@@ -98,8 +93,6 @@ local function Init_Frame()
             Save().point[2]= nil
         end
     end)
-
-
 
     function Button:settings()
         local show= Save().isUIParent
@@ -262,8 +255,9 @@ local function Init_Button()
                 name= name:gsub('/', '')
             end
             name= name or value
-            WoWTools_TextMixin:sub(name, 1, 2)
         end
+
+        name= WoWTools_TextMixin:sub(name, 1, 3)
 
         btn.text:SetText(name)
         btn.text:SetScale(fontScale)
@@ -442,7 +436,7 @@ local function Init_Menu(self, root)
             end,
             name=WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
             minValue=1,
-            maxValue=math.max(#EmoteList, #Buttons),
+            maxValue=math.max(#EmoteList+#TextEmoteSpeechList, #Buttons),
             step=1,
         })
 --背景 Alpha
