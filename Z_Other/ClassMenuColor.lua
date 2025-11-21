@@ -118,10 +118,10 @@ for specID, classID in pairs(tab) do
             if name and name~='' and icon then
                 local colorText=
                     '|T'..icon..':0|t'
+                    ..(role and _G['INLINE_'..role..'_ICON'] or '')
                     ..'|c'..hex
                     ..WoWTools_TextMixin:CN(name)
                     ..'|r'
-                    ..(role and _G['INLINE_'..role..'_ICON'] or '')
                 classTabs[name..(specID==251 and '251' or '')]= colorText--251 DEATHKNIGHT 冰霜
             end
         end
