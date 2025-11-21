@@ -174,9 +174,7 @@ local function Init_Button()
             name= name or value
         end
 
-        name= WoWTools_TextMixin:sub(name, 1, 3)
-
-        btn.text:SetText(name)
+        btn.text:SetText(WoWTools_TextMixin:sub(name, 1, 3))
         btn.text:SetScale(fontScale)
 
         local x= isUIParent and 0 or 2.5
@@ -243,7 +241,7 @@ local function Rest_Button()
         ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
         nil,
     function()
-        WoWToolsSave['Plus_EmoteButton']= P_Save
+        WoWToolsSave['Plus_EmoteButton']= CopyTable(P_Save)
         Button:set_point()
         Init_Button()
     end)
@@ -278,9 +276,9 @@ local function Init_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
-    for _, value in ipairs(EmoteList) do
+    for index, value in ipairs(EmoteList) do
         sub2=sub:CreateCheckbox(
-            Get_EmojiName(value),
+            format('|cff3fc7eb%d|r ', index)..Get_EmojiName(value),
         function(data)
             return Get_Save(data.value)
         end, function(data)
@@ -303,9 +301,9 @@ local function Init_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
-    for _, value in ipairs(TextEmoteSpeechList) do
+    for index, value in ipairs(TextEmoteSpeechList) do
         sub2=sub:CreateCheckbox(
-            Get_EmojiName(value),
+            format('|cff3fc7eb%d|r ', index)..Get_EmojiName(value),
         function(data)
             return Get_Save(data.value)
         end, function(data)
@@ -333,7 +331,7 @@ local function Init_Menu(self, root)
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or EVENTTRACE_BUTTON_ENABLE_FILTERS,
     function()
-        Save().emoji= EmoteList
+        Save().emoji= CopyTable(EmoteList)
         for _, value in ipairs(TextEmoteSpeechList) do
             table.insert(Save().emoji, value)
         end
@@ -344,7 +342,7 @@ local function Init_Menu(self, root)
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS,
      function()
-        Save().voice= {}
+        Save().emoji= {}
         Init_Button()
         return MenuResponse.Refresh
     end)
@@ -497,8 +495,8 @@ local function Init()
 
         GameTooltip:SetText(
             (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
-            ..' '..WoWTools_DataMixin.Icon.icon2
-            ..' |cffffffffAlt+|r'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
+            ..WoWTools_DataMixin.Icon.icon2
+            ..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)..'(+Alt)'
         )
         GameTooltip:Show()
         self:set_texture()
@@ -506,10 +504,8 @@ local function Init()
     Button:SetMovable(true)
     Button:RegisterForDrag("RightButton")
     Button:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' then
-            if IsAltKeyDown() then
-                SetCursor('UI_MOVE_CURSOR')
-            end
+        if d=='RightButton' and IsAltKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
@@ -567,7 +563,7 @@ Button:SetScript('OnEvent', function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['Plus_EmoteButton']= WoWToolsSave['Plus_EmoteButton'] or P_Save
+    WoWToolsSave['Plus_EmoteButton']= WoWToolsSave['Plus_EmoteButton'] or CopyTable(P_Save)
 
     addName= '|A:newplayerchat-chaticon-newcomer:0:0|a'..(WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE)
 
