@@ -173,7 +173,7 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
         name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
         minValue=0.2,
         maxValue=4,
-        step=0.05,
+        step=0.01,
         bit='%0.2f',
         tooltip=function(tooltip) tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE) end,
     })
@@ -318,7 +318,15 @@ function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
     end
     return sub
 end
-
+--[[
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(self, root, function(strata)
+        return self:GetFrameStrata()==strata
+    end, function(strata)
+        Save().strata= strata
+        return MenuResponse.Refresh
+    end)
+]]
 
 
 --背景, 透明度

@@ -6455,7 +6455,9 @@
         "EMOTE_MESSAGE",
         "EncounterJournalSuggestFrameNextButton",
         "EncounterJournalSuggestFramePrevButton",
-        "EDIT_TICKET"
+        "EDIT_TICKET",
+        "EMOTE454_TOKEN",
+        "EMOTE455_TOKEN"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

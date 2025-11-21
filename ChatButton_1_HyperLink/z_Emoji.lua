@@ -1,8 +1,9 @@
 local function Save()
-    return WoWToolsSave['ChatButton_HyperLink'] or {}
+    return WoWToolsSave['ChatButton_HyperLink'].Emote
 end
 local Button
 local Buttons={}
+local addName
 
 
 local List = {
@@ -32,14 +33,24 @@ local List = {
 
 
 local function Init_Frame()
-    if not Save().emojiUIParent then
+    if not Save().isUIParent then
         return
     end
 
-    Button= CreateFrame('Button', 'WoWToolsMoveEmojiButton', UIParent, 'WoWToolsButtonTemplate')
+    Button= CreateFrame('Button', 'WoWToolsChatEmoteButton', UIParent, 'WoWToolsButtonTemplate')
+
+    --[[WoWTools_TextureMixin:CreateBG(Button, {isColor=true, point=function(icon)
+        icon:SetPoint('BOTTOMRIGHT', -1, 1)
+    end})]]
+    Button.Background=Button:CreateTexture(nil, 'BACKGROUND')
+    Button.Background:SetColorTexture(0,0,0)
+    --Button.Background:SetPoint('BOTTOMLEFT', Button, 'BOTTOMRIGHT', -1, -1)
+
+
+    Button:SetClampedToScreen(true)
 
     function Button:set_texture()
-        if #Save().emoji==0  or GameTooltip:IsOwned(self) then
+        if #Save().emoji==0 or GameTooltip:IsOwned(self) then
             self:SetNormalAtlas('newplayerchat-chaticon-newcomer')
         else
             self:SetNormalTexture(0)
@@ -51,10 +62,11 @@ local function Init_Frame()
     end)
     Button:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:SetText('|A:newplayerchat-chaticon-newcomer:0:0|a'..(WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE))
-        GameTooltip:AddDoubleLine(
+
+        GameTooltip:SetText(
             (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
-            ,'Alt+'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
+            ..' '..WoWTools_DataMixin.Icon.icon2
+            ..' |cffffffffAlt+|r'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
         )
         GameTooltip:Show()
         self:set_texture()
@@ -82,23 +94,24 @@ local function Init_Frame()
         self:StopMovingOrSizing()
         ResetCursor()
         if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().emojiPoint= {self:GetPoint(1)}
-            Save().emojiPoint[2]= nil
+            Save().point= {self:GetPoint(1)}
+            Save().point[2]= nil
         end
     end)
 
 
+
     function Button:settings()
-        local show= Save().emojiUIParent
+        local show= Save().isUIParent
         if show then
-            local p= Save().emojiPoint
+            local p= Save().point
             self:ClearAllPoints()
             if p and p[1] then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
             else
                 self:SetPoint('BOTTOM', WoWTools_ChatMixin:GetButtonForName('HyperLink'), 'TOP', 0, 10)
             end
-            self:SetFrameStrata(Save().emojiStrata or 'MEDIUM')
+            self:SetFrameStrata(Save().strata or 'MEDIUM')
         end
         self:SetShown(show)
         self:set_texture()
@@ -110,6 +123,8 @@ local function Init_Frame()
         Button:settings()
     end
 end
+
+
 
 
 
@@ -162,7 +177,7 @@ local function Create_Button(index, w)
     local icon= btn:GetNormalTexture()
     icon:ClearAllPoints()
     WoWTools_ColorMixin:Setup(icon, {type='Texture'})
-    
+
     icon=btn:GetPushedTexture()
     icon:ClearAllPoints()
     WoWTools_ColorMixin:Setup(icon, {type='Texture'})
@@ -173,16 +188,27 @@ local function Create_Button(index, w)
 
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)
-        local isUIParent= Save().emojiUIParent
-        if WoWToolsSave['ChatButton'].disabledTooltiip and not Save().emojiUIParent then--禁用提示
+        local isUIParent= Save().isUIParent
+        if WoWToolsSave['ChatButton'].disabledTooltiip and not Save().isUIParent then--禁用提示
             return
         end
         GameTooltip:SetOwner(self, isUIParent and 'ANCHOR_LEFT' or "ANCHOR_BOTTOMRIGHT")
-        GameTooltip:SetText(Get_EmojiName(self.value))
+        local name= WoWTools_TextMixin:CN(Get_EmojiName(self.value))
+        name= name:gsub('/', '')
+        GameTooltip:SetText(name)
         GameTooltip:Show()
     end)
     btn:SetScript('OnClick', function(self)
-        DoEmote(self.value)
+        local emote= self.value
+        if (emote == EMOTE454_TOKEN) or (emote == EMOTE455_TOKEN) then
+            local faction = UnitFactionGroup("player", true)
+            if faction == "Alliance" then
+                emote = EMOTE454_TOKEN
+            elseif faction == "Horde" then
+                emote = EMOTE455_TOKEN
+            end
+        end
+        DoEmote(emote)
     end)
 
 
@@ -207,16 +233,19 @@ local function Init_Button()
 
     Init_Frame()
 
-    local index= 1
-
+    local index= 0
     local w= ChatFrameMenuButton:GetWidth() or 32
-    local isUIParent= Save().emojiUIParent
-    local scale= Save().emojiScale or 1
-    local alpha= Save().emojiAlpha or 0.5
-    local fontScale= Save().emojiFontScale or 1
-    local line= Save().emojiLine or 1
+
+    local isUIParent= Save().isUIParent
+    local line= Save().line or 1
+
+    local scale= Save().scale or 1
+    local alpha= Save().alpha or 0.5
+    local fontScale= Save().fontScale or 1
 
     for _, value in pairs(Save().emoji) do
+        index= index+1
+
         local btn= Buttons[index]
         if not btn then
             btn= Create_Button(index, w)
@@ -251,6 +280,7 @@ local function Init_Button()
 
         btn:SetParent(isUIParent and Button or ChatFrameMenuButton)
         btn:SetScale(scale)
+
         if isUIParent then
             if index>1 and select(2, math.modf((index-1)/line))==0 then
                 btn:SetPoint('BOTTOM', Buttons[index-line], 'TOP')
@@ -262,15 +292,28 @@ local function Init_Button()
         end
 
         btn:SetShown(true)
-
-        index= index+1
     end
 
-    for i= index, #Buttons do
+    if isUIParent and index>0 then
+        Button.Background:SetPoint('TOP', Buttons[index], 0, 1)
+        Button.Background:SetPoint('RIGHT', Buttons[index>=line and line or index], 1, 0)
+        Button.Background:SetPoint('BOTTOMLEFT', Buttons[1], -1, -1)
+        Button.Background:SetAlpha(Save().bgAlpha or 0)
+    end
+
+    for i= index+1, #Buttons do
         local btn= Buttons[i]
         btn:SetShown(false)
     end
 end
+
+
+
+
+
+
+
+
 
 
 
@@ -284,16 +327,17 @@ local function Init_Menu(self, root)
     local isRoot= self==Button
 
     if not isRoot then
-        root= root:CreateButton(
-            '|A:newplayerchat-chaticon-newcomer:0:0|a'
-            ..(WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE),
-        function()
-            return MenuResponse.Open
-        end)
+        root= root:CreateButton(addName..' '..#Save().emoji, function() return MenuResponse.Open end)
     end
 
+--表情
+    sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE,
+    function()
+        return MenuResponse.Open
+    end)
     for _, value in ipairs(EmoteList) do
-        sub=root:CreateCheckbox(
+        sub2=sub:CreateCheckbox(
             Get_EmojiName(value),
         function(data)
             return Get_Save(data.value)
@@ -306,21 +350,51 @@ local function Init_Menu(self, root)
             end
             Init_Button()
         end, {value=value})
-        sub:SetTooltip(function(tooltip, desc)
+        sub2:SetTooltip(function(tooltip, desc)
             tooltip:AddLine(WoWTools_DataMixin.Icon.icon2..desc.data.value)
         end)
     end
+
+--谈话
+    sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '谈话' or VOICEMACRO_LABEL,
+    function()
+        return MenuResponse.Open
+    end)
+    for _, value in ipairs(TextEmoteSpeechList) do
+        sub2=sub:CreateCheckbox(
+            Get_EmojiName(value),
+        function(data)
+            return Get_Save(data.value)
+        end, function(data)
+            local tabIndex= Get_Save(data.value)
+            if tabIndex then
+                table.remove(Save().emoji, tabIndex)
+            else
+                table.insert(Save().emoji, data.value)
+            end
+            Init_Button()
+        end, {value=value})
+        sub2:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(WoWTools_DataMixin.Icon.icon2..desc.data.value)
+        end)
+    end
+
 
 
 --打开选项界面
     root:CreateDivider()
     sub= WoWTools_ChatMixin:Open_SettingsPanel(root, WoWTools_HyperLink.addName)
 
+
 --勾选所有
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or EVENTTRACE_BUTTON_ENABLE_FILTERS,
     function()
         Save().emoji= EmoteList
+        for _, value in ipairs(TextEmoteSpeechList) do
+            table.insert(Save().emoji, value)
+        end
         Init_Button()
         return MenuResponse.Refresh
     end)
@@ -328,47 +402,77 @@ local function Init_Menu(self, root)
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS,
      function()
-        Save().emoji= {}
+        Save().voice= {}
         Init_Button()
         return MenuResponse.Refresh
     end)
-    sub:CreateDivider()
+
 
 --自定义位置
-    sub2= sub:CreateCheckbox(
+    sub:CreateDivider()
+    sub:CreateCheckbox(
         'UIParent',
     function()
-        return Save().emojiUIParent
+        return Save().isUIParent
     end, function()
-        Save().emojiUIParent= not Save().emojiUIParent and true or nil
+        Save().isUIParent= not Save().isUIParent and true or nil
         Init_Button()
+        return MenuResponse.Close
     end)
 
-    --字体缩放
-    sub2:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub2, {
-        getValue=function()
-            return Save().emojiLine or 1
-        end,
-        setValue=function(value)
-            Save().emojiLine= value
-            if Save().emojiUIParent then
+--自定义位置
+    if Save().isUIParent then
+--FrameStrata
+        WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
+            return Button and Button:GetFrameStrata()==data
+        end, function(data)
+            Save().strata= data
+            Init_Button()
+            return MenuResponse.Refresh
+        end)
+--数量
+        sub:CreateSpacer()
+        WoWTools_MenuMixin:CreateSlider(sub, {
+            getValue=function()
+                return Save().line or 1
+            end,
+            setValue=function(value)
+                Save().line= value
                 Init_Button()
-            end
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
-        minValue=1,
-        maxValue=math.max(#EmoteList, #Buttons),
-        step=1,
-    })
+            end,
+            name=WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
+            minValue=1,
+            maxValue=math.max(#EmoteList, #Buttons),
+            step=1,
+        })
+--背景 Alpha
+        sub:CreateSpacer()
+        WoWTools_MenuMixin:CreateSlider(sub, {
+            getValue=function()
+                return Save().bgAlpha or 0
+            end,
+            setValue=function(value)
+                Save().bgAlpha= value
+                Init_Button()
+            end,
+            name=WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND,
+            minValue=0,
+            maxValue=1,
+            step=0.1,
+            bit='%0.1f',
+        })
+
+        sub:CreateSpacer()
+    end
 
 
 --背景, 透明度
+    sub:CreateSpacer()
     WoWTools_MenuMixin:BgAplha(sub,
     function()--GetValue
-        return Save().emojiAlpha or 0.5
+        return Save().alpha or 0.5
     end, function(value)--SetValue
-        Save().emojiAlpha= value
+        Save().alpha= value
         Init_Button()
     end, nil, true)
 
@@ -376,34 +480,35 @@ local function Init_Menu(self, root)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return Save().emojiFontScale or 1
+            return Save().fontScale or 1
         end,
         setValue=function(value)
-            Save().emojiFontScale= value
+            Save().fontScale= value
             Init_Button()
         end,
         name=WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE,
         minValue=0.2,
         maxValue=4,
-        step=0.05,
+        step=0.01,
         bit='%0.2f',
     })
 
 --缩放
     WoWTools_MenuMixin:ScaleRoot(self, sub, function()
-        return Save().emojiScale or 1
+        return Save().scale or 1
     end, function(value)
-        Save().emojiScale= value
+        Save().scale= value
         Init_Button()
     end, function()
-        Save().emoji={'DANCE'}
-        Save().emojiScale= nil
-        Save().emojiAlpha= nil
-        Save().emojiFontScale= nil
-        Save().emojiPoint= nil
-        Save().emojiUIParent= nil
-        Save().emojiLine= nil
-        Init_Button()
+         StaticPopup_Show('WoWTools_RestData',
+                addName..'|n'
+                ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                nil,
+            function()
+                WoWToolsSave['ChatButton_HyperLink'].Emote= {emoji={'DANCE'}, voice={}}
+                Init_Button()
+            end)
+
     end)
 end
 
@@ -415,14 +520,13 @@ end
 
 
 local function Init()
-
-    Save().emoji= Save().emoji or {}
-
-    Menu.ModifyMenu("MENU_CHAT_SHORTCUTS", function(self, root)
-        Init_Menu(self, root, false)
-    end)
+    addName= '|A:newplayerchat-chaticon-newcomer:0:0|a'..(WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE)
 
     Init_Button()
+
+    Menu.ModifyMenu("MENU_CHAT_SHORTCUTS", function(self, root)
+        Init_Menu(self, root)
+    end)
 
     Init=function()end
 end

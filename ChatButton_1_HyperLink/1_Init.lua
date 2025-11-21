@@ -34,10 +34,12 @@ local P_Save={
     showCopyChatButton=true,--显示 复制聊天 按钮
     --copyChatSetText=nil,--处理，文本
 
-    emoji={
-        'DANCE'
-    },
-    --emojiScale=1,
+    Emote={
+        emoji={
+            'DANCE'
+        },
+        voice={},
+    }
 }
 
 local function Save()
@@ -113,7 +115,8 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
             P_Save=nil
-
+            Save().emoji= nil
+            Save().Emote= Save().Emote or {emoji={'DANCE'}, voice={}}
 
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
             WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
