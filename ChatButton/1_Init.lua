@@ -508,13 +508,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
+            WoWTools_PanelMixin:Header(WoWTools_ChatMixin.Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
+
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                 Init_Panel()
                 self:UnregisterEvent(event)
+                self:SetScript('OnEvent', nil)
             end
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
+            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
     end

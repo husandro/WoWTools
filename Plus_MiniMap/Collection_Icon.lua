@@ -1184,9 +1184,8 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddLine(
             '|cffffd100'..WoWTools_DataMixin.Icon.icon2
-            ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL)
+            ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL))
             ..'|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'
-        )
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
