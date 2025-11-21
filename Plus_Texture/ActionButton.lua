@@ -4,6 +4,9 @@ local function Set_Texture(self)
         WoWTools_TextureMixin:HideTexture(self.SlotArt)--, nil, true, 0)
         WoWTools_TextureMixin:HideTexture(self.NormalTexture)--, nil, true, 0)--外框，方块
         WoWTools_TextureMixin:HideTexture(self.SlotBackground)--, nil, true, 0)--背景
+        if self.CheckedTexture then
+            self.CheckedTexture:SetVertexColor(0,1,0)
+        end
 
         if not self.IconMask then
             WoWTools_ButtonMixin:AddMask(self, false, self.Icon)
