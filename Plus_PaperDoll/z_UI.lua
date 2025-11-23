@@ -329,6 +329,8 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
 
 --图标，选取
     self:SetIconSelectFrame(GearManagerPopupFrame)
+    self:SetUIButton(GearManagerPopupFrame.BorderBox.OkayButton)
+    self:SetUIButton(GearManagerPopupFrame.BorderBox.CancelButton)
     --[[self:HideFrame(GearManagerPopupFrame.BorderBox)
     self:SetAlphaColor(GearManagerPopupFrame.BG, nil, nil, 0.3)
     self:SetScrollBar(GearManagerPopupFrame.IconSelector)
