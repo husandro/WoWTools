@@ -605,6 +605,17 @@ end
 
 
 --[[驭空术，return 名称，点数 11.2.7 没有了
+
+加载，Trait，UI
+function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)
+    TraitUtil.OpenTraitFrame(treeID)
+
+    --WoWTools_DataMixin:Call('GenericTraitUI_LoadUI')
+    --securecallfunction(GenericTraitFrame.SetSystemID, GenericTraitFrame, systemID)
+    --securecallfunction(GenericTraitFrame.SetTreeID, GenericTraitFrame, treeID)
+    --ToggleFrame(GenericTraitFrame)
+end
+
 function WoWTools_MenuMixin:GetDragonriding()
     local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
     if dragonridingConfigID then
@@ -631,9 +642,14 @@ function WoWTools_MenuMixin:OpenDragonriding(root)
             --..(self:GetDragonriding() or ''),
         function()
             if not DragonridingUtil.IsDragonridingTreeOpen() then
-                GenericTraitUI_LoadUI()
-                GenericTraitFrame:SetConfigIDBySystemID(Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID)
-                GenericTraitFrame:SetTreeID(Constants.MountDynamicFlightConsts.TREE_ID)
+                if GenericTraitFrame.SetConfigIDBySystemID then--11.2.7才有
+                    GenericTraitUI_LoadUI()
+                    GenericTraitFrame:SetConfigIDBySystemID(Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID)
+                    GenericTraitFrame:SetTreeID(Constants.MountDynamicFlightConsts.TREE_ID)
+                else
+                    securecallfunction(GenericTraitFrame.SetSystemID, GenericTraitFrame, Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID)
+                    securecallfunction(GenericTraitFrame.SetTreeID, GenericTraitFrame, Constants.MountDynamicFlightConsts.TREE_ID)
+                end
             end
             if GenericTraitFrame then
                 ToggleFrame(GenericTraitFrame)
