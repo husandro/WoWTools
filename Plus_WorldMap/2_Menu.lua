@@ -312,7 +312,7 @@ local function Init_Menu(self, root)
     function()
         return Save().ShowMapID
     end, function()
-        Save().ShowMapID= not Save().ShowMapID and true or nil
+        Save().ShowMapID= not Save().ShowMapID and true or false
         WoWTools_WorldMapMixin:Init_MpaID()
     end)
 
@@ -322,7 +322,7 @@ local function Init_Menu(self, root)
         Save().MapIDScale= value
         WoWTools_WorldMapMixin:Init_MpaID()
     end, function()
-        Save().MapIDScale=1
+        Save().MapIDScale=nil
         WoWTools_WorldMapMixin:Init_MpaID()
     end)
 

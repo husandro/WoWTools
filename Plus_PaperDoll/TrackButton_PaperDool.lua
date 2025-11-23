@@ -60,6 +60,9 @@ local function Init_Menu(self, root)
     end, function(value)
         Save().trackButtonTextScale= value
         TrackButton:set_text_scale()
+    end, function()
+        Save().trackButtonTextScale= nil
+        TrackButton:set_text_scale()
     end)
 
 

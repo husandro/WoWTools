@@ -255,9 +255,10 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(AddonListCloseButton, {
-        name='WoWToolAddOnsOptionsMenuButton'
-    })
+    local btn= CreateFrame('DropdownButton', 'WoWToolAddOnsOptionsMenuButton', AddonListCloseButton,'WoWToolsMenuTemplate')
+    --WoWTools_ButtonMixin:Menu(AddonListCloseButton, {
+      --  name='WoWToolAddOnsOptionsMenuButton'
+    --})
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
 
 --提升 Strata

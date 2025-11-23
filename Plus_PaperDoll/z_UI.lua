@@ -186,7 +186,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
                 Set_Button_Point()
 
             end, function()
-                self:Save().CharacterSlotScale= 1
+                self:Save().CharacterSlotScale= nil
                 settings()
                 Set_Button_Point()
             end)

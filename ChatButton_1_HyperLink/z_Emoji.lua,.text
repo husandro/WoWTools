@@ -495,14 +495,13 @@ local function Init_Menu(self, root)
         Init_Button()
     end, function()
          StaticPopup_Show('WoWTools_RestData',
-                addName..'|n'
-                ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-                nil,
-            function()
-                WoWToolsSave['ChatButton_HyperLink'].Emote= {emoji={'DANCE'}, voice={}}
-                Init_Button()
-            end)
-
+            addName..'|n'
+            ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+            nil,
+        function()
+            WoWToolsSave['ChatButton_HyperLink'].Emote= {emoji={'DANCE'}, voice={}}
+            Init_Button()
+        end)
     end)
 end
 

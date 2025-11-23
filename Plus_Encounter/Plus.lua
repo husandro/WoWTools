@@ -531,8 +531,8 @@ local function Init()
             text= text..'uiModelSceneID '..self.uiModelSceneID..'|n'
         end
         text= text..'CreatureDisplayID ' .. self.displayInfo
-        local name= WoWTools_TextMixin:CN(self.name, true)--汉化
-        if name then
+        local name= WoWTools_TextMixin:CN(self.name)--汉化
+        if name~=self.name then
             text= text..'|n'..name
         end
         model.creatureDisplayIDText:SetText(text)

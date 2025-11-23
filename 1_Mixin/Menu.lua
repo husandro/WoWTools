@@ -239,7 +239,7 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
         return MenuResponse.Open
     end)
 
-    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
+    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue or function() SetValue(1) end)
     sub2:SetEnabled(not isLocked)
 
     return sub, sub2

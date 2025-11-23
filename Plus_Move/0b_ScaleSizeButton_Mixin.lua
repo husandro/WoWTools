@@ -393,6 +393,7 @@ local function Init_Menu(self, root)
     end, function()
         if not WoWTools_FrameMixin:IsLocked(target) then
             Save().scale[name]=nil
+            target:SetScale(1)
             if self.scaleRestFunc then
                 self.scaleRestFunc(self)
             end

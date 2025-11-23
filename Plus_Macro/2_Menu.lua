@@ -103,6 +103,9 @@ local PointTab={
     end, function(value)
         Save().bottomListScale=value
         _G['WoWToolsMacroBottomListFrame']:settings()
+    end, function ()
+        Save().bottomListScale=nil
+        _G['WoWToolsMacroBottomListFrame']:settings()
     end)
 
 --全部删除

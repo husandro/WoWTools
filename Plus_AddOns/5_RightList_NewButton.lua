@@ -17,16 +17,21 @@ end
 --新建按钮
 local function Init()
 
-    
 
 
 
 
-    local NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {
+
+    local NewButton= CreateFrame('Button', 'WoWToolsAddonsNewButton', AddonList, 'WoWToolsButtonTemplate')
+    NewButton:SetFrameStrata('HIGH')
+    NewButton:SetFrameLevel(999)
+    NewButton:SetSize(26,26)
+    NewButton:SetNormalAtlas('communities-chat-icon-plus')
+    --[[WoWTools_ButtonMixin:Cbtn(AddonList, {
         size=26,
         atlas='communities-chat-icon-plus',
         name='WoWToolsAddonsNewButton'
-    })
+    })]]
 
 
     NewButton:SetPoint('TOPRIGHT', -2, -28)
@@ -75,8 +80,8 @@ local function Init()
 
 
 
-    NewButton.Text= WoWTools_LabelMixin:Create(NewButton)--已选中，数量
-    NewButton.Text:SetPoint('TOPLEFT', 0, 6)
+    NewButton.Text= NewButton:CreateFontString(nil, nil, 'GameFontNormal')--WoWTools_LabelMixin:Create(NewButton)--已选中，数量
+    NewButton.Text:SetPoint('TOPRIGHT', 0, 8)
     --NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
     NewButton.Text:SetScript('OnLeave', function(self)
         self:SetAlpha(1)
