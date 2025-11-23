@@ -1,76 +1,196 @@
+if not ChatFrameUtil.OpenChat then--11.2.7才有
+    ChatFrameUtil.ReplyTell= ChatFrame_ReplyTell
+    ChatFrameUtil.OpenChat= ChatFrame_OpenChat
+
+    SLASH_COMMAND= {
+	TARGET = "TARGET",
+	INSPECT = "INSPECT",
+	STOPATTACK = "STOPATTACK",
+	CAST = "CAST",
+	USE = "USE",
+	STOPCASTING = "STOPCASTING",
+	STOPSPELLTARGET = "STOPSPELLTARGET",
+	CANCELAURA = "CANCELAURA",
+	CANCELFORM = "CANCELFORM",
+	EQUIP = "EQUIP",
+	EQUIP_TO_SLOT = "EQUIP_TO_SLOT",
+	CHANGEACTIONBAR = "CHANGEACTIONBAR",
+	SWAPACTIONBAR = "SWAPACTIONBAR",
+	TARGET_EXACT = "TARGET_EXACT",
+	TARGET_NEAREST_ENEMY = "TARGET_NEAREST_ENEMY",
+	TARGET_NEAREST_ENEMY_PLAYER = "TARGET_NEAREST_ENEMY_PLAYER",
+	TARGET_NEAREST_FRIEND = "TARGET_NEAREST_FRIEND",
+	TARGET_NEAREST_FRIEND_PLAYER = "TARGET_NEAREST_FRIEND_PLAYER",
+	TARGET_NEAREST_PARTY = "TARGET_NEAREST_PARTY",
+	TARGET_NEAREST_RAID = "TARGET_NEAREST_RAID",
+	CLEARTARGET = "CLEARTARGET",
+	TARGET_LAST_TARGET = "TARGET_LAST_TARGET",
+	TARGET_LAST_ENEMY = "TARGET_LAST_ENEMY",
+	TARGET_LAST_FRIEND = "TARGET_LAST_FRIEND",
+	ASSIST = "ASSIST",
+	FOCUS = "FOCUS",
+	CLEARFOCUS = "CLEARFOCUS",
+	MAINTANKON = "MAINTANKON",
+	MAINTANKOFF = "MAINTANKOFF",
+	MAINASSISTON = "MAINASSISTON",
+	MAINASSISTOFF = "MAINASSISTOFF",
+	DUEL = "DUEL",
+	DUEL_CANCEL = "DUEL_CANCEL",
+	PET_ATTACK = "PET_ATTACK",
+	PET_FOLLOW = "PET_FOLLOW",
+	PET_MOVE_TO = "PET_MOVE_TO",
+	PET_STAY = "PET_STAY",
+	PET_PASSIVE = "PET_PASSIVE",
+	PET_DEFENSIVE = "PET_DEFENSIVE",
+	PET_DEFENSIVEASSIST = "PET_DEFENSIVEASSIST",
+	PET_AGGRESSIVE = "PET_AGGRESSIVE",
+	STOPMACRO = "STOPMACRO",
+	CANCELQUEUEDSPELL = "CANCELQUEUEDSPELL",
+	CLICK = "CLICK",
+	PET_DISMISS = "PET_DISMISS",
+	LOGOUT = "LOGOUT",
+	QUIT = "QUIT",
+	GUILD_UNINVITE = "GUILD_UNINVITE",
+	GUILD_PROMOTE = "GUILD_PROMOTE",
+	GUILD_DEMOTE = "GUILD_DEMOTE",
+	GUILD_LEADER = "GUILD_LEADER",
+	GUILD_LEAVE = "GUILD_LEAVE",
+	GUILD_DISBAND = "GUILD_DISBAND",
+	EQUIP_SET = "EQUIP_SET",
+	WORLD_MARKER = "WORLD_MARKER",
+	CLEAR_WORLD_MARKER = "CLEAR_WORLD_MARKER",
+	STARTATTACK = "STARTATTACK",
+	CONSOLE = "CONSOLE",
+	CHATLOG = "CHATLOG",
+	COMBATLOG = "COMBATLOG",
+	UNINVITE = "UNINVITE",
+	PROMOTE = "PROMOTE",
+	REPLY = "REPLY",
+	HELP = "HELP",
+	MACROHELP = "MACROHELP",
+	TIME = "TIME",
+	PLAYED = "PLAYED",
+	FOLLOW = "FOLLOW",
+	TRADE = "TRADE",
+	JOIN = "JOIN",
+	LEAVE = "LEAVE",
+	LIST_CHANNEL = "LIST_CHANNEL",
+	CHAT_HELP = "CHAT_HELP",
+	CHAT_PASSWORD = "CHAT_PASSWORD",
+	CHAT_OWNER = "CHAT_OWNER",
+	CHAT_MODERATOR = "CHAT_MODERATOR",
+	CHAT_UNMODERATOR = "CHAT_UNMODERATOR",
+	CHAT_CINVITE = "CHAT_CINVITE",
+	CHAT_KICK = "CHAT_KICK",
+	CHAT_BAN = "CHAT_BAN",
+	CHAT_UNBAN = "CHAT_UNBAN",
+	CHAT_ANNOUNCE = "CHAT_ANNOUNCE",
+	GUILD_INVITE = "GUILD_INVITE",
+	GUILD_MOTD = "GUILD_MOTD",
+	GUILD_INFO = "GUILD_INFO",
+	CHAT_DND = "CHAT_DND",
+	WHO = "WHO",
+	CHANNEL = "CHANNEL",
+	FRIENDS = "FRIENDS",
+	REMOVEFRIEND = "REMOVEFRIEND",
+	IGNORE = "IGNORE",
+	UNIGNORE = "UNIGNORE",
+	SCRIPT = "SCRIPT",
+	RANDOM = "RANDOM",
+	MACRO = "MACRO",
+	PVP = "PVP",
+	READYCHECK = "READYCHECK",
+	BENCHMARK = "BENCHMARK",
+	DISMOUNT = "DISMOUNT",
+	RESETCHAT = "RESETCHAT",
+	ENABLE_ADDONS = "ENABLE_ADDONS",
+	DISABLE_ADDONS = "DISABLE_ADDONS",
+	STOPWATCH = "STOPWATCH",
+	ACHIEVEMENTUI = "ACHIEVEMENTUI",
+	UI_ERRORS_OFF = "UI_ERRORS_OFF",
+	UI_ERRORS_ON = "UI_ERRORS_ON",
+	EVENTTRACE = "EVENTTRACE",
+	TABLEINSPECT = "TABLEINSPECT",
+	DUMP = "DUMP",
+	RELOAD = "RELOAD",
+	WARGAME = "WARGAME",
+	TARGET_MARKER = "TARGET_MARKER",
+	OPEN_LOOT_HISTORY = "OPEN_LOOT_HISTORY",
+	RAIDFINDER = "RAIDFINDER",
+	API = "API",
+	COMMENTATOR_OVERRIDE = "COMMENTATOR_OVERRIDE",
+	COMMENTATOR_NAMETEAM = "COMMENTATOR_NAMETEAM",
+	COMMENTATOR_ASSIGNPLAYER = "COMMENTATOR_ASSIGNPLAYER",
+	RESET_COMMENTATOR_SETTINGS = "RESET_COMMENTATOR_SETTINGS",
+	VOICECHAT = "VOICECHAT",
+	TEXTTOSPEECH = "TEXTTOSPEECH",
+	COUNTDOWN = "COUNTDOWN",
+	PET_ASSIST = "PET_ASSIST",
+	PET_AUTOCASTON = "PET_AUTOCASTON",
+	PET_AUTOCASTOFF = "PET_AUTOCASTOFF",
+	PET_AUTOCASTTOGGLE = "PET_AUTOCASTTOGGLE",
+	SUMMON_BATTLE_PET = "SUMMON_BATTLE_PET",
+	RANDOMPET = "RANDOMPET",
+	RANDOMFAVORITEPET = "RANDOMFAVORITEPET",
+	DISMISSBATTLEPET = "DISMISSBATTLEPET",
+	USE_TOY = "USE_TOY",
+	PING = "PING",
+	ABANDON = "ABANDON",
+	INVITE = "INVITE",
+	REQUEST_INVITE = "REQUEST_INVITE",
+	CHAT_AFK = "CHAT_AFK",
+	RAID_INFO = "RAID_INFO",
+	DUNGEONS = "DUNGEONS",
+	LEAVEVEHICLE = "LEAVEVEHICLE",
+	CALENDAR = "CALENDAR",
+	SET_TITLE = "SET_TITLE",
+	FRAMESTACK = "FRAMESTACK",
+	SOLOSHUFFLE_WARGAME = "SOLOSHUFFLE_WARGAME",
+	SOLORBG_WARGAME = "SOLORBG_WARGAME",
+	SPECTATOR_WARGAME = "SPECTATOR_WARGAME",
+	SPECTATOR_SOLOSHUFFLE_WARGAME = "SPECTATOR_SOLOSHUFFLE_WARGAME",
+	SPECTATOR_SOLORBG_WARGAME = "SPECTATOR_SOLORBG_WARGAME",
+	GUILDFINDER = "GUILDFINDER",
+	TRANSMOG_OUTFIT = "TRANSMOG_OUTFIT",
+	COMMUNITY = "COMMUNITY",
+	RAF = "RAF",
+	EDITMODE = "EDITMODE",
+};
+
+end
+
 local P_Save= {
     emoji={'DANCE'},
+    chat={},
     command={},
     --subNum= 0
 }
 local function Save()
     return WoWToolsSave['Plus_EmoteButton']
 end
-
+local UseTab={
+    MACRO= {name=SLASH_MACRO1, click=function()
+        if not InCombatLockdown() then
+            ShowMacroFrame()
+            return true
+        end
+    end},
+}
 local Button
 local Buttons={}
 local addName
 
---[[
-local List = {
-	["WAVE"]="招",
-	["BOW"]="鞠",
-	["DANCE"]="跳",
-	["APPLAUD"]="鼓",
-	["BEG"]="乞",
-	["CHICKEN"]="鸡",
-	["CRY"]="哭",
-	["EAT"]="吃",
-	["FLEX"]="强",
-	["KISS"]="吻",
-	["LAUGH"]="笑",
-	["POINT"]="指",
-	["ROAR"]="咆",
-	["RUDE"]="粗",
-	["SALUTE"]="敬",
-	["SHY"]="羞",
-	["TALK"]="谈",
-	["STAND"]="站",
-	["SIT"]="坐",
-	["SLEEP"]="睡",
-	["KNEEL"]="跪",
-	["LEAN"]="靠",
 
-    ["HELPME"]="救",
-	["INCOMING"]="敌",
-	["CHARGE"]="冲",
-	["FLEE"]="逃",
-	["ATTACKMYTARGET"]="功",
-	["OOM"]="魔",
-	["FOLLOW"]="跟",
-	["WAIT"]="等",
-	["HEALME"]="治",
-	["CHEER"]="呼",
-	["OPENFIRE"]="开",
-	["RASP"]="鲁",
-	["HELLO"]="好",
-	["BYE"]="见",
-	["NOD"]="头",
-	["NO"]="不",
-	["THANK"]="谢",
-	["WELCOME"]="欢",
-	["CONGRATULATE"]="祝",
-	["FLIRT"]="逃",
-	["JOKE"]="笑",
-	["TRAIN"]="火",
-}]]
+local function Get_Save(value, tabName)
+    for index, name in pairs(Save()[tabName]) do
+        if name==value then
+            return index
+        end
+    end
+    return false
+end
 
-
-
-
-
-
-
-
-
-
-
-local function Get_EmojiName(value)
+local function EmoteIndex(value)
     local i = 1
     local token = _G["EMOTE"..i.."_TOKEN"]
     while ( i < MAXEMOTEINDEX ) do
@@ -80,58 +200,87 @@ local function Get_EmojiName(value)
         i = i + 1
         token = _G["EMOTE"..i.."_TOKEN"]
     end
-    return _G["EMOTE"..i.."_CMD1"] or value, i
-end
-local function Get_Save(value)
-    for index, name in pairs(Save().emoji) do
-        if name==value then
-            return index
-        end
-    end
-    return false
+    return i
 end
 
-local function Get_CommandName(value)
+
+
+local function Get_Name(value, isChat, isCommand)
     local name
-    for i= 1, 12 do
-        local va= _G['SLASH_SMART_'..value..i] or _G["SLASH_"..value..i]
-        if not va then
-            break
-        elseif va and va:find('[\228-\233]') then
-            name= va
-            break
+    if UseTab[value] then
+        return UseTab[value].name
 
+    elseif isChat then
+        if value=='MACRO' then
+            return _G["SLASH_"..value..1]
         else
-            name= name or va
-            if string.len(va)> string.len(name) then
+            return _G[value..'_MESSAGE'] or value
+        end
+
+    elseif isCommand then
+        for index= 1, 12 do
+            local va= _G["SLASH_"..value..index]
+            if not va then
+                break
+            elseif va and va:find('[\228-\233]') then
                 name= va
+                break
+
+            else
+                name= name or va
+                if string.len(va)> string.len(name) then
+                    name= va
+                end
             end
         end
-    end
-    return name
-end
-local function Get_CommandSave(value)
-    for index, name in pairs(Save().command) do
-        if name==value then
-            return index
+        return name or value
+
+    else
+        local i = EmoteIndex(value)
+        name= _G["EMOTE"..i.."_CMD1"]
+        if name then
+            if not name:find('[\228-\233]') then
+                for index= 2, 12 do
+                    local va=  _G["EMOTE"..i.."_CMD"..index]
+                    if not va then
+                        break
+                    elseif va and va:find('[\228-\233]') then
+                        name= va
+                        break
+                    else
+                        name= name or va
+                        if string.len(va)> string.len(name) then
+                            name= va
+                        end
+                    end
+                end
+            end
         end
+        return name or value, i
     end
-    return false
 end
+
+
 local function On_Click(self)
     local value= self.value
-    if self.isCommand then
-        if value=='WHISPER' then
-            local editBox = ChatFrameUtil.OpenChat(SLASH_SMART_WHISPER1.." ")
-			editBox:SetText(SLASH_SMART_WHISPER1.." "..editBox:GetText())
-        elseif value=='REPLY' then
+    if self.isChat then
+        if value=='REPLY' then
             ChatFrameUtil.ReplyTell()
+        elseif value=='WHISPER' then
+            local name= UnitIsPlayer('target') and UnitIsFriend('target', 'player') and GetUnitName("target", true) or nil
+            WoWTools_ChatMixin:Say(SLASH_YELL1..' ', name)
         else
-            ChatFrameUtil.OpenChat(Get_CommandName(value)..' ')
+            if not (UseTab[value] and UseTab[value].click()) then
+                local va= _G['SLASH_'..value..1]
+                if va then
+                    WoWTools_ChatMixin:Say(va..' ')
+                end
+            end
         end
-        --[[local editBox = ChatFrameUtil.OpenChat("")
-        editBox:SetAttribute("chatType", emote)
-        editBox:UpdateHeader()]]
+
+    elseif self.isCommand then
+        ChatFrameUtil.OpenChat(Get_Name(value, nil, true)..' ')
+
     else
         if (value == EMOTE454_TOKEN) or (value == EMOTE455_TOKEN) then
             local faction = UnitFactionGroup("player", true)
@@ -145,7 +294,7 @@ local function On_Click(self)
     end
 end
 
-local function SetChatTypeAttribute(chatType)
+--[[local function SetChatTypeAttribute(chatType)
     local editBox = ChatFrameUtil.OpenChat("")
     editBox:SetAttribute("chatType", chatType)
     editBox:UpdateHeader()
@@ -161,7 +310,7 @@ local function AddSlashInitializer(root, chatShortcut)
 
         button.fontString:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
     end)
-end
+end]]
 
 
 
@@ -187,25 +336,24 @@ local function Create_Button(index, w)
     icon:ClearAllPoints()
     WoWTools_ColorMixin:Setup(icon, {type='Texture'})
 
-    btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
+    btn.text= btn:CreateFontString(nil, 'OVERLAY', 'ChatFontNormal')
     btn.text:SetPoint('CENTER')
     WoWTools_ColorMixin:Setup(btn.text, {type='FontString'})
 
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)
         local isUIParent= Save().isUIParent
-        if WoWToolsSave['ChatButton'].disabledTooltiip and not Save().isUIParent then--禁用提示
+        if WoWToolsSave['ChatButton'].disabledTooltiip and not isUIParent then--禁用提示
             return
         end
         GameTooltip:SetOwner(self, isUIParent and 'ANCHOR_LEFT' or "ANCHOR_BOTTOMRIGHT")
-        
-        local name= self.isCommand and Get_CommandName(self.value) or Get_EmojiName(self.value)
+        local name= Get_Name(self.value, self.isChat, self.isCommand)
         name=WoWTools_TextMixin:CN(name)
         name= name:gsub('/', '')
         GameTooltip:SetText(name)
         GameTooltip:Show()
     end)
-    btn:SetScript('OnClick', function(self)
+    btn:SetScript('OnMouseDown', function(self)
         On_Click(self)
     end)
 
@@ -245,6 +393,9 @@ local function Init_Button()
     for _, value in pairs(Save().command) do
         table.insert(_newTab, {value=value, isCommand=true})
     end
+    for _, value in pairs(Save().chat) do
+        table.insert(_newTab, {value=value, isChat=true})
+    end
 
     for index, tab in pairs(_newTab) do
 
@@ -257,6 +408,7 @@ local function Init_Button()
 
         btn.value= tab.value
         btn.isCommand= tab.isCommand
+        btn.isChat= tab.isChat
 
         if isUIParent then
             if index>1 and select(2, math.modf((index-1)/line))==0 then
@@ -282,26 +434,20 @@ local function Init_Button()
         btn:SetParent(isUIParent and Button or ChatFrameMenuButton)
         btn:SetScale(scale)
 
-        btn:SetSize(btnW, btnH)
-
-        --[[local name = WoWTools_DataMixin.onlyChinese and List[value]
-        --if not name then
-            --if LOCALE_koKR or LOCALE_zhTW or LOCALE_zhCN or LOCALE_ruRU then
-                name= Get_EmojiName(value)
-                name= name:gsub('/', '')
-            --end
-            --name= name or value
-        --end]]
-        local name= tab.isCommand and Get_CommandName(tab.value) or Get_EmojiName(tab.value)
+        local name= Get_Name(tab.value, tab.isChat, tab.isCommand)
         name= WoWTools_TextMixin:CN(name)
         name= name:gsub('/', '')
         if subNum>0 then
             name= WoWTools_TextMixin:sub(name, subNum)
         end
-        btn.text:SetText(name)
+
+        btn.text:SetText(name:upper())
         btn.text:SetScale(fontScale)
 
+        btnW= btnW==0 and (btn.text:GetStringWidth()+13) or btnW
+        btnH= btnH==0 and (btn.text:GetStringHeight()+13) or btnH
 
+        btn:SetSize(btnW, btnH)
 
         btn:SetShown(true)
     end
@@ -355,22 +501,22 @@ local function Rest_Button()
 end
 
 
+local function Set_Menu(root, tab, tabName, rootName)
+    local isCommand= tabName=='command'
+    local isChat= tabName=='chat'
+    local isEmote=  not isChat and not isCommand
+
+    local sub= root:CreateButton(rootName..' #'..#Save()[tabName], function() return MenuResponse.Open end)
 
 
-
-
-
-local function Set_Emote_Menu(root, tab, name)
-    local sub=root:CreateButton(name, function() return MenuResponse.Open end)
-
---勾选所有
+    --勾选所有
     sub:CreateButton(
         (WoWTools_DataMixin.onlyChinese and '勾选所有' or EVENTTRACE_BUTTON_ENABLE_FILTERS)
         ..' #'..#tab,
     function()
-        for _, value in ipairs(tab) do
-            if not Get_Save(value) then
-                table.insert(Save().emoji, value)
+        for _, value in pairs(tab) do
+            if not Get_Save(value, tabName) then
+                table.insert(Save()[tabName], value)
             end
         end
         Init_Button()
@@ -381,10 +527,10 @@ local function Set_Emote_Menu(root, tab, name)
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS,
      function()
-        for _, value in ipairs(tab) do
-            local index= Get_Save(value)
+        for _, value in pairs(tab) do
+            local index= Get_Save(value, tabName)
             if index then
-                table.remove(Save().emoji, index)
+                table.remove(Save()[tabName], index)
             end
         end
         Init_Button()
@@ -392,36 +538,41 @@ local function Set_Emote_Menu(root, tab, name)
     end)
     sub:CreateDivider()
 
-    for index, value in ipairs(tab) do
-        local chaName, tokenIndex= Get_EmojiName(value)
+
+    for index, value in pairs(tab) do
+        local chaName= Get_Name(value, isChat, isCommand)
         local sub2=sub:CreateCheckbox(
             WoWTools_TextMixin:CN(chaName):gsub('/', ''),
         function(data)
-            return Get_Save(data.value)
+            return Get_Save(data.value, tabName)
         end, function(data)
-            local tabIndex= Get_Save(data.value)
+            local tabIndex= Get_Save(data.value, tabName)
             if tabIndex then
-                table.remove(Save().emoji, tabIndex)
+                table.remove(Save()[tabName], tabIndex)
             else
-                table.insert(Save().emoji, data.value)
+                table.insert(Save()[tabName], data.value)
             end
             Init_Button()
-        end, {value=value, tokenIndex= tokenIndex,chaName=chaName, index=index})
+        end, {value=value, chaName=chaName, index=index})
 
         sub2:SetTooltip(function(tooltip, desc)
-            tooltip:AddDoubleLine(desc.data.value, desc.data.tokenIndex)
+            local emoteIndex= isEmote and EmoteIndex(desc.data.value)
+            tooltip:AddDoubleLine(desc.data.value, emoteIndex)
+
+            local str= value=='WHISPER' and 'SLASH_SMART_%s%d'
+                or ((isChat or isCommand) and 'SLASH_%s%d')
+                or 'EMOTE%s_CMD%d'
+
             for i= 1, 12 do
-                local va= _G["EMOTE"..desc.data.tokenIndex.."_CMD"..i]
+                local va= _G[format(str, emoteIndex and ''..emoteIndex or desc.data.value, i)]
                 if va then
-                    if va~=desc.data.chaName then
-                        tooltip:AddDoubleLine(va, i)
-                    end
+                    va= (va==desc.data.chaName and '|cffffffff' or '')..va..' '
+                    tooltip:AddDoubleLine(va, i)
                 else
                     break
                 end
             end
         end)
-
         sub2:AddInitializer(function(btn, desc)
             local font = btn:AttachFontString()
             local offset = desc:HasElements() and -20 or 0
@@ -430,82 +581,18 @@ local function Set_Emote_Menu(root, tab, name)
             local chatShortcut= _G['SLASH_'..desc.data.value..'1']
             font:SetTextToFit(
                 (chatShortcut and chatShortcut..' ' or '')..
-                index
+                desc.data.index
             )
             if select(2, math.modf(desc.data.index/2))==0 then
                 font:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
                 btn.fontString:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
             end
         end)
+
     end
 
     WoWTools_MenuMixin:SetScrollMode(sub)
 end
-
-
-
-local function Se_Command_Menu(root)
-    
-    local index=0
-    local sub= root:CreateButton(WoWTools_DataMixin.onlyChinese and '命令' or COMMAND)
-
-    for name in pairs(SLASH_COMMAND) do
-        local chatName= Get_CommandName(name)
-        if chatName then
-            index= index+1
-            local sub2=sub:CreateCheckbox(
-                Get_CommandName(name),
-            function(data)
-                return Get_CommandSave(data.name)
-            end, function(data)
-                local index2= Get_CommandSave(data.name)
-                if index2 then
-                    table.remove(Save().command, index2)
-                else
-                    table.insert(Save().command, data.name)
-                end
-                Init_Button()
-            end, {name=name, index=index})
-
-            sub2:SetTooltip(function(tooltip, desc)
-                tooltip:AddDoubleLine(desc.data.name, desc.data.index)
-                for i= 2, 12 do
-                    local va= _G["SLASH_"..desc.data.name..i]
-                    if va then
-                        tooltip:AddDoubleLine(va, i)
-                    else
-                        break
-                    end
-                end
-            end)
-
-            sub2:AddInitializer(function(btn, desc)
-                local font = btn:AttachFontString()
-                local offset = desc:HasElements() and -20 or 0
-                font:SetPoint("RIGHT", offset, 0)
-                font:SetJustifyH("RIGHT")
-                font:SetTextToFit(
-                    desc.data.index
-                )
-                if select(2, math.modf(desc.data.index/2))==0 then
-                    font:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-                    btn.fontString:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-                end
-            end)
-        end
-    end
-    WoWTools_MenuMixin:SetScrollMode(sub)
-end
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -514,30 +601,50 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-    local sub, sub2
+    local sub
     local isRoot= self==Button
+    local _tab={}
 
     if not isRoot then
-        root= root:CreateButton(addName..' '..(#Save().emoji+#Save().command), function() return MenuResponse.Open end)
+        root= root:CreateButton(addName..' '..(#Save().emoji+#Save().command+ #Save().chat), function() return MenuResponse.Open end)
     end
 
 --表情
-    sub=Set_Emote_Menu(root, EmoteList, WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE)
+    Set_Menu(root, EmoteList, 'emoji', WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE)
 --谈话
-    Set_Emote_Menu(root, TextEmoteSpeechList, WoWTools_DataMixin.onlyChinese and '谈话' or VOICEMACRO_LABEL)
---其它
-    local _tab={}
+    Set_Menu(root, TextEmoteSpeechList, 'emoji', WoWTools_DataMixin.onlyChinese and '谈话' or VOICEMACRO_LABEL)
+--合集
     for i= 1, MAXEMOTEINDEX do
-        local value= _G['EMOTE'..i..'_TOKEN']
+        local value= _G["EMOTE"..i.."_CMD1"] and _G['EMOTE'..i..'_TOKEN']
         if value then
             table.insert(_tab, value)
         end
     end
-    Set_Emote_Menu(root, _tab, WoWTools_DataMixin.onlyChinese and '全部' or ALL)
+    Set_Menu(root, _tab, 'emoji', 'Emote')
+--聊天
+    root:CreateSpacer()
+    _tab={
+        'SAY',
+        'PARTY',
+        'RAID',
+        'INSTANCE_CHAT',
+        'GUILD',
+        'YELL',
+        'WHISPER',
+        'REPLY',
+        
+    }
+    Set_Menu(root, _tab, 'chat', WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
 
 if WoWTools_DataMixin.Player.husandro then
-    Se_Command_Menu(root)
+    _tab= {}
+    for value in pairs(SLASH_COMMAND) do
+        table.insert(_tab, value)
+    end
+    table.sort(_tab)
+    Set_Menu(root, _tab, 'command', WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
 end
+
 
 --打开选项界面
     root:CreateDivider()
@@ -551,6 +658,7 @@ end
      function()
         Save().emoji= {}
         Save().command= {}
+        Save().chat= {}
         Init_Button()
         return MenuResponse.Refresh
     end)
@@ -628,8 +736,8 @@ end
         name=WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE,
         minValue=0.2,
         maxValue=4,
-        step=0.01,
-        bit='%0.2f',
+        step=0.1,
+        bit='%0.1f',
     })
 
     sub:CreateSpacer()
@@ -667,7 +775,7 @@ end
             Init_Button()
         end,
         name=WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
-        minValue=8,
+        minValue=0,
         maxValue=128,
         step=1,
     })
@@ -682,7 +790,7 @@ end
             Init_Button()
         end,
         name=WoWTools_DataMixin.onlyChinese and '高度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_HEIGHT,
-        minValue=8,
+        minValue=0,
         maxValue=128,
         step=1,
     })
@@ -759,6 +867,7 @@ local function Init()
     end)
     Button:SetMovable(true)
     Button:RegisterForDrag("RightButton")
+    Button:SetScript('OnMouseUp', ResetCursor)
     Button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')

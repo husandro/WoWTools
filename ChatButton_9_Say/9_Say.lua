@@ -159,14 +159,14 @@ local function Init_Menu(self, root)
                     return Save().type==data.type
 
             end, function(data)
-                local name
+                local name2
                 if data.isWhisper then
                     if UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
-                        name= GetUnitName("target", true)
+                        name2= GetUnitName("target", true)
                     end
                 end
-                WoWTools_ChatMixin:Say(data.type, name, nil)
-                self:settings(data.type, data.text, name, nil)
+                WoWTools_ChatMixin:Say(data.type, name2, nil)
+                self:settings(data.type, data.text, name2, nil)
             end, tab)
 
         sub:SetTooltip(function(tooltip, description)

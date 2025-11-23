@@ -6461,7 +6461,16 @@
         "EMOTE449_TOKEN",
         "ChatFrameUtil",
         "COMMAND",
-        "SLASH_COMMAND"
+        "SLASH_COMMAND",
+        "SAY_MESSAGE",
+        "PARTY_MESSAGE",
+        "RAID_MESSAGE",
+        "INSTANCE_CHAT_MESSAGE",
+        "GUILD_MESSAGE",
+        "SLASH_GUILD1",
+        "YELL_MESSAGE",
+        "SLASH_EMOTE1",
+        "SLASH_MACRO1"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

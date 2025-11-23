@@ -9,6 +9,7 @@ WoWTools_ChatMixin={
 --[[
 ChatEdit_TryInsertChatLink(link)
 ChatEdit_LinkItem(itemID, itemLink)
+ChatFrameUtil.OpenChat 11.2.7才有
 --]]
 function WoWTools_ChatMixin:Chat(text, name, printText)
     if not text then

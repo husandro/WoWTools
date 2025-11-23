@@ -149,7 +149,7 @@ WoWTools_MenuMixin:CreateSlider(sub, {
     minValue=1,
     maxValue=10,
     step=1,
-    bit='%.2f',
+    bit='%.1f',
     tooltip=function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval')
     end
@@ -173,8 +173,8 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
         name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
         minValue=0.2,
         maxValue=4,
-        step=0.01,
-        bit='%0.2f',
+        step=0.1,
+        bit='%0.1f',
         tooltip=function(tooltip) tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE) end,
     })
     sub:SetEnabled(not isLocked)
@@ -350,8 +350,8 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
         name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
         minValue=0,
         maxValue=1,
-        step=0.01,
-        bit='%.2f',
+        step=0.1,
+        bit='%.1f',
     })
 
     if not onlyRoot and RestFunc then
@@ -401,8 +401,8 @@ function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue, GetAlphaVal
             name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
             minValue=0,
             maxValue=1,
-            step=0.01,
-            bit='%.2f',
+            step=0.1,
+            bit='%.1f',
         })
         sub:CreateSpacer()
     end
