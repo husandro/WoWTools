@@ -639,7 +639,9 @@ local function Init_Menu(self, root)
 if WoWTools_DataMixin.Player.husandro then
     _tab= {}
     for value in pairs(SLASH_COMMAND) do
-        table.insert(_tab, value)
+        if not UseTab[value] then
+            table.insert(_tab, value)
+        end
     end
     table.sort(_tab)
     Set_Menu(root, _tab, 'command', WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
