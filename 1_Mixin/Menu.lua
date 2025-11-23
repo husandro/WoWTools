@@ -604,8 +604,7 @@ end
 
 
 
---[[驭空术，return 名称，点数 11.2.7 没有了
-
+--[[
 加载，Trait，UI
 function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)
     TraitUtil.OpenTraitFrame(treeID)
@@ -615,20 +614,22 @@ function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)
     --securecallfunction(GenericTraitFrame.SetTreeID, GenericTraitFrame, treeID)
     --ToggleFrame(GenericTraitFrame)
 end
+]]
 
+--驭空术，return 名称，点数 11.2.7 没有了
 function WoWTools_MenuMixin:GetDragonriding()
     local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
     if dragonridingConfigID then
         local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
         local num= treeCurrencies[1] and treeCurrencies[1].quantity
-        if num and num>=0 then
+        if num and num>0 then
             return '|T'..(select(4, C_Traits.GetTraitCurrencyInfo(2563)) or 4728198)..':0|t'
                 ..(num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:')..num..'|r',
 
                 num
         end
     end
-end]]
+end
 
 --驭空术 TraitUtil.OpenTraitFrame(Constants.MountDynamicFlightConsts.TREE_ID)
 function WoWTools_MenuMixin:OpenDragonriding(root)
@@ -638,12 +639,12 @@ function WoWTools_MenuMixin:OpenDragonriding(root)
     local sub= root:CreateButton(
             '|A:dragonriding-barbershop-icon-protodrake:0:0|a'
             ..((InCombatLockdown() or not DragonridingUtil.IsDragonridingUnlocked()) and '|cff626262' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE),
-            --..(self:GetDragonriding() or ''),
+            ..(WoWTools_DataMixin.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
+            ..(self:GetDragonriding() or ''),
         function()
             if not DragonridingUtil.IsDragonridingTreeOpen() then
+                GenericTraitUI_LoadUI()
                 if GenericTraitFrame.SetConfigIDBySystemID then--11.2.7才有
-                    GenericTraitUI_LoadUI()
                     GenericTraitFrame:SetConfigIDBySystemID(Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID)
                     GenericTraitFrame:SetTreeID(Constants.MountDynamicFlightConsts.TREE_ID)
                 else
