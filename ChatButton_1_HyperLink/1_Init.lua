@@ -111,8 +111,14 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
             P_Save=nil
+
             Save().emoji= nil
-            --Save().Emote= Save().Emote or {emoji={'DANCE'}, voice={}}
+            Save().emojiScale= nil
+            Save().emojiAlpha= nil
+            Save().emojiFontScale= nil
+            Save().emojiPoint= nil
+            Save().emojiUIParent= nil
+            Save().emojiLine= nil
 
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
             WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
