@@ -639,11 +639,12 @@ end
 local function Set_Menu(root, tab, tabName, rootName)
     local isCommand= tabName=='command'
     local isChat= tabName=='chat'
-    --local isEmote= not isChat and not isCommand
     local isUse= tabName=='useCommand' or tabName=='useChat'
-    local isInCombat= InCombatLockdown()
 
-    local sub= root:CreateButton(
+    local isInCombat= InCombatLockdown()
+    local sub
+
+    root= root:CreateButton(
         rootName
         ..' #'..#Save()[tabName],
     function()
@@ -651,8 +652,15 @@ local function Set_Menu(root, tab, tabName, rootName)
     end)
 
 --是否使用，安全按钮
-    if isCommand then
-        local sub2= sub:CreateCheckbox(
+    if isUse then
+        root:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '添加' or ADD,
+        function()
+            
+        end)
+
+    elseif isCommand then
+        sub= root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '安全按钮' or'Secure Button',
         function()
             return Save().isSecure
@@ -660,15 +668,15 @@ local function Set_Menu(root, tab, tabName, rootName)
             Save().isSecure= not Save().isSecure and true or nil
             Init_Button()
         end)
-        sub2:SetEnabled(not isInCombat)
-        sub2:SetTooltip(function(tooltip)
+        sub:SetEnabled(not isInCombat)
+        sub:SetTooltip(function(tooltip)
             tooltip:AddLine('SecureActionButtonTemplate')
            GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and'友情提示: 可能会出现错误' or 'Note: Errors may occur')
         end)
     end
 
     --勾选所有
-    sub:CreateButton(
+    root:CreateButton(
         (WoWTools_DataMixin.onlyChinese and '勾选所有' or EVENTTRACE_BUTTON_ENABLE_FILTERS)
         ..' #'..#tab,
     function()
@@ -682,7 +690,7 @@ local function Set_Menu(root, tab, tabName, rootName)
     end)
 
 --撤选所有
-    sub:CreateButton(
+    root:CreateButton(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS,
      function()
         for _, value in pairs(tab) do
@@ -694,12 +702,12 @@ local function Set_Menu(root, tab, tabName, rootName)
         Init_Button()
         return MenuResponse.Refresh
     end)
-    sub:CreateDivider()
+    root:CreateDivider()
 
 
     for index, value in pairs(tab) do
         local vaName= Get_Name(value, isChat, isCommand)
-        local sub2=sub:CreateCheckbox(
+        sub=root:CreateCheckbox(
             (SaveUse().use[value] and SaveUse().use[value].add and '|cff00ccff' or '')
             ..WoWTools_TextMixin:CN(vaName):gsub('/', ''),
         function(data)
@@ -714,10 +722,10 @@ local function Set_Menu(root, tab, tabName, rootName)
             Init_Button()
         end, {value=value, vaName=vaName, index=index})
 
-        sub2:SetTooltip(function(tooltip, desc)
+        sub:SetTooltip(function(tooltip, desc)
             Set_Tooltip(tooltip, desc.data.value, desc.data.vaName, isChat, isCommand)
         end)
-        sub2:AddInitializer(function(btn, desc)
+        sub:AddInitializer(function(btn, desc)
             local font = btn:AttachFontString()
             local offset = desc:HasElements() and -20 or 0
             font:SetPoint("RIGHT", offset, 0)
@@ -738,7 +746,7 @@ local function Set_Menu(root, tab, tabName, rootName)
 
     end
 
-    WoWTools_MenuMixin:SetScrollMode(sub)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
@@ -804,7 +812,7 @@ local function Init_Menu(self, root)
             table.insert(_tab, value)
         end
     end
-    Set_Menu(root, _tab, 'emoji', 'Emote')
+    Set_Menu(root, _tab, 'emoji', WoWTools_DataMixin.onlyChinese and '全部' or ALL)
 
 --聊天
     _tab={'SAY', 'PARTY', 'RAID', 'INSTANCE_CHAT', 'GUILD', 'YELL', 'WHISPER','REPLY',}
