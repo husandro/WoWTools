@@ -658,10 +658,16 @@ end
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS,
      function()
-        Save().emoji= {}
-        Save().command= {}
-        Save().chat= {}
-        Init_Button()
+        StaticPopup_Show('WoWTools_OK',
+            addName..'|n|n'
+            ..(WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS),
+            nil,
+        function()
+            Save().emoji= {}
+            Save().command= {}
+            Save().chat= {}
+            Init_Button()
+        end)
         return MenuResponse.Refresh
     end)
 

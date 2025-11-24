@@ -39,10 +39,7 @@ end
 
 
 local function Init()
-    if not StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].acceptDelay then
-        StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].acceptDelay=3
-    end
-
+    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].acceptDelay=3
 
 --重置, 数据
 StaticPopupDialogs['WoWTools_RestData']= {
@@ -59,7 +56,7 @@ StaticPopupDialogs['WoWTools_RestData']= {
     hideOnEscape=true,
     exclusive=true,
     showAlert=true,
-    acceptDelay= WoWTools_DataMixin.Player.husandro and 1 or 3,
+    acceptDelay= 1,
 }
 
 
