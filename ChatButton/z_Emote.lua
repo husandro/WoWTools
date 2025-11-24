@@ -253,22 +253,24 @@ end
 
 local function On_Click(self)
     local value= self.value
+    local add= SaveUse().use[value] and SaveUse().use[value].add
 
     if self.isChat then
         if value=='REPLY' then
             ChatFrameUtil.ReplyTell()
+
         elseif value=='WHISPER' then
             local name= UnitIsPlayer('target') and UnitIsFriend('target', 'player') and GetUnitName("target", true) or nil
-            WoWTools_ChatMixin:Say(SLASH_YELL1..' ', name)
+            WoWTools_ChatMixin:Say(SLASH_YELL1..' ', name, nil, add)
         else
             local va= _G['SLASH_'..value..1]
             if va then
-                WoWTools_ChatMixin:Say(va..' ')
+                WoWTools_ChatMixin:Say(va..' '..(add or ''))
             end
         end
 
     elseif self.isCommand then
-        ChatFrameUtil.OpenChat(Get_Name(value, nil, true)..' ')
+        ChatFrameUtil.OpenChat(Get_Name(value, nil, true)..' '..(add or ''))
 
     else
         if (value == EMOTE454_TOKEN) or (value == EMOTE455_TOKEN) then
@@ -299,6 +301,61 @@ local function On_Enter(self)
     end
     GameTooltip:SetText(WoWTools_DataMixin.Icon.left..name..WoWTools_DataMixin.Icon.right)
     GameTooltip:Show()
+end
+local function Set_Tooltip(tooltip, value, vaName, isChat, isCommand)
+    local emoteIndex= not (isChat or isCommand) and EmoteIndex(value)
+    tooltip:AddDoubleLine(value, emoteIndex)
+
+    local str= value=='WHISPER' and 'SLASH_SMART_%s%d'
+        or ((isChat or isCommand) and 'SLASH_%s%d')
+        or 'EMOTE%s_CMD%d'
+
+    vaName= vaName or Get_Name(value, isChat, isCommand)
+
+    for i= 1, 12 do
+        local va= _G[format(str, emoteIndex and ''..emoteIndex or value, i)]
+        if va then
+            va= (va==vaName and '|cffffffff' or '')..va..' '
+            tooltip:AddDoubleLine(va, i)
+        else
+            break
+        end
+    end
+end
+local function Init_Button_Menu(self, root)
+    local value= self.value
+    local valueName= Get_Name(value, self.isChat, self.isCommand)
+
+    local sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT,
+    function()
+        StaticPopup_Show('WoWTools_EditText',
+            addName
+            ..'|n|n'
+            ..(WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT)
+            ..'|n'
+            ..valueName,
+            nil,
+            {
+                text=SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')),
+                SetValue= function(s)
+                    local va= s:GetEditBox():GetText()
+                    SaveUse().use[value]= SaveUse().use[value] or {}
+                    SaveUse().use[value].name= va
+                    MainButton:Init_Button()
+                end,
+                OnAlt=function()
+                    if SaveUse().use[value] then
+                        SaveUse().use[value].name=nil
+                    end
+                end
+            }
+        )
+    end)
+    sub:SetTooltip(function(tooltip)
+        Set_Tooltip(tooltip, value, valueName, self.isChat, self.isCommand)
+    end)
+
 end
 --[[local function SetChatTypeAttribute(chatType)
     local editBox = ChatFrameUtil.OpenChat("")
@@ -346,7 +403,7 @@ local function Init_Button()
     end
 
     local isInCombat= InCombatLockdown()
-    
+
 
     local isUIParent= Save().isUIParent
     local line= Save().line or 1
@@ -379,7 +436,7 @@ local function Init_Button()
         local canChange= tab.isSecure and not isInCombat or not tab.isSecure
         local valueName= Get_Name(tab.value, tab.isChat, tab.isCommand)
         if canChange then
-        
+
 
             local btn= tab.isSecure and MainButton.poolSecur:Acquire() or MainButton.pool:Acquire()
             table.insert(_buttons, btn)
@@ -388,6 +445,11 @@ local function Init_Button()
                 local add= SaveUse().use[tab.value] and SaveUse().use[tab.value].add
                 btn:SetAttribute('type1', 'macro')
                 btn:SetAttribute("macrotext1", valueName..(add and ' '..add or ''))
+                btn:SetScript('OnMouseDown', function(self, d)
+                    if d=='RightButton' then
+                        MenuUtil.CreateContextMenu(self, Init_Button_Menu)
+                    end
+                end)
             else
                 secureIndex= secureIndex+ 1
                 btn:SetScript('OnClick', function(...) On_Click(...) end)
@@ -399,7 +461,7 @@ local function Init_Button()
             btn.isChat= tab.isChat
             btn.isSecure= tab.isSecure
 
-            --[[local x= isUIParent and 0 or 2.5
+            local x= isUIParent and 0 or 2.5
             local icon= btn:GetNormalTexture()
             icon:SetPoint('TOPLEFT', x, -x)
             icon:SetPoint('BOTTOMRIGHT', -x, x)
@@ -407,7 +469,7 @@ local function Init_Button()
 
             icon= btn:GetPushedTexture()
             icon:SetPoint('TOPLEFT', x, -x)
-            icon:SetPoint('BOTTOMRIGHT', -x, x)]]
+            icon:SetPoint('BOTTOMRIGHT', -x, x)
 
             btn:SetScale(scale)
 
@@ -421,12 +483,13 @@ local function Init_Button()
                 name= WoWTools_TextMixin:sub(name, subNum)
             end
 
-            btn.text:SetText(name:upper())
-            btn.text:SetScale(fontScale)
-            btnW= btnW==0 and (btn.text:GetStringWidth()+13) or btnW
-            btnH= btnH==0 and (btn.text:GetStringHeight()+13) or btnH
+            btn.Text:SetText(name:upper())
+            btn.Text:SetScale(fontScale)
+            btnW= btnW==0 and (btn.Text:GetStringWidth()+13) or btnW
+            btnH= btnH==0 and (btn.Text:GetStringHeight()+13) or btnH
             btn:SetSize(btnW, btnH)
 
+            btn:SetParent(isUIParent and MainButton or ChatFrameMenuButton)
             btn:ClearAllPoints()
             if isUIParent then
                 if i>1 and select(2, math.modf((i-1)/line))==0 then
@@ -438,13 +501,11 @@ local function Init_Button()
                 btn:SetPoint('BOTTOM', _buttons[i-1] or ChatFrameMenuButton, 'TOP')
             end
 
-            btn:SetParent(isUIParent and MainButton or ChatFrameMenuButton)
-
             btn:Show()
         end
     end
 
-    
+
     if isUIParent then
         MainButton:set_texture()
         local all= index+ secureIndex
@@ -459,7 +520,7 @@ local function Init_Button()
         MainButton:SetFrameStrata(Save().strata or 'MEDIUM')
     end
     MainButton:SetShown(isUIParent)
-    
+
     _buttons= nil
     _newTab= nil
 end
@@ -566,22 +627,7 @@ local function Set_Menu(root, tab, tabName, rootName)
         end, {value=value, vaName=vaName, index=index})
 
         sub2:SetTooltip(function(tooltip, desc)
-            local emoteIndex= isEmote and EmoteIndex(desc.data.value)
-            tooltip:AddDoubleLine(desc.data.value, emoteIndex)
-
-            local str= value=='WHISPER' and 'SLASH_SMART_%s%d'
-                or ((isChat or isCommand) and 'SLASH_%s%d')
-                or 'EMOTE%s_CMD%d'
-
-            for i= 1, 12 do
-                local va= _G[format(str, emoteIndex and ''..emoteIndex or desc.data.value, i)]
-                if va then
-                    va= (va==desc.data.vaName and '|cffffffff' or '')..va..' '
-                    tooltip:AddDoubleLine(va, i)
-                else
-                    break
-                end
-            end
+            Set_Tooltip(tooltip, desc.data.value, desc.data.vaName, isChat, isCommand)
         end)
         sub2:AddInitializer(function(btn, desc)
             local font = btn:AttachFontString()
@@ -953,7 +999,7 @@ local function Init()
     end)
 
     MainButton:set_point()
-    
+
     MainButton:SetScript('OnEvent', function(self, event)
         Init_Button()
         self:UnregisterEvent(event)
@@ -990,6 +1036,7 @@ end
 
 MainButton= CreateFrame('Button', 'WoWToolsChatEmoteButton', UIParent, 'WoWToolsButtonTemplate')
 MainButton:RegisterEvent('ADDON_LOADED')
+
 MainButton:SetScript('OnEvent', function(self, event, arg1)
     if arg1~= 'WoWTools' then
         return
@@ -1020,3 +1067,8 @@ MainButton:SetScript('OnEvent', function(self, event, arg1)
         Init()
     end
 end)
+
+
+function MainButton:Init_Button()
+    Init_Button()
+end

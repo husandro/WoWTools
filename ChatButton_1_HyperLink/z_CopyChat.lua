@@ -198,21 +198,35 @@ local function Init_Menu(frame, root)
 	function()
 		return LoggingChat()
 	end, function()
-		WoWTools_ChatMixin:Say(SLASH_CHATLOG2)
-		return MenuResponse.Open
+		--WoWTools_ChatMixin:Say(SLASH_CHATLOG2)
+		local info = ChatTypeInfo["SYSTEM"];
+		if ( LoggingChat() ) then
+			LoggingChat(false);
+			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '聊天记录已被禁止。' or CHATLOGDISABLED, info.r, info.g, info.b, info.id);
+		else
+			LoggingChat(true);
+			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '聊天记录保存在Logs/WoWChatLog.txt中' or CHATLOGENABLED, info.r, info.g, info.b, info.id);
+		end
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '聊天记录保存在Logs/WoWChatLog.txt中' or CHATLOGENABLED)
 	end)
-	
+
 --战斗日志
 	sub2=sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '/战斗日志' or SLASH_COMBATLOG1,
 	function()
 		return LoggingCombat()
 	end, function()
-		WoWTools_ChatMixin:Say(SLASH_COMBATLOG1)
-		return MenuResponse.Open
+		--WoWTools_ChatMixin:Say(SLASH_COMBATLOG1)
+		local info = ChatTypeInfo["SYSTEM"];
+		if ( LoggingCombat() ) then
+			LoggingCombat(false);
+			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '战斗记录已被禁止。' or COMBATLOGDISABLED, info.r, info.g, info.b, info.id);
+		else
+			LoggingCombat(true);
+			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED, info.r, info.g, info.b, info.id);
+		end
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED)

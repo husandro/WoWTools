@@ -169,7 +169,9 @@ local function Add_Menu(self, root, name, channelNumber)
 
 --世界，修改
      if name== Save().world then
-        sub:CreateButton(WoWTools_DataMixin.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''), function()
+        sub:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT,
+        function()
             StaticPopup_Show('WoWToolsChatButtonWorldChangeNamme')
         end)
         sub:CreateDivider()

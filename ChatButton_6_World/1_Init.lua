@@ -126,7 +126,7 @@ local function Init_Dialogs()
 
 
     StaticPopupDialogs['WoWToolsChatButtonWorldChangeNamme']={
-        text=(WoWTools_DataMixin.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'|n|n'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI ),
+        text=(WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT)..'|n|n'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI ),
         whileDead=true, hideOnEscape=true, exclusive=true,
         hasEditBox=true,
         button1= WoWTools_DataMixin.onlyChinese and '确定' or OKAY,

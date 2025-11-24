@@ -160,7 +160,7 @@
         <HighlightTexture atlas="chatframe-button-highlightalert"/>
         <Layers>
             <Layer level="OVERLAY">        
-                <FontString parentKey="text" inherits="ChatFontNormal" justifyH="CENTER">
+                <FontString parentKey="Text" inherits="ChatFontNormal" justifyH="CENTER">
                     <Anchors>
                         <Anchor point="CENTER"/>
                     </Anchors>
@@ -173,7 +173,7 @@
                 self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
                 WoWTools_ColorMixin:Setup(self:GetNormalTexture(), {type='Texture'})
                 WoWTools_ColorMixin:Setup(self:GetPushedTexture(), {type='Texture'})
-                WoWTools_ColorMixin:Setup(self.text, {type='FontString'})
+                WoWTools_ColorMixin:Setup(self.Text, {type='FontString'})
             </OnLoad>
             <OnClick>
             </OnClick>

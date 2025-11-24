@@ -6477,7 +6477,10 @@
         "SLASH_CHATLOG1",
         "CHATLOGENABLED",
         "SLASH_COMBATLOG1",
-        "COMBATLOGENABLED"
+        "COMBATLOGENABLED",
+        "CHATLOGDISABLED",
+        "COMBATLOGDISABLED",
+        "HOUSING_NEIGHBORHOOD_SETTINGS_NAME_BUTTON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
