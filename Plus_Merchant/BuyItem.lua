@@ -378,7 +378,7 @@ local function Init()
         button3 = WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
         whileDead=true, hideOnEscape=true, exclusive=true,
         OnShow=function(self, data)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetNumeric(true)
             local num= Get_Buy_Num(data.itemID) or select(8, C_Item.GetItemInfo(data.itemID)) or 1
             edit:SetText(num)
@@ -386,13 +386,13 @@ local function Init()
             edit:HighlightText()
         end,
         OnHide= function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetText("")
             edit:SetNumeric(false)
             edit:ClearFocus()
         end,
         OnAccept=function(self, data)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             local num= edit:GetNumber()
             if num==0 then
                 SaveBuyItem(data.itemID, nil)

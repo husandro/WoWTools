@@ -67,7 +67,7 @@ local function Edit_Item(self, info)
         EditBoxOnTextChanged=function(s)
             local num= s:GetNumber()
             local p=s:GetParent()
-            local b1= p.button1 or p:GetButton1()
+            local b1= p:GetButton1()
             if num>1 then
                 b1:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
             else

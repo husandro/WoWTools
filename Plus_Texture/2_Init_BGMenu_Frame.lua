@@ -390,7 +390,7 @@ local function Texture_List_Menu(self, root, icon, name)
                 local isTextureTab= TextureTab[textureID]
 
                 local p= s:GetParent()
-                local b1= p.button1 or p:GetButton1()
+                local b1= p:GetButton1()
                 local b3= p.button3 or p:GetButton3()
                 b1:SetEnabled(enabled and not isAdd and not isTextureTab)
                 b3:SetEnabled(enabled and isAdd and not isTextureTab)

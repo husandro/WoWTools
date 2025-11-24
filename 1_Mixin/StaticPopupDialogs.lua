@@ -75,11 +75,11 @@ StaticPopupDialogs['WoWTools_EditText']={
     button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
     button3= WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
     OnShow=function(self, data)
-        local edit= self.editBox or self:GetEditBox()
+        local edit= self:GetEditBox()
         edit:SetAutoFocus(false)
         edit:SetText(data.text or '')
 
-        local b3= self.button3 or self:GetButton3()
+        local b3= self:GetButton3()
         b3:SetShown(data.OnAlt and true or false)
 
         if data.OnShow then
@@ -92,7 +92,7 @@ StaticPopupDialogs['WoWTools_EditText']={
         if data.OnHide then
             data.OnHide(self, data)
         end
-        local edit= self.editBox or self:GetEditBox()
+        local edit= self:GetEditBox()
         edit:SetText("")
         edit:ClearFocus()
     end,
@@ -108,7 +108,7 @@ StaticPopupDialogs['WoWTools_EditText']={
         local text= self:GetText() or ''
         local p= self:GetParent()
 
-        local b1= p.button1 or p:GetButton1()
+        local b1= p:GetButton1()
         b1:SetEnabled(text:gsub(' ', '')~='' and text~=data.text)
 
         if data.EditBoxOnTextChanged then
@@ -122,7 +122,7 @@ StaticPopupDialogs['WoWTools_EditText']={
     EditBoxOnEnterPressed = function(self, data)
         self:ClearFocus()
         local p = self:GetParent();
-        local b1= p.button1 or p:GetButton1()
+        local b1= p:GetButton1()
         if b1:IsEnabled() then
             if data.SetValue then
                 data.SetValue(p, data)
@@ -167,7 +167,7 @@ StaticPopupDialogs['WoWTools_Item'] = {
         if data.OnShow then
             data.OnShow(self, data)
         end
-        local b3= self.button3 or self:GetButton3()
+        local b3= self:GetButton3()
         b3:SetShown(data.OnAlt and true or false)
     end,
 	OnAccept =function(self, data)
@@ -209,11 +209,11 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         button2=WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         button3=WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
         OnShow = function(self, data)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetAutoFocus(false)
             edit:SetText(data.text or '')
 
-            local b3= self.button3 or self:GetButton3()
+            local b3= self:GetButton3()
             b3:SetShown(data.OnAlt and true or false)
 
             if data.OnShow then
@@ -223,12 +223,12 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
             edit:SetFocus()
         end,
         OnHide=function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetText("")
             edit:ClearFocus()
         end,
         OnAccept = function(self, data)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             local tab, text= Get_UIMapIDs_Name(edit:GetText())
             data.SetValue(self, data, tab, text)
         end,
@@ -240,7 +240,7 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         EditBoxOnTextChanged=function(self, data)
             local _, text= Get_UIMapIDs_Name(self:GetText())
             local p= self:GetParent()
-            local b1= p.button1 or p:GetButton1()
+            local b1= p:GetButton1()
             b1:SetEnabled((text and text~=data.text) and true or false)
             b1:SetText(text or (WoWTools_DataMixin.onlyChinese and '无' or NONE))
         end,
@@ -251,7 +251,7 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         EditBoxOnEnterPressed = function(self, data)
             self:ClearFocus()
             local p = self:GetParent();
-            local b1= p.button1 or p:GetButton1()
+            local b1= p:GetButton1()
             if b1:IsEnabled() then
                 local tab, text= Get_UIMapIDs_Name(self:GetText())
                 if data and data.SetValue then
@@ -304,7 +304,7 @@ end})
         text= '|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         button1 = WoWTools_DataMixin.onlyChinese and '关闭' or CLOSE,
         OnShow = function(self, web)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
                     print(
@@ -325,7 +325,7 @@ end})
             edit:SetFocus()
         end,
         OnHide= function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetScript("OnKeyUp", nil)
             edit:SetScript("OnCursorChanged", nil)
             edit:SetText("")
@@ -360,7 +360,7 @@ end})
         button1= WoWTools_DataMixin.onlyChinese and '添加' or ADD,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnShow=function(self, data)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetNumeric(true)
             edit:SetNumber(data.GetValue() or 0)
         end,
@@ -370,7 +370,7 @@ end})
             edit:ClearFocus()
         end,
         OnAccept= function(self, data)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             local currencyID= edit:GetNumber()
             if currencyID and currencyID>0 then
                 data.SetValue(currencyID)
@@ -378,7 +378,7 @@ end})
         end,
         EditBoxOnTextChanged=function(self, data)
             local p= self:GetParent()
-            local b1= p.button1 or p:GetButton1()
+            local b1= p:GetButton1()
             local currencyID= self:GetNumber()
             local name, info, text, icon
             if currencyID>0 and currencyID<214748364 then

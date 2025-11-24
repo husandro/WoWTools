@@ -56,7 +56,7 @@ local function Add_Item(info)
         count=C_Item.GetItemCount(info.itemID, true, true, true, true),
         OnShow=function(self, data)
             local b1= self.button1 or self:GetButton1()
-            local b3= self.button3 or self:GetButton3()
+            local b3= self:GetButton3()
             b1:SetEnabled(not Save().addItems[data.itemID])
             b3:SetEnabled(Save().addItems[data.itemID])
         end,

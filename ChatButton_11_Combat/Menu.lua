@@ -67,7 +67,7 @@ local function Init_Menu(self, root)
             EditBoxOnTextChanged=function(s)
                 local num= s:GetNumber() or 0
                 local p= s:GetParent()
-                local b1= p.button1 or p:GetButton1()
+                local b1= p:GetButton1()
                 b1:SetEnabled(num>=60 and num<2147483647)
             end,
         }

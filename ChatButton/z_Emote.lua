@@ -162,7 +162,9 @@ end
 local P_Save= {
     emoji={'DANCE'},
     chat={},--
+    useChat={},--自定义Chat
     command={},--宏
+    useCommand={}--自定义，宏
 }
 local P_SaveUse={
     use={
@@ -210,7 +212,6 @@ end
 
 local function Get_Name(value, isChat, isCommand)
     local name
-
     if isChat then
         name= _G[value..'_MESSAGE']
 
@@ -249,8 +250,17 @@ local function Get_Name(value, isChat, isCommand)
 
     return name or _G["SLASH_"..value..'1'] or value
 end
-
-
+local function Rest_Button()
+    StaticPopup_Show('WoWTools_RestData',
+        addName..'|n'
+        ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+        nil,
+    function()
+        WoWToolsSave['Plus_EmoteButton']= CopyTable(P_Save)
+        MainButton:set_point()
+        MainButton:Init_Button()
+    end)
+end
 local function On_Click(self)
     local value= self.value
     local add= SaveUse().use[value] and SaveUse().use[value].add
@@ -290,16 +300,16 @@ local function On_Enter(self)
         return
     end
     GameTooltip:SetOwner(self, isUIParent and 'ANCHOR_LEFT' or "ANCHOR_BOTTOMRIGHT")
+
     local name= Get_Name(self.value, self.isChat, self.isCommand)
 
     local add= SaveUse().use[self.value] and SaveUse().use[self.value].add
-    if add then
-        name= name..' '..add
-    else
-        name=WoWTools_TextMixin:CN(name)
-        name= name:gsub('/', '')
-    end
+
+    name=WoWTools_TextMixin:CN(name)
+    --name= name:gsub('/', '')
     GameTooltip:SetText(WoWTools_DataMixin.Icon.left..name..WoWTools_DataMixin.Icon.right)
+    GameTooltip:AddLine(add, 0, 0.8, 1, true)
+
     GameTooltip:Show()
 end
 local function Set_Tooltip(tooltip, value, vaName, isChat, isCommand)
@@ -322,18 +332,32 @@ local function Set_Tooltip(tooltip, value, vaName, isChat, isCommand)
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Button_Menu(self, root)
     local value= self.value
     local valueName= Get_Name(value, self.isChat, self.isCommand)
 
+
     local sub=root:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT,
+        (SaveUse().use[value] and SaveUse().use[value].name and '|cff00ccff' or '')
+        ..(WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT),
     function()
         StaticPopup_Show('WoWTools_EditText',
-            addName
+            (WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT)
             ..'|n|n'
-            ..(WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT)
-            ..'|n'
             ..valueName,
             nil,
             {
@@ -360,6 +384,47 @@ local function Init_Button_Menu(self, root)
         Set_Tooltip(tooltip, value, valueName, self.isChat, self.isCommand)
     end)
 
+
+    root:CreateDivider()
+
+    sub=root:CreateButton(
+        (SaveUse().use[value] and SaveUse().use[value].add and '|cff00ccff' or '')
+        ..(WoWTools_DataMixin.onlyChinese and '添加参数'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, MACRO)),
+    function()
+         StaticPopup_Show('WoWTools_EditText',
+            addName..'|n|n'..valueName..' |cffffffff('..(WoWTools_DataMixin.onlyChinese and '参数' or MACRO)..')|r',
+            nil,
+            {
+                --text=SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')),
+                OnShow= function(s)
+                    s:GetEditBox():SetText(SaveUse().use[value] and SaveUse().use[value].add or '')
+                    s:GetButton1():SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+                end,
+                SetValue= function(s)
+                    local va= s:GetEditBox():GetText()
+                    SaveUse().use[value]= SaveUse().use[value] or {}
+                    SaveUse().use[value].add= va
+                    MainButton:Init_Button()
+                end,
+                OnAlt=function()
+                    if SaveUse().use[value] then
+                        SaveUse().use[value].add=nil
+                        MainButton:Init_Button()
+                    end
+                end,
+                EditBoxOnTextChanged= function(s)
+                    local t=s:GetText() or ''
+                    s:GetParent().Text:SetText(
+                        addName..'|n|n'..valueName..' |cffff8200'..t..'|r'
+                    )
+                end
+            }
+        )
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(SaveUse().use[value] and SaveUse().use[value].add, nil, nil, nil, true)
+    end)
+    sub:SetEnabled(self.isChat or self.isCommand)
 end
 --[[local function SetChatTypeAttribute(chatType)
     local editBox = ChatFrameUtil.OpenChat("")
@@ -422,12 +487,24 @@ local function Init_Button()
     for _, value in pairs(Save().chat) do
         table.insert(_newTab, {value=value, isChat=true})
     end
+    for _, value in pairs(Save().useChat) do
+        if SaveUse().chat[value] then
+            table.insert(_newTab, {value=value, isChat=true, isUse=true})
+        end
+    end
+
     for _, value in pairs(Save().emoji) do
         table.insert(_newTab, {value=value})
     end
 
+
     for _, value in pairs(Save().command) do
         table.insert(_newTab, {value=value, isCommand=true, isSecure= isSecure})
+    end
+    for _, value in pairs(Save().useCommand) do
+        if SaveUse().command[value] then
+            table.insert(_newTab, {value=value, isCommand=true, isSecure=true, isUse=true})
+        end
     end
 
     local index=0
@@ -464,12 +541,13 @@ local function Init_Button()
                     end
                 end)
             end
-            btn:SetScript('OnEnter', function(...) On_Enter(...) end)
+            btn:SetScript('OnEnter', On_Enter)
 
             btn.value= tab.value
             btn.isCommand= tab.isCommand
             btn.isChat= tab.isChat
             btn.isSecure= tab.isSecure
+            btn.isUse= tab.isUse
 
             local x= isUIParent and 0 or 2.5
             local icon= btn:GetNormalTexture()
@@ -547,23 +625,22 @@ end
 
 
 
-local function Rest_Button()
-    StaticPopup_Show('WoWTools_RestData',
-        addName..'|n'
-        ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-        nil,
-    function()
-        WoWToolsSave['Plus_EmoteButton']= CopyTable(P_Save)
-        MainButton:set_point()
-        Init_Button()
-    end)
-end
+
+
+
+
+
+
+
+
+
 
 
 local function Set_Menu(root, tab, tabName, rootName)
     local isCommand= tabName=='command'
     local isChat= tabName=='chat'
-    local isEmote= not isChat and not isCommand
+    --local isEmote= not isChat and not isCommand
+    local isUse= tabName=='useCommand' or tabName=='useChat'
     local isInCombat= InCombatLockdown()
 
     local sub= root:CreateButton(
@@ -623,7 +700,8 @@ local function Set_Menu(root, tab, tabName, rootName)
     for index, value in pairs(tab) do
         local vaName= Get_Name(value, isChat, isCommand)
         local sub2=sub:CreateCheckbox(
-            WoWTools_TextMixin:CN(vaName):gsub('/', ''),
+            (SaveUse().use[value] and SaveUse().use[value].add and '|cff00ccff' or '')
+            ..WoWTools_TextMixin:CN(vaName):gsub('/', ''),
         function(data)
             return Get_Save(data.value, tabName)
         end, function(data)
@@ -679,6 +757,30 @@ end
 
 
 
+
+local function Set_Use_Menu(root, tabName)
+    root= root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '添加' or Add)
+        ..' #'..Save()
+    )
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
@@ -705,21 +807,19 @@ local function Init_Menu(self, root)
     Set_Menu(root, _tab, 'emoji', 'Emote')
 
 --聊天
-    _tab={
-        'SAY',
-        'PARTY',
-        'RAID',
-        'INSTANCE_CHAT',
-        'GUILD',
-        'YELL',
-        'WHISPER',
-        'REPLY',
-
-    }
+    _tab={'SAY', 'PARTY', 'RAID', 'INSTANCE_CHAT', 'GUILD', 'YELL', 'WHISPER','REPLY',}
+    root:CreateDivider()
     Set_Menu(root, _tab, 'chat', WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
-    root:CreateSpacer()
+
+--自定义聊天
+    _tab={}
+    for value in pairs(Save().useChat) do
+        table.insert(_tab, value)
+    end
+    Set_Menu(root, _tab, 'useChat', WoWTools_DataMixin.onlyChinese and '自定义聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, CHAT))
 
 --宏
+    root:CreateDivider()
     _tab= {}
     for value in pairs(SLASH_COMMAND) do
         table.insert(_tab, value)
@@ -727,8 +827,12 @@ local function Init_Menu(self, root)
 
     table.sort(_tab)
     Set_Menu(root, _tab, 'command', WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
-
-
+--自定义宏
+    _tab={}
+    for value in pairs(Save().useCommand) do
+        table.insert(_tab, value)
+    end
+    Set_Menu(root, _tab, 'useCommand', WoWTools_DataMixin.onlyChinese and '自定义宏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, MACRO))
 
 --打开选项界面
     root:CreateDivider()
@@ -934,6 +1038,12 @@ end
 
 
 
+
+
+
+
+
+
 local function Init()
     if Save().disabled then
         MainButton:Hide()
@@ -1028,6 +1138,10 @@ local function Init()
         end
     end
 end
+
+
+
+
 
 
 

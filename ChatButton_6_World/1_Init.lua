@@ -35,12 +35,12 @@ local function Init_Dialogs()
         button1= WoWTools_DataMixin.onlyChinese and '修改' or EDIT,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnShow = function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetNumeric(true)
             edit:SetNumber(Save().myChatFilterNum)
         end,
         OnAccept = function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             local num= edit:GetNumber()
             Save().myChatFilterNum= num
             print(
@@ -51,11 +51,11 @@ local function Init_Dialogs()
         EditBoxOnTextChanged=function(self)
             local num= self:GetNumber() or 0
             local p= self:GetParent()
-            local b1= p.button1 or p:GetButton1()
+            local b1= p:GetButton1()
             b1:SetEnabled(num>=10 and num<2147483647)
         end,
         OnHide=function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetNumeric(false)
             edit:ClearFocus()
         end,
@@ -77,11 +77,11 @@ local function Init_Dialogs()
             b1:SetEnabled(false)
         end,
         OnHide= function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:ClearFocus()
         end,
         OnAccept = function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             local text= edit:GetText() or ''
             if not text:find('%-') then
                 text= text..'-'..WoWTools_DataMixin.Player.Realm
@@ -115,7 +115,7 @@ local function Init_Dialogs()
                 enabled=false
             end
             local p= self:GetParent()
-            local b1= p.button1 or p:GetButton1()
+            local b1= p:GetButton1()
             b1:SetEnabled(enabled)
         end,
         EditBoxOnEscapePressed = function(self)
@@ -132,26 +132,26 @@ local function Init_Dialogs()
         button1= WoWTools_DataMixin.onlyChinese and '确定' or OKAY,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnShow= function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetAutoFocus(false)
             edit:SetText(WoWTools_DataMixin.Player.Region==5 and '大脚世界频道' and Save().world or 'World')
             local b1= self.button1 or self:GetButton1()
             b1:SetEnabled(false)
         end,
         OnHide= function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetText("")
             edit:ClearFocus()
         end,
         OnAccept= function(self)
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             Save().world= edit:GetText()
             WoWTools_DataMixin:Reload()
         end,
         EditBoxOnTextChanged=function(self)
             local t= self:GetText() or ''
             local p= self:GetParent()
-            local b1= p.button1 or p:GetButton1()
+            local b1= p:GetButton1()
             b1:SetEnabled(t~= Save().world and t:gsub(' ', '')~='')
         end,
         EditBoxOnEscapePressed = function(s)

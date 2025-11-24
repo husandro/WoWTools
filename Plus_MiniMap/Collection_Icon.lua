@@ -605,7 +605,7 @@ local function Init_UserAdd_Menu(_, root)
             end,
             EditBoxOnTextChanged=function(s, _, text)
                 local p= s:GetParent()
-                local b1= p.button1 or p:GetButton1()
+                local b1= p:GetButton1()
                 local b3= p.button3 or p:GetButton3()
                 if _G[text] and _G[text].GetFrameStrata then
                     b1:SetText(

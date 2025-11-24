@@ -61,7 +61,7 @@ local function Init()
     StaticPopupDialogs["UNLEARN_SKILL"].acceptDelay= 1
     WoWTools_DataMixin:Hook(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow", function(self)
         if Save().wangquePrefessionText then
-            local edit= self.editBox or self:GetEditBox()
+            local edit= self:GetEditBox()
             edit:SetText(UNLEARN_SKILL_CONFIRMATION);
         end
     end)

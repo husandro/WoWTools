@@ -326,8 +326,8 @@ local function Set_Item_Spell_Edit(info)
                     local mapID= C_Map.GetBestMapForUnit("player")
                     text= (mapID and text..mapID or text)..', '
                 end
-                local edit= self.editBox or self:GetEditBox()
-                local b3= self.button3 or self:GetButton3()
+                local edit= self:GetEditBox()
+                local b3= self:GetButton3()
                 edit:SetText(text)
                 b3:SetEnabled(Save().Mounts[FLOOR][data.spellID] and true or false)
                 if self.data then
@@ -376,7 +376,7 @@ local function Set_Item_Spell_Edit(info)
         count=count,
         OnShow=function(self, data)
             local b1= self.button1 or self:GetButton1()
-            local b3= self.button3 or self:GetButton3()
+            local b3= self:GetButton3()
             b3:SetEnabled(Save().Mounts[data.type][data.ID] and true or false)
             b1:SetEnabled(not Save().Mounts[data.type][data.ID] and true or false)
         end,
