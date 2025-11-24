@@ -842,7 +842,7 @@ local function Init()
     Button:SetClampedToScreen(true)
 
     function Button:set_texture()
-        if (#Save().emoji+#Save().command)==0 or GameTooltip:IsOwned(self) then
+        if (#Save().emoji+#Save().command+#Save().chat)==0 or self:IsMouseOver() then
             self:SetNormalAtlas('newplayerchat-chaticon-newcomer')
         else
             self:SetNormalTexture(0)

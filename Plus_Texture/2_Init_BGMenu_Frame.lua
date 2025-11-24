@@ -1034,7 +1034,7 @@ local function Set_Frame_Menu(frame, tab)
         local t= self.portrait or self.Icon
         if t then
             t:SetAlpha(
-                GameTooltip:IsOwned(self) and 0.5
+                self:IsMouseOver() and 0.5
                 or (self.portrait and Get_Portrait_Alpha(frame:GetName(), frame[BGName]))
                 or 1
             )

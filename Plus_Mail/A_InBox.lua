@@ -380,7 +380,7 @@ local function Create_Unit_Button(btn, i)
     btn.DeleteButton:SetScript('OnClick', function(self)--OpenMail_Delete()
         return_delete_InBox(self.openMailID)--删除，或退信
         C_Timer.After(0.3, function()
-            if GameTooltip:IsOwned(self) then
+            if self:IsMouseOver() then
                 eventEnter(self)
                 self:GetParent().enterTipTexture:SetShown(true)
             end

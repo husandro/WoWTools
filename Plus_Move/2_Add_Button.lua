@@ -131,7 +131,7 @@ local function SetupButton(frame, tab)
 --透明度
     function btn:set_alpha()
         if self.alpha~=1 then
-            self:SetAlpha(GameTooltip:IsOwned(self) and 1 or self.alpha)
+            self:SetAlpha(self:IsMouseOver() and 1 or self.alpha)
         end
     end
     btn:set_alpha()

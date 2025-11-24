@@ -137,7 +137,7 @@ local function Init()
 	btn:SetPoint("TOPLEFT", ColorPickerFrame.Border, 7, -7)
 
 	function btn:set_alpha()
-		self:GetNormalTexture():SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
+		self:GetNormalTexture():SetAlpha(self:IsMouseOver() and 1 or 0.3)
 	end
 
 	function btn:set_tooltip()

@@ -769,7 +769,7 @@ local function Set_Move_Button(btn)
 
     function btn:set_alpha()
         self.texture:SetAlpha(
-            (GameTooltip:IsOwned(self) or self.frame:IsShown())
+            (self:IsMouseOver() or self.frame:IsShown())
             and 1 or 0.3
         )
     end

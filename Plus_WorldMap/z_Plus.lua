@@ -97,7 +97,7 @@ end
         end
         --QuestScrollFrame.CampaignTooltip
         
-        if not GameTooltip:IsOwned(self) then
+        if not self:IsMouseOver() then
             GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
             GameTooltip:ClearLines()
         end

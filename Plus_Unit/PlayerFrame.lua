@@ -39,7 +39,7 @@ local function Craete_assisterButton()
     frame.assisterButton:SetScript('OnClick', function(self)
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
         C_Timer.After(1, function()
-            if GameTooltip:IsOwned(self) then
+            if self:IsMouseOver() then
                 self:set_tooltip()
             end
         end)

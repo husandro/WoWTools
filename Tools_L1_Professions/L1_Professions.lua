@@ -301,7 +301,7 @@ local function Init_KeyButton(index, type)
         else
             WoWTools_KeyMixin:Setup(self, false)
         end
-        if GameTooltip:IsOwned(self) then
+        if self:IsMouseOver() then
             self:set_tooltip()
         end
     end)

@@ -104,7 +104,7 @@ local function Init(frame)
     btn:SetupMenu(Init_Menu)
 
     function btn:settings()
-        self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
+        self:SetAlpha(self:IsMouseOver() and 1 or 0.3)
         if Save().hide then
             self:SetNormalAtlas('talents-button-reset')
         else

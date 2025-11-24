@@ -23,7 +23,7 @@ local function Create_Button(frame)
         frame.spellPort:SetAlpha(
             (
                 C_SpellBook.IsSpellInSpellBook(self.spellID)
-                or GameTooltip:IsOwned(self)
+                or self:IsMouseOver()
             ) and 1 or 0.3
         )
     end

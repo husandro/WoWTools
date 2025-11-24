@@ -158,7 +158,7 @@ local function Init()
         self:SetNormalAtlas(Save().questPlayText and 'voicechat-icon-STT' or 'voicechat-icon-STT-mute')
     end
     function menu:set_alpha()
-        self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
+        self:SetAlpha(self:IsMouseOver() and 1 or 0.3)
     end
     menu:SetupMenu(function(self, root)
         if not self:IsMouseOver() then

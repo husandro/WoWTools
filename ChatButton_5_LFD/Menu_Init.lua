@@ -130,7 +130,7 @@ local function Add_Initializer(btn, desc)
             --self.leftTexture:SetAlpha(atlas and 1 or 0)
             self.fontString:SetTextColor(r,g,b)
 
-            if GameTooltip:IsOwned(self) then
+            if self:IsMouseOver() then
                 self:SetButtonState('PUSHED')
             end
         end

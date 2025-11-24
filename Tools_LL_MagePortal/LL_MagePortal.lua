@@ -219,7 +219,7 @@ local function Init_Button(tab)
     end
 
     function btn:set_alpha()
-        self:SetAlpha((GameTooltip:IsOwned(self) or C_SpellBook.IsSpellInSpellBook(self.spellID)) and 1 or 0.3)
+        self:SetAlpha((self:IsMouseOver() or C_SpellBook.IsSpellInSpellBook(self.spellID)) and 1 or 0.3)
     end
 
     function btn:settings()

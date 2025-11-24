@@ -333,7 +333,7 @@ local function Init(isShow)
             self.texture:SetAtlas('WildBattlePetCapturable')
         end
         self.texture:SetAlpha(
-            (GameTooltip:IsOwned(self) or show) and 1 or 0.5
+            (self:IsMouseOver() or show) and 1 or 0.5
         )
     end
 

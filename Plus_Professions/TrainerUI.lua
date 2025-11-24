@@ -79,7 +79,7 @@ local function Init()
                 (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost)
             )
 
-            if GameTooltip:IsOwned(self) then
+            if self:IsMouseOver() then
                 self:set_tooltip()
             end
         end)

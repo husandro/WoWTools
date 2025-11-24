@@ -1231,7 +1231,7 @@ local function Init_Button()
         if self:GetButtonState()~='PUSHED' then
             self:SetButtonState('PUSHED')
             C_Timer.After(5, function()
-                if not GameTooltip:IsOwned(self) then
+                if not self:IsMouseOver() then
                     self:SetButtonState('NORMAL')
                 end
             end)

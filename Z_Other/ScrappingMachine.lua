@@ -504,7 +504,7 @@ local function Init()
     ScrappingMachineFrame.ScrapButton:HookScript('OnLeave', GameTooltip_Hide)
     ScrappingMachineFrame.ScrapButton:HookScript('OnEnter', function(self)
         local spellID= C_ScrappingMachineUI.GetScrapSpellID()
-        if not spellID or GameTooltip:IsOwned(self) then
+        if not spellID or self:IsMouseOver() then
             return
         end
         GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")

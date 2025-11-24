@@ -199,7 +199,7 @@ local function Init_LeftList()
     end
     function Pause:set_texture()
         local atlas
-        local isOwner= GameTooltip:IsOwned(self)
+        local isOwner= self:IsMouseOver()
         if Save().eventTraceIsPased then
             atlas= isOwner and '128-RedButton-VisibilityOff' or '128-RedButton-VisibilityOff-Disabled'
         else

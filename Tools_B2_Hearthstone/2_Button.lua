@@ -162,7 +162,7 @@ local function Init(btn)
 
     function btn:set_textureModifier(down)
         local itemID, icon, isDesaturated
-        if GameTooltip:IsOwned(self) then
+        if self:IsMouseOver() then
             if down==1 then
                 local index= self:get_modifier_index()
                 if index then

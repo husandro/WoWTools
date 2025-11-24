@@ -21,7 +21,7 @@ local function Init()
 
     function btn:settings()
         local enabled= Save().wangquePrefessionText
-        self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
+        self:SetAlpha(self:IsMouseOver() and 1 or 0.3)
         if enabled then
             self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         else

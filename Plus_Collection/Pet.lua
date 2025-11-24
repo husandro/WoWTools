@@ -133,7 +133,7 @@ local function Init()
             pet.name:SetPoint('RIGHT', -4, 0)
 
             function pet.abilityLabel:set_shown()
-                self:SetShown(PetJournalPetCard.petIndex ~= self.index and not GameTooltip:IsOwned(self))
+                self:SetShown(PetJournalPetCard.petIndex ~= self.index and not self:IsMouseOver())
             end
             pet:HookScript('OnEnter', function(self)
                 self.abilityLabel:SetShown(false)

@@ -518,7 +518,7 @@ local function Create_GossipOptionCheckBox(btn, info)
         local showFrame= GossipButton:Is_ShowOptionsFrame()
         isShow= isShow or showFrame or Save().gossipOption[self.gossipOptionID]
         self:SetAlpha(isShow and 1 or 0)
-        self.Text:SetAlpha((showFrame or GameTooltip:IsOwned(self)) and 1 or 0)
+        self.Text:SetAlpha((showFrame or self:IsMouseOver()) and 1 or 0)
     end
 
     btn.gossipCheckBox:SetScript('OnLeave', function(self)

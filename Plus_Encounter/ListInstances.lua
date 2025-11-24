@@ -237,7 +237,7 @@ local function Init_Button(btn)
         else
             self:GetHighlightTexture():SetVertexColor(1,1,1)
         end
-        self:SetAlpha((isSaved or GameTooltip:IsOwned(self) or GameTooltip:IsOwned(self:GetParent())) and 1 or 0)
+        self:SetAlpha((isSaved or self:IsMouseOver() or GameTooltip:IsOwned(self:GetParent())) and 1 or 0)
     end
     function btn.Favorites2:get_save()
         Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
