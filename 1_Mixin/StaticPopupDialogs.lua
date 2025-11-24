@@ -124,7 +124,7 @@ StaticPopupDialogs['WoWTools_EditText']={
         local p = self:GetParent();
         local b1= p.button1 or p:GetButton1()
         if b1:IsEnabled() then
-            if p.SetValue then
+            if data.SetValue then
                 data.SetValue(p, data)
             end
             p:Hide()
@@ -146,7 +146,7 @@ StaticPopup_Show('WoWTools_EditText',
         end,
         OnAlt=function(s, data)
         end,
-        EditBoxOnTextChanged=function(s, data)
+        EditBoxOnTextChanged=function(s, data, text)
         end,
     }
 )

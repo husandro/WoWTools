@@ -337,7 +337,10 @@ local function Init_Button_Menu(self, root)
             ..valueName,
             nil,
             {
-                text=SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')),
+                --text=SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')),
+                OnShow= function(s)
+                    s:GetEditBox():SetText(SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')))
+                end,
                 SetValue= function(s)
                     local va= s:GetEditBox():GetText()
                     SaveUse().use[value]= SaveUse().use[value] or {}
@@ -347,8 +350,9 @@ local function Init_Button_Menu(self, root)
                 OnAlt=function()
                     if SaveUse().use[value] then
                         SaveUse().use[value].name=nil
+                        MainButton:Init_Button()
                     end
-                end
+                end,
             }
         )
     end)
@@ -452,7 +456,13 @@ local function Init_Button()
                 end)
             else
                 secureIndex= secureIndex+ 1
-                btn:SetScript('OnClick', function(...) On_Click(...) end)
+                btn:SetScript('OnMouseDown', function(self, d)
+                    if d=='RightButton' then
+                        MenuUtil.CreateContextMenu(self, Init_Button_Menu)
+                    else
+                        On_Click(self)
+                    end
+                end)
             end
             btn:SetScript('OnEnter', function(...) On_Enter(...) end)
 
