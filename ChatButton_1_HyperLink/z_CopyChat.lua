@@ -147,7 +147,8 @@ local function Init_Menu(frame, root)
 	if not self then
 		return
 	end
-	local sub
+
+	local sub, sub2
 
 	sub=root:CreateButton(
 		(self:GetNumMessages()==0 and '|cff606060' or '')
@@ -190,12 +191,38 @@ local function Init_Menu(frame, root)
 		Save().copyChatSetText= not Save().copyChatSetText and true or nil
 	end)
 
+--聊天记录
+	sub:CreateDivider()
+	sub2=sub:CreateCheckbox(
+		WoWTools_DataMixin.onlyChinese and '/聊天记录' or SLASH_CHATLOG2,
+	function()
+		return LoggingChat()
+	end, function()
+		WoWTools_ChatMixin:Say(SLASH_CHATLOG2)
+		return MenuResponse.Open
+	end)
+	sub2:SetTooltip(function(tooltip)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '聊天记录保存在Logs/WoWChatLog.txt中' or CHATLOGENABLED)
+	end)
+	
+--战斗日志
+	sub2=sub:CreateCheckbox(
+		WoWTools_DataMixin.onlyChinese and '/战斗日志' or SLASH_COMBATLOG1,
+	function()
+		return LoggingCombat()
+	end, function()
+		WoWTools_ChatMixin:Say(SLASH_COMBATLOG1)
+		return MenuResponse.Open
+	end)
+	sub2:SetTooltip(function(tooltip)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED)
+	end)
+
 
 --打开，选项面板
 	sub:CreateDivider()
 	WoWTools_ChatMixin:Open_SettingsPanel(sub, WoWTools_HyperLink.addName)
 end
-
 
 
 

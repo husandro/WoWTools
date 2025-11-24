@@ -6472,7 +6472,12 @@
         "SLASH_EMOTE1",
         "SLASH_MACRO1",
         "SLASH_REPLY1",
-        "HUD_EDIT_MODE_SETTING_COOLDOWN_VIEWER_VISIBLE_SETTING_IN_COMBAT"
+        "HUD_EDIT_MODE_SETTING_COOLDOWN_VIEWER_VISIBLE_SETTING_IN_COMBAT",
+        "SLASH_CHATLOG2",
+        "SLASH_CHATLOG1",
+        "CHATLOGENABLED",
+        "SLASH_COMBATLOG1",
+        "COMBATLOGENABLED"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

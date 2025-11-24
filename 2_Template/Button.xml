@@ -147,4 +147,57 @@
             </OnEnter>
         </Scripts>
     </DropdownButton>
+
+    <Button name="WoWToolsEmojiButtonTemplate" virtual="true">
+        <Size x="32" y="32"/>
+        <NormalTexture atlas="chatframe-button-up">
+            <Anchors>
+                <Anchor point="TOPLEFT" x='0' y='0'/>
+                <Anchor point="BOTTOMRIGHT" x='0' y='0'/>
+            </Anchors>
+        </NormalTexture>
+        <PushedTexture atlas="chatframe-button-down"/>
+        <HighlightTexture atlas="chatframe-button-highlightalert"/>
+        <Layers>
+            <Layer level="OVERLAY">        
+                <FontString parentKey="text" inherits="ChatFontNormal" justifyH="CENTER">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                --self:EnableMouseWheel(true)
+                self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+                WoWTools_ColorMixin:Setup(self:GetNormalTexture(), {type='Texture'})
+                WoWTools_ColorMixin:Setup(self:GetPushedTexture(), {type='Texture'})
+                WoWTools_ColorMixin:Setup(self.text, {type='FontString'})
+            </OnLoad>
+            <OnClick>
+            </OnClick>
+            <OnLeave>
+                GameTooltip_Hide()
+                if self.set_alpha then
+                    self:set_alpha()
+                end
+            </OnLeave>
+            <OnEnter>
+                if self.tooltip then
+                    GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+                    GameTooltip:ClearLines()
+                    if type(self.tooltip)=='function' then
+                        self:tooltip(GameTooltip)
+                    else
+                        GameTooltip:AddLine(self.tooltip)
+                    end
+                    GameTooltip:Show()
+                end
+                if self.set_alpha then
+                    self:set_alpha()
+                end
+            </OnEnter>
+        </Scripts>
+    </Button>
 </Ui>
