@@ -656,7 +656,20 @@ local function Set_Menu(root, tab, tabName, rootName)
         root:CreateButton(
             WoWTools_DataMixin.onlyChinese and '添加' or ADD,
         function()
-            
+            StaticPopup_Show('WoWTools_EditText',
+                WoWTools_DataMixin.onlyChinese and '名称' or NAME,
+                nil,
+                {
+                    SetValue= function(s)
+                        local t= s:GetEditBox():GetText()
+                        SaveUse()[tabName][t]= {}
+                    end,
+                    EditBoxOnTextChanged=function(s, data, text)
+                        s:GetParent():GetButton1():SetEnabled(text~='' and not SaveUse()[tabName])
+                    end,
+                }
+            )
+
         end)
 
     elseif isCommand then
