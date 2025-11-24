@@ -78,7 +78,7 @@ local function Init_Options()
 
 
 --清除玩家输入数据
-    local playerHeader= WoWTools_DataMixin.onlyChinese and '清除玩家输入数据' or 'Clear player input data'
+    local playerHeader= WoWTools_DataMixin.onlyChinese and '清除输入数据' or 'Clear input data'
     WoWTools_PanelMixin:OnlyButton({
         title= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..playerHeader,
         buttonText= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),

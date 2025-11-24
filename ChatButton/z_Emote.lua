@@ -161,23 +161,28 @@ end
 
 local P_Save= {
     emoji={'DANCE'},
+    chat={},--
+    command={},--宏
+}
+local P_SaveUse={
+    use={
+        --CLICK={name='', add=''},
+    },
     chat={},
     command={},
-    --subNum= 0
 }
+
 local function Save()
     return WoWToolsSave['Plus_EmoteButton']
 end
-local UseTab={
-    MACRO= {name=SLASH_MACRO1, click=function()
-        if not InCombatLockdown() then
-            ShowMacroFrame()
-            return true
-        end
-    end},
-}
-local Button
+
+local function SaveUse()
+    return WoWToolsPlayerDate['EmoteButton']
+end
+
+local MainButton
 local Buttons={}
+local MacroBtns={}
 local addName
 
 
@@ -207,15 +212,9 @@ end
 
 local function Get_Name(value, isChat, isCommand)
     local name
-    if UseTab[value] then
-        return UseTab[value].name
 
-    elseif isChat then
-        if value=='MACRO' then
-            return _G["SLASH_"..value..1]
-        else
-            return _G[value..'_MESSAGE'] or value
-        end
+    if isChat then
+        name= _G[value..'_MESSAGE']
 
     elseif isCommand then
         for index= 1, 12 do
@@ -225,7 +224,6 @@ local function Get_Name(value, isChat, isCommand)
             elseif va and va:find('[\228-\233]') then
                 name= va
                 break
-
             else
                 name= name or va
                 if string.len(va)> string.len(name) then
@@ -233,36 +231,31 @@ local function Get_Name(value, isChat, isCommand)
                 end
             end
         end
-        return name or value
 
     else
-        local i = EmoteIndex(value)
-        name= _G["EMOTE"..i.."_CMD1"]
-        if name then
-            if not name:find('[\228-\233]') then
-                for index= 2, 12 do
-                    local va=  _G["EMOTE"..i.."_CMD"..index]
-                    if not va then
-                        break
-                    elseif va and va:find('[\228-\233]') then
-                        name= va
-                        break
-                    else
-                        name= name or va
-                        if string.len(va)> string.len(name) then
-                            name= va
-                        end
-                    end
-                end
+        local index = EmoteIndex(value)
+        local i=1
+        name= _G["EMOTE"..index.."_CMD1"]
+        local va= name
+        while va do
+            i= i+1
+            va= _G["EMOTE"..index.."_CMD"..i]
+            if name:find('[\228-\233]') or not va then
+                break
+            end
+            if string.len(va)> string.len(name) then
+                name= va
             end
         end
-        return name or value, i
     end
+
+    return name or _G["SLASH_"..value..'1'] or value
 end
 
 
 local function On_Click(self)
     local value= self.value
+
     if self.isChat then
         if value=='REPLY' then
             ChatFrameUtil.ReplyTell()
@@ -270,11 +263,9 @@ local function On_Click(self)
             local name= UnitIsPlayer('target') and UnitIsFriend('target', 'player') and GetUnitName("target", true) or nil
             WoWTools_ChatMixin:Say(SLASH_YELL1..' ', name)
         else
-            if not (UseTab[value] and UseTab[value].click()) then
-                local va= _G['SLASH_'..value..1]
-                if va then
-                    WoWTools_ChatMixin:Say(va..' ')
-                end
+            local va= _G['SLASH_'..value..1]
+            if va then
+                WoWTools_ChatMixin:Say(va..' ')
             end
         end
 
@@ -318,12 +309,11 @@ end]]
 
 
 
-local function Create_Button(index, w)
+local function Create_Button(index)
     Buttons[index]= CreateFrame('Button', 'WoWToolsEmojiButton'..index, ChatFrameMenuButton, 'WoWToolsButtonTemplate')
 
     local btn=Buttons[index]
 
-    btn:SetSize(w,w)
     btn:SetNormalAtlas('chatframe-button-up')
     btn:SetPushedAtlas('chatframe-button-down')
     btn:SetHighlightTexture('Interface\\Buttons\\UI-Common-MouseHilight')
@@ -338,6 +328,7 @@ local function Create_Button(index, w)
 
     btn.text= btn:CreateFontString(nil, 'OVERLAY', 'ChatFontNormal')
     btn.text:SetPoint('CENTER')
+    btn.text:SetJustifyH('CENTER')
     WoWTools_ColorMixin:Setup(btn.text, {type='FontString'})
 
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -375,7 +366,13 @@ end
 
 
 
+
 local function Init_Button()
+     if WoWTools_FrameMixin:IsLocked(MainButton) then
+        print(addName,'|cnWARNING_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_COOLDOWN_VIEWER_VISIBLE_SETTING_IN_COMBAT)
+        return
+    end
+
     local w= ChatFrameMenuButton:GetWidth() or 32
 
     local isUIParent= Save().isUIParent
@@ -387,21 +384,23 @@ local function Init_Button()
     local btnW, btnH= Save().width or w, Save().height or w
 
     local _newTab= {}
+    for _, value in pairs(Save().chat) do
+        table.insert(_newTab, {value=value, isChat=true})
+    end
     for _, value in pairs(Save().emoji) do
         table.insert(_newTab, {value=value})
     end
     for _, value in pairs(Save().command) do
         table.insert(_newTab, {value=value, isCommand=true})
     end
-    for _, value in pairs(Save().chat) do
-        table.insert(_newTab, {value=value, isChat=true})
-    end
+
+
 
     for index, tab in pairs(_newTab) do
 
         local btn= Buttons[index]
         if not btn then
-            btn= Create_Button(index, w)
+            btn= Create_Button(index)
         else
             btn:ClearAllPoints()
         end
@@ -414,7 +413,7 @@ local function Init_Button()
             if index>1 and select(2, math.modf((index-1)/line))==0 then
                 btn:SetPoint('BOTTOM', Buttons[index-line], 'TOP')
             else
-                btn:SetPoint('LEFT', Buttons[index-1] or Button, 'RIGHT')
+                btn:SetPoint('LEFT', Buttons[index-1] or MainButton, 'RIGHT')
             end
         else
             btn:SetPoint('BOTTOM', Buttons[index-1] or ChatFrameMenuButton, 'TOP')
@@ -431,12 +430,15 @@ local function Init_Button()
         icon:SetPoint('TOPLEFT', x, -x)
         icon:SetPoint('BOTTOMRIGHT', -x, x)
 
-        btn:SetParent(isUIParent and Button or ChatFrameMenuButton)
+        btn:SetParent(isUIParent and MainButton or ChatFrameMenuButton)
         btn:SetScale(scale)
 
-        local name= Get_Name(tab.value, tab.isChat, tab.isCommand)
-        name= WoWTools_TextMixin:CN(name)
-        name= name:gsub('/', '')
+        local name= SaveUse().use[tab.value] and SaveUse().use[tab.value].name
+        if not name then
+            name= Get_Name(tab.value, tab.isChat, tab.isCommand)
+            name= WoWTools_TextMixin:CN(name)
+            name= name:gsub('/', '')
+        end
         if subNum>0 then
             name= WoWTools_TextMixin:sub(name, subNum)
         end
@@ -455,18 +457,18 @@ local function Init_Button()
 
     local numButton= #_newTab
     if isUIParent then
-        Button:SetFrameStrata(Save().strata or 'MEDIUM')
-        Button:set_texture()
+        MainButton:SetFrameStrata(Save().strata or 'MEDIUM')
+        MainButton:set_texture()
 
         if numButton>0 then
-            Button.Background:SetPoint('TOP', Buttons[numButton], 0, 1)
-            Button.Background:SetPoint('RIGHT', Buttons[numButton>=line and line or numButton], 1, 0)
-            Button.Background:SetPoint('BOTTOMLEFT', Buttons[1], -1, -1)
-            Button.Background:SetAlpha(Save().bgAlpha or 0)
+            MainButton.Background:SetPoint('TOP', Buttons[numButton], 0, 1)
+            MainButton.Background:SetPoint('RIGHT', Buttons[numButton>=line and line or numButton], 1, 0)
+            MainButton.Background:SetPoint('BOTTOMLEFT', Buttons[1], -1, -1)
+            MainButton.Background:SetAlpha(Save().bgAlpha or 0)
         end
-        Button.Background:SetShown(numButton>0)
+        MainButton.Background:SetShown(numButton>0)
     end
-    Button:SetShown(isUIParent)
+    MainButton:SetShown(isUIParent)
 
     for i= numButton+1, #Buttons do
         local btn= Buttons[i]
@@ -495,7 +497,7 @@ local function Rest_Button()
         nil,
     function()
         WoWToolsSave['Plus_EmoteButton']= CopyTable(P_Save)
-        Button:set_point()
+        MainButton:set_point()
         Init_Button()
     end)
 end
@@ -506,8 +508,12 @@ local function Set_Menu(root, tab, tabName, rootName)
     local isChat= tabName=='chat'
     local isEmote=  not isChat and not isCommand
 
-    local sub= root:CreateButton(rootName..' #'..#Save()[tabName], function() return MenuResponse.Open end)
-
+    local sub= root:CreateButton(
+        rootName
+        ..' #'..#Save()[tabName],
+    function()
+        return MenuResponse.Open
+    end)
 
     --勾选所有
     sub:CreateButton(
@@ -540,9 +546,9 @@ local function Set_Menu(root, tab, tabName, rootName)
 
 
     for index, value in pairs(tab) do
-        local chaName= Get_Name(value, isChat, isCommand)
+        local vaName= Get_Name(value, isChat, isCommand)
         local sub2=sub:CreateCheckbox(
-            WoWTools_TextMixin:CN(chaName):gsub('/', ''),
+            WoWTools_TextMixin:CN(vaName):gsub('/', ''),
         function(data)
             return Get_Save(data.value, tabName)
         end, function(data)
@@ -553,7 +559,7 @@ local function Set_Menu(root, tab, tabName, rootName)
                 table.insert(Save()[tabName], data.value)
             end
             Init_Button()
-        end, {value=value, chaName=chaName, index=index})
+        end, {value=value, vaName=vaName, index=index})
 
         sub2:SetTooltip(function(tooltip, desc)
             local emoteIndex= isEmote and EmoteIndex(desc.data.value)
@@ -566,7 +572,7 @@ local function Set_Menu(root, tab, tabName, rootName)
             for i= 1, 12 do
                 local va= _G[format(str, emoteIndex and ''..emoteIndex or desc.data.value, i)]
                 if va then
-                    va= (va==desc.data.chaName and '|cffffffff' or '')..va..' '
+                    va= (va==desc.data.vaName and '|cffffffff' or '')..va..' '
                     tooltip:AddDoubleLine(va, i)
                 else
                     break
@@ -578,10 +584,13 @@ local function Set_Menu(root, tab, tabName, rootName)
             local offset = desc:HasElements() and -20 or 0
             font:SetPoint("RIGHT", offset, 0)
             font:SetJustifyH("RIGHT")
+
             local chatShortcut= _G['SLASH_'..desc.data.value..'1']
+            chatShortcut= chatShortcut~=desc.data.vaName and chatShortcut or nil
+
             font:SetTextToFit(
-                (chatShortcut and chatShortcut..' ' or '')..
-                desc.data.index
+                (chatShortcut and chatShortcut..' ' or '')
+                ..desc.data.index
             )
             if select(2, math.modf(desc.data.index/2))==0 then
                 font:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
@@ -597,12 +606,25 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
     local sub
-    local isRoot= self==Button
+    local isRoot= self==MainButton
     local _tab={}
 
     if not isRoot then
@@ -621,8 +643,8 @@ local function Init_Menu(self, root)
         end
     end
     Set_Menu(root, _tab, 'emoji', 'Emote')
+
 --聊天
-    root:CreateSpacer()
     _tab={
         'SAY',
         'PARTY',
@@ -632,20 +654,20 @@ local function Init_Menu(self, root)
         'YELL',
         'WHISPER',
         'REPLY',
-        
+
     }
     Set_Menu(root, _tab, 'chat', WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
+    root:CreateSpacer()
 
-if WoWTools_DataMixin.Player.husandro then
+--宏
     _tab= {}
     for value in pairs(SLASH_COMMAND) do
-        if not UseTab[value] then
-            table.insert(_tab, value)
-        end
+        table.insert(_tab, value)
     end
+
     table.sort(_tab)
     Set_Menu(root, _tab, 'command', WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
-end
+
 
 
 --打开选项界面
@@ -662,12 +684,12 @@ end
             addName..'|n|n'
             ..(WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS),
             nil,
-        function()
+        {SetValue=function()
             Save().emoji= {}
             Save().command= {}
             Save().chat= {}
             Init_Button()
-        end)
+        end})
         return MenuResponse.Refresh
     end)
 
@@ -688,7 +710,7 @@ end
     if Save().isUIParent then
 --FrameStrata
         WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
-            return Button and Button:GetFrameStrata()==data
+            return MainButton and MainButton:GetFrameStrata()==data
         end, function(data)
             Save().strata= data
             Init_Button()
@@ -809,7 +831,35 @@ end
     end, function(value)
         Save().scale= value
         Init_Button()
-    end, Rest_Button)
+    end)
+    
+--重置
+    sub:CreateDivider()
+    sub:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            addName..'|n|n'
+            ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+            nil,
+        {SetValue=Rest_Button})
+        return MenuResponse.Refresh
+    end)
+
+    sub:CreateButton(
+        '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '清除输入数据' or 'Clear input data'),
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            addName..'|n|n|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '清除输入数据' or 'Clear input data'),
+            nil,
+        {SetValue=function()
+            WoWToolsPlayerDate['EmoteButton']= CopyTable(P_SaveUse)
+        end})
+        return MenuResponse.Refresh
+    end)
 
     _tab=nil
 end
@@ -832,63 +882,64 @@ end
 
 local function Init()
     if Save().disabled then
-        Button:Hide()
+        MainButton:Hide()
         return
     end
 
-    Button.Background=Button:CreateTexture(nil, 'BACKGROUND')
-    Button.Background:SetColorTexture(0,0,0)
+    MainButton.Background=MainButton:CreateTexture(nil, 'BACKGROUND')
+    MainButton.Background:SetColorTexture(0,0,0)
 
-    Button:SetClampedToScreen(true)
+    MainButton:SetClampedToScreen(true)
 
-    function Button:set_texture()
+    function MainButton:set_texture()
         if (#Save().emoji+#Save().command+#Save().chat)==0 or self:IsMouseOver() then
             self:SetNormalAtlas('newplayerchat-chaticon-newcomer')
         else
             self:SetNormalTexture(0)
         end
     end
-    function Button:set_point()
+    function MainButton:set_point()
         local p= Save().point
-        Button:ClearAllPoints()
+        self:ClearAllPoints()
         if p and p[1] then
-            Button:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+            self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
-            Button:SetPoint('CENTER')
+            self:SetPoint('CENTER')
         end
     end
 
-    Button:SetScript('OnLeave', function(self)
+    MainButton:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:set_texture()
     end)
-    Button:SetScript('OnEnter', function(self)
+    MainButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
 
         GameTooltip:SetText(
-            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
-            ..WoWTools_DataMixin.Icon.icon2
+            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            ..WoWTools_DataMixin.Icon.left
+            ..'|cffffffff'..(#Save().emoji+#Save().chat+#Save().command)..'|r'
             ..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)..'(+Alt)'
         )
         GameTooltip:Show()
         self:set_texture()
     end)
-    Button:SetMovable(true)
-    Button:RegisterForDrag("RightButton")
-    Button:SetScript('OnMouseUp', ResetCursor)
-    Button:SetScript('OnMouseDown', function(self, d)
+    MainButton:SetMovable(true)
+    MainButton:RegisterForDrag("RightButton")
+    MainButton:SetScript('OnMouseUp', ResetCursor)
+    MainButton:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
-    Button:SetScript('OnDragStart', function(self)
+    MainButton:SetScript('OnDragStart', function(self)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    Button:SetScript('OnDragStop', function(self)
+    MainButton:SetScript('OnDragStop', function(self)
         self:StopMovingOrSizing()
         ResetCursor()
         if WoWTools_FrameMixin:IsInSchermo(self) then
@@ -901,16 +952,18 @@ local function Init()
         Init_Menu(self, root)
     end)
 
-    Button:set_point()
+    MainButton:set_point()
     Init_Button()
 
     Init=function()
-        if Save().disabled then
-            Button:Hide()
+        if not WoWTools_FrameMixin:IsLocked(MainButton) then
+            MainButton:SetShown(Save().disabled)
+            if not Save().disabled then
+                Init_Button()
+            end
         else
-            Init_Button()
+            print(addName,'|cnWARNING_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_COOLDOWN_VIEWER_VISIBLE_SETTING_IN_COMBAT)
         end
-
     end
 end
 
@@ -929,15 +982,15 @@ end
 
 
 
-Button= CreateFrame('Button', 'WoWToolsChatEmoteButton', UIParent, 'WoWToolsButtonTemplate')
-Button:RegisterEvent('ADDON_LOADED')
-Button:SetScript('OnEvent', function(self, event, arg1)
+MainButton= CreateFrame('Button', 'WoWToolsChatEmoteButton', UIParent, 'WoWToolsButtonTemplate')
+MainButton:RegisterEvent('ADDON_LOADED')
+MainButton:SetScript('OnEvent', function(self, event, arg1)
     if arg1~= 'WoWTools' then
         return
     end
 
     WoWToolsSave['Plus_EmoteButton']= WoWToolsSave['Plus_EmoteButton'] or CopyTable(P_Save)
-
+    WoWToolsPlayerDate['EmoteButton']= WoWToolsPlayerDate['EmoteButton'] or CopyTable(P_SaveUse)
     addName= '|A:newplayerchat-chaticon-newcomer:0:0|a'..(WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE)
 
     WoWTools_PanelMixin:Check_Button({
@@ -948,9 +1001,7 @@ Button:SetScript('OnEvent', function(self, event, arg1)
             Init()
         end,
         buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-        buttonFunc= function()
-           Rest_Button()
-        end,
+        buttonFunc= Rest_Button,
         layout= WoWTools_ChatMixin.Layout,
         category= WoWTools_ChatMixin.Category,
         tooltip= WoWTools_DataMixin.onlyChinese and '按钮' or 'Button',
