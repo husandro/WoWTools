@@ -779,21 +779,6 @@ end
 
 
 
-local function Set_Use_Menu(root, tabName)
-    root= root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '添加' or Add)
-        ..' #'..Save()
-    )
-end
-
-
-
-
-
-
-
-
-
 
 
 
@@ -833,11 +818,11 @@ local function Init_Menu(self, root)
     Set_Menu(root, _tab, 'chat', WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
 
 --自定义聊天
-    --[[_tab={}
+    _tab={}
     for value in pairs(Save().useChat) do
         table.insert(_tab, value)
     end
-    Set_Menu(root, _tab, 'useChat', WoWTools_DataMixin.onlyChinese and '自定义聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, CHAT))]]
+    Set_Menu(root, _tab, 'useChat', WoWTools_DataMixin.onlyChinese and '自定义聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, CHAT))
 
 --宏
     root:CreateDivider()
@@ -849,11 +834,11 @@ local function Init_Menu(self, root)
     table.sort(_tab)
     Set_Menu(root, _tab, 'command', WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
 --自定义宏
-    --[[_tab={}
+    _tab={}
     for value in pairs(Save().useCommand) do
         table.insert(_tab, value)
     end
-    Set_Menu(root, _tab, 'useCommand', WoWTools_DataMixin.onlyChinese and '自定义宏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, MACRO))]]
+    Set_Menu(root, _tab, 'useCommand', WoWTools_DataMixin.onlyChinese and '自定义宏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, MACRO))
 
 --打开选项界面
     root:CreateDivider()
