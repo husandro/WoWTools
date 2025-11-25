@@ -63,14 +63,19 @@ end
 
 
 
-
+--ChatFrameEditBoxMixin.SendText 11.2.7才有
 function WoWTools_ChatMixin:SendText(text)
+    if not text then
+        return
+    end
     local msg= DEFAULT_CHAT_FRAME:IsShown() and DEFAULT_CHAT_FRAME.editBox:GetText() or ''
     DEFAULT_CHAT_FRAME.editBox:SetText(text)
     ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
     if msg~='' then
         ChatFrame_OpenChat(msg, DEFAULT_CHAT_FRAME)
-        DEFAULT_CHAT_FRAME.editbox:ClearFocus()
+        if DEFAULT_CHAT_FRAME.editbox then
+            DEFAULT_CHAT_FRAME.editbox:ClearFocus()
+        end
     end
 end
 

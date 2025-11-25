@@ -1096,7 +1096,7 @@ local function Create_Button(self, tab)
 
     self.bgMenuButton= WoWTools_ButtonMixin:Cbtn(p, {
         size=23,
-        name=tab.name..'WoWToolsBGMenuButton',
+        name=tab.name..'BGMenuButton',
         texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
     })
     --self.bgMenuButton.isLeftShowMenu=true

@@ -117,6 +117,7 @@ end
 
 function WoWTools_FrameMixin:Create(parent, tab)
     tab= tab or {}
+    parent= parent or UIParent
 
     local name= tab.name or ((parent:GetName() or 'WoWTools')..'Frame'..getIndex())
     local size= tab.size
@@ -130,7 +131,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     local sizeRestFunc= tab.sizeRestFunc
     local restPointFunc= tab.restPointFunc
 
-    local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..getIndex()), parent or UIParent, template, setID)
+    local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..getIndex()), parent, template, setID)
 
 --Esc 键
     tinsert(UISpecialFrames, name)

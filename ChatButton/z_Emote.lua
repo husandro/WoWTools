@@ -1,185 +1,29 @@
-if not ChatFrameUtil.OpenChat then--11.2.7才有
-    ChatFrameUtil.ReplyTell= ChatFrame_ReplyTell
-    ChatFrameUtil.OpenChat= ChatFrame_OpenChat
-
-    SLASH_COMMAND= {
-	TARGET = "TARGET",
-	INSPECT = "INSPECT",
-	STOPATTACK = "STOPATTACK",
-	CAST = "CAST",
-	USE = "USE",
-	STOPCASTING = "STOPCASTING",
-	STOPSPELLTARGET = "STOPSPELLTARGET",
-	CANCELAURA = "CANCELAURA",
-	CANCELFORM = "CANCELFORM",
-	EQUIP = "EQUIP",
-	EQUIP_TO_SLOT = "EQUIP_TO_SLOT",
-	CHANGEACTIONBAR = "CHANGEACTIONBAR",
-	SWAPACTIONBAR = "SWAPACTIONBAR",
-	TARGET_EXACT = "TARGET_EXACT",
-	TARGET_NEAREST_ENEMY = "TARGET_NEAREST_ENEMY",
-	TARGET_NEAREST_ENEMY_PLAYER = "TARGET_NEAREST_ENEMY_PLAYER",
-	TARGET_NEAREST_FRIEND = "TARGET_NEAREST_FRIEND",
-	TARGET_NEAREST_FRIEND_PLAYER = "TARGET_NEAREST_FRIEND_PLAYER",
-	TARGET_NEAREST_PARTY = "TARGET_NEAREST_PARTY",
-	TARGET_NEAREST_RAID = "TARGET_NEAREST_RAID",
-	CLEARTARGET = "CLEARTARGET",
-	TARGET_LAST_TARGET = "TARGET_LAST_TARGET",
-	TARGET_LAST_ENEMY = "TARGET_LAST_ENEMY",
-	TARGET_LAST_FRIEND = "TARGET_LAST_FRIEND",
-	ASSIST = "ASSIST",
-	FOCUS = "FOCUS",
-	CLEARFOCUS = "CLEARFOCUS",
-	MAINTANKON = "MAINTANKON",
-	MAINTANKOFF = "MAINTANKOFF",
-	MAINASSISTON = "MAINASSISTON",
-	MAINASSISTOFF = "MAINASSISTOFF",
-	DUEL = "DUEL",
-	DUEL_CANCEL = "DUEL_CANCEL",
-	PET_ATTACK = "PET_ATTACK",
-	PET_FOLLOW = "PET_FOLLOW",
-	PET_MOVE_TO = "PET_MOVE_TO",
-	PET_STAY = "PET_STAY",
-	PET_PASSIVE = "PET_PASSIVE",
-	PET_DEFENSIVE = "PET_DEFENSIVE",
-	PET_DEFENSIVEASSIST = "PET_DEFENSIVEASSIST",
-	PET_AGGRESSIVE = "PET_AGGRESSIVE",
-	STOPMACRO = "STOPMACRO",
-	CANCELQUEUEDSPELL = "CANCELQUEUEDSPELL",
-	CLICK = "CLICK",
-	PET_DISMISS = "PET_DISMISS",
-	LOGOUT = "LOGOUT",
-	QUIT = "QUIT",
-	GUILD_UNINVITE = "GUILD_UNINVITE",
-	GUILD_PROMOTE = "GUILD_PROMOTE",
-	GUILD_DEMOTE = "GUILD_DEMOTE",
-	GUILD_LEADER = "GUILD_LEADER",
-	GUILD_LEAVE = "GUILD_LEAVE",
-	GUILD_DISBAND = "GUILD_DISBAND",
-	EQUIP_SET = "EQUIP_SET",
-	WORLD_MARKER = "WORLD_MARKER",
-	CLEAR_WORLD_MARKER = "CLEAR_WORLD_MARKER",
-	STARTATTACK = "STARTATTACK",
-	CONSOLE = "CONSOLE",
-	CHATLOG = "CHATLOG",
-	COMBATLOG = "COMBATLOG",
-	UNINVITE = "UNINVITE",
-	PROMOTE = "PROMOTE",
-	REPLY = "REPLY",
-	HELP = "HELP",
-	MACROHELP = "MACROHELP",
-	TIME = "TIME",
-	PLAYED = "PLAYED",
-	FOLLOW = "FOLLOW",
-	TRADE = "TRADE",
-	JOIN = "JOIN",
-	LEAVE = "LEAVE",
-	LIST_CHANNEL = "LIST_CHANNEL",
-	CHAT_HELP = "CHAT_HELP",
-	CHAT_PASSWORD = "CHAT_PASSWORD",
-	CHAT_OWNER = "CHAT_OWNER",
-	CHAT_MODERATOR = "CHAT_MODERATOR",
-	CHAT_UNMODERATOR = "CHAT_UNMODERATOR",
-	CHAT_CINVITE = "CHAT_CINVITE",
-	CHAT_KICK = "CHAT_KICK",
-	CHAT_BAN = "CHAT_BAN",
-	CHAT_UNBAN = "CHAT_UNBAN",
-	CHAT_ANNOUNCE = "CHAT_ANNOUNCE",
-	GUILD_INVITE = "GUILD_INVITE",
-	GUILD_MOTD = "GUILD_MOTD",
-	GUILD_INFO = "GUILD_INFO",
-	CHAT_DND = "CHAT_DND",
-	WHO = "WHO",
-	CHANNEL = "CHANNEL",
-	FRIENDS = "FRIENDS",
-	REMOVEFRIEND = "REMOVEFRIEND",
-	IGNORE = "IGNORE",
-	UNIGNORE = "UNIGNORE",
-	SCRIPT = "SCRIPT",
-	RANDOM = "RANDOM",
-	MACRO = "MACRO",
-	PVP = "PVP",
-	READYCHECK = "READYCHECK",
-	BENCHMARK = "BENCHMARK",
-	DISMOUNT = "DISMOUNT",
-	RESETCHAT = "RESETCHAT",
-	ENABLE_ADDONS = "ENABLE_ADDONS",
-	DISABLE_ADDONS = "DISABLE_ADDONS",
-	STOPWATCH = "STOPWATCH",
-	ACHIEVEMENTUI = "ACHIEVEMENTUI",
-	UI_ERRORS_OFF = "UI_ERRORS_OFF",
-	UI_ERRORS_ON = "UI_ERRORS_ON",
-	EVENTTRACE = "EVENTTRACE",
-	TABLEINSPECT = "TABLEINSPECT",
-	DUMP = "DUMP",
-	RELOAD = "RELOAD",
-	WARGAME = "WARGAME",
-	TARGET_MARKER = "TARGET_MARKER",
-	OPEN_LOOT_HISTORY = "OPEN_LOOT_HISTORY",
-	RAIDFINDER = "RAIDFINDER",
-	API = "API",
-	COMMENTATOR_OVERRIDE = "COMMENTATOR_OVERRIDE",
-	COMMENTATOR_NAMETEAM = "COMMENTATOR_NAMETEAM",
-	COMMENTATOR_ASSIGNPLAYER = "COMMENTATOR_ASSIGNPLAYER",
-	RESET_COMMENTATOR_SETTINGS = "RESET_COMMENTATOR_SETTINGS",
-	VOICECHAT = "VOICECHAT",
-	TEXTTOSPEECH = "TEXTTOSPEECH",
-	COUNTDOWN = "COUNTDOWN",
-	PET_ASSIST = "PET_ASSIST",
-	PET_AUTOCASTON = "PET_AUTOCASTON",
-	PET_AUTOCASTOFF = "PET_AUTOCASTOFF",
-	PET_AUTOCASTTOGGLE = "PET_AUTOCASTTOGGLE",
-	SUMMON_BATTLE_PET = "SUMMON_BATTLE_PET",
-	RANDOMPET = "RANDOMPET",
-	RANDOMFAVORITEPET = "RANDOMFAVORITEPET",
-	DISMISSBATTLEPET = "DISMISSBATTLEPET",
-	USE_TOY = "USE_TOY",
-	PING = "PING",
-	ABANDON = "ABANDON",
-	INVITE = "INVITE",
-	REQUEST_INVITE = "REQUEST_INVITE",
-	CHAT_AFK = "CHAT_AFK",
-	RAID_INFO = "RAID_INFO",
-	DUNGEONS = "DUNGEONS",
-	LEAVEVEHICLE = "LEAVEVEHICLE",
-	CALENDAR = "CALENDAR",
-	SET_TITLE = "SET_TITLE",
-	FRAMESTACK = "FRAMESTACK",
-	SOLOSHUFFLE_WARGAME = "SOLOSHUFFLE_WARGAME",
-	SOLORBG_WARGAME = "SOLORBG_WARGAME",
-	SPECTATOR_WARGAME = "SPECTATOR_WARGAME",
-	SPECTATOR_SOLOSHUFFLE_WARGAME = "SPECTATOR_SOLOSHUFFLE_WARGAME",
-	SPECTATOR_SOLORBG_WARGAME = "SPECTATOR_SOLORBG_WARGAME",
-	GUILDFINDER = "GUILDFINDER",
-	TRANSMOG_OUTFIT = "TRANSMOG_OUTFIT",
-	COMMUNITY = "COMMUNITY",
-	RAF = "RAF",
-	EDITMODE = "EDITMODE",
-};
-
-end
-
 local P_Save= {
     emoji={'DANCE'},
-    chat={},--
-    useChat={},--自定义Chat
+    chat={},--聊天
     command={},--宏
+
+    useChat={},--自定义，聊天
     useCommand={}--自定义，宏
 }
 local P_SaveUse={
     use={
         --CLICK={name='', add=''},
     },
-    chat={},
-    command={},
+    chat={
+        [YELL]= '/y '..FIND_A_GROUP
+    },
+    command={
+        [MOUNTS]= "/run C_MountJournal.SummonByID(0)"
+    },
 }
 
 local function Save()
     return WoWToolsSave['Plus_EmoteButton']
 end
 
-local function SaveUse()
-    return WoWToolsPlayerDate['EmoteButton']
+local function SaveUse(name)
+    return WoWToolsPlayerDate['EmoteButton'][name]
 end
 
 local MainButton
@@ -210,9 +54,12 @@ end
 
 
 
-local function Get_Name(value, isChat, isCommand)
+local function Get_Name(value, isChat, isCommand, useType)
     local name
-    if isChat then
+    if useType then
+        name= value
+
+    elseif isChat then
         name= _G[value..'_MESSAGE']
 
     elseif isCommand then
@@ -263,9 +110,13 @@ local function Rest_Button()
 end
 local function On_Click(self)
     local value= self.value
-    local add= SaveUse().use[value] and SaveUse().use[value].add
-
-    if self.isChat then
+    local add= SaveUse('use')[value] and SaveUse('use')[value].add
+    if self.useType then
+        local va= SaveUse(self.useType)[value]
+        if va then
+            WoWTools_ChatMixin:SendText(va)
+        end
+    elseif self.isChat then
         if value=='REPLY' then
             ChatFrameUtil.ReplyTell()
 
@@ -280,7 +131,7 @@ local function On_Click(self)
         end
 
     elseif self.isCommand then
-        ChatFrameUtil.OpenChat(Get_Name(value, nil, true)..' '..(add or ''))
+        ChatFrameUtil.OpenChat(Get_Name(value, nil, true, nil)..' '..(add or ''))
 
     else
         if (value == EMOTE454_TOKEN) or (value == EMOTE455_TOKEN) then
@@ -299,15 +150,21 @@ local function On_Enter(self)
     if WoWToolsSave['ChatButton'].disabledTooltiip and not isUIParent then--禁用提示
         return
     end
+
     GameTooltip:SetOwner(self, isUIParent and 'ANCHOR_LEFT' or "ANCHOR_BOTTOMRIGHT")
 
-    local name= Get_Name(self.value, self.isChat, self.isCommand)
+    local name= self.useType and self.value or Get_Name(self.value, self.isChat, self.isCommand)
 
-    local add= SaveUse().use[self.value] and SaveUse().use[self.value].add
+    local add
+    if self.useType then
+        add= self:GetAttribute('macrotext1') or (SaveUse(self.useType) and SaveUse(self.useType)[self.value])
+    else
+        add= SaveUse('use')[self.value] and SaveUse('use')[self.value].add
+    end
 
     name=WoWTools_TextMixin:CN(name)
     --name= name:gsub('/', '')
-    GameTooltip:SetText(WoWTools_DataMixin.Icon.left..name..WoWTools_DataMixin.Icon.right)
+    GameTooltip:SetText(WoWTools_DataMixin.Icon.left..name..(self.useType and '' or WoWTools_DataMixin.Icon.right))
     GameTooltip:AddLine(add, 0, 0.8, 1, true)
 
     GameTooltip:Show()
@@ -315,7 +172,6 @@ end
 local function Set_Tooltip(tooltip, value, vaName, isChat, isCommand)
     local emoteIndex= not (isChat or isCommand) and EmoteIndex(value)
     tooltip:AddDoubleLine(value, emoteIndex)
-
     local str= value=='WHISPER' and 'SLASH_SMART_%s%d'
         or ((isChat or isCommand) and 'SLASH_%s%d')
         or 'EMOTE%s_CMD%d'
@@ -329,6 +185,16 @@ local function Set_Tooltip(tooltip, value, vaName, isChat, isCommand)
             tooltip:AddDoubleLine(va, i)
         else
             break
+        end
+    end
+
+    local data= SaveUse('use')[value]
+    if data then
+        local add, name= data.name, data.add
+        if add or name then
+            tooltip:AddLine(' ')
+            tooltip:AddLine(name, 0, 0.8, 1)
+            tooltip:AddLine(add, 0, 0.8, 1, true)
         end
     end
 end
@@ -348,11 +214,11 @@ end
 
 local function Init_Button_Menu(self, root)
     local value= self.value
-    local valueName= Get_Name(value, self.isChat, self.isCommand)
+    local valueName= Get_Name(value, self.isChat, self.isCommand, self.useType)
 
 
     local sub=root:CreateButton(
-        (SaveUse().use[value] and SaveUse().use[value].name and '|cff00ccff' or '')
+        (SaveUse('use')[value] and SaveUse('use')[value].name and '|cff00ccff' or '')
         ..(WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT),
     function()
         StaticPopup_Show('WoWTools_EditText',
@@ -362,17 +228,17 @@ local function Init_Button_Menu(self, root)
             nil,
             {
                 OnShow= function(s)
-                    s:GetEditBox():SetText(SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')))
+                    s:GetEditBox():SetText(SaveUse('use')[value] and SaveUse('use')[value].name or (valueName:gsub('/', '')))
                 end,
                 SetValue= function(s)
                     local va= s:GetEditBox():GetText()
-                    SaveUse().use[value]= SaveUse().use[value] or {}
-                    SaveUse().use[value].name= va
+                    SaveUse('use')[value]= SaveUse('use')[value] or {}
+                    SaveUse('use')[value].name= va
                     MainButton:Init_Button()
                 end,
                 OnAlt=function()
-                    if SaveUse().use[value] then
-                        SaveUse().use[value].name=nil
+                    if SaveUse('use')[value] then
+                        SaveUse('use')[value].name=nil
                         MainButton:Init_Button()
                     end
                 end,
@@ -380,34 +246,33 @@ local function Init_Button_Menu(self, root)
         )
     end)
     sub:SetTooltip(function(tooltip)
-        Set_Tooltip(tooltip, value, valueName, self.isChat, self.isCommand)
+        Set_Tooltip(tooltip, value, valueName, self.isChat, self.isCommand, self.useType)
     end)
 
 
     root:CreateDivider()
 
     sub=root:CreateButton(
-        (SaveUse().use[value] and SaveUse().use[value].add and '|cff00ccff' or '')
+        (SaveUse('use')[value] and SaveUse('use')[value].add and '|cff00ccff' or '')
         ..(WoWTools_DataMixin.onlyChinese and '添加参数'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, MACRO)),
     function()
          StaticPopup_Show('WoWTools_EditText',
             addName..'|n|n'..valueName..' |cffffffff('..(WoWTools_DataMixin.onlyChinese and '参数' or MACRO)..')|r',
             nil,
             {
-                --text=SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')),
                 OnShow= function(s)
-                    s:GetEditBox():SetText(SaveUse().use[value] and SaveUse().use[value].add or '')
+                    s:GetEditBox():SetText(SaveUse('use')[value] and SaveUse('use')[value].add or '')
                     s:GetButton1():SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
                 end,
                 SetValue= function(s)
                     local va= s:GetEditBox():GetText()
-                    SaveUse().use[value]= SaveUse().use[value] or {}
-                    SaveUse().use[value].add= va
+                    SaveUse('use')[value]= SaveUse('use')[value] or {}
+                    SaveUse('use')[value].add= va
                     MainButton:Init_Button()
                 end,
                 OnAlt=function()
-                    if SaveUse().use[value] then
-                        SaveUse().use[value].add=nil
+                    if SaveUse('use')[value] then
+                        SaveUse('use')[value].add=nil
                         MainButton:Init_Button()
                     end
                 end,
@@ -421,7 +286,7 @@ local function Init_Button_Menu(self, root)
         )
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(SaveUse().use[value] and SaveUse().use[value].add, nil, nil, nil, true)
+        tooltip:AddLine(SaveUse('use')[value] and SaveUse('use')[value].add, nil, nil, nil, true)
     end)
     sub:SetEnabled(self.isChat or self.isCommand)
 end
@@ -484,45 +349,53 @@ local function Init_Button()
 
     local _newTab= {}
     for _, value in pairs(Save().chat) do
-        table.insert(_newTab, {value=value, isChat=true})
+        table.insert(_newTab, {value=value, isChat=true, isCommand=nil, isSecure=nil, useType=nil})
     end
     for _, value in pairs(Save().useChat) do
-        if SaveUse().chat[value] then
-            table.insert(_newTab, {value=value, isChat=true, isUse=true})
+        if SaveUse('chat')[value] then
+            table.insert(_newTab, {value=value, isChat=true, isCommand=nil, isSecure=nil, useType='chat'})
         end
     end
 
     for _, value in pairs(Save().emoji) do
-        table.insert(_newTab, {value=value})
+        table.insert(_newTab, {value=value, isChat=nil, isCommand=nil, isSecure=nil, useType=nil})
     end
 
 
     for _, value in pairs(Save().command) do
-        table.insert(_newTab, {value=value, isCommand=true, isSecure= isSecure})
+        table.insert(_newTab, {value=value, isChat=nil, isCommand=true, isSecure=isSecure, useType=nil})
     end
     for _, value in pairs(Save().useCommand) do
-        if SaveUse().command[value] then
-            table.insert(_newTab, {value=value, isCommand=true, isSecure=true, isUse=true})
+        if SaveUse('command')[value] then
+            table.insert(_newTab, {value=value, isChat=nil, isCommand=true, isSecure=true, useType='command'})
         end
     end
 
+    MainButton.pool:ReleaseAll()
+    MainButton.poolSecur:ReleaseAll()
+
+    local _buttons={}
     local index=0
     local secureIndex=0
 
-    MainButton.pool:ReleaseAll()
-    MainButton.poolSecur:ReleaseAll()
-    local _buttons={}
     for i, tab in pairs(_newTab) do
         local canChange= tab.isSecure and not isInCombat or not tab.isSecure
-        local valueName= Get_Name(tab.value, tab.isChat, tab.isCommand)
+        local valueName= Get_Name(tab.value, tab.isChat, tab.isCommand, tab.useType)
         if canChange then
 
 
             local btn= tab.isSecure and MainButton.poolSecur:Acquire() or MainButton.pool:Acquire()
             table.insert(_buttons, btn)
 
-            if tab.isSecure then
-                local add= SaveUse().use[tab.value] and SaveUse().use[tab.value].add
+            if tab.useType=='command' then
+                btn:SetAttribute('type1', 'macro')
+                btn:SetAttribute('type1', 'macro')
+                btn:SetAttribute("macrotext1", SaveUse(tab.useType)[tab.value])
+                btn:SetScript('OnMouseDown', nil)
+                secureIndex= secureIndex+ 1
+
+            elseif tab.isSecure then
+                local add= SaveUse('use')[tab.value] and SaveUse('use')[tab.value].add
                 btn:SetAttribute('type1', 'macro')
                 btn:SetAttribute("macrotext1", valueName..(add and ' '..add or ''))
                 btn:SetScript('OnMouseDown', function(self, d)
@@ -530,10 +403,12 @@ local function Init_Button()
                         MenuUtil.CreateContextMenu(self, Init_Button_Menu)
                     end
                 end)
-            else
                 secureIndex= secureIndex+ 1
+
+            else
+                index= index+1
                 btn:SetScript('OnMouseDown', function(self, d)
-                    if d=='RightButton' then
+                    if d=='RightButton' and not self.useType then
                         MenuUtil.CreateContextMenu(self, Init_Button_Menu)
                     else
                         On_Click(self)
@@ -542,11 +417,13 @@ local function Init_Button()
             end
             btn:SetScript('OnEnter', On_Enter)
 
+
             btn.value= tab.value
-            btn.isCommand= tab.isCommand
             btn.isChat= tab.isChat
+            btn.isCommand= tab.isCommand
             btn.isSecure= tab.isSecure
-            btn.isUse= tab.isUse
+            btn.useType= tab.useType
+
 
             local x= isUIParent and 0 or 2.5
             local icon= btn:GetNormalTexture()
@@ -560,7 +437,7 @@ local function Init_Button()
 
             btn:SetScale(scale)
 
-            local name= SaveUse().use[tab.value] and SaveUse().use[tab.value].name
+            local name= SaveUse('use')[tab.value] and SaveUse('use')[tab.value].name
             if not name then
                 name= valueName
                 name= WoWTools_TextMixin:CN(name)
@@ -623,6 +500,205 @@ end
 
 
 
+--添加，自定义
+local function Init_UseFrame()
+    local typeTab={
+        chat= WoWTools_DataMixin.onlyChinese and '聊天' or CHAT,
+        command= WoWTools_DataMixin.onlyChinese and '宏' or MACRO,
+    }
+
+    local frame= WoWTools_FrameMixin:Create(UIParent, {
+        header= addName,
+        name='WoWToolsEmoteUseAddFrame',
+        size=400,
+    })
+    frame.type= Save().useFrameType or 'chat'--保存上次值
+
+    local function Get_TypeNum(t)
+        t= t or frame.type
+        local num=0
+        for _ in pairs(SaveUse(t)) do
+            num= num+1
+        end
+        return num
+    end
+
+    local menu= CreateFrame("DropdownButton", nil, frame, "WowStyle1DropdownTemplate")
+    menu:SetWidth(150)
+    menu:SetPoint('TOPLEFT', 13, -32)
+    menu:SetDefaultText(WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
+
+
+    local list= CreateFrame('DropdownButton', nil, menu, 'WoWToolsMenu2Template')
+    list:SetSize(32, 32)
+    list:SetPoint('LEFT', menu, 'RIGHT', 5,0)
+    list:SetNormalAtlas('chatframe-button-up')
+    WoWTools_ColorMixin:Setup(list:GetNormalTexture(), {type='Texture', alpha=0.5})
+    list.Text= list:CreateFontString(nil, 'OVERLAY', 'GameFontWhite')
+    list.Text:SetPoint('CENTER')
+    function list:set_text()
+        self.Text:SetText(Get_TypeNum())
+    end
+    list:set_text()
+
+
+
+    local editName= CreateFrame('EditBox', nil, frame, 'SearchBoxTemplate')
+    editName.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '名称' or NAME)
+    editName:SetPoint('LEFT', list, 'RIGHT', 7, 0)
+    editName:SetPoint('RIGHT', -23*3, 0)
+    editName:SetHeight(23)
+    editName.searchIcon:SetAtlas('newplayerchat-chaticon-newcomer')
+
+
+    local add= CreateFrame('Button', nil, frame, 'WoWToolsButtonTemplate')
+    add:SetNormalAtlas('Garr_Building-AddFollowerPlus')
+    add:SetDisabledAtlas('pvptalents-talentborder-empty')
+    add:SetPoint('LEFT', editName, 'RIGHT', 2, 0)
+    add:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..': |cffffffff'..typeTab[frame.type])
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(frame.value, 0, 0.8,1)
+        GameTooltip:AddLine(SaveUse(frame.type)[frame.value], nil, nil, nil, true)
+        GameTooltip:Show()
+    end)
+
+    local update= CreateFrame('Button', nil, frame, 'WoWToolsButtonTemplate')
+    update:SetNormalAtlas('QuestSharing-DialogIcon')
+    update:SetDisabledAtlas('QuestSharing-QuestLog-Details-ModifiersReplayIconOff')
+    update:SetPoint('LEFT', add, 'RIGHT', 2, 0)
+    update:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText((WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)..': |cffffffff'..typeTab[frame.type])
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(frame.value, 0, 0.8,1)
+        GameTooltip:AddLine(SaveUse(frame.type)[frame.value], nil, nil, nil, true)
+        GameTooltip:Show()
+    end)
+
+    local editText= WoWTools_EditBoxMixin:CreateFrame(frame, {text=typeTab[frame.type]})
+    editText:SetPoint("TOPLEFT", menu, 'BOTTOMLEFT', 0, -10)
+    editText:SetPoint('BOTTOMRIGHT', -13, 13)
+
+
+    local TabGroup= CreateTabGroup(editName, editText.editBox)
+    editName:SetScript('OnTabPressed', function() TabGroup:OnTabPressed() end)
+    editText.editBox:SetScript('OnTabPressed', function() TabGroup:OnTabPressed() end)
+
+
+    local function Settings()
+        local name= editName:GetText() or ''
+        local text= editText:GetText() or ''
+        local isChat= frame.type=='chat'
+        local enabled= name~='' and text~='' and (isChat and text:find('^/.+') or not isChat)
+
+        add:SetEnabled(enabled and not SaveUse(frame.type)[name])
+        update:SetEnabled(enabled and SaveUse(frame.type)[frame.value])
+    end
+    editName:HookScript('OnTextChanged', Settings)
+    editText.editBox:HookScript('OnTextChanged', Settings)
+
+
+    menu:SetupMenu(function(self, root)
+        for _, type in pairs({'chat', 'command'}) do
+            root:CreateRadio(
+                typeTab[type]..' #'..Get_TypeNum(type),
+            function(data)
+                return data.type==frame.type
+            end, function(data)
+                frame.type= data.type
+                self:SetDefaultText(typeTab[data.type])
+                list:set_text()
+                editText.editBox.Instructions:SetText(typeTab[data.type])
+                Settings()
+                Save().useFrameType= data.type--保存上次值
+            end, {type=type})
+        end
+    end)
+
+
+
+    list:SetupMenu(function(_, root)
+        for value, text in pairs(SaveUse(frame.type)) do
+            local sub= root:CreateRadio(
+                value,
+            function(data)
+                return data.value==frame.value
+            end, function(data)
+                frame.value= data.value
+                editName:SetText(data.value or '')
+                editText:SetText(data.text or '')
+                return MenuResponse.Close
+            end, {value=value, text=text})
+            sub:SetTooltip(function(tooltip, desc)
+                tooltip:AddLine(desc.data.text, nil, nil, nil, true)
+            end)
+
+            sub:CreateButton(
+                '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
+            function(data)
+                 StaticPopup_Show('WoWTools_OK',
+                    typeTab[data.type]..'|n'
+                    ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
+                    ..'|n|n|cff00ccff'
+                    ..(data.value or '')
+                    ..'|r|n'..(data.text or ''),
+                    nil,
+                {SetValue=function()
+                    SaveUse(data.type)[data.value]=nil
+                    list:set_text()
+                    Settings()
+                    Init_Button()
+                end})
+                return MenuResponse.Open
+            end, {value=value, text=text, type=frame.type})
+            sub:SetTooltip(function(tooltip, desc) tooltip:AddLine(desc.data.text, nil, nil, nil, true) end)
+        end
+
+        root:CreateDivider()
+        root:CreateButton(
+            '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        function()
+            StaticPopup_Show('WoWTools_OK',
+                typeTab[frame.type]..'|n|n|A:bags-button-autosort-up:0:0|a'
+                ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+                nil,
+            {SetValue=function()
+                WoWToolsPlayerDate['EmoteButton'][frame.type]={}
+                list:set_text()
+                Settings()
+                Init_Button()
+            end})
+            return MenuResponse.Open
+        end)
+
+        WoWTools_MenuMixin:SetScrollMode(root)
+    end)
+
+    add:SetScript('OnClick', function()
+        SaveUse(frame.type)[editName:GetText()]= editText:GetText()
+        Settings()
+        list:set_text()
+        Init_Button()
+    end)
+    update:SetScript('OnClick', function()
+        SaveUse(frame.type)[editName:GetText()]= editText:GetText()
+        Settings()
+        Init_Button()
+    end)
+
+    Init_UseFrame= function()
+        _G['WoWToolsEmoteUseAddFrame']:SetShown(not _G['WoWToolsEmoteUseAddFrame']:IsShown())
+    end
+end
+
+
+
+
+
+
+
 
 
 
@@ -638,9 +714,10 @@ end
 local function Set_Menu(root, tab, tabName, rootName)
     local isCommand= tabName=='command'
     local isChat= tabName=='chat'
-    local isUse= tabName=='useCommand' or tabName=='useChat'
+    local useType= tabName=='useChat' and 'chat' or (tabName=='useCommand' and 'command') or nil
+    --local isUse= tabName=='useCommand' or tabName=='useChat'
 
-    local isInCombat= InCombatLockdown()
+    --local isInCombat= InCombatLockdown()
     local sub
 
     root= root:CreateButton(
@@ -651,27 +728,7 @@ local function Set_Menu(root, tab, tabName, rootName)
     end)
 
 --是否使用，安全按钮
-    if isUse then
-        root:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '添加' or ADD,
-        function()
-            StaticPopup_Show('WoWTools_EditText',
-                WoWTools_DataMixin.onlyChinese and '名称' or NAME,
-                nil,
-                {
-                    SetValue= function(s)
-                        local t= s:GetEditBox():GetText()
-                        SaveUse()[tabName][t]= {}
-                    end,
-                    EditBoxOnTextChanged=function(s, data, text)
-                        s:GetParent():GetButton1():SetEnabled(text~='' and not SaveUse()[tabName])
-                    end,
-                }
-            )
-
-        end)
-
-    elseif isCommand then
+    if isCommand then
         sub= root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '安全按钮' or'Secure Button',
         function()
@@ -680,12 +737,12 @@ local function Set_Menu(root, tab, tabName, rootName)
             Save().isSecure= not Save().isSecure and true or nil
             Init_Button()
         end)
-        sub:SetEnabled(not isInCombat)
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine('SecureActionButtonTemplate')
-           GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and'友情提示: 可能会出现错误' or 'Note: Errors may occur')
+            GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and'友情提示: 可能会出现错误' or 'Note: Errors may occur')
         end)
     end
+
 
     --勾选所有
     root:CreateButton(
@@ -718,9 +775,9 @@ local function Set_Menu(root, tab, tabName, rootName)
 
 
     for index, value in pairs(tab) do
-        local vaName= Get_Name(value, isChat, isCommand)
+        local vaName= Get_Name(value, isChat, isCommand, useType)
         sub=root:CreateCheckbox(
-            (SaveUse().use[value] and SaveUse().use[value].add and '|cff00ccff' or '')
+            (SaveUse('use')[value] and (SaveUse('use')[value].add or SaveUse('use')[value].name) and '|cff00ccff' or '')
             ..WoWTools_TextMixin:CN(vaName):gsub('/', ''),
         function(data)
             return Get_Save(data.value, tabName)
@@ -735,7 +792,11 @@ local function Set_Menu(root, tab, tabName, rootName)
         end, {value=value, vaName=vaName, index=index})
 
         sub:SetTooltip(function(tooltip, desc)
-            Set_Tooltip(tooltip, desc.data.value, desc.data.vaName, isChat, isCommand)
+            if useType then
+                tooltip:AddLine(SaveUse(useType)[desc.data.vaName])
+            else
+                Set_Tooltip(tooltip, desc.data.value, desc.data.vaName, isChat, isCommand)
+            end
         end)
         sub:AddInitializer(function(btn, desc)
             local font = btn:AttachFontString()
@@ -748,7 +809,7 @@ local function Set_Menu(root, tab, tabName, rootName)
 
             font:SetTextToFit(
                 (chatShortcut and chatShortcut..' ' or '')
-                ..desc.data.index
+                ..'|cff626262'..desc.data.index
             )
             if select(2, math.modf(desc.data.index/2))==0 then
                 font:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
@@ -818,10 +879,10 @@ local function Init_Menu(self, root)
 
 --自定义聊天
     _tab={}
-    for value in pairs(Save().useChat) do
+    for value in pairs(SaveUse('chat')) do
         table.insert(_tab, value)
     end
-    Set_Menu(root, _tab, 'useChat', WoWTools_DataMixin.onlyChinese and '自定义聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, CHAT))
+    Set_Menu(root, _tab, 'useChat', WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)
 
 --宏
     root:CreateDivider()
@@ -829,20 +890,30 @@ local function Init_Menu(self, root)
     for value in pairs(SLASH_COMMAND) do
         table.insert(_tab, value)
     end
-
     table.sort(_tab)
     Set_Menu(root, _tab, 'command', WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
+
 --自定义宏
     _tab={}
-    for value in pairs(Save().useCommand) do
+    for value in pairs(SaveUse('command')) do
         table.insert(_tab, value)
     end
-    Set_Menu(root, _tab, 'useCommand', WoWTools_DataMixin.onlyChinese and '自定义宏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, MACRO))
+    Set_Menu(root, _tab, 'useCommand', WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)
 
---打开选项界面
+
+--添加，自定义
     root:CreateDivider()
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM),
+    function()
+        Init_UseFrame()
+        return MenuResponse.Open
+    end)
+--打开选项界面
+
     sub= WoWTools_ChatMixin:Open_SettingsPanel(root, addName)
 
+--选项
 
 
 --撤选所有
@@ -1055,6 +1126,167 @@ local function Init()
         return
     end
 
+if not ChatFrameUtil.OpenChat then--11.2.7才有
+    ChatFrameUtil.ReplyTell= ChatFrame_ReplyTell
+    ChatFrameUtil.OpenChat= ChatFrame_OpenChat
+
+    SLASH_COMMAND= {
+	TARGET = "TARGET",
+	INSPECT = "INSPECT",
+	STOPATTACK = "STOPATTACK",
+	CAST = "CAST",
+	USE = "USE",
+	STOPCASTING = "STOPCASTING",
+	STOPSPELLTARGET = "STOPSPELLTARGET",
+	CANCELAURA = "CANCELAURA",
+	CANCELFORM = "CANCELFORM",
+	EQUIP = "EQUIP",
+	EQUIP_TO_SLOT = "EQUIP_TO_SLOT",
+	CHANGEACTIONBAR = "CHANGEACTIONBAR",
+	SWAPACTIONBAR = "SWAPACTIONBAR",
+	TARGET_EXACT = "TARGET_EXACT",
+	TARGET_NEAREST_ENEMY = "TARGET_NEAREST_ENEMY",
+	TARGET_NEAREST_ENEMY_PLAYER = "TARGET_NEAREST_ENEMY_PLAYER",
+	TARGET_NEAREST_FRIEND = "TARGET_NEAREST_FRIEND",
+	TARGET_NEAREST_FRIEND_PLAYER = "TARGET_NEAREST_FRIEND_PLAYER",
+	TARGET_NEAREST_PARTY = "TARGET_NEAREST_PARTY",
+	TARGET_NEAREST_RAID = "TARGET_NEAREST_RAID",
+	CLEARTARGET = "CLEARTARGET",
+	TARGET_LAST_TARGET = "TARGET_LAST_TARGET",
+	TARGET_LAST_ENEMY = "TARGET_LAST_ENEMY",
+	TARGET_LAST_FRIEND = "TARGET_LAST_FRIEND",
+	ASSIST = "ASSIST",
+	FOCUS = "FOCUS",
+	CLEARFOCUS = "CLEARFOCUS",
+	MAINTANKON = "MAINTANKON",
+	MAINTANKOFF = "MAINTANKOFF",
+	MAINASSISTON = "MAINASSISTON",
+	MAINASSISTOFF = "MAINASSISTOFF",
+	DUEL = "DUEL",
+	DUEL_CANCEL = "DUEL_CANCEL",
+	PET_ATTACK = "PET_ATTACK",
+	PET_FOLLOW = "PET_FOLLOW",
+	PET_MOVE_TO = "PET_MOVE_TO",
+	PET_STAY = "PET_STAY",
+	PET_PASSIVE = "PET_PASSIVE",
+	PET_DEFENSIVE = "PET_DEFENSIVE",
+	PET_DEFENSIVEASSIST = "PET_DEFENSIVEASSIST",
+	PET_AGGRESSIVE = "PET_AGGRESSIVE",
+	STOPMACRO = "STOPMACRO",
+	CANCELQUEUEDSPELL = "CANCELQUEUEDSPELL",
+	CLICK = "CLICK",
+	PET_DISMISS = "PET_DISMISS",
+	LOGOUT = "LOGOUT",
+	QUIT = "QUIT",
+	GUILD_UNINVITE = "GUILD_UNINVITE",
+	GUILD_PROMOTE = "GUILD_PROMOTE",
+	GUILD_DEMOTE = "GUILD_DEMOTE",
+	GUILD_LEADER = "GUILD_LEADER",
+	GUILD_LEAVE = "GUILD_LEAVE",
+	GUILD_DISBAND = "GUILD_DISBAND",
+	EQUIP_SET = "EQUIP_SET",
+	WORLD_MARKER = "WORLD_MARKER",
+	CLEAR_WORLD_MARKER = "CLEAR_WORLD_MARKER",
+	STARTATTACK = "STARTATTACK",
+	CONSOLE = "CONSOLE",
+	CHATLOG = "CHATLOG",
+	COMBATLOG = "COMBATLOG",
+	UNINVITE = "UNINVITE",
+	PROMOTE = "PROMOTE",
+	REPLY = "REPLY",
+	HELP = "HELP",
+	MACROHELP = "MACROHELP",
+	TIME = "TIME",
+	PLAYED = "PLAYED",
+	FOLLOW = "FOLLOW",
+	TRADE = "TRADE",
+	JOIN = "JOIN",
+	LEAVE = "LEAVE",
+	LIST_CHANNEL = "LIST_CHANNEL",
+	CHAT_HELP = "CHAT_HELP",
+	CHAT_PASSWORD = "CHAT_PASSWORD",
+	CHAT_OWNER = "CHAT_OWNER",
+	CHAT_MODERATOR = "CHAT_MODERATOR",
+	CHAT_UNMODERATOR = "CHAT_UNMODERATOR",
+	CHAT_CINVITE = "CHAT_CINVITE",
+	CHAT_KICK = "CHAT_KICK",
+	CHAT_BAN = "CHAT_BAN",
+	CHAT_UNBAN = "CHAT_UNBAN",
+	CHAT_ANNOUNCE = "CHAT_ANNOUNCE",
+	GUILD_INVITE = "GUILD_INVITE",
+	GUILD_MOTD = "GUILD_MOTD",
+	GUILD_INFO = "GUILD_INFO",
+	CHAT_DND = "CHAT_DND",
+	WHO = "WHO",
+	CHANNEL = "CHANNEL",
+	FRIENDS = "FRIENDS",
+	REMOVEFRIEND = "REMOVEFRIEND",
+	IGNORE = "IGNORE",
+	UNIGNORE = "UNIGNORE",
+	SCRIPT = "SCRIPT",
+	RANDOM = "RANDOM",
+	MACRO = "MACRO",
+	PVP = "PVP",
+	READYCHECK = "READYCHECK",
+	BENCHMARK = "BENCHMARK",
+	DISMOUNT = "DISMOUNT",
+	RESETCHAT = "RESETCHAT",
+	ENABLE_ADDONS = "ENABLE_ADDONS",
+	DISABLE_ADDONS = "DISABLE_ADDONS",
+	STOPWATCH = "STOPWATCH",
+	ACHIEVEMENTUI = "ACHIEVEMENTUI",
+	UI_ERRORS_OFF = "UI_ERRORS_OFF",
+	UI_ERRORS_ON = "UI_ERRORS_ON",
+	EVENTTRACE = "EVENTTRACE",
+	TABLEINSPECT = "TABLEINSPECT",
+	DUMP = "DUMP",
+	RELOAD = "RELOAD",
+	WARGAME = "WARGAME",
+	TARGET_MARKER = "TARGET_MARKER",
+	OPEN_LOOT_HISTORY = "OPEN_LOOT_HISTORY",
+	RAIDFINDER = "RAIDFINDER",
+	API = "API",
+	COMMENTATOR_OVERRIDE = "COMMENTATOR_OVERRIDE",
+	COMMENTATOR_NAMETEAM = "COMMENTATOR_NAMETEAM",
+	COMMENTATOR_ASSIGNPLAYER = "COMMENTATOR_ASSIGNPLAYER",
+	RESET_COMMENTATOR_SETTINGS = "RESET_COMMENTATOR_SETTINGS",
+	VOICECHAT = "VOICECHAT",
+	TEXTTOSPEECH = "TEXTTOSPEECH",
+	COUNTDOWN = "COUNTDOWN",
+	PET_ASSIST = "PET_ASSIST",
+	PET_AUTOCASTON = "PET_AUTOCASTON",
+	PET_AUTOCASTOFF = "PET_AUTOCASTOFF",
+	PET_AUTOCASTTOGGLE = "PET_AUTOCASTTOGGLE",
+	SUMMON_BATTLE_PET = "SUMMON_BATTLE_PET",
+	RANDOMPET = "RANDOMPET",
+	RANDOMFAVORITEPET = "RANDOMFAVORITEPET",
+	DISMISSBATTLEPET = "DISMISSBATTLEPET",
+	USE_TOY = "USE_TOY",
+	PING = "PING",
+	ABANDON = "ABANDON",
+	INVITE = "INVITE",
+	REQUEST_INVITE = "REQUEST_INVITE",
+	CHAT_AFK = "CHAT_AFK",
+	RAID_INFO = "RAID_INFO",
+	DUNGEONS = "DUNGEONS",
+	LEAVEVEHICLE = "LEAVEVEHICLE",
+	CALENDAR = "CALENDAR",
+	SET_TITLE = "SET_TITLE",
+	FRAMESTACK = "FRAMESTACK",
+	SOLOSHUFFLE_WARGAME = "SOLOSHUFFLE_WARGAME",
+	SOLORBG_WARGAME = "SOLORBG_WARGAME",
+	SPECTATOR_WARGAME = "SPECTATOR_WARGAME",
+	SPECTATOR_SOLOSHUFFLE_WARGAME = "SPECTATOR_SOLOSHUFFLE_WARGAME",
+	SPECTATOR_SOLORBG_WARGAME = "SPECTATOR_SOLORBG_WARGAME",
+	GUILDFINDER = "GUILDFINDER",
+	TRANSMOG_OUTFIT = "TRANSMOG_OUTFIT",
+	COMMUNITY = "COMMUNITY",
+	RAF = "RAF",
+	EDITMODE = "EDITMODE",
+};
+
+end
+
     MainButton.pool= CreateFramePool('Button', UIParent, 'WoWToolsEmojiButtonTemplate')
     MainButton.poolSecur= CreateFramePool('Button', UIParent, 'WoWToolsEmojiButtonTemplate SecureActionButtonTemplate')-- 'WoWToolsButtonTemplate SecureActionButtonTemplate')
     MainButton.Background=MainButton:CreateTexture(nil, 'BACKGROUND')
@@ -1085,18 +1317,26 @@ local function Init()
     end)
     MainButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-
-        GameTooltip:SetText(
-            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
-            ..WoWTools_DataMixin.Icon.left
-            ..'|cffffffff'..(self.pool:GetNumActive()+self.poolSecur:GetNumActive())..'|r'
-            ..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)..'(+Alt)'
-        )
+        GameTooltip:SetText('|cffffffff'..(self.pool:GetNumActive()+self.poolSecur:GetNumActive()))
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM, WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self:set_texture()
     end)
     MainButton:SetMovable(true)
     MainButton:RegisterForDrag("RightButton")
+    MainButton:SetScript('OnMouseWheel', function(_, d)
+        if d==1 then
+            if not _G['WoWToolsEmoteUseAddFrame'] then
+                Init_UseFrame()
+            else
+                _G['WoWToolsEmoteUseAddFrame']:SetShown(true)
+            end
+        elseif _G['WoWToolsEmoteUseAddFrame'] then
+            _G['WoWToolsEmoteUseAddFrame']:SetShown(false)
+        end
+    end)
     MainButton:SetScript('OnMouseUp', ResetCursor)
     MainButton:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
@@ -1131,6 +1371,10 @@ local function Init()
     end)
 
     Init_Button()
+
+    C_Timer.After(2, function()
+    Init_UseFrame()
+end)
 
     Init=function()
         if not WoWTools_FrameMixin:IsLocked(MainButton) then
