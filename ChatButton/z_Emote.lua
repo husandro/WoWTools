@@ -510,7 +510,7 @@ local function Init_UseFrame()
     local frame= WoWTools_FrameMixin:Create(UIParent, {
         header= addName,
         name='WoWToolsEmoteUseAddFrame',
-        size=400,
+        size={400, 250},
     })
     frame.type= Save().useFrameType or 'chat'--保存上次值
 
