@@ -272,6 +272,8 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetFrame(FriendsFrameBattlenetFrame.BroadcastFrame.Border, {alpha=0.7})
     self:SetEditBox(FriendsFrameBattlenetFrame.BroadcastFrame.EditBox)
     self:SetButton(FriendsFrameBattlenetFrame.ContactsMenuButton, {alpha=1})
+    self:SetUIButton(FriendsFrameBattlenetFrame.BroadcastFrame.UpdateButton)
+    self:SetUIButton(FriendsFrameBattlenetFrame.BroadcastFrame.CancelButton)
 
 
 --查询

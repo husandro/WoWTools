@@ -68,6 +68,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Macro']=nil
             P_Save= nil
 
+            if Save().noteText then
+                WoWToolsPlayerDate['MacroNoteText']= Save().noteText
+                Save().noteText = nil
+            end
+
             WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
 
 --添加控制面板

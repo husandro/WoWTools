@@ -18,7 +18,7 @@ local Button, TargetButton, AttackButton, NoteEditBox
 
 
 local function Init_Menu(self, root)
-    if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+    if not self:IsMouseOver() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
 
@@ -29,13 +29,13 @@ local function Init_Menu(self, root)
         '|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE),
     function()
         if NoteEditBox:IsVisible() then
-            Save().noteText= NoteEditBox:GetText()
+            WoWToolsPlayerDate['MacroNoteText']= NoteEditBox:GetText()
         end
         WoWTools_TextMixin:ShowText(
-            Save().noteText,
+            WoWToolsPlayerDate['MacroNoteText'],
             WoWTools_DataMixin.onlyChinese and '宏' or MACRO,
             {onHide=function(t)
-                Save().noteText= t
+                WoWToolsPlayerDate['MacroNoteText']= t
                 if NoteEditBox:IsVisible() then
                     NoteEditBox:SetText(t)
                 end
@@ -273,12 +273,12 @@ local function Init_Created()
     NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
     NoteEditBox:Hide()
     NoteEditBox.editBox:SetScript('OnHide', function(self)--保存备注
-        Save().noteText= self:GetText()
+        WoWToolsPlayerDate['MacroNoteText']= self:GetText()
         self:SetText("")
         self:ClearFocus()
     end)
     NoteEditBox.editBox:SetScript('OnShow', function(self)
-        self:SetText(Save().noteText or '')
+        self:SetText(WoWToolsPlayerDate['MacroNoteText'] or '')
     end)
 
 
@@ -332,7 +332,7 @@ end
 
 local function Init()
     --Button= WoWTools_ButtonMixin:Cbtn(MacroFrameCloseButton, {size=23, atlas='ui-questtrackerbutton-filter'})
-    Button= WoWTools_ButtonMixin:Menu(MacroFrameCloseButton)
+    Button= CreateFrame('DropdownButton', 'WoWToolsMacroFrameMenuButton', MacroFrameCloseButton, 'WoWToolsMenuTemplate')--WoWTools_ButtonMixin:Menu(MacroFrameCloseButton)
     Button:SetPoint('RIGHT', MacroFrameCloseButton, 'LEFT', -2, 0)
 
 
@@ -347,11 +347,11 @@ local function Init()
         GameTooltip:AddDoubleLine(' ', (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
-    Button:SetScript('OnMouseDown', function(self)
+    Button:SetupMenu(Init_Menu)--[[SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, function(...)
             Init_Menu(...)
         end)
-    end)
+    end)]]
 
 
     Button.Text= WoWTools_LabelMixin:Create(MacroFrame.TitleContainer, {color={r=1,g=0,b=0}, size=16})

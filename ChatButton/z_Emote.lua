@@ -361,7 +361,6 @@ local function Init_Button_Menu(self, root)
             ..valueName,
             nil,
             {
-                --text=SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')),
                 OnShow= function(s)
                     s:GetEditBox():SetText(SaveUse().use[value] and SaveUse().use[value].name or (valueName:gsub('/', '')))
                 end,
@@ -415,7 +414,7 @@ local function Init_Button_Menu(self, root)
                 EditBoxOnTextChanged= function(s)
                     local t=s:GetText() or ''
                     s:GetParent().Text:SetText(
-                        addName..'|n|n'..valueName..' |cffff8200'..t..'|r'
+                        addName..'|n|n'..valueName..' |cff00ccff'..t..'|r'
                     )
                 end
             }
