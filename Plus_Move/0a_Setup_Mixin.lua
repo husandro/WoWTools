@@ -238,7 +238,13 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     if frame.TitleContainer then
         Set_Move_Frame(frame.TitleContainer, target or frame, click, notSave, isAltKeyDown)
+--会点不中，关闭按钮
+        if frame.CloseButton then
+            frame.CloseButton:SetFrameLevel(frame.TitleContainer:GetFrameLevel()+1)
+        end
     end
+
+
 
     if not target or not target.moveFrameData then
         return Set_Frame_Point(frame, name)--设置, 移动, 位置

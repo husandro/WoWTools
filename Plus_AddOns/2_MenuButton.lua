@@ -262,8 +262,8 @@ local function Init()
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
 
 --提升 Strata
-    AddonListCloseButton:SetFrameStrata(AddonList.TitleContainer:GetFrameStrata())
-    AddonListCloseButton:GetFrameLevel(AddonList.TitleContainer:GetFrameLevel()+1)
+    --AddonListCloseButton:SetFrameStrata(AddonList.TitleContainer:GetFrameStrata())
+    --AddonListCloseButton:GetFrameLevel(AddonList.TitleContainer:GetFrameLevel()+1)
 
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)

@@ -193,8 +193,8 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     })
 
 --好友 屏蔽列表
-    FriendsFrame.IgnoreListWindow.CloseButton:SetFrameStrata(FriendsFrame.IgnoreListWindow.TitleContainer:GetFrameStrata())
-    FriendsFrame.IgnoreListWindow.CloseButton:SetFrameLevel(FriendsFrame.IgnoreListWindow.TitleContainer:GetFrameLevel()+1)
+    --FriendsFrame.IgnoreListWindow.CloseButton:SetFrameStrata(FriendsFrame.IgnoreListWindow.TitleContainer:GetFrameStrata())
+    --FriendsFrame.IgnoreListWindow.CloseButton:SetFrameLevel(FriendsFrame.IgnoreListWindow.TitleContainer:GetFrameLevel()+1)
     FriendsFrame.IgnoreListWindow:ClearAllPoints()
     FriendsFrame.IgnoreListWindow:SetPoint('TOPLEFT', FriendsFrame, 'TOPRIGHT')
     FriendsFrame.IgnoreListWindow:SetPoint('BOTTOMLEFT', FriendsFrame, 'BOTTOMRIGHT')

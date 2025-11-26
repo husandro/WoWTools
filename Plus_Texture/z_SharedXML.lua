@@ -185,10 +185,13 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     end)
 
     --WoWTools_DataMixin:Hook(UIButtonFitToTextBehaviorMixin, 'SetTextToFit', function(btn, text)
+--模型，放大，缩小 按钮
+    WoWTools_DataMixin:Hook(ModelSceneControlFrameMixin, 'OnLoad', function(frame)
+        self:SetModelZoom(frame)
+    end)
 
 --钱
-
-WoWTools_DataMixin:Hook(LargeMoneyInputFrameMixin, 'OnLoad', function(frame)
+    WoWTools_DataMixin:Hook(LargeMoneyInputFrameMixin, 'OnLoad', function(frame)
         self:SetEditBox(frame.CopperBox)
         self:SetEditBox(frame.SilverBox)
         self:SetEditBox(frame.GoldBox)

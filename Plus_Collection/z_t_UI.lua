@@ -186,6 +186,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     end)
 
 --试衣间，套装
+    --self:SetModelZoom(WardrobeTransmogFrame.ModelScene.ControlFrame)
     self:SetButton(WardrobeTransmogFrame.ModelScene.ClearAllPendingButton)
     self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.NextPageButton, 1)
     self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.PrevPageButton, 1)

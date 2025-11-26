@@ -521,7 +521,7 @@ local function Init_Plus()
 
 
 --关闭按钮
-    EventTraceCloseButton:SetFrameLevel(EventTrace.TitleContainer:GetFrameLevel()+1)
+    --EventTraceCloseButton:SetFrameLevel(EventTrace.TitleContainer:GetFrameLevel()+1)
 
 --OnEnter 提示
     WoWTools_DataMixin:Hook(EventTraceLogEventButtonMixin, 'OnEnter', function()

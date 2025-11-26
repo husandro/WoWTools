@@ -159,6 +159,23 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_HousingModelPreview()
-    self:SetUIButton(HousingModelPreviewFrameCloseButton)
-    self:SetNineSlice(HousingModelPreviewFrame)
+    self:SetButton(HousingModelPreviewFrameCloseButton)
+    --self:SetModelZoom(HousingModelPreviewFrame.ModelPreview.ModelSceneControls)
+    self:HideTexture(HousingModelPreviewFrameBg)
+    self:HideTexture(HousingModelPreviewFrameInset.Bg)
+    self:SetNineSlice(HousingModelPreviewFrameInset)
+
+     self:Init_BGMenu_Frame(HousingModelPreviewFrame, {
+        enabled=true,
+        alpha=1,
+        isNewButton=true,
+        newButtonPoint=function(btn)
+            btn:SetPoint('RIGHT', HousingModelPreviewFrameCloseButton, 'LEFT')
+        end,
+        settings=function(_, texture, alpha)
+            alpha= texture and 0 or alpha or 1
+            self:SetAlphaColor(HousingModelPreviewFrame.ModelPreview.PreviewBackground, nil, true, alpha)
+        end,
+    })
+    
 end

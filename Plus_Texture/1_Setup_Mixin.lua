@@ -699,3 +699,16 @@ function WoWTools_TextureMixin:SetStatusBar(bar, icon, notColor)
         self:SetAlphaColor(bar.Right, nil, nil, 0.3)
     end
 end
+
+--Blizzard_CustomizationUI
+function WoWTools_TextureMixin:SetModelZoom(frame)
+    if not frame then
+        return
+    end
+    for _, child in pairs({frame:GetChildren()}) do
+        if child:IsObjectType('Button') then
+            self:SetAlphaColor(child.NormalTexture, true)
+        end
+    end
+end
+    --HousingModelPreviewFrame.ModelPreview.ModelSceneControls.zoomInButton.NormalTexture

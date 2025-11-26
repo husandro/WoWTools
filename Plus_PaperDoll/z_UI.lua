@@ -268,6 +268,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetNineSlice(CharacterFrameInsetRight)
     self:HideTexture(CharacterFrameInsetRight.Bg)
 
+    self:SetModelZoom(CharacterModelScene.ControlFrame)
     PaperDollFrame:HookScript('OnShow', function()
         CharacterModelScene.ControlFrame:SetShown(false)
     end)

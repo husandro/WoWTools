@@ -6483,7 +6483,10 @@
         "HOUSING_NEIGHBORHOOD_SETTINGS_NAME_BUTTON",
         "FIND_A_GROUP",
         "HousingModelPreviewFrame",
-        "HousingModelPreviewFrameCloseButton"
+        "HousingModelPreviewFrameCloseButton",
+        "HousingModelPreviewFrameInset",
+        "HousingModelPreviewFrameBg",
+        "ModelSceneControlFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
