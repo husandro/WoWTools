@@ -232,3 +232,10 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingControls()
     self:Setup(HousingControlsFrame, {notZoom=true})
     HousingControlsFrame:SetClampedToScreen(true)
 end
+
+function WoWTools_MoveMixin.Events:Blizzard_HousingModelPreview()
+    --[[self:Setup(HousingModelPreviewFrame, {
+    sizeRestFunc=function()
+        HousingModelPreviewFrame:SetSize(450, 545)
+    end})]]
+end

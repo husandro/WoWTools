@@ -142,9 +142,6 @@ function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
             self:SetAlphaColor(HouseEditorFrame.StoragePanel.Categories.TopBorder, nil, nil, alpha)
             HouseEditorFrame.StoragePanel.ResizeButton:SetNormalTexture(texture and 0 or 'Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up')
         end,
-        --[[addMenu=function(frame, root)
-
-        end,]]
     })
 
     self:HideTexture(HouseEditorFrame.ModeBar.BookendRight)
@@ -158,4 +155,10 @@ function WoWTools_TextureMixin.Events:Blizzard_HouseEditor()
     self:SetAlphaColor(HouseEditorFrame.ExteriorCustomizationModeFrame.FixtureOptionList.Header)
 
 end
---
+
+
+
+function WoWTools_TextureMixin.Events:Blizzard_HousingModelPreview()
+    self:SetUIButton(HousingModelPreviewFrameCloseButton)
+    self:SetNineSlice(HousingModelPreviewFrame)
+end
