@@ -115,6 +115,23 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
                 WoWTools_EncounterMixin:Init_LootSpec()--BOSS战时, 指定拾取, 专精
 
+--击杀次数，提示
+                WoWTools_DataMixin:Hook(EncounterJournalPinMixin, 'OnMouseEnter', function(frame)
+                    if not Save().hideEncounterJournal and frame.tooltipTitle and frame.encounterID then
+                        local encounterID= select(7, EJ_GetEncounterInfo(frame.encounterID))
+                        local numKill= encounterID and WoWToolsPlayerDate['BossKilled'][encounterID] or 0
+                        if numKill>0 then
+                            GameTooltip:AddLine(' ')
+                            GameTooltip:AddLine(
+                                format(WoWTools_DataMixin.onlyChinese and '%s（|cffffffff%d|r次）' or REAGENT_COST_CONSUME_CHARGES,
+                                    WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED,
+                                    numKill)
+                            )
+                            GameTooltip:Show()
+                        end
+                    end
+                end)
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
                     Init()--冒险指南界面
                     self:UnregisterEvent(event)
@@ -136,7 +153,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
                 '|cnWARNING_FONT_COLOR:'..(WoWTools_TextMixin:CN(arg2) or arg1)..'|r',
 
-                format(WoWTools_DataMixin.onlyChinese and '%s（%d次）' or REAGENT_COST_CONSUME_CHARGES,
+                format(WoWTools_DataMixin.onlyChinese and '%s（|cffffffff%d|r次）' or REAGENT_COST_CONSUME_CHARGES,
                     WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED,
                     num)
             )

@@ -35,47 +35,89 @@ local function Create_BossButtonList(btn)
         self:SetAlpha(0.5)
     end)
 
-    btn.killedLabel= btn:CreateFontString(nil, 'OVERLAY', 'GameFontNormalMed3')
-    btn.killedLabel:SetTextColor(0.827, 0.659, 0.463)
-    btn.killedLabel:SetPoint('RIGHT', btn.indexLabel, 'LEFT', -5, 0)
-    btn.killedLabel:EnableMouse(true)
-    btn.killedLabel:SetScript('OnLeave', function(self)
+    --btn.killedLabel= btn:CreateFontString(nil, 'OVERLAY', 'GameFontNormalMed3')
+    btn.killButton= CreateFrame('DropdownButton', nil , btn, 'WoWToolsMenu2Template')
+    btn.killButton.Text= btn.killButton:CreateFontString(nil, 'BORDER', 'GameFontNormalMed3')
+    btn.killButton.Text:SetPoint('RIGHT', -2, 0)
+    btn.killButton.Text:SetTextColor(0.827, 0.659, 0.463)
+    btn.killButton:SetPoint('RIGHT', btn.indexLabel, 'LEFT', -5, 0)
+    --btn.killedLabel:EnableMouse(true)
+    btn.killButton:SetScript('OnLeave', function()
         GameTooltip:Hide()
-        self:SetAlpha(1)
+        --self:SetAlpha(1)
     end)
-    btn.killedLabel:SetScript('OnEnter', function(self)
+    btn.killButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:SetText(
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED)
-            ..' |cffffffff'..(self:GetText() or '')
+            ..' |cffffffff'..(self.Text:GetText() or '')
+            ..WoWTools_DataMixin.Icon.left
         )
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
 --全部清除
-    btn.killedLabel:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self:GetParent(), function(_, root)
-            local num= 0
-            for _ in pairs(WoWToolsPlayerDate['BossKilled']) do
-                num= num+1
+    --btn.killButton:SetScript('OnMouseDown', function(self)
+        --MenuUtil.CreateContextMenu(self:GetParent(), function(_, root)
+    btn.killButton:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        local bossID= self:GetParent().encounterID
+
+        local encounterID, name, _, killNum
+        if bossID then
+            name, _, _, _, _, _, encounterID=  EJ_GetEncounterInfo(bossID)
+            if encounterID then
+                killNum= WoWToolsPlayerDate['BossKilled'][encounterID]
             end
-            root:CreateButton(
-                WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            function()
-                StaticPopup_Show('WoWTools_OK',
-                    '|A:bags-button-autosort-up:0:0|a|cnWARNING_FONT_COLOR:'
-                    ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
-                    ..'|r|n|n'
-                    ..(WoWTools_DataMixin.onlyChinese and '击败首领：记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LFG_LIST_BOSSES_DEFEATED, EVENTTRACE_LOG_HEADER)),
-                    nil,
-                    {SetValue=function()
-                    WoWToolsPlayerDate['BossKilled']={}
-                        WoWTools_DataMixin:Call('EncounterJournal_Refresh')
-                    end}
-                )
-                return MenuResponse.Open
-            end)
+        end
+
+        local sub=root:CreateButton(
+            '|A:bags-button-autosort-up:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '清除' or DELETE),
+        function()
+             StaticPopup_Show('WoWTools_OK',
+                '|A:bags-button-autosort-up:0:0|a|cnWARNING_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '清除' or DELETE)
+                ..'|r|n'
+                ..(WoWTools_TextMixin:CN(name) or encounterID )
+                ..'|n|n'
+                ..(WoWTools_DataMixin.onlyChinese and '击败首领：记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LFG_LIST_BOSSES_DEFEATED, EVENTTRACE_LOG_HEADER)),
+                nil,
+                {SetValue=function()
+                    WoWToolsPlayerDate['BossKilled'][encounterID]= nil
+                    WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+                end}
+            )
+            return MenuResponse.Open
+        end)
+        sub:SetTooltip(function(tooltip)
+            if encounterID then
+                tooltip:AddLine(WoWTools_TextMixin:CN(name))
+                tooltip:AddLine('encounterID |cffffffff'..encounterID)
+            end
+        end)
+        sub:SetEnabled(encounterID and killNum and true or false)
+
+        root:CreateDivider()
+        root:CreateButton(
+            '|A:bags-button-autosort-up:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        function()
+            StaticPopup_Show('WoWTools_OK',
+                '|A:bags-button-autosort-up:0:0|a|cnWARNING_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+                ..'|r|n|n'
+                ..(WoWTools_DataMixin.onlyChinese and '击败首领：记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LFG_LIST_BOSSES_DEFEATED, EVENTTRACE_LOG_HEADER)),
+                nil,
+                {SetValue=function()
+                WoWToolsPlayerDate['BossKilled']={}
+                    WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+                end}
+            )
+            return MenuResponse.Open
         end)
     end)
 
@@ -220,10 +262,13 @@ local function Init()
         local encounterID= select(7, EJ_GetEncounterInfo(data.bossID))
         local numKill=WoWToolsPlayerDate['BossKilled'][encounterID] or 0
         if numKill>0 then
-            self.killedLabel:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, numKill)
+            self.killButton.Text:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, numKill)
+            self.killButton:SetWidth(self.killButton.Text:GetStringWidth()+2)
         else
-            self.killedLabel:SetText('')
+            self.killButton.Text:SetText('')
         end
+        self.killButton:SetShown(numKill>0)
+
     end)
 
 

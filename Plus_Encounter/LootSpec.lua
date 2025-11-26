@@ -1,5 +1,5 @@
 --[[
-LootSpec= {
+WoWToolsPlayerDate['LootSpec']= {
     [encounterID] = {
         class={
                 classFile= lootSpecID,
@@ -15,7 +15,9 @@ local function Save()
     return WoWToolsSave['Adventure_Journal']
 end
 
-
+local function SaveUse()
+    return WoWToolsPlayerDate['LootSpec']
+end
 
 
 
@@ -48,18 +50,18 @@ local function Init_Menu(self, root)
                 ..(curID==specID and '|A:auctionhouse-icon-favorite:0:0|a' or '')
                 ..' '..specID,
             function(data)
-                    return WoWToolsPlayerDate['LootSpec'][dungeonEncounterID] and WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[self.classFile]==data.specID
+                    return SaveUse()[dungeonEncounterID] and SaveUse()[dungeonEncounterID].class[self.classFile]==data.specID
 
             end, function(data)
-                WoWToolsPlayerDate['LootSpec'][dungeonEncounterID]= WoWToolsPlayerDate['LootSpec'][dungeonEncounterID] or {
+                SaveUse()[dungeonEncounterID]= SaveUse()[dungeonEncounterID] or {
                     class={},
                     encounterID= encounterID,
                     index= self.index,
                 }
-                if WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[self.classFile]==data.specID then
-                    WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[self.classFile]= nil
+                if SaveUse()[dungeonEncounterID].class[self.classFile]==data.specID then
+                    SaveUse()[dungeonEncounterID].class[self.classFile]= nil
                 else
-                    WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[self.classFile]= data.specID
+                    SaveUse()[dungeonEncounterID].class[self.classFile]= data.specID
                 end
                 self:settings()
                 return MenuResponse.Refresh
@@ -84,11 +86,11 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     local classTab={}
     local classNum=0
-    if WoWToolsPlayerDate['LootSpec'][dungeonEncounterID] then
-        for _ in pairs(WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class) do
+    if SaveUse()[dungeonEncounterID] then
+        for _ in pairs(SaveUse()[dungeonEncounterID].class) do
             classNum= classNum+1
         end
-        classTab= WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class
+        classTab= SaveUse()[dungeonEncounterID].class
     end
 
     bossName= WoWTools_TextMixin:CN(bossName) or dungeonEncounterID
@@ -104,7 +106,7 @@ local function Init_Menu(self, root)
             ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
             nil,
             {SetValue=function()
-                WoWToolsPlayerDate['LootSpec'][dungeonEncounterID]= nil
+                SaveUse()[dungeonEncounterID]= nil
                 WoWTools_DataMixin:Call('EncounterJournal_Refresh')
             end}
         )
@@ -123,12 +125,12 @@ local function Init_Menu(self, root)
             ..(WoWTools_DataMixin.Icon[role] or '')
             ..(WoWTools_TextMixin:CN(name) or specID),
         function(d)
-            return WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[d.className]
+            return SaveUse()[dungeonEncounterID] and SaveUse()[dungeonEncounterID].class[d.className]
         end, function(d)
-            if not WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[d.className] then
-                WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[d.className]= d.specID
+            if not SaveUse()[dungeonEncounterID].class[d.className] then
+                SaveUse()[dungeonEncounterID].class[d.className]= d.specID
             else
-                WoWToolsPlayerDate['LootSpec'][dungeonEncounterID].class[d.className]= nil
+                SaveUse()[dungeonEncounterID].class[d.className]= nil
             end
             WoWTools_DataMixin:Call('EncounterJournal_Refresh')
         end, {className=className, specID=specID, desc=desc})
@@ -151,7 +153,7 @@ local function Init_Menu(self, root)
 
 --当前职业，列表
     local classSpecTab={}
-    for id, data in pairs(WoWToolsPlayerDate['LootSpec']) do
+    for id, data in pairs(SaveUse()) do
         local specID= data.class[self.classFile]
         if specID then
             local boss, _, _, _, _, instanceID= EJ_GetEncounterInfo(data.encounterID)
@@ -188,8 +190,8 @@ local function Init_Menu(self, root)
             ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
             nil,
             {SetValue=function()
-                for id in pairs(WoWToolsPlayerDate['LootSpec']) do
-                    WoWToolsPlayerDate['LootSpec'][id].class[self.classFile]=nil
+                for id in pairs(SaveUse()) do
+                    SaveUse()[id].class[self.classFile]=nil
                 end
                 WoWTools_DataMixin:Call('EncounterJournal_Refresh')
             end}
@@ -227,9 +229,9 @@ local function Init_Menu(self, root)
 --副本名称
             ..(data.bossName or data.encounterID),
         function(d)
-                return WoWToolsPlayerDate['LootSpec'][d.dungeonEncounterID] and WoWToolsPlayerDate['LootSpec'][d.dungeonEncounterID].class[self.classFile]
+                return SaveUse()[d.dungeonEncounterID] and SaveUse()[d.dungeonEncounterID].class[self.classFile]
         end, function(d)
-            WoWToolsPlayerDate['LootSpec'][d.dungeonEncounterID].class[self.classFile]= not WoWToolsPlayerDate['LootSpec'][d.dungeonEncounterID].class[self.classFile] and d.specID or nil
+            SaveUse()[d.dungeonEncounterID].class[self.classFile]= not SaveUse()[d.dungeonEncounterID].class[self.classFile] and d.specID or nil
 --转到 副本
             if EncounterJournal.instanceID~= d.instanceID then
                 WoWTools_DataMixin:Call('EncounterJournal_DisplayInstance', d.instanceID)
@@ -344,7 +346,7 @@ local function Init_Button(btn)
                 local encounterID= self:GetParent().encounterID
                 local  dungeonEncounterID= select(7, EJ_GetEncounterInfo(encounterID))
 
-                local data= WoWToolsPlayerDate['LootSpec'][dungeonEncounterID]
+                local data= SaveUse()[dungeonEncounterID]
                 local lootSpecID= data and data.class[self.classFile]
 
                 local icon= lootSpecID and select(4, GetSpecializationInfoByID(lootSpecID))
@@ -376,7 +378,7 @@ end
 
 --设置拾取专精
 local function Set_LootSpec(self, encounterID)
-    local data= WoWToolsPlayerDate['LootSpec'][encounterID]
+    local data= SaveUse()[encounterID]
     local lootSpecID= data and data.class[WoWTools_DataMixin.Player.Class]
     local logID
 
@@ -437,6 +439,11 @@ end
 
 
 
+
+
+
+
+
 --BOSS 列表
 local function Init_Loot()
     WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)--{data={bossID index link rootSectionID, desctiption, name} }
@@ -456,9 +463,17 @@ local function Init_Loot()
             btn:SetShown(show)
         end
     end)
-
     Init_Loot=function()end
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -489,6 +504,36 @@ local function Init()
         elseif event=='ENCOUNTER_END' then--BOSS战时, 指定拾取, 专精, 还原, 专精拾取
             Rest_LootSpec(self)
         end
+    end)
+
+
+--地图，BOOS图标
+    WoWTools_DataMixin:Hook(EncounterJournalPinMixin, 'OnLoad', function(self)
+        self.lootTexture= self:CreateTexture(nil, 'OVERLAY')
+        self.lootTexture:SetSize(20,20)
+        self.lootTexture:SetPoint('BOTTOMLEFT', 3, 3)
+        WoWTools_ButtonMixin:AddMask(self, true, self.lootTexture)
+    end)
+
+--[[
+local name, description, encounterID, rootSectionID, link, instanceID = EJ_GetEncounterInfo(self.encounterID);
+self.instanceID = instanceID;
+self.tooltipTitle = name;
+self.tooltipText = description;
+local displayInfo = select(4, EJ_GetCreatureInfo(1, self.encounterID));
+self.displayInfo = displayInfo;
+if displayInfo then
+]]
+    WoWTools_DataMixin:Hook(EncounterJournalPinMixin, 'Refresh', function(self)
+        local icon
+        local encounterID= self.encounterID and select(7, EJ_GetEncounterInfo(self.encounterID))
+        if not Save().hideLootSpec and encounterID and SaveUse()[encounterID] then
+            local lootSpecID=  SaveUse()[encounterID].class[WoWTools_DataMixin.Player.Class]
+            if lootSpecID then
+                icon= select(4, GetSpecializationInfoByID(lootSpecID))
+            end
+        end
+        self.lootTexture:SetTexture(icon or 0)
     end)
 
 --冒险指南界面

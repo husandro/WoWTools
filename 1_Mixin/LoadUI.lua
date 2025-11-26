@@ -374,7 +374,12 @@ https://warcraft.wiki.gg/wiki/DifficultyID
 Blizzard_SharedMapDataProviders/DungeonEntranceDataProvider.lua
 |Hjournal:1:2568:23|h[虚空石畸体]|h
 EncounterJournal_DisplayInstance
-EncounterJournal_OpenJournal(nil, journalInstanceID)
+
+function EncounterJournalPinMixin:OnMouseClickAction()
+	EncounterJournal_LoadUI();
+	EncounterJournal_OpenJournal(nil, self.instanceID, self.encounterID);
+end
+
 WoWTools_DataMixin:Call(ToggleEncounterJournal)
 ]]
 function WoWTools_LoadUIMixin:JournalInstance(journalType, journalInstanceID, difficultyID)

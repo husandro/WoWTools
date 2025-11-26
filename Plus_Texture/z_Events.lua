@@ -1418,6 +1418,7 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
+    self:SetCheckBox(RaidFrameAllAssistCheckButton)
     self:SetUIButton(CompactRaidFrameManagerLeavePartyButton)
     self:SetUIButton(CompactRaidFrameManagerLeaveInstanceGroupButton)
 
@@ -1465,15 +1466,12 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     end)
 --BG
     self:Init_BGMenu_Frame(CompactRaidFrameManagerDisplayFrame, {
-        menuTag='MENU_RAID_FRAME_CONVERT_PARTY',
-        --[[isNewButton=true,
+        --menuTag='MENU_RAID_FRAME_CONVERT_PARTY',
+        isNewButton=true,
         newButtonPoint=function(btn)
-            if _G['CompactRaidFrameManagerScaleMenuButton'] then
-                btn:SetPoint('RIGHT', _G['CompactRaidFrameManagerScaleMenuButton'], 'LEFT')
-            else
-                btn:SetPoint('LEFT', CompactRaidFrameManagerDisplayFrameModeControlDropdown, 'RIGHT')
-            end
-        end,]]
+            btn:SetPoint('LEFT', CompactRaidFrameManagerDisplayFrameModeControlDropdown, 'RIGHT')
+            
+        end,
         settings=function(_, texture, alpha)
             CompactRaidFrameManager.Background:SetAlpha(texture and 0 or alpha or 1)
         end
