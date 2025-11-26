@@ -1,3 +1,9 @@
+
+function WoWTools_MoveMixin.Frames:GearManagerPopupFrame()
+    self:Setup(GearManagerPopupFrame, {frame=CharacterFrame})
+end
+
+
 function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角色
     PaperDollFrame.TitleManagerPane:ClearAllPoints()
     PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
@@ -399,6 +405,53 @@ end
 
 
 
-function WoWTools_MoveMixin.Frames:GearManagerPopupFrame()
-    self:Setup(GearManagerPopupFrame, {frame=CharacterFrame})
+
+--货币
+function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
+    self:SetButton(TokenFrame.CurrencyTransferLogToggleButton, 1)
+
+    self:SetFrame(TokenFramePopup.Border, {alpha=1})
+    self:SetUIButton(TokenFramePopup.CurrencyTransferToggleButton)
+    self:SetCheckBox(TokenFramePopup.InactiveCheckbox)
+    self:SetCheckBox(TokenFramePopup.BackpackCheckbox)
+--货币转移, 记录
+    self:SetButton(CurrencyTransferLogCloseButton)
+    self:SetNineSlice(CurrencyTransferLog)
+    self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
+    self:SetNineSlice(CurrencyTransferLogInset, nil, true)
+    self:SetScrollBar(CurrencyTransferLog)
+--货币转移
+    self:SetButton(CurrencyTransferMenuCloseButton)
+    self:SetUIButton(CurrencyTransferMenu.Content.ConfirmButton)
+    self:SetUIButton(CurrencyTransferMenu.Content.CancelButton)
+    self:SetUIButton(CurrencyTransferMenu.Content.AmountSelector.MaxQuantityButton)
+    self:SetAlphaColor(CurrencyTransferMenu.Content.TransactionDivider)
+        self:SetNineSlice(CurrencyTransferMenu)
+    self:SetAlphaColor(CurrencyTransferMenu.TransactionDivider)
+    self:HideTexture(CurrencyTransferMenuBg)
+    self:SetNineSlice(CurrencyTransferMenuInset)
+    if CurrencyTransferMenu.AmountSelector then--11.2 没有了
+        self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
+        self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
+    else
+        self:SetEditBox(CurrencyTransferMenu.Content.AmountSelector.InputBox)
+        self:SetMenu(CurrencyTransferMenu.Content.SourceSelector.Dropdown)
+    end
+
+    self:SetFrame(TokenFrame)
+    self:SetMenu(TokenFrame.filterDropdown)
+    self:SetScrollBar(TokenFrame)--bug，货币转移，出错
+    self:SetButton(TokenFramePopup['$parent.CloseButton'] or TokenFramePopup.CloseButton)
+
+    WoWTools_DataMixin:Hook(TokenHeaderMixin, 'OnLoad_TokenHeaderTemplate', function(frame)
+        self:SetAlphaColor(frame.Middle, nil, nil, 0.5)
+        self:SetAlphaColor(frame.Right, nil, nil, 0.5)
+        self:SetAlphaColor(frame.Left, nil, nil, 0.5)
+    end)
+
+    self:CreateBG(TokenFrame.ScrollBox, {--添加Bg
+        atlas= "UI-Character-Info-"..WoWTools_DataMixin.Player.Class.."-BG",
+        alpha=0.3,
+        isAllPoint=true,
+    })
 end

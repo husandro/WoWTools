@@ -67,6 +67,7 @@ local function Init()
 
     if SplashFrame then
         WoWTools_TextureMixin:SetButton(SplashFrame.TopCloseButton)
+        WoWTools_TextureMixin:SetUIButton(SplashFrame.BottomCloseButton)
     end
 
 
