@@ -391,7 +391,7 @@ local function Init(isShow)
                 hex= hex,
             }
             self.gossipID= num
-            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+            WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
             self:set_list()
         end
 
@@ -403,7 +403,7 @@ local function Init(isShow)
             local info=PlayerDataSave()[gossipID]
             PlayerDataSave()[gossipID]=nil            
             self:set_list()
-            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+            WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
             print(
                 WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r|n',
@@ -727,7 +727,7 @@ local function Init(isShow)
             if not icon or icon==0 then
                 List.Texture:SetTexture(3847780)
             end
-            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+            WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
     end})
     List.Size:SetPoint('TOP', List.Icon, 'BOTTOM', 0, -36)
 
@@ -755,7 +755,7 @@ local function Init(isShow)
         end)
         List.font:SetScript('OnMouseDown', function()
             Save().Gossip_Text_Icon_cnFont= not Save().Gossip_Text_Icon_cnFont and true or false
-            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+            WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
             List:set_list()
             if not Save().Gossip_Text_Icon_cnFont then
                 print(
@@ -1018,7 +1018,7 @@ local function Init(isShow)
     
     List:set_list()
     List:set_color()
-    WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+    WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
 
 
 
@@ -1085,7 +1085,7 @@ local function Init(isShow)
 
 --Frame 设置
     Frame:SetScript('OnHide', function()
-        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+        WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
         List:set_list()
         if GossipFrame:IsShown() and GossipFrame.GreetingPanel.ScrollBox:HasView() then
            for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
@@ -1095,7 +1095,7 @@ local function Init(isShow)
     end)
 
     Frame:SetScript('OnShow', function()
-        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+        WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
         List:set_list()
     end)
 

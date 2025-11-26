@@ -91,7 +91,7 @@ local function Init_Menu(self, root)
         return  Save().unique
     end, function ()
         Save().unique= not Save().unique and true or false
-        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+        WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
     end)
 
 --自定义,闲话
@@ -116,7 +116,7 @@ local function Init_Menu(self, root)
             return Save().gossipOption[data.gossipOptionID]
         end, function(data)
             Save().gossipOption[data.gossipOptionID]= not Save().gossipOption[data.gossipOptionID] and data.text or nil
-            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+            WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
         end, {gossipOptionID=gossipOptionID, text=text})
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(description.data.gossipOptionID)
@@ -154,7 +154,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().not_Gossip_Text_Icon= not Save().not_Gossip_Text_Icon and true or nil
         WoWTools_GossipMixin:Init_Gossip_Data()
-        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+        WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
         --return MenuResponse.Close
     end)
 
@@ -179,7 +179,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().notGossipPlayerData= not Save().notGossipPlayerData and true or nil
         WoWTools_GossipMixin:Init_Gossip_Data()
-        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+        WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
         --return MenuResponse.CloseAll
     end)
 

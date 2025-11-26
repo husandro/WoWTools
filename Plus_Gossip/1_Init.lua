@@ -1,4 +1,12 @@
 WoWTools_GossipMixin= {}
+--更新GossipFrame
+function WoWTools_GossipMixin:UpdateGossip()--更新GossipFrame
+    if GossipFrame:IsShown() then
+        GossipFrame:Update()
+    end
+end
+
+
 
 local P_Save={
     NPC={--禁用NPC

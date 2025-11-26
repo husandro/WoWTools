@@ -6,7 +6,6 @@ ToggleLandingPage()概要
 Professions(recipeID)专业
 WeeklyRewards()宏伟宝库
 MajorFaction(factionID)派系声望
-UpdateGossipFrame()更新GossipFrame
 Achievement(achievementID)打开成就
 JournalInstance(journalInstanceID)--冒险指南，副本
 ]]
@@ -305,12 +304,6 @@ end
 
 
 
---更新GossipFrame
-function WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
-    if GossipFrame:IsShown() then
-        GossipFrame:Update()
-    end
-end
 
 
 
