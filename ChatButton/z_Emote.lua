@@ -1372,10 +1372,6 @@ end
 
     Init_Button()
 
-    C_Timer.After(2, function()
-    Init_UseFrame()
-end)
-
     Init=function()
         if not WoWTools_FrameMixin:IsLocked(MainButton) then
             MainButton:SetShown(Save().disabled)
