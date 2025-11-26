@@ -6486,7 +6486,12 @@
         "HousingModelPreviewFrameCloseButton",
         "HousingModelPreviewFrameInset",
         "HousingModelPreviewFrameBg",
-        "ModelSceneControlFrameMixin"
+        "ModelSceneControlFrameMixin",
+        "CompactRaidFrameManagerLeavePartyButton",
+        "CompactRaidFrameManagerLeaveInstanceGroupButton",
+        "RolePollPopupAcceptButton",
+        "CompactRaidFrameManager_Expand",
+        "CompactRaidFrameManager_Collapse"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

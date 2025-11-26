@@ -430,7 +430,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
         end
         local numCriteria = GetAchievementNumCriteria(id)
         for i = 1, numCriteria do
-            local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, criteriaFlags, assetID, quantityString = GetAchievementCriteriaInfo(id, i);
+            local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, criteriaFlags, assetID, quantityString = GetAchievementCriteriaInfo(id, i)
             if ( criteriaType == CRITERIA_TYPE_ACHIEVEMENT and assetID ) then
             elseif ( bit.band(criteriaFlags, EVALUATION_TREE_FLAG_PROGRESS_BAR) == EVALUATION_TREE_FLAG_PROGRESS_BAR ) then
 
@@ -771,4 +771,55 @@ end
 
 function WoWTools_MoveMixin.Events:Blizzard_AlliedRacesUI()
     self:Setup(AlliedRacesFrame)
+end
+
+
+
+--隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
+function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
+--local p_CompactRaidFrameManager_Expand= CompactRaidFrameManager_Expand
+--local p_CompactRaidFrameManager_Collapse= CompactRaidFrameManager_Collapse
+--替换 原生
+    function CompactRaidFrameManager_Expand()
+        CompactRaidFrameManager.collapsed = false
+        CompactRaidFrameManager.displayFrame:Show()
+        CompactRaidFrameManager.toggleButtonBack:Show()
+        CompactRaidFrameManager.toggleButtonForward:Hide()
+        CompactRaidFrameManager.BottomButtons:Show()
+        CompactRaidFrameManager:ClearAllPoints()
+        local p= self:Save().point['CompactRaidFrameManager']
+        if p and p[1] then
+            CompactRaidFrameManager:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        else
+            CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -140)
+        end
+        self:Save().CompactRaidFrameManagerIsExpand= true--保存上次显或展开
+    end
+
+    function CompactRaidFrameManager_Collapse()
+        CompactRaidFrameManager.collapsed = true
+        CompactRaidFrameManager.displayFrame:Hide()
+        CompactRaidFrameManager.toggleButtonBack:Hide()
+        CompactRaidFrameManager.toggleButtonForward:Show()
+        CompactRaidFrameManager.BottomButtons:Hide()
+        CompactRaidFrameManager:ClearAllPoints()
+        CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -200, -140)
+        self:Save().CompactRaidFrameManagerIsExpand= nil
+    end
+
+    self:Setup(CompactRaidFrameManager, {
+        restPointFunc=function()
+            CompactRaidFrameManager_Expand()
+        end
+          --[[minW=222, minH=364,
+    sizeRestFunc=function()
+        CompactRaidFrameManager:SetSize(222, 364)
+    end]]})
+
+--保存上次显或展开
+    if self:Save().CompactRaidFrameManagerIsExpand then
+        CompactRaidFrameManager_Expand()
+    else
+        CompactRaidFrameManager_Collapse()
+    end
 end

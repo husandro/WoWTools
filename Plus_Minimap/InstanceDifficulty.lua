@@ -33,7 +33,7 @@ local function InstanceDifficulty_Tooltip(tooltip, difficultyID)
         local text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
         if text then
             if ID==difficultyID or difficultyIDName==text then
-                tooltip:AddLine(text..'|A:common-icon-rotateright:0:0|a difficultyID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..difficultyID)
+                tooltip:AddLine(text..'|A:common-icon-rotateleft:0:0|a |cffffffff'..difficultyID)
             else
                 tooltip:AddLine(text)
             end

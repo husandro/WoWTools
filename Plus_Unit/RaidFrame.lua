@@ -207,7 +207,7 @@ local function Init()--设置,团队
 
     --团体, 管理, 缩放
 
-    CompactRaidFrameManager.ScaleButton= WoWTools_ButtonMixin:Menu(CompactRaidFrameManagerDisplayFrameOptionsButton, {
+    --[[CompactRaidFrameManager.ScaleButton= WoWTools_ButtonMixin:Menu(CompactRaidFrameManagerDisplayFrameOptionsButton, {
         size=18,
         name='CompactRaidFrameManagerScaleMenuButton'
     })
@@ -239,7 +239,7 @@ local function Init()--设置,团队
 --打开选项界面
         WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_UnitMixin.addName})
     end)
-    CompactRaidFrameManager.ScaleButton:settings()
+    CompactRaidFrameManager.ScaleButton:settings()]]
 
 
 

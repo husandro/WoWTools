@@ -1418,6 +1418,8 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
+    self:SetUIButton(CompactRaidFrameManagerLeavePartyButton)
+    self:SetUIButton(CompactRaidFrameManagerLeaveInstanceGroupButton)
 
     self:HideFrame(CompactRaidFrameManager, {show={[CompactRaidFrameManager.Background]=true}})
     self:HideTexture(CompactRaidFrameManagerDisplayFrameRaidMarkers.BG)
@@ -1427,7 +1429,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
 --打开
     CompactRaidFrameManagerToggleButtonBack.hoverTex= 'common-icon-rotateleft'
     CompactRaidFrameManagerToggleButtonBack.normalTex= 'common-icon-backarrow'
-    CompactRaidFrameManagerToggleButtonBack:GetNormalTexture():SetAlpha(0.3)
+    CompactRaidFrameManagerToggleButtonBack:GetNormalTexture():SetAlpha(0.5)
     CompactRaidFrameManagerToggleButtonBack:SetNormalAtlas('common-icon-backarrow')
     local icon= CompactRaidFrameManagerToggleButtonBack:GetPushedTexture()
     icon:SetAtlas('common-icon-backarrow')
@@ -1435,7 +1437,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     icon:SetAtlas('common-icon-backarrow')
     icon:SetDesaturated(true)
 --合
-    CompactRaidFrameManagerToggleButtonForward:GetNormalTexture():SetAlpha(0.3)
+    CompactRaidFrameManagerToggleButtonForward:GetNormalTexture():SetAlpha(0.5)
     CompactRaidFrameManagerToggleButtonForward.hoverTex= 'common-icon-rotateright'
     CompactRaidFrameManagerToggleButtonForward.normalTex= 'common-icon-forwardarrow'
     CompactRaidFrameManagerToggleButtonForward:SetNormalAtlas('common-icon-forwardarrow')
@@ -1444,6 +1446,14 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     icon= CompactRaidFrameManagerToggleButtonForward:GetDisabledTexture()
     icon:SetAtlas('common-icon-forwardarrow')
     icon:SetDesaturated(true)
+
+    --[[for _, child in pairs({CompactRaidFrameManagerDisplayFrameRaidMarkers:GetChildren()}) do
+        if child:IsObjectType('Button') then
+            self:SetAlphaColor(child.backgroundTexture, true)
+        end
+    end]]
+
+
 --Background
     self:SetAlphaColor(CompactRaidFrameManager.Background, true)
     CompactRaidFrameManager.Background:SetShown(CompactRaidFrameManagerToggleButtonBack:IsShown())
@@ -1455,14 +1465,15 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     end)
 --BG
     self:Init_BGMenu_Frame(CompactRaidFrameManagerDisplayFrame, {
-        isNewButton=true,
+        menuTag='MENU_RAID_FRAME_CONVERT_PARTY',
+        --[[isNewButton=true,
         newButtonPoint=function(btn)
             if _G['CompactRaidFrameManagerScaleMenuButton'] then
                 btn:SetPoint('RIGHT', _G['CompactRaidFrameManagerScaleMenuButton'], 'LEFT')
             else
                 btn:SetPoint('LEFT', CompactRaidFrameManagerDisplayFrameModeControlDropdown, 'RIGHT')
             end
-        end,
+        end,]]
         settings=function(_, texture, alpha)
             CompactRaidFrameManager.Background:SetAlpha(texture and 0 or alpha or 1)
         end
@@ -1569,6 +1580,10 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
 --团队 RolePoll.lua
     self:SetFrame(RolePollPopup.Border, {notAlpha=true})
     self:SetButton(RolePollPopupCloseButton)
+    self:SetUIButton(RolePollPopupAcceptButton)
+    self:SetCheckBox(RolePollPopupRoleButtonTank.checkButton)
+    self:SetCheckBox(RolePollPopupRoleButtonHealer.checkButton)
+    self:SetCheckBox(RolePollPopupRoleButtonDPS.checkButton)
 end
 
 
