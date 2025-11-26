@@ -440,7 +440,28 @@ end
 
 
 
+local function Init_Loot()
 
+
+--BOSS 列表
+    WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)--{data={bossID index link rootSectionID, desctiption, name} }
+        if not self.specButtons then
+            Init_Button(self)
+        end
+
+        local scale= Save().lootScale or 1
+        local show= not Save().hideLootSpec
+
+        for _, btn in pairs(self.specButtons) do
+            if show then
+                btn:settings()
+                btn:SetScale(scale)
+                btn.index= data.index
+            end
+            btn:SetShown(show)
+        end
+    end)
+end
 
 
 
@@ -462,6 +483,7 @@ local function Init()
             self:RegisterEvent('ENCOUNTER_END')
         end
     end
+    frame:set_event()
 
     frame:SetScript('OnEvent', function(self, event, encounterID)
         if event=='ENCOUNTER_START' and encounterID then--BOSS战时, 指定拾取, 专精
@@ -472,27 +494,17 @@ local function Init()
         end
     end)
 
-
-
---BOSS 列表
-    WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)--{data={bossID index link rootSectionID, desctiption, name} }
-        if not self.specButtons then
-            Init_Button(self)
-        end
-
-        local scale= Save().lootScale or 1
-        local show= not Save().hideLootSpec
-
-        for _, btn in pairs(self.specButtons) do
-            if show then
-                btn:settings()
-                btn:SetScale(scale)
-                btn.index= data.index
+--冒险指南界面
+    if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
+        Init_Loot()
+    else
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_EncounterJournal' then
+                Init_Loot()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
             end
-            btn:SetShown(show)
-        end
-    end)
-
+        end)
+    end
 
 
 
@@ -505,6 +517,5 @@ end
 
 
 function WoWTools_EncounterMixin:Init_LootSpec()
-
     Init()
 end

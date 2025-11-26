@@ -29,7 +29,7 @@ local function Init()--冒险指南界面
     WoWTools_EncounterMixin:Init_Plus()
     WoWTools_EncounterMixin:Init_ListInstances()--界面, 副本击杀
     WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-    WoWTools_EncounterMixin:Init_LootSpec()--BOSS战时, 指定拾取, 专精
+
 
     --[[if WoWTools_DataMixin.Player.husandro then
         C_Timer.After(0.3, function()
@@ -112,6 +112,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 self:UnregisterAllEvents()
                 self:SetScript('OnEvent', nil)
             else
+
+                WoWTools_EncounterMixin:Init_LootSpec()--BOSS战时, 指定拾取, 专精
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
                     Init()--冒险指南界面
