@@ -181,7 +181,7 @@ local function Create_potFrame(frame)
         self.frame:settings()
     end)
 
-    btn:SetScript('OnShow', function(self)
+    function btn:Init()
         self:set_unit()
         self:RegisterEvent('RAID_TARGET_UPDATE')
         self:RegisterUnitEvent('UNIT_TARGET', self.unit)
@@ -190,6 +190,14 @@ local function Create_potFrame(frame)
         self:RegisterEvent('PLAYER_TARGET_CHANGED')
         self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.tt)
         self.frame:settings()
+    end
+
+    if frame:IsShown() then
+        btn:Init()
+    end
+
+    btn:SetScript('OnShow', function(self)
+        self:Init()
     end)
 
     btn:SetScript('OnHide', function(self)
@@ -201,6 +209,8 @@ local function Create_potFrame(frame)
     end)
 
     frame.ToTButton= btn
+
+    Create_potFrame=function()end
 end
 
 
@@ -272,7 +282,7 @@ local function Create_castFrame(frame)
         WoWTools_CooldownMixin:SetFrame(self)
     end)
 
-    castFrame:SetScript('OnShow', function(self)
+    function castFrame:Init()
         self.unit= self:GetParent():GetUnit()
         local events= {--ActionButton.lua
             'UNIT_SPELLCAST_CHANNEL_START',
@@ -294,7 +304,16 @@ local function Create_castFrame(frame)
         FrameUtil.RegisterFrameForUnitEvents(self, events, self.unit)
         self:RegisterEvent('UNIT_SPELLCAST_SENT')
         self:settings()
+    end
+
+    if frame:IsShown() then
+        castFrame:Init()
+    end
+    castFrame:SetScript('OnShow', function(self)
+        self:Init()
     end)
+
+    Create_castFrame=function()end
 end
 
 
@@ -358,7 +377,13 @@ local function Create_raidTargetFrame(frame)
         end
     end
 
-
+    function raidTargetFrame:Init()
+        self.unit= self:GetParent():GetUnit()
+        self:RegisterUnitEvent('UNIT_FACTION', self.unit)
+        self:RegisterEvent('RAID_TARGET_UPDATE')
+        self:set_faction()
+        self:set_mark()
+    end
 
     raidTargetFrame:SetScript('OnEvent', function(self, event)
         if event=='RAID_TARGET_UPDATE' then
@@ -373,13 +398,16 @@ local function Create_raidTargetFrame(frame)
         self.faction:SetTexture(0)
         self.unit=nil
     end)
+
+    if frame:IsShown() then
+        raidTargetFrame:Init()
+    end
+
     raidTargetFrame:SetScript('OnShow', function(self)
-        self.unit= self:GetParent():GetUnit()
-        self:RegisterUnitEvent('UNIT_FACTION', self.unit)
-        self:RegisterEvent('RAID_TARGET_UPDATE')
-        self:set_faction()
-        self:set_mark()
+        self:Init()
     end)
+
+    Create_raidTargetFrame=function()end
 end
 
 
@@ -450,6 +478,8 @@ local function Create_combatFrame(frame)
     combatFrame:SetScript('OnShow', function(self)
         self.unit= self:GetParent():GetUnit()
     end)
+
+    Create_combatFrame=function()end
 end
 
 
@@ -528,6 +558,19 @@ local function Create_positionFrame(frame)
         self.xy:SetShown(isInEditMode or isInInstance)
     end
 
+    function Frame:Init()
+        local unit= self:GetParent():GetUnit()
+        self.unit= unit
+        self.map.unit= unit
+        self.xy.unit= unit
+
+        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
+        self.map.Text:SetTextColor(r,g,b)
+
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:set_shown()
+    end
+
     Frame:SetScript('OnEvent',  function(self)
         self:set_shown()
     end)
@@ -547,18 +590,15 @@ local function Create_positionFrame(frame)
         self:UnregisterAllEvents()
     end)
 
+    if frame:IsShown() then
+        Frame:Init()
+    end
+
     Frame:SetScript('OnShow', function(self)
-        local unit= self:GetParent():GetUnit()
-        self.unit= unit
-        self.map.unit= unit
-        self.xy.unit= unit
-
-        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-        self.map.Text:SetTextColor(r,g,b)
-
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        self:set_shown()
+        self:Init()
     end)
+
+    Create_positionFrame=function()end
 end
 
 
@@ -641,6 +681,17 @@ local function Create_deadFrame(frame)
         end
     end
 
+    function deadFrame:Init()
+        self.dead=0
+        self.unit= self:GetParent():GetUnit()
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:RegisterEvent('CHALLENGE_MODE_START')
+        self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
+        self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
+        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.unit)
+        self:settings()
+    end
+
     deadFrame:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
             self.dead= 0
@@ -657,16 +708,6 @@ local function Create_deadFrame(frame)
         self:settings()
     end)
 
-    deadFrame:SetScript('OnShow', function(self)
-        self.dead=0
-        self.unit= self:GetParent():GetUnit()
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        self:RegisterEvent('CHALLENGE_MODE_START')
-        self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
-        self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
-        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.unit)
-        self:settings()
-    end)
     deadFrame:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()
         self.Text:SetText('')
@@ -675,6 +716,16 @@ local function Create_deadFrame(frame)
         self.deadBool=nil
         self.texture:SetTexture(0)
     end)
+
+    if frame:IsShown() then
+        deadFrame:Init()
+    end
+
+    deadFrame:SetScript('OnShow', function(self)
+        self:Init()
+    end)
+
+    Create_deadFrame=function()end
 end
 
 

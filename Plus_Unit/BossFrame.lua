@@ -45,17 +45,7 @@ local function Create_BossButton(frame)
         self.targetTexture:SetShown(UnitIsUnit('target', unit))
     end
 
-
-    frame.BossButton:SetScript('OnEvent', function(self)
-        self:settings()
-    end)
-
-    frame.BossButton:SetScript('OnHide', function(self)
-        self:UnregisterAllEvents()
-        self.Portrait:SetTexture(0)
-    end)
-
-    frame.BossButton:SetScript('OnShow', function(self)
+    function frame.BossButton:Init()
         self:RegisterEvent('PLAYER_TARGET_CHANGED')
         self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit)
         self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
@@ -66,6 +56,23 @@ local function Create_BossButton(frame)
         p.TargetFrameContent.TargetFrameContentMain.ReputationColor:SetVertexColor(r,g,b)
 
         self:settings()
+    end
+
+
+    frame.BossButton:SetScript('OnEvent', function(self)
+        self:settings()
+    end)
+
+    frame.BossButton:SetScript('OnHide', function(self)
+        self:UnregisterAllEvents()
+        self.Portrait:SetTexture(0)
+    end)
+
+    if frame:IsShown() then
+        frame.BossButton:Init()
+    end
+    frame.BossButton:SetScript('OnShow', function(self)
+        self:Init()
     end)
 
 end
@@ -298,17 +305,22 @@ local function Create_TotButton(frame)
         self:SetShown(exists)
     end
 
-
+    function frame.TotButton.frame:Init()
+        self:RegisterUnitEvent('UNIT_TARGET', self.unit)
+        self:RegisterEvent('RAID_TARGET_UPDATE')
+        self:RegisterEvent('PLAYER_TARGET_CHANGED')
+        self:set_settings()
+    end
 
     frame.TotButton.frame:SetScript('OnEvent', function(self)
         self:set_settings()
     end)
 
+    if frame:IsShown() then
+        frame.TotButton.frame:Init()
+    end
     frame.TotButton.frame:HookScript('OnShow', function(self)
-        self:RegisterUnitEvent('UNIT_TARGET', self.unit)
-        self:RegisterEvent('RAID_TARGET_UPDATE')
-        self:RegisterEvent('PLAYER_TARGET_CHANGED')
-        self:set_settings()
+        self:Init()
     end)
     frame.TotButton.frame:HookScript('OnHide', function(self)
        self:UnregisterAllEvents()
