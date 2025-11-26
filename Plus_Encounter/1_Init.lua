@@ -37,22 +37,19 @@ local function Init_Encounter()--冒险指南界面
     end]]
 
 --记录上次选择版本
-C_Timer.After(0.3, function()
-    if Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
-        local max= EJ_GetNumTiers()
-        if max then
-            local tier= math.min(Save().EncounterJournalTier, max)
-            EJ_SelectTier(tier)
+    C_Timer.After(0.3, function()
+        if Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
+            local max= EJ_GetNumTiers()
+            if max then
+                local tier= math.min(Save().EncounterJournalTier, max)
+                EJ_SelectTier(tier)
+            end
         end
-    end
 
-    WoWTools_DataMixin:Hook('EJ_SelectTier', function(tier)
-        Save().EncounterJournalTier= Save().isSaveTier and tier or nil
+        WoWTools_DataMixin:Hook('EJ_SelectTier', function(tier)
+            Save().EncounterJournalTier= Save().isSaveTier and tier or nil
+        end)
     end)
-end)
-
-
-
 
     Init_Encounter=function()end
 end
@@ -121,12 +118,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or P_Save
             P_Save= nil
-
-            if Save().wowBossKill then--旧数据
-                Save().loot= nil
-                WoWToolsPlayerDate['BossKilled']= Save().wowBossKill
-                Save().wowBossKill= nil
-            end
 
             WoWToolsPlayerDate['BossKilled']= WoWToolsPlayerDate['BossKilled'] or {}
 
