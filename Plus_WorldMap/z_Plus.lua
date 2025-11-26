@@ -206,5 +206,5 @@ end
 
 
 function WoWTools_WorldMapMixin:Init_Plus()
-    Init()
+    C_Timer.After(0.3, Init)
 end
