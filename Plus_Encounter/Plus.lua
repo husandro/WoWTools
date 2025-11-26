@@ -52,7 +52,6 @@ local function Create_BossButtonList(btn)
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED)
             ..' |cffffffff'..(self.Text:GetText() or '')
-            ..WoWTools_DataMixin.Icon.left
         )
         GameTooltip:Show()
         self:SetAlpha(0.5)

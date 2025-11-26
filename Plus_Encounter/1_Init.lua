@@ -126,7 +126,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     if numKill>0 then
                         GameTooltip:AddLine(' ')
                         GameTooltip:AddLine(
-                            format(WoWTools_DataMixin.onlyChinese and '%s（|cffffffff%d|r次）' or REAGENT_COST_CONSUME_CHARGES,
+                            WoWTools_DataMixin.Icon.icon2
+                            ..format(WoWTools_DataMixin.onlyChinese and '%s（|cffffffff%d|r次）' or REAGENT_COST_CONSUME_CHARGES,
                                 WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED,
                                 numKill)
                         )
@@ -138,7 +139,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     if lootSpecID then
                         local _, name, _, icon, role = GetSpecializationInfoByID(lootSpecID)
                         if name then
-                            GameTooltip:AddLine(WoWTools_DataMixin.Icon.icon2
+                            if numKill==0 then
+                                GameTooltip:AddLine(' ')
+                            end
+                            GameTooltip:AddLine(
+                                WoWTools_DataMixin.Icon.icon2
                                 ..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
                                 ..': |cffffffff'
                                 ..'|T'..(icon or 0)..':0|t'
@@ -149,7 +154,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                         end
                     end
 
-                    if numKill>0 and loot then
+                    if numKill>0 or loot then
                         GameTooltip:Show()
                     end
                 end)
