@@ -37,7 +37,7 @@ function WoWTools_LabelMixin:Create(frame, tab)
     local size= tab.size or 12
     local justifyH= tab.justifyH
     local notFlag= tab.notFlag
-    local notShadow= tab.notShadow
+    --local notShadow= tab.notShadow
     local color= tab.color
     local mouse= tab.mouse
     local wheel= tab.wheel
@@ -68,9 +68,9 @@ function WoWTools_LabelMixin:Create(frame, tab)
 
         font:SetJustifyH(justifyH or 'LEFT')
     end
-    if not notShadow then
-        font:SetShadowOffset(1, -1)
-    end
+    --if not notShadow then
+        --font:SetShadowOffset(1, -1)
+    --end
     if color~=false then
         if color==true then--颜色
             WoWTools_ColorMixin:Setup(font, {type='FontString', alpha=alpha})

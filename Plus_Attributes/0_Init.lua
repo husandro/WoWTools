@@ -5,7 +5,7 @@ WoWTools_AttributesMixin={}
 local P_Save={
     redColor= '|cffff4800',
     greenColor='|cff00ff00',
-    font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
+    font={r=0, g=0, b=0, a=1, x=0, y=0},--阴影
     tab={
         ['STATUS']={bit=2},
         ['CRITCHANCE']= {r=0.99, g=0.35, b=0.31},
