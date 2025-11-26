@@ -777,10 +777,10 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
---local p_CompactRaidFrameManager_Expand= CompactRaidFrameManager_Expand
---local p_CompactRaidFrameManager_Collapse= CompactRaidFrameManager_Collapse
+    local p_CompactRaidFrameManager_Expand= CompactRaidFrameManager_Expand
+    local p_CompactRaidFrameManager_Collapse= CompactRaidFrameManager_Collapse
 --替换 原生
-    function CompactRaidFrameManager_Expand()
+    local function c_CompactRaidFrameManager_Expand()
         CompactRaidFrameManager.collapsed = false
         CompactRaidFrameManager.displayFrame:Show()
         CompactRaidFrameManager.toggleButtonBack:Show()
@@ -796,7 +796,7 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
         self:Save().CompactRaidFrameManagerIsExpand= true--保存上次显或展开
     end
 
-    function CompactRaidFrameManager_Collapse()
+    local function c_CompactRaidFrameManager_Collapse()
         CompactRaidFrameManager.collapsed = true
         CompactRaidFrameManager.displayFrame:Hide()
         CompactRaidFrameManager.toggleButtonBack:Hide()
@@ -808,18 +808,27 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
     end
 
     self:Setup(CompactRaidFrameManager, {
-        restPointFunc=function()
-            CompactRaidFrameManager_Expand()
-        end
-          --[[minW=222, minH=364,
-    sizeRestFunc=function()
-        CompactRaidFrameManager:SetSize(222, 364)
-    end]]})
+    restPointFunc=function()
+        CompactRaidFrameManager_Collapse= p_CompactRaidFrameManager_Collapse
+        CompactRaidFrameManager_Expand= p_CompactRaidFrameManager_Expand
+        CompactRaidFrameManager:ClearAllPoints()
+        WoWTools_DataMixin:Call('CompactRaidFrameManager_Expand')
+    end})
+
+    local name= CompactRaidFrameManager:GetName() or 'CompactRaidFrameManager'
+    if self:Save().point[name] then
+        CompactRaidFrameManager_Collapse= c_CompactRaidFrameManager_Collapse
+        CompactRaidFrameManager_Expand= c_CompactRaidFrameManager_Expand
+    end
+    CompactRaidFrameManager:HookScript('OnDragStop', function()
+        CompactRaidFrameManager_Collapse= c_CompactRaidFrameManager_Collapse
+        CompactRaidFrameManager_Expand= c_CompactRaidFrameManager_Expand
+    end)
 
 --保存上次显或展开
     if self:Save().CompactRaidFrameManagerIsExpand then
-        CompactRaidFrameManager_Expand()
+        WoWTools_DataMixin:Call('CompactRaidFrameManager_Expand')
     else
-        CompactRaidFrameManager_Collapse()
+        WoWTools_DataMixin:Call('CompactRaidFrameManager_Collapse')
     end
 end

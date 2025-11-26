@@ -115,20 +115,42 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
                 WoWTools_EncounterMixin:Init_LootSpec()--BOSS战时, 指定拾取, 专精
 
---击杀次数，提示
+--击杀次数，拾取专精，提示,
                 WoWTools_DataMixin:Hook(EncounterJournalPinMixin, 'OnMouseEnter', function(frame)
-                    if not Save().hideEncounterJournal and frame.tooltipTitle and frame.encounterID then
-                        local encounterID= select(7, EJ_GetEncounterInfo(frame.encounterID))
-                        local numKill= encounterID and WoWToolsPlayerDate['BossKilled'][encounterID] or 0
-                        if numKill>0 then
-                            GameTooltip:AddLine(' ')
-                            GameTooltip:AddLine(
-                                format(WoWTools_DataMixin.onlyChinese and '%s（|cffffffff%d|r次）' or REAGENT_COST_CONSUME_CHARGES,
-                                    WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED,
-                                    numKill)
+                    local encounterID= frame.tooltipTitle and frame.encounterID and select(7, EJ_GetEncounterInfo(frame.encounterID))
+                    if not encounterID then
+                        return
+                    end
+
+                    local numKill= encounterID and WoWToolsPlayerDate['BossKilled'][encounterID] or 0
+                    if numKill>0 then
+                        GameTooltip:AddLine(' ')
+                        GameTooltip:AddLine(
+                            format(WoWTools_DataMixin.onlyChinese and '%s（|cffffffff%d|r次）' or REAGENT_COST_CONSUME_CHARGES,
+                                WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED,
+                                numKill)
+                        )
+                    end
+
+                    local data= not Save().hideLootSpec and WoWToolsPlayerDate['LootSpec'][encounterID]
+                    local lootSpecID= data and data.class[WoWTools_DataMixin.Player.Class]
+                    local loot
+                    if lootSpecID then
+                        local _, name, _, icon, role = GetSpecializationInfoByID(lootSpecID)
+                        if name then
+                            GameTooltip:AddLine(WoWTools_DataMixin.Icon.icon2
+                                ..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                                ..': |cffffffff'
+                                ..'|T'..(icon or 0)..':0|t'
+                                ..(WoWTools_DataMixin.Icon[role] or '')
+                                ..WoWTools_TextMixin:CN(name)
                             )
-                            GameTooltip:Show()
+                            loot= true
                         end
+                    end
+
+                    if numKill>0 and loot then
+                        GameTooltip:Show()
                     end
                 end)
 
