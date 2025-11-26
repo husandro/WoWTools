@@ -777,6 +777,19 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
+    local name= CompactRaidFrameManager:GetName() or 'CompactRaidFrameManager'
+
+    WoWTools_DataMixin:Hook('CompactRaidFrameManager_Expand', function()
+        if CompactRaidFrameManager.ResizeButton then
+            CompactRaidFrameManager.ResizeButton:SetShown(true)
+        end
+    end)
+    WoWTools_DataMixin:Hook('CompactRaidFrameManager_Collapse', function()
+        if CompactRaidFrameManager.ResizeButton then
+            CompactRaidFrameManager.ResizeButton:SetShown(false)
+        end
+    end)
+
     local p_CompactRaidFrameManager_Expand= CompactRaidFrameManager_Expand
     local p_CompactRaidFrameManager_Collapse= CompactRaidFrameManager_Collapse
 --替换 原生
@@ -793,6 +806,9 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
         else
             CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -140)
         end
+        if CompactRaidFrameManager.ResizeButton then
+            CompactRaidFrameManager.ResizeButton:SetShown(true)
+        end
         self:Save().CompactRaidFrameManagerIsExpand= true--保存上次显或展开
     end
 
@@ -804,6 +820,9 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
         CompactRaidFrameManager.BottomButtons:Hide()
         CompactRaidFrameManager:ClearAllPoints()
         CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -200, -140)
+        if CompactRaidFrameManager.ResizeButton then
+            CompactRaidFrameManager.ResizeButton:SetShown(false)
+        end
         self:Save().CompactRaidFrameManagerIsExpand= nil
     end
 
@@ -814,8 +833,7 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
         CompactRaidFrameManager:ClearAllPoints()
         WoWTools_DataMixin:Call('CompactRaidFrameManager_Expand')
     end})
-
-    local name= CompactRaidFrameManager:GetName() or 'CompactRaidFrameManager'
+    
     if self:Save().point[name] then
         CompactRaidFrameManager_Collapse= c_CompactRaidFrameManager_Collapse
         CompactRaidFrameManager_Expand= c_CompactRaidFrameManager_Expand
