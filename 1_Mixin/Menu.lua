@@ -239,7 +239,7 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
         return MenuResponse.Open
     end)
 
-    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue or function() SetValue(1) end)
+    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
     sub2:SetEnabled(not isLocked)
 
     return sub, sub2
@@ -354,7 +354,7 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
         bit='%.1f',
     })
 
-    if not onlyRoot and RestFunc then
+    if RestFunc then
         sub:CreateSpacer()
         sub:CreateButton(
             '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),

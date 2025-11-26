@@ -71,6 +71,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetScrollBar(MapLegendScrollFrame)
     self:SetAlphaColor(MapLegendScrollFrame.Background, nil, nil, 0.3)
 
+    self:SetAlphaColor(QuestScrollFrame.Contents.Separator.Divider, true)
 --任务，列表 QuestLogHeaderCodeTemplate
     WoWTools_DataMixin:Hook(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
         self:SetFrame(btn, {alpha=0.7})
@@ -82,7 +83,8 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
         self:SetFrame(frame, {alpha=0.5})
-        self:SetButton(frame.BountyDropdown)
+
+        --self:SetButton(frame.BountyDropdown)
     end
 
     self:SetButton(WorldMapFrame.SidePanelToggle.CloseButton, 0.5)

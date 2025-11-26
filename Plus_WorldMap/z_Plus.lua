@@ -12,9 +12,12 @@ local function Init()
     for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
         if frame.BountyDropdown then
 
-            function frame:set_scale()
+            function frame:settings()
                 if not WoWTools_FrameMixin:IsLocked(self) then
                     self:SetScale(Save().activityTrackerScale or 1)
+                    local alpha= Save().activityTrackerAlpha or 1
+                    WoWTools_TextureMixin:SetFrame(frame, {alpha=alpha})
+                    WoWTools_TextureMixin:SetButton(frame.BountyDropdown, math.max(0.2, alpha))
                 end
             end
 
@@ -23,22 +26,32 @@ local function Init()
                     return
                 end
                 root:CreateDivider()
+--缩放
                 local sub= WoWTools_MenuMixin:Scale(self, root, function()
                     return Save().activityTrackerScale or 1
                 end, function(value)
                     if not WoWTools_FrameMixin:IsLocked(frame) then
                         Save().activityTrackerScale= value
-                        frame:set_scale()
+                        frame:settings()
                     end
                 end)
                 sub:SetTooltip(function(tooltip)
                     tooltip:AddLine(WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
                 end)
+--Alpha
+                WoWTools_MenuMixin:BgAplha(sub, function()
+                    return Save().activityTrackerAlpha or 1
+                end, function(value)
+                    Save().activityTrackerAlpha= value
+                    frame:settings()
+                end, function()
+                    Save().activityTrackerScale= nil
+                    Save().activityTrackerAlpha= nil
+                    frame:settings()
+                end, true)
             end)
 
-            if Save().activityTrackerScale then
-                frame:set_scale()
-            end
+            frame:settings()
 
             break
         end
