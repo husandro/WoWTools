@@ -30,13 +30,11 @@ local function Init()--冒险指南界面
     WoWTools_EncounterMixin:Init_ListInstances()--界面, 副本击杀
     WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
 
-
     --[[if WoWTools_DataMixin.Player.husandro then
         C_Timer.After(0.3, function()
             WoWTools_LoadUIMixin:JournalInstance(nil, 1271)
         end)
     end]]
-
 
 --记录上次选择版本
 C_Timer.After(0.3, function()
@@ -51,7 +49,6 @@ C_Timer.After(0.3, function()
     WoWTools_DataMixin:Hook('EJ_SelectTier', function(tier)
         Save().EncounterJournalTier= Save().isSaveTier and tier or nil
     end)
-
 end)
 
 
@@ -70,8 +67,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
-panel:SetScript("OnEvent", function(self, event, arg1, arg2)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
@@ -106,10 +102,27 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             })
 
 --为了保存击杀数据，保持这个开启
-            self:RegisterEvent('BOSS_KILL')
+
+            EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", function(_, ncounterID, encounterName)
+                if not ncounterID then
+                    return
+                end
+                local num= (WoWToolsPlayerDate['BossKilled'][ncounterID] or 0)+ 1
+                WoWToolsPlayerDate['BossKilled'][ncounterID]= num--Boss击杀数量
+                if not Save().hideEncounterJournal then
+                    print(
+                        WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnWARNING_FONT_COLOR:'..(WoWTools_TextMixin:CN(encounterName) or ncounterID)..'|r',
+                        format(WoWTools_DataMixin.onlyChinese and '%s（|cffffffff%d|r次）' or REAGENT_COST_CONSUME_CHARGES,
+                            WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED,
+                            num)
+                    )
+                end
+            end)
+
 
             if Save().disabled then
-                self:UnregisterAllEvents()
+                self:UnregisterEvent(event)
                 self:SetScript('OnEvent', nil)
             else
 
@@ -162,6 +175,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
                     Init()--冒险指南界面
                     self:UnregisterEvent(event)
+                    self:SetScript('OnEvent', nil)
                 end
             end
 
@@ -169,21 +183,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         elseif arg1=='Blizzard_EncounterJournal' and WoWToolsSave then---冒险指南
             Init()--冒险指南界面
             self:UnregisterEvent(event)
+            self:SetScript('OnEvent', nil)
         end
-
-    elseif arg1 then
-        local num= (WoWToolsPlayerDate['BossKilled'][arg1] or 0)+ 1
-        WoWToolsPlayerDate['BossKilled'][arg1]= num--Boss击杀数量
-        if not Save().hideEncounterJournal then
-            print(
-                WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
-
-                '|cnWARNING_FONT_COLOR:'..(WoWTools_TextMixin:CN(arg2) or arg1)..'|r',
-
-                format(WoWTools_DataMixin.onlyChinese and '%s（|cffffffff%d|r次）' or REAGENT_COST_CONSUME_CHARGES,
-                    WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED,
-                    num)
-            )
-        end
+        
     end
 end)
