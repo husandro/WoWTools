@@ -362,8 +362,6 @@ local function Init_Button(btn)
             b:SetupMenu(Init_Menu)
         end
     end
-
-
 end
 
 
@@ -439,11 +437,8 @@ end
 
 
 
-
-local function Init_Loot()
-
-
 --BOSS 列表
+local function Init_Loot()
     WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)--{data={bossID index link rootSectionID, desctiption, name} }
         if not self.specButtons then
             Init_Button(self)
@@ -461,6 +456,8 @@ local function Init_Loot()
             btn:SetShown(show)
         end
     end)
+
+    Init_Loot=function()end
 end
 
 
