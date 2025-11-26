@@ -399,8 +399,8 @@ local function Set_LootSpec(self, encounterID)
                     WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)..'|r',
                     (WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                    ..(icon and '|T'..(icon or '')..':0|t' or '')
                     ..(WoWTools_DataMixin.Icon[role] or '')
-                    ..(icon and '|T'..icon..':0|t' or '')
                     ..(name and '|cffff00ff'..WoWTools_TextMixin:CN(name) or '')
                 )
             end
@@ -427,8 +427,8 @@ local function Rest_LootSpec(self)
                 WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '还原' or RESET)..'|r',
                 (WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                ..(icon and '|T'..(icon or 0)..':0|t' or '')
                 ..(WoWTools_DataMixin.Icon[role] or '')
-                ..(icon and '|T'..icon..':0|t' or '')
                 ..(name and '|cffff00ff'..WoWTools_TextMixin:CN(name) or '')
             )
         end

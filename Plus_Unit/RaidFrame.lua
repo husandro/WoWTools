@@ -174,11 +174,7 @@ local function Init()--设置,团队
         self:GetParent():SetScale(Save().raidFrameScale or 1)
     end
     CompactRaidFrameContainer.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
-        if not IsAltKeyDown() then
-            return
-        end
-        if not self:CanChangeAttribute() then
-            print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        if not IsAltKeyDown() or WoWTools_FrameMixin:IsLocked(self) then
             return
         end
         local num= Save().raidFrameScale or 1
@@ -192,7 +188,6 @@ local function Init()--设置,团队
         Save().raidFrameScale= num
         self:set_Scale()
         self:set_Tooltips()
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, num)
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self)
         GameTooltip:Hide()
