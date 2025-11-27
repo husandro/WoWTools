@@ -646,7 +646,7 @@ local function Init()
     btn.texture:SetSize(24,24)
     btn.texture:SetAtlas('greatVault-whole-normal')
 
-    btn:SetPoint('RIGHT', BankPanel.MoneyFrame.MoneyDisplay, 'LEFT', -8, 0)
+    btn:SetPoint('RIGHT', BankPanel.MoneyFrame.MoneyDisplay.GoldButton, 'LEFT', -2, 0)
 
     btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=0, g=0.8, b=1}})
     btn.Text:SetPoint('TOPRIGHT', btn, 'TOPLEFT')

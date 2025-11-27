@@ -199,7 +199,22 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     WoWTools_DataMixin:Hook(LargeMoneyInputBoxMixin, 'OnLoad', function(edit)
         self:SetEditBox(edit)
     end)
+
+
+
+
+
+
 end
+
+
+
+
+
+
+
+
+
 
 
 --上一页，下一页

@@ -6492,7 +6492,16 @@
         "RolePollPopupAcceptButton",
         "CompactRaidFrameManager_Expand",
         "CompactRaidFrameManager_Collapse",
-        "PerksProgramScrollItemDetailsMixin"
+        "PerksProgramScrollItemDetailsMixin",
+        "COPPER_PER_GOLD",
+        "MoneyDisplayFrameMixin",
+        "SILVER_PER_GOLD",
+        "CVarCallbackRegistry",
+        "GOLD_AMOUNT_SYMBOL",
+        "MONEY_ICON_WIDTH",
+        "MONEY_BUTTON_SPACING",
+        "MONEY_ICON_WIDTH_SMALL",
+        "MONEY_BUTTON_SPACING_SMALL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
