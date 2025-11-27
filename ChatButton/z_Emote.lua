@@ -453,7 +453,7 @@ local function Init_Button()
             btnH= btnH==0 and (btn.Text:GetStringHeight()+13) or btnH
             btn:SetSize(btnW, btnH)
 
-            btn:SetParent(isUIParent and MainButton or ChatFrameMenuButton)
+            btn:SetParent(isUIParent and MainButton or GeneralDockManager)
             btn:ClearAllPoints()
             if isUIParent then
                 if i>1 and select(2, math.modf((i-1)/line))==0 then
@@ -461,8 +461,10 @@ local function Init_Button()
                 else
                     btn:SetPoint('LEFT', _buttons[i-1] or MainButton, 'RIGHT')
                 end
+            elseif not _buttons[i-1] then
+                btn:SetPoint('BOTTOMRIGHT', ChatFrame1, 'BOTTOMLEFT', -4, 32)
             else
-                btn:SetPoint('BOTTOM', _buttons[i-1] or ChatFrameMenuButton, 'TOP')
+                btn:SetPoint('BOTTOM', _buttons[i-1], 'TOP')
             end
 
             btn:Show()
