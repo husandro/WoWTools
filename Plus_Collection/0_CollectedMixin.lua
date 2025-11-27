@@ -73,6 +73,15 @@ function WoWTools_CollectedMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--�
     return text, isCollected, isSelf
 end
 
+
+--[[
+local _data= C_Transmog.GetAllSetAppearancesByID(transmogSetID) or {}
+local _n, _a=0,0
+for _, _tab in pairs(_data) do
+    _n= C_TransmogCollection.PlayerHasTransmogByItemInfo(_tab.itemID) and _n+1 or _n
+    _a= _a +1
+end
+]]
 function WoWTools_CollectedMixin:SetID(setID, isLoot)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
     local numCollected, numAll=0,0
     if setID then

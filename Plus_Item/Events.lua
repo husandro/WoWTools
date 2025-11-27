@@ -64,6 +64,13 @@ end
 
 --商站
 function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
+
+--右边，列表
+    WoWTools_DataMixin:Hook(PerksProgramScrollItemDetailsMixin, 'InitItem', function(frame, data)
+         WoWTools_ItemMixin:SetupInfo(frame, {itemID=data.itemID, point=frame.Icon})
+    end)
+
+
     local function set_uptate(frame)
         if not frame:HasView() then
             return
@@ -99,9 +106,9 @@ function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
         set_uptate(frame)
     end)
 
-    C_Timer.After(0.3, function()
-        set_uptate(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox)
-    end)
+    --C_Timer.After(0.3, function()
+       -- set_uptate(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox)
+    --end)
 end
 
 

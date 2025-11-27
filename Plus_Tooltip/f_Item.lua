@@ -462,8 +462,22 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         )
     end
 
+--套装：炎阳珠衣装
+    local transmogSetID= C_Item.GetItemLearnTransmogSet(itemID)
+    if transmogSetID then
+        local collect, numAll = select(2, WoWTools_CollectedMixin:SetID(transmogSetID))
+        if numAll then
+            if collect==numAll then
+                textLeft= format('|cnGREEN_FONT_COLOR:%s|r',  WoWTools_DataMixin.onlyChinese and '已收集' or WoWTools_TextMixin)
+            elseif collect>0 then
+                textLeft= '|cnWARNING_FONT_COLOR:'..collect..'/'..numAll
+            else
+                textLeft= format('|cnWARNING_FONT_COLOR:%s|r',  WoWTools_DataMixin.onlyChinese and '未收集' or WoWTools_TextMixin)
+            end
+        end
+        tooltip:AddLine('transmogSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..transmogSetID)
 --装备
-    if classID==2 or classID==4 then
+    elseif classID==2 or classID==4 then
         textLeft, text2Left= Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
 --次属性 %值
         if not PlayerIsTimerunning() then

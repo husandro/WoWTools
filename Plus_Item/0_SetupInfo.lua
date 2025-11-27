@@ -1,10 +1,17 @@
 --[[
 WoWTools_ItemMixin:SetupInfo(itemButton, {
+    itemLink= ,
+    hyperlink=,
+    lootIndex= , 
     bag= {bag=bagID, slot=slotID},
     merchant= {slot=slot, buyBack= selectedTab==2},
     guidBank= {tab=tab, slot=i},
-    itemLink= itemLink,
+    itemLocation=,
+    itemKey=,
+    
+
     point= region,
+    size=
 })
 ]]
 local function Save()
@@ -26,17 +33,18 @@ local ITEM_SPELL_KNOWN= ITEM_SPELL_KNOWN
 --local size= 10--字体大小
 
 local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
-        ['INVTYPE_WEAPON']= true,
-        ['INVTYPE_2HWEAPON']= true,
-        ['INVTYPE_RANGED']= true,
-        ['INVTYPE_RANGEDRIGHT']= true,
-    }
+    ['INVTYPE_WEAPON']= true,
+    ['INVTYPE_2HWEAPON']= true,
+    ['INVTYPE_RANGED']= true,
+    ['INVTYPE_RANGEDRIGHT']= true,
+}
 
 
 
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
 local FMTab={}--附魔
+
 EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(owner)
     for classID= 1, GetNumClasses() do
         local classInfo = C_CreatureInfo.GetClassInfo(classID)
@@ -60,12 +68,12 @@ EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(ow
         [ITEM_MOD_CR_LIFESTEAL_SHORT]= WoWTools_DataMixin.onlyChinese and '吸' or WoWTools_TextMixin:sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 3, true),
         [ITEM_MOD_CR_SPEED_SHORT]= WoWTools_DataMixin.onlyChinese and '速' or WoWTools_TextMixin:sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
     }
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
 end)
 
 
 
-local function Get_Class_Icon_da_Text(text)
+--[[local function Get_Class_Icon_da_Text(text)
     local t
     if text then
         for name, icon in pairs(ClassNameIconTab) do
@@ -75,7 +83,7 @@ local function Get_Class_Icon_da_Text(text)
         end
     end
     return t
-end
+end]]
 
 
 
@@ -354,8 +362,10 @@ local function Get_Info(tab)
         itemLink= itemKeyInfo.battlePetLink or WoWTools_ItemMixin:GetLink(itemID)
         itemQuality= itemKeyInfo.quality
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
-    end
 
+    elseif tab.itemID then
+        itemLink= select(2, C_Item.GetItemInfo(tab.itemID))
+    end
 
 
     if not itemLink then
@@ -363,15 +373,13 @@ local function Get_Info(tab)
     end
 
 
+    itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
 
-
-
-    itemID= itemID or C_Item.GetItemInfoInstant(itemLink) or C_Item.GetItemIDForItemInfo(itemLink)
-
-    local itemName, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
+    local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
     itemMinLevel= itemMinLevel or 1
 
-
+--套装：炎阳珠衣装
+    local transmogSetID= C_Item.GetItemLearnTransmogSet(itemLink)
 
     itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel or itemLevel2
     itemQuality= itemQuality or itemQuality2
@@ -399,6 +407,19 @@ local function Get_Info(tab)
             topRightText= '|T236994:0|t'
         end
 
+--套装：炎阳珠衣装
+    elseif transmogSetID then
+        local collect, numAll = select(2, WoWTools_CollectedMixin:SetID(transmogSetID))
+        if numAll then
+            if collect==numAll then
+                bottomLeftText= get_has_text(true)
+            elseif collect>0 then
+                bottomLeftText= '|cnWARNING_FONT_COLOR:'..collect..'/'..numAll
+            else
+                bottomLeftText= get_has_text(false)
+            end
+        end
+        
 --炉石
     elseif itemID==6948 then
         bottomLeftText=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GetBindLocation()), 3, 6, true)
@@ -727,7 +748,7 @@ local function Get_Info(tab)
             end
         end
 
---套装：炎阳珠衣装
+--[[套装：炎阳珠衣装
     elseif classID==0 and subclassID==8 and itemName:find(WARDROBE_SETS) then
         local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, '外观仅供(.-)使用'}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会"
         local text= dateInfo.text['外观仅供(.-)使用']
@@ -739,7 +760,7 @@ local function Get_Info(tab)
             topRightText= WoWTools_DataMixin.Icon.wow2
         elseif dateInfo.red then
             topRightText= format('|A:%s:0:0|a', 'talents-button-reset')
-        end
+        end]]
 
 --仅一个
     elseif itemStackCount==1 then

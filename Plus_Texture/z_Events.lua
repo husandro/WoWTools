@@ -1186,6 +1186,9 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_PerksProgram()
+    self:SetCheckBox(PerksProgramFrame.FooterFrame.ToggleHideArmor)
+    self:SetCheckBox(PerksProgramFrame.FooterFrame.ToggleAttackAnimation)
+
     self:SetScrollBar(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer)
     self:SetScrollBar(PerksProgramFrame.ProductsFrame.PerksProgramShoppingCartFrame.ItemList)
     self:SetScrollBar(PerksProgramFrame.ProductsFrame.PerksProgramProductDetailsContainerFrame.SetDetailsScrollBoxContainer)

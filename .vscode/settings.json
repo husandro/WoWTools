@@ -6491,7 +6491,8 @@
         "CompactRaidFrameManagerLeaveInstanceGroupButton",
         "RolePollPopupAcceptButton",
         "CompactRaidFrameManager_Expand",
-        "CompactRaidFrameManager_Collapse"
+        "CompactRaidFrameManager_Collapse",
+        "PerksProgramScrollItemDetailsMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

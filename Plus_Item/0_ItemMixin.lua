@@ -472,9 +472,9 @@ end
 function WoWTools_ItemMixin:GetItemID(itemLink)
     local itemID
     if itemLink then
-        itemID= C_Item.GetItemInfoInstant(itemLink)
+        itemID= C_Item.GetItemInfoInstant(itemLink) or C_Item.GetItemIDForItemInfo(itemLink)
         if not itemID then
-            itemID = itemLink and itemLink:match("|H.-:(%d+).-|h")
+            itemID = itemLink:match("|H.-:(%d+).-|h")
             if itemID then
                 itemID= tonumber(itemID)
             end
