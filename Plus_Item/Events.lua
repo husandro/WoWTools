@@ -94,7 +94,7 @@ function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
             end
         end
     end
-
+print('a')
 
     WoWTools_DataMixin:Hook(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'Update', function(frame)
         set_uptate(frame)

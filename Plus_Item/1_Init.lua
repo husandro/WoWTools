@@ -14,7 +14,7 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
-    
+
 
 --字体
     WoWTools_PanelMixin:OnlySlider({
@@ -82,7 +82,6 @@ local function Init()
             elseif WoWTools_DataMixin.Player.husandro then
                 print('物品信息，没有发现Frames', name)
             end
-            WoWTools_ItemMixin.Frames[name]= nil
         end
     end
     WoWTools_ItemMixin.Frames={}
@@ -147,7 +146,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif WoWToolsSave and WoWTools_ItemMixin.Events[arg1] then
-            if not not Save().no[arg1] then
+            if not Save().no[arg1] then
                 WoWTools_ItemMixin.Events[arg1](WoWTools_ItemMixin)
             end
             WoWTools_ItemMixin.Events[arg1]= nil
