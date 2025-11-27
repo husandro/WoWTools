@@ -8,6 +8,9 @@ end
 FIRST_NUMBER = "千";
 SECOND_NUMBER = "万";
 THIRD_NUMBER = "亿"
+
+--TooltipComparisonManager:SetItemTooltip(
+
 ]]
 
 local function Set_Value_Text(line)
