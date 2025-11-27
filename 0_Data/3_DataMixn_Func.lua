@@ -155,6 +155,7 @@ function WoWTools_DataMixin:MK(number, bit)
     if not number then
         return
     end
+
     if not self.onlyChinese then
         return BreakUpLargeNumbers(number)
     end
@@ -165,7 +166,7 @@ function WoWTools_DataMixin:MK(number, bit)
     if number>=1e8 then-- 1234 56789
         number= number/1e8
         t='m'-- '|cffff00ffm|r'
-    elseif number>= 1e4 and WoWTools_DataMixin.onlyChinese then
+    elseif number>= 1e4 then--and WoWTools_DataMixin.onlyChinese then
         number= number/1e4
         t='w'--'|cff00ff00w|r'
     elseif number>=1e3 then
