@@ -104,6 +104,8 @@ end
     self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.NoteBackground, 0.5)
     self:SetMenu(CommunitiesFrame.GuildMemberDetailFrame.RankDropdown)
     self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.OfficerNoteBackground, 0.5)
+    self:SetUIButton(CommunitiesFrame.GuildMemberDetailFrame.RemoveButton)
+    self:SetUIButton(CommunitiesFrame.GuildMemberDetailFrame.GroupInviteButton)
 
 
 --公会奖励，列表, 物品，GuildRewards.lua
