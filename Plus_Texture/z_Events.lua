@@ -752,12 +752,15 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, 0.5)
     self:SetFrame(ProfessionsFrame.CraftingPage.RankBar.ExpansionDropdownButton, {notAlpha=true})
     self:HideTexture(ProfessionsFrame.CraftingPage.RankBar.Border)
+
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, 0.5)
     self:SetNineSlice(ProfessionsFrame.CraftingPage.SchematicForm)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0.5)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
+    self:SetCheckBox(ProfessionsFrame.CraftingPage.SchematicForm.TrackRecipeCheckbox)
+
     self:SetFrame(ProfessionsFrame.CraftingPage.GearSlotDivider)
 
     self:SetFrame(ProfessionsFrame.CraftingPage.Prof1Gear0Slot, {show={[ProfessionsFrame.CraftingPage.Prof1Gear0Slot.icon]=true}})
