@@ -182,7 +182,7 @@ local function Set_Tooltip(tooltip, value, vaName, isChat, isCommand)
         local va= _G[format(str, emoteIndex and ''..emoteIndex or value, i)]
         if va then
             va= (va==vaName and '|cffffffff' or '')..va..' '
-            tooltip:AddDoubleLine(va, i)
+            tooltip:AddDoubleLine(va, '|cff626262'..i)
         else
             break
         end

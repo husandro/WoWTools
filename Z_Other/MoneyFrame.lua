@@ -1,10 +1,5 @@
 
 --更改, 金, mk
-if BreakUpLargeNumbers(12000)~= '12000' then
-    return
-end
-
-
 local function Init()
 
     local function GetMoneyFrame(frameOrName)
@@ -66,7 +61,7 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
-        WoWToolsSave['Other_MoneyFrame']= WoWToolsSave['Other_MoneyFrame'] or {}
+        WoWToolsSave['Other_MoneyFrame']= WoWToolsSave['Other_MoneyFrame'] or {disabled=BreakUpLargeNumbers(12000)~= '12000'}
 
         --添加控制面板
         WoWTools_PanelMixin:OnlyCheck({
