@@ -22,6 +22,8 @@ local function Save()
     return WoWToolsSave['Plus_EmoteButton']
 end
 
+local Init_Button
+
 local function SaveUse(name)
     return WoWToolsPlayerDate['EmoteButton'][name]
 end
@@ -105,7 +107,7 @@ local function Rest_Button()
     function()
         WoWToolsSave['Plus_EmoteButton']= CopyTable(P_Save)
         MainButton:set_point()
-        MainButton:Init_Button()
+        Init_Button()
     end)
 end
 local function On_Click(self)
@@ -234,12 +236,12 @@ local function Init_Button_Menu(self, root)
                     local va= s:GetEditBox():GetText()
                     SaveUse('use')[value]= SaveUse('use')[value] or {}
                     SaveUse('use')[value].name= va
-                    MainButton:Init_Button()
+                    Init_Button()
                 end,
                 OnAlt=function()
                     if SaveUse('use')[value] then
                         SaveUse('use')[value].name=nil
-                        MainButton:Init_Button()
+                        Init_Button()
                     end
                 end,
             }
@@ -268,12 +270,12 @@ local function Init_Button_Menu(self, root)
                     local va= s:GetEditBox():GetText()
                     SaveUse('use')[value]= SaveUse('use')[value] or {}
                     SaveUse('use')[value].add= va
-                    MainButton:Init_Button()
+                    Init_Button()
                 end,
                 OnAlt=function()
                     if SaveUse('use')[value] then
                         SaveUse('use')[value].add=nil
-                        MainButton:Init_Button()
+                        Init_Button()
                     end
                 end,
                 EditBoxOnTextChanged= function(s)
@@ -328,7 +330,7 @@ end]]
 
 
 
-local function Init_Button()
+function Init_Button()
     if WoWTools_FrameMixin:IsLocked(MainButton) then
         print(addName,'|cnWARNING_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_COOLDOWN_VIEWER_VISIBLE_SETTING_IN_COMBAT)
         MainButton:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -1438,8 +1440,3 @@ MainButton:SetScript('OnEvent', function(self, event, arg1)
         Init()
     end
 end)
-
-
-function MainButton:Init_Button()
-    Init_Button()
-end

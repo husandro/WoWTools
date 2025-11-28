@@ -1,9 +1,10 @@
 --这个功能，灵感来源：ChatCopyPaste 插件
 local function Save()
-    return WoWToolsSave['ChatButton_HyperLink'] or {}
+    return WoWToolsSave['Plus_ChatCopy'] or {}
 end
 
 local Init_Button
+local addName
 
 local JunkTabs={}
 for _, name in pairs({--. ( ) + - * ? [ ^
@@ -85,19 +86,20 @@ local function Get_Text(index)
 	local frame=_G["ChatFrame" .. index]
 	local numMessage= frame and frame:GetNumMessages() or 0
 
+
 	if numMessage==0 then
 		return
 	end
 
 	local tab={}
-	local copyChatSetText= Save().copyChatSetText--不处理，文本
+	local isSetText= Save().isSetText--不处理，文本
 
 	for i = 1, numMessage do
 		local currentMsg, r, g, b, chatTypeID = frame:GetMessageInfo(i)
 
 		currentMsg= currentMsg or ''
 
-		if copyChatSetText then--处理，文本
+		if isSetText then--处理，文本
 
 			local colorCode = false
 			currentMsg = removeChatJunk(currentMsg)
@@ -141,6 +143,10 @@ end
 
 
 local function Init_Menu(frame, root)
+    if not frame:IsMouseOver() then
+        return
+    end
+
 	local index= frame:GetName():match('%d+') or '1'
 
 	local self= _G['ChatFrame'..index]
@@ -174,9 +180,9 @@ local function Init_Menu(frame, root)
 	sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '显示按钮' or SHOW_QUICK_BUTTON,
 	function()
-		return Save().showCopyChatButton
+		return Save().isShowButton
 	end, function()
-		Save().showCopyChatButton= not Save().showCopyChatButton and true or false
+		Save().isShowButton= not Save().isShowButton and true or false
 		for i= 1, NUM_CHAT_WINDOWS do
 			Init_Button(i)
 		end
@@ -186,9 +192,9 @@ local function Init_Menu(frame, root)
 	sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '处理文本' or 'Processing text',
 	function()
-			return Save().copyChatSetText
+			return Save().isSetText
 	end, function()
-		Save().copyChatSetText= not Save().copyChatSetText and true or nil
+		Save().isSetText= not Save().isSetText and true or nil
 	end)
 
 --聊天记录
@@ -196,11 +202,11 @@ local function Init_Menu(frame, root)
 	sub2=sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '/聊天记录' or SLASH_CHATLOG2,
 	function()
-		return LoggingChat()
+		return C_ChatInfo.IsLoggingChat()
 	end, function()
 		--WoWTools_ChatMixin:Say(SLASH_CHATLOG2)
 		local info = ChatTypeInfo["SYSTEM"];
-		if ( LoggingChat() ) then
+		if C_ChatInfo.IsLoggingChat() then
 			LoggingChat(false);
 			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '聊天记录已被禁止。' or CHATLOGDISABLED, info.r, info.g, info.b, info.id);
 		else
@@ -216,22 +222,22 @@ local function Init_Menu(frame, root)
 	sub2=sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '/战斗日志' or SLASH_COMBATLOG1,
 	function()
-		return LoggingCombat()
+		return C_ChatInfo.IsLoggingCombat()
 	end, function()
-		--WoWTools_ChatMixin:Say(SLASH_COMBATLOG1)
-		local info = ChatTypeInfo["SYSTEM"];
-		if ( LoggingCombat() ) then
-			LoggingCombat(false);
-			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '战斗记录已被禁止。' or COMBATLOGDISABLED, info.r, info.g, info.b, info.id);
+		local t
+		if C_ChatInfo.IsLoggingCombat() then
+			LoggingCombat(false)
+			t= WoWTools_DataMixin.onlyChinese and '战斗记录已被禁止。' or COMBATLOGDISABLED
 		else
-			LoggingCombat(true);
-			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED, info.r, info.g, info.b, info.id);
+			LoggingCombat(true)
+			t= WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED
 		end
+		local info = ChatTypeInfo["SYSTEM"]
+		DEFAULT_CHAT_FRAME:AddMessage(t, info.r, info.g, info.b, info.id);
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED)
 	end)
-
 
 --打开，选项面板
 	sub:CreateDivider()
@@ -250,7 +256,7 @@ end
 
 
 function Init_Button(index)
-	local enabled= Save().showCopyChatButton and true or false
+	local enabled= Save().isShowButton and true or false
 	local frame= _G['ChatFrame'..index]
 	if not frame then
 		return
@@ -328,7 +334,7 @@ end
 
 
 local function Init()
-	if Save().showCopyChatButton then
+	if Save().isShowButton then
 		for index = 1, NUM_CHAT_WINDOWS do
 			Init_Button(index)
 		end
@@ -365,11 +371,7 @@ local function Init()
 	end)
 
 
-	Menu.ModifyMenu("MENU_FCF_TAB", function(self, ...)
-		if self:IsMouseOver() then
-			Init_Menu(self, ...)
-		end
-	end)
+	Menu.ModifyMenu("MENU_FCF_TAB", Init_Menu)
 
 
 	Init=function()end
@@ -387,12 +389,40 @@ end
 
 
 
+local frame= CreateFrame('Frame')
+frame:RegisterEvent('ADDON_LOADED')
 
-function WoWTools_HyperLink:Init_CopyChat()
-	Init()
-end
+frame:SetScript('OnEvent', function(self, event, arg1)
+    if arg1~= 'WoWTools' then
+        return
+    end
 
+    WoWToolsSave['Plus_ChatCopy']= WoWToolsSave['Plus_ChatCopy'] or {isShowButton=true}
+    addName= '|A:poi-workorders:0:0|a'..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
 
+    WoWTools_PanelMixin:OnlyCheck({
+        name= addName,
+        GetValue= function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled= not Save().disabled and true or nil
+            Init()
+            print(
+                addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
+        end,
+        layout= WoWTools_ChatMixin.Layout,
+        category= WoWTools_ChatMixin.Category,
+    })
+
+    if not Save().disabled then
+        Init()
+    end
+
+    self:SetScript('OnEvent', nil)
+    self:UnregisterEvent(event)
+end)
 
 
 

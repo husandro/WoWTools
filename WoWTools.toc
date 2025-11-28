@@ -536,7 +536,7 @@ ChatButton_1_HyperLink\z_Event_Sound.lua
 ChatButton_1_HyperLink\z_Reload_Button.lua
 ChatButton_1_HyperLink\z_Talking.lua
 ChatButton_1_HyperLink\z_Welcome.lua
-ChatButton_1_HyperLink\z_CopyChat.lua
+
 
 
 ##ROLL
@@ -602,3 +602,4 @@ ChatButton_11_Combat\Menu.lua
 ChatButton_11_Combat\TrackButton.lua
 
 ChatButton\z_Emote.lua
+ChatButton\z_CopyChat.lua

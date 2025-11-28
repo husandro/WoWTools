@@ -120,6 +120,9 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             Save().emojiUIParent= nil
             Save().emojiLine= nil
 
+            Save().showCopyChatButton= nil
+            Save().copyChatSetText= nil
+
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
             WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
             WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
@@ -142,7 +145,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         WoWTools_HyperLink:Init_Welcome()--欢迎加入
         WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
         --WoWTools_HyperLink:Init_EmojiButton()
-        WoWTools_HyperLink:Init_CopyChat()
+        --WoWTools_HyperLink:Init_CopyChat()
     end
 end)
 
