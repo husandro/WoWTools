@@ -92,6 +92,8 @@ function WoWTools_TextureMixin.Events:Blizzard_RaidFrame()
     self:SetFrame(RaidInfoFrame.Header)
     self:SetAlphaColor(RaidInfoDetailFooter)
     self:SetScrollBar(RaidInfoFrame)
+    self:SetUIButton(RaidInfoExtendButton)
+    self:SetUIButton(RaidInfoCancelButton)
 end
 
 
