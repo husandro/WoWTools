@@ -146,6 +146,8 @@ local function Create_Button(tooltip)
         self.id=nil
         self:SetShown(false)
     end
+
+    WoWTools_TextureMixin:SetButton(tooltip.WoWHeadButton)
 end
 
 
