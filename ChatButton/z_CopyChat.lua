@@ -228,10 +228,13 @@ local function Init_Menu(frame, root)
 		if C_ChatInfo.IsLoggingCombat() then
 			LoggingCombat(false)
 			t= WoWTools_DataMixin.onlyChinese and '战斗记录已被禁止。' or COMBATLOGDISABLED
+			Save().IsLoggingCombat= false
 		else
 			LoggingCombat(true)
 			t= WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED
+			Save().IsLoggingCombat= true
 		end
+		
 		local info = ChatTypeInfo["SYSTEM"]
 		DEFAULT_CHAT_FRAME:AddMessage(t, info.r, info.g, info.b, info.id);
 	end)
@@ -334,6 +337,18 @@ end
 
 
 local function Init()
+	local isLoggingCombat= C_ChatInfo.IsLoggingCombat() and true or false
+	local loggingCombat = Save().IsLoggingCombat
+	if loggingCombat~=nil and isLoggingCombat ~=loggingCombat then
+		LoggingCombat(loggingCombat)
+	end
+
+	local isLoggingChat= C_ChatInfo.IsLoggingChat() and true or false
+	local loggingChat= Save().IsLoggingChat
+	if loggingChat~=nil and loggingChat~=isLoggingChat then
+		LoggingChat(loggingChat)
+	end
+
 	if Save().isShowButton then
 		for index = 1, NUM_CHAT_WINDOWS do
 			Init_Button(index)
