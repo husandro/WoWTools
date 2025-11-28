@@ -202,7 +202,7 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     FriendsFrame.IgnoreListWindow:SetPoint('BOTTOMLEFT', FriendsFrame, 'BOTTOMRIGHT')
     self:Setup(FriendsFrame.IgnoreListWindow, {frame=FriendsFrame})
 
-    WoWTools_TextureMixin:SetButton(FriendsFrame.IgnoreListWindow.ResizeButton)
+    --WoWTools_TextureMixin:SetButton(FriendsFrame.IgnoreListWindow.ResizeButton)
 --通告
     self:Setup(FriendsFrameBattlenetFrame.BroadcastFrame, {frame=FriendsFrame})
 end
@@ -268,6 +268,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(FriendsFrame.IgnoreListWindow)
     self:HideTexture(FriendsFrame.IgnoreListWindow.Bg)
     self:SetNineSlice(FriendsFrame.IgnoreListWindow.Inset)
+    self:SetUIButton(FriendsFrame.IgnoreListWindow.UnignorePlayerButton)
 
 --通告
     self:SetFrame(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
