@@ -356,6 +356,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
         btn.NormalTexture:SetAlpha(alpha)
         btn.HighlightTexture:SetAlpha(alpha)
     end)
+
     self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBackground)
     self:SetAlphaColor(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBorder, nil, nil, 0.3)
 

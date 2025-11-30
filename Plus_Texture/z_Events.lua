@@ -13,6 +13,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
     self:HideTexture(ClassTrainerFrameBottomInset.Bg)
     self:SetNineSlice(ClassTrainerFrameBottomInset)
 
+    self:SetStatusBar(ClassTrainerStatusBar)
     self:HideTexture(ClassTrainerStatusBarBackground)
     self:SetAlphaColor(ClassTrainerStatusBarRight, nil, nil, 0.3)
     self:SetAlphaColor(ClassTrainerStatusBarLeft, nil, nil, 0.3)

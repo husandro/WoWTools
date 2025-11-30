@@ -1,7 +1,9 @@
 local function Save()
     return WoWToolsSave['Plus_SellBuy']
 end
-
+local function RepairSave()
+    return WoWToolsPlayerDate['RepairMoney']
+end
 
 
 
@@ -384,14 +386,21 @@ local function Init_Menu(self, root)
         end
     end)
 
-    sub:CreateTitle(Save().repairItems.date)
+    local repDate= RepairSave().date
+    local repNum= RepairSave().num or 0
+    local repGuild= RepairSave().guild or 0
+    local repPlayer= RepairSave().player or 0
+
+
+    sub:CreateTitle(repDate)
     sub:CreateSpacer()
-    sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..Save().repairItems.num..' '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
-    sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild))
-    sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.player))
+
+    sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..repNum..' '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+    sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(repGuild))
+    sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(repPlayer))
 
     sub:CreateSpacer()
-    sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild+Save().repairItems.player))
+    sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(repGuild+repPlayer))
 
     sub:CreateDivider()
     sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..': '..C_CurrencyInfo.GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0))

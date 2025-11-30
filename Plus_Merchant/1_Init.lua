@@ -16,7 +16,7 @@ local P_Save={
     numLine=6,--行数
 
 
-    repairItems={date=date('%x'), player=0, guild=0, num=0},
+    --repairItems={date=date('%x'), player=0, guild=0, num=0},旧数据，已不用
 
     --notItemInfo=true,--禁用物品信息
     --notIsUsableAlpha=0.5,--无法使用物品，alpha
@@ -89,6 +89,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_SellBuy']= WoWToolsSave['Plus_SellBuy'] or P_Save
             P_Save= nil
 
+            if Save().repairItems then
+                WoWToolsPlayerDate['RepairMoney']= Save().repairItems
+                Save().repairItems= nil
+            else
+                WoWToolsPlayerDate['RepairMoney']= WoWToolsPlayerDate['RepairMoney'] or {date=date('%x'), player=0, guild=0, num=0}
+            end
+            
             if Save().buyItems then--清除以前数据
                 --上次的BUG
                 for guid, tab in pairs(Save().buyItems) do

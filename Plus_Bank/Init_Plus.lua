@@ -127,8 +127,8 @@ local function Init()
         BankFrameTitleText:SetText(
             name
             ..(numAll and numAll>0 and
-                ' |cnGREEN_FONT_COLOR:'..freeAll..'|r/'..numAll..' |cnGREEN_FONT_COLOR:'
-                ..math.modf(freeAll/numAll*100)..'%'
+                ' |cnGREEN_FONT_COLOR:'..freeAll..'|r/'..numAll
+                ..(freeAll==0 and ' |cff626262' or ' |cnGREEN_FONT_COLOR:')..math.modf(freeAll/numAll*100)..'%'
                 or ''
             )
         )
@@ -243,7 +243,7 @@ local function AddBankTabSettingsToTooltip(self, tabData)
     if num >0 then
         GameTooltip_AddNormalLine(GameTooltip,
             (WoWTools_DataMixin.onlyChinese and '空置' or DELVES_CURIO_SLOT_EMPTY)..': '
-            ..free..'/'..num..' '..math.modf(free/num*100)..'%'
+            ..free..'/'..num..' '..(free==0 and '|cff626262' or '')..math.modf(free/num*100)..'%'
         )
     end
     GameTooltip_AddNormalLine(GameTooltip,
@@ -343,7 +343,7 @@ local function Init_TabSystem()
                     free= data.ID and C_Container.GetContainerNumFreeSlots(data.ID)
                 end
                 self.FlagsText:SetText(flag or '')
-                self.FreeText:SetText(free or '')
+                self.FreeText:SetText(free==0 and '|cff626262'..free or free or '')
             end
         end
         local r,g,b

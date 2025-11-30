@@ -6503,7 +6503,8 @@
         "MONEY_ICON_WIDTH_SMALL",
         "MONEY_BUTTON_SPACING_SMALL",
         "AchievementFrame_GetCategoryTotalNumAchievements",
-        "GUILD_ACHIEVEMENT_FUNCTIONS"
+        "GUILD_ACHIEVEMENT_FUNCTIONS",
+        "ClassTrainerStatusBar"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -3,7 +3,7 @@ local function Save()
 end
 
 local function RepairSave()
-    return WoWToolsSave['Plus_SellBuy'].repairItems
+    return WoWToolsPlayerDate['RepairMoney']
 end
 
 
@@ -24,10 +24,13 @@ local function Init_Auto_Repair()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave().date)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave().num or 0)..' '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+        local date= RepairSave().date
+        local num= RepairSave().num or 0
         local guild= RepairSave().guild or 0
         local player= RepairSave().player or 0
+
+        GameTooltip:AddDoubleLine('|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), date)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, num..' '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '公会' or GUILD, C_CurrencyInfo.GetCoinTextureString(guild))
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '玩家' or PLAYER, C_CurrencyInfo.GetCoinTextureString(player))
         if guild>0 and player>0 then
@@ -81,7 +84,7 @@ local function Init_Auto_Repair()
                     '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r',
                     C_CurrencyInfo.GetCoinTextureString(Co)
                 )
-                
+
             else
                 if GetMoney()>=Co then
                     do

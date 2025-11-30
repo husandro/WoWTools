@@ -93,6 +93,7 @@ local function Init(btn)
     btn.typeItems={}
 
     for _, data in pairs(ModifiedMenuTab) do
+        WoWTools_DataMixin:Load(data.itemID, 'item')
         local icon= btn:CreateTexture(nil,'BORDER', nil, 1)
         icon:SetSize(10, 10)
         icon:SetTexture(data.icon)
@@ -131,6 +132,7 @@ local function Init(btn)
         local toyName, itemName
 
         for _, data in pairs(ModifiedMenuTab) do
+            WoWTools_DataMixin:Load(data.itemID, 'item')
             itemName= C_Item.GetItemNameByID(data.itemID)
             toyName= select(2, C_ToyBox.GetToyInfo(data.itemID))
             if toyName or not itemName then
