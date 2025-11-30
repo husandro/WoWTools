@@ -176,6 +176,7 @@ local function Init()
     })]]
     GossipButton.texture= GossipButton:CreateTexture(nil, 'BORDER')
     GossipButton.texture:SetAllPoints()
+    GossipButton.texture:SetAtlas('SpecDial_LastPip_BorderGlow')
 
 --BG
     WoWTools_TextureMixin:CreateBG(GossipButton, {isColor=true,
@@ -213,12 +214,13 @@ local function Init()
     end
     function GossipButton:set_Texture()--设置，图片 
         if Save().gossip then
-            self.texture:SetAtlas('SpecDial_LastPip_BorderGlow')
+            --self.texture:SetAtlas('SpecDial_LastPip_BorderGlow')
             _G['WoWToolsOpenGossipIconTextButton']:SetNormalAtlas('SpecDial_LastPip_BorderGlow')
         else
-            self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+            --self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
             _G['WoWToolsOpenGossipIconTextButton']:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         end
+        self.texture:SetDesaturated(not Save().gossip)
         self:set_Alpha()
     end
     function GossipButton:tooltip_Show()

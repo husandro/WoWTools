@@ -181,6 +181,7 @@ local function Init()
 
     QuestButton.texture= QuestButton:CreateTexture(nil, 'BORDER')
     QuestButton.texture:SetAllPoints()
+    QuestButton.texture:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
 
     QuestButton.Text= QuestButton:CreateFontString(nil, 'BORDER', 'GameFontNormalSmall2')
     QuestButton.Text:SetJustifyH('RIGHT')
@@ -257,11 +258,12 @@ local function Init()
         self.texture:SetAlpha(Save().quest and 1 or 0.3)
     end
     function QuestButton:set_Texture()--设置，图片
-        if Save().quest then
-            self.texture:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')--AutoQuest-Badge-Campaign
-        else
-            self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-        end
+        self.texture:SetDesaturated(not Save().quest)
+        --if Save().quest then
+            --self.texture:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')--AutoQuest-Badge-Campaign
+        --else
+            --self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        --end
         self:set_Alpha()
     end
 
