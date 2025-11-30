@@ -224,7 +224,7 @@ local function Init(isShow)
                 end
 --GossipFrame 有多少已设置
                 self.chat.Text:SetFormattedText('%s%d',
-                    gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff626262', 
+                    gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff626262',
                     gossipNum
                 )
 
@@ -401,7 +401,7 @@ local function Init(isShow)
     function List:delete_gossip(gossipID)
         if gossipID and PlayerDataSave()[gossipID] then
             local info=PlayerDataSave()[gossipID]
-            PlayerDataSave()[gossipID]=nil            
+            PlayerDataSave()[gossipID]=nil
             self:set_list()
             WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
             print(
@@ -1015,10 +1015,10 @@ local function Init(isShow)
     end)
 
 
-    
+
     List:set_list()
     List:set_color()
-    WoWTools_GossipMixin:UpdateGossip()()--更新GossipFrame
+    WoWTools_GossipMixin:UpdateGossip()--更新GossipFrame
 
 
 

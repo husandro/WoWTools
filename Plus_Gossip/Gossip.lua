@@ -1,5 +1,5 @@
 
-local GossipButton, GButton2, NumGossipCNLabel
+local GossipButton, NumGossipCNLabel
 local SelectGissipIDTab= {}--GossipFrame，显示时用
 local function Save()
     return WoWToolsSave['Plus_Gossip']
@@ -206,7 +206,7 @@ local function Init()
     function GossipButton:settings()--设置，缩放
         self:SetScale(Save().scale or 1)
         self:SetFrameStrata(Save().strata or 'MEDIUM')
-        self.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0.5)
+        self.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
     function GossipButton:set_Alpha()
         self.texture:SetAlpha(Save().gossip and 1 or 0.3)
@@ -214,10 +214,10 @@ local function Init()
     function GossipButton:set_Texture()--设置，图片 
         if Save().gossip then
             self.texture:SetAtlas('SpecDial_LastPip_BorderGlow')
-            GButton2:SetNormalAtlas('SpecDial_LastPip_BorderGlow')
+            _G['WoWToolsOpenGossipIconTextButton']:SetNormalAtlas('SpecDial_LastPip_BorderGlow')
         else
             self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-            GButton2:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+            _G['WoWToolsOpenGossipIconTextButton']:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         end
         self:set_Alpha()
     end
@@ -413,7 +413,7 @@ local function Init()
 
 
 --打开，自定义，对话，文本，按钮
-    GButton2= CreateFrame('Button', 'WoWToolsOpenGossipIconTextButton', GossipFrame, 'WoWToolsButtonTemplate')
+    local GButton2= CreateFrame('Button', 'WoWToolsOpenGossipIconTextButton', GossipFrame, 'WoWToolsButtonTemplate')
 
     GButton2:SetAlpha(0.3)
     GButton2:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip:Hide() end)
