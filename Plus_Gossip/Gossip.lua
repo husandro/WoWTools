@@ -178,7 +178,13 @@ local function Init()
     GossipButton.texture:SetAllPoints()
 
 --BG
-    WoWTools_TextureMixin:CreateBG(GossipButton, {isColor=true, point=true, alpha=Save().bgAlpha})
+    WoWTools_TextureMixin:CreateBG(GossipButton, {isColor=true,
+        point=function(bg)
+            bg:SetPoint('BOTTOMRIGHT', 2, -2)
+            bg:SetPoint('TOPRIGHT', 2, 1)
+        end,
+        lpha=Save().bgAlpha
+    })
 
     function GossipButton:Is_ShowOptionsFrame()
         local frame=_G['WoWToolsGossipTextIconOptionsFrame']

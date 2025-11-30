@@ -8,7 +8,9 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
             self:SetFrame(_G[frame].Header.MinimizeButton, {alpha=1, index=1})
         end
     end
-    self:SetFrame(ObjectiveTrackerFrame.Header.MinimizeButton, {alpha=1, index=1})
+    --self:SetFrame(ObjectiveTrackerFrame.Header.MinimizeButton, {alpha=1, index=1})
+    self:SetButton(ObjectiveTrackerFrame.Header.MinimizeButton, {alpha=1})
+    
 
     self:SetAlphaColor(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, 0.3)
 

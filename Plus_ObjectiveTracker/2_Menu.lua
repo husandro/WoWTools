@@ -196,10 +196,8 @@ end
 
 
 local function Init()
-    local MenuButton= WoWTools_ButtonMixin:Menu(ObjectiveTrackerFrame.Header, {
-        size=20,
-        name='WoWToolsObjectiveTrackerFrameMenuButton'
-    })
+    local MenuButton=CreateFrame('DropdownButton', 'WoWToolsObjectiveTrackerFrameMenuButton', ObjectiveTrackerFrame.Header, 'WoWToolsMenuTemplate') --WoWTools_ButtonMixin:Menu(ObjectiveTrackerFrame.Header, {size=20,name='WoWToolsObjectiveTrackerFrameMenuButton'})
+    MenuButton:SetSize(20,20)
 
     function MenuButton:set_scale()
         if not Is_Locked() then
