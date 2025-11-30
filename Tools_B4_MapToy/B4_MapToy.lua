@@ -370,6 +370,7 @@ local function Init()
         end
 
         for _, info in pairs(Tab) do
+            WoWTools_DataMixin:Load(info.itemID, 'item')
             local new= Is_Completed(info)
             if new.isNotChecked==nil and new.num>0 then
                 self:Set_Random_Value(info.itemID, info.achievements, nil)

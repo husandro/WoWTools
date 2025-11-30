@@ -74,6 +74,7 @@ end
 local function checkItem(self)--检测物品
     self.itemID=nil
     for itemID in pairs(Save().Mounts[ITEMS]) do
+        WoWTools_DataMixin:Load(itemID, 'item')
         if C_Item.GetItemCount(itemID , false, true, true, false)>0 and C_PlayerInfo.CanUseItem(itemID) then
             self.itemID=itemID
             break
@@ -97,6 +98,7 @@ local function checkMount()--检测坐骑
         else
             MountTab[name]= {}
             for spellID, tab in pairs(Save().Mounts[name] or {}) do
+                WoWTools_DataMixin:Load(spellID, 'spell')
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
@@ -274,7 +276,7 @@ local function setClickAtt(self)--设置 Click属性
             end
             self:SetAttribute('unit', nil)
         else
-           WoWTools_DataMixin:Load(self.itemID, 'item')
+            WoWTools_DataMixin:Load(self.itemID, 'item')
             self.Combat=true
         end
     else

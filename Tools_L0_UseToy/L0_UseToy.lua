@@ -88,6 +88,7 @@ local function Set_Alt_Menu(root, itemID)
     local sub
     root:CreateDivider()
     for _, info in pairs(ModifiedMenuTab) do
+        WoWTools_DataMixin:Load(info.itemID, 'item')
         sub=root:CreateCheckbox(info.type..'|T'..(select(5, C_Item.GetItemInfoInstant(info.itemID)) or 0)..':0|t',
             function(data)
                 return Save()[data.type]== data.itemID2
@@ -346,6 +347,7 @@ local function Init_Menu(self, root)
         {SetValue=function()
             local n=0
             for itemID in pairs(Save().items) do
+                WoWTools_DataMixin:Load(itemID, 'item')
                 if not PlayerHasToy(itemID) then
                     Save().items[itemID]=nil
                     n=n+1
@@ -563,6 +565,7 @@ local function Init()
             return
         end
         for itemID, type in pairs(ModifiedTab) do
+            WoWTools_DataMixin:Load(itemID, 'item')
             self:SetAttribute(type.."-toy1",  itemID)
         end
     end
@@ -623,6 +626,7 @@ local function Init()
         GameTooltip:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
+            WoWTools_DataMixin:Load(data.itemID, 'item')
             name, col=WoWTools_ItemMixin:GetName(data.itemID)
             col= col or ''
             GameTooltip:AddDoubleLine(col..name, col..data.type..'+'..WoWTools_DataMixin.Icon.left)
@@ -708,6 +712,7 @@ local function Init()
     function ToyButton:Get_Random_Data()--取得数据库, {数据1, 数据2, 数据3, ...}
         local tab={}
         for itemID in pairs(Save().items) do
+            WoWTools_DataMixin:Load(itemID, 'item')
             if PlayerHasToy(itemID) then
                 local duration= select(2, C_Item.GetItemCooldown(itemID))
                 if duration and duration<3 then
