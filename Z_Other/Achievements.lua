@@ -221,6 +221,14 @@ local function Set_AchievementTemplate(self, show)
 end
 
 
+
+
+
+
+
+
+
+
 local function Init_Achievement()
 --选中，提示
     local back= CreateFrame('Button', 'WoWToolsAchievementBackButton', AchievementFrame, 'WoWToolsButtonTemplate')
@@ -297,10 +305,6 @@ local function Init_Achievement()
             category=WoWTools_OtherMixin.Category
         })
     end)
-
-
-
-
 
 
 
@@ -417,6 +421,8 @@ local function Init_Achievement()
         end)
         btn.Shield:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     end)
+
+
 
     WoWTools_DataMixin:Hook(AchievementTemplateMixin, 'Init', function(btn)
         Set_AchievementTemplate(btn, nil)
@@ -582,7 +588,7 @@ local function Init_Achievement()
     end)
 
 
-
+--为目录，添加 完成/总计
     WoWTools_DataMixin:Hook(AchievementCategoryTemplateMixin, 'OnLoad', function(frame)
         frame.completedBar= CreateFrame('StatusBar', nil, frame.Button)
         frame.completedBar:SetHeight(2)
@@ -604,8 +610,8 @@ local function Init_Achievement()
         else
             numAchievements, numCompleted = AchievementFrame_GetCategoryTotalNumAchievements(id, true);
         end
-        numCompleted= numCompleted or 0
-        if numAchievements and numAchievements>0 and numAchievements> numCompleted then
+
+        if numAchievements and numAchievements>0 and numCompleted and numAchievements> numCompleted then
             local value= numCompleted/numAchievements*100
             frame.completedBar:SetValue(value)
             frame.completedBar:SetShown(true)
@@ -614,10 +620,12 @@ local function Init_Achievement()
             else
                 frame.completedLable:SetFormattedText('%d', numAchievements-numCompleted)
             end
-            if elementData.isChild then
-                frame.completedLable:SetFontObject('GameFontWhiteTiny2')
+            if isSummary then
+                frame.completedLable:SetTextColor(WARNING_FONT_COLOR:GetRGB())
+            elseif elementData.isChild then
+                frame.completedLable:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
             else
-                frame.completedLable:SetFontObject('GameFontNormalTiny2')
+                frame.completedLable:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
             end
         else
             frame.completedBar:SetValue(0)
@@ -625,6 +633,28 @@ local function Init_Achievement()
             frame.completedLable:SetText('')
         end
     end)
+
+--近期成就，添加，百份比
+    local function Get_ValeText(total, completed)
+        if total and total>0 and completed then
+            return WoWTools_DataMixin:MK(completed, 3).."/"..WoWTools_DataMixin:MK(total, 3)
+                ..(completed==total and '|cnWARNING_FONT_COLOR:' or '|cffffd200')
+                ..format(' %d%%', completed/total*100)
+        end
+    end
+    WoWTools_DataMixin:Hook('AchievementFrameSummaryCategory_OnShow', function(self)
+        local text = Get_ValeText(AchievementFrame_GetCategoryTotalNumAchievements(self:GetID(), true))
+        if text then
+            self.Text:SetText(text)
+        end
+    end)
+    WoWTools_DataMixin:Hook('AchievementFrameSummaryCategoriesStatusBar_Update', function()
+        local text = Get_ValeText(GetNumCompletedAchievements(InGuildView()))
+        if text then
+            AchievementFrameSummaryCategoriesStatusBarText:SetText(text            )
+        end
+    end)
+
 
     Init_Achievement=function()end
 end

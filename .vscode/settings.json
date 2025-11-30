@@ -6504,7 +6504,10 @@
         "MONEY_BUTTON_SPACING_SMALL",
         "AchievementFrame_GetCategoryTotalNumAchievements",
         "GUILD_ACHIEVEMENT_FUNCTIONS",
-        "ClassTrainerStatusBar"
+        "ClassTrainerStatusBar",
+        "AchievementFrameSummaryCategory_OnShow",
+        "AchievementFrameSummaryCategoriesStatusBar_Update",
+        "AchievementFrameSummaryCategoriesStatusBarText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
