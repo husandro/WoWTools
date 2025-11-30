@@ -3,7 +3,9 @@ local function Save()
 end
 local addName
 
-
+local function InGuildView()
+    return AchievementFrame.selectedTab == 2
+end
 
 
 local function Get_InstanceID()
@@ -211,7 +213,7 @@ end
 
 --已完成，背景 alpha
 local function Set_AchievementTemplate(self, show)
-    local alpha= Save().completedAlpha or 0
+    local alpha= Save().completedAlpha or 1
     alpha= (self.completed and not self:IsSelected() and not show) and alpha or 1
 
     WoWTools_TextureMixin:SetFrame(self, {alpha=alpha, notColor=true})
@@ -282,7 +284,7 @@ local function Init_Achievement()
         end)
 
         WoWTools_MenuMixin:BgAplha(sub, function()
-            return Save().completedAlpha or 0
+            return Save().completedAlpha or 1
         end, function(value)
             Save().completedAlpha=value
         end, function()
@@ -581,10 +583,50 @@ local function Init_Achievement()
 
 
 
+    WoWTools_DataMixin:Hook(AchievementCategoryTemplateMixin, 'OnLoad', function(frame)
+        frame.completedBar= CreateFrame('StatusBar', nil, frame.Button)
+        frame.completedBar:SetHeight(2)
+        frame.completedBar:SetPoint('BOTTOMLEFT', frame.Button, 9, 0)
+        frame.completedBar:SetPoint('BOTTOMRIGHT', frame.Button, -9, 0)
+        frame.completedBar:SetMinMaxValues(0, 100)
+        WoWTools_TextureMixin:SetStatusBar(frame.completedBar)
 
+        frame.completedLable= frame.Button:CreateFontString(nil, 'BORDER','GameFontNormalTiny2')
+        frame.completedLable:SetPoint('BOTTOMRIGHT', frame.Button)
+    end)
 
+    WoWTools_DataMixin:Hook(AchievementCategoryTemplateMixin, 'Init', function(frame, elementData)
+        local id = elementData.id
+	    local numAchievements, numCompleted
+        local isSummary= id == "summary"--总览
+        if isSummary then
+            numAchievements, numCompleted = GetNumCompletedAchievements(InGuildView())
+        else
+            numAchievements, numCompleted = AchievementFrame_GetCategoryTotalNumAchievements(id, true);
+        end
+        numCompleted= numCompleted or 0
+        if numAchievements and numAchievements>0 and numAchievements> numCompleted then
+            local value= numCompleted/numAchievements*100
+            frame.completedBar:SetValue(value)
+            frame.completedBar:SetShown(true)
+            if isSummary then
+                frame.completedLable:SetFormattedText('%d%%', numCompleted/numAchievements*100)
+            else
+                frame.completedLable:SetFormattedText('%d', numAchievements-numCompleted)
+            end
+            if elementData.isChild then
+                frame.completedLable:SetFontObject('GameFontWhiteTiny2')
+            else
+                frame.completedLable:SetFontObject('GameFontNormalTiny2')
+            end
+        else
+            frame.completedBar:SetValue(0)
+            frame.completedBar:SetShown(false)
+            frame.completedLable:SetText('')
+        end
+    end)
 
-  Init_Achievement=function()end
+    Init_Achievement=function()end
 end
 
 
@@ -655,7 +697,7 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
-        WoWToolsSave['Plus_Achievement']= WoWToolsSave['Plus_Achievement'] or {completedAlpha=0.5}
+        WoWToolsSave['Plus_Achievement']= WoWToolsSave['Plus_Achievement'] or {completedAlpha=1}
         addName= '|A:UI-Achievement-Shield-NoPoints:0:0|a'..(WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENTS)
 
         --添加控制面板

@@ -354,14 +354,18 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
         bit='%.1f',
     })
 
-    if RestFunc then
+    if RestFunc or not onlyRoot then
         sub:CreateSpacer()
         sub:CreateButton(
             '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-        function(data)
-            data.RestFunc()
+        function()
+            if RestFunc then
+                RestFunc()
+            else
+                SetValue(1)
+            end
             return MenuResponse.Refresh
-        end, {RestFunc=RestFunc})
+        end)
     end
     return sub, sub2
 end

@@ -121,8 +121,8 @@ local function Init_Menu(self, root)
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '重置' or RESET,
     function()
-         Save().pointX=0
-         Save().borderAlpha=0.3
+        Save().pointX=0
+        Save().borderAlpha=0.3
         Set_All_Buttons(self)
         return MenuResponse.Open
     end)
@@ -132,6 +132,10 @@ local function Init_Menu(self, root)
         return Save().bgAlpha or 0
     end, function(value)
         Save().bgAlpha=value
+        self:set_backgroud()
+    end, function()
+        Save().bgAlpha= nil
+        Save().bgUseClassColor= nil
         self:set_backgroud()
     end)
 
@@ -145,7 +149,6 @@ local function Init_Menu(self, root)
         Save().bgUseClassColor= not Save().bgUseClassColor and true or nil
         self:set_backgroud()
     end)
-
 
 --方向, 竖
     sub=root:CreateCheckbox(
