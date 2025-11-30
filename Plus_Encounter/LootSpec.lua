@@ -225,7 +225,7 @@ local function Init_Menu(self, root)
             (col2 or '|cffff00ff')..data.index..'|r'
 --转精，图标，名称
             ..'|T'..(select(4, GetSpecializationInfoByID(data.specID)) or 0)..':0|t'
-            ..'|T'..(data.bossIcon or "Interface\\EncounterJournal\\UI-EJ-BOSS-Default")..':40:22|t'
+            ..'|T'..(data.bossIcon or "Interface\\EncounterJournal\\UI-EJ-BOSS-Default")..':0|t'
 --副本名称
             ..(data.bossName or data.encounterID),
         function(d)
