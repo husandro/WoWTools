@@ -26,9 +26,9 @@ local function Init_MoveUI()
 
     StableFrame.ReleasePetButton:ClearAllPoints()
     StableFrame.ReleasePetButton:SetPoint('BOTTOM', StableFrame.PetModelScene, 'TOP', 0, 12)
-    StableFrame.ReleasePetButton:SetAlpha(0.5)
-    StableFrame.ReleasePetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.5) end)
-    StableFrame.ReleasePetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
+    --StableFrame.ReleasePetButton:SetAlpha(0.5)
+    --StableFrame.ReleasePetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.5) end)
+    --StableFrame.ReleasePetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
 
     StableFrame.StableTogglePetButton:ClearAllPoints()
     StableFrame.StableTogglePetButton:SetPoint('BOTTOMRIGHT', StableFrame.PetModelScene)
@@ -146,7 +146,10 @@ end
 
 
 local function Init_Texture(self)
+    self:SetUIButton(StableFrame.ReleasePetButton)
+    self:SetUIButton(StableFrame.StableTogglePetButton)
     self:SetModelZoom(StableFrame.PetModelScene.ControlFrame)
+    self:SetAlphaColor(StableFrame.PetModelScene.PetInfo.NameBox.EditButton.Icon, true)
 
     self:SetEditBox(StableFrame.StabledPetList.FilterBar.SearchBox)
     self:SetMenu(StableFrame.StabledPetList.FilterBar.FilterDropdown)
