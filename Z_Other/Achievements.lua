@@ -610,7 +610,6 @@ local function Init_Achievement()
         else
             numAchievements, numCompleted = AchievementFrame_GetCategoryTotalNumAchievements(id, true);
         end
-
         if numAchievements and numAchievements>0 and numCompleted and numAchievements> numCompleted then
             local value= numCompleted/numAchievements*100
             frame.completedBar:SetValue(value)
@@ -623,9 +622,9 @@ local function Init_Achievement()
             if isSummary then
                 frame.completedLable:SetTextColor(WARNING_FONT_COLOR:GetRGB())
             elseif elementData.isChild then
-                frame.completedLable:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-            else
                 frame.completedLable:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+            else
+                frame.completedLable:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
             end
         else
             frame.completedBar:SetValue(0)
