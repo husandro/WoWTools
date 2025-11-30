@@ -142,6 +142,39 @@ end
 
 
 
+local function Print_Text(isLogging, isChat)
+	local t
+	if isChat then
+		if isLogging then
+			t= WoWTools_DataMixin.onlyChinese and '聊天记录保存在Logs/WoWChatLog.txt中' or CHATLOGENABLED
+		else
+			t=WoWTools_DataMixin.onlyChinese and '聊天记录已被禁止。' or CHATLOGDISABLED
+		end
+	else
+		if isLogging then
+			t= WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED
+		else
+			t= WoWTools_DataMixin.onlyChinese and '战斗记录已被禁止。' or COMBATLOGDISABLED
+		end
+	end
+	local info = ChatTypeInfo["SYSTEM"]
+	DEFAULT_CHAT_FRAME:AddMessage('|A:poi-workorders:0:0|a'..WoWTools_DataMixin.Icon.icon2..t, info.r, info.g, info.b, info.id)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu(frame, root)
     if not frame:IsMouseOver() then
         return
@@ -204,15 +237,14 @@ local function Init_Menu(frame, root)
 	function()
 		return C_ChatInfo.IsLoggingChat()
 	end, function()
-		--WoWTools_ChatMixin:Say(SLASH_CHATLOG2)
-		local info = ChatTypeInfo["SYSTEM"];
 		if C_ChatInfo.IsLoggingChat() then
-			LoggingChat(false);
-			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '聊天记录已被禁止。' or CHATLOGDISABLED, info.r, info.g, info.b, info.id);
+			LoggingChat(false)
+			Save().IsLoggingChat= false
 		else
-			LoggingChat(true);
-			DEFAULT_CHAT_FRAME:AddMessage(WoWTools_DataMixin.onlyChinese and '聊天记录保存在Logs/WoWChatLog.txt中' or CHATLOGENABLED, info.r, info.g, info.b, info.id);
+			LoggingChat(true)
+			Save().IsLoggingChat= true
 		end
+		Print_Text(C_ChatInfo.IsLoggingChat(), true)
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '聊天记录保存在Logs/WoWChatLog.txt中' or CHATLOGENABLED)
@@ -224,19 +256,14 @@ local function Init_Menu(frame, root)
 	function()
 		return C_ChatInfo.IsLoggingCombat()
 	end, function()
-		local t
 		if C_ChatInfo.IsLoggingCombat() then
 			LoggingCombat(false)
-			t= WoWTools_DataMixin.onlyChinese and '战斗记录已被禁止。' or COMBATLOGDISABLED
 			Save().IsLoggingCombat= false
 		else
 			LoggingCombat(true)
-			t= WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED
 			Save().IsLoggingCombat= true
 		end
-		
-		local info = ChatTypeInfo["SYSTEM"]
-		DEFAULT_CHAT_FRAME:AddMessage(t, info.r, info.g, info.b, info.id);
+		Print_Text(C_ChatInfo.IsLoggingCombat(), false)
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗记录保存在Logs/WoWCombatLog中' or COMBATLOGENABLED)
@@ -337,16 +364,18 @@ end
 
 
 local function Init()
-	local isLoggingCombat= C_ChatInfo.IsLoggingCombat() and true or false
-	local loggingCombat = Save().IsLoggingCombat
-	if loggingCombat~=nil and isLoggingCombat ~=loggingCombat then
-		LoggingCombat(loggingCombat)
+	local isLoggingChat= C_ChatInfo.IsLoggingChat()
+	local chat= Save().IsLoggingChat
+	if chat~=nil and chat~=isLoggingChat then
+		LoggingChat(chat)
+		Print_Text(C_ChatInfo.IsLoggingChat(), true)
 	end
 
-	local isLoggingChat= C_ChatInfo.IsLoggingChat() and true or false
-	local loggingChat= Save().IsLoggingChat
-	if loggingChat~=nil and loggingChat~=isLoggingChat then
-		LoggingChat(loggingChat)
+	local isLoggingCombat= C_ChatInfo.IsLoggingCombat()
+	local combat = Save().IsLoggingCombat
+	if combat~=nil and isLoggingCombat ~=combat then
+		LoggingCombat(combat)
+		Print_Text(C_ChatInfo.IsLoggingCombat(), false)
 	end
 
 	if Save().isShowButton then
