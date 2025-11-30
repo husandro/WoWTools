@@ -146,6 +146,8 @@ end
 
 
 local function Init_Texture(self)
+    self:SetModelZoom(StableFrame.PetModelScene.ControlFrame)
+
     self:SetEditBox(StableFrame.StabledPetList.FilterBar.SearchBox)
     self:SetMenu(StableFrame.StabledPetList.FilterBar.FilterDropdown)
 
