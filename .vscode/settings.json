@@ -6507,7 +6507,8 @@
         "ClassTrainerStatusBar",
         "AchievementFrameSummaryCategory_OnShow",
         "AchievementFrameSummaryCategoriesStatusBar_Update",
-        "AchievementFrameSummaryCategoriesStatusBarText"
+        "AchievementFrameSummaryCategoriesStatusBarText",
+        "QuestLogTitleMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

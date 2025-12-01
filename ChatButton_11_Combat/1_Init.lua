@@ -224,7 +224,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or CopyTable(P_Save)
+    WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or P_Save
     P_Save=nil
 
     if Save().bat then--旧数据，不在用

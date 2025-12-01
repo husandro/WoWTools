@@ -3,6 +3,9 @@
 local function Save()
     return WoWToolsSave['Tools_Hearthstone']
 end
+local function SaveItems()
+    return WoWToolsPlayerDate['HearthstoneItems']
+end
 
 
 
@@ -16,7 +19,7 @@ local function Remove_Toy(itemID)--移除
         return
     end
 
-    Save().items[itemID]=nil
+    SaveItems()[itemID]=nil
     local isSelect, isLock= btn:Check_Random_Value(itemID)
     if isLock or isSelect then
         if isSelect then
@@ -42,10 +45,10 @@ end
 local function Add_Remove_Toy(itemID)--移除/添加
     local btn= WoWTools_ToolsMixin:Get_ButtonForName('Hearthstone')
     if itemID and btn then
-        if Save().items[itemID] then
+        if SaveItems()[itemID] then
             Remove_Toy(itemID)--移除
         else--添加
-            Save().items[itemID]= true
+            SaveItems()[itemID]= true
             if btn then
                 btn:Init_Random(Save().lockedToy)--初始
             end
@@ -69,7 +72,7 @@ local function Create_Button(btn)--标记, 是否已选取
         return self:GetParent().itemID
     end
     function btn.hearthstone:set_alpha()
-        self:SetAlpha(Save().items[self:get_itemID()] and 1 or 0.1)
+        self:SetAlpha(SaveItems()[self:get_itemID()] and 1 or 0.1)
     end
     function btn.hearthstone:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -80,7 +83,7 @@ local function Create_Button(btn)--标记, 是否已选取
         local icon= select(5, C_Item.GetItemInfoInstant(itemID))
         GameTooltip:AddDoubleLine(
             (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
-            WoWTools_TextMixin:GetEnabeleDisable(Save().items[itemID])..WoWTools_DataMixin.Icon.left
+            WoWTools_TextMixin:GetEnabeleDisable(SaveItems()[itemID])..WoWTools_DataMixin.Icon.left
         )
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()

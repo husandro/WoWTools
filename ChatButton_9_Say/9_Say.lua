@@ -6,7 +6,7 @@ local P_Save= {
 
 
     --保存上次，内容
-    --type='/s',
+    type= SLASH_SAY1,
     --text= WoWTools_DataMixin.onlyChinese and '说' or SAY
     --name=玩家名称,
     --isWoW=bool,

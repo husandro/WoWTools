@@ -422,9 +422,6 @@ local function Init_Menu(self, root)
 
 --公会在线列表
     Guild_Player_List(self, root)
-
-
-
 end
 
 

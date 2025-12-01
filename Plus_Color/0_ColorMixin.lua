@@ -155,7 +155,7 @@ function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
 
     if Type=='FontString' then
         object:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
-        
+
     elseif Type=='EditBox' then
         object:SetTextColor(r, g, b, a)
 

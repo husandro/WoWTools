@@ -3,6 +3,9 @@
 local function Save()
     return WoWToolsSave['Tools_Hearthstone']
 end
+local function SaveItems()
+    return WoWToolsPlayerDate['HearthstoneItems']
+end
 
 --设置，物品，提示
 local function Set_Menu_Tooltip(tooltip, desc)
@@ -11,26 +14,6 @@ local function Set_Menu_Tooltip(tooltip, desc)
     end
     WoWTools_ToolsMixin:Get_ButtonForName('Hearthstone'):set_tooltip_location(tooltip)
 end
-
---[[local function set_ToggleCollectionsJournal(data)
-    WoWTools_LoadUIMixin:Journal(3)
-    if data.name or data.itemID then
-        local name= data.name or select(2, C_ToyBox.GetToyInfo(data.itemID)) or C_Item.GetItemNameByID(data.itemID)
-        if name then
-            C_ToyBoxInfo.SetDefaultFilters()
-            if ToyBox.searchBox then
-                ToyBox.searchBox:SetText(name)
-            end
-        end
-    end
-    return MenuResponse.Open
-end]]
-
-
-
-
-
-
 
 
 
@@ -42,7 +25,7 @@ local function Init_Menu_Toy(self, root)
 
     local sub, sub2, name, toyName, icon
     local index=0
-    for itemID in pairs(Save().items) do
+    for itemID in pairs(SaveItems()) do
        WoWTools_DataMixin:Load(itemID, 'item')
 
         toyName, icon = select(2, C_ToyBox.GetToyInfo(itemID))

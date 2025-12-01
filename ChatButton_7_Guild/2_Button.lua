@@ -66,7 +66,8 @@ end
 
 
 
-local function Init(btn)
+local function Init()
+    local btn= WoWTools_ChatMixin:GetButtonForName('Guild')
     btn.texture:ClearAllPoints()
     btn.texture:SetPoint('CENTER', -1.5, 1)
     btn.texture:SetSize(18,18)
@@ -160,27 +161,7 @@ local function Init(btn)
         WoWTools_ChatMixin:Say('/g')
     end
 
-    --[[btn:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' then
-            if not IsInGuild() then-- and not InCombatLockdown() then
-                ToggleGuildFrame()
-                self:CloseMenu()
-                self:set_tooltip()
-            else
-                WoWTools_ChatMixin:Say('/g')
-                self:set_tooltip()
-            end
-        end
-    end)]]
-
-
-
-
---菜单
-    WoWTools_GuildMixin:Init_Menu()
-
 --事件
-
     btn:RegisterEvent('GUILD_ROSTER_UPDATE')
     btn:RegisterEvent('PLAYER_GUILD_UPDATE')
 
@@ -234,5 +215,5 @@ end
 
 
 function WoWTools_GuildMixin:Init_Button()
-    Init(WoWTools_ChatMixin:GetButtonForName('Guild'))
+    Init()
 end

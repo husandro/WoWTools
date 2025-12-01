@@ -76,6 +76,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     WoWTools_DataMixin:Hook(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
         self:SetFrame(btn, {alpha=0.7})
     end)
+
 --战役, 列表
     WoWTools_DataMixin:Hook(CampaignHeaderDisplayMixin, 'SetCampaign', function(btn)
         self:SetAlphaColor(btn.Background, nil, true)

@@ -101,9 +101,7 @@ Tools_B1_Mount\UI_Collections.lua
 Tools_B1_Mount\UI_SpellBook.lua
 ##随机炉石
 Tools_B2_Hearthstone\1_Init.lua
-Tools_B2_Hearthstone\2_Button.lua
-Tools_B2_Hearthstone\3_Menu.lua
-Tools_B2_Hearthstone\4_Toy_Menu.lua
+Tools_B2_Hearthstone\z_Toy_Menu.lua
 Tools_B2_Hearthstone\z_Blizzard_Collections.lua
 ##打开物品，各种物品
 Tools_B3_OpenItems\1_Init.lua

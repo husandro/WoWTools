@@ -15,8 +15,6 @@ local P_Save={
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -36,10 +34,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_GuildMixin:Init_Button()
+        WoWTools_GuildMixin:Init_Menu()--菜单
         WoWTools_GuildMixin:Init_ClubFinder()
         WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus
         WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
 
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)
