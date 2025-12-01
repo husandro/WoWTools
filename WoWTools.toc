@@ -123,8 +123,6 @@ Tools_L3_NoggenfoggerElixir\L3_NoggenfoggerElixir.lua
 ##各种专送门,物品，玩具
 Tools_L4_UsaItems\1_Init.lua
 Tools_L4_UsaItems\2_All_Buttons.lua
-Tools_L4_UsaItems\3_Menu.lua
-Tools_L4_UsaItems\4_AddRemove_Button.lua
 Tools_L4_UsaItems\UI_Spell.lua
 Tools_L4_UsaItems\UI_Toy.lua
 ##食物

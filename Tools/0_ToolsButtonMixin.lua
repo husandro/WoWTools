@@ -50,7 +50,7 @@ end
 
 local function Set_BG(frame)
     if frame and frame.Background then
-        frame.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0)
+        frame.Background:SetAlpha(Save().bgAlpha or 0)
     end
 end
 

@@ -1,21 +1,7 @@
 
 
 local function Save()
-    return WoWToolsSave['Tools_UseItems']
-end
-
-local function Has_ItemSpell(ID, spell)
-    if WoWTools_DataMixin.Player.husandro then
-        return true
-    elseif spell then
-        if C_SpellBook.IsSpellInSpellBook(ID) then
-            return true
-        end
-    elseif ID then
-        if C_Item.GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then
-            return true
-        end
-    end
+    return WoWToolsPlayerDate['Tools_UseItems']
 end
 
 local function Set_Button_Event(self, isShown)--事件
@@ -53,14 +39,14 @@ end
 --####
 local function Set_Equip_Slot(btn)--装备
     --if btn and btn.CanChangeTalents and not btn:CanChangeTalents() or InCombatLockdown() then
-    if InCombatLockdown() then
+    if not btn:CanChangeAttribute() then
         btn:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end
 
     local slotItemID=GetInventoryItemID('player', btn.slot)
     local slotItemLink=GetInventoryItemLink('player', btn.slot)
-    local name= slotItemLink and C_Item.GetItemInfo(slotItemLink) or slotItemID and C_Item.GetItemNameByID(slotItemID)
+    local name= slotItemLink and C_Item.GetItemInfo(slotItemLink) or (slotItemID and C_Item.GetItemNameByID(slotItemID))
     if name and slotItemID~=btn.itemID and btn:GetAttribute('item2')~=name then
         btn:SetAttribute('item2', name)
         btn.slotEquipName=name
@@ -134,7 +120,60 @@ end
 
 
 --设置按钮
-local function Set_Item_Button(btn, equip)
+local function Set_Item_Button(btn, itemID, equipSlotID)
+    btn.itemID= itemID
+    btn.slot= equipSlotID
+
+    local hasToy
+    if equipSlotID then
+        btn:SetAttribute('type', 'item')
+        btn:SetAttribute('type2', 'item')
+
+        btn:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+        btn:SetScript('OnMouseUp',function()
+            local frame=PaperDollFrame
+            if frame and not frame:IsVisible() then
+                ToggleCharacter("PaperDollFrame");
+            end
+        end)
+        Set_Equip_Slot(btn)
+
+    else
+        hasToy= PlayerHasToy(itemID)
+        if hasToy then
+            btn:SetAttribute('type', 'toy')
+            btn:SetAttribute('toy', itemID)
+        else
+            btn:SetAttribute('type', 'item')
+        end
+    end
+
+    if C_Item.IsItemDataCachedByID(itemID) then
+        btn.texture:SetTexture(C_Item.GetItemIconByID(itemID or 134400))
+        if not hasToy then
+            btn:SetAttribute('item', C_Item.GetItemNameByID(itemID))
+        end
+    else
+        ItemEventListener:AddCancelableCallback(itemID, function()
+            btn.texture:SetTexture(C_Item.GetItemIconByID(itemID or 134400))
+            if not hasToy then
+                if not btn:CanChangeAttribute() then
+                    EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+                        btn:SetAttribute('item', C_Item.GetItemNameByID(itemID))
+                        EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+                    end)
+                else
+                    btn:SetAttribute('item', C_Item.GetItemNameByID(itemID))
+                end
+            end
+        end)
+    end
+
+    if itemID==168667 or itemID==87214 or itemID==111821 then--布林顿任务
+        btn:RegisterEvent('QUEST_COMPLETE')
+        Set_Bling_Quest(btn)
+    end
+
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
@@ -174,26 +213,21 @@ local function Set_Item_Button(btn, equip)
         Set_Button_Event(self, false)--事件
     end)
 
-    if equip then
-        btn:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-        btn:SetScript('OnMouseUp',function()
-            local frame=PaperDollFrame
-            if frame and not frame:IsVisible() then
-                ToggleCharacter("PaperDollFrame");
-            end
-        end)
-        Set_Equip_Slot(btn)
-    end
-
-    if btn.itemID==168667 or btn.itemID==87214 or btn.itemID==111821 then--布林顿任务
-        btn:RegisterEvent('QUEST_COMPLETE')
-        Set_Bling_Quest(btn)
-    end
-
     WoWTools_CooldownMixin:SetFrame(btn, {itemID=btn.itemID})
+
     Set_Item_Count(btn)
+
     Set_Button_Event(btn, btn:IsVisible())--事件
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -214,8 +248,23 @@ local function Set_Spell_Count(btn)--次数
 end
 
 
+
+
+
 --法术，设置按钮
-local function Set_Spell_Button(btn)
+local function Set_Spell_Button(btn, spellID)
+    btn.spellID= spellID
+
+    btn:SetAttribute('type', 'spell')
+    btn:SetAttribute('spell', spellID)
+    if C_Spell.IsSpellDataCached(spellID) then
+        btn.texture:SetTexture(C_Spell.GetSpellTexture(spellID) or 134400)
+    else
+        SpellEventListener:AddCancelableCallback(spellID, function()
+            btn.texture:SetTexture(C_Spell.GetSpellTexture(spellID) or 134400)
+        end)
+    end
+
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
@@ -264,74 +313,49 @@ local function Init()
     end)
 
     for _, itemID in pairs(Save().item) do
-        local name ,icon
-        if Has_ItemSpell(itemID) then
-            name = C_Item.GetItemNameByID(itemID)
-            icon = select(5, C_Item.GetItemInfoInstant(itemID))
-            if name and icon then
-                local btn= WoWTools_ToolsMixin:CreateButton({
-                    name='UsaItems_ItemID_'..itemID,
-                    tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}),
-                })
-                if btn then
-                    btn.itemID=itemID
-                    if PlayerHasToy(itemID) then
-                        btn:SetAttribute('type', 'toy')
-                        btn:SetAttribute('toy', itemID)
-                    else
-                        btn:SetAttribute('type', 'item')
-                        btn:SetAttribute('item', name)
-                    end
-                    btn.texture:SetTexture(icon)
-                    Set_Item_Button(btn, false)
-                end
+        if C_Item.GetItemCount(itemID)>0 or (PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) or WoWTools_DataMixin.Player.husandro then
+            WoWTools_DataMixin:Load(itemID, 'item')
+            local name = C_Item.GetItemNameByID(itemID) or itemID
+            local icon= select(5, C_Item.GetItemInfoInstant(itemID)) or 134400
+            local btn= WoWTools_ToolsMixin:CreateButton({
+                name='UsaItems_ItemID_'..itemID,
+                tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}),
+            })
+            if btn then
+                Set_Item_Button(btn, itemID, nil)
             end
         end
    end
 
     for _, itemID in pairs(Save().equip) do
-        local name ,icon
-        if C_Item.GetItemCount(itemID)>0 then
-            name = C_Item.GetItemNameByID(itemID)
-            local itemEquipLoc, icon2 = select(4, C_Item.GetItemInfoInstant(itemID))
-            icon =icon2 or select(5, C_Item.GetItemInfoInstant(itemID))
+        if C_Item.GetItemCount(itemID)>0 or WoWTools_DataMixin.Player.husandro then
+            WoWTools_DataMixin:Load(itemID, 'item')
+            local itemEquipLoc, icon = select(4, C_Item.GetItemInfoInstant(itemID))
             local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
-
-            if name and icon and slot then
+            if slot then
+                local name = C_Item.GetItemNameByID(itemID) or itemID
+                icon= icon or 134400
                 local btn= WoWTools_ToolsMixin:CreateButton({
                     name='UsaItems_Equip_ItemID_'..itemID,
                     tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}),
                 })
                 if btn then
-                    btn.itemID=itemID
-                    btn.slot=slot
-                    Set_Item_Button(btn, true)
-                    btn:SetAttribute('type', 'item')
-                    btn:SetAttribute('item', name)
-                    btn:SetAttribute('type2', 'item')
-                    btn.texture:SetTexture(icon)
+                    Set_Item_Button(btn, itemID, slot)
                 end
             end
         end
     end
 
     for _, spellID in pairs(Save().spell) do
-        if C_SpellBook.IsSpellInSpellBook(spellID) then
-            local name= C_Spell.GetSpellName(spellID)
-            local icon= C_Spell.GetSpellTexture(spellID)
-            if name and icon then
-                local btn= WoWTools_ToolsMixin:CreateButton({
-                    name='UsaItems_SpellID_'..spellID,
-                    tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {spellID=spellID, isName=true}),
-                })
-                if btn then
-                    btn.spellID=spellID
-                    btn:SetAttribute('type', 'spell')
-                    btn:SetAttribute('spell', name)
-                    btn.texture:SetTexture(icon)
-                    Set_Spell_Button(btn)
-                    
-                end
+        if C_SpellBook.IsSpellInSpellBook(spellID) or WoWTools_DataMixin.Player.husandro then
+            WoWTools_DataMixin:Load(spellID, 'spell')
+            local btn= WoWTools_ToolsMixin:CreateButton({
+                name='UsaItems_SpellID_'..spellID,
+                tooltip='|T'..(C_Spell.GetSpellTexture(spellID) or 134400)..':0|t'
+                    ..(WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or spellID),
+            })
+            if btn then
+                Set_Spell_Button(btn, spellID)
             end
         end
     end

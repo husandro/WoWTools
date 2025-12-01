@@ -87,6 +87,7 @@ end
 
     self:SetFrame(CommunitiesFrame.AddToChatButton, {notAlpha=true})
 
+    self:SetMenu(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropdown)
     self:SetFrame(CommunitiesFrame.NotificationSettingsDialog.Selector)
     self:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
     self:SetAlphaColor(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
@@ -242,6 +243,12 @@ end
 --这个会，弹出菜单
     CommunitiesFrame.CommunitiesListDropdown:SetFrameStrata('HIGH')
     self:SetMenu(CommunitiesFrame.CommunitiesListDropdown)
+
+--邀请别人加入
+    self:SetFrame(CommunitiesTicketManagerDialog, {show={CommunitiesTicketManagerDialog.Background}, alpha=1})
+    self:SetUIButton(CommunitiesTicketManagerDialog.LinkToChat)
+    self:SetUIButton(CommunitiesTicketManagerDialog.Copy)
+    self:SetUIButton(CommunitiesTicketManagerDialog.Close)
 
 --BG
     self:Init_BGMenu_Frame(CommunitiesFrame)

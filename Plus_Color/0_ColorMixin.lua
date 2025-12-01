@@ -153,7 +153,10 @@ function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
 
     local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
 
-    if Type=='FontString' or Type=='EditBox' then
+    if Type=='FontString' then
+        object:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+        
+    elseif Type=='EditBox' then
         object:SetTextColor(r, g, b, a)
 
     elseif Type=='Texture' then
@@ -178,7 +181,7 @@ function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
         end
 
     elseif Type=='String' then
-        local hex= tab.color and tab.color.hex or WoWTools_DataMixin.Player.UseColor.hex
+        local hex= tab.color and tab.color.hex or WoWTools_DataMixin.Player.col
         return hex..object
     end
 end

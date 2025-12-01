@@ -66,7 +66,7 @@ local function Init_Panel()
         category= Category,
     })
 
-    WoWTools_PanelMixin:OnlyCheck({
+    --[[WoWTools_PanelMixin:OnlyCheck({
         category= Category,
         name= WoWTools_DataMixin.onlyChinese and '战团藏品' or COLLECTIONS,
         tooltip= '|nCollectionsJournal_LoadUI()|n|n'
@@ -78,7 +78,7 @@ local function Init_Panel()
             Save().loadCollectionUI= not Save().loadCollectionUI and true or nil
             Button:load_wow_ui()
         end
-    }, initializer)
+    }, initializer)]]
 
 
 
@@ -358,11 +358,11 @@ end
 
 
 local function Init()
-    function Button:load_wow_ui()
+    --[[function Button:load_wow_ui()
         if Save().loadCollectionUI then
             WoWTools_LoadUIMixin:Journal()
         end
-    end
+    end]]
 
     function Button:set_size()
         self:SetHeight(Save().height)
@@ -466,7 +466,7 @@ local function Init()
         end
     end)
 
-    Button:load_wow_ui()
+    --Button:load_wow_ui()
     Button:set_scale()
     Button:set_point()
     Button:set_strata()

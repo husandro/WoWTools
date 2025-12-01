@@ -252,7 +252,7 @@ local function Init_Button_Menu(self, root)
     end)
 
 
-    root:CreateDivider()
+
 
     sub=root:CreateButton(
         (SaveUse('use')[value] and SaveUse('use')[value].add and '|cff00ccff' or '')
@@ -291,6 +291,9 @@ local function Init_Button_Menu(self, root)
         tooltip:AddLine(SaveUse('use')[value] and SaveUse('use')[value].add, nil, nil, nil, true)
     end)
     sub:SetEnabled(self.isChat or self.isCommand)
+
+    root:CreateDivider()
+    WoWTools_ChatMixin:Open_SettingsPanel(root, addName)
 end
 --[[local function SetChatTypeAttribute(chatType)
     local editBox = ChatFrameUtil.OpenChat("")
