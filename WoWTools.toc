@@ -594,10 +594,8 @@ ChatButton_9_Say\9_Say.lua
 ##表情，如不是中文，默认关闭
 ChatButton_10_Emoji\10_Emoji.lua
 ##各种, 战斗时间
-ChatButton_11_Combat\11_Combat.lua
-ChatButton_11_Combat\CombatButton.lua
-ChatButton_11_Combat\Menu.lua
-ChatButton_11_Combat\TrackButton.lua
+ChatButton_11_Combat\1_Init.lua
+ChatButton_11_Combat\z_TrackButton.lua
 
 ChatButton\z_Emote.lua
 ChatButton\z_CopyChat.lua

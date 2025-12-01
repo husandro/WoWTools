@@ -4,9 +4,8 @@ local function Save()
 end
 
 
-local TrackButton
 
---local OnLineTime--在线时间
+
 local OnCombatTime--战斗时间
 local OnAFKTime--AFK时间
 local OnPetTime--宠物战斗
@@ -48,6 +47,10 @@ local InstanceEventTab={
 
 
 function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
+    if  Save().disabledText then
+        return
+    end
+
     tooltip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save().bat.time),
         Save().bat.num..' '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
@@ -56,8 +59,6 @@ function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
         (WoWTools_DataMixin.onlyChinese and '宠物' or PET)..'|A:worldquest-icon-petbattle:0:0|a'..Save().pet.win..'|r/'..Save().pet.num..' |T646379:0|t'..Save().pet.capture,
         PetAll.win..'/'..PetAll.num
     )
-        --(PetAll.num>0 and PetAll.win..'/'..PetAll.num or (WoWTools_DataMixin.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save().pet.win..'|r/'..Save().pet.num,
-        --Save().pet.capture..' |T646379:0|t'
 
     tooltip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..SecondsToTime(Save().afk.time),
@@ -94,7 +95,7 @@ end
 
 
 local chatStarTime
-local function set_TrackButton_Text()--设置显示内容
+local function Set_Text(self)--设置显示内容
     local text
     if OnCombatTime then--战斗时间
         local combat, sec = WoWTools_TimeMixin:Info(OnCombatTime, not Save().timeTypeText)
@@ -122,7 +123,7 @@ local function set_TrackButton_Text()--设置显示内容
         text= text and text..'|n' or LastText and (LastText..'|n') or ''
         text=text..'|A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..'|A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(OnInstanceTime, not Save().timeTypeText)
     end
-    TrackButton.text:SetText(text or LastText or '')
+    self.text:SetText(text or LastText or '')
 end
 
 
@@ -162,7 +163,7 @@ end
 
 
 
-local function TrackButton_Frame_Init_Date()--初始, 数据
+local function Init_Date(self)--初始, 数据
     local time=GetTime()
     local save= Save()
     if UnitIsAFK('player') then
@@ -259,10 +260,10 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
     end
 
     if OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime then
-        TrackButton.Frame:SetShown(true)
+        self.Frame:SetShown(true)
     else
-        TrackButton.Frame:SetShown(false)
-        set_TrackButton_Text()
+        self.Frame:SetShown(false)
+        Set_Text(self)
     end
 end
 
@@ -275,18 +276,6 @@ end
 
 
 
-
-
-
-
-
-local function Set_Event()
-    if not TrackButton:IsShown() then
-        TrackButton:UnregisterAllEvents()
-    else
-        FrameUtil.RegisterFrameForEvents(TrackButton, EventTab)
-    end
-end
 
 
 
@@ -300,30 +289,39 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         return
     end
 
-    TrackButton= WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {
+    local btn= CreateFrame('Button', 'WoWToolsChatCombatTrackButton', UIParent, 'WoWToolsButtonTemplate') --[[WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {
         name='WoWToolsChatCombatTrackButton',
         size=22,
         icon='hide'
-    })
+    })]]
 
-    TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
-    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
-    TrackButton.texture:SetAlpha(0.3)
-    TrackButton.texture:SetPoint('BOTTOMLEFT')
-    TrackButton.texture:SetSize(22,10)
+    btn.texture= btn:CreateTexture(nil, 'BORDER')
+    btn.texture:SetAtlas('Adventure-MissionEnd-Line')
+    btn.texture:SetAlpha(0.3)
+    btn.texture:SetPoint('BOTTOMLEFT')
+    btn.texture:SetSize(22,10)
 
-    TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {color=true})
-    TrackButton.text:SetPoint('BOTTOMLEFT', 0,8)
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')-- WoWTools_LabelMixin:Create(TrackButton, {color=true})
+    btn.text:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+    btn.text:SetPoint('BOTTOMLEFT', 0, 8)
 
-    function TrackButton:set_instance_evnet()
-        if IsInInstance() then
-            FrameUtil.RegisterFrameForEvents(self, InstanceEventTab)
-        else
-            FrameUtil.UnregisterFrameForEvents(self, InstanceEventTab)
+    btn.Bg= btn:CreateTexture(nil, "BACKGROUND")
+    btn.Bg:SetColorTexture(0,0,0)
+    btn.Bg:SetPoint('TOPLEFT', btn.text, -2, 2)
+    btn.Bg:SetPoint('BOTTOMRIGHT', btn.text, 2, -2)
+    
+    function btn:set_event()
+        self:UnregisterAllEvents()
+        if self:IsShown() then
+            FrameUtil.RegisterFrameForEvents(self, EventTab)
+
+            if IsInInstance() then
+                FrameUtil.RegisterFrameForEvents(self, InstanceEventTab)
+            end
         end
     end
 
-    function TrackButton:set_Point()
+    function btn:set_Point()
         self:ClearAllPoints()
         local p= Save().textFramePoint
         if p and p[1] then
@@ -333,15 +331,15 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         end
     end
 
-    TrackButton:RegisterForDrag("RightButton")
-    TrackButton:SetMovable(true)
-    TrackButton:SetClampedToScreen(true)
-    TrackButton:SetScript("OnDragStart", function(self)
+    btn:RegisterForDrag("RightButton")
+    btn:SetMovable(true)
+    btn:SetClampedToScreen(true)
+    btn:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    TrackButton:SetScript("OnDragStop", function(self)
+    btn:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
@@ -350,20 +348,20 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         end
     end)
 
-    TrackButton:SetScript("OnMouseUp", ResetCursor)
-    TrackButton:SetScript("OnMouseDown", function(self, d)
+    btn:SetScript("OnMouseUp", ResetCursor)
+    btn:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and IsAltKeyDown() then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
 
-    TrackButton:SetScript("OnClick", function(self, d)--清除
+    btn:SetScript("OnClick", function(self, d)--清除
         if d=='LeftButton' and not IsModifierKeyDown() then
             self.text:SetText('')
         end
     end)
 
-    function TrackButton:set_tooltip()
+    function btn:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_DataMixin.Icon.left)
@@ -377,15 +375,15 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         GameTooltip:Show()
     end
 
-    TrackButton:SetScript('OnEnter', function(self)
+    btn:SetScript('OnEnter', function(self)
         self:set_tooltip()
         WoWTools_ChatMixin:GetButtonForName('Combat'):SetButtonState('PUSHED')
     end)
-    TrackButton:SetScript("OnLeave", function()
+    btn:SetScript("OnLeave", function()
         WoWTools_ChatMixin:GetButtonForName('Combat'):SetButtonState('NORMAL')
     end)
 
-    TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
+    --[[btn:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             local sacle=Save().textScale or 1
             if d==1 then
@@ -396,17 +394,17 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             sacle=sacle>4 and 4 or sacle
             sacle=sacle<0.4 and 0.4 or sacle
             Save().textScale=sacle
-            self:set_text_scale()
+            self:settings()
             self:set_tooltip()
         end
-    end)
+    end)]]
 
-    TrackButton:SetScript('OnEvent', function(self, event, arg1)
+    btn:SetScript('OnEvent', function(self, event, arg1)
         if event=='PLAYER_FLAGS_CHANGED' then--AFK
-            TrackButton_Frame_Init_Date()--初始, 数据
+            Init_Date(self)--初始, 数据
 
         elseif event=='PET_BATTLE_OPENING_DONE' then
-            TrackButton_Frame_Init_Date()--初始, 数据
+            Init_Date(self)--初始, 数据
 
         elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
             PetRound.PVP =true
@@ -423,11 +421,11 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             end
             set_Pet_Text()--宠物战斗, 设置显示内容
         elseif event=='PET_BATTLE_CLOSE' then
-            TrackButton_Frame_Init_Date()--初始, 数据
+            Init_Date(self)--初始, 数据
 
         elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
-            TrackButton_Frame_Init_Date()--初始, 数据
-            self:set_instance_evnet()
+            Init_Date(self)--初始, 数据
+            self:set_event()
             IsInArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
 
         elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
@@ -446,34 +444,34 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
                 end
             end
         elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
-            TrackButton_Frame_Init_Date()--初始, 数据
+            Init_Date(self)--初始, 数据
         end
     end)
 
 
-    function TrackButton:set_text_scale()
+    function btn:settings()
         self.text:SetScale(Save().textScale or 1)
+        self.Bg:SetAlpha(Save().textAlpha or 0.5)
     end
 
-    TrackButton.Frame=CreateFrame("Frame", nil, TrackButton)
-    TrackButton.Frame:HookScript("OnUpdate", function (self, elapsed)
+    btn.Frame=CreateFrame("Frame", nil, btn)
+    btn.Frame:HookScript("OnUpdate", function (self, elapsed)
         self.elapsed = (self.elapsed or 0.3) + elapsed
         if self.elapsed > 0.3 then
             self.elapsed = 0
-            set_TrackButton_Text()--设置显示内容
+            Set_Text(self:GetParent())--设置显示内容
         end
     end)
 
-    TrackButton.Frame:SetScript('OnHide', function(self)
+    btn.Frame:SetScript('OnHide', function(self)
         self.elapsed= nil
     end)
 
-    TrackButton:set_Point()
-    TrackButton:set_text_scale()
-    TrackButton:set_instance_evnet()
+    btn:set_Point()
+    btn:settings()
+    btn:set_event()
 
-    Set_Event()
-    TrackButton_Frame_Init_Date()--初始, 数据
+    Init_Date(btn)--初始, 数据
 
 
 
@@ -482,15 +480,16 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
     end
 
 
-    Init=function()
-        if Save().disabledText then
-            TrackButton.text:SetText('')
+    Init=function()        
+        local show= not Save().disabledText
+print(btn)
+        btn:SetShown(show)
+        if show then
+            btn:set_event()
+            Init_Date(btn)--初始, 数据
         else
-            TrackButton:set_instance_evnet()
-            TrackButton_Frame_Init_Date(TrackButton)--初始, 数据
+            btn.text:SetText('')
         end
-        Set_Event()
-        TrackButton:SetShown(not Save().disabledText)
     end
 end
 
