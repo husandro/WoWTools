@@ -271,7 +271,7 @@ local function Init_Menu(frame, root)
 
 --打开，选项面板
 	sub:CreateDivider()
-	WoWTools_ChatMixin:Open_SettingsPanel(sub, WoWTools_HyperLink.addName)
+	WoWTools_ChatMixin:Open_SettingsPanel(sub, addName)
 end
 
 

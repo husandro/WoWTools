@@ -42,87 +42,104 @@ end
 
 
 function WoWTools_MenuMixin:CreateSlider(root, tab)
-    local sub=root:CreateTemplate("OptionsSliderTemplate")
+    local sub= root:CreateTemplate("OptionsSliderTemplate")
 
-    sub:SetData(tab)
+    local getValue= tab.getValue
+    local setValue= tab.setValue
+    local minValue= tab.minValue or 0
+    local maxValue= tab.maxValue or 100
+    local step= tab.step or 1
+    local bit= tab.bit--'%.1f'
+
+    local name= tab.name or ''
+    local tooltip= tab.tooltip--function, string, table
+
+    local tooltipType= type(tooltip)
+    local function Get_Value(value)
+        value= value or 1
+         if bit then
+            return tonumber(format(bit, value))
+        else
+            return math.modf(value)
+        end
+    end
+
+    local function Get_tooltip()
+        local func
+        if tooltipType=='function' then
+            func= tooltip
+        elseif tooltipType=='string' then
+            func= function(tip) GameTooltip_SetTitle(tip, tooltip) end
+        elseif tooltipType=='table' then
+            func= function(tip)
+                for text in pairs(tooltip) do
+                    tip:AddLine(text)
+                end
+            end
+        end
+        return func
+    end
 
     sub:AddInitializer(function(f, desc)--, description, menu)
-        f.getValue=desc.data.getValue
-        f.setValue=desc.data.setValue
-        f.minValue=desc.data.minValue or 0
-        f.maxValue=desc.data.maxValue or 100
-        f.step=desc.data.step or 1
-        f.bit=desc.data.bit
-
-        local va= desc.data.getValue() or 1
-        f:SetValueStep(f.step or 1)
-        f:SetMinMaxValues(f.minValue, f.maxValue)
+        local va= getValue() or 1
+        f:SetValueStep(step or 1)
+        f:SetMinMaxValues(minValue, maxValue)
         f:SetValue(va)
 
         f.Text:ClearAllPoints()
         f.Text:SetPoint('TOPRIGHT', 0,8)
-        if f.bit then
-            f.Text:SetText(tonumber(format(f.bit, va)))
-        else
-            f.Text:SetText(math.ceil(va))
-        end
+        f.Text:SetText(Get_Value(va))
 
         f.Low:ClearAllPoints()
         f.Low:SetPoint('TOPLEFT', 0, 8)
-        f.Low:SetText(desc.data.name or '')
+        f.Low:SetText(name)
 
         f.High:SetText('')
 
         f:SetScript('OnValueChanged', function(s, value)
-            if s.bit then
-                value= tonumber(format(s.bit, value))
-            else
-                value= math.ceil(value)
-            end
-            s.setValue(value, s)
+            value= Get_Value(value)
+            setValue(value, s)
             s.Text:SetText(value)
-            local t= type(desc.data.tooltip)
-            if t=='function' then
-                MenuUtil.ShowTooltip(f, desc.data.tooltip, desc)
-            elseif t=='string' then
-                MenuUtil.ShowTooltip(f, function(tooltip)
-				    GameTooltip_SetTitle(tooltip, desc.data.tooltip)
-			    end, desc)
+            local func= Get_tooltip()
+            if func then
+                MenuUtil.ShowTooltip(f, func, desc)
             end
         end)
 
         f:EnableMouseWheel(true)
         f:SetScript('OnMouseWheel', function(s, d)
-            local value= s.getValue() or 1
+            local value= getValue() or 1
             if d== 1 then
-                value= value- s.step
+                value= value- step
             elseif d==-1 then
-                value= value+ s.step
+                value= value+ step
             end
-            value= value> s.maxValue and s.maxValue or value
-            value= value< s.minValue and s.minValue or value
+            value= value> maxValue and maxValue or value
+            value= value< minValue and minValue or value
+            value= Get_Value(value)
+
             s:SetValue(value, s)
+
+            local func= Get_tooltip()
+            if func then
+                MenuUtil.ShowTooltip(f, func, desc)
+            end
         end)
         f:SetScript('OnHide', function(s)
-            s.getValue=nil
-            s.setValue=nil
-            s.minValue=nil
-            s.maxValue=nil
-            s.step=nil
-            s.bit=nil
-            s.elapsed=nil
             s:SetScript('OnMouseWheel', nil)
             s:SetScript('OnValueChanged', nil)
             s:SetScript('OnHide', nil)
-            s:SetScript('OnUpdate', nil)
         end)
 
         WoWTools_TextureMixin:SetNineSlice(f, 1)
         WoWTools_TextureMixin:SetAlphaColor(f.Thumb, true)
     end)
 
+    if Get_tooltip() then
+        sub:SetTooltip(Get_tooltip())
+    end
 
-    sub:SetTooltip(function(tooltip, desc)
+    --[[sub:SetTooltip(function(tooltip, desc)
         local t= type(desc.data.tooltip)
         if t=='string' then
             tooltip:AddLine(desc.data.tooltip)
@@ -133,7 +150,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
                 tooltip:AddLine(text)
             end
         end
-    end)
+    end)]]
 
     return sub
 end
@@ -362,7 +379,7 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
             if RestFunc then
                 RestFunc()
             else
-                SetValue(1)
+                SetValue(0.5)
             end
             return MenuResponse.Refresh
         end)
