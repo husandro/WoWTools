@@ -3,12 +3,6 @@ function WoWToolsButton_OnLoad(self)
     self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
 end
 
-function WoWToolsMenu_OnLoad(self)
-    self:EnableMouseWheel(true)
-    self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-    WoWTools_TextureMixin:SetButton(self, {alpha=0.5})
-end
-
 function WoWToolsButton_OnLeave(self)
     GameTooltip_Hide()
     if self.set_alpha then

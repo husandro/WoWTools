@@ -65,7 +65,11 @@
         <PushedTexture atlas="ui-questtrackerbutton-filter-pressed"/>
         <HighlightTexture atlas="ui-questtrackerbutton-red-highlight"/>
         <Scripts>
-            <OnLoad function="WoWToolsMenu_OnLoad"/>
+            <OnLoad>
+                self:EnableMouseWheel(true)
+                self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+                WoWTools_TextureMixin:SetButton(self, {alpha=0.5})
+            </OnLoad>
             <OnLeave function="WoWToolsButton_OnLeave"/>
             <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>
@@ -84,9 +88,38 @@
                 <Anchor point="TOPLEFT" x="-2" y="2"/>
                 <Anchor point="BOTTOMRIGHT" x="4" y="-4"/>
             </Anchors>
-        </PushedTexture>        
+        </PushedTexture>
+        <Layers>
+            <Layer level="BORDER">
+                <Texture parentKey="texture">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-1" y="2"/>
+                        <Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture parentKey="border" atlas='bag-reagent-border'>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-7" y="7"/>
+                        <Anchor point="BOTTOMRIGHT" x="7" y="-7"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="OVERLAY">
+                <MaskTexture parentKey="IconMask" setAllPoints="true" atlas="CircleMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+					<MaskedTextures>
+						<MaskedTexture childKey="texture"/>
+					</MaskedTextures>
+				</MaskTexture>
+            </Layer>
+        </Layers>
         <Scripts>
-            <OnLoad function="WoWToolsMenu_OnLoad"/>
+            <OnLoad>
+                self:EnableMouseWheel(true)
+                self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+                WoWTools_TextureMixin:SetAlphaColor(self.border, nil, nil, 0)
+            </OnLoad>
             <OnLeave function="WoWToolsButton_OnLeave"/>
             <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>

@@ -1349,6 +1349,24 @@ function WoWTools_TextureMixin.Events:Blizzard_Channels()
     self:SetNineSlice(ChannelFrame.RightInset)
     self:SetNineSlice(ChannelFrame.LeftInset)
 
+    WoWTools_DataMixin:Hook(ChannelButtonHeaderMixin, 'OnLoad', function(btn)
+        self:SetAlphaColor(btn.NormalTexture, true)
+    end)
+    WoWTools_DataMixin:Hook(ChannelButtonMixin, 'OnLoad', function(btn)
+        self:SetAlphaColor(btn.NormalTexture, true)
+        print(btn.NormalTexture)
+    end)
+--新建，频道
+    self:SetAlphaColor(CreateChannelPopup.Header.LeftBG, true)
+    self:SetAlphaColor(CreateChannelPopup.Header.RightBG, true)
+    self:SetAlphaColor(CreateChannelPopup.Header.CenterBG, true)
+    self:SetButton(CreateChannelPopup.CloseButton)
+    self:SetFrame(CreateChannelPopup.BG, {alpha=1, show={[CreateChannelPopup.BG.Bg]=true}})
+    self:SetEditBox(CreateChannelPopup.Name)
+    self:SetEditBox(CreateChannelPopup.Password)
+    self:SetUIButton(CreateChannelPopup.OKButton)
+    self:SetUIButton(CreateChannelPopup.CancelButton)
+
     self:Init_BGMenu_Frame(ChannelFrame)
 end
 
@@ -1413,6 +1431,10 @@ function WoWTools_TextureMixin.Events:Blizzard_EditMode()
         self:SetCheckBox(f.Button)
     end)
 
+    self:SetFrame(EditModeUnsavedChangesDialog.Border, {alpha=1, show={[EditModeUnsavedChangesDialog.Border.Bg]=true}})
+    self:SetUIButton(EditModeUnsavedChangesDialog.SaveAndProceedButton)
+    self:SetUIButton(EditModeUnsavedChangesDialog.ProceedButton)
+    self:SetUIButton(EditModeUnsavedChangesDialog.CancelButton)
     --self:SetButton(EditModeManagerFrame.GridSpacingSlider.Slider.Back, 1)
 end
 

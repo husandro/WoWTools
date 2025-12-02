@@ -493,8 +493,13 @@ end
 
 --聊天设置
 function WoWTools_MoveMixin.Events:Blizzard_Channels()
+    self:Setup(CreateChannelPopup)
+
+    WoWTools_DataMixin:Hook(ChannelRosterButtonMixin, 'OnLoad', function(btn)
+        btn.Name:SetPoint('RIGHT')
+    end)
     self:Setup(ChannelFrame, {
-        minW=402, minH=200, maxW=402,
+        minW=402, minH=200,-- maxW=402,
     sizeRestFunc=function()
         ChannelFrame:SetSize(402, 423)
     end})
@@ -545,7 +550,7 @@ function WoWTools_MoveMixin.Events:Blizzard_UnitFrame()
     self:Setup(VehicleSeatIndicator, {notZoom=true, notSave=true})
     self:Setup(ExpansionLandingPage)
     self:Setup(PlayerPowerBarAlt, {notMoveAlpha=true})
-    self:Setup(CreateChannelPopup)
+
     self:Setup(BattleTagInviteFrame)
 
     for _, barContainer in ipairs(StatusTrackingBarManager.barContainers or {}) do

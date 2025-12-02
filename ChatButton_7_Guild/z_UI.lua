@@ -32,8 +32,6 @@ end
 
 
 
-
-
  --公会和社区 Blizzard_Communities
  function WoWTools_TextureMixin.Events:Blizzard_Communities()
     self:SetButton(CommunitiesFrameCloseButton)
@@ -249,6 +247,14 @@ end
     self:SetUIButton(CommunitiesTicketManagerDialog.LinkToChat)
     self:SetUIButton(CommunitiesTicketManagerDialog.Copy)
     self:SetUIButton(CommunitiesTicketManagerDialog.Close)
+--编辑频道
+    self:SetFrame(CommunitiesFrame.EditStreamDialog.BG, {alpha=1, show={[CommunitiesFrame.EditStreamDialog.BG.Bg]=true}})
+    self:SetCheckBox(CommunitiesFrame.EditStreamDialog.TypeCheckbox)
+    self:SetUIButton(CommunitiesFrame.EditStreamDialog.Accept)
+    self:SetUIButton(CommunitiesFrame.EditStreamDialog.Delete)
+    self:SetUIButton(CommunitiesFrame.EditStreamDialog.Cancel)
+    self:SetEditBox(CommunitiesFrame.EditStreamDialog.NameEdit)
+    self:SetFrame(CommunitiesFrame.EditStreamDialog.Description, {alpha=1})
 
 --BG
     self:Init_BGMenu_Frame(CommunitiesFrame)

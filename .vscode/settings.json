@@ -6509,7 +6509,13 @@
         "AchievementFrameSummaryCategoriesStatusBar_Update",
         "AchievementFrameSummaryCategoriesStatusBarText",
         "QuestLogTitleMixin",
-        "PetBattleAbilityButton_OnLoad"
+        "PetBattleAbilityButton_OnLoad",
+        "CommunitiesAddDialog",
+        "ChatFrameToggleVoiceDeafenButton",
+        "ChatFrameToggleVoiceMuteButton",
+        "ChannelButtonHeaderMixin",
+        "ChannelButtonMixin",
+        "ChannelRosterButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

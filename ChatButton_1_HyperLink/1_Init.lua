@@ -92,6 +92,48 @@ local function Init()
     WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
     WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
 
+--聊天频道，名称 增强
+    WoWTools_DataMixin:Hook(ChannelRosterButtonMixin, 'UpdateName', function(self)
+        if self:IsLocalPlayer() then
+            self.Name:SetText(
+                '|A:recipetoast-icon-star:0:0|a'
+                ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+            )
+        else
+            local guid= self.playerLocation and self.playerLocation:GetGUID()
+            local name= guid and self:GetMemberName()
+            if name then
+                local t=''
+--种族
+                t= t..(WoWTools_UnitMixin:GetRaceIcon(nil, guid) or '')
+--职业
+                t= t..(WoWTools_UnitMixin:GetClassIcon(nil, guid) or '')
+--等级
+                local data= WoWTools_DataMixin.UnitItemLevel[guid]
+                if data then
+--专精
+                    if data.specID then
+                        t= t..'|T'..(select(4, GetSpecializationInfoByID(data.specID)) or 0)..':0|t'
+                    end
+--装等
+                    if data.itemLevel then
+                        t= t..'|cnGREEN_FONT_COLOR:[|r|cffffffff'..data.itemLevel..'|r|cnGREEN_FONT_COLOR:]|r'
+                    end
+                end
+--处理，服务器名称
+                if name:find('%-'..WoWTools_DataMixin.Player.Realm) then
+                    t= t..name:gsub('%-'..WoWTools_DataMixin.Player.Realm, '')
+                elseif C_PlayerInfo.UnitIsSameServer(self.playerLocation) then
+                    t= t..name..'|cnGREEN_FONT_COLOR:*|r'
+                else
+                    t= t..name
+                end
+
+                self.Name:SetText(t)
+            end
+        end
+    end)
+
     Init=function()end
 end
 
