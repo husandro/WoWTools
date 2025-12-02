@@ -4,100 +4,33 @@
     <Button name="WoWToolsButtonTemplate" virtual="true">
         <Size x="23" y="23"/>
         <PushedTexture atlas="newplayertutorial-drag-cursor"/>
-        <HighlightTexture atlas="WoWShare-Highlight"/>
-        
+        <HighlightTexture atlas="WoWShare-Highlight"/>        
         <Scripts>
-            <OnLoad>
-                self:EnableMouseWheel(true)
-                self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-            </OnLoad>
-            <OnLeave>
-                GameTooltip_Hide()
-                if self.set_alpha then
-                    self:set_alpha()
-                end
-            </OnLeave>
-            <OnEnter>
-                if self.tooltip then
-                    GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-                    GameTooltip:ClearLines()
-                    if type(self.tooltip)=='function' then
-                        self:tooltip(GameTooltip)
-                    else
-                        GameTooltip:AddLine(self.tooltip)
-                    end
-                    GameTooltip:Show()
-                end
-                if self.set_alpha then
-                    self:set_alpha()
-                end
-            </OnEnter>
+            <OnLoad function="WoWToolsButton_OnLoad"/>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>
     </Button>
 
-
-
-    <DropdownButton name="WoWToolsMenuTemplate" virtual="true">
+    <Button name="WoWToolsButton2Template" virtual="true">
         <Size x="23" y="23"/>
-        <NormalTexture atlas="ui-questtrackerbutton-filter"/>
-        <PushedTexture atlas="ui-questtrackerbutton-filter-pressed"/>
-        <HighlightTexture atlas="ui-questtrackerbutton-red-highlight"/>
-        <Scripts>
-            <OnLoad>
-                self:EnableMouseWheel(true)
-                self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-                WoWTools_TextureMixin:SetButton(self, {alpha=0.5})
-            </OnLoad>
-            <OnLeave>
-                GameTooltip_Hide()
-                if self.set_alpha then
-                    self:set_alpha()
-                end
-            </OnLeave>
-            <OnEnter>
-                if self.tooltip then
-                    GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-                    GameTooltip:ClearLines()
-                    if type(self.tooltip)=='function' then
-                        self:tooltip(GameTooltip)
-                    else
-                        GameTooltip:AddLine(self.tooltip)
-                    end
-                    GameTooltip:Show()
-                end
-                if self.set_alpha then
-                    self:set_alpha()
-                end
-            </OnEnter>
-        </Scripts>
-    </DropdownButton>
-
-
-
-
-
-
-
-    <DropdownButton name="WoWToolsMenu2Template" virtual="true">
-        <Size x="23" y="23"/>
-        
-        <HighlightTexture atlas="Azerite-Trait-RingGlow">
+        <HighlightTexture atlas="bag-border">
             <Anchors>
-                <Anchor point="TOPLEFT" x="-5" y="5"/>
-                <Anchor point="BOTTOMRIGHT" x="5" y="-5"/>
+                <Anchor point="TOPLEFT" x="-1" y="2"/>
+                <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
             </Anchors>
         </HighlightTexture>
         <PushedTexture atlas="bag-border-highlight">
             <Anchors>
-                <Anchor point="TOPLEFT" x="-2" y="2"/>
-                <Anchor point="BOTTOMRIGHT" x="4" y="-4"/>
+                <Anchor point="TOPLEFT" x="-1" y="2"/>
+                <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
             </Anchors>
         </PushedTexture>
         <Layers>
             <Layer level="BORDER">
                 <Texture parentKey="texture">
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="-1" y="2"/>
+                        <Anchor point="TOPLEFT" x="-1" y="1"/>
                         <Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
                     </Anchors>
                 </Texture>
@@ -105,8 +38,8 @@
             <Layer level="ARTWORK">
                 <Texture parentKey="border" atlas='bag-reagent-border'>
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="-7" y="7"/>
-                        <Anchor point="BOTTOMRIGHT" x="7" y="-7"/>
+                        <Anchor point="TOPLEFT" x="-1" y="2"/>
+                        <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
                     </Anchors>
                 </Texture>
             </Layer>
@@ -119,32 +52,43 @@
             </Layer>
         </Layers>
         <Scripts>
-            <OnLoad>
-                self:EnableMouseWheel(true)
-                self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-                WoWTools_TextureMixin:SetAlphaColor(self.border, nil, nil, 0)
-            </OnLoad>
-            <OnLeave>
-                GameTooltip_Hide()
-                if self.set_alpha then
-                    self:set_alpha()
-                end
-            </OnLeave>
-            <OnEnter>
-                if self.tooltip then
-                    GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-                    GameTooltip:ClearLines()
-                    if type(self.tooltip)=='function' then
-                        self:tooltip(GameTooltip)
-                    else
-                        GameTooltip:AddLine(self.tooltip)
-                    end
-                    GameTooltip:Show()
-                end
-                if self.set_alpha then
-                    self:set_alpha()
-                end
-            </OnEnter>
+            <OnLoad function="WoWToolsButton_OnLoad"/>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
+        </Scripts>
+    </Button>
+
+
+    <DropdownButton name="WoWToolsMenuTemplate" virtual="true">
+        <Size x="23" y="23"/>
+        <NormalTexture atlas="ui-questtrackerbutton-filter"/>
+        <PushedTexture atlas="ui-questtrackerbutton-filter-pressed"/>
+        <HighlightTexture atlas="ui-questtrackerbutton-red-highlight"/>
+        <Scripts>
+            <OnLoad function="WoWToolsMenu_OnLoad"/>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
+        </Scripts>
+    </DropdownButton>
+
+    <DropdownButton name="WoWToolsMenu2Template" virtual="true">
+        <Size x="23" y="23"/>        
+        <HighlightTexture atlas="Azerite-Trait-RingGlow">
+            <Anchors>
+                <Anchor point="TOPLEFT" x="-5" y="5"/>
+                <Anchor point="BOTTOMRIGHT" x="5" y="-5"/>
+            </Anchors>
+        </HighlightTexture>
+        <PushedTexture atlas="bag-border-highlight">
+            <Anchors>
+                <Anchor point="TOPLEFT" x="-2" y="2"/>
+                <Anchor point="BOTTOMRIGHT" x="4" y="-4"/>
+            </Anchors>
+        </PushedTexture>        
+        <Scripts>
+            <OnLoad function="WoWToolsMenu_OnLoad"/>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>
     </DropdownButton>
 
@@ -169,35 +113,13 @@
         </Layers>
         <Scripts>
             <OnLoad>
-                --self:EnableMouseWheel(true)
                 self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
                 WoWTools_ColorMixin:Setup(self:GetNormalTexture(), {type='Texture'})
                 WoWTools_ColorMixin:Setup(self:GetPushedTexture(), {type='Texture'})
                 WoWTools_ColorMixin:Setup(self.Text, {type='FontString'})
             </OnLoad>
-            <OnClick>
-            </OnClick>
-            <OnLeave>
-                GameTooltip_Hide()
-                if self.set_alpha then
-                    self:set_alpha()
-                end
-            </OnLeave>
-            <OnEnter>
-                if self.tooltip then
-                    GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-                    GameTooltip:ClearLines()
-                    if type(self.tooltip)=='function' then
-                        self:tooltip(GameTooltip)
-                    else
-                        GameTooltip:AddLine(self.tooltip)
-                    end
-                    GameTooltip:Show()
-                end
-                if self.set_alpha then
-                    self:set_alpha()
-                end
-            </OnEnter>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>
     </Button>
 </Ui>

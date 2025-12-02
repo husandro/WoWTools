@@ -234,12 +234,26 @@ function WoWTools_TextureMixin.Events:Blizzard_PetBattleUI()
     self:HideTexture(PetBattleFrame.BottomFrame.LeftEndCap)
     self:HideTexture(PetBattleFrame.BottomFrame.RightEndCap)
     self:HideTexture(PetBattleFrame.BottomFrame.Background)
+
     self:HideTexture(PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2)
+    self:SetUIButton(PetBattleFrame.BottomFrame.TurnTimer.SkipButton)
+--动作条，去外框
+    for _, t in pairs({'ForfeitButton', 'CatchButton', 'SwitchPetButton'}) do
+        local btn= PetBattleFrame.BottomFrame[t]
+        if btn then
+            self:HideTexture(btn.NormalTexture)
+            WoWTools_ButtonMixin:AddMask(btn)
+        end
+    end
+    WoWTools_DataMixin:Hook('PetBattleAbilityButton_OnLoad', function(btn)
+        self:HideTexture(btn.NormalTexture)
+        WoWTools_ButtonMixin:AddMask(btn)
+    end)
 
     PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
     PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
 
-    for i=1,NUM_BATTLE_PETS_IN_BATTLE do
+    for i=1, NUM_BATTLE_PETS_IN_BATTLE do
         if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
             WoWTools_ColorMixin:Setup(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
         end

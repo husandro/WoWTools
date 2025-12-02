@@ -58,6 +58,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 1_Mixin\Realm.lua
 
 ##模板
+2_Template\Button.lua
 2_Template\Button.xml
 2_Template\PlayerFrame.xml
 2_Template\ChallengeAffix.xml

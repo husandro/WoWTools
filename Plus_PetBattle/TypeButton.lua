@@ -101,7 +101,6 @@ end
 local function Init_Buttons()
     TypeButton.frame:SetSize(1,1)
     TypeButton.frame:SetPoint('RIGHT')
-    
 
     for petType=1, C_PetJournal.GetNumPetTypes() do
         local name= 'petType'..petType
@@ -111,7 +110,9 @@ local function Init_Buttons()
             isType2=true,
             name= Name..name
         })
+        btn:GetHighlightTexture():SetVertexColor(0,1,0)
         btn:SetPoint('LEFT', TypeButton, 'RIGHT', (petType-1)*34+2, 0)
+
         Set_Button_Script(btn, petType, name)
 
         local strongTexture, weakHintsTexture, stringIndex, weakHintsIndex= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)
@@ -129,6 +130,7 @@ local function Init_Buttons()
                 name=Name..strongName
             })
             btn.strong:SetPoint('BOTTOM', btn.indicatoUp, 'TOP', 0, -2)
+            btn.strong:GetHighlightTexture():SetVertexColor(0,1,0)
             Set_Button_Script(btn.strong, stringIndex, strongName)
 
         end
@@ -145,6 +147,7 @@ local function Init_Buttons()
                 isType2=true,
                 name=Name..WeakHintsName
             })
+            btn.weakHints:GetHighlightTexture():SetVertexColor(0,1,0)
             btn.weakHints:SetPoint('TOP', btn.indicatoDown, 'BOTTOM', 0, 2)
             Set_Button_Script(btn.weakHints, weakHintsIndex, WeakHintsName)
         end
