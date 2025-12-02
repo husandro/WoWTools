@@ -519,18 +519,15 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         size=22,
         icon='hide'
     })]]
-
-    
-
     btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')-- WoWTools_LabelMixin:Create(TrackButton, {color=true})
     btn.text:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
     btn.text:SetPoint('BOTTOMLEFT')
 
     btn.texture= btn:CreateTexture(nil, 'BORDER')
     btn.texture:SetAtlas('Adventure-MissionEnd-Line')
-    btn.texture:SetAlpha(0.5)
     btn.texture:SetPoint('BOTTOMLEFT')
     btn.texture:SetSize(22,10)
+    WoWTools_TextureMixin:SetAlphaColor(btn.texture, true, nil, 0.5)
 
     btn.Bg= btn:CreateTexture(nil, "BACKGROUND")
     btn.Bg:SetColorTexture(0,0,0)

@@ -3,16 +3,7 @@ local function Save()
     return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
-local dataButton={--layoutIndex
-    [GAMEMENU_OPTIONS]= {'mechagon-projects', false},--选项
-    [HUD_EDIT_MODE_MENU]= {'UI-HUD-Minimap-CraftingOrder-Up', false},--编辑模式
-    [MACROS]= {'NPE_Icon', false},--宏命令设置
 
-    [ADDONS]= {'dressingroom-button-appearancelist-up', false},--插件
-    [LOG_OUT]= {'perks-warning-large', false, {0,0.8,1}},--登出
-    [EXIT_GAME]= {'Ping_Chat_Warning', false, {0,0.8,1}},--退出游戏
-    [RETURN_TO_GAME]= {'poi-traveldirections-arrow', true, {0,1,0}},--返回游戏
-}
 
 
 
@@ -31,7 +22,7 @@ local function Create_Texture_Tips(btn, data)--atlas, coord)
         btn.Texture= btn:CreateTexture(nil, 'BORDER')
         btn.Texture:SetSize(26, 26)--200, 36
         btn.Texture:SetPoint('RIGHT', btn, 'LEFT', 6,0)
-        
+
     end
     if btn.Texture then
         if data and data[1] then
@@ -66,7 +57,18 @@ local function Init()
         return
     end
 
-    --for _, frame in pairs({SettingsPanel.AddOnsTab}) do
+   local dataButton={--layoutIndex
+        [WoWTools_TextMixin:CN(GAMEMENU_OPTIONS)]= {'mechagon-projects', false},--选项
+        [WoWTools_TextMixin:CN(HUD_EDIT_MODE_MENU)]= {'UI-HUD-Minimap-CraftingOrder-Up', false},--编辑模式
+        [WoWTools_TextMixin:CN(MACROS)]= {'NPE_Icon', false},--宏命令设置
+
+        [WoWTools_TextMixin:CN(ADDONS)]= {'dressingroom-button-appearancelist-up', false},--插件
+        [WoWTools_TextMixin:CN(LOG_OUT)]= {'perks-warning-large', false, {0,0.8,1}},--登出
+        [WoWTools_TextMixin:CN(EXIT_GAME)]= {'Ping_Chat_Warning', false, {0,0.8,1}},--退出游戏
+        [WoWTools_TextMixin:CN(RETURN_TO_GAME)]= {'poi-traveldirections-arrow', true, {0,1,0}},--返回游戏
+    }
+
+
     local frame= SettingsPanel.AddOnsTab
     if frame then
         frame.reload= CreateFrame('Button', nil, frame, 'GameMenuButtonTemplate')
@@ -83,7 +85,7 @@ local function Init()
         Create_Texture_Tips(frame.reload, 'BattleBar-SwapPetIcon')
         WoWTools_TextureMixin:SetUIButton(frame.reload)
     end
-    --end
+
 
 
     SettingsPanel.AddOnsTab.reload:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
@@ -96,7 +98,7 @@ local function Init()
 
 --Blizzard_GameMenu/Standard/GameMenuFrame.lua
     WoWTools_DataMixin:Hook(GameMenuFrame, 'InitButtons', function(self)
-        
+
         for btn in self.buttonPool:EnumerateActive() do
             local data= dataButton[btn:GetText()]
             Create_Texture_Tips(btn, data)
