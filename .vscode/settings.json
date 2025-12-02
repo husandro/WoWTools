@@ -6516,7 +6516,8 @@
         "ChannelButtonHeaderMixin",
         "ChannelButtonMixin",
         "ChannelRosterButtonMixin",
-        "MainMenuFrameMixin"
+        "MainMenuFrameMixin",
+        "WhoList_InitButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -6538,7 +6539,8 @@
         "inject-field",
         "missing-parameter",
         "redundant-parameter",
-        "undefined-field"
+        "undefined-field",
+        "duplicate-set-field"
     ],
     "Lua.type.weakUnionCheck": true,
 }

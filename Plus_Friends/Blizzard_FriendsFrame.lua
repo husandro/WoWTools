@@ -455,7 +455,7 @@ local function Init()--好友列表, 初始化
                 return
             elseif not accountInfo.gameAccountInfo.isOnline then--or accountInfo.gameAccountInfo.wowProjectID~=WOW_PROJECT_ID then
                 return
-
+--不同版本 WOW PROJECT ID
             elseif accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW or accountInfo.gameAccountInfo.wowProjectID~= WOW_PROJECT_ID then
                 if accountInfo.gameAccountInfo.wowProjectID and accountInfo.gameAccountInfo.clientProgram then
                     self.info:SetText('|cnWARNING_FONT_COLOR:'..accountInfo.gameAccountInfo.clientProgram.. accountInfo.gameAccountInfo.wowProjectID)
@@ -583,16 +583,18 @@ local function Init()--好友列表, 初始化
                 if RAID_CLASS_COLORS[info.filename] then
                     r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
                     hex= RAID_CLASS_COLORS[info.filename]:GenerateHexColor()
+                    local size= btn:GetHeight()
                     btn.Class:SetText(
                         (info.gender==2
-                            and '|A:charactercreate-gendericon-male-selected:0:0|a'
-                            or (info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a')
+                            and format('|A:charactercreate-gendericon-male-selected:%d:%d|a', size, size)
+                            or (info.gender==3 and format('|A:charactercreate-gendericon-female-selected:%d:%d|a', size, size))
                             or ''
                         )
-                        ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, info.filename) or info.filename)
+                        ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, info.filename, {size=size}) or info.filename)
                     )
                 end
-            lv= info.level
+
+                lv= info.level
 
                 if info.fullName then
                     if info.fullName== WoWTools_DataMixin.Player.Name then
@@ -632,6 +634,7 @@ local function Init()--好友列表, 初始化
         set_WhoList_Update(self)
     end)
 
+    --WoWTools_DataMixin:Hook('WhoList_InitButton', function(btn, data)可用
 
     FriendsFrame:HookScript('OnShow', function(self)
         local isConnected= BNConnected()

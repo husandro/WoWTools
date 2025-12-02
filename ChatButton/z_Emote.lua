@@ -217,7 +217,8 @@ end
 local function Init_Button_Menu(self, root)
     local value= self.value
     local valueName= Get_Name(value, self.isChat, self.isCommand, self.useType)
-
+    local cn= WoWTools_TextMixin:CN(valueName)
+    cn= cn~=valueName and cn or nil
 
     local sub=root:CreateButton(
         (SaveUse('use')[value] and SaveUse('use')[value].name and '|cff00ccff' or '')
@@ -226,11 +227,18 @@ local function Init_Button_Menu(self, root)
         StaticPopup_Show('WoWTools_EditText',
             (WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT)
             ..'|n|n'
-            ..valueName,
+            ..valueName
+            ..(cn and '|n'..cn or ''),
             nil,
             {
                 OnShow= function(s)
-                    s:GetEditBox():SetText(SaveUse('use')[value] and SaveUse('use')[value].name or (valueName:gsub('/', '')))
+                    local t= SaveUse('use')[value] and SaveUse('use')[value].name
+                    s:GetButton3():SetEnabled(t and true or false)
+                    if not t then
+                        t= cn or valueName
+                        t= t:gsub('/', '')
+                    end
+                    s:GetEditBox():SetText(t)
                 end,
                 SetValue= function(s)
                     local va= s:GetEditBox():GetText()
@@ -259,11 +267,16 @@ local function Init_Button_Menu(self, root)
         ..(WoWTools_DataMixin.onlyChinese and '添加参数'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, MACRO)),
     function()
          StaticPopup_Show('WoWTools_EditText',
-            addName..'|n|n'..valueName..' |cffffffff('..(WoWTools_DataMixin.onlyChinese and '参数' or MACRO)..')|r',
+            addName..'|n|n'..valueName..' |cffffffff('..(WoWTools_DataMixin.onlyChinese and '参数' or MACRO)..')|r'
+            ..(cn and '|n'..cn or ''),
             nil,
             {
                 OnShow= function(s)
-                    s:GetEditBox():SetText(SaveUse('use')[value] and SaveUse('use')[value].add or '')
+                    local t= SaveUse('use')[value] and SaveUse('use')[value].add
+                    s:GetButton3():SetEnabled(t and true or false)
+                    if t then
+                        s:GetEditBox():SetText(t)
+                    end
                     s:GetButton1():SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
                 end,
                 SetValue= function(s)
@@ -282,6 +295,7 @@ local function Init_Button_Menu(self, root)
                     local t=s:GetText() or ''
                     s:GetParent().Text:SetText(
                         addName..'|n|n'..valueName..' |cff00ccff'..t..'|r'
+                        ..(cn and '|n'..cn or '')
                     )
                 end
             }
@@ -345,7 +359,7 @@ function Init_Button()
 
     local isUIParent= Save().isUIParent
     local line= Save().line or 1
-    local subNum= Save().subName or (LOCALE_koKR or LOCALE_zhTW or LOCALE_zhCN) and 1 or 3
+    local subNum= Save().subName or (LOCALE_koKR or LOCALE_zhTW or LOCALE_zhCN or WoWTools_ChineseMixin) and 1 or 3
     local scale= Save().scale or 1
     local alpha= Save().alpha or 0.5
     local fontScale= Save().fontScale or 1
@@ -444,8 +458,7 @@ function Init_Button()
 
             local name= SaveUse('use')[tab.value] and SaveUse('use')[tab.value].name
             if not name then
-                name= valueName
-                name= WoWTools_TextMixin:CN(name)
+                name= WoWTools_TextMixin:CN(valueName)
                 name= name:gsub('/', '')
             end
             if subNum>0 then
@@ -1021,7 +1034,7 @@ local function Init_Menu(self, root)
     sub:CreateSpacer()
         WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return Save().subName or (LOCALE_koKR or LOCALE_zhTW or LOCALE_zhCN) and 1 or 3
+            return Save().subName or (LOCALE_koKR or LOCALE_zhTW or LOCALE_zhCN or WoWTools_ChineseMixin) and 1 or 3
         end,
         setValue=function(value)
             Save().subName= value
@@ -1414,32 +1427,37 @@ MainButton= CreateFrame('Button', 'WoWToolsChatEmoteButton', UIParent, 'WoWTools
 MainButton:RegisterEvent('ADDON_LOADED')
 
 MainButton:SetScript('OnEvent', function(self, event, arg1)
-    if arg1~= 'WoWTools' then
-        return
-    end
+    if event=='ADDON_LOADED' then
+        if arg1== 'WoWTools' then
+            WoWToolsSave['Plus_EmoteButton']= WoWToolsSave['Plus_EmoteButton'] or CopyTable(P_Save)
+            WoWToolsPlayerDate['EmoteButton']= WoWToolsPlayerDate['EmoteButton'] or CopyTable(P_SaveUse)
+            addName= '|A:newplayerchat-chaticon-newcomer:0:0|a'..(WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE)
 
-    WoWToolsSave['Plus_EmoteButton']= WoWToolsSave['Plus_EmoteButton'] or CopyTable(P_Save)
-    WoWToolsPlayerDate['EmoteButton']= WoWToolsPlayerDate['EmoteButton'] or CopyTable(P_SaveUse)
-    addName= '|A:newplayerchat-chaticon-newcomer:0:0|a'..(WoWTools_DataMixin.onlyChinese and '表情' or EMOTE_MESSAGE)
+            WoWTools_PanelMixin:Check_Button({
+                checkName= addName,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    Init()
+                end,
+                buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+                buttonFunc= Rest_Button,
+                layout= WoWTools_ChatMixin.Layout,
+                category= WoWTools_ChatMixin.Category,
+                tooltip= WoWTools_DataMixin.onlyChinese and '按钮' or 'Button',
+            })
 
-    WoWTools_PanelMixin:Check_Button({
-        checkName= addName,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            Init()
-        end,
-        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-        buttonFunc= Rest_Button,
-        layout= WoWTools_ChatMixin.Layout,
-        category= WoWTools_ChatMixin.Category,
-        tooltip= WoWTools_DataMixin.onlyChinese and '按钮' or 'Button',
-    })
+            if Save().disabled then
+                self:SetScript('OnEvent', nil)
+            else
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            end
+            self:UnregisterEvent(event)
+        end
 
-    self:SetScript('OnEvent', nil)
-    self:UnregisterEvent(event)
-
-    if not Save().disabled then
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        self:SetScript('OnEvent', nil)
+        self:UnregisterEvent(event)
         Init()
     end
 end)

@@ -440,7 +440,7 @@ local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem, titl
         end
     else
 --材料
-        for subClassID= 1, 19 do
+        for subClassID= 1, 20 do
             local num, items
             if isOut then
                 num, items= Get_Bank_Num(tabID, 7, subClassID, onlyItem)

@@ -1,10 +1,10 @@
----@diagnostic disable: duplicate-set-field
 
-WoWTools_RealmMixin={}
+WoWTools_RealmMixin={
+    Get_Region=function()end
+}
 
 
 if WoWTools_DataMixin.Player.Region~=1 and WoWTools_DataMixin.Player.Region~=3 then
-    WoWTools_RealmMixin.Get_Region=function()end
     return
 end
 
@@ -135,6 +135,7 @@ elseif WoWTools_DataMixin.Player.Region==1 then
         ["Azralon"]="bzl", ["Gallywix"]="bzl", ["Goldrinn"]="bzl", ["Nemesis"]="bzl", ["Tol Barad"]="bzl",
     }
 end
+
 local regionColor = {--https://wago.io/6-GG3RMcC
     ["deDE"]= {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
     ["frFR"]= {col="|cFF00FFFFFR|r", text='FR', realm="France"},
@@ -153,15 +154,19 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["bzl"]= {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
 
+
 function WoWTools_RealmMixin:Get_Region(realm, guid, unit, disabled)--WoWTools_RealmMixin:Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
     if disabled then
         regionColor={}
         Realms={}
+        self.Get_Region=function()end
     else
         realm= realm=='' and WoWTools_DataMixin.Player.Realm
                 or realm
                 or unit and ((select(2, UnitName(unit)) or WoWTools_DataMixin.Player.Realm))
                 or guid and select(7, GetPlayerInfoByGUID(guid))
-        return realm and Realms[realm] and regionColor[Realms[realm]]
+        if realm and Realms[realm] then
+            return regionColor[Realms[realm]]
+        end
     end
 end

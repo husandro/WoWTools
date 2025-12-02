@@ -95,8 +95,10 @@ local function Init()
 --聊天频道，名称 增强
     WoWTools_DataMixin:Hook(ChannelRosterButtonMixin, 'UpdateName', function(self)
         if self:IsLocalPlayer() then
+            local region= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm)
             self.Name:SetText(
-                '|A:recipetoast-icon-star:0:0|a'
+                (region and region.col or '')
+                ..'|A:recipetoast-icon-star:0:0|a'
                 ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
             )
         else
@@ -104,6 +106,11 @@ local function Init()
             local name= guid and self:GetMemberName()
             if name then
                 local t=''
+--欧美，服务器语言
+                local region= WoWTools_RealmMixin:Get_Region(name:match('%-(.+)') or '', guid)
+                if region then
+                    t= t..region.col
+                end
 --种族
                 t= t..(WoWTools_UnitMixin:GetRaceIcon(nil, guid) or '')
 --职业
@@ -121,10 +128,12 @@ local function Init()
                     end
                 end
 --处理，服务器名称
-                if name:find('%-'..WoWTools_DataMixin.Player.Realm) then
-                    t= t..name:gsub('%-'..WoWTools_DataMixin.Player.Realm, '')
-                elseif C_PlayerInfo.UnitIsSameServer(self.playerLocation) then
-                    t= t..name..'|cnGREEN_FONT_COLOR:*|r'
+                if name:find('%-') then
+                    if name:find('%-'..WoWTools_DataMixin.Player.Realm) then
+                        t= t..name:gsub('%-'..WoWTools_DataMixin.Player.Realm, '')
+                    elseif C_PlayerInfo.UnitIsSameServer(self.playerLocation) then
+                        t= t..name..'|cnGREEN_FONT_COLOR:*|r'
+                    end
                 else
                     t= t..name
                 end
