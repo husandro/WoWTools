@@ -622,7 +622,7 @@ local function Init_UseFrame()
 
     menu:SetupMenu(function(self, root)
         for _, type in pairs({'chat', 'command'}) do
-            root:CreateRadio(
+            local sub= root:CreateRadio(
                 typeTab[type]..' #'..Get_TypeNum(type),
             function(data)
                 return data.type==frame.type
@@ -634,6 +634,11 @@ local function Init_UseFrame()
                 Settings()
                 Save().useFrameType= data.type--保存上次值
             end, {type=type})
+            if type=='command' then
+                sub:SetTooltip(function(tooltip)
+                    GameTooltip_AddErrorLine(tooltip, 'SecureActionButtonTemplate')
+                end)
+            end
         end
     end)
 
