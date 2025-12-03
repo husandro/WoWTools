@@ -43,7 +43,16 @@ local function EventFilter(_, _, text, ...)
 			if cnName then
 				local num= text:match('%d+')
 				if num then
-					text= format("你在%s中的声望值提高了%s点。", cnName, num)
+					if WoWTools_DataMixin.onlyChinese then
+						text= format("你在%s中的声望值提高了%s点。", cnName, num)
+					else
+						num= tonumber(num)
+						if  text:match(FACTION_STANDING_INCREASED) then
+							text= format(FACTION_STANDING_INCREASED, cnName, num)
+						else
+							text= format(FACTION_STANDING_INCREASED_ACCOUNT_WIDE, cnName, num)
+						end
+					end
 				else
 					text= text:gsub(name, cnName)
 				end

@@ -6517,7 +6517,8 @@
         "ChannelButtonMixin",
         "ChannelRosterButtonMixin",
         "MainMenuFrameMixin",
-        "WhoList_InitButton"
+        "WhoList_InitButton",
+        "BountyFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

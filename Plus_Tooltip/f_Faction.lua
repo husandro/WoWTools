@@ -69,11 +69,13 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         )
     end
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='faction', id=info.friendshipID or info.factionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
-
+    tooltip:Show()
+end
+--[[
     if tooltip==EmbeddedItemTooltip then
         GameTooltip_AddBlankLineToTooltip(tooltip)
     end
 
     WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
-end
+]]
 

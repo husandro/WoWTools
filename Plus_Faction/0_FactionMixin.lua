@@ -27,7 +27,7 @@ end
 function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
     local data= Get_Data(factionID, index)
     if not data.name then
-        return data
+        return {}
     end
 
     factionID= factionID or data.factionID

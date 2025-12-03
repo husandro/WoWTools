@@ -83,8 +83,9 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     end)
 
     for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
-        self:SetFrame(frame, {alpha=0.5})
-
+        if not frame.BountyDropdown then
+            self:SetFrame(frame, {alpha=0.5})
+        end
         --self:SetButton(frame.BountyDropdown)
     end
 
