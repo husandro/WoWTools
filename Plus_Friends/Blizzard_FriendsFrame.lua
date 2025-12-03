@@ -455,7 +455,7 @@ local function Init()--好友列表, 初始化
                 return
             elseif not accountInfo.gameAccountInfo.isOnline then--or accountInfo.gameAccountInfo.wowProjectID~=WOW_PROJECT_ID then
                 return
---不同版本 WOW PROJECT ID
+--不同版本 WOW PROJECT ID FriendsListButtonMixin:OnEnter()
             elseif accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW or accountInfo.gameAccountInfo.wowProjectID~= WOW_PROJECT_ID then
                 if accountInfo.gameAccountInfo.wowProjectID and accountInfo.gameAccountInfo.clientProgram then
                     self.info:SetText('|cnWARNING_FONT_COLOR:'..accountInfo.gameAccountInfo.clientProgram.. accountInfo.gameAccountInfo.wowProjectID)
