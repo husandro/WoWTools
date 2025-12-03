@@ -201,6 +201,7 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     minH=248,--496,
     sizeStopFunc= function()
         Set_InstanceSelect_Stride()
+
     end,
     sizeRestFunc=function()
         EncounterJournal:SetSize(800, 496)
