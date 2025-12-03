@@ -16,6 +16,9 @@ EncounterJournal.encounter.overviewFrame == EncounterJournalEncounterFrameInfoOv
 
 function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     local s
+
+    EncounterJournalMonthlyActivitiesFrame.RestrictedText:ClearAllPoints()
+    EncounterJournalMonthlyActivitiesFrame.RestrictedText:SetPoint('CENTER', EncounterJournalMonthlyActivitiesFrame.ThresholdContainer)
 --旅行者日志
     EncounterJournalMonthlyActivitiesFrame.ThemeContainer.Top:SetPoint('LEFT')
     EncounterJournalMonthlyActivitiesFrame.ThemeContainer.Top:SetPoint('RIGHT')
@@ -179,25 +182,24 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     EncounterJournalInstanceSelect.ScrollBar:SetPoint('TOPRIGHT', EncounterJournalInstanceSelect.ScrollBox, 0 ,-6)
     EncounterJournalInstanceSelect.ScrollBar:SetPoint('BOTTOMRIGHT', EncounterJournalInstanceSelect.ScrollBox, 0 , 6)
     local function Set_InstanceSelect_Stride()
-        --w= w or frame:GetWidth()
         local frame= EncounterJournalInstanceSelect.ScrollBox
         local spacing= frame.view:GetHorizontalSpacing() or 15
         local value= frame:GetWidth() / (174+ spacing)
         value= math.max(1, math.modf(value))
         if frame.view:GetStride()~= value then
             frame.view:SetStride(value)
-            --if frame:IsVisible() then
-              --  WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
-            --end
+            if frame:IsVisible() then
+                WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
+            end
         end
     end
-    EncounterJournalInstanceSelect.ScrollBox:HookScript('OnSizeChanged', Set_InstanceSelect_Stride) --EncounterInstanceButtonTemplate Size x="174" y="96"
+    --EncounterJournalInstanceSelect.ScrollBox:HookScript('OnSizeChanged', Set_InstanceSelect_Stride) --EncounterInstanceButtonTemplate Size x="174" y="96"
 
 
     self:Setup(EncounterJournal, {
     minW=400,--800,
     minH=248,--496,
-    sizeUpdateFunc= function()
+    sizeStopFunc= function()
         Set_InstanceSelect_Stride()
     end,
     sizeRestFunc=function()
@@ -216,6 +218,8 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
 
 
     Set_InstanceSelect_Stride()
+
+    s= nil
 end
 
 

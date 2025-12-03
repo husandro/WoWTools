@@ -127,7 +127,7 @@ local function Init_Menu(self, root)
 --打开选项界面
     WoWTools_MenuMixin:OpenOptions(root, {
         name=addName,
-        name2= self.name,
+        name2= WoWTools_TextMixin:CN(self.name),
         category=WoWTools_OtherMixin.Category
     })
 end
