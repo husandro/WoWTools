@@ -28,7 +28,7 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     self:SetAlphaColor(HousingDashboardFrame.HouseInfoTabButton.Icon, true)
     self:SetAlphaColor(HousingDashboardFrame.CatalogTabButton.Icon, true)
     self:SetScrollBar(HousingDashboardFrame.CatalogContent.OptionsContainer)
-    HousingDashboardFrame.CatalogContent.TempDisclaimer.DisclaimerText:SetAlpha(0.3)
+    --HousingDashboardFrame.CatalogContent.TempDisclaimer.DisclaimerText:SetAlpha(0.3)
 
     self:SetUIButton(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.NoHouseButton)
 
