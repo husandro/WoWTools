@@ -658,10 +658,14 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
         local placementCost, r,g,b
         local isTrackable= nil
+        local show
         if btn:HasValidData() then
-            isTrackable= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
+
+            show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
                 and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--追踪功能对此物品可用
-                and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--正在追踪
+
+            isTrackable= show and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--正在追踪
+
             r,g,b= WoWTools_ItemMixin:GetColor(btn.entryInfo.quality)
             placementCost= btn.entryInfo.placementCost
 
@@ -685,7 +689,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
         btn.placementCostLabel:SetText(placementCost and placementCost..'|A:House-Decor-budget-icon:0:0|a' or '')
 
-        btn.trackableButton:SetShown(isTrackable~=nil)
+        btn.trackableButton:SetShown(show)
         btn.trackableButton.texture:SetDesaturated(isTrackable==false)
         btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.5)
     end)
@@ -719,5 +723,5 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'ClearCatalogData', function(frame)
         frame.numItemLabel:SetText('')
     end)
-    
+
 end
