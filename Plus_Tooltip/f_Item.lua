@@ -549,4 +549,3 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
     --tooltip:Show()
 end
-

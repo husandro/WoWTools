@@ -633,6 +633,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.InfoText:SetFontObject('GameFontWhite')--有点大
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
         btn.placementCostLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
+--添加，追踪，按钮
         btn.trackableButton= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
         btn.trackableButton:SetSize(18,18)
         btn.trackableButton:SetPoint('TOPLEFT', 3., -2)
@@ -640,7 +641,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.trackableButton.texture:SetAllPoints()
         btn.trackableButton.texture:SetAtlas('Waypoint-MapPin-Tracked')
         btn.trackableButton:SetScript('OnLeave', GameTooltip_Hide)
-        btn.trackableButton.tooltip=WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING
+        btn.trackableButton.tooltip= self.addName..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
         btn.trackableButton:SetScript('OnClick', function(b)
             local recordID= b:GetParent().entryInfo.entryID.recordID
             if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID) then
@@ -712,6 +713,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         tooltip:Show()
     end)
 
+--列表，数量
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'OnLoad', function(frame)
         frame.numItemLabel= frame:CreateFontString(nil, nil, 'GameFontWhite')
         frame.numItemLabel:SetPoint('LEFT', frame.CategoryText, 'RIGHT', 4, 0)

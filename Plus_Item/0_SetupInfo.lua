@@ -407,6 +407,35 @@ local function Get_Info(tab)
             topRightText= '|T236994:0|t'
         end
 
+--住宅装饰
+    elseif C_Item.IsDecorItem(itemLink) then
+        local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
+        if entryInfo then
+
+                --rightText= '|T'..(entryInfo.asset or 0)..':0|t'--modelID
+
+            if entryInfo.placementCost then
+                topRightText= '|A:House-Decor-budget-icon:0:0|a'..entryInfo.placementCost
+            end
+            if entryInfo.canCustomize then
+                bottomLeftText= '|A:housing-dyable-palette-icon:0:0|a'
+            end
+            if entryInfo.showQuantity then
+                bottomRightText= (entryInfo.numPlaced>0 and '' or '|cff626262')
+                    ..entryInfo.numPlaced
+                    ..(entryInfo.numPlaced>0 and '' or '|r')
+                    ..'/'
+                    ..(entryInfo.numStored>0 and '' or '|cff626262')
+                    ..entryInfo.numStored
+            --[[else
+                if not HousingDashboardFrame then
+                    C_AddOns.LoadAddOn("Blizzard_HousingDashboard");
+                end]]
+            end
+        end
+        --info= entryInfo
+        --for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+
 --套装：炎阳珠衣装
     elseif transmogSetID then
         local collect, numAll = select(2, WoWTools_CollectedMixin:SetID(transmogSetID))
@@ -419,7 +448,7 @@ local function Get_Info(tab)
                 bottomLeftText= get_has_text(false)
             end
         end
-        
+
 --炉石
     elseif itemID==6948 then
         bottomLeftText=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GetBindLocation()), 3, 6, true)
