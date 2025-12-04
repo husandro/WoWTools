@@ -24,9 +24,11 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
 --11.2.7中显示图标，会出错
     WoWTools_DataMixin:Hook(HousingDashboardFrame.CatalogContent, 'UpdateCategoryText', function(frame)
         local categoryString = frame.Categories:GetFocusedCategoryString()
-        print(categoryString, categoryString:find('|t$'))
-        if categoryString and categoryString:find('|TInterfaceIcons') then
-            frame.OptionsContainer.CategoryText:SetText(categoryString:gsub('|TInterfaceIcons', '|TInterface\\Icons\\')..'|t')
+        if categoryString then
+            local t= categoryString:match('(.+) ||TInterfaceIcons.+|t')
+            if t then
+                frame.OptionsContainer.CategoryText:SetText(t)
+            end
         end
     end)
 
