@@ -6,7 +6,7 @@ function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
     if not tooltip
         or not data
         or not data.id
-        or WoWTools_FrameMixin:IsLocked(tooltip)
+        or self:IsInCombatDisabled(tooltip)
     then
         return
     end
@@ -38,7 +38,7 @@ end
 
 --来源
 function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
-    local data= not WoWTools_FrameMixin:IsLocked(tooltip) and C_UnitAuras.GetAuraDataByIndex(...)
+    local data= not self:IsInCombatDisabled(tooltip) and C_UnitAuras.GetAuraDataByIndex(...)
     local source= data and data.sourceUnit
     if not source then
         return

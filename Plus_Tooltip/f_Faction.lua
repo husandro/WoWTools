@@ -7,7 +7,7 @@
 function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
     local info= WoWTools_FactionMixin:GetInfo(factionID, nil, true)
 
-    if not info or not info.factionID or info.factionID<1 or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not info or not info.factionID or info.factionID<1 or self:IsInCombatDisabled(tooltip) then
         return
     end
 

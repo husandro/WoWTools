@@ -3,7 +3,7 @@
 
 function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     local info2 = (tooltip and currencyID) and C_CurrencyInfo.GetCurrencyInfo(currencyID)
-    if not info2 or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not info2 or self:IsInCombatDisabled(tooltip) then
         return
     end
 

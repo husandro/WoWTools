@@ -123,7 +123,7 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-        tooltip= WoWTools_TooltipMixin.addName,
+        tooltip= WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION,
         GetValue= function() return Save().inCombatDefaultAnchor end,
         category= Category,
         SetValue= function()
@@ -132,6 +132,15 @@ local function Init_Panel()
         end
     }, root)
 
+    WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_DataMixin.onlyChinese and '战斗中：禁用' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DISABLE),
+        tooltip= WoWTools_TooltipMixin.addName,
+        GetValue= function() return Save().isInCombatDisabled end,
+        category= Category,
+        SetValue= function()
+            Save().inCombatDefaultAnchor= not Save().isInCombatDisabled and true or nil
+        end
+    }, root)
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
 

@@ -72,7 +72,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
         originalIcon= spellInfo.originalIconID
     end
 
-    if not name or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not name or self:IsInCombatDisabled(tooltip) then
         return
     end
 

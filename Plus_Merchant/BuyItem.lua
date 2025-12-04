@@ -18,8 +18,6 @@ end
 
 local BuyItemButton
 
-local tabCN
-
 
 
 
@@ -284,8 +282,7 @@ local function Init_Menu_Sell(_, root)
 
     for quality= 0 , 4 do
         name= '|T236994:0|t'
-            ..select(4, WoWTools_ItemMixin:GetColor(quality))
-            ..tabCN[quality]
+            ..WoWTools_ItemMixin.QalityText[quality]
             ..' #|cffffffff'..#tabs[quality]
 
         sub2= sub:CreateButton(
@@ -432,17 +429,6 @@ local function Init()
     }
 
 
-
-
-
-    tabCN= {
-        [0]= WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC,
-        [1]= WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC,
-        [2]= WoWTools_DataMixin.onlyChinese and '优秀' or ITEM_QUALITY2_DESC,
-        [3]= WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC,
-        [4]= WoWTools_DataMixin.onlyChinese and '史诗' or ITEM_QUALITY4_DESC,
-
-}
 
     BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
         name='WoWTools_BuyItemButton',

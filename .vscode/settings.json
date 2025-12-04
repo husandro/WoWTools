@@ -6519,7 +6519,12 @@
         "MainMenuFrameMixin",
         "WhoList_InitButton",
         "BountyFrameMixin",
-        "HousingCatalogFrameMixin"
+        "HousingCatalogFrameMixin",
+        "ITEM_QUALITY8_DESC",
+        "ICON_FILTER_ITEM",
+        "PROFESSIONS_COLUMN_HEADER_ITEM",
+        "HOUSING_CATALOG_FILTERS_INDOORS",
+        "HOUSING_CATALOG_FILTERS_OUTDOORS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -4,7 +4,7 @@
 function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     speciesID = speciesID and tonumber(speciesID) or -1
 
-    if speciesID< 1 or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if speciesID< 1 or self:IsInCombatDisabled(tooltip) then
         return
     end
 

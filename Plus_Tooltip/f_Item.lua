@@ -397,11 +397,103 @@ end
 
 
 
+--[[
+Name = "HousingCatalogEntryInfo",
+Type = "Structure",
+Fields =
+{
+    { Name = "entryID", Type = "HousingCatalogEntryID", Nilable = false },
+    { Name = "name", Type = "cstring", Nilable = false },
+    { Name = "asset", Type = "ModelAsset", Nilable = true },
+    { Name = "iconTexture", Type = "FileAsset", Nilable = true },
+    { Name = "iconAtlas", Type = "textureAtlas", Nilable = true },
+    { Name = "uiModelSceneID", Type = "number", Nilable = true },
+    { Name = "quantity", Type = "number", Nilable = false },
+    { Name = "showQuantity", Type = "bool", Nilable = false },
+    { Name = "categoryIDs", Type = "table", InnerType = "number", Nilable = false },
+    { Name = "subcategoryIDs", Type = "table", InnerType = "number", Nilable = false },
+    { Name = "dataTagsByID", Type = "LuaValueVariant", Nilable = false },
+    { Name = "size", Type = "HousingCatalogEntrySize", Nilable = false },
+    { Name = "placementCost", Type = "number", Nilable = false },
+    { Name = "numPlaced", Type = "number", Nilable = false },
+    { Name = "numStored", Type = "number", Nilable = false },
+    { Name = "isAllowedOutdoors", Type = "bool", Nilable = false },
+    { Name = "isAllowedIndoors", Type = "bool", Nilable = false },
+    { Name = "canCustomize", Type = "bool", Nilable = false },
+    { Name = "isPrefab", Type = "bool", Nilable = false },
+    { Name = "quality", Type = "ItemQuality", Nilable = true },
+    { Name = "customizations", Type = "table", InnerType = "cstring", Nilable = false },
+    { Name = "marketInfo", Type = "HousingMarketInfo", Nilable = true },
+    { Name = "remainingRedeemable", Type = "number", Nilable = false },
+    { Name = "firstAcquisitionBonus", Type = "number", Nilable = false },
+    { Name = "sourceText", Type = "cstring", Nilable = false },
+},
+},
 
+local ValueTypePortraits = {
+	[Enum.HouseLevelRewardValueType.InteriorDecor] = "house-decor-budget-icon",
+	[Enum.HouseLevelRewardValueType.ExteriorDecor] = "house-outdoor-budget-icon",
+	[Enum.HouseLevelRewardValueType.Rooms] =         "house-room-limit-icon",
+	[Enum.HouseLevelRewardValueType.Fixtures] =      "house-fixture-budget-icon",
+}
 
+entryInfo.isPrefab 匠心房间
+]]
 
+function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
+    local textLeft, portrait
+    tooltip:AddLine(
+        'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.entryID.recordID
 
+    )
+    tooltip:AddDoubleLine(
+        'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.uiModelSceneID,
+        'modelAsset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.asset
+    )
 
+    if entryInfo.iconTexture then
+        local size= math.min(entryInfo.size, 90)*5
+        tooltip:AddDoubleLine(nil,
+            '|T'..entryInfo.iconTexture..':'..size..':'..size..'|t'--':-'..entryInfo.size..'|t'
+        )
+    end
+    if entryInfo.canCustomize then
+        portrait='housing-dyable-palette-icon'
+    end
+    if entryInfo.showQuantity then
+        textLeft=entryInfo.numPlaced..'/'..entryInfo.numStored..'|A:house-chest-icon:0:0|a'
+    end
+    tooltip:AddDoubleLine(
+        format(
+            NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY),
+            '|cffffffff'..WoWTools_ItemMixin.QalityText[entryInfo.quality or 1]..'|r'
+        ),
+        '|T'..entryInfo.iconTexture..':23|t|cffffffff'..entryInfo.iconTexture
+    )
+
+--室内, 室外
+    if entryInfo.isAllowedIndoors or entryInfo.isAllowedOutdoors then
+        tooltip:AddDoubleLine(
+            entryInfo.isAllowedIndoors and  '|A:house-room-limit-icon:0:0|a'..NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '室内' or HOUSING_CATALOG_FILTERS_INDOORS) or ' ',
+            entryInfo.isAllowedOutdoors and  NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS)..'|A:house-outdoor-budget-icon:0:0|a'
+        )
+    end
+
+--关键词
+    local tag
+    for _, name in pairs(entryInfo.dataTagsByID) do
+        tag= (tag and tag.. NORMAL_FONT_COLOR:WrapTextInColorCode(PLAYER_LIST_DELIMITER) or '')..WoWTools_TextMixin:CN(name)
+    end
+    if tag then
+        tooltip:AddLine(tag, 1,1,1, true)
+    end
+--来源
+    if entryInfo.sourceText and entryInfo.sourceText~='' then
+        tooltip:AddLine(entryInfo.sourceText, 1,1,1)
+    end
+
+    return textLeft, portrait
+end
 
 
 
@@ -413,7 +505,7 @@ end
 
 
 function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
-    if not (itemLink or itemID) or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not (itemLink or itemID) or self:IsInCombatDisabled(tooltip) then
         return
     end
 
@@ -446,13 +538,25 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         )
     end
 
+--物品法术
+    local spellName, spellID = C_Item.GetItemSpell(itemID)
+    if spellName and spellID then
+        local spellTexture= C_Spell.GetSpellTexture(spellID)
+        tooltip:AddDoubleLine(
+            spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t|cffffffff'..spellTexture or ' ',
+
+            (itemName~=spellName and '|cff71d5ff['..WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true})..']|r' or '')
+            ..NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'|T'..(spellTexture or itemTexture or 0)..':0|t|cffffffff'..spellID
+        )
+    end
+
     itemTexture= itemTexture or select(5, C_Item.GetItemInfoInstant(itemID or itemLink))
 
 --itemID,  图标
     tooltip:AddDoubleLine(
         itemTexture and '|T'..itemTexture..':'..self.iconSize..'|t|cffffffff'..itemTexture or ' ',
 
-        'itemID|cffffffff'
+        NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '物品' or PROFESSIONS_COLUMN_HEADER_ITEM)..'|cffffffff'
         ..WoWTools_DataMixin.Icon.icon2
         ..itemID
     )
@@ -460,8 +564,8 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 --物品，类型
     if classID or subclassID then
         tooltip:AddDoubleLine(
-            classID and (WoWTools_TextMixin:CN(itemType) or 'itemType')..' |cffffffff'..classID,
-            subclassID and (WoWTools_TextMixin:CN(itemSubType) or 'itemSubType')..' |cffffffff'..subclassID
+            classID and NORMAL_FONT_COLOR:WrapTextInColorCode((WoWTools_TextMixin:CN(itemType) or 'itemType'))..' |cffffffff'..classID or ' ',
+            subclassID and NORMAL_FONT_COLOR:WrapTextInColorCode((WoWTools_TextMixin:CN(itemSubType) or 'itemSubType'))..' |cffffffff'..subclassID
         )
     end
 
@@ -471,28 +575,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     local portrait
 --住宅装饰
     if C_Item.IsDecorItem(itemLink or itemID) then
-        local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
+        local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink or itemID, true)
         if entryInfo then
-            tooltip:AddDoubleLine(
-                'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.entryID.recordID,
-                '|cffffffff'..entryInfo.iconTexture
-            )
-            tooltip:AddDoubleLine(
-                'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.uiModelSceneID,
-                'asset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.asset
-            )
-
-            if entryInfo.iconTexture then
-                tooltip:AddDoubleLine(nil,
-                    '|T'..entryInfo.iconTexture..':'..(math.min(entryInfo.size, 90)*4)..'|t'
-                )
-            end
-            if entryInfo.canCustomize then
-                portrait='housing-dyable-palette-icon'
-            end
-            if entryInfo.showQuantity then
-                textLeft=entryInfo.numPlaced..'/'..entryInfo.numStored
-            end
+            textLeft, portrait= self:Set_HouseItem(tooltip, entryInfo)
         end
 
 --套装：炎阳珠衣装
@@ -548,16 +633,6 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         end
     end
 
-    local spellName, spellID = C_Item.GetItemSpell(itemID)--物品法术
-    if spellName and spellID then
-        local spellTexture= C_Spell.GetSpellTexture(spellID)
-        tooltip:AddDoubleLine(
-            spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t|cffffffff'..spellTexture or ' ',
-
-            (itemName~=spellName and '|cff71d5ff['..WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true})..']|r' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'|T'..(spellTexture or itemTexture or 0)..':0|t|cffffffff'..spellID
-        )
-    end
 
     tooltip.Portrait:settings(portrait or itemTexture)
 

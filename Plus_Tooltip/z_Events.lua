@@ -704,18 +704,16 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
 
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'AddTooltipTrackingLines', function(btn, tooltip)
-        if not btn:HasValidData() then
+        local entryInfo= btn:HasValidData() and btn.entryInfo
+        if not entryInfo then
             return
         end
-        tooltip:AddLine(" ")
-        tooltip:AddDoubleLine(
-            'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.entryID.recordID,
-            btn.entryInfo.iconTexture and '|T'..btn.entryInfo.iconTexture..':'..(btn.entryInfo.size*2.5)..'|t|cffffffff'..btn.entryInfo.iconTexture
-        )
-        tooltip:AddDoubleLine(
-            'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.uiModelSceneID,
-            btn.entryInfo.asset and 'asset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.asset
-        )
+        tooltip:AddLine(' ')
+        local textLeft, portrait= WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
+        if tooltip.textLeft then
+            tooltip.textLeft:SetText(textLeft or '')
+            tooltip.Portrait:settings(portrait)
+        end
         tooltip:Show()
     end)
 

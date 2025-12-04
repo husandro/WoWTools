@@ -5,7 +5,7 @@
 function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
     local name, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
 
-    if not name or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not name or self:IsInCombatDisabled(tooltip) then
         return
     end
 

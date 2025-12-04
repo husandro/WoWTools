@@ -5,7 +5,7 @@
 function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     questID= questID or (info and info.questID or nil)
 
-    if not questID or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not questID or self:IsInCombatDisabled(tooltip) then
         return
     end
 

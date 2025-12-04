@@ -1,8 +1,21 @@
 WoWTools_ItemMixin={
     Events={},
     Frames={},
+    QalityText={},
 }
 --[[
+WoWTools_ItemMixin.QalityText= {
+    [0]= select(4, C_Item.GetItemQualityColor(0))..(WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r',
+    [1]= select(4, C_Item.GetItemQualityColor(1))..(WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC)..'|r',
+    [2]= select(4, C_Item.GetItemQualityColor(2))..( WoWTools_DataMixin.onlyChinese and '优秀' or ITEM_QUALITY2_DESC)..'|r',
+    [3]= select(4, C_Item.GetItemQualityColor(3))..(WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC)..'|r',
+    [4]= select(4, C_Item.GetItemQualityColor(4))..(WoWTools_DataMixin.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r',
+    [5]= select(4, C_Item.GetItemQualityColor(5))..(WoWTools_DataMixin.onlyChinese and '传说' or ITEM_QUALITY5_DESC)..'|r',
+    [6]= select(4, C_Item.GetItemQualityColor(6))..(WoWTools_DataMixin.onlyChinese and '神器' or ITEM_QUALITY6_DESC)..'|r',
+    [7]= select(4, C_Item.GetItemQualityColor(7))..(WoWTools_DataMixin.onlyChinese and '传家宝' or ITEM_QUALITY7_DESC)..'|r',
+    [8]= select(4, WoWTools_ItemMixin:GetColor(8))..(WoWTools_DataMixin.onlyChinese and '时光徽章' or ITEM_QUALITY8_DESC)..'|r',
+    }
+    
 WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
 WoWTools_ItemMixin:GetItemStats(link)--取得，物品，次属性，表
 WoWTools_ItemMixin:SetItemStats(frame, itemLink, {point=frame.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等

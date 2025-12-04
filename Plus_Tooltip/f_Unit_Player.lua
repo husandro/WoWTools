@@ -2,7 +2,7 @@
 
 --设置单位, 玩家
 function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
-    if WoWTools_FrameMixin:IsLocked(tooltip) or not UnitExists(unit) then
+    if self:IsInCombatDisabled(tooltip) or not UnitExists(unit) then
         return
     end
 

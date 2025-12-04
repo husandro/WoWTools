@@ -35,3 +35,7 @@ function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
         self:Set_Unit_NPC(tooltip, name, unit, guid)
     end
 end
+
+function WoWTools_TooltipMixin:IsInCombatDisabled(tooltip)
+    return WoWTools_FrameMixin:IsLocked(tooltip) or (self:Save().isInCombatDisabled and InCombatLockdown())
+end

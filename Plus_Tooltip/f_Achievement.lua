@@ -2,7 +2,7 @@
 
 
 function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
-    if not achievementID or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not achievementID or self:IsInCombatDisabled(tooltip) then
         return
     end
 

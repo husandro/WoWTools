@@ -8,7 +8,7 @@
 
 
 function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
-    if WoWTools_FrameMixin:IsLocked(tooltip) or not mountID then
+    if self:IsInCombatDisabled(tooltip) or not mountID then
         return
     elseif mountID==268435455 then
         self:Set_Spell(tooltip, 150544)--法术

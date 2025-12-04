@@ -1,6 +1,6 @@
 --艾泽拉斯之心
 function WoWTools_TooltipMixin:Set_Azerite(tooltip, powerID)
-    if not powerID or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not powerID or self:IsInCombatDisabled(tooltip) then
         return
     end
 

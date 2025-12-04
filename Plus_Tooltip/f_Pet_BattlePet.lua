@@ -2,7 +2,7 @@
 function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQuality, maxHealth, power, speed, customName)
     speciesID= speciesID and tonumber(speciesID) or -1
 
-    if speciesID < 1 or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if speciesID < 1 or self:IsInCombatDisabled(tooltip) then
         return
     end
 

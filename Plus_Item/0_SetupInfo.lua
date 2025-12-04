@@ -411,14 +411,18 @@ local function Get_Info(tab)
     elseif C_Item.IsDecorItem(itemLink) then
         local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
         if entryInfo then
+            if entryInfo.firstAcquisitionBonus>0 then
+                topLeftText= '|A:GarrMission_CurrencyIcon-Xp:0:0|a'
+            end
+
             if entryInfo.placementCost then
-                topRightText= '|A:House-Decor-budget-icon:0:0|a'..entryInfo.placementCost
+                topRightText= entryInfo.placementCost..'|A:House-Decor-budget-icon:0:0|a'
             end
             if entryInfo.canCustomize then
-                bottomLeftText= '|A:housing-dyable-palette-icon:0:0|a'
+                rightText= '|A:housing-dyable-palette-icon:0:0|a'
             end
             if entryInfo.showQuantity then
-                bottomRightText=entryInfo.numPlaced..'/'..entryInfo.numStored
+                bottomRightText=entryInfo.numPlaced..'/'..entryInfo.numStored..'|A:house-chest-icon:0:0|a'
             end
         end
 
