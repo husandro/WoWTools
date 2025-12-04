@@ -658,7 +658,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         end)
 --可获得首次收集奖励
         btn.firstXP= btn:CreateTexture()
-        btn.firstXP:SetPoint('BOTTOM', btn.placementCostLabel)
+        btn.firstXP:SetPoint('BOTTOM', btn.placementCostLabel,'TOP')
         btn.firstXP:SetSize(23,23)
         btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
         btn.firstXP:SetAlpha(0.7)
