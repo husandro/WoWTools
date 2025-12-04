@@ -631,6 +631,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 --Blizzard_HousingCatalogEntry.lua
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
         btn.InfoText:SetFontObject('GameFontWhite')--有点大
+--空间，大小
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
         btn.placementCostLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
 --添加，追踪，按钮
@@ -655,11 +656,17 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                 b.texture:SetAlpha(isTrackable and 1 or 0.5)
             end)
         end)
+--可获得首次收集奖励
+        btn.firstXP= btn:CreateTexture()
+        btn.firstXP:SetPoint('LEFT', btn.CustomizeIcon, 'RIGHT', -3, 0)
+        btn.firstXP:SetSize(23,23)
+        btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
+        btn.firstXP:SetAlpha(0.7)
     end)
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
         local placementCost, r,g,b
         local isTrackable= nil
-        local show
+        local show, xp
         if btn:HasValidData() then
 
             show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
@@ -685,6 +692,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                     )
                 end
             end
+
+            xp= btn.entryInfo.firstAcquisitionBonus and btn.entryInfo.firstAcquisitionBonus>0
         end
 
         btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
@@ -693,6 +702,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.trackableButton:SetShown(show)
         btn.trackableButton.texture:SetDesaturated(isTrackable==false)
         btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.5)
+
+        btn.firstXP:SetShown(xp)
     end)
 
 
@@ -725,5 +736,4 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'ClearCatalogData', function(frame)
         frame.numItemLabel:SetText('')
     end)
-
 end

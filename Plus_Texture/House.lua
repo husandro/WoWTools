@@ -21,6 +21,15 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingCornerstone()
 end
 --住宅信息板
 function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
+--11.2.7中显示图标，会出错
+    WoWTools_DataMixin:Hook(HousingDashboardFrame.CatalogContent, 'UpdateCategoryText', function(frame)
+        local categoryString = frame.Categories:GetFocusedCategoryString()
+        print(categoryString, categoryString:find('|t$'))
+        if categoryString and categoryString:find('|TInterfaceIcons') then
+            frame.OptionsContainer.CategoryText:SetText(categoryString:gsub('|TInterfaceIcons', '|TInterface\\Icons\\')..'|t')
+        end
+    end)
+
     self:SetButton(HousingDashboardFrameCloseButton)
     self:SetNineSlice(HousingDashboardFrame)
     self:SetFrame(HousingDashboardFrame, {alpha=0})
