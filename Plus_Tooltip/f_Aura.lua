@@ -29,6 +29,8 @@ function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
     else
         WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
+
+    tooltip.Portrait:settings(icon)
 end
 
 
@@ -48,7 +50,7 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     end
     if source~='player' and tooltip.Portrait then
         SetPortraitTexture(tooltip.Portrait, source)
-        tooltip.Portrait:SetShown(true)
+        --tooltip.Portrait:SetShown(true)
     end
     local text= source=='player' and (WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
             or source=='pet' and (WoWTools_DataMixin.onlyChinese and '宠物' or PET)

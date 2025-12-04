@@ -86,14 +86,14 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
     local textLeft, text2Left
 --装等
     itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
+    local portrait
     if itemLevel and itemLevel>1 then
 --比较装等
         local slot= {WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}
         if slot[1] then
             local slotTexture= select(2, WoWTools_ItemMixin:GetEquipSlotIcon(slot[1]))
             if slotTexture then
-                tooltip.Portrait:SetTexture(slotTexture)
-                tooltip.Portrait:SetShown(true)
+                portrait=slotTexture
             end
 --栏位
             tooltip:AddDoubleLine(
@@ -133,7 +133,7 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
     self:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
 
     if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
-        tooltip.Portrait:SetAtlas('greatVault-lock')
+        portrait:SetAtlas('greatVault-lock')
     end
 
 --专精图标
@@ -161,7 +161,7 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
         tooltip:AddDoubleLine(player or ' ', other)
     end
 
-    return textLeft, text2Left
+    return textLeft, text2Left, portrait
 end
 
 
@@ -467,7 +467,36 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 --套装：炎阳珠衣装
     local transmogSetID= C_Item.GetItemLearnTransmogSet(itemID)
-    if transmogSetID then
+
+    local portrait
+--住宅装饰
+    if C_Item.IsDecorItem(itemLink or itemID) then
+        local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
+        if entryInfo then
+            tooltip:AddDoubleLine(
+                'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.entryID.recordID,
+                '|cffffffff'..entryInfo.iconTexture
+            )
+            tooltip:AddDoubleLine(
+                'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.uiModelSceneID,
+                'asset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.asset
+            )
+
+            if entryInfo.iconTexture then
+                tooltip:AddDoubleLine(nil,
+                    '|T'..entryInfo.iconTexture..':'..(math.min(entryInfo.size, 90)*4)..'|t'
+                )
+            end
+            if entryInfo.canCustomize then
+                portrait='housing-dyable-palette-icon'
+            end
+            if entryInfo.showQuantity then
+                textLeft=entryInfo.numPlaced..'/'..entryInfo.numStored
+            end
+        end
+
+--套装：炎阳珠衣装
+    elseif transmogSetID then
         local collect, numAll = select(2, WoWTools_CollectedMixin:SetID(transmogSetID))
         if numAll then
             if collect==numAll then
@@ -481,7 +510,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         tooltip:AddLine('transmogSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..transmogSetID)
 --装备
     elseif classID==2 or classID==4 then
-        textLeft, text2Left= Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
+        textLeft, text2Left, portrait= Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
 --次属性 %值
         if not PlayerIsTimerunning() then
             Set_ItemStatus(tooltip, itemLink)
@@ -530,6 +559,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         )
     end
 
+    tooltip.Portrait:settings(portrait or itemTexture)
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         textLeft, text2Left, text2Right= Set_keystonee(tooltip, itemLink)

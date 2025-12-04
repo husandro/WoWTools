@@ -681,15 +681,10 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                 --self.InfoText:SetText(self.bundleEntryInfo.quantity)
             elseif btn:IsInMarketView() then
             else
-                local n= btn.entryInfo.numPlaced or 0--已放置
-                local q=  btn.entryInfo.numStored or 0--储存空间
-                if n>0 or q>0 then
-                    btn.InfoText:SetText(
-                        (n==0 and '|cff606060' or '|cffffffff')
-                        ..n..'|r/'
-                        ..(q==0 and '|cff606060' or '|cffffffff')
-                        ..q
-                    )
+                local numPlaced= btn.entryInfo.numPlaced or 0--已放置
+                local numStored=  btn.entryInfo.numStored or 0--储存空间
+                if numPlaced>0 or numStored>0 then
+                    btn.InfoText:SetText(numPlaced..'/'..numStored)
                 end
             end
 
@@ -715,7 +710,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         tooltip:AddLine(" ")
         tooltip:AddDoubleLine(
             'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.entryID.recordID,
-            btn.entryInfo.iconTexture and '|T'..btn.entryInfo.iconTexture..':'..(btn.entryInfo.size*2)..'|t|cffffffff'..btn.entryInfo.iconTexture
+            btn.entryInfo.iconTexture and '|T'..btn.entryInfo.iconTexture..':'..(btn.entryInfo.size*2.5)..'|t|cffffffff'..btn.entryInfo.iconTexture
         )
         tooltip:AddDoubleLine(
             'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..btn.entryInfo.uiModelSceneID,

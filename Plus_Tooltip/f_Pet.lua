@@ -97,7 +97,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
 
 --图像
     tooltip.Portrait:SetTexture(typeTexture or 0)
-    tooltip.Portrait:SetShown(typeTexture)
+    --tooltip.Portrait:SetShown(typeTexture)
 
 --收集数量
     if obtainable then--可得到的

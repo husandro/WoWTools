@@ -13,7 +13,7 @@ end
 
 function WoWTools_TooltipMixin:Set_PlayerModel(tooltip)
     if not tooltip.playerModel then
-        tooltip.playerModel= CreateFrame("PlayerModel", tooltip:GetName()..'PlayerModel', tooltip)--PlayerModel ModelScene DressUpModel PlayerModel        
+        tooltip.playerModel= CreateFrame("PlayerModel", tooltip:GetName()..'PlayerModel', tooltip)--PlayerModel ModelScene DressUpModel PlayerModel
     else
         tooltip.playerModel:ClearAllPoints()
     end
@@ -91,10 +91,21 @@ local function Create(tooltip)
         if tooltip.CloseButton then
             tooltip.Portrait:SetPoint('TOPRIGHT', tooltip.CloseButton, 'BOTTOMRIGHT', -6, 0)
         else
-            tooltip.Portrait:SetPoint('TOPRIGHT',-2, -3)
+            tooltip.Portrait:SetPoint('TOPRIGHT',-6, -24)
         end
         tooltip.Portrait:SetSize(40,40)
         WoWTools_ButtonMixin:AddMask(tooltip, false, tooltip.Portrait)
+    end
+    function tooltip.Portrait:settings(icon)
+        if icon then
+            if C_Texture.GetAtlasInfo(icon) then
+                self:SetAtlas(icon)
+            else
+                self:SetTexture(icon)
+            end
+        else
+            self:SetTexture(0)
+        end
     end
 
     tooltip:HookScript("OnHide", function(self)--隐藏
@@ -143,7 +154,8 @@ function WoWTools_TooltipMixin:Set_Rest_Item(tooltip)
     tooltip.textRight:SetTextColor(1, 0.82, 0)
     tooltip.text2Right:SetTextColor(1, 0.82, 0)
 
-    tooltip.Portrait:SetShown(false)
+    --tooltip.Portrait:SetShown(false)
+    tooltip.Portrait:SetTexture(0)
     tooltip:Set_BG_Color()
     if tooltip.playerModel then
         tooltip.playerModel:ClearModel()

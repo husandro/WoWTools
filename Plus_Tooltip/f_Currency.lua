@@ -87,6 +87,9 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
         tooltip.text2Left:SetText(text2Left or '')
         tooltip.textRight:SetText(textRight or '')
     end
+
+    tooltip.Portrait:settings(info2.iconFileID )
+
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 
     --tooltip:Show()
