@@ -658,15 +658,25 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         end)
 --可获得首次收集奖励
         btn.firstXP= btn:CreateTexture()
-        btn.firstXP:SetPoint('LEFT', btn.CustomizeIcon, 'RIGHT', -3, 0)
+        btn.firstXP:SetPoint('BOTTOM', btn.placementCostLabel)
         btn.firstXP:SetSize(23,23)
         btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
         btn.firstXP:SetAlpha(0.7)
+
+        btn.Outdoors= btn:CreateTexture()
+        btn.Outdoors:SetPoint('BOTTOM', btn.CustomizeIcon, 'TOP')
+        btn.Outdoors:SetSize(23,23)
+        btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
+
+        btn.Indoors= btn:CreateTexture()
+        btn.Indoors:SetPoint('BOTTOM', btn.Outdoors, 'TOP')
+        btn.Indoors:SetSize(23,23)
+        btn.Indoors:SetAtlas('house-room-limit-icon')
     end)
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
         local placementCost, r,g,b
         local isTrackable= nil
-        local show, xp
+        local show, xp, indoors, outdoors
         if btn:HasValidData() then
 
             show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
@@ -689,6 +699,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             end
 
             xp= btn.entryInfo.firstAcquisitionBonus and btn.entryInfo.firstAcquisitionBonus>0
+            indoors= btn.entryInfo.isAllowedIndoors
+            outdoors= btn.entryInfo.isAllowedOutdoors
         end
 
         btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
@@ -699,6 +711,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.5)
 
         btn.firstXP:SetShown(xp)
+        btn.Indoors:SetShown(indoors)
+        btn.Outdoors:SetShown(outdoors)
     end)
 
 
