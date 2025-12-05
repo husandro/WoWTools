@@ -412,7 +412,7 @@ local function Get_Info(tab)
         local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
         if entryInfo then
             if entryInfo.firstAcquisitionBonus>0 then
-                topLeftText= '|A:GarrMission_CurrencyIcon-Xp:0:0|a'
+                topLeftText= '|A:GarrMission_CurrencyIcon-Xp:18:18:0:4|a'
             end
 
             if entryInfo.placementCost then
