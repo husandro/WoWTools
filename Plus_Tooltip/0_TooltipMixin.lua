@@ -39,3 +39,7 @@ end
 function WoWTools_TooltipMixin:IsInCombatDisabled(tooltip)
     return WoWTools_FrameMixin:IsLocked(tooltip) or (self:Save().isInCombatDisabled and InCombatLockdown())
 end
+
+function WoWTools_TooltipMixin:OpenOption(root, name2)
+    return WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_ItemMixin.Category, name=self.addName, nam2=name2})
+end

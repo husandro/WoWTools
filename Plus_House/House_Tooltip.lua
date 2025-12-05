@@ -17,6 +17,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingDashboard()
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         end)
 
+        root:CreateDivider()
+        self:OpenOption(root)
     end)
 end
 
@@ -27,10 +29,10 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.InfoText:SetFontObject('GameFontWhite')
         btn.InfoText:ClearAllPoints()
         btn.InfoText:SetPoint('BOTTOMRIGHT' , -6, 2)
+--可制定
+        btn.CustomizeIcon:ClearAllPoints()--size 16,16
+        btn.CustomizeIcon:SetPoint('BOTTOM', btn.InfoText, 'TOP')
 
---是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
-        btn.canDeleteLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
-        btn.canDeleteLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
 
 --添加，追踪，按钮
         btn.trackableButton= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
@@ -55,12 +57,9 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             end)
         end)
 
-        btn.CustomizeIcon:ClearAllPoints()--size 16,16
-        btn.CustomizeIcon:SetPoint('TOP', btn.trackableButton, 'BOTTOM')
-
     --可放置，室内，提示
         btn.Indoors= btn:CreateTexture()
-        btn.Indoors:SetPoint('TOP', btn.CustomizeIcon, 'BOTTOM')
+        btn.Indoors:SetPoint('TOP', btn.trackableButton, 'BOTTOM')
         btn.Indoors:SetSize(16,16)
         btn.Indoors:SetAtlas('house-room-limit-icon')
         btn.Indoors:SetAlpha(0.7)
@@ -81,8 +80,13 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
 --空间，大小
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
-        btn.placementCostLabel:SetPoint('TOP', btn.firstXP, 'BOTTOM', 3, 4)
+        btn.placementCostLabel:SetPoint('TOPLEFT', btn.firstXP, 'BOTTOMLEFT', 3, 4)
         btn.placementCostLabel:SetAlpha(0.7)
+
+--是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
+        btn.canDeleteLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
+        btn.canDeleteLabel:SetPoint('TOPLEFT', btn.placementCostLabel, 'BOTTOMLEFT')
+
 --预览不可用
         btn.notAsset= btn:CreateTexture()
         btn.notAsset:SetPoint('LEFT', btn.trackableButton, 'RIGHT')
@@ -93,9 +97,9 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
         local isTrackable= nil
         local placementCost, r,g,b, show, isXP, isIndoors, isOutdoors, canDelete, isNotAsset
-        local entryInfo= btn:HasValidData() and btn.entryInfo
-        
-        if entryInfo or self:Save().disabledHousingItemsPlus then
+        local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
+
+        if entryInfo then
             show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
                 and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--追踪功能对此物品可用
 
@@ -113,8 +117,11 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                 if numPlaced>0 or numStored>0 then
                     btn.InfoText:SetText(numPlaced..'/'..numStored..'|A:house-chest-icon:0:0|a')
                 end
-                if entryInfo.quantity + entryInfo.remainingRedeemable > 0 and C_HousingCatalog.CanDestroyEntry(entryInfo.entryID) then
-                    canDelete= (entryInfo.quantity>0 and  entryInfo.quantity or '')..'|A:Islands-MarkedArea:0:0|a'
+                if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID) then
+                    canDelete= '|A:Islands-MarkedArea:0:0|a'
+                    if entryInfo.quantity + entryInfo.remainingRedeemable > 0 and entryInfo.quantity>0 then
+                        canDelete= canDelete..entryInfo.quantity
+                    end
                 end
             end
 
@@ -122,11 +129,11 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             isIndoors= entryInfo.isAllowedIndoors
             isOutdoors= entryInfo.isAllowedOutdoors
 
-            isNotAsset= not entryInfo.asse
+            isNotAsset= not entryInfo.asset
         end
 
         btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
-        btn.placementCostLabel:SetText(placementCost and '|A:House-Decor-budget-icon:0:0|a'..placementCost or '')
+        btn.placementCostLabel:SetText(placementCost and '|A:House-Decor-budget-icon:0:0|a'..placementCost or ' ')
 
         btn.trackableButton:SetShown(show)
         btn.trackableButton.texture:SetDesaturated(isTrackable==false)

@@ -249,3 +249,20 @@ function WoWTools_ItemMixin.Events:Blizzard_FrameXML()
         WoWTools_ItemMixin:SetItemStats(frame, itemLink, {point= frame.Icon})
     end)
 end
+
+
+
+
+
+function WoWTools_ItemMixin.Events:Blizzard_ItemButton()
+    WoWTools_DataMixin:Hook('SetItemButtonOverlay', function(btn, itemIDOrLink)--, quality, isBound)
+--住宅装饰
+        if C_Item.IsDecorItem(itemIDOrLink) then
+            local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemIDOrLink, true)
+            if entryInfo and entryInfo.quality then
+                local r,g,b= C_Item.GetItemQualityColor(entryInfo.quality)
+                btn.IconOverlay:SetVertexColor(r, g, b)
+            end
+        end
+    end)
+end

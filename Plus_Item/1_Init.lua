@@ -1,7 +1,7 @@
 local function Save()
     return WoWToolsSave['Plus_ItemInfo']
 end
-local Category, Layout
+
 
 
 
@@ -12,7 +12,7 @@ local function Init_Panel()
 
 
 
-    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
+    WoWTools_PanelMixin:Header(WoWTools_ItemMixin.Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
 
 
@@ -24,7 +24,7 @@ local function Init_Panel()
         maxValue= 18,
         setp= 1,
         tooltip=tooltip,
-        category= Category,
+        category= WoWTools_ItemMixin.Category,
         SetValue= function(_, _, value2)
             Save().size= value2 or 10
         end
@@ -34,7 +34,7 @@ local function Init_Panel()
         WoWTools_PanelMixin:OnlyCheck({
             name= name:gsub('Blizzard_', ''),
             tooltip= tooltip,
-            category= Category,
+            category= WoWTools_ItemMixin.Category,
             Value= not Save().no[name],
             GetValue= function() return not Save().no[name] end,
             SetValue= function()
@@ -43,12 +43,12 @@ local function Init_Panel()
         })
     end
 
-    WoWTools_PanelMixin:Header(Layout, 'Event')
+    WoWTools_PanelMixin:Header(WoWTools_ItemMixin.Layout, 'Event')
     for name in pairs(WoWTools_ItemMixin.Events) do
         Add_Options(name)
     end
 
-    WoWTools_PanelMixin:Header(Layout, 'Frame')
+    WoWTools_PanelMixin:Header(WoWTools_ItemMixin.Layout, 'Frame')
     for name in pairs(WoWTools_ItemMixin.Frames) do
         Add_Options(name)
     end
@@ -104,7 +104,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().no= Save().no or {}
 
             WoWTools_ItemMixin.addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
-            Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+            WoWTools_ItemMixin.Category, WoWTools_ItemMixin.Layout= WoWTools_PanelMixin:AddSubCategory({
                 name=WoWTools_ItemMixin.addName,
                 disabled=Save().disabled
             })
@@ -128,8 +128,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end)
                 end,
                 tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
-                layout= Layout,
-                category= Category,
+                layout= WoWTools_ItemMixin.Layout,
+                category= WoWTools_ItemMixin.Category,
             })
 
             WoWTools_ItemMixin.QalityText= {

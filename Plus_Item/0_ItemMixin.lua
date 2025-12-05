@@ -643,6 +643,10 @@ function WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
     end
 end
 
+--[[function WoWTools_ItemMixin:OpenOption(root, name2)
+    return WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_ItemMixin.Category, name=self.addName, nam2=name2})
+end]]
+
 
 
 
