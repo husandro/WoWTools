@@ -134,10 +134,17 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingDashboard()
     HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background:ClearAllPoints()
     HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame.Background:SetAllPoints(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame)
 
+--WoWTools_DataMixin:Hook(HousingDashboardFrame, 'UpdateSizeToContent', function(contentFrame)
+    local size= self:Save().size[HousingDashboardFrame:GetName()]
+    if size and size[1] and size[2] then
+        HousingDashboardFrame.baseWidth, HousingDashboardFrame.baseHeight= size[1], size[2]
+    end
+
     self:Setup(HousingDashboardFrame, {
         minW=405, minH=455,
     sizeRestFunc=function()
         HousingDashboardFrame:SetSize(814, 544)
+        HousingDashboardFrame.baseWidth, HousingDashboardFrame.baseHeight= 814, 544
     end})
     self:Setup(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame, {frame=HousingDashboardFrame})
 end

@@ -6524,7 +6524,8 @@
         "ICON_FILTER_ITEM",
         "PROFESSIONS_COLUMN_HEADER_ITEM",
         "HOUSING_CATALOG_FILTERS_INDOORS",
-        "HOUSING_CATALOG_FILTERS_OUTDOORS"
+        "HOUSING_CATALOG_FILTERS_OUTDOORS",
+        "HousingDashboardFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
