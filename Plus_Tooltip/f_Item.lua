@@ -479,10 +479,11 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
         )
     end
 
-    local canDestroy= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
-    if canDestroy==false then
-        GameTooltip_AddInstructionLine(tooltip,
-            '|A:Objective-Fail:0:0|a'..(WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY), true
+    if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
+        tooltip:AddLine(
+            '|cnGREEN_FONT_COLOR:|A:Objective-Fail:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY),
+            nil, nil, nil, true
         )
     end
 
@@ -593,7 +594,8 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         if entryInfo then
             textLeft, portrait= self:Set_HouseItem(tooltip, entryInfo)
             if entryInfo.quality then
-                r, g, b=  C_Item.GetItemQualityColor(entryInfo.quality)
+                r, g, b, col=  C_Item.GetItemQualityColor(entryInfo.quality)
+                col= '|c'..col
             end
         end
 

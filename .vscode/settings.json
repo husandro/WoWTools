@@ -6535,7 +6535,10 @@
         "HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY_ALL",
         "ConfirmationStringMatches",
         "ConfirmationEditBoxMatches",
-        "HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY"
+        "HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY",
+        "HOUSING_DECOR_ONLY_PLACEABLE_INSIDE",
+        "HOUSING_DECOR_ONLY_PLACEABLE_OUTSIDE",
+        "HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -7,6 +7,8 @@ function WoWToolsButton_OnLeave(self)
     GameTooltip_Hide()
     if self.set_alpha then
         self:set_alpha()
+    elseif self.alpha then
+        self:SetAlpha(self:IsMouseOver() and 1 or self.alpha)
     end
 end
 
@@ -23,5 +25,7 @@ function WoWToolsButton_OnEnter(self)
     end
     if self.set_alpha then
         self:set_alpha()
+    elseif self.alpha then
+        self:SetAlpha(self:IsMouseOver() and 1 or self.alpha)
     end
 end

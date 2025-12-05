@@ -39,8 +39,19 @@ end
 
 
 
-
 function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
+    local function Set_Texture(texture)
+        if texture:IsObjectType('Texture') then
+            texture:SetSize(16,16)
+        end
+        texture:SetAlpha(0.7)
+        texture:EnableMouse(true)
+        texture:SetScript('OnLeave', WoWToolsButton_OnLeave)
+        function texture:set_alpha()
+            self:SetAlpha(self:IsMouseOver() and 0.3 or 0.7)
+        end
+        texture:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    end
 
 --Blizzard_HousingCatalogEntry.lua
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
@@ -78,30 +89,38 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 --可放置，室内，提示
         btn.Indoors= btn:CreateTexture()
         btn.Indoors:SetPoint('TOP', btn.trackableButton, 'BOTTOM')
-        btn.Indoors:SetSize(16,16)
         btn.Indoors:SetAtlas('house-room-limit-icon')
-        btn.Indoors:SetAlpha(0.7)
+        btn.Indoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室内' or HOUSING_DECOR_ONLY_PLACEABLE_INSIDE
+        Set_Texture(btn.Indoors)
 --可放置，室外，提示
         btn.Outdoors= btn:CreateTexture()
         btn.Outdoors:SetPoint('TOP', btn.Indoors, 'BOTTOM')
-        btn.Outdoors:SetSize(16,16)
         btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
-        btn.Outdoors:SetAlpha(0.7)
+        btn.Outdoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室外' or HOUSING_DECOR_ONLY_PLACEABLE_OUTSIDE
+        Set_Texture(btn.Outdoors)
 --是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
         btn.canDelete= btn:CreateTexture()
         btn.canDelete:SetPoint('TOPLEFT', btn.Outdoors, 'BOTTOMLEFT')
-        btn.canDelete:SetSize(16,16)
         btn.canDelete:SetAtlas('Objective-Fail')
+        btn.canDelete.tooltip= WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY
+        Set_Texture(btn.canDelete)
+        btn.canDelete:SetSize(20,20)
+        btn.canDelete:SetAlpha(1)
+        function btn.canDelete:set_alpha()
+            self:SetAlpha(self:IsMouseOver() and 0.3 or 1)
+        end
 --可获得首次收集奖励
         btn.firstXP= btn:CreateTexture()
         btn.firstXP:SetPoint('TOP', btn.canDelete,'BOTTOM', -1, 4)
-        btn.firstXP:SetSize(20,20)
         btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
-        btn.firstXP:SetAlpha(0.7)
+        btn.firstXP.tooltip= WoWTools_DataMixin.onlyChinese and '|cnLIGHTBLUE_FONT_COLOR:可获得首次收集奖励|r' or HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE
+        Set_Texture(btn.firstXP)
+
 --空间，大小
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
         btn.placementCostLabel:SetPoint('TOPLEFT', btn.firstXP, 'BOTTOMLEFT', 5, 5)
-        btn.placementCostLabel:SetAlpha(0.7)
+        btn.placementCostLabel.tooltip= WoWTools_DataMixin.onlyChinese and '装饰放置成本|cnNORMAL_FONT_COLOR:|n放置此装饰所需占用的装饰放置预算|r' or HOUSING_DECOR_PLACEMENT_COST_TOOLTIP
+        Set_Texture(btn.placementCostLabel)
 
 --预览不可用
         btn.notAsset= btn:CreateTexture()
