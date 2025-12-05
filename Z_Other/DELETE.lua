@@ -103,7 +103,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     ..(WoWTools_DataMixin.onlyChinese and '命运' or SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)..', '
                     ..(WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING)
 
-                    ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '你真的要摧毁%s吗？\n\n请在输入框中输入\"DELETE\"以确认。' or DELETE_GOOD_ITEM):gsub('\n\n', '\n'),
+                    ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '你真的要摧毁%s吗？\n\n请在输入框中输入'..DELETE_ITEM_CONFIRM_STRING..'以确认。' or DELETE_GOOD_ITEM):gsub('\n\n', '\n'),
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,
             })
