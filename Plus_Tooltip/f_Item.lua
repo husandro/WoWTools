@@ -440,16 +440,20 @@ local ValueTypePortraits = {
 entryInfo.isPrefab 匠心房间
 ]]
 
+
 function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     local textLeft, portrait
-    tooltip:AddLine(
-        'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.entryID.recordID
-
-    )
-    tooltip:AddDoubleLine(
-        'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.uiModelSceneID,
-        'modelAsset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.asset
-    )
+    if entryInfo.entryID then
+        tooltip:AddLine(
+            'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.entryID.recordID
+        )
+    end
+    if entryInfo.asset then
+        tooltip:AddDoubleLine(
+            entryInfo.asset and 'modelAsset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.asset,
+            entryInfo.uiModelSceneID and 'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.uiModelSceneID
+        )
+    end
 
     if entryInfo.iconTexture then
         local size= math.min(entryInfo.size, 90)*5
@@ -457,12 +461,8 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
             '|T'..entryInfo.iconTexture..':'..size..':'..size..'|t'--':-'..entryInfo.size..'|t'
         )
     end
-    if entryInfo.canCustomize then
-        portrait='housing-dyable-palette-icon'
-    end
-    if entryInfo.showQuantity then
-        textLeft=entryInfo.numPlaced..'/'..entryInfo.numStored..'|A:house-chest-icon:0:0|a'
-    end
+
+
     tooltip:AddDoubleLine(
         format(
             NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY),
@@ -479,6 +479,13 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
         )
     end
 
+    local canDestroy= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
+    if canDestroy==false then
+        GameTooltip_AddInstructionLine(tooltip,
+            '|A:Objective-Fail:0:0|a'..(WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY), true
+        )
+    end
+
 --关键词
     local tag
     for _, name in pairs(entryInfo.dataTagsByID) do
@@ -490,6 +497,13 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
 --来源
     if entryInfo.sourceText and entryInfo.sourceText~='' then
         tooltip:AddLine(entryInfo.sourceText, 1,1,1)
+    end
+
+    if entryInfo.canCustomize then
+        portrait='housing-dyable-palette-icon'
+    end
+    if entryInfo.showQuantity then
+        textLeft=entryInfo.numPlaced..'/'..entryInfo.numStored..'|A:house-chest-icon:0:0|a'
     end
 
     return textLeft, portrait

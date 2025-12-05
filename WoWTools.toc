@@ -484,7 +484,6 @@ Plus_Macro\z_MacroFrame_UI.lua
 ##专业按钮
 Plus_Professions\0_Professions.lua
 Plus_Professions\ArchaeologyUI.lua
-Plus_Professions\ProfessionsBook.lua
 Plus_Professions\ProfessionsFrame_Button.lua
 Plus_Professions\ProfessionsFrame.lua
 Plus_Professions\TrainerUI.lua
@@ -514,7 +513,8 @@ Z_Other\ClassMenuColor.lua
 Z_Other\Achievements.lua
 ##MoneyFrame 金 增加 mk
 Z_Other\MoneyFrame.lua
-
+##自动输入，删除
+Z_Other\DELETE.lua
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
 ChatButton\0_ChatMixin.lua

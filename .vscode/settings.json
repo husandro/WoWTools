@@ -6532,7 +6532,10 @@
         "AUCTION_HOUSE_HEADER_ITEM",
         "DELETE_GOOD_QUEST_ITEM",
         "ITEM_BIND_QUEST",
-        "HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY_ALL"
+        "HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY_ALL",
+        "ConfirmationStringMatches",
+        "ConfirmationEditBoxMatches",
+        "HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

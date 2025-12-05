@@ -311,14 +311,12 @@ local function Init_Options()
             end
         })
 
-        if Save().disabledRealm then
-            do
-                WoWTools_RealmMixin:Get_Region(nil, nil, nil, true)
-            end
----@diagnostic disable-next-line: duplicate-set-field
-            WoWTools_RealmMixin.Get_Region=function() end
+        if Save().disabledRealm then            
+            WoWTools_RealmMixin:Get_Region(nil, nil, nil, true)
         end
     end
+
+
 
     WoWTools_PanelMixin:Header(nil, 'Plus')
 

@@ -45,13 +45,6 @@ end
 
 --Blizzard_PlayerChoice
 local function Init()
-    --命运, 字符
-    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"], "OnShow", function(s)
-        if Save().gossip then
-            local edit= s.editBox or s:GetEditBox()
-           edit:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
-        end
-    end)
 
 
      --WoWTools_DataMixin:Hook(PlayerChoiceBaseOptionButtonsContainerMixin, 'Setup', function(btn, optionInfo, showAsList)

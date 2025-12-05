@@ -19,46 +19,28 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingDashboard()
         end)
 
 --摧毁
-        sub=root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING,
-        function()
-            return self:Save().disabledHousingDELETE
-        end, function()
-            self:Save().disabledHousingDELETE= not self:Save().disabledHousingDELETE and true or nil
-        end)
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(format(
-                WoWTools_DataMixin.onlyChinese and '你确定要摧毁%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认。' or HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY,
-                WoWTools_DataMixin.onlyChinese and '装饰' or CATALOG_SHOP_TYPE_DECOR,
-                HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING
-            ))
-            tooltip:AddDoubleLine('-', '-', 0,1,0, 0,1,0)
-            tooltip:AddLine(format(
-                WoWTools_DataMixin.onlyChinese and '您确定要摧毁全部%d件%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认' or HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY_ALL,
-                0,
-                WoWTools_DataMixin.onlyChinese and '装饰' or CATALOG_SHOP_TYPE_DECOR,
-                HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING
-            ))
-
-        end)
+        WoWTools_OtherMixin:OpenOption(root,
+            '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING),
+            '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING)
+        )
 
         root:CreateDivider()
         self:OpenOption(root)
     end)
 end
 
-function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
---你确定要摧毁%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认。
---您确定要摧毁全部%d件%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认。
-    StaticPopupDialogs["CONFIRM_DESTROY_DECOR"].acceptDelay= 0.5
-    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_DESTROY_DECOR"],"OnShow",function(frame)
-        if not self:Save().disabledHousingDELETE then
-            local edit= frame:GetEditBox()
-            edit:SetText(HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING)--摧毁
-            edit:ClearFocus()
-        end
-    end)
 
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
 --Blizzard_HousingCatalogEntry.lua
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
@@ -93,36 +75,33 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                 b.texture:SetAlpha(isTrackable and 1 or 0.5)
             end)
         end)
-
-    --可放置，室内，提示
+--可放置，室内，提示
         btn.Indoors= btn:CreateTexture()
         btn.Indoors:SetPoint('TOP', btn.trackableButton, 'BOTTOM')
         btn.Indoors:SetSize(16,16)
         btn.Indoors:SetAtlas('house-room-limit-icon')
         btn.Indoors:SetAlpha(0.7)
-
 --可放置，室外，提示
         btn.Outdoors= btn:CreateTexture()
         btn.Outdoors:SetPoint('TOP', btn.Indoors, 'BOTTOM')
         btn.Outdoors:SetSize(16,16)
         btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
         btn.Outdoors:SetAlpha(0.7)
-
+--是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
+        btn.canDelete= btn:CreateTexture()
+        btn.canDelete:SetPoint('TOPLEFT', btn.Outdoors, 'BOTTOMLEFT')
+        btn.canDelete:SetSize(16,16)
+        btn.canDelete:SetAtlas('Objective-Fail')
 --可获得首次收集奖励
         btn.firstXP= btn:CreateTexture()
-        btn.firstXP:SetPoint('TOP', btn.Outdoors,'BOTTOM', -1, 4)
+        btn.firstXP:SetPoint('TOP', btn.canDelete,'BOTTOM', -1, 4)
         btn.firstXP:SetSize(20,20)
         btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
         btn.firstXP:SetAlpha(0.7)
-
 --空间，大小
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
-        btn.placementCostLabel:SetPoint('TOPLEFT', btn.firstXP, 'BOTTOMLEFT', 3, 4)
+        btn.placementCostLabel:SetPoint('TOPLEFT', btn.firstXP, 'BOTTOMLEFT', 5, 5)
         btn.placementCostLabel:SetAlpha(0.7)
-
---是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
-        btn.canDeleteLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
-        btn.canDeleteLabel:SetPoint('TOPLEFT', btn.placementCostLabel, 'BOTTOMLEFT')
 
 --预览不可用
         btn.notAsset= btn:CreateTexture()
@@ -133,7 +112,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
         local isTrackable= nil
-        local placementCost, r,g,b, show, isXP, isIndoors, isOutdoors, canDelete, isNotAsset
+        local placementCost, r,g,b, show, isXP, isIndoors, isOutdoors, isCanDelete, isNotAsset
         local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
 
         if entryInfo then
@@ -146,7 +125,6 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             placementCost= entryInfo.placementCost
 
             if btn:IsBundleEntry() then
-                --self.InfoText:SetText(self.bundleEntryInfo.quantity)
             elseif btn:IsInMarketView() then
             else
                 local numPlaced= entryInfo.numPlaced or 0--已放置
@@ -154,12 +132,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                 if numPlaced>0 or numStored>0 then
                     btn.InfoText:SetText(numPlaced..'/'..numStored..'|A:house-chest-icon:0:0|a')
                 end
-                if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID) then
-                    canDelete= '|A:Islands-MarkedArea:0:0|a'
-                    if entryInfo.quantity + entryInfo.remainingRedeemable > 0 and entryInfo.quantity>0 then
-                        canDelete= canDelete..entryInfo.quantity
-                    end
-                end
+                isCanDelete= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
             end
 
             isXP= entryInfo.firstAcquisitionBonus and entryInfo.firstAcquisitionBonus>0
@@ -180,9 +153,16 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.Indoors:SetShown(isIndoors)
         btn.Outdoors:SetShown(isOutdoors)
         btn.notAsset:SetShown(isNotAsset)
-
-        btn.canDeleteLabel:SetText(canDelete or '')
+        btn.canDelete:SetShown(isCanDelete==false)
     end)
+
+
+
+
+
+
+
+
 
 
 
@@ -199,6 +179,15 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         end
         tooltip:Show()
     end)
+
+
+
+
+
+
+
+
+
 
 --列表，数量
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'OnLoad', function(frame)

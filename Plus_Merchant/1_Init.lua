@@ -69,24 +69,6 @@ local function Init()
     WoWTools_MerchantMixin:Init_WidthX2()
     WoWTools_MerchantMixin:Plus_ItemInfo()
 
---"你真的要摧毁%s吗？\n\n请在输入框中输入\"DELETE\"以确认。"
-    StaticPopupDialogs["DELETE_GOOD_ITEM"].acceptDelay=0.5
-    WoWTools_DataMixin:Hook(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(self)
-        if not Save().notDELETE then
-            local edit= self:GetEditBox()
-            edit:SetText(DELETE_ITEM_CONFIRM_STRING)
-            edit:ClearFocus()
-        end
-    end)
---"确定要摧毁%s吗？\n|cffff2020摧毁该物品也将同时放弃相关任务。|r\n\n请在输入框中输入\"DELETE\"以确认。"
-    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].acceptDelay=0.5
-    WoWTools_DataMixin:Hook(StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"], "OnShow", function(self)
-        if not Save().notDELETE then
-            local edit= self:GetEditBox()
-            edit:SetText(DELETE_ITEM_CONFIRM_STRING)
-            edit:ClearFocus()
-        end
-    end)
 
     Init=function()end
 end
@@ -107,6 +89,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_SellBuy']= WoWToolsSave['Plus_SellBuy'] or P_Save
             P_Save= nil
+
+            Save().notDELETE= nil--旧数据， 你确定要摧毁%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认
 
             if Save().repairItems then
                 WoWToolsPlayerDate['RepairMoney']= Save().repairItems

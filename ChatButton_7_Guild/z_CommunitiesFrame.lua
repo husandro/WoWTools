@@ -100,13 +100,7 @@ local function Init()
         end
     end)
 
---你确定要删除群组\"%s\"吗？此操作无法撤销。|n|n请在输入框中输入\"DELETE\"以确认。
-    StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"].acceptDelay= 1
-    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"],"OnShow",function(self)
-        local edit= self:GetEditBox()
-        edit:SetText(COMMUNITIES_DELETE_CONFIRM_STRING)
-        edit:ClearFocus()
-    end)
+
 
     Init=function()end
 end

@@ -59,9 +59,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if C_AddOns.IsAddOnLoaded("Blizzard_ArchaeologyUI") then
                 WoWTools_ProfessionMixin:Init_Archaeology()--考古学
             end
-            if C_AddOns.IsAddOnLoaded("Blizzard_ProfessionsBook") then
+            --[[if C_AddOns.IsAddOnLoaded("Blizzard_ProfessionsBook") then
                 WoWTools_ProfessionMixin:Init_ProfessionsBook()--专业书
-            end
+            end]]
         end
 
     elseif arg1== 'Blizzard_TrainerUI' and WoWToolsSave then
@@ -73,7 +73,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif arg1=='Blizzard_ArchaeologyUI' and WoWToolsSave then
         WoWTools_ProfessionMixin:Init_Archaeology()
 
-    elseif arg1=='Blizzard_ProfessionsBook' and WoWToolsSave then--专业书
-        WoWTools_ProfessionMixin:Init_ProfessionsBook()
+    --[[elseif arg1=='Blizzard_ProfessionsBook' and WoWToolsSave then--专业书
+        WoWTools_ProfessionMixin:Init_ProfessionsBook()]]
     end
 end)

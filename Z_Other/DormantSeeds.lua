@@ -123,7 +123,7 @@ local function Init()
             if self:CanChangeAttribute() then
                 Save().point=nil
                 self:set_Point()
-                print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+                print(addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end
     end)
@@ -317,7 +317,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Button then
                 Button:set_Point()
             end
-            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+            print(addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip=function()
             return  WoWTools_ItemMixin:GetName(2200) or addName
