@@ -592,6 +592,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink or itemID, true)
         if entryInfo then
             textLeft, portrait= self:Set_HouseItem(tooltip, entryInfo)
+            if entryInfo.quality then
+                r, g, b=  C_Item.GetItemQualityColor(entryInfo.quality)
+            end
         end
 
 --套装：炎阳珠衣装
@@ -661,7 +664,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 --嵌入式
     tooltip:Set_TopLabel(textLeft, text2Left, textRight, text2Right)
 
-    tooltip:Set_BG_Color(r,g,b, 0.15)
+    tooltip:Set_BG_Color(r, g, b, 0.15)
     --setItemCooldown(tooltip, itemID)--物品冷却
     self:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
