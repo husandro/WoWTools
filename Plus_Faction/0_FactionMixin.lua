@@ -196,7 +196,7 @@ function WoWTools_FactionMixin:GetName(factionID, index)
             ..((data.isCapped or data.hasRep) and data.valueText or '')--值
             ..'|r'
 
-            or '|A:greatVault-lock:0:0|a'--未解锁
+            or '|A:Professions_Specialization_Lock_Glow:0:0|a'--未解锁
         )
 
         ..(isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')

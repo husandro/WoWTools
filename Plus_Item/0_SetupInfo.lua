@@ -480,7 +480,7 @@ local function Get_Info(tab)
     elseif classID==1 then
         bottomLeftText= WoWTools_TextMixin:sub(itemSubType, 2, 3, true)
         if containerInfo and not containerInfo.isBound then--没有锁定
-            topRightText='|A:greatVault-lock:0:0|a'
+            topRightText='|A:Professions_Specialization_Lock_Glow:0:0|a'
         end
         --多少格
         local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, index=3})
@@ -693,7 +693,7 @@ local function Get_Info(tab)
         end
 
         if containerInfo and not containerInfo.isBound and (bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE) and not topRightText then
-            rightText='|A:greatVault-lock:16:16|a'--可交易
+            rightText='|A:Professions_Specialization_Lock_Glow:16:16|a'--可交易
         end
 
         leftText= leftText or ''--不显示，物品数量

@@ -47,7 +47,7 @@ end
 
 
 function WoWTools_MoveMixin.Events:Blizzard_HouseEditor()
-   
+
     --WoWTools_TextureMixin:CreateBG(HouseEditorFrame.StoragePanel, {isColor=true, isAllpoint=true, alpha=0.5})
     HouseEditorFrame.StoragePanel.SearchBox:SetPoint('TOPLEFT', 43, -20)--<Anchor point="TOPLEFT" x="20" y="-20"/>]]
 --编辑住宅器

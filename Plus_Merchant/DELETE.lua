@@ -22,7 +22,7 @@ local function Init()
         end
     end)
 
-    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].acceptDelay=1
+    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].acceptDelay=0.5
     WoWTools_DataMixin:Hook(StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"], "OnShow",function(self)
         if not Save().notDELETE then
             local edit= self:GetEditBox()
@@ -31,7 +31,7 @@ local function Init()
         end
     end)
 
-    StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"].acceptDelay=1
+    StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"].acceptDelay=0.5
     WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"],"OnShow",function(self)
         if not Save().notDELETE then
             local edit= self:GetEditBox()

@@ -133,7 +133,7 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
     self:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
 
     if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
-        portrait:SetAtlas('greatVault-lock')
+        portrait:SetAtlas('Professions_Specialization_Lock_Glow')
     end
 
 --专精图标

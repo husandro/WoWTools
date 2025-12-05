@@ -64,7 +64,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
             '|cnWARNING_FONT_COLOR:'
             ..format(
                 WoWTools_DataMixin.onlyChinese and  '%s尚未解锁' or ERR_AZERITE_ESSENCE_SELECTION_FAILED_ESSENCE_NOT_UNLOCKED,
-                '|A:greatVault-lock:0:0|a'
+                '|A:Professions_Specialization_Lock_Glow:0:0|a'
             )
         )
     end

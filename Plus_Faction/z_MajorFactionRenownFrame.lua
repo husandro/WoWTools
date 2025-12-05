@@ -21,7 +21,7 @@ local function Get_Major_Faction_Level(factionID, level)
     local info = C_MajorFactions.GetMajorFactionData(factionID)
 
     if not info or not info.isUnlocked then
-        return '|A:greatVault-lock:0:0|a', true
+        return '|A:Professions_Specialization_Lock_Glow:0:0|a', true
     end
 
     level= level or 0
@@ -276,7 +276,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
-        '|A:greatVault-lock:0:0|a'
+        '|A:Professions_Specialization_Lock_Glow:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '仅限已解锁' or format(LFG_LIST_CROSS_FACTION, UNLOCK)),
     function()
         return Save().onlyUnlockRenownFrame

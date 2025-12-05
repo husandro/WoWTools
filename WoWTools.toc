@@ -71,7 +71,6 @@ Plus_Move\2_Add_Button.lua
 Plus_Move\Professions.lua
 Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
-Plus_Move\House.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -84,7 +83,6 @@ Plus_Texture\ActionButton.lua
 Plus_Texture\ChatBubbles.lua
 Plus_Texture\ClassPower.lua
 Plus_Texture\HelpTip.lua
-Plus_Texture\House.lua
 Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
 Plus_Texture\z_SharedXML.lua
@@ -401,6 +399,10 @@ Plus_AuctionHouse\B_Sell_Menu.lua
 Plus_AuctionHouse\B_Sell_Other.lua
 Plus_AuctionHouse\C_AllAuctionsList.lua
 Plus_AuctionHouse\z_AccountStore.lua
+##12.2.7住宅
+Plus_House\House_Move.lua
+Plus_House\House_Texture.lua
+Plus_House\House_Tooltip.lua
 ##宠物对战
 Plus_PetBattle\0_PetBattleMixin.lua
 Plus_PetBattle\1_Init.lua
