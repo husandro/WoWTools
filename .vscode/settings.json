@@ -6525,7 +6525,14 @@
         "PROFESSIONS_COLUMN_HEADER_ITEM",
         "HOUSING_CATALOG_FILTERS_INDOORS",
         "HOUSING_CATALOG_FILTERS_OUTDOORS",
-        "HousingDashboardFrameMixin"
+        "HousingDashboardFrameMixin",
+        "HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING",
+        "CATALOG_SHOP_TYPE_DECOR",
+        "HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY",
+        "AUCTION_HOUSE_HEADER_ITEM",
+        "DELETE_GOOD_QUEST_ITEM",
+        "ITEM_BIND_QUEST",
+        "HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY_ALL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -298,7 +298,6 @@ Plus_Friends\z_UI.lua
 Plus_Merchant\0_MerchantMixin.lua
 Plus_Merchant\1_Init.lua
 Plus_Merchant\2_Menu.lua
-Plus_Merchant\DELETE.lua
 Plus_Merchant\LootFrame.lua
 Plus_Merchant\Repair.lua
 Plus_Merchant\SellJunk.lua

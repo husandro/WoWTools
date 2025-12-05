@@ -66,7 +66,7 @@ end
 
 
 
-
+local COMMUNITIES_DELETE_CONFIRM_STRING= COMMUNITIES_DELETE_CONFIRM_STRING
 --公会，社区，在线人数
 local function Init()
     WoWTools_DataMixin:Hook(CommunitiesListEntryMixin, 'Init', function(btn, elementData)
@@ -93,14 +93,19 @@ local function Init()
             btn.allText:SetTextColor(btn.Name:GetTextColor())
         end
         if btn.allText then
-            --btn.allText:SetText(all and all>0 and all or '')
             btn.allText:SetText(text or '' )
-            ---btn.onlineText:SetText(online or '')
             btn.inviteTexture:SetShown(hasInvite)
             btn.msgTexture:SetShown(hasMessage)
             btn.factionTexture:SetShown(faction)
-            --btn.rankText:SetText(rank or '')
         end
+    end)
+
+--你确定要删除群组\"%s\"吗？此操作无法撤销。|n|n请在输入框中输入\"DELETE\"以确认。
+    StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"].acceptDelay= 1
+    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"],"OnShow",function(self)
+        local edit= self:GetEditBox()
+        edit:SetText(COMMUNITIES_DELETE_CONFIRM_STRING)
+        edit:ClearFocus()
     end)
 
     Init=function()end

@@ -438,17 +438,24 @@ local function Init_Menu(self, root)
 
 --删除字符
     sub=root:CreateCheckbox(
-        '|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自动输入DELETE' or (RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING)),
+        '|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING),
     function()
         return not Save().notDELETE
     end, function()
         Save().notDELETE= not Save().notDELETE and true or nil
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(
-            WoWTools_DataMixin.onlyChinese and '你真的要摧毁%s吗？|n|n请在输入框中输入 DELETE 以确认。'
-            or DELETE_GOOD_ITEM
-        )
+        tooltip:AddLine(format(
+            WoWTools_DataMixin.onlyChinese and '你真的要摧毁%s吗？|n|n请在输入框中输入 DELETE 以确认。' or DELETE_GOOD_ITEM,
+            WoWTools_DataMixin.onlyChinese and '物品' or AUCTION_HOUSE_HEADER_ITEM,
+            DELETE_ITEM_CONFIRM_STRING
+        ))
+        tooltip:AddDoubleLine('-', '-', 0,1,0, 0,1,0)
+        tooltip:AddLine(format(
+            WoWTools_DataMixin.onlyChinese and '确定要摧毁%s吗？\n|cffff2020摧毁该物品也将同时放弃相关任务。|r\n\n请在输入框中输入\"DELETE\"以确认。' or DELETE_GOOD_QUEST_ITEM,
+            WoWTools_DataMixin.onlyChinese and '任务物品' or ITEM_BIND_QUEST,
+            DELETE_ITEM_CONFIRM_STRING
+        ))
     end)
 
 

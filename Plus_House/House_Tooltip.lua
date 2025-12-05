@@ -6,6 +6,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingDashboard()
         if not btn:IsMouseOver() then
             return
         end
+--物品信息 plus
         local sub= root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO),
         function()
@@ -17,12 +18,48 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingDashboard()
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         end)
 
+--摧毁
+        sub=root:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING,
+        function()
+            return self:Save().disabledHousingDELETE
+        end, function()
+            self:Save().disabledHousingDELETE= not self:Save().disabledHousingDELETE and true or nil
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(format(
+                WoWTools_DataMixin.onlyChinese and '你确定要摧毁%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认。' or HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY,
+                WoWTools_DataMixin.onlyChinese and '装饰' or CATALOG_SHOP_TYPE_DECOR,
+                HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING
+            ))
+            tooltip:AddDoubleLine('-', '-', 0,1,0, 0,1,0)
+            tooltip:AddLine(format(
+                WoWTools_DataMixin.onlyChinese and '您确定要摧毁全部%d件%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认' or HOUSING_DECOR_STORAGE_ITEM_CONFIRM_DESTROY_ALL,
+                0,
+                WoWTools_DataMixin.onlyChinese and '装饰' or CATALOG_SHOP_TYPE_DECOR,
+                HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING
+            ))
+
+        end)
+
         root:CreateDivider()
         self:OpenOption(root)
     end)
 end
 
 function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
+--你确定要摧毁%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认。
+--您确定要摧毁全部%d件%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认。
+    StaticPopupDialogs["CONFIRM_DESTROY_DECOR"].acceptDelay= 0.5
+    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_DESTROY_DECOR"],"OnShow",function(frame)
+        if not self:Save().disabledHousingDELETE then
+            local edit= frame:GetEditBox()
+            edit:SetText(HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING)--摧毁
+            edit:ClearFocus()
+        end
+    end)
+
+
 --Blizzard_HousingCatalogEntry.lua
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
 --有点大
