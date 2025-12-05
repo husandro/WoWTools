@@ -25,9 +25,9 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingDashboard()
     WoWTools_DataMixin:Hook(HousingDashboardFrame.CatalogContent, 'UpdateCategoryText', function(frame)
         local categoryString = frame.Categories:GetFocusedCategoryString()
         if categoryString then
-            local t= categoryString:match('(.+) ||TInterfaceIcons.+|t')
+            local t= WoWTools_TextMixin:CN(categoryString:match('(.+) ||TInterfaceIcons.+|t'))
             if t then
-                frame.OptionsContainer.CategoryText:SetText(t)
+                frame.OptionsContainer.CategoryText:SetText(WoWTools_TextMixin:CN(t))
             end
         end
     end)

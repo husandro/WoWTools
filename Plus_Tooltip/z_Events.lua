@@ -631,9 +631,9 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 --Blizzard_HousingCatalogEntry.lua
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
         btn.InfoText:SetFontObject('GameFontWhite')--有点大
---空间，大小
-        btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
-        btn.placementCostLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
+
+
+
 --添加，追踪，按钮
         btn.trackableButton= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
         btn.trackableButton:SetSize(18,18)
@@ -656,59 +656,73 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                 b.texture:SetAlpha(isTrackable and 1 or 0.5)
             end)
         end)
+
+        btn.CustomizeIcon:ClearAllPoints()--size 16,16
+        btn.CustomizeIcon:SetPoint('TOP', btn.trackableButton, 'BOTTOM')
+
+    --可放置，室内，提示
+        btn.Indoors= btn:CreateTexture()
+        btn.Indoors:SetPoint('TOP', btn.CustomizeIcon, 'BOTTOM')
+        btn.Indoors:SetSize(16,16)
+        btn.Indoors:SetAtlas('house-room-limit-icon')
+        btn.Indoors:SetAlpha(0.7)
+
+--可放置，室外，提示
+        btn.Outdoors= btn:CreateTexture()
+        btn.Outdoors:SetPoint('TOP', btn.Indoors, 'BOTTOM')
+        btn.Outdoors:SetSize(16,16)
+        btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
+        btn.Outdoors:SetAlpha(0.7)
+
 --可获得首次收集奖励
         btn.firstXP= btn:CreateTexture()
-        btn.firstXP:SetPoint('BOTTOM', btn.placementCostLabel,'TOP')
-        btn.firstXP:SetSize(23,23)
+        btn.firstXP:SetPoint('TOP', btn.Outdoors,'BOTTOM', -1, 4)
+        btn.firstXP:SetSize(20,20)
         btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
         btn.firstXP:SetAlpha(0.7)
 
-        btn.Outdoors= btn:CreateTexture()
-        btn.Outdoors:SetPoint('BOTTOM', btn.CustomizeIcon, 'TOP')
-        btn.Outdoors:SetSize(16,16)
-        btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
-
-        btn.Indoors= btn:CreateTexture()
-        btn.Indoors:SetPoint('BOTTOM', btn.Outdoors, 'TOP')
-        btn.Indoors:SetSize(16,16)
-        btn.Indoors:SetAtlas('house-room-limit-icon')
+--空间，大小
+        btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
+        btn.placementCostLabel:SetPoint('TOP', btn.firstXP, 'BOTTOM', 3, 4)
+        btn.placementCostLabel:SetAlpha(0.7)
     end)
+
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
         local placementCost, r,g,b
         local isTrackable= nil
         local show, xp, indoors, outdoors
-        if btn:HasValidData() then
-
+        local entryInfo= btn:HasValidData() and btn.entryInfo
+        if entryInfo then
             show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
-                and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--追踪功能对此物品可用
+                and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--追踪功能对此物品可用
 
-            isTrackable= show and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, btn.entryInfo.entryID.recordID)--正在追踪
+            isTrackable= show and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--正在追踪
 
-            r,g,b= WoWTools_ItemMixin:GetColor(btn.entryInfo.quality)
-            placementCost= btn.entryInfo.placementCost
+            r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
+            placementCost= entryInfo.placementCost
 
             if btn:IsBundleEntry() then
                 --self.InfoText:SetText(self.bundleEntryInfo.quantity)
             elseif btn:IsInMarketView() then
             else
-                local numPlaced= btn.entryInfo.numPlaced or 0--已放置
-                local numStored=  btn.entryInfo.numStored or 0--储存空间
+                local numPlaced= entryInfo.numPlaced or 0--已放置
+                local numStored=  entryInfo.numStored or 0--储存空间
                 if numPlaced>0 or numStored>0 then
-                    btn.InfoText:SetText(numPlaced..'/'..numStored)
+                    btn.InfoText:SetText(numPlaced..'/'..numStored..'|A:house-chest-icon:0:0|a')
                 end
             end
 
-            xp= btn.entryInfo.firstAcquisitionBonus and btn.entryInfo.firstAcquisitionBonus>0
-            indoors= btn.entryInfo.isAllowedIndoors
-            outdoors= btn.entryInfo.isAllowedOutdoors
+            xp= entryInfo.firstAcquisitionBonus and entryInfo.firstAcquisitionBonus>0
+            indoors= entryInfo.isAllowedIndoors
+            outdoors= entryInfo.isAllowedOutdoors
         end
 
         btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
-        btn.placementCostLabel:SetText(placementCost and placementCost..'|A:House-Decor-budget-icon:0:0|a' or '')
+        btn.placementCostLabel:SetText(placementCost and '|A:House-Decor-budget-icon:0:0|a'..placementCost or '')
 
         btn.trackableButton:SetShown(show)
         btn.trackableButton.texture:SetDesaturated(isTrackable==false)
-        btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.5)
+        btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.3)
 
         btn.firstXP:SetShown(xp)
         btn.Indoors:SetShown(indoors)
