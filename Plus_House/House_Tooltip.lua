@@ -21,17 +21,16 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingDashboard()
 end
 
 function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
-    
 --Blizzard_HousingCatalogEntry.lua
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
-        btn.InfoText:SetFontObject('GameFontWhite')--有点大
+--有点大
+        btn.InfoText:SetFontObject('GameFontWhite')
         btn.InfoText:ClearAllPoints()
         btn.InfoText:SetPoint('BOTTOMRIGHT' , -6, 2)
 
 --是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
         btn.canDeleteLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
         btn.canDeleteLabel:SetPoint('BOTTOMRIGHT', btn.InfoText, 'TOPRIGHT')
-
 
 --添加，追踪，按钮
         btn.trackableButton= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
@@ -139,7 +138,6 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.notAsset:SetShown(isNotAsset)
 
         btn.canDeleteLabel:SetText(canDelete or '')
-        
     end)
 
 
