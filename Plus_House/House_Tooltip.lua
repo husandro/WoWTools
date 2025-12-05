@@ -48,7 +48,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         texture:EnableMouse(true)
         texture:SetScript('OnLeave', WoWToolsButton_OnLeave)
         function texture:set_alpha()
-            self:SetAlpha(self:IsMouseOver() and 0.3 or 0.7)
+            self:SetAlpha(self:IsMouseOver() and 0.2 or 0.7)
         end
         texture:SetScript('OnEnter', WoWToolsButton_OnEnter)
     end
@@ -104,7 +104,6 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.canDelete:SetAtlas('Objective-Fail')
         btn.canDelete.tooltip= WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY
         Set_Texture(btn.canDelete)
-        btn.canDelete:SetSize(20,20)
         btn.canDelete:SetAlpha(1)
         function btn.canDelete:set_alpha()
             self:SetAlpha(self:IsMouseOver() and 0.3 or 1)
@@ -115,7 +114,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
         btn.firstXP.tooltip= WoWTools_DataMixin.onlyChinese and '|cnLIGHTBLUE_FONT_COLOR:可获得首次收集奖励|r' or HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE
         Set_Texture(btn.firstXP)
-
+        btn.firstXP:SetSize(20,20)
 --空间，大小
         btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
         btn.placementCostLabel:SetPoint('TOPLEFT', btn.firstXP, 'BOTTOMLEFT', 5, 5)

@@ -19,7 +19,7 @@ function WoWToolsButton_OnEnter(self)
         if type(self.tooltip)=='function' then
             self:tooltip(GameTooltip)
         else
-            GameTooltip:AddLine(self.tooltip)
+            GameTooltip:AddLine(self.tooltip, nil, nil, nil, true)
         end
         GameTooltip:Show()
     end
