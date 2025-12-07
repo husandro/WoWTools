@@ -2437,12 +2437,11 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
     end)
 
     local function settins(frame)
-        self:SetAlphaColor(frame.Header, nil, true)
+        self:SetAlphaColor(frame.Header, true)
         self:SetButton(frame.ResizeButton)
 
 --伤害，类型
         self:SetAlphaColor(frame.DamageMeterTypeDropdown.Arrow, nil, nil, 0)
-        --frame.DamageMeterTypeDropdown.Arrow:SetDrawLayer('BORDER')
         frame.DamageMeterTypeDropdown.TypeName:ClearAllPoints()
         frame.DamageMeterTypeDropdown.TypeName:SetPoint('LEFT')
         frame.DamageMeterTypeDropdown:HookScript('OnLeave', function(menu)
