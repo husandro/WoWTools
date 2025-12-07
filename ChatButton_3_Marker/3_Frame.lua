@@ -724,7 +724,7 @@ local function Init()--设置标记, 框架
     MakerFrame.marker:set_point()
 
     local markerTab={5,6,3,2,7,1,4,8}
-    for index=0,  NUM_WORLD_RAID_MARKERS do
+    for index=0, NUM_WORLD_RAID_MARKERS do
         btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.marker, {
             name=Name..'MakerButton'..index,
             isSecure=true,

@@ -2,7 +2,7 @@ WoWTools_MarkerMixin={}
 
 
 function WoWTools_MarkerMixin:Set_Taget(unit, index)--设置,目标,标记
-    if index and CanBeRaidTarget(unit) and GetRaidTargetIndex(unit)~=index then
+    if index and CanBeRaidTarget(unit) and GetRaidTargetIndex(unit)~=index and CombatLogGetCurrentEventInfo then--12.0没有了
         SetRaidTarget(unit, index)
     end
 end
