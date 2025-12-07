@@ -1,6 +1,11 @@
 --EventRegistry:TriggerEvent("PerksProgram.UpdateCartShown", showCart)
 --EventRegistry:RegisterCallback("PerksProgram.UpdateCartShown", self.OnShoppingCartVisibilityUpdated, self);
 --TimerunningUtil.TimerunningEnabledForPlayer() PlayerIsTimerunning(),--1=幻境新生：潘达利亚 
+
+if not issecretvalue then--12.0才有 SecureTypes.lua
+    issecretvalue= function() return false end
+end
+
 WoWTools_DataMixin= {
     addName= '|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
     onlyChinese= LOCALE_zhCN and true or false,

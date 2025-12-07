@@ -1,38 +1,81 @@
 --试衣间, 外观列表
 --DressUpFrames.lua
+--DressUpCustomSetDetailsSlotMixin
 
 
 
-
-
+local function GetItemLink(self)
+    local link
+    if self.transmogID then
+        if type(self.item)=='table' and self.item.GetItemLink then--12.0更新如下
+            link= self.item:GetItemLink()
+        elseif self.item then
+            link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID))
+        else
+            link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID))
+        end
+    end
+    print(link)
+    return link
+end
 
 
 local function Set_SetDetails(frame)
-    if frame.setEnter or frame:IsVisible() then
-        return
-    end
-    frame.setEnter=true
-    frame.Icon:EnableMouse(true)
-    function frame:get_item_link()
-        local link
-        if self.transmogID then
-            if self.item then
-                link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID))
-            else
-                link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID))
-            end
+    if frame.chatButton then return end--:IsMouseEnabled() 
+
+    frame.chatButton= CreateFrame('Button', nil, frame, 'WoWToolsButtonTemplate')
+    frame.chatButton:SetNormalAtlas('transmog-icon-chat')
+    frame.chatButton:SetPoint("RIGHT")
+    frame.chatButton:SetSize(18,18)
+    frame.chatButton.tooltip=function(tooltip, self)
+        local link= GetItemLink(self:GetParent())
+        if link then
+            tooltip:SetHyperlink(link)
         end
-        return link
     end
-    frame.Icon:SetScript("OnMouseUp", function(self) self:SetAlpha(0.5) end)
+    frame.chatButton:SetScript('OnClick', function()
+        local link= GetItemLink(frame)
+        if link then
+            WoWTools_ChatMixin:Chat(link, nil, true)
+        end
+    end)
+
+    frame.findButton= CreateFrame('Button', nil, frame, 'WoWToolsButtonTemplate')
+    frame.findButton:SetNormalAtlas('common-search-magnifyingglass')
+    frame.findButton:SetPoint('RIGHT', frame.chatButton, 'LEFT')
+    frame.findButton:SetSize(18,18)
+    frame.findButton.tooltip=function(tooltip, self)
+        local link= GetItemLink(self:GetParent())
+        if link then
+            tooltip:SetHyperlink(link)
+        end
+    end
+    frame.findButton:SetScript('OnClick', function(self)
+        local p= self:GetParent()
+            WoWTools_LoadUIMixin:Journal(5)
+        local wcFrame= WardrobeCollectionFrame
+        if wcFrame.activeFrame ~= wcFrame.ItemsCollectionFrame then
+            wcFrame:ClickTab(wcFrame.ItemsTab)
+        end
+        if p.transmogLocation then
+            WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(p.transmogLocation)
+        end
+        WardrobeCollectionFrameSearchBox:SetText(p.name or '')
+        print(p.name)
+    end)
+
+    frame.Icon:EnableMouse(true)
+    frame.Icon:SetScript("OnMouseUp", function(self)
+        self:SetAlpha(0.3)
+    end)
+
     frame.Icon:SetScript("OnMouseDown", function(self, d)
         local p= self:GetParent()
-        local link= p:get_item_link()
+        local link= p:get_item()
         if d=='LeftButton' then
             WoWTools_ChatMixin:Chat(link, nil, true)
         elseif d=='RightButton' then
             WoWTools_LoadUIMixin:Journal(5)
-            
             local wcFrame= WardrobeCollectionFrame
             if wcFrame.activeFrame ~= wcFrame.ItemsCollectionFrame then
                 wcFrame:ClickTab(wcFrame.ItemsTab)
@@ -44,10 +87,14 @@ local function Set_SetDetails(frame)
         end
         self:SetAlpha(0.3)
     end)
-    frame.Icon:SetScript("OnLeave", function(self) GameTooltip_Hide() self:SetAlpha(1) end)
+    frame.Icon:SetScript("OnLeave", function(self)
+        GameTooltip_Hide()
+        self:SetAlpha(1)
+    end)
+
     frame.Icon:SetScript("OnEnter", function(self)
         local p= self:GetParent()
-        local link= p:get_item_link()
+        local link= p:get_item()
         if not link then
             return
         end
@@ -76,7 +123,6 @@ end
 
 
 function WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表
-    if DressUpOutfitDetailsSlotMixin then--12.0没有了
-        WoWTools_DataMixin:Hook(DressUpOutfitDetailsSlotMixin, 'SetDetails', Set_SetDetails)
-    end
+    --if DressUpOutfitDetailsSlotMixin then--12.0没有了
+    WoWTools_DataMixin:Hook(DressUpCustomSetDetailsSlotMixin or DressUpOutfitDetailsSlotMixin, 'SetDetails', Set_SetDetails)
 end

@@ -6,16 +6,10 @@ end
 
 
 
-
+--issecretvalue(index)
 local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     if texture then
-        local index = UnitExists(unit) and GetRaidTargetIndex(unit)
-        if index and index>0 and index< 9 then
-            SetRaidTargetIconTexture(texture, index)
-            texture:SetShown(true)
-        else
-            texture:SetShown(false)
-        end
+        SetRaidTargetIconTexture(texture, GetRaidTargetIndex(unit) or 0)
     end
 end
 
@@ -263,21 +257,27 @@ local function Init()--设置,团队
             frame.statusText:SetText('|A:poi-soulspiritghost:0:0|a')
         elseif dead then--死亡
             frame.statusText:SetText('|A:deathrecap-icon-tombstone:0:0|a')
-        elseif ( frame.optionTable.healthText == "health" ) then
-            frame.statusText:SetText(WoWTools_DataMixin:MK(UnitHealth(frame.displayedUnit), 0))
-        elseif ( frame.optionTable.healthText == "losthealth" ) then
-            local healthLost = UnitHealthMax(frame.displayedUnit) - UnitHealth(frame.displayedUnit)
-            if ( healthLost > 0 ) then
-                frame.statusText:SetText('-'..WoWTools_DataMixin:MK(healthLost, 0))
-            end
-        elseif (frame.optionTable.healthText == "perc") then
-            if UnitHealth(frame.displayedUnit)== UnitHealthMax(frame.displayedUnit) then
-                frame.statusText:SetText('')
-            else
-                local text= frame.statusText:GetText()
-                if text then
-                    text= text:gsub('%%','')
-                    frame.statusText:SetText(text)
+        else
+            local hp= UnitHealth(frame.displayedUnit)
+            if hp and not issecretvalue(hp) then
+                if ( frame.optionTable.healthText == "health" ) then
+                    frame.statusText:SetText(WoWTools_DataMixin:MK(hp, 0))
+
+                elseif ( frame.optionTable.healthText == "losthealth" ) then
+                    local healthLost = UnitHealthMax(frame.displayedUnit) - hp
+                    if ( healthLost > 0 ) then
+                        frame.statusText:SetText('-'..WoWTools_DataMixin:MK(healthLost, 0))
+                    end
+                elseif (frame.optionTable.healthText == "perc") then
+                    if hp== UnitHealthMax(frame.displayedUnit) then
+                        frame.statusText:SetText('')
+                    else
+                        local text= frame.statusText:GetText()
+                        if text then
+                            text= text:gsub('%%','')
+                            frame.statusText:SetText(text)
+                        end
+                    end
                 end
             end
         end

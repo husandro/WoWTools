@@ -783,15 +783,33 @@ end
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
     local name= CompactRaidFrameManager:GetName() or 'CompactRaidFrameManager'
-
+--[[展开
     WoWTools_DataMixin:Hook('CompactRaidFrameManager_Expand', function()
         if CompactRaidFrameManager.ResizeButton then
             CompactRaidFrameManager.ResizeButton:SetShown(true)
+            if CompactRaidFrameManager:CanChangeAttribute() then
+                CompactRaidFrameManager:SetMovable(true)
+                print('展开')
+            end
         end
     end)
+--收起
     WoWTools_DataMixin:Hook('CompactRaidFrameManager_Collapse', function()
         if CompactRaidFrameManager.ResizeButton then
             CompactRaidFrameManager.ResizeButton:SetShown(false)
+            if CompactRaidFrameManager:CanChangeAttribute() then
+                CompactRaidFrameManager:SetMovable(false)
+            end
+        end
+    end)]]
+
+    WoWTools_DataMixin:Hook('CompactRaidFrameManager_Toggle', function()
+        if CompactRaidFrameManager.ResizeButton then
+            local isExpand= not CompactRaidFrameManager.collapsed
+            CompactRaidFrameManager.ResizeButton:SetShown(isExpand)
+            if CompactRaidFrameManager:CanChangeAttribute() then
+                CompactRaidFrameManager:SetMovable(isExpand)
+            end
         end
     end)
 

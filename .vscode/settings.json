@@ -6539,7 +6539,18 @@
         "HOUSING_DECOR_ONLY_PLACEABLE_INSIDE",
         "HOUSING_DECOR_ONLY_PLACEABLE_OUTSIDE",
         "HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE",
-        "HOUSING_DECOR_PLACEMENT_COST_TOOLTIP"
+        "HOUSING_DECOR_PLACEMENT_COST_TOOLTIP",
+        "CompactRaidFrameManager_Toggle",
+        "DressUpFrameCustomSetDropdown",
+        "DressUpCustomSetDetailsSlotMixin",
+        "SecureMap",
+        "issecretvalue",
+        "DamageMeterSessionWindowMixin",
+        "DamageMeter",
+        "DAMAGE_METER_OVERALL_SESSION_SHORT",
+        "DAMAGE_METER_CURRENT_SESSION_SHORT",
+        "GetWowStyle1ArrowButtonState",
+        "GetWowStyle1ArrowButtonShadowlessState"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

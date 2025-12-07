@@ -1499,7 +1499,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
         isNewButton=true,
         newButtonPoint=function(btn)
             btn:SetPoint('LEFT', CompactRaidFrameManagerDisplayFrameModeControlDropdown, 'RIGHT')
-            
+
         end,
         settings=function(_, texture, alpha)
             CompactRaidFrameManager.Background:SetAlpha(texture and 0 or alpha or 1)
@@ -1684,7 +1684,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     --地下城和团队副本
     self:SetButton(PVEFrameCloseButton)
     self:HideTexture(PVEFrame.TopTileStreaks)--最上面
-    
+
     --self:SetNineSlice(PVEFrame)
     self:SetEditBox(LFGListFrame.SearchPanel.SearchBox)
     self:SetScrollBar(LFGListFrame.SearchPanel)
@@ -1729,14 +1729,14 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetCheckBox(LFGListFrame.EntryCreation.VoiceChat.CheckButton)
     self:SetCheckBox(LFGListFrame.EntryCreation.PrivateGroup.CheckButton)
     self:SetCheckBox(LFGListFrame.EntryCreation.CrossFactionGroup.CheckButton)
-   
+
     self:SetCheckBox(LFGListFrame.EntryCreation.PvpItemLevel.CheckButton)
     self:SetEditBox(LFGListFrame.EntryCreation.PvpItemLevel.EditBox)
     self:SetCheckBox(LFGListFrame.EntryCreation.PVPRating.CheckButton)
     self:SetEditBox(LFGListFrame.EntryCreation.PVPRating.EditBox)
 
 
-    
+
 
 
 
@@ -1757,14 +1757,14 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetUIButton(LFGListFrame.ApplicationViewer.RemoveEntryButton)
     self:SetButton(LFGListFrame.ApplicationViewer.RefreshButton, {alpha=1})
     self:SetUIButton(LFGListFrame.ApplicationViewer.EditButton)
-    
+
 
     self:SetUIButton(LFGListFrame.SearchPanel.ScrollBox.StartGroupButton)
     self:SetUIButton(LFGListFrame.SearchPanel.BackToGroupButton)
     self:SetUIButton(LFGListFrame.SearchPanel.BackButton)
     self:SetUIButton(LFGListFrame.SearchPanel.SignUpButton)
     self:SetButton(LFGListFrame.SearchPanel.RefreshButton, {alpha=1})
-    
+
 
 
     self:SetAlphaColor(RaidFinderQueueFrameBackground)
@@ -2416,4 +2416,82 @@ end
 --教程
 function WoWTools_TextureMixin.Events:Blizzard_TutorialManager()
     self:SetFrame(TutorialDoubleKey_Frame)
+end
+
+--12.0 伤害统计
+function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
+
+    local DAMAGE_METER_SESSION_TYPE_SHORT_NAMES = {
+        [Enum.DamageMeterSessionType.Overall] = WoWTools_DataMixin.onlyChinese and '总' or WoWTools_TextMixin:sub(DAMAGE_METER_OVERALL_SESSION_SHORT, 2),
+        [Enum.DamageMeterSessionType.Current] = WoWTools_DataMixin.onlyChinese and '当' or WoWTools_TextMixin:sub(DAMAGE_METER_CURRENT_SESSION_SHORT, 2)
+    }
+    local function GetDamageMeterSessionShortName(sessionType, sessionID)
+        if sessionType then
+            return DAMAGE_METER_SESSION_TYPE_SHORT_NAMES[sessionType] or "?"
+        end
+
+        return sessionID or "?";
+    end
+    WoWTools_DataMixin:Hook(DamageMeterSessionWindowMixin, 'SetSession', function(f, sessionType, sessionID)
+        f:GetSessionName():SetText(GetDamageMeterSessionShortName(sessionType, sessionID))
+    end)
+
+    local function settins(frame)
+        self:SetAlphaColor(frame.Header, nil, true)
+        self:SetButton(frame.ResizeButton)
+
+--伤害，类型
+        self:SetAlphaColor(frame.DamageMeterTypeDropdown.Arrow, nil, nil, 0)
+        --frame.DamageMeterTypeDropdown.Arrow:SetDrawLayer('BORDER')
+        frame.DamageMeterTypeDropdown.TypeName:ClearAllPoints()
+        frame.DamageMeterTypeDropdown.TypeName:SetPoint('LEFT')
+        frame.DamageMeterTypeDropdown:HookScript('OnLeave', function(menu)
+            menu.Arrow:SetAlpha(0)
+        end)
+        frame.DamageMeterTypeDropdown:HookScript('OnEnter', function(menu)
+            menu.Arrow:SetAlpha(1)
+        end)
+
+--当前，总体 WowStyle2DropdownTemplate
+        self:SetAlphaColor(frame.SessionDropdown.Background, nil, nil, 0)
+        frame.SessionDropdown:HookScript('OnLeave', function(menu)
+            menu.Background:SetAlpha(0)
+        end)
+        frame.SessionDropdown:HookScript('OnEnter', function(menu)
+            menu.Background:SetAlpha(1)
+        end)
+        WoWTools_DataMixin:Hook(frame.SessionDropdown, 'OnButtonStateChanged', function(menu)
+            if not menu:IsMouseOver() then
+	            menu.Background:SetAlpha(0)
+            end
+        end)
+--简写
+        WoWTools_DataMixin:Hook(frame, 'SetSession', function(f, sessionType, sessionID)
+            f:GetSessionName():SetText(GetDamageMeterSessionShortName(sessionType, sessionID))
+        end)
+        frame:GetSessionName():SetText(GetDamageMeterSessionShortName(frame.sessionType, frame.sessionID))
+
+--选项 DamageMeterSettingsDropdownButtonTemplate
+        frame.SettingsDropdown.Icon:SetAtlas(frame:IsLocked() and 'Garr_LevelUpgradeLocked' or 'GM-icon-settings-hover')
+        self:SetAlphaColor(frame.SettingsDropdown.Icon, nil, nil, 0.2)
+        WoWTools_DataMixin:Hook(frame.SettingsDropdown, 'OnButtonStateChanged', function(f)
+            f.Icon:SetAtlas(f:GetParent():IsLocked() and 'Garr_LevelUpgradeLocked' or 'GM-icon-settings-hover')
+        end)
+        frame.SettingsDropdown:HookScript('OnLeave', function(menu)
+            menu.Icon:SetAlpha(0.2)
+        end)
+        frame.SettingsDropdown:HookScript('OnEnter', function(menu)
+            menu.Icon:SetAlpha(1)
+        end)
+
+    end
+
+    for _, windowData in pairs(DamageMeter:GetWindowDataList()) do
+        if windowData.sessionWindow then
+            settins(windowData.sessionWindow)
+        end
+    end
+    WoWTools_DataMixin:Hook(DamageMeterSessionWindowMixin, 'OnLoad', function(frame)
+        settins(frame)
+    end)
 end

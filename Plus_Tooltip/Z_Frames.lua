@@ -200,14 +200,13 @@ end
 
 --试衣间 DressUpFrames.lua
 function WoWTools_TooltipMixin.Frames:DressUpFrame()
-    if DressUpOutfitDetailsSlotMixin then--12.0没有了
-        WoWTools_DataMixin:Hook(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(frame)
-            if frame.transmogID then
-                GameTooltip:AddLine('transmogID|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.transmogID)
-                GameTooltip:Show()
-            end
-        end)
-    end
+   -- if DressUpOutfitDetailsSlotMixin then--12.0没有了
+    WoWTools_DataMixin:Hook(DressUpCustomSetDetailsSlotMixin or DressUpOutfitDetailsSlotMixin, 'OnEnter', function(frame)
+        if frame.transmogID then
+            GameTooltip:AddLine('transmogID|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.transmogID)
+            GameTooltip:Show()
+        end
+    end)
 end
 
 

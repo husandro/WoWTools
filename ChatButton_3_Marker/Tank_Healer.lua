@@ -32,9 +32,7 @@ end
 
 
 local function Set_TankHealer(set)--设置队伍标记
-    if not CombatLogGetCurrentEventInfo then--12.0没有了
-        Set_TankHealer=function()end
-        return
+    if CombatLogGetCurrentEventInfo then--12.0没有了
     elseif not Is_Enable(set) then
         return
     end
@@ -98,8 +96,8 @@ local function Set_TankHealer(set)--设置队伍标记
             isSelf= true
         end
         if Save().target then
-            local index= GetRaidTargetIndex('target')
-            if not index or (index>8 and index<0) then
+            local index= GetRaidTargetIndex('target')--12.0没有了
+            if not issecretvalue(index) and (not index or (index>8 and index<0)) then
                 WoWTools_MarkerMixin:Set_Taget('target', Save().target or (set and 0))--设置,目标,标记
             end
             isSelf= true

@@ -264,10 +264,12 @@ local function Create_TotButton(frame)
         local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
         local text=''
         local value, max= UnitHealth(unit), UnitHealthMax(unit)
-        value= (not value or value<=0) and 0 or value
-        if value and max and max>0 then
-            local per= value/max*100
-            text= format('%0.f', per)
+        if not issecretvalue(value) then
+            value= (not value or value<=0) and 0 or value
+            if value and max and max>0 then
+                local per= value/max*100
+                text= format('%0.f', per)
+            end
         end
         self.healthLable:SetText(text)
     end)

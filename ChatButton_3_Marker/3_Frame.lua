@@ -520,8 +520,10 @@ local function Init()--设置标记, 框架
     MakerFrame.target:set_point()
 
     function MakerFrame.target:set_Clear_Unit(unit, index)
-        local t= UnitExists(unit) and GetRaidTargetIndex(unit)
-        if t and t>0 and (index==t or not index) then
+        local t= GetRaidTargetIndex(unit)
+        if issecretvalue(t) then--12.0没有了
+            WoWTools_MarkerMixin:Set_Taget(unit, 0)--设置,目标,标记
+        elseif t and t>0 and (index==t or not index) then
             WoWTools_MarkerMixin:Set_Taget(unit, 0)--设置,目标,标记
         end
     end
@@ -650,9 +652,14 @@ local function Init()--设置标记, 框架
                 self:SetAlpha(1)
             end)
             function btn:set_Active()
-                local check=GetRaidTargetIndex('target')== self.index
-                self:SetButtonState(check and 'PUSHED' or 'NORMAL')
+                local t= GetRaidTargetIndex('target')
+                local check= false
+                if not issecretvalue(t) then
+                    check= t== self.index
+                    self:SetButtonState(check and 'PUSHED' or 'NORMAL')
+                end
                 self.texture:SetShown(check)
+
                 self:SetAlpha((not UnitExists('target') or not CanBeRaidTarget('target')) and 0.5 or 1)
             end
             function btn:set_Events()

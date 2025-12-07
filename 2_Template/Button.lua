@@ -17,7 +17,7 @@ function WoWToolsButton_OnEnter(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
         if type(self.tooltip)=='function' then
-            self:tooltip(GameTooltip)
+            self:tooltip(GameTooltip, self)
         else
             GameTooltip:AddLine(self.tooltip, nil, nil, nil, true)
         end

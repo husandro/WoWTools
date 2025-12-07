@@ -406,14 +406,21 @@ end
 --试衣间
 function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:HideFrame(DressUpFrame)
-    --self:SetNineSlice(DressUpFrame)
-    self:SetMenu(DressUpFrameOutfitDropdown)
-    self:SetButton(DressUpFrame.ToggleOutfitDetailsButton)
+    if DressUpFrameOutfitDropdown then--12.0没有了
+        self:SetMenu(DressUpFrameOutfitDropdown)
+        self:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
+    else
+        self:SetMenu(DressUpFrameCustomSetDropdown)
+        self:SetUIButton(DressUpFrameCustomSetDropdown.SaveButton)
+        self:SetButton(DressUpFrame.ToggleCustomSetDetailsButton, {alpha=1})
+        self:SetFrame(DressUpFrame.CustomSetDetailsPanel, {alpha=0.3})
+        self:SetModelZoom(DressUpFrame.ModelScene.ControlFrame)
+    end
 
+    self:SetButton(DressUpFrame.ToggleOutfitDetailsButton)
     self:SetNineSlice(DressUpFrameInset)
     self:HideFrame(DressUpFrameInset)
 
-    self:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
     self:SetButton(DressUpFrame.MaxMinButtonFrame.MinimizeButton, {all=true})
     self:SetButton(DressUpFrame.MaxMinButtonFrame.MaximizeButton, {all=true})
     self:SetButton(DressUpFrameCloseButton)
