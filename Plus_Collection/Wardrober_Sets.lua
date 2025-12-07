@@ -352,7 +352,9 @@ local function Init()
     end)
 
 --幻化，套装，索引
-    WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(...) set_Sets_Tooltips(...) end)
+    if WardrobeCollectionFrame.SetsTransmogFrame then--12.0没有了
+        WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(...) set_Sets_Tooltips(...) end)
+    end
 
 
 --套装，列表

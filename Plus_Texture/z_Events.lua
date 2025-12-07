@@ -1384,14 +1384,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
 --编辑模式
 function WoWTools_TextureMixin.Events:Blizzard_EditMode()
     self:SetButton(EditModeManagerFrame.CloseButton)
@@ -1654,18 +1646,6 @@ function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
         end
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1975,45 +1955,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-    --[[
-	if TokenFrame.ScrollBox:HasView() then
-		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
-            self:SetAlphaColor(frame.Middle, true)
-        self:SetAlphaColor(frame.Right, true)
-        self:SetAlphaColor(frame.Left, true)
-        end
-	end
-    WoWTools_DataMixin:Hook(TokenEntryMixin, 'OnLoad', function(frame)
-		self:SetAlphaColor(frame.Middle, true)
-        self:SetAlphaColor(frame.Right, true)
-        self:SetAlphaColor(frame.Left, true)
-	end)
-
-    WoWTools_DataMixin:Hook(TokenFrame.ScrollBox, 'Update', function(f)
-        if not f:HasView() then
-            return
-        end
-        for _, frame in pairs(f:GetFrames() or {}) do
-            if frame.Middle then
-                self:SetAlphaColor(frame.Middle)
-                self:SetAlphaColor(frame.Right)
-                self:SetAlphaColor(frame.Left)
-            end
-        end
-    end)]]
-
-
 --玩家, 观察角色, 界面
 function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:HideFrame(InspectFrame)
@@ -2129,17 +2070,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 --天赋，法术书
 function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetButton(PlayerSpellsFrameCloseButton)
@@ -2218,38 +2148,6 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
         end
     })
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2493,4 +2391,47 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
     WoWTools_DataMixin:Hook(DamageMeterSessionWindowMixin, 'OnLoad', function(frame)
         settins(frame)
     end)
+end
+
+
+
+
+
+
+
+--12.0才有 幻化
+function WoWTools_TextureMixin.Events:Blizzard_Transmog()
+    self:SetButton(TransmogFrameCloseButton)
+    self:SetButton(TransmogFrame.HelpPlateButton)
+    self:HideTexture(TransmogFrame.TopTileStreaks)
+    self:HideTexture(TransmogFrameBg)
+--左边
+    self:HideTexture(TransmogFrame.OutfitCollection.OutfitList.DividerTop)
+    self:HideTexture(TransmogFrame.OutfitCollection.OutfitList.DividerBottom)
+    self:HideTexture(TransmogFrame.OutfitCollection.PurchaseOutfitButton.NormalTexture)
+    self:HideTexture(TransmogFrame.OutfitCollection.MoneyFrame.Background)
+    self:HideTexture(TransmogFrame.OutfitCollection.DividerBar)
+--左边，列表
+    WoWTools_DataMixin:Hook(TransmogOutfitEntryMixin, 'SetSelected', function(frame, selected)
+        frame.OutfitButton.NormalTexture:SetShown(selected)
+    end)
+--中间
+    self:SetCheckBox(TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox)
+    self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientLeft)
+    self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientRight)
+--右边
+    self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider)
+    self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeUnassignedButton.NormalTexture)
+    self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeEquippedButton.NormalTexture)
+
+    self:Init_BGMenu_Frame(TransmogFrame, {
+        settings=function(_, texture, alpha)
+            alpha= texture and 0 or alpha or 1
+            TransmogFrame.OutfitCollection.Background:SetAlpha(alpha)
+            TransmogFrame.CharacterPreview.Background:SetAlpha(alpha)
+            TransmogFrame.WardrobeCollection.TabContent.Border:SetAlpha(alpha)
+            TransmogFrame.WardrobeCollection.TabContent.Background:SetAlpha(alpha)
+            TransmogFrame.WardrobeCollection.Background:SetAlpha(alpha)
+        end
+    })
 end

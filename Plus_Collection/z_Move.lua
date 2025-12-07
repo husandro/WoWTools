@@ -17,16 +17,15 @@ end
 local function update_frame()
     local self= WardrobeCollectionFrame
     if self:IsShown() then
-        if self.SetsTransmogFrame:IsShown() then
+        if self.SetsTransmogFrame and self.SetsTransmogFrame:IsShown() then--12.0没有了
             self.SetsTransmogFrame:ResetPage()--WardrobeSetsTransmogMixin
             self:RefreshCameras()
-        elseif self.ItemsCollectionFrame:IsShown() then
+        elseif self.ItemsCollectionFrame and self.ItemsCollectionFrame:IsShown() then
             self.ItemsCollectionFrame:RefreshVisualsList()
             self.ItemsCollectionFrame:UpdateItems()
             self.ItemsCollectionFrame:ResetPage()
             self:RefreshCameras()
         end
-
     end
 end
 
@@ -40,6 +39,9 @@ end
 
 
 local function init_sets_collenction(restButton, set)--套装
+if not WardrobeCollectionFrame.SetsTransmogFrame then--12.0没有了
+    return
+end
     local self= WardrobeCollectionFrame
     if self:GetParent()~=WardrobeFrame then
         return
@@ -138,7 +140,7 @@ local function init_items_colllection(restButton, set)--物品
     local num= cols * rows--总数
     local numModel= #frame.Models--已存，数量
 
-    for i= numModel+1, num, 1 do--创建，MODEL
+    for _ = numModel+1, num, 1 do--创建，MODEL
         local model= CreateFrame('DressUpModel', nil, frame, 'WardrobeItemsModelTemplate')
         table.insert(frame.Models, model)
     end
@@ -389,17 +391,19 @@ local function Init_WardrobeFrame()
     end})--幻化
 
 
-
-    WoWTools_DataMixin:Hook(WardrobeCollectionFrame, 'SetContainer', function(self, parent)
-        local btn=parent.ResizeButton
-        if not btn or not btn.setSize then
-            return
-        end
-        if parent==WardrobeFrame then
-            self:SetPoint('BOTTOMLEFT', 300,0)
-        end
-        init_items_colllection(btn)
-    end)
+--ardrobeCollectionFrameMixin
+    if WardrobeCollectionFrame.SetContainer then--12.0没有了
+        WoWTools_DataMixin:Hook(WardrobeCollectionFrame, 'SetContainer', function(self, parent)
+            local btn=parent.ResizeButton
+            if not btn or not btn.setSize then
+                return
+            end
+            if parent==WardrobeFrame then
+                self:SetPoint('BOTTOMLEFT', 300,0)
+            end
+            init_items_colllection(btn)
+        end)
+    end
 
 
     Init_WardrobeFrame=function()end

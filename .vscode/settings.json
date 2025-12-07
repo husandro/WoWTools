@@ -6550,7 +6550,11 @@
         "DAMAGE_METER_OVERALL_SESSION_SHORT",
         "DAMAGE_METER_CURRENT_SESSION_SHORT",
         "GetWowStyle1ArrowButtonState",
-        "GetWowStyle1ArrowButtonShadowlessState"
+        "GetWowStyle1ArrowButtonShadowlessState",
+        "TransmogFrame",
+        "TransmogFrameCloseButton",
+        "TransmogFrameBg",
+        "TransmogOutfitEntryMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

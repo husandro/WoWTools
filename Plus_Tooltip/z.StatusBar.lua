@@ -60,7 +60,9 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
                     left =WoWTools_DataMixin:MK(value, 2)
                 end
             end
-            right = WoWTools_DataMixin:MK(max, 2)
+            if not issecretvalue(max) then
+                right = WoWTools_DataMixin:MK(max, 2)
+            end
             frame:SetStatusBarColor(r or 1, g or 1, b or 1)
         end
         frame.text:SetText(text or '')

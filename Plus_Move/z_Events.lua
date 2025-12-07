@@ -873,3 +873,9 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
         WoWTools_DataMixin:Call('CompactRaidFrameManager_Collapse')
     end
 end
+
+--12.0才有 幻化
+function WoWTools_MoveMixin.Events:Blizzard_Transmog()
+    TransmogFrame.HelpPlateButton:SetFrameLevel(WorldMapFrame.BorderFrame.TitleContainer:GetFrameLevel()+1)
+    self:Setup(TransmogFrame)
+end

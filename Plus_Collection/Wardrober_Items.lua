@@ -78,7 +78,7 @@ local function UpdateSlotButtons(self)
                         category = self.lastWeaponCategory;
                     else
                         local appliedSourceID, appliedVisualID, selectedSourceID, selectedVisualID = self:GetActiveSlotInfo();
-                        if ( selectedSourceID ~= Constants.Transmog.NoTransmogID ) then
+                        if selectedSourceID and selectedSourceID ~= Constants.Transmog.NoTransmogID then
                             category = C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID);
                             if category and not self:IsValidWeaponCategoryForSlot(category) then
                                 category = nil;
@@ -353,7 +353,7 @@ local function set_Items_Tooltips(self)--UpdateItems
             if not Save().hideItems and self.transmogLocation then
                 local findLinks={}
                 if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
-                    local link= get_Link_Item_Type_Source(model.visualInfo.sourceID, 'illusion')--select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
+                    local link--= get_Link_Item_Type_Source(model.visualInfo.sourceID, 'illusion')--select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
                     if link then
                        WoWTools_DataMixin:Load(link, 'item')--加载 item quest spell
                         --visualInfo={isHideVisual=, visualID=, isCollected=, sourceID=, icon=, isUsable=}
@@ -367,7 +367,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                 else
                     local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(model.visualInfo.visualID, self:GetActiveCategory(), self.transmogLocation) or {}
                     for index= 1, #sources do
-                        local link= get_Link_Item_Type_Source(sources[index],'item')--WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index])
+                        local link--= get_Link_Item_Type_Source(sources[index],'item')--WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index])
                         if link and not findLinks[link] then
                             --sources[index]= {sourceType=3, visualID=1, isCollected=, isValidSourceForPlayer, categoryID, isHideVisual, quality, invType, sourceID, playerCanCollect, inventorySlot, itemID, itemModID, name, canDisplayerOnPlayer}
                            WoWTools_DataMixin:Load(link, 'item')--加载 item quest spell
@@ -513,13 +513,15 @@ local function Init()
     Init_Wardrober_Items()
 
     --幻化，套装，索引
-    WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(self)
-        set_Sets_Tooltips(self)
-    end)
+    if WardrobeCollectionFrame.SetsTransmogFrame then--12.0没有了
+        WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(self)
+            set_Sets_Tooltips(self)
+        end)
+        WardrobeCollectionFrameSearchBox:ClearAllPoints()
+        WardrobeCollectionFrameSearchBox:SetPoint('LEFT',WardrobeCollectionFrame.progressBar ,'RIGHT', 12, 0)
+        WardrobeCollectionFrameSearchBox:SetPoint('LEFT', WardrobeCollectionFrame.progressBar, 'RIGHT')
+    end
 
-    WardrobeCollectionFrameSearchBox:ClearAllPoints()
-    WardrobeCollectionFrameSearchBox:SetPoint('LEFT',WardrobeCollectionFrame.progressBar ,'RIGHT', 12, 0)
-    WardrobeCollectionFrameSearchBox:SetPoint('LEFT', WardrobeCollectionFrame.progressBar, 'RIGHT')
 
     Init=function()end
 end

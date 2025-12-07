@@ -126,7 +126,9 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetCheckBox(WarbandSceneJournal.IconsFrame.Icons.Controls.ShowOwned.Checkbox)
 
 
---试衣间WardrobeFrame
+--试衣间 WardrobeFrame
+
+if WardrobeTransmogFrame then--12.0没有了
     for _, name in pairs({
     'HeadButton',
     'ShoulderButton',
@@ -170,6 +172,30 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:HideTexture(WardrobeTransmogFrame.Inset.BG)
     self:SetButton(WardrobeFrameCloseButton)
 
+
+    --试衣间，套装
+    self:SetButton(WardrobeTransmogFrame.ModelScene.ClearAllPendingButton)
+    self:SetCheckBox(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox)
+    for _, btn in pairs(WardrobeCollectionFrame.SetsTransmogFrame.Models or {}) do
+        btn:DisableDrawLayer('BACKGROUND')
+        self:HideTexture(btn.Border)
+    end
+    WoWTools_DataMixin:Hook(WardrobeSetsTransmogModelMixin, 'OnLoad', function(btn)
+        btn:DisableDrawLayer('BACKGROUND')
+        self:HideTexture(btn.Border)
+    end)
+
+--试衣间，物品
+    WoWTools_DataMixin:Hook(WardrobeItemsModelMixin, 'OnLoad', function(btn)
+        btn:DisableDrawLayer('BACKGROUND')
+        btn.Border:SetAlpha(0)
+    end)
+
+    self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.NextPageButton, 1)
+    self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.PrevPageButton, 1)
+
+end
+
 --试衣间, 套装
     self:HideFrame(WardrobeCollectionFrame.SetsTransmogFrame)
     self:SetNineSlice(WardrobeCollectionFrame.SetsTransmogFrame)
@@ -180,25 +206,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         btn:DisableDrawLayer('BACKGROUND')
         btn.Border:SetAlpha(0)
     end
-    WoWTools_DataMixin:Hook(WardrobeItemsModelMixin, 'OnLoad', function(btn)
-        btn:DisableDrawLayer('BACKGROUND')
-        btn.Border:SetAlpha(0)
-    end)
 
---试衣间，套装
-    --self:SetModelZoom(WardrobeTransmogFrame.ModelScene.ControlFrame)
-    self:SetButton(WardrobeTransmogFrame.ModelScene.ClearAllPendingButton)
-    self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.NextPageButton, 1)
-    self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.PrevPageButton, 1)
-    self:SetCheckBox(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox)
-    for _, btn in pairs(WardrobeCollectionFrame.SetsTransmogFrame.Models or {}) do
-        btn:DisableDrawLayer('BACKGROUND')
-        self:HideTexture(btn.Border)
-    end
-    WoWTools_DataMixin:Hook(WardrobeSetsTransmogModelMixin, 'OnLoad', function(btn)
-        btn:DisableDrawLayer('BACKGROUND')
-        self:HideTexture(btn.Border)
-    end)
+
 
     self:HideFrame(WarbandSceneJournal.IconsFrame)
     self:SetNineSlice(WarbandSceneJournal.IconsFrame)
@@ -221,15 +230,16 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:Init_BGMenu_Frame(CollectionsJournal)
 
 --试衣间
+if WardrobeFrame then--12.0没有了
     self:Init_BGMenu_Frame(WardrobeFrame, {
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', WardrobeFrameCloseButton, -23, 0)
         end
     })
+end
+end
 
-
-
-
+--[[
     if _G['RematchJournal'] then
         self:SetNineSlice(_G['RematchJournal'])
         self:SetAlphaColor(_G['RematchJournalBg'])
@@ -468,8 +478,9 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
             end
         end
     end)
+    ]]
 
-end
+
 
 
 

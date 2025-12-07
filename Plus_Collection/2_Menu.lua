@@ -135,14 +135,16 @@ local function Init()
         end)
     end)
 
-    local btn2=WoWTools_ButtonMixin:Menu(WardrobeFrameCloseButton)
-    btn2:SetPoint('RIGHT', WardrobeFrameCloseButton, 'LEFT')
+    if WardrobeFrameCloseButton then--12.0没有了
+        local btn2=WoWTools_ButtonMixin:Menu(WardrobeFrameCloseButton)
+        btn2:SetPoint('RIGHT', WardrobeFrameCloseButton, 'LEFT')
 
-    btn2:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
+        btn2:SetScript('OnMouseDown', function(self)
+            MenuUtil.CreateContextMenu(self, function(...)
+                Init_Menu(...)
+            end)
         end)
-    end)
+    end
 
     Init=function()end
 end

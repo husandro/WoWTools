@@ -256,8 +256,8 @@ Plus_Collection\Heirloom.lua
 Plus_Collection\Wardrober_Items.lua
 Plus_Collection\Wardrober_Sets.lua
 Plus_Collection\DressUpFrames.lua
-Plus_Collection\z_m_UI.lua
-Plus_Collection\z_t_UI.lua
+Plus_Collection\z_Move.lua
+Plus_Collection\z_Texture.lua
 
 ##世界地图，增强
 Plus_WorldMap\0_WorldMapMixin.lua
