@@ -88,7 +88,8 @@ local function Init()
             texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
         end
 
-        SetPortraitToTexture(self.texture, texture or 0)
+        --SetPortraitToTexture(self.texture, texture or 0)
+        self.texture:SetTexture(texture or 0)
     end
 
     Frame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)

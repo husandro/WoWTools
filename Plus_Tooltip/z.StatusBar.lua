@@ -1,9 +1,4 @@
 --生命条提示
-local function Set_HealthBar_Unit(frame, unit)
-    
-end
-
-
 
 
 
@@ -15,7 +10,10 @@ end
 
 --生命条提示
 local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnitHealth', function(tooltip)
-    if WoWToolsSave['Plus_Tootips'].hideHealth then
+    if not CombatLogGetCurrentEventInfo then--12.0没有了
+        Init=function()end
+        return
+    elseif WoWToolsSave['Plus_Tootips'].hideHealth then--12.0没有了
         return
     end
 

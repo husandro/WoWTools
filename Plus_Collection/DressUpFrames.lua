@@ -75,6 +75,8 @@ end
 
 
 
-function WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表 a
-    WoWTools_DataMixin:Hook(DressUpOutfitDetailsSlotMixin, 'SetDetails', Set_SetDetails)
+function WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表
+    if DressUpOutfitDetailsSlotMixin then--12.0没有了
+        WoWTools_DataMixin:Hook(DressUpOutfitDetailsSlotMixin, 'SetDetails', Set_SetDetails)
+    end
 end

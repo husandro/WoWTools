@@ -32,8 +32,10 @@ end
 
 
 local function Set_TankHealer(set)--设置队伍标记
-
-    if not Is_Enable(set) then
+    if not CombatLogGetCurrentEventInfo then--12.0没有了
+        Set_TankHealer=function()end
+        return
+    elseif not Is_Enable(set) then
         return
     end
 

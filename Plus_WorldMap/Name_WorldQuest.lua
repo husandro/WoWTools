@@ -81,7 +81,8 @@ local function Init()
 
 
         if self.Display and texture then
-            SetPortraitToTexture(self.Display.Icon, texture)
+            --SetPortraitToTexture(self.Display.Icon, texture)
+            self.Display.Icon:SetTexture(texture)
             self.Display.Icon:SetSize(18, 18)
         end
 

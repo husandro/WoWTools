@@ -1318,7 +1318,7 @@ function lib:processItemRequests(itemRequests)
     end
     while true do
       local i, item = next(items)
-      if not i then
+      if not i or not item then
         itemRequests[range] = nil
         break
       elseif Item:CreateFromItemID(item):IsItemEmpty() or self.failedItemRequests[item] then
@@ -1405,7 +1405,7 @@ function lib:activate()
     local frame = CreateFrame('Frame')
     self.frame = frame
 
-    frame:RegisterEvent("LEARNED_SPELL_IN_TAB")
+    --frame:RegisterEvent("LEARNED_SPELL_IN_TAB")
     frame:RegisterEvent("CHARACTER_POINTS_CHANGED")
     frame:RegisterEvent("SPELLS_CHANGED")
 

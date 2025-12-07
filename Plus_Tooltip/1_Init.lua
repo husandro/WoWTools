@@ -248,16 +248,18 @@ local function Init_Panel()
         end
     })
 
-    WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '生命值' or HEALTH,
-        tooltip= reloadText,
-        GetValue= function() return not Save().hideHealth end,
-        category= WoWTools_TooltipMixin.Category,
-        SetValue= function()
-            Save().hideHealth= not Save().hideHealth and true or nil
-            WoWTools_TooltipMixin:Init_StatusBar()
-        end
-    })
+    if CombatLogGetCurrentEventInfo then--12.0没有了
+        WoWTools_PanelMixin:OnlyCheck({
+            name= WoWTools_DataMixin.onlyChinese and '生命值' or HEALTH,
+            tooltip= reloadText,
+            GetValue= function() return not Save().hideHealth end,
+            category= WoWTools_TooltipMixin.Category,
+            SetValue= function()
+                Save().hideHealth= not Save().hideHealth and true or nil
+                WoWTools_TooltipMixin:Init_StatusBar()
+            end
+        })
+    end
 
 --<右键点击设置框体>
     WoWTools_PanelMixin:OnlyCheck({

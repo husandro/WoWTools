@@ -96,14 +96,22 @@ local function Init()
     end
 
     isMeFrame= CreateFrame('Frame', 'WoWToolsTarget_IsMeFrame')
-    --WoWTools_TargetMixin.isMeFrame= isMeFrame
 
-    WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnAdded', function(_, unit)
-        Set_Plate(nil, unit)
-    end)
-    WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnOptionsUpdated', function(plate)
-        Set_Plate(plate, nil)
-    end)
+    if NamePlateBaseMixin.OnAdded then--12.0没有了
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnAdded', function(_, unit)
+            Set_Plate(nil, unit)
+        end)
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnOptionsUpdated', function(plate)
+            Set_Plate(plate, nil)
+        end)
+    else
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'Init', function(_, unit)
+            Set_Plate(nil, unit)
+        end)
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'SetUnit', function(plate)
+            Set_Plate(plate, nil)
+        end)
+    end
 
     isMeFrame:SetScript('OnEvent', function(_, event, arg1)
         if event=='PLAYER_REGEN_DISABLED' then--颜色

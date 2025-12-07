@@ -104,10 +104,12 @@ local function Init_Buttons()
 
     for petType=1, C_PetJournal.GetNumPetTypes() do
         local name= 'petType'..petType
-        local btn= WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
+        --[[local btn= CreateFrame('Button', Name..name, UIParent, 'WoWToolsButtonTemplate')
+        btn:SetSize(38, 38)
+        btn:SetNormalTexture('Interface\\ICONS\\Pet_Type_'..PET_TYPE_SUFFIX[petType])]]
+        local btn=WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
             size=38,
-            --texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType],
-            texture= 'Interface\\ICONS\\Pet_Type_'..PET_TYPE_SUFFIX[petType],
+            texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType],
             isType2=true,
             name= Name..name
         })

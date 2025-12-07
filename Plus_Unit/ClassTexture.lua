@@ -39,43 +39,31 @@ local function Craete_Frame(frame)
     function frame.classFrame:set_settings(guid3)
         local unit2= self:GetParent().unit
         local isPlayer= UnitExists(unit2) and UnitIsPlayer(unit2)
-        local find2=false
+        local atlas, texture
         if isPlayer then
             if UnitIsUnit(unit2, 'player') then
-                local texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
-                if texture then
-                    SetPortraitToTexture(self.Portrait, texture)
-                    find2= true
-                end
+                texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
             else
                 local specID= GetInspectSpecialization(unit2)
                 if specID and specID>0 then
-                    local texture= select(4, GetSpecializationInfoByID(specID))
-                    if texture then
-                        SetPortraitToTexture(self.Portrait, texture)
-                        find2= true
-                    end
+                    texture= select(4, GetSpecializationInfoByID(specID))
                 else
                     local guid2= guid3 or UnitGUID(unit2)
                     if guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID then
-                        local texture= select(4, GetSpecializationInfoByID(WoWTools_DataMixin.UnitItemLevel[guid2].specID))
-                        if texture then
-                            SetPortraitToTexture(self.Portrait, texture)
-                            find2= true
-                        end
+                        texture= select(4, GetSpecializationInfoByID(WoWTools_DataMixin.UnitItemLevel[guid2].specID))
                     else
-                        local class= WoWTools_UnitMixin:GetClassIcon(unit2, nil, nil, {reAtlas=true})--职业, 图标
-                        if class then
-                            self.Portrait:SetAtlas(class)
-                            find2=true
-                        end
+                        atlas= WoWTools_UnitMixin:GetClassIcon(unit2, nil, nil, {reAtlas=true})--职业, 图标
                     end
                 end
             end
-
+            if atlas then
+                self.Portrait:SetAtlas(atlas)
+            else
+                self.Portrait:SetTexture(texture or 0)
+            end
             self.itemLevel:SetText(guid3 and WoWTools_DataMixin.UnitItemLevel[guid3] and WoWTools_DataMixin.UnitItemLevel[guid3].itemLevel or '')
         end
-        self:SetShown(isPlayer and find2)
+        self:SetShown(atlas or texture)
     end
     frame.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', frame.unit)
     frame.classFrame:SetScript('OnEvent', function(self)

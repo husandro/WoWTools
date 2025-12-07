@@ -43,20 +43,6 @@ local P_Save= {
 
 
 
-local function OnRemoved()
-    WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
-        if _G['WoWToolsTarget_IsMeFrame'] then
-            _G['WoWToolsTarget_IsMeFrame']:hide_plate(plate)
-        end
-        if _G['WoWToolsTarget_QuestFrame'] then
-           _G['WoWToolsTarget_QuestFrame']:hide_plate(plate)
-        end
-    end)
-
-    OnRemoved=function()end
-end
-
-
 
 
 function WoWTools_TargetMixin:Set_All_Init()
@@ -64,7 +50,25 @@ function WoWTools_TargetMixin:Set_All_Init()
         return
     end
 
-    OnRemoved()
+    if NamePlateBaseMixin.OnRemoved then--12.0没有了
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
+            if _G['WoWToolsTarget_IsMeFrame'] then
+                _G['WoWToolsTarget_IsMeFrame']:hide_plate(plate)
+            end
+            if _G['WoWToolsTarget_QuestFrame'] then
+                _G['WoWToolsTarget_QuestFrame']:hide_plate(plate)
+            end
+        end)
+    else
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'ClearUnit', function(plate)--移除所有
+            if _G['WoWToolsTarget_IsMeFrame'] then
+                _G['WoWToolsTarget_IsMeFrame']:hide_plate(plate)
+            end
+            if _G['WoWToolsTarget_QuestFrame'] then
+                _G['WoWToolsTarget_QuestFrame']:hide_plate(plate)
+            end
+        end)
+    end
 
     WoWTools_TargetMixin:Init_targetFrame()
     WoWTools_TargetMixin:Init_numFrame()

@@ -357,6 +357,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
 
 
 --标记
+if CombatLogGetCurrentEventInfo then--12.0没有了
     local mark = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--标记
     mark:SetText(WoWTools_DataMixin.Icon['TANK']..(WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon['HEALER'])
     mark:SetPoint('RIGHT', ChallengesKeystoneFrame.StartButton, 'LEFT',-2, 0)
@@ -379,7 +380,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
             end
         end
     end)
-
+end
 
 
 

@@ -588,7 +588,8 @@ local function Set_PetUnit(self)
     local r,g,b= select(3, Get_Pet_Quality(petOwner, petIndex))
 
 --图标
-    SetPortraitToTexture(self.portrait, petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0)
+    --SetPortraitToTexture(self.portrait, petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0)
+    self.portrait:SetTexture(petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0)
     self.portrait.border:SetVertexColor(r,g,b)
 
 --等级

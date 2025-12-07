@@ -1,3 +1,6 @@
+if not CombatLogGetCurrentEventInfo then--12.0没有了
+    return
+end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
@@ -62,7 +65,7 @@ end
 
 local function Init_Panel()
 
- 
+
     --添加控制面板
     local root= WoWTools_PanelMixin:OnlyCheck({
         name= addName,

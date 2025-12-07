@@ -443,9 +443,10 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		local can= btn:CanChangeAttribute()
 
 		if btn.texture then
-			SetPortraitToTexture(btn.texture, tables.icon)
+			--SetPortraitToTexture(btn.texture, tables.icon)
+			btn.texture:SetTexture(tables.icon or 0)
 		else
-			btn:SetNormalTexture(tables.icon)--设置，图片
+			btn:SetNormalTexture(tables.icon or 0)--设置，图片
 		end
 		if btn.border then
 			local atlas= btn.itemButtonUse and qualityToIconBorderAtlas[tables.itemQuality] or WoWTools_DataMixin.Icon[tables.itemQuality]--qualityToIconBorderAtlas4[tables.itemQuality]
