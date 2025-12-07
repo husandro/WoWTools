@@ -2420,11 +2420,22 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientLeft)
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientRight)
 --右边
-    self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider)
+    self:SetAlphaColor()
     self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeUnassignedButton.NormalTexture)
     self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeEquippedButton.NormalTexture)
+    self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider, true)
+    for _, tabID in pairs(TransmogFrame.WardrobeCollection:GetTabSet()) do
+        local btn= TransmogFrame.WardrobeCollection:GetTabButton(tabID)
+        if btn then
+            self:HideTexture(btn.Left)
+            self:HideTexture(btn.Middle)
+            self:HideTexture(btn.Right)
+        end
+    end
 
     self:Init_BGMenu_Frame(TransmogFrame, {
+        enabled=true,
+        alpha=1,
         settings=function(_, texture, alpha)
             alpha= texture and 0 or alpha or 1
             TransmogFrame.OutfitCollection.Background:SetAlpha(alpha)
@@ -2432,6 +2443,10 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
             TransmogFrame.WardrobeCollection.TabContent.Border:SetAlpha(alpha)
             TransmogFrame.WardrobeCollection.TabContent.Background:SetAlpha(alpha)
             TransmogFrame.WardrobeCollection.Background:SetAlpha(alpha)
+            TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations.Background:SetAlpha(alpha)
+            TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider:SetAlpha(alpha)
+            TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.SearchBox.Background:SetAlpha(alpha)
+            TransmogFrame.WardrobeCollection.TabContent.SetsFrame.SearchBox.Background:SetAlpha(alpha)
         end
     })
 end
