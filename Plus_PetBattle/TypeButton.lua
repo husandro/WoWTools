@@ -106,7 +106,8 @@ local function Init_Buttons()
         local name= 'petType'..petType
         local btn= WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
             size=38,
-            texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType],
+            --texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType],
+            texture= 'Interface\\ICONS\\Pet_Type_'..PET_TYPE_SUFFIX[petType],
             isType2=true,
             name= Name..name
         })
