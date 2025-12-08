@@ -436,7 +436,7 @@ local function Get_Info(tab)
 
 --套装：炎阳珠衣装
     elseif transmogSetID then
-        local collect, numAll = select(2, WoWTools_CollectedMixin:SetID(transmogSetID))
+        local collect, numAll = select(2, WoWTools_CollectionMixin:SetID(transmogSetID))
         if numAll then
             if collect==numAll then
                 bottomLeftText= get_has_text(true)
@@ -477,7 +477,7 @@ local function Get_Info(tab)
         end
 
 --宠物兑换, wow9.0
-    elseif itemQuality==0 and WoWTools_CollectedMixin:GetPet9Item(itemID, true) then
+    elseif itemQuality==0 and WoWTools_CollectionMixin:GetPet9Item(itemID, true) then
         topRightText='|A:WildBattlePetCapturable:0:0|a'
 
 --垃圾装备
@@ -549,7 +549,7 @@ local function Get_Info(tab)
 --装备
     elseif classID==2 or classID==4 then
         if C_Item.IsCosmeticItem(itemLink) then--装饰品
-            bottomLeftText= get_has_text(select(2, WoWTools_CollectedMixin:Item(itemLink, nil, nil, true)))
+            bottomLeftText= get_has_text(select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true)))
         elseif PlayerIsTimerunning() then
 
             local stat= WoWTools_ItemMixin:GetItemStats(itemLink)
@@ -674,7 +674,7 @@ local function Get_Info(tab)
             end
 
 
-            local collectedIcon, isCollected= WoWTools_CollectedMixin:Item(itemLink, nil, true)--幻化
+            local collectedIcon, isCollected= WoWTools_CollectionMixin:Item(itemLink, nil, true)--幻化
             bottomRightText= not isCollected and collectedIcon or bottomRightText
 --幻化，没有收集
             if isCollected==false then

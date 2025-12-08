@@ -349,7 +349,7 @@ local function Init()
                     end
                 end
 --物品是否收集, 返回图标, 幻化
-                local item, collected, isSelf = WoWTools_CollectedMixin:Item(btn.link, nil, true)
+                local item, collected, isSelf = WoWTools_CollectionMixin:Item(btn.link, nil, true)
                 if item and not collected then
                     itemText= (itemText or '')..item
                     tips= tips and tips..'|n|n' or ''
@@ -361,9 +361,9 @@ local function Init()
             else
                 local itemID= btn.itemID or C_Item.GetItemInfoInstant(btn.link)
                 if itemID then
-                    itemText= WoWTools_CollectedMixin:Mount(nil, itemID)--坐骑物品
+                    itemText= WoWTools_CollectionMixin:Mount(nil, itemID)--坐骑物品
                     itemText= itemText or select(3, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
-                    itemText= itemText or WoWTools_CollectedMixin:Toy(itemID)--玩具,是否收集
+                    itemText= itemText or WoWTools_CollectionMixin:Toy(itemID)--玩具,是否收集
                 end
             end
             local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=btn.link, text={ITEM_CLASSES_ALLOWED, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
@@ -642,7 +642,7 @@ local function Init()
             frame.setNum:SetPoint('RIGHT', frame.SetName)
         end
         if data and data.setID then
-            text= WoWTools_CollectedMixin:SetID(data.setID, true)--套装, 收集数
+            text= WoWTools_CollectionMixin:SetID(data.setID, true)--套装, 收集数
         end
         for _, btn in pairs(frame.ItemButtons or {}) do
             if btn.itemID then

@@ -711,4 +711,36 @@ function WoWTools_TextureMixin:SetModelZoom(frame)
         end
     end
 end
+
+
+
+--列表，总数
+function WoWTools_TextureMixin:SetPagingControls(frame)
+    if not frame or frame.TotaleText then
+        return
+    end
+
+    self:SetButton(frame.PrevPageButton, {alpha=1})
+    self:SetButton(frame.NextPageButton, {alpha=1})
+--总数
+    frame.TotaleText= frame:CreateFontString(nil, 'ARTWORK', frame.PageText:GetFontObject():GetName() or'GameFontHighlight')
+    frame.TotaleText:SetTextColor(frame.PageText:GetTextColor())
+    frame.TotaleText:SetPoint('LEFT', frame.NextPageButton, 'RIGHT', 2, 0)
+    if frame:GetParent().SetDataProvider then
+        WoWTools_DataMixin:Hook(frame:GetParent(), 'SetDataProvider', function(f, dataProvider)
+            local num= 0
+            for _, tab in pairs(dataProvider:GetCollection() or {}) do
+                if tab.elements then
+                    num= num+ #tab.elements
+                end
+            end
+            f.PagingControls.TotaleText:SetText(num>0 and num or '')
+        end)
+    end
+
+--去掉文字, 页
+    frame.currentPageOnlyText='%d'
+    frame.currentPageWithMaxText='%d/%d'
+end
+
     --HousingModelPreviewFrame.ModelPreview.ModelSceneControls.zoomInButton.NormalTexture

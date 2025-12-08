@@ -29,7 +29,7 @@ local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
             )
         then
             if class==2 or class==4 then--幻化
-                local text, isCollected =WoWTools_CollectedMixin:Item(info.hyperlink)
+                local text, isCollected =WoWTools_CollectionMixin:Item(info.hyperlink)
                 if text and not isCollected then
                     return info
                 end
@@ -86,7 +86,7 @@ local function Init_Menu(self, root)
                 if class and sub then
                     local find=true
                     if class==2 or class==4 then--幻化
-                        local text, isCollected= WoWTools_CollectedMixin:Item(info2.hyperlink)
+                        local text, isCollected= WoWTools_CollectionMixin:Item(info2.hyperlink)
                         if not text or isCollected then
                             find= false
                         end

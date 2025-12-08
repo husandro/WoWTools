@@ -246,9 +246,8 @@ Plus_ObjectiveTracker\2_Menu.lua
 Plus_ObjectiveTracker\z_UI.lua
 
 ##战团藏品
-Plus_Collection\0_CollectedMixin.lua
+Plus_Collection\0_CollectionMixin.lua
 Plus_Collection\1_Init.lua
-Plus_Collection\2_Menu.lua
 Plus_Collection\Mount.lua
 Plus_Collection\Pet.lua
 Plus_Collection\ToyBox.lua

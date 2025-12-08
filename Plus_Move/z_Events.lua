@@ -856,7 +856,7 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
         CompactRaidFrameManager:ClearAllPoints()
         WoWTools_DataMixin:Call('CompactRaidFrameManager_Expand')
     end})
-    
+
     if self:Save().point[name] then
         CompactRaidFrameManager_Collapse= c_CompactRaidFrameManager_Collapse
         CompactRaidFrameManager_Expand= c_CompactRaidFrameManager_Expand
@@ -874,8 +874,96 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
     end
 end
 
+
+
+
+
+
+
+
 --12.0才有 幻化
+--TransmogWardrobeItemsMixin
+--TransmogItemModelMixin
+--TransmogWardrobeSetsMixin
+--TransmogWardrobeCustomSetsMixin
+--TransmogWardrobeSituationsMixin 情景
 function WoWTools_MoveMixin.Events:Blizzard_Transmog()
     TransmogFrame.HelpPlateButton:SetFrameLevel(WorldMapFrame.BorderFrame.TitleContainer:GetFrameLevel()+1)
-    self:Setup(TransmogFrame)
+
+    TransmogFrame.OutfitCollection:SetPoint('BOTTOM')
+    TransmogFrame.OutfitCollection.OutfitList:SetPoint('BOTTOM', TransmogFrame.OutfitCollection.SaveOutfitButton, 'TOP')
+    TransmogFrame.OutfitCollection.DividerBar:SetPoint('BOTTOMRIGHT', 2, 0)
+--移动，购买外观方案栏位
+    TransmogFrame.OutfitCollection.PurchaseOutfitButton:ClearAllPoints()
+    TransmogFrame.OutfitCollection.PurchaseOutfitButton:SetPoint('LEFT', TransmogFrame.OutfitCollection.SaveOutfitButton, 'RIGHT')
+    TransmogFrame.OutfitCollection.PurchaseOutfitButton:SetSize(23, 23)
+    TransmogFrame.OutfitCollection.PurchaseOutfitButton.Text:SetText("")
+    TransmogFrame.OutfitCollection.PurchaseOutfitButton.Icon:ClearAllPoints()
+    TransmogFrame.OutfitCollection.PurchaseOutfitButton.Icon:SetPoint('TOPLEFT', 4, -4)
+    TransmogFrame.OutfitCollection.PurchaseOutfitButton.Icon:SetPoint('BOTTOMRIGHT', -4, 4)
+    TransmogFrame.OutfitCollection.PurchaseOutfitButton:SetScript('OnEnter', function(button)
+        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '购买外观方案栏位' or TRANSMOG_PURCHASE_OUTFIT_SLOT)
+        local maxSlot= C_TransmogOutfitInfo.GetMaxNumberOfUsableOutfits()
+        if not button:IsEnabled() then
+            GameTooltip_AddErrorLine(GameTooltip, format(
+                WoWTools_DataMixin.onlyChinese and '已达到%d个外观方案栏位的上限' or TRANSMOG_PURCHASE_OUTFIT_SLOT_TOOLTIP_DISABLED,
+                maxSlot
+            ), true)
+        else
+            local source = Enum.TransmogOutfitEntrySource.PlayerPurchased
+	        local unlockedOutfitCount = C_TransmogOutfitInfo.GetNumberOfOutfitsUnlockedForSource(source)
+            GameTooltip_AddInstructionLine(GameTooltip, format(
+                WoWTools_DataMixin.onlyChinese and '总上限：%s%s/%s' or CURRENCY_TOTAL_CAP,
+                '',
+                format('%d', unlockedOutfitCount),
+                format('%d', maxSlot)
+            ))
+		end
+        GameTooltip:Show()
+    end)
+
+
+
+
+    TransmogFrame.CharacterPreview:SetPoint('BOTTOM')
+    TransmogFrame.CharacterPreview.Background:SetPoint('BOTTOM')
+    TransmogFrame.CharacterPreview.Gradients.GradientLeft:SetPoint('TOPLEFT')
+    TransmogFrame.CharacterPreview.Gradients.GradientLeft:SetPoint('BOTTOMLEFT')
+    TransmogFrame.CharacterPreview.Gradients.GradientRight:SetPoint('TOPRIGHT')
+    TransmogFrame.CharacterPreview.Gradients.GradientRight:SetPoint('BOTTOMRIGHT')
+
+
+    TransmogFrame.WardrobeCollection:SetPoint('BOTTOMRIGHT')
+    TransmogFrame.WardrobeCollection.TabContent:SetPoint('BOTTOMRIGHT')
+    TransmogFrame.WardrobeCollection.TabContent.Background:SetPoint('BOTTOMRIGHT', -4, 4)
+    TransmogFrame.WardrobeCollection.TabContent.Border:SetPoint('BOTTOMRIGHT', 11, -12)
+
+--情景
+TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.DescriptionText:SetPoint('RIGHT', TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.DefaultsButton, 'LEFT', -4,0)
+TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.DescriptionText:SetPoint('BOTTOM', TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.EnabledToggle, 'TOP', 0, 4)
+TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations.fixedWidth= TransmogFrame.WardrobeCollection.TabContent.SituationsFrame:GetWidth()-43*2
+--TransmogFrame.WardrobeCollection.TabContent.SituationsFrame:GetWidth(), TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations:GetWidth(), TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations.fixedWidth)
+    TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations:SetPoint('RIGHT', -43, 0)
+
+    local function updata()
+        if TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:IsVisible() then
+            TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:Refresh()
+        elseif TransmogFrame.WardrobeCollection.TabContent.SetsFrame:IsVisible() then
+            TransmogFrame.WardrobeCollection.TabContent.SetsFrame:RefreshCollectionEntries()
+        elseif TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame:IsVisible() then
+            TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame:RefreshCollectionEntries()
+        end
+    end
+    self:Setup(TransmogFrame, {
+        minW=1396, minH=555,
+        --minW=200, minH=200,
+    sizeRestFunc=function()
+        TransmogFrame:SetSize(1618, 883)
+    end,
+    --sizeStopFunc=function()
+    sizeUpdateFunc=updata,
+    --[[addMenu=function(frame, root)
+
+    end]]})
 end

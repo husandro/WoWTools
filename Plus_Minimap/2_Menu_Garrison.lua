@@ -53,9 +53,9 @@ local function Init_GarrisonList()
     end,
     },]]
     {name=WoWTools_DataMixin.onlyChinese and '卡兹阿加概要' or WAR_WITHIN_LANDING_PAGE_TITLE,--Blizzard_WarWithinLandingPage.lua
-    garrisonType= Enum.ExpansionLandingPageType.WarWithin,
+    garrisonType= Enum.ExpansionLandingPageType and Enum.ExpansionLandingPageType.WarWithin or 2,
     --garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
-    disabled= not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_WAR_WITHIN),
+    disabled= C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer and not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_WAR_WITHIN) or nil,
     --check= function() return ExpansionLandingPage and ExpansionLandingPage:IsShown() end,
     atlas= 'warwithin-landingbutton-up',
     --tooltip= WoWTools_DataMixin.onlyChinese and '点击这里显示卡兹阿加概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,

@@ -2400,6 +2400,11 @@ end
 
 
 --12.0才有 幻化
+--TransmogWardrobeItemsMixin
+--TransmogItemModelMixin
+--TransmogWardrobeSetsMixin
+--TransmogWardrobeCustomSetsMixin
+--TransmogWardrobeSituationsMixin 情景
 function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     self:SetButton(TransmogFrameCloseButton)
     self:SetButton(TransmogFrame.HelpPlateButton)
@@ -2410,15 +2415,28 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     self:HideTexture(TransmogFrame.OutfitCollection.OutfitList.DividerBottom)
     self:HideTexture(TransmogFrame.OutfitCollection.PurchaseOutfitButton.NormalTexture)
     self:HideTexture(TransmogFrame.OutfitCollection.MoneyFrame.Background)
-    self:HideTexture(TransmogFrame.OutfitCollection.DividerBar)
+    self:SetScrollBar(TransmogFrame.OutfitCollection.OutfitList)
 --左边，列表
+    self:HideTexture(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.Border)
+    WoWTools_ButtonMixin:AddMask(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button, false, TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.Icon)
+    self:SetAlphaColor(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.HighlightTexture, true)
+    WoWTools_DataMixin:Hook(TransmogOutfitEntryMixin, 'OnLoad', function(frame)
+        self:HideTexture(frame.OutfitIcon.Border)
+        WoWTools_ButtonMixin:AddMask(frame.OutfitIcon, false, frame.OutfitIcon.Icon)
+        self:SetAlphaColor(frame.OutfitIcon.HighlightTexture, true)
+    end)
     WoWTools_DataMixin:Hook(TransmogOutfitEntryMixin, 'SetSelected', function(frame, selected)
         frame.OutfitButton.NormalTexture:SetShown(selected)
     end)
+    WoWTools_DataMixin:Hook(TransmogOutfitEntryMixin, 'Init', function(frame, selected)
+        frame.OutfitButton.NormalTexture:SetShown(selected)
+    end)
+
 --中间
     self:SetCheckBox(TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox)
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientLeft)
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientRight)
+
 --右边
     self:SetAlphaColor()
     self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeUnassignedButton.NormalTexture)
@@ -2433,12 +2451,16 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
         end
     end
 
+--情景
+    self:SetCheckBox(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.EnabledToggle.Checkbox)
+
     self:Init_BGMenu_Frame(TransmogFrame, {
         enabled=true,
         alpha=1,
         settings=function(_, texture, alpha)
             alpha= texture and 0 or alpha or 1
             TransmogFrame.OutfitCollection.Background:SetAlpha(alpha)
+            TransmogFrame.OutfitCollection.DividerBar:SetAlpha(alpha)
             TransmogFrame.CharacterPreview.Background:SetAlpha(alpha)
             TransmogFrame.WardrobeCollection.TabContent.Border:SetAlpha(alpha)
             TransmogFrame.WardrobeCollection.TabContent.Background:SetAlpha(alpha)
@@ -2449,4 +2471,21 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
             TransmogFrame.WardrobeCollection.TabContent.SetsFrame.SearchBox.Background:SetAlpha(alpha)
         end
     })
+end
+
+
+
+
+
+
+
+
+
+
+--上一页，下一页
+function WoWTools_TextureMixin.Events:Blizzard_PagedContent()
+--列表，总数
+    WoWTools_DataMixin:Hook(PagingControlsMixin, 'OnLoad', function(frame)
+        self:SetPagingControls(frame)
+    end)
 end

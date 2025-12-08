@@ -160,7 +160,7 @@ local function Set_List_Button(btn, displayData)
     local text, isLimited, patch, version--版本
     for _, info in pairs(variantSets) do
         if info and info.setID then
-            local meno, collect, numAll = WoWTools_CollectedMixin:SetID(info.setID)
+            local meno, collect, numAll = WoWTools_CollectionMixin:SetID(info.setID)
             if meno and numAll then
 
                 text= (text or '').. meno..' '--未收集，数量

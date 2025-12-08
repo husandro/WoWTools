@@ -131,7 +131,7 @@ local function Get_Items(self)--取得背包物品信息
 
                 elseif C_Item.IsCosmeticItem(info.hyperlink) then--装饰品
                     if Save().mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
-                        local  isCollected, isSelf= select(2, WoWTools_CollectedMixin:Item(info.hyperlink, nil, nil, true))
+                        local  isCollected, isSelf= select(2, WoWTools_CollectionMixin:Item(info.hyperlink, nil, nil, true))
                         if not isCollected and isSelf then
                             Set_Att(self, bag, slot, info.iconFileID, info.itemID, nil, true)
                             return
@@ -148,7 +148,7 @@ local function Get_Items(self)--取得背包物品信息
 
                 elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
                     if Save().mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
-                        local  isCollected, isSelf= select(2, WoWTools_CollectedMixin:Item(info.hyperlink, nil, nil, true))
+                        local  isCollected, isSelf= select(2, WoWTools_CollectionMixin:Item(info.hyperlink, nil, nil, true))
                         if not isCollected and isSelf then
                             Set_Att(self, bag, slot, info.iconFileID, info.itemID)
                             self.IsEquipItem= true

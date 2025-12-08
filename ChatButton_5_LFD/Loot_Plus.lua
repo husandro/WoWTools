@@ -128,7 +128,7 @@ local function Init()
         end
         if btn.dropInfo.itemHyperlink and notGreed then
             local _, _, itemSubType2, itemEquipLoc, _, _, subclassID = C_Item.GetItemInfoInstant(btn.dropInfo.itemHyperlink)--提示,装备,子类型
-            local collected, _, isSelfCollected= WoWTools_CollectedMixin:Item(btn.dropInfo.itemHyperlink, nil, false)--物品是否收集
+            local collected, _, isSelfCollected= WoWTools_CollectionMixin:Item(btn.dropInfo.itemHyperlink, nil, false)--物品是否收集
             text= subclassID==0 and itemEquipLoc and WoWTools_TextMixin:CN(_G[itemEquipLoc]) or WoWTools_TextMixin:CN(itemSubType2)
             if isSelfCollected and collected then
                 text= text..' '..collected

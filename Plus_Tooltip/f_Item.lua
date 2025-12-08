@@ -601,7 +601,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 --套装：炎阳珠衣装
     elseif transmogSetID then
-        local collect, numAll = select(2, WoWTools_CollectedMixin:SetID(transmogSetID))
+        local collect, numAll = select(2, WoWTools_CollectionMixin:SetID(transmogSetID))
         if numAll then
             if collect==numAll then
                 textLeft= format('|cnGREEN_FONT_COLOR:%s|r',  WoWTools_DataMixin.onlyChinese and '已收集' or WoWTools_TextMixin)
@@ -646,7 +646,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end
 
     if itemQuality==0 and(classID==2 or classID==15) then
-        local petText= WoWTools_CollectedMixin:GetPet9Item(itemID)--宠物兑换, wow9.0
+        local petText= WoWTools_CollectionMixin:GetPet9Item(itemID)--宠物兑换, wow9.0
         if petText then
             tooltip:AddLine(petText)
         end

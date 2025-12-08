@@ -625,13 +625,3 @@ function WoWTools_TooltipMixin.Events:Blizzard_ObjectiveTracker()
         end)
     end
 end
-
-
---[[function WoWTools_TooltipMixin.Events:Blizzard_PagedContent()
-    
-    WoWTools_DataMixin:Hook(PagedNaturalSizeGridContentFrameMixin, 'InitializeElementSplit', function(frame, splitDat, retainCurrentPage)
-        info=frame.viewLayout 
-        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
-        print('InitializeElementSplit', frame.PagingControls.PrevPageButton, frame.PagingControls.NextPageButton, #splitDat)
-    end)
-end]]

@@ -61,7 +61,7 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
-        WoWToolsSave['Other_MoneyFrame']= WoWToolsSave['Other_MoneyFrame'] or {disabled=BreakUpLargeNumbers(12000)~= '12000'}
+        WoWToolsSave['Other_MoneyFrame']= WoWToolsSave['Other_MoneyFrame'] or {disabled= not (LOCALE_zhCN and WoWTools_DataMixin.Player.husandro) and true or nil}
 
         --添加控制面板
         WoWTools_PanelMixin:OnlyCheck({

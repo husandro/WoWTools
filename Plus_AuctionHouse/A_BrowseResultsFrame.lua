@@ -30,11 +30,11 @@ local function Set_BrowseResultsFrame(frame)
             end
 --物品是否收
             if not text then
-                text= WoWTools_CollectedMixin:Item(itemKeyInfo.itemID, nil, true)
+                text= WoWTools_CollectionMixin:Item(itemKeyInfo.itemID, nil, true)
             end
 --坐骑
             if not text then
-                local isMountCollected= select(2, WoWTools_CollectedMixin:Mount(nil, itemKeyInfo.itemID))
+                local isMountCollected= select(2, WoWTools_CollectionMixin:Mount(nil, itemKeyInfo.itemID))
                 if isMountCollected==true then
                     text= '|A:common-icon-checkmark-yellow:0:0|a'
                 elseif isMountCollected==false then
@@ -43,7 +43,7 @@ local function Set_BrowseResultsFrame(frame)
             end
 --玩具,是否收集
             if not text then
-                local isToy= select(2, WoWTools_CollectedMixin:Toy(itemKeyInfo.itemID))
+                local isToy= select(2, WoWTools_CollectionMixin:Toy(itemKeyInfo.itemID))
                 if isToy==true then
                     text= '|A:common-icon-checkmark-yellow:0:0|a'
                 elseif isToy==false then

@@ -223,6 +223,9 @@ function WoWTools_LoadUIMixin:MajorFaction(factionID)
     if factionID and MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID then
         MajorFactionRenownFrame:Hide()
     else
+        if not MajorFactionRenownFrame then
+            UIParentLoadAddOn("Blizzard_MajorFactions")
+        end
         ToggleMajorFactionRenown(factionID)
     end
 end

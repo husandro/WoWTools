@@ -6558,7 +6558,11 @@
         "TransmogWardrobeItemsMixin",
         "TransmogItemModelMixin",
         "PagedContentFrameBaseMixin",
-        "PagedNaturalSizeGridContentFrameMixin"
+        "PagedNaturalSizeGridContentFrameMixin",
+        "TRANSMOG_PURCHASE_OUTFIT_SLOT_TOOLTIP_DISABLED",
+        "C_TransmogOutfitInfo",
+        "TRANSMOG_PURCHASE_OUTFIT_SLOT",
+        "CURRENCY_TOTAL_CAP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -6576,12 +6580,5 @@
         "~\\.vscode\\extensions\\ketho.wow-api-0.21.0\\Annotations\\Core"
     ],
     "Lua.runtime.unicodeName": true,
-    "Lua.diagnostics.disable": [
-        "inject-field",
-        "missing-parameter",
-        "redundant-parameter",
-        "undefined-field",
-        "duplicate-set-field"
-    ],
     "Lua.type.weakUnionCheck": true,
 }

@@ -1,8 +1,8 @@
-WoWTools_CollectedMixin={}
+WoWTools_CollectionMixin={}
 
 
 
-function WoWTools_CollectedMixin:Mount(mountID, itemID)--坐骑, 收集数量
+function WoWTools_CollectionMixin:Mount(mountID, itemID)--坐骑, 收集数量
     if not mountID and itemID then
         mountID= C_MountJournal.GetMountFromItem(itemID)
     end
@@ -15,7 +15,7 @@ function WoWTools_CollectedMixin:Mount(mountID, itemID)--坐骑, 收集数量
     end
 end
 
-function WoWTools_CollectedMixin:Toy(itemID)--玩具,是否收集
+function WoWTools_CollectionMixin:Toy(itemID)--玩具,是否收集
     if C_ToyBox.GetToyInfo(itemID) then
         if PlayerHasToy(itemID) then
             return '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r', true
@@ -26,7 +26,7 @@ function WoWTools_CollectedMixin:Toy(itemID)--玩具,是否收集
 end
 
 
-function WoWTools_CollectedMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--物品是否收集 --if itemIDOrLink and IsCosmeticItem(itemIDOrLink) then isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
+function WoWTools_CollectionMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--物品是否收集 --if itemIDOrLink and IsCosmeticItem(itemIDOrLink) then isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
     sourceID= sourceID or (itemIDOrLink and select(2, C_TransmogCollection.GetItemInfo(itemIDOrLink)))
 
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
@@ -82,7 +82,7 @@ for _, _tab in pairs(_data) do
     _a= _a +1
 end
 ]]
-function WoWTools_CollectedMixin:SetID(setID, isLoot)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
+function WoWTools_CollectionMixin:SetID(setID, isLoot)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
     local numCollected, numAll=0,0
     if setID then
         if isLoot then
@@ -133,7 +133,7 @@ end
 
 
 
-function WoWTools_CollectedMixin:GetPet9Item(itemID, find)--宠物兑换, wow9.0
+function WoWTools_CollectionMixin:GetPet9Item(itemID, find)--宠物兑换, wow9.0
     if itemID==11406 or itemID==11944 or itemID==25402 then--[黄晶珠蜒]
         if find then
             return true

@@ -115,7 +115,7 @@ local function select_Reward(questID)--自动:选择奖励
                     end
 
                     if not upItem then
-                        local isCollected, isSelf= select(2, WoWTools_CollectedMixin:Item(itemLink))--物品是否收集 
+                        local isCollected, isSelf= select(2, WoWTools_CollectionMixin:Item(itemLink))--物品是否收集 
                         if isCollected==false and isSelf then
                             bestItem = i
                             selectItemLink=itemLink
