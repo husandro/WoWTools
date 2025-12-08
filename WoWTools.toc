@@ -256,6 +256,7 @@ Plus_Collection\Heirloom.lua
 Plus_Collection\Wardrober_Items.lua
 Plus_Collection\Wardrober_Sets.lua
 Plus_Collection\DressUpFrames.lua
+Plus_Collection\Transmog.lua
 Plus_Collection\z_Move.lua
 Plus_Collection\z_Texture.lua
 

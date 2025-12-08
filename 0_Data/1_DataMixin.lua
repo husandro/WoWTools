@@ -215,3 +215,28 @@ end
 
 
 
+function WoWTools_DataMixin:Info(data)
+    if not WoWTools_DataMixin.Player.husandro then
+        return
+    elseif type(data)~='table' then
+        print(WoWTools_DataMixin.Icon.icon2, tostring(data), type(data))
+        return
+    end
+
+    local t=''
+    for k, v in pairs(data) do
+        if v and type(v)=='table' then
+            t= t..'|n|cff00ff00---'..tostring(k)..'---STAR|r'
+
+            for k2, v2 in pairs(v) do
+                t= t..'|n    '..(type(v2)=='function' and '|cff00ccff' or '|cffffff00')..tostring(k2)..' |r= '..tostring(v2)
+            end
+            t= t..'|n|cffff0000---'..tostring(k)..'---END|r'
+        else
+            t= t..'|n'..(type(v)=='function' and '|cff00ccff' or '|cffff00ff')..tostring(k)..'|r = '..tostring(v)
+        end
+    end
+    t=t..'|n|cffff00ff——————————|r'
+
+    WoWTools_TextMixin:ShowText(t, WoWTools_DataMixin.Icon.icon2..tostring(data), {notClear=true})
+end

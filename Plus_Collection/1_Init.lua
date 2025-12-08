@@ -58,7 +58,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:SetScript('OnEvent', nil)
                 self:UnregisterEvent(event)
             else
-                WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表 a
+                WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表
+                WoWTools_CollectionMixin:Init_Transmog()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                     Init()

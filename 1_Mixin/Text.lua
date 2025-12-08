@@ -26,8 +26,11 @@ text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
 
 function WoWTools_TextMixin:ShowText(data, headerText, tab)
     tab= tab or {}
+    
     local onHide= tab.onHide
+    local notClear= tab.notClear
 
+    local text
     local frame= _G['WoWToolsShowTextEditBoxFrame']
     if not frame then
         frame= WoWTools_FrameMixin:Create(nil, {name='WoWToolsShowTextEditBoxFrame'})
@@ -45,18 +48,23 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
             f.ScrollBox:SetText('')
         end)
         frame:SetFrameStrata('HIGH')
+
+    elseif notClear then
+        text= frame.ScrollBox:GetText()
+        if text and text~='' then
+            text= text..'|n|cnWARNING_FONT_COLOR:..........|r'
+        end
     end
 
 
 
-    local text
     if type(data)=='table' then
         for _, str in pairs(data) do
             text= text and text..'|n' or ''
             text= text.. str
         end
     else
-        text= data
+        text= text and text..'|n'..data or data
     end
 
     frame.ScrollBox:SetText(text or '')
