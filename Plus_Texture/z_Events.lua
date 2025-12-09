@@ -2441,6 +2441,11 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
         WoWTools_ButtonMixin:AddMask(frame, nil, frame.Icon)
         frame.Border:SetAlpha(0)
     end)
+    WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'SetIllusionSlotFrame', function(frame)
+        WoWTools_ButtonMixin:AddMask(frame.illusionSlotFrame, nil, frame.illusionSlotFrame.Icon)
+        frame.illusionSlotFrame.Border:SetAlpha(0)
+    end)
+
     --[[WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'Update', function(frame)
        -- frame.Border:SetAlpha(frame.Border:GetAtlas()=='transmog-gearSlot-default' and 0 or 1)
     end)]]
@@ -2458,6 +2463,10 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
             self:HideTexture(btn.Right)
         end
     end
+    WoWTools_DataMixin:Hook(TransmogItemModelMixin, 'OnLoad', function(frame)
+        self:HideTexture(frame.Background)
+        self:HideTexture(frame.Border)
+    end)
 
 --情景
     self:SetCheckBox(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.EnabledToggle.Checkbox)
