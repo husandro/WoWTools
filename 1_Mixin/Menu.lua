@@ -81,7 +81,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
     end
 
     sub:AddInitializer(function(f, desc)--, description, menu)
-        local va= getValue() or 1
+        local va= getValue(f, desc) or 1
         f:SetValueStep(step or 1)
         f:SetMinMaxValues(minValue, maxValue)
         f:SetValue(va)
@@ -98,7 +98,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
 
         f:SetScript('OnValueChanged', function(s, value)
             value= Get_Value(value)
-            setValue(value, s)
+            setValue(value, s, desc)
             s.Text:SetText(value)
             local func= Get_tooltip()
             if func then
@@ -108,7 +108,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
 
         f:EnableMouseWheel(true)
         f:SetScript('OnMouseWheel', function(s, d)
-            local value= getValue() or 1
+            local value= getValue(s, desc) or 1
             if d== 1 then
                 value= value- step
             elseif d==-1 then

@@ -493,21 +493,15 @@ local function Init_WidthX2()
 
 
 --增加，按钮宽度，按钮
-    MerchantFrame.ResizeButton2= WoWTools_ButtonMixin:Cbtn(MerchantFrame, {
-        name='WoWToolsMerchantPlusToWidthButton',
-        atlas='uitools-icon-chevron-right',
-        addTexture=true,
-        size={12, 32}
-    })
-    WoWTools_TextureMixin:SetAlphaColor(MerchantFrame.ResizeButton2.texture, true)
+    MerchantFrame.ResizeButton2= CreateFrame('Button', 'WoWToolsMerchantPlusToWidthButton', MerchantFrame, 'WoWToolsButtonTemplate')
+    MerchantFrame.ResizeButton2:SetSize(12,32)
+    MerchantFrame.ResizeButton2:SetNormalAtlas('uitools-icon-chevron-right')
+    WoWTools_TextureMixin:SetAlphaColor(MerchantFrame.ResizeButton2:GetNormalTexture(), nil, nil, 0.3)
     MerchantFrame.ResizeButton2:SetPoint('RIGHT', 7, 0)
-    MerchantFrame.ResizeButton2.texture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b,0.3)
-    MerchantFrame.ResizeButton2:SetScript('OnLeave', function(self)
-        --self.texture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b,0.3)
+    MerchantFrame.ResizeButton2:SetScript('OnLeave', function()
         GameTooltip:Hide()
     end)
     MerchantFrame.ResizeButton2:SetScript('OnEnter', function(self)
-        --self.texture:SetVertexColor(1,1,1,1)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(
@@ -516,9 +510,6 @@ local function Init_WidthX2()
         )
         GameTooltip:Show()
     end)
-
-    MerchantFrame.ResizeButton2:SetClampedToScreen(true)
-
     MerchantFrame.ResizeButton2:SetScript('OnMouseDown', function(self, d)
 --移动
         if d=='LeftButton' then
@@ -526,7 +517,6 @@ local function Init_WidthX2()
             self.isMovingToRight= true
             p:SetResizable(true)
             p:StartSizing('RIGHT', true)
-            --SetCursor("UI_RESIZE_CURSOR")
             SetCursor('Interface\\CURSOR\\Crosshair\\UI-Cursor-SizeRight')
         else
 --还原

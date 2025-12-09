@@ -207,7 +207,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
     local name= ProfessionsFrame:GetName()
 
     self:Setup(ProfessionsFrame, {
-    scaleStoppedFunc=function()
+    scaleStopFunc=function()
         local sacle= ProfessionsFrame:GetScale()
         if ProfessionsUtil.IsCraftingMinimized() then
             Save().scale[name..'Mini']= sacle

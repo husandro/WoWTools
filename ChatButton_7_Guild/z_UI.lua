@@ -460,7 +460,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     end
 
     self:Setup(CommunitiesFrame, {
-        scaleStoppedFunc= function()
+        scaleStopFunc= function()
             self:Save().scale[CommunitiesMode_GetName()]= CommunitiesFrame:GetScale()
 
         end,

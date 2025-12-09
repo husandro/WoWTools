@@ -6562,7 +6562,16 @@
         "TRANSMOG_PURCHASE_OUTFIT_SLOT_TOOLTIP_DISABLED",
         "C_TransmogOutfitInfo",
         "TRANSMOG_PURCHASE_OUTFIT_SLOT",
-        "CURRENCY_TOTAL_CAP"
+        "CURRENCY_TOTAL_CAP",
+        "TransmogSituationMixin",
+        "TransmogWardrobeSituationsMixin",
+        "TRANSMOG_OUTFIT_NAME_DEFAULT",
+        "TRANSMOG_HIDE_UNASSIGNED_SLOTS",
+        "GameTooltip_ShowSimpleTooltip",
+        "OPEN_DYNAMIC_FLIGHT_TREE_TOOLTIP",
+        "SimpleTooltipConstants",
+        "TransmogCharacterMixin",
+        "TransmogAppearanceSlotMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -6581,4 +6590,8 @@
     ],
     "Lua.runtime.unicodeName": true,
     "Lua.type.weakUnionCheck": true,
+    "Lua.diagnostics.disable": [
+        "missing-parameter",
+        "redundant-parameter"
+    ],
 }

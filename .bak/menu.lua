@@ -32,7 +32,16 @@ GameTooltip_AddInstructionLine(tooltip, "Test Tooltip Instruction");--绿色
 GameTooltip_AddNormalLine(tooltip, "Test Tooltip Normal Line");--黄色
 GameTooltip_AddErrorLine(tooltip, "Test Tooltip Colored Line");--红色
 GameTooltip_AddColoredLine(tooltip, text, HIGHLIGHT_FONT_COLOR)--白色
-
+GameTooltip_ShowDisabledTooltip(tooltip, owner, text, tooltipAnchor)
+GameTooltip_ShowSimpleTooltip(tooltip, text, overrideColor, wrap, owner, point, offsetX, offsetY)
+GameTooltip_ShowSimpleTooltip(GameTooltip,
+	WoWTools_DataMixin.onlyChinese and '隐藏已忽略栏位' or TRANSMOG_HIDE_UNASSIGNED_SLOTS,
+	SimpleTooltipConstants.NoOverrideColor,
+	SimpleTooltipConstants.DoNotWrapText,
+	frame,
+	"ANCHOR_LEFT"
+)
+GameTooltip_ShowSimpleTooltip(GetAppropriateTooltip(), OPEN_DYNAMIC_FLIGHT_TREE_TOOLTIP, SimpleTooltipConstants.NoOverrideColor, SimpleTooltipConstants.DoNotWrapText, self, "ANCHOR_RIGHT");
 
 Blizzard_Menu 是一个用于创建上下文菜单和下拉菜单的新框架，是 UIDropDownMenu 的完全替代品。
 

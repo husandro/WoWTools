@@ -383,7 +383,7 @@ local function Init_WardrobeFrame()
         init_items_colllection(btn)
 
     end,
-    scaleStoppedFunc=function()
+    scaleStopFunc=function()
         update_frame()
     end,
     scaleRestFunc=function()

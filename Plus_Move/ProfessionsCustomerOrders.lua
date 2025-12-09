@@ -63,7 +63,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
         minW=825,
         minH=200,
         onShowFunc=true,
-        scaleStoppedFunc=function()
+        scaleStopFunc=function()
             local name= ProfessionsCustomerOrdersFrame:GetName()
             local scale= ProfessionsCustomerOrdersFrame:GetScale()
             if ProfessionsCustomerOrdersFrame.Form:IsShown() then

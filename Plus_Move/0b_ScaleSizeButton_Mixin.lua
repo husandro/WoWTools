@@ -258,16 +258,16 @@ local function Init_Point_Menu(self, root)
 --列表
     root:CreateDivider()
     local index=0
-    for name in pairs(Save().UIPanelWindows) do
+    for frameName in pairs(Save().UIPanelWindows) do
         index= index+1
         sub=root:CreateCheckbox(
-            (index<10 and ' ' or '')..index..') '..name,
+            (index<10 and ' ' or '')..index..') '..frameName,
         function(data)
             return Save().UIPanelWindows[data.name]
         end, function(data)
             Save().UIPanelWindows[data.name]= not Save().UIPanelWindows[data.name] and true or nil
             FrameOnShow_SetPoint(self, Save().UIPanelWindows[data.name])
-        end, {name=name})
+        end, {name=frameName})
         sub:SetTooltip(function(tooltip, desc)
             tooltip:AddLine(desc.data.name)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )
@@ -801,8 +801,8 @@ local function Set_OnMouseUp(self)
         Save_Frame_Size(self)--保存，大小
 
     elseif d=='LeftButton' then--保存，缩放
-        if self.scaleStoppedFunc then
-            self.scaleStoppedFunc(self)
+        if self.scaleStopFunc then
+            self.scaleStopFunc(self)
         end
         Save().scale[self.name]= target:GetScale()
     end
@@ -996,7 +996,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     btn.name= name
 
 --设置缩放
-    btn.scaleStoppedFunc= tab.scaleStoppedFunc--保存，缩放内容
+    btn.scaleStopFunc= tab.scaleStopFunc--保存，缩放内容
     btn.scaleUpdateFunc= tab.scaleUpdateFunc
     btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
     btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
@@ -1035,7 +1035,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
 
     WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=1})--设置颜色
 
-    btn:SetClampedToScreen(true)
+    --btn:SetClampedToScreen(true)
 
 
     btn.SOS = { --Scaler Original State

@@ -71,6 +71,7 @@ Plus_Move\2_Add_Button.lua
 Plus_Move\Professions.lua
 Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
+Plus_Move\Transmog.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
