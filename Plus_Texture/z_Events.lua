@@ -2439,11 +2439,13 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     self:HideTexture(TransmogFrame.CharacterPreview.ClearAllPendingButton.NormalTexture)
     WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'OnLoad', function(frame)
         WoWTools_ButtonMixin:AddMask(frame, nil, frame.Icon)
-        frame.Border:SetAlpha(0)
+        self:HideTexture(frame.Border)
     end)
     WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'SetIllusionSlotFrame', function(frame)
-        WoWTools_ButtonMixin:AddMask(frame.illusionSlotFrame, nil, frame.illusionSlotFrame.Icon)
-        frame.illusionSlotFrame.Border:SetAlpha(0)
+        if frame.illusionSlotFrame then
+            WoWTools_ButtonMixin:AddMask(frame.illusionSlotFrame, nil, frame.illusionSlotFrame.Icon)
+            self:HideTexture(frame.illusionSlotFrame.Border)
+        end
     end)
 
     --[[WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'Update', function(frame)
