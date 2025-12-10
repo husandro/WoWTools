@@ -6572,7 +6572,12 @@
         "SimpleTooltipConstants",
         "TransmogCharacterMixin",
         "TransmogAppearanceSlotMixin",
-        "TransmogSlotFlyoutDropdownMixin"
+        "TransmogSlotFlyoutDropdownMixin",
+        "TransmogWardrobeSetsMixin",
+        "TransmogWardrobeCustomSetsMixin",
+        "TransmogCustomSetModelMixin",
+        "TransmogSetModelMixin",
+        "TransmogSetBaseModelMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

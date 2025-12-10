@@ -3,9 +3,18 @@
 12.0才有 幻化
 这个有保护，注意操作
 TransmogWardrobeItemsMixin
-TransmogItemModelMixin
 TransmogWardrobeSetsMixin
 TransmogWardrobeCustomSetsMixin
+
+TransmogCharacterMixin
+
+TransmogSetBaseModelMixin
+TransmogItemModelMixin
+TransmogSetModelMixin
+TransmogCustomSetModelMixin
+
+TransmogWardrobeSituationsMixin
+TransmogSituationMixin
 ]]
 
 local function Save()
@@ -50,7 +59,7 @@ local function reset()
 end
 
 
---增加，按钮宽度，按钮 WoWToolsTransmogOutfitCollectionResizeButton 'WoWToolsTransmogCharacterPreviewResizeButton'
+--增加，按钮宽度，按钮 WoWToolsTransmogOutfitCollectionResizeButton WoWToolsTransmogCharacterPreviewResizeButton
 local function Create_ResizeButton(name, data)
     local btn= CreateFrame('Button', 'WoWToolsTransmog'..name..'ResizeButton', TransmogFrame[name], 'WoWToolsButtonTemplate')
 
@@ -133,6 +142,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 local function Init()
     if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
         ListTab.OutfitCollection.title= '外观方案'
@@ -140,6 +157,14 @@ local function Init()
     end
 
     TransmogFrame.HelpPlateButton:SetFrameLevel(WorldMapFrame.BorderFrame.TitleContainer:GetFrameLevel()+1)
+
+
+
+
+
+
+
+
 --左边
     TransmogFrame.OutfitCollection:SetPoint('BOTTOM')
 --方案，列表按钮
@@ -210,7 +235,17 @@ local function Init()
 
 
 
---中间 TransmogCharacterMixin
+
+
+
+
+
+
+
+
+
+
+--中间
     TransmogFrame.CharacterPreview:SetPoint('BOTTOM')
     TransmogFrame.CharacterPreview.Background:SetPoint('BOTTOMRIGHT')
     TransmogFrame.CharacterPreview.Gradients.GradientLeft:SetPoint('TOPLEFT')
@@ -261,13 +296,21 @@ local function Init()
         TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:set_icon()
     end)
 
+
+
+
+
+
+
+
+
 --右边
     TransmogFrame.WardrobeCollection:SetPoint('BOTTOMRIGHT')
     TransmogFrame.WardrobeCollection.TabContent:SetPoint('BOTTOMRIGHT')
     TransmogFrame.WardrobeCollection.TabContent.Background:SetPoint('BOTTOMRIGHT', -4, 4)
     TransmogFrame.WardrobeCollection.TabContent.Border:SetPoint('BOTTOMRIGHT', 8, -8)
 
---情景 TransmogWardrobeSituationsMixin TransmogSituationMixin
+--情景
     TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations:SetPoint('RIGHT', -43, 0)
     TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations:SetPoint('BOTTOM', 0, 43)
 
@@ -291,12 +334,30 @@ local function Init()
     TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.ApplyButton:SetPoint('BOTTOM', TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations, 0, 23)
     TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.ApplyButton:SetFrameLevel(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.ApplyButton:GetFrameLevel()+1)
 
+
+
+
+
+
+
+
+
+
+
 --增加，按钮宽度，按钮
     for name, data in pairs(ListTab) do
         Create_ResizeButton(name, data)
     end
 
     set_width()
+
+
+
+
+
+
+
+
 
     WoWTools_MoveMixin:Setup(TransmogFrame, {
         minW=830, minH=510,

@@ -1354,7 +1354,6 @@ function WoWTools_TextureMixin.Events:Blizzard_Channels()
     end)
     WoWTools_DataMixin:Hook(ChannelButtonMixin, 'OnLoad', function(btn)
         self:SetAlphaColor(btn.NormalTexture, true)
-        print(btn.NormalTexture)
     end)
 --新建，频道
     self:SetAlphaColor(CreateChannelPopup.Header.LeftBG, true)
@@ -2447,15 +2446,10 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
         end
     end)
     WoWTools_DataMixin:Hook(TransmogSlotFlyoutDropdownMixin, 'OnLoad', function(frame)
-        self:SetAlphaColor(frame.NormalTexture, true)
+        self:SetFrame(frame, {alpha=1})
     end)
 
-    --[[WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'Update', function(frame)
-       -- frame.Border:SetAlpha(frame.Border:GetAtlas()=='transmog-gearSlot-default' and 0 or 1)
-    end)]]
-
 --右边
-
     self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeUnassignedButton.NormalTexture)
     self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeEquippedButton.NormalTexture)
     self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider, true)
@@ -2471,10 +2465,14 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
         self:HideTexture(frame.Background)
         self:HideTexture(frame.Border)
     end)
-
+    WoWTools_DataMixin:Hook(TransmogSetBaseModelMixin, 'OnLoad', function(frame)
+        self:HideTexture(frame.Background)
+        self:HideTexture(frame.Border)
+    end)
 --情景
     self:SetCheckBox(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.EnabledToggle.Checkbox)
     self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations.Background)
+
 
     self:Init_BGMenu_Frame(TransmogFrame, {
         enabled=true,
