@@ -115,12 +115,11 @@ local function Init_Menu(self, root)
 
 --物品品质
     sub= root:CreateButton(
-        select(4, WoWTools_ItemMixin:GetColor(Save().sellItemQualiy))
-        ..format(
+        WoWTools_ItemMixin:GetColor(Save().sellItemQualiy, {text=format(
             CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
             WoWTools_DataMixin.onlyChinese and '品质' or PROFESSIONS_COLUMN_HEADER_QUALITY,
-            (WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..Save().sellItemQualiy..'_DESC']) or Save().sellItemQualiy)
-        ),
+            WoWTools_ItemMixin.QualityText[Save().sellItemQualiy] or Save().sellItemQualiy
+        )}),
     function()
         return MenuResponse.Open
     end)
@@ -131,8 +130,7 @@ local function Init_Menu(self, root)
 --物品品质 0, 8
     for quality= Enum.ItemQuality.Poor ,  Enum.ItemQuality.WoWToken do
         sub2=sub:CreateCheckbox(
-            select(4, WoWTools_ItemMixin:GetColor(quality))
-            ..(WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC']) or quality),
+            WoWTools_ItemMixin.QualityText[quality] or quality,
         function(data)
             return Save().sellItemQualiy== data.quality
         end, function(data)

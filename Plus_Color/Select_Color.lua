@@ -132,14 +132,12 @@ local function Init()
     size, x, y, n= 16, x+size, -15, 0
 
     for index = 0, Enum.ItemQualityMeta.NumValues - 1 do
-        local r,g,b= C_Item.GetItemQualityColor(index)
-
-       
+        local r,g,b= WoWTools_ItemMixin:GetColor(index)
         local text= r..g..b..1
         colorTab[text]= true
         local texture= Create_Texture(r,g,b,1)
         texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
-        texture.tooltip= WoWTools_TextMixin:CN(_G["ITEM_QUALITY" .. index.. "_DESC"])..'|nITEM_QUALITY' ..index.. '_DESC'
+        texture.tooltip= (WoWTools_ItemMixin.QualityText[index] or '')..'|nITEM_QUALITY' ..index.. '_DESC'
         y= y- size
     end
 

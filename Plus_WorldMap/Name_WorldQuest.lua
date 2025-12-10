@@ -1,9 +1,45 @@
 --世界地图任务
 
+local function Create_Pin(self)
+    self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
+    self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
+    self.worldQuestTypeTips:SetSize(30, 30)
+
+    self.rewardText= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 12)
+    self.rewardText:SetPoint('TOP', self, 'BOTTOM',0, 2)
+
+    self.Display.Icon:SetSize(18, 18)
+end
+
+
+
+
+
+local function Clear_Pin(self)
+    if self.worldQuestTypeTips then
+        self.worldQuestTypeTips:SetTexture(0)
+        self.rewardText:SetText('')
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     if not WoWToolsSave['Plus_WorldMap'].ShowWorldQues_Name then
         return
     end
+
 
     WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'RefreshVisuals', function(self)
         if WoWTools_FrameMixin:IsLocked(self) then
@@ -12,13 +48,11 @@ local function Init()
 
         local data= WoWTools_QuestMixin:GetRewardInfo(self.questID)
         if not data then
-            if self.Text then
-                self.Text:SetText('')
-            end
-            if self.worldQuestTypeTips then
-                self.worldQuestTypeTips:SetShown(false)
-            end
+            Clear_Pin(self)
             return
+
+        elseif not self.worldQuestTypeTips then
+            Create_Pin(self)
         end
 
         local text, texture
@@ -26,16 +60,11 @@ local function Init()
         if data.itemID then
             texture= data.texture
 
-            if data.itemLevel and data.itemLevel>1 then
-                text= data.itemLevel
-            end
-
             local itemEquipLoc, _, classID = select(4, C_Item.GetItemInfoInstant(data.itemID))
-            if classID==2 or classID==4 then
-                local hex= select(4, WoWTools_ItemMixin:GetColor(data.quality, {itemID=data.itemID}))
 
-                if hex and text then--物品，颜色
-                    text=hex..text..'|r'
+            if classID==2 or classID==4 then
+                if data.itemLevel and data.itemLevel>1 then
+                    text= WoWTools_ItemMixin:GetColor(data.quality, {itemID=data.itemID, text=data.itemLevel})
                 end
 
                 local setLevelUp
@@ -79,43 +108,28 @@ local function Init()
             texture= data.texture
         end
 
-
-        if self.Display and texture then
-            --SetPortraitToTexture(self.Display.Icon, texture)
-            self.Display.Icon:SetTexture(texture)
-            self.Display.Icon:SetSize(18, 18)
-        end
-
-
-        if not self.Text and text then
-            self.Text= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 12)
-            self.Text:SetPoint('TOP', self, 'BOTTOM',0, 2)
-        end
-        if self.Text then
-            self.Text:SetText(text or '')
-        end
-
-        local tagInfo
+        local atlas
         if self.worldQuestType and self.worldQuestType ~= Enum.QuestTagType.Normal  then
-            tagInfo= self.tagInfo or C_QuestLog.GetQuestTagInfo(self.questID)
+            local tagInfo= self.tagInfo or C_QuestLog.GetQuestTagInfo(self.questID)
+            if tagInfo then
+                local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID)
+                atlas= QuestUtil.GetWorldQuestAtlasInfo(self.questID, tagInfo, inProgress)--QuestUtils.lua (questID, tagInfo, inProgress)
+            end
         end
-        if tagInfo then
-            local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID)
 
-            local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.questID, tagInfo, inProgress)--QuestUtils.lua (questID, tagInfo, inProgress)
-            if not self.worldQuestTypeTips and atlas then
-                self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
-                self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
-                self.worldQuestTypeTips:SetSize(30, 30)
-            end
-            if atlas then
-                self.worldQuestTypeTips:SetAtlas(atlas)
-            end
+        if texture then
+            self.Display.Icon:SetTexture(texture)
         end
-        if self.worldQuestTypeTips then
-            self.worldQuestTypeTips:SetShown(tagInfo)
+        if atlas then
+            self.worldQuestTypeTips:SetAtlas(atlas)
+        else
+            self.worldQuestTypeTips:SetTexture(0)
         end
+
+       self.rewardText:SetText(text or '')
     end)
+
+
 
     Init=function()end
 end

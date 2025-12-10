@@ -194,8 +194,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         if tooltip.textLeft then
             tooltip.textLeft:SetText(textLeft or '')
             tooltip.Portrait:settings(portrait)
-
-            local r,g,b=  C_Item.GetItemQualityColor(entryInfo.quality or 1)
+            local r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             tooltip:Set_BG_Color(r,g,b, 0.15)
         end
 

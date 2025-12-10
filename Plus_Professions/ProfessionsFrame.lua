@@ -97,14 +97,10 @@ local function Init()
             self.texture:SetTexture(recipeInfo.icon and recipeInfo.icon>0 and recipeInfo.icon or 0)
         end
 
-        local r,g,b--颜色        
+--颜色
         if recipeInfo.learned or recipeInfo.isRecraf then
-            local link= recipeInfo.hyperlink
-            local quality= link and C_Item.GetItemQualityByID(link)
-            if quality then
-                r,g,b=C_Item.GetItemQualityColor(quality)
-            end
-            self.Label:SetTextColor(r or 1, g or 0.82, b or 0)
+            local r,g,b= WoWTools_ItemMixin:GetColor(nil, {itemLink=recipeInfo.hyperlink})
+            self.Label:SetTextColor(r, g, b)
         else
             self.Label:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
         end

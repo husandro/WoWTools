@@ -26,7 +26,10 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), WoWTools_TextMixin:GetEnabeleDisable(not Save().notSellJunk))
         if not Save().notSellJunk then
-            GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff626262'..(WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r'))
+            GameTooltip:AddLine(format(
+                WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY,
+                WoWTools_ItemMixin.QualityText[0]
+            ))
         end
         GameTooltip:Show()
     end

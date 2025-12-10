@@ -263,7 +263,10 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '品质：|cff626262粗糙' or format(PROFESSIONS_CRAFTING_QUALITY, '|cff626262'..ITEM_QUALITY0_DESC))
+        tooltip:AddLine(format(
+            WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY,
+            WoWTools_ItemMixin.QualityText[0]
+        ))
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
     end)
 

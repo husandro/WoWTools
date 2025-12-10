@@ -151,10 +151,10 @@ local function Init()
                     local sub= raceName
                     if rarity == 0 then
                         name= '|cffffffff'..name..'|r'
-                        sub= sub.."-|cffffffff"..(WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC).."|r"
+                        sub= sub.."-"..WoWTools_ItemMixin.QualityText[1]--普通
                     else
                         name='|cff0070dd'..name..'|r'
-                        sub= sub.."-|cff0070dd"..(WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC).."|r"
+                        sub= sub.."-"..WoWTools_ItemMixin.QualityText[3]--精良
                     end
                     btn.artifactName:SetText(name)
                     btn.artifactSubText:SetText(sub..' |cnGREEN_FONT_COLOR:'..completionCount..'|r')

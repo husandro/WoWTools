@@ -116,7 +116,7 @@ TypeTabs= {
         itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
         itemTexture= itemTexture or select(5, C_Item.GetItemInfoInstant(itemID))
 
-        r,g,b= C_Item.GetItemQualityColor(itemQuality or data.quality or 1)
+        r,g,b= WoWTools_ItemMixin:GetColor(itemQuality or data.quality)
 
 
         local bag, bank ,wow
@@ -217,7 +217,7 @@ TypeTabs= {
         local name, _, _, _, _, _, _, _, _, texture= C_Item.GetItemInfo(itemID)
         itemName= WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}) or itemID
         itemTexture= texture or select(5, C_Item.GetItemInfoInstant(itemID))
-        r,g,b= C_Item.GetItemQualityColor(data.quality or 1)
+        r,g,b= WoWTools_ItemMixin:GetColor(data.quality)
         if data.num>1 then
             count= WoWTools_DataMixin:MK(data.num, 3)..'|A:Banker:0:0|a'
         end
@@ -306,7 +306,7 @@ TypeTabs= {
             count= (wow>0 and '|cff00ccff'..wow..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or '')
                 ..(data.num>0 and WoWTools_DataMixin:MK(data.num, 3)..WoWTools_DataMixin.Icon.Player or '')
 
-            r,g,b= C_Item.GetItemQualityColor(info.quality or 1)
+            r,g,b= WoWTools_ItemMixin:GetColor(info.quality)
         end
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},

@@ -86,13 +86,7 @@ local function Get_Item(itemID)
 
 		name= WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID)) or ''
 
-		local nameText
-		local hex= itemQuality and select(4, C_Item.GetItemQualityColor(itemQuality)) or 'ffffffff'
-		if Save().nameShow then
-			nameText= '|c'..hex..name..'|r'
-		else
-			numText= '|c'..hex..numText..'|r'
-		end
+		local nameText= WoWTools_ItemMixin:GetColor(itemQuality, {text= Save().nameShow and name or numText})
 
 		if Save().toRightTrackText then--向右平移
 			text=(nameText and nameText..' ' or '')..numText
@@ -123,10 +117,13 @@ local function Get_Currency(currencyID, index)
 	local info, num2, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, index)
 
 	local text
+
+	currencyID= currencyID or (info and info.currencyID)
+
     if not info
+		or not currencyID
 		or info.isHeader
 		or not info.iconFileID
-
 		or (info.quantity==0 and not (canWeek or canEarned or canQuantity))
 	then
 		return
@@ -134,9 +131,13 @@ local function Get_Currency(currencyID, index)
 
     local name
 
-	if Save().nameShow then
-		local hex= currencyID and C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) and 'ff00d1ff' or select(4, C_Item.GetItemQualityColor(info and info.quality or 1))
-		name = format('|c%s%s|r', hex, WoWTools_TextMixin:CN(info.name))
+	if Save().nameShow and info.name then
+		name= WoWTools_TextMixin:CN(info.name)
+		if C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then
+			name= '|cff00d1ff'..name..'|r'
+		else
+			name= WoWTools_ItemMixin:GetColor(info.quality, {text=name})
+		end
 	end
 
 
@@ -684,7 +685,7 @@ local function Init_TrackButton()
 				Save().item[itemID] and
 				('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
 				or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
-				
+
 				itemLink or itemID
 			)
 			ClearCursor()

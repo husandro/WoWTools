@@ -282,7 +282,7 @@ local function Init_Menu_Sell(_, root)
 
     for quality= 0 , 4 do
         name= '|T236994:0|t'
-            ..WoWTools_ItemMixin.QalityText[quality]
+            ..WoWTools_ItemMixin.QualityText[quality]
             ..' #|cffffffff'..#tabs[quality]
 
         sub2= sub:CreateButton(

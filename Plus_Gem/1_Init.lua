@@ -36,14 +36,8 @@ end
 
 local CurTypeGemTab={}--当前，宝石，类型
 local function Get_Item_Color(itemLink)
-    local r,g,b
-    if itemLink then
-        local itemQuality= select(3, C_Item.GetItemInfo(itemLink))
-        if itemQuality then
-            r,g,b = C_Item.GetItemQualityColor(itemQuality)
-        end
-    end
-    return r or 1, g or 1, b or 1
+    local r,g,b= WoWTools_ItemMixin:GetColor(nil, {itemLink=itemLink})
+    return r,g,b
 end
 
 
@@ -726,7 +720,7 @@ local function Init_ItemSocketingFrame_Update()
             local atlas
             if gemLink then
                 if PlayerIsTimerunning() then
-                    local quality= C_Item.GetItemQualityByID(gemLink)--C_Item.GetItemQualityColor(quality)
+                    local quality= C_Item.GetItemQualityByID(gemLink)
                     atlas= WoWTools_DataMixin.Icon[quality]
                 else
                     local quality= C_TradeSkillUI.GetItemReagentQualityByItemInfo(gemLink) or C_TradeSkillUI.GetItemCraftedQualityByItemInfo(gemLink)

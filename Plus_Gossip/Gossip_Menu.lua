@@ -240,12 +240,10 @@ local function Init_Menu(self, root)
 
 --列表，PlayerChoiceFrame
     for spellID, rarity in pairs(Save().choice) do
-        local hex= select(4, C_Item.GetItemQualityColor(rarity))
-        local quality=(hex and '|c'..hex or '')..(WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..rarity..'_DESC']) or rarity)
-
         sub2=sub:CreateCheckbox(
             WoWTools_SpellMixin:GetName(spellID)
-            ..quality,
+            ..' '
+            ..(WoWTools_ItemMixin.QualityText[rarity] or ''),
         function(data)
             return Save().choice[data.spellID]
         end, function(data)

@@ -6603,6 +6603,8 @@
     "Lua.type.weakUnionCheck": true,
     "Lua.diagnostics.disable": [
         "missing-parameter",
-        "redundant-parameter"
+        "redundant-parameter",
+        "inject-field",
+        "undefined-field"
     ],
 }

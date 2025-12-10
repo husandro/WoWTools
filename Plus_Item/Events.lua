@@ -260,7 +260,7 @@ function WoWTools_ItemMixin.Events:Blizzard_ItemButton()
         if C_Item.IsDecorItem(itemIDOrLink) then
             local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemIDOrLink, true)
             if entryInfo and entryInfo.quality then
-                local r,g,b= C_Item.GetItemQualityColor(entryInfo.quality)
+                local r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
                 btn.IconOverlay:SetVertexColor(r, g, b)
             end
         end

@@ -189,9 +189,8 @@ local function Init_Sell_Item_Button()
     end
 
     AuctionHouseButton.Text:SetText(
-        select(4, WoWTools_ItemMixin:GetColor(Save().sellItemQualiy))
-        ..(index-1)
-        )
+        WoWTools_ItemMixin:GetColor(Save().sellItemQualiy, {text=index-1})
+    )
 end
 
 

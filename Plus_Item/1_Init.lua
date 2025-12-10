@@ -132,16 +132,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 category= WoWTools_ItemMixin.Category,
             })
 
-            WoWTools_ItemMixin.QalityText= {
-                [0]= '|c'..select(4, C_Item.GetItemQualityColor(0))..(WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r',
-                [1]= '|c'..select(4, C_Item.GetItemQualityColor(1))..(WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC)..'|r',
-                [2]= '|c'..select(4, C_Item.GetItemQualityColor(2))..( WoWTools_DataMixin.onlyChinese and '优秀' or ITEM_QUALITY2_DESC)..'|r',
-                [3]= '|c'..select(4, C_Item.GetItemQualityColor(3))..(WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC)..'|r',
-                [4]= '|c'..select(4, C_Item.GetItemQualityColor(4))..(WoWTools_DataMixin.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r',
-                [5]= '|c'..select(4, C_Item.GetItemQualityColor(5))..(WoWTools_DataMixin.onlyChinese and '传说' or ITEM_QUALITY5_DESC)..'|r',
-                [6]= '|c'..select(4, C_Item.GetItemQualityColor(6))..(WoWTools_DataMixin.onlyChinese and '神器' or ITEM_QUALITY6_DESC)..'|r',
-                [7]= '|c'..select(4, C_Item.GetItemQualityColor(7))..(WoWTools_DataMixin.onlyChinese and '传家宝' or ITEM_QUALITY7_DESC)..'|r',
-                [8]= '|c'..select(4, WoWTools_ItemMixin:GetColor(8))..(WoWTools_DataMixin.onlyChinese and '时光徽章' or ITEM_QUALITY8_DESC)..'|r',
+            WoWTools_ItemMixin.QualityText= {
+                [0]= WoWTools_ItemMixin:GetColor(0, {text=WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC}),
+                [1]= WoWTools_ItemMixin:GetColor(1, {text=WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC}),
+                [2]= WoWTools_ItemMixin:GetColor(2, {text=WoWTools_DataMixin.onlyChinese and '优秀' or ITEM_QUALITY2_DESC}),
+                [3]= WoWTools_ItemMixin:GetColor(3, {text=WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC}),
+                [4]= WoWTools_ItemMixin:GetColor(4, {text=WoWTools_DataMixin.onlyChinese and '史诗' or ITEM_QUALITY4_DESC}),
+                [5]= WoWTools_ItemMixin:GetColor(5, {text=WoWTools_DataMixin.onlyChinese and '传说' or ITEM_QUALITY5_DESC}),
+                [6]= WoWTools_ItemMixin:GetColor(6, {text=WoWTools_DataMixin.onlyChinese and '神器' or ITEM_QUALITY6_DESC}),
+                [7]= WoWTools_ItemMixin:GetColor(7, {text=WoWTools_DataMixin.onlyChinese and '传家宝' or ITEM_QUALITY7_DESC}),
+                [8]= WoWTools_ItemMixin:GetColor(8, {text=WoWTools_DataMixin.onlyChinese and '时光徽章' or ITEM_QUALITY8_DESC}),
              }
 
             if Save().disabled then

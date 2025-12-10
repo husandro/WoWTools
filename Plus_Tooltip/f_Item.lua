@@ -466,7 +466,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     tooltip:AddDoubleLine(
         format(
             NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY),
-            '|cffffffff'..WoWTools_ItemMixin.QalityText[entryInfo.quality or 1]..'|r'
+            '|cffffffff'..WoWTools_ItemMixin.QualityText[entryInfo.quality or 1]..'|r'
         ),
         '|T'..entryInfo.iconTexture..':23|t|cffffffff'..entryInfo.iconTexture
     )
@@ -535,11 +535,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         Set_Value(tooltip)
     end
 
-    local r, g, b, col= 1,1,1,WoWTools_DataMixin.Player.col
-    if itemQuality then
-        r, g, b, col= C_Item.GetItemQualityColor(itemQuality)
-        col=col and '|c'..col
-    end
+    local r, g, b, col= WoWTools_ItemMixin:GetColor(itemQuality)
 
     tooltip:AddLine(' ')
 
@@ -594,8 +590,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         if entryInfo then
             textLeft, portrait= self:Set_HouseItem(tooltip, entryInfo)
             if entryInfo.quality then
-                r, g, b, col=  C_Item.GetItemQualityColor(entryInfo.quality)
-                col= '|c'..col
+                r, g, b, col= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             end
         end
 

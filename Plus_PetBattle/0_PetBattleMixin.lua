@@ -67,19 +67,15 @@ function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner,
             end
             if numCollected and numCollected>0 and limit and limit>0 then
                 local text2
-                for index= 1 ,numOwned do
+                for index= 1, numOwned do
                     local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
                     if speciesID2==speciesID and petID and level then
                         local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                        local col= rarity and select(4, C_Item.GetItemQualityColor(rarity-1))
-                        if col then
-                            text2= text2 and text2..' ' or ''
-                            text2= text2..'|c'..col..level..'|r'
-                        end
+                        text2= text2 and text2..' ' or ''
+                        text2= text2..WoWTools_ItemMixin:GetColor(rarity, {text=level})
                     end
                 end
                 CollectedNum= text2
-
             end
         end
         local isCollectedAll--是否已全部收集

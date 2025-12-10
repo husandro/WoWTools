@@ -349,7 +349,7 @@ local function Set_Item_Gem(self, link, isLeftSlot)
                 end
                 local atlas
                 if gemID then
-                    local quality= C_Item.GetItemQualityByID(gemID)--C_Item.GetItemQualityColor(quality)
+                    local quality= C_Item.GetItemQualityByID(gemID)
                     atlas= WoWTools_DataMixin.Icon[quality]
                 end
                 frame.Slot:SetAtlas(atlas or 'character-emptysocket')
@@ -617,10 +617,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
         end
         btn.upgradeItemText.tips= upgradeItem
         local quality = GetInventoryItemQuality(unit, slot)--颜色
-        local hex = quality and select(4, C_Item.GetItemQualityColor(quality))
-        if hex then
-            upgradeItemText= '|c'..hex..upgradeItemText..'|r'
-        end
+        upgradeItemText= WoWTools_ItemMixin:GetColor(quality, {text=upgradeItemText})
     end
     if  btn.upgradeItemText then--"升级：%s %s/%s"
         btn.upgradeItemText:SetText(upgradeItemText or '')

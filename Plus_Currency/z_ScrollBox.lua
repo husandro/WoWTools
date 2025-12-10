@@ -141,8 +141,8 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 
 --其它
 	else
-		local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
-		label:SetTextColor(r or 1, g or 1, b or 1)
+		local r, g, b= WoWTools_ItemMixin:GetColor(info and info.quality)
+		label:SetTextColor(r, g, b)
 	end
 
 --战团总数量，不包含自已

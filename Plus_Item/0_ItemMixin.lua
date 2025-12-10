@@ -1,20 +1,10 @@
 WoWTools_ItemMixin={
     Events={},
     Frames={},
-    QalityText={},
+    QualityText={},
 }
 --[[
-WoWTools_ItemMixin.QalityText= {
-    [0]= select(4, C_Item.GetItemQualityColor(0))..(WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r',
-    [1]= select(4, C_Item.GetItemQualityColor(1))..(WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC)..'|r',
-    [2]= select(4, C_Item.GetItemQualityColor(2))..( WoWTools_DataMixin.onlyChinese and '优秀' or ITEM_QUALITY2_DESC)..'|r',
-    [3]= select(4, C_Item.GetItemQualityColor(3))..(WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC)..'|r',
-    [4]= select(4, C_Item.GetItemQualityColor(4))..(WoWTools_DataMixin.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r',
-    [5]= select(4, C_Item.GetItemQualityColor(5))..(WoWTools_DataMixin.onlyChinese and '传说' or ITEM_QUALITY5_DESC)..'|r',
-    [6]= select(4, C_Item.GetItemQualityColor(6))..(WoWTools_DataMixin.onlyChinese and '神器' or ITEM_QUALITY6_DESC)..'|r',
-    [7]= select(4, C_Item.GetItemQualityColor(7))..(WoWTools_DataMixin.onlyChinese and '传家宝' or ITEM_QUALITY7_DESC)..'|r',
-    [8]= select(4, WoWTools_ItemMixin:GetColor(8))..(WoWTools_DataMixin.onlyChinese and '时光徽章' or ITEM_QUALITY8_DESC)..'|r',
-    }
+WoWTools_ItemMixin.QualityText= {}
     
 WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
 WoWTools_ItemMixin:GetItemStats(link)--取得，物品，次属性，表
@@ -447,14 +437,22 @@ end
 function WoWTools_ItemMixin:GetColor(quality, tab)
     tab= tab or {}
 
-    quality= quality
-        or ((tab.itemID or tab.itemLink)
-            and C_Item.GetItemQualityByID(tab.itemLink or tab.itemID)
-        )
-        or (tab.itemLocation and C_Item.GetItemQuality(tab.itemLocation))
+    local itemID= tab.itemLink or tab.itemID or tab.itemName
+    local itemLocation= tab.itemLocation
+    local text= tab.text
+    --local texture= tab.texture
 
-    local color= ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[Enum.ItemQuality.Common]
-    return color.r, color.g, color.b, color.hex, color, quality
+    quality= quality
+        or (itemID and C_Item.GetItemQualityByID(itemID))
+        or (itemLocation and C_Item.GetItemQuality(itemLocation))
+        or 1
+    --local color= ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[Enum.ItemQuality.Common]
+    local color= C_ColorOverrides.GetColorForQuality(quality) or C_ColorOverrides.GetColorForQuality(Enum.ItemQuality.Common)
+    if text then
+        return color:WrapTextInColorCode(tab.text)
+    else
+        return color.r, color.g, color.b, color:GenerateHexColorMarkup(), color, quality
+    end
 end
 
 
@@ -743,11 +741,4 @@ function WoWTools_ItemMixin:GetWoWCount(itemID, checkGUID, checkRegion)--WoWTool
         end
     end
     return all, numPlayer
-end
-
-
-
-function WoWTools_ItemMixin:GetColor(quality)
-    quality= quality or 1
-    return ColorManager.GetColorDataForItemQuality(quality)
 end

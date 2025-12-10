@@ -231,13 +231,15 @@ function WoWTools_TooltipMixin.Frames:WarbandSceneEntryMixin()
             frame.warbandSceneInfo.sourceType and 'sourceType|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.warbandSceneInfo.sourceType
         )
 
-        local quality= frame.warbandSceneInfo.quality or 1
-        local atlas= frame.warbandSceneInfo.textureKit or ''
-
-        tooltip:AddDoubleLine(
-            '|A:'..atlas..':'..self.iconSize..':'..self.iconSize..'|a'..atlas,
-            '|c'..select(4,  C_Item.GetItemQualityColor(quality))..WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC'] or '')
-        )
+        local quality= frame.warbandSceneInfo.quality
+        local atlas= frame.warbandSceneInfo.textureKit
+        local text=WoWTools_ItemMixin.QualityText[quality]
+        if text then
+            tooltip:AddLine(
+                (atlas and '|A:'..atlas..':'..self.iconSize..':'..self.iconSize..'|a'..atlas or '')
+                ..text
+            )
+        end
 
         WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
     end)

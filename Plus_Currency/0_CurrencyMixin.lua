@@ -191,7 +191,7 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
         ..(
             info.isAccountTransferable and '|cff00ccff'
             or info.isAccountWide and '|cffff8000'
-            or ('|c'..select(4, C_Item.GetItemQualityColor(info.quality or 1)))
+            or select(4, WoWTools_ItemMixin:GetColor(info.quality))
         )
 --名称
         ..WoWTools_TextMixin:CN(info.name)

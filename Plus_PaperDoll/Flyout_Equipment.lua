@@ -46,24 +46,19 @@ local function setFlyout(button, itemLink, slot)
             button.level= WoWTools_LabelMixin:Create(button)
             button.level:SetPoint('BOTTOM')
         end
-        
+
         dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
 
         if dateInfo and dateInfo.text[itemLevelStr] then
             level= tonumber(dateInfo.text[itemLevelStr])
         end
-        level= level or itemLink and C_Item.GetDetailedItemLevelInfo(itemLink)
-        text= level
-        if text then
-            local itemQuality = C_Item.GetItemQualityByID(itemLink)
-            if itemQuality then
-                local hex = select(4, C_Item.GetItemQualityColor(itemQuality))
-                if hex then
-                    text= '|c'..hex..text..'|r'
-                end
-            end
+
+        level= level or (itemLink and C_Item.GetDetailedItemLevelInfo(itemLink))
+        if level then
+            text= WoWTools_ItemMixin:GetColor(nil, {itemLink=itemLink, text=level})
         end
     end
+
     if button.level then
         button.level:SetText(text or '')
     end
