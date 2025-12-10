@@ -6571,7 +6571,8 @@
         "OPEN_DYNAMIC_FLIGHT_TREE_TOOLTIP",
         "SimpleTooltipConstants",
         "TransmogCharacterMixin",
-        "TransmogAppearanceSlotMixin"
+        "TransmogAppearanceSlotMixin",
+        "TransmogSlotFlyoutDropdownMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
