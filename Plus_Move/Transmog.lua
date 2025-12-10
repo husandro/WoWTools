@@ -61,7 +61,12 @@ local function Create_ResizeButton(name, data)
 
     btn:SetPoint('BOTTOMRIGHT', TransmogFrame[name], 7, -2)
     btn:SetSize(12,23)
-    btn:SetNormalAtlas(name=='CharacterPreview' and 'uitools-icon-chevron-left' or 'uitools-icon-chevron-right')
+    if name=='CharacterPreview' then
+        btn:SetNormalAtlas('uitools-icon-chevron-left')
+        btn:SetFrameLevel(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:GetFrameLevel()+1)
+    else
+        btn:SetNormalAtlas('uitools-icon-chevron-right')
+    end
     btn:SetHighlightTexture(0)
     WoWTools_TextureMixin:SetAlphaColor(btn:GetNormalTexture(), nil, nil, btn.alpha)
 
