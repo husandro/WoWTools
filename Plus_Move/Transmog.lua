@@ -56,19 +56,30 @@ local function Create_ResizeButton(name, data)
 
     btn.minValue= data.minValue
     btn.name= name
-
-    btn:SetPoint('BOTTOMRIGHT', TransmogFrame[name], 7, 0)
-    btn:SetHighlightTexture(0)
-    btn:SetNormalAtlas('uitools-icon-chevron-right')
-    btn:SetSize(12,23)
     btn.tooltip= data.title
+    btn.alpha= 0.2
+
+    btn:SetPoint('BOTTOMRIGHT', TransmogFrame[name], 7, -2)
+    btn:SetSize(12,23)
+    btn:SetNormalAtlas(name=='CharacterPreview' and 'uitools-icon-chevron-left' or 'uitools-icon-chevron-right')
+    btn:SetHighlightTexture(0)
+    WoWTools_TextureMixin:SetAlphaColor(btn:GetNormalTexture(), nil, nil, btn.alpha)
+
+
     btn:SetScript('OnLeave', function(self)
-        self:GetNormalTexture():SetAlpha(0.15)
+        self:GetNormalTexture():SetAlpha(self.alpha)
+        GameTooltip:Hide()
     end)
     btn:SetScript('OnEnter', function(self)
         self:GetNormalTexture():SetAlpha(1)
+        GameTooltip_ShowSimpleTooltip(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2..
+            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH, self.tooltip)
+            ..WoWTools_DataMixin.Icon.left,
+            nil, nil, self
+        )
     end)
-    WoWTools_TextureMixin:SetAlphaColor(btn:GetNormalTexture(), nil, nil, 0.15)
+
     function btn.set_width(self)
         self:SetScript('OnUpdate', nil)
         Save()['Transmog'..self.name..'Width']= math.modf(self:GetParent():GetWidth())
