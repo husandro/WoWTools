@@ -6,6 +6,8 @@ TransmogWardrobeItemsMixin
 TransmogWardrobeSetsMixin
 TransmogWardrobeCustomSetsMixin
 
+ShowEquippedGearSpellFrameMixin
+
 TransmogCharacterMixin
 
 TransmogSetBaseModelMixin
@@ -22,39 +24,31 @@ local function Save()
 end
 
 local ListTab={
-    OutfitCollection= {minValue=83, rest=312, title=TRANSMOG_OUTFIT_NAME_DEFAULT},--外观方案
-    CharacterPreview= {minValue=300, rest=883, title=MODEL},--模型
+    OutfitCollection= {minValue= 83, rest=312, title=TRANSMOG_OUTFIT_NAME_DEFAULT},--外观方案
+    CharacterPreview= {minValue=300, rest=657, title=MODEL},--模型
 }
 
-local function updata()
+local function Set_TransmogWidth(onlyName)
     if not WoWTools_FrameMixin:IsLocked(TransmogFrame) then
-        if TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:IsVisible() then
-            TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:Refresh()
-        elseif TransmogFrame.WardrobeCollection.TabContent.SetsFrame:IsVisible() then
-            TransmogFrame.WardrobeCollection.TabContent.SetsFrame:RefreshCollectionEntries()
-        elseif TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame:IsVisible() then
-            TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame:RefreshCollectionEntries()
-        end
-    end
-end
-
-local function set_width()
-    if not WoWTools_FrameMixin:IsLocked(TransmogFrame) then
-        for name, data in pairs(ListTab) do
-            TransmogFrame[name]:SetWidth(Save()['Transmog'..name..'Width'] or data.rest)
+        if onlyName then
+            TransmogFrame[onlyName]:SetWidth(Save()['Transmog'..onlyName..'Width'] or ListTab[onlyName].rest)
+        else
+            for name, data in pairs(ListTab) do
+                TransmogFrame[name]:SetWidth(Save()['Transmog'..name..'Width'] or data.rest)
+            end
         end
     end
 end
 
 
-local function reset()
-     for name in pairs(ListTab) do
+local function Rest_Size()
+    for name in pairs(ListTab) do
         Save()['Transmog'..name..'Width']= nil
     end
     if not WoWTools_FrameMixin:IsLocked(TransmogFrame) then
         TransmogFrame:SetSize(1618, 883)
-        set_width()
-        updata()
+        Set_TransmogWidth()
+        WoWTools_CollectionMixin:Refresh_TransmogItems()
     end
 end
 
@@ -96,7 +90,7 @@ local function Create_ResizeButton(name, data)
 
     function btn.set_width(self)
         self:SetScript('OnUpdate', nil)
-        Save()['Transmog'..self.name..'Width']= math.modf(self:GetParent():GetWidth())
+        Save()['Transmog'..self.name..'Width']= math.floor(self:GetParent():GetWidth())
         if self._eventOwner then
             EventRegistry:UnregisterCallback('PLAYER_REGEN_DISABLED', self._eventOwner)
             self._eventOwner=nil
@@ -109,7 +103,7 @@ local function Create_ResizeButton(name, data)
     end)
     btn:SetScript('OnMouseUp', function(self)
         self:set_width()
-        updata()
+        WoWTools_CollectionMixin:Refresh_TransmogItems()
         ResetCursor()
     end)
     btn:SetScript('OnMouseDown', function(self)
@@ -129,7 +123,8 @@ local function Create_ResizeButton(name, data)
             local w2= w- (x- GetCursorPosition())*scale
             w2= math.min(w2, TransmogFrame:GetWidth()/2)
             w2= math.max(w2, self.minValue)
-            p:SetWidth(math.modf(w2))
+            w2= math.floor(w2)
+            p:SetWidth(w2)
         end)
     end)
 end
@@ -154,6 +149,9 @@ local function Init()
     if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
         ListTab.OutfitCollection.title= '外观方案'
         ListTab.CharacterPreview.title= '模型'
+    end
+    for name, data in pairs(ListTab) do
+        data.rest= math.floor(TransmogFrame[name]:GetWidth())
     end
 
     TransmogFrame.HelpPlateButton:SetFrameLevel(WorldMapFrame.BorderFrame.TitleContainer:GetFrameLevel()+1)
@@ -181,12 +179,11 @@ local function Init()
         frame.OutfitButton.SelectedPurple:SetPoint('RIGHT')
         frame.OutfitButton.TextContent:SetPoint('RIGHT', -10, 0)
     end)
-
 --保存外观方案按钮
     TransmogFrame.OutfitCollection.SaveOutfitButton:ClearAllPoints()
     TransmogFrame.OutfitCollection.SaveOutfitButton:SetPoint('BOTTOM', 9, 9)
     TransmogFrame.OutfitCollection.SaveOutfitButton:SetText(WoWTools_DataMixin.onlyChinese and '保存' or SAVE)
-    TransmogFrame.OutfitCollection.SaveOutfitButton:SetWidth(TransmogFrame.OutfitCollection.SaveOutfitButton:GetTextWidth()+20)
+    TransmogFrame.OutfitCollection.SaveOutfitButton:SetWidth(TransmogFrame.OutfitCollection.SaveOutfitButton:GetTextWidth()+24)
 --移动，购买外观方案栏位
     TransmogFrame.OutfitCollection.PurchaseOutfitButton:ClearAllPoints()
     TransmogFrame.OutfitCollection.PurchaseOutfitButton:SetPoint('RIGHT', TransmogFrame.OutfitCollection.SaveOutfitButton, 'LEFT')
@@ -227,10 +224,10 @@ local function Init()
     TransmogFrame.OutfitCollection.OutfitList:SetPoint('BOTTOM', TransmogFrame.OutfitCollection.SaveOutfitButton, 'TOP', 0, 9)
     TransmogFrame.OutfitCollection.DividerBar:SetPoint('BOTTOMRIGHT', 2, 0)
 --分割线
-    TransmogFrame.OutfitCollection.OutfitList.DividerTop:SetPoint('RIGHT', -9, 0)
-    TransmogFrame.OutfitCollection.OutfitList.DividerTop:SetPoint('LEFT')
-    TransmogFrame.OutfitCollection.OutfitList.DividerBottom:SetPoint('RIGHT', -9, 0)
-    TransmogFrame.OutfitCollection.OutfitList.DividerBottom:SetPoint('LEFT')
+    TransmogFrame.OutfitCollection.OutfitList.DividerTop:SetPoint('RIGHT', -26, 0)
+    TransmogFrame.OutfitCollection.OutfitList.DividerTop:SetPoint('LEFT', 13, 0)
+    TransmogFrame.OutfitCollection.OutfitList.DividerBottom:SetPoint('RIGHT', -26, 0)
+    TransmogFrame.OutfitCollection.OutfitList.DividerBottom:SetPoint('LEFT', 13, 0)
 
 
 
@@ -295,7 +292,28 @@ local function Init()
     C_Timer.After(0.3, function()
         TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:set_icon()
     end)
+--自定义套装 <Anchor point="TOPLEFT" x="26" y="-72"/> <Anchor point="BOTTOMRIGHT" x="-26" y="10"/>
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.PagedContent:SetPoint('TOPLEFT', 26, -26)
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.PagedContent:SetPoint('BOTTOMRIGHT', -26, 10)
+--新增自定义套装
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton:ClearAllPoints()
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton:SetPoint('BOTTOMRIGHT', -28, 13)
 
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton:SetText('')
+    --TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton:SetWidth(TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton:GetHeight())
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton:SetSize(32,32)
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton.texture= TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton:CreateTexture(nil, 'BORDER')
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton.texture:SetPoint('CENTER')
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton.texture:SetSize(16,16)
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton.texture:SetAtlas('transmog-icon-add')
+    WoWTools_DataMixin:Hook(TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton, 'SetEnabled', function(frame, enabled)
+        frame.texture:SetDesaturated(not enabled)
+    end)
+    TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.NewCustomSetButton:HookScript('OnEnter', function(frame)
+        if frame:IsEnabled() then
+            GameTooltip_ShowSimpleTooltip(GameTooltip, WoWTools_DataMixin.onlyChinese and '新增自定义套装' or TRANSMOG_CUSTOM_SET_NEW, nil, nil, frame, 'ANCHOR_RIGHT')
+        end
+    end)
 
 
 
@@ -349,7 +367,7 @@ local function Init()
         Create_ResizeButton(name, data)
     end
 
-    set_width()
+    Set_TransmogWidth()
 
 
 
@@ -361,16 +379,17 @@ local function Init()
 
     WoWTools_MoveMixin:Setup(TransmogFrame, {
         minW=830, minH=510,
-    sizeRestFunc=function()
-        reset()
-    end,
+
     --sizeStopFunc=function()
     onShowFunc=true,
     scaleStopFunc=function()
-        updata()
+        WoWTools_CollectionMixin:Refresh_TransmogItems()
     end,
     sizeUpdateFunc=function()
-        updata()
+        WoWTools_CollectionMixin:Refresh_TransmogItems()
+    end,
+    sizeRestFunc=function()
+        Rest_Size()
     end,
     addMenu=function(_, root)
         root= root:CreateButton(WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH, function() return MenuResponse.Open end)
@@ -384,8 +403,8 @@ local function Init()
                     return Save()['Transmog'..desc.data.name..'Width'] or desc.data.rest
                 end, setValue=function(value, _, desc)
                     Save()['Transmog'..desc.data.name..'Width']=  value
-                    set_width()
-                    updata()
+                    Set_TransmogWidth(desc.data.name)
+                    WoWTools_CollectionMixin:Refresh_TransmogItems()
                 end,
                 name=data.title,
                 minValue=data.minValue,
@@ -396,7 +415,7 @@ local function Init()
         end
 
         root:CreateSpacer()
-        root:CreateButton(WoWTools_DataMixin.onlyChinese and '重置' or RESET, reset)
+        root:CreateButton(WoWTools_DataMixin.onlyChinese and '重置' or RESET, Rest_Size)
     end})
 
     Init=function()end

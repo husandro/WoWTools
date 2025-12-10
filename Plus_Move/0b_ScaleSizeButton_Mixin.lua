@@ -78,7 +78,10 @@ local function Save_Frame_Size(self)
     if self.sizeStopFunc ~= nil then
         self.sizeStopFunc(self)
     else
-        Save().size[self.name]= {self:GetParent():GetSize()}
+        local w, h= self:GetParent():GetSize()
+        w= math.modf(w)
+        h= math.modf(h)
+        Save().size[self.name]= {w, h}
     end
 end
 

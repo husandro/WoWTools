@@ -1,10 +1,11 @@
-local P_Save={}
+local P_Save={
     --hideHeirloom= true,--传家宝
     --hideSets= true,--套装, 幻化, 界面
     --hideItems= true,--物品, 幻化, 界面
     --Heirlooms_Class_Scale=1,
     --Wardrober_Items_Labels_Scale=1, 
-
+    hideTransmogModelName= not WoWTools_DataMixin.Player.husandro,
+}
 local function Save()
     return WoWToolsSave['Plus_Collection'] or {}
 end

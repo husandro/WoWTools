@@ -1,6 +1,20 @@
 WoWTools_CollectionMixin={}
 
 
+function WoWTools_CollectionMixin:Refresh_TransmogItems()
+    if not WoWTools_FrameMixin:IsLocked(TransmogFrame) then
+        if TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:IsVisible() then
+            TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:Refresh()
+
+        elseif TransmogFrame.WardrobeCollection.TabContent.SetsFrame:IsVisible() then
+            TransmogFrame.WardrobeCollection.TabContent.SetsFrame:RefreshCollectionEntries()
+
+        elseif TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame:IsVisible() then
+            TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame:RefreshCollectionEntries()
+        end
+    end
+end
+
 
 function WoWTools_CollectionMixin:Mount(mountID, itemID)--坐骑, 收集数量
     if not mountID and itemID then

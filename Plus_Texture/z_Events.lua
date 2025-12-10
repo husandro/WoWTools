@@ -2415,11 +2415,13 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     self:HideTexture(TransmogFrame.OutfitCollection.PurchaseOutfitButton.NormalTexture)
     self:HideTexture(TransmogFrame.OutfitCollection.MoneyFrame.Background)
     self:SetScrollBar(TransmogFrame.OutfitCollection.OutfitList)
---左边，列表
-    self:HideTexture(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.Border)
     self:SetAlphaColor(TransmogFrame.OutfitCollection.DividerBar, true)
+--左边
+--ShowEquippedGearSpellFrameMixin
+    self:SetAlphaColor(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button:GetHighlightTexture(), true)
+    self:HideTexture(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.Border)
     WoWTools_ButtonMixin:AddMask(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button, false, TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.Icon)
-    self:SetAlphaColor(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.HighlightTexture, true)
+--列表
     WoWTools_DataMixin:Hook(TransmogOutfitEntryMixin, 'OnLoad', function(frame)
         self:HideTexture(frame.OutfitIcon.Border)
         WoWTools_ButtonMixin:AddMask(frame.OutfitIcon, false, frame.OutfitIcon.Icon)
@@ -2434,6 +2436,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientLeft)
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientRight)
     self:HideTexture(TransmogFrame.CharacterPreview.ClearAllPendingButton.NormalTexture)
+    self:SetAlphaColor(TransmogFrame.CharacterPreview.ClearAllPendingButton.HighlightTexture, true)
     self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.Border, true)
     WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'OnLoad', function(frame)
         WoWTools_ButtonMixin:AddMask(frame, nil, frame.Icon)
@@ -2450,9 +2453,6 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     end)
 
 --右边
-    self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeUnassignedButton.NormalTexture)
-    self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeEquippedButton.NormalTexture)
-    self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider, true)
     for _, tabID in pairs(TransmogFrame.WardrobeCollection:GetTabSet()) do
         local btn= TransmogFrame.WardrobeCollection:GetTabButton(tabID)
         if btn then
@@ -2461,14 +2461,22 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
             self:HideTexture(btn.Right)
         end
     end
+
+--物品
+    self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeUnassignedButton.NormalTexture)
+    self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeEquippedButton.NormalTexture)
+    self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider, true)
     WoWTools_DataMixin:Hook(TransmogItemModelMixin, 'OnLoad', function(frame)
         self:HideTexture(frame.Background)
         self:HideTexture(frame.Border)
     end)
+
+--套装，自定义套装 Model TransmogSetModelMixin TransmogCustomSetModelMixin
     WoWTools_DataMixin:Hook(TransmogSetBaseModelMixin, 'OnLoad', function(frame)
         self:HideTexture(frame.Background)
         self:HideTexture(frame.Border)
     end)
+
 --情景
     self:SetCheckBox(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.EnabledToggle.Checkbox)
     self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations.Background)
@@ -2478,8 +2486,11 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
         enabled=true,
         alpha=1,
         settings=function(_, texture, alpha)
-            alpha= texture and 0 or alpha or 1
-            local a2= texture and 0 or math.min(alpha or 0.5)
+            alpha= alpha or 1
+
+            local a2= texture and 0 or math.min(alpha, 0.5)
+            alpha= texture and 0 or alpha
+
             TransmogFrame.OutfitCollection.Background:SetAlpha(alpha)
             TransmogFrame.OutfitCollection.DividerBar:SetAlpha(alpha)
             TransmogFrame.OutfitCollection.OutfitList.DividerTop:SetAlpha(a2)
