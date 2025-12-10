@@ -124,19 +124,16 @@ local function Init()
             local setInfo = C_TransmogSets.GetSetInfo(self.elementData.set.setID)
             name= setInfo and setInfo.name
 
-            local isCollected= self.elementData.set.collected
             if name then
                 if not waitingOnQuality then
                     local setQuality = (numTotalSlots > 0 and totalQuality > 0) and Round(totalQuality / numTotalSlots) or Enum.ItemQuality.Common
                     local colorData = ColorManager.GetColorDataForItemQuality(setQuality)
-                    if not isCollected  then
-                        name= DISABLED_FONT_COLOR:WrapTextInColorCode(name)
-                    elseif colorData then
+                    if colorData then
                         name= colorData.color:WrapTextInColorCode(name)
                     end
                 end
                 if setInfo.label then
-                    name= name..'|n'..(isCollected and setInfo.label or WHITE_FONT_COLOR:WrapTextInColorCode(setInfo.label))
+                    name= name..'|n'..(self.elementData.set.collected and setInfo.label or DISABLED_FONT_COLOR:WrapTextInColorCode(setInfo.label))
                 end
             end
         end
