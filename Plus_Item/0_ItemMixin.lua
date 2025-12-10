@@ -744,3 +744,10 @@ function WoWTools_ItemMixin:GetWoWCount(itemID, checkGUID, checkRegion)--WoWTool
     end
     return all, numPlayer
 end
+
+
+
+function WoWTools_ItemMixin:GetColor(quality)
+    quality= quality or 1
+    return ColorManager.GetColorDataForItemQuality(quality)
+end
