@@ -286,10 +286,10 @@ local function Init()
             pool:SetPoint('RIGHT')
         end
     end)
-
+--应用改动，按钮
     TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.ApplyButton:ClearAllPoints()
     TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.ApplyButton:SetPoint('BOTTOM', TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations, 0, 23)
-
+    TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.ApplyButton:SetFrameLevel(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.ApplyButton:GetFrameLevel()+1)
 
 --增加，按钮宽度，按钮
     for name, data in pairs(ListTab) do

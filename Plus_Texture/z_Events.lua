@@ -2418,6 +2418,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     self:SetScrollBar(TransmogFrame.OutfitCollection.OutfitList)
 --左边，列表
     self:HideTexture(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.Border)
+    self:SetAlphaColor(TransmogFrame.OutfitCollection.DividerBar, true)
     WoWTools_ButtonMixin:AddMask(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button, false, TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.Icon)
     self:SetAlphaColor(TransmogFrame.OutfitCollection.ShowEquippedGearSpellFrame.Button.HighlightTexture, true)
     WoWTools_DataMixin:Hook(TransmogOutfitEntryMixin, 'OnLoad', function(frame)
@@ -2428,15 +2429,13 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     WoWTools_DataMixin:Hook(TransmogOutfitEntryMixin, 'SetSelected', function(frame, selected)
         frame.OutfitButton.NormalTexture:SetAlpha(selected and 1 or 0)
     end)
-    --[[WoWTools_DataMixin:Hook(TransmogOutfitEntryMixin, 'Init', function(frame, selected)
-        frame.OutfitButton.NormalTexture:SetAlpha(selected and 1 or 0)
-    end)]]
 
 --中间
     self:SetCheckBox(TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox)
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientLeft)
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientRight)
     self:HideTexture(TransmogFrame.CharacterPreview.ClearAllPendingButton.NormalTexture)
+    self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.Border, true)
     WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'OnLoad', function(frame)
         WoWTools_ButtonMixin:AddMask(frame, nil, frame.Icon)
         self:HideTexture(frame.Border)
@@ -2446,6 +2445,9 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
             WoWTools_ButtonMixin:AddMask(frame.illusionSlotFrame, nil, frame.illusionSlotFrame.Icon)
             self:HideTexture(frame.illusionSlotFrame.Border)
         end
+    end)
+    WoWTools_DataMixin:Hook(TransmogSlotFlyoutDropdownMixin, 'OnLoad', function(frame)
+        self:SetAlphaColor(frame.NormalTexture, true)
     end)
 
     --[[WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'Update', function(frame)
@@ -2472,16 +2474,18 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
 
 --情景
     self:SetCheckBox(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.EnabledToggle.Checkbox)
+    self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.SituationsFrame.Situations.Background)
 
     self:Init_BGMenu_Frame(TransmogFrame, {
         enabled=true,
         alpha=1,
         settings=function(_, texture, alpha)
             alpha= texture and 0 or alpha or 1
+            local a2= texture and 0 or math.min(alpha or 0.5)
             TransmogFrame.OutfitCollection.Background:SetAlpha(alpha)
             TransmogFrame.OutfitCollection.DividerBar:SetAlpha(alpha)
-            TransmogFrame.OutfitCollection.OutfitList.DividerTop:SetAlpha(alpha)
-            TransmogFrame.OutfitCollection.OutfitList.DividerBottom:SetAlpha(alpha)
+            TransmogFrame.OutfitCollection.OutfitList.DividerTop:SetAlpha(a2)
+            TransmogFrame.OutfitCollection.OutfitList.DividerBottom:SetAlpha(a2)
             TransmogFrame.CharacterPreview.Background:SetAlpha(alpha)
             TransmogFrame.WardrobeCollection.TabContent.Border:SetAlpha(alpha)
             TransmogFrame.WardrobeCollection.TabContent.Background:SetAlpha(alpha)
