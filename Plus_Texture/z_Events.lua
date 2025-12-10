@@ -2453,7 +2453,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     end)]]
 
 --右边
-    self:SetAlphaColor()
+
     self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeUnassignedButton.NormalTexture)
     self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeEquippedButton.NormalTexture)
     self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider, true)
