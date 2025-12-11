@@ -450,8 +450,8 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     end
     if entryInfo.asset then
         tooltip:AddDoubleLine(
-            entryInfo.asset and 'modelAsset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.asset,
-            entryInfo.uiModelSceneID and 'uiModelSceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.uiModelSceneID
+            entryInfo.asset and 'asset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.asset,
+            entryInfo.uiModelSceneID and 'sceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.uiModelSceneID
         )
     end
 
