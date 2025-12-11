@@ -303,7 +303,7 @@ local function Init()
 
             (index>0 and '' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '转到' or NPE_TURN)
-            ..WoWTools_DataMixin.Icon.right..(index or '')
+            ..WoWTools_DataMixin.Icon.right..(index or '')..WoWTools_DataMixin.Icon.icon2
         )
         if enabled then
             GameTooltip:AddLine(' ')
