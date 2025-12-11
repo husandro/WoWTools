@@ -26,6 +26,8 @@ local function Set_SetDetails(frame)
     frame.chatButton:SetNormalAtlas('transmog-icon-chat')
     frame.chatButton:SetPoint("RIGHT")
     frame.chatButton:SetSize(18,18)
+    frame.chatButton:SetAlpha(0.5)
+    frame.chatButton.alpha=0.5
     frame.chatButton.tooltip=function(self, tooltip)
         local link= GetItemLink(self:GetParent())
         if link then
@@ -43,6 +45,8 @@ local function Set_SetDetails(frame)
     frame.findButton:SetNormalAtlas('common-search-magnifyingglass')
     frame.findButton:SetPoint('RIGHT', frame.chatButton, 'LEFT')
     frame.findButton:SetSize(18,18)
+    frame.findButton:SetAlpha(0.5)
+    frame.findButton.alpha=0.5
     frame.findButton.tooltip=function(self, tooltip)
         local link= GetItemLink(self:GetParent())
         if link then
