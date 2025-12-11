@@ -6583,7 +6583,8 @@
         "GARRISON_CANNOT_AFFORD_FOLLOWER_ACTIVATION",
         "ERR_NOT_ENOUGH_MONEY",
         "ColorManager",
-        "DressUpFrameTransmogSetMixin"
+        "DressUpFrameTransmogSetMixin",
+        "DressUpFrameTransmogSetButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

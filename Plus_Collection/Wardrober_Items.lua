@@ -45,7 +45,7 @@ local SlotsIcon = {
 
 
 local function UpdateSlotButtons(self)
-    if not self:IsVisible() then
+    if not self:IsVisible() or not self.SlotsFrame.Buttons then
         return
     end
 
@@ -77,9 +77,16 @@ local function UpdateSlotButtons(self)
                     if ( useLastWeaponCategory ) then
                         category = self.lastWeaponCategory;
                     else
-                        local appliedSourceID, appliedVisualID, selectedSourceID, selectedVisualID = self:GetActiveSlotInfo();
+                        local _appliedSourceID, _appliedVisualID, selectedSourceID, _selectedVisualID = self:GetActiveSlotInfo();
                         if selectedSourceID and selectedSourceID ~= Constants.Transmog.NoTransmogID then
-                            category = C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID);
+                            if CombatLogGetCurrentEventInfo then
+                                category = C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID);
+                            else
+                                local data= C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID)
+                                if data then
+                                    category= data.category
+                                end
+                            end
                             if category and not self:IsValidWeaponCategoryForSlot(category) then
                                 category = nil;
                             end

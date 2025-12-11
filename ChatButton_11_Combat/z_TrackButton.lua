@@ -639,7 +639,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
             if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
                 InstanceDate.dead= InstanceDate.dead +1
-                Save().ins.dead= Save().ins.dead +1
+                SaveLog().ins.dead= SaveLog().ins.dead +1
                 OnInstanceDeadCheck= true
             else
                 OnInstanceDeadCheck=nil
@@ -648,7 +648,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
                 if IsInArena and UnitIsPlayer(arg1) or not IsInArena then
                     InstanceDate.kill= InstanceDate.kill +1
-                    Save().ins.kill= Save().ins.kill +1
+                    SaveLog().ins.kill= SaveLog().ins.kill +1
                 end
             end
         elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then

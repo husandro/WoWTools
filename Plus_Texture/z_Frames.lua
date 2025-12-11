@@ -429,8 +429,13 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:SetButton(DressUpFrame.LinkButton)
     self:SetButton(DressUpFrameResetButton)
 
-    self:SetAlphaColor(DressUpFrame.SetSelectionPanel.Border)
-    self:SetScrollBar(DressUpFrame.SetSelectionPanel)
+    WoWTools_DataMixin:Hook(DressUpFrameTransmogSetButtonMixin, 'InitItem', function(frame)
+        frame.BackgroundTexture:SetAlpha(self.elementData.selected and 0 or 1)
+    end)
+    if DressUpFrame.SetSelectionPanel then
+        self:SetAlphaColor(DressUpFrame.SetSelectionPanel.Border)
+        self:SetScrollBar(DressUpFrame.SetSelectionPanel)
+    end
 
     self:Init_BGMenu_Frame(DressUpFrame, {
         settings=function(_, texture, alpha)
