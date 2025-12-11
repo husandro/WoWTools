@@ -294,23 +294,28 @@ local function Init()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
 
         local index= self:GetID()
+        local enabled= Save().enableAllButtn
 
         GameTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '启用' or ENABLE)
             ..WoWTools_DataMixin.Icon.left
-            ..WoWTools_TextMixin:GetYesNo(Save().enableAllButtn),
+            ..WoWTools_TextMixin:GetYesNo(enabled),
 
             (index>0 and '' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '转到' or NPE_TURN)
             ..WoWTools_DataMixin.Icon.right..(index or '')
         )
-        GameTooltip:AddLine('WoWTools')
-        --[[if C_AddOns.GetAddOnInfo('BugSack') then
-            GameTooltip:AddLine('BugSack')
+        if enabled then
+            GameTooltip:AddLine(' ')
+            GameTooltip_AddInstructionLine(GameTooltip, (WoWTools_DataMixin.onlyChinese and '启用' or ENABLE)..':')
+            GameTooltip_AddHighlightLine(GameTooltip, 'WoWTools')
+            if C_AddOns.GetAddOnInfo('BugSack') then
+                GameTooltip_AddHighlightLine(GameTooltip, 'BugSack')
+            end
+            if C_AddOns.GetAddOnInfo('!BugGrabber') then
+                GameTooltip_AddHighlightLine(GameTooltip, '!BugGrabber')
+            end
         end
-        if C_AddOns.GetAddOnInfo('!BugGrabber') then
-            GameTooltip:AddLine('!BugGrabber')
-        end]]
 
         GameTooltip:Show()
         self:SetAlpha(1)
@@ -359,13 +364,11 @@ local function Init()
     AddonList.DisableAllButton:HookScript('OnClick', function()
         if Save().enableAllButtn then
             C_AddOns.EnableAddOn('WoWTools')
-            if WoWTools_DataMixin.Player.husandro then
-                if C_AddOns.GetAddOnInfo('BugSack') then
-                    C_AddOns.EnableAddOn('BugSack')
-                end
-                if C_AddOns.GetAddOnInfo('!BugGrabber') then
-                    C_AddOns.EnableAddOn('!BugGrabber')
-                end
+            if C_AddOns.GetAddOnInfo('BugSack') then
+                C_AddOns.EnableAddOn('BugSack')
+            end
+            if C_AddOns.GetAddOnInfo('!BugGrabber') then
+                C_AddOns.EnableAddOn('!BugGrabber')
             end
             WoWTools_DataMixin:Call('AddonList_Update')
         end
