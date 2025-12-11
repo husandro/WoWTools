@@ -15,7 +15,6 @@ local function GetItemLink(self)
             link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID))
         end
     end
-    print(link)
     return link
 end
 
@@ -27,7 +26,7 @@ local function Set_SetDetails(frame)
     frame.chatButton:SetNormalAtlas('transmog-icon-chat')
     frame.chatButton:SetPoint("RIGHT")
     frame.chatButton:SetSize(18,18)
-    frame.chatButton.tooltip=function(tooltip, self)
+    frame.chatButton.tooltip=function(self, tooltip)
         local link= GetItemLink(self:GetParent())
         if link then
             tooltip:SetHyperlink(link)
@@ -44,7 +43,7 @@ local function Set_SetDetails(frame)
     frame.findButton:SetNormalAtlas('common-search-magnifyingglass')
     frame.findButton:SetPoint('RIGHT', frame.chatButton, 'LEFT')
     frame.findButton:SetSize(18,18)
-    frame.findButton.tooltip=function(tooltip, self)
+    frame.findButton.tooltip=function(self, tooltip)
         local link= GetItemLink(self:GetParent())
         if link then
             tooltip:SetHyperlink(link)
@@ -61,7 +60,6 @@ local function Set_SetDetails(frame)
             WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(p.transmogLocation)
         end
         WardrobeCollectionFrameSearchBox:SetText(p.name or '')
-        print(p.name)
     end)
 
     frame.Icon:EnableMouse(true)
@@ -122,7 +120,20 @@ end
 
 
 
-function WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表
-    --if DressUpOutfitDetailsSlotMixin then--12.0没有了
+
+
+--DressUpOutfitDetailsSlotMixin 12.0没有了
+--DressUpCustomSetDetailsSlotMixin 12.0才有
+local function Init()
+    WoWTools_DataMixin:Hook(DressUpFrameTransmogSetMixin, 'SetData', function(frame, setID, setLink, setItems)
+ 
+    end)
     WoWTools_DataMixin:Hook(DressUpCustomSetDetailsSlotMixin or DressUpOutfitDetailsSlotMixin, 'SetDetails', Set_SetDetails)
+    Init=function()end
+end
+
+
+
+function WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表
+    Init()
 end

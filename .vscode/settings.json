@@ -6582,7 +6582,8 @@
         "TRANSMOG_CUSTOM_SET_NEW",
         "GARRISON_CANNOT_AFFORD_FOLLOWER_ACTIVATION",
         "ERR_NOT_ENOUGH_MONEY",
-        "ColorManager"
+        "ColorManager",
+        "DressUpFrameTransmogSetMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

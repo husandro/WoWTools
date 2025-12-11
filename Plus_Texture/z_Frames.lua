@@ -416,7 +416,7 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
         self:SetFrame(DressUpFrame.CustomSetDetailsPanel, {alpha=0.3})
         self:SetModelZoom(DressUpFrame.ModelScene.ControlFrame)
     end
-
+    
     self:SetButton(DressUpFrame.ToggleOutfitDetailsButton)
     self:SetNineSlice(DressUpFrameInset)
     self:HideFrame(DressUpFrameInset)
@@ -429,6 +429,7 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:SetButton(DressUpFrame.LinkButton)
     self:SetButton(DressUpFrameResetButton)
 
+    self:SetAlphaColor(DressUpFrame.SetSelectionPanel.Border)
     self:Init_BGMenu_Frame(DressUpFrame, {
         settings=function(_, texture, alpha)
             DressUpFrame.ModelBackground:SetAlpha(texture and 0 or alpha or 1)
