@@ -292,16 +292,26 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
+
         local index= self:GetID()
+
         GameTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '启用' or ENABLE)
-            ..WoWTools_DataMixin.addName..WoWTools_DataMixin.Icon.left
+            ..WoWTools_DataMixin.Icon.left
             ..WoWTools_TextMixin:GetYesNo(Save().enableAllButtn),
 
             (index>0 and '' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '转到' or NPE_TURN)
             ..WoWTools_DataMixin.Icon.right..(index or '')
         )
+        GameTooltip:AddLine('WoWTools')
+        --[[if C_AddOns.GetAddOnInfo('BugSack') then
+            GameTooltip:AddLine('BugSack')
+        end
+        if C_AddOns.GetAddOnInfo('!BugGrabber') then
+            GameTooltip:AddLine('!BugGrabber')
+        end]]
+
         GameTooltip:Show()
         self:SetAlpha(1)
     end
@@ -349,6 +359,14 @@ local function Init()
     AddonList.DisableAllButton:HookScript('OnClick', function()
         if Save().enableAllButtn then
             C_AddOns.EnableAddOn('WoWTools')
+            if WoWTools_DataMixin.Player.husandro then
+                if C_AddOns.GetAddOnInfo('BugSack') then
+                    C_AddOns.EnableAddOn('BugSack')
+                end
+                if C_AddOns.GetAddOnInfo('!BugGrabber') then
+                    C_AddOns.EnableAddOn('!BugGrabber')
+                end
+            end
             WoWTools_DataMixin:Call('AddonList_Update')
         end
     end)
