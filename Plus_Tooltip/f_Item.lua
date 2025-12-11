@@ -458,7 +458,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     if entryInfo.iconTexture then
         local size= math.min(entryInfo.size, 90)*5
         tooltip:AddDoubleLine(nil,
-            '|T'..entryInfo.iconTexture..':'..size..':'..size..'|t'--':-'..entryInfo.size..'|t'
+            '|T'..entryInfo.iconTexture..':'..size..':'..size..'|t'
         )
     end
 
