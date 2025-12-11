@@ -73,7 +73,7 @@ local function Set_SetDetails(frame)
 
     frame.Icon:SetScript("OnMouseDown", function(self, d)
         local p= self:GetParent()
-        local link= p:get_item()
+        local link= GetItemLink(p)
         if d=='LeftButton' then
             WoWTools_ChatMixin:Chat(link, nil, true)
         elseif d=='RightButton' then
@@ -96,7 +96,7 @@ local function Set_SetDetails(frame)
 
     frame.Icon:SetScript("OnEnter", function(self)
         local p= self:GetParent()
-        local link= p:get_item()
+        local link= GetItemLink(p)
         if not link then
             return
         end

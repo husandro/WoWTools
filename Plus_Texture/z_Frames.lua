@@ -117,7 +117,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:SetCheckBox(TextToSpeechFramePanelContainer.UseAlternateVoiceForSystemMessagesCheckButton)
     self:SetSlider(TextToSpeechFramePanelContainer.AdjustRateSlider)
     self:SetSlider(TextToSpeechFramePanelContainer.AdjustVolumeSlider)
-    
+
 
     self:SetButton(ChatConfigMoveFilterUpButton, 1)
     self:SetButton(ChatConfigMoveFilterDownButton, 1)
@@ -166,7 +166,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             return
         end
 
-        
+
         colorTexture.BottomEdge= nineSlice and nineSlice.BottomEdge or nil
         colorTexture.font= font
         colorTexture.checkBox= checkBox
@@ -343,7 +343,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             FCF_SetUninteractable(chatFrame)
         end
     end)]]
-    
+
     --[[WoWTools_DataMixin:Hook('FCF_MaximizeFrame', function(chatFrame)
         local name= chatFrame:GetName()
         self:SetFrame(_G[name..'ButtonFrameMinimizeButton'])
@@ -416,7 +416,7 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
         self:SetFrame(DressUpFrame.CustomSetDetailsPanel, {alpha=0.3})
         self:SetModelZoom(DressUpFrame.ModelScene.ControlFrame)
     end
-    
+
     self:SetButton(DressUpFrame.ToggleOutfitDetailsButton)
     self:SetNineSlice(DressUpFrameInset)
     self:HideFrame(DressUpFrameInset)
@@ -430,6 +430,8 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:SetButton(DressUpFrameResetButton)
 
     self:SetAlphaColor(DressUpFrame.SetSelectionPanel.Border)
+    self:SetScrollBar(DressUpFrame.SetSelectionPanel)
+
     self:Init_BGMenu_Frame(DressUpFrame, {
         settings=function(_, texture, alpha)
             DressUpFrame.ModelBackground:SetAlpha(texture and 0 or alpha or 1)
