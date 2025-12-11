@@ -489,7 +489,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
 
 --关键词
     local tag
-    for _, name in pairs(entryInfo.dataTagsByID) do
+    for _, name in pairs(entryInfo.dataTagsByID or {}) do
         tag= (tag and tag.. NORMAL_FONT_COLOR:WrapTextInColorCode(PLAYER_LIST_DELIMITER) or '')..WoWTools_TextMixin:CN(name)
     end
     if tag then
