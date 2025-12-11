@@ -94,12 +94,9 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
         self:Setup(DressUpFrame.OutfitDetailsPanel, {frame=DressUpFrame})
     end
 
-    if DressUpFrame.SetSelectionPanel then
-        DressUpFrame.SetSelectionPanel.Border:SetTexture(0)
-        DressUpFrame.SetSelectionPanel:SetPoint('TOPLEFT', DressUpFrame, 'TOPRIGHT', 7, 23)--<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-7" y="-30"/>
-        DressUpFrame.SetSelectionPanel:SetPoint('BOTTOMLEFT', DressUpFrame, 'BOTTOMRIGHT', -7, 0)
-        self:Setup(DressUpFrame.SetSelectionPanel, {frame=DressUpFrame})
-    end
+    DressUpFrame.SetSelectionPanel:SetPoint('TOPLEFT', DressUpFrame, 'TOPRIGHT', 7, 23)--<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="-7" y="-30"/>
+    DressUpFrame.SetSelectionPanel:SetPoint('BOTTOMLEFT', DressUpFrame, 'BOTTOMRIGHT', -7, 0)
+    self:Setup(DressUpFrame.SetSelectionPanel, {frame=DressUpFrame})
 end
 
 

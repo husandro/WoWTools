@@ -406,6 +406,7 @@ end
 --试衣间
 function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:HideFrame(DressUpFrame)
+
     if DressUpFrameOutfitDropdown then--12.0没有了
         self:SetMenu(DressUpFrameOutfitDropdown)
         self:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
@@ -414,9 +415,9 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
         self:SetUIButton(DressUpFrameCustomSetDropdown.SaveButton)
         self:SetButton(DressUpFrame.ToggleCustomSetDetailsButton, {alpha=1})
         self:SetFrame(DressUpFrame.CustomSetDetailsPanel, {alpha=0.3})
-        self:SetModelZoom(DressUpFrame.ModelScene.ControlFrame)
     end
 
+    self:SetModelZoom(DressUpFrame.ModelScene.ControlFrame)
     self:SetButton(DressUpFrame.ToggleOutfitDetailsButton)
     self:SetNineSlice(DressUpFrameInset)
     self:HideFrame(DressUpFrameInset)
@@ -429,13 +430,8 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:SetButton(DressUpFrame.LinkButton)
     self:SetButton(DressUpFrameResetButton)
 
-    WoWTools_DataMixin:Hook(DressUpFrameTransmogSetButtonMixin, 'InitItem', function(frame)
-        frame.BackgroundTexture:SetAlpha(self.elementData.selected and 0 or 1)
-    end)
-    if DressUpFrame.SetSelectionPanel then
-        self:SetAlphaColor(DressUpFrame.SetSelectionPanel.Border)
-        self:SetScrollBar(DressUpFrame.SetSelectionPanel)
-    end
+    self:SetAlphaColor(DressUpFrame.SetSelectionPanel.Border)
+    self:SetScrollBar(DressUpFrame.SetSelectionPanel)
 
     self:Init_BGMenu_Frame(DressUpFrame, {
         settings=function(_, texture, alpha)

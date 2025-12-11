@@ -46,62 +46,60 @@ end
 local function Init()
 
 --套装 itemModifiedAppearanceID sourceID
-
+    DressUpFrame.SetSelectionPanel.Border:SetTexture(0)
 --套装， DressUpFrameTransmogSetMixin
-    if DressUpFrame.SetSelectionPanel then --self.setID = setID; self.setItems = setItems; self.cachedSlotUpdates = {};
+   -- if DressUpFrame.SetSelectionPanel then --self.setID = setID; self.setItems = setItems; self.cachedSlotUpdates = {};
 --超链接，提示
-        DressUpFrame.SetSelectionPanel.SetName:EnableMouse(true)
-        DressUpFrame.SetSelectionPanel.SetName:SetScript('OnLeave', function(self)
-            self:SetAlpha(1)
-            GameTooltip_Hide()
-        end)
-        DressUpFrame.SetSelectionPanel.SetName:SetScript('OnEnter', function(self)
-            if self.setLink then
-                GameTooltip:SetOwner(self:GetParent(), 'ANCHOR_RIGHT')
-                GameTooltip:SetHyperlink(self.setLink)
-                GameTooltip:Show()
-            end
-            self:SetAlpha(0.3)
-        end)
-        DressUpFrame.SetSelectionPanel.SetName:HookScript('OnHide', function(self)
-            self.setLink=nil
-        end)
+    DressUpFrame.SetSelectionPanel.SetName:EnableMouse(true)
+    DressUpFrame.SetSelectionPanel.SetName:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip_Hide()
+    end)
+    DressUpFrame.SetSelectionPanel.SetName:SetScript('OnEnter', function(self)
+        if self.setLink then
+            GameTooltip:SetOwner(self:GetParent(), 'ANCHOR_RIGHT')
+            GameTooltip:SetHyperlink(self.setLink)
+            GameTooltip:Show()
+        end
+        self:SetAlpha(0.3)
+    end)
+    DressUpFrame.SetSelectionPanel.SetName:HookScript('OnHide', function(self)
+        self.setLink=nil
+    end)
 --件数
-        DressUpFrame.SetSelectionPanel.collectedText= DressUpFrame.SetSelectionPanel:CreateFontString(nil, 'BORDER', 'GameFontNormal')
-        DressUpFrame.SetSelectionPanel.collectedText:SetPoint('RIGHT', DressUpFrame.SetSelectionPanel.SetName)
-        WoWTools_DataMixin:Hook(DressUpFrame.SetSelectionPanel, 'SetData', function(frame, setID, setLink, setItems)
+    DressUpFrame.SetSelectionPanel.collectedText= DressUpFrame.SetSelectionPanel:CreateFontString(nil, 'BORDER', 'GameFontNormal')
+    --DressUpFrame.SetSelectionPanel.collectedText:SetPoint('RIGHT', DressUpFrame.SetSelectionPanel.SetName)
+    DressUpFrame.SetSelectionPanel.collectedText:SetPoint('TOPRIGHT', -10, -10)
+    WoWTools_DataMixin:Hook(DressUpFrame.SetSelectionPanel, 'SetData', function(frame, setID, setLink, setItems)
 --物品，是否收集
-            local co, all= 0, 0
-            for _, data in pairs(setItems or {}) do
-                if data.itemModifiedAppearanceID then
-                    local isCollected
-                    if CombatLogGetCurrentEventInfo then--12.0没有了
-                        isCollected= select(5, C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID))
-                    else
-                        local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
-                        if info then
-                            isCollected= info.isCollected
-                        end
-                    end
-                    if isCollected then
-                        co= co+1
+        local co, all= 0, 0
+        for _, data in pairs(setItems or {}) do
+            if data.itemModifiedAppearanceID then
+                local isCollected
+                if CombatLogGetCurrentEventInfo then--12.0没有了
+                    isCollected= select(5, C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID))
+                else
+                    local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
+                    if info then
+                        isCollected= info.isCollected
                     end
                 end
-                all= all+1
+                if isCollected then
+                    co= co+1
+                end
             end
+            all= all+1
+        end
 --套装是否收集
-            local collect, numAll = select(2, WoWTools_CollectionMixin:SetID(setID))
+        local collect, numAll = select(2, WoWTools_CollectionMixin:SetID(setID))
 
-            frame.collectedText:SetText(
-                (numAll and numAll==collect and '|cnGREEN_FONT_COLOR:' or '')
-                ..(all>0 and co..'/'..all or '')
-                ..(numAll and numAll~=all and ' ('..collect..'/'..numAll..')' or '')
-            )
-            frame.SetName.setLink= setLink
-        end)
-
-    end
-
+        frame.collectedText:SetText(
+            (numAll and numAll==collect and '|cnGREEN_FONT_COLOR:' or '')
+            ..(all>0 and co..'/'..all or '')
+            ..(numAll and numAll~=all and ' ('..collect..'/'..numAll..')' or '')
+        )
+        frame.SetName.setLink= setLink
+    end)
 
 --是否收集
     WoWTools_DataMixin:Hook(DressUpFrameTransmogSetButtonMixin, 'InitItem', function(frame, data)
@@ -118,6 +116,12 @@ local function Init()
             frame.indexText:SetAlpha(0.7)
 --更换，选中材质
             frame.SelectedTexture:SetAtlas('ReportList-ButtonSelect')
+--外框，改成线形
+            frame.BackgroundTexture:ClearAllPoints()
+            frame.BackgroundTexture:SetAtlas('_UI-Frame-Metal-EdgeBottom')
+            frame.BackgroundTexture:SetPoint('BOTTOMLEFT', 40, -2)
+            frame.BackgroundTexture:SetPoint('BOTTOMRIGHT', -15, -2)
+            frame.BackgroundTexture:SetHeight(32)
         end
         local isNotColleced
         if data.itemModifiedAppearanceID then
@@ -138,7 +142,12 @@ local function Init()
         end
         frame.indexText:SetText(frame:GetOrderIndex() or '')
     end)
-
+    WoWTools_DataMixin:Hook(DressUpFrameTransmogSetButtonMixin, 'Refresh', function(frame)
+        frame.BackgroundTexture:SetAlpha(frame.elementData.selected and 0 or 1)
+        local r,g,b= WoWTools_ItemMixin:GetColor(frame.elementData.itemQuality)
+        frame.BackgroundTexture:SetVertexColor(r,g,b)
+        frame.BackgroundTexture:SetAlpha(frame.elementData.selected and 0 or 1)
+    end)
 
 
 
@@ -152,7 +161,10 @@ local function Init()
         frame.chatButton= CreateFrame('Button', nil, frame, 'WoWToolsButtonTemplate')
         frame.chatButton:SetNormalAtlas('transmog-icon-chat')
         frame.chatButton:SetPoint("RIGHT")
-        frame.chatButton:SetSize(18,18)
+        frame.chatButton:SetSize(23,23)
+        local icon= frame.chatButton:GetNormalTexture()
+        icon:SetPoint("TOPLEFT", 6, -6)
+        icon:SetPoint("BOTTOMRIGHT", -6, 6)
         frame.chatButton:SetAlpha(0.5)
         frame.chatButton.alpha=0.5
         frame.chatButton.tooltip=function(self, tooltip)
@@ -171,7 +183,10 @@ local function Init()
         frame.findButton= CreateFrame('Button', nil, frame, 'WoWToolsButtonTemplate')
         frame.findButton:SetNormalAtlas('common-search-magnifyingglass')
         frame.findButton:SetPoint('RIGHT', frame.chatButton, 'LEFT')
-        frame.findButton:SetSize(18,18)
+        frame.findButton:SetSize(23,23)
+        icon= frame.findButton:GetNormalTexture()
+        icon:SetPoint("TOPLEFT", 6, -6)
+        icon:SetPoint("BOTTOMRIGHT", -6, 6)
         frame.findButton:SetAlpha(0.5)
         frame.findButton.alpha=0.5
         frame.findButton.tooltip=function(self, tooltip)
