@@ -2,7 +2,7 @@ WoWTools_CollectionMixin={}
 
 
 function WoWTools_CollectionMixin:Refresh_TransmogItems()
-    if not WoWTools_FrameMixin:IsLocked(TransmogFrame) then
+    if TransmogFrame and not WoWTools_FrameMixin:IsLocked(TransmogFrame) then
         if TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:IsVisible() then
             TransmogFrame.WardrobeCollection.TabContent.ItemsFrame:Refresh()
 

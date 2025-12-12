@@ -44,7 +44,6 @@ local function Init_Menu(self, root)
     end, function()
         Save().hidePets= not Save().hidePets and true or nil
         Refresh_Pet()
-        return MenuResponse.Open
     end)
 
     sub:CreateSpacer()

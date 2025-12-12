@@ -52,7 +52,7 @@ end
 
 
 
-local DELETE_ITEM_CONFIRM_STRING= DELETE_ITEM_CONFIRM_STRING
+
 
 local function Init()
     WoWTools_MerchantMixin:Init_AutoLoot()
@@ -98,29 +98,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 WoWToolsPlayerDate['RepairMoney']= WoWToolsPlayerDate['RepairMoney'] or {date=date('%x'), player=0, guild=0, num=0}
             end
-            
-            if Save().buyItems then--清除以前数据
-                --上次的BUG
-                for guid, tab in pairs(Save().buyItems) do
-                    for itemID, num in pairs(tab) do
-                        if type(num)~='number' then
-                            Save().buyItems[guid][itemID]= nil
-                        end
-                    end
-                end
 
-                WoWToolsPlayerDate['SellBuyItems']= {}
-                WoWToolsPlayerDate['SellBuyItems'].buy= Save().buyItems
-                WoWToolsPlayerDate['SellBuyItems'].sell= Save().Sell or {}
-                WoWToolsPlayerDate['SellBuyItems'].noSell= Save().noSell or {}
-
-                WoWToolsSave['Plus_SellBuy'].buyItems=nil
-                WoWToolsSave['Plus_SellBuy'].Sell= nil
-                WoWToolsSave['Plus_SellBuy'].noSell= nil
-                WoWToolsSave['Plus_SellBuy'].WoWBuyItems= nil
-            else
-                WoWToolsPlayerDate['SellBuyItems']= WoWToolsPlayerDate['SellBuyItems'] or P_WoWSave
-            end
+            WoWToolsPlayerDate['SellBuyItems']= WoWToolsPlayerDate['SellBuyItems'] or P_WoWSave
 
             if not WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID] then
                 WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID]= {}
@@ -128,7 +107,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_MerchantMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人' or MERCHANT)
 
-            --添加控制面板
+--添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_MerchantMixin.addName,
                 GetValue= function() return not Save().disabled end,
