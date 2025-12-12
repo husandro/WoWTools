@@ -561,7 +561,7 @@ end
     PlayerFrameGroupIndicatorText:SetPoint('TOPRIGHT', PlayerFrame, -35, -24)
 
 --处理,小队, 号码
-    WoWTools_DataMixin:Hook('PlayerFrame_UpdateGroupIndicator', function()
+    local function set_grouptext()
         if IsInRaid() then
             local text= PlayerFrameGroupIndicatorText:GetText()
             local num= text and text:match('(%d)')
@@ -569,21 +569,13 @@ end
                 PlayerFrameGroupIndicatorText:SetFormattedText('|A:services-number-%s:22:22|a', num)
             end
         end
-    end)
-    if IsInRaid() then
-        WoWTools_DataMixin:Call('PlayerFrame_UpdateGroupIndicator')
     end
+    WoWTools_DataMixin:Hook('PlayerFrame_UpdateGroupIndicator', set_grouptext)
+    set_grouptext()
+    WoWTools_ColorMixin:Setup(PlayerFrameGroupIndicatorText)
 
-
-    if PlayerFrameGroupIndicatorLeft then
-        PlayerFrameGroupIndicatorLeft:SetTexture(0)
-        PlayerFrameGroupIndicatorLeft:SetShown(false)
-        PlayerFrameGroupIndicatorMiddle:SetTexture(0)
-        PlayerFrameGroupIndicatorMiddle:SetShown(false)
-        PlayerFrameGroupIndicatorRight:SetTexture(0)
-        PlayerFrameGroupIndicatorRight:SetShown(false)
-    end
-
+--隐藏，小队号，背景
+    WoWTools_TextureMixin:HideFrame(PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator)
 
 --等级，颜色
     WoWTools_DataMixin:Hook('PlayerFrame_UpdateLevel', function()

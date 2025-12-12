@@ -216,6 +216,7 @@ local function Init_UI()
     InspectPaperDollFrame.ViewButton:ClearAllPoints()
     InspectPaperDollFrame.ViewButton:SetPoint('TOPRIGHT', -5, -28)
     InspectPaperDollFrame.ViewButton:SetSize(28,28)
+    WoWTools_TextureMixin:SetUIButton(InspectPaperDollFrame.ViewButton)
     InspectPaperDollFrame.ViewButton:SetText(WoWTools_DataMixin.onlyChinese and '试' or WoWTools_TextMixin:sub(VIEW,1))
     InspectPaperDollFrame.ViewButton:HookScript('OnLeave', GameTooltip_Hide)
     InspectPaperDollFrame.ViewButton:HookScript('OnEnter', function(self)
@@ -264,13 +265,16 @@ local function Init_UI()
 
         SetDoubleGuildTabardTextures(InspectFrame.unit, InspectGuildFrameTabardLeftIcon, InspectGuildFrameTabardRightIcon, InspectGuildFrameBanner, InspectGuildFrameBannerBorder)
     end
+
+    Init_UI=function()end
 end
 
 
 
 
 
-local function Init()
+
+function WoWTools_PaperDollMixin:Init_InspectUI()
     if C_AddOns.IsAddOnLoaded('Blizzard_InspectUI') then
         Init_UI()
     else
@@ -281,14 +285,4 @@ local function Init()
             end
         end)
     end
-
-    Init=function()end
-end
-
-
-
-
-
-function WoWTools_PaperDollMixin:Init_InspectUI()
-    Init()
 end

@@ -39,8 +39,7 @@ local function Set_KeyText(self)
 end
 
 local function Set_MainMenuBarPool()
-    local mainBar= MainActionBar or MainMenuBar--MainMenuBar 11.2.7没有了
-    local dividersPool = mainBar.isHorizontal and mainBar.HorizontalDividersPool or mainBar.VerticalDividersPool
+    local dividersPool = MainActionBar.isHorizontal and MainActionBar.HorizontalDividersPool or MainActionBar.VerticalDividersPool
     if dividersPool then
         for pool in dividersPool:EnumerateActive() do
             WoWTools_TextureMixin:HideFrame(pool)

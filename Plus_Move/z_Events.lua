@@ -107,10 +107,10 @@ end
 
 
 
---虚空，仓库
+--[[虚空，仓库
 function WoWTools_MoveMixin.Events:Blizzard_VoidStorageUI()
     self:Setup(VoidStorageFrame)
-end
+end]]
 
 --时光漫游
 function WoWTools_MoveMixin.Events:Blizzard_ChromieTimeUI()
@@ -714,14 +714,6 @@ end
 
 
 function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
-    if not CooldownViewerSettings then--冷却设置 11.2.5
-        return
-    end
-    --[[if WoWTools_DataMixin.Player.husandro then
-        CooldownViewerSettings:Show()
-    end]]
-
-
     local function on_settings(frame)
         local w=frame.CooldownScroll:GetWidth()
         local value= math.max(3, math.modf(w/46))

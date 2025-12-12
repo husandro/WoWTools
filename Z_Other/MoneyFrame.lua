@@ -12,11 +12,11 @@ local function Init()
         return nil
     end
     local function MoneyFrame_GetIconSizeData(frame)
-        local iconWidth = MONEY_ICON_WIDTH;
-        local spacing = MONEY_BUTTON_SPACING;
+        local iconWidth = MONEY_ICON_WIDTH or 19
+        local spacing = MONEY_BUTTON_SPACING or -4
         if frame.small then
-            iconWidth = MONEY_ICON_WIDTH_SMALL;
-            spacing = MONEY_BUTTON_SPACING_SMALL;
+            iconWidth = MONEY_ICON_WIDTH_SMALL or 13
+            spacing = MONEY_BUTTON_SPACING_SMALL or -4
         end
 
         if frame.userScaledTextScale then

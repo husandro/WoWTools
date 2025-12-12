@@ -320,7 +320,7 @@ local function Init()
     LFGListInviteDialog:HookScript("OnShow", function(self)
         WoWTools_DataMixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
 
-        WoWTools_CooldownMixin:Setup(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+        WoWTools_CooldownMixin:Setup(self, nil, StaticPopupTimeoutSec, nil, true, true, nil)--冷却条
 
         if not self.resultID then
             return
@@ -412,7 +412,7 @@ local function Init()
 --确定，进入副本，信息
     LFGInvitePopup:HookScript("OnShow", function(self)--自动进入FB
         WoWTools_DataMixin:PlaySound()--播放, 声音
-        WoWTools_CooldownMixin:Setup(self, nil, self.timeOut and STATICPOPUP_TIMEOUT, nil, true, true)
+        WoWTools_CooldownMixin:Setup(self, nil, self.timeOut and StaticPopupTimeoutSec, nil, true, true)
     end)
     --[[LFGInvitePopup:HookScript('OnHide', function(self)
         WoWTools_CooldownMixin:Setup(self)

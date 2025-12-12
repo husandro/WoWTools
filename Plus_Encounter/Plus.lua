@@ -1,7 +1,3 @@
-local function Save()
-    return WoWToolsSave['Adventure_Journal']
-end
-
 local ITEM_CLASSES_ALLOWED= format(ITEM_CLASSES_ALLOWED, '(.+)')
 local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 
@@ -242,7 +238,7 @@ end
 
 
 local function Init()
-    if Save().hideEncounterJournal then
+    if WoWToolsSave['Adventure_Journal'].hideEncounterJournal then
         return
     end
 
@@ -398,10 +394,10 @@ local function Init()
         btn.classLabel:SetText(classText or '')
         btn.upText:SetText(upText or '')
     --显示, 物品, 属性
-        WoWTools_ItemMixin:SetItemStats(btn, show and btn.link, {point= btn.IconBorder})
+        WoWTools_ItemMixin:SetItemStats(btn, btn.link, {point= btn.IconBorder})
     --物品法术，提示
         local spellID
-        if show and (btn.link or btn.itemID) then
+        if btn.link or btn.itemID then
             spellID= select(2, C_Item.GetItemSpell(btn.link or btn.itemID))
         end
         btn.spellTexture.spellID= spellID

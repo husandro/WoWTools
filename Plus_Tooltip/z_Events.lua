@@ -595,7 +595,7 @@ end
 
 --挑战, AffixID Blizzard_ScenarioObjectiveTracker.lua
 function WoWTools_TooltipMixin.Events:Blizzard_ObjectiveTracker()
-    WoWTools_DataMixin:Hook(ScenarioChallengeModeAffixMixin, 'OnEnter', function(frame)
+    WoWTools_DataMixin:Hook(ScenarioChallengeModeAffixMixin, 'OnEnter', function(frame)--ScenarioObjectiveTracker 12.0 才有
         if frame.affixID then
             local name, description, filedataid = C_ChallengeMode.GetAffixInfo(frame.affixID)
             GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
@@ -608,20 +608,4 @@ function WoWTools_TooltipMixin.Events:Blizzard_ObjectiveTracker()
             GameTooltip:Show()
         end
     end)
-
-    if ScenarioChallengeModeBlock and ScenarioChallengeModeBlock.Affixes and ScenarioChallengeModeBlock.Affixes[1] then--11.2.7没发现
-        ScenarioChallengeModeBlock.Affixes[1]:HookScript('OnEnter', function(frame)
-            if frame.affixID then
-                local name, description, filedataid = C_ChallengeMode.GetAffixInfo(frame.affixID)
-                GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
-                GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
-                GameTooltip:AddDoubleLine(
-                    filedataid and '|T'..filedataid..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..filedataid,
-                    'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..frame.affixID
-                )
-                WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=frame.affixID, name=name, isPetUI=false})--取得网页，数据链接
-                GameTooltip:Show()
-            end
-        end)
-    end
 end

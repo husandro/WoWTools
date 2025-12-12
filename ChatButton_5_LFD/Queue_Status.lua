@@ -369,6 +369,7 @@ local function Set_Queue_Status()--小眼睛, 信息
             local member
             if not info.autoAccept and applicantsNum>0 then
                 local n=0
+                local maxLevel= GetMaxLevelForLatestExpansion()
                 for _, applicantID in pairs(applicants) do
                     local applicantInfo = C_LFGList.GetApplicantInfo(applicantID)
                     if applicantInfo and applicantInfo.numMembers and applicantInfo.applicationStatus=='applied' then
@@ -383,7 +384,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                                 local col= '|c'..select(4, GetClassColor(class))--颜色
 
                                 local levelText--等级
-                                if level and level~=MAX_PLAYER_LEVEL then
+                                if level and level~=maxLevel then
                                     levelText=' |cnWARNING_FONT_COLOR:'..level..'|r'
                                 end
 

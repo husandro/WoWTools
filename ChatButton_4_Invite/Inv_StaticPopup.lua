@@ -110,7 +110,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
 --好友
     elseif WoWTools_UnitMixin:GetIsFriendIcon(nil, inviterGUID, nil) then
         if not Save().FriendAceInvite then
-            WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, TimeLeft or STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
+            WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, TimeLeft or 30, nil, true, true, nil)--冷却条  
             return
         end
 
@@ -138,7 +138,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
     else
 
 --添加 拒绝 陌生人
-        WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, TimeLeft or STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+        WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, TimeLeft or StaticPopupTimeoutSec, nil, true, true, nil)--冷却条
     end
 end
 

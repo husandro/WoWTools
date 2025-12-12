@@ -60,7 +60,7 @@ end
     self:SetNineSlice(CommunitiesFrameInset)
 
     self:SetEditBox(CommunitiesFrame.ChatEditBox)
-    self:SetAlphaColor(CommunitiesFrameMiddle)
+    --self:SetAlphaColor(CommunitiesFrameMiddle)
 
 --公会和社区，列表
     self:HideTexture(CommunitiesFrameCommunitiesList.Bg)

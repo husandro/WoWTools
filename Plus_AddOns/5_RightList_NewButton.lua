@@ -230,7 +230,7 @@ local function Init()
 
 
     local Label= WoWTools_LabelMixin:Create(NewButton)--插件，总数
-    Label:SetPoint('LEFT',AddonListEnableAllButton, 3,0)
+    Label:SetPoint('LEFT', AddonList.DisableAllButton, 3,0)
     Label:SetText(C_AddOns.GetNumAddOns())
 
 

@@ -5,9 +5,9 @@ local function Save()
 end
 
 
-local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
-local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
+local ITEM_LEVEL= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
+local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
+local PVP_ITEM_LEVEL_TOOLTIP= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 
 
 
@@ -33,125 +33,142 @@ end
 
 
 
+local function Create_ButtonLabel(btn)
+    local w, h= btn:GetSize()
+
+    btn.level= WoWTools_LabelMixin:Create(btn)
+    btn.level:SetPoint('BOTTOM')
+
+    btn.upgrade= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}})
+    btn.upgrade:SetPoint('LEFT')
+    btn.itemType=WoWTools_LabelMixin:Create(btn)
+    btn.itemType:SetPoint('TOPRIGHT')
+--等级，比较
+    btn.updown=WoWTools_LabelMixin:Create(btn)
+    btn.updown:SetPoint('TOPLEFT')
+
+    btn.pvpItem=btn:CreateTexture(nil,'OVERLAY',nil,7)
+    btn.pvpItem:SetSize(h/3, h/3)
+    btn.pvpItem:SetPoint('RIGHT')
+    btn.pvpItem:SetAtlas('Warfronts-BaseMapIcons-Horde-Barracks-Minimap')
+--提示，已装备
+    btn.isEquippedTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.isEquippedTexture:SetPoint('CENTER')
+    btn.isEquippedTexture:SetSize(w+12, h+12)
+    btn.isEquippedTexture:SetAtlas('Forge-ColorSwatchHighlight')--'Forge-ColorSwatchSelection')
+    btn.isEquippedTexture:SetVertexColor(1,0,0)
+
+    btn.setTexture=btn:CreateTexture()
+    btn.setTexture:SetAllPoints(btn)
+    btn.setTexture:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
+
+    btn:HookScript('OnEnter', function(self)--查询
+        WoWTools_BagMixin:Find(true, {itemLink=self:GetItemLink()})
+    end)
+    btn:HookScript('OnLeave', function()
+        WoWTools_BagMixin:Find(false)
+    end)
+    btn:HookScript('OnHide', function(self)
+        set_item_Set(self)--套装
+        self.level:SetText('')
+        self.upgrade:SetText('')
+        self.itemType:SetText('')
+        self.updown:SetText('')
+        self.pvpItem:SetShown(false)
+        self.isEquippedTexture:SetShown(false)
+        self.setTexture:SetShown(false)
+    end)
+end
 
 
 
 
 
 
-local function setFlyout(button, itemLink, slot)
-    local text, level, dateInfo
-    if not Save().hide then
-        if not button.level then
-            button.level= WoWTools_LabelMixin:Create(button)
-            button.level:SetPoint('BOTTOM')
+
+
+
+
+local function setFlyout(self)--, itemLink, slot)
+	local locationData, itemLink
+    if not Save().hide and self.location then
+        locationData= EquipmentManager_GetLocationData(self.location)
+    end
+
+    if locationData then
+        local bag, slot = locationData.bag, locationData.slot
+        if not locationData.isBags then
+            itemLink= GetInventoryItemLink('player', slot)
+        else
+            itemLink= C_Container.GetContainerItemLink(bag, slot)
+        end
+    end
+
+    local upgrade, upLevel, upText, updown, text, level
+    local isSet, isEquipped, isPvP= false, false, false
+    if itemLink then
+        if not self.isEquippedTexture then
+            Create_ButtonLabel(self)
         end
 
-        dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({itemLInk=itemLink, text={ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT, PVP_ITEM_LEVEL_TOOLTIP, ITEM_LEVEL}, onlyText=true})--物品提示，信息
 
-        if dateInfo and dateInfo.text[itemLevelStr] then
-            level= tonumber(dateInfo.text[itemLevelStr])
-        end
+        level= dateInfo.text[ITEM_LEVEL]
+        level= level and tonumber(level) or C_Item.GetDetailedItemLevelInfo(itemLink)
 
-        level= level or (itemLink and C_Item.GetDetailedItemLevelInfo(itemLink))
+        local slotID
         if level then
             text= WoWTools_ItemMixin:GetColor(nil, {itemLink=itemLink, text=level})
+            local itemButton = EquipmentFlyoutFrame.button
+            slotID = itemButton.id or itemButton:GetID()
         end
-    end
 
-    if button.level then
-        button.level:SetText(text or '')
-    end
+        upgrade=dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
+        isPvP= dateInfo.text[PVP_ITEM_LEVEL_TOOLTIP] and true or false
 
-    local upgrade, pvpItem, upLevel, upText
-    local updown--UpgradeFrame等级，比较
-    if dateInfo then
-        upgrade, pvpItem=dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
         if upgrade then
             upLevel= upgrade and upgrade:match('(%d+/%d+)')
-            upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
-            upText=upText and strlower(WoWTools_TextMixin:sub(upText, 1,3, true))
+            upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]:match('(.-)%d+/%d+')
+            upText= upText and strlower(WoWTools_TextMixin:sub(upText, 1,3, true)) or nil
         end
-        if upgrade and not button.upgrade then
-            button.upgrade= WoWTools_LabelMixin:Create(button, {color={r=0,g=1,b=0}})
-            button.upgrade:SetPoint('LEFT')
-            button.itemType=WoWTools_LabelMixin:Create(button)
-            button.itemType:SetPoint('TOPRIGHT')
-        end
-        if button.upgrade then
-            button.upgrade:SetText(upLevel or '')
-            button.itemType:SetText(upText or '')
-        end
-        if level then
-            if not slot or slot==0 then
-                local itemEquipLoc= itemLink and select(4, C_Item.GetItemInfoInstant(itemLink))
-                slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
-            end
-            if slot then
-                local itemLink2 = GetInventoryItemLink('player', slot)
-                if itemLink2 then
-                    updown = C_Item.GetDetailedItemLevelInfo(itemLink2)
-                    if updown then
-                        updown=level-updown
-                        if updown>0 then
-                            updown= '|cnGREEN_FONT_COLOR:+'..updown..'|r'
-                        elseif updown<0 then
-                            updown= '|cnWARNING_FONT_COLOR:'..updown..'|r'
-                        elseif updown==0 then
-                            updown= nil
-                        end
-                    else
-                        updown= '|A:bags-greenarrow:0:0|a'
+
+        if level and slotID then
+            local link = GetInventoryItemLink('player', slotID)
+            if link then
+                updown = C_Item.GetDetailedItemLevelInfo(link)
+                if updown then
+                    updown=level-updown
+                    if updown>0 then
+                        updown= '|cnGREEN_FONT_COLOR:+'..updown..'|r'
+                    elseif updown<0 then
+                        updown= '|cnWARNING_FONT_COLOR:'..updown..'|r'
+                    elseif updown==0 then
+                        updown= nil
                     end
                 else
                     updown= '|A:bags-greenarrow:0:0|a'
                 end
+            else
+                updown= '|A:bags-greenarrow:0:0|a'
             end
         end
-    end
-    if updown and not button.updown then
-        button.updown=WoWTools_LabelMixin:Create(button)
-        button.updown:SetPoint('TOPLEFT')
-    end
-    if button.updown then
-        button.updown:SetText(updown or '')
+
+        isEquipped= C_Item.IsEquippedItem(itemLink)
+        isSet= select(16 , C_Item.GetItemInfo(itemLink)) and true or false
+
     end
 
-    set_item_Set(button, itemLink)--套装
+    if self.isEquippedTexture then
+        set_item_Set(self, itemLink)--套装
 
-    if pvpItem and not button.pvpItem and not Save().hide then--提示PvP装备
-        local h=button:GetHeight()/3
-        button.pvpItem=button:CreateTexture(nil,'OVERLAY',nil,7)
-        button.pvpItem:SetSize(h,h)
-        button.pvpItem:SetPoint('RIGHT')
-        button.pvpItem:SetAtlas('Warfronts-BaseMapIcons-Horde-Barracks-Minimap')
+        self.level:SetText(text or '')
+        self.upgrade:SetText(upLevel or '')
+        self.itemType:SetText(upText or '')
+        self.updown:SetText(updown or '')
+        self.pvpItem:SetShown(isPvP)
+        self.isEquippedTexture:SetShown(isEquipped)
+        self.setTexture:SetShown(isSet)
     end
-    if button.pvpItem then
-        button.pvpItem:SetShown(pvpItem and true or false)
-    end
-
-    if not button.isEquippedTexture then--提示，已装备
-        button.isEquippedTexture= button:CreateTexture(nil, 'OVERLAY')
-        button.isEquippedTexture:SetPoint('CENTER')
-        local w,h= button:GetSize()
-        button.isEquippedTexture:SetSize(w+12, h+12)
-        button.isEquippedTexture:SetAtlas('Forge-ColorSwatchHighlight')--'Forge-ColorSwatchSelection')
-        button.isEquippedTexture:SetVertexColor(1,0,0)
-
-        button:HookScript('OnEnter', function(self)--查询
-            if self.itemLink then
-                WoWTools_BagMixin:Find(true, {itemLink=self.itemLink})
-            end
-        end)
-        button:HookScript('OnLeave', function()
-           WoWTools_BagMixin:Find(false)
-        end)
-    end
-    local show=false
-    if not Save().hide and button.itemLink then
-        show= C_Item.IsEquippedItem(button.itemLink)
-    end
-    button.isEquippedTexture:SetShown(show)
 end
 
 
@@ -162,39 +179,6 @@ end
 
 
 
-
-
-
-
-local function Settings(itemButton)
-    for _, button in ipairs(EquipmentFlyoutFrame.buttons) do
-        if button and button:IsShown()  then
-            local itemLink, slot
-            if button.location and type(button.location)=='number' then--角色, 界面
-                local location = button.location
-                slot= itemButton:GetID()
-                if location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-                    local _, _, bags, _, slot2, bag = EquipmentManager_UnpackLocation(location)
-                    --[[if ( voidStorage and voidSlot ) then
-                        itemLink = GetVoidItemHyperlinkString(voidSlot)
-                    else]]if ( not bags and slot2) then
-                        itemLink =GetInventoryItemLink("player",slot2)
-                    elseif bag and slot2 then
-                        itemLink = C_Container.GetContainerItemLink(bag, slot2)
-                    end
-                end
-            else--其它
-                local location = button:GetItemLocation()
-                if location and type(location)=='table' then
-                    itemLink= C_Item.GetItemLink(location)
-                    slot=C_Item.GetItemInventoryType(location)
-                end
-            end
-            setFlyout(button, itemLink, slot)
-            button.itemLink= itemLink
-        end
-    end
-end
 
 
 
@@ -203,13 +187,21 @@ end
 
 local function Init()
     WoWTools_DataMixin:Hook('EquipmentFlyout_UpdateItems', function()
-        local itemButton = EquipmentFlyoutFrame.button
-        Settings(itemButton)
+        for _, btn in ipairs(EquipmentFlyoutFrame.buttons) do
+            if btn and btn:IsShown()  then
+                setFlyout(btn)
+            end
+        end
     end)
 
-    WoWTools_DataMixin:Hook('EquipmentFlyout_Show', function(...)
-            Settings(...)
-    end)
+    --[[WoWTools_DataMixin:Hook('EquipmentFlyout_Show', function()
+        print('aaa')
+       for _, btn in ipairs(EquipmentFlyoutFrame.buttons) do
+            if btn and btn:IsShown()  then
+                setFlyout(btn)
+            end
+        end
+    end)]]
 
    Init=function()end
 end

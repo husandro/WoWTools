@@ -334,7 +334,7 @@ end]]
 function WoWTools_DataMixin:StaticPopup_FindVisible(which)
     local info = StaticPopupDialogs[which];
 	if info then
-        for index = 1, STATICPOPUP_NUMDIALOGS or 4, 1 do--4
+        for index = 1, 4, 1 do--STATICPOPUP_NUMDIALOGS
             local frame = _G["StaticPopup"..index]--StaticPopup_GetDialog(index)
             if frame and frame:IsShown() and (frame.which == which) then-- and (not info.multiple or (frame.data == data)) ) then
                 return frame, frame.timeleft--StaticPopup1

@@ -177,8 +177,12 @@ end
 
 
 
-
+--12.0才有
 function WoWTools_CollectionMixin:Init_Transmog()
+    if not CombatLogGetCurrentEventInfo then--12.0没有了
+        return
+    end
+
     if C_AddOns.IsAddOnLoaded('Blizzard_Transmog') then
         Init()
     else

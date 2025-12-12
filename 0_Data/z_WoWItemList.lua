@@ -2071,7 +2071,7 @@ local function Init_List(showListType, isShow)
         if isFrameShow then
             Frame:Hide()
         end
-
+        local show
         if isShow2~=nil then
             show= isShow2
         else

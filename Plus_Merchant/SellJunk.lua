@@ -177,7 +177,7 @@ Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName
             if itemEquipLoc--绑定
                 and itemQuality and itemQuality<=4--最高史诗
                 and (classID==2 or classID==3 or classID==4 or other)--2武器 3宝石 4盔甲
-                and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
+                and bindType == Enum.ItemBind.OnAcquire--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
                 and (
                         (itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=30)
                         or (WoWTools_DataMixin.Player.isMaxLevel and expansionID and expansionID<WoWTools_DataMixin.ExpansionLevel)--旧版本

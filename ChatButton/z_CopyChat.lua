@@ -384,21 +384,12 @@ local function Init()
 		end
 	end
 
-	if ChatFrameMixin then
-		WoWTools_DataMixin:Hook(ChatFrameMixin, 'OnLoad', function(frame)
-			local index = frame:GetName():match("(%d+)")
-			if index then
-				Init_Button(index)
-			end
-		end)
-	elseif ChatFrame_OnLoad then --11.2.7没有了
-		WoWTools_DataMixin:Hook('ChatFrame_OnLoad', function(frame)
-			local index = frame:GetName():match("(%d+)")
-			if index then
-				Init_Button(index)
-			end
-		end)
-	end
+	WoWTools_DataMixin:Hook(ChatFrameMixin, 'OnLoad', function(frame)
+		local index = frame:GetName():match("(%d+)")
+		if index then
+			Init_Button(index)
+		end
+	end)
 
 	WoWTools_DataMixin:Hook('FCF_FadeInScrollbar', function(chatFrame)
 		local btn= chatFrame.CopyChatButton

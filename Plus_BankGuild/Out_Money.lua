@@ -231,7 +231,7 @@ local function Init_Menu(self, root)
     function()
         return Save().onlyMemberOutMoney
     end, function()
-        Save().onlyMemberOutMoney= not Save().onlyMemberOutMoney and true or nil
+        Save().onlyMemberOutMoney= not Save().onlyMemberOutMoney and true or false
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(

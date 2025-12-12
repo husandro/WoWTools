@@ -700,7 +700,7 @@ local function Get_Info(tab)
             end
         end
 
-        if containerInfo and not containerInfo.isBound and (bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE) and not topRightText then
+        if containerInfo and not containerInfo.isBound and (bindType==Enum.ItemBind.OnEquip or bindType==Enum.ItemBind.OnUse) and not topRightText then
             rightText='|A:Professions_Specialization_Lock_Glow:16:16|a'--可交易
         end
 
