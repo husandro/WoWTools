@@ -1,40 +1,16 @@
-
-local function Save()
+local function SaveLog()
     return WoWToolsSave['Tools_Mounts']
 end
+
 
 local function set_ShiJI()--召唤司机 代驾型机械路霸
     ShiJI= WoWTools_DataMixin.Player.Faction=='Horde' and 179244 or (WoWTools_DataMixin.Player.Faction=='Alliance' and 179245) or nil--"Alliance", "Horde", "Neutral"
 end
 
 
-
-
-
-
---local ITEMS= ITEMS
---local SPELLS= SPELLS
---local FLOOR= FLOOR
---local MOUNT_JOURNAL_FILTER_GROUND= MOUNT_JOURNAL_FILTER_GROUND
---local MOUNT_JOURNAL_FILTER_FLYING= MOUNT_JOURNAL_FILTER_FLYING
---local MOUNT_JOURNAL_FILTER_AQUATIC= MOUNT_JOURNAL_FILTER_AQUATIC
---local MOUNT_JOURNAL_FILTER_DRAGONRIDING= MOUNT_JOURNAL_FILTER_DRAGONRIDING
-
-
-
 local ShiJI
 local XD
 local MountTab={}
-
-
-local MountType={
-    MOUNT_JOURNAL_FILTER_GROUND,
-    MOUNT_JOURNAL_FILTER_AQUATIC,
-    MOUNT_JOURNAL_FILTER_FLYING,
-    MOUNT_JOURNAL_FILTER_DRAGONRIDING,
-    'Shift', 'Alt', 'Ctrl',
-    FLOOR,
-}
 
 
 local function XDInt()--德鲁伊设置
@@ -44,9 +20,9 @@ local function XDInt()--德鲁伊设置
         local flying=C_SpellBook.IsSpellInSpellBook(783) and 783
         if ground then
             XD={
-                [MOUNT_JOURNAL_FILTER_GROUND]= ground,
-                [MOUNT_JOURNAL_FILTER_AQUATIC]= flying,
-                [MOUNT_JOURNAL_FILTER_FLYING]= flying,
+                Ground= ground,
+                Flying= flying,
+                Aquatic= flying,
             }
         end
     end
@@ -58,10 +34,10 @@ end
 
 local function checkSpell(self)--检测法术
     self.spellID2=nil
-    if XD and XD[MOUNT_JOURNAL_FILTER_GROUND] then
-        self.spellID2=XD[MOUNT_JOURNAL_FILTER_GROUND]
+    if XD and XD.Ground then
+        self.spellID2=XD.Ground
     else
-        for spellID, _ in pairs(Save().Mounts[SPELLS]) do
+        for spellID in pairs(SaveLog()['Spell']) do
             if C_SpellBook.IsSpellInSpellBook(spellID) then
                 self.spellID2=spellID
                 break
@@ -73,9 +49,12 @@ end
 
 local function checkItem(self)--检测物品
     self.itemID=nil
-    for itemID in pairs(Save().Mounts[ITEMS]) do
+
+    for itemID in pairs(SaveLog().Item or {}) do
+
         WoWTools_DataMixin:Load(itemID, 'item')
-        if C_Item.GetItemCount(itemID , false, true, true, false)>0 and C_PlayerInfo.CanUseItem(itemID) then
+
+        if C_Item.GetItemCount(itemID, false, true, true, false)>0 and C_PlayerInfo.CanUseItem(itemID) then
             self.itemID=itemID
             break
         end
@@ -87,24 +66,30 @@ end
 
 local function checkMount()--检测坐骑
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
-    for _, name in pairs(MountType) do
+    for _, name in pairs({
+        'Ground',
+        'Aquatic',
+        'Flying',
+        'Dragonriding',
+        'Alt',
+        'Ctrl',
+        'Shift',
+        'Floor',
+    }) do
         if XD and XD[name] then
             MountTab[name]={XD[name]}
 
-
-        --[[elseif index<=3 and not OkMount and ShiJI then
-            MountTab[type]={ShiJI}]]
-
         else
             MountTab[name]= {}
-            for spellID, tab in pairs(Save().Mounts[name] or {}) do
+
+            for spellID, tab in pairs(SaveLog()[name] or {}) do
                 WoWTools_DataMixin:Load(spellID, 'spell')
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
                     local isFactionSpecific, faction, shouldHideOnChar, isCollected= select(8, C_MountJournal.GetMountInfoByID(mountID))
                     if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==WoWTools_MountMixin.faction) then
-                        if name==FLOOR then
+                        if name=='Floor' then
                             if uiMapID and type(tab)=='table' and tab[uiMapID] and not XD then
                                 table.insert(MountTab[name], spellID)
                             end
@@ -218,21 +203,21 @@ local function setClickAtt(self)--设置 Click属性
         elseif isMoving or isBat then
             spellID= IsIndoors() and 768 or 783
         elseif isAdvancedFlyableArea then
-            spellID= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+            spellID= getRandomRoll('Dragonriding')
         end
         spellID= spellID or (IsIndoors() and 768 or 783)
 
     elseif not self.itemID or not C_PlayerInfo.CanUseItem(self.itemID) then
         spellID= (IsIndoors() or isMoving or isBat) and self.spellID2
-            or getRandomRoll(FLOOR)--区域
+            or getRandomRoll('Floor')--区域
             or ((isAdvancedFlyableArea or C_Spell.IsSpellUsable(368896)) and-- [368896]=true,--[复苏始祖幼龙] 
                 C_UnitAuras.GetAuraDataBySpellName('player', C_Spell.GetSpellName(404468), 'HELPFUL')--404468/飞行模式：稳定
-                    and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)
-                    or getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                    and getRandomRoll('Flying')
+                    or getRandomRoll('Dragonriding')
                 )
-            or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
-            or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
-            or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
+            or (IsSubmerged() and getRandomRoll('Aquatic'))--水平中
+            or (isFlyableArea and getRandomRoll('Flying'))--飞行区域
+            or (IsOutdoors() and getRandomRoll('Ground'))--室内
             or self.spellID
             or ShiJI
     end
@@ -314,14 +299,17 @@ end
 
 
 local function Set_Item_Spell_Edit(info)
-    if info.type==FLOOR then
+    local mountType= info.type
+    local spellID= info.spellID
+    local itemLink= info.itemLink
+    local itemID= info.itemID
+
+    if mountType=='Floor' then
         StaticPopup_Show('WoWTools_GetMapID', WoWTools_MountMixin.addName, nil, {
-            type=info.type,
-            spellID=info.spellID,
-            OnShow=function(self, data)
+            OnShow=function(self)
                 local text= ''
-                local tab= Save().Mounts[FLOOR][data.spellID] or {}
-                for uiMapID, _ in pairs(tab) do
+                local tab= SaveLog().Floor[spellID] or {}
+                for uiMapID in pairs(tab) do
                     text= text..uiMapID..', '
                 end
                 if text=='' then
@@ -331,66 +319,68 @@ local function Set_Item_Spell_Edit(info)
                 local edit= self:GetEditBox()
                 local b3= self:GetButton3()
                 edit:SetText(text)
-                b3:SetEnabled(Save().Mounts[FLOOR][data.spellID] and true or false)
+                b3:SetEnabled(SaveLog().Floor[spellID] and true or false)
                 if self.data then
                     self.data.text= text
                 end
             end,
-            SetValue = function(_, data, tab, text)
-                Save().Mounts[FLOOR][data.spellID]= tab
+            SetValue = function(_, _, tab, text)
+                SaveLog().Floor[spellID]= tab
                 WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
-                WoWTools_DataMixin:Call('MountJournal_UpdateMountList')
-                print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, C_Spell.GetSpellLink(data.spellID), '|n', text)
+                if MountJournal and MountJournal:IsVisible() then
+                    WoWTools_DataMixin:Call('MountJournal_UpdateMountList')
+                end
+                print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, C_Spell.GetSpellLink(spellID), '|n', text)
 
             end,
-            OnAlt = function(_, data)
-                Save().Mounts[FLOOR][data.spellID]=nil
+            OnAlt = function()
+                SaveLog().Floor[spellID]=nil
                 checkMount()--检测坐骑
                 setClickAtt(WoWTools_ToolsMixin:Get_ButtonForName('Mount'))--设置 Click属性
-                WoWTools_DataMixin:Call('MountJournal_UpdateMountList')
-                print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, data.link)
+                if MountJournal and MountJournal:IsVisible() then
+                    WoWTools_DataMixin:Call('MountJournal_UpdateMountList')
+                end
+                print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(spellID))
             end
         })
         return
     end
 
 
-    local name, link, texture, itemRarity, color, type, count, _
-    if info.itemID or info.itemLink then
-        name, link, itemRarity, _, _, _, _, _, _, texture = C_Item.GetItemInfo(info.itemLink or info.itemID)
+    local name, link, texture, itemRarity, color, count, _
+    if itemID or itemLink then
+        name, link, itemRarity, _, _, _, _, _, _, texture = C_Item.GetItemInfo(itemLink or itemID)
         color= {ITEM_QUALITY_COLORS[itemRarity].color:GetRGBA()}
-        type=info.type
-        count=C_Item.GetItemCount(info.itemID, true, false, true,true)
-    elseif info.spellID then
+        count=C_Item.GetItemCount(itemID, true, false, true,true)
+    elseif spellID then
         name= C_Spell.GetSpellName(info.spellID)
         texture= C_Spell.GetSpellTexture(info.spellID)
         link=C_Spell.GetSpellLink(info.spellID)
-        type=info.type
     end
 
+    local ID= itemID or spellID
+
     StaticPopup_Show('WoWTools_Item', WoWTools_MountMixin.addName, nil, {
-        link= info.itemLink or link,
-        ID= info.itemID or info.spellID,
-        name= name,
-        type= type,
+        link= itemLink or link,
+        name= name or ID,
         color= color,
         texture= texture,
-        count=count,
-        OnShow=function(self, data)
+        count= count,
+        OnShow=function(self)
             local b1= self.button1 or self:GetButton1()
             local b3= self:GetButton3()
-            b3:SetEnabled(Save().Mounts[data.type][data.ID] and true or false)
-            b1:SetEnabled(not Save().Mounts[data.type][data.ID] and true or false)
+            b3:SetEnabled(SaveLog()[mountType][ID] and true or false)
+            b1:SetEnabled(not SaveLog()[mountType][ID] and true or false)
         end,
-        SetValue = function(_, data)
-            Save().Mounts[data.type][data.ID]=true
+        SetValue = function()
+            SaveLog()[mountType][ID]=true
              WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
-            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '添加' or ADD, data.link)
+            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '添加' or ADD, itemLink or link)
         end,
-        OnAlt = function(_, data)
-            Save().Mounts[data.type][data.ID]=nil
+        OnAlt = function()
+            SaveLog()[mountType][ID]=nil
              WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
-            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, data.link)
+            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, itemLink or link)
         end,
     })
 end
@@ -418,7 +408,7 @@ end
 
 local function Init()
     local btn= WoWTools_ToolsMixin:Get_ButtonForName('Mount')
-    WoWTools_KeyMixin:Init(btn, function() return Save().KEY end)
+    WoWTools_KeyMixin:Init(btn, function() return WoWToolsSave['Tools_Mounts'].KEY end)
 
 
 
@@ -450,11 +440,11 @@ local function Init()
     btn:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID then
-            Set_Item_Spell_Edit({itemID=itemID, itemLink=itemLink, type=ITEMS})
+            Set_Item_Spell_Edit({itemID=itemID, itemLink=itemLink, type='Item'})
             ClearCursor()
             return
         elseif infoType =='spell' and spellID then
-            Set_Item_Spell_Edit({spellID=spellID, type=SPELLS})
+            Set_Item_Spell_Edit({spellID=spellID, type='Spell'})
             ClearCursor()
             return
 
@@ -466,7 +456,7 @@ local function Init()
 
             --战斗中，可用，驭空术
             elseif UnitAffectingCombat('player') and not IsPlayerMoving() and  C_Spell.IsSpellUsable(368896) then
-                local spellID2= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                local spellID2= getRandomRoll('Dragonriding')
                 local mountID= spellID2 and C_MountJournal.GetMountFromSpell(spellID2) or 368896
                 if mountID then
                     C_MountJournal.SummonByID(mountID)
@@ -497,11 +487,11 @@ local function Init()
         local name, col, exits
         if infoType == "item" and itemID then
             name, col= WoWTools_ItemMixin:GetName(itemID)
-            exits= Save().Mounts[ITEMS][itemID] and true or false
+            exits= SaveLog().Item[itemID] and true or false
 
         elseif infoType =='spell' and spellID then
             name, col= WoWTools_SpellMixin:GetName(spellID)
-            exits=Save().Mounts[SPELLS][spellID] and true or false
+            exits=SaveLog().Spell[spellID] and true or false
         end
 
         if name and exits~=nil then

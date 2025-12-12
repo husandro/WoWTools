@@ -328,7 +328,9 @@ local function Init()
 
     btn:rest_type()
     btn:set_text()
-    btn:SetupMenu(Init_UI_List_Menu)--过滤，列表，菜单    
+    btn:SetupMenu(Init_UI_List_Menu)--过滤，列表，菜单
+
+    Init=function()end
 end
 
 
@@ -336,7 +338,16 @@ end
 
 
 function WoWTools_MountMixin:Init_MountJournal()
-    Init()
+     if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+        Init()
+    else
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_Collections' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+    end
 end
 
 

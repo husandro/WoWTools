@@ -58,12 +58,12 @@ end
 
 
 --加载 quest spell item itemLocation challengeMap club
-function WoWTools_DataMixin:Load(id, loadType)
-    if not id or not loadType then
+function WoWTools_DataMixin:Load(id, typeString)
+    if not id or not typeString then
         return
     end
 
-    if loadType=='quest' then
+    if typeString=='quest' then
         if not HaveQuestData(id) then
             C_QuestLog.RequestLoadQuestByID(id)
         end
@@ -71,7 +71,7 @@ function WoWTools_DataMixin:Load(id, loadType)
             C_TaskQuest.RequestPreloadRewardData(id)
         end
 
-    elseif loadType=='spell' then
+    elseif typeString=='spell' then
         local spellID= id
         if type(id)=='string' then
             spellID= (C_Spell.GetSpellInfo(id) or {}).spellID
@@ -80,17 +80,17 @@ function WoWTools_DataMixin:Load(id, loadType)
             C_Spell.RequestLoadSpellData(spellID)
         end
 
-    elseif loadType=='item' then
+    elseif typeString=='item' then
         if not C_Item.IsItemDataCachedByID(id) then
             C_Item.RequestLoadItemDataByID(id)
         end
 
-    elseif loadType=='itemLocation' then
+    elseif typeString=='itemLocation' then
         if not C_Item.IsItemDataCached(id) then
             C_Item.RequestLoadItemData(id)
         end
 
-    elseif loadType=='challengeMap' then
+    elseif typeString=='challengeMap' then
         C_ChallengeMode.RequestLeaders(id)
 
     elseif id=='club' then

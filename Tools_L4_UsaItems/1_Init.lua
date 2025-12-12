@@ -278,7 +278,8 @@ local function Init()
         btn:SetAlpha(0.3)
     end)
 
-
+    WoWTools_UseItemsMixin:Init_PlayerSpells()--法术书
+    WoWTools_UseItemsMixin:Init_UI_Toy()
 
     Init=function()end
 end
@@ -295,18 +296,10 @@ end
 --加载保存数据
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-
-            if WoWToolsSave['Tools_UseItems'] then
-                WoWToolsPlayerDate['Tools_UseItems']= WoWToolsSave['Tools_UseItems']
-                WoWToolsSave['Tools_UseItems']= nil
-            else
-                WoWToolsPlayerDate['Tools_UseItems']= WoWToolsPlayerDate['Tools_UseItems'] or CopyTable(P_Tabs)
-            end
+            WoWToolsPlayerDate['Tools_UseItems']= WoWToolsPlayerDate['Tools_UseItems'] or P_Tabs
 
 --禁用，Tools模块，退出
             if WoWTools_ToolsMixin:Get_MainButton() then
@@ -324,39 +317,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                    WoWTools_DataMixin:Load(ID, 'item')
                 end
 
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
-                   WoWTools_UseItemsMixin:Init_PlayerSpells()
-                end
-
-                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    WoWTools_UseItemsMixin:Init_UI_Toy()
-                end
-
             else
                 self:SetScript('OnEvent', nil)
-                self:UnregisterEvent(event)
             end
 
-        elseif arg1=='Blizzard_Collections' and WoWToolsSave then
-            WoWTools_UseItemsMixin:Init_UI_Toy()
-            if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
-                self:UnregisterEvent(event)
-            end
-
-        elseif arg1=='Blizzard_PlayerSpells' and WoWToolsSave then--法术书
-            WoWTools_UseItemsMixin:Init_PlayerSpells()
-            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                self:UnregisterEvent(event)
-            end
+            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         Init()
         WoWTools_UseItemsMixin:Init_All_Buttons()
-
-        WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
-
+        self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end
 end)

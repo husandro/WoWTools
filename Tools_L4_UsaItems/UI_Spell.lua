@@ -78,74 +78,32 @@ end
 
 
 
-
-
-
-
-
-
-local function set_Use_Spell_Button(btn, spellID)
-    if not btn.useSpell then
-        Create_Button(btn)
-    end
-
-    btn.useSpell.spellID= spellID
-    btn.useSpell:set_alpha()
-    btn.useSpell:SetShown(spellID and true or false)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init_SpellFlyoutButton()
-    if not SpellFlyoutButton_UpdateGlyphState then
-        return
-    end
-
-    WoWTools_DataMixin:Hook('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
-        local frame= self:GetParent():GetParent()
-        if not frame or not frame.useSpell or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
-            if self.useSpell then
-                self.useSpell:SetShown(false)
-            end
-        else
-            set_Use_Spell_Button(self, self.spellID)
-        end
-    end)
-
-    Init_SpellFlyoutButton=function()end
-end
-
-
-
-local function Init_PlayerSpells()
+local function Init()
     WoWTools_DataMixin:Hook(SpellBookItemMixin, 'UpdateVisuals', function(frame)
-        set_Use_Spell_Button(frame.Button, frame.spellBookItemInfo.spellID)
+         if not frame.Button.useSpell then
+            Create_Button(frame.Button)
+        end
+        local spellID= frame.spellBookItemInfo.spellID
+        frame.Button.useSpell.spellID= frame.spellBookItemInfo.spellID
+        frame.Button.useSpell:set_alpha()
+        frame.Button.useSpell:SetShown(spellID and true or false)
     end)
-    Init_PlayerSpells=function()end
+    Init=function()end
 end
 
 
 
 
-
-
-function WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
-    Init_SpellFlyoutButton()
-end
 
 function WoWTools_UseItemsMixin:Init_PlayerSpells()
-    Init_PlayerSpells()
+    if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
+        Init()
+    else
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_PlayerSpells' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+    end
 end

@@ -84,9 +84,9 @@ function WoWTools_TextureMixin.Frames:GroupLootHistoryFrame()
     self:SetNineSlice(GroupLootHistoryFrame, self.min, true)
     self:SetAlphaColor(GroupLootHistoryFrameBg)
     self:SetScrollBar(GroupLootHistoryFrame)
-    self:SetAlphaColor(GroupLootHistoryFrameMiddle)
+    --[[self:SetAlphaColor(GroupLootHistoryFrameMiddle)
     self:SetAlphaColor(GroupLootHistoryFrameLeft)
-    self:SetAlphaColor(GroupLootHistoryFrameRight)
+    self:SetAlphaColor(GroupLootHistoryFrameRight)]]
     self:SetFrame(GroupLootHistoryFrame.ResizeButton, {alpha=0.3})
 end
 

@@ -103,5 +103,14 @@ end
 
 
 function WoWTools_UseItemsMixin:Init_UI_Toy()
-    Init()
+    if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+        Init()
+    else
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_Collections' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+    end
 end
