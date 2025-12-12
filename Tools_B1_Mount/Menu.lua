@@ -2,11 +2,6 @@ local function Save()
     return WoWToolsSave['Tools_Mounts']
 end
 
-local function Set_Mount_Summon(data)
-    C_MountJournal.SummonByID(data.mountID or 0)
-    return MenuResponse.Open
-end
-
 
 
 
@@ -92,13 +87,14 @@ end
 local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemID
     local icon= data.icon or ''
     local col= data.col or ''
-    
+
     if data.mountID then
         root:CreateButton(
             icon..col..(WoWTools_DataMixin.onlyChinese and '召唤' or SUMMON),
-            Set_Mount_Summon,
-            data
-        )
+        function(d)
+            C_MountJournal.SummonByID(d.mountID or 0)
+            return MenuResponse.Refresh
+        end, data)
         root:CreateDivider()
     end
 
@@ -171,7 +167,10 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
         ..icon
         ..col
         ..name,
-        Set_Mount_Summon,
+        function(d)
+            C_MountJournal.SummonByID(d.mountID or 0)
+            return MenuResponse.Refresh
+        end,
         {spellID=spellID, mountID=mountID, type=type}
     )
     sub:SetTooltip(Set_Menu_Tooltip)
@@ -454,6 +453,7 @@ local function Init_Menu(self, root)
     sub=root:CreateButton('|T413588:0|t'..(Save().KEY or (WoWTools_DataMixin.onlyChinese and '坐骑' or MOUNT)),
     function()
         C_MountJournal.SummonByID(0)
+        return MenuResponse.Refresh
     end, {spellID=150544})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '随机召唤偏好坐骑' or MOUNT_JOURNAL_SUMMON_RANDOM_FAVORITE_MOUNT:gsub('\n', ' '), nil,nil,nil)

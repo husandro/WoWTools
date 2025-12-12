@@ -50,7 +50,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     elseif isForDragonriding then
         textRight= format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, WoWTools_DataMixin.onlyChinese and '驭空术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
     end
-    
+
 
     local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID, spellVisualKitID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
@@ -80,11 +80,11 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
-        print(
+        --[[print(
             self.addName..WoWTools_DataMixin.Icon.icon2,
             WoWTools_SpellMixin:GetLink(spellID, true),
             '|cnGREEN_FONT_COLOR:Alt+'..(WoWTools_DataMixin.onlyChinese and '召唤坐骑' or MOUNT)
-        )
+        )]]
     end
 
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff626262'

@@ -40,7 +40,7 @@ local function Init()
             return
         end
         local show= true
-        if UnitAffectingCombat('player') or IsIndoors() then
+        if InCombatLockdown() or IsIndoors() then
             show=false
 
         elseif self.specialEffects and not IsMounted() then
