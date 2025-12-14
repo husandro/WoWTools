@@ -83,7 +83,7 @@ Plus_Texture\3_Init.lua
 Plus_Texture\ActionButton.lua
 Plus_Texture\ChatBubbles.lua
 Plus_Texture\ClassPower.lua
-Plus_Texture\HelpTip.lua
+##Plus_Texture\HelpTip.lua
 Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
 Plus_Texture\z_SharedXML.lua
@@ -493,15 +493,9 @@ Plus\Hunter\Tooltips.lua
 Plus\Hunter\UI.lua
 ##其它
 Z_Other\0_Init.lua
-##美酒节 Brewfest
-Z_Other\Brewfest.lua
 
 ##分解
 Z_Other\ScrappingMachine.lua
-##断， 驱，散
-Z_Other\InterruptStolenDispel.lua
-##10.1 梦境之种
-Z_Other\DormantSeeds.lua
 ##自动隐藏，弹出NPC说话，
 Z_Other\Talking.lua
 ##为职业菜单，添加颜色，图标
@@ -511,6 +505,15 @@ Z_Other\Achievements.lua
 Z_Other\MoneyFrame.lua
 ##自动输入，删除
 Z_Other\DELETE.lua
+##隐藏教程
+Z_Other\HelpTip.lua
+##断， 驱，散 12.0没有了
+Z_Other\InterruptStolenDispel.lua
+##美酒节 Brewfest
+Z_Other\Brewfest.lua
+##10.1 梦境之种
+Z_Other\DormantSeeds.lua
+
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
 ChatButton\0_ChatMixin.lua

@@ -1,9 +1,4 @@
-local addName
 local classTabs={}
-local function Save()
-    return WoWToolsSave['Other_ClassMenuColor']
-end
-
 
 
 
@@ -16,9 +11,9 @@ end
 
 
 local function Init()
-local tab
+    local _tab
 
-tab= {--https://wago.tools/db2/ChrClasses?locale=zhCN
+_tab= {--https://wago.tools/db2/ChrClasses?locale=zhCN
 [1] ='战士',
 [2] ='圣骑士',
 [3] ='猎人',
@@ -45,7 +40,7 @@ for index = 1, GetNumClasses() do
 
         classTabs[className]= WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile)
             ..'|c'..hex
-            ..(WoWTools_DataMixin.onlyChinese and tab[classID] or className)
+            ..(WoWTools_DataMixin.onlyChinese and _tab[classID] or className)
             ..'|r'
 
     end
@@ -53,7 +48,7 @@ end
 
 --[ID]= ClassID,
 --https://wago.tools/db2/ChrSpecialization?locale=zhCN
-tab={
+_tab={
 [62]= 8,
 [63]= 8,
 [64]= 8,
@@ -109,7 +104,7 @@ tab={
 [1478]= 14,
 }
 
-for specID, classID in pairs(tab) do
+for specID, classID in pairs(_tab) do
     local className, classFile= GetClassInfo(classID)
     local hex=className and classFile and select(4, GetClassColor(classFile))
     if hex then
@@ -127,6 +122,9 @@ for specID, classID in pairs(tab) do
         end
     end
 end
+
+
+
 
 --Blizzard_Menu/MenuUtil.lua
     WoWTools_DataMixin:Hook(MenuUtil, 'SetElementText', function(desc, text)
@@ -147,8 +145,7 @@ end
 
 
 
-    tab=nil
-    Init=function()end
+    _tab=nil
 end
 
 
@@ -157,42 +154,18 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event=='ADDON_LOADED' then
-        if arg1== 'WoWTools' then
-            WoWToolsSave['Other_ClassMenuColor']= WoWToolsSave['Other_ClassMenuColor'] or {}
+    if arg1== 'WoWTools' then
 
-            addName= '|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '职业菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, HUD_EDIT_MODE_MICRO_MENU_LABEL))
-
-            --添加控制面板
-            WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                Value= not Save().disabled,
-                GetValue=function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    Init()
-                    if Save().disabled then
-                        print(addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetEnabeleDisable(Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                    end
-                end,
-                tooltip=WoWTools_DataMixin.onlyChinese and '添加 颜色 图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, COLOR..', '..EMBLEM_SYMBOL),
-                layout= WoWTools_OtherMixin.Layout,
-                category= WoWTools_OtherMixin.Category,
-            })
-
-            if not Save().disabled then
-                self:RegisterEvent("PLAYER_ENTERING_WORLD")
-            else
-                self:SetScript('OnEvent', nil)
-            end
-            self:UnregisterEvent(event)
+        if WoWTools_OtherMixin:AddOption(
+            'ClassMenuColor',
+            '|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '职业菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, HUD_EDIT_MODE_MICRO_MENU_LABEL)),
+            WoWTools_DataMixin.onlyChinese and '添加 颜色 图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, COLOR..', '..EMBLEM_SYMBOL)
+        ) then
+            Init()
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' then
-        Init()
+        Init=function()end
         self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end

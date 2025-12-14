@@ -1,17 +1,8 @@
---隐藏教程
-
-
-local function Save()
-    return WoWToolsSave['Plus_Texture'] or {}
-end
-
-
-
 
 
 local function Init()
-    if Save().disabledHelpTip then
-        return
+    if C_CVar.GetCVarBool("showNPETutorials") and not InCombatLockdown() then
+        C_CVar.SetCVar("showNPETutorials",'0')
     end
 
     WoWTools_DataMixin:Hook(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua
@@ -28,9 +19,6 @@ local function Init()
         end
     end)
 
-    if C_CVar.GetCVarBool("showNPETutorials") and not InCombatLockdown() then
-        C_CVar.SetCVar("showNPETutorials",'0')
-    end
 
 --Blizzard_TutorialPointerFrame.lua 隐藏, 新手教程
     WoWTools_DataMixin:Hook(TutorialPointerFrame, 'Show',function(self, content, direction, anchorFrame)
@@ -70,34 +58,20 @@ local function Init()
         WoWTools_TextureMixin:SetUIButton(SplashFrame.BottomCloseButton)
     end
 
-
     C_Timer.After(2, function()
-        --[[if SplashFrame and SplashFrame:IsShown() then新内容 bug
-            --SplashFrame:Close();
-            C_SplashScreen.SendSplashScreenCloseTelem()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
-            '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00',
-            SplashFrame.Label and SplashFrame.Label:GetText() or ''
-        )
-        end]]
-
-        if not Save().disabledHelpTip then--错误，提示
-            if ScriptErrorsFrame then
-                if ScriptErrorsFrame:IsShown() then
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName)
-                    print(WoWTools_TextMixin:CN(ScriptErrorsFrame.ScrollFrame.Text:GetText()))
-                    ScriptErrorsFrame.Close:Click()
-                end
-                ScriptErrorsFrame:HookScript('OnShow', function(self)
-                    print(WoWTools_TextureMixin.addName, WoWTools_TextureMixin.addName)
-                    print(WoWTools_TextMixin:CN(self.ScrollFrame.Text:GetText()))
-                    ScriptErrorsFrame.Close:Click()
-                end)
+        if ScriptErrorsFrame then
+            if ScriptErrorsFrame:IsShown() then
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName)
+                print(WoWTools_TextMixin:CN(ScriptErrorsFrame.ScrollFrame.Text:GetText()))
+                ScriptErrorsFrame.Close:Click()
             end
+            ScriptErrorsFrame:HookScript('OnShow', function(self)
+                print(WoWTools_TextureMixin.addName, WoWTools_TextureMixin.addName)
+                print(WoWTools_TextMixin:CN(self.ScrollFrame.Text:GetText()))
+                ScriptErrorsFrame.Close:Click()
+            end)
         end
     end)
-
-    Init=function()end
 end
 
 
@@ -105,6 +79,25 @@ end
 
 
 
-function WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
-    Init()
-end
+
+
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event=='ADDON_LOADED' then
+        if arg1== 'WoWTools' then
+            if WoWTools_OtherMixin:AddOption(
+                'HelpTip',
+                '|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS)),
+                nil
+            ) then
+                Init()
+            end
+
+            Init=function()end
+
+            self:SetScript('OnEvent', nil)
+            self:UnregisterEvent(event)
+        end
+    end
+end)

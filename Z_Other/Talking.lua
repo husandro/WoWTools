@@ -78,7 +78,7 @@ local function ADDON_LOADED()
         GetValue= function() return not WoWToolsSave['Other_VoiceTalking'].notPrint end,
         tooltip= WoWTools_DataMixin.onlyChinese and '聊天框提示，内容' or 'ChatBox input text',
         SetValue= function()
-            WoWToolsSave['Other_VoiceTalking'].notPrint= not WoWToolsSave['Other_VoiceTalking'].notPrint and true or nil
+            WoWToolsSave['Other_VoiceTalking'].notPrint= not WoWToolsSave['Other_VoiceTalking'].notPrint and true or false
         end,
         layout= WoWTools_OtherMixin.Layout,
         category= WoWTools_OtherMixin.Category,

@@ -1,5 +1,5 @@
 local function Save()
-    return  WoWToolsPlayerDate['Tools_UseItems']
+    return WoWToolsPlayerDate['Tools_UseItems']
 end
 
 
@@ -68,7 +68,8 @@ local function Create_Button(btn)
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_UseItemsMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
             end
         else
-            WoWTools_UseItemsMixin:Init_Menu(self)
+            --WoWTools_UseItemsMixin:Init_Menu(self)
+            MenuUtil.CreateContextMenu(self, WoWTools_UseItemsMixin.Init_Menu)
         end
     end)
 end

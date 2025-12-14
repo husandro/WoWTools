@@ -7,47 +7,48 @@ end
 
 
 local function Create_Button(btn)
-    btn.mountSpell= CreateFrame('Button', nil, btn, 'WoWToolsMenuTemplate')--WoWTools_ButtonMixin:Cbtn(btn, {size=16, atlas='hud-microbutton-Mounts-Down'})
-    btn.mountSpell:SetNormalAtlas('hud-microbutton-Mounts-Down')
+    btn.mountSpell= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')--WoWTools_ButtonMixin:Cbtn(btn, {size=16, atlas='hud-microbutton-Mounts-Down'})
+    btn.mountSpell:SetNormalTexture('Interface\\Icons\\MountJournalPortrait')
+    btn.mountSpell:SetSize(16,16)
     btn.mountSpell:SetPoint('TOP', btn, 'BOTTOM', -8, 0)
 
-    function btn.mountSpell:set_alpha()
+    function btn.mountSpell:settings()
         if self.spellID then
-            self:SetAlpha(SaveLog().Spell[self.spellID] and 1 or 0.2)
+            self:SetAlpha(
+                (self:IsMouseOver() or  SaveLog().Spell[self.spellID]) and 1
+                or 0.2)
         end
+        self:SetShown(self.spellID and not C_Spell.IsSpellPassive(self.spellID))
     end
+
     function btn.mountSpell:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_MountMixin.addName)
         GameTooltip:AddLine(' ')
-        if self.spellID then
-            GameTooltip:AddDoubleLine(
-                '|T'..(C_Spell.GetSpellTexture(self.spellID) or 0)..':0|t'
-                ..(C_Spell.GetSpellLink(self.spellID) or self.spellID)
-                ..' '..WoWTools_TextMixin:GetEnabeleDisable(SaveLog().Spell[self.spellID]),
+        GameTooltip:AddDoubleLine(
+            WoWTools_SpellMixin:GetName(self.spellID)
+            ..' '..WoWTools_TextMixin:GetEnabeleDisable(SaveLog().Spell[self.spellID]),
 
-                WoWTools_DataMixin.Icon.left
-            )
-        end
+            WoWTools_DataMixin.Icon.left
+        )
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         self:SetAlpha(1)
     end
-    btn.mountSpell:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha()  end)
+    btn.mountSpell:SetScript('OnLeave', function(self) GameTooltip:Hide() self:settings()  end)
     btn.mountSpell:SetScript('OnEnter', btn.mountSpell.set_tooltips)
     btn.mountSpell:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
-            if self.spellID then
-                SaveLog().Spell[self.spellID]= not SaveLog().Spell[self.spellID] and true or nil
-                self:set_tooltips()
-                self:set_alpha()
-                WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
-                print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
-            end
+            SaveLog().Spell[self.spellID]= not SaveLog().Spell[self.spellID] and true or nil
+            self:set_tooltips()
+            WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
+            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
         else
             WoWTools_MountMixin:Init_Menu_Spell(self)
         end
+        
+        self:settings()
     end)
 end
 
@@ -61,9 +62,9 @@ local function Init()
         if not frame.Button.mountSpell then
             Create_Button(frame.Button)
         end
+        
         frame.Button.mountSpell.spellID= frame.spellBookItemInfo.spellID
-        frame.Button.mountSpell:set_alpha()
-        frame.Button.mountSpell:SetShown(frame.spellBookItemInfo.spellID and true or false)
+        frame.Button.mountSpell:settings()
     end)
     Init=function()end
 end

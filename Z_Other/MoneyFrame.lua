@@ -56,31 +56,25 @@ end
 
 
 
+
+
+
+
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
-        WoWToolsSave['Other_MoneyFrame']= WoWToolsSave['Other_MoneyFrame'] or {disabled= not (LOCALE_zhCN and WoWTools_DataMixin.Player.husandro) and true or nil}
-
-        --添加控制面板
-        WoWTools_PanelMixin:OnlyCheck({
-            name= '|A:auctionhouse-icon-coin-gold:0:0|a'..(WoWTools_DataMixin.onlyChinese and '钱' or MONEY)..' mk',
-            Value= not WoWToolsSave['Other_MoneyFrame'].disabled,
-            GetValue=function() return not WoWToolsSave['Other_MoneyFrame'].disabled end,
-            SetValue= function()
-                WoWToolsSave['Other_MoneyFrame'].disabled= not WoWToolsSave['Other_MoneyFrame'].disabled and true or nil
-                Init()
-            end,
-            tooltip=WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
-            layout= WoWTools_OtherMixin.Layout,
-            category= WoWTools_OtherMixin.Category,
-        })
-
-        if not WoWToolsSave['Other_MoneyFrame'].disabled then
+        if WoWTools_OtherMixin:AddOption(
+            'MoneyFrame',
+            '|A:auctionhouse-icon-coin-gold:0:0|a'..(WoWTools_DataMixin.onlyChinese and '钱' or MONEY)..' mk',
+            nil
+        ) then
             Init()
         end
-        self:UnregisterEvent(event)
+
+        Init=function()end
+
         self:SetScript('OnEvent', nil)
+        self:UnregisterEvent(event)
     end
 end)

@@ -148,13 +148,12 @@ end
 
 
 
-
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_MountMixin.addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(WoWTools_DataMixin.onlyChinese and '坐骑' or MOUNT)
+            WoWTools_MountMixin.addName= '|TInterface\\Icons\\MountJournalPortrait:0|t'..(WoWTools_DataMixin.onlyChinese and '坐骑' or MOUNT)
 
             WoWToolsSave['Tools_Mounts']= WoWToolsSave['Tools_Mounts'] or P_Save
             P_Save= nil

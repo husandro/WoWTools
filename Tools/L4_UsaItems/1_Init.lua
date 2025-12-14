@@ -71,7 +71,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+function WoWTools_UseItemsMixin:Init_Menu(root)
     local sub, sub2, num
     for text, type in pairs({
         [WoWTools_DataMixin.onlyChinese and '物品' or ITEMS]='item',
@@ -120,7 +120,7 @@ local function Init_Menu(_, root)
 --玩具箱
                 if data.isToy then
                     WoWTools_LoadUIMixin:Journal(3, {toyItemID=data.itemID})
---已学，法术
+--已学，法术 bug
                 elseif data.spellID and C_SpellBook.IsSpellInSpellBook(data.spellID) then
                     WoWTools_LoadUIMixin:SpellBook(3, data.spellID)
 --其他
@@ -254,7 +254,7 @@ local function Init()
             ClearCursor()
 
         else
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, WoWTools_UseItemsMixin.Init_Menu)
         end
     end)
     btn:SetScript('OnEnter',function (self)

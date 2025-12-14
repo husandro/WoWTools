@@ -232,19 +232,18 @@ end
 
 
 
-function WoWTools_DataMixin:Reload(isControlKeyDown)
+function WoWTools_DataMixin:Reload()
     --if not (UnitAffectingCombat('player') and e.IsEncouter_Start) or not IsInInstance() then
-    if not issecure() then
-        if isControlKeyDown and IsControlKeyDown() or not isControlKeyDown then
-            C_UI.Reload()
-        end
-    else
+    --if not issecure() then
+    self:Call(C_UI.Reload)
+            --C_UI.Reload()
+    --[[else
         print(
             WoWTools_DataMixin.Icon.icon2
             ..'|cnWARNING_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         )
-    end
+    end]]
 end
 
 

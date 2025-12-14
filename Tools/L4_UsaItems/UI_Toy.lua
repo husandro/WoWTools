@@ -69,7 +69,7 @@ local function Create_Button(btn)--标记, 是否已选取
             self:set_tooltips()
             self:set_alpha()
         else
-            WoWTools_UseItemsMixin:Init_Menu(self)
+            --WoWTools_UseItemsMixin:Init_Menu(self)
         end
     end)
 

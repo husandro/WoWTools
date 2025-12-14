@@ -167,7 +167,7 @@ local function Init_Panel()
 
 
 
-    WoWTools_PanelMixin:OnlyCheck({
+    --[[WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS),
         tooltip='HelpTip'..'\n\n'..tooltip,
         category= WoWTools_TextureMixin.Category,
@@ -176,7 +176,7 @@ local function Init_Panel()
             Save().disabledHelpTip= not Save().disabledHelpTip and true or nil
             WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
         end
-    })
+    })]]
 
 
 
@@ -311,7 +311,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 WoWTools_TextureMixin:Init_Class_Power()--职业
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
-                WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
+                --WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
 
                 if Save().disabledTexture then
                     self:UnregisterEvent(event)
