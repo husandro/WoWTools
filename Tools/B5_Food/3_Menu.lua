@@ -137,7 +137,7 @@ local function Check_All_Menu(_, root, setClassID)
                     Save().class={}
                     for classID=0, 20 do
                         if not Save().DisableClassID[classID] then
-                            class= C_Item.GetItemClassInfo(classID)
+                            local class= C_Item.GetItemClassInfo(classID)
                             if class then
                                 Save().class[classID]= {}
                                 Check_All_SubClass(classID)

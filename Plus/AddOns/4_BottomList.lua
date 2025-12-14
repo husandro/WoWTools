@@ -49,6 +49,7 @@ local function Create_Button(index)
         AddonTooltip:SetOwner(_G[Name..'1'], "ANCHOR_RIGHT")
         AddonTooltip_Update(self)
         AddonTooltip:AddLine(' ')
+        local enabled, col
         local addonIndex= self:GetID()
         local character = UIDropDownMenu_GetSelectedValue(AddonList.Dropdown)
         if ( character == true ) then
@@ -61,7 +62,7 @@ local function Create_Button(index)
         else
             enabled = (checkboxState > Enum.AddOnEnableState.None)
         end
-        local col
+
         if ( loadable or ( enabled and (reason == "DEP_DEMAND_LOADED" or reason == "DEMAND_LOADED") ) ) then
             col='|cffffc600'
         elseif ( enabled and reason ~= "DEP_DISABLED" ) then
