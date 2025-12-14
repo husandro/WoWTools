@@ -167,19 +167,6 @@ local function Init_Panel()
 
 
 
-    --[[WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS),
-        tooltip='HelpTip'..'\n\n'..tooltip,
-        category= WoWTools_TextureMixin.Category,
-        GetValue= function() return not Save().disabledHelpTip end,
-        SetValue= function()
-            Save().disabledHelpTip= not Save().disabledHelpTip and true or nil
-            WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
-        end
-    })]]
-
-
-
     local function Add_Options(name)
         WoWTools_PanelMixin:OnlyCheck({
             name= name:gsub('Blizzard_', ''),
@@ -220,8 +207,10 @@ end
 
 local function Init()
     for name, func in pairs(WoWTools_TextureMixin.Frames) do
-        if _G[name] and not Save().no[name] then
-            func(WoWTools_TextureMixin)
+        if _G[name] then
+            if not not Save().no[name] then
+                func(WoWTools_TextureMixin)
+            end
         elseif WoWTools_DataMixin.Player.husandro then
             print(WoWTools_TextureMixin.addName, 'Frames[|cnWARNING_FONT_COLOR:'..name..'|r]', '没有发现')
         end
@@ -253,6 +242,7 @@ local function Clear_Frame()
     WoWTools_TextureMixin.Frames={}
     panel:UnregisterEvent('ADDON_LOADED')
     panel:SetScript('OnEvent', nil)
+    Clear_Frame=function()end
 end
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -266,11 +256,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().no= Save().no or {}
 
             P_Save= nil
-
-            if C_AddOns.IsAddOnLoaded('ElvUI') then
-                Clear_Frame()
-                return
-            end
 
             WoWToolsPlayerDate['BGTexture']= WoWToolsPlayerDate['BGTexture'] or {}
 
@@ -311,7 +296,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 WoWTools_TextureMixin:Init_Class_Power()--职业
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
-                --WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
 
                 if Save().disabledTexture then
                     self:UnregisterEvent(event)

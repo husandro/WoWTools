@@ -72,7 +72,7 @@ local function ClearAll_Menu(root, mountType)
             print(
                 WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 name,
-                WoWTools_TextMixin:CN(data.type)
+                WoWTools_MountMixin.TypeName[mountType]
             )
         end})
         return MenuResponse.Open

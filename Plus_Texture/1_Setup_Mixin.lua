@@ -723,7 +723,7 @@ function WoWTools_TextureMixin:SetPagingControls(frame)
     self:SetButton(frame.PrevPageButton, {alpha=1})
     self:SetButton(frame.NextPageButton, {alpha=1})
 --总数
-    frame.TotaleText= frame:CreateFontString(nil, 'ARTWORK', frame.PageText:GetFontObject():GetName() or'GameFontHighlight')
+    frame.TotaleText= frame:CreateFontString(nil, 'ARTWORK', frame.PageText:GetFontObject():GetName() or 'GameFontHighlight')
     frame.TotaleText:SetTextColor(frame.PageText:GetTextColor())
     frame.TotaleText:SetPoint('LEFT', frame.NextPageButton, 'RIGHT', 2, 0)
     if frame:GetParent().SetDataProvider then
@@ -738,9 +738,9 @@ function WoWTools_TextureMixin:SetPagingControls(frame)
         end)
     end
 
---去掉文字, 页
-    frame.currentPageOnlyText='%d'
-    frame.currentPageWithMaxText='%d/%d'
+--去掉文字, 页 这个有BUG
+    --frame.currentPageOnlyText='%d'
+    --frame.currentPageWithMaxText='%d/%d'
 end
 
     --HousingModelPreviewFrame.ModelPreview.ModelSceneControls.zoomInButton.NormalTexture

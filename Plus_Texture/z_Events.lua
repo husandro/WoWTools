@@ -2442,4 +2442,16 @@ function WoWTools_TextureMixin.Events:Blizzard_PagedContent()
     WoWTools_DataMixin:Hook(PagingControlsMixin, 'OnLoad', function(frame)
         self:SetPagingControls(frame)
     end)
+
+
+    WoWTools_DataMixin:Hook(PagingControlsMixin, 'UpdateControls', function(frame)
+        local shouldHideControls = frame.hideWhenSinglePage and frame.maxPages <= 1
+	    if not shouldHideControls then
+            if frame.displayMaxPages then
+                frame.PageText:SetFormattedText('%d/%d', frame.currentPage, frame.maxPages);
+            else
+                frame.PageText:SetFormattedText('%d', frame.currentPage)
+            end
+        end
+    end)
 end

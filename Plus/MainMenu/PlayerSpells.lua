@@ -169,7 +169,7 @@ local function Init()
                 WoWTools_LoadUIMixin:SpellBook(3, nil)
             end
         end]]
-    
+
 
     Init=function()end
 end
