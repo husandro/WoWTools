@@ -510,7 +510,7 @@ Z_Other\MoneyFrame.lua
 Z_Other\DELETE.lua
 ##隐藏教程
 Z_Other\HelpTip.lua
-##断， 驱，散 12.0没有了
+##断，驱，散 12.0没有了
 Z_Other\InterruptStolenDispel.lua
 ##美酒节 Brewfest
 Z_Other\Brewfest.lua

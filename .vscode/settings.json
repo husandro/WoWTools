@@ -2721,7 +2721,9 @@
         "ConfirmationStringMatches",
         "DELETE_GOOD_ITEM",
         "ID",
-        "MountJournal_InitMountButton"
+        "MountJournal_InitMountButton",
+        "TutorialDoubleKey_Frame",
+        "DamageMeterSessionWindowMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
