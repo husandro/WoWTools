@@ -2,7 +2,7 @@ local function Save()
     return WoWToolsSave['Tools_Mounts']
 end
 local function SaveLog()
-    return WoWToolsSave['Tools_Mounts']
+    return WoWToolsPlayerDate['Tools_Mounts'] 
 end
 
 
@@ -63,7 +63,7 @@ local function ClearAll_Menu(root, mountType)
         name,
     function(data)
         StaticPopup_Show('WoWTools_OK',
-        name..'\n\n'..(WoWTools_MountMixin.TypeName[mountType] or mountType),
+        name..'\n\n'..WoWTools_MountMixin.TypeName[mountType],
         nil,
         {SetValue=function()
            WoWToolsPlayerDate['Tools_Mounts'][mountType]={}
@@ -175,14 +175,14 @@ local function Set_Mount_Menu(root, mountType, spellID, num, index)
     elseif spellID then
         name= WoWTools_SpellMixin:GetName(spellID)
     else
-        name= icon..(WoWTools_MountMixin.TypeName[mountType] or mountType)
+        name= icon..WoWTools_MountMixin.TypeName[mountType]
     end
 
     sub=root:CreateButton(
         (index and index..') ' or '')
         ..col
         ..name
-        ..(num and ' '..num),
+        ..(num and ' '..num or ''),
         function(d)
             C_MountJournal.SummonByID(d.mountID or 0)
             return MenuResponse.Refresh
@@ -191,14 +191,15 @@ local function Set_Mount_Menu(root, mountType, spellID, num, index)
     )
     sub:SetTooltip(Set_Menu_Tooltip)
 
-
-    Set_Mount_Sub_Options(sub, {
-        icon=icon,
-        col=col,
-        mountID=mountID,
-        spellID=spellID,
-        type=mountType,
-    })
+    if index then
+        Set_Mount_Sub_Options(sub, {
+            icon=icon,
+            col=col,
+            mountID=mountID,
+            spellID=spellID,
+            type=mountType,
+        })
+    end
 
     return sub
 end
@@ -454,7 +455,7 @@ local function Init_Menu(self, root)
 
             sub=root:CreateButton(
                 '|T'..icon..':0|t'
-                ..(WoWTools_MountMixin.TypeName[mountType] or mountType)
+                ..WoWTools_MountMixin.TypeName[mountType]
                 ..col..' '.. num..'|r',
             function()
                 return MenuResponse.Open

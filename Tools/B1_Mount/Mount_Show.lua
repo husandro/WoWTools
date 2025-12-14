@@ -98,6 +98,7 @@ local function Init()
             self.elapsed=0
 
             WoWTools_CooldownMixin:Setup(self, nil, Save().mountShowTime, 0, true,false, true )--冷却条
+
             if self.specialEffects then
                 DEFAULT_CHAT_FRAME.editBox:SetText(EMOTE171_CMD2)
                 ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)

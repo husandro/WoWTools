@@ -2717,7 +2717,11 @@
         "GetMinimapShape",
         "BOOKTYPE_SPELL",
         "MountJournal_UpdateMountList",
-        "CAA_SAY_PLAYER_HEALTH_THROTTLE_LABEL"
+        "CAA_SAY_PLAYER_HEALTH_THROTTLE_LABEL",
+        "ConfirmationStringMatches",
+        "DELETE_GOOD_ITEM",
+        "ID",
+        "MountJournal_InitMountButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

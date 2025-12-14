@@ -1,5 +1,5 @@
 local function SaveLog()
-    return WoWToolsSave['Tools_Mounts']
+    return WoWToolsPlayerDate['Tools_Mounts']
 end
 
 
@@ -66,35 +66,26 @@ end
 
 local function checkMount()--检测坐骑
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
-    for _, name in pairs({
-        'Ground',
-        'Aquatic',
-        'Flying',
-        'Dragonriding',
-        'Alt',
-        'Ctrl',
-        'Shift',
-        'Floor',
-    }) do
-        if XD and XD[name] then
-            MountTab[name]={XD[name]}
+    for _, mountType in pairs(WoWTools_MountMixin.MountType) do
+        if XD and XD[mountType] then
+            MountTab[mountType]={XD[mountType]}
 
         else
-            MountTab[name]= {}
+            MountTab[mountType]= {}
 
-            for spellID, tab in pairs(SaveLog()[name] or {}) do
+            for spellID, tab in pairs(SaveLog()[mountType]) do
                 WoWTools_DataMixin:Load(spellID, 'spell')
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
                     local isFactionSpecific, faction, shouldHideOnChar, isCollected= select(8, C_MountJournal.GetMountInfoByID(mountID))
                     if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==WoWTools_MountMixin.faction) then
-                        if name=='Floor' then
+                        if mountType=='Floor' then
                             if uiMapID and type(tab)=='table' and tab[uiMapID] and not XD then
-                                table.insert(MountTab[name], spellID)
+                                table.insert(MountTab[mountType], spellID)
                             end
                         else
-                            table.insert(MountTab[name], spellID)
+                            table.insert(MountTab[mountType], spellID)
                         end
                     end
                 end
@@ -110,8 +101,8 @@ end
 
 
 
-local function getRandomRoll(type)--随机坐骑
-    local tab=MountTab[type] or {}
+local function getRandomRoll(muntType)--随机坐骑
+    local tab=MountTab[muntType] or {}
     local num= #tab
     if num>0 then
         local index= math.random(1, num)
@@ -379,7 +370,7 @@ local function Set_Item_Spell_Edit(info)
         end,
         OnAlt = function()
             SaveLog()[mountType][ID]=nil
-             WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
+            WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
             print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, itemLink or link)
         end,
     })

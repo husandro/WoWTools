@@ -1,76 +1,5 @@
-WoWTools_MountMixin={}
 
---[[local P_Mouts_Tab={
-    [ITEMS]={
-        [174464]=true,--幽魂缰绳
-        [168035]=true,--噬渊鼠缰绳
-        --[37011]=true,--/魔法扫帚
-    },
-    [SPELLS]={
-        [2645]=true,--幽魂之狼
-        [111400]=true,--爆燃冲刺
-        [2983]=true,--疾跑
-        [190784]=true,--神圣马驹
-        [48265]=true,--死亡脚步
-        [186257]=true,--猎豹守护
-        [6544]=true,--英勇飞跃
-        [358267]= true,--悬空
-        [1953]=true,--闪现术
-        [109132]=true,--滚地翻
-        [121536]=true,--天堂之羽
-        [189110]=true,--地狱火撞击
-        [195072]=true,--邪能冲撞
-    },
-    [FLOOR]={},--{[spellID]=uiMapID}
-    [MOUNT_JOURNAL_FILTER_GROUND]={
-        --[339588]=true,--[罪奔者布兰契]
-        --[163024]=true,--战火梦魇兽
-        --[366962]=true,--[艾什阿达，晨曦使者]
-        [256123]=true,--[斯克维里加全地形载具]
-    },
-    [MOUNT_JOURNAL_FILTER_FLYING]={
-        --[339588]=true,--[罪奔者布兰契]
-        [163024]=true,--战火梦魇兽
-        --[366962]=true,--[艾什阿达，晨曦使者]
-        --[107203]=true,--泰瑞尔的天使战马
-        --[419345]=true,--伊芙的森怖骑行扫帚
-    },
-    [MOUNT_JOURNAL_FILTER_AQUATIC]={
-        --[359379]=true,--闪光元水母
-        --[376912]=true,--[热忱的载人奥獭]
-        --[342680]=true,--[深星元水母]
-        --[30174]=true,--[乌龟坐骑]
-        [98718]=true,
-        --[64731]=true,--[海龟]
-    },
-    [MOUNT_JOURNAL_FILTER_DRAGONRIDING]={
-        [368896]=true,--[复苏始祖幼龙]
-        --[368901]=true,--[崖际荒狂幼龙]
-        --[368899]=true,--[载风迅疾幼龙]
-        --[360954]=true,--[高地幼龙]
-        --[339588]=true,--[罪奔者布兰契]
-        --[134359]=true,--飞天魔像
-    },
-    ['Shift']={
-        [359379]=true,--闪光元水母
-        [376912]=true,--[热忱的载人奥獭]
-        [342680]=true,--[深星元水母]
-        [30174]=true,--[乌龟坐骑]
-        [98718]=true,
-        [64731]=true,--[海龟]
-    },
-    ['Alt']={
-        [264058]=true,--雄壮商队雷龙
-        [122708]=true,--雄壮远足牦牛
-        [61425]=true,--旅行者的苔原猛犸象
-    },
-    ['Ctrl']={
-        [256123]=true,--斯克维里加全地形载具
-        --[118089]=true,--天蓝水黾
-        --[127271]=true,--猩红水黾
-        --[107203]=true,--泰瑞尔的天使战马
-     },
-}]]
+
 
 local P_Mouts_Tab={
     Item={
@@ -147,8 +76,8 @@ local P_Mouts_Tab={
      },
 }
 
+
 local P_Save={
-    --Mounts=P_Mouts_Tab,
     KEY= WoWTools_DataMixin.Player.husandro and 'BUTTON5', --为我自定义, 按键
     AFKRandom=WoWTools_DataMixin.Player.husandro,--离开时, 随机坐骑
     mountShowTime=3,--坐骑秀，时间
@@ -156,17 +85,36 @@ local P_Save={
     --toFrame=nil,
 }
 
-local function Save()
-    return WoWToolsSave['Tools_Mounts']
-end
 
 
+WoWTools_MountMixin={
+    MountType={
+        'Ground',
+        'Aquatic',
+        'Flying',
+        'Dragonriding',
 
+        'Alt',
+        'Ctrl',
+        'Shift',
 
+        'Floor',
+    },
+    TypeName={
+        Ground= MOUNT_JOURNAL_FILTER_GROUND,
+        Aquatic= MOUNT_JOURNAL_FILTER_AQUATIC,
+        Flying= MOUNT_JOURNAL_FILTER_FLYING,
+        Dragonriding= MOUNT_JOURNAL_FILTER_DRAGONRIDING,
 
+        Alt= 'Alt',
+        Ctrl= 'Ctrl',
+        Shift= 'Shift',
+        Floor= FLOOR,
 
-
-
+        Spell= SPELLS,
+        Item= ITEMS,
+    }
+}
 
 function WoWTools_MountMixin:Get_Table_Num(mountType)--检测,表里的数量
     local num= 0
@@ -184,6 +132,18 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+local function Save()
+    return WoWToolsSave['Tools_Mounts']
+end
 
 
 
@@ -213,9 +173,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Ctrl= Save().Mounts.Ctrl or P_Mouts_Tab.Ctrl or {},
                 }
                 Save().Mounts= nil
+            else
+                WoWToolsPlayerDate['Tools_Mounts']= WoWToolsPlayerDate['Tools_Mounts'] or P_Mouts_Tab
             end
-
-            WoWToolsPlayerDate['Tools_Mounts']= WoWToolsPlayerDate['Tools_Mounts'] or P_Mouts_Tab
 
             WoWTools_ToolsMixin:CreateButton({
                 name='Mount',
@@ -223,16 +183,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if WoWTools_ToolsMixin:Get_ButtonForName('Mount') then
-
-WoWTools_MountMixin.TypeName={
-    Spell= WoWTools_DataMixin.onlyChinese and '法术' or SPELLS,
-    Item= WoWTools_DataMixin.onlyChinese and '物品' or ITEMS,
-    Ground= WoWTools_DataMixin.onlyChinese and '地面' or MOUNT_JOURNAL_FILTER_GROUND,
-    Aquatic= WoWTools_DataMixin.onlyChinese and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC,
-    Flying= WoWTools_DataMixin.onlyChinese and '飞行' or MOUNT_JOURNAL_FILTER_FLYING,
-    Dragonriding= WoWTools_DataMixin.onlyChinese and '驭空术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING,
-    Floor= WoWTools_DataMixin.onlyChinese and '区域' or MOUNT_JOURNAL_FILTER_DRAGONRIDING
-}
+                if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
+                    WoWTools_MountMixin.TypeName={
+                        Spell= '法术',
+                        Item= '物品',
+                        Ground= '地面',
+                        Aquatic= '水栖',
+                        Flying= '飞行',
+                        Dragonriding= '驭空术',
+                        Floor= '区域',
+                    }
+                end
 
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
@@ -240,7 +201,7 @@ WoWTools_MountMixin.TypeName={
 
                 for name, tab in pairs(WoWToolsPlayerDate['Tools_Mounts']) do
                     for ID in pairs(tab) do
-                       WoWTools_DataMixin:Load(ID,  name==ITEMS and 'item' or 'spell')
+                        WoWTools_DataMixin:Load(ID,  name=='Item' and 'item' or 'spell')
                     end
                 end
 

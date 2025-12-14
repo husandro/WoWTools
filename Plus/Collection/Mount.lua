@@ -111,6 +111,9 @@ local function Init()
 
     --总数
     MountJournal.MountCount.Count:SetPoint('RIGHT', -4,0)
+    MountJournal.MountCount.Label:ClearAllPoints()
+    MountJournal.MountCount.Label:SetPoint('RIGHT', MountJournal.MountCount.Count, 'LEFT', -4, 0)
+    MountJournal.MountCount.Label:SetText(WoWTools_DataMixin.onlyChinese and '坐骑' or MOUNTS)
 
     WoWTools_DataMixin:Hook('MountJournal_UpdateMountList', function()
         if not MountJournal:IsVisible() then
