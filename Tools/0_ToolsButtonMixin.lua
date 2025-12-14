@@ -50,7 +50,7 @@ end
 
 local function Set_BG(frame)
     if frame and frame.Background then
-        frame.Background:SetAlpha(Save().bgAlpha or 0)
+        frame.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0)
     end
 end
 
@@ -262,6 +262,7 @@ function WoWTools_ToolsMixin:Init()
     MainButton.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
 
 --底部,需要，设置高 宽
+    
     local bgSet= {isAllPoint=true, isColor=true, alpha= Save().bgAlpha}
     MainButton.LeftFrame1= CreateFrame('Frame', nil , MainButton.Frame)
     WoWTools_TextureMixin:CreateBG(MainButton.LeftFrame1, bgSet)
