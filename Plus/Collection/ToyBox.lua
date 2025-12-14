@@ -20,7 +20,7 @@ local function Update_Button(self)
     else
         self.name:SetTextColor(1, 0.82, 0, 1)
     end
-    
+
     self.iconTextureUncollected:SetDesaturated(false)
 end
 
