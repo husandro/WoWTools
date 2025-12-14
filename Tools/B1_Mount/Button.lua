@@ -405,9 +405,8 @@ end
 
 local function Init()
     local btn= WoWTools_ToolsMixin:Get_ButtonForName('Mount')
+
     WoWTools_KeyMixin:Init(btn, function() return WoWToolsSave['Tools_Mounts'].KEY end)
-
-
 
     btn:SetAttribute("type1", "spell")
     btn:SetAttribute("alt-type1", "spell")
@@ -425,15 +424,6 @@ local function Init()
     btn.Up:SetAtlas('NPE_ArrowUp')
     btn.Up:SetSize(20,20)
 
-
-
-
-
-
-
-
-
-
     btn:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID then
@@ -447,12 +437,13 @@ local function Init()
 
         elseif d=='RightButton' and not IsModifierKeyDown() then
             WoWTools_MountMixin:Init_Menu(self)
+
         elseif d=='LeftButton' then
             if IsMounted() then
                 C_MountJournal.Dismiss()
 
             --战斗中，可用，驭空术
-            elseif UnitAffectingCombat('player') and not IsPlayerMoving() and  C_Spell.IsSpellUsable(368896) then
+            elseif InCombatLockdown() and not IsPlayerMoving() and C_Spell.IsSpellUsable(368896) then
                 local spellID2= getRandomRoll('Dragonriding')
                 local mountID= spellID2 and C_MountJournal.GetMountFromSpell(spellID2) or 368896
                 if mountID then

@@ -2,7 +2,7 @@ local function Save()
     return WoWToolsSave['Tools_Mounts']
 end
 local function SaveLog()
-    return WoWToolsPlayerDate['Tools_Mounts'] 
+    return WoWToolsPlayerDate['Tools_Mounts']
 end
 
 
@@ -14,8 +14,28 @@ end
 
 
 
+local function Set_Menu_Index(root)
+    root:AddInitializer(function(btn, desc)
+        local index= desc.data.index
+        if index then
+            local font = btn:AttachFontString()
+            local offset = desc:HasElements() and -20 or 0
+            font:SetPoint("RIGHT", offset, 0)
+            font:SetJustifyH("RIGHT")
+            font:SetTextToFit(index)
 
-
+            local disabled= index==0
+                or (desc.data.spellID and not C_Spell.DoesSpellExist(desc.data.spellID))
+                or (desc.data.itemID and C_Item.GetItemCount(desc.data.itemID, false, false, false, false)==0)
+        
+            if disabled then
+                font:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
+            else
+                font:SetTextColor(WHITE_FONT_COLOR:GetRGB())
+            end
+        end
+    end)
+end
 
 
 
@@ -161,9 +181,9 @@ end
 local function Set_Mount_Menu(root, mountType, spellID, num, index)
     local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID)
 
-    local sub, icon, isUsable, _, isCollected, col, name
+    local sub, icon, isUsable, _, isCollected, col, name, mountName
     if mountID then
-        name, _, icon, _, isUsable, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
+        mountName, _, icon, _, isUsable, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
         if not isCollected then--没收集
             col= '|cff626262'
         elseif not isUsable then--不可用
@@ -174,26 +194,27 @@ local function Set_Mount_Menu(root, mountType, spellID, num, index)
 
     icon= '|T'..(icon or (spellID and C_Spell.GetSpellTexture(spellID)) or 0)..':0|t'
 
-    if name then
-        name= icon..WoWTools_TextMixin:CN(name)
-    elseif spellID then
-        name= WoWTools_SpellMixin:GetName(spellID)
-    else
-        name= icon..WoWTools_MountMixin.TypeName[mountType]
+    if index then
+        if mountName then
+            name= icon..WoWTools_TextMixin:CN(mountName)
+        elseif spellID then
+            name= WoWTools_SpellMixin:GetName(spellID)
+        end
     end
 
+    name= name or (icon..WoWTools_MountMixin.TypeName[mountType])
+
     sub=root:CreateButton(
-        (index and index..') ' or '')
-        ..col
-        ..name
-        ..(num and ' '..num or ''),
+        col..name,
         function(d)
             C_MountJournal.SummonByID(d.mountID or 0)
             return MenuResponse.Refresh
         end,
-        {spellID=spellID, mountID=mountID, type=mountType}
+        {spellID=spellID, mountID=mountID, type=mountType, index=num or index}
     )
+
     sub:SetTooltip(Set_Menu_Tooltip)
+    Set_Menu_Index(sub)
 
     if index then
         Set_Mount_Sub_Options(sub, {
@@ -239,7 +260,9 @@ local function Init_Menu_Mount(root, mountType)
 
     local index=0
     for spellID in pairs(SaveLog()[mountType] or {}) do
+
         WoWTools_DataMixin:Load(spellID, 'spell')
+
         index= index +1
         Set_Mount_Menu(
             sub,
@@ -274,7 +297,7 @@ local function Init_Menu_ShiftAltCtrl(root, mountType)
     )
 
     sub:CreateTitle(
-        WoWTools_DataMixin.onlyChinese and '仅限第1个' or
+        WoWTools_DataMixin.onlyChinese and '仅限 1 个' or
         format(LFG_LIST_CROSS_FACTION, '|cffffffff1"r '..SPELLS)
     )
 
@@ -286,6 +309,7 @@ local function Init_Menu_ShiftAltCtrl(root, mountType)
     end
 
     ClearAll_Menu(sub, mountType)
+    return sub, index
 end
 
 
@@ -312,13 +336,14 @@ local function Init_Menu_Spell(_, sub)
         icon='|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
 
         sub2=sub:CreateButton(
-            index..') '
-            ..WoWTools_SpellMixin:GetName(spellID),
+            WoWTools_SpellMixin:GetName(spellID),
         function(data)
             WoWTools_MountMixin:Set_Item_Spell_Edit(data)
             return MenuResponse.Open
-        end, {spellID=spellID, type='Spell'})
+        end, {spellID=spellID, type='Spell', index=index})
+
         sub2:SetTooltip(Set_Menu_Tooltip)
+        Set_Menu_Index(sub2)
 
         Set_Mount_Sub_Options(sub2, {
             icon=icon,
@@ -375,12 +400,14 @@ local function Init_Menu_Item(_, sub)
         local name= WoWTools_ItemMixin:GetName(itemID)
 
         sub2=sub:CreateButton(
-            index..') '..name,
+            name,
         function(data)
             WoWTools_MountMixin:Set_Item_Spell_Edit(data)
             return MenuResponse.Open
-        end,{itemID=itemID, name=name, type='Item'})
+        end,{itemID=itemID, name=name, type='Item', index=index})
+
         sub2:SetTooltip(Set_Menu_Tooltip)
+        Set_Menu_Index(sub2)
 
         Set_Mount_Sub_Options(sub2, {
             icon=icon,
@@ -414,7 +441,7 @@ end
 --主菜单
 --#####
 local function Init_Menu(self, root)
-    local sub, sub2, sub3, num, col
+    local sub, sub2, sub3, num
 
     for _, mountType in pairs({
         'Ground',
@@ -432,6 +459,7 @@ local function Init_Menu(self, root)
         'Item',
     }) do
 
+        num= nil
         if mountType=='-' then
             root:CreateDivider()
 
@@ -441,9 +469,10 @@ local function Init_Menu(self, root)
             local itemID, spellID
             if mountType=='Spell' then
                 if self.spellID then
-                    WoWTools_DataMixin:Load(self.spellID, 'spell')
                     spellID= self.spellID
-                    icon= C_Spell.GetSpellTexture(self.spellID)
+                    WoWTools_DataMixin:Load(spellID, 'spell')
+
+                    icon= C_Spell.GetSpellTexture(spellID)
                 end
             elseif mountType=='Item' then
                 if self.itemID then
@@ -455,16 +484,26 @@ local function Init_Menu(self, root)
 
             icon= icon or 0
             num= WoWTools_MountMixin:Get_Table_Num(mountType)--检测,表里的数量
-            col= num==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:'
+
+            local name= WoWTools_MountMixin.TypeName[mountType] or mountType
+
+            if itemID then
+                name= WoWTools_ItemMixin:GetColor(nil, {itemID=itemID, text=name})
+            elseif spellID then
+                name= '|cff3fc7eb'..name..'|r'
+            else
+                name= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(name)
+            end
 
             sub=root:CreateButton(
                 '|T'..icon..':0|t'
-                ..WoWTools_MountMixin.TypeName[mountType]
-                ..col..' '.. num..'|r',
+                ..name,
             function()
                 return MenuResponse.Open
-            end, {itemID=itemID, spellID=spellID, type=mountType})
+            end, {itemID=itemID, spellID=spellID, type=mountType, index=num})
+
             sub:SetTooltip(Set_Menu_Tooltip)
+            Set_Menu_Index(sub)
 
             if mountType=='Spell' then
                 Init_Menu_Spell(self, sub)
@@ -472,12 +511,16 @@ local function Init_Menu(self, root)
                 Init_Menu_Item(self, sub)
             end
 
+            Set_Menu_Index(sub)
+
+
         elseif mountType=='Shift' or mountType=='Alt' or mountType=='Ctrl' then
             Init_Menu_ShiftAltCtrl(root, mountType)
 
         else
             Init_Menu_Mount(root, mountType)
         end
+--列表总数
     end
 
 --选项
