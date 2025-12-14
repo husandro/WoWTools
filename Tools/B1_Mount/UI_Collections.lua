@@ -243,7 +243,7 @@ local function Create_Button(frame)
 
     frame.WoWToolsButton.Text= frame:CreateFontString(nil, 'BORDER', 'GameFontNormalSmall2') --WoWTools_LabelMixin:Create(frame.WoWToolsButton, {justifyH='RIGHT'})--nil, frame.name, nil,nil,nil,'RIGHT')
     frame.WoWToolsButton.Text:SetJustifyH('RIGHT')
-    frame.WoWToolsButton.Text:SetPoint('TOPRIGHT', frame, 0,-2)
+    frame.WoWToolsButton.Text:SetPoint('RIGHT', frame, 0,-2)
 
     frame.WoWToolsButton:SetAlpha(0)
     frame.WoWToolsButton:SetScript('OnLeave', function(self)

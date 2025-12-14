@@ -363,13 +363,22 @@ local function Init()
 
     AddonList.DisableAllButton:HookScript('OnClick', function()
         if Save().enableAllButtn then
-            C_AddOns.EnableAddOn('WoWTools')
-            if C_AddOns.GetAddOnInfo('BugSack') then
-                C_AddOns.EnableAddOn('BugSack')
+            for _, name in pairs({
+                'WoWTools',
+                'BugSack',
+                'BugGrabber',
+            }) do
+                if C_AddOns.GetAddOnInfo(name) then
+                    C_AddOns.EnableAddOn(name)
+                end
             end
-            if C_AddOns.GetAddOnInfo('!BugGrabber') then
-                C_AddOns.EnableAddOn('!BugGrabber')
+
+            if WoWTools_DataMixin.Player then
+                if C_AddOns.GetAddOnInfo('TextureAtlasViewer') then
+                    C_AddOns.EnableAddOn('TextureAtlasViewer')
+                end
             end
+
             WoWTools_DataMixin:Call('AddonList_Update')
         end
     end)

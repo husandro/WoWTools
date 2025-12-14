@@ -66,7 +66,9 @@ end
 
 local function checkMount()--检测坐骑
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
+
     for _, mountType in pairs(WoWTools_MountMixin.MountType) do
+
         if XD and XD[mountType] then
             MountTab[mountType]={XD[mountType]}
 
@@ -78,10 +80,15 @@ local function checkMount()--检测坐骑
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
+
                     local isFactionSpecific, faction, shouldHideOnChar, isCollected= select(8, C_MountJournal.GetMountInfoByID(mountID))
-                    if not shouldHideOnChar and isCollected and (not isFactionSpecific or faction==WoWTools_MountMixin.faction) then
+
+                    if not shouldHideOnChar
+                        and isCollected
+                        and (not isFactionSpecific or faction==WoWTools_MountMixin.faction)
+                    then
                         if mountType=='Floor' then
-                            if uiMapID and type(tab)=='table' and tab[uiMapID] and not XD then
+                            if uiMapID and type(tab)=='table' and tab[uiMapID] then--and not XD then
                                 table.insert(MountTab[mountType], spellID)
                             end
                         else
@@ -299,8 +306,7 @@ local function Set_Item_Spell_Edit(info)
         StaticPopup_Show('WoWTools_GetMapID', WoWTools_MountMixin.addName, nil, {
             OnShow=function(self)
                 local text= ''
-                local tab= SaveLog().Floor[spellID] or {}
-                for uiMapID in pairs(tab) do
+                for uiMapID in pairs(SaveLog().Floor[spellID] or {}) do
                     text= text..uiMapID..', '
                 end
                 if text=='' then

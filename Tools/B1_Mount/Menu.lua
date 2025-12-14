@@ -101,6 +101,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
     local id= data.itemID or data.spellID
     local mountID= data.mountID
     local mountType= data.type
+    local sub
 
     if mountID then
         root:CreateButton(
@@ -130,20 +131,23 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
         })
     else
         WoWTools_MenuMixin:OpenSpellBook(root, {--天赋和法术书
-            name='|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS),
+            name='|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '查看' or VIEW),
             index=PlayerSpellsUtil.FrameTabs.SpellBook or 3,
             --spellID=data.spellID,--bug
         })
     end
 
     root:CreateDivider()
-    root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
+    sub= root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS,
     function()
         return SaveLog()[mountType][id]
     end, function()
         SaveLog()[mountType][id]= not SaveLog()[mountType][id] and true or nil
         WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '添加/移除' or format('%s/%s', ADD, REMOVE))
     end)
 end
 

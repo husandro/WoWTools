@@ -1,20 +1,19 @@
 --法术书，选项
-
-local function Save()
-    return WoWToolsSave['Tools_Mounts']
+local function SaveLog()
+    return WoWToolsPlayerDate['Tools_Mounts']
 end
 
 
 
 
-
 local function Create_Button(btn)
-    btn.mountSpell= WoWTools_ButtonMixin:Cbtn(btn, {size=16, atlas='hud-microbutton-Mounts-Down'})
+    btn.mountSpell= CreateFrame('Button', nil, btn, 'WoWToolsMenuTemplate')--WoWTools_ButtonMixin:Cbtn(btn, {size=16, atlas='hud-microbutton-Mounts-Down'})
+    btn.mountSpell:SetNormalAtlas('hud-microbutton-Mounts-Down')
     btn.mountSpell:SetPoint('TOP', btn, 'BOTTOM', -8, 0)
 
     function btn.mountSpell:set_alpha()
         if self.spellID then
-            self:SetAlpha(Save().Mounts[SPELLS][self.spellID] and 1 or 0.2)
+            self:SetAlpha(SaveLog().Spell[self.spellID] and 1 or 0.2)
         end
     end
     function btn.mountSpell:set_tooltips()
@@ -26,7 +25,7 @@ local function Create_Button(btn)
             GameTooltip:AddDoubleLine(
                 '|T'..(C_Spell.GetSpellTexture(self.spellID) or 0)..':0|t'
                 ..(C_Spell.GetSpellLink(self.spellID) or self.spellID)
-                ..' '..WoWTools_TextMixin:GetEnabeleDisable(Save().Mounts[SPELLS][self.spellID]),
+                ..' '..WoWTools_TextMixin:GetEnabeleDisable(SaveLog().Spell[self.spellID]),
 
                 WoWTools_DataMixin.Icon.left
             )
@@ -40,7 +39,7 @@ local function Create_Button(btn)
     btn.mountSpell:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             if self.spellID then
-                Save().Mounts[SPELLS][self.spellID]= not Save().Mounts[SPELLS][self.spellID] and true or nil
+                SaveLog().Spell[self.spellID]= not SaveLog().Spell[self.spellID] and true or nil
                 self:set_tooltips()
                 self:set_alpha()
                 WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
