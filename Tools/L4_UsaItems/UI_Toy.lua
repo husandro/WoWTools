@@ -51,7 +51,6 @@ local function Create_Button(btn)--标记, 是否已选取
         )
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
-        self:SetAlpha(1)
     end
 
     btn.useItem:SetScript('OnMouseDown', function(self, d)
@@ -80,6 +79,7 @@ local function Create_Button(btn)--标记, 是否已选取
 
     btn.useItem:SetScript('OnEnter', function(self)
         self:set_tooltips()
+        self:SetAlpha(1)
     end)
 end
 

@@ -25,6 +25,7 @@ local function Create_Button(btn)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_MountMixin.addName)
+        GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             WoWTools_SpellMixin:GetName(self.spellID)
@@ -37,18 +38,19 @@ local function Create_Button(btn)
         self:SetAlpha(1)
     end
     btn.mountSpell:SetScript('OnLeave', function(self) GameTooltip:Hide() self:settings()  end)
-    btn.mountSpell:SetScript('OnEnter', btn.mountSpell.set_tooltips)
+    btn.mountSpell:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+        self:SetAlpha(1)
+    end)
     btn.mountSpell:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             SaveLog().Spell[self.spellID]= not SaveLog().Spell[self.spellID] and true or nil
             self:set_tooltips()
             WoWTools_ToolsMixin:Get_ButtonForName('Mount'):settings()
-            print(WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
+            self:settings()
         else
             WoWTools_MountMixin:Init_Menu_Spell(self)
         end
-        
-        self:settings()
     end)
 end
 

@@ -42,7 +42,6 @@ local function Create_Button(btn)
         end
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
-        self:SetAlpha(1)
     end
 
     btn.useSpell:SetScript('OnLeave', function(self)
@@ -51,6 +50,7 @@ local function Create_Button(btn)
     end)
 
     btn.useSpell:SetScript('OnEnter', function(self)
+        self:SetAlpha(1)
         self:set_tooltips()
     end)
 
@@ -85,7 +85,7 @@ local function Init()
         local spellID= frame.spellBookItemInfo.spellID
         frame.Button.useSpell.spellID= frame.spellBookItemInfo.spellID
         frame.Button.useSpell:set_alpha()
-        frame.Button.useSpell:SetShown(spellID and true or false)
+        frame.Button.useSpell:SetShown(spellID and not C_Spell.IsSpellPassive(spellID))
     end)
     Init=function()end
 end

@@ -136,11 +136,6 @@ local function Remove_Toy(itemID)--移除
     elseif ToyButton.itemID==itemID then
         ToyButton:Init_Random(Save().lockedToy)
     end
-    print(
-        addName..WoWTools_DataMixin.Icon.icon2,
-        WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
-        WoWTools_ItemMixin:GetLink(itemID)
-    )
 end
 
 
@@ -491,7 +486,6 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             )
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
-            self:SetAlpha(1)
         end
         btn.useToy:SetScript('OnMouseDown', function(self, d)
             if d=='LeftButton' then
@@ -507,6 +501,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             self:set_alpha()
         end)
         btn.useToy:SetScript('OnEnter', function(self)
+            self:SetAlpha(1)
             self:set_tooltips()
         end)
     end
