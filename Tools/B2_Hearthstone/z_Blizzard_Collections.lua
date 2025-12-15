@@ -32,12 +32,6 @@ local function Remove_Toy(itemID)--移除
     elseif btn.itemID==itemID then
         btn:Init_Random(Save().lockedToy)
     end
-
-    print(
-        WoWTools_HearthstoneMixin.addName..WoWTools_DataMixin.Icon.icon2,
-        WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
-        WoWTools_ItemMixin:GetLink(itemID)
-    )
 end
 
 
