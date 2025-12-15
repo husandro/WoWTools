@@ -630,8 +630,8 @@ end
 
 function WoWTools_TextureMixin.Frames:MovieFrame()
     self:SetFrame(MovieFrame.CloseDialog.Border, {alpha=1})
-    self:SetButton(MovieFrame.CloseDialog.ConfirmButton, 1)
-    self:SetButton(MovieFrame.CloseDialog.ResumeButton, 1)
+    self:SetUIButton(MovieFrame.CloseDialog.ConfirmButton)
+    self:SetUIButton(MovieFrame.CloseDialog.ResumeButton)
 end
 
 --颜色选择器

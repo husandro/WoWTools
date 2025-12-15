@@ -208,7 +208,7 @@ end
 local function Init()
     for name, func in pairs(WoWTools_TextureMixin.Frames) do
         if _G[name] then
-            if not not Save().no[name] then
+            if not Save().no[name] then
                 func(WoWTools_TextureMixin)
             end
         elseif WoWTools_DataMixin.Player.husandro then

@@ -1,8 +1,22 @@
 --https://wago.tools/db2/Movie
 
 local list={
+1061,
+1057,
+1052,
+1051,
+1050,
+1049,
+1048,
+1047,
+1045,
+1043,
+1041,
 1040,
+1038,
 1035,
+1034,
+1033,
 1030,
 1029,
 1028,
@@ -453,7 +467,7 @@ local function Init_Menu(_, root)
     tab=nil
 end
 
-    
+
 
 function WoWTools_GossipMixin:Init_WoW_MoveList(...)
     Init_Menu(...)
