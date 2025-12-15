@@ -105,36 +105,47 @@ local function Init()
 --右边
 --职业 ColorUtil.lua
     local colorTab={}
-    local x, y, n= 0, -15, 1
-    for className, col in pairs(RAID_CLASS_COLORS) do
-        local text= col.r..col.g..col.b.. (col.a or 1)
-        if not colorTab[text] then
-            colorTab[text]= true
-            local texture= Create_Texture(
-                col.r, col.g, col.b, col.a,
-                WoWTools_UnitMixin:GetClassIcon(nil, nil, className, {reAtlas=true})
-            )
-            texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
-            texture.tooltip= 'RAID_CLASS_COLORS["'..className..'"]'
+    local x, y, n= 0, -22, 1
+    for index = 1, GetNumClasses() do
+        if (index == 10) and (GetClassicExpansionLevel() <= LE_EXPANSION_CATACLYSM) then
+            -- We have an annoying gap between warlock and druid
+            index = 11
+        end
+        local classFile = select(2, GetClassInfo(index))
+        if classFile then
+            local r, g, b= GetClassColor(classFile)
+            if r and g and b then
 
-            if n==7 then
-                n=0
-                x= x+ size
-                y= -15
-            else
-                y= y- size
+                colorTab[r..g..b..'1']= true
+
+                local texture= Create_Texture(
+                    r,g,b,1,
+                    WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile, {reAtlas=true})
+                )
+                texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
+
+                if RAID_CLASS_COLORS[classFile] then
+                    texture.tooltip= 'RAID_CLASS_COLORS["'..classFile..'"]'
+                end
+
+                if n==7 then
+                    n=0
+                    x= x+ size
+                    y= -22
+                else
+                    y= y- size
+                end
+                n=n+1
             end
-            n=n+1
         end
     end
 
 --物品 UIParent.lua
-    size, x, y, n= 16, x+size, -15, 0
+    size, x, y, n= 16, x+size, -32, 0
 
     for index = 0, Enum.ItemQualityMeta.NumValues - 1 do
         local r,g,b= WoWTools_ItemMixin:GetColor(index)
-        local text= r..g..b..1
-        colorTab[text]= true
+        colorTab[r..g..b..1]= true
         local texture= Create_Texture(r,g,b,1)
         texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
         texture.tooltip= (WoWTools_ItemMixin.QualityText[index] or '')..'|nITEM_QUALITY' ..index.. '_DESC'
@@ -150,7 +161,7 @@ local function Init()
             local texture= Create_Texture(col.r, col.g, col.b, col.a)
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
             texture.tooltip= 'MATERIAL_TEXT_COLOR_TABLE'..'["'..name..'"]'
-           
+
             y= y- size
             n=n+1
         end

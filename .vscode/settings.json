@@ -2728,7 +2728,8 @@
         "ERROR_CINEMATIC",
         "CinematicFrame_CancelCinematic",
         "CINEMATICS",
-        "PLAY_MOVIE_PREPEND"
+        "PLAY_MOVIE_PREPEND",
+        "UNSPECIFIED_SPEC_FILTER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
