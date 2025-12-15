@@ -52,7 +52,7 @@ local function Set_Event(self, event)
 
 		then
 			if self.cancelFunc then
-				self.cancelFunc(self.previousValues);
+				self.cancelFunc(self.previousValues)
 			end
 			self:Hide();
 		end
