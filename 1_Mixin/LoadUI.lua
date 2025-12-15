@@ -311,32 +311,49 @@ end
 
 
 
---法术书 PlayerSpellsUtil.lua
-function WoWTools_LoadUIMixin:SpellBook(index, spellID)
+--[[
+法术书 PlayerSpellsUtil.lua
+PlayerSpellsUtil={
+  OpenToClassSpecializationsTab=<function>,
+  SpellBookCategories={
+    Class=1,
+    General=2,
+    Pet=3
+  },
+  ToggleClassTalentOrSpecFrame=<function>,
+  ToggleClassTalentFrame=<function>,
+  SetPlayerSpellsFrameMinimizedOnNextShow=<function>,
+  OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason),
+  OpenToSpellBookTab(),
+  FrameTabs={
+    SpellBook=3,
+    ClassTalents=2,
+    ClassSpecializations=1
+  },
+  OpenToSpellBookTabAtCategory(spellBookCategory),
+  ToggleSpellBookFrame(spellBookCategory),
+  TogglePlayerSpellsFrame(suggestedTab, inspectUnit),
+  OpenToClassTalentsTab(inspectUnit),
+  InspectLoadout(linkData)
+}
+]]
+function WoWTools_LoadUIMixin:SpellBook(index)
     if InCombatLockdown() then
         return
     end
-
-    do
+    --[[do
         if not PlayerSpellsFrame then
             PlayerSpellsFrame_LoadUI();
         end
-    end
-
-    if index==1 then
-        PlayerSpellsUtil.OpenToClassSpecializationsTab()
-    elseif index==2 then
-        if PlayerSpellsFrame.TalentsFrame:IsVisible() then
+    end]]
+    if index==2 then
+        if PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsVisible() then
             PlayerSpellsUtil.TogglePlayerSpellsFrame(2)
-        end
-        PlayerSpellsUtil.ToggleClassTalentOrSpecFrame()
-
-    elseif index==3 or spellID then
-        if spellID and C_SpellBook.IsSpellInSpellBook(spellID) then
-            PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
         else
-            PlayerSpellsUtil.OpenToSpellBookTab()
+            PlayerSpellsUtil.ToggleClassTalentOrSpecFrame()
         end
+    else
+        PlayerSpellsUtil.OpenToClassSpecializationsTab()
     end
 end
 

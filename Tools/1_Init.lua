@@ -32,8 +32,7 @@ local P_Save={
 
 
 
-local Button, Category, Layout
-local addName= WoWTools_ToolsMixin.addName
+
 
 local function Save()
     return WoWToolsSave['WoWTools_ToolsButton']
@@ -51,40 +50,29 @@ local function Init_Panel()
         GetValue= function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_ToolsMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
         buttonFunc= function()
             Save().point=nil
-            if Button then
-                Button:set_point()
+            local btn= WoWTools_ToolsMixin:Get_MainButton()
+            if btn then
+                btn:set_point()
             end
-            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_ToolsMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
         end,
-        tooltip= addName,
-        layout= Layout,
-        category= Category,
+        tooltip= WoWTools_ToolsMixin.addName,
+        layout= WoWTools_ToolsMixin.Layout,
+        category= WoWTools_ToolsMixin.Category,
     })
 
-    --[[WoWTools_PanelMixin:OnlyCheck({
-        category= Category,
-        name= WoWTools_DataMixin.onlyChinese and '战团藏品' or COLLECTIONS,
-        tooltip= '|nCollectionsJournal_LoadUI()|n|n'
-                ..(WoWTools_DataMixin.onlyChinese and '登入游戏时|n建议：开启' or
-                (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)..'|n'..HELPFRAME_SUGGESTION_BUTTON_TEXT..': '..ENABLE)
-        ),
-        GetValue= function() return Save().loadCollectionUI end,
-        SetValue= function()
-            Save().loadCollectionUI= not Save().loadCollectionUI and true or nil
-            Button:load_wow_ui()
-        end
-    }, initializer)]]
+
 
 
 
     WoWTools_PanelMixin:OnlyButton({
-        category= Category,
-        layout=Layout,
+        category= WoWTools_ToolsMixin.Category,
+        layout=WoWTools_ToolsMixin.Layout,
         title= WoWTools_ToolsMixin.addName,
         buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
         addSearchTags= WoWTools_DataMixin.onlyChinese and '重置' or RESET,
@@ -102,7 +90,7 @@ local function Init_Panel()
         tooltip=WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL
     })
 
-    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
+    WoWTools_PanelMixin:Header(WoWTools_ToolsMixin.Layout, WoWTools_DataMixin.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
 do
     for _, data in pairs(WoWTools_ToolsMixin:Get_AddList()) do
@@ -111,7 +99,7 @@ do
 
             if data.isMoveButton then--食物
                 initializer= WoWTools_PanelMixin:OnlyCheck({
-                    category= Category,
+                    category= WoWTools_ToolsMixin.Category,
                     name= data.tooltip,
                     tooltip= data.name,
                     GetValue= function() return not Save().disabledADD[data.name] end,
@@ -123,8 +111,8 @@ do
             else
 
                 initializer= WoWTools_PanelMixin:CheckMenu({
-                    category=Category,
-                    layout=Layout,
+                    category=WoWTools_ToolsMixin.Category,
+                    layout=WoWTools_ToolsMixin.Layout,
                     name=data.tooltip,
                     tooltip=data.name,
                     GetValue= function() return not Save().disabledADD[data.name] end,
@@ -149,7 +137,7 @@ do
             end
         end
         if data.option then
-            data.option(Category, Layout, initializer)
+            data.option(WoWTools_ToolsMixin.Category, WoWTools_ToolsMixin.Layout, initializer)
         end
     end
 end
@@ -180,7 +168,9 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2
-    sub=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '显示' or SHOW, function()
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+    function()
         return self.Frame:IsShown()
     end, function()
         self:set_shown()
@@ -266,7 +256,7 @@ local function Init_Menu(self, root)
             Save().scale=data
             self:set_scale()
         else
-            print(WoWTools_DataMixin.addName, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            print(WoWTools_ToolsMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
 
@@ -306,28 +296,7 @@ local function Init_Menu(self, root)
         bit='%0.2f',
     })
 
---Border 透明度
-    --[[sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().borderAlpha or 0.3
-        end, setValue=function(value)
-            Save().borderAlpha=value
-            local list, Name= WoWTools_ToolsMixin:Get_All_Buttons()
-            for _, name in pairs(list) do
-                _G[Name..name]:set_border_alpha()
-            end
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '镶边' or EMBLEM_BORDER,
-        minValue=0,
-        maxValue=1,
-        step=0.05,
-        bit='%0.2f',
-        tooltip=function(tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)
-        end,
-    })
-    sub:CreateSpacer()]]
+
 
 
 
@@ -358,26 +327,28 @@ end
 
 
 local function Init()
-    --[[function Button:load_wow_ui()
-        if Save().loadCollectionUI then
-            WoWTools_LoadUIMixin:Journal()
-        end
-    end]]
+    local btn= WoWTools_ToolsMixin:Get_MainButton()
 
-    function Button:set_size()
-        self:SetHeight(Save().height)
+    btn.texture=btn:CreateTexture(nil, 'BORDER')
+    btn.texture:SetPoint('CENTER')
+    btn.texture:SetSize(10,10)
+    btn.texture:SetShown(Save().showIcon)
+    btn.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+
+    function btn:set_size()
+        self:SetSize(30, Save().height or 10)
     end
 
-    Button.texture:SetAlpha(0.5)
 
-    function Button:set_icon()
+
+    function btn:set_icon()
         self.texture:SetShown(Save().showIcon)
     end
 
 
-    function Button:set_point()
+    function btn:set_point()
         if self:IsProtected() and InCombatLockdown() then
-           print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+           print(WoWTools_ToolsMixin.addName..WoWTools_DataMixin.Icon.icon2, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         else
             self:ClearAllPoints()
             local p=Save().point
@@ -391,40 +362,37 @@ local function Init()
         end
     end
 
-    function Button:set_scale()
+    function btn:set_scale()
         if self:CanChangeAttribute() then
             self:SetScale(Save().scale or 1)
-        else
-            print(WoWTools_DataMixin.addName, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         end
     end
 
-    function Button:set_strata()
+    function btn:set_strata()
         self:SetFrameStrata(Save().strata or 'MEDIUM')
     end
 
-    function Button:set_tooltip()
+    function btn:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff626262')..WoWTools_TextMixin:GetShowHide(nil, true), WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
-    Button:RegisterForDrag("RightButton")
-    Button:SetMovable(true)
-    Button:SetClampedToScreen(true)
+    btn:RegisterForDrag("RightButton")
+    btn:SetMovable(true)
+    btn:SetClampedToScreen(true)
 
-    Button:SetScript("OnDragStart", function(self, d)
+    btn:SetScript("OnDragStart", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             self:StartMoving()
         end
     end)
 
-    Button:SetScript("OnDragStop", function(self)
+    btn:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
@@ -433,28 +401,30 @@ local function Init()
         end
     end)
 
-    Button:SetScript("OnLeave",function()
+    btn:SetScript("OnLeave",function()
         GameTooltip:Hide()
         ResetCursor()
     end)
 
-    Button:SetScript('OnEnter', function(self)
+    btn:SetScript('OnEnter', function(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltip()
     end)
 
-    Button:SetScript("OnMouseUp", ResetCursor)
-    Button:SetScript("OnMouseDown", function(_, d)
+    btn:SetScript("OnMouseUp", ResetCursor)
+    btn:SetScript("OnMouseDown", function(_, d)
         if IsAltKeyDown() and d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
 
-    Button:SetScript('OnMouseWheel', function(self, d)
-        Save().scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().scale, nil)
+    btn:SetScript('OnMouseWheel', function(self, d)
+        if self.Frame:CanChangeAttribute() then
+            self.Frame:SetShown(d==1)
+        end
     end)
 
-    Button:SetScript("OnClick", function(self, d)
+    btn:SetScript("OnClick", function(self, d)
         if IsModifierKeyDown() then
             return
         end
@@ -466,19 +436,18 @@ local function Init()
         end
     end)
 
-    --Button:load_wow_ui()
-    Button:set_scale()
-    Button:set_point()
-    Button:set_strata()
+    btn:set_scale()
+    btn:set_point()
+    btn:set_strata()
+    btn:set_size()
 
-
-    function Button:set_shown()
+    function btn:set_shown()
         if self.Frame:CanChangeAttribute() then
             self.Frame:SetShown(not self.Frame:IsShown())
         end
     end
 
-    function Button:set_event()
+    function btn:set_event()
         self.Frame:UnregisterAllEvents()
         if Save().isCombatHide then
             self.Frame:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -488,7 +457,7 @@ local function Init()
         end
     end
 
-    Button.Frame:SetScript('OnEvent', function(self, event)
+    btn.Frame:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_REGEN_DISABLED' then
             if self:IsShown() then
                 self:SetShown(false)--设置, TOOLS 框架,隐藏
@@ -499,11 +468,12 @@ local function Init()
             end
         end
     end)
-    Button:set_event()
+    btn:set_event()
 
     GameMenuFrame:HookScript('OnShow', function()
-        if Button.Frame:IsShown() and Save().isMainMenuHide then
-            Button:set_shown()
+        local b= WoWTools_ToolsMixin:Get_MainButton()
+        if b.Frame:IsShown() and Save().isMainMenuHide then
+            b:set_shown()
         end
     end)
 
@@ -528,8 +498,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
-
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -549,23 +518,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 MapToy=true,
             }
 
-            Button= WoWTools_ToolsMixin:Init()
+            WoWTools_ToolsMixin:Init()
 
-            Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-                name=addName,
-                disabled= not Button,
+            WoWTools_ToolsMixin.Category, WoWTools_ToolsMixin.Layout= WoWTools_PanelMixin:AddSubCategory({
+                name=WoWTools_ToolsMixin.addName,
+                disabled= not WoWTools_ToolsMixin:Get_MainButton(),
             })
 
-            WoWTools_ToolsMixin.Category= Category
-            WoWTools_ToolsMixin.Layout= Layout
 
-            if Button then
+            if WoWTools_ToolsMixin:Get_MainButton() then
                 Init()
                 self:RegisterEvent("PLAYER_LOGOUT")
             end
 
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                Init_Panel()
                 self:UnregisterEvent(event)
             end
 
@@ -574,9 +540,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
+--为了最后加载，才加个事件
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+            Init_Panel()
+        end
+        self:UnregisterEvent(event)
+
+--保存，记录
     elseif event == "PLAYER_LOGOUT" then
         if not WoWTools_DataMixin.ClearAllSave then
-            Save().show= Button and Button.Frame:IsShown()
+            local btn= WoWTools_ToolsMixin:Get_MainButton()
+            if btn then
+                Save().show= btn.Frame:IsShown()
+            end
         end
     end
 end)

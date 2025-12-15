@@ -40,7 +40,7 @@ local function Create_Button(btn)--标记, 是否已选取
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName)
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         GameTooltip:AddLine(' ')
 
         local icon= select(5, C_Item.GetItemInfoInstant(itemID))
@@ -69,7 +69,7 @@ local function Create_Button(btn)--标记, 是否已选取
             self:set_tooltips()
             self:set_alpha()
         else
-            --WoWTools_UseItemsMixin:Init_Menu(self)
+            MenuUtil.CreateContextMenu(self, WoWTools_UseItemsMixin.Init_Menu)
         end
     end)
 

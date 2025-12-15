@@ -70,6 +70,7 @@ local P_Save={
         [18]=true,
         [17]=true,
         [19]=true,
+        [20]=true,
     },
     spells=ClassSpells,
 }

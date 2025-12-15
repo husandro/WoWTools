@@ -3,7 +3,7 @@
 local SpellID= 431280
 
 local Tab={
-    {itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
+    --{itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
 
     {itemID=187869, achievements={14663, 14303, 14304, 14305, 14306}},--暗影界
 
@@ -41,7 +41,7 @@ local P_Save={
     no={
         --[guid]=true
     },
-    autoAddDisabled= WoWTools_DataMixin.Player.husandro,
+    --maxLevelIsDisabled= WoWTools_DataMixin.Player.husandro,
 }
 
 local function Save()
@@ -90,10 +90,9 @@ local function Is_Completed(tab)
 
     return {
         itemID= tab.itemID,
-        hasToy= PlayerHasToy(tab.itemID),--没收集 ==false
+        hasToy= C_ToyBox.GetToyInfo(tab.itemID) and PlayerHasToy(tab.itemID) or C_Item.GetItemCount(tab.itemID)>0,--没收集 ==false
         num=num,--没完成，数量
         isNotChecked=isNotChecked,--没数据 ==nil
-
         data=new,
     }
 end
@@ -142,7 +141,9 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2, sub3
+    WoWTools_DataMixin:Load(SpellID, 'spell')
+
+    local sub, sub2
     for _, info in pairs(Tab) do
         local new= Is_Completed(info)
 
@@ -165,8 +166,8 @@ local function Init_Menu(self, root)
         function(data)
             return data.itemID==self.itemID
         end, function(data)
-            self:Set_Random_Value(data.itemID, data.achievements, true)
-        end, {itemID=info.itemID, achievements=info.achievements})
+            self:settings(data.itemID)
+        end, {itemID=info.itemID})
 
         WoWTools_SetTooltipMixin:Set_Menu(sub)
 
@@ -179,98 +180,80 @@ local function Init_Menu(self, root)
                 ..(WoWTools_TextMixin:CN(tab.name) or tab.achievementID)
                 ..(tab.wasEarnedByMe==true and '|A:common-icon-checkmark:0:0|a' or ''),
             function(data)
-                self:Set_Random_Value(data.itemID, data.achievements, true)
+                self:settings(data.itemID)
                 return MenuResponse.Open
             end,
-            {itemID=tab.itemID, achievementID=tab.achievementID, achievements=info.achievements})
+            {itemID=tab.itemID, achievementID=tab.achievementID})
             sub2:SetTooltip(function(tooltip, description)
                 tooltip:SetAchievementByID(description.data.achievementID)
             end)
         end
     end
 
-
-    local tab={}
-    local num=0
-    for guid in pairs(Save().no) do
-        num=num+1
-        tab[guid]=true
-    end
-
-    root:CreateDivider()
-    sub= root:CreateButton((WoWTools_DataMixin.onlyChinese and '已完成' or CRITERIA_COMPLETED)..(num>0 and ' #'..num or ''), function() return MenuResponse.Open end)
-
-    sub2= sub:CreateCheckbox(WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil)..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE), function()
-        return Save().no[WoWTools_DataMixin.Player.GUID]
-    end, function()
-        Save().no[WoWTools_DataMixin.Player.GUID]= not Save().no[WoWTools_DataMixin.Player.GUID] and true or nil
-        print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().no[WoWTools_DataMixin.Player.GUID]), WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reLink=true, reName=true, reRealm=true}))
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '如果已完成|n可以 “禁用” 禁用本模块' or ('If you are complete|nyou can \"'..DISABLE..'\" this module disabled'))
-        tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT, WoWTools_TextMixin:GetEnabeleDisable(not Save().no[WoWTools_DataMixin.Player.GUID]))
-    end)
-
-    sub3= sub2:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO, function()
-        return Save().autoAddDisabled
-    end, function()
-        Save().autoAddDisabled= not Save().autoAddDisabled and true or nil
-    end)
-    sub3:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '自动禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, DISABLE))
-    end)
-
-    if num>0 then
-        sub:CreateDivider()
-    end
-    for guid in pairs(tab) do
-        local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true})
-        sub2=sub:CreateCheckbox(player,
-            function(data)
-                return Save().no[data.guid]
-            end, function(data)
-                Save().no[data.guid]= not Save().no[data.guid] and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2..addName,
-                        WoWTools_TextMixin:GetEnabeleDisable(not Save().no[data.guid]),
-                        WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reLink=true, reName=true, reRealm=true})
-                    )
-
-            end,
-            {guid=guid, player=player}
-        )
-        sub2:SetTooltip(function(tooltip, description)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
-            tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT, WoWTools_TextMixin:GetEnabeleDisable(not Save().no[description.data.guid]))
-        end)
-    end
-
-    if num>2 then
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-        function()
-            StaticPopup_Show('WoWTools_OK',
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            nil,
-            {SetValue=function()
-                Save().no={}
-            end})
-            return MenuResponse.Open
-        end)
-    end
-    WoWTools_MenuMixin:SetScrollMode(sub)
-
     sub= root:CreateCheckbox(
         WoWTools_SpellMixin:GetName(SpellID),
     function()
         return self.spellID==SpellID
     end, function()
-        self:Set_Random_Value(nil, nil, true)
+        self:settings()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:SetSpellByID(SpellID)
     end)
 
-    WoWTools_ToolsMixin:OpenMenu(root, addName)
+    local tab=CopyTable(Save().no)
+    tab[WoWTools_DataMixin.Player.GUID]= true
+
+    root:CreateDivider()
+    sub= WoWTools_ToolsMixin:OpenMenu(root, WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+
+    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+
+    for guid in pairs(tab) do
+        sub2=sub:CreateCheckbox(
+            WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
+        function(data)
+            return Save().no[data]
+        end, function(data)
+            Save().no[data]= not Save().no[data] and true or nil
+        end, guid)
+    end
+
+    sub:CreateDivider()
+
+
+    sub2=sub:CreateCheckbox(
+        format('%s = %d %s',
+            (WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE),
+            GetMaxLevelForLatestExpansion(),
+            WoWTools_DataMixin.onlyChinese and '等级' or LEVEL
+        ),
+    function()
+        return Save().maxLevelIsDisabled
+    end, function()
+        Save().maxLevelIsDisabled= not Save().maxLevelIsDisabled and true or nil
+    end)
+    sub2:SetTooltip(function (tooltip)
+        tooltip:AddLine(
+            WoWTools_DataMixin.onlyChinese and '禁用最高级'
+            or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, BEST), LEVEL)
+        )
+    end)
+
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+        nil,
+        {SetValue=function()
+            Save().no={}
+            Save().maxLevelIsDisabled=nil
+        end})
+        return MenuResponse.Open
+    end)
+
+    WoWTools_MenuMixin:SetScrollMode(sub)
 end
 
 
@@ -298,6 +281,7 @@ local function Init()
     if not btn then
         return
     end
+
     function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
@@ -335,8 +319,7 @@ local function Init()
         end
     end
 
-    function btn:Set_Random_Value(itemID, achievements, isLocked)--设置，随机值
-        --local name=C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
+    function btn:settings(itemID)--设置，随机值
         if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
@@ -352,34 +335,16 @@ local function Init()
             spellName= C_Spell.GetSpellName(spellID) or (LOCALE_zhCN and '瞬息全战团地图') or SpellID
         end
         self:SetAttribute('toy1', itemID)
-        self:SetAttribute('spell1', spellName)
+        self:SetAttribute('spell1', spellName or SpellID)
 
         self.itemID=itemID
         self.spellID=spellID
-        self.achievements= achievements
-        self.isLocked= isLocked
 
 
         self:set_texture()
         self:set_cool()
     end
 
-    function btn:Cerca_Toy()
-        if self.isLocked or not self:CanChangeAttribute() then
-            return
-        end
-
-        for _, info in pairs(Tab) do
-            WoWTools_DataMixin:Load(info.itemID, 'item')
-            local new= Is_Completed(info)
-            if new.isNotChecked==nil and new.num>0 then
-                self:Set_Random_Value(info.itemID, info.achievements, nil)
-                return
-            end
-        end
-
-        self:Set_Random_Value(nil, nil, nil)
-    end
 
 
 
@@ -390,33 +355,15 @@ local function Init()
     btn:SetScript('OnEnter', function(self)
         self:set_cool()
         self:set_tooltips()
-        local Elapsed= 2
-        self:SetScript('OnUpdate', function (s, elapsed)
-            Elapsed = Elapsed + elapsed
-            if Elapsed > 2 then
-                Elapsed = 0
-                self:Cerca_Toy()
-                if GameTooltip:IsOwned(s) then
-                    s:set_tooltips()
-                end
-            end
-        end)
     end)
 
     btn:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' and not IsModifierKeyDown() then
+        if d=='RightButton' then
             MenuUtil.CreateContextMenu(self, Init_Menu)
-        elseif d=='LeftButton' then
-            self.isLocked=nil
         end
     end)
 
-    btn:SetScript("OnEvent", function(self, event)
-        self:Cerca_Toy()
-        self:UnregisterEvent(event)
-    end)
-
-    btn:Cerca_Toy()
+    btn:settings()
     btn:set_texture()
 
     Init=function()end
@@ -444,6 +391,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
             WoWToolsSave['Tools_MapToy']= WoWToolsSave['Tools_MapToy'] or P_Save
             P_Save= nil
+--旧数据
+            Save().autoAddDisabled= nil
 
             addName= '|A:Taxi_Frame_Yellow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
@@ -456,14 +405,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                      end,
                      buttonText= WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
                      buttonFunc= function()
-                         Save().no={}
+                        StaticPopup_Show('WoWTools_OK',
+                        addName,
+                        nil,
+                        {SetValue=function()
+                            Save().no={}
+                            Save().maxLevelIsDisabled=nil
+                        end})
                      end,
                      layout= layout,
                      category= category,
                  })
              end)
 
-            if not Save().disabled and not Save().no[WoWTools_DataMixin.Player.GUID] then
+            if not Save().disabled
+                and not Save().no[WoWTools_DataMixin.Player.GUID]
+                and not (Save().maxLevelIsDisabled and WoWTools_DataMixin.Player.IsMaxLevel)
+             then
                 WoWTools_ToolsMixin:CreateButton({
                     name='MapToy',
                     tooltip=addName,
@@ -475,11 +433,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 for _, info in pairs(Tab) do
-                   WoWTools_DataMixin:Load(info.itemID, 'item')
+                    WoWTools_DataMixin:Load(info.itemID, 'item')
                     for _, achievementID in pairs(info.achievements) do
                         GetAchievementCategory(achievementID)
                     end
                 end
+                WoWTools_DataMixin:Load(SpellID, 'spell')
+
             else
                 self:SetScript('OnEvent', nil)
             end

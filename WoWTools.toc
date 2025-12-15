@@ -101,7 +101,7 @@ Tools\B1_Mount\UI_Collections.lua
 Tools\B1_Mount\UI_SpellBook.lua
 ##随机炉石
 Tools\B2_Hearthstone\1_Init.lua
-Tools\B2_Hearthstone\z_Toy_Menu.lua
+Tools\B2_Hearthstone\2_ToyList_Menu.lua
 Tools\B2_Hearthstone\z_Blizzard_Collections.lua
 ##打开物品，各种物品
 Tools\B3_OpenItems\1_Init.lua
@@ -125,7 +125,7 @@ Tools\L4_UsaItems\UI_Spell.lua
 Tools\L4_UsaItems\UI_Toy.lua
 ##食物
 Tools\B5_Food\1_Init.lua
-Tools\B5_Food\2_Init_Button.lua
+Tools\B5_Food\2_Button.lua
 Tools\B5_Food\3_Menu.lua
 Tools\B5_Food\Create_Button.lua
 

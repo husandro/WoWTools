@@ -107,18 +107,22 @@ local function Init()
 
 --显示背景 Background
     WoWTools_TextureMixin:CreateBG(btn, {
+        isColor=true,
+        alpha= Save().bgAlpha or 0.5,
         point=function(bg)
             bg:SetPoint('BOTTOMRIGHT', 1 , 1)
             bg:SetPoint('TOP', btn, 1 , 1)
             bg:SetPoint('LEFT', btn, -1 , -1)
-        end}
-    )
+        end,
+    })
     function btn:set_background()
-        self.Background:SetAlpha(Save().bgAlpha or 0.5)
+        self.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0.5)
     end
 
     function btn:set_strata()
-        self:SetFrameStrata(Save().strata or 'MEDIUM')
+        if self:CanChangeAttribute() then
+            self:SetFrameStrata(Save().strata or 'MEDIUM')
+        end
     end
 
     function btn:set_point()
@@ -286,7 +290,7 @@ local function Init()
     end
     btn:set_strata()
     btn:set_scale()
-    btn:set_background()
+    --btn:set_background()
 
     WoWTools_FoodMixin:Set_Button_Function(btn)
     Set_AltSpell()

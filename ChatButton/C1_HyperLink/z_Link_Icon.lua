@@ -27,35 +27,44 @@ end
 
 local function SetChannels(link)
     local name=link:match('%[(.-)]')
-    if name then
-        if name:find(WORLD) then
-            return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(WORLD), 2, 6)..']')
-        end
+    if not name then
+        return
+    elseif name:find(WORLD) then
+        return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(WORLD), 2, 6)..']')
+    end
 
 --关键词, 内容颜色，和频道名称替换
-        if not Save().disabledKeyColor then
-            for k, v in pairs(Save().channels or {}) do--自定义
-                if name:find(k) then
-                    return link:gsub('%[.-]', v)
-                end
+    if not Save().disabledKeyColor then
+        for k, v in pairs(Save().channels or {}) do--自定义
+            if name:find(k) then
+                return link:gsub('%[.-]', v)
             end
         end
-
-        if name:find(GENERAL_LABEL) then--综合
-            return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GENERAL_LABEL), 2, 6)..']')
-        end
-
-        name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
-        name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
-        name=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(name), 2, 6)
-        return link:gsub('%[.-]', '['..name..']')
     end
+
+    if name:find(GENERAL_LABEL) then--综合
+        return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GENERAL_LABEL), 2, 6)..']')
+    end
+
+    name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
+    name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
+    name=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(name), 2, 6)
+    return link:gsub('%[.-]', '['..name..']')
 end
 
 local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
+    local name
     local split= LinkUtil.SplitLink(link)
-    local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
-    local server= name and name:match('%-(.+)')
+    if split then
+        name= split:match('player:(.-):')
+    end
+    name= name or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
+
+    if not name then
+        return
+    end
+
+    local server= name:match('%-(.+)')
     if name==WoWTools_DataMixin.Player.Name_Realm or name==WoWTools_DataMixin.Player.Name then
         return '[|A:auctionhouse-icon-favorite:0:0|a'
             ..WoWTools_DataMixin.Player.col
@@ -123,6 +132,11 @@ end
 --物品，超链接
 local function Item(link)
     local itemID, _, _, _, icon, classID, subclassID= C_Item.GetItemInfoInstant(link)
+
+    if not itemID then
+        return
+    end
+
     local t= WoWTools_HyperLink:CN_Link(link, {itemID=itemID, isName=true})
     t= icon and '|T'..icon..Size..'|t'..t or t--加图标
     if classID==2 or classID==4 then
@@ -181,17 +195,19 @@ end
 local function Spell(link)
     local spellID
     spellID= (C_Spell.GetSpellInfo(link) or {}).spellID
+
     if not spellID then
         spellID= link:match('Hspell:(%d+)')
         if spellID  then
             spellID= spellID and tonumber(spellID)
         end
     end
+
     if not spellID then
         return
     end
 
-    local t=WoWTools_HyperLink:CN_Link(link, {spellID=spellID, isName=true})
+    local t= WoWTools_HyperLink:CN_Link(link, {spellID=spellID, isName=true})
 
     local icon= C_Spell.GetSpellTexture(link)
     t= (icon and '|T'..icon..Size..'|t' or '')..t

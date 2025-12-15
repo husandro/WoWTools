@@ -150,11 +150,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
             moutID=mountID,
         })
     else
-        WoWTools_MenuMixin:OpenSpellBook(root, {--天赋和法术书
-            name='|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '查看' or VIEW),
-            index=PlayerSpellsUtil.FrameTabs.SpellBook or 3,
-            --spellID=data.spellID,--bug
-        })
+        WoWTools_MenuMixin:OpenSpellBook(root)--天赋和法术书,
     end
 
     root:CreateDivider()

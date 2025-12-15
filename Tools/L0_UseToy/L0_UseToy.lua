@@ -78,9 +78,9 @@ local function Set_Alt_Table()
         [Save().Shift or 86568]='Shift',--精英旗帜
     }
     ModifiedMenuTab={
-        {type='Alt', itemID=Save().Alt or 69775},
-        {type='Ctrl', itemID=Save().Ctrl or 109183},
-        {type='Shift', itemID=Save().Shift or 86568}
+        {type='Alt', itemID= Save().Alt or 69775},
+        {type='Ctrl', itemID= Save().Ctrl or 109183},
+        {type='Shift', itemID= Save().Shift or 86568}
     }
 end
 
@@ -100,7 +100,6 @@ local function Set_Alt_Menu(root, itemID)
                 end
                 Set_Alt_Table()
                 ToyButton:set_alt()
-                return MenuResponse.Refresh
             end,
             {type=info.type, itemID=info.itemID, itemID2=itemID}
         )
@@ -258,19 +257,16 @@ local function Init_Menu_Toy(_, root)
             ..name
             ..(isLoked and '|A:AdventureMapIcon-Lock:0:0|a' or '')--锁定
             ..(has and WoWTools_CooldownMixin:GetText(nil, itemID) or ''),--CD
-            function(data)
-                return ToyButton.itemID==data.itemID
-            end, function(data)
-                if data.has then
-                    if not Save().lockedToy then
-                        local toy= ToyButton.Selected_Value~=data.itemID and data.itemID or nil
-                        ToyButton:Set_SelectValue_Random(toy)
-                    end
+        function(data)
+            return ToyButton.itemID==data.itemID
+        end, function(data)
+            if data.has then
+                if not Save().lockedToy then
+                    local toy= ToyButton.Selected_Value~=data.itemID and data.itemID or nil
+                    ToyButton:Set_SelectValue_Random(toy)
                 end
-                return MenuResponse.Refresh
-            end,
-            {itemID=itemID, name=toyName, has=has}
-        )
+            end
+        end, {itemID=itemID, name=toyName, has=has})
         sub:SetTooltip(Set_Menu_Tooltip)
 
         sub2=sub:CreateCheckbox(
@@ -284,7 +280,6 @@ local function Init_Menu_Toy(_, root)
                 Save().lockedToy= Save().lockedToy~=data.itemID and itemID or nil
                 ToyButton:Init_Random(Save().lockedToy)
             end
-            return MenuResponse.Refresh
         end, {itemID=itemID, name=toyName, has=has})
         sub2:SetTooltip(Set_Menu_Tooltip)
 
@@ -305,12 +300,10 @@ local function Init_Menu_Toy(_, root)
         sub:CreateDivider()
         sub2=sub:CreateButton(
             '|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE),
-            function(data)
-                Remove_Toy(data.itemID)--移除
-                return MenuResponse.Refresh
-            end,
-            {itemID=itemID, name=toyName}
-        )
+        function(data)
+            Remove_Toy(data.itemID)--移除
+            return MenuResponse.Refresh
+        end, {itemID=itemID, name=toyName})
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
 

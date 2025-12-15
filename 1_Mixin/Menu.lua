@@ -18,7 +18,7 @@ ToTop(root, tab)
 CheckInCombat()
 
 OpenJournal(root, tab)
-OpenSpellBook(root, tab)--天赋和法术书
+OpenSpellBook(root, index)--天赋和法术书
 OpenDragonriding(root)
 OpenOptions(root, tab)
 
@@ -599,27 +599,16 @@ WoWTools_MenuMixin:OpenJournal(root, {--战团藏品
 
 
 --PlayerSpellsUtil.lua
-function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
-    local sub=root:CreateButton(
-        tab.name or ('|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON)),
+--elseif tab.index== PlayerSpellsUtil.FrameTabs.SpellBook then--3
+--if tab.index== PlayerSpellsUtil.FrameTabs.ClassSpecializations then--1
+--PlayerSpellsUtil.OpenToSpellBookTab() bug
+
+function WoWTools_MenuMixin:OpenSpellBook(root, index)--天赋和法术书
+    return root:CreateButton(
+        MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"),
     function()
-        if SettingsPanel:IsShown() and not WoWTools_FrameMixin:IsLocked(SettingsPanel) then--ToggleGameMenu()
-            SettingsPanel:Close()
-        end
-        if tab.index== PlayerSpellsUtil.FrameTabs.ClassSpecializations then--1
-            PlayerSpellsUtil.OpenToClassSpecializationsTab()
-
-        elseif tab.index== PlayerSpellsUtil.FrameTabs.ClassTalents then--2
-            PlayerSpellsUtil.OpenToClassTalentsTab()
-
-        elseif tab.index== PlayerSpellsUtil.FrameTabs.SpellBook then--3
-            PlayerSpellsUtil.OpenToSpellBookTab()
-        end
-
+        WoWTools_LoadUIMixin:SpellBook(index)
         return MenuResponse.Refresh
-    end, tab)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON, "TOGGLETALENTS"))
     end)
 end
 
@@ -879,7 +868,6 @@ function WoWTools_MenuMixin:Set_Specialization(root)
     function()
         return C_PvP.IsWarModeDesired()
     end,function()
-        --C_PvP.ToggleWarMode()
         WoWTools_LoadUIMixin:SpellBook(2)
     end)
     sub:SetTooltip(function(tooltip)

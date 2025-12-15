@@ -191,6 +191,9 @@ local StatsValue={
 --次属性 %值
 local function Set_ItemStatus(tooltip, itemLink)
     local stats= C_Item.GetItemStats(itemLink)
+    if not stats then
+        return
+    end
 
     local find
     for stat, va in pairs(stats) do

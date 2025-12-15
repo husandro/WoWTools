@@ -132,7 +132,7 @@ local function Init_Menu(self, root)
         {SetValue=function()
             local n=0
             for itemID in pairs(SaveItems()) do
-                if not PlayerHasToy(itemID) then
+                if not C_ToyBox.GetToyInfo(itemID) or not PlayerHasToy(itemID) then
                     SaveItems()[itemID]=nil
                     n=n+1
                     print(n, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))

@@ -468,10 +468,7 @@ function WoWTools_ItemMixin:GetLink(itemID)
             local name= WoWTools_TextMixin:CN(nil, {itemID=itemID, isName=true})
             link= '|Hitem:'..itemID..'::::::::::::::::::|h['..(name or itemID)..']|h'
             if not name then
-                local hex= select(4, self:GetColor(itemID, nil))
-                if hex then
-                    link= hex..link..'|r'
-                end
+                link= self:GetColor(nil, {itemID=itemID, text=link})
             end
         end
     end

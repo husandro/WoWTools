@@ -122,7 +122,7 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
                     WoWTools_LoadUIMixin:Journal(3, {toyItemID=data.itemID})
 --已学，法术 bug
                 elseif data.spellID and C_SpellBook.IsSpellInSpellBook(data.spellID) then
-                    WoWTools_LoadUIMixin:SpellBook(3, data.spellID)
+                    WoWTools_LoadUIMixin:SpellBook(3)
 --其他
                 else
                     StaticPopup_Show('WoWTools_OK',
@@ -301,11 +301,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
             WoWToolsPlayerDate['Tools_UseItems']= WoWToolsPlayerDate['Tools_UseItems'] or P_Tabs
 
---禁用，Tools模块，退出
-            if WoWTools_ToolsMixin:Get_MainButton() then
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM)
 
-                WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM)
+            WoWTools_ToolsMixin:Set_AddList(function(category)
+                WoWTools_PanelMixin:OnlyCheck({
+                category= category,
+                name= WoWTools_UseItemsMixin.addName,
+                tooltip= WoWTools_UseItemsMixin.addName..'|n'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                end})
+            end)
+
+--禁用，Tools模块，退出
+            if WoWTools_ToolsMixin:Get_MainButton() and not Save().disabled then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
                 for _, ID in pairs(Save().item) do
                    WoWTools_DataMixin:Load(ID, 'item')
@@ -316,7 +327,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 for _, ID in pairs(Save().equip) do
                    WoWTools_DataMixin:Load(ID, 'item')
                 end
-
             else
                 self:SetScript('OnEvent', nil)
             end

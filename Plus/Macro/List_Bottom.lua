@@ -510,17 +510,20 @@ local function Sub_Menu(root, tab)
         sub:SetEnabled(MacroFrameSelectedMacroButton:IsShown())
     end
 
---[[查询 BUG
+--查询 BUG
     if tab.spellID then
         sub=root:CreateButton(--bug
-            '|A:common-search-magnifyingglass:0:0|a'..(WoWTools_DataMixin.onlyChinese and '查询' or WHO),
-        function(data)
-            PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
+            '|A:common-search-magnifyingglass:0:0|a'
+            ..(C_SpellBook.IsSpellKnown(tab.spellID) and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '查询' or WHO),
+        function()
+            WoWTools_LoadUIMixin:SpellBook(3)
             return MenuResponse.Open
-        end, tab)
-        WoWTools_SetTooltipMixin:Set_Menu(sub)--技能，提示
-        sub:SetEnabled(not InCombatLockdown())
-    end]]
+        end)
+        sub:SetTooltip(function(tooltip)
+            GameTooltip_AddErrorLine(tooltip, 'Bug')
+        end)
+    end
 
 --链接至聊天栏
     if tab.spellID or tab.itemLink then

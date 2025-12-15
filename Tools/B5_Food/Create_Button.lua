@@ -254,6 +254,7 @@ end
 local IsChecking
 function WoWTools_FoodMixin:Check_Items(isPrint)
     local btn= WoWTools_ToolsMixin:Get_ButtonForName('Food')
+
     if IsChecking or not btn then--正在查询
         return
     elseif InCombatLockdown() then
@@ -299,6 +300,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
         b:settings()
         b:set_attribute()
         b:set_point()
+        btn.Background:SetPoint('LEFT', b, -1, 1)
 
         if not b:IsShown() then
             b:set_event()
@@ -316,7 +318,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
             btn.Background:SetPoint('TOP', b, 1, 1)
         end
     end
-    btn.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[num-1]] or btn, -1, -1)
+    --btn.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[num-1]] or btn, -1, -1)
 
     for i= num+1 , #Buttons do
         _G[Buttons[i]]:SetShown(false)

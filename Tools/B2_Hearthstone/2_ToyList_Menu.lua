@@ -21,12 +21,12 @@ end
 
 
 
-local function Init_Menu_Toy(self, root)
+function WoWTools_HearthstoneMixin:Init_Menu_Toy(frame, root)
 
     local sub, sub2, name, toyName, icon
     local index=0
     for itemID in pairs(SaveItems()) do
-       WoWTools_DataMixin:Load(itemID, 'item')
+        WoWTools_DataMixin:Load(itemID, 'item')
 
         toyName, icon = select(2, C_ToyBox.GetToyInfo(itemID))
         index= index+ 1
@@ -49,11 +49,11 @@ local function Init_Menu_Toy(self, root)
             ..(isLoked and '|A:AdventureMapIcon-Lock:0:0|a' or '')--锁定
             ..(has and WoWTools_CooldownMixin:GetText(nil, itemID) or ''),--CD
             function(data)
-                return self.itemID==data.itemID
+                return frame.itemID==data.itemID
             end, function(data)
                 if data.has then
-                    local toy= self.Selected_Value~=data.itemID and data.itemID or nil
-                    self:Set_SelectValue_Random(toy)
+                    local toy= frame.Selected_Value~=data.itemID and data.itemID or nil
+                    frame:Set_SelectValue_Random(toy)
                 end
             end,
             {itemID=itemID, name=toyName, has=has}
@@ -70,7 +70,7 @@ local function Init_Menu_Toy(self, root)
             if data.has then
                 local toy= Save().lockedToy~=data.itemID and itemID or nil
                 Save().lockedToy= toy
-                self:Set_LockedValue_Random(toy)
+                frame:Set_LockedValue_Random(toy)
             end
         end, {itemID=itemID, name=toyName, has=has})
         sub2:SetTooltip(Set_Menu_Tooltip)
@@ -120,9 +120,3 @@ end
 
 
 
-
-
-
-function WoWTools_HearthstoneMixin:Init_Menu_Toy(...)
-    Init_Menu_Toy(...)
-end

@@ -132,12 +132,7 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    --[[PlayerSpellsMicroButton:HookScript('OnClick', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() or d~='RightButton' or Kiosk.IsEnabled() then
-            return
-        end
-        --WoWTools_LoadUIMixin:SpellBook(2, nil)
-    end)]]
+
 
     PlayerSpellsMicroButton:EnableMouseWheel(true)
     PlayerSpellsMicroButton:HookScript('OnMouseWheel', function(_, d)
@@ -152,24 +147,6 @@ local function Init()
             WoWTools_DataMixin:Call('ShowUIPanel', CooldownViewerSettings)
         end
     end)
-        --[[if d==1 then--上
-            if IsAltKeyDown() then
-                if not ClickBindingFrame or not ClickBindingFrame:IsShown() then
-                    ToggleClickBindingFrame()
-                end
-            else
-                WoWTools_LoadUIMixin:SpellBook(1, nil)
-            end
-        elseif d==-1 then
-            if IsAltKeyDown() and CooldownViewerSettings then
-                if not CooldownViewerSettings:IsShown() then
-                    
-                end
-            else
-                WoWTools_LoadUIMixin:SpellBook(3, nil)
-            end
-        end]]
-
 
     Init=function()end
 end

@@ -456,6 +456,7 @@ local function Init_Menu(self, root)
 
 
     find=nil
+--Enum.ItemClass
     for classID=0, 20 do
         if not Save().DisableClassID[classID] then
             class= C_Item.GetItemClassInfo(classID)

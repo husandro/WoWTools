@@ -49,9 +49,9 @@ end
 
 
 local function Set_BG(frame)
-    if frame and frame.Background then
+    --if frame and frame.Background then
         frame.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0)
-    end
+    --end
 end
 
 local function Set_Left1Point(frame)
@@ -99,11 +99,11 @@ local function Set_ButtonPoint(btn, tab)
             if num==0 then
                 Set_Left2Point(btn)
                 MainButton.LeftFrame2:SetWidth(30)
-                --Set_BG(MainButton.LeftFrame2)
             else
                 btn:SetPoint('BOTTOM', _G[Name..LeftButtons2[num]], 'TOP')
             end
             MainButton.LeftFrame2:SetPoint('TOP', btn)
+            Set_BG(MainButton.LeftFrame2)
             table.insert(LeftButtons2, name)
         else
 --右边
@@ -111,11 +111,11 @@ local function Set_ButtonPoint(btn, tab)
             if num==0 then
                 Set_RightPoint(btn)
                 MainButton.RightFrame:SetWidth(30)
-                --Set_BG(MainButton.RightFrame)
             else
                 btn:SetPoint('BOTTOM', _G[Name..RightButtons[num]], 'TOP')
             end
             MainButton.RightFrame:SetPoint('TOP', btn)
+            Set_BG(MainButton.RightFrame)
             table.insert(RightButtons, name)
         end
     else
@@ -128,12 +128,12 @@ local function Set_ButtonPoint(btn, tab)
                 btn.IsShownFrameEnterButton=true
                 Set_BottomPoint(btn)
                 MainButton.BottomFrame:SetHeight(30)
-                --Set_BG(MainButton.BottomFrame)
             else
                 btn:SetPoint('RIGHT', _G[Name..BottomButtons[num]], 'LEFT')
             end
+            Set_BG(MainButton.BottomFrame)
             if not tab.isMoveButton then
-                --MainButton.BottomFrame:SetPoint('LEFT', btn)--需要，设置宽 LEFT
+                MainButton.BottomFrame:SetPoint('TOPLEFT', btn)--需要，设置宽 LEFT
                 table.insert(BottomButtons, name)
             end
         else
@@ -144,8 +144,6 @@ local function Set_ButtonPoint(btn, tab)
                 Set_Left1Point(btn)
                 MainButton.LeftFrame1:SetPoint('TOP', btn)
                 MainButton.LeftFrame1:SetPoint('LEFT', btn)
-                --Set_BG(MainButton.LeftFrame1)
-
             else
                 local numLine= Save().lineNum or 10
                 if select(2, math.modf(num / numLine))==0 then
@@ -160,6 +158,7 @@ local function Set_ButtonPoint(btn, tab)
 
                 end
             end
+            Set_BG(MainButton.LeftFrame1)
             table.insert(LeftButtons1, name)
         end
     end
@@ -244,10 +243,11 @@ function WoWTools_ToolsMixin:Init()
         return
     end
 
-    MainButton= WoWTools_ButtonMixin:Cbtn(nil, {
+    MainButton= CreateFrame('Button', 'WoWToolsMainToolsButton', UIParent, 'WoWToolsButtonTemplate')
+    --[[WoWTools_ButtonMixin:Cbtn(nil, {
         name='WoWToolsMainToolsButton',
         size={30, Save().height or 10}
-    })
+    })]]
 
     MainButton.Frame= CreateFrame('Frame', nil, MainButton)
     MainButton.Frame:SetAllPoints()
@@ -255,14 +255,10 @@ function WoWTools_ToolsMixin:Init()
 --为显示Frame用
     MainButton.IsShownFrameEnterButton=true
 
-    MainButton.texture=MainButton:CreateTexture(nil, 'BORDER')
-    MainButton.texture:SetPoint('CENTER')
-    MainButton.texture:SetSize(10,10)
-    MainButton.texture:SetShown(Save().showIcon)
-    MainButton.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+
 
 --底部,需要，设置高 宽
-    
+
     local bgSet= {isAllPoint=true, isColor=true, alpha= Save().bgAlpha}
     MainButton.LeftFrame1= CreateFrame('Frame', nil , MainButton.Frame)
     WoWTools_TextureMixin:CreateBG(MainButton.LeftFrame1, bgSet)
@@ -274,7 +270,7 @@ function WoWTools_ToolsMixin:Init()
     WoWTools_TextureMixin:CreateBG(MainButton.RightFrame, bgSet)
 
 --需要，设置 LEFT
-    MainButton.BottomFrame= CreateFrame('Frame', 'WoWToolsToolsMainButton.BottomFrame', MainButton.Frame)
+    MainButton.BottomFrame= CreateFrame('Frame', nil, MainButton)
     WoWTools_TextureMixin:CreateBG(MainButton.BottomFrame, bgSet)
 
     Set_Left1Point(MainButton.LeftFrame1)
