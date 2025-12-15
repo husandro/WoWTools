@@ -346,6 +346,7 @@ Plus\Gossip\Quest_Menu.lua
 Plus\Gossip\Quest_QuestInfo.lua
 Plus\Gossip\Quest_PlayText.lua
 Plus\Gossip\Gossip_Menu_Move.lua
+Plus\Gossip\StaticPopupDialogs.lua
 
 
 ##冒险指南, 增强

@@ -343,8 +343,8 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 --套装,按钮
 
     WoWTools_DataMixin:Hook(LootJournalItemSetButtonMixin, 'Init', function(btn)
-        btn.Background:SetAlpha(0.5)
         btn.Background:SetAtlas('timerunning-TopHUD-button-glow')
+        btn.Background:SetAlpha(0.5)
     end)
 
     self:HideFrame(EncounterJournalMonthlyActivitiesFrame)

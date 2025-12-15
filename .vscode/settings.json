@@ -2723,7 +2723,12 @@
         "ID",
         "MountJournal_InitMountButton",
         "TutorialDoubleKey_Frame",
-        "DamageMeterSessionWindowMixin"
+        "DamageMeterSessionWindowMixin",
+        "SubtitlesFrame",
+        "ERROR_CINEMATIC",
+        "CinematicFrame_CancelCinematic",
+        "CINEMATICS",
+        "PLAY_MOVIE_PREPEND"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

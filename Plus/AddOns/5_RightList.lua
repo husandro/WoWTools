@@ -336,14 +336,13 @@ local function Init()
 
     RightFrame.Background= RightFrame:CreateTexture(nil, 'BACKGROUND')
     RightFrame.Background:SetPoint('TOPLEFT', RightFrame)
-    RightFrame.Background:SetColorTexture(0,0,0)
 
     function RightFrame:settings()
         local show= not Save().hideRightList
         self:SetScale(Save().rightListScale or 1)
         self:SetShown(show)
         _G['WoWToolsAddonsNewButton']:SetShown(show)
-        self.Background:SetAlpha(Save().bgAlpha or 0.5)
+        self.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0.5)
     end
 
     RightFrame:settings()

@@ -1,6 +1,29 @@
 --https://wago.tools/db2/Movie
 
-local list={
+--[[
+BlizzardInterfaceCode/Interface/AddOns/Blizzard_GlueXMLBase/Mists/Constants.lua
+CinematicsMenu.lua
+Constants.lua
+C_CinematicList.GetUICinematicList()
+MOVIE_LIST
+]]
+local function Save()
+    return WoWToolsSave['Plus_Gossip']
+end
+local List={}
+local MovieList={}
+
+
+
+
+
+
+
+
+
+
+local function Init()
+List={
 1061,
 1057,
 1052,
@@ -257,17 +280,6 @@ local list={
 1,
 }
 
---table.sort(list, function(a,b) return a>b end)
---[[
-BlizzardInterfaceCode/Interface/AddOns/Blizzard_GlueXMLBase/Mists/Constants.lua
-CinematicsMenu.lua
-Constants.lua
-C_CinematicList.GetUICinematicList()
-MOVIE_LIST
-]]
-local MovieList={}
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
 MovieList= {
 {
     expansion = LE_EXPANSION_WAR_WITHIN,
@@ -342,14 +354,71 @@ MovieList= {
     text= WoWTools_DataMixin.onlyChinese and '经典旧世' or EXPANSION_NAME0,
 },
 }
-EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
-end)
+
+    Init= function()end
+end
 
 
 
 
 
 
+
+
+
+local Movie_ID
+local Cinematics_ID
+local function Set_StopMove()
+    if Save().stopMovie then
+        if not Movie_ID then
+            Movie_ID= EventRegistry:RegisterFrameEventAndCallback("PLAY_MOVIE", function(_, movieID)
+                if not movieID then
+                    return
+                end
+
+                if Save().movie[movieID] then
+                    MovieFrame:StopMovie()
+                    print(
+                        WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_DataMixin.onlyChinese and '对话' or ENABLE_DIALOG,
+                        '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
+                        'movieID|cnGREEN_FONT_COLOR:',
+                        movieID
+                    )
+                else
+                    Save().movie[movieID]= date("%d/%m/%y %H:%M:%S")
+                    print(
+                        WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnGREEN_FONT_COLOR:movieID',
+                        movieID
+                    )
+                end
+            end)
+        end
+
+    elseif Movie_ID then
+        EventRegistry:UnregisterCallback('PLAY_MOVIE', Movie_ID)
+    end
+
+    if Save().stopCinematics then
+        if not Cinematics_ID then
+            Cinematics_ID= EventRegistry:RegisterFrameEventAndCallback("CINEMATIC_START", function(_, canBeCancelled)
+                if canBeCancelled then
+                    CinematicFrame_CancelCinematic()
+                    print(
+                        WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
+                        WoWTools_DataMixin.onlyChinese and '过场动画' or CINEMATICS
+                    )
+                end
+            end)
+        end
+
+    elseif Cinematics_ID then
+        EventRegistry:UnregisterCallback('CINEMATIC_START', Cinematics_ID)
+    end
+
+end
 
 
 
@@ -392,24 +461,92 @@ end
 
 
 
+
+
+
+
+
+
 local function Init_Menu(_, root)
     local sub, sub2
-    local tab={}
+--视频
+    local num=0
+    for _ in pairs(Save().movie) do
+        num=num+1
+    end
+
+    root= root:CreateButton(
+        '     '..(WoWTools_DataMixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU)..(num==0 and ' |cff626262' or ' ')..num,
+    function()
+        return MenuResponse.Open
+    end)
+
+
+--跳过，视频，
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '跳过播放影片' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RENOWN_LEVEL_UP_SKIP_BUTTON, PLAY_MOVIE_PREPEND:match('%(.+)%)') or PLAY_MOVIE_PREPEND),
+    function()
+        return Save().stopMovie
+    end, function()
+        Save().stopMovie= not Save().stopMovie and true or false
+        Set_StopMove()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('PLAY_MOVIE')
+        GameTooltip_AddHighlightLine(tooltip,
+            WoWTools_DataMixin.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY)
+        )
+    end)
+
+--动画字幕
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '动画字幕' or CINEMATIC_SUBTITLES,
+    function()
+        return C_CVar.GetCVarBool("movieSubtitle")
+    end, function()
+        if not InCombatLockdown() then
+            C_CVar.SetCVar('movieSubtitle', C_CVar.GetCVarBool("movieSubtitle") and '0' or '1')
+        end
+        if SubtitlesFrame and SubtitlesFrame:IsShown() then
+            SubtitlesFrame:Hide()
+        end
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine("CVar: movieSubtitle")
+    end)
+    sub2:SetEnabled(not InCombatLockdown())
+
+--跳过，过场动画
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '跳过过场动画' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RENOWN_LEVEL_UP_SKIP_BUTTON, CINEMATICS),
+    function()
+        return Save().stopCinematics
+    end, function()
+        Save().stopCinematics= not Save().stopCinematics and true or false
+        Set_StopMove()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('CINEMATIC_START')
+    end)
+
+
+
+    local _tab={}
 --WoW
-    sub=root:CreateButton('WoW', function()
+    sub=root:CreateButton('WoW |cff626262#'..#MovieList, function()
         return MenuResponse.Open
     end)
 
     for _, movieEntry in pairs(MovieList) do--MOVIE_LIST or 
         for _, movieID in pairs(movieEntry.movieIDs) do
-            tab[movieID]= movieEntry
+            _tab[movieID]= movieEntry
             sub2=sub:CreateButton(
                 '|A:'..(movieEntry.upAtlas or '')..':0:0|a'
                 ..(WoWTools_TextMixin:CN(movieEntry.text
                     or _G["EXPANSION_NAME"..movieEntry.expansion])
                     or ''
                 )
-                ..' '..movieID,
+                ..' |cff626262'..movieID,
             function(data)
                 MovieFrame_PlayMovie(MovieFrame, data.movieID)
                 return MenuResponse.Open
@@ -425,29 +562,24 @@ local function Init_Menu(_, root)
             Movie_SubMenu(sub2, movieID)
         end
     end
-
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 --WoW2
-    sub=root:CreateButton('WoW2', function()
+    sub=root:CreateButton('WoW2 |cff626262#'..#List, function()
         return MenuResponse.Open
     end)
-
-
-
-    for _, movieID in pairs(list) do
-        --if not tab[movieID] then
+    for _, movieID in pairs(List) do
         local text, atlas
-        if tab[movieID] then
-            text= tab[movieID].text
-                or WoWTools_TextMixin:CN(_G["EXPANSION_NAME"..tab[movieID].expansion])
+        if _tab[movieID] then
+            text= _tab[movieID].text
+                or WoWTools_TextMixin:CN(_G["EXPANSION_NAME".._tab[movieID].expansion])
                 or '|cnWARNING_FONT_COLOR:'
             text= text..' '
-            atlas= tab[movieID].upAtlas
+            atlas= _tab[movieID].upAtlas
         end
         sub2=sub:CreateButton(
             (atlas and '|A:'..atlas..':0:0|a' or '')
-            ..(text or '')
+            ..(text and text..' |cff626262' or '')
             ..movieID,
         function(data)
             MovieFrame_PlayMovie(MovieFrame, data.movieID)
@@ -458,18 +590,57 @@ local function Init_Menu(_, root)
                 tooltip:AddLine('|A:'..(desc.data.atlas or '')..':134:246|a')
             end
         end)
---下载
-        Movie_SubMenu(sub2, movieID)
-    --end
+        Movie_SubMenu(sub2, movieID)--下载
+    end
+    WoWTools_MenuMixin:SetScrollMode(sub)
+
+--列表，电影
+    root:CreateDivider()
+    local _num= 0
+    for movieID, dateTime in pairs(Save().movie) do
+        _num= _num+1
+        sub=root:CreateButton(
+            '|cff626262'.._num..')|r '..movieID,
+        function(data)
+            MovieFrame_PlayMovie(MovieFrame, data.movieID)
+        end, {movieID=movieID, dateTime=dateTime})
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
+        end)
+        Movie_SubMenu(sub, movieID, dateTime)
     end
 
-    WoWTools_MenuMixin:SetScrollMode(sub)
-    tab=nil
+--全部清除
+    root:CreateButton(
+        (_num==0 and '|cff626262' or '')
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'.._num,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        nil,
+        {SetValue=function()
+            Save().movie={}
+        end})
+    end)
+
+    WoWTools_MenuMixin:SetScrollMode(root)
+    _tab= nil
 end
 
 
 
-function WoWTools_GossipMixin:Init_WoW_MoveList(...)
+function WoWTools_GossipMixin:Init_MoveListMenu(...)
     Init_Menu(...)
 end
 
+
+
+
+
+
+
+
+function WoWTools_GossipMixin:Init_WoW_MoveList()
+    Init()
+    Set_StopMove()
+end

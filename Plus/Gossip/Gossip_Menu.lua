@@ -75,7 +75,7 @@ local function Init_Menu(self, root)
         WoWTools_GossipMixin:Init_Gossip_Data()
         self:set_Texture()--设置，图片
         self:tooltip_Show()
-        WoWTools_GossipMixin:Init_Gossip()
+        WoWTools_GossipMixin:Init_StaticPopupDialogs()
         return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
@@ -251,78 +251,17 @@ local function Init_Menu(self, root)
         end, {spellID=spellID, rarity=rarity})
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
     end
-    if num>1 then
-        sub:CreateDivider()
---全部清除
-        WoWTools_MenuMixin:ClearAll(sub, function()
-            Save().choice={}
-        end)
-        WoWTools_MenuMixin:SetScrollMode(sub)
-    end
-
-
---视频
-    num=0
-    for _ in pairs(Save().movie) do
-        num=num+1
-    end
-    sub=root:CreateButton(
-        '     '..(WoWTools_DataMixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU)..(num==0 and ' |cff626262' or ' ')..num,
-    function()
-        return MenuResponse.Open
-    end)
---列表，电影
-    for movieID, dateTime in pairs(Save().movie) do
-        sub2=sub:CreateButton(
-            movieID,
-        function(data)
-            MovieFrame_PlayMovie(MovieFrame, data.movieID)
-        end, {movieID=movieID, dateTime=dateTime})
-        sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
-        end)
-        Movie_SubMenu(sub2, movieID, dateTime)
-    end
-    if num>0 then
-        sub:CreateDivider()
-    end
-    if num>1 then
---全部清除
-        WoWTools_MenuMixin:ClearAll(sub, function()
-            Save().movie={}
-        end)
-        WoWTools_MenuMixin:SetScrollMode(sub)
-    end
-
---跳过，视频，
-    sub2=sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON,
-    function()
-        return Save().stopMovie
-    end, function()
-        Save().stopMovie= not Save().stopMovie and true or false
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(
-            WoWTools_DataMixin.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY)
-        )
-    end)
-
---动画字幕
-    sub2=sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '动画字幕' or CINEMATIC_SUBTITLES,
-    function()
-        return C_CVar.GetCVarBool("movieSubtitle")
-    end, function()
-        if not InCombatLockdown() then
-            C_CVar.SetCVar('movieSubtitle', C_CVar.GetCVarBool("movieSubtitle") and '0' or '1')
-        end
-    end)
-    sub2:SetEnabled(not InCombatLockdown())
-
---WoW
+    
     sub:CreateDivider()
-    WoWTools_GossipMixin:Init_WoW_MoveList(self, sub)
+--全部清除
+    WoWTools_MenuMixin:ClearAll(sub, function()
+        Save().choice={}
+    end)
+    WoWTools_MenuMixin:SetScrollMode(sub)
+
+
+
+    WoWTools_GossipMixin:Init_MoveListMenu(self, root)
 
 
 --打开选项界面

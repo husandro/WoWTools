@@ -263,7 +263,6 @@ local function Init()
 
     BottomFrame= CreateFrame('Frame', 'WoWToolsAddOnsBottomFrame', AddonListCloseButton)
     BottomFrame.Background= BottomFrame:CreateTexture(nil, "BACKGROUND")
-    BottomFrame.Background:SetColorTexture(0, 0, 0)
 
     BottomFrame:SetSize(1,1)
     BottomFrame:Hide()
@@ -275,7 +274,7 @@ local function Init()
         else
             BottomFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
         end
-        BottomFrame.Background:SetAlpha(Save().bgAlpha or 0.5)
+        BottomFrame.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0.5)
         Set_Load_Button()
     end
 

@@ -595,6 +595,7 @@ local function Set_Text(monthOffset, day)
     local num= #events
     local toLeft= Save().left
 
+    TrackButton.Background:ClearAllPoints()
 
 	for index, event in pairs(events) do
         btn= _G[Name..index] or Create_Button(index)
@@ -829,7 +830,7 @@ local function Init()
     TrackButton= CreateFrame('Button', 'WoWToolsHolidayTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
 
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBG(TrackButton)
+    WoWTools_TextureMixin:CreateBG(TrackButton, {isColor=true})
 
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
@@ -964,8 +965,8 @@ local function Init()
         self:SetFrameStrata(Save().strata or 'MEDIUM')
         self.Frame:SetScale(Save().scale or 1)
 
-        self.Background:SetAlpha(Save().bgAlpha or 0.5)
-        self.Background:ClearAllPoints()
+        self.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0.5)
+
 
         self:set_Shown()
         self:set_Events()

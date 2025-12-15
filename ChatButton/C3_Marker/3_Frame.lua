@@ -961,27 +961,27 @@ local function Init()--设置标记, 框架
 
 
 --背景
-    WoWTools_TextureMixin:CreateBG(MakerFrame.ping, {isColor=true, alpha=Save().MakerFrameBgAlpha})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.ping, {isColor=true})
     MakerFrame.ping.Background:SetPoint('BOTTOMRIGHT', _G[Name..PingButtons[1]])
     MakerFrame.ping.Background:SetPoint('TOPLEFT', _G[Name..PingButtons[#PingButtons]])
 
-    WoWTools_TextureMixin:CreateBG(MakerFrame.target, {isColor=true, alpha=Save().MakerFrameBgAlpha})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.target, {isColor=true})
     MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', _G[Name..TargetButtons[2]])
     MakerFrame.target.Background:SetPoint('TOPLEFT', _G[Name..TargetButtons[#TargetButtons]])
 
-    WoWTools_TextureMixin:CreateBG(MakerFrame.marker, {isColor=true, alpha=Save().MakerFrameBgAlpha})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.marker, {isColor=true})
     MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', _G[Name..MarkerButtons[2]])
     MakerFrame.marker.Background:SetPoint('TOPLEFT', _G[Name..MarkerButtons[#MarkerButtons]])
 
-    WoWTools_TextureMixin:CreateBG(MakerFrame.countdown, {isAllPoint=true, isColor=true, alpha=Save().MakerFrameBgAlpha})
-    WoWTools_TextureMixin:CreateBG(MakerFrame.check, {isAllPoint=true, isColor=true, alpha=Save().MakerFrameBgAlpha})
-    WoWTools_TextureMixin:CreateBG(MakerFrame.RolePoll, {isAllPoint=true, isColor=true, alpha=Save().MakerFrameBgAlpha})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.countdown, {isAllPoint=true, isColor=true})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.check, {isAllPoint=true, isColor=true})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.RolePoll, {isAllPoint=true, isColor=true})
 
     function MakerFrame:set_background()
         local alpha= Save().MakerFrameBgAlpha or 0.5
         for _, name in pairs(Buttons) do
             if _G[Name..name].Background then
-                _G[Name..name].Background:SetAlpha(alpha)
+                _G[Name..name].Background:SetColorTexture(0, 0, 0, alpha)
             end
         end
     end

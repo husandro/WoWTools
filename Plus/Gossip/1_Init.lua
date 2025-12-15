@@ -31,7 +31,7 @@ local P_Save={
     --autoSortQuest=  WoWTools_DataMixin.Player.husandro,--仅显示当前地图任务
     autoSelectReward= WoWTools_DataMixin.Player.husandro,--自动选择奖励
     showAllQuestNum= WoWTools_DataMixin.Player.husandro,--显示所有任务数量
-    
+
     questPlayText= WoWTools_DataMixin.Player.husandro,
     --questPlayTextStopMove=true,
 
@@ -47,6 +47,7 @@ local P_Save={
     --Gossip_Text_Icon_cnFont=nil,--仅限，外文, 修该字体
 
     --delvesDifficultyMaxLevel=nil,--地下堡指定难度
+    Dialogs={}
 }
 
 
@@ -76,6 +77,7 @@ end
 
 local function Init()
     WoWTools_GossipMixin:Init_Gossip_Data()--自定义，对话，文本
+    WoWTools_GossipMixin:Init_WoW_MoveList()
 
     do
         WoWTools_GossipMixin:Init_Gossip()--对话，初始化
@@ -84,6 +86,8 @@ local function Init()
     WoWTools_GossipMixin:Init_Quest()--任务，初始化
     WoWTools_GossipMixin:Init_QuestPlayText()
     WoWTools_GossipMixin:Init_QuestInfo_Display()--任务目标，类型提示
+
+    WoWTools_GossipMixin:Init_StaticPopupDialogs()
 
     if Save().gossip then
         C_Timer.After(2, function()
@@ -112,10 +116,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             P_Save=nil
 
 --玩家，自定义，对话，文本
-            if WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player then
-                WoWToolsPlayerDate['GossipTextIcon']= WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player
-                WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player= nil
-            end
             WoWToolsPlayerDate['GossipTextIcon']= WoWToolsPlayerDate['GossipTextIcon'] or {
                 [55193]={
                     icon='communities-icon-invitemail',

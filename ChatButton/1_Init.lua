@@ -295,7 +295,7 @@ local function Init()
         local Buttons= WoWTools_ChatMixin:GetButtons()
         local btn1= Buttons[1] and _G[Name..Buttons[1]]
         if not btn1 then
-            self.Background:SetAlpha(0)
+            self.Background:SetColorTexture(0,0,0,0)
             return
         end
 

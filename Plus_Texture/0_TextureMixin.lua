@@ -79,8 +79,8 @@ function WoWTools_TextureMixin:CreateBG(frame, tab)
         if type(point)=='function' then
             point(frame.Background)
         else
-            frame.Background:SetPoint('TOPLEFT', point, -2, 2)
-            frame.Background:SetPoint('BOTTOMRIGHT', point, 2, -2)
+            frame.Background:SetPoint('TOPLEFT', point, -1, 1)
+            frame.Background:SetPoint('BOTTOMRIGHT', point, 1, -1)
         end
     end
 --颜色
