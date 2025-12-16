@@ -402,15 +402,13 @@ local function Set_StopMove()
 
     if Save().stopCinematics then
         if not Cinematics_ID then
-            Cinematics_ID= EventRegistry:RegisterFrameEventAndCallback("CINEMATIC_START", function(_, canBeCancelled)
-                if canBeCancelled then
-                    CinematicFrame_CancelCinematic()
-                    print(
-                        WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                        '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
-                        WoWTools_DataMixin.onlyChinese and '过场动画' or CINEMATICS
-                    )
-                end
+            Cinematics_ID= EventRegistry:RegisterFrameEventAndCallback("CINEMATIC_START", function()--_, canBeCancelled, forcedAspectRatio) 
+                CinematicFrame_CancelCinematic()
+                print(
+                    WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
+                    WoWTools_DataMixin.onlyChinese and '过场动画' or CINEMATICS
+                )
             end)
         end
 
@@ -419,11 +417,6 @@ local function Set_StopMove()
     end
 
 end
-
-
-
-
-
 
 
 

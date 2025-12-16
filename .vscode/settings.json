@@ -2729,7 +2729,11 @@
         "CinematicFrame_CancelCinematic",
         "CINEMATICS",
         "PLAY_MOVIE_PREPEND",
-        "UNSPECIFIED_SPEC_FILTER"
+        "UNSPECIFIED_SPEC_FILTER",
+        "CinematicFrameCloseDialogConfirmButton",
+        "CinematicFrame",
+        "CinematicFrameCloseDialogResumeButton",
+        "CinematicFrameCloseDialog"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

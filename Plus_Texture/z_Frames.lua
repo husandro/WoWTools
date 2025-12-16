@@ -644,3 +644,9 @@ function WoWTools_TextureMixin.Frames:ColorPickerFrame()
         self:SetEditBox(ColorPickerFrame.Content.HexBox)
     end
 end
+
+function WoWTools_TextureMixin.Frames:CinematicFrame()
+    self:SetUIButton(CinematicFrameCloseDialogConfirmButton)
+    self:SetUIButton(CinematicFrameCloseDialogResumeButton)
+    self:SetFrame(CinematicFrameCloseDialog.Border, {alpha=1})
+end

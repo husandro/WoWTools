@@ -24,6 +24,7 @@ local P_Save={
     choice={},--PlayerChoiceFrame
     movie={},--电影
     stopMovie=true,--如果已播放，停止播放
+    stopCinematics=WoWTools_DataMixin.Player.husandro,--跳过过场动画
 
     quest= true,
     questOption={},

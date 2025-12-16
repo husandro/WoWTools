@@ -777,6 +777,10 @@ local function Init()--PartyFrame.lua
         Create_positionFrame(frame)--队友位置
         Create_deadFrame(frame)--队友，死亡
 
+
+        frame.Name:SetPoint('RIGHT')
+        frame.Name:SetFontObject('GameFontNormalSmall2')
+
         WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
             if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
                 self.PartyMemberOverlay.RoleIcon:SetShown(false)
