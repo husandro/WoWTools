@@ -530,7 +530,7 @@ local function Init_Menu(_, root)
     function()
         return Save().stopCinematicsInInstance
     end, function()
-        Save().stopCinematicsInInstance= not Save().stopCinematicsInInstance and true or nil
+        Save().stopCinematicsInInstance= not Save().stopCinematicsInInstance and true or false
     end)
 
 
