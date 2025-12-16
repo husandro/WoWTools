@@ -41,16 +41,16 @@ local function Create(tooltip)
         return
     end
 
-    tooltip.textLeft= tooltip:CreateFontString(name..'TextLeft', 'ARTWORK', 'GameFontNormal')
+    tooltip.textLeft= tooltip:CreateFontString(name..'TextLeft', 'ARTWORK', 'GameTooltipHeaderText')
     tooltip.textLeft:SetFontHeight(16)
     tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
 --左上角字符2
-    tooltip.text2Left= tooltip:CreateFontString(name..'Text2Left', 'ARTWORK', 'GameFontNormal')
+    tooltip.text2Left= tooltip:CreateFontString(name..'Text2Left', 'ARTWORK', 'GameTooltipHeaderText')
     tooltip.text2Left:SetFontHeight(16)
     tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
 
 --右上角字符
-    tooltip.textRight= tooltip:CreateFontString(name..'textRight', 'ARTWORK', 'GameFontNormal')
+    tooltip.textRight= tooltip:CreateFontString(name..'textRight', 'ARTWORK', 'GameTooltipHeaderText')
     tooltip.textRight:SetFontHeight(16)
     tooltip.textRight:SetJustifyH('RIGHT')
     if tooltip.CloseButton then
@@ -59,7 +59,7 @@ local function Create(tooltip)
         tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
     end
 --右上角字符2
-    tooltip.text2Right= tooltip:CreateFontString(name..'text2Right', 'ARTWORK', 'GameFontNormal')
+    tooltip.text2Right= tooltip:CreateFontString(name..'text2Right', 'ARTWORK', 'GameTooltipHeaderText')
     tooltip.text2Right:SetFontHeight(12)
     tooltip.text2Right:SetJustifyH('RIGHT')
     tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
