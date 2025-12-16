@@ -34,7 +34,8 @@ local function Init()
         return
     end
 
-    btn.count=WoWTools_LabelMixin:Create(btn, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
+    btn.count= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
+    btn.count:SetFontHeight(12)
     btn.count:SetPoint('BOTTOMRIGHT')
     btn.noText= '|A:talents-button-reset:0:0|a'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
     btn.useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(WoWTools_DataMixin.onlyChinese and '使用' or USE)

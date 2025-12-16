@@ -12,14 +12,14 @@ end
 
 --自定义，颜色
 local function Set_Color()
-    WoWTools_DataMixin.Player.UseColor= Save().useColor==2 and Save().useCustomColorTab
-        or {
-            r=WoWTools_DataMixin.Player.r,
-            g=WoWTools_DataMixin.Player.g,
-            b=WoWTools_DataMixin.Player.b,
-            a=1,
-            hex= WoWTools_DataMixin.Player.col
-        }
+WoWTools_DataMixin.Player.UseColor= Save().useColor==2 and Save().useCustomColorTab
+    or {
+        r=WoWTools_DataMixin.Player.r,
+        g=WoWTools_DataMixin.Player.g,
+        b=WoWTools_DataMixin.Player.b,
+        a=1,
+        hex= WoWTools_DataMixin.Player.col
+    }
 end
 
 
@@ -36,7 +36,7 @@ end
 --开始
 --####
 local function Init_Options()
-    WoWTools_PanelMixin:Header(nil, WoWTools_DataMixin.onlyChinese and '数据' or 'Data')
+    WoWTools_PanelMixin:Header(nil,  WoWTools_DataMixin.onlyChinese and 'WoWTools 数据' or 'WoWTools Data')
 
     local optionHeader= WoWTools_DataMixin.onlyChinese and '插件选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, OPTIONS)
     WoWTools_PanelMixin:OnlyButton({

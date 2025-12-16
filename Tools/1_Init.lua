@@ -91,7 +91,7 @@ local function Init_Panel()
     })
 
     WoWTools_PanelMixin:Header(WoWTools_ToolsMixin.Layout, WoWTools_DataMixin.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
-
+ 
 do
     for _, data in pairs(WoWTools_ToolsMixin:Get_AddList()) do
         initializer=nil
@@ -120,7 +120,7 @@ do
                         Save().disabledADD[data.name]= not Save().disabledADD[data.name] and true or nil
                     end,
 
-                    DropDownGetValue=function(...)
+                    DropDownGetValue=function()
                         return Save().BottomPoint[data.name] and 2 or 1
                     end,
                     DropDownSetValue=function(value)

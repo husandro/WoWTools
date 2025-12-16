@@ -41,23 +41,30 @@ local function Create(tooltip)
         return
     end
 
-    tooltip.textLeft=WoWTools_LabelMixin:Create(tooltip, {size=16, name=name..'TextLeft'})
+    tooltip.textLeft= tooltip:CreateFontString(name..'TextLeft', 'ARTWORK', 'GameFontNormal')
+    tooltip.textLeft:SetFontHeight(16)
     tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
-
-    tooltip.text2Left=WoWTools_LabelMixin:Create(tooltip, {size=16, name=name..'Text2Left'})--左上角字符2
+--左上角字符2
+    tooltip.text2Left= tooltip:CreateFontString(name..'Text2Left', 'ARTWORK', 'GameFontNormal')
+    tooltip.text2Left:SetFontHeight(16)
     tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
 
-    tooltip.textRight=WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT', name=name..'TextRight'})--右上角字符
+--右上角字符
+    tooltip.textRight= tooltip:CreateFontString(name..'textRight', 'ARTWORK', 'GameFontNormal')
+    tooltip.textRight:SetFontHeight(16)
+    tooltip.textRight:SetJustifyH('RIGHT')
     if tooltip.CloseButton then
         tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', 0, 3)
     else
         tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
     end
-
-    tooltip.text2Right= WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT', name=name..'Text2Right'})--右上角字符2
+--右上角字符2
+    tooltip.text2Right= tooltip:CreateFontString(name..'text2Right', 'ARTWORK', 'GameFontNormal')
+    tooltip.text2Right:SetFontHeight(12)
+    tooltip.text2Right:SetJustifyH('RIGHT')
     tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
-
-    tooltip.backgroundColor= tooltip:CreateTexture(name..'BackgroundColor', 'BACKGROUND',nil, 1)--背景颜色
+--背景颜色
+    tooltip.backgroundColor= tooltip:CreateTexture(name..'BackgroundColor', 'BACKGROUND',nil, 1)
     tooltip.backgroundColor:SetPoint('TOPLEFT', 2, -2)
     tooltip.backgroundColor:SetPoint('BOTTOMRIGHT', -2, 2)
     tooltip.backgroundColor:Hide()

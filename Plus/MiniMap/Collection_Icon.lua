@@ -1133,7 +1133,7 @@ local function Init()
         else
             if not InCombatLockdown() then
                 if d==1 then
-                    WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT))
+                    WoWTools_PanelMixin:Open(nil, WoWTools_DataMixin.onlyChinese and 'WoWTools 数据' or 'WoWTools Data')
                 else
                     WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
                 end

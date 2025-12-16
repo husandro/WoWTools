@@ -383,7 +383,7 @@ local function Init_Achievement()
             end
         end)
 --成就ID提示
-        btn.idLabel= btn.Shield:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')--WoWTools_LabelMixin:Create(btn.Shield)
+        btn.idLabel= btn.Shield:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')
         btn.idLabel:SetPoint('TOP', btn.Shield.Icon)
 --点击，Tooltip, 超连接
         btn.Shield:SetScript('OnLeave', function(self)

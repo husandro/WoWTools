@@ -140,18 +140,23 @@ end
 
 --设置颜色
 function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
-    tab = tab or {}
-    if not object or not (WoWTools_DataMixin.Player.UseColor or tab.color) then
+    if not object then
         return
     end
 
+    tab = tab or {}
+
     local Type= tab.type or (object.GetObjectType and object:GetObjectType()) or type(object)-- FontString Texture String
 
-    local alpha= tab.alpha
     local col= tab.color or WoWTools_DataMixin.Player.UseColor
     local isColorTexture= tab.isColorTexture
 
-    local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
+    local r,g,b,a
+    if col then
+        r,g,b,a= col.r or 1, col.g or 1, col.b or 1, tab.alpha or col.a or 1
+    else
+        r,g,b,a= WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, 1
+    end
 
     if Type=='FontString' then
         object:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)

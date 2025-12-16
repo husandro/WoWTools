@@ -65,6 +65,7 @@ local function GetWeek()--周数
     return week
 end
 
+--PlayerUtil.GetClassColor():WrapTextInColorCode(linkText)
 WoWTools_DataMixin.Player={
     Realm= playerRealm,
     Realms= {},--多服务器
@@ -77,11 +78,12 @@ WoWTools_DataMixin.Player={
     Region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     IsCN= currentRegion==5 or currentRegion==4,
 
-    r= r,
-    g= g,
-    b= b,
+    r= r or 1,
+    g= g or 1,
+    b= b or 1,
     col= '|c'..hex,
     UseColor= {r=r, g=g, b=b, a=1, hex='|c'..hex},--使用颜色
+
 
     --Lo= GetLocale(),
     Week= GetWeek(),--周数 date('%W')

@@ -28,6 +28,7 @@ WoWTools_TextureMixin={
     Save=function()
         return WoWToolsSave['Plus_Texture'] or {}
     end,
+    Color= PlayerUtil.GetClassColor()
 }
 
 function WoWTools_TextureMixin:SetBG(frame, tab)

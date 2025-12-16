@@ -2737,7 +2737,8 @@
         "CURRENCY_FILTER_TYPE_CHARACTER",
         "GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE",
         "Background",
-        "HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY"
+        "HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY",
+        "DressUpFrameCustomSetDropdown"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

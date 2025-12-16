@@ -20,7 +20,8 @@ local function Set_Script(btn)
     end
 
     btn:SetAttribute("type1", "item")
-    btn.count= WoWTools_LabelMixin:Create(btn, {size=12, color={r=1,g=1,b=1}})
+    btn.count= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
+    btn.count:SetFontHeight(12)
     btn.count:SetPoint('BOTTOMRIGHT', -4,4)
     btn.numCount=0
     btn.enableCooldown=true
