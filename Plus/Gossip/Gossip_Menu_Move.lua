@@ -403,6 +403,9 @@ local function Set_StopMove()
     if Save().stopCinematics then
         if not Cinematics_ID then
             Cinematics_ID= EventRegistry:RegisterFrameEventAndCallback("CINEMATIC_START", function()--_, canBeCancelled, forcedAspectRatio) 
+                if IsInInstance() and Save().stopCinematicsInInstance then
+                    return
+                end
                 CinematicFrame_CancelCinematic()
                 print(
                     WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
@@ -521,7 +524,14 @@ local function Init_Menu(_, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('CINEMATIC_START')
     end)
-
+--仅限在副本里
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '仅限在副本里' or  format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_INSTANCE),
+    function()
+        return Save().stopCinematicsInInstance
+    end, function()
+        Save().stopCinematicsInInstance= not Save().stopCinematicsInInstance and true or nil
+    end)
 
 
     local _tab={}

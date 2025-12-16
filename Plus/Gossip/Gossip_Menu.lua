@@ -12,41 +12,6 @@ end
 
 
 
-local function Movie_SubMenu(root, movieID, dateTime)
---移除
-    if dateTime  then
-        root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
-        function(data)
-            return Save().movie[data.movieID]
-        end, function(data)
-            Save().movie[data.movieID]= not Save().movie[data.movieID] and data.dateTime or nil
-            return MenuResponse.Close
-        end, {movieID=movieID, dateTime=dateTime})
-        root:CreateDivider()
-    end
-
---下载
-    if not IsMovieLocal(movieID) then
-        local sub=root:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '下载' or 'Download',
-        function(data)
-            PreloadMovie(data.movieID)
-        end, {movieID=movieID})
-
-        --进度        
-        sub:SetTooltip(function(tooltip, description)
-            local inProgress, downloaded, total = GetMovieDownloadProgress(description.data.movieID)
-            if inProgress and downloaded and total and total>0 then
-                tooltip:AddDoubleLine(
-                    WoWTools_DataMixin.onlyChinese and '进度' or PVP_PROGRESS_REWARDS_HEADER,
-                    format('|n%i%%', downloaded/total*100)
-                )
-            end
-        end)
-    end
-end
-
 
 
 
