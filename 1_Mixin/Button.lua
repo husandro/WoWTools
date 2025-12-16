@@ -204,7 +204,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
             btn.border=btn:CreateTexture(nil, 'ARTWORK')
             btn.border:SetAllPoints(btn)
             btn.border:SetAtlas('bag-reagent-border')
-            WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
+            WoWTools_TextureMixin:SetAlphaColor(btn.border, nil, nil, 0.3)
         end
 --方形，按钮
     elseif atlas then

@@ -48,7 +48,7 @@ local function Init_UI()
     MerchantBuyBackItemName:SetPoint('RIGHT', MerchantFrame)
     MerchantBuyBackItemName:SetHeight(6)
 
-    WoWTools_ColorMixin:Setup(MerchantBuyBackItemItemButtonNormalTexture, {alpha=0.5})
+    WoWTools_TextureMixin:SetAlphaColor(MerchantBuyBackItemItemButtonNormalTexture, nil, nil, 0.5)
 
 --修理一件物品
     WoWTools_ButtonMixin:AddMask(MerchantRepairItemButton, false)

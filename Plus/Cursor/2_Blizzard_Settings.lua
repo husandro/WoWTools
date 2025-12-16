@@ -139,7 +139,7 @@ local function Init_Cursor_Options(panel)
     sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -20)
 
     local alphaSlider = WoWTools_SliderMixin:CSlider(panel, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
-    text=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+    text=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
@@ -317,7 +317,7 @@ local function Init_GCD_Options(panel)
     panel.sliderSize:SetPoint("TOPLEFT", panel.gcdCheck, 'BOTTOMLEFT', 0, -20)
 
     local alphaSlider = WoWTools_SliderMixin:CSlider(panel, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
-    text=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+    text=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)

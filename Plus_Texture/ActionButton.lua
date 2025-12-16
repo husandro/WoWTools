@@ -131,21 +131,20 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     OverrideActionBarExpBar:SetHeight(12)
 
     --WoWTools_DataMixin:Hook(StatusTrackingBarContainerMixin, 'InitializeBars', function()
-        
+
 --货币，XP，追踪，最下面BAR
     --self:SetAlphaColor(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.1)
     --self:SetAlphaColor(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.1)
 
-    local mainBar= MainActionBar or MainMenuBar--MainMenuBar 11.2.7没有了
-    self:SetFrame(mainBar.ActionBarPageNumber.UpButton, {alpha=0.5})
-    self:SetFrame(mainBar.ActionBarPageNumber.DownButton, {alpha=0.5})
-    WoWTools_ColorMixin:Setup(mainBar.ActionBarPageNumber.Text, {type='FontString'})
+    self:SetFrame(MainActionBar.ActionBarPageNumber.UpButton, {alpha=0.5})
+    self:SetFrame(MainActionBar.ActionBarPageNumber.DownButton, {alpha=0.5})
+    WoWTools_ColorMixin:Setup(MainActionBar.ActionBarPageNumber.Text, {type='FontString'})
 
-    if mainBar.EndCaps then
-        self:SetAlphaColor(mainBar.EndCaps.LeftEndCap, true, nil, nil)
-        self:SetAlphaColor(mainBar.EndCaps.RightEndCap, true, nil, nil)
+    if MainActionBar.EndCaps then
+        self:SetAlphaColor(MainActionBar.EndCaps.LeftEndCap, true, nil, nil)
+        self:SetAlphaColor(MainActionBar.EndCaps.RightEndCap, true, nil, nil)
     end
-    self:SetAlphaColor(mainBar.BorderArt, nil, nil, 0)
+    self:SetAlphaColor(MainActionBar.BorderArt, nil, nil, 0)
 
 
     self:HideTexture(SpellFlyout.Background.Start)
@@ -253,8 +252,9 @@ function WoWTools_TextureMixin.Events:Blizzard_PetBattleUI()
     PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
 
     for i=1, NUM_BATTLE_PETS_IN_BATTLE do
-        if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
-            WoWTools_ColorMixin:Setup(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
+        local frame= PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i]
+        if frame and frame.SelectedTexture then
+            frame.SelectedTexture:SetVertexColor(0,1,1)
         end
     end
 

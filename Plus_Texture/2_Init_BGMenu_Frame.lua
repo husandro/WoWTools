@@ -694,7 +694,7 @@ local function Init_Menu(self, root, isSub)
             SaveData(name).alpha=value
             Settings(IsEnabledSaveBg(name) and self or nil)
         end,
-        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
         minValue=0,
         maxValue=1,
         step=0.05,
@@ -800,7 +800,7 @@ local function Init_Menu(self, root, isSub)
             Save().Anims.alpha=value
             Settings()
         end,
-        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
         minValue=0.1,
         maxValue=1,
         step=0.05,

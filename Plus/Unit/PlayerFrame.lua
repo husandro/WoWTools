@@ -102,13 +102,6 @@ local function Create_lootButton(frame)
     frame.lootButton:SetPoint('TOP', frame.portrait, 6,10)
     frame.lootButton:SetFrameLevel(frame:GetFrameLevel() +1)
 
-
-    --[[local portrait= frame.lootButton:CreateTexture(nil, 'ARTWORK', nil, 7)--外框
-    portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
-    portrait:SetPoint('CENTER',1,-1)
-    portrait:SetSize(21,21)
-    WoWTools_ColorMixin:Setup(portrait, {type='Texture'})--设置颜色]]
-
     local lootTipsTexture= frame.lootButton:CreateTexture(nil, "OVERLAY")
     lootTipsTexture:SetSize(8,8)
     lootTipsTexture:SetPoint('TOP', 0, 4)
@@ -253,8 +246,7 @@ local function Create_instanceFrame(frame)
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     portrait:SetPoint('CENTER', frame.instanceFrame.dungeon,1,0)
     portrait:SetSize(20,20)
-    WoWTools_ColorMixin:Setup(portrait, {type='Texture'})--设置颜色
-
+    WoWTools_TextureMixin:SetAlphaColor(portrait, nil, nil, 1)
 
 --提示
     frame.instanceFrame.dungeon:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)

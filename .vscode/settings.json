@@ -150,7 +150,7 @@
         "GameTooltip_AddErrorLine",
         "GameTooltip_SetTitle",
         "UI_SCALE",
-        "CHANGE_OPACITY",
+        "HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY",
         "HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND",
         "GenericTraitFrame",
         "TEXT_TO_SPEECH",
@@ -2735,7 +2735,9 @@
         "CinematicFrameCloseDialogResumeButton",
         "CinematicFrameCloseDialog",
         "CURRENCY_FILTER_TYPE_CHARACTER",
-        "GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE"
+        "GROUP_FINDER_CROSS_FACTION_LISTING_WITHOUT_PLAYSTLE",
+        "Background",
+        "HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

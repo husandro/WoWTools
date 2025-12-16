@@ -61,13 +61,37 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2
-
+--缩放
     WoWTools_MenuMixin:Scale(self, root, function()
         return Save().scale
     end, function(value)
         Save().scale= value
         self:settings()
     end)
+
+--显示背景
+    sub=WoWTools_MenuMixin:BgAplha(root, function()
+        return Save().bgAlpha or 0
+    end, function(value)
+        Save().bgAlpha=value
+        self:set_backgroud()
+    end, function()
+        Save().bgAlpha= nil
+        Save().bgUseClassColor= nil
+        self:set_backgroud()
+    end)
+
+--职业颜色
+    sub:CreateSpacer()
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '职业颜色' or CLASS_COLORS,
+    function()
+        return Save().bgUseClassColor
+    end, function()
+        Save().bgUseClassColor= not Save().bgUseClassColor and true or nil
+        self:set_backgroud()
+    end)
+
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(self, root, function(data)
@@ -83,7 +107,8 @@ local function Init_Menu(self, root)
         '|A:bag-reagent-border:0:0|a'..(WoWTools_DataMixin.onlyChinese and '镶边' or EMBLEM_BORDER),
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=Save().borderAlpha or 0.3})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --Border 透明度
     sub:CreateSpacer()
@@ -94,7 +119,7 @@ local function Init_Menu(self, root)
             Save().borderAlpha=value
             Set_All_Buttons(self)
         end,
-        name=WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY,
+        name=WoWTools_DataMixin.onlyChinese and '改变透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
         minValue=0,
         maxValue=1,
         step=0.05,
@@ -127,28 +152,6 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
---显示背景
-    sub=WoWTools_MenuMixin:BgAplha(root, function()
-        return Save().bgAlpha or 0
-    end, function(value)
-        Save().bgAlpha=value
-        self:set_backgroud()
-    end, function()
-        Save().bgAlpha= nil
-        Save().bgUseClassColor= nil
-        self:set_backgroud()
-    end)
-
---职业颜色
-    sub:CreateSpacer()
-    sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '职业颜色' or CLASS_COLORS,
-    function()
-        return Save().bgUseClassColor
-    end, function()
-        Save().bgUseClassColor= not Save().bgUseClassColor and true or nil
-        self:set_backgroud()
-    end)
 
 --方向, 竖
     sub=root:CreateCheckbox(

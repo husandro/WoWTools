@@ -43,7 +43,7 @@ local function Init()
                     local tab={frame:GetRegions()}
                     for _, region in pairs(tab) do
                         if region:IsObjectType('Texture') then-- .String
-                            WoWTools_ColorMixin:Setup(region, {type='Texture', alpha=Save().chatBubbleAlpha})
+                            WoWTools_TextureMixin:SetAlphaColor(region, nil, nil, Save().chatBubbleAlpha)
                         end
                     end
                     buble.setAlphaOK= true

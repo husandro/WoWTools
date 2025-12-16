@@ -47,10 +47,8 @@ local function Init_Menu(self, root)
         tooltip:AddLine('Alt+'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '暂时' or BOOSTED_CHAR_SPELL_TEMPLOCK)
     end)
-
---唯一对话    
-    root:CreateDivider()
-    root:CreateCheckbox(
+--唯一对话  
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '唯一对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEM_UNIQUE, ENABLE_DIALOG),
     function()
         return  Save().unique
@@ -58,6 +56,13 @@ local function Init_Menu(self, root)
         Save().unique= not Save().unique and true or false
         WoWTools_GossipMixin:UpdateGossip()--更新GossipFrame
     end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当选项只有一个时，自动对话' or 'When there is only one option, automatic dialogue.', nil, nil,nil, true)
+    end)
+
+  
+    root:CreateDivider()
+
 
 --自定义,闲话
     num=0
@@ -65,13 +70,12 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '
-        ..(WoWTools_DataMixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))
-        ..(num==0 and ' |cff626262' or ' ')
-        ..num,
+        '|T0:0|t'
+        ..(WoWTools_DataMixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG)),
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=num})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --列表，自定义,闲话
     for gossipOptionID, text in pairs(Save().gossipOption) do
@@ -84,24 +88,21 @@ local function Init_Menu(self, root)
             WoWTools_GossipMixin:UpdateGossip()--更新GossipFrame
         end, {gossipOptionID=gossipOptionID, text=text})
         sub2:SetTooltip(function(tooltip, description)
-            tooltip:AddLine(description.data.gossipOptionID)
-            tooltip:AddLine('gossipOptionID')
+            tooltip:AddDoubleLine('gossipOptionID', description.data.gossipOptionID)
         end)
     end
-    if num>1 then
-        sub:CreateDivider()
---全部清除
-        WoWTools_MenuMixin:ClearAll(sub, function()
-            Save().gossipOption={}
-        end)
 
-        WoWTools_MenuMixin:SetScrollMode(sub)
-    end
+--全部清除
+    sub:CreateDivider()
+    WoWTools_MenuMixin:ClearAll(sub, function()
+        Save().gossipOption={}
+    end)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
 
 
 --对话替换
-    root:CreateDivider()
+    --root:CreateDivider()
     num, num2= 0, 0
     for _ in pairs(WoWToolsPlayerDate['GossipTextIcon']) do
         num=num+1
@@ -111,25 +112,27 @@ local function Init_Menu(self, root)
     end
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE))
-        ..WoWTools_DataMixin.Icon.mid
-        ..((num+num2)==0 and '|cff626262' or '')
-        ..(num..'/'..num2),
+        ..WoWTools_DataMixin.Icon.mid,
+        --..((num+num2)==0 and '|cff626262' or '')
+        --..(num..'/'..num2),
     function()
         return not Save().not_Gossip_Text_Icon
     end, function()
         Save().not_Gossip_Text_Icon= not Save().not_Gossip_Text_Icon and true or nil
         WoWTools_GossipMixin:Init_Gossip_Data()
         WoWTools_GossipMixin:UpdateGossip()--更新GossipFrame
-        --return MenuResponse.Close
-    end)
+    end, {rightText=num..'/'..num2, rightColor= (num+num2==0) and DISABLED_FONT_COLOR or nil})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --对话替换, 打开自定义, Frame
     sub:CreateButton(
-        '|A:mechagon-projects:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..(num==0 and ' |cff626262' or ' ')..num,
+        '|A:mechagon-projects:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM),
     function ()
         WoWTools_GossipMixin:Init_Options_Frame()
         return MenuResponse.Open
-    end)
+    end, {rightText=num})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --默认
     num=0
@@ -138,17 +141,15 @@ local function Init_Menu(self, root)
     end
     sub:CreateDivider()
     sub:CreateCheckbox(
-        (WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT)..(num==0 and ' |cff626262' or ' ')..num,
+        (WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT),--..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return not Save().notGossipPlayerData
     end, function()
         Save().notGossipPlayerData= not Save().notGossipPlayerData and true or nil
         WoWTools_GossipMixin:Init_Gossip_Data()
         WoWTools_GossipMixin:UpdateGossip()--更新GossipFrame
-        --return MenuResponse.CloseAll
-    end)
-
-
+    end, {rightText=num})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --禁用NPC, 闲话,任务, 选项
     num=0
@@ -156,37 +157,37 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(WoWTools_DataMixin.onlyChinese and '禁用NPC' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, 'NPC'))..(num==0 and ' |cff626262' or ' ')..num,
+        '|T0:0|t'..(WoWTools_DataMixin.onlyChinese and '禁用NPC' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, 'NPC')),--..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=num})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '闲话/任务' or (GOSSIP_OPTIONS..'/'..QUESTS_LABEL))
     end)
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --列表，禁用NPC, 闲话,任务, 选项
     for npcID, name in pairs(Save().NPC) do--npcID 是字符
         sub2=sub:CreateCheckbox(
-            WoWTools_TextMixin:CN(nil, {npcID=npcID, isName=true}) or name~=true and name or npcID,
+            WoWTools_TextMixin:CN(nil, {npcID=npcID, isName=true})
+            or (name~=true and name)
+            or npcID,
         function(data)
             return Save().NPC[data.npc]
         end, function(data)
             Save().NPC[data.npc]= not Save().NPC[data.npc] and data.name or nil
         end, {npc=npcID, name=name})
         sub2:SetTooltip(function(tooltip, description)
-            tooltip:AddLine(description.data.npc)
-            tooltip:AddLine('NPC ID')
+            tooltip:AddDoubleLine('NPC ID', description.data.npc)
         end)
-    end
-    if num>1 then
-        sub:CreateDivider()
---全部清除
-        WoWTools_MenuMixin:ClearAll(sub, function()
-            Save().NPC={}
-        end)
-        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
+--全部清除
+    sub:CreateDivider()
+    WoWTools_MenuMixin:ClearAll(sub, function()
+        Save().NPC={}
+    end)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
 --PlayerChoiceFrame
     num=0
@@ -194,14 +195,15 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE)..(num==0 and ' |cff626262' or ' ')..num,
+        '|T0:0|t'..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE),--..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=num})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('PlayerChoiceFrame')
         tooltip:AddLine('Blizzard_PlayerChoice')
     end)
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --列表，PlayerChoiceFrame
     for spellID, rarity in pairs(Save().choice) do
@@ -216,16 +218,16 @@ local function Init_Menu(self, root)
         end, {spellID=spellID, rarity=rarity})
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
     end
-    
-    sub:CreateDivider()
+
 --全部清除
+    sub:CreateDivider()
     WoWTools_MenuMixin:ClearAll(sub, function()
         Save().choice={}
     end)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 
-
+    root:CreateDivider()
     WoWTools_GossipMixin:Init_MoveListMenu(self, root)
 
 

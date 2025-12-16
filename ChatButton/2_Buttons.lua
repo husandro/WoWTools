@@ -126,7 +126,7 @@ local function Set_Button(btn)
     btn.border=btn:CreateTexture(nil, 'ARTWORK')
     btn.border:SetAllPoints(btn)
     btn.border:SetAtlas('bag-reagent-border')
-    WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha= 0.3})
+    WoWTools_TextureMixin:SetAlphaColor(btn.border, nil, nil, 0.3)
 
     btn:SetSize(30, 30)
 

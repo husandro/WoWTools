@@ -65,7 +65,6 @@ local function Settings(frame)
         self.Icon:SetShown(true)
     end)
 
-    --WoWTools_ColorMixin:Setup(frame.CastTimeText, {type='FontString'})--设置颜色    
     if not frame.CastTimeText then
         Create_CastTimeTexte(frame)
     else
@@ -75,7 +74,6 @@ local function Settings(frame)
             frame.CastTimeText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
         end
     end
-    --WoWTools_ColorMixin:Setup(frame.Text, {type='FontString'})--设置颜色
     frame.Text:SetTextColor(1, 0.82, 0, 1)
     frame.Text:SetShadowOffset(1, -1)
 

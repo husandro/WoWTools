@@ -140,10 +140,11 @@ local function Init_Menu(self, root)
 
 --透明度
     sub= root:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        '|A:MonkUI-LightOrb:0:0|a'..(WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY),
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=Save().alpha or 1})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -156,7 +157,7 @@ local function Init_Menu(self, root)
                 self:set_scale()
             end
         end,
-        name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
+        name= WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY ,
         minValue=0,
         maxValue=1,
         step=0.01,
@@ -174,7 +175,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(' ')
         tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is any item button')
     end})
 
     WoWTools_MenuMixin:Reload(sub)

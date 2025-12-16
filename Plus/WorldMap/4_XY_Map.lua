@@ -216,8 +216,8 @@ local function Init()
 
 
     btn.edit= CreateFrame("EditBox", nil, btn, 'InputBoxTemplate')--'InputBoxVisualTemplate')--InputBoxTemplate')
-    WoWTools_TextureMixin:SetEditBox(btn.edit)
-    WoWTools_ColorMixin:Setup(btn.edit, {type='EditBox'})
+    WoWTools_TextureMixin:SetEditBox(btn.edit)--外框，颜色
+    WoWTools_ColorMixin:Setup(btn.edit, {type='EditBox'})--字体颜色
     btn.edit:SetHeight(20)
 
     btn.edit:SetAutoFocus(false)

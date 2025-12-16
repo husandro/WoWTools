@@ -58,9 +58,9 @@ local function Init()
     btn.labelType= WoWTools_LabelMixin:Create(btn, {color=true, level=22, alpha=0.5})
     btn.labelType:SetPoint('TOP', btn, 'BOTTOM', 0, 4)
 
-    WoWTools_ColorMixin:Setup(btn.Default.Border, {type='Texture'})
-    WoWTools_ColorMixin:Setup(btn.Guild.Border, {type='Texture'})
-    WoWTools_ColorMixin:Setup(btn.ChallengeMode.Border, {type='Texture'})
+    WoWTools_TextureMixin:SetAlphaColor(btn.Default.Border, true)
+    WoWTools_TextureMixin:SetAlphaColor(btn.Guild.Border, true)
+    WoWTools_TextureMixin:SetAlphaColor(btn.ChallengeMode.Border, true)
 
     WoWTools_LabelMixin:Create(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
     btn.Default.Text:SetShadowOffset(1,-1)

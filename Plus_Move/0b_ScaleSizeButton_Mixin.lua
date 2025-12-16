@@ -493,7 +493,7 @@ local function Init_Menu(self, root)
 --改变透明度
     if self.set_move_event then
         sub=root:CreateCheckbox(
-            (WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)..' '..(Save().alpha or 1),
+            (WoWTools_DataMixin.onlyChinese and '改变透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY)..' '..(Save().alpha or 1),
         function()
             return not Save().disabledAlpha[name]
         end, function()
@@ -1036,10 +1036,9 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         end
     end
 
-    WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=1})--设置颜色
+    WoWTools_TextureMixin:SetButton(btn, {alpha=1})
 
     --btn:SetClampedToScreen(true)
-
 
     btn.SOS = { --Scaler Original State
         dist = 0,

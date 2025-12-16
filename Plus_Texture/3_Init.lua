@@ -4,6 +4,7 @@ local P_Save={
     --disabled=true,
     --disabledTexture=true,
     UIButton=WoWTools_DataMixin.Player.husandro,
+    CheckBox= WoWTools_DataMixin.Player.husandro,
     alpha= 0.5,
 
     --disabledChatBubble=true,--禁用，聊天泡泡
@@ -95,6 +96,15 @@ local function Init_Panel()
         end
     }, sub)
 
+    WoWTools_PanelMixin:OnlyCheck({
+        name= 'CheckBox',
+        tooltip= tooltip,
+        category= WoWTools_TextureMixin.Category,
+        GetValue= function() return Save().CheckBox end,
+        SetValue= function()
+            Save().CheckBox= not Save().CheckBox and true or nil
+        end
+    }, sub)
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
 

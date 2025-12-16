@@ -472,10 +472,11 @@ local function Init_Menu(_, root)
     end
 
     root= root:CreateButton(
-        '     '..(WoWTools_DataMixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU)..(num==0 and ' |cff626262' or ' ')..num,
+        '|T0:0|t'..(WoWTools_DataMixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU),--..(num==0 and ' |cff626262' or ' ')..num,
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=num})
+    WoWTools_MenuMixin:SetRightText(root)
 
 
 --跳过，视频，

@@ -1,7 +1,6 @@
 --[[
 CreateSlider(root, tab)
 ScaleRoot
-ScaleCheck
 Scale(
 
 BgAplha
@@ -219,31 +218,6 @@ end
 
 
 
---[[缩放, 加check
-function WoWTools_MenuMixin:ScaleCheck(frame, root, GetValue, SetValue, ResetValue, checkGetValue, checkSetValue)
-    local sub
-    if not frame:CanChangeAttribute() then
-        sub=root:CreateButton('|cff828282'..WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,function() end)
-        sub:SetEnabled(false)
-        return
-    end
-    sub= root:CreateCheckbox(
-        '|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE),
-        checkGetValue,
-        checkSetValue,
-        {checkGetValue=checkGetValue}
-    )
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
-    end)
-
-    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
-    end)
-    return sub2, sub
-end]]
-
 
 --缩放
 function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
@@ -254,7 +228,8 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
         ..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE),
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=GetValue()})
+    self:SetRightText(sub)
 
     local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue or function() SetValue(1) end)
     sub2:SetEnabled(not isLocked)
@@ -357,14 +332,15 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
             ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
         function()
             return MenuResponse.Open
-        end)
+        end, {rightText=GetValue()})
+        self:SetRightText(sub)
     end
 
     sub:CreateSpacer()
     sub2=WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=GetValue,
         setValue=SetValue,
-        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY ,
         minValue=0,
         maxValue=1,
         step=0.1,
@@ -419,7 +395,7 @@ function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue, GetAlphaVal
         sub2=WoWTools_MenuMixin:CreateSlider(sub, {
             getValue=GetAlphaValue,
             setValue=SetAplhaValue,
-            name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
+            name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY ,
             minValue=0,
             maxValue=1,
             step=0.1,
@@ -968,6 +944,31 @@ function WoWTools_MenuMixin:CVar(root, name, showName, tooltip, func)
     end)
     return sub
 end
+
+function WoWTools_MenuMixin:SetRightText(root)
+    root:AddInitializer(function(btn, desc)
+        local rightText= desc.data and desc.data.rightText
+        if not rightText then
+            return
+        end
+
+        local color= desc.data.rightColor
+
+        local font = btn:AttachFontString()
+        local offset = desc:HasElements() and -20 or 0
+        font:SetPoint("RIGHT", offset, 0)
+        font:SetJustifyH("RIGHT")
+        font:SetTextToFit(rightText)
+        if color and color.GetRGB then
+            font:SetTextColor(color:GetRGB())
+        elseif rightText==0 then
+            font:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
+        else
+            font:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+        end
+    end)
+end
+
 
 function WoWTools_MenuMixin:SetGridMode(sub, num)
     if num and num>maxMenuButton then

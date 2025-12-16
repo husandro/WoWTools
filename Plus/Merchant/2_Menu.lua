@@ -12,14 +12,6 @@ end
 
 
 
---显示背景
---[[local function Set_ShowBackground()
-    local alpha= Save().bgAlpha or 0.5
-    WoWTools_ColorMixin:Setup(MerchantFrameBg, {type='Texture', alpha=alpha})
-    MerchantFrameBg:SetAlpha(alpha)
-    WoWTools_ColorMixin:Setup(MerchantFrameInset.Bg, {type='Texture', alpha=alpha})
-end]]
-
 
 
 

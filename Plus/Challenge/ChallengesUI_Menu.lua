@@ -321,7 +321,7 @@ local function Init_Menu(self, root)
             Save().guildBgAlpha=value
             WoWTools_ChallengeMixin:ChallengesUI_Guild()
         end,
-        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
         minValue=0,
         maxValue=1,
         step=0.05,

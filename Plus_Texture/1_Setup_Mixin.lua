@@ -1,14 +1,6 @@
 
 
-function WoWTools_TextureMixin:SetColorTexture(object, tab)
-    if object then
-        tab= tab or {}
-        tab.isColorTexture=true
-        tab.type=object:GetObjectType()
-        tab.alpha= tab.alpha or self.alpha or self.min or self:Save().alpha or 0.5
-        WoWTools_ColorMixin:Setup(object, tab)
-    end
-end
+
 
 
 
@@ -129,11 +121,6 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         local icon= select(tab.index, frame:GetRegions())
         if icon and icon:IsObjectType("Texture") then
             self:SetAlphaColor(icon, nil, notColor, alpha)
-             --[[if not notColor then
-                WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
-             elseif alpha then
-                icon:SetAlpha(alpha)
-            end]]
         end
 
     else
@@ -141,12 +128,6 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         for _, icon in pairs({frame:GetRegions()}) do
             if icon:IsObjectType("Texture") and not show[icon] then
                 self:SetAlphaColor(icon, nil, notColor, alpha)
-                --[[if not notColor then
-                    WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
-
-                elseif alpha then
-                    icon:SetAlpha(alpha)
-                end]]
             end
         end
     end
@@ -379,21 +360,6 @@ function WoWTools_TextureMixin:SetMenu(frame)
         WoWTools_ColorMixin:Setup(frame.Text, {type='FontString'})
     end
 end
-    --[[if frame.Arrow and frame.Background and frame.Text then
-        self:SetAlphaColor(frame.Arrow, nil, nil, 0.7)
-
-        frame.Text:ClearAllPoints()
-        frame.Text:SetPoint('RIGHT', frame.Arrow, 'LEFT', 1, 3.5)
-        frame.Text:SetJustifyH('RIGHT')
-
-        frame.Background:SetTexture(0)
-        frame.Background:SetColorTexture(0,0,0, 0.3)
-
-        frame.Background:ClearAllPoints()
-        frame.Background:SetPoint('TOPLEFT', frame.Text, -2, 2)
-        frame.Background:SetPoint('BOTTOMRIGHT', frame.Text, 4, -2)]]
-
-
 
 
 --[[TabSystem 
@@ -411,14 +377,14 @@ end
 --PanelTemplates_TabResize(frame, frame:GetParent().tabPadding or 0 , nil, frame:GetParent().minTabWidth, frame:GetParent().maxTabWidth)
 --WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(self)
 function WoWTools_TextureMixin:SetCheckBox(frame, alpha)
-    if frame then
+    if frame and self:Save().CheckBox then
         local icon= frame.GetNormalTexture and frame:GetNormalTexture()
         if icon then
-            WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
+            self:SetAlphaColor(icon, nil, nil, alpha or 1)
         else
             icon= frame.GetRegions and frame:GetRegions()
             if icon and icon:IsObjectType("Texture") then
-                WoWTools_ColorMixin:Setup(icon, {type='Texture', alpha=alpha or 1})
+                self:SetAlphaColor(icon, nil, nil, alpha or 1)
             end
         end
     end
@@ -493,10 +459,6 @@ function WoWTools_TextureMixin:SetIconSelectFrame(frame)
         self:SetMenu(border.IconTypeDropdown)
         self:SetEditBox(border.IconSelectorEditBox)
 
-        --[[self:SetFrame(border.SelectedIconArea.SelectedIconButton, {show={
-            [border.SelectedIconArea.SelectedIconButton.Icon]=true,
-            [border.SelectedIconArea.SelectedIconButton.Highlight]=true,
-        }})]]
         self:HideFrame(border.SelectedIconArea.SelectedIconButton, {index=1})
         WoWTools_ButtonMixin:AddMask(border.SelectedIconArea.SelectedIconButton, nil, border.SelectedIconArea.SelectedIconButton.Icon)
 
@@ -504,13 +466,6 @@ function WoWTools_TextureMixin:SetIconSelectFrame(frame)
             '|A:communities-icon-addchannelplus:0:0|a|cnGREEN_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '将一个图标拖曳至此处来显示' or ICON_SELECTION_DRAG)
         )
-
---清除，焦点
-        --[[frame:HookScript('OnShow', function(f)
-            if f.BorderBox.IconSelectorEditBox:HasFocus() then
-                f.BorderBox.IconSelectorEditBox:ClearFocus()
-            end
-        end)]]
     end
 
     self:SetScrollBar(frame.IconSelector)

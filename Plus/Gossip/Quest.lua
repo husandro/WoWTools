@@ -190,7 +190,7 @@ local function Init()
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
 
 --Bg
-    _G['WoWToolsGossipButton'].Background:SetPoint('LEFT', QuestButton.Text, -2, 0)
+    _G['WoWToolsGossipButton'].Background:SetPoint('LEFT', QuestButton.Text, -1, 0)
 
 
     QuestButton:SetPoint('RIGHT', _G['WoWToolsGossipButton'], 'LEFT')

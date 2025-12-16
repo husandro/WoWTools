@@ -61,7 +61,7 @@ local function Init_Options()--初始, 选项
     initializer:SetParentInitializer(initializer2, function() if Save().plus then return true else return false end end)
 
     initializer= WoWTools_PanelMixin:Check_Slider({
-        checkName= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        checkName= WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
         checkGetValue= function() return Save().enabledMainMenuAlpha end,
         checkTooltip= WoWTools_MainMenuMixin.addName,
         checkSetValue= function()
