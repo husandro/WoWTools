@@ -153,26 +153,6 @@ local function Init_TrackButton_Menu(self, root)
 --reload
 	WoWTools_MenuMixin:Reload(sub)
 
-	--自动隐藏
-	sub=root:CreateCheckbox(
-		WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
-	function()
-		return not Save().notAutoHideTrack
-	end, function()
-		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
-		btn:set_shown()
-	end)
-	sub:SetTooltip(function(tooltip)
-		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
-		tooltip:AddLine(' ')
-		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)
-		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE)
-		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '载具控制' or BINDING_HEADER_VEHICLE)
-	end)
-
-
-
     --缩放
     WoWTools_MenuMixin:Scale(self, root, function()
         return Save().scaleTrackButton
@@ -190,7 +170,7 @@ local function Init_TrackButton_Menu(self, root)
     end)
 
 --背景, 透明度
-	WoWTools_MenuMixin:BgAplha(sub,
+	WoWTools_MenuMixin:BgAplha(root,
 	function()--GetValue
 		return Save().trackBgAlpha or 0.5
 	end, function(value)--SetValue
@@ -200,6 +180,24 @@ local function Init_TrackButton_Menu(self, root)
 		Save().bgAlpha= nil
 		btn:set_bgalpha()
 	end)--onlyRoot
+
+--自动隐藏
+	sub=root:CreateCheckbox(
+		WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+	function()
+		return not Save().notAutoHideTrack
+	end, function()
+		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
+		btn:set_shown()
+	end)
+	sub:SetTooltip(function(tooltip)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+		tooltip:AddLine(' ')
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '载具控制' or BINDING_HEADER_VEHICLE)
+	end)
 
 --重置位置
 	root:CreateDivider()
