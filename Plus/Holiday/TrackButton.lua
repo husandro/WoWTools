@@ -707,8 +707,8 @@ local function Init_Menu(self, root)
         return not Save().hide
     end, function()
         Save().hide= not Save().hide and true or nil
-        self:set_Events()--设置事件
-        self:set_Shown()
+        self:set_event()--设置事件
+        self:set_shown()
     end)
 
     root:CreateDivider()
@@ -823,10 +823,6 @@ end
 
 
 local function Init()
-    --[[TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
-        size=23,
-        name='WoWToolsHolidayTrackMainButton'
-    })]]
     TrackButton= CreateFrame('Button', 'WoWToolsHolidayTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
 
 --显示背景 Background
@@ -835,7 +831,10 @@ local function Init()
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
     TrackButton.texture:SetPoint('CENTER')
-    TrackButton.texture:SetSize(12,10)
+    TrackButton.texture:SetSize(20,10)
+    function TrackButton:set_alpha()
+        self.texture:SetAlpha(Save().hide and 1 or 0.3)
+    end
 
 
     TrackButton.Frame= CreateFrame('Frame',nil, TrackButton)
@@ -860,7 +859,7 @@ local function Init()
         end
     end)
 
-    function TrackButton:set_Events()--设置事件
+    function TrackButton:set_event()--设置事件
         self:UnregisterAllEvents()
         if Save().hide then
             return
@@ -894,13 +893,13 @@ local function Init()
             or event=='UNIT_ENTERED_VEHICLE'
             or event=='UNIT_EXITED_VEHICLE'
         then
-            self:set_Shown()
+            self:set_shown()
         else
             Set_Text()
         end
     end)
 
-    function TrackButton:set_Shown()
+    function TrackButton:set_shown()
         local hide= IsInInstance()
             or C_PetBattles.IsInBattle()
             or UnitInVehicle('player')
@@ -909,12 +908,12 @@ local function Init()
         local showFrame= not hide and not Save().hide
 
         self:SetShown(not hide)
-        self.texture:SetAlpha(Save().hide and 0.7 or 0.3)
+        self:set_alpha()
         self.Frame:SetShown(showFrame)
         self.Background:SetShown(showFrame)
     end
 
-    function TrackButton:set_Tooltips()
+    function TrackButton:set_tooltip()
         if self.monthOffset and self.day then
             CalendarDayButton_OnEnter(self)
             GameTooltip:AddLine(' ')
@@ -924,13 +923,14 @@ local function Init()
             else
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             end
-            GameTooltip:ClearLines()
         end
+        GameTooltip:SetText(WoWTools_HolidayMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HolidayMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(self.Frame:IsShown(), true), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -945,9 +945,16 @@ local function Init()
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
+    TrackButton:SetScript('OnMouseWheel', function(self, d)
+		Save().hide= d==-1
+        self:set_event()--设置事件
+        self:set_shown()
+        self:set_tooltip()
+	end)
 
     TrackButton:SetScript('OnEnter', function(self)
-        self:set_Tooltips()
+        self.texture:SetAlpha(1)
+        self:set_tooltip()
     end)
 
     function TrackButton:set_point()--设置, 位置
@@ -968,8 +975,8 @@ local function Init()
         self.Background:SetColorTexture(0, 0, 0, Save().bgAlpha or 0.5)
 
 
-        self:set_Shown()
-        self:set_Events()
+        self:set_shown()
+        self:set_event()
         Set_Text()
     end
     WoWTools_DataMixin:Hook('CalendarDayButton_Click', function(button)

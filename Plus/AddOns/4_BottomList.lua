@@ -51,17 +51,14 @@ local function Create_Button(index)
         AddonTooltip:AddLine(' ')
         local enabled, col
         local addonIndex= self:GetID()
-        local character = UIDropDownMenu_GetSelectedValue(AddonList.Dropdown)
-        if ( character == true ) then
-            character = nil
-        end
+        local character = WoWTools_AddOnsMixin:GetIsPlayer()
         local loadable, reason = C_AddOns.IsAddOnLoadable(addonIndex, character)
-        local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character)
-        if ( not InGlue() ) then
+        --local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character)
+        --if ( not InGlue() ) then
             enabled = (C_AddOns.GetAddOnEnableState(addonIndex, UnitName("player")) > Enum.AddOnEnableState.None)
-        else
-            enabled = (checkboxState > Enum.AddOnEnableState.None)
-        end
+        --else
+            --enabled = (checkboxState > Enum.AddOnEnableState.None)
+        --end
 
         if ( loadable or ( enabled and (reason == "DEP_DEMAND_LOADED" or reason == "DEMAND_LOADED") ) ) then
             col='|cffffc600'

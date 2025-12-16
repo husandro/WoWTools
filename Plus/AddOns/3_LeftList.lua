@@ -44,7 +44,9 @@ local function Create_Fast_Button(index)
             self:SetNormalTexture(0)
         end
         self.Text:SetText(name or self.name)
-        if C_AddOns.GetAddOnEnableState(self.name)~=0 then
+        local character = WoWTools_AddOnsMixin:GetIsPlayer()
+
+        if C_AddOns.GetAddOnEnableState(self.name, character)~=0 then
             self.Text:SetTextColor(0,1,0)
             self.checkTexture:SetShown(true)
         else
@@ -106,10 +108,11 @@ local function Create_Fast_Button(index)
 --AddonList_Enable(index, enabled)
     btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
-            if C_AddOns.GetAddOnEnableState(self.name)~=0 then
-                C_AddOns.DisableAddOn(self.name)
+            local character = WoWTools_AddOnsMixin:GetIsPlayer()
+            if C_AddOns.GetAddOnEnableState(self.name, character)~=0 then
+                C_AddOns.DisableAddOn(self.name, character)
             else
-                C_AddOns.EnableAddOn(self.name)
+                C_AddOns.EnableAddOn(self.name, character)
             end
             WoWTools_DataMixin:Call('AddonList_Update')
             self:set_tooltips()

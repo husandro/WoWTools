@@ -168,6 +168,7 @@ local function Crated_Button(index)
 
     btn.text= WoWTools_LabelMixin:Create(btn)
     function btn:set_text_point()
+		self.text:ClearAllPoints()
         if Save().toRightTrackText then
             self.text:SetPoint('LEFT', self, 'RIGHT', -3, 0)
         else
@@ -203,6 +204,7 @@ local function TrackButton_Settings()
 	end
 
 	local faction={}
+
 	if Save().indicato then
 		for factionID in pairs(Save().factions) do
 			local text, texture, atlas, data= get_Faction_Info(nil, factionID)
@@ -221,6 +223,7 @@ local function TrackButton_Settings()
 	end
 
 
+	local bgWidth= 0
 	for index, tab in pairs(faction) do
 		local btn= _G[Name..index] or Crated_Button(index)
 		btn:SetShown(true)
@@ -238,7 +241,13 @@ local function TrackButton_Settings()
 		else
 			btn:SetNormalTexture(0)
 		end
+
+		bgWidth= math.max(btn.text:GetWidth()+16, bgWidth)
 	end
+
+	TrackButton.numButton= #faction
+	TrackButton.bgWidth= bgWidth
+	TrackButton:set_bg()
 
 	for index= #faction+1, NumButton do
 		local btn= _G[Name..index]
@@ -251,6 +260,8 @@ local function TrackButton_Settings()
 		btn.isParagon= nil
 		btn.name= nil
 	end
+
+	faction=nil
 end
 
 
@@ -293,7 +304,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().btnstr= not Save().btnstr and true or false
 		self:set_Shown()
-		WoWTools_FactionMixin:UpdatList()
+		TrackButton_Settings()
 	end)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
@@ -310,11 +321,10 @@ local function Init_Menu(self, root)
 		for index=1, NumButton do
 			local btn= _G[Name..index]
 			if btn then
-				btn.text:ClearAllPoints()
 				btn:set_text_point()
 			end
 		end
-		WoWTools_FactionMixin:UpdatList()
+		TrackButton_Settings()
 	end)
 
 --上
@@ -336,7 +346,7 @@ local function Init_Menu(self, root)
 				end
 			end
 		end
-		WoWTools_FactionMixin:UpdatList()
+		TrackButton_Settings()
 	end)
 
 --隐藏名称
@@ -346,14 +356,14 @@ local function Init_Menu(self, root)
 		return Save().onlyIcon
 	end, function()
 		Save().onlyIcon= not Save().onlyIcon and true or nil
-		WoWTools_FactionMixin:UpdatList()
+		TrackButton_Settings()
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(
 			WoWTools_DataMixin.onlyChinese and '仅显示有图标声望'
 			or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL))
 		)
-		WoWTools_FactionMixin:UpdatList()
+		TrackButton_Settings()
 	end)
 
 --缩放
@@ -372,6 +382,17 @@ local function Init_Menu(self, root)
 		self:set_strata()
 	end)
 
+--背景, 透明度
+	WoWTools_MenuMixin:BgAplha(sub,
+	function()--GetValue
+		return Save().trackBgAlpha or 0.5
+	end, function(value)--SetValue
+		Save().trackBgAlpha= value
+		self:set_bgalpha()
+	end, function()--RestFunc
+		Save().bgAlpha= nil
+		self:set_bgalpha()
+	end)--onlyRoot
 
 --自动隐藏
 	sub2=sub:CreateCheckbox(
@@ -429,21 +450,51 @@ local function Init()
 		return
 	end
 
-	--[[TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
-		size=23,
-		name='WoWToolsFactionTrackMainButton',
-	})]]
+
 	TrackButton= CreateFrame('Button', 'WoWToolsFactionTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
-
-
-	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
-    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
-    TrackButton.texture:SetPoint('CENTER')
-    TrackButton.texture:SetSize(12,10)
 
 	Frame= CreateFrame('Frame', nil, TrackButton)
 	Frame:SetPoint('BOTTOM')
 	Frame:SetSize(1,1)
+
+	TrackButton.Bg= Frame:CreateTexture(nil, "BACKGROUND")
+	TrackButton.numButton=0--这个是总数量
+	TrackButton.NumButton=0--物品按钮，总数量
+	TrackButton.bgWidth=0
+	function TrackButton:set_bgalpha()
+		self.Bg:SetColorTexture(0, 0, 0, Save().trackBgAlpha or 0.5)
+	end
+	function TrackButton:set_bg()
+		if self.numButton==0 then
+			return
+		end
+		self.Bg:ClearAllPoints()
+		if Save().toTopTrack then
+			if Save().toRightTrackText then
+				self.Bg:SetPoint("TOPLEFT", _G[Name..self.numButton], -1, 1)
+				self.Bg:SetPoint('BOTTOMLEFT', _G[Name..1], -1, -1)
+			else
+				self.Bg:SetPoint("TOPRIGHT", _G[Name..self.numButton], 1, 1)
+				self.Bg:SetPoint('BOTTOMRIGHT', _G[Name..1], 1, -1)
+			end
+		else
+			if Save().toRightTrackText then
+				self.Bg:SetPoint('TOPLEFT', _G[Name..1], -1, 1)
+				self.Bg:SetPoint('BOTTOMLEFT', _G[Name..self.numButton], -1, -1)
+			else
+				self.Bg:SetPoint('TOPRIGHT', _G[Name..1], 1, 1)
+				self.Bg:SetPoint('BOTTOMRIGHT', _G[Name..self.numButton], 1, -1)
+			end
+		end
+		self.Bg:SetWidth(self.bgWidth+1)
+	end
+
+	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
+    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
+    TrackButton.texture:SetPoint('CENTER')
+    TrackButton.texture:SetSize(20,10)
+
+
 
 	function TrackButton:set_Shown()
 		local hide= not Save().btn
@@ -458,7 +509,7 @@ local function Init()
 	   	self:SetShown(not hide)
 		Frame:SetShown(not hide and Save().btnstr)
 		TrackButton_Settings()
-		self:set_Texture()
+		self:set_alpha()
 	end
 
 
@@ -473,14 +524,14 @@ local function Init()
 	end)
 
 
-	function TrackButton:set_Tooltips()
+	function TrackButton:set_tooltip()
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_FactionMixin.addName)
+		GameTooltip:SetText(WoWTools_FactionMixin.addName..WoWTools_DataMixin.Icon.icon2)
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, WoWTools_DataMixin.Icon.left)
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
 		GameTooltip:AddLine(' ')
+		GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(Frame:IsShown(), true)..' |cffffffff#'..self.numButton, WoWTools_DataMixin.Icon.mid)
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
 		GameTooltip:Show()
 	end
@@ -503,15 +554,18 @@ local function Init()
 
 	end
 
-	function TrackButton:set_Texture()
-		self.texture:SetAlpha(Save().btnstr and 0.3 or 0.7)
+	function TrackButton:set_alpha()
+		self.texture:SetAlpha(Save().btnstr and 0.3 or 1)
 	end
 
 	function TrackButton:set_Point()
-		if Save().point then
-			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
+		local p= Save().point
+		if p and p[1] then
+			self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+		elseif WoWTools_DataMixin.Player.husandro then
+			self:SetPoint('TOPLEFT')
 		else
-			self:SetPoint('TOPLEFT', 0, WoWTools_DataMixin.Player.husandro and 0 or -100)
+			self:SetPoint('CENTER')
 		end
 	end
 
@@ -548,26 +602,31 @@ local function Init()
 		elseif d=='RightButton' and not IsModifierKeyDown() then
 			MenuUtil.CreateContextMenu(self, Init_Menu)
 		end
-		self:set_Tooltips()
+		self:set_tooltip()
 	end)
 
-	TrackButton:SetScript("OnLeave", function(self)
-		ResetCursor()
-		GameTooltip:Hide()
-		self:set_Texture()
+	TrackButton:SetScript('OnMouseWheel', function(self, d)
+		Save().btnstr= d==1
+		self:set_Shown()
+		TrackButton_Settings()
+		self:set_tooltip()
 	end)
+
+
 	TrackButton:SetScript("OnEnter", function(self)
-		self:set_Tooltips()
 		self.texture:SetAlpha(1)
+		self:set_tooltip()
 		TrackButton_Settings()
 	end)
+
 
 
 	TrackButton:settings()
 	TrackButton:set_Point()
 	TrackButton:set_Shown()
-	TrackButton:set_Texture()
+	TrackButton:set_alpha()
 	TrackButton:set_strata()
+	TrackButton:set_bgalpha()
 	TrackButton_Settings()
 
 

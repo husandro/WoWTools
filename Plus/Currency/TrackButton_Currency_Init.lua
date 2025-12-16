@@ -5,7 +5,7 @@ local function Save()
 end
 local TrackButton, Frame
 local Name='WoWToolsCurrencyTrackButton'
-local NumButton=0
+
 
 
 
@@ -345,9 +345,7 @@ local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
     end
     btn.itemButtonUse= itemButtonUse--使用物品
 
-    NumButton= index
-
-	TrackButton.NumButton= NumButton
+    TrackButton.NumButton= index
 
     return btn
 end
@@ -377,7 +375,7 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 
 	local tab={}
 	local endTokenIndex=1--货物，物品，分开
-	local bat= UnitAffectingCombat('player')
+	local bat= InCombatLockdown()
 
 	if Save().indicato then
 		for currencyID, _ in pairs(Save().tokens) do
@@ -427,6 +425,7 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	end
 
 	local size
+	local bgWidth= 0
 
 	for index, tables in pairs(tab) do
         local itemButtonUse=(Save().itemButtonUse and tables.itemID) and true or nil--使用物品
@@ -470,10 +469,16 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		if btn.itemButtonUse and can or not btn.itemButtonUse then
 			btn:SetShown(true)
 		end
+
+		bgWidth= math.max(btn.text:GetWidth()+14, bgWidth)
 	end
 
+	TrackButton.numButton= #tab
+	TrackButton.bgWidth= bgWidth
+	TrackButton:set_bg()
+
 	if TrackButton.endTokenIndex and TrackButton.endTokenIndex~= endTokenIndex then--货物，物品，分开
-		for i= 1, NumButton do
+		for i= 1, TrackButton.NumButton do
 			local btn= _G[Name..i]
 			if btn and btn:CanChangeAttribute() then
 				btn:ClearAllPoints()
@@ -488,7 +493,8 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	TrackButton.endTokenIndex= endTokenIndex
 
 
-	for i= #tab+1, NumButton do--隐藏，多余
+
+	for i= #tab+1, TrackButton.NumButton do--隐藏，多余
 		local btn= _G[Name..i]
 		if btn then
 			btn.text:SetText('')
@@ -502,6 +508,8 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 			btn.currencyID= nil
 		end
 	end
+
+	tab=nil
 end
 
 
@@ -545,16 +553,83 @@ local function Init_TrackButton()
 	end
 
 
-	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWToolsCurrencyTrackMainButton', size=23})
+	--TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWToolsCurrencyTrackMainButton', size=23})
+	TrackButton= CreateFrame('Button', 'WoWToolsCurrencyTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
+
+	Frame= CreateFrame('Frame', 'WoWToolsCurrencyTrackMainFrame', TrackButton)
+	Frame:SetSize(1, 1)
+	Frame:SetPoint('BOTTOM')
+
+	Frame:SetScript('OnShow', function()
+		WoWTools_CurrencyMixin:Set_TrackButton_Text()
+	end)
+
+	Frame:RegisterEvent('BAG_UPDATE_DELAYED')
+	Frame:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+	Frame:SetScript('OnEvent', function(self, event)
+		if event=='PLAYER_REGEN_ENABLED' then
+			self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+		end
+		WoWTools_CurrencyMixin:Set_TrackButton_Text()
+	end)
+	function Frame:set_shown()
+		if self:CanChangeAttribute() then
+			self:SetShown(Save().str)
+		end
+	end
+	Frame:set_shown()
 
 
+	TrackButton.Bg= Frame:CreateTexture(nil, "BACKGROUND")
+	TrackButton.numButton=0
+	TrackButton.bgWidth=0
+	function TrackButton:set_bgalpha()
+		self.Bg:SetColorTexture(0, 0, 0, Save().trackBgAlpha or 0.5)
+	end
+	function TrackButton:set_bg()
+		if self.numButton==0 then
+			return
+		end
+		self.Bg:ClearAllPoints()
+		if Save().toTopTrack then
+			if Save().toRightTrackText then
+				self.Bg:SetPoint("TOPLEFT", _G[Name..self.numButton], -1, 1)
+				self.Bg:SetPoint('BOTTOMLEFT', _G[Name..1], -1, -1)
+			else
+				self.Bg:SetPoint("TOPRIGHT", _G[Name..self.numButton], 1, 1)
+				self.Bg:SetPoint('BOTTOMRIGHT', _G[Name..1], 1, -1)
+			end
+		else
+			if Save().toRightTrackText then
+				self.Bg:SetPoint('TOPLEFT', _G[Name..1], -1, 1)
+				self.Bg:SetPoint('BOTTOMLEFT', _G[Name..self.numButton], -1, -1)
+			else
+				self.Bg:SetPoint('TOPRIGHT', _G[Name..1], 1, 1)
+				self.Bg:SetPoint('BOTTOMRIGHT', _G[Name..self.numButton], 1, -1)
+			end
+		end
+		self.Bg:SetWidth(self.bgWidth+1)
+	end
 
 	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
-
     TrackButton.texture:SetPoint('CENTER')
-    TrackButton.texture:SetSize(12,10)
+	function TrackButton:set_texture(icon)
+		if icon and icon>0 then
+			self.texture:SetTexture(icon)
+			self.texture:SetPoint('TOPLEFT',0,0)
+			self.texture:SetPoint('BOTTOMRIGHT',0,0)
+		else
+			self.texture:SetAtlas('Adventure-MissionEnd-Line')
+			self.texture:SetPoint('TOPLEFT', 1.5,-6)
+			self.texture:SetPoint('BOTTOMRIGHT',-1.5,6)
+			self.texture:SetAlpha(Save().str and 0.3 or 1)
+		end
+	end
 
 	function TrackButton:set_point()
+		if not self:CanChangeAttribute() then
+			return
+		end
 		self:ClearAllPoints()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
@@ -563,38 +638,35 @@ local function Init_TrackButton()
 		end
 	end
 
-	function TrackButton:set_texture(icon)
-		if icon and icon>0 then
-			self.texture:SetTexture(icon)
-			self.texture:SetPoint('TOPLEFT',0,0)
-			self.texture:SetPoint('BOTTOMRIGHT',0,0)
-		else
-			self.texture:SetAtlas('Adventure-MissionEnd-Line')
-			self.texture:SetPoint('TOPLEFT', 6,-6)
-			self.texture:SetPoint('BOTTOMRIGHT',-6,6)
-			self.texture:SetAlpha(Save().str and 0.3 or 0.7)
+	function TrackButton:set_scale()
+		if Frame:CanChangeAttribute() then
+			Frame:SetScale(Save().scaleTrackButton or 1)
 		end
 	end
 
 	function TrackButton:set_shown()--显示,隐藏
+		if not self:CanChangeAttribute() then
+			return
+		end
 		local hide= Save().Hide
-		 	or (
+			or (
 				not Save().notAutoHideTrack and (
 					IsInInstance()
 					or C_PetBattles.IsInBattle()
 					or UnitHasVehicleUI('player')
-					or UnitAffectingCombat('player')
+					or InCombatLockdown()
 				)
 			)
-		if self:CanChangeAttribute() then
-			self:SetShown(not hide)
-		end
+		self:SetShown(not hide)
 	end
 
+	function TrackButton:set_strata()
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
+    end
+
 	function TrackButton:set_event()
-		if Save().Hide then
-			self:UnregisterAllEvents()
-		else
+		self:UnregisterAllEvents()
+		if not Save().Hide then
 			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
 			self:RegisterEvent('PLAYER_ENTERING_WORLD')
 			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
@@ -606,17 +678,6 @@ local function Init_TrackButton()
 		end
 	end
 
-	TrackButton:SetScript('OnEvent', TrackButton.set_shown)
-
-
-	function TrackButton:set_scale()
-		if Frame:CanChangeAttribute() then
-			Frame:SetScale(Save().scaleTrackButton or 1)
-		end
-	end
-
-
-
 	function TrackButton:set_Tooltip()
 		if Save().toRightTrackText then
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -624,6 +685,12 @@ local function Init_TrackButton()
 			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		end
 		GameTooltip:ClearLines()
+
+		if not self:CanChangeAttribute() then
+			GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+			GameTooltip:Show()
+			return
+		end
 
 		local infoType, itemID, itemLink = GetCursorInfo()
 		if infoType=='item' and itemID then
@@ -637,12 +704,13 @@ local function Init_TrackButton()
 			self:set_texture(select(5, C_Item.GetItemInfoInstant(itemID)))
 		else
 			local canFrame= Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
-			GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CurrencyMixin.addName)
+			GameTooltip:AddLine(WoWTools_CurrencyMixin.addName..WoWTools_DataMixin.Icon.icon2)
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, WoWTools_DataMixin.Icon.left)
 			GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
+			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(canFrame..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..WoWTools_DataMixin.Icon.right)
-			GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(Save().str, true), WoWTools_DataMixin.Icon.mid)
+			GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(Frame:IsShown(), true)..' |cffffffff#'..self.numButton, WoWTools_DataMixin.Icon.mid)
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(canFrame..(WoWTools_DataMixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS), WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
 		end
@@ -650,6 +718,9 @@ local function Init_TrackButton()
 	end
 
 
+	TrackButton:SetScript('OnEvent', function(self)
+		self:set_shown()
+	end)
 
 	TrackButton:RegisterForDrag("RightButton")
 	TrackButton:SetClampedToScreen(true)
@@ -696,14 +767,15 @@ local function Init_TrackButton()
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
 			WoWTools_CurrencyMixin:Init_Menu(self)
-			--WoWTools_CurrencyMixin:Init_TrackButton_Menu(self)
 		end
 	end)
 
 
 	TrackButton:SetScript("OnEnter", function(self)
-		if (Save().itemButtonUse and not UnitAffectingCombat('player')) or not Save().itemButtonUse then
-			WoWTools_CurrencyMixin:Set_TrackButton_Text()
+		if self:CanChangeAttribute() then
+			if not InCombatLockdown() then
+				WoWTools_CurrencyMixin:Set_TrackButton_Text()
+			end
 			self:set_shown()
 		end
 		self:set_Tooltip()
@@ -715,7 +787,7 @@ local function Init_TrackButton()
 		self:set_texture()
 	end)
 	TrackButton:SetScript('OnMouseWheel', function(self, d)
-		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
+		if self:CanChangeAttribute() then
 			Save().str= d==-1
 			self:set_texture()
 			Frame:set_shown()
@@ -731,40 +803,16 @@ local function Init_TrackButton()
 
 
 
-	Frame= CreateFrame('Frame', 'WoWToolsCurrencyTrackMainFrame', TrackButton)
-	Frame:SetSize(1,1)
-	Frame:SetPoint('BOTTOM')
+	
 
 
-
-	Frame:SetScript('OnShow', function()
-		WoWTools_CurrencyMixin:Set_TrackButton_Text()
-	end)
-
-	Frame:RegisterEvent('BAG_UPDATE_DELAYED')
-	Frame:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-	Frame:SetScript('OnEvent', function(self, event)
-		if event=='PLAYER_REGEN_ENABLED' then
-			self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-		end
-		WoWTools_CurrencyMixin:Set_TrackButton_Text()
-	end)
-	function Frame:set_shown()
-		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
-			self:SetShown(Save().str)
-		end
-	end
-	Frame:set_shown()
-
-	function TrackButton:set_strata()
-        self:SetFrameStrata(Save().strata or 'MEDIUM')
-    end
 	TrackButton:set_strata()
 	TrackButton:set_point()
 	TrackButton:set_scale()
 	TrackButton:set_event()
 	TrackButton:set_shown()
 	TrackButton:set_texture()
+	TrackButton:set_bgalpha()
 
 
 	WoWTools_CurrencyMixin:Set_TrackButton_Text()

@@ -1,5 +1,11 @@
 WoWTools_AddOnsMixin={}
 
+function WoWTools_AddOnsMixin:GetIsPlayer()
+    if AddonList.Dropdown.Text:GetText()==WoWTools_DataMixin.Player.Name then
+        return WoWTools_DataMixin.Player.GUID
+    end
+end
+
 --插件内存
 function WoWTools_AddOnsMixin:Get_MenoryValue(indexORname, showText)
     local va
@@ -25,7 +31,7 @@ end
 --更新，使用情况
 local lastMemoryUpdate
 function WoWTools_AddOnsMixin:Update_Usage()
-    if UnitAffectingCombat('player') or InGlue() then
+    if InCombatLockdown() then
         return
     end
     local now = GetTime()

@@ -189,6 +189,18 @@ local function Init_TrackButton_Menu(self, root)
         btn:set_strata()
     end)
 
+--背景, 透明度
+	WoWTools_MenuMixin:BgAplha(sub,
+	function()--GetValue
+		return Save().trackBgAlpha or 0.5
+	end, function(value)--SetValue
+		Save().trackBgAlpha= value
+		btn:set_bgalpha()
+	end, function()--RestFunc
+		Save().bgAlpha= nil
+		btn:set_bgalpha()
+	end)--onlyRoot
+
 --重置位置
 	root:CreateDivider()
 	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()

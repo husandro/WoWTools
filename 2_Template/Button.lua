@@ -4,6 +4,7 @@ function WoWToolsButton_OnLoad(self)
 end
 
 function WoWToolsButton_OnLeave(self)
+    ResetCursor()
     GameTooltip_Hide()
     if self.set_alpha then
         self:set_alpha()
