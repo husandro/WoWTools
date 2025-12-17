@@ -496,7 +496,7 @@ function WoWTools_PanelMixin:ReloadButton(tab)
         end)
     end
     if tab.restTips then
-        local needReload= tab.panel:CreateFontString(nil, 'BORDER', 'GameFontNormal') --WoWTools_LabelMixin:Create(tab.panel)
+        local needReload= tab.panel:CreateFontString(nil, 'BORDER', 'ChatFontNormal') --WoWTools_LabelMixin:Create(tab.panel)
         needReload:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..'|A:common-icon-rotateleft:0:0|a')
         needReload:SetPoint('BOTTOMRIGHT')
     end

@@ -16,6 +16,10 @@ local function Init()
         frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
     end)
 
+    TargetFrame.TargetFrameContent.TargetFrameContentMain.Name:SetPoint('RIGHT')
+    TargetFrame.TargetFrameContent.TargetFrameContentMain.Name:SetShadowOffset(2, -2)
+    --<Anchor point="TOPLEFT" relativeKey="$parent.ReputationColor" relativePoint="TOPRIGHT" x="-106" y="-1"/>
+
     WoWTools_DataMixin:Hook(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
         local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText
         if levelText then
@@ -36,6 +40,8 @@ local function Init()
         self.Text3:SetText('')
     end)
 
+--目标的目标
+    --TargetFrameToT.Name:SetWidth(0)
     Init=function()end
 end
 

@@ -291,6 +291,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
 
 --社交，按钮
     self:SetAlphaColor(QuickJoinToastButton.FriendsButton, nil, nil, 0.5)
+
     for _, name in pairs({
         'ChatFrameChannelButton',
         'ChatFrameToggleVoiceDeafenButton',
@@ -301,11 +302,12 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         local btn= _G[name]
         if btn then
             btn:SetHighlightAtlas('chatframe-button-highlightalert')
-            self:SetAlphaColor(btn:GetNormalTexture())
+            self:SetAlphaColor(btn:GetNormalTexture(), nil, nil, 0.5)
             self:SetAlphaColor(btn:GetPushedTexture(), true)
-            --self:SetFrame(btn, {alpha=0.6})
+            self:HideTexture(btn.Background)
         end
     end
+
 
 --聊天框 FloatingChatFrame.lua
     --最小化聊天框

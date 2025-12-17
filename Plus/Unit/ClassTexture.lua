@@ -10,6 +10,7 @@ local function Craete_Frame(frame)
     frame.classFrame:SetSize(16,16)
     frame.classFrame.Portrait= frame.classFrame:CreateTexture(nil, "BACKGROUND")
     frame.classFrame.Portrait:SetAllPoints(frame.classFrame)
+    WoWTools_ButtonMixin:AddMask(frame.classFrame, true, frame.classFrame.Portrait)
 
 
     if frame==TargetFrame then

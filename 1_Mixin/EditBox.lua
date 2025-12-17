@@ -97,13 +97,11 @@ end
 
 
 
---local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
+
 function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
-    --index= index+1
     tab= tab or {}
 
-
-    local name= tab.name --or ((frame:GetName() or 'WoWTools')..'ScrollFrame'..index)--.. format('%s%d', 'WoWTools_EditScrollFrame', index)--名称
+    local name= tab.name
     local isLink= tab.isLink--超链接
     local text= tab.text--使用说明
     --local clearButton= tab.clear

@@ -55,8 +55,7 @@ function WoWTools_KeyMixin:Init(btn, GetValue, notSetup)
         return
     end
     btn.GetKEY= GetValue or btn.GetKey or btn.GetKEY
-    btn.KEYstring= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
-    btn.KEYstring:SetFontHeight(12)
+    btn.KEYstring= btn:CreateFontString(nil, 'ARTWORK', 'ChatFontNormal')
     btn.KEYstring:SetPoint('TOPRIGHT')
 
     btn.KEYtexture=btn:CreateTexture(nil,'OVERLAY')

@@ -33,41 +33,63 @@ end
 
 
 
-
-
 local function Create(tooltip)
     local name= not tooltip.textLeft and tooltip:GetName()
     if not name then
         return
     end
 
-    tooltip.textLeft= tooltip:CreateFontString(name..'TextLeft', 'ARTWORK', 'GameTooltipHeaderText')
+    tooltip.textLeft= tooltip:CreateFontString(name..'TextLeft', 'ARTWORK', 'ChatFontNormal')
     tooltip.textLeft:SetFontHeight(16)
-    tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
+    tooltip.textLeft:SetJustifyH('LEFT')
+    tooltip.textLeft:SetShadowOffset(2, -2)
+    tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip.CompareHeader or tooltip, 'TOPLEFT', 3, 0)
+
+    --[[tooltip.textLeftBg= tooltip:CreateTexture(nil, 'BACKGROUND')
+    tooltip.textLeftBg:SetAllPoints(tooltip.textLeft)
+    tooltip.textLeftBg:SetColorTexture(0,0,0,0.5)]]
+
 --左上角字符2
-    tooltip.text2Left= tooltip:CreateFontString(name..'Text2Left', 'ARTWORK', 'GameTooltipHeaderText')
+    tooltip.text2Left= tooltip:CreateFontString(name..'Text2Left', 'ARTWORK', 'ChatFontNormal')
     tooltip.text2Left:SetFontHeight(16)
+    tooltip.text2Left:SetJustifyH('LEFT')
+    tooltip.text2Left:SetShadowOffset(2, -2)
     tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
+    --[[tooltip.text2LeftBg= tooltip:CreateTexture(nil, 'BACKGROUND')
+    tooltip.text2LeftBg:SetAllPoints(tooltip.text2Left)
+    tooltip.text2LeftBg:SetColorTexture(0,0,0,0.5)]]
 
 --右上角字符
-    tooltip.textRight= tooltip:CreateFontString(name..'textRight', 'ARTWORK', 'GameTooltipHeaderText')
-    tooltip.textRight:SetFontHeight(16)
+    tooltip.textRight= tooltip:CreateFontString(name..'textRight', 'ARTWORK', 'ChatFontNormal')
+    tooltip.textRight:SetFontHeight(12)
     tooltip.textRight:SetJustifyH('RIGHT')
+    tooltip.textRight:SetShadowOffset(2, -2)
     if tooltip.CloseButton then
-        tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', 0, 3)
+        tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', -3, 3)
     else
-        tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
+        tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', -3, 0)
     end
+    --[[tooltip.textRightBg= tooltip:CreateTexture(nil, 'BACKGROUND')
+    tooltip.textRightBg:SetAllPoints(tooltip.textRight)
+    tooltip.textRightBg:SetColorTexture(0,0,0,0.5)]]
+
 --右上角字符2
-    tooltip.text2Right= tooltip:CreateFontString(name..'text2Right', 'ARTWORK', 'GameTooltipHeaderText')
+    tooltip.text2Right= tooltip:CreateFontString(name..'text2Right', 'ARTWORK', 'ChatFontNormal')
     tooltip.text2Right:SetFontHeight(12)
     tooltip.text2Right:SetJustifyH('RIGHT')
-    tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
+    tooltip.text2Right:SetShadowOffset(2, -2)
+    tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 2)
+    --[[tooltip.text2RightBg= tooltip:CreateTexture(nil, 'BACKGROUND')
+    tooltip.text2RightBg:SetAllPoints(tooltip.text2Right)
+    tooltip.text2RightBg:SetColorTexture(0,0,0,0.5)]]
+
 --背景颜色
-    tooltip.backgroundColor= tooltip:CreateTexture(name..'BackgroundColor', 'BACKGROUND',nil, 1)
-    tooltip.backgroundColor:SetPoint('TOPLEFT', 2, -2)
-    tooltip.backgroundColor:SetPoint('BOTTOMRIGHT', -2, 2)
+    tooltip.backgroundColor= tooltip:CreateTexture(name..'BackgroundColor', 'BACKGROUND', nil, 1)
+    tooltip.backgroundColor:SetPoint('TOPLEFT')
+    tooltip.backgroundColor:SetPoint('BOTTOMRIGHT')
     tooltip.backgroundColor:Hide()
+
+
 
     function tooltip:Set_BG_Color(r, g, b, a)
         local show= r and g and b

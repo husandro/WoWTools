@@ -779,7 +779,7 @@ local function Init()--PartyFrame.lua
 
 
         frame.Name:SetPoint('RIGHT')
-        frame.Name:SetFontObject('GameFontNormalSmall2')
+        frame.Name:SetFontObject(GameFontNormalSmall2)
 
         WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
             if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
