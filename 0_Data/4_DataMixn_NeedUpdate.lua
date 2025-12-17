@@ -208,14 +208,14 @@ WoWTools_ChallengesSpellData={
     [507]= {spell=445424, ins=71, name='格瑞姆巴托', spellName='格瑞姆巴托之路', spellDes='传送至|cff00ccff格瑞姆巴托|r入口处。'},
     [525]= {spell=1216786, ins=1298, name='水闸行动', spellName='水闸行动之路', spellDes='传送至|cff00ccff水闸行动|r入口处。'},
 
-    [541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.5
+    --[541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.5
 
     [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'},
-    --[556]= {ins=945, name='执政团之座'},
-    --[557]= {},
-    --[558]= {},
-    --[559]= {},
-    --[560]= {},
+    --[556]= {spell=, ins=, name='萨隆矿坑', spellName='', spellDes=''},
+    --[557]= {spell=, ins=, name='风行者之塔', spellName='', spellDes=''},
+    --[558]= {spell=, ins=, name='魔导师平台', spellName='', spellDes=''},
+    --[559]= {spell=, ins=, name='节点希纳斯', spellName='', spellDes=''},
+    --[560]= {spell=, ins=, name='迈萨拉洞窟', spellName='', spellDes=''},
 
 }
 
