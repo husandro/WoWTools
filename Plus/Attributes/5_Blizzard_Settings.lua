@@ -133,8 +133,9 @@ local function Init_Options()--设置 Frame
             local current= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
             current:SetChecked(Save().tab[info.name].bar)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
-            current.text:SetText(WoWTools_DataMixin.Player.col..'Bar')
-            current:SetScript('OnMouseUp',function(self)
+            current.text:SetText('Bar')
+            current.text:SetTextColor(PlayerUtil.GetClassColor():GetRGB())
+            current:SetScript('OnMouseUp',function()
                 Save().tab['STATUS'].bar= not Save().tab['STATUS'].bar and true or false
                 WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
             end)
@@ -147,7 +148,7 @@ local function Init_Options()--设置 Frame
 
             --位数，bit
             local sliderBit=WoWTools_SliderMixin:CSlider(Frame, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
-                text= WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '位数' or 'bit'),
+                text= WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '位数' or 'bit'),
                 func=function(self, value)
                     value= math.floor(value)
                     self:SetValue(value)

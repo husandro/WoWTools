@@ -45,7 +45,7 @@ local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')
 local playerRealm= GetRealmName():gsub(' ', '')
 local currentRegion= GetCurrentRegion()
-local r, g, b, hex= GetClassColor(baseClass)
+--local r, g, b, hex= GetClassColor(baseClass)
 
 
 local function GetWeek()--周数
@@ -71,19 +71,16 @@ WoWTools_DataMixin.Player={
     Realms= {},--多服务器
 
     Name_Realm= UnitName('player')..'-'..playerRealm,
-    Name= UnitName('player'),
-    Sex= UnitSex("player"),--1	Neutrum / Unknown 2	Male 3	Female
+    --Name= UnitName('player'),
+    --Sex= UnitSex("player"),--1	Neutrum / Unknown 2	Male 3	Female
     Class= baseClass,--1WARRIOR 2PALADIN 3HUNTER 4ROGUE 5PRIEST 6DEATHKNIGHT 7SHAMAN 8MAGE 9WARLOCK 10MONK 11DRUID 12DEMONHUNTER 13EVOKER
 
     Region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     IsCN= currentRegion==5 or currentRegion==4,
 
-    r= r or 1,
-    g= g or 1,
-    b= b or 1,
-    col= '|c'..hex,
-    UseColor= {r=r, g=g, b=b, a=1, hex='|c'..hex},--使用颜色
-
+    --col= '|c'..hex,
+    --UseColor= {r=r, g=g, b=b, a=1, hex='|c'..hex},--使用颜色
+    --Color= PlayerUtil.GetClassColor(),
 
     --Lo= GetLocale(),
     Week= GetWeek(),--周数 date('%W')

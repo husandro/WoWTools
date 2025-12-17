@@ -27,7 +27,7 @@ local function Init()
     button.classPortrait:SetPoint('CENTER')
     button.classPortrait:SetSize(24,24)
     button.classPortrait:SetAtlas('bag-reagent-border')
-    button.classPortrait:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+    WoWTools_TextureMixin:SetAlphaColor(button.classPortrait, true)
 
     function button:get_Att_Text_Chat()--属性，内容
         local text=''

@@ -56,7 +56,7 @@ local function Init()
                 if co<5 or (IsInRaid() and co<40) then
                     local guid= select(11, ...)
                     local name= ...
-                    if guid and name and name~=WoWTools_DataMixin.Player.ame_server then
+                    if guid and name and name~=WoWTools_DataMixin.Player.Name_Realm then
                         C_PartyInfo.InviteUnit(name)
 
                         WoWTools_InviteMixin.InvPlateGuid[guid]=name--保存到已邀请列表

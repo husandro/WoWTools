@@ -5,11 +5,12 @@ end
 
 local function Set_Color()--颜色
     if Save().notUseColor then
-        WoWTools_CursorMixin.Color={r=1,g=1,b=1}
-    elseif Save().usrClassColor then
-        WoWTools_CursorMixin.Color={r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b= WoWTools_DataMixin.Player.b, a=1}
+        WoWTools_CursorMixin.Color= CreateColor(1,1,1,1)
+    elseif Save().usrClassColor or not Save().color then
+        WoWTools_CursorMixin.Color= PlayerUtil.GetClassColor()
     else
-        WoWTools_CursorMixin.Color= Save().color
+        local col= Save().color
+        WoWTools_CursorMixin.Color= CreateColor(col.r or 1, col.g or 1, col.b or 1, col.a or 1)
     end
 end
 
@@ -524,13 +525,13 @@ local function Init_Options(panel)
     panel.Texture:SetSize(80,80)
 
     local useClassColorCheck= CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
-    local colorText= WoWTools_LabelMixin:Create(panel, {color={r=Save().color.r, g=Save().color.g, b=Save().color.b, a=Save().color.a}})--nil, nil, nil, {Save().color.r, Save().color.g, Save().color.b, Save().color.a})--自定义,颜色
+    local colorText= WoWTools_LabelMixin:Create(panel, {color=WoWTools_CursorMixin.Color})--自定义,颜色
     local notUseColorCheck= CreateFrame('CheckButton', nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
 
     --职业颜色
     useClassColorCheck:SetPoint("BOTTOMLEFT")
     useClassColorCheck.text:SetText(WoWTools_DataMixin.onlyChinese and '职业颜色' or CLASS_COLORS)
-    useClassColorCheck.text:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+    useClassColorCheck.text:SetTextColor(PlayerUtil.GetClassColor():GetRGB())
     useClassColorCheck:SetChecked(Save().usrClassColor)
     useClassColorCheck:SetScript('OnMouseDown', function()
         Save().usrClassColor= not Save().usrClassColor and true or false
@@ -545,7 +546,7 @@ local function Init_Options(panel)
     colorText:SetPoint('LEFT', useClassColorCheck.text, 'RIGHT', 4,0)
     colorText:SetText('|A:colorblind-colorwheel:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自定义 ' or CUSTOM))
     colorText:EnableMouse(true)
-    colorText.r, colorText.g, colorText.b, colorText.a= Save().color.r, Save().color.g, Save().color.b, Save().color.a
+    colorText.r, colorText.g, colorText.b, colorText.a= WoWTools_CursorMixin.Color:GetRGBA()
     colorText:SetScript('OnMouseDown', function(self)
         local usrClassColor= Save().usrClassColor
         local notUseColor= Save().notUseColor
@@ -652,7 +653,7 @@ end
 
 
 local function Init(panel)
-    Set_Color()
+    
 
     --panel= CreateFrame('Frame')
 
@@ -725,5 +726,6 @@ end
 
 
 function WoWTools_CursorMixin:Set_Options(panel)
+    Set_Color()
     Init(panel)
 end

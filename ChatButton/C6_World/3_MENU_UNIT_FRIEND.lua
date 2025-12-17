@@ -53,7 +53,7 @@ local function Init_Menu(self, root, data)
         )
 
     end)
-    sub:SetEnabled(data.chatTarget~=WoWTools_DataMixin.Player.Name)
+    sub:SetEnabled(data.chatTarget~=UnitName('player'))
 
     WoWTools_WorldMixin:Init_Filter_Menu(sub)
     --[[sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '自定义屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, IGNORE), function()

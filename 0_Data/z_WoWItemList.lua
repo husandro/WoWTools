@@ -1560,8 +1560,9 @@ local function Init_IsMe_Menu(self, root)
 
     root:CreateButton(
         WoWTools_DataMixin.Icon.Player
-        ..WoWTools_DataMixin.Player.col
-        ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+        ..WoWTools_TextMixin:SetColor(
+            WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME
+        ),
     function()
         --Frame.SearchBox:SetText(UnitName('player'))
         Frame.SearchBox:SetText('')

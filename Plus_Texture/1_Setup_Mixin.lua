@@ -27,8 +27,8 @@ function WoWTools_TextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaOR
             object:SetAlpha(0)
             return
         end
-        if not notColor then
-            WoWTools_ColorMixin:Setup(object, {type=object:GetObjectType()})
+        if not notColor and object.SetVertexColor then
+            object:SetVertexColor(self.Color:GetRGB())
         end
         if not notAlpha then
             if alphaORmin==true then
@@ -204,8 +204,7 @@ function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
         return
     end
 
-    local col= WoWTools_DataMixin.Player.UseColor or {}
-    local r,g, b= col.r or 1, col.g or 1, col.b or 1
+    local r,g,b= self.Color:GetRGB()
 
     alpha= (alpha==nil and 0)
         or (type(alpha)=='number' and alpha)
@@ -356,8 +355,7 @@ function WoWTools_TextureMixin:SetMenu(frame)
     if frame then
         self:SetAlphaColor(frame.Background, nil, nil, 0.3)
         self:SetAlphaColor(frame.Arrow, nil, nil, 0.7)
-
-        WoWTools_ColorMixin:Setup(frame.Text, {type='FontString'})
+        --frame.Text:SetTextColor(PlayerUtil.GetClassColor():GetRGB())
     end
 end
 
@@ -505,8 +503,6 @@ function WoWTools_TextureMixin:SetAllFrames(frame, tab)
     local isChildren= tab.isChildren
     local bg= tab.bg
 
-    local col= WoWTools_DataMixin.Player.UseColor or {}
-    local r,g, b= col.r or 1, col.g or 1, col.b or 1
     local name= frame:GetName()
 
     if not name then
@@ -515,6 +511,7 @@ function WoWTools_TextureMixin:SetAllFrames(frame, tab)
 
     self:HideFrame(frame)
     if frame.NineSlice then
+        local r,g,b= self.Color:GetRGB()
         frame.NineSlice:SetBorderColor(r, g, b, 0.3)
         frame.NineSlice:SetCenterColor(0,0,0,0)
     end
@@ -630,16 +627,14 @@ function WoWTools_TextureMixin:SetStatusBar(bar, icon, notColor)
             icon:SetAtlas('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health')--绿色
         else
             icon:SetAtlas('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health-Status')
-            local col= WoWTools_DataMixin.Player.UseColor
-            icon:SetVertexColor(col.r, col.g, col.b)
+            icon:SetVertexColor(self.Color:GetRGB())
         end
     elseif bar and bar:IsObjectType('StatusBar') then
         if notColor then
             bar:SetStatusBarTexture('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health')--绿色
         else
             bar:SetStatusBarTexture('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health-Status')
-            local col= WoWTools_DataMixin.Player.UseColor
-            bar:SetStatusBarColor(col.r, col.g, col.b)
+            bar:SetStatusBarColor(self.Color:GetRGB())
         end
     end
 

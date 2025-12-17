@@ -1,6 +1,6 @@
 
 WoWTools_CursorMixin={
-    Color={r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b= WoWTools_DataMixin.Player.b, a=1},
+    Color= PlayerUtil.GetClassColor(),
     DefaultTexture= 'bonusobjectives-bar-starburst',
     DefaultGCDTexture= 'Interface\\Addons\\WoWTools\\Source\\Mouse\\Aura73',
 }

@@ -459,9 +459,16 @@ local function Init_Options()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         if WoWTools_DataMixin.onlyChinese then
-            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and WoWTools_TextMixin:SetColor('怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'))
         else
-            GameTooltip:AddLine(WoWTools_DataMixin.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
+            GameTooltip:AddLine(WoWTools_TextMixin:SetColor(
+                format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)
+                ..'('..YOU..')|r |cnGREEN_FONT_COLOR:'
+                ..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)
+                ..'('..YOU..')|r |cffffffff'
+                ..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)
+                ..'|r')
+            )
         end
         GameTooltip:Show()
     end)
@@ -520,7 +527,13 @@ local function Init_Options()
 
 
     local unitIsMeCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
-    unitIsMeCheck.Text:SetText('3) '..(WoWTools_DataMixin.onlyChinese and '目标是'..WoWTools_DataMixin.Player.col..'你|r' or 'Target is '..WoWTools_DataMixin.Player.col..'You|r'))
+    unitIsMeCheck.Text:SetText(
+        '3) '
+        ..(
+            WoWTools_DataMixin.onlyChinese and '目标是'..WoWTools_TextMixin:SetColor('你')
+            or ('Target is '..WoWTools_TextMixin:SetColor('You'))
+        )
+    )
     unitIsMeCheck:SetPoint('TOP', sel2, 'BOTTOM', 0, -24)
     unitIsMeCheck:SetChecked(Save().unitIsMe)
     unitIsMeCheck:SetScript('OnClick', function()

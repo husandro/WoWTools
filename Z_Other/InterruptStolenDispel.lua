@@ -30,7 +30,7 @@ local function COMBAT_LOG_EVENT_UNFILTERED()
 
     local text=(UMark[sourceRaidFlags] or '')..WoWTools_SpellMixin:GetLink(spellID)..de..WoWTools_SpellMixin:GetLink(extraSpellID)..(UMark[destRaidFlags] or '')
     if destGUID==WoWTools_DataMixin.Player.GUID then
-        print('|A:nameplates-holypower2-on:0:0|a', WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.col, text)
+        print('|A:nameplates-holypower2-on:0:0|a', WoWTools_DataMixin.Icon.Player..WoWTools_TextMixin:SetColor(text))
     else
         WoWTools_ChatMixin:Chat(text, nil, nil)
     end

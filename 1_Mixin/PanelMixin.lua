@@ -4,6 +4,27 @@ Settings.RegisterAddOnCategory(Category)
 
 WoWTools_PanelMixin={}
 --[[
+local function ResetColorSwatches()
+    C_ColorOverrides.ClearColorOverrides();
+    ColorManager.UpdateColorData();
+
+    for _, frame in ipairs(self.colorOverrideFrames) do
+        local colorData = ColorManager.GetColorDataForItemQuality(frame.data.qualityBase);
+        if colorData then
+            frame.Text:SetTextColor(colorData.color:GetRGB());
+            frame.ColorSwatch.Color:SetVertexColor(colorData.color:GetRGB());
+        end
+    end
+end
+
+local function CategoryDefaulted(o, category)
+    if self.categoryID == category:GetID() then
+        ResetColorSwatches();
+    end
+end
+EventRegistry:RegisterCallback("Settings.CategoryDefaulted", CategoryDefaulted);
+
+
 WoWTools_PanelMixin:Open(category, name)
 WoWTools_PanelMixin:AddSubCategory(tab)
 WoWTools_PanelMixin:Header(layout, title)
@@ -135,6 +156,7 @@ end
 --Settings.RegisterProxySetting(categoryTbl, variable, variableType, name, defaultValue, getValue, setValue)
 
 
+
 --添加，Check
 function WoWTools_PanelMixin:OnlyCheck(tab, root)
     local setting=Settings.RegisterProxySetting(
@@ -260,13 +282,13 @@ end
 --[[
 WoWTools_PanelMixin:CheckMenu({
 category=,
+layout=,
 name=,
 tooltip=,
 GetValue=function()
 end,
 SetValue=function(value)
 end,
-
 DropDownGetValue=function()
 end,
 DropDownSetValue=function(value)
@@ -276,8 +298,7 @@ GetOptions=function()
     container:Add(1, WoWTools_DataMixin.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE)
     container:Add(2, WoWTools_DataMixin.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW)
     return container:GetData()
-end
-})
+end})
 ]]
 
 
@@ -398,8 +419,14 @@ end
 
 
 
+	--[[Color Overrides
+	local data = { categoryID = category:GetID(), newTagID = "panelItemQualityColorOverrides" };
+	local initializer = Settings.CreatePanelInitializer("ItemQualityColorOverrides", data);
 
-
+	-- Include both 'Item Quality' and 'Rarity', since the terms are a bit interchangeable players could search for either.
+	initializer:AddSearchTags(COLORS_ITEM_QUALITY, RARITY);
+	layout:AddInitializer(initializer);
+]]
 
 
 

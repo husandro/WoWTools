@@ -28,6 +28,7 @@ local function Init_RaidGroupFrame_Update()
     local getItemLevelTab={}--取得装等
     local setSize= WhoFrame:GetWidth()> 350
     local maxLevel= GetMaxLevelForLatestExpansion()
+    local player= UnitName('player')
     for i=1, MAX_RAID_MEMBERS do
         local button = _G["RaidGroupButton"..i]
         if button and button.subframes then
@@ -43,7 +44,7 @@ local function Init_RaidGroupFrame_Update()
 
                 if subframes.name and name then
                     local text
-                    if name==WoWTools_DataMixin.Player.Name then--自己
+                    if name==player then--自己
                         text= WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME
                     end
                     if not text then--距离

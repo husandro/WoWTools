@@ -123,10 +123,14 @@ end
 
 --ColorPickerFrame.lua
 function WoWTools_ColorMixin:ShowColorFrame(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
+    if not valueR or not valueG or valueB then
+        valueR, valueG, valueB= PlayerUtil.GetClassColor():GetRGB()
+    end
+
     ColorPickerFrame:SetupColorPickerAndShow({
-        r=valueR or 1,
-        g=valueG or 1,
-        b=valueB or 1,
+        r=valueR,
+        g=valueG,
+        b=valueB,
         hasOpacity= valueA and true or false,
         swatchFunc= swatchFunc or function()end,
         cancelFunc= cancelFunc or function()end,
@@ -148,18 +152,12 @@ function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
 
     local Type= tab.type or (object.GetObjectType and object:GetObjectType()) or type(object)-- FontString Texture String
 
-    local col= tab.color or WoWTools_DataMixin.Player.UseColor
     local isColorTexture= tab.isColorTexture
-
-    local r,g,b,a
-    if col then
-        r,g,b,a= col.r or 1, col.g or 1, col.b or 1, tab.alpha or col.a or 1
-    else
-        r,g,b,a= WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, 1
-    end
+    local r,g,b= PlayerUtil.GetClassColor():GetRGB()
+    local a= tab.alpha or 1
 
     if Type=='FontString' then
-        object:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+        object:SetTextColor(r,g,b,a)
 
     elseif Type=='EditBox' then
         object:SetTextColor(r, g, b, a)
@@ -186,7 +184,7 @@ function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
         end
 
     elseif Type=='String' then
-        local hex= tab.color and tab.color.hex or WoWTools_DataMixin.Player.col
+        local hex= tab.color and tab.color.hex or PlayerUtil.GetClassColor():GenerateHexColorMarkup()
         return hex..object
     end
 end

@@ -42,10 +42,11 @@ local function Init()
             function btn.chatTexure:get_text()
                 local p= self:GetParent().dropInfo
                 local nu=''
+                local player= UnitName('player')
                 if IsInRaid() then
                     for i=1, MAX_RAID_MEMBERS do
                         local name, _, subgroup= GetRaidRosterInfo(i)
-                        if name==WoWTools_DataMixin.Player.Name then
+                        if name==player then
                             if subgroup then
                                 nu= ' '..subgroup..GROUP
                             end
@@ -110,7 +111,7 @@ local function Init()
 
         if winInfo and notGreed then--修改，名字
             if winInfo.isSelf then
-                btn.WinningRollInfo.WinningRoll:SetText(WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r')
+                btn.WinningRollInfo.WinningRoll:SetText(WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
             elseif winInfo.playerGUID then
                 local name= WoWTools_UnitMixin:GetPlayerInfo(nil, winInfo.playerGUID, nil, {reName=true})
                 if name and name~='' then

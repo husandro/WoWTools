@@ -89,12 +89,12 @@ local function Init_Menu(self, root)
     function()
         return not Save().notShowPlayerInfo
     end, function()
-        Save().notShowPlayerInfo= not Save().notShowPlayerInfo and true or nil       
+        Save().notShowPlayerInfo= not Save().notShowPlayerInfo and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo('player', nil, nil, {reLink=true}), WoWTools_TextMixin:GetEnabeleDisable(true))
         tooltip:AddLine(' ')
-        tooltip:AddDoubleLine(WoWTools_DataMixin.Player.col..UnitName('player'), WoWTools_TextMixin:GetEnabeleDisable(false))
+        tooltip:AddDoubleLine(WoWTools_TextMixin:SetColor(UnitName('player')), WoWTools_TextMixin:GetEnabeleDisable(false))
     end)
 
 
@@ -390,7 +390,7 @@ local function Init_Menu(self, root)
         if ColorPickerFrame:IsShown() then
             ColorPickerFrame:Hide()
         else
-            WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
+            WoWTools_ColorMixin:ShowColorFrame()
         end
         return MenuResponse.Open
     end)

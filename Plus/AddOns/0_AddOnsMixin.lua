@@ -1,7 +1,7 @@
 WoWTools_AddOnsMixin={}
 
 function WoWTools_AddOnsMixin:GetIsPlayer()
-    if AddonList.Dropdown.Text:GetText()==WoWTools_DataMixin.Player.Name then
+    if AddonList.Dropdown.Text:GetText()==UnitName('player') then
         return WoWTools_DataMixin.Player.GUID
     end
 end

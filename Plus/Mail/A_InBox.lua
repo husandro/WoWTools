@@ -454,7 +454,7 @@ end
 
 local function Init_InboxFrame_Update()
     local hide= Save().hide
-
+    local player= UnitName('player')
     for i=1, INBOXITEMS_TO_DISPLAY do
         local btn=_G["MailItem"..i.."Button"]
 
@@ -473,7 +473,7 @@ local function Init_InboxFrame_Update()
 
             local isCOD = CODAmount and CODAmount>0
             local isAuctionHouse= invoiceType~=nil or sender==BUTTON_LAG_AUCTIONHOUSE--拍卖行
-            local isSelf= sender==WoWTools_DataMixin.Player.Name
+            local isSelf= sender==player
 
             if hasItem and hasItem>1 then
                 btn.countLable:SetText('|cffffd100'..hasItem..'|r')

@@ -2741,7 +2741,13 @@
         "DressUpFrameCustomSetDropdown",
         "TextToSpeechButton",
         "GameTooltipDataMixin",
-        "GameTooltipUnitHealthBarMixin"
+        "GameTooltipUnitHealthBarMixin",
+        "COLORS_ITEM_QUALITY",
+        "RARITY",
+        "ColorblindOverrides",
+        "Add",
+        "UIDropDownMenu_CreateInfo",
+        "AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

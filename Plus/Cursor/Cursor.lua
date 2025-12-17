@@ -109,7 +109,7 @@ local function Set_Texture(self, atlas, texture, isInit)
         self:SetTexture(texture)
     end
     if isInit then
-        self:SetVertexColor(WoWTools_CursorMixin.Color.r, WoWTools_CursorMixin.Color.g, WoWTools_CursorMixin.Color.b, WoWTools_CursorMixin.Color.a)
+        self:SetVertexColor(WoWTools_CursorMixin.Color:GetRGBA())
         self:SetSize(size, size)
         self.life = 0
         self:SetAlpha(Save().alpha)

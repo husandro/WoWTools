@@ -2,25 +2,15 @@ local P_Save={
     onlyChinese= LOCALE_zhCN or WoWTools_DataMixin.Player.husandro,
     --useClassColor= WoWTools_DataMixin.Player.husandro,--使用,职业, 颜色
     --useCustomColor= nil,--使用, 自定义, 颜色
-    useColor=1,
-    useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
+    --useColor=1,
+    --useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
 }
 
 local function Save()
     return WoWToolsSave['WoWTools_Settings'] or {}
 end
 
---自定义，颜色
-local function Set_Color()
-WoWTools_DataMixin.Player.UseColor= Save().useColor==2 and Save().useCustomColorTab
-    or {
-        r=WoWTools_DataMixin.Player.r,
-        g=WoWTools_DataMixin.Player.g,
-        b=WoWTools_DataMixin.Player.b,
-        a=1,
-        hex= WoWTools_DataMixin.Player.col
-    }
-end
+
 
 
 
@@ -40,7 +30,7 @@ local function Init_Options()
 
     local optionHeader= WoWTools_DataMixin.onlyChinese and '插件选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, OPTIONS)
     WoWTools_PanelMixin:OnlyButton({
-        title= '|A:talents-button-undo:0:0|a'..optionHeader,
+        title= '1) |A:talents-button-undo:0:0|a'..optionHeader,
         buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET ),
         addSearchTags= optionHeader,
         SetValue= function()
@@ -80,7 +70,7 @@ local function Init_Options()
 --清除玩家输入数据
     local playerHeader= WoWTools_DataMixin.onlyChinese and '清除输入数据' or 'Clear input data'
     WoWTools_PanelMixin:OnlyButton({
-        title= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..playerHeader,
+        title= '2) |A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..playerHeader,
         buttonText= '|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= playerHeader,
         SetValue= function()
@@ -95,8 +85,6 @@ local function Init_Options()
                     WoWTools_DataMixin:Reload()
                 end
             )
-
-            
         end,
         tooltip=function()
             local text
@@ -121,7 +109,7 @@ local function Init_Options()
 --清除战网数据
     local wowHeader= WoWTools_DataMixin.onlyChinese and '清除战网数据' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, 'Data'))
     WoWTools_PanelMixin:OnlyButton({
-        title= WoWTools_DataMixin.Icon.wow2..wowHeader,
+        title= '3) '..WoWTools_DataMixin.Icon.wow2..wowHeader,
         buttonText= WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= wowHeader,
         SetValue= function()
@@ -202,58 +190,7 @@ local function Init_Options()
 
 
 
-    WoWTools_PanelMixin:Header(nil, WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
-
-    WoWTools_PanelMixin:OnlyMenu({
-        SetValue= function(value)
-            Save().useColor= value
-
-            if value==2 then
-                local valueR, valueG, valueB, valueA= Save().useCustomColorTab.r, Save().useCustomColorTab.g, Save().useCustomColorTab.b, Save().useCustomColorTab.a
-                local setA, setR, setG, setB
-                local function func()
-                    local hex=WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB, setA)--RGB转HEX
-                    Save().useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
-                    Set_Color()--自定义，颜色
-                    print(
-                        WoWTools_DataMixin.Player.UseColor.hex,
-                        WoWTools_DataMixin.addName,
-                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                    )
-                end
-                WoWTools_ColorMixin:ShowColorFrame(valueR, valueG, valueB, valueA, function()
-                        setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                        func()
-                    end, function()
-                        setR, setG, setB, setA= valueR, valueG, valueB, valueA
-                        func()
-                    end
-                )
-            else
-                if ColorPickerFrame:IsShown() then
-                    ColorPickerFrame.Footer.OkayButton:Click()
-                end
-                Set_Color()--自定义，颜色
-                print(
-                    WoWTools_DataMixin.Player.UseColor.hex,
-                    WoWTools_DataMixin.addName,
-                    WoWTools_DataMixin.onlyChinese and '颜色' or COLOR,
-                    '|r',
-                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                )
-            end
-        end,
-        GetOptions= function()
-            local container = Settings.CreateControlTextContainer()
-			container:Add(1, WoWTools_DataMixin.onlyChinese and '职业' or CLASS)
-			container:Add(2, WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)
-			--container:Add(3, WoWTools_DataMixin.onlyChinese and '无' or NONE)
-			return container:GetData()
-        end,
-        GetValue= function() return Save().useColor end,
-        name= '|A:Forge-ColorSwatch:0:0|a'..WoWTools_DataMixin.Player.UseColor.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR),
-        tooltip= WoWTools_DataMixin.addName,
-    })
+    --WoWTools_PanelMixin:Header(nil, WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
 
 
     if not LOCALE_zhCN then
@@ -352,9 +289,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     WoWTools_DataMixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese
 
-    Save().useColor= Save().useColor or 1
-    Save().useCustomColorTab= Save().useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
-    Set_Color()--自定义，颜色
+--旧数据
+    --Save().useColor= Save().useColor or 1
+    --Save().useCustomColorTab= Save().useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
+    Save().useColor= nil
+    Save().useCustomColorTab= nil
 
     Init_Options()
 

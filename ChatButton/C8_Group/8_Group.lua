@@ -233,7 +233,7 @@ local function Init_Menu(self, root)
                     if UnitExists(unit) and UnitIsPlayer(unit) then
                         playerName=GetUnitName(unit, true)
                         sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}), function(data)
-                            if data and data~=WoWTools_DataMixin.Player.Name then
+                            if data and data~=UnitName('player') then
                                 WoWTools_ChatMixin:Say(nil, data, nil)
                             end
                             return MenuResponse.Open
@@ -251,13 +251,13 @@ local function Init_Menu(self, root)
                         sub2=sub:CreateButton(
                             WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}),
                         function(data)
-                            if data and data~=WoWTools_DataMixin.Player.Name then
+                            if data and data~=UnitName('player') then
                                 WoWTools_ChatMixin:Say(nil, data, nil)
                             end
                             return MenuResponse.Open
                         end, playerName)
                         sub2:SetTooltip(function(tooltip, description)
-                            if description.data and description.data~=WoWTools_DataMixin.Player.Name then
+                            if description.data and description.data~=UnitName('player') then
                                 tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)
                             end
                         end)

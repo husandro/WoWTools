@@ -81,7 +81,7 @@ local function Set_Dragonriding_Speed(frame)
             local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
             if base>0 then
                 self.Text:SetText(math.modf(base / BASE_MOVEMENT_SPEED * 100))
-                local r,g,b=1,1,1-- WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b
+                local r,g,b=1,1,1
                 if isGliding and forwardSpeed>=30 then
                     if forwardSpeed>95 then
                         r,g,b=1,0,0

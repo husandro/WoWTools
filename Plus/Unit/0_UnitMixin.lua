@@ -36,7 +36,9 @@ function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
     local r, g, b, hex
     if UnitExists(unit) then
         if UnitIsUnit('player', unit) then
-            r,g,b,hex= WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, WoWTools_DataMixin.Player.col
+            local color= PlayerUtil.GetClassColor()
+            r,g,b= color:GetRGB()
+            hex= color:GenerateHexColorMarkup()
         else
             classFilename= UnitClassBase(unit)
         end
@@ -97,12 +99,12 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     local size= tab.size or 0
 
     if guid==WoWTools_DataMixin.Player.GUID
-        or name==WoWTools_DataMixin.Player.Name
+        or name==UnitName('player')
         or name==WoWTools_DataMixin.Player.Name_Realm
     then
         return WoWTools_DataMixin.Icon.Player
             ..(
-                (reName or reLink) and WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or ''
+                (reName or reLink) and WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME) or ''
             )..'|A:auctionhouse-icon-favorite:0:0|a'
     end
 
@@ -248,7 +250,7 @@ end
 function WoWTools_UnitMixin:GetLink(unit, guid, name, onlyLink) --玩家超链接
     guid= guid or self:GetGUID(unit, name)
     if guid==WoWTools_DataMixin.Player.GUID then--自已
-        return (onlyLink and '' or WoWTools_DataMixin.Icon.Player)..'|Hplayer:'..WoWTools_DataMixin.Player.Name_Realm..'|h['..WoWTools_DataMixin.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
+        return (onlyLink and '' or WoWTools_DataMixin.Icon.Player)..'|Hplayer:'..WoWTools_DataMixin.Player.Name_Realm..'|h['..WoWTools_TextMixin:SetColor(COMBATLOG_FILTER_STRING_ME)..']|h'
     end
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
@@ -367,7 +369,7 @@ function WoWTools_UnitMixin:GetGUID(unit, name)--从名字,名unit, 获取GUID
         elseif WoWTools_DataMixin.WoWGUID[name] then--战网
             return WoWTools_DataMixin.WoWGUID[name].guid
 
-        elseif name==WoWTools_DataMixin.Player.Name then
+        elseif name==UnitName('player') then
             return WoWTools_DataMixin.Player.GUID
 
         elseif UnitIsPlayer('target') and self:GetFullName(nil, 'target')==name then--目标

@@ -3,6 +3,7 @@
 local P_Save={
     --disabled=true,
     --disabledTexture=true,
+    --useColor=true,自定义，颜色
     UIButton=WoWTools_DataMixin.Player.husandro,
     CheckBox= WoWTools_DataMixin.Player.husandro,
     alpha= 0.5,
@@ -54,9 +55,17 @@ end
 local function SaveLog()
     return WoWToolsPlayerDate['TextureClassColor']
 end
-local Layout
 
 
+--自定义，颜色
+local function Set_Color()
+    local color= Save().useColor and SaveLog()[WoWTools_DataMixin.Player.Class]
+    if color and color.r and color.g and color.b then
+        WoWTools_TextureMixin.Color= CreateColor(color.r, color.g, color.b, 1)
+    else
+        WoWTools_TextureMixin.Color= PlayerUtil.GetClassColor()
+    end
+end
 
 
 
@@ -70,105 +79,104 @@ local function Init_Panel()
     local sub
     local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 
-    --[[WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)
+    WoWTools_PanelMixin:Header(WoWTools_TextureMixin.Layout, WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 
-    WoWTools_PanelMixin:CheckMenu({
-        category=WoWTools_TextureMixin.Category,
-        layout=WoWTools_TextureMixin.Layout,
-        name=WoWTools_DataMixin.onlyChinese and '职业颜色' or CLASS_COLORS,
-        tooltip=WoWTools_TextureMixin.addName,
-        GetValue= function() 
-            return not Save().disabledClassColor
-        end,
-        SetValue= function()
-            Save().disabledClassColor= not Save().disabledClassColor and true or nil
-        end,
 
-        DropDownGetValue=function()
-            
-        end,
-        DropDownSetValue=function(value)
-        end,
-        GetOptions=function()
-            local container = Settings.CreateControlTextContainer()
-            container:Add(1, '|A:bags-greenarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))
-            container:Add(2, '|A:Bags-padlock-authenticator:0:0|a'..(WoWTools_DataMixin.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW))
-            return container:GetData()
+
+WoWTools_PanelMixin:CheckMenu({
+    category=WoWTools_TextureMixin.Category,
+    layout= WoWTools_TextureMixin.Layout,
+    name= WoWTools_DataMixin.onlyChinese and '自定义颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM, CLASS_COLORS),
+    tooltip=tooltip,
+    GetValue=function()
+        return Save().useColor
+    end,
+    SetValue=function()
+        Save().useColor= not Save().useColor and true or nil
+        Set_Color()
+    end,
+    DropDownGetValue=function()
+        return 0
+    end,
+    DropDownSetValue=function(classID)
+        if ColorPickerFrame:IsShown() then
+            ColorPickerFrame.Footer.CancelButton:Click()
         end
-    })]]
 
-    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
+--全部重置
+        if classID==(GetNumClasses()+1) then
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '职业颜色|n|n全部重置' or (CLASS_COLORS..'|n|n'..RESET_ALL_BUTTON_TEXT) ,
+            nil,
+            {SetValue=function()
+                WoWToolsPlayerDate['TextureClassColor']={}
+            end})
+            return
+        end
 
-    --[[sub=WoWTools_PanelMixin:Check_Button({
-        checkName= WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER,
-        GetValue= function() return not Save().disabledTexture end,
-        SetValue= function()
-            Save().disabledTexture= not Save().disabledTexture and true or nil
-        end,
-        buttonText= WoWTools_DataMixin.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
-        buttonFunc= function()
-            WoWTools_PanelMixin:Open(nil, ('|A:Forge-ColorSwatch:0:0|a'..WoWTools_DataMixin.Player.UseColor.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)))
-        end,
-        tooltip= '|A:Forge-ColorSwatch:0:0|a'..WoWTools_DataMixin.Player.UseColor.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR),
-        layout= Layout,
-        category= WoWTools_TextureMixin.Category
-    })]]
-    
-    --[[WoWTools_PanelMixin:OnlyMenu({
-        SetValue= function(value)
-            Save().useColor= value
+--设置，职业，颜色
+        local classFile= select(2, GetClassInfo(classID))
+        local info = {
+            hasOpacity= false,
+            extraInfo= RAID_CLASS_COLORS[classFile],
+        }
+        local overrideInfo = SaveLog()[classFile]
+        if overrideInfo then
+            info.r, info.g, info.b = overrideInfo.r, overrideInfo.g, overrideInfo.b
+        else
+            info.r, info.g, info.b= GetClassColor(classFile)
+        end
+        info.swatchFunc = function ()
+            local r,g,b = ColorPickerFrame:GetColorRGB()
 
-            if value==2 then
-                local valueR, valueG, valueB, valueA= Save().useCustomColorTab.r, Save().useCustomColorTab.g, Save().useCustomColorTab.b, Save().useCustomColorTab.a
-                local setA, setR, setG, setB
-                local function func()
-                    local hex=WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB, setA)--RGB转HEX
-                    Save().useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
-                    Set_Color()--自定义，颜色
-                    print(
-                        WoWTools_DataMixin.Player.UseColor.hex,
-                        WoWTools_DataMixin.addName,
-                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                    )
+            SaveLog()[classFile]= {r=r, g=g, b=b}
+        end
+        info.cancelFunc = function ()
+            --local r,g,b = ColorPickerFrame:GetPreviousValues()
+            SaveLog()[classFile]= overrideInfo
+        end
+
+        ColorPickerFrame:SetupColorPickerAndShow(info)
+
+    end,
+    GetOptions=function()
+        local container = Settings.CreateControlTextContainer()
+        local maxClass= GetNumClasses()
+        for classID = 1, maxClass do
+            if (classID == 10) and (GetClassicExpansionLevel() <= LE_EXPANSION_CATACLYSM) then-- We have an annoying gap between warlock and druid
+                classID = 11
+            end
+
+            local className, classFile= GetClassInfo(classID)
+
+            if classFile then
+                local color
+                local col= SaveLog()[classFile]
+                if col then
+                    color= CreateColor(col.r, col.g, col.b)
+                else
+                    local r,g,b= GetClassColor(classFile)
+                    color= CreateColor(r,g,b)
                 end
-                WoWTools_ColorMixin:ShowColorFrame(valueR, valueG, valueB, valueA, function()
-                        setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                        func()
-                    end, function()
-                        setR, setG, setB, setA= valueR, valueG, valueB, valueA
-                        func()
-                    end
-                )
-            else
-                if ColorPickerFrame:IsShown() then
-                    ColorPickerFrame.Footer.OkayButton:Click()
-                end
-                Set_Color()--自定义，颜色
-                print(
-                    WoWTools_DataMixin.Player.UseColor.hex,
-                    WoWTools_DataMixin.addName,
-                    WoWTools_DataMixin.onlyChinese and '颜色' or COLOR,
-                    '|r',
-                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+
+                className= WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.ClassName_CN[classID] or className
+
+                container:Add(classID,
+                    WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile)
+                    ..color:WrapTextInColorCode(className)
+                    ..(classFile==WoWTools_DataMixin.Player.Class and '|A:recipetoast-icon-star:0:0|a' or ' ')..classID
                 )
             end
-        end,
-        GetOptions= function()
-            local container = Settings.CreateControlTextContainer()
-			container:Add(1, WoWTools_DataMixin.onlyChinese and '职业' or CLASS)
-			container:Add(2, WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)
-			--container:Add(3, WoWTools_DataMixin.onlyChinese and '无' or NONE)
-			return container:GetData()
-        end,
-        GetValue= function() return Save().useColor end,
-        name= '|A:Forge-ColorSwatch:0:0|a'..WoWTools_DataMixin.Player.UseColor.hex..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR),
-        tooltip= WoWTools_DataMixin.addName,
-    })]]
+        end
 
+        container:Add(maxClass+1, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET))
+
+        return container:GetData()
+    end})
 
 
     WoWTools_PanelMixin:OnlyCheck({
-        name= 'UIButton',
+        name= '|A:_128-RedButton-Center:0:0|aUIButton',
         tooltip= tooltip,
         category= WoWTools_TextureMixin.Category,
         GetValue= function() return Save().UIButton end,
@@ -178,7 +186,7 @@ local function Init_Panel()
     }, sub)
 
     WoWTools_PanelMixin:OnlyCheck({
-        name= 'CheckBox',
+        name= '|A:checkbox-minimal:0:0|aCheckBox',
         tooltip= tooltip,
         category= WoWTools_TextureMixin.Category,
         GetValue= function() return Save().CheckBox end,
@@ -187,7 +195,7 @@ local function Init_Panel()
         end
     }, sub)
 
-    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
+    WoWTools_PanelMixin:Header(WoWTools_TextureMixin.Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
 
 
     sub= WoWTools_PanelMixin:OnlyCheck({
@@ -252,7 +260,7 @@ local function Init_Panel()
                 WoWTools_TextureMixin:Init_Class_Power()--职业
             end
         end,
-        layout= Layout,
+        layout= WoWTools_TextureMixin.Layout,
         category= WoWTools_TextureMixin.Category,
     })
 
@@ -271,12 +279,12 @@ local function Init_Panel()
         })
     end
 
-    WoWTools_PanelMixin:Header(Layout, 'Event')
+    WoWTools_PanelMixin:Header(WoWTools_TextureMixin.Layout, 'Event')
     for name in pairs(WoWTools_TextureMixin.Events) do
         Add_Options(name)
     end
 
-    WoWTools_PanelMixin:Header(Layout, 'Frame')
+    WoWTools_PanelMixin:Header(WoWTools_TextureMixin.Layout, 'Frame')
     for name in pairs(WoWTools_TextureMixin.Frames) do
         Add_Options(name)
     end
@@ -341,10 +349,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
+            WoWToolsPlayerDate['TextureClassColor']= WoWToolsPlayerDate['TextureClassColor'] or {}
 
             Save().Bg= Save().Bg or P_Save.Bg
             Save().Bg.Anims= Save().Bg.Anims or P_Save.Bg.Anims
             Save().no= Save().no or {}
+
+            Set_Color()--自定义，颜色
 
             P_Save= nil
 
@@ -352,7 +363,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 
-            WoWTools_TextureMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+            WoWTools_TextureMixin.Category, WoWTools_TextureMixin.Layout = WoWTools_PanelMixin:AddSubCategory({
                 name= WoWTools_TextureMixin.addName,
                 disabled= Save().disabled,
             })
@@ -376,7 +387,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end)
                 end,
                 tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
-                layout= Layout,
+                layout= WoWTools_TextureMixin.Layout,
                 category= WoWTools_TextureMixin.Category,
             })
 

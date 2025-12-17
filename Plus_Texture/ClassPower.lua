@@ -80,8 +80,8 @@ local function Init()
                 WoWTools_TextureMixin:HideTexture(btn.BGActive)
                 WoWTools_TextureMixin:HideTexture(btn.BGInactive)
                 WoWTools_TextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
-                btn.SlashFBUncharged:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
-                btn.SlashFBCharged:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+                btn.SlashFBUncharged:SetVertexColor(PlayerUtil.GetClassColor():GetRGB())
+                btn.SlashFBCharged:SetVertexColor(PlayerUtil.GetClassColor():GetRGB())
                 WoWTools_DataMixin:Hook(btn, 'Update', function(b)
                     b.numTexture:SetShown(not b.isFull)
                 end)
@@ -93,8 +93,8 @@ local function Init()
         WoWTools_TextureMixin:HideTexture(btn.BGActive)
         WoWTools_TextureMixin:HideTexture(btn.BGInactive)
         WoWTools_TextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
-        btn.SlashFBUncharged:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
-        btn.SlashFBCharged:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+        btn.SlashFBUncharged:SetVertexColor(PlayerUtil.GetClassColor():GetRGB())
+        btn.SlashFBCharged:SetVertexColor(PlayerUtil.GetClassColor():GetRGB())
         WoWTools_DataMixin:Hook(btn, 'Update', function(b)
             b.numTexture:SetShown(not b.isFull)
         end)
@@ -120,7 +120,7 @@ local function Init()
             if specIndex==3 then
                 b.numTexture:SetVertexColor(0.5, 1, 0.5)
             else
-                b.numTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+                b.numTexture:SetVertexColor(PlayerUtil.GetClassColor():GetRGB())
             end
         end)
     end
@@ -149,7 +149,7 @@ local function Init()
             if specIndex==3 then
                 b.numTexture:SetVertexColor(0.5, 1, 0.5)
             else
-                b.numTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+                b.numTexture:SetVertexColor(PlayerUtil.GetClassColor():GetRGB())
             end
         end)
     end

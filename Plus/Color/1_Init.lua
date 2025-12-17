@@ -25,9 +25,8 @@ local function Show_ClorFrame()
 	if not Save().autoShow then
 		return
 	end
-	--C_Timer.After(2, function()
 
-	WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
+	WoWTools_ColorMixin:ShowColorFrame()
 
 	print(
 		WoWTools_ColorMixin.addName..WoWTools_DataMixin.Icon.icon2,
@@ -105,7 +104,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				end,
 				buttonText='|A:colorblind-colorwheel:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
 				buttonFunc= function()
-					WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
+					
+					WoWTools_ColorMixin:ShowColorFrame()
 				end,
 			})
 

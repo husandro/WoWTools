@@ -65,11 +65,13 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
+
     sub2=sub:CreateCheckbox(
         format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
-            WoWTools_DataMixin.Player.col..
             (WoWTools_UnitMixin:GetClassIcon(nil, nil, self.classFile) or '')
-            ..WoWTools_TextMixin:CN(UnitClass('player'), nil)
+            ..WoWTools_TextMixin:SetColor(
+                WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.ClassName_CN[WoWTools_DataMixin.Player.Class] or UnitClass('player')
+            )
         ),
     function()
         return Save().lootOnlyClass

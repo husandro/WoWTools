@@ -187,9 +187,16 @@ function WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID)--Dif
             end
         end
     end
-
-    return difficultyName,
-        colorRe or WoWTools_DataMixin.Player.UseColor or {r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b=WoWTools_DataMixin.Player.b, hex=WoWTools_DataMixin.Player.col}
+    if not colorRe then
+        local color= PlayerUtil.GetClassColor()
+        colorRe={
+            r=color.r,
+            g=color.g,
+            b=color.b,
+            hex= color:GenerateHexColorMarkup(),
+        }
+    end
+    return difficultyName, colorRe
 end
 
 

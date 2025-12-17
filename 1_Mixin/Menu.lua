@@ -236,57 +236,6 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
 
     return sub, sub2
 end
---[[
---缩放
-WoWTools_MenuMixin:Scale(self, root, function()
-    return Save().scale or 1
-end, function(value)
-    Save().scale= value
-    self:set_scale()
-end)
-]]
---[[
-function WoWTools_MenuMixin:Color(root, text, onClick, colorInfo, data)
-    return root:CreateColorSwatch(
-        text,
-        onClick or function()end,
-        {
-            r = colorInfo.r or WoWTools_DataMixin.Player.r,
-            g = colorInfo.g or WoWTools_DataMixin.Player.g,
-            b = colorInfo.b or WoWTools_DataMixin.Player.b,
-            opacity = colorInfo.opacity or colorInfo.a or 1,
-            swatchFunc = colorInfo.opacity or function()end,
-            opacityFunc = colorInfo.opacityFunc or function()end,
-            cancelFunc = colorInfo.cancelFunc or function()end,
-            hasOpacity = (colorInfo.opacity or colorInfo.a) and true or false,
-        },
-        data
-    )
-end
-
---颜色选择器
-WoWTools_MenuMixin:Color(root,
-    text,
-function()
-
-end, {
-    r= r,
-    g= g,
-    b= b,
-    opacity= 1,
-    swatchFunc= function()
-
-    end,
-    opacityFunc= function()
-
-    end,
-    cancelFunc= function()
-
-    end,
-})
-]]
-
-
 
 --FrameStrata
 function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)

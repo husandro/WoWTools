@@ -603,7 +603,7 @@ end
 
 
 --外框
-    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)--设置颜色
+    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(PlayerUtil.GetClassColor():GetRGB())--设置颜色
 
 
 --移动，缩小，开启战争模式时，PVP图标

@@ -167,7 +167,7 @@ local Frame= CreateFrame('Frame')
 Frame:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')
 Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName)--encounterID, itemID, itemLink, quantity, playerName, classFileName
     if event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
-        if IsInInstance() and  (playerName and playerName:find(WoWTools_DataMixin.Player.Name) or not IsInGroup()) then
+        if IsInInstance() and  (playerName and playerName:find(UnitName('player')) or not IsInGroup()) then
             local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID, bindType, expansionID = C_Item.GetItemInfo(itemLink)
             itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
 

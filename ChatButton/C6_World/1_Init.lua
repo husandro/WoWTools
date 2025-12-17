@@ -99,7 +99,7 @@ local function Init_Dialogs()
             local enabled=true
             if text==''
                 or text== WoWTools_DataMixin.Player.Name_Realm
-                or text== WoWTools_DataMixin.Player.Name
+                or text== UnitName('player')
 
                 or text:find('^ ')
                 or text:find(' $')

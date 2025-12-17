@@ -1,19 +1,6 @@
 local classTabs={}
-
-
-
-
-
-
-
-
-
-
-
-local function Init()
-    local _tab
-
-_tab= {--https://wago.tools/db2/ChrClasses?locale=zhCN
+--https://wago.tools/db2/ChrClasses?locale=zhCN
+WoWTools_DataMixin.ClassName_CN= {
 [1] ='战士',
 [2] ='圣骑士',
 [3] ='猎人',
@@ -30,19 +17,29 @@ _tab= {--https://wago.tools/db2/ChrClasses?locale=zhCN
 [14] ='冒险者',
 }
 
-for index = 1, GetNumClasses() do
-    if (index == 10) and (GetClassicExpansionLevel() <= LE_EXPANSION_CATACLYSM) then-- We have an annoying gap between warlock and druid
-        index = 11
+
+
+
+
+
+
+
+
+local function Init()
+local _tab
+
+for classID = 1, GetNumClasses() do
+    if (classID == 10) and (GetClassicExpansionLevel() <= LE_EXPANSION_CATACLYSM) then-- We have an annoying gap between warlock and druid
+        classID = 11
     end
-    local className, classFile, classID = GetClassInfo(index)
+    local className, classFile = GetClassInfo(classID)
     if className and className~='' then
         local hex= select(4, GetClassColor(classFile))
 
         classTabs[className]= WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile)
             ..'|c'..hex
-            ..(WoWTools_DataMixin.onlyChinese and _tab[classID] or className)
+            ..(WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.ClassName_CN[classID] or className)
             ..'|r'
-
     end
 end
 

@@ -64,7 +64,7 @@ local function Set_OnEnter(self)
                     local icon, role= select(4, GetSpecializationInfoByID(info.specID))
                     text= WoWTools_DataMixin.Icon[role]..'|T'..icon..':0|t'
                 end
-                text= info.name== WoWTools_DataMixin.Player.Name and text..info.name..'|A:auctionhouse-icon-favorite:0:0|a' or text..info.name
+                text= info.name== UnitName('player') and text..info.name..'|A:auctionhouse-icon-favorite:0:0|a' or text..info.name
                 if info.classID then
                     local classFile= select(2, GetClassInfo(info.classID))
                     local argbHex = classFile and select(4, GetClassColor(classFile))
@@ -74,7 +74,7 @@ local function Set_OnEnter(self)
                 end
                 if overtimeInfo and overtimeInfo.members and overtimeInfo.members[index] and overtimeInfo.members[index].name then
                     local info2= overtimeInfo.members[index]
-                    text2= info2.name== WoWTools_DataMixin.Player.Name and ('|A:auctionhouse-icon-favorite:0:0|a'..info2.name) or info2.name
+                    text2= info2.name== UnitName('player') and ('|A:auctionhouse-icon-favorite:0:0|a'..info2.name) or info2.name
                     if info2.specID then
                         local icon, role= select(4, GetSpecializationInfoByID(info.specID))
                         text2= text2..'|T'..icon..':0|t'..WoWTools_DataMixin.Icon[role]

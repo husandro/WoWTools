@@ -23,6 +23,13 @@ end
 text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
 
 ]]
+function WoWTools_TextMixin:SetColor(text)
+    if text then
+        return PlayerUtil.GetClassColor():WrapTextInColorCode(text)
+    else
+        return ''
+    end
+end
 
 function WoWTools_TextMixin:ShowText(data, headerText, tab)
     tab= tab or {}

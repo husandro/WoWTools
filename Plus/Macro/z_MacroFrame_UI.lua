@@ -111,7 +111,7 @@ local function Init()
     end)
 
 --角色，专用宏，颜色
-    MacroFrameTab2.Text:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+    MacroFrameTab2.Text:SetTextColor(PlayerUtil.GetClassColor():GetRGB())
 
 
 --保存，提示

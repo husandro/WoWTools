@@ -49,7 +49,7 @@ local function GCD_Settings(isTest)
 
     set_GCD_Texture()
 
-    GCDFrame.cooldown:SetSwipeColor(WoWTools_CursorMixin.Color.r, WoWTools_CursorMixin.Color.g, WoWTools_CursorMixin.Color.b, WoWTools_CursorMixin.Color.a)
+    GCDFrame.cooldown:SetSwipeColor(WoWTools_CursorMixin.Color:GetRGBA())
 
     if Save().randomTexture then
         GCDFrame:SetScript('OnHide', function()
