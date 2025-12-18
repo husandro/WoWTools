@@ -148,6 +148,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().MajorFactionRenownFrame_Button_Scale=nil
 			Save().hide_MajorFactionRenownFrame_Button=nil
             Save().Icons.hideBackground= nil
+            Save().isShowTimeManagerBackground=nil
 
             P_Save= nil
 

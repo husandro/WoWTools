@@ -107,7 +107,7 @@ local function Init_Menu(self, root)
         '|A:bag-reagent-border:0:0|a'..(WoWTools_DataMixin.onlyChinese and '镶边' or EMBLEM_BORDER),
     function()
         return MenuResponse.Open
-    end, {rightText=Save().borderAlpha or 0.3})
+    end, {rightText= Save().borderAlpha or 0.3})
     WoWTools_MenuMixin:SetRightText(sub)
 
 --Border 透明度
@@ -119,11 +119,11 @@ local function Init_Menu(self, root)
             Save().borderAlpha=value
             Set_All_Buttons(self)
         end,
-        name=WoWTools_DataMixin.onlyChinese and '改变透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
         minValue=0,
         maxValue=1,
-        step=0.05,
-        bit='%0.2f',
+        step=0.1,
+        bit='%0.1f',
     })
 
     sub:CreateSpacer()

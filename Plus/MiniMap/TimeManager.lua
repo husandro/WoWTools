@@ -47,8 +47,26 @@ end
 
 --秒表
 local function Init_Stopwatch_Menu(self, root)
+    local sub, sub2
+
+        if not Save().disabledClockPlus then    
+            root:CreateCheckbox(
+                WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
+            function()
+                return Save().StopwatchOnClickPause
+            end, function()
+                Save().StopwatchOnClickPause= not Save().StopwatchOnClickPause and true or nil
+                if StopwatchFrame.set_onclick_pause then
+                    StopwatchFrame:set_onclick_pause()
+                else
+                    StopwatchTitle:SetText(WoWTools_DataMixin.onlyChinese and '秒表' or STOPWATCH_TITLE)
+                end
+            end)
+            root:CreateDivider()
+        end
+
 --plus
-    local sub=root:CreateCheckbox('|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t Plus', function()
+    sub=root:CreateCheckbox('|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t Plus', function()
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
@@ -59,42 +77,17 @@ local function Init_Stopwatch_Menu(self, root)
     end)
 
 
---重新加载
-    WoWTools_MenuMixin:Reload(sub, nil)
-    sub:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_MinimapMixin.addName})
-
-    if Save().disabledClockPlus then
-        return
-    end
-
-    root:CreateDivider()
-    root:CreateCheckbox(
-        WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
+--背景, 透明度
+    WoWTools_MenuMixin:BgAplha(sub,
     function()
-        return Save().StopwatchOnClickPause
-    end, function()
-        Save().StopwatchOnClickPause= not Save().StopwatchOnClickPause and true or nil
-        if StopwatchFrame.set_onclick_pause then
-            StopwatchFrame:set_onclick_pause()
-        else
-            StopwatchTitle:SetText(WoWTools_DataMixin.onlyChinese and '秒表' or STOPWATCH_TITLE)
-        end
-    end)
-
---显示背景
-    WoWTools_MenuMixin:ShowBackground(root,
-    function()
-        return Save().isShowStopwatchBackground
-    end, function()
-        Save().isShowStopwatchBackground= not Save().isShowStopwatchBackground and true or nil
+        return Save().timeManagerBgAlpha or 0.5
+    end, function(value)
+        Save().timeManagerBgAlpha=value
         if StopwatchFrame.set_background then
             StopwatchFrame:set_background()
         end
     end, function()
-        return Save().timeManagerBgAlpha or 0.5
-    end, function(value)
-        Save().timeManagerBgAlpha=value
+        Save().timeManagerBgAlpha=0.5
         if StopwatchFrame.set_background then
             StopwatchFrame:set_background()
         end
@@ -102,7 +95,7 @@ local function Init_Stopwatch_Menu(self, root)
 
 
 --缩放
-    WoWTools_MenuMixin:Scale(self, root, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().StopwatchFrameScale
     end, function(value)
         Save().StopwatchFrameScale= value
@@ -112,7 +105,7 @@ local function Init_Stopwatch_Menu(self, root)
     end)
 
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
         return StopwatchFrame:GetFrameStrata()==data
     end, function(data)
         Save().stopwatchFrameStrata= data
@@ -123,12 +116,20 @@ local function Init_Stopwatch_Menu(self, root)
 
 
 --重置位置
-    root:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(self, root, Save().TimeManagerClockButtonPoint, function()
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().TimeManagerClockButtonPoint, function()
         if StopwatchFrame.rest_point then
             StopwatchFrame:rest_point()
         end
     end)
+
+--重新加载
+    sub:CreateDivider()
+    sub2= WoWTools_MenuMixin:Reload(sub, nil)
+    WoWTools_MenuMixin:OpenOptions(sub2, {name=WoWTools_MinimapMixin.addName})
+
+
+
+
 end
 
 
@@ -173,17 +174,8 @@ local function Init_TimeManager_Menu(self, root)
     if not Save().disabledClockPlus then
     --显示背景
         root:CreateDivider()
-        WoWTools_MenuMixin:ShowBackground(
-            root,
-        function()
-            return Save().isShowTimeManagerBackground
-        end, function()
-            Save().isShowTimeManagerBackground= not Save().isShowTimeManagerBackground and true or nil
-            if TimeManagerClockButton.set_background then
-                TimeManagerClockButton:set_background()
-            end
-        end)
 
+        
     --缩放
         WoWTools_MenuMixin:Scale(self, root, function()
             return Save().TimeManagerClockButtonScale
@@ -389,7 +381,6 @@ TimeManagerAlarmFiredTexture:SetPoint('BOTTOMRIGHT', 8, -8)
         end
     })
     function btn:set_background()
-        self.Background:SetShown(Save().isShowTimeManagerBackground)
         self.Background:SetAlpha(Save().timeManagerBgAlpha or 0.5)
     end
     btn:set_background()
@@ -592,7 +583,7 @@ local function Init_StopwatchFrame()
         end}
     )
     function StopwatchFrame:set_background()
-        self.Background:SetShown(Save().isShowStopwatchBackground)
+        self.Background:SetShown(Save().isShowStopwatchBackground or 0.5)
     end
     StopwatchFrame:set_background()
 
@@ -683,7 +674,6 @@ end
 function WoWTools_MinimapMixin:Rest_TimeManager_Point()
     Save().TimeManagerClockButtonPoint=nil
     Save().TimeManagerClockButtonScale=nil
-    Save().isShowTimeManagerBackground=nil
     if TimeManagerClockButton.rest_point then
         TimeManagerClockButton:rest_point()
         TimeManagerClockButton:set_scale()

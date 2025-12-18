@@ -228,7 +228,7 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
         ..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE),
     function()
         return MenuResponse.Open
-    end, {rightText= format('%1f', GetValue() or 1)})
+    end, {rightText= format('%.1f', tonumber(GetValue() or 1))})
     self:SetRightText(sub)
 
     local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue or function() SetValue(1) end)
@@ -281,7 +281,7 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
             ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
         function()
             return MenuResponse.Open
-        end, {rightText= format('%.1f', GetValue() or 1)})
+        end, {rightText= format('%.1f', tonumber(GetValue() or 1))})
         self:SetRightText(sub)
     end
 
@@ -289,7 +289,7 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
     sub2=WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=GetValue,
         setValue=SetValue,
-        name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY ,
+        name=WoWTools_DataMixin.onlyChinese and '背景透明度' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BACKGROUND, HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY),
         minValue=0,
         maxValue=1,
         step=0.1,
@@ -314,22 +314,22 @@ end
 --[[
 --背景, 透明度
 WoWTools_MenuMixin:BgAplha(sub,
-function()--GetValue
+function()
     return Save().bgAlpha or 0.5
-end, function(value)--SetValue
+end, function(value)
     Save().bgAlpha= value
     self:settings()
-end, function()--RestFunc
+end, function()
     Save().bgAlpha= nil
     self:settings()
-end)--onlyRoot
+end)
 ]]
 
 
 
 
 
---显示背景
+--[[显示背景
 function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue, GetAlphaValue, SetAplhaValue)
     local sub2
     local sub= root:CreateCheckbox(
@@ -356,7 +356,7 @@ function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue, GetAlphaVal
     end
     return sub, sub2
 end
---[[
+
 --显示背景
 WoWTools_MenuMixin:ShowBackground(sub,
 function()
