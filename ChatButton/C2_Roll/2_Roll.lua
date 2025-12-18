@@ -1,5 +1,6 @@
 local P_Save={
     autoClear=true,--进入战斗时,清除数据
+    saveLog=WoWTools_DataMixin.Player.husandro,
     save={},--保存数据,最多30个
 }
 
@@ -10,8 +11,9 @@ end
 local addName
 local RollButton
 local RollTab={}
+
 local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
+
 
 
 --local MaxPlayer, MinPlayer
@@ -27,13 +29,14 @@ local function findRolled(name)--查找是否ROLL过
 end
 
 local rollText= WoWTools_TextMixin:Magic(RANDOM_ROLL_RESULT)--"%s掷出%d（%d-%d）";
+
 local function setCHAT_MSG_SYSTEM(text)
     if not text then
         return
     end
     local name, roll, minText, maxText=text:match(rollText)
     roll=  roll and tonumber(roll)
-    if not (name and roll and minText=='1' and maxText=='100') then
+    if not (name and roll and minText=='1' and (maxText=='100' or maxText=='1000')) then
         return
     end
     name=name:find('%-') and name or (name..'-'..WoWTools_DataMixin.Player.Realm)
@@ -88,6 +91,10 @@ end
 
 
 local function get_Save_Max()--清除时,保存数据
+    if not Save().saveLog then
+        return
+    end
+
     local maxTab, max= nil, 0
     for _, tab in pairs(RollTab) do
         if tab.roll and tab.roll>max then
@@ -164,6 +171,19 @@ local function Init_Menu(self, root)
     end)
     WoWTools_MenuMixin:SetRightText(sub)
 
+--1000点
+    sub2=sub:CreateCheckbox(
+        '1000',
+    function()
+        return Save().is1000
+    end, function()
+        Save().is1000= not Save().is1000 and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('1-1000')
+        tooltip:AddLine('1-100')
+    end)
+--
     sub2= sub:CreateCheckbox(
         '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)),
@@ -176,7 +196,7 @@ local function Init_Menu(self, root)
     sub2:SetTooltip(function (tooltip)
         GameTooltip_SetTitle(tooltip, WoWTools_DataMixin.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..SLASH_STOPWATCH_PARAM_STOP2))
     end)
-
+--清除记录
     sub2=sub:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
@@ -185,6 +205,18 @@ local function Init_Menu(self, root)
         return MenuResponse.CloseAll
     end, {rightText= #Save().save})
     WoWTools_MenuMixin:SetRightText(sub2)
+
+--不保存
+    sub2:CreateCheckbox(
+        (WoWTools_DataMixin.onlyChinese and '保存' or SAVE)
+        .. ' 40 '
+        ..(WoWTools_DataMixin.onlyChinese and '条' or AUCTION_HOUSE_QUANTITY_LABEL),
+    function()
+        return Save().saveLog
+    end, function()
+        Save().saveLog= not Save().saveLog and true or nil
+        panel:set_event()
+    end)
 
     sub:CreateDivider()
     for index, tab in pairs(Save().save) do
@@ -340,7 +372,11 @@ local function Init()
     end
 
     function RollButton:set_OnMouseDown()
-        RandomRoll(1, 100)
+        if Save().is1000 then
+            RandomRoll(1, 1000)
+        else
+            RandomRoll(1, 100)
+        end
     end
 
     RollButton:SetupMenu(Init_Menu)
@@ -364,11 +400,16 @@ end
 
 
 
+function panel:set_event()
+    self:UnregisterEvent('PLAYER_LOGOUT')
+    if Save().saveLog then
+        self:RegisterEvent('PLAYER_LOGOUT')
+    end
+end
 
 
 
-
-
+panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -382,7 +423,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             RollButton= WoWTools_ChatMixin:CreateButton('Roll', addName)
 
             if RollButton then
-                self:RegisterEvent("PLAYER_LOGOUT")
+                self:set_event()
                 self:RegisterEvent('CHAT_MSG_SYSTEM')
                 Init()
             else
