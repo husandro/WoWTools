@@ -252,7 +252,7 @@ local function Init_Menu(self, root)
         end, {itemID=itemID})
         WoWTools_SetTooltipMixin:Set_Menu(sub3)
     end
-    
+
     sub2:CreateDivider()
     sub2:CreateButton(
         WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
@@ -267,7 +267,7 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
     WoWTools_MenuMixin:SetScrollMode(sub2)
-    
+
 
 
 --登录游戏时: 查找
@@ -300,7 +300,9 @@ local function Init_Menu(self, root)
 
 --仅当前版本物品
     if not PlayerIsTimerunning() then--时光
-        sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)), function()
+        sub:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)),
+        function()
             return Save().onlyMaxExpansion
         end, function()
             Save().onlyMaxExpansion= not Save().onlyMaxExpansion and true or nil
@@ -350,11 +352,13 @@ local function Init_Menu(self, root)
 --数量
     sub2=sub:CreateButton(
         '|A:newplayertutorial-icon-key:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
-        ..' '.. Save().numLine,
+        ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL),
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText= Save().numLine})
+    WoWTools_MenuMixin:SetRightText(sub2)
+
+
     sub2:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub2, {
         getValue=function()
@@ -375,12 +379,11 @@ local function Init_Menu(self, root)
 --外框，透明度
     sub2=sub:CreateButton(
         '|A:bag-reagent-border:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '镶边' or EMBLEM_BORDER)
-        ..' '
-        ..(Save().borderAlpha or 0),
+        ..(WoWTools_DataMixin.onlyChinese and '镶边' or EMBLEM_BORDER),
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText= Save().borderAlpha or 0})
+    WoWTools_MenuMixin:SetRightText(sub2)
 
 --Border 透明度
     sub2:CreateSpacer()
@@ -391,11 +394,11 @@ local function Init_Menu(self, root)
             Save().borderAlpha=value
             WoWTools_FoodMixin:Check_Items()
         end,
-        name=WoWTools_DataMixin.onlyChinese and '改变透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY,
         minValue=0,
         maxValue=1,
-        step=0.05,
-        bit='%0.2f',
+        step=0.1,
+        bit='%0.1f',
     })
 
 
