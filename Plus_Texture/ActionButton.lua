@@ -138,7 +138,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
 
     self:SetFrame(MainActionBar.ActionBarPageNumber.UpButton, {alpha=0.5})
     self:SetFrame(MainActionBar.ActionBarPageNumber.DownButton, {alpha=0.5})
-    WoWTools_ColorMixin:Setup(MainActionBar.ActionBarPageNumber.Text, {type='FontString'})
+    WoWTools_ColorMixin:SetLabelColor(MainActionBar.ActionBarPageNumber.Text)
 
     if MainActionBar.EndCaps then
         self:SetAlphaColor(MainActionBar.EndCaps.LeftEndCap, true, nil, nil)

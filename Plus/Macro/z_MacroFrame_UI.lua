@@ -133,12 +133,12 @@ local function Init()
 
 
 --宏数量
-    MacroFrameTab1.label= MacroFrameTab1:CreateFontString(nil, 'OVERLAY', 'GameFontWhite')--WoWTools_LabelMixin:Create(MacroFrameTab1, {color={r=1,g=1,b=1,a=1}})
+    MacroFrameTab1.label= MacroFrameTab1:CreateFontString(nil, 'OVERLAY', 'GameFontWhite')
     MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1.Text, 'TOP', 0, 8)
     MacroFrameTab1.label:SetAlpha(0.7)
 
     MacroFrameTab2.label= MacroFrameTab2:CreateFontString(nil, 'OVERLAY', 'GameFontNormal') --WoWTools_LabelMixin:Create(MacroFrameTab2)
-    WoWTools_ColorMixin:Setup(MacroFrameTab2.label)
+    WoWTools_ColorMixin:SetLabelColor(MacroFrameTab2.label)
     MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2.Text, 'TOP', 0, 8)
     MacroFrameTab2.label:SetAlpha(0.7)
     WoWTools_DataMixin:Hook(MacroFrame, 'Update', function()

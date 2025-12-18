@@ -48,13 +48,9 @@ local function Init()
     if GameLimitedMode_IsActive() then
         Label:SetTextColor(1,0.28,0)
     else
-        WoWTools_ColorMixin:Setup(Label)
+        WoWTools_ColorMixin:SetLabelColor(Label)
     end
-    --[[WoWTools_LabelMixin:Create(frame, {
-        name='WoWToolsPaperDollRealmLabel',
-        color= GameLimitedMode_IsActive() and {r=0,g=1,b=1} or {r=1,g=1,b=1},
-        mouse=true,
-    })]]
+
 
     Label:SetPoint('LEFT')
     

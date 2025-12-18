@@ -68,7 +68,7 @@ local function Set_Text()
     if data.isYou then
         text= text
             ..'|n|n'
-            ..WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+            ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
             ..WoWTools_DataMixin.Icon.Player
     elseif data.name then
         local col= select(5,WoWTools_UnitMixin:GetColor(nil, nil, data.classFilename))

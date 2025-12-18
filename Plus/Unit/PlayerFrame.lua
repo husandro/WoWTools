@@ -563,7 +563,7 @@ end
     end
     WoWTools_DataMixin:Hook('PlayerFrame_UpdateGroupIndicator', set_grouptext)
     set_grouptext()
-    WoWTools_ColorMixin:Setup(PlayerFrameGroupIndicatorText)
+    WoWTools_ColorMixin:SetLabelColor(PlayerFrameGroupIndicatorText)
 
 --隐藏，小队号，背景
     WoWTools_TextureMixin:HideFrame(PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator)
@@ -587,7 +587,7 @@ end
     if PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator then
         local label= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText
         if label then
-            WoWTools_ColorMixin:Setup(label, {type='FontString'})--设置颜色
+            WoWTools_ColorMixin:SetLabelColor(label)--设置颜色
             label:ClearAllPoints()
             label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
         end

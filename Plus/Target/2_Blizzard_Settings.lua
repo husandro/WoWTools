@@ -459,9 +459,9 @@ local function Init_Options()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         if WoWTools_DataMixin.onlyChinese then
-            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and WoWTools_TextMixin:SetColor('怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'))
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and WoWTools_ColorMixin:SetStringColor('怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'))
         else
-            GameTooltip:AddLine(WoWTools_TextMixin:SetColor(
+            GameTooltip:AddLine(WoWTools_ColorMixin:SetStringColor(
                 format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)
                 ..'('..YOU..')|r |cnGREEN_FONT_COLOR:'
                 ..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)
@@ -530,8 +530,8 @@ local function Init_Options()
     unitIsMeCheck.Text:SetText(
         '3) '
         ..(
-            WoWTools_DataMixin.onlyChinese and '目标是'..WoWTools_TextMixin:SetColor('你')
-            or ('Target is '..WoWTools_TextMixin:SetColor('You'))
+            WoWTools_DataMixin.onlyChinese and '目标是'..WoWTools_ColorMixin:SetStringColor('你')
+            or ('Target is '..WoWTools_ColorMixin:SetStringColor('You'))
         )
     )
     unitIsMeCheck:SetPoint('TOP', sel2, 'BOTTOM', 0, -24)

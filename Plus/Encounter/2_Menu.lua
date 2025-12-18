@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(
         format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
             (WoWTools_UnitMixin:GetClassIcon(nil, nil, self.classFile) or '')
-            ..WoWTools_TextMixin:SetColor(
+            ..WoWTools_ColorMixin:SetStringColor(
                 WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.ClassName_CN[WoWTools_DataMixin.Player.Class] or UnitClass('player')
             )
         ),

@@ -223,7 +223,7 @@ local function Init()--设置标记, 框架
                 GameTooltip:AddLine(
                     WoWTools_DataMixin.Icon.right
                     ..WoWTools_DataMixin.Icon.Player
-                    ..WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+                    ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
                     1,1,1
                 )
             else
@@ -250,7 +250,7 @@ local function Init()--设置标记, 框架
                 GameTooltip:AddLine(
                     WoWTools_DataMixin.Icon.right
                     ..WoWTools_DataMixin.Icon.Player
-                    ..WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                    ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                     ..(
                         (type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or ''
                     )
@@ -639,7 +639,7 @@ local function Init()--设置标记, 框架
                 GameTooltip:AddLine(
                     WoWTools_DataMixin.Icon.right
                     ..WoWTools_DataMixin.Icon.Player
-                    ..WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                    ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                 )
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddLine(MicroButtonTooltipText('Alt+'..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), 'RAIDTARGETNONE'))

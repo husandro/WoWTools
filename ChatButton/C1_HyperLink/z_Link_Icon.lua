@@ -67,7 +67,7 @@ local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local server= name:match('%-(.+)')
     if name==WoWTools_DataMixin.Player.Name_Realm or name==UnitName('player') then
         return '[|A:auctionhouse-icon-favorite:0:0|a'
-            ..WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+            ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
             ..']'
     else
         local text= WoWTools_UnitMixin:GetPlayerInfo(nil, nil, name)
@@ -611,7 +611,7 @@ local function New_AddMessage(self, s, ...)
             local unitName= s:match(LOOT_ITEM)--	%s获得了战利品：%s。
             if unitName then
                 if unitName==UnitName('player') or unitName==YOU then
-                    s=s:gsub(unitName, '[|A:auctionhouse-icon-favorite:0:0|a'..WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..']')
+                    s=s:gsub(unitName, '[|A:auctionhouse-icon-favorite:0:0|a'..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..']')
                 else
                     s=s:gsub(WoWTools_TextMixin:Magic(unitName), WoWTools_UnitMixin:GetLink(nil, nil, unitName, false))
                 end

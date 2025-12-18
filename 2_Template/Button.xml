@@ -149,7 +149,7 @@
                 self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
                 WoWTools_TextureMixin:SetAlphaColor(self:GetNormalTexture(), nil, nil, 1)
                 WoWTools_TextureMixin:SetAlphaColor(self:GetPushedTexture(), nil, nil, 1)
-                WoWTools_ColorMixin:Setup(self.Text, {type='FontString'})
+                WoWTools_ColorMixin:SetLabelColor(self.Text)
             </OnLoad>
             <OnLeave function="WoWToolsButton_OnLeave"/>
             <OnEnter function="WoWToolsButton_OnEnter"/>

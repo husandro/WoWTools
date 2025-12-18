@@ -172,11 +172,7 @@ end
 local function Init()
 
     local QuestButton= CreateFrame('Button', 'WoWToolsGossipQuestButton', _G['WoWToolsGossipButton'], 'WoWToolsButtonTemplate')
-    --[[WoWTools_ButtonMixin:Cbtn(_G['WoWToolsGossipButton'], {
-        size=22,
-        name='WoWTools_GossipQuestButton',
-        icon='hide',
-    })]]
+
     WoWTools_GossipMixin.QuestButton= QuestButton
 
     QuestButton.texture= QuestButton:CreateTexture(nil, 'BORDER')
@@ -185,8 +181,8 @@ local function Init()
 
     QuestButton.Text= QuestButton:CreateFontString(nil, 'BORDER', 'GameFontNormalSmall2')
     QuestButton.Text:SetJustifyH('RIGHT')
-    WoWTools_ColorMixin:Setup(QuestButton.Text, {type='FontString'})
-    --WoWTools_LabelMixin:Create(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
+    WoWTools_ColorMixin:SetLabelColor(QuestButton.Text)
+
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
 
 --Bg

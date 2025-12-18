@@ -104,7 +104,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     then
         return WoWTools_DataMixin.Icon.Player
             ..(
-                (reName or reLink) and WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME) or ''
+                (reName or reLink) and WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME) or ''
             )..'|A:auctionhouse-icon-favorite:0:0|a'
     end
 
@@ -250,7 +250,7 @@ end
 function WoWTools_UnitMixin:GetLink(unit, guid, name, onlyLink) --玩家超链接
     guid= guid or self:GetGUID(unit, name)
     if guid==WoWTools_DataMixin.Player.GUID then--自已
-        return (onlyLink and '' or WoWTools_DataMixin.Icon.Player)..'|Hplayer:'..WoWTools_DataMixin.Player.Name_Realm..'|h['..WoWTools_TextMixin:SetColor(COMBATLOG_FILTER_STRING_ME)..']|h'
+        return (onlyLink and '' or WoWTools_DataMixin.Icon.Player)..'|Hplayer:'..WoWTools_DataMixin.Player.Name_Realm..'|h['..WoWTools_ColorMixin:SetStringColor(COMBATLOG_FILTER_STRING_ME)..']|h'
     end
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)

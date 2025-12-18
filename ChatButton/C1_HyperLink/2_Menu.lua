@@ -94,7 +94,7 @@ local function Init_Menu(self, root)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo('player', nil, nil, {reLink=true}), WoWTools_TextMixin:GetEnabeleDisable(true))
         tooltip:AddLine(' ')
-        tooltip:AddDoubleLine(WoWTools_TextMixin:SetColor(UnitName('player')), WoWTools_TextMixin:GetEnabeleDisable(false))
+        tooltip:AddDoubleLine(WoWTools_ColorMixin:SetStringColor(UnitName('player')), WoWTools_TextMixin:GetEnabeleDisable(false))
     end)
 
 

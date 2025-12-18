@@ -364,7 +364,7 @@ local function Init_TimeManager()
         if TimeManagerAlarmEnabledButton:GetChecked() then
             TimeManagerClockTicker:SetTextColor(0,1,0,1)
         else
-            WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+            WoWTools_ColorMixin:SetLabelColor(TimeManagerClockTicker)--设置颜色
         end
     end
     set_textcolor()
@@ -527,10 +527,10 @@ local function Init_StopwatchFrame()
         StopwatchTickerSecond:SetTextColor(0,1,0,1)
     end)
     WoWTools_DataMixin:Hook('Stopwatch_Play', function()
-        StopwatchTitle:SetText(WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '开始' or START))
-        WoWTools_ColorMixin:Setup(StopwatchTickerHour, {type='FontString'})
-        WoWTools_ColorMixin:Setup(StopwatchTickerMinute, {type='FontString'})
-        WoWTools_ColorMixin:Setup(StopwatchTickerSecond, {type='FontString'})
+        StopwatchTitle:SetText(WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '开始' or START))
+        WoWTools_ColorMixin:SetLabelColor(StopwatchTickerHour)
+        WoWTools_ColorMixin:SetLabelColor(StopwatchTickerMinute)
+        WoWTools_ColorMixin:SetLabelColor(StopwatchTickerSecond)
     end)
     WoWTools_DataMixin:Hook('Stopwatch_Clear', function()
         StopwatchTitle:SetText((WoWTools_DataMixin.onlyChinese and '重置' or RESET))

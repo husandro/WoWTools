@@ -111,7 +111,7 @@ local function Init()
 
         if winInfo and notGreed then--修改，名字
             if winInfo.isSelf then
-                btn.WinningRollInfo.WinningRoll:SetText(WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
+                btn.WinningRollInfo.WinningRoll:SetText(WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
             elseif winInfo.playerGUID then
                 local name= WoWTools_UnitMixin:GetPlayerInfo(nil, winInfo.playerGUID, nil, {reName=true})
                 if name and name~='' then

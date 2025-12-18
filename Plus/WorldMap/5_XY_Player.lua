@@ -74,7 +74,7 @@ local function Init()
 --Text
     btn.Text= btn:CreateFontString(nil, 'ARTWORK', 'ChatFontNormal')
     btn.Text:SetShadowOffset(1, -1)
-    WoWTools_ColorMixin:Setup(btn.Text, {type='FontString'})
+    WoWTools_ColorMixin:SetLabelColor(btn.Text)
 
 --Background
     WoWTools_TextureMixin:CreateBG(btn, {--isColor=true

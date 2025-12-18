@@ -148,7 +148,7 @@ local function Init_Options()--设置 Frame
 
             --位数，bit
             local sliderBit=WoWTools_SliderMixin:CSlider(Frame, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
-                text= WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '位数' or 'bit'),
+                text= WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '位数' or 'bit'),
                 func=function(self, value)
                     value= math.floor(value)
                     self:SetValue(value)

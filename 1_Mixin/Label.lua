@@ -23,6 +23,8 @@ CreateFontString(nil, 'ARTWORK', 'GameFontDisableSmall')
 
 
 
+
+
 function WoWTools_LabelMixin:Create(frame, tab)
     IndexLabel= IndexLabel+1
 
@@ -73,7 +75,8 @@ function WoWTools_LabelMixin:Create(frame, tab)
     --end
     if color~=false then
         if color==true then--颜色
-            WoWTools_ColorMixin:Setup(font, {type='FontString', alpha=alpha})
+            WoWTools_ColorMixin:SetLabelColor(font)
+
         elseif type(color)=='table' then
             font:SetTextColor(color.r or 1, color.g or 1, color.b or 1, color.a or alpha)
         else

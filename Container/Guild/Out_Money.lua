@@ -69,7 +69,7 @@ local function Out_Text(num)
     if money then
        text= ' '..WoWTools_DataMixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
     end
-    return WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)
+    return WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)
         ..text
 end
 
@@ -117,7 +117,7 @@ local function Save_Tooltip(tooltip, num)
     if bag>=money then
         tooltip:AddLine(
             WoWTools_DataMixin.Icon.Player
-            ..WoWTools_TextMixin:SetColor(C_CurrencyInfo.GetCoinTextureString(bag-money))
+            ..WoWTools_ColorMixin:SetStringColor(C_CurrencyInfo.GetCoinTextureString(bag-money))
         )
     else
         tooltip:AddLine(
@@ -244,7 +244,7 @@ local function Init_Menu(self, root)
 
 --全部提取
     sub=root:CreateButton(
-        WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '全部提取' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, DEPOSIT)),
+        WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '全部提取' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, DEPOSIT)),
     function()
         Out_Money(0)
         return MenuResponse.Open

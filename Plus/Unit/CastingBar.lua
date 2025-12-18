@@ -113,8 +113,8 @@ local function SetupTimer(frame)
             activeTimer.valueText=WoWTools_LabelMixin:Create(activeTimer, {justifyH='RIGHT'})
             activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
 
-            WoWTools_ColorMixin:Setup(activeTimer.valueText, {type='FontString'})--设置颜色
-            WoWTools_ColorMixin:Setup(activeTimer.Text, {type='FontString'})--设置颜色
+            WoWTools_ColorMixin:SetLabelColor(activeTimer.valueText)--设置颜色
+            WoWTools_ColorMixin:SetLabelColor(activeTimer.Text)--设置颜色
 
             WoWTools_DataMixin:Hook(activeTimer, 'UpdateStatusBarValue', function(self)
                 self.valueText:SetText(format('%i', self.StatusBar:GetValue()))

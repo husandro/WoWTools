@@ -3,6 +3,19 @@
 WoWTools_ColorMixin={}
 
 
+function WoWTools_ColorMixin:SetLabelColor(lable)
+    if lable and lable.SetTextColor then
+        lable:SetTextColor(PlayerUtil.GetClassColor():GetRGB())
+    end
+end
+
+function WoWTools_ColorMixin:SetStringColor(text)
+    if text then
+        return PlayerUtil.GetClassColor():WrapTextInColorCode(text)
+    else
+        return ''
+    end
+end
 
 
 
@@ -12,7 +25,6 @@ local function set_Frame_Color(frame, r, g, b, setA, hex)
         if Type=='FontString' then
             frame:SetTextColor(r, g, b,setA)
         elseif Type=='Texture' then
-            --frame:SetVertexColor(r, g, b, setA)
             frame:SetColorTexture(r, g, b,setA)
         end
         frame.r, frame.g, frame.b, frame.a, frame.hex= r, g, b, setA, '|c'..hex
@@ -142,7 +154,7 @@ end
 
 
 
---设置颜色
+--[[设置颜色
 function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
     if not object then
         return
@@ -187,7 +199,7 @@ function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
         local hex= tab.color and tab.color.hex or PlayerUtil.GetClassColor():GenerateHexColorMarkup()
         return hex..object
     end
-end
+end]]
 
 
 

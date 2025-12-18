@@ -46,7 +46,7 @@ local function Save_Tooltip(tooltip, num)
     local money= Save_Value(num) or 0
     tooltip:AddLine(
         WoWTools_DataMixin.Icon.Player
-        ..WoWTools_TextMixin:SetColor(C_CurrencyInfo.GetCoinTextureString(GetMoney()- money))
+        ..WoWTools_ColorMixin:SetStringColor(C_CurrencyInfo.GetCoinTextureString(GetMoney()- money))
     )
 
     tooltip:AddLine(
@@ -117,7 +117,7 @@ local function Out_Text(num)
     if money then
        text= ' '..WoWTools_DataMixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
     end
-    return WoWTools_TextMixin:SetColor(
+    return WoWTools_ColorMixin:SetStringColor(
         (WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..text
     )
 end
@@ -126,7 +126,7 @@ local function Out_Tooltip(tooltip, num)
     local money= Out_Value(num) or 0
     tooltip:AddLine(
         WoWTools_DataMixin.Icon.Player
-        ..WoWTools_TextMixin:SetColor(C_CurrencyInfo.GetCoinTextureString(GetMoney()+ money))
+        ..WoWTools_ColorMixin:SetStringColor(C_CurrencyInfo.GetCoinTextureString(GetMoney()+ money))
     )
 
     tooltip:AddLine(
@@ -158,7 +158,7 @@ local function Out_Money(num)
     print(
         WoWTools_BankMixin.addName..WoWTools_DataMixin.Icon.icon2,
         WoWTools_DataMixin.Icon.Player
-        ..WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '自动填充' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, WITHDRAW)),
+        ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '自动填充' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, WITHDRAW)),
         C_CurrencyInfo.GetCoinTextureString(money)
     )
 
@@ -389,7 +389,7 @@ local function Init_Out_Menu(self, root)
 --自动提取
     local out= Save().autoOutMoney or 500
     sub=autoSub:CreateCheckbox(
-        WoWTools_TextMixin:SetColor(
+        WoWTools_ColorMixin:SetStringColor(
             WoWTools_DataMixin.onlyChinese and '自动提取' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, WITHDRAW)
         ),
     function()
@@ -444,7 +444,7 @@ local function Init_Out_Menu(self, root)
 
 --全部提取
     sub=root:CreateButton(
-        WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '全部提取' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, DEPOSIT)),
+        WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '全部提取' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, DEPOSIT)),
     function()
         C_Bank.WithdrawMoney(Enum.BankType.Account, C_Bank.FetchDepositedMoney(Enum.BankType.Account) or 0)
         return MenuResponse.Open
@@ -454,7 +454,7 @@ local function Init_Out_Menu(self, root)
         local bag= GetMoney()
         tooltip:AddLine(
             WoWTools_DataMixin.Icon.Player
-            ..WoWTools_TextMixin:SetColor(
+            ..WoWTools_ColorMixin:SetStringColor(
                 C_CurrencyInfo.GetCoinTextureString(bag+bank)
             )
         )
@@ -662,7 +662,7 @@ local function Init()
 
         GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.Player
-            ..WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)
+            ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)
             ..': '..WoWTools_TextMixin:GetYesNo(Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID])
         )
         GameTooltip:AddLine(' ')
@@ -678,7 +678,7 @@ local function Init()
         )
 
         GameTooltip:AddLine(
-            WoWTools_TextMixin:SetColor(WoWTools_DataMixin.onlyChinese and '填充' or WITHDRAW)
+            WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '填充' or WITHDRAW)
             ..' |cnGREEN_FONT_COLOR:>|r '
             ..(Save().autoOutMoney
                 and WoWTools_DataMixin:MK(Save().autoOutMoney, 3)..'|A:Coin-Gold:0:0|a'
@@ -711,7 +711,7 @@ local function Init()
         self.texture:SetAlpha((save or out) and 1 or 0.5)
         self.texture:SetDesaturated(not (save and out) and true or false)
         self.Text:SetText(save and '|cff00ccff'..WoWTools_DataMixin:MK(save, 3) or '')
-        self.Text2:SetText(WoWTools_TextMixin:SetColor(WoWTools_DataMixin:MK(out, 3)))
+        self.Text2:SetText(WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin:MK(out, 3)))
     end
 
     WoWTools_DataMixin:Hook(BankPanel.MoneyFrame.DepositButton, 'Refresh', function()
