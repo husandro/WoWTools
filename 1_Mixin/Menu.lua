@@ -228,7 +228,7 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
         ..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE),
     function()
         return MenuResponse.Open
-    end, {rightText=GetValue()})
+    end, {rightText= format('%1f', GetValue() or 1)})
     self:SetRightText(sub)
 
     local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue or function() SetValue(1) end)
@@ -281,7 +281,7 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
             ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
         function()
             return MenuResponse.Open
-        end, {rightText=GetValue()})
+        end, {rightText= format('%.1f', GetValue() or 1)})
         self:SetRightText(sub)
     end
 
@@ -333,11 +333,13 @@ end)--onlyRoot
 function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue, GetAlphaValue, SetAplhaValue)
     local sub2
     local sub= root:CreateCheckbox(
-        '|A:MonkUI-LightOrb:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND),
+        '|A:MonkUI-LightOrb:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND),
         GetValue,
-        SetValue
+        SetValue,
+        {rightText=format('%.1f', GetAlphaValue() or 1)}
     )
+    self:SetRightText(sub)
+
     if GetAlphaValue and SetAplhaValue then
 --透明度
         sub:CreateSpacer()

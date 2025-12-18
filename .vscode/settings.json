@@ -2748,7 +2748,8 @@
         "Add",
         "UIDropDownMenu_CreateInfo",
         "AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM",
-        "CHATCONFIG_SELECTED_FILTER"
+        "CHATCONFIG_SELECTED_FILTER",
+        "CHANNELPULLOUT_OPACITY_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

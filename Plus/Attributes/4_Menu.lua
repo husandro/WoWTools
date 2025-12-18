@@ -78,7 +78,7 @@ local function Init_Menu(self, root)
     sub=WoWTools_AttributesMixin:Open_Options(root)
 
 
---显示背景
+--[[显示背景
     WoWTools_MenuMixin:ShowBackground(sub,
     function()
         return Save().showBG
@@ -90,7 +90,19 @@ local function Init_Menu(self, root)
     end, function(value)
         Save().bgAlpha=value
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-    end)
+    end)]]
+
+--背景, 透明度
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()--GetValue
+        return Save().bgAlpha or 0.5
+    end, function(value)--SetValue
+        Save().bgAlpha=value
+        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
+    end, function()--RestFunc
+        Save().bgAlpha= 0.5
+        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
+    end)--onlyRoot
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(self, sub, function(data)

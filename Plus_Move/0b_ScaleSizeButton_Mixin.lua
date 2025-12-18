@@ -493,16 +493,17 @@ local function Init_Menu(self, root)
 --改变透明度
     if self.set_move_event then
         sub=root:CreateCheckbox(
-            (WoWTools_DataMixin.onlyChinese and '改变透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY)..' '..(Save().alpha or 1),
+            (WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANNELPULLOUT_OPACITY_LABEL),
         function()
             return not Save().disabledAlpha[name]
         end, function()
             Save().disabledAlpha[name]= not Save().disabledAlpha[name] and true or nil
             self:set_move_event()
-        end)
+        end, {rightText= Save().alpha or 1})
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移动时' or CAMERA_SMARTER)
         end)
+        WoWTools_MenuMixin:SetRightText(sub)
 
 --设置
         WoWTools_MenuMixin:OpenOptions(sub, {

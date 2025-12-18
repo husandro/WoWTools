@@ -660,23 +660,17 @@ local function set_Frame(frame, rest)--设置, frame
         WoWTools_AttributesMixin:Set_Shadow(frame.text)--设置，字体阴影
 
 --背景
-        if Save().showBG then
-            frame.bg:ClearAllPoints()
-            if Save().toLeft then
-                frame.bg:SetPoint('TOPRIGHT', frame.label, 1, 1)
-                frame.bg:SetPoint('BOTTOM', frame.label, 0, -1)
-                frame.bg:SetPoint('LEFT', frame.text, -1, 0)
-            else
-                frame.bg:SetPoint('TOPLEFT', frame.label, -1, 1)
-                frame.bg:SetPoint('BOTTOM', frame.label, 0, -1)
-                frame.bg:SetPoint('RIGHT', frame.text, 1, 0)
-            end
-            frame.bg:SetShown(true)
-            frame.bg:SetAlpha(Save().bgAlpha or 0.5)
+        frame.bg:ClearAllPoints()
+        if Save().toLeft then
+            frame.bg:SetPoint('TOPRIGHT', frame.label, 1, 1)
+            frame.bg:SetPoint('BOTTOM', frame.label, 0, -1)
+            frame.bg:SetPoint('LEFT', frame.text, -1, 0)
         else
-            frame.bg:SetShown(false)
+            frame.bg:SetPoint('TOPLEFT', frame.label, -1, 1)
+            frame.bg:SetPoint('BOTTOM', frame.label, 0, -1)
+            frame.bg:SetPoint('RIGHT', frame.text, 1, 0)
         end
-
+        frame.bg:SetAlpha(Save().bgAlpha or 0.5)
 
         if frame.isBar then
             local value
@@ -886,8 +880,6 @@ local function Frame_Init(rest)
 
                 frame.bg= frame:CreateTexture(nil, 'BACKGROUND')
                 frame.bg:SetColorTexture(0,0,0)
-                --frame.bg:SetAlpha(0.5)
-                --frame.bg:SetAtlas('ChallengeMode-guild-background')
 
                 frame.bar= CreateFrame('StatusBar', nil, frame)
                 frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
