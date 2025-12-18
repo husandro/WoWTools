@@ -14,17 +14,22 @@ local function OnColorSelect(_, r, g, b)
         return
     end
 
-    local a= ColorPickerFrame.hasOpacity and ColorPickerFrame.Content.ColorPicker:GetColorAlpha() or 1
+    --local a= ColorPickerFrame.hasOpacity and ColorPickerFrame.Content.ColorPicker:GetColorAlpha() or 1
     for _, name in pairs(EditBoxs) do
-        local frame= _G['WoWToolsColor'..name..'EditBox']
-        if frame:IsShown() then
-            if not frame:HasFocus() then
-                local text= frame.get_text(r, g, b, a)
+        local edit= _G['WoWToolsColor'..name..'EditBox']
+        if edit:IsShown() then
+            if not edit:HasFocus() then
+                local text= edit.get_text(r, g, b)
                 if text then
-                    frame:SetText(text)
+                    edit:SetText(text)
                 end
             end
-            frame.Instructions:SetTextColor(r,g,b)
+            edit.Instructions:SetTextColor(r,g,b)
+            edit.Middle:SetVertexColor(r,g,b)
+            edit.Left:SetVertexColor(r,g,b)
+            edit.Right:SetVertexColor(r,g,b)
+            edit.searchIcon:SetVertexColor(r,g,b)
+            edit.clearButton.texture:SetVertexColor(r,g,b)
         end
     end
 end
@@ -262,7 +267,12 @@ local function Create_EditBox(index, tab)
         self.clearButton:SetShown(self:HasText())
     end)
     function frame:Setup()
-        Set_Color(self.get_value(self:GetText()))
+        local text= self:GetText()
+        Set_Color(self.get_value(text))
+        if not self:HasFocus() and text== self.name and self.name then
+            self:SetText(self.name)
+        end
+        self.name=nil
         self.clearButton:SetShown(self:HasText())
     end
 

@@ -36,7 +36,9 @@ local function Create_Texture(r,g,b,a, atlas)
 		self:SetAlpha(0.1)
 	end)
 
-	texture:SetScript('OnMouseUp', function(self) self:SetAlpha(0.7) end)
+	texture:SetScript('OnMouseUp', function(self)
+        self:SetAlpha(0.7)
+    end)
 	texture:SetScript('OnEnter', function(self)
 		local col= '|c'..WoWTools_ColorMixin:RGBtoHEX(self.r or 1, self.g or 1, self.b or 1, self.a or 1)
 		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
@@ -149,6 +151,12 @@ local function Init()
         local texture= Create_Texture(r,g,b,1)
         texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
         texture.tooltip= (WoWTools_ItemMixin.QualityText[index] or '')..'|nITEM_QUALITY' ..index.. '_DESC'
+        texture.quality= index
+
+        texture:SetScript('OnShow', function(self)
+            WoWTools_ItemMixin:GetColor(self.quality, {texture=self})
+        end)
+
         y= y- size
     end
 
@@ -231,7 +239,7 @@ local function Init()
 
 --上面
 --Color.lua
-    size, x, y, n= 16, -70, -3, 1
+    size, x, y, n= 16, -88, -3, 1
     local Y=0
     local DBColors = C_UIColor.GetColors() or {}
     table.sort(DBColors, function(a,b)
@@ -247,7 +255,7 @@ local function Init()
             if n==20 then
                 n=0
                 y=y +size
-                x=-70
+                x=-88
                 Y=Y+1
             else
                 x=x +size

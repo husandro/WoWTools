@@ -146,11 +146,11 @@ function WoWTools_TextureMixin:SetEditBox(frame, tab)
         self:SetAlphaColor(frame.Left, nil, nil, alpha)
         self:SetAlphaColor(frame.Right, nil, nil, alpha)
         self:SetAlphaColor(frame.Mid, nil, nil, alpha)
-        local alpha2= type(alpha)=='number' and alpha<0 and alpha or true
+        
         if frame.clearButton then
-            self:SetAlphaColor(frame.clearButton.texture, nil, nil, alpha2)
+            self:SetAlphaColor(frame.clearButton.texture, nil, nil, 1)
         end
-        self:SetAlphaColor(frame.searchIcon, nil, nil, alpha2)
+        self:SetAlphaColor(frame.searchIcon, nil, nil, 1)
 
     else
         self:SetFrame(frame, tab)

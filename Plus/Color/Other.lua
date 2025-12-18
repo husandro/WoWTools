@@ -29,18 +29,36 @@ local function OnColorSelect(self, r, g, b)
 --修改材质颜色
 	for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
 		if icon:IsObjectType('Texture')then
-			icon:SetVertexColor(r,g,b,a)
+			icon:SetVertexColor(r,g,b)
 		end
 	end
 	for _, icon in pairs({ColorPickerFrame.Header:GetRegions()}) do
 		if icon:IsObjectType('Texture')then
-			icon:SetVertexColor(r,g,b,a)
+			icon:SetVertexColor(r,g,b)
 		end
 	end
 	local texture= _G['WoWToolsColorPickerFrameButton']:GetNormalTexture()
 	texture:SetVertexColor(r,g,b)
 
-	ColorPickerFrame.Header.Text:SetTextColor(r,g,b,a)
+	ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
+
+	for _, btn in pairs({
+		ColorPickerFrame.Footer.OkayButton,
+		ColorPickerFrame.Footer.CancelButton,
+		ColorPickerFrame.Content.HexBox,
+	}) do
+		if btn.Left then
+			btn.Left:SetVertexColor(r,g,b)
+		end
+		if btn.Middle then
+			btn.Middle:SetVertexColor(r,g,b)
+		end
+		if btn.Right then
+			btn.Right:SetVertexColor(r,g,b)
+		end
+	end
+
+	
 end
 
 
@@ -124,7 +142,7 @@ local function Init()
 
 
 	ColorPickerFrame.Header.Text:SetShadowOffset(1, -1)
-	ColorPickerFrame.Header.Text:SetShadowColor(1,1,1)
+	ColorPickerFrame.Header.Text:SetShadowColor(0,0,0)
 end
 
 

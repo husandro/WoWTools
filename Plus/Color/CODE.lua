@@ -308,9 +308,9 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-    
+
     local sub
-    for _, name in pairs(Tab) do
+    for index, name in pairs(Tab) do
         local color = _G[name..'_CODE']
         if color and _G[name] then
             sub=root:CreateRadio (
@@ -320,14 +320,16 @@ local function Init_Menu(self, root)
                 return t==data.name or (_G[t] and _G[t].GenerateHexColorMarkup and _G[t]:GenerateHexColorMarkup()==_G[data.name]:GenerateHexColorMarkup())
             end, function(data)
                 local edit= self:GetParent()
+                edit.name= data.name..'_CODE'
                 edit:SetText(data.name..'_CODE')
                 edit:Setup()
                 return MenuResponse.Refresh
-            end, {name=name})
+            end, {name=name, rightText=index})
             sub:SetTooltip(function(tooltip, desc)
                 tooltip:AddLine(desc.data.name..'_CODE')
                 tooltip:AddDoubleLine('|c',_G[desc.data.name..'_CODE']:gsub('|c', ''), 1,1,1, 1,1,1)
             end)
+            WoWTools_MenuMixin:SetRightText(sub)
         end
     end
 
@@ -339,6 +341,7 @@ end
 local function Init(edit)
     if not edit then
         Tab={}
+        Init=function()end
         return
     end
 

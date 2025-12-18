@@ -440,6 +440,7 @@ function WoWTools_ItemMixin:GetColor(quality, tab)
     local itemID= tab.itemLink or tab.itemID or tab.itemName
     local itemLocation= tab.itemLocation
     local text= tab.text
+    local texture= tab.texture
     --local texture= tab.texture
 
     quality= quality
@@ -450,6 +451,12 @@ function WoWTools_ItemMixin:GetColor(quality, tab)
     local color= C_ColorOverrides.GetColorForQuality(quality) or C_ColorOverrides.GetColorForQuality(Enum.ItemQuality.Common)
     if text then
         return color:WrapTextInColorCode(tab.text)
+    elseif texture then
+        if texture:GetAtlas() or texture:GetTexture() then
+            texture:SetVertexColor(color:GetRGB())
+        else
+            texture:SetColorTexture(color:GetRGB())
+        end
     else
         return color.r, color.g, color.b, color:GenerateHexColorMarkup(), color, quality
     end

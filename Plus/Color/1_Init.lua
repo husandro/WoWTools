@@ -26,7 +26,7 @@ local function Show_ClorFrame()
 		return
 	end
 
-	WoWTools_ColorMixin:ShowColorFrame()
+	WoWTools_ColorMixin:ShowColorFrame(nil, nil, nil, 1)
 
 	print(
 		WoWTools_ColorMixin.addName..WoWTools_DataMixin.Icon.icon2,
@@ -105,7 +105,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				buttonText='|A:colorblind-colorwheel:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
 				buttonFunc= function()
 					
-					WoWTools_ColorMixin:ShowColorFrame()
+					WoWTools_ColorMixin:ShowColorFrame(nil, nil, nil, 1)
 				end,
 			})
 

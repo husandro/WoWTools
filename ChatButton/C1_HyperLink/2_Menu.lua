@@ -390,7 +390,7 @@ local function Init_Menu(self, root)
         if ColorPickerFrame:IsShown() then
             ColorPickerFrame:Hide()
         else
-            WoWTools_ColorMixin:ShowColorFrame()
+            WoWTools_ColorMixin:ShowColorFrame(nil, nil, nil, 1)
         end
         return MenuResponse.Open
     end)
