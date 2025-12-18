@@ -68,7 +68,7 @@ local function Init()
 --InstanceDifficulty.lua
     WoWTools_DataMixin:Hook(btn, 'Update', function(self)
         local isChallengeMode= self.ChallengeMode:IsShown()
-        local difficultyName, color, name, tip
+        local difficultyName, color, name
 
         local frame
 
@@ -92,11 +92,11 @@ local function Init()
         if difficultyName then
             name= difficultyName:match('|cff......(.-)|r') or difficultyName
             name= WoWTools_TextMixin:sub(name, 3, 7)
-            tip= difficultyName..WoWTools_DataMixin.Icon.icon2..'difficultyID|cffffffff'..difficultyID
+            --tip= difficultyName..WoWTools_DataMixin.Icon.icon2..'difficultyID|cffffffff'..difficultyID
         end
 
         if frame and frame.Background and color then
-            frame.Background:SetVertexColor(color.r, color.g, color.b)
+            frame.Background:SetVertexColor(color:GetRGB())
         end
         self.labelType:SetText(name or '')
     end)

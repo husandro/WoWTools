@@ -309,7 +309,6 @@ local function Create_instanceFrame(frame)
             local name3, color3= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID3)
             if not name3 and difficultyID3 then
                 name3= GetDifficultyInfo(difficultyID3) or difficultyID3
-                color3= {r=1,g=1,b=1}
             end
 
             local text3= (WoWTools_DataMixin.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..name3..'|r'
@@ -321,19 +320,19 @@ local function Create_instanceFrame(frame)
             end
 
             if name3 and (name3~=name2 or not displayMythic3) then
-                self.raid:SetVertexColor(color3.r, color3.g, color3.b)
+                self.raid:SetVertexColor(color3:GetRGB())
                 self.raid.tips= text3
                 self.raid.name= name3
                 self.raid.text:SetText((size3 and not displayMythic3) and size3 or '')
-                self.raid.text:SetTextColor(color3.r, color3.g, color3.b)
+                self.raid.text:SetTextColor(color3:GetRGB())
                 findRiad=true
             else
                 self.raid.text:SetText('')
             end
 
             if name2  then
-                self.dungeon:SetVertexColor(color2.r, color2.g, color2.b)
-                local text2= (WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
+                self.dungeon:SetVertexColor(color2:GetRGB())
+                local text2= (WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..name2
 
                 if not findRiad then
                     text2= text2..(text3 and '|n|n'..text3 or '')

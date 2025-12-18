@@ -123,9 +123,12 @@ local function GetInstanceData(frame, showTips)
         for i=1, n do
             local name, _, reset, difficultyID, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
             if instancename==name and (not reset or reset>0) and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 then
+
                 difficultyName= WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID) or difficultyName
+
                 local num=encounterProgress..'/'..numEncounters..'|r'
                 num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
+
                 if showTips then
                     if find then
                         GameTooltip:AddLine(' ')
