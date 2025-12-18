@@ -98,7 +98,7 @@ local function get_Save_Max()--清除时,保存数据
         end
     end
     if maxTab then
-        if #Save().save>=30 then
+        if #Save().save>=40 then
             table.remove(Save().save, 1)
         end
         table.insert(Save().save, maxTab)
@@ -149,21 +149,25 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub, sub2, icon
-    local rollNum= #RollTab
-    local saveNum= #Save().save
+    local sub, sub2
 
     root:SetScrollMode(20*44)
 
-    sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..rollNum..'|r', function()
+    sub=root:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+    function()
         setRest()--重置
         return MenuResponse.Close
-    end)
+    end, {rightText=#RollTab})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
     end)
+    WoWTools_MenuMixin:SetRightText(sub)
 
-    sub2= sub:CreateCheckbox('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)), function ()
+    sub2= sub:CreateCheckbox(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)),
+    function ()
         return Save().autoClear
     end, function ()
         Save().autoClear= not Save().autoClear and true or false
@@ -173,58 +177,107 @@ local function Init_Menu(self, root)
         GameTooltip_SetTitle(tooltip, WoWTools_DataMixin.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..SLASH_STOPWATCH_PARAM_STOP2))
     end)
 
-    if saveNum>0 then
-        sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
-            Save().save={}
-            return MenuResponse.CloseAll
+    sub2=sub:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
+    function()
+        Save().save={}
+        return MenuResponse.CloseAll
+    end, {rightText= #Save().save})
+    WoWTools_MenuMixin:SetRightText(sub2)
+
+    sub:CreateDivider()
+    for index, tab in pairs(Save().save) do
+        sub2= sub:CreateButton(
+            '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'
+            ..HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(tab.roll)
+            ..(tab.roll<10 and '  ' or (tab.roll<100 and ' ') or '')
+            ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})..' '..tab.date,
+        function(data)
+            WoWTools_ChatMixin:Chat(data.text, nil, nil)
+            return MenuResponse.Refresh
+        end, {text=tab.text, rightText=index})
+
+        sub2:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(desc.data.text)
+            GameTooltip_AddHighlightLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE))
         end)
-        sub:CreateDivider()
-        for _, tab in pairs(Save().save) do
-            sub2= sub:CreateButton(
-                '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
-                ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})..' '..tab.date,
-            function(text)
-                WoWTools_ChatMixin:Chat(text, nil, nil)
-                return MenuResponse.Refresh
-            end, tab.text)
-            sub2:SetTooltip(function(tooltip, data)
-                GameTooltip_SetTitle(tooltip, data.data)
-                GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE))
-            end)
-        end
+        WoWTools_MenuMixin:SetRightText(sub2)
+    end
 --SetScrollMod
+    WoWTools_MenuMixin:SetScrollMode(sub)
+
+
+
+--[[{
+name=name,
+roll=roll,
+date=date('%X'),
+text=text,
+guid= guid,
+faction= faction,
+}]]
+    root:CreateDivider()
+    local _tabNew={}
+    for index, tab in pairs(RollTab) do
+        local header='|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'
+                ..HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(tab.roll)
+                ..(tab.roll<10 and '  ' or (tab.roll<100 and ' ') or '')
+                ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})
+                ..' '..tab.date
+                ..(tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or '')
+
+        if not _tabNew[tab.name] then
+            _tabNew[tab.name]={
+                text=tab.text,
+                header= header,
+                index=index,
+                list={}
+            }
+        else
+            table.insert(_tabNew[tab.name].list, {
+                text=tab.text,
+                header=header,
+            })
+        end
+    end
+
+    table.sort(_tabNew, function(a, b)
+        return a.index< b.index
+    end)
+
+    for _, tab in pairs(_tabNew) do
+        sub=root:CreateButton(
+            tab.header,
+        function(data)
+            WoWTools_ChatMixin:Chat(data.text, nil, nil)
+            return MenuResponse.Open
+        end, {text=tab.text, rightText=#tab.list})
+        sub:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(desc.data.text)
+            GameTooltip_AddHighlightLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE))
+        end)
+        WoWTools_MenuMixin:SetRightText(sub)
+
+        for i, list in pairs(tab.list) do
+            sub2=sub:CreateButton(
+                list.header,
+            function(data)
+                WoWTools_ChatMixin:Chat(data.text, nil, nil)
+                return MenuResponse.Open
+            end, {text=list.text, rightText=i})
+            sub2:SetTooltip(function(tooltip, desc)
+                tooltip:AddLine(desc.data.text)
+                GameTooltip_AddHighlightLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE))
+            end)
+            WoWTools_MenuMixin:SetRightText(sub2)
+        end
         WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
+    WoWTools_MenuMixin:SetScrollMode(root)
 
-
-    if rollNum>0 then
-        root:CreateDivider()
-        local tabNew={}
-        for _, tab in pairs(RollTab) do
-            if not tabNew[tab.name] then
-                --col=tabNew[tab.name] and '|cff626262' or ''
-                icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
-                sub=root:CreateButton(
-                    '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
-                    ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})
-                    ..' '..tab.date..icon,
-                function(text)
-                    WoWTools_ChatMixin:Chat(text, nil, nil)
-                    return MenuResponse.Refresh
-                end, tab.text)
-                sub:SetTooltip(function(tooltip, data)
-                    GameTooltip_SetTitle(tooltip, data.data)
-                    GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE))
-                end)
-                tabNew[tab.name]=true
-            end
-        end
-        WoWTools_MenuMixin:SetScrollMode(root)
-    end
-
-
-
+    _tabNew= nil
 end
 
 
@@ -268,17 +321,20 @@ local function Init()
         GameTooltip:AddLine(addName..WoWTools_DataMixin.Icon.left..'/roll')
         if #RollTab>0 then
             GameTooltip:AddLine(' ')
-            local tabNew={}
+            local _tabNew={}
             for _, tab in pairs(RollTab) do
-                local col=tabNew[tab.name] and '|cff626262' or ''
-                local icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
-                GameTooltip:AddLine(
-                    col
-                    ..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
-                    ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})
-                    ..' '..tab.date..icon)
-                tabNew[tab.name]=true
+                if not _tabNew[tab.name] then
+                    local icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
+                    GameTooltip:AddLine(
+                        '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'
+                        ..(tab.roll<10 and '  ' or (tab.roll<100 and ' ') or '')
+                        ..HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(tab.roll)
+                        ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})
+                        ..' '..tab.date..icon)
+                    _tabNew[tab.name]=true
+                end
             end
+            _tabNew= nil
         end
         GameTooltip:Show()
     end

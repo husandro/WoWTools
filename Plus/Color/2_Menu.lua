@@ -30,22 +30,21 @@ local function Init_Menu(self, root)
 		self:Settings()
 	end)
 
-	local num= #Save().logColor
+--清除记录
 	sub=root:CreateButton(
 		'|A:bags-button-autosort-up:0:0|a'
-		..(num==0 and '|cff828282' or '')
-		..'#'..num
 		..(WoWTools_DataMixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
 	function()
 		Save().logColor={}
 		WoWTools_ColorMixin:Set_SaveLogList()
 		return MenuResponse.Close
-	end)
+	end, {rightText= #Save().logColor})
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(
 			format((WoWTools_DataMixin.onlyChinese and '最多保存%d个颜色' or 'Save up to %d colors'), Save().logMaxColor or 10)
 		)
 	end)
+	WoWTools_MenuMixin:SetRightText(sub)
 
 --设置，最多保存30个颜色
 	sub:CreateSpacer()
