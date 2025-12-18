@@ -463,34 +463,6 @@ local function Init_Menu(self, root)
 
 --删除字符
     WoWTools_OtherMixin:OpenOption(root, '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING))
-    --[[root:CreateCheckbox(
-        '|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING),
-    function()
-        return not Save().notDELETE
-    end, function()
-        Save().notDELETE= not Save().notDELETE and true or nil
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(format(
-            WoWTools_DataMixin.onlyChinese and '你真的要摧毁%s吗？|n|n请在输入框中输入 DELETE 以确认。' or DELETE_GOOD_ITEM,
-            WoWTools_DataMixin.onlyChinese and '物品' or AUCTION_HOUSE_HEADER_ITEM,
-            DELETE_ITEM_CONFIRM_STRING
-        ))
-        tooltip:AddDoubleLine('-', '-', 0,1,0, 0,1,0)
-        tooltip:AddLine(format(
-            WoWTools_DataMixin.onlyChinese and '确定要摧毁%s吗？\n|cffff2020摧毁该物品也将同时放弃相关任务。|r\n\n请在输入框中输入\"DELETE\"以确认。' or DELETE_GOOD_QUEST_ITEM,
-            WoWTools_DataMixin.onlyChinese and '任务物品' or ITEM_BIND_QUEST,
-            DELETE_ITEM_CONFIRM_STRING
-        ))
-    end)
-显示背景
-    WoWTools_MenuMixin:BgAplha(root,
-    function()
-        return Save().bgAlpha or 0.5
-    end, function(value)
-        Save().bgAlpha= value
-        Set_ShowBackground()
-    end)]]
 
 --打开选项界面
     root:CreateDivider()
@@ -527,8 +499,6 @@ local function Init()
     btn:SetPoint('RIGHT', MerchantFrameCloseButton, 'LEFT', -2, 0)
     btn:SetupMenu(Init_Menu)
 
---显示背景
-    --Set_ShowBackground()
 
     Init=function()end
 end

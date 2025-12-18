@@ -4,9 +4,8 @@ ScaleRoot
 Scale(
 
 BgAplha
-ShowBackground(root, GetValue, SetValue)
+
 FrameStrata(root, GetValue, SetValue)
-Color(root,OnClick, ColorInfo)
 RestPoint(root, point, SetValue)
 RestData(root, name, SetValue)
 Reload(root, isControlKeyDown)
@@ -138,41 +137,8 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
         sub:SetTooltip(Get_tooltip())
     end
 
-    --[[sub:SetTooltip(function(tooltip, desc)
-        local t= type(desc.data.tooltip)
-        if t=='string' then
-            tooltip:AddLine(desc.data.tooltip)
-        elseif t=='function' then
-            desc.data.tooltip(tooltip)
-        elseif t=='table' then
-            for text in pairs(desc.data.tooltip) do
-                tooltip:AddLine(text)
-            end
-        end
-    end)]]
-
     return sub
 end
---[[
-sub:CreateSpacer()
-WoWTools_MenuMixin:CreateSlider(sub, {
-    getValue=function()
-        return Save().mountShowTime
-    end, setValue=function(value)
-        Save().mountShowTime=value
-    end,
-    name=WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
-    minValue=1,
-    maxValue=10,
-    step=1,
-    bit='%.1f',
-    tooltip=function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval')
-    end
-   
-})
-sub:CreateSpacer()
-]]
 
 
 
@@ -328,41 +294,6 @@ end)
 
 
 
-
---[[显示背景
-function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue, GetAlphaValue, SetAplhaValue)
-    local sub2
-    local sub= root:CreateCheckbox(
-        '|A:MonkUI-LightOrb:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND),
-        GetValue,
-        SetValue,
-        {rightText=format('%.1f', GetAlphaValue() or 1)}
-    )
-    self:SetRightText(sub)
-
-    if GetAlphaValue and SetAplhaValue then
---透明度
-        sub:CreateSpacer()
-        sub2=WoWTools_MenuMixin:CreateSlider(sub, {
-            getValue=GetAlphaValue,
-            setValue=SetAplhaValue,
-            name=WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY ,
-            minValue=0,
-            maxValue=1,
-            step=0.1,
-            bit='%.1f',
-        })
-        sub:CreateSpacer()
-    end
-    return sub, sub2
-end
-
---显示背景
-WoWTools_MenuMixin:ShowBackground(sub,
-function()
-end, function()
-end)
-]]
 
 
 

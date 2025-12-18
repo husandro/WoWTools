@@ -93,14 +93,15 @@ local function Init_Panel()
     WoWTools_PanelMixin:Header(WoWTools_ToolsMixin.Layout, WoWTools_DataMixin.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
  
 do
+    local index=0
     for _, data in pairs(WoWTools_ToolsMixin:Get_AddList()) do
         initializer=nil
         if not data.isPlayerSetupOptions then--用户，自定义设置，选项，法师
-
+            index= index+1
             if data.isMoveButton then--食物
                 initializer= WoWTools_PanelMixin:OnlyCheck({
                     category= WoWTools_ToolsMixin.Category,
-                    name= data.tooltip,
+                    name= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(index..') ')..data.tooltip,
                     tooltip= data.name,
                     GetValue= function() return not Save().disabledADD[data.name] end,
                     SetValue= function()
@@ -113,7 +114,7 @@ do
                 initializer= WoWTools_PanelMixin:CheckMenu({
                     category=WoWTools_ToolsMixin.Category,
                     layout=WoWTools_ToolsMixin.Layout,
-                    name=data.tooltip,
+                    name= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(index..') ')..data.tooltip,
                     tooltip=data.name,
                     GetValue= function() return not Save().disabledADD[data.name] end,
                     SetValue= function()

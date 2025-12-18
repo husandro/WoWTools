@@ -265,10 +265,11 @@ WoWTools_PanelMixin:CheckMenu({
     })
 
 
-
+    local index=0
     local function Add_Options(name)
+
         WoWTools_PanelMixin:OnlyCheck({
-            name= name:gsub('Blizzard_', ''),
+            name= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(index..') ')..name:gsub('Blizzard_', ''),
             tooltip= tooltip,
             category= WoWTools_TextureMixin.Category,
             Value= not Save().no[name],
@@ -281,11 +282,14 @@ WoWTools_PanelMixin:CheckMenu({
 
     WoWTools_PanelMixin:Header(WoWTools_TextureMixin.Layout, 'Event')
     for name in pairs(WoWTools_TextureMixin.Events) do
+        index= index+1
         Add_Options(name)
     end
 
+    index=0
     WoWTools_PanelMixin:Header(WoWTools_TextureMixin.Layout, 'Frame')
     for name in pairs(WoWTools_TextureMixin.Frames) do
+        index= index+1
         Add_Options(name)
     end
 

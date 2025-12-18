@@ -6,7 +6,6 @@ local P_Save={
     scale= 1,
     strata='MEDIUM',
     --isVertical=nil,--方向, 竖
-    --isShowBackground=nil,--是否显示背景 bool
     isEnterShowMenu= WoWTools_DataMixin.Player.husandro,-- 移过图标，显示菜单
 
     borderAlpha=0,--外框，透明度

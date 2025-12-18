@@ -30,9 +30,10 @@ local function Init_Panel()
         end
     })
 
+    local index=0
     local function Add_Options(name)
         WoWTools_PanelMixin:OnlyCheck({
-            name= name:gsub('Blizzard_', ''),
+            name= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(index..') ')..name:gsub('Blizzard_', ''),
             tooltip= tooltip,
             category= WoWTools_ItemMixin.Category,
             Value= not Save().no[name],
@@ -45,11 +46,14 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:Header(WoWTools_ItemMixin.Layout, 'Event')
     for name in pairs(WoWTools_ItemMixin.Events) do
+        index= index+1
         Add_Options(name)
     end
 
+    index= 0
     WoWTools_PanelMixin:Header(WoWTools_ItemMixin.Layout, 'Frame')
     for name in pairs(WoWTools_ItemMixin.Frames) do
+        index= index+1
         Add_Options(name)
     end
 
