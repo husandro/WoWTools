@@ -194,7 +194,7 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
         ..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE),
     function()
         return MenuResponse.Open
-    end, {rightText= format('%.1f', tonumber(GetValue() or 1))})
+    end, {rightText= tonumber(format('%.1f', GetValue() or 1))})
     self:SetRightText(sub)
 
     local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue or function() SetValue(1) end)
@@ -247,7 +247,7 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
             ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
         function()
             return MenuResponse.Open
-        end, {rightText= format('%.1f', tonumber(GetValue() or 1))})
+        end, {rightText= tonumber(format('%.1f', GetValue() or 1))})
         self:SetRightText(sub)
     end
 

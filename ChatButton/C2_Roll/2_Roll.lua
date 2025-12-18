@@ -236,19 +236,9 @@ local function Init_Menu(self, root)
         end)
         WoWTools_MenuMixin:SetRightText(sub2)
     end
---SetScrollMod
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 
-
---[[{
-name=name,
-roll=roll,
-date=date('%X'),
-text=text,
-guid= guid,
-faction= faction,
-}]]
     root:CreateDivider()
     local _tabNew={}
     for index, tab in pairs(RollTab) do
@@ -416,8 +406,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['ChatButton_Roll']= WoWToolsSave['ChatButton_Roll'] or P_Save
             P_Save=nil
 
-            addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'
-                ..(WoWTools_DataMixin.onlyChinese and '掷骰' or ROLL)
+            addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_DataMixin.onlyChinese and '掷骰' or ROLL)
 
             RollButton= WoWTools_ChatMixin:CreateButton('Roll', addName)
 

@@ -881,7 +881,12 @@ local function Init_Menu(self, root)
     local _tab={}
 
     if not isRoot then
-        root= root:CreateButton(addName..' '..(MainButton.pool:GetNumActive()+MainButton.poolSecur:GetNumActive()), function() return MenuResponse.Open end)
+        root= root:CreateButton(
+            addName,
+        function()
+            return MenuResponse.Open
+        end, {rightText= MainButton.pool:GetNumActive()+MainButton.poolSecur:GetNumActive()})
+        WoWTools_MenuMixin:SetRightText(root)
     end
 
 --表情

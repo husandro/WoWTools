@@ -1,7 +1,7 @@
 
 local TrackButton
 local WorldMapButton--世界地图，添加一个按钮
-local addName, addName2
+
 local Buttons={}
 local Name='WoWToolsMinimapTrackButton'
 
@@ -889,8 +889,7 @@ local function Init_Menu(self, root)--菜单
         end, function(data)
             Save().questIDs[data.questID]= not Save().questIDs[data.questID] and true or nil
             print(
-                addName..WoWTools_DataMixin.Icon.icon2,
-                addName2,
+                WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_QuestMixin:GetLink(data.questID)
             )
         end, {questID=questID})
@@ -1013,7 +1012,10 @@ local function Init_Button()
     TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
     TrackButton.Frame:SetAllPoints()
 
-
+    TrackButton.Bg= TrackButton.Frame:CreateTexture(nil, 'BACKGROUND')
+    function TrackButton:set_bgalpha()
+        self.Bg:SetColorTexture(0,0,0, Save().trackBgAlpha or 0.5)
+    end
 
     function TrackButton:set_strata()
         self:SetFrameStrata(Save().trackButtonStrata or 'MEDIUM')
@@ -1075,7 +1077,7 @@ local function Init_Button()
     function TrackButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(addName, addName2)
+        GameTooltip:AddDoubleLine(WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(nil, true), WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '主菜单' or MAINMENU_BUTTON, WoWTools_DataMixin.Icon.right)
@@ -1248,7 +1250,9 @@ local function Init_Button()
     TrackButton:set_event()
     TrackButton:set_shown()
     TrackButton:set_strata()
+    TrackButton:set_bgalpha()
 
+    Init_Button=function()end
 end
 
 
@@ -1294,7 +1298,7 @@ local function Init_WorldFrame_Button()
             self:set_texture()
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
             print(
-                addName2..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2,
                 name,
                 Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
@@ -1307,13 +1311,18 @@ local function Init_WorldFrame_Button()
         if uiMapID then
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(addName2..(Save().uiMapIDs[uiMapID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
+            GameTooltip:AddDoubleLine(
+                WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2
+                ..(Save().uiMapIDs[uiMapID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
+                ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID
+            )
             GameTooltip:Show()
         end
     end)
     WoWTools_DataMixin:Hook(WorldMapFrame, 'OnMapChanged', function() WorldMapButton:set_texture() end)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
     WoWTools_TextureMixin:SetButton(WorldMapButton, {all=true, alpha=0.7})
+
+    Init_WorldFrame_Button=function()end
 end
 
 
@@ -1336,7 +1345,7 @@ end
 local function Init_WorldFrame_Event()
     WoWTools_DataMixin:Hook('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
         if WoWTools_QuestMixin:IsValidQuestID(self.questID) and self.OnMouseClickAction then
-            GameTooltip:AddDoubleLine(addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine(WoWTools_MinimapMixin.addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()
         end
     end)
@@ -1347,7 +1356,7 @@ local function Init_WorldFrame_Event()
         WoWTools_DataMixin:Hook(self, 'OnMouseClickAction', function(f, d)
             if WoWTools_QuestMixin:IsValidQuestID(f.questID) and d=='LeftButton' and IsAltKeyDown() then
                 Save().questIDs[f.questID]= not Save().questIDs[f.questID] and true or nil
-                print(WoWTools_DataMixin.Icon.icon2..addName, addName2,
+                print(WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2,
                     WoWTools_QuestMixin:GetLink(f.questID),
                     Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
@@ -1358,7 +1367,11 @@ local function Init_WorldFrame_Event()
 
     WoWTools_DataMixin:Hook(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
         if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
-            GameTooltip:AddDoubleLine(addName2..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine(
+                WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2
+                ..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
+                'Alt+'..WoWTools_DataMixin.Icon.left
+            )
             GameTooltip:Show()
         end
     end)
@@ -1374,7 +1387,7 @@ local function Init_WorldFrame_Event()
                     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
                     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
                     name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                    print(WoWTools_DataMixin.Icon.icon2..addName, addName2,
+                    print(WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2,
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
                         Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
@@ -1385,6 +1398,8 @@ local function Init_WorldFrame_Event()
         self.setTracking=true
     end)
 
+
+    Init_WorldFrame_Event=function()end
 end
 
 
@@ -1409,8 +1424,7 @@ function WoWTools_MinimapMixin:Init_TrackButton()
         end
         return
     end
-    addName= self.addName
-    addName2= self.addName2
+
 
     Init_Button()--小地图, 标记, 文本
     Init_WorldFrame_Button()--世界地图，添加一个按钮
