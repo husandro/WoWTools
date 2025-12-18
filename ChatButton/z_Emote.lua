@@ -746,11 +746,11 @@ local function Set_Menu(root, tab, tabName, rootName)
     local sub
 
     root= root:CreateButton(
-        rootName
-        ..' #'..#Save()[tabName],
+        rootName,
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=#Save()[tabName]})
+    WoWTools_MenuMixin:SetRightText(root)
 
 --是否使用，安全按钮
     if isCommand then
