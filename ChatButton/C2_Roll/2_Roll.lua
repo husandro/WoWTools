@@ -352,7 +352,6 @@ local function Init()
         self:set_owner()
         GameTooltip:AddLine(addName..WoWTools_DataMixin.Icon.left..'/roll')
         if #RollTab>0 then
-            GameTooltip:AddLine(' ')
             local _tabNew={}
             for _, tab in pairs(RollTab) do
                 if not _tabNew[tab.name] then
