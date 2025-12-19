@@ -131,6 +131,7 @@ end
             local alpha= textureName and 0 or alphaValue or 1
             EncounterJournalJourneysFrame.BorderFrame.Border:SetAlpha(alpha)
             EncounterJournalJourneysFrame.BorderFrame.TopDetail:SetAlpha(alpha)
+            EncounterJournalInstanceSelect.evergreenBg:SetAlpha(alpha)
         end
     end})
 end
