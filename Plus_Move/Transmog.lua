@@ -1,4 +1,4 @@
-if not CombatLogGetCurrentEventInfo then--12.0没有了
+if CombatLogGetCurrentEventInfo then--12.0才有
     return
 end
 --[[

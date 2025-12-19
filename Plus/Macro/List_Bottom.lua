@@ -516,13 +516,10 @@ local function Sub_Menu(root, tab)
             '|A:common-search-magnifyingglass:0:0|a'
             ..(C_SpellBook.IsSpellKnown(tab.spellID) and '' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '查询' or WHO),
-        function()
-            WoWTools_LoadUIMixin:SpellBook(3)
+        function(spellID)
+            WoWTools_LoadUIMixin:SpellBook(3, spellID)
             return MenuResponse.Open
-        end)
-        sub:SetTooltip(function(tooltip)
-            GameTooltip_AddErrorLine(tooltip, 'Bug')
-        end)
+        end, tab.spellID)
     end
 
 --链接至聊天栏

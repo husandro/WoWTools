@@ -122,7 +122,7 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
                     WoWTools_LoadUIMixin:Journal(3, {toyItemID=data.itemID})
 --已学，法术 bug
                 elseif data.spellID and C_SpellBook.IsSpellInSpellBook(data.spellID) then
-                    WoWTools_LoadUIMixin:SpellBook(3)
+                    WoWTools_LoadUIMixin:SpellBook(3, data.spellID)
 --其他
                 else
                     StaticPopup_Show('WoWTools_OK',

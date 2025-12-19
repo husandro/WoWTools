@@ -164,7 +164,7 @@ local function Set_List_Button(btn, displayData)
             if meno and numAll then
 
                 text= (text or '').. meno..' '--未收集，数量
-                
+
                 isLimited= isLimited or info.limitedTimeSet--限时套装
 
                 local name= info.description or info.name or ''
@@ -255,12 +255,20 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
     end
     CollectionWardrobeUtil.SortSources(sources, sourceInfo.visualID, itemFrame.sourceID)
 
+    local isVer12= not CombatLogGetCurrentEventInfo and true or false--12.0  C_TransmogCollection.GetAppearanceSourceInfo 返回 tab
+
     local numItems= #sources
     for i=1, numItems do
         local index = CollectionWardrobeUtil.GetValidIndexForNumSources(i, numItems)
 
+        local itemLink
+        if isVer12 then--12.0才有
+            local data= C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID) or {}
+            itemLink= data.itemLink
+        else
+            itemLink= select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
+        end
 
-        local itemLink = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
         local btn=itemFrame['btn'..i]
         if not btn then
             btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {
@@ -284,9 +292,13 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
                 self:GetNormalTexture():SetAlpha(0.5)
                 GameTooltip:Hide()
             end)
+            btn:SetScript('OnHide', function(self)
+                self.itemLink= nil
+            end)
         end
 
         btn.itemLink= itemLink
+
         if sources[index].isCollected then
             btn:GetNormalTexture():SetVertexColor(0,1,0, 0.5)
         else
@@ -366,7 +378,7 @@ local function Init()
     --套装,物品, Link WardrobeSetsCollectionMixin
     WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', function(...) Init_Wardrobe_DetailsFrame(...) end)
      --WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsCollectionFrame, 'DisplaySet', function(...)
-        
+
 
     return true
 end

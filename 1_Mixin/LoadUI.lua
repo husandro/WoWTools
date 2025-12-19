@@ -349,7 +349,7 @@ PlayerSpellsUtil={
   InspectLoadout(linkData)
 }
 ]]
-function WoWTools_LoadUIMixin:SpellBook(index)
+function WoWTools_LoadUIMixin:SpellBook(index, spellID)
     if InCombatLockdown() then
         return
     end
@@ -366,6 +366,10 @@ function WoWTools_LoadUIMixin:SpellBook(index)
         end
     else
         PlayerSpellsUtil.OpenToClassSpecializationsTab()
+        if spellID then
+            local knownSpellsOnly, toggleFlyout, flyoutReason = true, false, nil;
+            PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
+        end
     end
 end
 

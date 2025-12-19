@@ -163,10 +163,10 @@ local function Init()
         frame.chatButton:SetPoint("RIGHT")
         frame.chatButton:SetSize(23,23)
         local icon= frame.chatButton:GetNormalTexture()
-        icon:SetPoint("TOPLEFT", 6, -6)
-        icon:SetPoint("BOTTOMRIGHT", -6, 6)
-        frame.chatButton:SetAlpha(0.5)
-        frame.chatButton.alpha=0.5
+        icon:SetPoint("TOPLEFT", 8, -8)
+        icon:SetPoint("BOTTOMRIGHT", -8, 8)
+        frame.chatButton:SetAlpha(0.3)
+        frame.chatButton.alpha=0.3
         frame.chatButton.tooltip=function(self, tooltip)
             local link= GetItemLink(self:GetParent())
             if link then
@@ -185,10 +185,10 @@ local function Init()
         frame.findButton:SetPoint('RIGHT', frame.chatButton, 'LEFT')
         frame.findButton:SetSize(23,23)
         icon= frame.findButton:GetNormalTexture()
-        icon:SetPoint("TOPLEFT", 6, -6)
-        icon:SetPoint("BOTTOMRIGHT", -6, 6)
-        frame.findButton:SetAlpha(0.5)
-        frame.findButton.alpha=0.5
+        icon:SetPoint("TOPLEFT", 8, -8)
+        icon:SetPoint("BOTTOMRIGHT", -8, 8)
+        frame.findButton:SetAlpha(0.3)
+        frame.findButton.alpha=0.3
         frame.findButton.tooltip=function(self, tooltip)
             local link= GetItemLink(self:GetParent())
             if link then

@@ -466,7 +466,7 @@ function WoWTools_MenuMixin:OpenSpellBook(root, index)--天赋和法术书
         MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"),
     function()
         WoWTools_LoadUIMixin:SpellBook(index)
-        return MenuResponse.Refresh
+        return MenuResponse.Open
     end)
 end
 
