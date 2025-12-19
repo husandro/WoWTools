@@ -325,10 +325,16 @@ function Init_Button(index)
 
 	frame.CopyChatButton:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:ClearLines()
+
+		local tab=  _G['ChatFrame'..index..'Tab']
+		if tab then
+			GameTooltip:AddLine(tab:GetText())
+		end
 
 		local num = self:GetParent():GetNumMessages() or 0
 		local col= num==0 and '|cff606060'
-		GameTooltip:SetText(
+		GameTooltip:AddLine(
 			(col or '|cffffffff')
 			..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
 			..(col or'|cnGREEN_FONT_COLOR:#')
