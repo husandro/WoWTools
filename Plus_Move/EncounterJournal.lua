@@ -162,7 +162,9 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
 
 --instanceSelect
     EncounterJournalInstanceSelectBG:SetPoint('BOTTOMRIGHT', 0,2)
-    EncounterJournalInstanceSelect.evergreenBg:SetPoint('BOTTOMRIGHT')
+    if EncounterJournalInstanceSelect.evergreenBg then 
+        EncounterJournalInstanceSelect.evergreenBg:SetPoint('BOTTOMRIGHT')
+    end
     EncounterJournalInstanceSelect.ScrollBox:SetPoint('BOTTOMRIGHT', 0, 15)
     EncounterJournalInstanceSelect.ScrollBar:ClearAllPoints()
     EncounterJournalInstanceSelect.ScrollBar:SetPoint('TOPRIGHT', EncounterJournalInstanceSelect.ScrollBox, 0 ,-6)
