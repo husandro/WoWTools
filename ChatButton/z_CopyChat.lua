@@ -350,8 +350,8 @@ function Init_Button(index)
 	end)
 
 	frame.CopyChatButton:SetScript('OnMouseDown', function(self, d)
-		print(self:GetID())
-		if d~='RightButton' then
+
+		if d=='LeftButton' then
 			Get_Text(self:GetID())
 		else
 			MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -436,35 +436,41 @@ local frame= CreateFrame('Frame')
 frame:RegisterEvent('ADDON_LOADED')
 
 frame:SetScript('OnEvent', function(self, event, arg1)
-    if arg1~= 'WoWTools' then
-        return
-    end
+	if event=='ADDON_LOADED' then
+		if arg1== 'WoWTools' then
+			WoWToolsSave['Plus_ChatCopy']= WoWToolsSave['Plus_ChatCopy'] or {isShowButton=true}
+			addName= '|A:poi-workorders:0:0|a'..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
 
-    WoWToolsSave['Plus_ChatCopy']= WoWToolsSave['Plus_ChatCopy'] or {isShowButton=true}
-    addName= '|A:poi-workorders:0:0|a'..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
+			WoWTools_PanelMixin:OnlyCheck({
+				name= addName,
+				GetValue= function() return not Save().disabled end,
+				SetValue= function()
+					Save().disabled= not Save().disabled and true or nil
+					Init()
+					print(
+						addName..WoWTools_DataMixin.Icon.icon2,
+						WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+						WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+					)
+				end,
+				layout= WoWTools_ChatMixin.Layout,
+				category= WoWTools_ChatMixin.Category,
+			})
 
-    WoWTools_PanelMixin:OnlyCheck({
-        name= addName,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            Init()
-            print(
-                addName..WoWTools_DataMixin.Icon.icon2,
-                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-            )
-        end,
-        layout= WoWTools_ChatMixin.Layout,
-        category= WoWTools_ChatMixin.Category,
-    })
+			if Save().disabled then
+				self:SetScript('OnEvent', nil)
+			else
+				self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			end
 
-    if not Save().disabled then
-        Init()
-    end
+			self:UnregisterEvent(event)
+		end
 
-    self:SetScript('OnEvent', nil)
-    self:UnregisterEvent(event)
+	elseif event=='PLAYER_ENTERING_WORLD' then
+		Init()
+		self:UnregisterEvent(event)
+		self:SetScript('OnEvent', nil)
+	end
 end)
 
 
