@@ -437,7 +437,7 @@ frame:RegisterEvent('ADDON_LOADED')
 
 frame:SetScript('OnEvent', function(self, event, arg1)
 	if event=='ADDON_LOADED' then
-		if arg1== 'WoWTools' then
+    	if arg1== 'WoWTools' then
 			WoWToolsSave['Plus_ChatCopy']= WoWToolsSave['Plus_ChatCopy'] or {isShowButton=true}
 			addName= '|A:poi-workorders:0:0|a'..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
 
@@ -462,7 +462,6 @@ frame:SetScript('OnEvent', function(self, event, arg1)
 			else
 				self:RegisterEvent('PLAYER_ENTERING_WORLD')
 			end
-
 			self:UnregisterEvent(event)
 		end
 
