@@ -188,14 +188,16 @@ local function Init_Menu(frame, root)
 	end
 
 	local sub, sub2
+	local num= self:GetNumMessages()
 
 	sub=root:CreateButton(
 		'|A:poi-workorders:0:0|a'
+		..(num==0 and '|cff606060' or '')
 		..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT)),
 	function()
 		Get_Text(index)
 		return MenuResponse.Open
-	end, {rightText=self:GetNumMessages()})
+	end, {rightText=num})
 	sub:SetTooltip(function(tooltip)
 		local tab=  _G['ChatFrame'..index..'Tab']
 		if tab then
@@ -290,16 +292,14 @@ end
 function Init_Button(index)
 	local enabled= Save().isShowButton and true or false
 	local frame= index and _G['ChatFrame'..index]
-	if not frame then
-		return
-	elseif frame.CopyChatButton then
-		if frame.ResizeButton then
-			frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, enabled and 15 or -1)-- -2,-2
-		end
-		frame.CopyChatButton:SetShown(enabled)
-		return
 
-	elseif not enabled then
+	if not frame or not enabled or not frame.GetNumMessages then
+		if frame and frame.CopyChatButton then
+			if frame.ResizeButton then
+				frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, enabled and 15 or -1)-- -2,-2
+			end
+			frame.CopyChatButton:SetShown(enabled)
+		end
 		return
 	end
 
@@ -344,6 +344,7 @@ function Init_Button(index)
 	end)
 
 	frame.CopyChatButton:SetScript('OnMouseDown', function(self, d)
+		print(self:GetID())
 		if d~='RightButton' then
 			Get_Text(self:GetID())
 		else
