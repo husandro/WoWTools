@@ -176,27 +176,26 @@ end
 
 
 local function Init_Menu(frame, root)
-    if not frame:IsMouseOver() then
+    if not frame or not frame:IsMouseOver() then
         return
     end
 
 	local index= frame:GetName():match('%d+') or '1'
 
 	local self= _G['ChatFrame'..index]
-	if not self then
+	if not self or not self.GetNumMessages then
 		return
 	end
 
 	local sub, sub2
 
 	sub=root:CreateButton(
-		(self:GetNumMessages()==0 and '|cff606060' or '')
-		..'|A:poi-workorders:0:0|a'
+		'|A:poi-workorders:0:0|a'
 		..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT)),
 	function()
 		Get_Text(index)
 		return MenuResponse.Open
-	end)
+	end, {rightText=self:GetNumMessages()})
 	sub:SetTooltip(function(tooltip)
 		local tab=  _G['ChatFrame'..index..'Tab']
 		if tab then
@@ -205,10 +204,13 @@ local function Init_Menu(frame, root)
 		tooltip:AddLine(
 			WoWTools_DataMixin.Icon.icon2
 			..(WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
-			..' |cnGREEN_FONT_COLOR:#'
+			..WoWTools_DataMixin.Icon.left
+			..'|cnGREEN_FONT_COLOR:#'
 			..self:GetNumMessages()
 		)
 	end)
+	WoWTools_MenuMixin:SetRightText(sub)
+
 --选项
 	sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '显示按钮' or SHOW_QUICK_BUTTON,
@@ -287,7 +289,7 @@ end
 
 function Init_Button(index)
 	local enabled= Save().isShowButton and true or false
-	local frame= _G['ChatFrame'..index]
+	local frame= index and _G['ChatFrame'..index]
 	if not frame then
 		return
 	elseif frame.CopyChatButton then
@@ -386,9 +388,8 @@ local function Init()
 
 	WoWTools_DataMixin:Hook(ChatFrameMixin, 'OnLoad', function(frame)
 		local index = frame:GetName():match("(%d+)")
-		if index then
-			Init_Button(index)
-		end
+		print(frame:GetID())
+		Init_Button(index)
 	end)
 
 	WoWTools_DataMixin:Hook('FCF_FadeInScrollbar', function(chatFrame)

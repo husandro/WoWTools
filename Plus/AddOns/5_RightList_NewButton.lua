@@ -229,8 +229,8 @@ local function Init()
 
 
 
-    local Label= WoWTools_LabelMixin:Create(NewButton)--插件，总数
-    Label:SetPoint('LEFT', AddonList.DisableAllButton, 3,0)
+    local Label= AddonList.EnableAllButton:CreateFontString('WoWToolsAllNumAddonLable', nil, 'GameFontHighlight') --WoWTools_LabelMixin:Create(NewButton)--插件，总数
+    Label:SetPoint('LEFT', AddonList.EnableAllButton, 3, 0)
     Label:SetText(C_AddOns.GetNumAddOns())
 
 
