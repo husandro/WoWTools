@@ -406,7 +406,7 @@ local function Init_Menu(self, root)
     end)
 
 --尺寸
-    if self.sizeRestFunc then
+    if self.setSize then
         sub=root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
         function()
@@ -734,6 +734,12 @@ local function Set_Tooltip(self)
                 GameTooltip:AddLine(self.sizeTooltip)
             end
         end
+    else
+        GameTooltip_AddErrorLine(GameTooltip,
+            (WoWTools_DataMixin.onlyChinese and '框体尺寸' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_FRAME_SIZE)
+            ..': '
+            ..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
+        )
     end
 
     GameTooltip:AddLine(' ')
@@ -956,7 +962,11 @@ end
 
 
 
-
+--[[
+    注意，如果有参数， 不保存数据（大小）
+    btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
+    btn.scaleStopFunc= tab.scaleStopFunc--保存，缩放内容
+]]
 
 
 function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
@@ -1138,7 +1148,7 @@ function WoWTools_MoveMixin:Set_SizeScale(frame)
         Set_Frame_Scale(frame, scale)
     end
 
-    if frame.ResizeButton.sizeRestFunc then
+    if frame.ResizeButton.setSize then
         local size= Save().size[name]
         if size then
             Set_Frame_Size(frame, size[1], size[2])--设置大小
