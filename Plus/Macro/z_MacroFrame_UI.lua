@@ -215,9 +215,9 @@ local function Init()
 
 
     WoWTools_MoveMixin:Setup(MacroFrame, {
-    needSize=true, minW=260, minH=250,
-    sizeRestFunc=function()
-        MacroFrame:SetSize(338, 424)
+        minW=260, minH=250,
+    sizeRestFunc=function(f)
+        f:SetSize(338, 424)
     end})
 
 

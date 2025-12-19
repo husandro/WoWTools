@@ -22,8 +22,8 @@ function WoWTools_MoveMixin.Frames:GossipFrame()
     self:Setup(GossipFrame, {
         minW=220,
         minH=220,
-        sizeRestFunc=function()
-            GossipFrame:SetSize(384, 512)
+        sizeRestFunc=function(f)
+            f:SetSize(384, 512)
         end
     })
 end
@@ -84,10 +84,10 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
 
     self:Setup(DressUpFrame, {
         minH=320, minW=310,
-    sizeRestFunc=function()
-        self:Save().size[DressUpFrame:GetName()]= nil
-        DressUpFrame:ConfigureSize(GetCVarBool("miniDressUpFrame"))
-        DressUpFrame:Raise()
+    sizeRestFunc=function(f)
+        --self:Save().size[f:GetName()]= nil
+        f:ConfigureSize(true)--GetCVarBool("miniDressUpFrame"))
+        f:Raise()
     end})
 
     if DressUpFrame.OutfitDetailsPanel then
@@ -141,10 +141,10 @@ function WoWTools_MoveMixin.Frames:QuestFrame()
     self:Setup(QuestFrame, {
         minW=164,
         minH=128,
-        sizeRestFunc=function()
-            QuestFrame:SetSize(338, 496)
+        sizeRestFunc=function(f)
+            f:SetSize(338, 496)
         end
-    })   
+    })
 end
 
 --新内容
@@ -204,10 +204,7 @@ function WoWTools_MoveMixin.Frames:LootFrame()
 
     self:Setup(LootFrame, {
         isShow=true,
-    sizeStopFunc=function()
-        self:Save().size['LootFrame']= {LootFrame:GetSize()}
-    end, sizeRestFunc=function()
-        self:Save().size['LootFrame']= nil
+    sizeRestFunc=function()
 	    ScrollingFlatPanelMixin.Open(LootFrame, true)
     end})
 end

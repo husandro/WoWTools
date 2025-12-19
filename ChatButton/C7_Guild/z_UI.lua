@@ -460,25 +460,24 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     end
 
     self:Setup(CommunitiesFrame, {
-        scaleStopFunc= function()
-            self:Save().scale[CommunitiesMode_GetName()]= CommunitiesFrame:GetScale()
-
+        scaleStopFunc= function(frame)
+            self:Save().scale[CommunitiesMode_GetName()]= frame:GetScale()
         end,
         scaleRestFunc=function()
             self:Save().scale['CommunitiesFrameMINIMIZED']= nil
             self:Save().scale['CommunitiesFrameNormal']= nil
         end,
-        sizeStopFunc=function()
-            self:Save().size[CommunitiesMode_GetName()]=  {CommunitiesFrame:GetSize()}
+        sizeStopFunc=function(frame)
+            self:Save().size[CommunitiesMode_GetName()]=  {frame:GetSize()}
         end,
-        sizeRestFunc=function()
-            if CommunitiesMode_IsMini() then
-                CommunitiesFrame:SetSize(322, 406)
-            else
-                CommunitiesFrame:SetSize(814, 426)
-            end
+        sizeRestFunc=function(frame)
             self:Save().size['CommunitiesFrameMINIMIZED']=nil
             self:Save().size['CommunitiesFrameNormal']= nil
+            if CommunitiesMode_IsMini() then
+                frame:SetSize(322, 406)
+            else
+                frame:SetSize(814, 426)
+            end
         end,
         sizeRestTooltipColorFunc=function()
             if self:Save().size[CommunitiesMode_GetName()] then
@@ -510,14 +509,14 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --信息，查看记录
     self:Setup(CommunitiesGuildLogFrame, {
-    sizeRestFunc=function()
-        CommunitiesGuildLogFrame:SetSize(384, 432)
+    sizeRestFunc=function(frame)
+        frame:SetSize(384, 432)
     end})
 
 --公会信息， 点击以编辑
     self:Setup(CommunitiesGuildTextEditFrame, {
-    sizeRestFunc=function()
-        CommunitiesGuildTextEditFrame:SetSize(295, 295)
+    sizeRestFunc=function(frame)
+        frame:SetSize(295, 295)
     end})
 
 
@@ -542,8 +541,8 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --新建，公会, 签名
     self:Setup(PetitionFrame, {
-    sizeRestFunc=function()
-        PetitionFrame:SetSize(338, 424)
+    sizeRestFunc=function(frame)
+        frame:SetSize(338, 424)
     end})
     PetitionFrame.Bg:SetPoint('BOTTOMRIGHT',-32,30)
 
@@ -554,8 +553,8 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --设计，公会战袍
     self:Setup(TabardFrame, {
-    sizeRestFunc=function()
-        TabardFrame:SetSize(338, 424)
+    sizeRestFunc=function(frame)
+        frame:SetSize(338, 424)
     end})
 
     TabardFrameCancelButton:ClearAllPoints()
@@ -599,8 +598,8 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 --公会设置
     self:Setup(GuildControlUI, {
-    sizeRestFunc=function()
-        GuildControlUI:SetSize(338, 444)
+    sizeRestFunc=function(frame)
+        frame:SetSize(338, 444)
     end})
     GuildControlUIRankBankFrameInset:SetPoint('LEFT', 2, 0)
     GuildControlUIRankBankFrameInset:SetPoint('BOTTOMRIGHT', -2, 2)

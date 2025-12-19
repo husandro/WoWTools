@@ -142,9 +142,10 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingDashboard()
 
     self:Setup(HousingDashboardFrame, {
         minW=405, minH=455,
-    sizeRestFunc=function()
-        HousingDashboardFrame:SetSize(814, 544)
-        HousingDashboardFrame.baseWidth, HousingDashboardFrame.baseHeight= 814, 544
+    sizeRestFunc=function(f)
+        f:SetSize(814, 544)
+--这个是修改参数，可能会有BUG
+        f.baseWidth, f.baseHeight= 814, 544
     end})
     self:Setup(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame, {frame=HousingDashboardFrame})
 end
@@ -159,8 +160,8 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_HousingBulletinBoard()
     HousingBulletinBoardFrame.ResidentsTab:SetPoint('BOTTOMRIGHT')
     self:Setup(HousingBulletinBoardFrame, {
-    sizeRestFunc=function()
-        HousingBulletinBoardFrame:SetSize(600, 400)
+    sizeRestFunc=function(f)
+        f:SetSize(600, 400)
     end
     })
 end
@@ -218,8 +219,8 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingHouseFinder()
     HouseFinderFrame.HouseFinderMapCanvasFrame:SetPoint('BOTTOMRIGHT')
     HouseFinderFrame.NeighborhoodListFrame:SetPoint('BOTTOM')
     self:Setup(HouseFinderFrame,  {
-    sizeRestFunc=function()
-        HouseFinderFrame:SetSize(954, 489)
+    sizeRestFunc=function(f)
+        f:SetSize(954, 489)
     end})
     self:Setup(HouseFinderFrame.PlotInfoFrame, {frame=HouseFinderFrame})
 end
@@ -242,7 +243,7 @@ end
 
 function WoWTools_MoveMixin.Events:Blizzard_HousingModelPreview()
     self:Setup(HousingModelPreviewFrame, {
-    sizeRestFunc=function()
-        HousingModelPreviewFrame:SetSize(450, 545)
+    sizeRestFunc=function(f)
+        f:SetSize(450, 545)
     end})
 end

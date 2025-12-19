@@ -396,26 +396,26 @@ local function Init_Move()
     BankPanel:SetPoint('BOTTOMRIGHT')
 
     WoWTools_MoveMixin:Setup(BankFrame, {
-    minW=80, minH=140,
-    sizeRestFunc= function()
+        minW=80, minH=140,
+    sizeRestFunc= function(frame)
         Save().num=15
         Save().accountNum= nil
-        BankPanel:GenerateItemSlotsForSelectedTab()
-    end, sizeStopFunc= function()
-        if BankPanel.PurchasePrompt:IsShown()
-            or BankPanel.LockPrompt:IsShown()
+        frame:GenerateItemSlotsForSelectedTab()
+    end, sizeStopFunc= function(frame)
+        if frame.PurchasePrompt:IsShown()
+            or frame.LockPrompt:IsShown()
             or not C_Bank.AreAnyBankTypesViewable()
         then
             return
         end
         local line= Save().line or 2
-        local h= math.ceil((BankFrame:GetHeight()-63-BODER_LEFT+line)/(37+line))
-        if BankPanel:GetActiveBankType() == Enum.BankType.Account then
+        local h= math.ceil((frame:GetHeight()-63-BODER_LEFT+line)/(37+line))
+        if frame:GetActiveBankType() == Enum.BankType.Account then
             Save().accountNum= h
         else
             Save().num= h
         end
-        BankPanel:GenerateItemSlotsForSelectedTab()
+        frame:GenerateItemSlotsForSelectedTab()
     end})
     WoWTools_MoveMixin:Setup(BankPanel.TabSettingsMenu, {frame=BankFrame})
     WoWTools_MoveMixin:Setup(BankCleanUpConfirmationPopup)

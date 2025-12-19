@@ -10,8 +10,8 @@ function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
     self:Setup(ClassTrainerFrame, {
     minW=200,
     minH=197,
-    sizeRestFunc=function()
-        ClassTrainerFrame:SetSize(338, 424)
+    sizeRestFunc=function(f)
+        f:SetSize(338, 424)
     end})
 end
 
@@ -268,11 +268,11 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
     self:Setup(TableAttributeDisplay, {
         minW=476,
         minH=150,
-        sizeUpdateFunc=function()
-            TableAttributeDisplay:UpdateLines()--RefreshAllData()
+        sizeUpdateFunc=function(frame)
+            frame:UpdateLines()--RefreshAllData()
         end,
-        sizeRestFunc=function()
-            TableAttributeDisplay:SetSize(500, 400)
+        sizeRestFunc=function(f)
+            f:SetSize(500, 400)
         end,
     })
 end
@@ -338,8 +338,8 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
     end)
 
     self:Setup(AuctionHouseFrame, {
-        sizeRestFunc=function()
-            AuctionHouseFrame:SetSize(800, 538)
+        sizeRestFunc=function(f)
+            f:SetSize(800, 538)
         end
     })
 
@@ -445,8 +445,8 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     self:Setup(AchievementFrame, {
         minW=768,
         minH=500,
-        sizeRestFunc= function()
-            AchievementFrame:SetSize(768, 500)
+        sizeRestFunc= function(f)
+            f:SetSize(768, 500)
         end,
     })
     self:Setup(AchievementFrame.Header, {frame=AchievementFrame})
@@ -500,8 +500,8 @@ function WoWTools_MoveMixin.Events:Blizzard_Channels()
     end)
     self:Setup(ChannelFrame, {
         minW=402, minH=200,-- maxW=402,
-    sizeRestFunc=function()
-        ChannelFrame:SetSize(402, 423)
+    sizeRestFunc=function(f)
+        f:SetSize(402, 423)
     end})
 end
 
@@ -512,8 +512,11 @@ function WoWTools_MoveMixin.Events:Blizzard_Settings_Shared()
             region:SetPoint('BOTTOMRIGHT', -12, 38)
         end
     end
-    self:Setup(SettingsPanel, {minW=800, minH=200, sizeRestFunc=function(btn)
-        SettingsPanel:SetSize(920, 724)
+    self:Setup(SettingsPanel, {
+        minW=800,
+        minH=200,
+    sizeRestFunc=function(f)
+        f:SetSize(920, 724)
     end})
 end
 
@@ -608,9 +611,10 @@ end
 --商店
 function WoWTools_MoveMixin.Events:Blizzard_AccountStore()
     self:Setup(AccountStoreFrame, {
-        minH=537, minW=800,
-    sizeRestFunc=function()
-        AccountStoreFrame:SetSize(800, 537)
+        minH=537,
+        minW=800,
+    sizeRestFunc=function(f)
+        f:SetSize(800, 537)
     end})
 end
 
@@ -715,8 +719,8 @@ function WoWTools_MoveMixin.Events:Blizzard_CooldownViewer()
 
     self:Setup(CooldownViewerSettings, {
         minW=196, minH=183,
-    sizeRestFunc=function()
-        CooldownViewerSettings:SetSize(399, 609)
+    sizeRestFunc=function(f)
+        f:SetSize(399, 609)
     end
     })
 end

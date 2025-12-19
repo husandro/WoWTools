@@ -75,8 +75,8 @@ end
 
 --保存，大小
 local function Save_Frame_Size(self)
-    if self.sizeStopFunc ~= nil then
-        self.sizeStopFunc(self)
+    if self.sizeStopFunc then
+        self.sizeStopFunc(_G[self.name], self)
     else
         local w, h= self:GetParent():GetSize()
         w= math.modf(w)
@@ -396,15 +396,17 @@ local function Init_Menu(self, root)
     end, function()
         if not WoWTools_FrameMixin:IsLocked(target) then
             Save().scale[name]=nil
-            target:SetScale(1)
             if self.scaleRestFunc then
-                self.scaleRestFunc(self)
+                self.scaleRestFunc(target, self)
+            end
+            if target:GetScale()~=1 then
+                target:SetScale(1)
             end
         end
     end)
 
 --尺寸
-    if self.setSize then
+    if self.sizeRestFunc then
         sub=root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
         function()
@@ -420,12 +422,13 @@ local function Init_Menu(self, root)
             end, setValue=function(value)
                 if not WoWTools_FrameMixin:IsLocked(target) then
                     target:SetWidth(value)
-                    Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
-                        self:sizeUpdateFunc()
+                        self.sizeUpdateFunc(target, self)
                     end
                     if self.sizeStopFunc then
-                        self:sizeStopFunc()
+                        self.sizeStopFunc(target, self)
+                    else
+                        Save_Frame_Size(self)--保存，大小
                     end
                 end
             end,
@@ -442,12 +445,13 @@ local function Init_Menu(self, root)
                 return math.modf(target:GetHeight())
             end, setValue=function()
                 if not WoWTools_FrameMixin:IsLocked(target) then
-                    Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
-                        self:sizeUpdateFunc()
+                        self.sizeUpdateFunc(target, self)
                     end
                     if self.sizeStopFunc then
-                        self:sizeStopFunc()
+                        self.sizeStopFunc(target, self)
+                    else
+                        Save_Frame_Size(self)--保存，大小
                     end
                 end
             end,
@@ -480,7 +484,7 @@ local function Init_Menu(self, root)
             local t=self:GetParent()
             if not WoWTools_FrameMixin:IsLocked(t) then
                 if self.sizeRestFunc then--还原
-                    self:sizeRestFunc()
+                    self.sizeRestFunc(target, self)
                 end
                 if not self.notUpdatePositon then
                     WoWTools_DataMixin:Call('UpdateUIPanelPositions', t)
@@ -515,7 +519,7 @@ local function Init_Menu(self, root)
 --清除，位置，数据
 
     root:CreateDivider()
-    sub=root:CreateCheckbox(
+    sub=root:CreateRadio(
         (Save().point[name] and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
     function()
@@ -703,7 +707,7 @@ local function Set_Tooltip(self)
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnWARNING_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
     GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), scale..WoWTools_DataMixin.Icon.left)
 
-    if self.setSize then
+    if self.sizeRestFunc then
         GameTooltip:AddLine(' ')
         local col
         if self.sizeRestTooltipColorFunc then
@@ -725,7 +729,7 @@ local function Set_Tooltip(self)
 
         if self.sizeTooltip then
             if type(self.sizeTooltip)=='function' then
-                self:sizeTooltip()
+                self.sizeTooltip(GameTooltip, target, self)
             else
                 GameTooltip:AddLine(self.sizeTooltip)
             end
@@ -794,7 +798,7 @@ local function Set_OnMouseUp(self)
 
     self:SetScript("OnUpdate", nil)
 
-    if d=='RightButton' and self.setSize then--保存，大小 d=='RightButton' and
+    if d=='RightButton' and self.sizeRestFunc then--保存，大小 d=='RightButton' and
         local continueResizeStop = true
         if target.onResizeStopCallback then
             continueResizeStop = target.onResizeStopCallback(self)
@@ -806,9 +810,10 @@ local function Set_OnMouseUp(self)
 
     elseif d=='LeftButton' then--保存，缩放
         if self.scaleStopFunc then
-            self.scaleStopFunc(self)
+            self.scaleStopFunc(target, self)
+        else
+            Save().scale[self.name]= target:GetScale()
         end
-        Save().scale[self.name]= target:GetScale()
     end
 
     self.isActiveButton= nil
@@ -867,11 +872,11 @@ local function Set_OnMouseDown(self, d)
             Set_Tooltip(self)
 
             if self.scaleUpdateFunc then
-                self.scaleUpdateFunc(self)
+                self.scaleUpdateFunc(target, self)
             end
         end)
 
-    elseif d=='RightButton' and self.setSize and not Save().disabledSize[self.name] then
+    elseif d=='RightButton' and self.sizeRestFunc and not Save().disabledSize[self.name] then
 --开始，设置，大小
 
         local continueResizeStart = true
@@ -889,7 +894,7 @@ local function Set_OnMouseDown(self, d)
                 target:StopMovingOrSizing()
 
             elseif self.sizeUpdateFunc then
-                self.sizeUpdateFunc(self)
+                self.sizeUpdateFunc(target, self)
             end
             Set_Tooltip(self)
         end)
@@ -968,16 +973,6 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         return
     end
 
-    local setResizeButtonPoint= tab.setResizeButtonPoint--设置，按钮，位置
-    local onShowFunc= tab.onShowFunc-- true, function
-
-    local minW= tab.minW or 115--最小窗口， 宽
-    local minH= tab.minH or 115--最小窗口，高
-    local maxW= tab.maxW--最大，可无
-    local maxH= tab.maxH--最大，可无
-
-    local rotationDegrees= tab.rotationDegrees--旋转度数
-    local initFunc= tab.initFunc--初始
 
 
     frame.ResizeButton= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--UI-HUD-UnitFrame-Player-PortraitOn-CornerEmbellishment SharedUIPanelTemplates.lua
@@ -989,36 +984,43 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     btn:SetFrameLevel(frame:GetFrameLevel()+7)
     btn:SetSize(18, 18)
 
+    local setResizeButtonPoint= tab.setResizeButtonPoint--设置，按钮，位置
+    local minW= tab.minW or 115--最小窗口， 宽
+    local minH= tab.minH or 115--最小窗口，高
+    local maxW= tab.maxW--最大，可无
+    local maxH= tab.maxH--最大，可无
+    local rotationDegrees= tab.rotationDegrees--旋转度数
+    local initFunc= tab.initFunc--初始
+
+
+    local onShowFunc= tab.onShowFunc-- true, function (可用于, sizeStopFunc, sizeUpdateFunc, sizeStopFunc)
+
+
+    btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
+    btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
+
+--注意，如果有参数， 不保存数据（大小）
+    btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
+    btn.scaleStopFunc= tab.scaleStopFunc--保存，缩放内容
+
+    btn.name= name
+    btn.scaleUpdateFunc= tab.scaleUpdateFunc
+    btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
+    btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
+    btn.alpha= tab.alpha--button 透明度
+    btn.notUpdatePositon= tab.notUpdatePositon
+    btn.notMoveAlpha= tab.notMoveAlpha--是否设置，移动时，设置透明度
+    btn.setSize= tab.sizeRestFunc and true or nil --and not disabledSize--是否有，设置大小，功能 
+
+    btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
+    btn.sizeTooltip= tab.sizeTooltip
+    btn.addMenu= tab.addMenu--添加菜单
 
     if setResizeButtonPoint then
         btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
     else
         btn:SetPoint('BOTTOMRIGHT', frame, 3, -3)
     end
-
-
-    btn.name= name
-
---设置缩放
-    btn.scaleStopFunc= tab.scaleStopFunc--保存，缩放内容
-    btn.scaleUpdateFunc= tab.scaleUpdateFunc
-    btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
-    btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
-    btn.alpha= tab.alpha--button 透明度
-    btn.setSize= tab.sizeRestFunc and true or nil --and not disabledSize--是否有，设置大小，功能
-    btn.notUpdatePositon= tab.notUpdatePositon
-    btn.notMoveAlpha= tab.notMoveAlpha--是否设置，移动时，设置透明度
-
-    btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
-    btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
-    btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
-    btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
-    btn.sizeTooltip= tab.sizeTooltip
-
-    btn.addMenu= tab.addMenu--添加菜单
-    --btn.alpha= tab.alpha
-
-    --btn.hideButton= tab.hideButton--隐藏按钮，移过时，才显示
 
     if btn.sizeRestFunc then
         frame:SetResizable(true)
@@ -1058,7 +1060,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     btn:SetScript("OnMouseUp", function(s, d)
         Set_OnMouseUp(s, d)
     end)
-    btn:SetScript("OnMouseDown",function(s, d)
+    btn:SetScript("OnMouseDown", function(s, d)
         Set_OnMouseDown(s, d)
     end)
     btn:SetScript('OnMouseWheel', function(s)
@@ -1080,7 +1082,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     if onShowFunc then
         if onShowFunc==true then
             frame:HookScript('OnShow', function(s)
-                WoWTools_MoveMixin:Set_SizeScale(s)
+                self:Set_SizeScale(s)
             end)
         else
             frame:HookScript('OnShow', onShowFunc)
@@ -1136,7 +1138,7 @@ function WoWTools_MoveMixin:Set_SizeScale(frame)
         Set_Frame_Scale(frame, scale)
     end
 
-    if frame.ResizeButton.setSize then
+    if frame.ResizeButton.sizeRestFunc then
         local size= Save().size[name]
         if size then
             Set_Frame_Size(frame, size[1], size[2])--设置大小

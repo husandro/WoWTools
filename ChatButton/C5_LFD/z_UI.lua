@@ -95,11 +95,11 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
             if PVEFrame.activeTabIndex==3 then
                 WoWTools_DataMixin:Call(ChallengesFrame.Update, ChallengesFrame)
             end
-        end, sizeStopFunc=function()
-            local w, h= PVEFrame:GetSize()
+        end, sizeStopFunc=function(frame)
+            local w, h= frame:GetSize()
             self:Save().size['PVEFrame'..Get_Index()]= {w, h}
             Set_Width(w)
-        end, sizeRestFunc=function()
+        end, sizeRestFunc=function(frame)
             for index=1,5 do
                 self:Save().size['PVEFrame'..index]=nil
             end
@@ -111,12 +111,12 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
 
             local index= Get_Index()
             if index==3 then
-                PVEFrame:SetSize(950, 717)
+                frame:SetSize(950, 717)
                 if ChallengesFrame then
                     WoWTools_DataMixin:Call(ChallengesFrame.Update, ChallengesFrame)
                 end
             else
-                PVEFrame:SetSize(563, 428)
+                frame:SetSize(563, 428)
             end
         end
     })

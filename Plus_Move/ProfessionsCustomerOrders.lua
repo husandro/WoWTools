@@ -72,13 +72,13 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
                 self:Save().scale[name]= scale
             end
         end,
-        scaleRestFunc=function()
-            local name= ProfessionsCustomerOrdersFrame:GetName()
+        scaleRestFunc=function(frame)
+            local name= frame:GetName()
             self:Save().scale[name..'From']= nil
             self:Save().scale[name]= nil
         end,
-        sizeRestFunc=function()
-            ProfessionsCustomerOrdersFrame:SetSize(825, 568)
+        sizeRestFunc=function(f)
+            f:SetSize(825, 568)
         end,
     })
     WoWTools_MoveMixin:Setup(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})

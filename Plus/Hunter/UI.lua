@@ -99,10 +99,11 @@ local function Init_MoveUI()
 
 
     WoWTools_MoveMixin:Setup(StableFrame, {
-    minW=860, minH=440,
-    sizeRestFunc=function()
-        StableFrame:SetSize(1040, 638)
+        minW=860, minH=440,
+    sizeRestFunc=function(f)
+        f:SetSize(1040, 638)
     end})
+
     WoWTools_MoveMixin:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
 
     Init_MoveUI= function()end

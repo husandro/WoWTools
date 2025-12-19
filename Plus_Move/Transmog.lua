@@ -381,11 +381,10 @@ local function Init()
 
     WoWTools_MoveMixin:Setup(TransmogFrame, {
         minW=830, minH=510,
-
-    --sizeStopFunc=function()
     onShowFunc=true,
-    scaleStopFunc=function()
+    scaleStopFunc=function(frame, btn)
         WoWTools_CollectionMixin:Refresh_TransmogItems()
+        Save().scale[btn.name]= frame:GetScale()
     end,
     sizeUpdateFunc=function()
         WoWTools_CollectionMixin:Refresh_TransmogItems()

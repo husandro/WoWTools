@@ -1,7 +1,17 @@
+
+--[[冒险指南
+EncounterJournal.encounter.info == EncounterJournalEncounterFrameInfo
+EncounterJournal.encounter.info.BossesScrollBox == EncounterJournalEncounterFrameInfo.BossesScrollBox
+
+EncounterJournal.encounter.info.detailsScroll == EncounterJournalEncounterFrameInfoDetailsScrollFrame
+EncounterJournal.encounter.infoFrame ==          EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChild
+
+EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChild
+
+EncounterJournal.encounter.overviewFrame == EncounterJournal.encounter.info.overviewScroll.child
+EncounterJournal.encounter.overviewFrame == EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild
+]]
 WoWTools_EncounterMixin={}
-
-
-
 
 
 

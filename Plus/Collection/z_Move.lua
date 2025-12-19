@@ -244,18 +244,18 @@ local function Init_CollectionsJournal()
     WoWTools_MoveMixin:Setup(CollectionsJournal, {
         minW=703,
         minH=606,
-        sizeUpdateFunc=function(btn)
+        sizeUpdateFunc=function(_, btn)
             init_items_colllection(btn, true)
             if WarbandSceneJournal and WarbandSceneJournal:IsShown() then
                 WarbandSceneJournal:SetupJournalEntries()
             end
         end,
-        sizeStopFunc=function()
-            Save().size['CollectionsJournal']= {CollectionsJournal:GetSize()}
+        sizeStopFunc=function(frame)
+            Save().size[frame:GetName()]= {frame:GetSize()}
             update_frame()
         end,
-        sizeRestFunc=function(btn)
-            CollectionsJournal:SetSize(703, 606)
+        sizeRestFunc=function(frame, btn)
+            frame:SetSize(703, 606)
             Save().size['CollectionsJournal']=nil
             init_items_colllection(btn)
             update_frame()
@@ -361,7 +361,7 @@ end
 
 local function Init_WardrobeFrame()
     WoWTools_MoveMixin:Setup(WardrobeFrame, {
-    minW=965, minH=606,
+        minW=965, minH=606,
     initFunc=function()
         WardrobeTransmogFrame:ClearAllPoints()
         WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
@@ -370,21 +370,22 @@ local function Init_WardrobeFrame()
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetPoint('RIGHT', WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox, 'LEFT')
     end,
-    sizeUpdateFunc=function(btn)
+    sizeUpdateFunc=function(_, btn)
         init_items_colllection(btn, true)
     end,
-    sizeStopFunc=function()
-        Save().size['WardrobeFrame']= {WardrobeFrame:GetSize()}
+    sizeStopFunc=function(frame)
+        Save().size['WardrobeFrame']= {frame:GetSize()}
         update_frame()
     end,
-    sizeRestFunc=function(btn)
-        WardrobeFrame:SetSize(965, 606)
+    sizeRestFunc=function(frame, btn)
+        frame:SetSize(965, 606)
         Save().size[btn.name]=nil
         init_items_colllection(btn)
 
     end,
-    scaleStopFunc=function()
+    scaleStopFunc=function(frame, btn)
         update_frame()
+        WoWTools_MoveMixin:Save().scale[btn.name]= frame:GetScale()
     end,
     scaleRestFunc=function()
         update_frame()

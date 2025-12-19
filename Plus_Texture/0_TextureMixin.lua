@@ -169,9 +169,12 @@ local function Create_IconSelectorPopupFrame()
     IconFrame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
 
     WoWTools_MoveMixin:Setup(IconFrame, {
-        notSave=true, minW=524, minH=276, maxW=524,
-    sizeRestFunc=function()
-        IconFrame:SetSize(524, 495)
+        notSave=true,
+        minW=524,
+        minH=276,
+        maxW=524,
+    sizeRestFunc=function(f)
+        f:SetSize(524, 495)
     end})
 
     IconFrame:Hide()

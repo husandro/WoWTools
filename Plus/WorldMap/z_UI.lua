@@ -135,6 +135,7 @@ end
 
 
 function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
+--因为修改，内置参数，可能会出现，错误 
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
     local minimizedHeight= WorldMapFrame.minimizedHeight or 534
     local questLogWidth= WorldMapFrame.questLogWidth or 333
@@ -199,16 +200,16 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     self:Setup(WorldMapFrame, {
         minW=questLogWidth*2+37,
         minH=questLogWidth,
-        sizeUpdateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
-            set_min_max_value({WorldMapFrame:GetSize()})
-        end,
-        sizeRestFunc= function()
-            WorldMapFrame.minimizedWidth= minimizedWidth
-            WorldMapFrame.minimizedHeight= minimizedHeight
-            WorldMapFrame:SetSize(minimizedWidth+ questLogWidth, minimizedHeight)
-            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
-        end, sizeTooltip='|cnWARNING_FONT_COLOR:BUG|r'
-    })
+        sizeTooltip='|cnWARNING_FONT_COLOR:BUG|r',
+    sizeUpdateFunc= function(frame)--WorldMapMixin:UpdateMaximizedSize()
+        set_min_max_value({frame:GetSize()})
+    end,
+    sizeRestFunc= function(f)
+        f.minimizedWidth= minimizedWidth
+        f.minimizedHeight= minimizedHeight
+        f:SetSize(minimizedWidth+ questLogWidth, minimizedHeight)
+        f.BorderFrame.MaximizeMinimizeFrame:Minimize()
+    end,})
 
 
     QuestMapDetailsScrollFrame:SetPoint('BOTTOM', 0, 72)

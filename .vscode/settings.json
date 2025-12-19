@@ -2751,7 +2751,8 @@
         "CHANNELPULLOUT_OPACITY_LABEL",
         "MajorFactionRenownFrame",
         "MajorFactionsRenownToast",
-        "EncounterJournalJourneysFrame"
+        "EncounterJournalJourneysFrame",
+        "SLASH_STOPWATCH_PARAM_STOP5"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

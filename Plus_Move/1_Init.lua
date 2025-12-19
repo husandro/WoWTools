@@ -32,12 +32,11 @@ end
 
 
 
-
 local function Init_Panel()
 
     local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 
-    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
+    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)
 
 
     WoWTools_PanelMixin:Check_Button({
@@ -46,7 +45,7 @@ local function Init_Panel()
         SetValue= function()
             Save().SavePoint= not Save().SavePoint and true or nil
         end,
-        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION),
+        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         buttonFunc= function()
             StaticPopup_Show('WoWTools_RestData',
                 WoWTools_MoveMixin.addName

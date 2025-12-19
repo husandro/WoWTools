@@ -145,59 +145,58 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     self:Setup(CharacterFrame, {
         minW=450,
         minH=424,
-        sizeUpdateFunc=function()
-            if PaperDollFrame.EquipmentManagerPane:IsVisible() then
-                WoWTools_DataMixin:Call('PaperDollEquipmentManagerPane_Update')
+    sizeUpdateFunc=function()
+        if PaperDollFrame.EquipmentManagerPane:IsVisible() then
+            WoWTools_DataMixin:Call('PaperDollEquipmentManagerPane_Update')
+        end
+        if PaperDollFrame.TitleManagerPane:IsVisible() then
+            WoWTools_DataMixin:Call('PaperDollTitlesPane_Update')
+        end
+    end,
+    sizeStopFunc=function(frame)
+        if frame.Expanded then
+            self:Save().size['CharacterFrameExpanded']={frame:GetSize()}
+        else
+            self:Save().size['CharacterFrameCollapse']={frame:GetSize()}
+        end
+    end,
+    sizeRestFunc=function(f)
+        if not WoWTools_FrameMixin:IsLocked(f) then
+            if (self:Save().size['CharacterFrameExpanded'] or self:Save().size['CharacterFrameCollapse']) then
+                f:SetHeight(424)
             end
-            if PaperDollFrame.TitleManagerPane:IsVisible() then
-                WoWTools_DataMixin:Call('PaperDollTitlesPane_Update')
-            end
-        end,
-        sizeStopFunc=function()
-            if CharacterFrame.Expanded then
-                self:Save().size['CharacterFrameExpanded']={CharacterFrame:GetSize()}
-            else
-                self:Save().size['CharacterFrameCollapse']={CharacterFrame:GetSize()}
-            end
-        end,
-        sizeRestFunc=function()
-            if not WoWTools_FrameMixin:IsLocked(CharacterFrame) then
-                if (self:Save().size['CharacterFrameExpanded'] or self:Save().size['CharacterFrameCollapse']) then
-                    CharacterFrame:SetHeight(424)
-                end
-                self:Save().size['CharacterFrameExpanded']=nil
-                self:Save().size['CharacterFrameCollapse']=nil
-                WoWTools_DataMixin:Call(CharacterFrame.UpdateSize, CharacterFrame)
-            end
-        end,
-        sizeRestTooltipColorFunc=function(f)
-            return ((f.target.Expanded and self:Save().size['CharacterFrameExpanded']) or (not f.target.Expanded and self:Save().size['CharacterFrameCollapse'])) and '' or '|cff626262'
-        end,
-        addMenu= function(frame, root)
-            root:CreateDivider()
-            local sub= root:CreateButton(
-                (WoWTools_DataMixin.onlyChinese and '装备栏位' or ORDER_HALL_EQUIPMENT_SLOTS)
-                ..' '
-                ..(self:Save().CharacterSlotScale or 1),
-            function()
-                return MenuResponse.Open
-            end)
+            self:Save().size['CharacterFrameExpanded']=nil
+            self:Save().size['CharacterFrameCollapse']=nil
+            WoWTools_DataMixin:Call(f.UpdateSize, f)
+        end
+    end,
+    sizeRestTooltipColorFunc=function(f)
+        return ((f.target.Expanded and self:Save().size['CharacterFrameExpanded']) or (not f.target.Expanded and self:Save().size['CharacterFrameCollapse'])) and '' or '|cff626262'
+    end,
+    addMenu= function(frame, root)
+        root:CreateDivider()
+        local sub= root:CreateButton(
+            (WoWTools_DataMixin.onlyChinese and '装备栏位' or ORDER_HALL_EQUIPMENT_SLOTS)
+            ..' '
+            ..(self:Save().CharacterSlotScale or 1),
+        function()
+            return MenuResponse.Open
+        end)
 
-            WoWTools_MenuMixin:ScaleRoot(frame, sub,
-            function()
-                return self:Save().CharacterSlotScale or 1
-            end, function(value)
-                self:Save().CharacterSlotScale= value
-                settings()
-                Set_Button_Point()
+        WoWTools_MenuMixin:ScaleRoot(frame, sub,
+        function()
+            return self:Save().CharacterSlotScale or 1
+        end, function(value)
+            self:Save().CharacterSlotScale= value
+            settings()
+            Set_Button_Point()
 
-            end, function()
-                self:Save().CharacterSlotScale= nil
-                settings()
-                Set_Button_Point()
-            end)
-        end,
-    })
+        end, function()
+            self:Save().CharacterSlotScale= nil
+            settings()
+            Set_Button_Point()
+        end)
+    end})
 
     CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
     CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
@@ -209,13 +208,13 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
 
     self:Setup(CurrencyTransferMenu)
     self:Setup(CurrencyTransferLog, {
-        sizeRestFunc=function()
-            CurrencyTransferLog:ClearAllPoints()
-            CurrencyTransferLog:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
-            CurrencyTransferLog:SetSize(340, 370)
-        end, scaleRestFunc= function()
-            CurrencyTransferLog:ClearAllPoints()
-            CurrencyTransferLog:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+        sizeRestFunc=function(frame)
+            frame:ClearAllPoints()
+            frame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+            frame:SetSize(340, 370)
+        end, scaleRestFunc= function(frame)
+            frame:ClearAllPoints()
+            frame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
         end,
     })
 

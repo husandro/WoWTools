@@ -1203,8 +1203,8 @@ function WoWTools_MoveMixin.Events:Blizzard_ItemSocketingUI()
     self:Setup(ItemSocketingFrame, {
         minW=338,
         minH=424,
-    sizeRestFunc=function()
-        ItemSocketingFrame:SetSize(338, 424)
+    sizeRestFunc=function(frame)
+        frame:SetSize(338, 424)
         Set_Gem()
         ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
     end, sizeUpdateFunc=function()

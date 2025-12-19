@@ -72,8 +72,8 @@ function WoWTools_MoveMixin.Events:Blizzard_RaidFrame()
         minW=345,
         minH=128,
         notMoveAlpha=true,
-        sizeRestFunc=function()
-            RaidInfoFrame:SetSize(345, 250)
+        sizeRestFunc=function(frame)
+            frame:SetSize(345, 250)
             RaidInfoFrame_Set_point()
         end, restPointFunc=function()
             RaidInfoFrame_Set_point()
@@ -154,14 +154,14 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
 
     WoWTools_MoveMixin:Setup(FriendsFrame, {
         sizeUpdateFunc=function()
-            if RaidFrame:IsVisible() and not WoWTools_FrameMixin:IsLocked(RaidFrame) then
+            if RaidFrame and RaidFrame:IsVisible() and not WoWTools_FrameMixin:IsLocked(RaidFrame) then
                 Set_RaidFrame_Button_size()
                 WoWTools_DataMixin:Call('RaidGroupFrame_Update')
             end
         end,
-        sizeRestFunc=function()
-            FriendsFrame:SetSize(385, 424)
-            if RaidFrame:IsVisible() and RaidFrame:CanChangeAttribute() then
+        sizeRestFunc=function(frame)
+            frame:SetSize(385, 424)
+            if RaidFrame and RaidFrame:IsVisible() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
                 WoWTools_DataMixin:Call('RaidGroupFrame_Update')
             end
@@ -188,11 +188,9 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     WoWTools_MoveMixin:Setup(FriendsFriendsFrame, {
         minW=295,
         minH=157,
-        sizeRestFunc=function()
-            FriendsFriendsFrame:SetSize(314, 345)
-        end
-
-    })
+    sizeRestFunc=function(frame)
+        frame:SetSize(314, 345)
+    end})
 
 --好友 屏蔽列表
     --FriendsFrame.IgnoreListWindow.CloseButton:SetFrameStrata(FriendsFrame.IgnoreListWindow.TitleContainer:GetFrameStrata())

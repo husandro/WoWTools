@@ -207,13 +207,14 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
     local name= ProfessionsFrame:GetName()
 
     self:Setup(ProfessionsFrame, {
-    scaleStopFunc=function()
-        local sacle= ProfessionsFrame:GetScale()
+
+    scaleStopFunc=function(frame)
+        local sacle= frame:GetScale()
         if ProfessionsUtil.IsCraftingMinimized() then
             Save().scale[name..'Mini']= sacle
-        elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+        elseif frame.TabSystem.selectedTabID==2 then
             Save().scale[name..'Spec']= sacle
-        elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+        elseif frame.TabSystem.selectedTabID==3 then
             Save().scale[name..'Order']= sacle
         else
             Save().scale[name..'Normal']= sacle
@@ -241,35 +242,35 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
             return Save().size[name..'Normal'] and '' or '|cff626262'
         end
     end,
-    sizeStopFunc=function()
-        local size= {ProfessionsFrame:GetSize()}
+    sizeStopFunc=function(frame)
+        local size= {frame:GetSize()}
 
         if ProfessionsUtil.IsCraftingMinimized() then
             name= name..'Mini'
-        elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+        elseif frame.TabSystem.selectedTabID==2 then
             name= name..'Spec'
-        elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+        elseif frame.TabSystem.selectedTabID==3 then
             name= name..'Order'
         else
             name= name..'Normal'
         end
         Save().size[name]= size
-        ProfessionsFrame:Refresh()
+        frame:Refresh()
     end,
-    sizeRestFunc=function()
+    sizeRestFunc=function(f)
         if ProfessionsUtil.IsCraftingMinimized() then
-            ProfessionsFrame:SetSize(404, 658)
+            f:SetSize(404, 658)
 
         elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
-            ProfessionsFrame:SetSize(1144, 658)
+            f:SetSize(1144, 658)
 
         elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
-            ProfessionsFrame:SetSize(1105, 658)
+            f:SetSize(1105, 658)
 
         else
-            ProfessionsFrame:SetSize(942, 658)
+            f:SetSize(942, 658)
         end
-        ProfessionsFrame:Refresh()
+        f:Refresh()
         Save().size[name..'Spec']=nil
         Save().size[name..'Order']=nil
         Save().size[name..'Normal']=nil

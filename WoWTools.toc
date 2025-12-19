@@ -71,6 +71,7 @@ Plus_Move\Professions.lua
 Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
 Plus_Move\Transmog.lua
+Plus_Move\EncounterJournal.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -82,7 +83,7 @@ Plus_Texture\3_Init.lua
 Plus_Texture\ActionButton.lua
 Plus_Texture\ChatBubbles.lua
 Plus_Texture\ClassPower.lua
-##Plus_Texture\HelpTip.lua
+Plus_Texture\EncounterJournal.lua
 Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
 Plus_Texture\z_SharedXML.lua
@@ -356,7 +357,6 @@ Plus\Encounter\Plus.lua
 Plus\Encounter\ListInstances.lua
 Plus\Encounter\LootSpec.lua
 Plus\Encounter\Right_Info.lua
-Plus\Encounter\z_UI.lua
 ##史诗钥石地下城, 挑战增强
 Plus\Challenge\0_ChallengeMixin.lua
 Plus\Challenge\1_Init.lua
