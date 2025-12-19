@@ -51,7 +51,7 @@ local function Init_Menu(self, root)
         local text=-- col..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
                -- ..' '
                 col
-                ..WoWTools_MountMixin.TypeName[mountType]
+                ..(WoWTools_MountMixin.TypeName[mountType] or mountType)
                 ..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(mountType)
 
         local function getValue(data)
@@ -196,7 +196,7 @@ local function Init_UI_List_Menu(self, root)
     root:CreateDivider()
     for _, mountType in pairs(WoWTools_MountMixin.MountType) do
         root:CreateCheckbox(
-            WoWTools_MountMixin.TypeName[mountType]
+            (WoWTools_MountMixin.TypeName[mountType] or mountType)
                 ..' #'
                 ..WoWTools_MountMixin:Get_Table_Num(mountType),
         function(data)
@@ -283,7 +283,7 @@ local function Create_Button(frame)
                         text=text..HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(num)
                     end
                 end
-                text= text..WoWTools_MountMixin.TypeName[mountType]
+                text= text..(WoWTools_MountMixin.TypeName[mountType] or mountType)
             end
         end
         self.Text:SetText(text or '')--提示， 文本

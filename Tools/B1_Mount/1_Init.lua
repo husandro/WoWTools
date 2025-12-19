@@ -191,6 +191,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Flying= '飞行',
                         Dragonriding= '驭空术',
                         Floor= '区域',
+                        --[[Alt= 'Alt',
+                        Ctrl= 'Ctrl',
+                        Shift= 'Shift',]]
+                        
                     }
                 end
 

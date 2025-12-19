@@ -83,7 +83,7 @@ local function ClearAll_Menu(root, mountType)
         name,
     function(data)
         StaticPopup_Show('WoWTools_OK',
-        name..'\n\n'..WoWTools_MountMixin.TypeName[mountType],
+        name..'\n\n'..(WoWTools_MountMixin.TypeName[mountType] or mountType),
         nil,
         {SetValue=function()
            WoWToolsPlayerDate['Tools_Mounts'][mountType]={}
@@ -92,7 +92,7 @@ local function ClearAll_Menu(root, mountType)
             print(
                 WoWTools_MountMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 name,
-                WoWTools_MountMixin.TypeName[mountType]
+                (WoWTools_MountMixin.TypeName[mountType] or mountType)
             )
         end})
         return MenuResponse.Open
@@ -198,7 +198,7 @@ local function Set_Mount_Menu(root, mountType, spellID, num, index)
         end
     end
 
-    name= name or (icon..WoWTools_MountMixin.TypeName[mountType])
+    name= name or (icon..(WoWTools_MountMixin.TypeName[mountType] or mountType))
 
     sub=root:CreateButton(
         col..name,
