@@ -119,7 +119,6 @@
         "PaperDollFrame",
         "ProfessionsFrame",
         "ProfessionsFrame_LoadUI",
-        "MajorFactionRenownFrame",
         "ToggleCovenantRenown",
         "PlayerSpellsFrame",
         "PlayerSpellsFrame_LoadUI",
@@ -2749,7 +2748,10 @@
         "UIDropDownMenu_CreateInfo",
         "AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM",
         "CHATCONFIG_SELECTED_FILTER",
-        "CHANNELPULLOUT_OPACITY_LABEL"
+        "CHANNELPULLOUT_OPACITY_LABEL",
+        "MajorFactionRenownFrame",
+        "MajorFactionsRenownToast",
+        "EncounterJournalJourneysFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

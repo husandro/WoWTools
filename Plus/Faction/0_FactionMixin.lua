@@ -69,22 +69,30 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
 
     elseif isMajor then--名望
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
-        local info = C_MajorFactions.GetMajorFactionData(factionID) or {}
-        if info.renownLevel then
-            factionStandingtext= (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..info.renownLevel
-            local levels = C_MajorFactions.GetRenownLevels(factionID)
-            if levels then
-                factionStandingtext= factionStandingtext..'/'..#levels
+        local info = C_MajorFactions.GetMajorFactionData(factionID)
+        if info then
+            if info.isUnlocked then
+                if info.renownLevel then
+                    factionStandingtext= (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..info.renownLevel
+                    local levels = C_MajorFactions.GetRenownLevels(factionID)
+                    if levels then
+                        factionStandingtext= factionStandingtext..'/'..#levels
+                    end
+                end
+                if not isCapped then
+                    value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
+                    barColor= GREEN_FONT_COLOR
+                else
+                    value= '|cff626262'..(WoWTools_DataMixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+                end
+            else
+                factionStandingtext= '|A:AdventureMapIcon-Lock:0:0|a'
             end
+            if info.textureKit then
+                atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
+            end
+            isUnlocked= info.isUnlocked
         end
-        if not isCapped then
-            value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
-            barColor= GREEN_FONT_COLOR
-        else
-            value= '|cff626262'..(WoWTools_DataMixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
-        end
-        atlas=info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
-        isUnlocked= info.isUnlocked
     else
         if isHeaderWithRep or not isHeader then
             factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID)
@@ -123,7 +131,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
 
     local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励
     local hasRewardPending
-    if isParagon then--奖励
+    if isParagon and isUnlocked then--奖励
         local currentValue, threshold, _, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
         hasRewardPending= hasRewardPending2 and format('|A:GarrMission-%sChest:0:0|a', WoWTools_DataMixin.Player.Faction) or nil
         if not tooLowLevelForParagon and currentValue and threshold then

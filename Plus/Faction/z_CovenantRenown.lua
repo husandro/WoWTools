@@ -109,5 +109,7 @@ end
 
 --盟约 9.0
 function WoWTools_FactionMixin:Init_CovenantRenown(frame)
-    Init(frame)
+    if frame then
+        Init(frame)
+    end
 end

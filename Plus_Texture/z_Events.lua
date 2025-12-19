@@ -1162,9 +1162,7 @@ end
 
 --派系声望
 function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
-    --self:SetAlphaColor(MajorFactionRenownFrame.Background)
-    self:SetNineSlice(MajorFactionRenownFrame)
-    self:SetButton(MajorFactionRenownFrame.CloseButton)
+
 
 --解锁
     WoWTools_DataMixin:Hook(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(frame)--Blizzard_MajorFactionsLandingTemplates.lua
@@ -1174,6 +1172,13 @@ function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
     WoWTools_DataMixin:Hook(MajorFactionButtonLockedStateMixin, 'Refresh', function(frame)
         self:SetAlphaColor(frame.Background, nil, nil, 0.75)
     end)
+
+    if not MajorFactionRenownFrame then--12.0没发现
+        return
+    end
+    
+    self:SetNineSlice(MajorFactionRenownFrame)
+    self:SetButton(MajorFactionRenownFrame.CloseButton)
 
     self:Init_BGMenu_Frame(MajorFactionRenownFrame, {isNewButton=true,
         newButtonAlpha=1,
@@ -2454,4 +2459,10 @@ function WoWTools_TextureMixin.Events:Blizzard_PagedContent()
             end
         end
     end)
+end
+
+--死亡
+function WoWTools_TextureMixin.Events:Blizzard_DeathRecap()
+    self:SetButton(DeathRecapFrame.CloseXButton)
+    self:SetFrame(DeathRecapFrame, {alpha=1})
 end

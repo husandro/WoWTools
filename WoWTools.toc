@@ -1,4 +1,4 @@
-## Interface: 110207, 120001
+## Interface: 110207, 120000
 ## Title: |cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: @project-version@
@@ -14,7 +14,6 @@
 ## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !LibUIDropDownMenu, LibRangeCheck-3.0
 ####AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ####AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
-
 
 ##调用库，不能删除
 Source\Libs\LibStub.lua

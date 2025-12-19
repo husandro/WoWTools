@@ -1165,28 +1165,35 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
 function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
     tab= tab or {}
 
-    local name=  frame:GetName()
-
-    if not name and tab.name and not WoWTools_FrameMixin:IsLocked(frame) then
-        function frame:GetName()
-            return tab.name
+    local name
+    if frame then
+        name= frame:GetName()
+        if not name and tab.name then-- and not WoWTools_FrameMixin:IsLocked(frame) then
+            if frame then
+                function frame:GetName()
+                    return tab.name
+                end
+            end
+            name= tab.name
         end
-        name= tab.name
+    else
+        if WoWTools_DataMixin.Player.husandro then
+            print(frame, 'Init_BGMenu_Frame',WARNING_FONT_COLOR:WrapTextInColorCode('没发现frame'))
+        end
+        return
     end
 
-
-    if (
+     --[[(
             WoWToolsSave['Plus_Texture'].disabledTexture
             --or WoWToolsSave['Plus_Texture'].disabedBG
         ) and not tab.enabled
 
-        or not frame
-        or not name
-        or name==''
-    then
-        self:SetNineSlice(tab.NineSlice or frame)
+        or ]]
+    if not name or name=='' then
         return
     end
+
+    self:SetNineSlice(tab.NineSlice or frame)
 
     tab.name= name
 

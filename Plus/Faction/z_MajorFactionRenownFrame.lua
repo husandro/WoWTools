@@ -329,6 +329,10 @@ end
 
 --派系，列表 MajorFactionRenownFrame
 local function Init()
+    if not MajorFactionRenownFrame then--12.0没发现
+        return
+    end
+
     Button= WoWTools_ButtonMixin:Cbtn(MajorFactionRenownFrame.CloseButton, {size=22})
 
     function Button:set_scale()

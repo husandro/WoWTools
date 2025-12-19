@@ -345,7 +345,7 @@ local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
     end
     btn.itemButtonUse= itemButtonUse--使用物品
 
-    TrackButton.NumButton= index
+    TrackButton.allNumButton= index
 
     return btn
 end
@@ -478,7 +478,7 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	TrackButton:set_bg()
 
 	if TrackButton.endTokenIndex and TrackButton.endTokenIndex~= endTokenIndex then--货物，物品，分开
-		for i= 1, TrackButton.NumButton do
+		for i= 1, TrackButton.allNumButton do
 			local btn= _G[Name..i]
 			if btn and btn:CanChangeAttribute() then
 				btn:ClearAllPoints()
@@ -494,7 +494,7 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 
 
 
-	for i= #tab+1, TrackButton.NumButton do--隐藏，多余
+	for i= #tab+1, TrackButton.allNumButton do--隐藏，多余
 		local btn= _G[Name..i]
 		if btn then
 			btn.text:SetText('')
@@ -555,6 +555,8 @@ local function Init_TrackButton()
 
 	--TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWToolsCurrencyTrackMainButton', size=23})
 	TrackButton= CreateFrame('Button', 'WoWToolsCurrencyTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
+
+	TrackButton.allNumButton=0
 
 	Frame= CreateFrame('Frame', 'WoWToolsCurrencyTrackMainFrame', TrackButton)
 	Frame:SetSize(1, 1)

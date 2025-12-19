@@ -218,15 +218,27 @@ end
 
 
 
---派系声望
+--派系声望 ReputationDetailViewRenownButtonMixin:OnClick()
 function WoWTools_LoadUIMixin:MajorFaction(factionID)
-    if factionID and MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID then
-        MajorFactionRenownFrame:Hide()
-    else
-        if not MajorFactionRenownFrame then
-            UIParentLoadAddOn("Blizzard_MajorFactions")
+    if MajorFactionsRenownToast then--12.0才有
+        if not EncounterJournal then
+            EncounterJournal_LoadUI();
         end
-        ToggleMajorFactionRenown(factionID)
+        if not EncounterJournal:IsShown() then
+            ShowUIPanel(EncounterJournal);
+        end
+        EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID())
+        EncounterJournalJourneysFrame:ResetView(nil, factionID)
+
+    else
+        if factionID and MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID then
+            MajorFactionRenownFrame:Hide()
+        else
+            if not MajorFactionRenownFrame then
+                UIParentLoadAddOn("Blizzard_MajorFactions")
+            end
+            ToggleMajorFactionRenown(factionID)
+        end
     end
 end
 

@@ -11,29 +11,41 @@ local function Set_Faction_Menu(root, factionID)
         return
     end
 
-    local sub=root:CreateCheckbox(
-        (info.atlas and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
-        ..WoWTools_TextMixin:CN(info.name)
+    local icon=''
+    if info.atlas then
+        icon= '|A:'..info.atlas..':18:18|a'
+    elseif info.texture then
+        icon= '|T'..info.texture..':18|t'
+    end
+
+    local name= WoWTools_TextMixin:CN(info.name)
+    if not info.isUnlocked then
+        name= DISABLED_FONT_COLOR:WrapTextInColorCode(name)
+    end
+
+    local sub=root:CreateRadio(
+        icon..name
         ..(info.color and '|c'..info.color:GenerateHexColor() or '|cffffffff')
-        ..(info.factionStandingtext and ' '..info.factionStandingtext..' ' or '')
+        ..(info.factionStandingtext and not info.isCapped and ' '..info.factionStandingtext..' ' or ' ')
         ..'|r'
         ..(info.valueText or '')
         ..(info.hasRewardPending and '|A:BonusLoot-Chest:0:0|a' or ''),
 
     function(data)
-        return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
-
+        if MajorFactionRenownFrame then--12.0没有了
+            return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
+        else
+            return EncounterJournalJourneysFrame and EncounterJournalJourneysFrame.JourneyProgress.majorFactionData.factionID==data.factionID
+        end
     end, function(data)
         WoWTools_LoadUIMixin:MajorFaction(data.factionID)
-
+        return MenuResponse.Refresh
     end, {factionID=factionID})
 
     WoWTools_SetTooltipMixin:FactionMenu(sub)
 
     return sub
 end
-
-
 
 
 
