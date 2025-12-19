@@ -7,6 +7,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --RaidFinder.lua
 local function isRaidFinderDungeonDisplayable(dungeonID)
     local _, _, _, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(dungeonID)
@@ -35,6 +43,17 @@ local function Set_Tooltip(tooltip, desc)
     local bossTab= desc.data.bossTab
     local modifiedDesc= desc.data.modifiedDesc
 
+    if not desc.data.isEnabled then
+        GameTooltip_AddErrorLine(tooltip,
+            WoWTools_DataMixin.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS
+        )
+        local declined= LFGConstructDeclinedMessage(desc.data.dungeonID)
+        if declined and declined~='' then
+            GameTooltip_AddErrorLine(tooltip,
+                WoWTools_TextMixin:CN(declined)
+            )
+        end
+    end
 
     local rewardID, rewardType, rewardArg= desc.data.rewardIndex, desc.data.rewardType, desc.data.rewardArg
 
@@ -264,6 +283,7 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
                     rewardType= rewardType,
                     rewardArg= rewardArg,
                     listType= listType,
+                    isEnabled= isEnabled,
                 })
                 sub2:SetTooltip(Set_Tooltip)
 
@@ -330,8 +350,8 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
         local dungeonID, name = GetRandomScenarioInfo(i)
         if dungeonID and name then
             local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(dungeonID)
-
-            if isAvailableForAll and isAvailableForPlayer then
+            local isEnabled= isAvailableForAll and isAvailableForPlayer
+            if isEnabled then
                 reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
                 sub2=sub:CreateButton(
                     WoWTools_TextMixin:CN(name)..reward,
@@ -351,6 +371,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                     rewardIndex= rewardIndex,
                     rewardType= rewardType,
                     rewardArg= rewardArg,
+                    isEnabled= true,
                 })
                 sub2:SetTooltip(Set_Tooltip)
 
@@ -359,7 +380,9 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 find= find+1
 
             else
-                sub2=sub:CreateButton('     |cff626262'..WoWTools_TextMixin:CN(name)..' |r', function()
+                sub2=sub:CreateButton(
+                    '     |cff626262'..WoWTools_TextMixin:CN(name)..' |r',
+                function()
                     return MenuResponse.Open
                 end, {
                     dungeonID= dungeonID,
@@ -456,7 +479,7 @@ end
 
 
 
-
+--随机地下城
 --副本， 菜单列表
 --5人，随机 LFDFrame.lua
 local function set_Party_Menu_List(root2)
@@ -476,7 +499,7 @@ local function set_Party_Menu_List(root2)
                 table.insert(tab, {
                     dungeonID= dungeonID,
                     name= name,
-                    isAvailableForPlayer= isAvailableForPlayer
+                    isEnabled= isAvailableForAll and isAvailableForPlayer
                 })
                 num= num+1
             end
@@ -500,7 +523,7 @@ local function set_Party_Menu_List(root2)
     for _, info in pairs(tab) do
         local name= info.name
         local dungeonID= info.dungeonID
-        if info.isAvailableForPlayer then
+        if info.isEnabled then
             local reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
             local isHoliday= select(15, GetLFGDungeonInfo(dungeonID))
             local sub2= isHoliday and root2 or root
@@ -528,6 +551,7 @@ local function set_Party_Menu_List(root2)
                 rewardIndex= rewardIndex,
                 rewardType= rewardType,
                 rewardArg= rewardArg,
+                isEnabled= true
             })
 
             sub:SetTooltip(Set_Tooltip)
@@ -608,8 +632,8 @@ end
 
 --团队本
 local function set_Raid_Menu_List(root2)
-    local isMaxLevel= WoWTools_DataMixin.Player.IsMaxLevel
-    local hide= Save().hideDontEnterMenu and isMaxLevel
+    --local isMaxLevel= WoWTools_DataMixin.Player.IsMaxLevel
+    local hide= Save().hideDontEnterMenu --and isMaxLevel
     local sortedDungeons= {}
 
     local function InsertDungeonData(dungeonID, name, mapName, isAvailable, mapID)
@@ -617,7 +641,7 @@ local function set_Raid_Menu_List(root2)
             return
         end
 
-        local tab = { id = dungeonID, name = name, mapName = mapName, isAvailable = isAvailable, mapID = mapID }
+        local tab = { id= dungeonID, name= name, mapName= mapName, isAvailable= isAvailable, mapID = mapID }
         local foundMap = false
         for i = 1, #sortedDungeons do
             if ( sortedDungeons[i].mapName == mapName ) then
@@ -643,7 +667,7 @@ local function set_Raid_Menu_List(root2)
             if name and (not hideIfNotJoinable or isAvailable)
                 and (isAvailable or isAvailableToPlayer or isRaidFinderDungeonDisplayable(dungeonID))
             then
-                InsertDungeonData(dungeonID, name, mapName, isAvailable, mapID)
+                InsertDungeonData(dungeonID, name, mapName, isAvailable and isAvailableToPlayer, mapID)
             end
         end
     end
@@ -652,32 +676,27 @@ local function set_Raid_Menu_List(root2)
 
     local num= #sortedDungeons
 
-    local header=NORMAL_FONT_COLOR:WrapTextInColorCode(
-        (WoWTools_DataMixin.onlyChinese and '随机团队' or PLAYER_DIFFICULTY3)
-        ..' #'
-    )
 
     local root=root2
-    if not isMaxLevel or num==0 then
+    if num==0 then
         root= root:CreateButton(
-            header..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..num,
+            NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '随机团队' or PLAYER_DIFFICULTY3),
         function()
             if C_LFGInfo.IsLFREnabled() and (not RaidFinderFrame or not RaidFinderFrame:IsShown()) then
                 PVEFrame_ToggleFrame("GroupFinderFrame", RaidFinderFrame)
             end
             return MenuResponse.Open
-        end)
+        end, {rightText=0})
         root:SetTooltip(function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.Icon.left..MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"))
         end)
-    end
-
-    if num==0 then
+        WoWTools_MenuMixin:SetRightText(root)
         return
     end
 
+
+
     local currentMapName, sub, icon, reward, rewardIndex, rewardType, rewardArg
-    local find=0
     local scenarioInfo = C_ScenarioInfo.GetScenarioInfo() or {}
     local scenarioName= scenarioInfo.name--场景名称
     if scenarioName then
@@ -717,6 +736,8 @@ local function set_Raid_Menu_List(root2)
 
             local bossNum= GetLFGDungeonNumEncounters(dungeonID) or 0
             local killNum=0
+            local indexText
+
             if bossNum>0 then
                 for encounterIndex= 1, bossNum, 1 do
                     local bossName, texture, isKilled = GetLFGDungeonEncounterInfo(dungeonID, encounterIndex)
@@ -727,7 +748,7 @@ local function set_Raid_Menu_List(root2)
                         killText= killText..' '..encounterIndex
                     end
                     table.insert(bossTab,
-                        (texture and '|T'..texture..':0|t' or '')
+                        '|T'..(texture or 0)..':0|t'
                         ..(isKilled and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')
                         ..WoWTools_TextMixin:CN(bossName)
                     )
@@ -738,8 +759,8 @@ local function set_Raid_Menu_List(root2)
 
             reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
             sub=root:CreateButton(
-                ((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName)) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
-                ..(modifiedIcon or '')
+                ((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName)) and '|A:auctionhouse-icon-favorite:0:0|a' or '|T0:0|t')--在当前副本
+                ..(modifiedIcon or '|T0:0|t')
                 ..(isKillAll and '|cff626262' or '')
                 ..WoWTools_TextMixin:CN(dungeonName)--名称
                 ..reward
@@ -769,15 +790,18 @@ local function set_Raid_Menu_List(root2)
                 rewardIndex= rewardIndex,
                 rewardType= rewardType,
                 rewardArg= rewardArg,
+                isEnabled= true,
             })
             sub:SetTooltip(Set_Tooltip)
 
             sub:AddInitializer(Add_Initializer)
 
-            find= find+1
-
         else
-            sub=root:CreateButton((modifiedIcon or '')..'|cff626262'..WoWTools_TextMixin:CN(dungeonName)..' |r', function()
+            sub=root:CreateButton(
+                (modifiedIcon or '|T0:0|t')
+                ..'|cff626262'
+                ..WoWTools_TextMixin:CN(dungeonName),
+            function()
                 return MenuResponse.Open
              end, {modifiedDesc=modifiedDesc, dungeonID=dungeonID}
             )
@@ -800,15 +824,6 @@ local function set_Raid_Menu_List(root2)
             end)
         end
     end
-
-    if not isMaxLevel and num~=find then
-        root:AddInitializer(function (btn)
-            btn.fontString:SetText(
-                header..(find>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..find
-            )
-        end)
-    end
-
 end
 
 
