@@ -141,12 +141,14 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingDashboard()
     end
 
     self:Setup(HousingDashboardFrame, {
-        minW=405, minH=455,
+        minW=405,
+        minH=455,
     sizeRestFunc=function(f)
         f:SetSize(814, 544)
 --这个是修改参数，可能会有BUG
         f.baseWidth, f.baseHeight= 814, 544
     end})
+
     self:Setup(HousingDashboardFrame.HouseInfoContent.DashboardNoHousesFrame, {frame=HousingDashboardFrame})
 end
 
