@@ -91,8 +91,8 @@ local PointTab={
         return not Save().hideBottomList
     end, function()
         Save().hideBottomList= not Save().hideBottomList and true or nil
-        _G['WoWToolsMacroBottomListFrame']:settings()
-        WoWTools_MacroMixin.NewEmptyButton:settings()
+        WoWTools_MacroMixin:Init_List_Button()
+        WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
         TargetButton:settings()
     end)
 
@@ -102,10 +102,10 @@ local PointTab={
         return Save().bottomListScale or 1
     end, function(value)
         Save().bottomListScale=value
-        _G['WoWToolsMacroBottomListFrame']:settings()
+        WoWTools_MacroMixin:Init_List_Button()
     end, function ()
         Save().bottomListScale=nil
-        _G['WoWToolsMacroBottomListFrame']:settings()
+        WoWTools_MacroMixin:Init_List_Button()
     end)
 
 --全部删除

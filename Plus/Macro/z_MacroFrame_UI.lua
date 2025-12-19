@@ -62,7 +62,7 @@ function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
     self:SetAlphaColor(MacroHorizontalBarLeft, true)
     self:HideTexture(MacroFrameSelectedMacroBackground)
     self:SetScrollBar(MacroFrame.MacroSelector)
-    self:SetScrollBar(_G['WoWToolsMacroPlusNoteEditBox'])
+
     self:SetScrollBar(MacroFrameScrollFrame)
     self:SetButton(MacroFrameCloseButton)
 

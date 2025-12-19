@@ -10,7 +10,7 @@ local isZero= (isGolbal and global==0) or (not isGolbal and perChar==0)
 local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
 ]]
 
-local Button
+
 --新建，宏，列表
 --#############
 local MacroButtonList={
@@ -54,13 +54,14 @@ local function Save_Macro_Menu(frame, root)
         spellID= GetMacroSpell(index)
         local spellName= spellID and C_Spell.GetSpellName(spellID)
 
-       WoWTools_DataMixin:Load(itemLink, 'item')
-       WoWTools_DataMixin:Load(spellID, 'spell')
+        WoWTools_DataMixin:Load(itemLink, 'item')
+        WoWTools_DataMixin:Load(spellID, 'spell')
 
         header= '|T'..(icon or 134400)..':0|t'.. (name and name:gsub(' ', '') or '')..(spellName or spellID or '')..(itemName or itemLink or '')
         sub=root:CreateCheckbox(
-            ((not body or body=='') and '|cff626262' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '保存' or SAVE)
+            '|A:PetJournal-FavoritesIcon:0:0|a'
+            ..((not body or body=='') and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES)
             ..' '..header,
         function(data)
             return data.header and Save().macro[data.header]
@@ -77,7 +78,11 @@ local function Save_Macro_Menu(frame, root)
 
         WoWTools_MacroMixin:SetMenuTooltip(sub)--宏，提示
     else
-        sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '保存' or SAVE, function() return MenuResponse.Open end)
+        root:CreateTitle(
+            '|A:PetJournal-FavoritesIcon:0:0|a'
+            ..DISABLED_FONT_COLOR:WrapTextInColorCode(
+                WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES
+            ))
     end
 
 
@@ -107,7 +112,7 @@ local function Save_Macro_Menu(frame, root)
 --删除
         sub3=sub2:CreateCheckbox(
             '|A:XMarksTheSpot:0:0|a'
-            ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
+            ..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE),
         function(data)
             return Save().macro[data.head2]
         end, function(data)
@@ -116,13 +121,13 @@ local function Save_Macro_Menu(frame, root)
             if Save().macro[data.head2] then
                 print(
                     WoWTools_MacroMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '保存' or SAVE)
+                    GREEN_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES)
                 )
             else
                 print(
                     WoWTools_MacroMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnWARNING_FONT_COLOR:',
-                    WoWTools_DataMixin.onlyChinese and '删除' or DELETE
+                    WoWTools_DataMixin.onlyChinese and '移除' or REMOVE
                 )
                 print(
                     data.body
@@ -158,7 +163,10 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
 --战斗中/已满
     local notMax= MacroNewButton:IsEnabled()
     if WoWTools_MenuMixin:CheckInCombat(root) then
@@ -187,7 +195,7 @@ local function Init_Menu(_, root)
 
 --保存
     root:CreateDivider()
-    Save_Macro_Menu(_, root)
+    Save_Macro_Menu(self, root)
 end
 
 
@@ -205,47 +213,43 @@ end
 --创建，空，按钮
 --#############
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(MacroFrame, {size=22, name='WoWTools_MacroNewEmptyButton'})
-    WoWTools_MacroMixin.NewEmptyButton= Button
-    Button.texture= Button:CreateTexture(nil, 'ARTWORK')
-    Button.texture:SetAtlas('communities-chat-icon-plus')
-    Button.texture:SetAllPoints()
-
-    Button:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT',2 ,0)
-    Button:SetScript('OnLeave', GameTooltip_Hide)
-    function Button:set_Tooltips()
-        local col= WoWTools_MacroMixin:IsCanCreateNewMacro() and '' or '|cff626262'
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(col..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left, WoWTools_DataMixin.Icon.right..col..(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))
-        GameTooltip:Show()
+    if Save().hideBottomList then
+        return
     end
 
-    Button:SetScript('OnEnter', Button.set_Tooltips)
-    Button:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' then
-            WoWTools_MacroMixin:CreateMacroNew()--新建，宏
-        elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(...)
-                Init_Menu(...)
-            end)
-        end
+    local btn= CreateFrame('Button', 'WoWToolsMacroNewEmptyButton', MacroFrame, 'WoWToolsButtonTemplate')
+    btn:SetNormalAtlas('communities-chat-icon-plus')
+    btn:SetPoint('BOTTOMLEFT', _G['MacroFrameTab3'] or MacroFrameTab2, 'BOTTOMRIGHT', 2 ,0)
+    function btn:tooltip(tooltip)
+        tooltip:AddLine(
+            (WoWTools_MacroMixin:IsCanCreateNewMacro() and '' or '|cff626262')
+            ..'|A:communities-chat-icon-plus:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
+        )
+    end
+    btn:SetScript('OnClick', function()
+        WoWTools_MacroMixin:CreateMacroNew()--新建，宏
     end)
-    Button:SetScript('OnMouseUp', Button.set_Tooltips)
+
+    local menu= CreateFrame('DropdownButton', 'WoWToolsMacroEmptyMenuButton', btn, 'WoWToolsMenuTemplate')
+    menu:SetPoint('LEFT', btn, 'RIGHT')
+    menu:SetNormalAtlas('PetJournal-FavoritesIcon')
+    menu:GetNormalTexture():SetVertexColor(1,1,1,1)
+    menu:SetupMenu(Init_Menu)
+    menu.tooltip= '|A:PetJournal-FavoritesIcon:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES)
 
     WoWTools_DataMixin:Hook(MacroFrame, 'UpdateButtons', function()
-        if WoWTools_MacroMixin:IsCanCreateNewMacro() then
-            Button.texture:SetVertexColor(0,1,0)
-        else
-            Button.texture:SetVertexColor(1,1,1)
-        end
+        local enabled= WoWTools_MacroMixin:IsCanCreateNewMacro()
+        _G['WoWToolsMacroNewEmptyButton']:SetEnabled(enabled)
+        _G['WoWToolsMacroEmptyMenuButton']:SetEnabled(enabled)
     end)
 
-    function Button:settings()
-        self:SetShown(not Save().hideBottomList)
+    Init=function()
+        local show= not Save().hideBottomList
+         _G['WoWToolsMacroNewEmptyButton']:SetShown(show)
+        _G['WoWToolsMacroEmptyMenuButton']:SetShown(show)
     end
-
-    Button:settings()
 end
 
 

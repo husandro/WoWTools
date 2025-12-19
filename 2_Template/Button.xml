@@ -62,12 +62,9 @@
     <DropdownButton name="WoWToolsMenuTemplate" virtual="true">
         <Size x="23" y="23"/>
         <NormalTexture atlas="ui-questtrackerbutton-filter"/>
-        <PushedTexture atlas="ui-questtrackerbutton-filter-pressed"/>
-        <HighlightTexture atlas="ui-questtrackerbutton-red-highlight"/>
         <Scripts>
             <OnLoad>
-                self:EnableMouseWheel(true)
-                self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+                WoWToolsButton_MenuOnLoad(self)
                 WoWTools_TextureMixin:SetButton(self, {alpha=0.5})
             </OnLoad>
             <OnLeave function="WoWToolsButton_OnLeave"/>

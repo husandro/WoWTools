@@ -74,7 +74,7 @@ local function Init_Panel()
         category= WoWTools_ToolsMixin.Category,
         layout=WoWTools_ToolsMixin.Layout,
         title= WoWTools_ToolsMixin.addName,
-        buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+        buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
         addSearchTags= WoWTools_DataMixin.onlyChinese and '重置' or RESET,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',

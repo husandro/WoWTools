@@ -19,30 +19,26 @@ end
 
 
 
+local function Init_Load()
+    WoWTools_MacroMixin:Init_Set_UI()
+    WoWTools_MacroMixin:Init_Button()--宏列表，位置
+    WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
+    WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
+    WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
+    WoWTools_MacroMixin:Init_ChangeTab()
+    WoWTools_MacroMixin:Init_MacroButton_Plus()
 
+    Init_Load=function()end
+end
 
 local function Init()
     if WoWTools_FrameMixin:IsLocked(MacroFrame) then
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
-            WoWTools_MacroMixin:Init_Set_UI()
-            WoWTools_MacroMixin:Init_Button()--宏列表，位置
-            WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
-            WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
-            WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
-            WoWTools_MacroMixin:Init_ChangeTab()
-            WoWTools_MacroMixin:Init_MacroButton_Plus()
-
+            Init_Load()
             EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
         end)
-
     else
-        WoWTools_MacroMixin:Init_Set_UI()
-        WoWTools_MacroMixin:Init_Button()--宏列表，位置
-        WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
-        WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
-        WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
-        WoWTools_MacroMixin:Init_ChangeTab()
-        WoWTools_MacroMixin:Init_MacroButton_Plus()
+        Init_Load()
     end
 
     Init=function()end
@@ -56,10 +52,6 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
-
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -103,16 +95,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_MacroUI' and WoWToolsSave then
-            if InCombatLockdown() then
-                self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            else
-                Init()
-            end
+            self:UnregisterEvent(event)
+            Init()
         end
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        Init()
-        self:UnregisterEvent(event)
 
     elseif event == "PLAYER_LOGOUT" then
         if not WoWTools_DataMixin.ClearAllSave then

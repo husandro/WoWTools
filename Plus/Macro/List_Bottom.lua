@@ -3,7 +3,6 @@
 local function Save()
     return WoWToolsSave['Plus_Macro2']
 end
-local Frame
 
 
 
@@ -938,7 +937,11 @@ end
 
 --命令，按钮，列表
 local function Init()
-    Frame= CreateFrame("Frame", 'WoWToolsMacroBottomListFrame', MacroFrame)
+    if Save().hideBottomList then
+        return
+    end
+
+    local Frame= CreateFrame("Frame", 'WoWToolsMacroBottomListFrame', MacroFrame)
     --WoWTools_MacroMixin.BottomListFrame= Frame
 
     WoWTools_TextureMixin:CreateBG(Frame, {isColor=true})
@@ -1042,7 +1045,9 @@ local function Init()
 
     Frame:settings()
 
-    Init=function()end
+    Init=function()
+        _G['WoWToolsMacroBottomListFrame']:settings()
+    end
 end
 
 

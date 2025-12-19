@@ -30,3 +30,9 @@ function WoWToolsButton_OnEnter(self)
         self:SetAlpha(self:IsMouseOver() and 1 or self.alpha)
     end
 end
+
+function WoWToolsButton_MenuOnLoad(self)
+    self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    self:SetPushedAtlas("newplayertutorial-drag-cursor")
+    self:SetHighlightAtlas("WoWShare-Highlight")
+end
