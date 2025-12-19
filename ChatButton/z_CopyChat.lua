@@ -88,6 +88,9 @@ local function Get_Text(index)
 
 
 	if numMessage==0 then
+		if WoWTools_DataMixin.Player.husandro then
+			print('GetNumMessages', frame, index , numMessage)
+		end
 		return
 	end
 
@@ -373,19 +376,6 @@ end
 
 
 local function Init()
-	local isLoggingChat= C_ChatInfo.IsLoggingChat()
-	local chat= Save().IsLoggingChat
-	if chat~=nil and chat~=isLoggingChat then
-		LoggingChat(chat)
-		Print_Text(C_ChatInfo.IsLoggingChat(), true)
-	end
-
-	local isLoggingCombat= C_ChatInfo.IsLoggingCombat()
-	local combat = Save().IsLoggingCombat
-	if combat~=nil and isLoggingCombat ~=combat then
-		LoggingCombat(combat)
-		Print_Text(C_ChatInfo.IsLoggingCombat(), false)
-	end
 
 	if Save().isShowButton then
 		for index = 1, NUM_CHAT_WINDOWS do
@@ -460,6 +450,22 @@ frame:SetScript('OnEvent', function(self, event, arg1)
 			if Save().disabled then
 				self:SetScript('OnEvent', nil)
 			else
+
+				local isLoggingChat= C_ChatInfo.IsLoggingChat()
+				local chat= Save().IsLoggingChat
+				if chat~=nil and chat~=isLoggingChat then
+					LoggingChat(chat)
+					Print_Text(C_ChatInfo.IsLoggingChat(), true)
+				end
+
+				local isLoggingCombat= C_ChatInfo.IsLoggingCombat()
+				local combat = Save().IsLoggingCombat
+				if combat~=nil and isLoggingCombat ~=combat then
+					LoggingCombat(combat)
+					Print_Text(C_ChatInfo.IsLoggingCombat(), false)
+				end
+
+
 				self:RegisterEvent('PLAYER_ENTERING_WORLD')
 			end
 			self:UnregisterEvent(event)
