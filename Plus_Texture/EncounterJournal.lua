@@ -72,8 +72,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     end)
 --副本信息
     self:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
---副本列表
-    EncounterJournalInstanceSelectBG:SetAlpha(0)
+
 --套装
     self:SetScrollBar(EncounterJournal.LootJournal)
     self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
@@ -118,12 +117,10 @@ self:SetButton(EncounterJournalInstanceSelect.GreatVaultButton, {alpha=1})
 
 --旅程
 if EncounterJournalJourneysFrame then--12.0才有
-    
     self:SetButton(EncounterJournalJourneysFrame.JourneyProgress.OverviewBtn, {alpha=1})
     self:SetScrollBar(EncounterJournalJourneysFrame)
     self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyOverview.DividerTexture, nil, nil, true)
 end
-
 
     self:Init_BGMenu_Frame(EncounterJournal, {
     settings= function(icon, textureName, alphaValue)
@@ -131,6 +128,8 @@ end
             local alpha= textureName and 0 or alphaValue or 1
             EncounterJournalJourneysFrame.BorderFrame.Border:SetAlpha(alpha)
             EncounterJournalJourneysFrame.BorderFrame.TopDetail:SetAlpha(alpha)
+--副本列表
+            EncounterJournalInstanceSelectBG:SetAlpha(alpha)
             if EncounterJournalInstanceSelect.evergreenBg then
                 EncounterJournalInstanceSelect.evergreenBg:SetAlpha(alpha)
             end

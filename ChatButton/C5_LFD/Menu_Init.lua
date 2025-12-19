@@ -203,15 +203,15 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
             (listType=='follower'
                 and (WoWTools_DataMixin.onlyChinese and '追随者地下城' or LFG_TYPE_FOLLOWER_DUNGEON)
                 or (WoWTools_DataMixin.onlyChinese and '指定地下城' or SPECIFIC_DUNGEONS)
-            )..' #'
+            )
     )
 
 
-    local num= #followerList
+
     local sub, sub2
 
     sub= root:CreateButton(
-        header..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..num,
+        header,
     function(data)
         PVEFrame_ShowFrame("GroupFinderFrame", LFDParentFrame)--RaidFinderFrame
         LFDQueueFrame_SetType(data.listType)
@@ -220,10 +220,6 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.Icon.left..MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"))
     end)
-
-    if num==0 then
-        return
-    end
 
     local find=0
 
@@ -235,7 +231,8 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
 
         else
             local info = C_LFGInfo.GetDungeonInfo(dungeonID)
-            local isAvailableForAll, _, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
+            local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
+            local isEnabled= isAvailableForAll and isAvailableForPlayer
             if info and info.name and (isAvailableForAll or not hid2eIfNotJoinable) then
                 if title then
                     sub:CreateTitle(WoWTools_TextMixin:CN(title))
@@ -244,6 +241,7 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
                 local reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
                 sub2= sub:CreateButton(
                     '|T'..(info.iconID or 0)..':0|t'
+                    ..(isEnabled and '' or '|cff626262')
                     ..WoWTools_TextMixin:CN(info.name)
                     ..reward
                     ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
@@ -271,22 +269,16 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
 
                 sub2:AddInitializer(Add_Initializer)
 
-                find=find+1
+                if isEnabled then
+                    find=find+1
+                end
             end
 
         end
     end
 
-    if find~=num then
-        sub:AddInitializer(function (btn)
-            btn.fontString:SetText(
-            header
-            ..(find>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')
-            ..find
-        )
-        end)
-    end
-
+    sub:SetData({rightText=find})
+    WoWTools_MenuMixin:SetRightText(sub)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 
@@ -322,20 +314,14 @@ end
 local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
     local sub, sub2, reward, rewardIndex, rewardType, rewardArg
     local numScenario= GetNumRandomScenarios() or 0
-    local header= NORMAL_FONT_COLOR:WrapTextInColorCode(
-            (WoWTools_DataMixin.onlyChinese and '场景战役' or SCENARIOS)
-            ..' #'
-    )
+    local header= NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '场景战役' or SCENARIOS)
 
     sub= root:CreateButton(
-        header..(numScenario>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..numScenario,
+        header,
     function()
         return MenuResponse.Open
     end)
 
-    if numScenario==0 then
-        return
-    end
 
     local find=0
 
@@ -348,7 +334,6 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
             if isAvailableForAll and isAvailableForPlayer then
                 reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
                 sub2=sub:CreateButton(
-                    --WoWTools_TextMixin:CN(name, {scenarioID=dungeonID, isName=true})..reward,
                     WoWTools_TextMixin:CN(name)..reward,
                 function(data)
                     if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
@@ -403,9 +388,12 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
             end
         end
     end
+
+    sub:SetData({rightText=find})
+    WoWTools_MenuMixin:SetRightText(sub)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
-    if find~=numScenario then
+    --[[if find~=numScenario then
         sub:AddInitializer(function(btn)
             btn.fontString:SetText(
                 header
@@ -413,7 +401,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 ..find
             )
         end)
-    end
+    end]]
 end
 
 
@@ -473,9 +461,7 @@ end
 --5人，随机 LFDFrame.lua
 local function set_Party_Menu_List(root2)
     local isMaxLevel= WoWTools_DataMixin.Player.IsMaxLevel
-    local header= NORMAL_FONT_COLOR:WrapTextInColorCode(
-        (WoWTools_DataMixin.onlyChinese and '随机地下城' or LFG_TYPE_RANDOM_DUNGEON)..' #'
-    )
+    local header= NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '随机地下城' or LFG_TYPE_RANDOM_DUNGEON)
 
     local hide= Save().hideDontEnterMenu and not isMaxLevel
 
@@ -501,7 +487,7 @@ local function set_Party_Menu_List(root2)
     local root
     if isMaxLevel or num==0 then
         root= root2:CreateButton(
-            header..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..num,
+            header,
         function()
             return MenuResponse.Open
         end)
@@ -509,9 +495,6 @@ local function set_Party_Menu_List(root2)
         root=root2
     end
 
-    if num==0 then
-        return
-    end
 
     local find= 0
     for _, info in pairs(tab) do
@@ -555,7 +538,9 @@ local function set_Party_Menu_List(root2)
             end
 
         else
-            local sub=root:CreateButton('   |cff626262'..WoWTools_TextMixin:CN(name)..' |r', function()
+            local sub=root:CreateButton(
+                '   |cff626262'..WoWTools_TextMixin:CN(name)..' |r',
+            function()
                 return MenuResponse.Open
             end, {
                 dungeonID=dungeonID,
@@ -584,14 +569,10 @@ local function set_Party_Menu_List(root2)
         end
     end
 
-    if isMaxLevel then
-        if find~=num then
-            root:AddInitializer(function(btn)
-                btn.fontString:SetText(header..(find>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..find)
-            end)
-        end
-        WoWTools_MenuMixin:SetScrollMode(root)
-    end
+    root:SetData({rightText=find})
+    WoWTools_MenuMixin:SetRightText(root)
+    WoWTools_MenuMixin:SetScrollMode(root)
+
 end
 
 

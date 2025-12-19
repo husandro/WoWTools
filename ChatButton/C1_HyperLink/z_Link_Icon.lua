@@ -657,7 +657,7 @@ end
 
 
 
-local function Set_HyperLlinkIcon(btn)
+local function Set_HyperLlinkIcon()
     local enable= Save().linkIcon and not C_SocialRestrictions.IsChatDisabled()
 
     for i = 3, NUM_CHAT_WINDOWS do
