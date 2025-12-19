@@ -39,7 +39,12 @@ local function get_Faction_Info(index, factionID)
 	local name
 	name= data.name
 
-	if not factionID or not name or name==HIDE or (not data.isHeaderWithRep and data.isHeader) then
+	if not factionID
+		or not name
+		or name==HIDE
+		or (not data.isHeaderWithRep and data.isHeader)
+		or not data.isUnlocked
+	then
 		return
 	end
 
