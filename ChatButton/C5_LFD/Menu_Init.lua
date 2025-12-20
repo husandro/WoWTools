@@ -300,7 +300,7 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
     sub:SetData({rightText=find})
     WoWTools_MenuMixin:SetRightText(sub)
     WoWTools_MenuMixin:SetScrollMode(sub)
-
+end
 
 
     --[[FollowerSpecific_Menu(
@@ -309,7 +309,7 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
         
 
     )]]
-end
+
 
 
 
@@ -415,7 +415,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
     sub:SetData({rightText=find})
     WoWTools_MenuMixin:SetRightText(sub)
     WoWTools_MenuMixin:SetScrollMode(sub)
-
+end
     --[[if find~=numScenario then
         sub:AddInitializer(function(btn)
             btn.fontString:SetText(
@@ -425,7 +425,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
             )
         end)
     end]]
-end
+
 
 
 
@@ -507,16 +507,11 @@ local function set_Party_Menu_List(root2)
     end
 
 
-    local root
-    if isMaxLevel or num==0 then
-        root= root2:CreateButton(
-            header,
-        function()
-            return MenuResponse.Open
-        end)
-    else
-        root=root2
-    end
+    local root= root2:CreateButton(
+        header,
+    function()
+        return MenuResponse.Open
+    end)
 
 
     local find= 0
@@ -1389,13 +1384,24 @@ local function Init_Menu(self, root)
         WoWTools_LFDMixin:Leave_All_LFG()
         return MenuResponse.Refresh
     end)
-    sub:AddInitializer(function(btn)
-        btn:SetScript("OnUpdate", function(self, elapsed)
-            self.elapsed= (self.elapsed or 1.2) +elapsed
-            if self.elapsed>1.2 then
-                self.elapsed=0
+    sub:AddInitializer(function(btn, desc)
+        local font = btn:AttachFontString()
+        local offset = desc:HasElements() and -20 or 0
+        font:SetPoint("RIGHT", offset, 0)
+        font:SetJustifyH("RIGHT")
+        font:SetTextToFit(0)
+
+        btn:SetScript("OnUpdate", function(b, elapsed)
+            b.elapsed= (b.elapsed or 1.2) +elapsed
+            if b.elapsed>1.2 then
+                b.elapsed=0
                 local queueNum= WoWTools_LFDMixin:Leave_All_LFG(true)
-                self.fontString:SetText((queueNum==0 and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES)..' '..queueNum)
+                font:SetTextToFit(queueNum)
+                if queueNum==0 then
+                    font:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
+                else
+                    font:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+                end
             end
         end)
         btn:SetScript('OnHide', function(self)
