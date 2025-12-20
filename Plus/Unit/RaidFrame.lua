@@ -110,7 +110,7 @@ local function Init()--设置,团队
             return
         end
         local text= frame.statusText:GetText()
-        if text then
+        if text and not issecretvalue(text) then
             if text== '100%' or text=='0%' then
                 text= ''
             else
