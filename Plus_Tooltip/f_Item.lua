@@ -133,7 +133,7 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
     self:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
 
     if bindType==Enum.ItemBind.OnEquip or bindType==Enum.ItemBind.OnUse then--绑定装备,使用时绑定
-        portrait:SetAtlas('Professions_Specialization_Lock_Glow')
+        portrait='Professions_Specialization_Lock_Glow'
     end
 
 --专精图标
