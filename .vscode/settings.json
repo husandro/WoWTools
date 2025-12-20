@@ -2757,7 +2757,9 @@
         "PetName",
         "PetFrameHealthBarTextLeft",
         "PetFrameHealthBarTextRight",
-        "PetFrameHealthBar"
+        "PetFrameHealthBar",
+        "PetFrameHealthBarText",
+        "PetFrameManaBarText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

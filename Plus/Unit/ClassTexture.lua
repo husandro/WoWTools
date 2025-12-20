@@ -110,7 +110,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
 --名称
     if frame.name then
         local name
-        if not UnitIsUnit(unit, 'pet') then
+        if UnitIsUnit(unit, 'pet') then
             frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         else
             frame.name:SetTextColor(r,g,b)
@@ -154,12 +154,17 @@ local function Init()
     end
 
     PetName:SetAlpha(0)
+    PetFrameManaBarText:SetAlpha(0)
 
     PetFrameHealthBarTextLeft:ClearAllPoints()
     PetFrameHealthBarTextLeft:SetPoint('TOPLEFT', PetPortrait, 'TOPRIGHT',0, 1.5)
 
     PetFrameHealthBarTextRight:ClearAllPoints()
     PetFrameHealthBarTextRight:SetPoint('BOTTOMRIGHT', PetFrameHealthBar, 'TOPRIGHT', 0, 1.5)
+
+    PetFrameHealthBarText:ClearAllPoints()
+    PetFrameHealthBarText:SetPoint('BOTTOM', PetFrameHealthBar, 'TOP', 0, 1.5)
+    --PetFrameHealthBarText:SetFontObject(GameFontHighlightSmall2)
 
     WoWTools_DataMixin:Hook('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
     Init=function()end
