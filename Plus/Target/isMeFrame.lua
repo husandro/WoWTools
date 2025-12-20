@@ -57,8 +57,9 @@ end
 local function Set_Plate(plate, unit)
     plate= UnitExists(unit) and C_NamePlate.GetNamePlateForUnit(unit, issecure()) or plate
     if plate and plate.UnitFrame then
-        local isMe= plate.UnitFrame.unit and UnitIsUnit((plate.UnitFrame.unit or '')..'target', 'player')
-        if isMe and not plate.UnitFrame.UnitIsMe then
+
+        local isMe= plate.UnitFrame.unit and UnitIsUnit(plate.UnitFrame.unit..'target', 'player')
+        if not issecretvalue(isMe) and isMe and not plate.UnitFrame.UnitIsMe then
             Set_Texture(plate)--设置，参数
         end
         if plate.UnitFrame.UnitIsMe then

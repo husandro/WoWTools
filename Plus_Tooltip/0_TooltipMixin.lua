@@ -22,7 +22,7 @@ end
 --设置单位
 function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
     local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
-    if not name or not UnitExists(unit) or not guid then
+    if not name or not guid then--or not UnitExists(unit) 
         return
     end
     if UnitIsPlayer(unit) then

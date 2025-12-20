@@ -767,7 +767,23 @@ local function Init()--PartyFrame.lua
 
     --local showPartyFrames = PartyFrame:ShouldShow();
     for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+        frame.ManaBar.RightText:SetAlpha(0)
+        frame.ManaBar.LeftText:SetAlpha(0)
+        frame.HealthBarContainer.RightText:SetAlpha(0)
+
+        frame.HealthBarContainer.LeftText:ClearAllPoints()
+        frame.HealthBarContainer.LeftText:SetPoint('RIGHT', -2,0)
+        frame.HealthBarContainer.LeftText:SetJustifyH('RIGHT')
+
+        --frame.HealthBarContainer.CenterText:SetAlpha(0)
+        frame.HealthBarContainer.CenterText:ClearAllPoints()
+        frame.HealthBarContainer.CenterText:SetPoint('RIGHT')
+        frame.HealthBarContainer.CenterText:SetJustifyH('RIGHT')
+        frame.ManaBar.TextString:SetAlpha(0)
+
+
         frame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
+
         do
             Create_potFrame(frame)--目标的目标
         end
