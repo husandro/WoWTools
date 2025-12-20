@@ -2753,7 +2753,11 @@
         "MajorFactionsRenownToast",
         "EncounterJournalJourneysFrame",
         "SLASH_STOPWATCH_PARAM_STOP5",
-        "HUD_EDIT_MODE_SETTING_UNIT_FRAME_FRAME_SIZE"
+        "HUD_EDIT_MODE_SETTING_UNIT_FRAME_FRAME_SIZE",
+        "PetName",
+        "PetFrameHealthBarTextLeft",
+        "PetFrameHealthBarTextRight",
+        "PetFrameHealthBar"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
