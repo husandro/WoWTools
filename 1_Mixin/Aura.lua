@@ -25,7 +25,7 @@ function WoWTools_AuraMixin:Get(unit, spellTab, filter)--HELPFUL HARMFUL
     filter= filter or AuraUtil.AuraFilters.Helpful
     local data
 
-    if UnitIsUnit(unit, 'player') then
+    if WoWTools_UnitMixin:UnitIsUnit(unit, 'player') then
         for spellID in pairs(spellTab) do
             data= C_UnitAuras.GetPlayerAuraBySpellID(spellID)
             if data then

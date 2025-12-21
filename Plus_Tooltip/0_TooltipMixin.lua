@@ -29,7 +29,7 @@ function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
         return
     end
 
-    if UnitIsPlayer(unit) then
+    if WoWTools_UnitMixin:UnitIsPlayer(unit) then
         self:Set_Unit_Player(tooltip, name, unit, guid)
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua

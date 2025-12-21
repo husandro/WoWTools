@@ -123,7 +123,7 @@ local function On_Click(self)
             ChatFrameUtil.ReplyTell()
 
         elseif value=='WHISPER' then
-            local name= UnitIsPlayer('target') and UnitIsFriend('target', 'player') and GetUnitName("target", true) or nil
+            local name= WoWTools_UnitMixin:UnitIsPlayer('target') and UnitIsFriend('target', 'player') and GetUnitName("target", true) or nil
             WoWTools_ChatMixin:Say(SLASH_YELL1..' ', name, nil, add)
         else
             local va= _G['SLASH_'..value..1]

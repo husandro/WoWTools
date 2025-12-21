@@ -55,7 +55,7 @@ local function Inv_All_Unit()
                 if u then
                     local name= GetUnitName(u,true)
                     local guid= UnitGUID(u)
-                    if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
+                    if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and WoWTools_UnitMixin:UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not WoWTools_UnitMixin:UnitIsUnit('player',u) then
                         if not WoWTools_InviteMixin.InvPlateGuid[guid] then
                             C_PartyInfo.InviteUnit(name)
                             WoWTools_InviteMixin.InvPlateGuid[guid]=name

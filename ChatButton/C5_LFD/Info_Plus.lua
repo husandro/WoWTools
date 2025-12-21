@@ -26,7 +26,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
             local u= IsInRaid() and 'raid' or 'party'
             for i=1, co do
                 local unit=u..i
-                if UnitExists(unit) and not UnitIsUnit('player', unit) then
+                if UnitExists(unit) and not WoWTools_UnitMixin:UnitIsUnit('player', unit) then
                     local guid=UnitGUID(unit)
                     local line= WoWTools_UnitMixin:GetOnlineInfo(unit)
                     if line and guid then

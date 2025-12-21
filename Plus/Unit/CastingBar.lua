@@ -49,6 +49,9 @@ end
 
 
 local function Settings(frame)
+    if not frame then
+        return
+    end
     frame.Icon:EnableMouse(true)
     frame.Icon:SetScript('OnEnter', function(self)
         local unit= self:GetParent().unit or 'player'
@@ -79,8 +82,10 @@ local function Settings(frame)
 
     if frame==PlayerCastingBarFrame then
         frame:HookScript('OnShow', function(self)
-            self:SetFrameStrata('TOOLTIP')
-            self:SetFrameLevel('10000')
+            if not WoWTools_FrameMixin:IsLocked(self) then
+                self:SetFrameStrata('TOOLTIP')
+                self:SetFrameLevel('10000')
+            end
         end)
     end
     --[[if frame.UpdateCastTimeText then

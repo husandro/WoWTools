@@ -141,7 +141,7 @@ local function Get_Button_Text(event)
         if invitInfo.guid then
             atlas= WoWTools_UnitMixin:GetPlayerInfo(nil, invitInfo.guid, nil, {reAtlas=true})
         end
-        if not UnitIsUnit("player", event.invitedBy) then
+        if not WoWTools_UnitMixin:UnitIsUnit("player", event.invitedBy) then
             if _CalendarFrame_IsSignUpEvent(event.calendarType, event.inviteType) then
                 local inviteStatusInfo = CalendarUtil.GetCalendarInviteStatusInfo(event.inviteStatus);
                 if event.inviteStatus== Enum.CalendarStatus.NotSignedup or event.inviteStatus == Enum.CalendarStatus.Signedup then

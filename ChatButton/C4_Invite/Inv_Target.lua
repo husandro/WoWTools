@@ -35,9 +35,9 @@ local function Init()
         or UnitInAnyGroup('target')
         or UnitIsAFK('target')
         or not UnitIsConnected('target')
-        or not UnitIsPlayer('target')
+        or not WoWTools_UnitMixin:UnitIsPlayer('target')
         or not UnitIsFriend('target', 'player')
-        or UnitIsUnit('player','target')
+        or WoWTools_UnitMixin:UnitIsUnit('player','target')
         then
             return
         end

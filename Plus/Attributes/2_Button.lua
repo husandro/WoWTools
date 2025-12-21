@@ -63,7 +63,7 @@ local function Init()
         local text
         if ChatEdit_GetActiveWindow() then
             text= WoWTools_DataMixin.onlyChinese and '编辑' or EDIT
-        elseif UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+        elseif UnitExists('target') and WoWTools_UnitMixin:UnitIsPlayer('target') and not WoWTools_UnitMixin:UnitIsUnit('player', 'target') then
             text= (WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..': '.. GetUnitName('target', true)
         elseif not UnitIsDeadOrGhost('player') and IsInInstance() then
             text= (WoWTools_DataMixin.onlyChinese and '说' or SAY)
@@ -83,7 +83,7 @@ local function Init()
             ChatEdit_InsertLink(text)
         else
             local name
-            if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+            if UnitExists('target') and WoWTools_UnitMixin:UnitIsPlayer('target') and not WoWTools_UnitMixin:UnitIsUnit('player', 'target') then
                 name= GetUnitName('target', true)
             end
             WoWTools_ChatMixin:Chat(text, name, nil)

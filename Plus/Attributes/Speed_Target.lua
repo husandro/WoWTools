@@ -85,7 +85,7 @@ local function Init()
 
 
     function btn:Is_Exists()
-        return UnitExists('target') and not UnitIsUnit('player', 'target')
+        return UnitExists('target') and not WoWTools_UnitMixin:UnitIsUnit('player', 'target')
     end
 
     function btn:Settings()

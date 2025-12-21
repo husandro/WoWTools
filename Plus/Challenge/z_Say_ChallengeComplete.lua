@@ -42,7 +42,7 @@ local function Settings(isSay, sayType)
 
     elseif sayType=='WHISPER' then
         if UnitExists('target')
-            and UnitIsPlayer('target')
+            and WoWTools_UnitMixin:UnitIsPlayer('target')
             and UnitIsFriend('target', 'player')
         then
             C_ChatInfo.SendChatMessage(text, "WHISPER", nil, UnitName("target"))
@@ -155,7 +155,7 @@ local function Say_Menu(_, root)
 --目标
     root:CreateDivider()
     local target
-    if UnitExists('target') and UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
+    if UnitExists('target') and WoWTools_UnitMixin:UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
         target= WoWTools_UnitMixin:GetPlayerInfo('target', nil, nil, {reName=true, reRealm=false})
         target= target~='' and target or nil
     end

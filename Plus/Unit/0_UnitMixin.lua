@@ -1,5 +1,27 @@
 WoWTools_UnitMixin={}
 
+function WoWTools_UnitMixin:UnitIsPlayer(unit)
+    local isPlayer= UnitIsPlayer(unit)
+    if not issecretvalue(isPlayer) then
+        return isPlayer and true or false
+    end
+end
+
+function WoWTools_UnitMixin:IsLocked(unit)
+    return issecretvalue(UnitExists(unit))
+end
+
+function WoWTools_UnitMixin:UnitIsUnit(unit, unit2)
+    if unit and unit2 then
+        local name= UnitName(unit)
+        local name2= UnitName(unit2)
+        if not issecretvalue(name) and not issecretvalue(name2) and name and name2 then
+            return name==name2
+        end
+    end
+end
+--/dump issecretvalue(UnitCanAttack('player', 'target'))
+
 function WoWTools_UnitMixin:NameRemoveRealm(name, realm)--玩家名称, 去服务器为*
     if not name then
         return
@@ -35,7 +57,7 @@ end
 function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
     local r, g, b, hex
     if UnitExists(unit) then
-        if UnitIsUnit('player', unit) then
+        if WoWTools_UnitMixin:UnitIsUnit('player', unit) then
             local color= PlayerUtil.GetClassColor()
             r,g,b= color:GetRGB()
             hex= color:GenerateHexColorMarkup()
@@ -372,7 +394,7 @@ function WoWTools_UnitMixin:GetGUID(unit, name)--从名字,名unit, 获取GUID
         elseif name==UnitName('player') then
             return WoWTools_DataMixin.Player.GUID
 
-        elseif UnitIsPlayer('target') and self:GetFullName(nil, 'target')==name then--目标
+        elseif WoWTools_UnitMixin:UnitIsPlayer('target') and self:GetFullName(nil, 'target')==name then--目标
             return UnitGUID('target')
         end
     end
@@ -518,7 +540,7 @@ function WoWTools_UnitMixin:GetGroupMembers(inclusoMe)
         if IsInRaid() then
             for i= 1, MAX_RAID_MEMBERS, 1 do
                 unit='raid'..i
-                if UnitExists(unit) and not UnitIsUnit(unit, 'player') then
+                if UnitExists(unit) and not WoWTools_UnitMixin:UnitIsUnit(unit, 'player') then
                     table.insert(tab, unit)
                 end
             end
@@ -614,7 +636,7 @@ local function Set_Range_OnUpdata(self, elapsed)
 
     self.elapsed=0
     local speed, mi, ma
-    if not UnitIsUnit(self.unit, 'player') then
+    if not WoWTools_UnitMixin:UnitIsUnit(self.unit, 'player') then
         mi, ma= LibRangeCheck:GetRange(self.unit)
         if mi and ma then
             local r,g,b

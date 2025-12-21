@@ -230,7 +230,7 @@ local function Init_Menu(self, root)
 --队伍，子目录
                 for i=1, GetNumGroupMembers()-1, 1 do
                     unit='party'..i
-                    if UnitExists(unit) and UnitIsPlayer(unit) then
+                    if UnitExists(unit) and WoWTools_UnitMixin:UnitIsPlayer(unit) then
                         playerName=GetUnitName(unit, true)
                         sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}), function(data)
                             if data and data~=UnitName('player') then
@@ -247,7 +247,7 @@ local function Init_Menu(self, root)
             elseif index==2 and isInRaid then
                 for i=1, MAX_RAID_MEMBERS,  1 do
                     unit='raid'..i
-                   if UnitExists(unit) and not UnitIsUnit(unit, 'player') and UnitIsPlayer(unit) then
+                   if UnitExists(unit) and not WoWTools_UnitMixin:UnitIsUnit(unit, 'player') and WoWTools_UnitMixin:UnitIsPlayer(unit) then
                         sub2=sub:CreateButton(
                             WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}),
                         function(data)
@@ -430,7 +430,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             end
 
             if maxHP and role then
-                if UnitIsPlayer(unit) then
+                if WoWTools_UnitMixin:UnitIsPlayer(unit) then
                     info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')
                         ..WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {reName=true, reRealm=true})
                         ..(WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLeve or '')

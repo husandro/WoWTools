@@ -44,7 +44,7 @@ end
 
 ---取得，内容 GameTooltip.lua --local questID= line and line.id
 local function Get_Unit_Text(_, unit)
-    if UnitIsUnit('player', unit) then
+    if WoWTools_UnitMixin:UnitIsUnit('player', unit) then
         return
     end
 
@@ -57,7 +57,7 @@ local function Get_Unit_Text(_, unit)
             return WoWTools_DataMixin.Icon[role]
         end--if role=='TANK' or role=='HEALER' then
 
-    elseif not UnitIsPlayer(unit) then
+    elseif not WoWTools_UnitMixin:UnitIsPlayer(unit) then
         local tooltipData = C_TooltipInfo.GetUnit(unit)
         if tooltipData and tooltipData.lines then
             for i = 4, #tooltipData.lines do

@@ -120,10 +120,10 @@ local function Create_potFrame(frame)
         if exists2 then
 
 --目标，图像
-            if UnitIsUnit(self.tt, self.unit) then--队员，选中他自已
+            if WoWTools_UnitMixin:UnitIsUnit(self.tt, self.unit) then--队员，选中他自已
                 self.Portrait:SetAtlas('common-icon-rotateleft')
 
-            elseif UnitIsUnit(self.tt, 'player') then--我
+            elseif WoWTools_UnitMixin:UnitIsUnit(self.tt, 'player') then--我
                 self.Portrait:SetAtlas('auctionhouse-icon-favorite')
             else
                 local atlas, texture=  Get_Unit_Status(self.unit)
@@ -144,7 +144,7 @@ local function Create_potFrame(frame)
             end
 
 --目标，职业
-            if UnitIsPlayer(self.tt) then
+            if WoWTools_UnitMixin:UnitIsPlayer(self.tt) then
                 self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(self.tt, nil, nil, {reAtlas=true}))
             elseif UnitIsBossMob(self.tt) then
                 self.class:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
@@ -270,7 +270,7 @@ local function Create_castFrame(frame)
 
 
     castFrame:SetScript('OnEvent', function(self, event, arg1)
-        if event=='UNIT_SPELLCAST_SENT' and not UnitIsUnit(self.unit, arg1) then
+        if event=='UNIT_SPELLCAST_SENT' and not WoWTools_UnitMixin:UnitIsUnit(self.unit, arg1) then
             return
         end
             self:settings()

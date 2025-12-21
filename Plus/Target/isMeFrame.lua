@@ -1,5 +1,5 @@
 --提示，目标是我
-local isMeFrame
+
 
 local function Save()
     return WoWToolsSave['Plus_Target']
@@ -24,9 +24,18 @@ local EventTab= {
 
 --设置，参数
 local function Set_Texture(plate)
-    local frame= plate and plate.UnitFrame
+    local unit =plate:GetUnit()
+    local frame= C_NamePlate.GetNamePlateForUnit(unit, issecure())
+    
+if not frame then
+    return
+end
+    --local frame= plate.UnitFrame
+    if not frame.CreateTexture or not plate.CreateTexture then
+        print(frame.CreateTexture , plate.CreateTexture)
+    end
     if not frame.UnitIsMe then
-        frame.UnitIsMe= frame:CreateTexture(nil, 'OVERLAY')
+        frame.UnitIsMe= plate:CreateTexture(nil, 'OVERLAY')
     else
         frame.UnitIsMe:ClearAllPoints()
     end
@@ -55,16 +64,20 @@ end
 
 --设置, Plate
 local function Set_Plate(plate, unit)
-    plate= UnitExists(unit) and C_NamePlate.GetNamePlateForUnit(unit, issecure()) or plate
-    if plate and plate.UnitFrame then
+    unit= unit or plate:GetUnit()
+    plate= C_NamePlate.GetNamePlateForUnit(unit, issecure())
+    if not plate then
+        return
+    end
 
-        local isMe= plate.UnitFrame.unit and UnitIsUnit(plate.UnitFrame.unit..'target', 'player')
-        if not issecretvalue(isMe) and isMe and not plate.UnitFrame.UnitIsMe then
+        local isMe= WoWTools_UnitMixin:UnitIsUnit(unit, 'player')
+
+        if not plate.UnitIsMe then
             Set_Texture(plate)--设置，参数
         end
-        if plate.UnitFrame.UnitIsMe then
-            plate.UnitFrame.UnitIsMe:SetShown(isMe)
-        end
+        
+    if plate.UnitIsMe then
+        plate.UnitIsMe:SetShown(isMe)
     end
 end
 
@@ -96,7 +109,7 @@ local function Init()
         return
     end
 
-    isMeFrame= CreateFrame('Frame', 'WoWToolsTarget_IsMeFrame')
+    local isMeFrame= CreateFrame('Frame', 'WoWToolsTarget_IsMeFrame')
 
     if NamePlateBaseMixin.OnAdded then--12.0没有了
         WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnAdded', function(_, unit)
@@ -158,7 +171,7 @@ local function Init()
     isMeFrame:Settings()
 
     Init= function()
-        isMeFrame:Settings()
+        _G['WoWToolsTarget_IsMeFrame']:Settings()
     end
 end
 

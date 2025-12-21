@@ -646,7 +646,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             end
         elseif event=='UNIT_FLAGS' and arg1 then--杀怪,数量
             if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
-                if IsInArena and UnitIsPlayer(arg1) or not IsInArena then
+                if IsInArena and WoWTools_UnitMixin:UnitIsPlayer(arg1) or not IsInArena then
                     InstanceDate.kill= InstanceDate.kill +1
                     SaveLog().ins.kill= SaveLog().ins.kill +1
                 end

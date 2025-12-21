@@ -8,8 +8,8 @@ end
 local function Invite(unit)
     if not UnitExists(unit)
         or not UnitIsConnected(unit)
-        or not UnitIsPlayer(unit)
-        or UnitIsUnit('player', unit)
+        or not WoWTools_UnitMixin:UnitIsPlayer(unit)
+        or WoWTools_UnitMixin:UnitIsUnit('player', unit)
         or UnitIsEnemy('player', unit)
     then
         return

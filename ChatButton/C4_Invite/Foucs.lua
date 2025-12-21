@@ -48,8 +48,8 @@ local function Init()
         frame:HookScript('OnMouseWheel', function(f, d)
             local unit= f.unit or f:GetAttribute('unit')
             if UnitExists(unit)
-                and UnitIsPlayer(unit)
-                and not UnitIsUnit('player', unit)
+                and WoWTools_UnitMixin:UnitIsPlayer(unit)
+                and not WoWTools_UnitMixin:UnitIsUnit('player', unit)
                 and UnitIsFriend('player', unit)
             then
                 if d==1 then

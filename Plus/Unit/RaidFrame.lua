@@ -91,7 +91,7 @@ local function Init()--设置,团队
         if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
             return
         end
-        if UnitIsUnit('player', frame.unit) then
+        if WoWTools_UnitMixin:UnitIsUnit('player', frame.unit) then
             frame.name:SetText(WoWTools_DataMixin.Icon.Player)
         elseif frame.unit:find('pet') then
             frame.name:SetText('')

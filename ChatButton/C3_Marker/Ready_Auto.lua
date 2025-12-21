@@ -152,7 +152,7 @@ local function Init()
 
         --initiator= initiator or ReadyCheckFrame.initiator
 
-        if not initiator then-- or UnitIsUnit("player", initiator) then
+        if not initiator then
             return
         end
 

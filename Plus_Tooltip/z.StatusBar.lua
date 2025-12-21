@@ -26,7 +26,7 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
         if WoWTools_FrameMixin:IsLocked(frame)
             or issecretvalue(guid)
             or not unit
-            or frame:GetWidth()<100
+            --or frame:GetWidth()<100
             or WoWTools_FrameMixin:IsLocked(frame)
         then
             frame.text:SetText('')

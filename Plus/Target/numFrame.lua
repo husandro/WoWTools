@@ -31,15 +31,15 @@ local EventTab= {
 --local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
 local function Set_Text(self)
     local k,T,F=0,0,0
-    if not IsInInstance() then
+
         for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
             local unit = plate.UnitFrame and plate.UnitFrame.unit
             if UnitCanAttack('player', unit)
-                and (self.isPvPArena and UnitIsPlayer(unit) or not self.isPvPArena)
+                and (self.isPvPArena and WoWTools_UnitMixin:UnitIsPlayer(unit) or not self.isPvPArena)
                 and WoWTools_UnitMixin:CheckRange(unit, 40, true)
             then
                 k=k+1
-                if UnitIsUnit(unit..'target', 'player') then
+                if WoWTools_UnitMixin:UnitIsUnit(unit..'target', 'player') then
                     T=T+1
                 end
             end
@@ -47,18 +47,18 @@ local function Set_Text(self)
         if IsInRaid() then
             for i=1, MAX_RAID_MEMBERS do
                 local unit='raid'..i..'target'
-                if UnitIsUnit(unit, 'player') and not UnitIsUnit(unit, 'player') then
+                if WoWTools_UnitMixin:UnitIsUnit(unit, 'player') and not WoWTools_UnitMixin:UnitIsUnit(unit, 'player') then
                     F=F+1
                 end
             end
         elseif IsInGroup() then
             for i=1, MAX_PARTY_MEMBERS do
-                if UnitIsUnit('party'..i..'target', 'player') then
+                if WoWTools_UnitMixin:UnitIsUnit('party'..i..'target', 'player') then
                     F=F+1
                 end
             end
         end
-    end
+   
     self.Text:SetText(WoWTools_ColorMixin:SetStringColor(T==0 and '-' or  T)..' |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
 
 end

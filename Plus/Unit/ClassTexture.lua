@@ -39,10 +39,10 @@ local function Craete_Frame(frame)
 
     function frame.classFrame:set_settings(guid3)
         local unit2= self:GetParent().unit
-        local isPlayer= UnitExists(unit2) and UnitIsPlayer(unit2)
+        local isPlayer= UnitExists(unit2) and WoWTools_UnitMixin:UnitIsPlayer(unit2)
         local atlas, texture
         if isPlayer then
-            if UnitIsUnit(unit2, 'player') then
+            if WoWTools_UnitMixin:UnitIsUnit(unit2, 'player') then
                 texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
             else
                 local specID= GetInspectSpecialization(unit2)
@@ -69,7 +69,7 @@ local function Craete_Frame(frame)
     frame.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', frame.unit)
     frame.classFrame:SetScript('OnEvent', function(self)
         local unit2= self:GetParent().unit
-        if UnitIsPlayer(unit2) then
+        if WoWTools_UnitMixin:UnitIsPlayer(unit2) then
             WoWTools_UnitMixin:GetNotifyInspect(nil, unit2)--取得玩家信息
             C_Timer.After(2, function()
                 self:set_settings()
@@ -92,7 +92,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
 
     local guid
-    local unitIsPlayer= UnitIsPlayer(unit)
+    local unitIsPlayer= WoWTools_UnitMixin:UnitIsPlayer(unit)
     if unitIsPlayer then
         guid= UnitGUID(frame.unit)--职业, 天赋, 图标
         Craete_Frame(frame)
@@ -110,7 +110,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
 --名称
     if frame.name then
         local name
-        if UnitIsUnit(unit, 'pet') then
+        if WoWTools_UnitMixin:UnitIsUnit(unit, 'pet') then
             frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         else
             frame.name:SetTextColor(r,g,b)
