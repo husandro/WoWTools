@@ -155,7 +155,7 @@ local function Create_potFrame(frame)
             local r2,g2,b2= select(2, WoWTools_UnitMixin:GetColor(self.tt))
             self.healthLable:SetTextColor(r2, g2, b2)
 --目标，也是我的目标
-            self.isPlayerTargetTexture:SetShown(UnitIsUnit(self.tt, 'target'))
+            self.isPlayerTargetTexture:SetShown(WoWTools_UnitMixin:UnitIsUnit(self.tt, 'target'))
         end
 --目标是否存在
         self:SetShown(exists2)

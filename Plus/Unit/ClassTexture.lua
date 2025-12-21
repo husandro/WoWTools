@@ -50,7 +50,7 @@ local function Craete_Frame(frame)
                     texture= select(4, GetSpecializationInfoByID(specID))
                 else
                     local guid2= guid3 or UnitGUID(unit2)
-                    if guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID then
+                    if not issecurevalue(guid2) and guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID then
                         texture= select(4, GetSpecializationInfoByID(WoWTools_DataMixin.UnitItemLevel[guid2].specID))
                     else
                         atlas= WoWTools_UnitMixin:GetClassIcon(unit2, nil, nil, {reAtlas=true})--职业, 图标
@@ -62,7 +62,11 @@ local function Craete_Frame(frame)
             else
                 self.Portrait:SetTexture(texture or 0)
             end
-            self.itemLevel:SetText(guid3 and WoWTools_DataMixin.UnitItemLevel[guid3] and WoWTools_DataMixin.UnitItemLevel[guid3].itemLevel or '')
+            if issecurevalue(guid3) then
+                self.itemLevel:SetText('')
+            else
+                self.itemLevel:SetText(guid3 and WoWTools_DataMixin.UnitItemLevel[guid3] and WoWTools_DataMixin.UnitItemLevel[guid3].itemLevel or '')
+            end
         end
         self:SetShown(atlas or texture)
     end

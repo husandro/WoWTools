@@ -84,7 +84,7 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
             else
                 channel= true
             end
-            if texture and startTime and endTime then
+            if not issecurevalue(startTime) and not issecurevalue(endTime) and texture and startTime and endTime then
                 duration= (endTime - startTime) / 1000
                 self:Setup(frame, nil, duration, nil, true, channel, nil,nil)
                 return texture
