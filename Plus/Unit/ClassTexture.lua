@@ -39,9 +39,12 @@ local function Craete_Frame(frame)
 
     function frame.classFrame:set_settings(guid3)
         local unit2= self:GetParent().unit
+        if WoWTools_UnitMixin:IsLocked(unit2) and not issecretvalue(guid3) then
+            return
+        end
         local isPlayer= UnitExists(unit2) and WoWTools_UnitMixin:UnitIsPlayer(unit2)
         local atlas, texture
-        if isPlayer then
+        if isPlayer and not WoWTools_UnitMixin:IsLocked(unit2) then
             if WoWTools_UnitMixin:UnitIsUnit(unit2, 'player') then
                 texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
             else
@@ -56,13 +59,7 @@ local function Craete_Frame(frame)
                     local guid2= guid3 or UnitGUID(unit2)
 
                     
-                    local tab
-                    if not issecurevalue(guid2)
-                        and guid2
-                    then
-                        tab= WoWTools_DataMixin.UnitItemLevel[guid2]
-                    end
-                    
+                    local tab= not issecretvalue(WoWTools_DataMixin.UnitItemLevel) and WoWTools_DataMixin.UnitItemLevel[guid2]                    
                     --specID= not issecurevalue(guid2) and guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID
                     if tab and tab.specID  then
                     --if not issecurevalue(guid2) and guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID then
@@ -117,6 +114,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
         guid= UnitGUID(frame.unit)--职业, 天赋, 图标
         Craete_Frame(frame)
     end
+    unitIsPlayer= unitIsPlayer and not issecretvalue(guid)
 
     if frame.classFrame then
         if unitIsPlayer then

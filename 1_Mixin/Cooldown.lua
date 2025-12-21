@@ -76,7 +76,7 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
     elseif unit then
         local texture, startTime, endTime, duration, channel
 
-        if UnitExists(unit) then
+        if not WoWTools_UnitMixin:IsLocked(unit) and UnitExists(unit) then
             texture, startTime, endTime= select(3, UnitChannelInfo(unit))
 
             if not (texture and startTime and endTime) then

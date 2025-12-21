@@ -246,15 +246,15 @@ local function Create_castFrame(frame)
         self:SetAlpha(1)
     end)
     castFrame.texture:SetScript('OnEnter', function(self)
+        local u= self:GetParent().unit
+        if WoWTools_UnitMixin:IsLocked(u) then
+            return
+        end
+
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        local u= self:GetParent().unit
         local spellID= select(8, UnitChannelInfo(u)) or select(9, UnitCastingInfo(u))
-        if spellID then
-            GameTooltip:SetSpellByID(spellID)
-        else
-            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)..' '..(self.unit or ''), WoWTools_DataMixin.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL)
-        end
+        GameTooltip:SetSpellByID(spellID or 0)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
         GameTooltip:Show()

@@ -163,8 +163,8 @@ local function setTextrue(self)--设置图标
         icon=136116
     elseif icon then
         local spellID= self.spellID or (self.itemID and select(2, C_Item.GetItemSpell(self.itemID)))
-        if spellID then
-            local aura = C_UnitAuras.GetPlayerAuraBySpellID(spellID)
+        if not issecretvalue(spellID) and spellID then
+            local aura = not InCombatLockdown() and C_UnitAuras.GetPlayerAuraBySpellID(spellID)
             if aura and aura.spellId then
                 icon=136116
             end

@@ -159,5 +159,5 @@ end
 
 
 function WoWTools_UnitMixin:Init_CastingBar()
-   Init()
+   --Init()
 end

@@ -22,6 +22,10 @@ AuraUtil.AuraFilters = {
 AuraUtil.AuraFilters.Harmful
 ]]
 function WoWTools_AuraMixin:Get(unit, spellTab, filter)--HELPFUL HARMFUL
+    if WoWTools_UnitMixin:IsLocked(unit) then
+        return
+    end
+
     filter= filter or AuraUtil.AuraFilters.Helpful
     local data
 

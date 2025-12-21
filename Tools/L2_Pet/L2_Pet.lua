@@ -166,6 +166,7 @@ local function Init()
     if not btn then
         return
     end
+
     btn.Text=WoWTools_LabelMixin:Create(btn, {size=10, color=true})-- size,nil,nil, true)
     btn.Text:SetPoint('BOTTOM',0 , -2)
 
@@ -244,7 +245,7 @@ local function Init()
 
         local petID = C_PetJournal.GetSummonedPetGUID()
         local find= (petID and petID==info.petID) and true or false
-        if not find and info.auraName and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') then
+        if not find and info.auraName and not InCombatLockdown() and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') then
             find=true
         end
         if Save().autoSummon and not find and self:can_summon() then
@@ -338,8 +339,7 @@ local function Init()
             local info= self:get_speciesID_data()
             if info.emote and UnitIsBattlePetCompanion('target') and C_PetJournal.GetSummonedPetGUID()==info.petID then
                 DoEmote(info.emote)
-                if info.auraName and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') and self:can_summon() then
-                    print(AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL'))
+                if info.auraName and not InCombatLockdown() and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') and self:can_summon() then
                     C_PetJournal.SummonRandomPet(true)
                 end
             end

@@ -23,7 +23,7 @@ end
 
 
 local function Find_Text(text)
-    if text and not text:find(THREAT_TOOLTIP) then
+    if not issecretvalue(text) and text and not text:find(THREAT_TOOLTIP) then
         if text:find('(%d+/%d+)') then
             local min, max= text:match('(%d+)/(%d+)')
             min, max= tonumber(min), tonumber(max)
