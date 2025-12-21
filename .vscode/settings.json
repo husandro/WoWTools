@@ -2759,7 +2759,11 @@
         "PetFrameHealthBarTextRight",
         "PetFrameHealthBar",
         "PetFrameHealthBarText",
-        "PetFrameManaBarText"
+        "PetFrameManaBarText",
+        "FCF_OpenNewWindow",
+        "FCF_IsChatWindowIndexActive",
+        "FCF_GetChatFrameByID",
+        "PrimaryChatFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

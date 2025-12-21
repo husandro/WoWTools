@@ -1,4 +1,18 @@
---这个功能，灵感来源：ChatCopyPaste 插件
+--[[
+这个功能，灵感来源：ChatCopyPaste 插件
+NUM_CHAT_WINDOWS
+Constants.ChatFrameConstants.MaxChatWindows
+
+function FCF_GetNextOpenChatWindowIndex()
+	for i = C_ChatInfo.GetNumReservedChatWindows() + 1, Constants.ChatFrameConstants.MaxChatWindows do
+		if ( not FCF_IsChatWindowIndexActive(i) ) then
+			return i;
+		end
+	end
+
+	return nil;
+end
+]]
 local function Save()
     return WoWToolsSave['Plus_ChatCopy'] or {}
 end
@@ -18,7 +32,13 @@ end
 
 
 
-
+local function Init_AllButton()
+	for index =1, Constants.ChatFrameConstants.MaxChatWindows do
+		if FCF_GetChatFrameByID(index) then
+			Init_Button(index)
+		end
+	end
+end
 
 
 
@@ -83,7 +103,7 @@ end
 local function Get_Text(index)
 	index= index or 1
 
-	local frame=_G["ChatFrame" .. index]
+	local frame= FCF_GetChatFrameByID(index)
 	local numMessage= frame and frame:GetNumMessages() or 0
 
 
@@ -223,9 +243,7 @@ local function Init_Menu(frame, root)
 		return Save().isShowButton
 	end, function()
 		Save().isShowButton= not Save().isShowButton and true or false
-		for i= 1, NUM_CHAT_WINDOWS do
-			Init_Button(i)
-		end
+		Init_AllButton()
 	end)
 
 --处理文本
@@ -294,9 +312,9 @@ end
 
 function Init_Button(index)
 	local enabled= Save().isShowButton and true or false
-	local frame= index and _G['ChatFrame'..index]
+	local frame= FCF_GetChatFrameByID(index)
 
-	if not frame or not enabled or not frame.GetNumMessages then
+	if not frame or not enabled or not frame.GetNumMessages or frame.CopyChatButton then
 		if frame and frame.CopyChatButton then
 			if frame.ResizeButton then
 				frame.ScrollToBottomButton:SetPoint('BOTTOMRIGHT', frame.ResizeButton, 'TOPRIGHT', -2, enabled and 15 or -1)-- -2,-2
@@ -332,7 +350,7 @@ function Init_Button(index)
 
 		local tab=  _G['ChatFrame'..index..'Tab']
 		if tab then
-			GameTooltip:AddLine(tab:GetText())
+			GameTooltip:AddLine(tab:GetText()..' |cff626262'..index)
 		end
 
 		local num = self:GetParent():GetNumMessages() or 0
@@ -353,7 +371,6 @@ function Init_Button(index)
 	end)
 
 	frame.CopyChatButton:SetScript('OnMouseDown', function(self, d)
-
 		if d=='LeftButton' then
 			Get_Text(self:GetID())
 		else
@@ -376,17 +393,40 @@ end
 
 
 local function Init()
+	local isLoggingChat= C_ChatInfo.IsLoggingChat()
+	local chat= Save().IsLoggingChat
+	if chat~=nil and chat~=isLoggingChat then
+		LoggingChat(chat)
+		Print_Text(C_ChatInfo.IsLoggingChat(), true)
+	end
+
+	local isLoggingCombat= C_ChatInfo.IsLoggingCombat()
+	local combat = Save().IsLoggingCombat
+	if combat~=nil and isLoggingCombat ~=combat then
+		LoggingCombat(combat)
+		Print_Text(C_ChatInfo.IsLoggingCombat(), false)
+	end
 
 	if Save().isShowButton then
-		for index = 1, NUM_CHAT_WINDOWS do
-			Init_Button(index)
-		end
+		Init_AllButton()
 	end
 
 	WoWTools_DataMixin:Hook(ChatFrameMixin, 'OnLoad', function(frame)
-		local index = frame:GetName():match("(%d+)")
-		print(frame:GetID())
-		Init_Button(index)
+		if Save().isShowButton and frame then
+			local index = frame:GetName():match("(%d+)")
+			if index then
+				Init_Button(tonumber(index))
+			end
+		end
+	end)
+
+	WoWTools_DataMixin:Hook('FCF_OpenNewWindow', function(name)
+		if Save().isShowButton and name then
+			local index = name:match("(%d+)")
+			if index then
+				Init_Button(tonumber(index))
+			end
+		end
 	end)
 
 	WoWTools_DataMixin:Hook('FCF_FadeInScrollbar', function(chatFrame)
@@ -402,6 +442,8 @@ local function Init()
 			UIFrameFadeOut(btn, CHAT_FRAME_FADE_OUT_TIME, btn:GetAlpha(), 0)
 		end
 	end)
+
+
 
 
 	Menu.ModifyMenu("MENU_FCF_TAB", Init_Menu)
@@ -424,53 +466,34 @@ end
 
 local frame= CreateFrame('Frame')
 frame:RegisterEvent('ADDON_LOADED')
-
 frame:SetScript('OnEvent', function(self, event, arg1)
-	if event=='ADDON_LOADED' then
-    	if arg1== 'WoWTools' then
-			WoWToolsSave['Plus_ChatCopy']= WoWToolsSave['Plus_ChatCopy'] or {isShowButton=true}
-			addName= '|A:poi-workorders:0:0|a'..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
+	--if event=='ADDON_LOADED' then
+	if arg1~= 'WoWTools' then
+		return
+	end
 
-			WoWTools_PanelMixin:OnlyCheck({
-				name= addName,
-				GetValue= function() return not Save().disabled end,
-				SetValue= function()
-					Save().disabled= not Save().disabled and true or nil
-					Init()
-				end,
-				layout= WoWTools_ChatMixin.Layout,
-				category= WoWTools_ChatMixin.Category,
-				tooltip= WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-			})
+	WoWToolsSave['Plus_ChatCopy']= WoWToolsSave['Plus_ChatCopy'] or {isShowButton=true}
+	addName= '|A:poi-workorders:0:0|a'..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
 
-			if Save().disabled then
-				self:SetScript('OnEvent', nil)
-			else
+	WoWTools_PanelMixin:OnlyCheck({
+		name= addName,
+		GetValue= function() return not Save().disabled end,
+		SetValue= function()
+			Save().disabled= not Save().disabled and true or nil
+			Init()
+		end,
+		layout= WoWTools_ChatMixin.Layout,
+		category= WoWTools_ChatMixin.Category,
+		tooltip= WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+	})
 
-				local isLoggingChat= C_ChatInfo.IsLoggingChat()
-				local chat= Save().IsLoggingChat
-				if chat~=nil and chat~=isLoggingChat then
-					LoggingChat(chat)
-					Print_Text(C_ChatInfo.IsLoggingChat(), true)
-				end
-
-				local isLoggingCombat= C_ChatInfo.IsLoggingCombat()
-				local combat = Save().IsLoggingCombat
-				if combat~=nil and isLoggingCombat ~=combat then
-					LoggingCombat(combat)
-					Print_Text(C_ChatInfo.IsLoggingCombat(), false)
-				end
-
-				self:RegisterEvent('PLAYER_ENTERING_WORLD')
-			end
-			self:UnregisterEvent(event)
-		end
-
-	elseif event=='PLAYER_ENTERING_WORLD' then
+	if Save().disabled then
+		self:SetScript('OnEvent', nil)
+	else
 		Init()
-		self:UnregisterEvent(event)
 		self:SetScript('OnEvent', nil)
 	end
+	self:UnregisterEvent(event)
 end)
 
 

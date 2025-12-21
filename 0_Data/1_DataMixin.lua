@@ -225,17 +225,25 @@ function WoWTools_DataMixin:Info(data)
     local t=''
     for k, v in pairs(data) do
         if v and type(v)=='table' then
-            t= t..'|n|cff00ff00---'..tostring(k)..'---STAR|r'
+            t= t..' |n|cff00ff00---'..tostring(k)..'---STAR|r'
 
             for k2, v2 in pairs(v) do
-                t= t..'|n    '..(type(v2)=='function' and '|cff00ccff' or '|cffffff00')..tostring(k2)..' |r= '..tostring(v2)
+                if type(v2)=='table' then
+                    t= t..'|n|cff00ffff---'..tostring(k2)..'---STAR|r'
+                    for k3, v3 in pairs(v2) do
+                        t= t..'|n        '..(type(v3)=='function' and '|cff00ccff' or '|cffffff00')..tostring(k3)..' |r= '..tostring(v3)
+                    end
+                    t= t..'|n   |cffff5e00---'..tostring(k2)..'---END|r'
+                else
+                    t= t..'|n    '..(type(v2)=='function' and '|cff00ccff' or '|cffffff00')..tostring(k2)..' |r= '..tostring(v2)
+                end
             end
-            t= t..'|n|cffff0000---'..tostring(k)..'---END|r'
+            t= t..'  |n|cffff0000---'..tostring(k)..'---END|r'
         else
             t= t..'|n'..(type(v)=='function' and '|cff00ccff' or '|cffff00ff')..tostring(k)..'|r = '..tostring(v)
         end
     end
     t=t..'|n|cffff00ff——————————|r'
 
-    WoWTools_TextMixin:ShowText(t, WoWTools_DataMixin.Icon.icon2..tostring(data), {notClear=true})
+    WoWTools_TextMixin:ShowText(t, WoWTools_DataMixin.Icon.icon2..tostring(data))--, {notClear=true})
 end

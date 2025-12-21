@@ -238,6 +238,7 @@ end
 
 --FSTACK
 function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
+
     TableAttributeDisplay.LinesScrollFrame:ClearAllPoints()
     TableAttributeDisplay.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
     TableAttributeDisplay.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
@@ -264,6 +265,7 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
             end
         end
     end)
+    
 
     self:Setup(TableAttributeDisplay, {
         minW=476,
