@@ -21,9 +21,10 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
     GameTooltipStatusBar.textRight = WoWTools_LabelMixin:Create(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
     GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
     GameTooltipStatusBar:HookScript("OnValueChanged", function(frame)
-        local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
+        local unit, guid= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
 
         if WoWTools_FrameMixin:IsLocked(frame)
+            or issecretvalue(guid)
             or not unit
             or frame:GetWidth()<100
             or WoWTools_FrameMixin:IsLocked(frame)
@@ -34,7 +35,7 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
             return
         end
 
-        local value=UnitHealth(unit)
+        local value= UnitHealth(unit)
         local max= UnitHealthMax(unit)
         local r, g, b, left, right, col, text
 

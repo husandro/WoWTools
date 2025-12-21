@@ -232,8 +232,8 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
     sub= root:CreateButton(
         header,
     function(data)
-        PVEFrame_ShowFrame("GroupFinderFrame", LFDParentFrame)--RaidFinderFrame
-        LFDQueueFrame_SetType(data.listType)
+        WoWTools_DataMixin:Call('PVEFrame_ShowFrame', "GroupFinderFrame", LFDParentFrame)--RaidFinderFrame
+        WoWTools_DataMixin:Call('LFDQueueFrame_SetType', data.listType)
         return MenuResponse.Open
     end, {listType=listType})
     sub:SetTooltip(function(tooltip)
@@ -266,12 +266,13 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
                     ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
 
                 function(data)
+                    
                     if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
-                        LeaveSingleLFG(LE_LFG_CATEGORY_LFD, data.dungeonID)
+                        WoWTools_DataMixin:Call('LeaveSingleLFG', LE_LFG_CATEGORY_LFD, data.dungeonID)
                     else
-                        LFDQueueFrame_SetTypeInternal(data.listType)--follower, specific
-                        LFDQueueFrame_SetType(data.dungeonID)
-                        LFDQueueFrame_Join()
+                        WoWTools_DataMixin:Call('LFDQueueFrame_SetTypeInternal', data.listType)--follower, specific
+                        WoWTools_DataMixin:Call('LFDQueueFrame_SetType', data.dungeonID)
+                        WoWTools_DataMixin:Call('LFDQueueFrame_Join')
                         WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, WoWTools_TextMixin:CN(data.dungeonName), nil)--设置图标, 点击,提示
                     end
                     return MenuResponse.Open

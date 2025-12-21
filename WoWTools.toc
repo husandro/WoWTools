@@ -287,6 +287,7 @@ Plus\Unit\PartyFrame.lua
 Plus\Unit\PlayerFrame.lua
 Plus\Unit\RaidFrame.lua
 Plus\Unit\TargetFrame.lua
+Plus\Unit\PetFrame.lua
 
 ##好友，面板
 Plus\Friends\1_Init.lua

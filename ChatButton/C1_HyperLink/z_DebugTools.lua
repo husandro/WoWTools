@@ -87,7 +87,7 @@ local function Init_Create(frame)
     frame.WoWToolsLabel:SetScript('OnHide', function(self)
         self:SetText('')
     end)
-    
+
 
 
     local check= CreateFrame('CheckButton', nil, frame.WoWToolsButton, 'UICheckButtonTemplate')
@@ -103,13 +103,11 @@ local function Init_Create(frame)
         Save().autoHideTableAttributeDisplay= not Save().autoHideTableAttributeDisplay and true or false
     end)
     check:SetScript('OnHide', function()
-        if Save().autoHideTableAttributeDisplay and C_CVar.GetCVarBool("fstack_enabled") then
+        if Save().autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
             FrameStackTooltip_ToggleDefaults()
         end
     end)
     WoWTools_TextureMixin:SetCheckBox(check)
-
-    
 end
 
 
@@ -140,7 +138,7 @@ local function Init()
 
     Init_Create(TableAttributeDisplay)
     --WoWTools_DataMixin:Hook(TableInspectorMixin, 'OnLoad', function(frame)
-      
+
     local function set_objectType(_, focusedTable)
         local text
         TableAttributeDisplay.WoWToolsLabel:SetText('')

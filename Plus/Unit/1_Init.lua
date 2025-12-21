@@ -17,6 +17,7 @@ end
 
 local function Init()
     WoWTools_UnitMixin:Init_PlayerFrame()--玩家
+    WoWTools_UnitMixin:Init_PetFrame()
     WoWTools_UnitMixin:Init_TargetFrame()--目标
 
     WoWTools_UnitMixin:Init_PartyFrame()--小队

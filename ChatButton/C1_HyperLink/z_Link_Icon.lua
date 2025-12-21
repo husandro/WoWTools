@@ -565,6 +565,10 @@ end
 CommunitiesHyperlink.lua CommunitiesHyperlink_OnEvent
 ]]
 local function New_AddMessage(self, s, ...)
+    if issecretvalue(s) then
+        return
+    end
+
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 
     s=s:gsub('|Hchannel:.-]|h', SetChannels)

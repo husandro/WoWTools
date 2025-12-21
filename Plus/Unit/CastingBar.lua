@@ -20,7 +20,7 @@ local function Create_CastTimeTexte(frame)
         return
     end
 
-    frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
+    --[[frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
         self.elapsed= (self.elapsed or 0.1) + elapsed
         if self.elapsed>=0.1 and self.value and self.maxValue then
             self.elapsed=0
@@ -33,7 +33,7 @@ local function Create_CastTimeTexte(frame)
                 self.CastTimeText:SetFormattedText('%.01f', value)
             end
         end
-    end)
+    end)]]
 end
 
 
@@ -83,7 +83,7 @@ local function Settings(frame)
             self:SetFrameLevel('10000')
         end)
     end
-    if frame.UpdateCastTimeText then
+    --[[if frame.UpdateCastTimeText then
         WoWTools_DataMixin:Hook(frame, 'UpdateCastTimeText', function(self)--去掉 秒
             local text= self.CastTimeText:GetText()
             text= text:match('(%d+.%d)') or text
@@ -93,7 +93,7 @@ local function Settings(frame)
                 self.CastTimeText:SetShown(true)
             end
         end)
-    end
+    end]]
 end
 
 

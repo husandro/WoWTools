@@ -12,9 +12,12 @@ WoWTools_TooltipMixin={
 --设置，宽度
 function WoWTools_TooltipMixin:Set_Width(tooltip)
     local w= tooltip:GetWidth()
-    local w2= tooltip.textLeft:GetStringWidth()+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
-    if w<w2 then
-        tooltip:SetMinimumWidth(w2)
+    local w2= tooltip.textLeft:GetStringWidth()
+    if not issecurevalue(w2) then
+        w2= w2+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
+        if w<w2 then
+            tooltip:SetMinimumWidth(w2)
+        end
     end
 end
 
@@ -22,9 +25,10 @@ end
 --设置单位
 function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
     local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
-    if not name or not guid then--or not UnitExists(unit) 
+    if not name or not guid or issecretvalue(guid) then--or not UnitExists(unit) 
         return
     end
+
     if UnitIsPlayer(unit) then
         self:Set_Unit_Player(tooltip, name, unit, guid)
 

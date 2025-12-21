@@ -276,7 +276,7 @@ local function Create_TotButton(frame)
 
     function frame.TotButton.frame:set_settings()
         local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
-        local exists=UnitExists(unit)
+        local exists= not IsInInstance() and UnitExists(unit)
         if exists then
             --图像
             local isSelf= UnitIsUnit(unit, 'player')

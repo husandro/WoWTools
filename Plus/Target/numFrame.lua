@@ -31,29 +31,31 @@ local EventTab= {
 --local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
 local function Set_Text(self)
     local k,T,F=0,0,0
-    for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-        local unit = plate.UnitFrame and plate.UnitFrame.unit
-        if UnitCanAttack('player', unit)
-            and (self.isPvPArena and UnitIsPlayer(unit) or not self.isPvPArena)
-            and WoWTools_UnitMixin:CheckRange(unit, 40, true)
-        then
-            k=k+1
-            if UnitIsUnit(unit..'target','player') then
-                T=T+1
+    if not IsInInstance() then
+        for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+            local unit = plate.UnitFrame and plate.UnitFrame.unit
+            if UnitCanAttack('player', unit)
+                and (self.isPvPArena and UnitIsPlayer(unit) or not self.isPvPArena)
+                and WoWTools_UnitMixin:CheckRange(unit, 40, true)
+            then
+                k=k+1
+                if UnitIsUnit(unit..'target', 'player') then
+                    T=T+1
+                end
             end
         end
-    end
-    if IsInRaid() then
-        for i=1, MAX_RAID_MEMBERS do
-            local unit='raid'..i..'target'
-            if UnitIsUnit(unit, 'player') and not UnitIsUnit(unit, 'player') then
-                F=F+1
+        if IsInRaid() then
+            for i=1, MAX_RAID_MEMBERS do
+                local unit='raid'..i..'target'
+                if UnitIsUnit(unit, 'player') and not UnitIsUnit(unit, 'player') then
+                    F=F+1
+                end
             end
-        end
-    elseif IsInGroup() then
-        for i=1, MAX_PARTY_MEMBERS do
-            if UnitIsUnit('party'..i..'target', 'player') then
-                F=F+1
+        elseif IsInGroup() then
+            for i=1, MAX_PARTY_MEMBERS do
+                if UnitIsUnit('party'..i..'target', 'player') then
+                    F=F+1
+                end
             end
         end
     end

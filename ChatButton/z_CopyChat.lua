@@ -104,17 +104,22 @@ local function Get_Text(index)
 	index= index or 1
 
 	local frame= FCF_GetChatFrameByID(index)
-	local numMessage= frame and frame:GetNumMessages() or 0
-
-
+	if not frame then
+		return
+	end
+	local numMessage= frame:GetNumMessages() or 0
 	if numMessage==0 then
+		
 		if WoWTools_DataMixin.Player.husandro then
 			print('GetNumMessages', frame, index , numMessage)
 		end
-		return
+
 	end
 
 	local tab={}
+
+	
+
 	local isSetText= Save().isSetText--不处理，文本
 
 	for i = 1, numMessage do

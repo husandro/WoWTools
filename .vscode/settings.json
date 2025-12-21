@@ -2763,7 +2763,9 @@
         "FCF_OpenNewWindow",
         "FCF_IsChatWindowIndexActive",
         "FCF_GetChatFrameByID",
-        "PrimaryChatFrameMixin"
+        "PrimaryChatFrameMixin",
+        "CanAccessObject",
+        "WoWTools_DataMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

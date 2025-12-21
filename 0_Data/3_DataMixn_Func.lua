@@ -1,3 +1,5 @@
+--CanAccessObject(ChatFrame1)
+
 function WoWTools_DataMixin:Call(func, ...)
     if type(func)=='string' then
         if _G[func] then

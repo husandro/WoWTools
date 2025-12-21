@@ -63,11 +63,11 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
     local type= tab.type
     local unit= tab.unit
 
-    
+
 
     if spellID then
         local data= C_Spell.GetSpellCooldown(spellID)
-        if data and data.duration>0 then
+        if data then-- and not issecretvalue(data) and data.duration>0 then
             self:Setup(frame, data.startTime, data.duration, data.modRate, true, nil, not type)--冷却条
         else
             self:Setup(frame)
@@ -95,7 +95,7 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
 
     elseif item then
         local startTime, duration = C_Item.GetItemCooldown(item)
-        self:Setup(frame, startTime, duration, nil, true, nil, not type)   
+        self:Setup(frame, startTime, duration, nil, true, nil, not type)
 
     elseif frame.Cooldown then
         self:Setup(frame)
@@ -114,7 +114,7 @@ end
 function WoWTools_CooldownMixin:Setup(frame, start, duration, modRate, HideCountdownNumbers, Reverse, setSwipeTexture, hideDrawBling)--冷却条
     if not frame then
         return
-    elseif not duration or duration<=0 then
+    elseif not duration then
         if frame.Cooldown then
             frame.Cooldown:Clear()
         end
