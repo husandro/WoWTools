@@ -56,9 +56,6 @@ local function Settings(frame)
     frame.Icon:SetScript('OnEnter', function(self)
         local unit= self:GetParent().unit or 'player'
         local spellID= select(9, UnitCastingInfo(unit)) or select(8, UnitChannelInfo(unit)) or 0
-        if spellID==0 then
-            return
-        end
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:SetSpellByID(spellID)
@@ -113,19 +110,7 @@ end
 
 --MirrorTimer.lua
 local function SetupTimer(frame)
-    for _, activeTimer in pairs(frame.activeTimers) do
-        if not activeTimer.valueText then
-            activeTimer.valueText=WoWTools_LabelMixin:Create(activeTimer, {justifyH='RIGHT'})
-            activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
-
-            WoWTools_ColorMixin:SetLabelColor(activeTimer.valueText)--设置颜色
-            WoWTools_ColorMixin:SetLabelColor(activeTimer.Text)--设置颜色
-
-            WoWTools_DataMixin:Hook(activeTimer, 'UpdateStatusBarValue', function(self)
-                self.valueText:SetText(format('%i', self.StatusBar:GetValue()))
-            end)
-        end
-    end
+    
 end
 
 
@@ -140,12 +125,31 @@ local function Init()
         return
     end
 
-    Settings(PlayerCastingBarFrame)
-    Settings(PetCastingBarFrame)
-    Settings(OverlayPlayerCastingBarFrame)
-    Settings(TargetFrameSpellBar)
+    Settings(_G['PlayerCastingBarFrame'])
+    Settings(_G['PetCastingBarFrame'])
+    Settings(_G['OverlayPlayerCastingBarFrame'])
+    Settings(_G['TargetFrameSpellBar'])
 
-    WoWTools_DataMixin:Hook(MirrorTimerContainer, 'SetupTimer', SetupTimer)
+    WoWTools_DataMixin:Hook(MirrorTimerContainer, 'SetupTimer', function(frame)
+        for _, activeTimer in pairs(frame.activeTimers) do
+            if not activeTimer.valueText then
+                activeTimer.valueText=WoWTools_LabelMixin:Create(activeTimer, {justifyH='RIGHT'})
+                activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
+
+                WoWTools_ColorMixin:SetLabelColor(activeTimer.valueText)--设置颜色
+                WoWTools_ColorMixin:SetLabelColor(activeTimer.Text)--设置颜色
+
+                WoWTools_DataMixin:Hook(activeTimer, 'UpdateStatusBarValue', function(self)
+                    local value= self.StatusBar:GetValue()
+                    if not issecurevalue(value) then
+                        self.valueText:SetFormattedText('%i', value)
+                    else
+                        self.valueText:SetText('')
+                    end
+                end)
+            end
+        end
+    end)
 
 
 

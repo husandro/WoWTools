@@ -69,6 +69,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
     WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(btn)
         btn:GetRegions():SetAlpha(0.5)
+        btn.text:SetTextColor(1, 0.88, 0.68)
     end)
 --副本信息
     self:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)

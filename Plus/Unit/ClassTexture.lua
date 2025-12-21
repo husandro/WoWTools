@@ -45,13 +45,29 @@ local function Craete_Frame(frame)
             if WoWTools_UnitMixin:UnitIsUnit(unit2, 'player') then
                 texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
             else
-                local specID= GetInspectSpecialization(unit2)
+                local specID
+
+                specID= GetInspectSpecialization(unit2)
                 if specID and specID>0 then
                     texture= select(4, GetSpecializationInfoByID(specID))
+
                 else
+
                     local guid2= guid3 or UnitGUID(unit2)
-                    if not issecurevalue(guid2) and guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID then
-                        texture= select(4, GetSpecializationInfoByID(WoWTools_DataMixin.UnitItemLevel[guid2].specID))
+
+                    
+                    local tab
+                    if not issecurevalue(guid2)
+                        and guid2
+                    then
+                        tab= WoWTools_DataMixin.UnitItemLevel[guid2]
+                    end
+                    
+                    --specID= not issecurevalue(guid2) and guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID
+                    if tab and tab.specID  then
+                    --if not issecurevalue(guid2) and guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID then
+                       
+                        texture= select(4, GetSpecializationInfoByID(tab.specID))
                     else
                         atlas= WoWTools_UnitMixin:GetClassIcon(unit2, nil, nil, {reAtlas=true})--职业, 图标
                     end

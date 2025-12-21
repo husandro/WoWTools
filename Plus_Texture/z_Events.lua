@@ -1587,10 +1587,11 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
 
 --施法条 CastingBarFrameTemplate
     for _, frame in pairs({
-        PlayerCastingBarFrame,
-        PetCastingBarFrame,
-        OverlayPlayerCastingBarFrame,
+        'PlayerCastingBarFrame',
+        'PetCastingBarFrame',
+        'OverlayPlayerCastingBarFrame',
     }) do
+        frame=_G[frame]
         if frame then
             --self:SetFrame(frame, {show={frame.Icon}})
             self:SetAlphaColor(frame.Border)

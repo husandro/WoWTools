@@ -18,7 +18,7 @@ local P_Save={
     --WidgetSetID=848,--自定义，监视 WidgetSetID
     --disabledNPCcolor=true,--禁用NPC颜色
     --hideHealth=true,----生命条提示
-    --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体>
+    --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体> 12.0移除
 
     no={}--禁用
 }
@@ -261,7 +261,7 @@ local function Init_Panel()
         })
     end
 
---<右键点击设置框体>
+--[[<右键点击设置框体>
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '<右键点击设置框体>' or UNIT_POPUP_RIGHT_CLICK,
         tooltip=  WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK),
@@ -271,7 +271,7 @@ local function Init_Panel()
             Save().UNIT_POPUP_RIGHT_CLICK= not Save().UNIT_POPUP_RIGHT_CLICK and true or nil
             print(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), reloadText)
         end
-    })
+    })]]
 
     WoWTools_PanelMixin:OnlyCheck({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|A:NPE_Icon:0:0|aCtrl+Shift', WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
@@ -474,7 +474,7 @@ local function Init()
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
 
 --移除，<右键点击设置框体> 替换原生
-    if not Save().UNIT_POPUP_RIGHT_CLICK then
+    --[[if not Save().UNIT_POPUP_RIGHT_CLICK then
         function UnitFrame_UpdateTooltip (self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);
             if GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip) then
@@ -483,7 +483,7 @@ local function Init()
                 self.UpdateTooltip = nil;
             end
         end
-    end
+    end]]
 
 
     Init=function()end

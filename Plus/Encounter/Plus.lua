@@ -13,7 +13,7 @@ local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGR
 --BOSS 列表 按钮
 local function Create_BossButtonList(btn)
 --索引
-    btn.indexLabel= btn:CreateFontString(nil, 'OVERLAY', 'GameFontNormalMed3')
+    btn.indexLabel= btn:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
     btn.indexLabel:SetPoint('TOPRIGHT', -8, -7)
     btn.indexLabel:SetTextColor(0.827, 0.659, 0.463)
     btn.indexLabel:SetScript('OnLeave', function(self)
@@ -37,21 +37,14 @@ local function Create_BossButtonList(btn)
     btn.killButton.Text:SetPoint('RIGHT', -2, 0)
     btn.killButton.Text:SetTextColor(0.827, 0.659, 0.463)
     btn.killButton:SetPoint('RIGHT', btn.indexLabel, 'LEFT', -5, 0)
-    --btn.killedLabel:EnableMouse(true)
-    btn.killButton:SetScript('OnLeave', function()
-        GameTooltip:Hide()
-        --self:SetAlpha(1)
-    end)
-    btn.killButton:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:SetText(
-            WoWTools_DataMixin.Icon.icon2
-            ..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED)
-            ..' |cffffffff'..(self.Text:GetText() or '')
+    function btn.killButton:tooltip()
+         GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED)
+            ..WoWTools_DataMixin.Icon.icon2
+            ..'|cffffffff'..(self.Text:GetText() or '')
         )
-        GameTooltip:Show()
-        self:SetAlpha(0.5)
-    end)
+    end
+
 --全部清除
     --btn.killButton:SetScript('OnMouseDown', function(self)
         --MenuUtil.CreateContextMenu(self:GetParent(), function(_, root)
