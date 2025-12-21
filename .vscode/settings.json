@@ -2765,7 +2765,8 @@
         "FCF_GetChatFrameByID",
         "PrimaryChatFrameMixin",
         "CanAccessObject",
-        "WoWTools_DataMixin"
+        "WoWTools_DataMixin",
+        "DAMAGE_METER_OVERALL_SESSION_SHORT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
