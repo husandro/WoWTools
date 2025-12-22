@@ -14,12 +14,14 @@ local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGR
 local function Create_BossButtonList(btn)
 --索引
     btn.indexLabel= btn:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+
     btn.indexLabel:SetPoint('TOPRIGHT', -8, -7)
-    btn.indexLabel:SetTextColor(1, 0.88, 0.68)
+    btn.indexLabel:SetTextColor(1, 0.88, 0.6)
     btn.indexLabel:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:SetAlpha(1)
     end)
+    btn.indexLabel:SetAlpha(0.5)
     btn.indexLabel:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:SetText(
@@ -140,6 +142,21 @@ local function Create_BossButtonList(btn)
         end
         GameTooltip:Show()
     end)
+
+
+    btn.creatureNumLabel= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+    btn.creatureNumLabel:SetPoint('RIGHT', btn.text, 'LEFT', -2, 0)
+    btn.creatureNumLabel:SetJustifyH('RIGHT')
+    btn.creatureNumLabel:SetTextColor(1, 0.88, 0.68)
+    btn.creatureNumLabel:EnableMouse(true)
+    btn.creatureNumLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    btn.creatureNumLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
+    btn.creatureNumLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(
+        WoWTools_DataMixin.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CREATURE)
+    )
+    function btn.creatureNumLabel:set_alpha()
+        self:SetAlpha(self:IsMouseOver() and 0.5 or 1)
+    end
 end
 
 
@@ -235,6 +252,25 @@ local function Init()
         return
     end
 
+    
+    EncounterJournalEncounterFrameInfo.allNumLabel= EncounterJournalEncounterFrameInfoInstanceButton:CreateFontString(nil, 'ARTWORK', 'GameNormalNumberFont')
+    EncounterJournalEncounterFrameInfo.allNumLabel:SetPoint('BOTTOM', EncounterJournalEncounterFrameInfoInstanceButtonIcon, 0, 2)
+    EncounterJournalEncounterFrameInfo.allNumLabel:SetTextColor(1, 0.88, 0.68)
+    EncounterJournalEncounterFrameInfo.allNumLabel:EnableMouse(true)
+    EncounterJournalEncounterFrameInfo.allNumLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    EncounterJournalEncounterFrameInfo.allNumLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
+    EncounterJournalEncounterFrameInfo.allNumLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(
+        WoWTools_DataMixin.onlyChinese and '首领数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, BOSSES)
+    )
+    function EncounterJournalEncounterFrameInfo.allNumLabel:set_alpha()
+        self:SetAlpha(self:IsMouseOver() and 0.5 or 1)
+    end
+    WoWTools_DataMixin:Hook('EncounterJournal_DisplayInstance', function()
+        EncounterJournalEncounterFrameInfo.allNumLabel:SetText(
+            EncounterJournalEncounterFrameInfo.BossesScrollBox:GetDataProviderSize() or ''
+        )
+    end)
+
 
 --BOSS 列表 按钮
     WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)
@@ -245,6 +281,8 @@ local function Init()
         if not self.indexLabel then
             Create_BossButtonList(self)
         end
+
+
 
         self.indexLabel:SetText(data.index or '')
         local encounterID= select(7, EJ_GetEncounterInfo(data.bossID))
@@ -257,6 +295,13 @@ local function Init()
         end
         self.killButton:SetShown(numKill>0)
 
+        local numCreature= 0
+        for  i=1, 9 do
+            if EJ_GetCreatureInfo(i, data.bossID) then
+                numCreature= numCreature+1
+            end
+        end
+        self.creatureNumLabel:SetText(numCreature)
     end)
 
 
@@ -657,9 +702,82 @@ local function Init()
     end)
 
 
+--暗影国度 暗影之力 LootJournalMixin
+    WoWTools_DataMixin:Hook(EncounterJournal.LootJournal, 'Refresh', function(frame)
+        if not frame:IsShown() then
+            return
+        end
+        if not frame.allNumLabel then
+            frame.allNumLabel= frame:CreateFontString(nil, 'ARTWORK', 'GameNormalNumberFont')
+            frame.allNumLabel:SetPoint('BOTTOM', frame.ScrollBox, 'TOP', 0,2)
+            frame.allNumLabel:EnableMouse(true)
+            frame.allNumLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+            frame.allNumLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
+            frame.allNumLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '总计' or TOTAL)
+        end
+        frame.allNumLabel:SetText(frame.powers and #frame.powers or '')
+    end)
 
+    WoWTools_DataMixin:Hook(RuneforgeLegendaryPowerLootJournalMixin, 'OnPowerSet', function(btn, oldPowerID, newPowerID)
+        local text, icon
+        local slotNames= C_LegendaryCrafting.GetRuneforgePowerSlots(btn:GetPowerID())
+        if slotNames and #slotNames > 0 then
+            for _, name in pairs(slotNames) do
+                text= (text and text..LIST_DELIMITER or '')..WoWTools_TextMixin:CN(name)
+            end
+		end
+        local powerInfo = btn:GetPowerInfo()
+        local spellID= powerInfo and powerInfo.descriptionSpellID 
+        if spellID then
+            WoWTools_DataMixin:Load(spellID, 'spell')
+            icon= C_Spell.GetSpellTexture(spellID)
+            if icon==powerInfo.iconFileID then
+                icon= nil
+            end
+        end
+        if not btn.slotNameLabel then
+--符文铭刻于：
+            btn.slotNameLabel= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')
+            btn.slotNameLabel:SetPoint('BOTTOMLEFT', btn.Name, 'TOPLEFT')
+            btn.slotNameLabel:SetPoint('RIGHT', -6, 0)
+            btn.slotNameLabel:SetPoint('TOP', 0, -6)
+            btn.slotNameLabel:SetJustifyH('LEFT')
+            btn.slotNameLabel:SetTextColor(RUNEFORGE_LEGEDARY_SPEC_COLOR:GetRGB())
+--法术，提示
+            btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY')
+            btn.spellTexture:SetPoint('RIGHT', btn.Icon, 9, 0)
+            btn.spellTexture:SetSize(20, 20)
+            btn.spellTexture:EnableMouse(true)
+            btn.spellTexture:SetAtlas('soulbinds_tree_conduit_icon_utility')
+            btn.spellTexture:SetScript('OnEnter', WoWToolsButton_OnEnter)
+            btn.spellTexture:SetScript('OnLeave', WoWToolsButton_OnLeave)
+            function btn.spellTexture:tooltip(tooltip)
+                if self.spellID then
+                    tooltip:SetSpellByID(self.spellID)
+                end
+            end
+--索引
+            btn.indexLabel= btn:CreateFontString(nil, 'OVERLAY', 'GameFontNormalSmall2')
+            btn.indexLabel:SetPoint('LEFT', btn.Icon, -3, 0)
+            btn.indexLabel:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+            btn.indexLabel:SetAlpha(0.7)
+        end
+        btn.slotNameLabel:SetText(text or '')
+        btn.spellTexture.spellID= spellID
+        btn.spellTexture:SetShown(spellID)
+        btn.indexLabel:SetText(btn:GetElementDataIndex() or '')
+    end)
 
-
+    WoWTools_DataMixin:Hook(RuneforgeLegendaryPowerLootJournalMixin, 'OnEnter', function(btn)
+        local powerInfo = btn:GetPowerInfo()
+	    if powerInfo and powerInfo.runeforgePowerID then--btn:GetPowerID()
+            GameTooltip:AddDoubleLine(
+                'powerID|cffffffff'..WoWTools_DataMixin.Icon.icon2..powerInfo.runeforgePowerID,
+                powerInfo.iconFileID and '|T'..powerInfo.iconFileID..':0|t|cffffffff'..powerInfo.iconFileID
+            )
+            GameTooltip:Show()
+        end
+    end)
 
 
 

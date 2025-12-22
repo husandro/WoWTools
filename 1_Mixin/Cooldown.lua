@@ -134,9 +134,7 @@ function WoWTools_CooldownMixin:Setup(frame, start, duration, modRate, HideCount
             frame.Cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
         end
         frame:HookScript('OnHide', function(f)
-            if f.Cooldown then
-                f.Cooldown:Clear()
-            end
+            f.Cooldown:Clear()
         end)
     end
     start=start or GetTime()

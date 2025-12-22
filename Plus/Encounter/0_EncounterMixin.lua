@@ -17,7 +17,6 @@ WoWTools_EncounterMixin={}
 
 
 
-
 function WoWTools_EncounterMixin:GetBossNameSort(name)--取得怪物名称, 短名称
     name= WoWTools_TextMixin:CN(name)
     name=name:gsub('(,.+)','')

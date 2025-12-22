@@ -2767,7 +2767,16 @@
         "CanAccessObject",
         "WoWTools_DataMixin",
         "DAMAGE_METER_OVERALL_SESSION_SHORT",
-        "DAMAGE_METER_CURRENT_SESSION_SHORT"
+        "DAMAGE_METER_CURRENT_SESSION_SHORT",
+        "EncounterJournalItemHeaderMixin",
+        "LootJournalMixin",
+        "RuneforgeLegendaryPowerLootJournalMixin",
+        "RUNEFORGE_LEGENDARY_POWER_TOOLTIP_SLOT_HEADER",
+        "EncounterJournal_DisplayEncounter",
+        "EncounterJournalEncounterFrameInfoInstanceTitle",
+        "EncounterJournalEncounterFrameInfoInstanceButton",
+        "EncounterJournalEncounterFrameInfoInstanceButtonIcon",
+        "CATALOG_SHOP_TYPE_DECOR"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

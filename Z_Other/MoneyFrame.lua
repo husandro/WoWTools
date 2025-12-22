@@ -28,6 +28,10 @@ local function Init()
     end
 
     WoWTools_DataMixin:Hook('MoneyFrame_Update', function(frameName, money)
+        if issecretvalue(money) then
+            return
+        end
+
         local gold = money and floor(money / (COPPER_PER_SILVER * SILVER_PER_GOLD)) or 0
         local frame = gold>=1000 and GetMoneyFrame(frameName)
         if frame then

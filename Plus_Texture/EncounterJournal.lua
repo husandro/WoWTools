@@ -36,15 +36,11 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 --BOSS, 掉落
     EncounterJournalEncounterFrameInfoClassFilterClearFrame:GetRegions():SetAlpha(0.5)--职业过滤，标题
 
-    if EncounterJournalEncounterFrameInfo.LootContainer then--11.2.5
-        --self:SetMenu(EncounterJournalEncounterFrameInfoDifficulty)
-        EncounterJournalEncounterFrameInfo.LootContainer.slotFilter:ClearAllPoints()
-        EncounterJournalEncounterFrameInfo.LootContainer.slotFilter:SetPoint('RIGHT', EncounterJournalEncounterFrameInfoDifficulty, 'LEFT', -4, 0)
-        EncounterJournalEncounterFrameInfo.LootContainer.filter:ClearAllPoints()
-        EncounterJournalEncounterFrameInfo.LootContainer.filter:SetPoint('RIGHT', EncounterJournalEncounterFrameInfo.LootContainer.slotFilter, 'LEFT', -4, 0)
-        --self:SetMenu(EncounterJournalEncounterFrameInfo.LootContainer.slotFilter)
-        --self:SetMenu(EncounterJournalEncounterFrameInfo.LootContainer.filter)
-    end
+    EncounterJournalEncounterFrameInfo.LootContainer.slotFilter:ClearAllPoints()
+    EncounterJournalEncounterFrameInfo.LootContainer.slotFilter:SetPoint('RIGHT', EncounterJournalEncounterFrameInfoDifficulty, 'LEFT', -4, 0)
+    EncounterJournalEncounterFrameInfo.LootContainer.filter:ClearAllPoints()
+    EncounterJournalEncounterFrameInfo.LootContainer.filter:SetPoint('RIGHT', EncounterJournalEncounterFrameInfo.LootContainer.slotFilter, 'LEFT', -4, 0)
+    
 
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
     WoWTools_DataMixin:Hook(EncounterJournalItemMixin,'Init', function(btn)
@@ -88,8 +84,8 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
         0, 2
     )
     self:HideFrame(EncounterJournal.LootJournalItems.ItemSetsFrame)
---套装,按钮
 
+--套装,按钮
     WoWTools_DataMixin:Hook(LootJournalItemSetButtonMixin, 'Init', function(btn)
         btn.Background:SetAtlas('timerunning-TopHUD-button-glow')
         btn.Background:SetAlpha(0.5)
@@ -98,7 +94,8 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:HideFrame(EncounterJournalMonthlyActivitiesFrame)
     self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
     self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
-
+--暗影国度 暗影之力
+    self:HideFrame(EncounterJournal.LootJournal, {index=1})
 
 --旅行者日志
     EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetColorTexture(0,0,0,0.3)
@@ -125,8 +122,11 @@ end
 
     self:Init_BGMenu_Frame(EncounterJournal, {
     settings= function(icon, textureName, alphaValue)
+        local alpha= textureName and 0 or alphaValue or 1
+
+
+
         if EncounterJournalJourneysFrame then--12.0才有 
-            local alpha= textureName and 0 or alphaValue or 1
             EncounterJournalJourneysFrame.BorderFrame.Border:SetAlpha(alpha)
             EncounterJournalJourneysFrame.BorderFrame.TopDetail:SetAlpha(alpha)
 --副本列表

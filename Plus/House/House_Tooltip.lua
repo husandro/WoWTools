@@ -1,4 +1,7 @@
-
+--[[
+	<Button name="HousingCatalogDecorEntryTemplate" mixin="HousingCatalogDecorEntryMixin" inherits="BaseHousingCatalogEntryTemplate" virtual="true"/>
+	<Button name="HousingCatalogRoomEntryTemplate" mixin="HousingCatalogRoomEntryMixin" inherits="BaseHousingCatalogEntryTemplate" virtual="true">
+]]
 function WoWTools_TooltipMixin.Events:Blizzard_HousingDashboard()
     local menu= CreateFrame('DropdownButton', 'WoWToolsHousingDashboardMenuButton', HousingDashboardFrameCloseButton, 'WoWToolsMenuTemplate')
     menu:SetPoint('RIGHT', HousingDashboardFrameCloseButton, 'LEFT')
@@ -54,7 +57,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
     end
 
 --Blizzard_HousingCatalogEntry.lua
-    WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
+    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin or HousingCatalogEntryMixin, 'OnLoad', function(btn)
 --有点大
         btn.InfoText:SetFontObject('GameFontWhite')
         btn.InfoText:ClearAllPoints()
@@ -128,7 +131,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.notAsset:SetAtlas('transmog-icon-hidden')
     end)
 
-    WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
+    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin or HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
+
         local isTrackable= nil
         local placementCost, r,g,b, show, isXP, isIndoors, isOutdoors, isCanDelete, isNotAsset
         local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
@@ -142,8 +146,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             placementCost= entryInfo.placementCost
 
-            if btn:IsBundleEntry() then
-            elseif btn:IsInMarketView() then
+            if btn.IsBundleEntry and btn:IsBundleEntry() then--12.0没有了 IsBundleEntry 
+            elseif btn.IsInMarketView and btn:IsInMarketView() then
             else
                 local numPlaced= entryInfo.numPlaced or 0--已放置
                 local numStored=  entryInfo.numStored or 0--储存空间
@@ -213,7 +217,13 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 --列表，数量
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'OnLoad', function(frame)
         frame.numItemLabel= frame:CreateFontString(nil, nil, 'GameFontWhite')
-        frame.numItemLabel:SetPoint('LEFT', frame.CategoryText, 'RIGHT', 4, 0)
+        frame.numItemLabel:SetPoint('LEFT', frame.CategoryText, 'RIGHT', 5, 0)
+        frame.numItemLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
+        frame.numItemLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+        frame.numItemLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '家具数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CATALOG_SHOP_TYPE_DECOR))
+        function frame.numItemLabel:set_alpha()
+            self:SetAlpha(self:IsMouseOver() and 0.5 or 1)
+        end
     end)
 
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'SetCatalogElements', function(frame)
