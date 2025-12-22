@@ -2471,8 +2471,9 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_DebugTools()
     local function set_frame(frame)
-        self:SetButton(frame.CloseButton, {alpha=1, show= {[frame.DialogBG]=true}})
-        self:SetFrame(frame, {alpha=1})
+        self:SetButton(frame.CloseButton, {alpha=1})
+        self:SetFrame(frame, {alpha=1, show={[frame.DialogBG]=true}})
+        self:SetNineSlice(frame.ScrollFrameArt)
     end
 
     set_frame(TableAttributeDisplay)
