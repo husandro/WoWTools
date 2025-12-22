@@ -37,6 +37,9 @@ local function Create_ModelName(frame)
     frame.nameBG:SetPoint('BOTTOMRIGHT', frame.Name)
     frame.nameBG:Hide()
 end
+    --[[frame.indexLabel= frame:CreateFontString(nil, 'ARTWORK', 'GameNormalNumberFont')
+    frame.indexLabel:SetPoint('TOPRIGHT', -2,-2)
+    frame.indexLabel:SetAlpha(0.5)]]
 
 
 
@@ -67,7 +70,30 @@ end
 
 
 
+
+
+
+
+
+
+
 local function Init()
+
+    if CombatLogGetCurrentEventInfo then--12.0才有
+        Init=function()end
+        return
+    end
+
+    if not C_AddOns.IsAddOnLoaded('Blizzard_Transmog') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_Transmog' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
+
     local menu= CreateFrame('DropdownButton', 'WoWToolsTransmogMenuButton', TransmogFrameCloseButton, 'WoWToolsMenuTemplate')
     menu:SetPoint('RIGHT', TransmogFrameCloseButton, 'LEFT')
     menu:SetupMenu(Init_Menu)
@@ -162,8 +188,6 @@ local function Init()
         self.nameBG:SetShown(name)
     end)
 
-
-
     Init=function()end
 end
 
@@ -179,19 +203,6 @@ end
 
 --12.0才有
 function WoWTools_CollectionMixin:Init_Transmog()
-    if not CombatLogGetCurrentEventInfo then--12.0没有了
-        return
-    end
-
-    if C_AddOns.IsAddOnLoaded('Blizzard_Transmog') then
-        Init()
-    else
-        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-            if arg1=='Blizzard_Transmog' then
-                Init()
-                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-            end
-        end)
-    end
+    Init()
 end
 
