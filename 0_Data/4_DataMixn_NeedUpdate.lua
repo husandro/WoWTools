@@ -209,15 +209,17 @@ WoWTools_ChallengesSpellData={
     [525]= {spell=1216786, ins=1298, name='水闸行动', spellName='水闸行动之路', spellDes='传送至|cff00ccff水闸行动|r入口处。'},
 
     --[541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.5
-
     [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'},
-    --[556]= {spell=, ins=, name='萨隆矿坑', spellName='', spellDes=''},
-    --[557]= {spell=, ins=, name='风行者之塔', spellName='', spellDes=''},
-    --[558]= {spell=, ins=, name='魔导师平台', spellName='', spellDes=''},
-    --[559]= {spell=, ins=, name='节点希纳斯', spellName='', spellDes=''},
-    --[560]= {spell=, ins=, name='迈萨拉洞窟', spellName='', spellDes=''},
+
+    [556]= {spell=1254555, ins=658, name='萨隆矿坑', spellName='不屈凋零之路', spellDes='传送至萨隆矿坑入口。'},
+    [557]= {spell=1254400, ins=2805, name='风行者之塔', spellName='风行者之路', spellDes='传送至风行者尖塔入口'},
+    [558]= {spell=1254572, ins=2811, name='魔导师平台', spellName='虔心魔导之路', spellDes='传送至魔导师平台入口。'},
+    [559]= {spell=1254563, ins=2915, name='节点希纳斯', spellName=nil, spellDes='传送至节点希纳斯入口。'},
+    [560]= {spell=1254559, ins=2874, name='迈萨拉洞窟', spellName=nil, spellDes='传送至迈萨拉洞窟入口。'},
 
 }
+--https://www.wowhead.com/cn/spell=1254557/加冕巅峰之路 传送至天际之巅入口。
+--https://www.wowhead.com/cn/spell=1254551/黑暗废弃之路 传送至三巨头宝座入口。
 
 --双法术，
 if WoWTools_DataMixin.Player.Faction=='Alliance' then
@@ -261,3 +263,7 @@ WoWTools_DataMixin.FlyoutID={
     --燃烧的远征 2
     --经典旧世 1
 }
+
+if not CombatLogGetCurrentEventInfo then--12.0才有
+    table.insert(WoWTools_DataMixin.FlyoutID, 1, {flyoutID= 246, ver=11})--英雄之路：“至暗之夜”
+end

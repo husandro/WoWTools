@@ -37,6 +37,13 @@ local function Init_Menu(self, root)
     sub=root:CreateTitle(WoWTools_TextMixin:CN(name))
     root:CreateDivider()
 
+    local spells={}
+    for _, spellinfo in pairs(WoWTools_ChallengesSpellData) do
+        if spellinfo.spell then
+            spells[spellinfo.spell]=true
+        end
+    end
+    local isInCombat= PlayerIsInCombat()
     for slot= 1, numSlots2 do
         local flyoutSpellID, overrideSpellID, isKnown, spellName = GetFlyoutSlotInfo(self.flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
@@ -44,7 +51,9 @@ local function Init_Menu(self, root)
             sub= root:CreateButton(
                 '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
                 ..(isKnown and '' or '|cnWARNING_FONT_COLOR:')
-                ..(WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true}) or spellID),
+                ..(WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true}) or spellID)
+                --为挑战数据，标记是否有数据，需要更新
+                ..(WoWTools_DataMixin.Player.husandro and not self.isRaid and not spells[spellID] and '|A:UI-LFG-PendingMark:0:0|a' or ''),
             function(data)
                 local spellLink= WoWTools_SpellMixin:GetLink(data.spellID, false)
                 WoWTools_ChatMixin:Chat(spellLink or data.spellID, nil, true)
@@ -52,12 +61,15 @@ local function Init_Menu(self, root)
             end, {spellID=spellID})
             WoWTools_SetTooltipMixin:Set_Menu(sub)
 
-            --[[sub:CreateButton(--bug
+            sub= sub:CreateButton(--bug
                 WoWTools_DataMixin.onlyChinese and '查询' or WHO,
             function(data)
-                PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, true)--knownSpellsOnly, toggleFlyout, flyoutReason
+                if not InCombatLockdown() then
+                    PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
+                end
                 return MenuResponse.Open
-            end, {spellID=spellID})]]
+            end, {spellID=spellID})
+            sub:SetEnabled(not isInCombat)
         end
     end
 
@@ -71,6 +83,7 @@ local function Init_Menu(self, root)
     
 --SetScrollMod
     WoWTools_MenuMixin:SetScrollMode(root)
+    spells=nil
 end
 
 
@@ -131,8 +144,8 @@ local function Init_All_Flyout()
                             ..' '
                             ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)
                             ..'('..slot
-                            ..(spells[spellID] and ''
-                                or ((WoWTools_DataMixin.Player.husandro and not self.isRaid) and '|A:UI-LFG-PendingMark:0:0|a' or '')--为挑战数据，标记是否有数据，需要更新
+--为挑战数据，标记是否有数据，需要更新
+                            ..((WoWTools_DataMixin.Player.husandro and not self.isRaid and not spells[spellID] and '|A:UI-LFG-PendingMark:0:0|a' or '')
                             )
                         )
                     else
@@ -165,7 +178,7 @@ local function Init_All_Flyout()
         end)
         btn:set_text()
 
-        y= y-52
+        y= y-32-15
     end
 end
 
