@@ -239,11 +239,7 @@ end
 --FSTACK
 function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
 
-    TableAttributeDisplay.LinesScrollFrame:ClearAllPoints()
-    TableAttributeDisplay.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
-    TableAttributeDisplay.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
-    TableAttributeDisplay.FilterBox:SetPoint('RIGHT', -26,0)
-    TableAttributeDisplay.TitleButton.Text:SetPoint('RIGHT')
+
 
     local function Set_Line(frame, line)
         local width= frame:GetWidth()
@@ -261,23 +257,27 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
         end
     end
 
+     local function set_frame(frame)
+        frame.LinesScrollFrame:ClearAllPoints()
+        frame.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
+        frame.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
+        frame.FilterBox:SetPoint('RIGHT', -26,0)
+        frame.TitleButton.Text:SetPoint('RIGHT')
 
-    WoWTools_DataMixin:Hook(TableAttributeLineReferenceMixin, 'Initialize', function(line)
-        local frame= line:GetParent():GetParent():GetParent()
-        local btn= frame.ResizeButton
-        if btn and btn.setSize then
-            Set_Line(frame, line)
-        end
-    end)
-    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'UpdateLines', function(frame)
-        if frame.dataProviders then
-            for _, line in ipairs(frame.lines) do
-                Set_Line(frame, line)
+       WoWTools_DataMixin:Hook(frame, 'UpdateLines', function(f)
+            if f.dataProviders then
+                for _, line in ipairs(f.lines) do
+                    Set_Line(f, line)
+                end
             end
-        end
-    end)
-    
+        end)
+    end
+    set_frame(TableAttributeDisplay)
+
+
     WoWTools_DataMixin:Hook(TableInspectorMixin, 'OnLoad', function(frame)
+        set_frame(frame)
+
         frame:SetResizable(true)
         frame.ResizeButton= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
         frame.ResizeButton:SetSize(18, 18)
@@ -291,6 +291,15 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
         frame.ResizeButton:SetScript("OnMouseDown", function(...)
             WoWTools_MoveMixin:Set_OnMouseDown(...)
         end)
+    end)
+
+
+    WoWTools_DataMixin:Hook(TableAttributeLineReferenceMixin, 'Initialize', function(line)
+        local frame= line:GetParent():GetParent():GetParent()
+        local btn= frame.ResizeButton
+        if btn and btn.setSize then
+            Set_Line(frame, line)
+        end
     end)
 
     self:Setup(TableAttributeDisplay, {

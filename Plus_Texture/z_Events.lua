@@ -1176,7 +1176,7 @@ function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
     if not MajorFactionRenownFrame then--12.0没发现
         return
     end
-    
+
     self:SetNineSlice(MajorFactionRenownFrame)
     self:SetButton(MajorFactionRenownFrame.CloseButton)
 
@@ -2466,4 +2466,17 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_DeathRecap()
     self:SetButton(DeathRecapFrame.CloseXButton)
     self:SetFrame(DeathRecapFrame, {alpha=1})
+end
+
+
+function WoWTools_TextureMixin.Events:Blizzard_DebugTools()
+    local function set_frame(frame)
+        self:SetButton(frame.CloseButton, {alpha=1, show= {[frame.DialogBG]=true}})
+        self:SetFrame(frame, {alpha=1})
+    end
+
+    set_frame(TableAttributeDisplay)
+    WoWTools_DataMixin:Hook(TableInspectorMixin, 'OnLoad', function(frame)
+        set_frame(frame)
+    end)
 end
