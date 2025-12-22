@@ -17,7 +17,7 @@ local function OnColorSelect(_, r, g, b)
     --local a= ColorPickerFrame.hasOpacity and ColorPickerFrame.Content.ColorPicker:GetColorAlpha() or 1
     for _, name in pairs(EditBoxs) do
         local edit= _G['WoWToolsColor'..name..'EditBox']
-        if edit:IsShown() then
+        if edit and edit:IsShown() then
             if not edit:HasFocus() then
                 local text= edit.get_text(r, g, b)
                 if text then
@@ -29,7 +29,12 @@ local function OnColorSelect(_, r, g, b)
             edit.Left:SetVertexColor(r,g,b)
             edit.Right:SetVertexColor(r,g,b)
             edit.searchIcon:SetVertexColor(r,g,b)
-            edit.clearButton.texture:SetVertexColor(r,g,b)
+            if edit.clearButton then--12.0变为.Icon
+                local icon= edit.clearButton.texture or edit.Icon
+                if icon then
+                    icon:SetVertexColor(r,g,b)
+                end
+            end
         end
     end
 end

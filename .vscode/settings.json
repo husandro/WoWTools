@@ -2776,7 +2776,12 @@
         "EncounterJournalEncounterFrameInfoInstanceTitle",
         "EncounterJournalEncounterFrameInfoInstanceButton",
         "EncounterJournalEncounterFrameInfoInstanceButtonIcon",
-        "CATALOG_SHOP_TYPE_DECOR"
+        "CATALOG_SHOP_TYPE_DECOR",
+        "TableAttributeLineFixedValueMixin",
+        "TableAttributeLineMixin",
+        "BLUE_FONT_COLOR_CODE",
+        "ARTIFACT_GOLD_COLOR_CODE",
+        "ADVENTURES_HEALING_GREEN_CODE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

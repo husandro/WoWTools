@@ -311,22 +311,22 @@ local function Init_Menu(self, root)
 
     local sub
     for index, name in pairs(Tab) do
-        local color = _G[name..'_CODE']
-        if color and _G[name] then
+        local color = _G[name]
+        if color then
             sub=root:CreateRadio (
-                color..name,
+                color:WrapTextInColorCode(name),
             function(data)
                 local t= string.upper(self:GetParent():GetText() or '')
                 return t==data.name or (_G[t] and _G[t].GenerateHexColorMarkup and _G[t]:GenerateHexColorMarkup()==_G[data.name]:GenerateHexColorMarkup())
             end, function(data)
                 local edit= self:GetParent()
-                edit.name= data.name..'_CODE'
-                edit:SetText(data.name..'_CODE')
+                edit.name= data.name
+                edit:SetText(data.name)
                 edit:Setup()
                 return MenuResponse.Refresh
             end, {name=name, rightText=index})
             sub:SetTooltip(function(tooltip, desc)
-                tooltip:AddLine(desc.data.name..'_CODE')
+                tooltip:AddLine(desc.data.name)
                 tooltip:AddDoubleLine('|c',_G[desc.data.name..'_CODE']:gsub('|c', ''), 1,1,1, 1,1,1)
             end)
             WoWTools_MenuMixin:SetRightText(sub)

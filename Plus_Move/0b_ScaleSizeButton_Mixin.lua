@@ -75,6 +75,10 @@ end
 
 --保存，大小
 local function Save_Frame_Size(self)
+    if not self.name then
+        return
+    end
+
     if self.sizeStopFunc then
         self.sizeStopFunc(_G[self.name], self)
     else
@@ -679,10 +683,14 @@ end
 
 
 local function Set_Tooltip(self)
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:ClearLines()
     local target= self:GetParent()
     local name= self.name or target:GetName()
+
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    if not name then
+        return
+    end
 
     if WoWTools_FrameMixin:IsLocked(target) then
         GameTooltip:AddDoubleLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
@@ -707,7 +715,7 @@ local function Set_Tooltip(self)
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnWARNING_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
     GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), scale..WoWTools_DataMixin.Icon.left)
 
-    if self.sizeRestFunc then
+    if self.setSize then
         GameTooltip:AddLine(' ')
         local col
         if self.sizeRestTooltipColorFunc then
@@ -804,7 +812,7 @@ local function Set_OnMouseUp(self)
 
     self:SetScript("OnUpdate", nil)
 
-    if d=='RightButton' and self.sizeRestFunc then--保存，大小 d=='RightButton' and
+    if d=='RightButton' and self.setSize then--保存，大小 d=='RightButton' and
         local continueResizeStop = true
         if target.onResizeStopCallback then
             continueResizeStop = target.onResizeStopCallback(self)
@@ -817,10 +825,11 @@ local function Set_OnMouseUp(self)
     elseif d=='LeftButton' then--保存，缩放
         if self.scaleStopFunc then
             self.scaleStopFunc(target, self)
-        else
+        elseif self.name then
             Save().scale[self.name]= target:GetScale()
         end
     end
+    self.SOS= nil
 
     self.isActiveButton= nil
 end
@@ -844,6 +853,13 @@ local function Set_OnMouseDown(self, d)
 
 
     if d=='LeftButton' then
+        self.SOS= self.SOS or {}
+            --[[dist = 0,
+            x = 0,
+            y = 0,
+            left = 0,
+            top = 0,
+            scale = 1,]]
         self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
         self.SOS.scale = target:GetScale()
         self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
@@ -882,7 +898,7 @@ local function Set_OnMouseDown(self, d)
             end
         end)
 
-    elseif d=='RightButton' and self.sizeRestFunc and not Save().disabledSize[self.name] then
+    elseif d=='RightButton' and self.setSize and not Save().disabledSize[self.name] then
 --开始，设置，大小
 
         local continueResizeStart = true
@@ -891,7 +907,7 @@ local function Set_OnMouseDown(self, d)
         end
         if continueResizeStart then
             target:SetResizable(true)
-            target:StartSizing("BOTTOMRIGHT", true)
+            target:StartSizing(self.startSizing or "BOTTOMRIGHT", true)
         end
         self:SetScript('OnUpdate', function()
             if WoWTools_FrameMixin:IsLocked(target) then
@@ -1032,7 +1048,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         btn:SetPoint('BOTTOMRIGHT', frame, 3, -3)
     end
 
-    if btn.sizeRestFunc then
+    if btn.setSize then
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         --[[
@@ -1053,14 +1069,14 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
 
     --btn:SetClampedToScreen(true)
 
-    btn.SOS = { --Scaler Original State
+    --[[btn.SOS = { --Scaler Original State
         dist = 0,
         x = 0,
         y = 0,
         left = 0,
         top = 0,
         scale = 1,
-    }
+    }]]
 
     local scale= Save().scale[name]
     if scale and scale~=1 then
@@ -1163,4 +1179,12 @@ function WoWTools_MoveMixin:Set_Frame_Scale(frame)
     if value then
         Set_Frame_Scale(frame, value)
     end
+end
+
+function WoWTools_MoveMixin:Set_OnMouseUp(...)
+    Set_OnMouseUp(...)
+end
+
+function WoWTools_MoveMixin:Set_OnMouseDown(...)
+    Set_OnMouseDown(...)
 end

@@ -160,12 +160,35 @@ local function Init()
         end
     end
 
+
+
+
     WoWTools_DataMixin:Hook(TableInspectorMixin, 'InspectTable', function(frame, focusedTable)
         set_objectType(frame, focusedTable)
     end)
 
     WoWTools_DataMixin:Hook(TableAttributeDisplay, 'InspectTable', function(frame, focusedTable)--self.focusedTable= focusedTable
         set_objectType(frame, focusedTable)
+    end)
+
+
+
+    WoWTools_DataMixin:Hook(TableAttributeLineMixin, 'Initialize', function(line, attributeSource, index, attributeData)
+        if attributeData.type=='function' then
+            line.Key.Text:SetTextColor(BLUE_FONT_COLOR:GetRGB())--|cff00bff3
+        elseif attributeData.type=='table' then
+            line.Key.Text:SetTextColor(ARTIFACT_GOLD_COLOR:GetRGB())--|cffe6cc80
+        elseif attributeData.type=='userdata' then
+            line.Key.Text:SetTextColor(WARNING_FONT_COLOR:GetRGB())--|cffff4800
+        elseif attributeData.type=='region' then
+            line.Key.Text:SetTextColor(ADVENTURES_HEALING_GREEN:GetRGB())--|cff00ff12
+        elseif attributeData.type=='childFrame' then
+            line.Key.Text:SetTextColor(ITEM_EPIC_COLOR:GetRGB())--|cffa334ee
+        elseif attributeData.type=='string' then
+            line.Key.Text:SetTextColor(CORRUPTION_COLOR:GetRGB())--|cff956dd1
+        else
+            line.Key.Text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+        end
     end)
 
     Init=function()

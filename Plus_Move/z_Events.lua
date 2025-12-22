@@ -245,30 +245,56 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
     TableAttributeDisplay.FilterBox:SetPoint('RIGHT', -26,0)
     TableAttributeDisplay.TitleButton.Text:SetPoint('RIGHT')
 
-    WoWTools_DataMixin:Hook(TableAttributeLineReferenceMixin, 'Initialize', function(f)
-        local frame= f:GetParent():GetParent():GetParent()
+    local function Set_Line(frame, line)
+        local width= frame:GetWidth()
+        local keyWidth= width/4
+        if line.Key then
+            line.Key:SetWidth(keyWidth)
+            line.Key.Text:SetPoint('RIGHT')
+        end
+        if line.ValueButton then
+            line.ValueButton:SetPoint('RIGHT', frame, -23, 0)
+            line.ValueButton.Text:SetPoint('RIGHT')
+        end
+        if line.Value then
+            line.Value:SetPoint('RIGHT', frame, -23, 0)
+        end
+    end
+
+
+    WoWTools_DataMixin:Hook(TableAttributeLineReferenceMixin, 'Initialize', function(line)
+        local frame= line:GetParent():GetParent():GetParent()
         local btn= frame.ResizeButton
         if btn and btn.setSize then
-            local w= frame:GetWidth()-200
-            f.ValueButton:SetWidth(w)
-            f.ValueButton.Text:SetWidth(w)
+            Set_Line(frame, line)
         end
     end)
-    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'UpdateLines', function(f)
-        if f.dataProviders then
-            for _, line in ipairs(f.lines) do
-                if line.ValueButton then
-                    local w= f:GetWidth()-200
-                    line.ValueButton:SetWidth(w)
-                    line.ValueButton.Text:SetWidth(w)
-                end
+    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'UpdateLines', function(frame)
+        if frame.dataProviders then
+            for _, line in ipairs(frame.lines) do
+                Set_Line(frame, line)
             end
         end
     end)
     
+    WoWTools_DataMixin:Hook(TableInspectorMixin, 'OnLoad', function(frame)
+        frame:SetResizable(true)
+        frame.ResizeButton= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
+        frame.ResizeButton:SetSize(18, 18)
+        frame.ResizeButton:SetPoint('BOTTOMRIGHT', frame, 3, -3)
+        frame.ResizeButton:Init(frame, 200, 150)
+        frame.ResizeButton.setSize=true
+        WoWTools_TextureMixin:SetButton(frame.ResizeButton, {alpha=0.5})
+        frame.ResizeButton:SetScript("OnMouseUp", function(...)
+            WoWTools_MoveMixin:Set_OnMouseUp(...)
+        end)
+        frame.ResizeButton:SetScript("OnMouseDown", function(...)
+            WoWTools_MoveMixin:Set_OnMouseDown(...)
+        end)
+    end)
 
     self:Setup(TableAttributeDisplay, {
-        minW=476,
+        minW=200,
         minH=150,
         sizeUpdateFunc=function(frame)
             frame:UpdateLines()--RefreshAllData()
