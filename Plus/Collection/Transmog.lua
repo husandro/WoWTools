@@ -116,10 +116,11 @@ local function Init()
     WoWTools_DataMixin:Hook(TransmogItemModelMixin, 'OnLoad', function(self)
         Create_ModelName(self)
     end)
+
     WoWTools_DataMixin:Hook(TransmogItemModelMixin, 'UpdateItem', function(self)
         local itemLink
         if not Save().hideTransmogModelName then
-            itemLink= WoWTools_ItemMixin:GetName(nil, self:GetAppearanceLink(), nil, {notCount=true})
+            itemLink= WoWTools_ItemMixin:GetName(nil, self:GetAppearanceLink() or self:GetIllusionLink(), nil, {notCount=true, label=self.Name})
         end
         self.Name:SetText(itemLink or '')
         self.nameBG:SetShown(itemLink)

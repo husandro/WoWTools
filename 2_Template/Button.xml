@@ -144,8 +144,8 @@
         <Scripts>
             <OnLoad>
                 self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-                WoWTools_TextureMixin:SetAlphaColor(self:GetNormalTexture(), nil, nil, 1)
-                WoWTools_TextureMixin:SetAlphaColor(self:GetPushedTexture(), nil, nil, 1)
+                WoWTools_TextureMixin:SetAlphaColor(self:GetNormalTexture(), true)
+                WoWTools_TextureMixin:SetAlphaColor(self:GetPushedTexture(), true)
                 WoWTools_ColorMixin:SetLabelColor(self.Text)
             </OnLoad>
             <OnLeave function="WoWToolsButton_OnLeave"/>

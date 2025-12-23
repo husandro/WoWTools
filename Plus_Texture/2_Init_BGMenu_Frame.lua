@@ -43,6 +43,11 @@ local TextureTab={
 ['Interface\\DialogFrame\\UI-DialogBox-Background']=1,
 ['Interface\\DialogFrame\\UI-DialogBox-Background-Dark']=1,
 ['Interface\\DialogFrame\\UI-DialogBox-Gold-Background']=1,
+['Interface\\Tooltips\\UI-Tooltip-Background']=1,
+['Interface\\Tooltips\\UI-Tooltip-Background-Azerite']=1,
+['Interface\\Tooltips\\UI-Tooltip-Background-Corrupted']=1,
+['Interface\\Tooltips\\UI-Tooltip-Background-Maw']=1,
+
 
 ['talents-background-warrior-arms']=1,
 ['talents-background-warrior-fury']=1,

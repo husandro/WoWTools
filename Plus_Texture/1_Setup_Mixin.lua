@@ -255,7 +255,10 @@ end
 --设置，滚动条，颜色
 function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     bar= bar and bar.ScrollBar or bar
-    if not bar or not bar.Track then
+    if not bar
+        or not bar.Track
+        or bar.wowTextureIsHooked
+    then
         return
     end
 
@@ -266,13 +269,13 @@ function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, nil, 0.6)
 
-    --if isHideBar and not bar.hideIfUnscrollable  then
     bar:SetAlpha(bar:HasScrollableExtent() and 1 or 0)
+
     WoWTools_DataMixin:Hook(bar, 'Update', function(b)
         b:SetAlpha(b:HasScrollableExtent() and 1 or 0)
     end)
-    --end
---bar:SetHideIfUnscrollable(true)
+
+    bar.wowTextureIsHooked=1
 end
 
 
@@ -374,17 +377,41 @@ end
 
 --PanelTemplates_TabResize(frame, frame:GetParent().tabPadding or 0 , nil, frame:GetParent().minTabWidth, frame:GetParent().maxTabWidth)
 --WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(self)
-function WoWTools_TextureMixin:SetCheckBox(frame, alpha)
-    if frame and self:Save().CheckBox then
-        local icon= frame.GetNormalTexture and frame:GetNormalTexture()
+
+local function Set_CheckBox(self)
+    local icon= self.GetNormalTexture and self:GetNormalTexture() or self:GetRegions()
+    icon:SetAlpha(self:GetChecked() and 0 or 1)
+end
+
+function WoWTools_TextureMixin:SetCheckBox(check, bgAtlas)--, alpha)
+--self:SetAlphaColor(icon, nil, nil, alpha or 1)
+    if not check
+        or not self:Save().CheckBox
+        or check.wowTextureIsHooked
+    then
+        return
+    end
+
+    local icon= check.GetNormalTexture and check:GetNormalTexture()
+                or (check.GetRegions and check:GetRegions())
+
+    if icon:IsObjectType("Texture") then
+        icon:SetAtlas(bgAtlas or 'UI-QuestTrackerButton-QuestItem-Frame')
+        icon:ClearAllPoints()
+        icon:SetPoint('TOPLEFT', 4, -4)
+        icon:SetPoint('BOTTOMRIGHT', -4, 4)
+        icon:SetVertexColor(self.Color:GetRGB())
+
+        icon= check:GetHighlightTexture()
         if icon then
-            self:SetAlphaColor(icon, nil, nil, alpha or 1)
-        else
-            icon= frame.GetRegions and frame:GetRegions()
-            if icon and icon:IsObjectType("Texture") then
-                self:SetAlphaColor(icon, nil, nil, alpha or 1)
-            end
+           check:SetHighlightAtlas('Forge-ColorSwatchSelection')
         end
+
+        Set_CheckBox(check)
+        WoWTools_DataMixin:Hook(check, 'SetChecked', Set_CheckBox)
+        check:HookScript('OnLeave', Set_CheckBox)
+
+        check.wowTextureIsHooked=true
     end
 end
 
@@ -676,7 +703,8 @@ function WoWTools_TextureMixin:SetPagingControls(frame)
     frame.TotaleText= frame:CreateFontString(nil, 'ARTWORK', frame.PageText:GetFontObject():GetName() or 'GameFontHighlight')
     frame.TotaleText:SetTextColor(frame.PageText:GetTextColor())
     frame.TotaleText:SetPoint('LEFT', frame.NextPageButton, 'RIGHT', 2, 0)
-    if frame:GetParent().SetDataProvider then
+
+    if frame:GetParent().SetDataProvider and not frame.wowTextureIsHooked then
         WoWTools_DataMixin:Hook(frame:GetParent(), 'SetDataProvider', function(f, dataProvider)
             local num= 0
             for _, tab in pairs(dataProvider:GetCollection() or {}) do
@@ -686,6 +714,7 @@ function WoWTools_TextureMixin:SetPagingControls(frame)
             end
             f.PagingControls.TotaleText:SetText(num>0 and num or '')
         end)
+        frame.wowTextureIsHooked= 1
     end
 
 --去掉文字, 页 这个有BUG

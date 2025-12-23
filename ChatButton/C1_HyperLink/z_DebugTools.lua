@@ -5,24 +5,100 @@ end
 
 
 
+
+
+local function Set_CheckBox(check, atlas)
+    check.Label:SetText('')
+    check.Label:SetAlpha(0)
+    check:HookScript('OnLeave', WoWToolsButton_OnLeave)
+    check:HookScript('OnEnter', WoWToolsButton_OnEnter)
+
+    WoWTools_TextureMixin:SetCheckBox(check, atlas)
+end
+
+
+
 local function Init_Create(frame)
     if frame.WoWToolsButton then
         return
     end
 
-    frame.WoWToolsButton= CreateFrame('Button', 'WoWToolsHyperLinkTableAttributeDisplayButton', frame, 'WoWToolsButtonTemplate')
-    frame.WoWToolsButton:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+    TableAttributeDisplay.VisibilityButton.tooltip= WoWTools_DataMixin.onlyChinese and '显示' or SHOW
+    Set_CheckBox(TableAttributeDisplay.VisibilityButton)--, 'AlliedRace-UnlockingFrame-GenderSelectionGlow')
 
+
+    TableAttributeDisplay.HighlightButton.tooltip= WoWTools_DataMixin.onlyChinese and '高亮' or TableAttributeDisplay.HighlightButton.Label:GetText()
+    TableAttributeDisplay.HighlightButton:ClearAllPoints()
+    TableAttributeDisplay.HighlightButton:SetPoint('LEFT', TableAttributeDisplay.VisibilityButton, 'RIGHT')
+    Set_CheckBox(TableAttributeDisplay.HighlightButton, 'loottoast-itemborder-glow')
+
+    TableAttributeDisplay.DynamicUpdateButton.tooltip= WoWTools_DataMixin.onlyChinese and '动态更新' or TableAttributeDisplay.HighlightButton.Label:GetText()
+    TableAttributeDisplay.DynamicUpdateButton:ClearAllPoints()
+    TableAttributeDisplay.DynamicUpdateButton:SetPoint('LEFT', TableAttributeDisplay.HighlightButton, 'RIGHT')    
+    Set_CheckBox(TableAttributeDisplay.DynamicUpdateButton)--, 'AlliedRace-UnlockingFrame-GenderMouseOverGlow')
+
+
+    local check
+    if frame==TableAttributeDisplay then
+        check= CreateFrame('CheckButton', 'WoWTools', frame, 'WoWToolsCheckTemplate')
+        function check:tooltip(tooltip)
+            tooltip:AddLine(WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2)
+            tooltip:AddDoubleLine('/|cff00ff00FST|rACK', WoWTools_DataMixin.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
+        end
+        function check:settings()
+            Save().autoHideTableAttributeDisplay= not Save().autoHideTableAttributeDisplay and true or false
+        end
+        check:SetChecked(Save().autoHideTableAttributeDisplay)
+        check:SetPoint('LEFT', frame.FilterBox, 'RIGHT')
+        check:SetScript('OnHide', function()
+            if Save().autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
+                FrameStackTooltip_ToggleDefaults()
+            end
+        end)
+        WoWTools_TextureMixin:SetCheckBox(check)
+    end
+
+    frame.WoWToolsButton= CreateFrame('Button', nil, frame, 'WoWToolsButtonTemplate')
+    frame.WoWToolsButton:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
     frame.WoWToolsButton:SetPoint('BOTTOM', frame.CloseButton, 'TOP')
-    frame.WoWToolsButton:SetScript('OnClick', function(self)
-        FrameStackTooltip_ToggleDefaults()
-        self:set_tooltip()
+
+    TableAttributeDisplay.DialogBG:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga')
+    function frame.WoWToolsButton:settings()
+        TableAttributeDisplay.DialogBG:SetAlpha(Save().debugTooltBgAlpha or 0.75)
+        --TableAttributeDisplay.ScrollFrameArt.NineSlice:SetCenterColor(0, 0, 0, Save().debugTooltBgAlpha or 0.75)
+    end
+    frame.WoWToolsButton:settings()
+
+    frame.WoWToolsButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            FrameStackTooltip_ToggleDefaults()
+        else
+            MenuUtil.CreateContextMenu(self, function(_, root)
+                WoWTools_MenuMixin:BgAplha(root,
+                    function()
+                        return Save().debugTooltBgAlpha or 0.75
+                    end, function(value)
+                        Save().debugTooltBgAlpha= value
+                        self:settings()
+                    end, function()
+                        Save().debugTooltBgAlpha= nil
+                        self:settings()
+                    end)
+            end)
+        end
+        self:tooltip()
     end)
-    function frame.WoWToolsButton:set_tooltip()
+    function frame.WoWToolsButton:tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HyperLink.addName)
-        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', WoWTools_DataMixin.Icon.left..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool('fstack_enabled'), nil))
+        GameTooltip:SetText(WoWTools_HyperLink.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip:AddDoubleLine(
+            '|cff00ff00FST|rACK'
+            ..WoWTools_DataMixin.Icon.left
+            ..WoWTools_TextMixin:GetEnabeleDisable(not C_CVar.GetCVarBool('fstack_enabled')),
+
+            WoWTools_DataMixin.Icon.right
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        )
         GameTooltip:Show()
     end
 
@@ -30,7 +106,8 @@ local function Init_Create(frame)
     frame.WoWToolsInfoButton= CreateFrame('Button', nil, frame.WoWToolsButton, 'WoWToolsButtonTemplate')
     frame.WoWToolsInfoButton:SetPoint('RIGHT', frame.WoWToolsButton, 'LEFT')
     frame.WoWToolsInfoButton:SetNormalAtlas('Garr_Building-AddFollowerPlus')
-    frame.WoWToolsInfoButton:SetScript('OnMouseDown', function(self)
+    frame.WoWToolsInfoButton.tooltip= WoWTools_DataMixin.onlyChinese and '更多信息' or CLICK_FOR_DETAILS
+    frame.WoWToolsInfoButton:SetScript('OnClick', function(self)
         if C_CVar.GetCVarBool("fstack_enabled") then
             FrameStackTooltip_ToggleDefaults()
         end
@@ -39,7 +116,7 @@ local function Init_Create(frame)
     end)
 
 
-    frame.WoWToolsEdit= CreateFrame("EditBox", 'WoWToolsHyperLinkTableAttributeDisplayEdit', frame.WoWToolsButton, 'InputBoxTemplate')
+    frame.WoWToolsEdit= CreateFrame("EditBox", nil, frame.WoWToolsButton, 'InputBoxTemplate')
     WoWTools_TextureMixin:SetEditBox(frame.WoWToolsEdit)
     frame.WoWToolsEdit:SetPoint('BOTTOMRIGHT', frame.WoWToolsInfoButton, 'BOTTOMLEFT')
     frame.WoWToolsEdit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 36, 24 )
@@ -86,28 +163,12 @@ local function Init_Create(frame)
     end)
     frame.WoWToolsLabel:SetScript('OnHide', function(self)
         self:SetText('')
-    end)
+    
 
 
 
-    local check= CreateFrame('CheckButton', nil, frame.WoWToolsButton, 'UICheckButtonTemplate')
-    function check:tooltip(tooltip)
-        tooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HyperLink.addName)
-        tooltip:AddDoubleLine('|cff00ff00FST|rACK', WoWTools_DataMixin.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
-    end
-    WoWToolsButton_OnEnter(check)
-    WoWToolsButton_OnLeave(check)
-    check:SetPoint('RIGHT', frame.WoWToolsEdit, 'LEFT', -2, 0)
-    check:SetChecked(Save().autoHideTableAttributeDisplay)
-    check:SetScript('OnMouseDown', function()
-        Save().autoHideTableAttributeDisplay= not Save().autoHideTableAttributeDisplay and true or false
-    end)
-    check:SetScript('OnHide', function()
-        if Save().autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
-            FrameStackTooltip_ToggleDefaults()
-        end
-    end)
-    WoWTools_TextureMixin:SetCheckBox(check)
+
+    
 end
 
 

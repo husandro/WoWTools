@@ -499,25 +499,61 @@ function WoWTools_ItemMixin:GetItemID(itemLink)
 end
 
 
+  --ItemEventListener:AddCancelableCallback(ID, function()
+function WoWTools_ItemMixin:LoadItem(itemID, label, notCount)
+    if not itemID
+        or not label
+        or label._loadResultItemID==itemID
+        or not label:IsVisible()
+        or not C_Item.GetItemInfoInstant(itemID)
+    then
+        return
+    end
 
+    if label._loadResultItemOwner then
+        EventRegistry:UnregisterCallback('ADDON_LOADED', label._loadResultItemOwner)
+    end
+
+    WoWTools_DataMixin:Load(itemID, 'item')
+
+    label._loadResultItemID= itemID
+    label._loadResultItemOwner= EventRegistry:RegisterFrameEventAndCallback("ITEM_DATA_LOAD_RESULT", function(owner, itemID2, success)
+        if itemID2==itemID and success then
+            local name= self:GetName(itemID, nil, nil, {notCount=notCount})
+            if name and label:IsVisible() then
+                label:SetText(name)
+            end
+            label._loadResultItemID= nil
+            label._loadResultItemOwner= nil
+            EventRegistry:UnregisterCallback('ITEM_DATA_LOAD_RESULT', owner)
+        end
+    end)
+end
 
 
 function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得物品，名称 itemLocation,ItemButton
     --tab= tab or {}
 
-    local disableCount= tab and tab.notCount
+    local notCount, label
+    if tab then
+        notCount= tab.notCount
+        label= tab.label
+    end
 
     itemID= itemID or self:GetItemID(itemLink)
     if itemLocation then
         itemID= itemID or itemLocation:GetItemID()
         itemLink= itemLink or itemLocation:GetItemLink()
     end
+
+
     if not itemID then
         return itemID or itemLink or itemLocation
     end
 
+    WoWTools_DataMixin:Load(itemID, 'item')
+
     local col, name, desc, cool
-   WoWTools_DataMixin:Load(itemID, 'item')
 
     if C_ToyBox.GetToyInfo(itemID) then
         if not PlayerHasToy(itemID) then
@@ -527,7 +563,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
             cool= WoWTools_CooldownMixin:GetText(nil, itemID)
         end
     else
-        if not disableCount then
+        if not notCount then
             local num= C_Item.GetItemCount(itemID, true, false, true, true) or 0
             if num==0 then
                 col='|cff626262'
@@ -539,7 +575,12 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
         end
     end
 
-    name= WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID), {itemID=itemID,itemLink=itemLink, isName=true}) or ('itemID '..itemID)
+    name= C_Item.GetItemNameByID(itemID)
+    name= WoWTools_TextMixin:CN(name, {itemID=itemID,itemLink=itemLink, isName=true})
+
+    if not name and label then
+        self:LoadItem(itemID, label, notCount)
+    end
 
     if name then
         if not name:find('|c') then
@@ -549,8 +590,10 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
             end
         end
         name= '|T'..(select(5, C_Item.GetItemInfoInstant(itemID)) or 0)..':0|t'..name
-    end
 
+    else
+         name= name or ('itemID '..itemID)
+    end
 
     if desc and col then
         desc= col..desc..'|r'

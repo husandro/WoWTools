@@ -2781,7 +2781,8 @@
         "TableAttributeLineMixin",
         "BLUE_FONT_COLOR_CODE",
         "ARTIFACT_GOLD_COLOR_CODE",
-        "ADVENTURES_HEALING_GREEN_CODE"
+        "ADVENTURES_HEALING_GREEN_CODE",
+        "CLICK_FOR_DETAILS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

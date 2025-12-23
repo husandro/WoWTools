@@ -261,7 +261,7 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
         frame.LinesScrollFrame:ClearAllPoints()
         frame.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
         frame.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
-        frame.FilterBox:SetPoint('RIGHT', -26,0)
+        --frame.FilterBox:SetPoint('RIGHT', -26,0)
         frame.TitleButton.Text:SetPoint('RIGHT')
 
        WoWTools_DataMixin:Hook(frame, 'UpdateLines', function(f)
