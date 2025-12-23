@@ -24,9 +24,10 @@ local EventTab= {
 
 --设置，参数
 local function Set_Texture(plate)
-    local unit =plate:GetUnit()
-    local frame= C_NamePlate.GetNamePlateForUnit(unit, issecure())
-    
+    local unit = plate and plate.UnitFrame and plate.UnitFrame.unit
+
+    local frame=  unit and C_NamePlate.GetNamePlateForUnit(unit, issecure())
+
 if not frame then
     return
 end
