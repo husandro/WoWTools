@@ -57,7 +57,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
     end
 
 --Blizzard_HousingCatalogEntry.lua
-    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin or HousingCatalogEntryMixin, 'OnLoad', function(btn)
+    local func= HousingCatalogEntryMixin and HousingCatalogEntryMixin.OnLoad and HousingCatalogEntryMixin or HousingCatalogDecorEntryMixin
+    WoWTools_DataMixin:Hook(func, 'OnLoad', function(btn)
 --有点大
         btn.InfoText:SetFontObject('GameFontWhite')
         btn.InfoText:ClearAllPoints()
@@ -131,7 +132,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.notAsset:SetAtlas('transmog-icon-hidden')
     end)
 
-    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin or HousingCatalogEntryMixin, 'UpdateVisuals', function(btn)
+    WoWTools_DataMixin:Hook(func, 'UpdateVisuals', function(btn)
 
         local isTrackable= nil
         local placementCost, r,g,b, show, isXP, isIndoors, isOutdoors, isCanDelete, isNotAsset
