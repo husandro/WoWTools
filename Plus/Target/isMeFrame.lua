@@ -65,8 +65,7 @@ end
 --设置, Plate
 local function Set_Plate(plate, unit)
     unit= unit or (plate and plate.UnitFrame.unit)
-    
-    plate=  unit and C_NamePlate.GetNamePlateForUnit(unit, issecure())
+    plate= unit and C_NamePlate.GetNamePlateForUnit(unit, issecure())
     if not plate then
         return
     end
