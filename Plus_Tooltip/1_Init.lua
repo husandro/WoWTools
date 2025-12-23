@@ -446,7 +446,6 @@ local function Init()
     for name in pairs(WoWTools_TooltipMixin.Events)do
         if C_AddOns.IsAddOnLoaded(name) then
             if not Save().no[name] then
-                print(name)
                 WoWTools_TooltipMixin.Events[name](WoWTools_TooltipMixin)
             end
             WoWTools_TooltipMixin.Events[name]= nil
