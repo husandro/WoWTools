@@ -88,7 +88,7 @@ end
 
 
 local function Create_Button(tooltip)
-    
+
     tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
         size=24,
         isUI=true,

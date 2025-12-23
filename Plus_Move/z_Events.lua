@@ -303,7 +303,7 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
     end)
 
     self:Setup(TableAttributeDisplay, {
-        minW=200,
+        minW=330,
         minH=150,
         sizeUpdateFunc=function(frame)
             frame:UpdateLines()--RefreshAllData()

@@ -2782,7 +2782,10 @@
         "BLUE_FONT_COLOR_CODE",
         "ARTIFACT_GOLD_COLOR_CODE",
         "ADVENTURES_HEALING_GREEN_CODE",
-        "CLICK_FOR_DETAILS"
+        "CLICK_FOR_DETAILS",
+        "BACK",
+        "BINDING_NAME_HOUSING_LAYOUTFLOOR_UP",
+        "BINDING_NAME_MOVEFORWARD"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
