@@ -163,6 +163,8 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             P_Save=nil
 
             Save().disabedFrameStackPlus= nil
+            Save().debugTooltBgAlpha= nil
+            Save().autoHideTableAttributeDisplay= nil
 
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
             WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))

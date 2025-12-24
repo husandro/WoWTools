@@ -18,7 +18,7 @@
 
 --fstack 增强 TableAttributeDisplay
 local function Save()
-    return WoWToolsSave['ChatButton_HyperLink'] or {}
+    return WoWToolsSave['Other_Fstack'] or {}
 end
 
 
@@ -360,6 +360,8 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
+        WoWToolsSave['Other_Fstack']= WoWToolsSave['Other_Fstack'] or {}
+
         if WoWTools_OtherMixin:AddOption(
             'FSTACK',
             '|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK',
