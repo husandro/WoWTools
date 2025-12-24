@@ -334,7 +334,7 @@ local function Init_Menu(self, root)
     function()
         return Save().ShowMapXY
     end, function()
-        Save().ShowMapXY= not Save().ShowMapXY and true or nil
+        Save().ShowMapXY= not Save().ShowMapXY and true or false
         WoWTools_WorldMapMixin:Init_XY_Map()
     end)
 
@@ -422,7 +422,7 @@ local function Init_Menu(self, root)
     function()
         return Save().ShowAreaPOI_Name
     end, function()
-        Save().ShowAreaPOI_Name= not Save().ShowAreaPOI_Name and true or nil
+        Save().ShowAreaPOI_Name= not Save().ShowAreaPOI_Name and true or false
         WoWTools_WorldMapMixin:Init_AreaPOI_Name()
     end,sub)
     sub:SetTooltip(function(tooltip)
@@ -440,7 +440,7 @@ local function Init_Menu(self, root)
     function()
         return Save().ShowDungeon_Name
     end, function()
-        Save().ShowDungeon_Name= not Save().ShowDungeon_Name and true or nil
+        Save().ShowDungeon_Name= not Save().ShowDungeon_Name and true or false
         WoWTools_WorldMapMixin:Init_Dungeon_Name()--地下城，加名称
     end)
     sub:SetTooltip(function(tooltip)
@@ -458,7 +458,7 @@ local function Init_Menu(self, root)
     function()
         return Save().ShowWorldQues_Name
     end, function()
-        Save().ShowWorldQues_Name= not Save().ShowWorldQues_Name and true or nil
+        Save().ShowWorldQues_Name= not Save().ShowWorldQues_Name and true or false
         WoWTools_WorldMapMixin:Init_WorldQuest_Name()--世界地图任务，加名称
     end)
     sub:SetTooltip(function(tooltip)

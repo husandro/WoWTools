@@ -144,18 +144,10 @@ local function Init()
         return
     end
 
-    --[[btn=WoWTools_ButtonMixin:Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {
-        atlas=WoWTools_DataMixin.Icon.Player:match('|A:(.-):'),
-        size=22,
-        isMask=true,
-        name='WoWToolsMapXYButton'
-    })]]
-    
-    local btn= CreateFrame('DropdownButton', 'WoWToolsMapXYButton', WorldMapFrame.BorderFrame.TitleContainer)
-    btn:SetSize(20, 20)
-    btn:SetNormalAtlas(WoWTools_DataMixin.Icon.Player:match('|A:(.-):'))
+    local btn= CreateFrame('DropdownButton', 'WoWToolsMapXYButton', WorldMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenuTemplate')
 
-
+    btn:SetNormalAtlas(WoWTools_DataMixin.Icon.Player:match('|A:(.-):') or '')
+    btn:GetNormalTexture():SetVertexColor(1,1,1,1)
     function btn:Settings()
         local isShow= Save().ShowMapXY
         self:SetShown(isShow)
@@ -171,21 +163,9 @@ local function Init()
         end
     end
 
-
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
-        GameTooltip:Show()
-    end)
+    btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
 
     btn:SetupMenu(Init_Menu)
-    --[[btn:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)]]
-
 
     btn:SetScript('OnHide', function(self)
         self.elapsed= nil
@@ -266,12 +246,11 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    btn.Text=WoWTools_LabelMixin:Create(btn, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
+    btn.Text= btn:CreateFontString(nil, nil, 'GameFontNormal')-- WoWTools_LabelMixin:Create(btn, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
     btn.Text:SetPoint('LEFT',btn.edit, 'RIGHT', 2, 0)
 
-
-
     btn:Settings()
+
     Init=function()
         btn:Settings()
     end

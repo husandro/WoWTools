@@ -43,7 +43,9 @@ local P_Save={
 
 
 local function Init()
-    WoWTools_WorldMapMixin:Init_Menu()--设置菜单
+    do
+        WoWTools_WorldMapMixin:Init_Menu()--设置菜单
+    end
     WoWTools_WorldMapMixin:Init_MpaID()--地图ID，信息
     WoWTools_WorldMapMixin:Init_XY_Map()--地图坐标
     WoWTools_WorldMapMixin:Init_XY_Player()--实时玩家当前坐标

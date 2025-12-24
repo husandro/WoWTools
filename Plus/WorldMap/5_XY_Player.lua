@@ -49,24 +49,14 @@ local function Init()
         end)
     end)
 
-    function btn:set_tooltip()
-        GameTooltip:ClearLines()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_DataMixin.Icon.Player..' XY')
+    function btn:tootip()
+        GameTooltip:SetText(WoWTools_DataMixin.addName, WoWTools_DataMixin.Icon.Player..' XY'..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
-
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
-
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-
-        GameTooltip:Show()
     end
-
-    btn:SetScript("OnEnter", function(self)
-        self:set_tooltip()
-    end)
-    btn:SetScript("OnLeave", function()
-        GameTooltip:Hide()
+    btn:SetScript("OnLeave", function(self)
+        WoWToolsButton_OnEnter(self)
         ResetCursor()
     end)
 
@@ -77,12 +67,9 @@ local function Init()
     WoWTools_ColorMixin:SetLabelColor(btn.Text)
 
 --Background
-    WoWTools_TextureMixin:CreateBG(btn, {--isColor=true
-    point=function(bg)
-        bg:SetPoint('LEFT')
-        bg:SetPoint('TOP', btn.Text, -1, 1)
-        bg:SetPoint('BOTTOMRIGHT', btn.Text, 1.5, -1.5)
-    end})
+    btn.Bg= btn:CreateTexture(nil, "BACKGROUND")
+    btn.Bg:SetPoint('TOPLEFT', btn.Text, -1.5, 1)
+    btn.Bg:SetPoint('BOTTOMRIGHT', btn.Text, 1, -1)
 
     function btn:Settings()
         local isShow= Save().ShowPlayerXY
@@ -115,7 +102,7 @@ local function Init()
             self.Text:SetJustifyH('LEFT')
         end
 --Background
-        self.Background:SetAlpha(Save().PlayerXY_BGAlpha or 0.5)
+        self.Bg:SetColorTexture(0, 0, 0, Save().PlayerXY_BGAlpha or 0.5)
 --延迟容限
         self.SElapsed= Save().PlayerXY_Elapsed or 0.3
     end

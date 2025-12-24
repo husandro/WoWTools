@@ -15,7 +15,7 @@ local function Set_Text()
     local story, achievementID
 
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
-    
+
     if uiMapID then
         local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
         if areaPoiIDs then
@@ -81,9 +81,14 @@ end
 
 
 local function Init()
+    if not Save().ShowMapID then
+        return
+    end
+
     Frame= CreateFrame('Frame', 'WoWToolsWorldMapMapIDFrame', _G['WoWTools_PlusWorldMap_MenuButton'])
     Frame:SetPoint('LEFT')
     Frame:SetSize(1,1)
+    Frame:Hide()
 
     Frame.Text=WoWTools_LabelMixin:Create(Frame, {copyFont= WorldMapFrameTitleText})
     Frame.Text:SetPoint('RIGHT', Frame, 'LEFT', -2, 0)
@@ -140,8 +145,8 @@ local function Init()
 
     Frame:Settings()
 
-    if Frame:IsVisible() then
-        Set_Text()
+    Init=function()
+        Frame:Settings()
     end
 end
 
@@ -149,10 +154,5 @@ end
 
 
 function WoWTools_WorldMapMixin:Init_MpaID()
-    if Frame then
-        Frame:Settings()
-
-    elseif WoWToolsSave['Plus_WorldMap'].ShowMapID then
-        Init()
-    end
+    Init()
 end
