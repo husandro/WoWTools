@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --fstack 增强 TableAttributeDisplay
 local function Save()
     return WoWToolsSave['ChatButton_HyperLink'] or {}
@@ -29,7 +47,8 @@ local function Init_Menu(self, root)
 
     --打开选项界面
     root:CreateDivider()
-    WoWTools_ChatMixin:Open_SettingsPanel(root, WoWTools_HyperLink.addName)
+    WoWTools_OtherMixin:OpenOption(root, '|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK')
+    --WoWTools_ChatMixin:Open_SettingsPanel(root, WoWTools_HyperLink.addName)
 end
 
 
@@ -77,7 +96,6 @@ local function Init_Create(frame)
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
-        self:tooltip()
     end)
     function frame.WoWToolsButton:tooltip()
         GameTooltip:AddDoubleLine(
@@ -253,10 +271,6 @@ end
 
 
 local function Init()
-    if Save().disabedFrameStackPlus then
-        return
-    end
-
     if not C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
         EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
             if arg1=='Blizzard_DebugTools' then
@@ -322,7 +336,7 @@ local function Init()
     end)
 
     Init=function()
-        TableAttributeDisplay.WoWToolsButton:SetShown(not Save().disabedFrameStackPlus)
+        --TableAttributeDisplay.WoWToolsButton:SetShown(not Save().disabedFrameStackPlus)
     end
 end
 
@@ -340,6 +354,21 @@ end
 
 
 --fstack 增强 TableAttributeDisplay
-function WoWTools_HyperLink:Init_DebugTools()
-    Init()
-end
+
+
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if arg1== 'WoWTools' then
+        if WoWTools_OtherMixin:AddOption(
+            'FSTACK',
+            '|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK',
+            'Blizzard_DebugTools|n/fstack'
+        ) then
+            Init()
+        end
+
+        self:SetScript('OnEvent', nil)
+        self:UnregisterEvent(event)
+    end
+end)

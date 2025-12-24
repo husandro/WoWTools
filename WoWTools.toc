@@ -518,6 +518,8 @@ Z_Other\InterruptStolenDispel.lua
 Z_Other\Brewfest.lua
 ##10.1 梦境之种
 Z_Other\DormantSeeds.lua
+##/fstack
+Z_Other\Fstack.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
@@ -531,7 +533,6 @@ ChatButton\C1_HyperLink\0_HyperLinkMixin.lua
 ChatButton\C1_HyperLink\1_Init.lua
 ChatButton\C1_HyperLink\2_Menu.lua
 ChatButton\C1_HyperLink\3_Options.lua
-ChatButton\C1_HyperLink\z_DebugTools.lua
 ChatButton\C1_HyperLink\z_EventTrace.lua
 ChatButton\C1_HyperLink\z_Link_Icon.lua
 ChatButton\C1_HyperLink\z_Event_Sound.lua

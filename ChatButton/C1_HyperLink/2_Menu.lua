@@ -491,14 +491,15 @@ local function Init_Menu(self, root)
         tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(WoWTools_DataMixin.onlyChinese and '类型' or TYPE))
     end)
 
-    sub:CreateCheckbox(
+    WoWTools_OtherMixin:OpenOption(sub, 'Plus')
+    --[[sub:CreateCheckbox(
         'Plus',
     function()
         return not Save().disabedFrameStackPlus
     end, function()
         Save().disabedFrameStackPlus= not Save().disabedFrameStackPlus and true or nil
         WoWTools_HyperLink:Init_DebugTools()
-    end)
+    end)]]
 
 
 
