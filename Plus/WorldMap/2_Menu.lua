@@ -1,6 +1,3 @@
-
-
-
 local function Save()
     return  WoWToolsSave['Plus_WorldMap']
 end
@@ -433,6 +430,20 @@ local function Init_Menu(self, root)
         )
         tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
     end)
+
+--字体大小
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
+        getValue=function()
+            return Save().areaPoinFontSize or 10
+        end, setValue=function(value)
+            Save().areaPoinFontSize=value
+        end,
+        minValue=4,
+        maxValue=24,
+        step=1,
+        tooltip=WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)
+    })
 
 --地下城，加名称
     sub=root:CreateCheckbox(

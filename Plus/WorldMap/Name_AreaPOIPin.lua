@@ -1,4 +1,8 @@
 --地图POI提示 AreaPOIDataProvider.lua
+local function Save()
+    return  WoWToolsSave['Plus_WorldMap']
+end
+
 local INSTANCE_DIFFICULTY_FORMAT='('..WoWTools_TextMixin:Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 
 
@@ -7,8 +11,10 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
     self.elapsed= (self.elapsed or 1) + elapsed
     if self.elapsed>1 then
         self.elapsed= 0
+
         if self.areaPoiID then
             local time= C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID)
+
             if time and time>0 then
                 if time<86400 then
                     self.Text:SetText(WoWTools_TimeMixin:SecondsToClock(time))
@@ -18,6 +24,7 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
                 return
             end
         end
+
         if self.widgetID then
             local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(self.widgetID)
             if widgetInfo and widgetInfo.shownState== 1 and widgetInfo.text and widgetInfo.hasTimer then--剩余时间：
@@ -34,18 +41,20 @@ end
 
 
 local function Create_Label(frame)
-    frame.WoWToolsFrame= CreateFrame('Frame', frame)
+    frame.WoWToolsFrame= CreateFrame('Frame', nil, frame)
     frame.WoWToolsFrame:SetAllPoints()
 
     function frame.WoWToolsFrame:Clear()
-        self.WoWToolsFrame.elapsed=1
-        self.WoWToolsFrame.areaPoiID= nil
-        self.WoWToolsFrame.widgetID= nil
-        self.WoWToolsFrame:SetScript('OnUpdate', nil)
+        self.elapsed=1
+        self.areaPoiID= nil
+        self.widgetID= nil
+        self:SetScript('OnUpdate', nil)
+        self.Text:SetFontHeight(Save().areaPoinFontSize or 10)
     end
 
     frame.WoWToolsFrame.Text= frame.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
     frame.WoWToolsFrame.Text:SetPoint('TOP', frame.WoWToolsFrame, 'BOTTOM', 0, 3)
+    frame.WoWToolsFrame.Text:SetFontHeight(8)
 
     frame.WoWToolsFrame:SetScript('OnHide', function(self)
         self.Text:SetText('')
@@ -58,7 +67,7 @@ end
 
 --地图POI提示 AreaPOIDataProvider.lua
 local function Init()
-    if not WoWToolsSave['Plus_WorldMap'].ShowAreaPOI_Name then
+    if not Save().ShowAreaPOI_Name then
         return
     end
 
@@ -74,8 +83,6 @@ local function Init()
             end
             return
         end
-
-
 
         if not self.WoWToolsFrame then
             Create_Label(self)
@@ -96,7 +103,7 @@ local function Init()
                         if widgetInfo.hasTimer then--剩余时间：
                             self.WoWToolsFrame.widgetID= widget.widgetID
                             self.WoWToolsFrame:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
-
+                            return
                         else
                             local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
                             local text2= widgetInfo.text:match('(%d+/%d+)')--次数

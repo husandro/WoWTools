@@ -140,8 +140,19 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
     return sub
 end
 
-
-
+--[[
+WoWTools_MenuMixin:CreateSlider(root, {
+name= 
+getValue=function()
+end, setValue=function()
+end,
+minValue=0,
+maxValue=100,
+step=1,
+--bit--'%.1f'
+--tooltip--function, string, table
+})
+]]
 
 
 --缩放, 单行
