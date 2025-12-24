@@ -93,6 +93,7 @@ local function Init_Create(frame)
     frame.WoWToolsButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             FrameStackTooltip_ToggleDefaults()
+            WoWToolsButton_OnEnter(self)
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
