@@ -99,6 +99,7 @@ end
 
 
 
+--frame.fontStringPool:EnumerateActive()
 
 local function Get_Text(index)
 	index= index or 1
@@ -107,23 +108,25 @@ local function Get_Text(index)
 	if not frame then
 		return
 	end
-	local numMessage= frame:GetNumMessages() or 0
-	if numMessage==0 then
-		
-		if WoWTools_DataMixin.Player.husandro then
-			print('GetNumMessages', frame, index , numMessage)
-		end
 
+	local numMessage= frame:GetNumMessages() or 0
+
+	if numMessage==0 then
+		if WoWTools_DataMixin.Player.husandro then
+			print('GetNumMessages', frame:GetName(), index , numMessage)
+		end
 	end
 
 	local tab={}
-
-	
 
 	local isSetText= Save().isSetText--不处理，文本
 
 	for i = 1, numMessage do
 		local currentMsg, r, g, b, chatTypeID = frame:GetMessageInfo(i)
+
+		if not currentMsg and WoWTools_DataMixin.Player.husandro then
+			print('没有发现 currentMsg')
+		end
 
 		currentMsg= currentMsg or ''
 
@@ -147,10 +150,12 @@ local function Get_Text(index)
 				currentMsg = RGBTableToColorCode(ChatTypeInfo.GUILD) .. currentMsg
 			end
 		end
+
 		currentMsg= tostring(currentMsg)
 
 		table.insert(tab, currentMsg)
 	end
+
 
 	WoWTools_TextMixin:ShowText(
 		tab,

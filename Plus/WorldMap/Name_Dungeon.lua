@@ -1,19 +1,26 @@
-
 --地下城，加名称
+local function Save()
+    return  WoWToolsSave['Plus_WorldMap']
+end
+
+
 local function Init()
-    if not WoWToolsSave['Plus_WorldMap'].ShowDungeon_Name then
+    if not Save().ShowDungeon_Name then
         return
     end
 
+    WoWTools_DataMixin:Hook(DungeonEntrancePinMixin, 'OnLoad', function(self)
+        self.Text= self:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
+        --WoWTools_WorldMapMixin:Create_Wolor_Font(self, 10)
+        self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+    end)
     WoWTools_DataMixin:Hook(DungeonEntrancePinMixin, 'OnAcquired', function(self)
-        local text= WoWTools_TextMixin:CN(self.name)
-        if text and not self.Text then
-            self.Text= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 10)
-            self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
-        end
-        if self.Text then
-            self.Text:SetText(text or '')
-        end
+        self.Text:SetText(
+            Save().ShowDungeon_Name
+            and WoWTools_TextMixin:CN(self.name)
+            or ''
+        )
+        self.Text:SetFontHeight(Save().dungeonFontSize or 10)
     end)
 
 
@@ -22,7 +29,11 @@ local function Init()
 
 
     WoWTools_DataMixin:Hook(DungeonEntrancePinMixin, 'CheckShowTooltip', function(self)
-        local tooltip = self.journalInstanceID and self.journalInstanceID>0 and GetAppropriateTooltip()
+        local tooltip = Save().ShowDungeon_Name
+            and self.journalInstanceID
+            and self.journalInstanceID>0
+            and GetAppropriateTooltip()
+
         if not tooltip or not tooltip:IsShown() or WoWTools_FrameMixin:IsLocked(tooltip) then
             return
         end

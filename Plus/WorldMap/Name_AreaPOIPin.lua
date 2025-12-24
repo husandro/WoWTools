@@ -41,26 +41,13 @@ end
 
 
 local function Create_Label(frame)
-    frame.WoWToolsFrame= CreateFrame('Frame', nil, frame)
-    frame.WoWToolsFrame:SetAllPoints()
-
-    function frame.WoWToolsFrame:Clear()
-        self.elapsed=1
-        self.areaPoiID= nil
-        self.widgetID= nil
-        self:SetScript('OnUpdate', nil)
-        self.Text:SetFontHeight(Save().areaPoinFontSize or 10)
-    end
-
-    frame.WoWToolsFrame.Text= frame.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
-    frame.WoWToolsFrame.Text:SetPoint('TOP', frame.WoWToolsFrame, 'BOTTOM', 0, 3)
-    frame.WoWToolsFrame.Text:SetFontHeight(8)
-
-    frame.WoWToolsFrame:SetScript('OnHide', function(self)
-        self.Text:SetText('')
-        self.elapsed= 1
-    end)
+    
 end
+
+
+
+
+
 
 
 
@@ -71,24 +58,39 @@ local function Init()
         return
     end
 
+    WoWTools_DataMixin:Hook(AreaPOIPinMixin, 'OnLoad', function(frame)
+        frame.WoWToolsFrame= CreateFrame('Frame', nil, frame)
+        frame.WoWToolsFrame:SetAllPoints()
+
+        function frame.WoWToolsFrame:Clear()
+            self.elapsed=1
+            self.areaPoiID= nil
+            self.widgetID= nil
+            self:SetScript('OnUpdate', nil)
+            self.Text:SetFontHeight(Save().areaPoinFontSize or 10)
+        end
+
+        frame.WoWToolsFrame.Text= frame.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
+        frame.WoWToolsFrame.Text:SetPoint('TOP', frame.WoWToolsFrame, 'BOTTOM', 0, 3)
+        frame.WoWToolsFrame.Text:SetFontHeight(8)
+
+        frame.WoWToolsFrame:SetScript('OnHide', function(self)
+            self.Text:SetText('')
+            self.elapsed= 1
+        end)
+    end)
+
     WoWTools_DataMixin:Hook(AreaPOIPinMixin, 'OnAcquired', function(self, poiInfo)
+        self.WoWToolsFrame:Clear()
+
         poiInfo= poiInfo or self.poiInfo
 
-
-         if not poiInfo
+        if not Save().ShowAreaPOI_Name
+            or not poiInfo
             or not (poiInfo.name or poiInfo.widgetSetID or poiInfo.areaPoiID)
         then
-            if self.WoWToolsFrame then
-                self.WoWToolsFrame:Clear()
-            end
             return
         end
-
-        if not self.WoWToolsFrame then
-            Create_Label(self)
-        end
-
-        self.WoWToolsFrame:Clear()
 
         if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
             self.WoWToolsFrame.areaPoiID= poiInfo.areaPoiID
@@ -142,10 +144,15 @@ local function Init()
     --POI提示 AreaPOIDataProvider.lua
     --AreaPOIPinMixin:TryShowTooltip
     WoWTools_DataMixin:Hook(AreaPoiUtil, 'TryShowTooltip', function(_, _, poiInfo)
-        local tooltip = poiInfo and GetAppropriateTooltip()
-        if not tooltip or not tooltip:IsShown() or not (poiInfo.areaPoiID or not poiInfo.widgetSetID) or WoWTools_FrameMixin:IsLocked(tooltip) then
+        local tooltip = Save().ShowAreaPOI_Name
+                and poiInfo
+                and (poiInfo.areaPoiID or poiInfo.widgetSetID)
+                and GetAppropriateTooltip()
+
+        if not tooltip or not tooltip:IsShown() or WoWTools_FrameMixin:IsLocked(tooltip) then
             return
         end
+
         if poiInfo.areaPoiID then
             tooltip:AddLine('areaPoiID|cffffffff'..WoWTools_DataMixin.Icon.icon2..poiInfo.areaPoiID)
         end

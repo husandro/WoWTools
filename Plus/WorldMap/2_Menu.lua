@@ -421,6 +421,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().ShowAreaPOI_Name= not Save().ShowAreaPOI_Name and true or false
         WoWTools_WorldMapMixin:Init_AreaPOI_Name()
+        WoWTools_WorldMapMixin:Refresh()
     end,sub)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
@@ -439,6 +440,7 @@ local function Init_Menu(self, root)
             return Save().areaPoinFontSize or 10
         end, setValue=function(value)
             Save().areaPoinFontSize=value
+            WoWTools_WorldMapMixin:Refresh()
         end,
         minValue=4,
         maxValue=24,
@@ -454,15 +456,28 @@ local function Init_Menu(self, root)
     end, function()
         Save().ShowDungeon_Name= not Save().ShowDungeon_Name and true or false
         WoWTools_WorldMapMixin:Init_Dungeon_Name()--地下城，加名称
+        WoWTools_WorldMapMixin:Refresh()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
-        tooltip:AddLine(
-            (Save().ShowDungeon_Name and '' or '|cff626262')
-            ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        )
+        --tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
     end)
 
+--字体大小
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
+        getValue=function()
+            return Save().dungeonFontSize or 10
+        end, setValue=function(value)
+            Save().dungeonFontSize=value
+            WoWTools_WorldMapMixin:Refresh()
+        end,
+        minValue=4,
+        maxValue=24,
+        step=1,
+        --tooltip=WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)
+    })
 
 --世界地图任务，加名称
     sub=root:CreateCheckbox(
@@ -472,6 +487,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().ShowWorldQues_Name= not Save().ShowWorldQues_Name and true or false
         WoWTools_WorldMapMixin:Init_WorldQuest_Name()--世界地图任务，加名称
+        --WoWTools_WorldMapMixin:Refresh()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示图标' or SELF_HIGHLIGHT_ICON)
