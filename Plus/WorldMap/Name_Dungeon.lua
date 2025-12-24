@@ -4,17 +4,26 @@ local function Save()
 end
 
 
+
+
+local function Init_Label(self)
+    self.Text= self:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
+    self.Text:SetJustifyH('CENTER')
+    self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+end
+
 local function Init()
     if not Save().ShowDungeon_Name then
         return
     end
 
-    WoWTools_DataMixin:Hook(DungeonEntrancePinMixin, 'OnLoad', function(self)
-        self.Text= self:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
-        --WoWTools_WorldMapMixin:Create_Wolor_Font(self, 10)
-        self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
-    end)
+    WoWTools_DataMixin:Hook(DungeonEntrancePinMixin, 'OnLoad', Init_Label)
+
     WoWTools_DataMixin:Hook(DungeonEntrancePinMixin, 'OnAcquired', function(self)
+        if not self.Text then
+            Init_Label(self)
+        end
+
         self.Text:SetText(
             Save().ShowDungeon_Name
             and WoWTools_TextMixin:CN(self.name)

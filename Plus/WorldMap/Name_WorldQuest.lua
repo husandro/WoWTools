@@ -1,24 +1,32 @@
 --世界地图任务
-
-local function Create_Pin(self)
-    self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
-    self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
-    self.worldQuestTypeTips:SetSize(30, 30)
-
-    self.rewardText= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 12)
-    self.rewardText:SetPoint('TOP', self, 'BOTTOM',0, 2)
-
-    self.Display.Icon:SetSize(18, 18)
+local function Save()
+    return  WoWToolsSave['Plus_WorldMap']
 end
 
 
 
 
 
-local function Clear_Pin(self)
-    if self.worldQuestTypeTips then
-        self.worldQuestTypeTips:SetTexture(0)
-        self.rewardText:SetText('')
+local function Create_Pin(self)
+    self.Display.Icon2= self.Display:CreateTexture(nil, 'ARTWORK', nil, 6)
+    self.Display.Icon2:SetPoint('TOPLEFT', self)
+    self.Display.Icon2:SetPoint('BOTTOMRIGHT', self)
+    WoWTools_ButtonMixin:AddMask(self.Display, true, self.Display.Icon2)
+
+    self.Display.typeTexure=self.Display:CreateTexture(nil, 'ARTWORK', nil, 7)
+    self.Display.typeTexure:SetPoint('TOPRIGHT', self)
+    self.Display.typeTexure:SetSize(10, 10)
+
+    self.Display.rewardText=self.Display:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')-- WoWTools_WorldMapMixin:Create_Wolor_Font(self, 12)
+    self.Display.rewardText:SetJustifyH('CENTER')
+    self.Display.rewardText:SetFontHeight(12)
+    self.Display.rewardText:SetPoint('TOP', self, 'BOTTOM', 0, 2)
+
+    function self:wowtools_Clear()
+        self.Display.Icon2:SetTexture(0)
+        self.Display.Icon:SetAlpha(1)
+        self.Display.typeTexure:SetTexture(0)
+        self.Display.rewardText:SetText('')
     end
 end
 
@@ -36,23 +44,21 @@ end
 
 
 local function Init()
-    if not WoWToolsSave['Plus_WorldMap'].ShowWorldQues_Name then
+    if not Save().ShowWorldQues_Name then
         return
     end
 
+    WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'OnLoad', Create_Pin)
 
     WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'RefreshVisuals', function(self)
-        if WoWTools_FrameMixin:IsLocked(self) then
-            return
+        if not self.wowtools_Clear then
+            Create_Pin(self)
         end
 
-        local data= WoWTools_QuestMixin:GetRewardInfo(self.questID)
+        local data= Save().ShowWorldQues_Name and WoWTools_QuestMixin:GetRewardInfo(self.questID)
         if not data then
-            Clear_Pin(self)
+            self:wowtools_Clear()
             return
-
-        elseif not self.worldQuestTypeTips then
-            Create_Pin(self)
         end
 
         local text, texture
@@ -100,10 +106,9 @@ local function Init()
                 elseif canWeek or canEarned or canQuantity then
                     text= format('|cnGREEN_FONT_COLOR:%d|r', data.totalRewardAmount)
                 else
-                    text= data.totalRewardAmount
+                    text= format('|cnHIGHLIGHT_FONT_COLOR:%d|r', data.totalRewardAmount)
                 end
             end
-
         else
             texture= data.texture
         end
@@ -117,16 +122,16 @@ local function Init()
             end
         end
 
-        if texture then
-            self.Display.Icon:SetTexture(texture)
-        end
-        if atlas then
-            self.worldQuestTypeTips:SetAtlas(atlas)
+        self.Display.Icon2:SetTexture(texture or 0)
+        self.Display.Icon:SetAlpha(texture and 0 or 1)
+
+        if atlas and texture then
+            self.Display.typeTexure:SetAtlas(atlas)
         else
-            self.worldQuestTypeTips:SetTexture(0)
+            self.Display.typeTexure:SetTexture(0)
         end
 
-       self.rewardText:SetText(text or '')
+       self.Display.rewardText:SetText(text or '')
     end)
 
 

@@ -41,7 +41,26 @@ end
 
 
 local function Create_Label(frame)
-    
+    frame.WoWToolsFrame= CreateFrame('Frame', nil, frame)
+    frame.WoWToolsFrame:SetAllPoints()
+
+    function frame.WoWToolsFrame:Clear()
+        self.elapsed=1
+        self.areaPoiID= nil
+        self.widgetID= nil
+        self:SetScript('OnUpdate', nil)
+        self.Text:SetText('')
+        self.Text:SetFontHeight(Save().areaPoinFontSize or 10)
+    end
+
+    frame.WoWToolsFrame.Text= frame.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
+    frame.WoWToolsFrame.Text:SetPoint('TOP', frame.WoWToolsFrame, 'BOTTOM', 0, 3)
+    frame.WoWToolsFrame.Text:SetFontHeight(8)
+
+    frame.WoWToolsFrame:SetScript('OnHide', function(self)
+        self.Text:SetText('')
+        self.elapsed= 1
+    end)
 end
 
 
@@ -58,30 +77,14 @@ local function Init()
         return
     end
 
-    WoWTools_DataMixin:Hook(AreaPOIPinMixin, 'OnLoad', function(frame)
-        frame.WoWToolsFrame= CreateFrame('Frame', nil, frame)
-        frame.WoWToolsFrame:SetAllPoints()
-
-        function frame.WoWToolsFrame:Clear()
-            self.elapsed=1
-            self.areaPoiID= nil
-            self.widgetID= nil
-            self:SetScript('OnUpdate', nil)
-            self.Text:SetFontHeight(Save().areaPoinFontSize or 10)
-        end
-
-        frame.WoWToolsFrame.Text= frame.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
-        frame.WoWToolsFrame.Text:SetPoint('TOP', frame.WoWToolsFrame, 'BOTTOM', 0, 3)
-        frame.WoWToolsFrame.Text:SetFontHeight(8)
-
-        frame.WoWToolsFrame:SetScript('OnHide', function(self)
-            self.Text:SetText('')
-            self.elapsed= 1
-        end)
-    end)
+    WoWTools_DataMixin:Hook(AreaPOIPinMixin, 'OnLoad', Create_Label)
 
     WoWTools_DataMixin:Hook(AreaPOIPinMixin, 'OnAcquired', function(self, poiInfo)
-        self.WoWToolsFrame:Clear()
+        if not self.WoWToolsFrame then
+            Create_Label(self)
+        else
+            self.WoWToolsFrame:Clear()
+        end
 
         poiInfo= poiInfo or self.poiInfo
 

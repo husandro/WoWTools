@@ -425,10 +425,6 @@ local function Init_Menu(self, root)
     end,sub)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
-        tooltip:AddLine(
-            (Save().ShowAreaPOI_Name and '' or '|cff626262')
-            ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        )
         tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
     end)
 
@@ -445,7 +441,7 @@ local function Init_Menu(self, root)
         minValue=4,
         maxValue=24,
         step=1,
-        tooltip=WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)
+        --tooltip=WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)
     })
 
 --地下城，加名称
@@ -487,14 +483,10 @@ local function Init_Menu(self, root)
     end, function()
         Save().ShowWorldQues_Name= not Save().ShowWorldQues_Name and true or false
         WoWTools_WorldMapMixin:Init_WorldQuest_Name()--世界地图任务，加名称
-        --WoWTools_WorldMapMixin:Refresh()
+        WoWTools_WorldMapMixin:Refresh()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示图标' or SELF_HIGHLIGHT_ICON)
-        tooltip:AddLine(
-            (Save().ShowWorldQues_Name and '' or '|cff626262')
-            ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        )
     end)
 
 --Plus

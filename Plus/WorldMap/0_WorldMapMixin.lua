@@ -1,10 +1,16 @@
 WoWTools_WorldMapMixin={}
 
-function WoWTools_WorldMapMixin:Refresh()
+function WoWTools_WorldMapMixin:Refresh(isQuest)
     if not WoWTools_FrameMixin:IsLocked(WorldMapFrame) and WorldMapFrame:IsShown() then
-        WorldMapFrame:RefreshOverlayFrames()
+        if isQuest then
+            WoWTools_DataMixin:Call(WorldMapFrame.RefreshQuestLog, WorldMapFrame)
+        else
+            WoWTools_DataMixin:Call(WorldMapFrame.RefreshOverlayFrames, WorldMapFrame)
+        end
     end
 end
+
+
 
 function WoWTools_WorldMapMixin:GetMapID()
     return WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
