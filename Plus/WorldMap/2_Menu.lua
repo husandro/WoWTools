@@ -432,6 +432,7 @@ local function Init_Menu(self, root)
     end)
 
 --字体大小
+    sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
         getValue=function()
