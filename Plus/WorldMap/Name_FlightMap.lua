@@ -38,6 +38,16 @@ end
 
 
 local function Init()
+    if not C_AddOns.IsAddOnLoaded('Blizzard_FlightMap') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_FlightMap' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
+
     btn= WoWTools_ButtonMixin:Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size=20})
     btn:SetPoint('LEFT')
 

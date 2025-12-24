@@ -39,8 +39,25 @@ local P_Save={
 
 
 
-local function Save()
-    return  WoWToolsSave['Plus_WorldMap']
+
+
+
+local function Init()
+    WoWTools_WorldMapMixin:Init_Menu()--设置菜单
+    WoWTools_WorldMapMixin:Init_MpaID()--地图ID，信息
+    WoWTools_WorldMapMixin:Init_XY_Map()--地图坐标
+    WoWTools_WorldMapMixin:Init_XY_Player()--实时玩家当前坐标
+
+    WoWTools_WorldMapMixin:Init_AreaPOI_Name()--地图POI提示，加名称
+    WoWTools_WorldMapMixin:Init_Dungeon_Name()--地下城，加名称
+    WoWTools_WorldMapMixin:Init_WorldQuest_Name()--世界地图任务，加名称
+
+    WoWTools_WorldMapMixin:Init_Plus_Menu()--设置菜单
+    WoWTools_WorldMapMixin:Init_Plus()
+
+    WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
+
+    Init=function()end
 end
 
 
@@ -48,57 +65,30 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== 'WoWTools' then
-            WoWToolsSave['Plus_WorldMap']= WoWToolsSave['Plus_WorldMap'] or P_Save
-            P_Save= nil
-
-            WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
-
-            --添加控制面板
-            WoWTools_PanelMixin:OnlyCheck({
-                name= WoWTools_WorldMapMixin.addName,
-                tooltip=  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
-                GetValue= function() return not  Save().disabled end,
-                func= function()
-                     Save().disabled= not  Save().disabled and true or nil
-                    print(
-                        WoWTools_DataMixin.addName,
-                        WoWTools_WorldMapMixin.addName,
-                        WoWTools_TextMixin:GetEnabeleDisable(not  Save().disabled),
-                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                    )
-                end
-            })
-
-            if Save().disabled then
-                self:SetScript('OnEvent', nil)
-                self:UnregisterEvent(event)
-            else
-                WoWTools_WorldMapMixin:Init_Menu()--设置菜单
-                WoWTools_WorldMapMixin:Init_MpaID()--地图ID，信息
-                WoWTools_WorldMapMixin:Init_XY_Map()--地图坐标
-                WoWTools_WorldMapMixin:Init_XY_Player()--实时玩家当前坐标
-
-                WoWTools_WorldMapMixin:Init_AreaPOI_Name()--地图POI提示，加名称
-                WoWTools_WorldMapMixin:Init_Dungeon_Name()--地下城，加名称
-                WoWTools_WorldMapMixin:Init_WorldQuest_Name()--世界地图任务，加名称
-
-                WoWTools_WorldMapMixin:Init_Plus_Menu()--设置菜单
-                WoWTools_WorldMapMixin:Init_Plus()
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_FlightMap') then
-                    WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
-                    self:SetScript('OnEvent', nil)
-                    self:UnregisterEvent(event)
-                end
-            end
-
-        elseif arg1=='Blizzard_FlightMap' and WoWToolsSave then--飞行点，加名称
-            WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
-            self:UnregisterEvent(event)
-        end
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    WoWToolsSave['Plus_WorldMap']= WoWToolsSave['Plus_WorldMap'] or P_Save
+    P_Save= nil
+
+    WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
+
+    --添加控制面板
+    WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_WorldMapMixin.addName,
+        tooltip=  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
+        GetValue= function() return not  WoWToolsSave['Plus_WorldMap'].disabled end,
+        func= function()
+            WoWToolsSave['Plus_WorldMap'].disabled= not  WoWToolsSave['Plus_WorldMap'].disabled and true or nil
+            Init()
+        end
+    })
+
+    if not WoWToolsSave['Plus_WorldMap'].disabled then
+        Init()
+    end
+    self:SetScript('OnEvent', nil)
+    self:UnregisterEvent(event)
 end)
