@@ -415,7 +415,7 @@ local function Init_Menu(self, root)
 
 --AreaPOI名称
     sub=root:CreateCheckbox(
-        '|cnWARNING_FONT_COLOR:|A:minimap-genericevent-hornicon:0:0|aAreaPOI',
+        '|A:minimap-genericevent-hornicon:0:0|aAreaPOI',
     function()
         return Save().ShowAreaPOI_Name
     end, function()
@@ -425,7 +425,7 @@ local function Init_Menu(self, root)
     end,sub)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
-        tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
+        --tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
     end)
 
 --字体大小

@@ -6,10 +6,15 @@ end
 
 
 
---issecretvalue(index)
+
 local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     if texture then
-        SetRaidTargetIconTexture(texture, GetRaidTargetIndex(unit) or 0)
+        local index= GetRaidTargetIndex(unit)
+        if canaccessvalue(index) and index then
+            SetRaidTargetIconTexture(texture, index)
+        else
+            SetRaidTargetIconTexture(texture, 0)
+        end
     end
 end
 
@@ -110,7 +115,7 @@ local function Init()--设置,团队
             return
         end
         local text= frame.statusText:GetText()
-        if text and not issecretvalue(text) then
+        if canaccessvalue(text) and text then
             if text== '100%' or text=='0%' then
                 text= ''
             else
@@ -259,7 +264,7 @@ local function Init()--设置,团队
             frame.statusText:SetText('|A:deathrecap-icon-tombstone:0:0|a')
         else
             local hp= UnitHealth(frame.displayedUnit)
-            if hp and not issecretvalue(hp) then
+            if canaccessvalue(hp) and hp then
                 if ( frame.optionTable.healthText == "health" ) then
                     frame.statusText:SetText(WoWTools_DataMixin:MK(hp, 0))
 

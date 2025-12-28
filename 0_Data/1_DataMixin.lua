@@ -23,8 +23,11 @@ WoWTools_DataMixin= {
     Language={}
 }
 
-if not issecretvalue then--12.0才有 SecureTypes.lua
-    issecretvalue= function() return false end
+if not canaccessvalue then--12.0才有 SecureTypes.lua
+    canaccessvalue= function() return true end
+    canaccesstable= function() return true end
+    issecretvalue= function() return true end
+    issecrettable= function() return true end
 end
 
 --[[
@@ -216,12 +219,14 @@ end
 
 
 
-function WoWTools_DataMixin:Info(data)
-    if not WoWTools_DataMixin.Player.husandro then
-        return
-    elseif type(data)~='table' then
+function WoWTools_DataMixin:Info(data1)
+    local data= _G[data1] or data1
+
+    if type(data)~='table' then
         print(WoWTools_DataMixin.Icon.icon2, tostring(data), type(data))
         return
+    elseif not canaccessvalue(data) then
+        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '显示机密数值' or EVENTTRACE_SHOW_SECRET_VALUES)
     end
 
     local t=''
@@ -247,5 +252,14 @@ function WoWTools_DataMixin:Info(data)
     end
     t=t..'|n|cffff00ff——————————|r'
 
-    WoWTools_TextMixin:ShowText(t, WoWTools_DataMixin.Icon.icon2..tostring(data))--, {notClear=true})
+    WoWTools_TextMixin:ShowText(t, WoWTools_DataMixin.Icon.icon2..(type(data1)=='string' and data1 or tostring(data)))--, {notClear=true})
 end
+
+if not _G[SLASH_INFOSLASH1] then
+    SLASH_INFOSLASH1 = "/info"
+    SlashCmdList["INFOSLASH"] = function(msg)
+	    WoWTools_DataMixin:Info(msg)
+    end
+end
+
+

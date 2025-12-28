@@ -28,7 +28,7 @@ local function Init()
     end
 
     WoWTools_DataMixin:Hook('MoneyFrame_Update', function(frameName, money)
-        if issecretvalue(money) then
+        if not canaccessvalue(money) or not money then
             return
         end
 

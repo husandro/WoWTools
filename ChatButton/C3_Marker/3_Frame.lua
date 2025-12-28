@@ -10,7 +10,7 @@ local PingButtons={}
 local TargetButtons={}
 local MarkerButtons={}
 
-
+--SecureTemplates.lua
 
 
 
@@ -519,10 +519,10 @@ local function Init()--设置标记, 框架
 
     function MakerFrame.target:set_Clear_Unit(unit, index)
         local t= GetRaidTargetIndex(unit)
-        if issecretvalue(t) then--12.0没有了
-            WoWTools_MarkerMixin:Set_Taget(unit, 0)--设置,目标,标记
-        elseif t and t>0 and (index==t or not index) then
-            WoWTools_MarkerMixin:Set_Taget(unit, 0)--设置,目标,标记
+        if canaccessvalue(t) then
+            if t and t>0 and (index==t or not index) then
+                WoWTools_MarkerMixin:Set_Taget(unit, 0)--设置,目标,标记
+            end
         end
     end
     function MakerFrame.target:set_Clear(index)--取消标记标    
@@ -567,6 +567,7 @@ local function Init()--设置标记, 框架
             atlas= index==0 and 'jailerstower-animapowerlist-powerborder-purple',--'auctionhouse-itemicon-border-orange' or nil,
             texture= index>0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
             setID=index,
+            isSecure=true,
         })
 
         table.insert(TargetButtons, 'TargetButton'..index)
@@ -586,7 +587,7 @@ local function Init()--设置标记, 框架
             btn:set_point()
         end
 
-        if index==0 then
+        --[[if index==0 then
             btn:SetScript('OnClick', function(self, d)
                 if d=='LeftButton' then
                     self:GetParent():set_Clear()--取消标记标    
@@ -607,13 +608,33 @@ local function Init()--设置标记, 框架
                 self:SetAlpha(1)
             end)
             btn:SetAlpha(0.5)
-        else
-            btn.index= index
-            btn.texture= btn:CreateTexture(nil, 'BACKGROUND')
-            btn.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-            btn.texture:SetSize(size/2.5, size/2.5)
-            btn.texture:SetPoint('CENTER')
-            btn:SetScript('OnClick', function(self, d)
+        else]]
+            --btn.index= index
+            if index==0 then
+                btn:SetAttribute('type', 'raidtarget')
+                btn:SetAttribute("action", "clear-all")
+            else
+                btn.texture= btn:CreateTexture(nil, 'BACKGROUND')
+                btn.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                btn.texture:SetSize(size/2.5, size/2.5)
+                btn.texture:SetPoint('CENTER')
+
+                btn:SetAttribute('type1', 'raidtarget')
+                btn:SetAttribute('marker1', index)
+                btn:SetAttribute("action1", index==0 and 'clear' or "set")
+                btn:SetAttribute("unit1", 'target')
+
+                btn:SetAttribute("type2", "raidtarget")
+                btn:SetAttribute("marker2", index)
+                btn:SetAttribute("action2", "clear")
+                btn:SetAttribute("unit2", 'target')
+            end
+            
+
+
+
+        
+            --[[btn:SetScript('OnClick', function(self, d)
                 if IsAltKeyDown() then
                     self:GetParent():set_Clear(self.index)--取消标记标    
                 elseif d=='LeftButton' then
@@ -621,7 +642,7 @@ local function Init()--设置标记, 框架
                 elseif d=='RightButton' then
                     WoWTools_MarkerMixin:Set_Taget('player', self.index)--设置,目标, 标记
                 end
-            end)
+            end)]]
             btn:SetScript('OnLeave', function(self)
                 GameTooltip:Hide()
                 self:set_Active()
@@ -630,7 +651,7 @@ local function Init()--设置标记, 框架
                 self:GetParent():GetParent():set_Tooltips_Point()
                 GameTooltip:ClearLines()
                 local can= CanBeRaidTarget('target')
-                GameTooltip:AddLine(MicroButtonTooltipText(WoWTools_MarkerMixin:GetIcon(self.index), 'RAIDTARGET'..self.index))
+                --GameTooltip:AddLine(MicroButtonTooltipText(WoWTools_MarkerMixin:GetIcon(self.index), 'RAIDTARGET'..self.index))
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(
                     WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET),
@@ -651,25 +672,27 @@ local function Init()--设置标记, 框架
             function btn:set_Active()
                 local t= GetRaidTargetIndex('target')
                 local check= false
-                if not issecretvalue(t) then
-                    check= t== self.index
+                if canaccessvalue(t) then
+                    check= t== self:GetID()
                     self:SetButtonState(check and 'PUSHED' or 'NORMAL')
                 end
-                self.texture:SetShown(check)
+                if self.texture then
+                    self.texture:SetShown(check)
+                end
 
                 self:SetAlpha((not UnitExists('target') or not CanBeRaidTarget('target')) and 0.5 or 1)
             end
             function btn:set_Events()
                 self:UnregisterAllEvents()
-                if self:IsShown() then
+                if self:IsShown() and self:GetID()>0 then
                     self:RegisterEvent('PLAYER_TARGET_CHANGED')
                     self:RegisterEvent('RAID_TARGET_UPDATE')
                     if Save().showMakerFrameHotKey then
                         self:RegisterEvent('UPDATE_BINDINGS')
                     end
                     self:set_Active()
+                    self:set_hotkey()
                 end
-                self:set_hotkey()
             end
 
 --快捷键
@@ -696,8 +719,10 @@ local function Init()--设置标记, 框架
             btn:SetScript('OnHide', function(self)
                 self:set_Events()
             end)
-            btn:set_Events()
-        end
+            if btn:IsVisible() then
+                btn:set_Events()
+            end
+        --end
     end
 
 

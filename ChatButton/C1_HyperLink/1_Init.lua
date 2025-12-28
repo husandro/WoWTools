@@ -101,9 +101,12 @@ local function Init()
                 ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
             )
         else
-            local guid= self.playerLocation and self.playerLocation:GetGUID()
-            local name= guid and self:GetMemberName()
-            if name then
+            local guid
+            if canaccessvalue(self.playerLocation) and self.playerLocation then
+                guid=self.playerLocation:GetGUID()
+            end
+            local name= self:GetMemberName()
+            if canaccessvalue(name) and name then
                 local t=''
 --欧美，服务器语言
                 local region= WoWTools_RealmMixin:Get_Region(name:match('%-(.+)') or '', guid)

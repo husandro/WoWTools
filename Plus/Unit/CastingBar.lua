@@ -109,10 +109,6 @@ end
 
 
 --MirrorTimer.lua
-local function SetupTimer(frame)
-    
-end
-
 
 
 
@@ -141,7 +137,7 @@ local function Init()
 
                 WoWTools_DataMixin:Hook(activeTimer, 'UpdateStatusBarValue', function(self)
                     local value= self.StatusBar:GetValue()
-                    if not issecurevalue(value) then
+                    if canaccessvalue(value) and value then
                         self.valueText:SetFormattedText('%i', value)
                     else
                         self.valueText:SetText('')
@@ -159,5 +155,5 @@ end
 
 
 function WoWTools_UnitMixin:Init_CastingBar()
-   --Init()
+   Init()
 end

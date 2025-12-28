@@ -565,7 +565,7 @@ end
 CommunitiesHyperlink.lua CommunitiesHyperlink_OnEvent
 ]]
 local function New_AddMessage(self, s, ...)
-    if issecretvalue(s) then
+    if not canaccessvalue(s) then
         return
     end
 

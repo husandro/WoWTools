@@ -150,7 +150,7 @@ EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--
 --设置 GameTooltip
     if  GameTooltip.textLeft and GameTooltip:IsShown() then
         local name2, unit2, guid2= TooltipUtil.GetDisplayedUnit(GameTooltip)
-        if not issecretvalue(guid2) and guid2==guid then
+        if canaccessvalue(guid2) and guid2==guid then
             WoWTools_TooltipMixin:Set_Unit_Player(GameTooltip, name2, unit2, guid2)
         end
     end

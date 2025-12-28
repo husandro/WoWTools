@@ -82,10 +82,11 @@ local function Set_TankHealer(set)--设置队伍标记
                         healer=true
                     end
                 else
-                    local raidIndex= GetRaidTargetIndex(unit)
-                    if raidIndex and raidIndex>0 and raidIndex<=8 then
-                        WoWTools_MarkerMixin:Set_Taget(unit, 0)
-                    end
+                     WoWTools_MarkerMixin:Set_Taget(unit, 0)
+                    --local raidIndex= GetRaidTargetIndex(unit)
+                    --if raidIndex and raidIndex>0 and raidIndex<=8 then
+                       
+                    --end
                 end
             end
         end
@@ -97,7 +98,7 @@ local function Set_TankHealer(set)--设置队伍标记
         end
         if Save().target then
             local index= GetRaidTargetIndex('target')--12.0没有了
-            if not issecretvalue(index) and (not index or (index>8 and index<0)) then
+            if canaccessvalue(index) and (not index or (index>8 and index<0)) then
                 WoWTools_MarkerMixin:Set_Taget('target', Save().target or (set and 0))--设置,目标,标记
             end
             isSelf= true

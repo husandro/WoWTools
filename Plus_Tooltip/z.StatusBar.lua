@@ -24,10 +24,7 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
         local unit, guid= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
 
         if WoWTools_FrameMixin:IsLocked(frame)
-            or issecretvalue(guid)
-            or not unit
-            --or frame:GetWidth()<100
-            or WoWTools_FrameMixin:IsLocked(frame)
+            or not canaccessvalue(guid)
         then
             frame.text:SetText('')
             frame.textLeft:SetText('')
@@ -39,38 +36,41 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
         local max= UnitHealthMax(unit)
         local r, g, b, left, right, col, text
 
-        if value and max then
-            r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
-            if UnitIsFeignDeath(unit) then
-                text= WoWTools_DataMixin.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
-            elseif not issecretvalue(value) then
-                if value <= 0 then
-                    text = '|A:poi-soulspiritghost:0:0|a'..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)..'|r'
+        r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
+
+        local isDeath= UnitIsFeignDeath(unit)
+        if canaccessvalue(isDeath) and isDeath then
+            text= WoWTools_DataMixin.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
+        elseif canaccessvalue(value) and value then
+            if value <= 0 then
+                text = '|A:poi-soulspiritghost:0:0|a'..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)..'|r'
+            elseif canaccessvalue(max) and max and max>0 then
+                local hp = value / max * 100
+                text = ('%i%%'):format(hp)..'  '
+                if hp<30 then
+                    text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnWARNING_FONT_COLOR:' .. text..'|r'
+                elseif hp<60 then
+                    text='|cnGREEN_FONT_COLOR:'..text..'|r'
+                elseif hp<90 then
+                    text='|cnYELLOW_FONT_COLOR:'..text..'|r'
                 else
-                    local hp = value / max * 100
-                    text = ('%i%%'):format(hp)..'  '
-                    if hp<30 then
-                        text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnWARNING_FONT_COLOR:' .. text..'|r'
-                    elseif hp<60 then
-                        text='|cnGREEN_FONT_COLOR:'..text..'|r'
-                    elseif hp<90 then
-                        text='|cnYELLOW_FONT_COLOR:'..text..'|r'
-                    else
-                        text= '|c'..col..text..'|r'
-                    end
-                    left =WoWTools_DataMixin:MK(value, 2)
+                    text= '|c'..col..text..'|r'
                 end
+                left =WoWTools_DataMixin:MK(value, 2)
             end
-            if not issecretvalue(max) then
-                right = WoWTools_DataMixin:MK(max, 2)
-            end
-            frame:SetStatusBarColor(r or 1, g or 1, b or 1)
+            right = WoWTools_DataMixin:MK(max, 2)
+        else
+            left= value
+            right= max
         end
+
         frame.text:SetText(text or '')
-        frame.textLeft:SetText(left or value or '')
-        frame.textRight:SetText(right or '')
-        frame.textLeft:SetTextColor(r or 1, g or 1, b or 1)
-        frame.textRight:SetTextColor(r or 1, g or 1, b or 1)
+        frame.textLeft:SetText(left)
+        frame.textRight:SetText(right)
+
+        frame:SetStatusBarColor(r, g, b)
+        frame.textLeft:SetTextColor(r, g, b)
+        frame.textRight:SetTextColor(r , g, b)
     end)
 
     WoWTools_TextureMixin:SetStatusBar(GameTooltipStatusBar)

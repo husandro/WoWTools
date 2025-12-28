@@ -135,7 +135,7 @@ local function Create_potFrame(frame)
 
                 else
                     local index = GetRaidTargetIndex(self.tt)--标记
-                    if index and index>0 and index< 9 then
+                    if canaccessvalue(index) and index and index>0 and index< 9 then
                         self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                     else
                         SetPortraitTexture(self.Portrait, self.tt, true)--图像
@@ -168,7 +168,7 @@ local function Create_potFrame(frame)
             self.elapsed=0
             local cur= UnitHealth(self.tt)
             local max= UnitHealthMax(self.tt) or 0
-            if cur and not issecretvalue(cur) and max>0 then
+            if canaccessvalue(cur) and canaccessvalue(max) and cur and max and max>0 then
                 self.healthLable:SetFormattedText('%i', cur/max*100)
             else
                 self.healthLable:SetText('')
@@ -247,7 +247,7 @@ local function Create_castFrame(frame)
     end)
     castFrame.texture:SetScript('OnEnter', function(self)
         local u= self:GetParent().unit
-        if WoWTools_UnitMixin:IsLocked(u) then
+        if not WoWTools_UnitMixin:UnitGUID(u) then
             return
         end
 
@@ -345,7 +345,7 @@ local function Create_raidTargetFrame(frame)
             index=1
         else
             index = GetRaidTargetIndex(self.unit)
-            if index and (index<=0 or index>=9) then
+            if not canaccessvalue(index) or (index and (index<=0 or index>=9)) then
                 index= nil
             end
         end

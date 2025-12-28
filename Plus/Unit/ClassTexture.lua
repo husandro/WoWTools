@@ -37,51 +37,35 @@ local function Craete_Frame(frame)
         frame.classFrame.itemLevel:SetPoint('TOPRIGHT', frame.classFrame, 'TOPLEFT')
     end
 
-    function frame.classFrame:set_settings(guid3)
-        local unit2= self:GetParent().unit
-        if WoWTools_UnitMixin:IsLocked(unit2) and not issecretvalue(guid3) then
-            return
-        end
-        local isPlayer= UnitExists(unit2) and WoWTools_UnitMixin:UnitIsPlayer(unit2)
-        local atlas, texture
-        if isPlayer and not WoWTools_UnitMixin:IsLocked(unit2) then
-            if WoWTools_UnitMixin:UnitIsUnit(unit2, 'player') then
-                texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
-            else
-                local specID
-
-                specID= GetInspectSpecialization(unit2)
-                if specID and specID>0 then
-                    texture= select(4, GetSpecializationInfoByID(specID))
-
-                else
-
-                    local guid2= guid3 or UnitGUID(unit2)
-
-                    
-                    local tab= not issecretvalue(WoWTools_DataMixin.UnitItemLevel) and WoWTools_DataMixin.UnitItemLevel[guid2]                    
-                    --specID= not issecurevalue(guid2) and guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID
-                    if tab and tab.specID  then
-                    --if not issecurevalue(guid2) and guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID then
-                       
-                        texture= select(4, GetSpecializationInfoByID(tab.specID))
-                    else
-                        atlas= WoWTools_UnitMixin:GetClassIcon(unit2, nil, nil, {reAtlas=true})--职业, 图标
-                    end
+    function frame.classFrame:set_settings()
+        local unit= self:GetParent().unit
+        if WoWTools_UnitMixin:UnitIsPlayer(unit) then
+            local specID= GetInspectSpecialization(unit)
+            local texture=0
+            if canaccessvalue(specID) and specID and specID>0 then
+                texture= select(4, GetSpecializationInfoByID(specID))
+                if not canaccessvalue(texture) or not texture then
+                    texture=0
                 end
             end
-            if atlas then
-                self.Portrait:SetAtlas(atlas)
-            else
-                self.Portrait:SetTexture(texture or 0)
-            end
-            if issecurevalue(guid3) then
+
+            self.Portrait:SetTexture(texture)
+
+            local guid= UnitGUID(unit)
+            if not canaccessvalue(guid) or not guid then
                 self.itemLevel:SetText('')
             else
-                self.itemLevel:SetText(guid3 and WoWTools_DataMixin.UnitItemLevel[guid3] and WoWTools_DataMixin.UnitItemLevel[guid3].itemLevel or '')
+                local level= WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel
+                if canaccessvalue(level) and level then
+                    self.itemLevel:SetText(level)
+                else
+                    self.itemLevel:SetText('')
+                end
             end
+            self:SetShown(true)
+        else
+            self:SetShown(false)
         end
-        self:SetShown(atlas or texture)
     end
     frame.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', frame.unit)
     frame.classFrame:SetScript('OnEvent', function(self)
@@ -103,9 +87,10 @@ end
 
 local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图标， 颜色
     local unit= frame.unit
-    if not UnitExists(unit) or unit:find('nameplate') then
+    if unit:find('nameplate') then
         return
     end
+
     local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
 
     local guid
@@ -114,11 +99,10 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
         guid= UnitGUID(frame.unit)--职业, 天赋, 图标
         Craete_Frame(frame)
     end
-    unitIsPlayer= unitIsPlayer and not issecretvalue(guid)
 
     if frame.classFrame then
         if unitIsPlayer then
-            frame.classFrame:set_settings(guid)
+            frame.classFrame:set_settings()
             frame.classFrame.Texture:SetVertexColor(r, g, b)
             frame.classFrame.itemLevel:SetTextColor(r, g, b)
         end
@@ -172,7 +156,7 @@ local function Init()
     end
 
 
-   
+
 
 
     WoWTools_DataMixin:Hook('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色

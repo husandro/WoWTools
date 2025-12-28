@@ -411,8 +411,8 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             unit='player'
         end
 
-        local guid= UnitGUID(unit)
-        if guid and UnitExists(unit) then
+        local guid= WoWTools_UnitMixin:UnitGUID(unit)
+        if guid then
             playerNum= playerNum+1
 
             if (not WoWTools_DataMixin.UnitItemLevel[guid] or not WoWTools_DataMixin.UnitItemLevel[guid].itemLeve) then

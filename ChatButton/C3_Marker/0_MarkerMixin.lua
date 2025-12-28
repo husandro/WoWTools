@@ -6,7 +6,7 @@ function WoWTools_MarkerMixin:Set_Taget(unit, index)--设置,目标,标记
         return
     end
     local t= index and CanBeRaidTarget(unit) and GetRaidTargetIndex(unit)
-    if not issecretvalue(t) and t~=index then
+    if canaccessvalue(t) and t~=index then
         SetRaidTarget(unit, index)
     end
 end
@@ -41,7 +41,7 @@ end
 function WoWTools_MarkerMixin:GetIcon(index, unit)--取得图片
     index= index or GetRaidTargetIndex(unit)
     if index then
-        if issecretvalue(index) or (index>=0 and index<=NUM_WORLD_RAID_MARKERS) then
+        if canaccessvalue(index) or (index>=0 and index<=NUM_WORLD_RAID_MARKERS) then
             return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t'
         end
     end

@@ -16,8 +16,8 @@ function WoWTools_CooldownMixin:GetText(spellID, itemID)--法术,物品,冷却
             return
         end
         local data= C_Spell.GetSpellCooldown(spellID)
-        if data then
-            if data.duration>0 then
+        if data and canaccesstable(data) and data.duration and canaccessvalue(data.duration) then
+            if  data.duration>0 then
                 local t= GetTime()
                 while t<data.startTime do
                     t= t+86400
@@ -33,7 +33,7 @@ function WoWTools_CooldownMixin:GetText(spellID, itemID)--法术,物品,冷却
         end
     elseif itemID then
         local startTime, duration, enable = C_Item.GetItemCooldown(itemID)
-        if duration and duration>0 then
+        if canaccessvalue(duration) and duration and duration>0 then
             local t= GetTime()
             while t<startTime do
                 t= t+86400
@@ -67,31 +67,30 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
 
     if spellID then
         local data= C_Spell.GetSpellCooldown(spellID)
-        if data then-- and not issecretvalue(data) and data.duration>0 then
+        if canaccesstable(data) and data then
             self:Setup(frame, data.startTime, data.duration, data.modRate, true, nil, not type)--冷却条
         else
             self:Setup(frame)
         end
 
     elseif unit then
-        local texture, startTime, endTime, duration, channel
-
-        if not WoWTools_UnitMixin:IsLocked(unit) and UnitExists(unit) then
-            texture, startTime, endTime= select(3, UnitChannelInfo(unit))
-
-            if not (texture and startTime and endTime) then
-                texture, startTime, endTime= select(3, UnitCastingInfo(unit))
-            else
-                channel= true
-            end
-            if not issecurevalue(startTime) and not issecurevalue(endTime) and texture and startTime and endTime then
-                duration= (endTime - startTime) / 1000
-                self:Setup(frame, nil, duration, nil, true, channel, nil,nil)
-                return texture
-            else
-                self:Setup(frame)
-            end
+        local texture, startTime, endTime= select(3, UnitChannelInfo(unit))
+        if canaccessvalue(startTime) and startTime then
+            local duration= (endTime - startTime) / 1000
+            local channel= true
+            self:Setup(frame, nil, duration, nil, true, channel, nil,nil)
+            return texture
         end
+
+        texture, startTime, endTime= select(3, UnitCastingInfo(unit))
+        if canaccessvalue(startTime) and startTime then
+            local channel= false
+            local duration= (endTime - startTime) / 1000
+            self:Setup(frame, nil, duration, nil, true, channel, nil,nil)
+            return texture
+        end
+
+        self:Setup(frame)
 
     elseif item then
         local startTime, duration = C_Item.GetItemCooldown(item)

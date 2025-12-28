@@ -75,8 +75,7 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
         local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
         local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
         local isLoaded, reason= C_AddOns.IsAddOnLoaded(name)
-        local vType= type(value)
-        local text= vType=='string' and WoWTools_UnitMixin:GetPlayerInfo(nil, value, nil)
+        local text= type(value)=='string' and WoWTools_UnitMixin:GetPlayerInfo(nil, value, nil)
         if not text and not isLoaded and reason then
             text= '|cff626262'..WoWTools_TextMixin:CN(_G['ADDON_'..reason] or reason)..' ('..index
         end

@@ -22,7 +22,7 @@ AuraUtil.AuraFilters = {
 AuraUtil.AuraFilters.Harmful
 ]]
 function WoWTools_AuraMixin:Get(unit, spellTab, filter)--HELPFUL HARMFUL
-    if WoWTools_UnitMixin:IsLocked(unit) then
+    if not WoWTools_UnitMixin:UnitGUID(unit) then
         return
     end
 

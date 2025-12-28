@@ -1037,6 +1037,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
 		self:SetFrame(frame.Bar, {alpha=0.2, index=1})
 	end
 
+    self:SetMenu(CooldownViewerSettings.LayoutDropdown)
 
     self:SetButton(CooldownViewerSettingsCloseButton)
     self:SetButton(CooldownViewerSettings.SettingsDropdown, {alpha=1})
@@ -1055,6 +1056,13 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
 	end
 
     self:SetUIButton(CooldownViewerSettings.UndoButton)
+--给新布局起名
+    if CooldownViewerLayoutDialog then--12.0才有
+        self:SetFrame(CooldownViewerLayoutDialog.Border, {alpha=1})
+        self:SetUIButton(CooldownViewerLayoutDialog.AcceptButton)
+        self:SetUIButton(CooldownViewerLayoutDialog.CancelButton)
+        self:SetEditBox(CooldownViewerLayoutDialog.LayoutNameEditBox)
+    end
 
     --CooldownViewerSettingsCategoryMixin 标题
     --CooldownViewerSettingsItemMixin 追踪的状态栏
@@ -2259,6 +2267,13 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         f:GetSessionName():SetText(GetDamageMeterSessionShortName(sessionType, sessionID))
     end)
 
+
+
+    local function Set_BG(bar)
+        bar:GetBackgroundEdge():SetVertexColor(0,0,0,0.3)
+        bar:GetBackground():SetVertexColor(0,0,0,0.3)
+    end
+
     local function settins(frame)
         self:SetAlphaColor(frame.Header, true)
         self:SetButton(frame.ResizeButton)
@@ -2306,8 +2321,21 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
             menu.Icon:SetAlpha(1)
         end)
 
+        self:SetScrollBar(frame)
+        if frame.ScrollBox:HasView() then
+            for _, bar in pairs(TokenFrame.ScrollBox:GetFrames()) do
+                Set_BG(bar)
+            end
+        end
     end
 
+
+    
+
+    WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'SetupSharedStyleBackground', function(bar)
+        Set_BG(bar)
+    end)
+    
     for _, windowData in pairs(DamageMeter:GetWindowDataList()) do
         if windowData.sessionWindow then
             settins(windowData.sessionWindow)
@@ -2479,5 +2507,12 @@ function WoWTools_TextureMixin.Events:Blizzard_DebugTools()
     set_frame(TableAttributeDisplay)
     WoWTools_DataMixin:Hook(TableInspectorMixin, 'OnLoad', function(frame)
         set_frame(frame)
+    end)
+end
+
+
+function WoWTools_TextureMixin.Events:Blizzard_NamePlates()
+    WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnLoad', function(frame)
+        self:HideTexture(frame.HealthBarsContainer.healthBar.bgTexture)
     end)
 end

@@ -12,9 +12,9 @@ WoWTools_TooltipMixin={
 --设置，宽度
 function WoWTools_TooltipMixin:Set_Width(tooltip)
     local w= tooltip:GetWidth()
-    local w2= tooltip.textLeft:GetStringWidth()
-    if not issecurevalue(w2) then
-        w2= w2+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
+    local w2= tooltip.textLeft:GetWidth()
+    if canaccessvalue(w2) then
+        w2= w2+ tooltip.text2Left:GetWidth()+ tooltip.textRight:GetWidth()
         if w<w2 then
             tooltip:SetMinimumWidth(w2)
         end
@@ -25,11 +25,13 @@ end
 --设置单位
 function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
     local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
-    if not name or not guid or issecretvalue(guid) then--or not UnitExists(unit) 
+
+    
+    if not canaccessvalue(guid) then
         return
     end
 
-    if WoWTools_UnitMixin:UnitIsPlayer(unit) then
+    if UnitIsPlayer(unit) then
         self:Set_Unit_Player(tooltip, name, unit, guid)
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
