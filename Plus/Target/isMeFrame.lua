@@ -31,10 +31,7 @@ local function Set_Texture(plate)
 if not frame then
     return
 end
-    --local frame= plate.UnitFrame
-    if not frame.CreateTexture or not plate.CreateTexture then
-        print(frame.CreateTexture , plate.CreateTexture)
-    end
+
     if not frame.UnitIsMe then
         frame.UnitIsMe= plate:CreateTexture(nil, 'OVERLAY')
     else
