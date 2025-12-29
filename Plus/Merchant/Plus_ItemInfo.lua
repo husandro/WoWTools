@@ -152,19 +152,19 @@ local function Create_Label(btn)
 
 --索引
     btn.IndexLable= btn:CreateFontString(nil, 'ARTWORK', 'GameFontDisable')-- WoWTools_LabelMixin:Create(btn, {size=10})
-    btn.IndexLable:SetFontHeight(10)
-    --btn.IndexLable:SetPoint('BOTTOMRIGHT',  2, -2)
-    btn.IndexLable:SetPoint('RIGHT')
-    --btn.IndexLable:SetAlpha(0.7)
-
+    btn.IndexLable:SetPoint('TOPRIGHT', btn.Name, 0, 2)
+    btn.IndexLable:SetFontHeight(8)
 --数量
     btn.buyItemNum= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')--WoWTools_LabelMixin:Create(btn, {size=10})
-    btn.buyItemNum:SetPoint('BOTTOMRIGHT', btn.IndexLable, 'TOPRIGHT', 0,3)
+    --btn.buyItemNum:SetPoint('BOTTOMRIGHT', btn.IndexLable, 'TOPRIGHT', 0,3)
+    btn.buyItemNum:SetPoint('BOTTOMRIGHT', btn.Name)
     btn.buyItemNum:SetFontHeight(10)
 
+
 --属性
-    btn.stats=WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
+    btn.stats= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')--WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
     btn.stats:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT',0,6)
+    btn.stats:SetFontHeight(10)
     btn.stats:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     btn.stats:SetScript('OnEnter', function(self)
         if self.spellID then
@@ -177,7 +177,6 @@ local function Create_Label(btn)
         end
         self:SetAlpha(0.5)
     end)
-
 end
 
 
@@ -233,7 +232,6 @@ local function Set_Item_Info()
             end
 --包里，银行
             num= num..(WoWTools_ItemMixin:GetCount(itemID, {notZero=true}) or '')
-
 --物品，属性
             local classID= select(6, C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
@@ -263,6 +261,8 @@ local function Set_Item_Info()
                     _G["MerchantItem"..i.."Name"]:SetText(itemName)
                 end
             end
+
+            btn.ItemButton.Count:SetPoint('BOTTOMRIGHT', -6, 6)
         end
 --索引
         btn.IndexLable:SetText(itemID and index or '')

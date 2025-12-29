@@ -219,7 +219,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin:Get_CVar_Tooltips({name='Sound_EnableDialog', msg=WoWTools_DataMixin.onlyChinese and '启用对话' or ENABLE_DIALOG }))
     end)
 
---禁用，隐藏NPC发言
+--[[禁用，隐藏NPC发言
     sub2=sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '隐藏NPC发言' or (HIDE..' NPC '..VOICE_TALKING),
     function()
@@ -229,7 +229,7 @@ local function Init_Menu(self, root)
     end)
     sub2:SetTooltip(function (tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL)
-    end)
+    end)]]
 
 --文本
     sub:CreateCheckbox('|A:communities-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '文本' or LOCALE_TEXT_LABEL), function()

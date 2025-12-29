@@ -187,7 +187,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-        WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
+        --WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
         WoWTools_HyperLink:Init_Welcome()--欢迎加入
         WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
         --WoWTools_HyperLink:Init_EmojiButton()

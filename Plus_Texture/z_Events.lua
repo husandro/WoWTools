@@ -2514,6 +2514,9 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_NamePlates()
+    if not NamePlateUnitFrameMixin then--12.0才有
+        return
+    end
     WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnLoad', function(frame)
         self:HideTexture(frame.HealthBarsContainer.healthBar.bgTexture)
     end)

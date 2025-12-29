@@ -573,7 +573,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LEAVING_WORLD' then
-        if Save().setCVar then
+        if Save() and Save().setCVar then
             if not InCombatLockdown() then
                 Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
                 SetCVar("graphicsViewDistance", 0)

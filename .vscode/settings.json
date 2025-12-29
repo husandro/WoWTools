@@ -2818,7 +2818,10 @@
         "ERR_CANT_BUY_QUANTITY",
         "TRANSMOG_COLLECTED",
         "TRANSMOGRIFICATION",
-        "MERCHANT_ITEMS_PER_PAGE"
+        "MERCHANT_ITEMS_PER_PAGE",
+        "MerchantItem12ItemButton",
+        "MerchantItem8ItemButtonCount",
+        "MerchantItem11MoneyFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

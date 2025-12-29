@@ -34,9 +34,6 @@ local function Create_Lable(btn)
     end
 
     local name= btn:GetName()
---_G[name..'AltCurrencyFrame']
---_G[name..'MoneyFrame']
-
 
     _G[name..'NameFrame']:SetTexture(0)
     btn.ItemButton.NormalTexture:SetTexture(0)
@@ -55,6 +52,12 @@ local function Create_Lable(btn)
     btn.itemBG:SetPoint('BOTTOMRIGHT')
     btn.itemBG:SetAlpha(Save().btnBgAlpha or 0.5)
     btn.itemBG:Hide()
+
+    --[[local count= _G[name..'ItemButtonCount']
+    if count then
+        count:ClearAllPoints()
+        count:SetPoint('BOTTOMRIGHT', 0, 10)
+    end]]
 
 --查询，背包，物品
     btn.ItemButton:HookScript('OnEnter', function(self)
@@ -402,6 +405,8 @@ local function Init_WidthX2()
         local numMerchantItems= GetMerchantNumItems()
         local index, info, btn
         local curNum= 0
+        local numWidth= Save().numWidth or 153
+        local moneyAlpha= numWidth<=45 and 0 or 1
         for i = 1, MERCHANT_ITEMS_PER_PAGE do--按钮，数量
             btn= _G['MerchantItem'..i]
             index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
@@ -421,11 +426,14 @@ local function Init_WidthX2()
                 btn:ClearAllPoints()
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
+
+            _G['MerchantItem'..i..'MoneyFrame']:SetAlpha(moneyAlpha)
+            _G['MerchantItem'..i..'AltCurrencyFrame']:SetAlpha(moneyAlpha)
         end
 
 --换行
-        local numWidth= (Save().numWidth or 153)+8
-        local w= numWidth+ 15
+        local width= numWidth+8
+        local w= width+ 15
         local line= Save().numLine or 5
         local h= 146+(line*52)
 
@@ -433,7 +441,7 @@ local function Init_WidthX2()
             btn= _G['MerchantItem'..i]
             btn:ClearAllPoints()
             btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
-            w= w+ numWidth
+            w= w+ width
         end
 
 --设置，框加大小
@@ -468,7 +476,8 @@ local function Init_WidthX2()
     WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', function()
         local numBuybackItems = GetNumBuybackItems() or 0
         local btn
-
+        local numWidth= Save().numWidth or 153
+        local moneyAlpha= numWidth<=45 and 0 or 1
         for i = 1, BUYBACK_ITEMS_PER_PAGE do
             btn= _G['MerchantItem'..i]
             btn:SetShown(true)
@@ -476,11 +485,14 @@ local function Init_WidthX2()
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
             btn.itemBG:SetShown(numBuybackItems>=i)
+
+            _G['MerchantItem'..i..'MoneyFrame']:SetAlpha(moneyAlpha)
+            _G['MerchantItem'..i..'AltCurrencyFrame']:SetAlpha(moneyAlpha)
         end
 
         _G['MerchantItem7']:SetPoint('TOPLEFT', _G['MerchantItem1'], 'TOPRIGHT', 8, 0)
 
-        local width= ((Save().numWidth or 153)+8)*2+ 15
+        local width= (numWidth+8)*2+ 15
         width= math.max(width, 336)--336
 
         MerchantFrame:SetSize(width, 444)

@@ -537,7 +537,6 @@ ChatButton\C1_HyperLink\z_EventTrace.lua
 ChatButton\C1_HyperLink\z_Link_Icon.lua
 ChatButton\C1_HyperLink\z_Event_Sound.lua
 ChatButton\C1_HyperLink\z_Reload_Button.lua
-ChatButton\C1_HyperLink\z_Talking.lua
 ChatButton\C1_HyperLink\z_Welcome.lua
 
 
