@@ -466,6 +466,7 @@ local function Init_Menu(self, root)
 --重置数据
     WoWTools_MenuMixin:RestData(sub, WoWTools_MerchantMixin.addName, function()
         WoWToolsPlayerDate['Plus_SellBuy']=nil
+        WoWToolsSave['Plus_SellBuy']= nil
         WoWTools_DataMixin:Reload()
     end)
 
