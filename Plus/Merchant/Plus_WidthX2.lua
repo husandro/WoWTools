@@ -326,7 +326,7 @@ local function ResizeButton2_Menu(self, root)
     WoWTools_MenuMixin:CreateSlider(root, {
         name= WoWTools_DataMixin.onlyChinese and '无法使用' or MOUNT_JOURNAL_FILTER_UNUSABLE,
         getValue=function()
-            return Save().notIsUsableAlpha or 0.5
+            return Save().notIsUsableAlpha or 1
         end, setValue=function(value)
             Save().notIsUsableAlpha= value
             WoWTools_MerchantMixin:Update_MerchantFrame()

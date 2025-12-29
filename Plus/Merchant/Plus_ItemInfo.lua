@@ -154,8 +154,8 @@ local function Create_Label(btn)
     btn.IndexLable= btn:CreateFontString(nil, 'ARTWORK', 'GameFontDisable')-- WoWTools_LabelMixin:Create(btn, {size=10})
     btn.IndexLable:SetFontHeight(10)
     --btn.IndexLable:SetPoint('BOTTOMRIGHT',  2, -2)
-    btn.IndexLable:SetPoint('RIGHT', btn, 'LEFT')
-    btn.IndexLable:SetAlpha(0.3)
+    btn.IndexLable:SetPoint('RIGHT')
+    --btn.IndexLable:SetAlpha(0.7)
 
 --数量
     btn.buyItemNum= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')--WoWTools_LabelMixin:Create(btn, {size=10})
@@ -195,7 +195,7 @@ local function Set_Item_Info()
     local numItem= isMerce and numMerchantNumItems or numBuybackItems
 
     local showItemInfo= not Save().notItemInfo--物品信息
-    local notIsUsableAlpha= Save().notIsUsableAlpha or 0.5--无法使用物品，alpha
+    local notIsUsableAlpha= Save().notIsUsableAlpha or 1--无法使用物品，alpha
     local notAutoBuy= Save().notAutoBuy
 
     for i=1, page do
