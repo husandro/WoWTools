@@ -133,7 +133,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
         WoWTools_TextureMixin:SetAlphaColor(f.Thumb, true)
     end)
 
-    if Get_tooltip() then
+    if tooltip then
         sub:SetTooltip(Get_tooltip())
     end
 
@@ -144,12 +144,12 @@ end
 WoWTools_MenuMixin:CreateSlider(root, {
 name= 
 getValue=function()
-end, setValue=function()
+end, setValue=function(value)
 end,
 minValue=0,
 maxValue=100,
 step=1,
---bit--'%.1f'
+--bit--='%.1f'
 --tooltip--function, string, table
 })
 ]]

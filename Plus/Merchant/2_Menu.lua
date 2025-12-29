@@ -413,14 +413,12 @@ local function Init_Menu(self, root)
         return not Save().notPlus
     end, function()
         Save().notPlus = not Save().notPlus and true or nil
-        print(
-            WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
-            '|cnWARNING_FONT_COLOR:',
-            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-        )
         --商人 Plus
         WoWTools_MerchantMixin:Init_WidthX2()
         WoWTools_MerchantMixin:Plus_ItemInfo()
+    end)
+    sub:SetTooltip(function(tooltip)
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --增加，按钮宽度，按钮，菜单
@@ -445,11 +443,6 @@ local function Init_Menu(self, root)
         return not Save().notAutoLootPlus
     end, function()
         Save().notAutoLootPlus= not Save().notAutoLootPlus and true or nil
-        print(
-            WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
-            '|cnWARNING_FONT_COLOR:',
-            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-        )
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
@@ -459,6 +452,8 @@ local function Init_Menu(self, root)
             or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_LOOT_FRAME_LABEL, 'Shift: ')..DISABLE)
         )
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '不在战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT)
+        tooltip:AddLine(' ')
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --删除字符

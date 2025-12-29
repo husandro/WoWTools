@@ -90,7 +90,8 @@ local function Init()
         if stat=='ready' then
             return
         end
-        local mapText, mapID WoWTools_MapMixin:GetUnit(unit)--单位, 地图名称
+        local mapText, mapID= WoWTools_MapMixin:GetUnit(unit)--单位, 地图名称
+        local guid= WoWTools_UnitMixin:UnitGUID(unit)
         return (
                     stat== 'waiting' and '|A:QuestTurnin:0:0|a'
                     or (stat== 'notready' and '|A:common-icon-redx:0:0|a')
@@ -99,7 +100,7 @@ local function Init()
                 )
                 ..(index<10 and ' ' or '')..index..')'--编号号
                 ..(WoWTools_UnitMixin:GetOnlineInfo(unit) or '')
-                ..WoWTools_UnitMixin:GetPlayerInfo(unit, self:UnitGUID(unit), nil, {reName=true, reRealm=true})
+                ..WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {reName=true, reRealm=true})
                 ..(UnitHasLFGRandomCooldown(unit) and '|cnWARNING_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
                 ..(uiMapID~=mapID and mapText or '')--地图名称
                 ..' '

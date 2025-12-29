@@ -3,8 +3,8 @@
 
     <Button name="WoWToolsButtonTemplate" virtual="true">
         <Size x="23" y="23"/>
-        <PushedTexture atlas="newplayertutorial-drag-cursor"/>
-        <HighlightTexture atlas="WoWShare-Highlight"/>        
+        <PushedTexture atlas="Forge-ColorSwatchHighlight"/>
+        <HighlightTexture atlas="Forge-ColorSwatchSelection"/>        
         <Scripts>
             <OnLoad function="WoWToolsButton_OnLoad"/>
             <OnLeave function="WoWToolsButton_OnLeave"/>

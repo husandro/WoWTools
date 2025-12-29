@@ -77,25 +77,28 @@ local function Settings(frame)
     frame.Text:SetTextColor(1, 0.82, 0, 1)
     frame.Text:SetShadowOffset(1, -1)
 
-    if frame==PlayerCastingBarFrame then
-        frame:HookScript('OnShow', function(self)
-            if not WoWTools_FrameMixin:IsLocked(self) then
-                self:SetFrameStrata('TOOLTIP')
-                self:SetFrameLevel('10000')
-            end
-        end)
+
+    if CombatLogGetCurrentEventInfo then--12.0出现问题
+        if frame==PlayerCastingBarFrame then
+            frame:HookScript('OnShow', function(self)
+                if not WoWTools_FrameMixin:IsLocked(self) then
+                    self:SetFrameStrata('TOOLTIP')
+                    self:SetFrameLevel('10000')
+                end
+            end)
+        end
+        if frame.UpdateCastTimeText then
+            WoWTools_DataMixin:Hook(frame, 'UpdateCastTimeText', function(self)--去掉 秒
+                local text= self.CastTimeText:GetText()
+                text= text:match('(%d+.%d)') or text
+                text= text=='0.0' and '' or text
+                self.CastTimeText:SetText(text)
+                if self~=PlayerCastingBarFrame then
+                    self.CastTimeText:SetShown(true)
+                end
+            end)
+        end
     end
-    --[[if frame.UpdateCastTimeText then
-        WoWTools_DataMixin:Hook(frame, 'UpdateCastTimeText', function(self)--去掉 秒
-            local text= self.CastTimeText:GetText()
-            text= text:match('(%d+.%d)') or text
-            text= text=='0.0' and '' or text
-            self.CastTimeText:SetText(text)
-            if self~=PlayerCastingBarFrame then
-                self.CastTimeText:SetShown(true)
-            end
-        end)
-    end]]
 end
 
 

@@ -676,7 +676,7 @@ local function Init()
             frame.setNum:SetPoint('RIGHT', frame.SetName)
         end
         if data and data.setID then
-            text= WoWTools_CollectionMixin:SetID(data.setID, true)--套装, 收集数
+            text= WoWTools_CollectionMixin:SetID(data.setID, nil, true)--套装, 收集数
         end
         for _, btn in pairs(frame.ItemButtons or {}) do
             if btn.itemID then

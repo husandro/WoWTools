@@ -241,7 +241,7 @@ local function Init()
             local text, charges, applications
             local data= self.optionInfo
             if data and data.spellID then
-                local info= C_UnitAuras.GetPlayerAuraBySpellID(data.spellID)
+                local info= (not InCombatLockdown() or canaccesssecrets()) and C_UnitAuras.GetPlayerAuraBySpellID(data.spellID)
                 if info then
                     applications= info.applications
                     if info.expirationTime then

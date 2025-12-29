@@ -1,4 +1,8 @@
 --[[
+if not GetCVarBool("loadDeprecationFallbacks") then
+	return;
+end
+
 https://warcraft.wiki.gg/wiki/Patch_12.0.0/API_changes
 
 issecretvalue(value) 如果提供的值是秘密的，则返回 true。

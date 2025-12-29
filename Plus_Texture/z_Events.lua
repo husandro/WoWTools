@@ -2321,6 +2321,8 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
             menu.Icon:SetAlpha(1)
         end)
 
+
+
         self:SetScrollBar(frame)
         if frame.ScrollBox:HasView() then
             for _, bar in pairs(TokenFrame.ScrollBox:GetFrames()) do

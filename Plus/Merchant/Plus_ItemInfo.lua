@@ -192,7 +192,8 @@ local function Set_Item_Info()
     local numItem= isMerce and numMerchantNumItems or numBuybackItems
 
     local showItemInfo= not Save().notItemInfo--物品信息
-    --local notIsUsableAlpha= Save().notIsUsableAlpha or 1--无法使用物品，alpha
+    local notIsUsableAlpha= Save().notIsUsableAlpha or 0.5--无法使用物品，alpha
+    local notAutoBuy= Save().notAutoBuy
 
     for i=1, page do
         local index = isMerce and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
@@ -203,15 +204,15 @@ local function Set_Item_Info()
             break
         end
 
-        local stats, spellID, num, itemID, itemLink, itemName
+        local stats, spellID, itemID, itemLink, itemName
+        local num= ''
 
         if not btn.buyItemNum then
             Create_Label(btn)
         end
 
         local isValueItem= index<= numItem
-
-        if isValueItem and showItemInfo then
+        if isValueItem then
             if isMerce then
                 itemID= GetMerchantItemID(index)
                 itemLink=  GetMerchantItemLink(index)
@@ -220,24 +221,25 @@ local function Set_Item_Info()
                 itemID= C_MerchantFrame.GetBuybackItemID(index)
                 itemLink= GetBuybackItemLink(index)
             end
-
+        end
+        if showItemInfo and itemID and itemLink then
 --自动购买， 数量
-            num=(not Save().notAutoBuy and itemID) and WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]
-            num= num and num..'|A:Perks-ShoppingCart:0:0|a' or ''
-
+            local buyNum= WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]
+            if buyNum then
+                num= buyNum..'|A:Perks-ShoppingCart:0:0|a'
+            end
 --包里，银行
-            num= num ..(WoWTools_ItemMixin:GetCount(itemID, {notZero=true}) or '')
-
+            num= num..(WoWTools_ItemMixin:GetCount(itemID, {notZero=true}) or '')
 
 --物品，属性
-            local classID= itemLink and select(6, C_Item.GetItemInfoInstant(itemLink))
+            local classID= select(6, C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
                 local stat= WoWTools_ItemMixin:GetItemStats(itemLink)--物品，属性，表
                 for _, tab in pairs(stat) do
                     stats= stats and stats..' ' or ''
                     stats= (stats and stats..' ' or '')..tab.text
                 end
-                spellID= itemLink and select(2, C_Item.GetItemSpell(itemLink))
+                spellID= select(2, C_Item.GetItemSpell(itemLink))
                 if spellID then
                     stats= (stats or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
                 end
@@ -262,7 +264,7 @@ local function Set_Item_Info()
 --索引
         btn.IndexLable:SetText(itemID and index or '')
 --数量
-        btn.buyItemNum:SetText(num or '')
+        btn.buyItemNum:SetText(num)
 --属性
         btn.stats:SetText(stats or '')
         btn.stats.spellID= spellID
@@ -271,16 +273,28 @@ local function Set_Item_Info()
             _G["MerchantItem"..i..'ItemButton'], showItemInfo and {merchant={slot=index, buyBack= not isMerce} or nil}
         )
 
---无法使用物品，alpha
-        --[[local alpha=1
-        if isValueItem and isMerce and notIsUsableAlpha<1 then
+
+        local alpha=1
+        if itemID and itemLink and isMerce and notIsUsableAlpha~=1 then
             local info= C_MerchantFrame.GetItemInfo(i)
-            if info and not info.isUsable then
-                print(info.name)
-                alpha= notIsUsableAlpha
+
+            if info and (not info.isPurchasable or not info.isUsable)--无法使用物品
+
+            or (C_Item.IsCosmeticItem(itemID) and select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true)))--幻化
+
+            or select(2, WoWTools_CollectionMixin:Toy(itemID))--玩具
+
+            or select(2,WoWTools_CollectionMixin:Mount(nil, itemID))--坐骑
+
+            or select(4, WoWTools_CollectionMixin:SetID(nil, itemLink))--套装
+
+            or select(4, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
+
+            then
+               alpha= notIsUsableAlpha
             end
         end
-        btn:SetAlpha(alpha)]]
+        btn:SetAlpha(alpha)
     end
 
 --回购，物品，信息
@@ -328,13 +342,15 @@ end
 --物品信息
 local function Init_SetItem_Info()
 --物品，数量
-    MerchantFrameTab1.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab1)
+    MerchantFrameTab1.numLable= MerchantFrameTab1:CreateFontString(nil, nil, 'GameFontNormal')-- WoWTools_LabelMixin:Create(MerchantFrameTab1)
     MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
+    MerchantFrameTab1.numLable:SetFontHeight(12)
 
 
   --回购，数量，提示
-    MerchantFrameTab2.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab2)
+    MerchantFrameTab2.numLable= MerchantFrameTab2:CreateFontString(nil, nil, 'GameFontNormal')--WoWTools_LabelMixin:Create(MerchantFrameTab2)
     MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
+    MerchantFrameTab2.numLable:SetFontHeight(12)
 
 
 --物品信息
@@ -553,6 +569,9 @@ local function Init_StackSplitFrame()
     end
     menu:set_scale()
     menu:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
         WoWTools_MenuMixin:Scale(self, root, function()
             return Save().StackSplitScale or 1
         end, function(value)

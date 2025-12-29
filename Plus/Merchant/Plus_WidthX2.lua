@@ -302,7 +302,7 @@ local function ResizeButton2_Menu(self, root)
     end)
 
     root:CreateDivider()
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO),
     function()
         return not Save().notItemInfo
@@ -311,23 +311,32 @@ local function ResizeButton2_Menu(self, root)
         WoWTools_MerchantMixin:Update_MerchantFrame()
     end)
 
---[[无法使用物品，alpha
-    sub= root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '无法使用' or MOUNT_JOURNAL_FILTER_UNUSABLE)
-        ..' '..(Save().notIsUsableAlpha or 1),
-    function()
-        return MenuResponse.Open
-    end)
-    WoWTools_MenuMixin:BgAplha(sub, function()
-        return Save().notIsUsableAlpha or 1
-    end, function(value)
-        Save().notIsUsableAlpha= value
-        WoWTools_MerchantMixin:Update_MerchantFrame()
-    end, function()
-        Save().notIsUsableAlpha= nil
-        WoWTools_MerchantMixin:Update_MerchantFrame()
-    end, true)]]
+--无法使用
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        name= WoWTools_DataMixin.onlyChinese and '无法使用' or MOUNT_JOURNAL_FILTER_UNUSABLE,
+        getValue=function()
+            return Save().notIsUsableAlpha or 0.5
+        end, setValue=function(value)
+            Save().notIsUsableAlpha= value
+            WoWTools_MerchantMixin:Update_MerchantFrame()
+        end,
+        minValue=0.1,
+        maxValue=1,
+        step=0.1,
+        bit='%.1f',
+        tooltip= WoWTools_DataMixin.onlyChinese and '无法使用|n不可购买|n已收集' or (
+            MOUNT_JOURNAL_FILTER_UNUSABLE..'|n'..ERR_CANT_BUY_QUANTITY..'|n'..TRANSMOG_COLLECTED
+        )
+    })
 
+    sub:CreateSpacer()
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '重置' or RESET,
+    function()
+        Save().notIsUsableAlpha= nil
+        return MenuResponse.Refresh
+    end)
 end
 
 

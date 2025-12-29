@@ -2811,7 +2811,13 @@
         "EVENTTRACE_SHOW_SECRET_VALUES",
         "issecrettable",
         "DamageMeter",
-        "DamageMeterEntryMixin"
+        "DamageMeterEntryMixin",
+        "class",
+        "canaccesssecrets",
+        "MOUNT_JOURNAL_FILTER_UNUSABLE",
+        "ERR_CANT_BUY_QUANTITY",
+        "TRANSMOG_COLLECTED",
+        "TRANSMOGRIFICATION"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -312,9 +312,9 @@ function WoWTools_UnitMixin:GetLink(unit, guid, name, onlyLink) --玩家超链�
     end
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
-        if name2 then
+        if canaccessvalue(name2) and name2 then
             local showName= self:NameRemoveRealm(name2, realm)
-            if class then
+            if class and showName then
                 local hex= select(4,GetClassColor(class))
                 if canaccessvalue(hex) and hex then
                     showName= '|c'..hex..showName..'|r'
@@ -322,7 +322,7 @@ function WoWTools_UnitMixin:GetLink(unit, guid, name, onlyLink) --玩家超链�
             end
             return (onlyLink and '' or self:GetRaceIcon(unit, guid, race, {sex=sex , reAtlas=false}))..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
         end
-    elseif name then
+    elseif canaccessvalue(name) and name then
         return '|Hplayer:'..name..'|h['..self:NameRemoveRealm(name)..']|h'
     end
 

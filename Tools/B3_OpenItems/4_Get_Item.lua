@@ -157,10 +157,11 @@ local function Get_Items(self)--取得背包物品信息
                     end
 
                 else
+--是否可使用 then--不出售, 可以使用
                     local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, text={LOCKED}})
-                    if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--是否可使用 then--不出售, 可以使用
-
-                       if info.hasLoot then--可打开
+                    if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then
+--可打开
+                       if info.hasLoot then
                             if Save().open then
                                 if dateInfo.text[LOCKED] and WoWTools_DataMixin.Player.Class=='ROGUE' then--DZ
                                     Set_Att(self, bag, slot, info.iconFileID, info.itemID, 1804)--开锁 Pick Lock
@@ -169,8 +170,8 @@ local function Get_Items(self)--取得背包物品信息
                                 end
                                 return
                             end
-
-                        elseif classID==9 then--配方                    
+--配方
+                        elseif classID==9 then
                             if Save().ski then
                                 if subclassID == 0 then
                                     if C_Item.GetItemSpell(info.hyperlink) then
@@ -181,8 +182,8 @@ local function Get_Items(self)--取得背包物品信息
                                 end
                                 return
                             end
-
-                        elseif classID==15 and  subclassID==5 then--坐骑
+--坐骑
+                        elseif classID==15 and  subclassID==5 then
                             if Save().mount then
                                 local mountID = C_MountJournal.GetMountFromItem(info.itemID)
                                 if mountID then
@@ -193,14 +194,14 @@ local function Get_Items(self)--取得背包物品信息
                                     end
                                 end
                             end
-
+--玩具
                         elseif C_ToyBox.GetToyInfo(info.itemID) then
-                            if Save().toy and not PlayerHasToy(info.itemID) then--玩具 
+                            if Save().toy and not PlayerHasToy(info.itemID) then
                                 Set_Att(self, bag, slot, info.iconFileID, info.itemID)
                                 return
                             end
-
-                        elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
+--宠物, 收集数量
+                        elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then
                             if Save().pet then
                                 local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
                                 if speciesID then

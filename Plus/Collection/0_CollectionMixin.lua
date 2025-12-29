@@ -1,5 +1,7 @@
 WoWTools_CollectionMixin={}
 
+--宠物数量 WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner, petIndex)--总收集数量， 25 25 25， 3/3
+
 
 function WoWTools_CollectionMixin:Refresh_TransmogItems()
     if TransmogFrame and not WoWTools_FrameMixin:IsLocked(TransmogFrame) then
@@ -14,6 +16,7 @@ function WoWTools_CollectionMixin:Refresh_TransmogItems()
         end
     end
 end
+
 
 
 function WoWTools_CollectionMixin:Mount(mountID, itemID)--坐骑, 收集数量
@@ -96,8 +99,11 @@ for _, _tab in pairs(_data) do
     _a= _a +1
 end
 ]]
-function WoWTools_CollectionMixin:SetID(setID, isLoot)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
+function WoWTools_CollectionMixin:SetID(setID, itemLinkOrID, isLoot)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
     local numCollected, numAll=0,0
+
+    setID= setID or (itemLinkOrID and  C_Item.GetItemLearnTransmogSet(itemLinkOrID))
+
     if setID then
         if isLoot then
             for _, data in pairs(C_LootJournal.GetItemSetItems(setID) or {}) do
@@ -121,11 +127,25 @@ function WoWTools_CollectionMixin:SetID(setID, isLoot)--套装 , 收集数量, �
     if numAll==0 then
         return
     elseif numCollected==numAll then
-        return '|A:AlliedRace-UnlockingFrame-Checkmark:12:12|a', numCollected, numAll--, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
+        return '|A:AlliedRace-UnlockingFrame-Checkmark:12:12|a',
+               numCollected,
+               numAll,
+               true
+               --'|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r',
+
+
     elseif numCollected==0 then
-        return '|cff626262'..numAll..'|r', numCollected, numAll,  '|cff626262'..numCollected..'|r/'..numAll--, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+        return '|cff626262'..numAll..'|r',
+                numCollected,
+                numAll,
+                false
+                --'|cff626262'..numCollected..'|r/'..numAll--, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
     else
-        return numAll-numCollected, numCollected, numAll, '|cffffffff'..numCollected..'|r/'..numAll--, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+        return numAll-numCollected,
+            numCollected,
+            numAll,
+            false
+            --'|cffffffff'..numCollected..'|r/'..numAll--, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
     end
 end
 

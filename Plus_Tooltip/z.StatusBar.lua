@@ -24,7 +24,7 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
         local unit, guid= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
 
         if WoWTools_FrameMixin:IsLocked(frame)
-            or not canaccessvalue(guid)
+            or not issecretvalue(guid)
         then
             frame.text:SetText('')
             frame.textLeft:SetText('')
