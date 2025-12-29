@@ -57,7 +57,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
     end
 
 --Blizzard_HousingCatalogEntry.lua
-if not CombatLogGetCurrentEventInfo then--12.0
+if CombatLogGetCurrentEventInfo then--12.0改了
 
     WoWTools_DataMixin:Hook(HousingCatalogEntryMixin, 'OnLoad', function(btn)
 --有点大
