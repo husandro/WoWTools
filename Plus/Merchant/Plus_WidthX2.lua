@@ -226,7 +226,7 @@ local function ResizeButton2_Menu(self, root)
             WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
         end,
         name=WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH ,
-        minValue=153,
+        minValue=37,-- 153,
         maxValue=500,
         step=1,
         --bit='%.2f',    
@@ -284,6 +284,16 @@ local function ResizeButton2_Menu(self, root)
         --bit='%.2f',    
     })
     sub:CreateSpacer()
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '重置' or RESET,
+    function()
+        Save().numLine= nil
+        Save().MERCHANT_ITEMS_PER_PAGE= nil
+        WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
+        return MenuResponse.Refresh
+    end)
+
+
 
 --背景, 透明度
     WoWTools_MenuMixin:BgAplha(root, function()
@@ -302,7 +312,7 @@ local function ResizeButton2_Menu(self, root)
     end)
 
     root:CreateDivider()
-    sub=root:CreateCheckbox(
+    root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO),
     function()
         return not Save().notItemInfo
@@ -312,8 +322,8 @@ local function ResizeButton2_Menu(self, root)
     end)
 
 --无法使用
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
+    root:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(root, {
         name= WoWTools_DataMixin.onlyChinese and '无法使用' or MOUNT_JOURNAL_FILTER_UNUSABLE,
         getValue=function()
             return Save().notIsUsableAlpha or 0.5
@@ -321,7 +331,7 @@ local function ResizeButton2_Menu(self, root)
             Save().notIsUsableAlpha= value
             WoWTools_MerchantMixin:Update_MerchantFrame()
         end,
-        minValue=0.1,
+        minValue=0,
         maxValue=1,
         step=0.1,
         bit='%.1f',
@@ -330,13 +340,13 @@ local function ResizeButton2_Menu(self, root)
         )
     })
 
-    sub:CreateSpacer()
-    sub:CreateButton(
+    root:CreateSpacer()
+    --[[sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '重置' or RESET,
     function()
         Save().notIsUsableAlpha= nil
         return MenuResponse.Refresh
-    end)
+    end)]]
 end
 
 

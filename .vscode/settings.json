@@ -2817,7 +2817,8 @@
         "MOUNT_JOURNAL_FILTER_UNUSABLE",
         "ERR_CANT_BUY_QUANTITY",
         "TRANSMOG_COLLECTED",
-        "TRANSMOGRIFICATION"
+        "TRANSMOGRIFICATION",
+        "MERCHANT_ITEMS_PER_PAGE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

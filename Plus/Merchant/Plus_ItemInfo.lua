@@ -151,13 +151,16 @@ end
 local function Create_Label(btn)
 
 --索引
-    btn.IndexLable= WoWTools_LabelMixin:Create(btn, {size=10})
-    btn.IndexLable:SetPoint('BOTTOMRIGHT', 2, -2)
+    btn.IndexLable= btn:CreateFontString(nil, 'ARTWORK', 'GameFontDisable')-- WoWTools_LabelMixin:Create(btn, {size=10})
+    btn.IndexLable:SetFontHeight(10)
+    --btn.IndexLable:SetPoint('BOTTOMRIGHT',  2, -2)
+    btn.IndexLable:SetPoint('RIGHT', btn, 'LEFT')
     btn.IndexLable:SetAlpha(0.3)
 
 --数量
-    btn.buyItemNum=WoWTools_LabelMixin:Create(btn, {size=10})
+    btn.buyItemNum= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')--WoWTools_LabelMixin:Create(btn, {size=10})
     btn.buyItemNum:SetPoint('BOTTOMRIGHT', btn.IndexLable, 'TOPRIGHT', 0,3)
+    btn.buyItemNum:SetFontHeight(10)
 
 --属性
     btn.stats=WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})

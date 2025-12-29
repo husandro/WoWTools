@@ -531,6 +531,8 @@ function WoWTools_TextureMixin.Frames:MerchantFrame()
     self:SetMenu(MerchantFrame.FilterDropdown)
 
     self:SetAlphaColor(MerchantMoneyInset.Bg)
+    self:SetNineSlice(MerchantMoneyInset)
+
     self:HideTexture(MerchantMoneyBgMiddle)
     self:HideTexture(MerchantMoneyBgLeft)
     self:HideTexture(MerchantMoneyBgRight)
