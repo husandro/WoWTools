@@ -78,7 +78,7 @@ function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner,
                 CollectedNum= text2
             end
         end
-        local isCollectedAll--是否已全部收集
+        local isCollectedAll= false--是否已全部收集
         if numCollected==0 then
             CollectedText='|cnWARNING_FONT_COLOR:'..numCollected..'|r/'..limit
         elseif limit and numCollected==limit and limit>0 then

@@ -20,9 +20,7 @@ end
 
 
 function WoWTools_CollectionMixin:Mount(mountID, itemID)--坐骑, 收集数量
-    if not mountID and itemID then
-        mountID= C_MountJournal.GetMountFromItem(itemID)
-    end
+    mountID= mountID or (itemID and C_MountJournal.GetMountFromItem(itemID))
     if mountID then
         if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
             return '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r', true

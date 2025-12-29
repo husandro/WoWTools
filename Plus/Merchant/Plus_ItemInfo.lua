@@ -224,7 +224,7 @@ local function Set_Item_Info()
         end
         if showItemInfo and itemID and itemLink then
 --自动购买， 数量
-            local buyNum= WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]
+            local buyNum= not notAutoBuy and WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]
             if buyNum then
                 num= buyNum..'|A:Perks-ShoppingCart:0:0|a'
             end
