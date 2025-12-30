@@ -170,6 +170,7 @@ local function Init()
         category= Category,
     })
 
+if not CombatLogGetCurrentEventInfo then--12.0可能会出现问题，没测试
 --施法条
     WoWTools_PanelMixin:OnlyCheck({
         name= (WoWTools_DataMixin.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL),
@@ -189,7 +190,7 @@ local function Init()
         category= Category,
     })
 
-
+end
 
 --职业图标
     WoWTools_PanelMixin:OnlyCheck({

@@ -36,7 +36,7 @@ local function Init_Menu(self, root)
 
     local curID= PlayerUtil.GetCurrentSpecID() or 0
     local sex= self.classFile== WoWTools_DataMixin.Player.Class and WoWTools_DataMixin.Player.Sex or nil
-    local col= select(5, WoWTools_UnitMixin:GetColor(nil, nil, self.classFile)) or ''
+    local hex= select(5, WoWTools_UnitMixin:GetColor(nil, nil, self.classFile))
 
     for specIndex= 1, C_SpecializationInfo.GetNumSpecializationsForClassID(self.classID) or 0 do
         local specID, name, desc, icon, role= GetSpecializationInfoForClassID(self.classID, specIndex, sex)
@@ -45,7 +45,7 @@ local function Init_Menu(self, root)
             sub=root:CreateRadio(
                 '|T'..(icon or 0)..':0|t'
                 ..(WoWTools_DataMixin.Icon[role] or '')
-                ..col
+                ..hex
                 ..WoWTools_TextMixin:CN(name)
                 ..(curID==specID and '|A:auctionhouse-icon-favorite:0:0|a' or '')
                 ..' '..specID,

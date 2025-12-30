@@ -178,17 +178,20 @@ local function Init_Create(frame)
         self:SetText('')
         self:ClearFocus()
     end)
-
+EVENTTRACE_SECRET_FMT = "|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s"
     frame.WoWToolsEdit:SetScript('OnEditFocusGained', function(self)
-        local p= self:GetParent():GetParent()
-        local label=p.TitleButton.Text
+        local label=self:GetParent():GetParent().TitleButton.Text
 
-        local text
-        if p.focusedTable and p.focusedTable.GetDebugName then
-            text= p.focusedTable:GetDebugName()
+        local text=label:GetText()
+        if canaccessvalue(text) then
+            text= text:match('Frame Attributes %- (.+)') or text
+        else
+            text=WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r' or format(EVENTTRACE_SECRET_FMT, '')
         end
-        text= text or label:GetText() or ''
-        self:SetText(text:match('Frame Attributes %- (.+)') or text)
+        --if p.focusedTable and p.focusedTable.GetDebugName then
+            --text= p.focusedTable:GetDebugName()
+        --end
+        self:SetText(text)
         self:SetWidth(label:GetWidth())
         label:SetAlpha(0)
         GameTooltip:Hide()
@@ -292,29 +295,25 @@ local function Init()
 
 
     local function set_objectType(self, focusedTable)
-        if not self.WoWToolsLabel then
+        if not canaccesstable(focusedTable) or not focusedTable then
+            self.WoWToolsLabel:SetText('')
             return
         end
         local text
-
-        focusedTable= focusedTable or self.focusedTable
-        if focusedTable then
-            if focusedTable.GetObjectType then
-                text= focusedTable:GetObjectType()
+        if focusedTable.GetObjectType then
+            text= focusedTable:GetObjectType()
+            if not canaccessvalue(text) then
+                text= nil
             end
-            if focusedTable.GetSize then
-                text= (text and text..' ' or '')
-                    ..format('%i|cffffd200x|r%i', focusedTable:GetSize())
-            end
+        end
+        if focusedTable.GetSize then
+            text= (text and text..' ' or '')
+                ..format('%i|cffffd200x|r%i', focusedTable:GetSize())
         end
         self.WoWToolsLabel:SetText(text or '')
     end
-    WoWTools_DataMixin:Hook(TableInspectorMixin, 'InspectTable', function(frame, focusedTable)
-        set_objectType(frame, focusedTable)
-    end)
-    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'InspectTable', function(frame, focusedTable)--self.focusedTable= focusedTable
-        set_objectType(frame, focusedTable)
-    end)
+    WoWTools_DataMixin:Hook(TableInspectorMixin, 'InspectTable', set_objectType)
+    WoWTools_DataMixin:Hook(TableAttributeDisplay, 'InspectTable', set_objectType)--self.focusedTable= focusedTable
 
 
 

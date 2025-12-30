@@ -23,7 +23,6 @@ local P_Save={
     setPlayerSound= WoWTools_DataMixin.Player.husandro,--播放, 声音
     Cvar={},
     --disabledNPCTalking=true,--禁用，隐藏NPC发言    
-    --disabledTalkingPringText=true,--禁用，隐藏NPC发言，文本
 
     not_Add_Reload_Button= not WoWTools_DataMixin.Player.husandro,--添加 RELOAD 按钮
     autoHideTableAttributeDisplay=true,--自动关闭，Fstack
@@ -165,9 +164,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
             P_Save=nil
 
-            Save().disabedFrameStackPlus= nil
-            Save().debugTooltBgAlpha= nil
-            Save().autoHideTableAttributeDisplay= nil
+            Save().disabledTalkingPringText= nil
 
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
             WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))

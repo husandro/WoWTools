@@ -10,7 +10,7 @@
 
 --生命条提示
 local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnitHealth', function(tooltip)
-    if WoWToolsSave['Plus_Tootips'].hideHealth then--12.0没有了
+    if WoWToolsSave['Plus_Tootips'].hideHealth then
         return
     end
 
@@ -21,10 +21,11 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
     GameTooltipStatusBar.textRight = WoWTools_LabelMixin:Create(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
     GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
     GameTooltipStatusBar:HookScript("OnValueChanged", function(frame)
-        local unit, guid= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
+        local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
 
         if WoWTools_FrameMixin:IsLocked(frame)
-            or not issecretvalue(guid)
+            or not canaccessvalue(unit)
+            or not unit
         then
             frame.text:SetText('')
             frame.textLeft:SetText('')
@@ -32,33 +33,40 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
             return
         end
 
+        local r, g, b = select(2, WoWTools_UnitMixin:GetColor(unit))
+
+        local left, right, text
         local value= UnitHealth(unit)
         local max= UnitHealthMax(unit)
-        local r, g, b, left, right, col, text
-
-        r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
 
         local isDeath= UnitIsFeignDeath(unit)
         if canaccessvalue(isDeath) and isDeath then
-            text= WoWTools_DataMixin.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
+            if WoWTools_DataMixin.onlyChinese then
+                text= '假死'
+            else
+                WoWTools_DataMixin:Load(5384, 'spell')
+                text= C_Spell.GetSpellName(5384) or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NO, DEAD)
+            end
         elseif canaccessvalue(value) and value then
             if value <= 0 then
-                text = '|A:poi-soulspiritghost:0:0|a'..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)..'|r'
-            elseif canaccessvalue(max) and max and max>0 then
+                text = WARNING_FONT_COLOR:WrapTextInColorCode('|A:poi-soulspiritghost:0:0|a'..(WoWTools_DataMixin.onlyChinese and '死亡' or DEAD))
+
+            elseif max and max>0 then
                 local hp = value / max * 100
-                text = ('%i%%'):format(hp)..'  '
+                text = format('%i%% ', hp)
                 if hp<30 then
-                    text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnWARNING_FONT_COLOR:' .. text..'|r'
+                    text=  WARNING_FONT_COLOR:WrapTextInColorCode('|A:GarrisonTroops-Health-Consume:0:0|a'..text)
                 elseif hp<60 then
-                    text='|cnGREEN_FONT_COLOR:'..text..'|r'
+                    text= GREEN_FONT_COLOR:WrapTextInColorCode(text)
                 elseif hp<90 then
-                    text='|cnYELLOW_FONT_COLOR:'..text..'|r'
+                    text=YELLOW_FONT_COLOR:WrapTextInColorCode(text)
                 else
-                    text= '|c'..col..text..'|r'
+                    text= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(text)
                 end
-                left =WoWTools_DataMixin:MK(value, 2)
             end
-            right = WoWTools_DataMixin:MK(max, 2)
+
+            left= WoWTools_DataMixin:MK(value, 2)
+            right= WoWTools_DataMixin:MK(max, 2)
         else
             left= value
             right= max
@@ -68,12 +76,12 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
         frame.textLeft:SetText(left)
         frame.textRight:SetText(right)
 
-        frame:SetStatusBarColor(r, g, b)
+
         frame.textLeft:SetTextColor(r, g, b)
         frame.textRight:SetTextColor(r , g, b)
     end)
 
-    WoWTools_TextureMixin:SetStatusBar(GameTooltipStatusBar)
+
 
     Init=function()end
 end

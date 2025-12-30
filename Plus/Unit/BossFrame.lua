@@ -256,19 +256,21 @@ local function Create_TotButton(frame)
 
     frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) +elapsed
-        if self.elapsed<=0.3 then
+        if self.elapsed<0.3 then
             return
         end
         self.elapsed= 0
 
         local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
         local text=''
-        local value, max= UnitHealth(unit), UnitHealthMax(unit)
-        if canaccessvalue(value) and canaccessvalue(max) then
-            value= (not value or value<=0) and 0 or value
-            if value and max and max>0 then
-                local per= value/max*100
-                text= format('%0.f', per)
+        if canaccessvalue(unit) then
+            local value, max= UnitHealth(unit), UnitHealthMax(unit)
+            if canaccessvalue(value) and canaccessvalue(max) then
+                value= (not value or value<=0) and 0 or value
+                if value and max and max>0 then
+                    local per= value/max*100
+                    text= format('%0.f', per)
+                end
             end
         end
         self.healthLable:SetText(text)

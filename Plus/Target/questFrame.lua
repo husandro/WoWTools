@@ -1,6 +1,6 @@
-local questFrame
-local THREAT_TOOLTIP= WoWTools_TextMixin:Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
 
+local THREAT_TOOLTIP= WoWTools_TextMixin:Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
+local questFrame
 local function Save()
     return WoWToolsSave['Plus_Target']
 end
@@ -42,15 +42,9 @@ local function Find_Text(text)
 end
 
 
+
 ---取得，内容 GameTooltip.lua --local questID= line and line.id
-local function Get_Unit_Text(_, unit)
-    if WoWTools_UnitMixin:UnitIsUnit('player', unit) then
-        return
-    end
-
-    --C_WorldLootObject.IsWorldLootObject(unit)
-    --C_WorldLootObject.GetWorldLootObjectInfo(unit)
-
+local function Get_Unit_Text( unit)
     if UnitInPartyIsAI(unit) then
         local role = UnitGroupRolesAssigned(unit)
         if role and role~='NONE' then
@@ -107,21 +101,61 @@ end
 
 
 --设置，内容
-local function Set_Quest_Text(self, plate, unit)
-    plate= unit and C_NamePlate.GetNamePlateForUnit(unit, issecure()) or plate
+local function Set_Quest_Text(plate)
     local frame= plate and plate.UnitFrame
+
     if not frame then
         return
     end
-    local text= Get_Unit_Text(self, frame.unit or unit)
+
+    local unit = frame.unit
+    local text
+    if canaccessvalue(unit) and unit and not UnitIsPlayer(unit) then
+        text= Get_Unit_Text(unit)
+    end
+
     if text and not frame.questProgress then
-        frame.questProgress= WoWTools_LabelMixin:Create(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
+        frame.questProgress= frame:CreateFontString(nil, 'ARTWORK', 'ChatFontNormal') -- WoWTools_LabelMixin:Create(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
+        frame.questProgress:SetFontHeight(14)
+        frame.questProgress:SetTextColor(GREEN_FONT_COLOR:GetRGB())
         frame.questProgress:SetPoint('LEFT', frame.healthBar or frame, 'RIGHT', 2,0)
     end
     if frame.questProgress then
         frame.questProgress:SetText(text or '')
     end
 end
+
+
+
+
+
+
+
+
+
+--检查，所有
+local function Check_AllPlate()
+    for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+        Set_Quest_Text(plate)
+    end
+end
+
+
+--移除，内容
+local function RestPlate(plate)
+    if plate and plate.UnitFrame and plate.UnitFrame.questProgress then--任务
+        plate.UnitFrame.questProgress:SetText('')
+    end
+end
+--移除，所有内容
+local function RestAllPlate()
+    for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+        RestPlate(plate)
+    end
+end
+
+
+
 
 
 
@@ -141,86 +175,106 @@ end
 --任务，数量
 --#########
 local function Init()
-    questFrame= CreateFrame('Frame', 'WoWToolsTarget_QuestFrame')
-    --WoWTools_TargetMixin.questFrame= questFrame
-
-    function questFrame:hide_plate(plate)--移除，内容
-        if plate and plate.UnitFrame and plate.UnitFrame.questProgress then--任务
-            plate.UnitFrame.questProgress:SetText('')
-        end
-    end
-    function questFrame:rest_all()--移除，所有内容
-        for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-            self:hide_plate(plate)
-        end
-    end
-    function questFrame:check_all()--检查，所有
-        if not self.isInCheckAll then
-            self.isInCheckAll= true
-            do
-                for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-                    Set_Quest_Text(self, plate, nil)
-                end
-            end
-            self.isInCheckAll= nil
-        end
+    if not Save().quest then
+        return
     end
 
-    function questFrame:Settings()--注册，事件
+    questFrame= CreateFrame('Frame')
+
+
+    function questFrame:settings()--注册，事件
         self:UnregisterAllEvents()
 
         if not Save().quest then
-            self:rest_all()
+            RestAllPlate()
             return
         end
 
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-        local isPvPArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
-        local isDisabledCheck= isPvPArena
-                or (not Save().questShowInstance and IsInInstance()
-                    and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
+        if IsInRaid()
+                or WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
+                or C_ChallengeMode.IsChallengeModeActive()
+                or (
+                    IsInInstance()
+                    and not UnitInPartyIsAI('party1')
+                    and not Save().questShowInstance
                 )
-        if isDisabledCheck then
-            self:rest_all()
-        else
-            local eventTab= {
-                'UNIT_QUEST_LOG_CHANGED',
-                'SCENARIO_UPDATE',
-                'SCENARIO_CRITERIA_UPDATE',
-                'SCENARIO_COMPLETED',
-                'QUEST_POI_UPDATE',
-                'NAME_PLATE_UNIT_ADDED',
-                --'NAME_PLATE_UNIT_REMOVED',
-            }
-            FrameUtil.RegisterFrameForEvents(self, eventTab)
-
-            if UnitInPartyIsAI('party1') then
-                self:RegisterEvent('GROUP_ROSTER_UPDATE')
-            end
-
-            self:check_all()
+        then
+            RestAllPlate()
+            return
         end
+
+        FrameUtil.RegisterFrameForEvents(self, {
+            'UNIT_QUEST_LOG_CHANGED',
+            'SCENARIO_UPDATE',
+            'SCENARIO_CRITERIA_UPDATE',
+            'SCENARIO_COMPLETED',
+            'QUEST_POI_UPDATE',
+            'NAME_PLATE_UNIT_ADDED',
+            --'NAME_PLATE_UNIT_REMOVED',
+        })
+
+        if UnitInPartyIsAI('party1') then
+            self:RegisterEvent('GROUP_ROSTER_UPDATE')
+        end
+
+        Check_AllPlate()
     end
+
+
+
+
+
+
+
 
     questFrame:SetScript("OnEvent", function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' then
-            self:Settings()--注册，事件
+            self:settings()--注册，事件
 
-        elseif event=='NAME_PLATE_UNIT_ADDED'  then
-            Set_Quest_Text(self, nil, arg1)--任务
+        elseif event=='NAME_PLATE_UNIT_ADDED' then
+            if arg1 then
+                Set_Quest_Text(C_NamePlate.GetNamePlateForUnit(arg1, issecure()))--任务
+            end
 
         elseif event=='GROUP_ROSTER_UPDATE' then
-            self:check_all()
+            Check_AllPlate()
 
         else--event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
-            C_Timer.After(2, function()
-                self:check_all()
-            end)
+            C_Timer.After(2, Check_AllPlate)
         end
     end)
 
-    return true
+
+
+
+
+
+
+
+
+    questFrame:settings()
+
+
+
+
+
+
+    if NamePlateBaseMixin.OnRemoved then--12.0没有了
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
+           RestPlate(plate)
+        end)
+    else
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'ClearUnit', function(plate)--移除所有
+            RestPlate(plate)
+        end)
+    end
+
+
+    Init=function()
+        questFrame:settings()
+    end
 end
 
 
@@ -237,11 +291,5 @@ end
 
 
 function WoWTools_TargetMixin:Init_questFrame()
-    if Save().quest and Init() then
-        Init=function()end
-    end
-
-    if questFrame then
-        questFrame:Settings()
-    end
+    Init()
 end

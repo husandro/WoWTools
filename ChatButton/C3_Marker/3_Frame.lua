@@ -194,7 +194,7 @@ local function Init()--设置标记, 框架
             if event=='UPDATE_BINDINGS' then
                 self:set_hotkey()
             else
-                local exists= UnitExists('target')
+                local exists= WoWTools_UnitMixin:UnitExists('target')
                 if not self.action then
                     local atlas
                     local guid= exists and UnitGUID('target') or WoWTools_DataMixin.Player.GUID
@@ -567,17 +567,7 @@ local function Init()--设置标记, 框架
             btn:SetNormalAtlas('jailerstower-animapowerlist-powerborder-purple')
             btn:SetAttribute('type', 'raidtarget')
             btn:SetAttribute("action", "clear-all")
-            btn:SetScript('OnLeave', function(self)
-                self:SetAlpha(0.5)
-                GameTooltip:Hide()
-            end)
-            btn:SetScript('OnEnter', function(self)
-                GameTooltip:SetOwner(MakerFrame, "ANCHOR_RIGHT")
-                GameTooltip:SetText('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL)..WoWTools_DataMixin.Icon.left)
-                GameTooltip:Show()
-                self:SetAlpha(1)
-            end)
-            btn:SetAlpha(0.5)
+            btn.tooltip='|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL)..WoWTools_DataMixin.Icon.left
 
         else
             table.insert(Buttons, 'TargetButton'..index)
@@ -690,6 +680,7 @@ local function Init()--设置标记, 框架
             btn:SetScript('OnHide', function(self)
                 self:set_Events()
             end)
+
             btn:set_Events()
         end
    end

@@ -164,11 +164,11 @@ local function Create_potFrame(frame)
  --目标， 生命条
     btn.frame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) +elapsed
-        if self.elapsed>0.3 then
+        if self.elapsed>0.3 and canaccessvalue(self.tt) then
             self.elapsed=0
             local cur= UnitHealth(self.tt)
             local max= UnitHealthMax(self.tt) or 0
-            if canaccessvalue(cur) and canaccessvalue(max) and cur and max and max>0 then
+            if canaccessvalue(max) and cur and max>0 then
                 self.healthLable:SetFormattedText('%i', cur/max*100)
             else
                 self.healthLable:SetText('')
@@ -242,12 +242,12 @@ local function Create_castFrame(frame)
     castFrame.texture:Hide()
 
     castFrame.texture:SetScript('OnLeave', function(self)
-        --GameTooltip:Hide()
+        GameTooltip:Hide()
         self:SetAlpha(1)
     end)
     castFrame.texture:SetScript('OnEnter', function(self)
         local u= self:GetParent().unit
-        if not WoWTools_UnitMixin:UnitGUID(u) then
+        if not canaccessvalue(u) or not u then
             return
         end
 

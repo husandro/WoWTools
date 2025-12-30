@@ -294,10 +294,10 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
         tooltip:AddLine(' ')
         tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '创建跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, START_A_GROUP),  WoWTools_TextMixin:GetEnabeleDisable(C_PartyInfo.CanFormCrossFactionParties()))
-        local col2= IsInGroup() and '' or '|cff626262'
+        local hex= IsInGroup() and '' or '|cff626262'
         tooltip:AddDoubleLine(
-            col2..(WoWTools_DataMixin.onlyChinese and '跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)),
-            col2..WoWTools_TextMixin:GetYesNo(isCrossFactionParty)..' #'..crossNum..' '..(WoWTools_DataMixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
+            hex..(WoWTools_DataMixin.onlyChinese and '跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)),
+            hex..WoWTools_TextMixin:GetYesNo(isCrossFactionParty)..' #'..crossNum..' '..(WoWTools_DataMixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
         )
     end)
 
@@ -430,7 +430,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             end
 
             if maxHP and role then
-                if WoWTools_UnitMixin:UnitIsPlayer(unit) then
+                if UnitIsPlayer(unit) then
                     info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')
                         ..WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {reName=true, reRealm=true})
                         ..(WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLeve or '')
@@ -445,7 +445,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
                 info.maxHP= maxHP
 
-                info.col= select(5, WoWTools_UnitMixin:GetColor(unit, nil))
+                info.hex= select(5, WoWTools_UnitMixin:GetColor(unit, nil))
                 if uiMapID then--不在同地图
                     local text, mapID=WoWTools_MapMixin:GetUnit(unit)
                     if text and mapID and mapID~=uiMapID then
@@ -481,7 +481,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     end
     local find
     for _, data in pairs(tabT) do
-        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_TANK_ICON)
+        GameTooltip:AddDoubleLine(data.name, data.hex..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_TANK_ICON)
         find=true
     end
     if find then
@@ -489,7 +489,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, data in pairs(tabN) do
-        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_HEALER_ICON)
+        GameTooltip:AddDoubleLine(data.name, data.hex..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_HEALER_ICON)
         find=true
     end
     if find then
@@ -497,7 +497,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, data in pairs(tabDPS) do
-        GameTooltip:AddDoubleLine(data.name, data.col..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_DAMAGER_ICON)
+        GameTooltip:AddDoubleLine(data.name, data.hex..WoWTools_DataMixin:MK(data.maxHP, 3)..INLINE_DAMAGER_ICON)
         find= true
     end
     if find then

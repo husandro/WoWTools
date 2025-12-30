@@ -229,7 +229,7 @@ local function Init_Menu(self, root)
     end)
     sub2:SetTooltip(function (tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL)
-    end)]]
+    end)
 
 --文本
     sub:CreateCheckbox('|A:communities-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '文本' or LOCALE_TEXT_LABEL), function()
@@ -237,9 +237,8 @@ local function Init_Menu(self, root)
     end, function()
         Save().disabledTalkingPringText= not Save().disabledTalkingPringText and true or nil
     end)
-
+]]
 --打开，音频
-    sub:CreateDivider()
     sub2=sub:CreateButton(
         col..(WoWTools_DataMixin.onlyChinese and '音频' or AUDIO_LABEL),
     function()

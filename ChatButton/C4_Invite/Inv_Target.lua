@@ -30,14 +30,14 @@ local function Init()
     function frame:InviteTarget()
         if not Save().InvTar
         --or WoWTools_InviteMixin.InvPlateGuid[guid]--已邀请
-        or not UnitExists('target')
+        or not WoWTools_UnitMixin:UnitGUID('target')
         or not WoWTools_InviteMixin:Get_Leader()--取得权限
         or UnitInAnyGroup('target')
         or UnitIsAFK('target')
         or not UnitIsConnected('target')
-        or not WoWTools_UnitMixin:UnitIsPlayer('target')
+        or not UnitIsPlayer('target')
         or not UnitIsFriend('target', 'player')
-        or WoWTools_UnitMixin:UnitIsUnit('player','target')
+        or UnitIsUnit('player','target')
         then
             return
         end

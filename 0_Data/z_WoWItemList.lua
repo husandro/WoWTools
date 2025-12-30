@@ -620,11 +620,10 @@ TypeTabs= {
     end,
     set_tips=function(data)
         local index=0
-        local col
         GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED))
         for name in pairs(data.rareTab or {}) do
             index= index+1
-            col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
+            local col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
             GameTooltip:AddDoubleLine(col..WoWTools_TextMixin:CN(name), col..'('..index)
         end
     end},
@@ -706,11 +705,10 @@ TypeTabs= {
     end,
     set_tips=function(data)
         local index=0
-        local col
         GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED))
         for name in pairs(data.boosTab or {}) do
             index= index+1
-            col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
+            local col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
             GameTooltip:AddDoubleLine(col..WoWTools_TextMixin:CN(name), col..'('..index)
         end
     end},
@@ -1090,15 +1088,14 @@ end
 
 
 local function Settings_Right_Button(btn, data)
-    local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
-    local r,g,b= col.r, col.g, col.b
+    local r,g,b,hex= select(2, WoWTools_UnitMixin:GetColor(nil, data.guid))
+
     local isNotBattle= data.battleTag~=WoWTools_DataMixin.Player.BattleTag
 --玩家，图标
     btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true}) or '')
 
 --玩家等级
     btn.PlayerLevelText:SetText(data.playerLevel~=GetMaxLevelForPlayerExpansion() and data.playerLevel or '')
-    --btn.PlayerLevelText:SetTextColor(col.r, col.g, col.b)
 
 --玩家，名称
     if data.guid== WoWTools_DataMixin.Player.GUID then
@@ -1116,7 +1113,7 @@ local function Settings_Right_Button(btn, data)
             ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
         )
     end
-    btn.Name:SetTextColor(col.r, col.g, col.b)
+    btn.Name:SetTextColor(r, g, b)
 
 
 --提示，不同战网
@@ -1140,7 +1137,7 @@ local function Settings_Right_Button(btn, data)
     if data.itemLevel and data.itemLevel>0 then
         local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
         btn.ItemLevelText:SetText(
-            (item>6 and '|cnGREEN_FONT_COLOR:' or col.hex)
+            (item>6 and '|cnGREEN_FONT_COLOR:' or hex)
             ..data.itemLevel
         )
     else
@@ -1599,7 +1596,7 @@ local function Init_IsMe_Menu(self, root)
         c[class]= {
             num=(c[class] and c[class].num or 0)+1,
             icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, englishClass) or '',
-            col= select(5, WoWTools_UnitMixin:GetColor(nil, nil, englishClass)) or ''
+            hex= select(5, WoWTools_UnitMixin:GetColor(nil, nil, englishClass)) or ''
         }
 
         if tab.faction=='Alliance' then
@@ -1639,7 +1636,7 @@ local function Init_IsMe_Menu(self, root)
     for class, tab in pairs(c) do
         root:CreateButton(
             tab.icon
-            ..tab.col
+            ..tab.hex
             ..WoWTools_TextMixin:CN(class)
             ..' #'
             ..tab.num,

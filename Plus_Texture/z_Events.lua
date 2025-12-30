@@ -267,7 +267,12 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_GameTooltip()
-    --如：成就左边，提示
+--如：成就左边，提示
+    self:SetStatusBar(GameTooltipStatusBar)
+    WoWTools_DataMixin:Hook(GameTooltipUnitHealthBarMixin, 'OnLoad', function(bar)
+        self:SetStatusBar(bar)
+    end)
+
     WoWTools_DataMixin:Hook('GameTooltip_ShowStatusBar', function(tooltip)
         for bar in tooltip.statusBarPool:EnumerateActive() do
             self:SetFrame(bar, {index=2, alpha=1})

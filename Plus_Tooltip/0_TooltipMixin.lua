@@ -25,13 +25,11 @@ end
 --设置单位
 function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
     local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
-
-    
-    if not canaccessvalue(guid) then
+    if not canaccessvalue(unit) or not unit then
         return
     end
 
-    if WoWTools_UnitMixin:UnitIsPlayer(unit) then
+    if UnitIsPlayer(unit) then
         self:Set_Unit_Player(tooltip, name, unit, guid)
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
@@ -47,5 +45,5 @@ function WoWTools_TooltipMixin:IsInCombatDisabled(tooltip)
 end
 
 function WoWTools_TooltipMixin:OpenOption(root, name2)
-    return WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_ItemMixin.Category, name=self.addName, nam2=name2})
+    return WoWTools_MenuMixin:OpenOptions(root, {category=self.Category, name=self.addName, nam2=name2})
 end

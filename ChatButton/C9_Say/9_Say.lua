@@ -501,7 +501,7 @@ local function Init()
         if Save().type or Save().name then
             local name, wow= Save().name, Save().isWoW
             if Save().type==SLASH_WHISPER1 and WoWTools_UnitMixin:UnitIsPlayer('target') then
-                name=GetUnitName('target', true)
+                name= GetUnitName('target', true)
                 wow= false
             end
             WoWTools_ChatMixin:Say(Save().type, name, wow)

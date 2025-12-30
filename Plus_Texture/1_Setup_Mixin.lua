@@ -253,6 +253,7 @@ end
 
 
 --设置，滚动条，颜色
+
 function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     bar= bar and bar.ScrollBar or bar
     if not bar

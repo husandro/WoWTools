@@ -1,5 +1,5 @@
 --施法条 CastingBarFrame.lua
-
+--CastingBarMixin
 
 
 
@@ -20,7 +20,7 @@ local function Create_CastTimeTexte(frame)
         return
     end
 
-    --[[frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
+    frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
         self.elapsed= (self.elapsed or 0.1) + elapsed
         if self.elapsed>=0.1 and self.value and self.maxValue then
             self.elapsed=0
@@ -33,7 +33,7 @@ local function Create_CastTimeTexte(frame)
                 self.CastTimeText:SetFormattedText('%.01f', value)
             end
         end
-    end)]]
+    end)
 end
 
 
@@ -78,7 +78,7 @@ local function Settings(frame)
     frame.Text:SetShadowOffset(1, -1)
 
 
-    if CombatLogGetCurrentEventInfo then--12.0出现问题
+ 
         if frame==PlayerCastingBarFrame then
             frame:HookScript('OnShow', function(self)
                 if not WoWTools_FrameMixin:IsLocked(self) then
@@ -98,7 +98,6 @@ local function Settings(frame)
                 end
             end)
         end
-    end
 end
 
 
@@ -117,10 +116,8 @@ end
 
 
 
-
-
 local function Init()
-    if WoWToolsSave['Plus_UnitFrame'].hideCastingFrame then
+    if WoWToolsSave['Plus_UnitFrame'].hideCastingFrame or not CombatLogGetCurrentEventInfo then--12.0会出问题
         return
     end
 

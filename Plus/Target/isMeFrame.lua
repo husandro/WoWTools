@@ -168,6 +168,16 @@ local function Init()
 
     isMeFrame:Settings()
 
+    if NamePlateBaseMixin.OnRemoved then--12.0没有了
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
+            _G['WoWToolsTarget_IsMeFrame']:hide_plate(plate)
+        end)
+    else
+        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'ClearUnit', function(plate)--移除所有
+            _G['WoWToolsTarget_IsMeFrame']:hide_plate(plate)
+        end)
+    end
+
     Init= function()
         _G['WoWToolsTarget_IsMeFrame']:Settings()
     end

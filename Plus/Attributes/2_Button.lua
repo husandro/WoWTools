@@ -60,21 +60,24 @@ local function Init()
     end
 
     function button:get_sendTextTips()
-        local text
         if ChatEdit_GetActiveWindow() then
-            text= WoWTools_DataMixin.onlyChinese and '编辑' or EDIT
-        elseif UnitExists('target') and WoWTools_UnitMixin:UnitIsPlayer('target') and not WoWTools_UnitMixin:UnitIsUnit('player', 'target') then
-            text= (WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..': '.. GetUnitName('target', true)
+            return WoWTools_DataMixin.onlyChinese and '编辑' or EDIT
+
+        elseif WoWTools_UnitMixin:UnitGUID('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+            return (WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..': '.. GetUnitName('target', true)
+
         elseif not UnitIsDeadOrGhost('player') and IsInInstance() then
-            text= (WoWTools_DataMixin.onlyChinese and '说' or SAY)
+            return (WoWTools_DataMixin.onlyChinese and '说' or SAY)
+
         elseif IsInRaid() then
-            text= WoWTools_DataMixin.onlyChinese and '说: 团队' or (SAY..': '..CHAT_MSG_RAID)
+            return WoWTools_DataMixin.onlyChinese and '说: 团队' or (SAY..': '..CHAT_MSG_RAID)
+
         elseif IsInGroup() then
-            text= WoWTools_DataMixin.onlyChinese and '说: 队伍' or (SAY..': '..CHAT_MSG_PARTY)
+            return WoWTools_DataMixin.onlyChinese and '说: 队伍' or (SAY..': '..CHAT_MSG_PARTY)
+
         else
-            text= (WoWTools_DataMixin.onlyChinese and '说' or SAY)
+            return WoWTools_DataMixin.onlyChinese and '说' or SAY
         end
-        return text
     end
 
     function button:send_Att_Chat()--发送信息
@@ -83,7 +86,7 @@ local function Init()
             ChatEdit_InsertLink(text)
         else
             local name
-            if UnitExists('target') and WoWTools_UnitMixin:UnitIsPlayer('target') and not WoWTools_UnitMixin:UnitIsUnit('player', 'target') then
+            if WoWTools_UnitMixin:UnitGUID('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
                 name= GetUnitName('target', true)
             end
             WoWTools_ChatMixin:Chat(text, name, nil)

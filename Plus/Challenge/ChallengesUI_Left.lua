@@ -24,7 +24,7 @@ local IsInSearch
 
 
 local function Initializer(btn, data)
-    local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
+    local color= WoWTools_UnitMixin:GetColor(nil, data.guid)
 
 --玩家，图标
     btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
@@ -45,7 +45,7 @@ local function Initializer(btn, data)
             ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
         )
     end
-    btn.Name:SetTextColor(col.r, col.g, col.b)
+    btn.Name:SetTextColor(color:GetRGB())
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
 

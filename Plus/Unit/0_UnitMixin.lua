@@ -1,5 +1,14 @@
 WoWTools_UnitMixin={}
 
+function WoWTools_UnitMixin:UnitExists(unit)
+    if unit then
+        local guid= UnitGUID(unit)
+        if not canaccessvalue(guid) or guid then
+            return true
+        end
+    end
+    return false
+end
 
 function WoWTools_UnitMixin:UnitGUID(unit, name)
     if unit then
@@ -52,7 +61,7 @@ end
 
 function WoWTools_UnitMixin:NameRemoveRealm(name, realm)--玩家名称, 去服务器为*
     if canaccessvalue(name) or not canaccessvalue(realm) or not name then
-        return
+        return ''
     end
     local reName= name:match('(.+)%-') or name
     local reRealm= name:match('%-(.+)') or realm
@@ -83,7 +92,7 @@ end
 --职业颜色
 function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
     local r, g, b, hex
-    if unit then
+    if canaccessvalue(unit) and unit then
         classFilename= UnitClassBase(unit)
     elseif canaccessvalue(guid) and guid then
         classFilename = select(2, GetPlayerInfoByGUID(guid))
@@ -96,7 +105,7 @@ function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
 
     r, g, b, hex =r or 1, g or 1, b or 1, hex or '|cffffffff'
 
-    return {r=r, g=g, b=b, hex=hex},--1
+    return CreateColor(r, g, b),
         r,--2
         g,
         b,

@@ -30,36 +30,43 @@ local EventTab= {
 
 --local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
 local function Set_Text(self)
-    local k,T,F=0,0,0
+    local k=0--敌人数量
+    local T=0--目标是我 的敌人
+    local F=0--好友目标是我
 
-        for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-            local unit = plate.UnitFrame and plate.UnitFrame.unit
-            if UnitCanAttack('player', unit)
-                and (self.isPvPArena and WoWTools_UnitMixin:UnitIsPlayer(unit) or not self.isPvPArena)
-                and WoWTools_UnitMixin:CheckRange(unit, 40, true)
-            then
-                k=k+1
-                if WoWTools_UnitMixin:UnitIsUnit(unit..'target', 'player') then
-                    T=T+1
-                end
+    for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+        local unit = plate.UnitFrame.unit
+        if UnitCanAttack('player', unit)
+            and (not self.isPvPArena or UnitIsPlayer(unit))
+            and WoWTools_UnitMixin:CheckRange(unit, 40, true)
+        then
+            k=k+1
+            if WoWTools_UnitMixin:UnitIsUnit(unit..'target', 'player') then
+                T=T+1
             end
         end
-        if IsInRaid() then
-            for i=1, MAX_RAID_MEMBERS do
-                local unit='raid'..i..'target'
-                if WoWTools_UnitMixin:UnitIsUnit(unit, 'player') and not WoWTools_UnitMixin:UnitIsUnit(unit, 'player') then
-                    F=F+1
-                end
-            end
-        elseif IsInGroup() then
-            for i=1, MAX_PARTY_MEMBERS do
-                if WoWTools_UnitMixin:UnitIsUnit('party'..i..'target', 'player') then
-                    F=F+1
-                end
+    end
+
+    if IsInRaid() then
+        for i=1, MAX_RAID_MEMBERS do
+            if UnitIsUnit('raid'..i..'target', 'player') then
+                F=F+1
             end
         end
-   
-    self.Text:SetText(WoWTools_ColorMixin:SetStringColor(T==0 and '-' or  T)..' |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
+    elseif IsInGroup() then
+        for i=1, MAX_PARTY_MEMBERS do
+            if UnitIsUnit('party'..i..'target', 'player') then
+                F=F+1
+            end
+        end
+    end
+
+    self.Text:SetText(
+        HIGHLIGHT_FONT_COLOR:WrapTextInColorCode( T==0 and '-' or  T)
+        ..' '
+        ..GREEN_FONT_COLOR:WrapTextInColorCode(F==0 and '-' or F)
+        ..' '
+        ..WARNING_FONT_COLOR:WrapTextInColorCode(k==0 and '-' or k))
 
 end
 
