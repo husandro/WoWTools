@@ -547,7 +547,6 @@ ChatButton\C3_Marker\0_MarkerMixin.lua
 ChatButton\C3_Marker\1_Init.lua
 ChatButton\C3_Marker\2_Menu.lua
 ChatButton\C3_Marker\3_Frame.lua
-ChatButton\C3_Marker\3_Frame_Menu.lua
 ChatButton\C3_Marker\Tank_Healer.lua
 ChatButton\C3_Marker\Ready_Info.lua
 ChatButton\C3_Marker\Ready_Auto.lua

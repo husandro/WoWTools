@@ -264,7 +264,18 @@ local function Init_Menu(self, root)
     end)
 
 
-    WoWTools_MarkerMixin:Init_MarkerTools_Menu(self, sub)--队伍标记工具, 选项，菜单
+    --重置位置
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().markersFramePoint, function()
+        Save().markersFramePoint=nil
+        if _G['WoWToolsChatButtonMarkersFrame'] then
+            _G['WoWToolsChatButtonMarkersFrame']:set_point()
+        end
+        print(
+            WoWTools_MarkerMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+        )
+    end)
+
 
 
     sub=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)), function()
