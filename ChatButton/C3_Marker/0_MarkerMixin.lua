@@ -38,11 +38,11 @@ function WoWTools_MarkerMixin:Get_ReadyTextAtlas(autoReady)
 end
 
 
-function WoWTools_MarkerMixin:GetIcon(index, unit)--取得图片
+function WoWTools_MarkerMixin:GetIcon(index, unit, size)--取得图片
     index= index or GetRaidTargetIndex(unit)
     if index then
         if canaccessvalue(index) or (index>=0 and index<=NUM_WORLD_RAID_MARKERS) then
-            return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t'
+            return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':'..(size or 0)..'|t'
         end
     end
     return ''

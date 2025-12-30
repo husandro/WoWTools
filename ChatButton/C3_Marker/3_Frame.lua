@@ -794,6 +794,7 @@ local function Init()--设置标记, 框架
             btn:SetAttribute("alt-action2", "clear")
             btn:SetAttribute("alt-unit2", 'player')
 
+
             btn:SetScript('OnLeave', function(self)
                 GameTooltip:Hide()
                 self:set_Active()
@@ -833,11 +834,11 @@ local function Init()--设置标记, 框架
             function btn:set_Events()
                 self:UnregisterAllEvents()
                 if self:IsShown() then
-                    --if CombatLogGetCurrentEventInfo then--12.0出问题
-                        self:RegisterEvent('PLAYER_TARGET_CHANGED')
+                    self:RegisterEvent('PLAYER_TARGET_CHANGED')
+                    if CombatLogGetCurrentEventInfo then--12.0出问题
                         self:RegisterEvent('RAID_TARGET_UPDATE')
-                        self:set_Active()
-                    --end
+                    end
+                    self:set_Active()
                     if Save().showMakerFrameHotKey then
                         self:RegisterEvent('UPDATE_BINDINGS')
                     end
@@ -911,9 +912,23 @@ local function Init()--设置标记, 框架
         if index==0 then
             btn:SetAllPoints(MakerFrame.marker)
             btn:SetNormalAtlas('jailerstower-animapowerlist-powerborder-blue')
+
             btn:SetAttribute('type', 'worldmarker')
-            btn:SetAttribute('marker', 0)
             btn:SetAttribute("action", 'clear')
+            btn:SetAttribute('marker', 0)
+            if not CombatLogGetCurrentEventInfo then
+                btn:SetAlpha(0)
+            end
+            --[[
+                    btn:SetAttribute('type1', 'worldmarker')
+                    btn:SetAttribute('marker1', index==0 and 0 or markerTab[index])
+                    btn:SetAttribute("action1", index==0 and 'clear' or "set")
+
+                    btn:SetAttribute("type2", "worldmarker")
+                    btn:SetAttribute("marker2", index==0 and 0 or markerTab[index])
+                    btn:SetAttribute("action2", "clear")
+            ]]
+
             btn:SetScript('OnEnter', function()
                 if not Tooltip_SetOwner() then
                     return
@@ -940,20 +955,27 @@ local function Init()--设置标记, 框架
 
             btn.marker= markerTab[index]
             btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+
             btn:SetAttribute('type1', 'worldmarker')
-            btn:SetAttribute('marker1', btn.marker)
             btn:SetAttribute("action1", "set")
+
             btn:SetAttribute("type2", "worldmarker")
-            btn:SetAttribute("marker2", btn.marker)
             btn:SetAttribute("action2", "clear")
 
+            btn:SetAttribute('marker', btn.marker)
+
+            btn:SetScript('OnLeave', function(self)
+                self.elapsed=1
+                GameTooltip:Hide()
+            end)
             btn:SetScript('OnEnter', function(self)
+                self.elapsed=1
                 if not Tooltip_SetOwner() then
                     return
                 end
                 GameTooltip:SetText(
                     WoWTools_DataMixin.Icon.left
-                    ..WoWTools_MarkerMixin:GetIcon(self:GetID())
+                    ..WoWTools_MarkerMixin:GetIcon(self:GetID(), nil, 26)
                     ..'|A:bags-button-autosort-up:0:0|a'
                     ..WoWTools_DataMixin.Icon.right
                 )
@@ -967,13 +989,21 @@ local function Init()--设置标记, 框架
             btn.texture:SetColorTexture(col.r, col.g, col.b)
             btn.texture:SetAlpha(0.3)
 
-            btn.elapsed=2
+            btn.elapsed= 1.5
             btn:SetScript('OnUpdate', function(self, elapsed)
                 self.elapsed= self.elapsed +elapsed
                 if self.elapsed>2 then
                     self.elapsed=0
                     self:SetButtonState(IsRaidMarkerActive(self.marker) and 'PUSHED' or 'NORMAL')
                 end
+            end)
+            btn:SetScript('OnMouseUp', function(self)
+                self:RegisterEvent('GLOBAL_MOUSE_DOWN')
+                self.elapsed=1.3
+            end)
+            btn:SetScript('OnEvent', function(self, event)
+                self:UnregisterEvent(event)
+                self.elapsed=1.3
             end)
         end
     end
