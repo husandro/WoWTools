@@ -61,7 +61,7 @@ local function Craete_Frame(frame)
             self.itemLevel:SetText(level or '')
             self.Portrait:SetTexture(texture or 0)
             local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-            self.Texture:SetVertexColor(r, g, b)
+            self.Texture:SetVertexColor(r or 1, g or 1, b or 1)
             self.itemLevel:SetTextColor(r, g, b)
         end
         self:SetShown(isShow)
@@ -82,6 +82,8 @@ local function Craete_Frame(frame)
             self:set_settings()
         end)
     end)
+
+    frame.classFrame:set_settings()
 end
 
 
@@ -101,25 +103,14 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
         return
     end
 
-    local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-    local guid
-    local unitIsPlayer= WoWTools_UnitMixin:UnitIsPlayer(unit)
-
-    guid= UnitGUID(frame.unit)--职业, 天赋, 图标
-    if not canaccessvalue(guid) then
-        guid= nil
-    end
 
     if not frame.classFrame then
         Craete_Frame(frame)
-    end
-
-    if frame.classFrame then
+    else
         frame.classFrame:set_settings()
-
-
-        frame.classFrame:SetShown(unitIsPlayer)
     end
+
+    local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
 
 --名称
     if frame.name then
@@ -132,8 +123,8 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                 name= UnitName(unit)
                 name= WoWTools_TextMixin:sub(name, 4, 8)
                 frame.name:SetText(name)
-            elseif unit=='target' and guid then
-                local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil)
+            elseif unit=='target' then
+                local wow= WoWTools_UnitMixin:GetIsFriendIcon(unit)
                 if wow then
                     name= wow..GetUnitName(unit, false)
                 end
