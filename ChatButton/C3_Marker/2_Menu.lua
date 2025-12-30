@@ -248,7 +248,7 @@ local function Init_Menu(self, root)
         or (InCombatLockdown()) and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
-        return  _G['WoWToolsChatButtonMarkersFrame'] and  _G['WoWToolsChatButtonMarkersFrame']:IsShown()
+        return  _G['WoWToolsMarkerFrame'] and  _G['WoWToolsMarkerFrame']:IsShown()
     end, function()
         if not InCombatLockdown() then
             Save().markersFrame= not Save().markersFrame and true or nil
@@ -267,8 +267,8 @@ local function Init_Menu(self, root)
     --重置位置
     WoWTools_MenuMixin:RestPoint(self, sub, Save().markersFramePoint, function()
         Save().markersFramePoint=nil
-        if _G['WoWToolsChatButtonMarkersFrame'] then
-            _G['WoWToolsChatButtonMarkersFrame']:set_point()
+        if _G['WoWToolsMarkerFrame'] then
+            _G['WoWToolsMarkerFrame']:set_point()
         end
         print(
             WoWTools_MarkerMixin.addName..WoWTools_DataMixin.Icon.icon2,

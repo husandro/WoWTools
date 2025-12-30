@@ -20,10 +20,6 @@ local MarkerButtons={}
 
 
 local function Init_Menu(self, root)
-    if not self then
-        return
-    end
-
     local sub,sub2
 
     sub= root:CreateCheckbox(
@@ -81,15 +77,11 @@ local function Init_Menu(self, root)
         return Save().markersScale
     end, function(value)
         Save().markersScale= value
-        local btn= _G['WoWTools_MarkerFrame_Move_Button']
-        if btn then
-            btn:set_scale()
-        end
+        self.move:set_scale()
     end)
 
 --显示背景 
-    WoWTools_MenuMixin:BgAplha(root,
-    function()
+    WoWTools_MenuMixin:BgAplha(root, function()
         return Save().MakerFrameBgAlpha or 0.5
     end, function(value)
         Save().MakerFrameBgAlpha=value
@@ -207,21 +199,22 @@ local function Init()--设置标记, 框架
         return
     end
 
-    MakerFrame= CreateFrame('Frame', 'WoWToolsChatButtonMarkersFrame', UIParent)
+    MakerFrame= CreateFrame('Frame', 'WoWToolsMarkerFrame', UIParent)
 
     local size= 23
 
     --移动按钮
-    local btn= WoWTools_ButtonMixin:Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size=size, texture='Interface\\Cursor\\UI-Cursor-Move'})
-    btn:SetAllPoints(MakerFrame)
-    btn:RegisterForDrag("RightButton")
-    btn:SetMovable(true)
-    btn:SetScript("OnDragStart", function(self, d)
+    MakerFrame.move= CreateFrame('Button', 'WoWToolsMakerFrameMoveButton', MakerFrame, 'WoWToolsButtonTemplate') -- WoWTools_ButtonMixin:Cbtn(MakerFrame, {size=size, texture='Interface\\Cursor\\UI-Cursor-Move'})
+    MakerFrame.move:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
+    MakerFrame.move:SetAllPoints(MakerFrame)
+    MakerFrame.move:RegisterForDrag("RightButton")
+    MakerFrame.move:SetMovable(true)
+    MakerFrame.move:SetScript("OnDragStart", function(self, d)
         if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self:GetParent()) then
             self:GetParent():StartMoving()
         end
     end)
-    btn:SetScript("OnDragStop", function(frame)
+    MakerFrame.move:SetScript("OnDragStop", function(frame)
         local self= frame:GetParent()
         ResetCursor()
         self:StopMovingOrSizing()
@@ -230,10 +223,10 @@ local function Init()--设置标记, 框架
             Save().markersFramePoint[2]=nil
         end
     end)
-    function btn:set_Alpha(enter)
+    function MakerFrame.move:set_Alpha(enter)
         self:SetAlpha(enter and 1 or 0.1)
     end
-    btn:SetScript('OnMouseDown', function(self, d)
+    MakerFrame.move:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self:GetParent()) then
             SetCursor('UI_MOVE_CURSOR')
         else
@@ -241,26 +234,25 @@ local function Init()--设置标记, 框架
         end
         self:SetAlpha(0.3)
     end)
-    btn:set_Alpha()
-    btn:SetScript('OnMouseUp', function(self)
+    MakerFrame.move:set_Alpha()
+    MakerFrame.move:SetScript('OnMouseUp', function(self)
         ResetCursor()
         self:set_Alpha(true)
     end)
 
-    function btn:set_scale()
-        local frame= self:GetParent()
-        if frame:CanChangeAttribute() then
-            frame:SetScale(Save().markersScale or 1)--缩放
+    function MakerFrame.move:set_scale()
+        if MakerFrame:CanChangeAttribute() then
+            MakerFrame:SetScale(Save().markersScale or 1)--缩放
         end
     end
-    btn:set_scale()
+    MakerFrame.move:set_scale()
 
-    btn:SetScript('OnLeave', function(self)
+    MakerFrame.move:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:set_Alpha()
         WoWTools_ChatMixin:GetButtonForName('Markers'):SetButtonState('NORMAL')
     end)
-    btn:SetScript('OnEnter', function(self)
+    MakerFrame.move:SetScript('OnEnter', function(self)
         if not Tooltip_SetOwner() then
             return
         end
@@ -312,7 +304,7 @@ local function Init()--设置标记, 框架
 
 
     for setIndex, index in pairs({8, 0, 1, 3, 2}) do
-        btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.ping, {
+        local btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.ping, {
             name=Name..'PingButton'..index,
             size=size,
             atlas= MakerFrame.ping.tab[index].atlas,
@@ -738,7 +730,7 @@ local function Init()--设置标记, 框架
 
 --目标，标记
     for index = 0, NUM_RAID_ICONS do
-        btn= CreateFrame('Button', Name..'TargetButton'..index, MakerFrame.target, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
+        local btn= CreateFrame('Button', Name..'TargetButton'..index, MakerFrame.target, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
 
         table.insert(TargetButtons, 'TargetButton'..index)
 
@@ -904,7 +896,7 @@ local function Init()--设置标记, 框架
 
     local markerTab={5,6,3,2,7,1,4,8}
     for index=0, NUM_WORLD_RAID_MARKERS do
-        btn= CreateFrame('Button', Name..'MakerButton'..index, MakerFrame.marker, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
+        local btn= CreateFrame('Button', Name..'MakerButton'..index, MakerFrame.marker, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
 
         table.insert(MarkerButtons, 'MakerButton'..index)
 
@@ -1198,8 +1190,8 @@ local function Init()--设置标记, 框架
     end
 
     Init=function()
-        _G['WoWToolsChatButtonMarkersFrame']:set_Shown()
-        _G['WoWToolsChatButtonMarkersFrame']:set_Event()
+        MakerFrame:set_Shown()
+        MakerFrame:set_Event()
     end
 end
 

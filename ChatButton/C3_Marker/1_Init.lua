@@ -153,19 +153,11 @@ local function Init(btn)
         if self.groupReadyTips then
             self.groupReadyTips:SetButtonState('NORMAL')
         end
-        local b= _G['WoWTools_MarkerFrame_Move_Button']
-        if b then
-            b:set_Alpha(false)
-        end
     end
 
     function btn:set_OnEnter()
         if self.groupReadyTips and self.groupReadyTips:IsShown() then
             self.groupReadyTips:SetButtonState('PUSHED')
-        end
-        local b= _G['WoWTools_MarkerFrame_Move_Button']
-        if b then
-            b:set_Alpha(true)
         end
     end
 
