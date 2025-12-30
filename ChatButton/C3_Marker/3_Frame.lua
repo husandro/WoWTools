@@ -590,7 +590,7 @@ local function Init()--设置标记, 框架
     MakerFrame.check=WoWTools_ButtonMixin:Cbtn(MakerFrame, {
         name=Name..'CheckButton',
         size=size,
-        atlas='common-icon-checkmark'
+        atlas='common-icon-checkmark-yellow',--'common-icon-checkmark'
     })
     table.insert(Buttons, 'CheckButton')
 
@@ -644,6 +644,8 @@ local function Init()--设置标记, 框架
         atlas='GM-icon-roles'
     })
     table.insert(Buttons, 'RolePollButton')
+
+    WoWTools_TextureMixin:SetButton(MakerFrame.RolePoll, {alpha=1})
 
     function MakerFrame.RolePoll:set_point()
         if Save().H then
@@ -916,18 +918,9 @@ local function Init()--设置标记, 框架
             btn:SetAttribute('type', 'worldmarker')
             btn:SetAttribute("action", 'clear')
             btn:SetAttribute('marker', 0)
-            if not CombatLogGetCurrentEventInfo then
+            if not CombatLogGetCurrentEventInfo then--12.0出问题
                 btn:SetAlpha(0)
             end
-            --[[
-                    btn:SetAttribute('type1', 'worldmarker')
-                    btn:SetAttribute('marker1', index==0 and 0 or markerTab[index])
-                    btn:SetAttribute("action1", index==0 and 'clear' or "set")
-
-                    btn:SetAttribute("type2", "worldmarker")
-                    btn:SetAttribute("marker2", index==0 and 0 or markerTab[index])
-                    btn:SetAttribute("action2", "clear")
-            ]]
 
             btn:SetScript('OnEnter', function()
                 if not Tooltip_SetOwner() then
@@ -987,9 +980,9 @@ local function Init()--设置标记, 框架
             btn.texture:SetAllPoints()
             local col= WoWTools_MarkerMixin:GetColor(index)
             btn.texture:SetColorTexture(col.r, col.g, col.b)
-            btn.texture:SetAlpha(0.3)
+            btn.texture:SetAlpha(0.4)
 
-            btn.elapsed= 1.5
+            btn.elapsed= 1.3
             btn:SetScript('OnUpdate', function(self, elapsed)
                 self.elapsed= self.elapsed +elapsed
                 if self.elapsed>2 then
