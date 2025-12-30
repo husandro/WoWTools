@@ -133,7 +133,114 @@ end
 
 
 
+function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
+--因为修改，内置参数，可能会出现，错误 
+    local minimizedWidth= WorldMapFrame.minimizedWidth or 702
+    local minimizedHeight= WorldMapFrame.minimizedHeight or 534
+    local questLogWidth= WorldMapFrame.questLogWidth or 333
+
+
+    local function set_min_max_value(size)
+        if WoWTools_FrameMixin:IsLocked(WorldMapFrame) then
+            return
+        end
+        local isMax= WorldMapFrame:IsMaximized()
+        if isMax then
+            WorldMapFrame.minimizedWidth= minimizedWidth
+            WorldMapFrame.minimizedHeight= minimizedHeight
+            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Maximize()
+            if self:Save().size[WorldMapFrame:GetName()] then
+                WorldMapFrame:UpdateMaximizedSize()
+            end
+
+        elseif size and size[1] then
+            local w= size[1] -questLogWidth-- +2
+            WorldMapFrame.minimizedWidth= w
+            WorldMapFrame.minimizedHeight= size[2] or minimizedHeight
+            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
+        end
+    end
+
+    WoWTools_DataMixin:Hook(WorldMapFrame.SidePanelToggle, 'Refresh', function()
+        local name= WorldMapFrame:GetName()
+        if self:Save().size[name] and not WorldMapFrame:IsMaximized() then
+            self:Save().size[name]= {WorldMapFrame:GetSize()}
+        end
+    end)
+
+
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'Minimize', function(frame)
+        if not frame.ResizeButton then
+            return
+        end
+        local name= frame:GetName()
+        local size= self:Save().size[name]
+        if size then
+            frame:SetSize(size[1], size[2])
+            set_min_max_value(size)
+        end
+        local scale= self:Save().scale[name]
+        if scale then
+            frame:SetScale(scale)
+        end
+        frame.ResizeButton:SetShown(true)
+    end)
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'Maximize', function(frame)
+        if not frame.ResizeButton then
+            return
+        end
+        set_min_max_value()
+        if self:Save().scale[frame:GetName()] then
+            frame:SetScale(1)
+        end
+        frame.ResizeButton:SetShown(false)
+    end)
+
+    self:Setup(WorldMapFrame, {
+        minW=questLogWidth*2+37,
+        minH=questLogWidth,
+        sizeTooltip='|cnWARNING_FONT_COLOR:BUG|r',
+    sizeUpdateFunc= function(frame)--WorldMapMixin:UpdateMaximizedSize()
+        set_min_max_value({frame:GetSize()})
+    end,
+    sizeRestFunc= function(f)
+        f.minimizedWidth= minimizedWidth
+        f.minimizedHeight= minimizedHeight
+        f:SetSize(minimizedWidth+ questLogWidth, minimizedHeight)
+        f.BorderFrame.MaximizeMinimizeFrame:Minimize()
+    end,})
+
+
+    QuestMapDetailsScrollFrame:SetPoint('BOTTOM', 0, 72)
+
+    QuestMapFrame.DetailsFrame:SetPoint('BOTTOM')
+    QuestMapDetailsScrollFrame.Contents:SetPoint('BOTTOMLEFT')
+
+    QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOM', 0, 23)
+    QuestMapFrame.DetailsFrame.SealMaterialBG:SetPoint('BOTTOM', 0, 23)
+
+    WorldMapFrame.ScrollContainer.Child.TiledBackground:ClearAllPoints()
+    WorldMapFrame.ScrollContainer.Child.TiledBackground:SetAllPoints()
+
+    QuestMapFrame.QuestsFrame.DetailsFrame:GetFrameLevel(501)
+    QuestMapFrame.QuestsFrame.DetailsFrame:GetFrameStrata('HIGH')
+
+
+    QuestScrollFrame.Background:SetPoint('BOTTOM', 0, 123)
+    QuestScrollFrame.Background:SetAllPoints()
+
+    self:Setup(QuestScrollFrame, {frame=WorldMapFrame})
+    self:Setup(MapQuestInfoRewardsFrame, {frame=WorldMapFrame})
+    self:Setup(QuestMapFrame, {frame=WorldMapFrame})
+    self:Setup(QuestMapFrame.DetailsFrame, {frame=WorldMapFrame})
+    self:Setup(QuestMapDetailsScrollFrame, {frame=WorldMapFrame})
+
+--战役
+    QuestMapFrame.QuestsFrame.CampaignOverview.Header:SetFrameLevel(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame:GetFrameLevel()+1)
+    self:Setup(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame, {frame=WorldMapFrame})
+end
 --[[
+
 function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
 --因为修改，内置参数，可能会出现，错误 
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
@@ -242,9 +349,32 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     
 
 
-end]]
+end
 
-function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
+]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     WoWTools_DataMixin:Hook(WorldMapFrame, 'Minimize', function(frame)
         local name= frame:GetName()
         local scale= self:Save().scale[name]
@@ -271,4 +401,4 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
 --战役
     QuestMapFrame.QuestsFrame.CampaignOverview.Header:SetFrameLevel(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame:GetFrameLevel()+1)
     self:Setup(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame, {frame=WorldMapFrame})
-end
+end]]
