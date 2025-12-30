@@ -12,7 +12,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetButton(EncounterJournalCloseButton)
 
     self:HideTexture(EncounterJournalBg)
-    self:HideTexture(EncounterJournalInset.Bg)
+    
     self:SetNineSlice(EncounterJournalInset)
     self:SetScrollBar(EncounterJournalInstanceSelect)
     self:SetEditBox(EncounterJournalSearchBox)
@@ -75,7 +75,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
     self:HideFrame(EncounterJournal.LootJournalItems)
 --重新设置专精，位置
-    --self:SetMenu(EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown)
+    self:SetMenu(EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown)
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:ClearAllPoints()
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:SetPoint(
         'TOPRIGHT',
@@ -91,14 +91,17 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
         btn.Background:SetAlpha(0.5)
     end)
 
-    self:HideFrame(EncounterJournalMonthlyActivitiesFrame)
-    self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
-    self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
 --暗影国度 暗影之力
     self:HideFrame(EncounterJournal.LootJournal, {index=1})
 
 --旅行者日志
-    EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetColorTexture(0,0,0,0.3)
+    self:HideFrame(EncounterJournalMonthlyActivitiesFrame)
+    self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
+    --EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetColorTexture(0,0,0,0.3)
+    self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
+    self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBackground)
+    self:SetAlphaColor(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBorder, nil, nil, 0.3)
+    self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton)
 --任务，右边列表，按钮
     WoWTools_DataMixin:Hook(MonthlyActivitiesButtonMixin, 'UpdateDesaturatedShared', function(btn)
         local data = btn:GetData()
@@ -107,11 +110,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
         btn.HighlightTexture:SetAlpha(alpha)
     end)
 
-    self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBackground)
-    self:SetAlphaColor(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBorder, nil, nil, 0.3)
-    self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton)
-
-self:SetButton(EncounterJournalInstanceSelect.GreatVaultButton, {alpha=1})
+    self:SetButton(EncounterJournalInstanceSelect.GreatVaultButton, {alpha=1})
 
 --旅程
 if EncounterJournalJourneysFrame then--12.0才有
@@ -123,14 +122,12 @@ end
     self:Init_BGMenu_Frame(EncounterJournal, {
     settings= function(icon, textureName, alphaValue)
         local alpha= textureName and 0 or alphaValue or 1
-
-
-
+        EncounterJournalInstanceSelectBG:SetAlpha(alpha)
+        EncounterJournalInset.Bg:SetAlpha(alpha)
         if EncounterJournalJourneysFrame then--12.0才有 
             EncounterJournalJourneysFrame.BorderFrame.Border:SetAlpha(alpha)
             EncounterJournalJourneysFrame.BorderFrame.TopDetail:SetAlpha(alpha)
 --副本列表
-            EncounterJournalInstanceSelectBG:SetAlpha(alpha)
             if EncounterJournalInstanceSelect.evergreenBg then
                 EncounterJournalInstanceSelect.evergreenBg:SetAlpha(alpha)
             end

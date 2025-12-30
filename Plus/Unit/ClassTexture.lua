@@ -1,10 +1,6 @@
 
 --职业, 图标， 颜色
 local function Craete_Frame(frame)
-    if frame.classFrame then
-        return
-    end
-
     frame.classFrame= CreateFrame('Frame', nil, frame)
     frame.classFrame:SetShown(false)
     frame.classFrame:SetSize(16,16)
@@ -39,43 +35,52 @@ local function Craete_Frame(frame)
 
     function frame.classFrame:set_settings()
         local unit= self:GetParent().unit
-        if WoWTools_UnitMixin:UnitIsPlayer(unit) then
-            local specID= GetInspectSpecialization(unit)
-            local texture=0
-            if canaccessvalue(specID) and specID and specID>0 then
-                texture= select(4, GetSpecializationInfoByID(specID))
-                if not canaccessvalue(texture) or not texture then
-                    texture=0
-                end
-            end
 
-            self.Portrait:SetTexture(texture)
-
-            local guid= UnitGUID(unit)
-            if not canaccessvalue(guid) or not guid then
-                self.itemLevel:SetText('')
-            else
-                local level= WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel
-                if canaccessvalue(level) and level then
-                    self.itemLevel:SetText(level)
-                else
-                    self.itemLevel:SetText('')
-                end
-            end
-            self:SetShown(true)
-        else
+        if not canaccessvalue(unit) or not UnitIsPlayer(unit) then
             self:SetShown(false)
+            return
         end
+
+        local texture, level
+        if UnitIsUnit(unit, 'player') then
+            texture= select(4, PlayerUtil.GetCurrentSpecID())
+        else
+            local specID= GetInspectSpecialization(unit)
+            if specID and specID>0 then
+                texture= select(4, GetSpecializationInfoByID(specID, UnitSex(unit)))
+            end
+        end
+
+        local guid= UnitGUID(unit)
+        if canaccessvalue(guid) and WoWTools_DataMixin.UnitItemLevel[guid] then
+            level= WoWTools_DataMixin.UnitItemLevel[guid].itemLevel
+        end
+
+        local isShow= (texture or level) and true or false
+        if isShow then
+            self.itemLevel:SetText(level or '')
+            self.Portrait:SetTexture(texture or 0)
+            local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
+            self.Texture:SetVertexColor(r, g, b)
+            self.itemLevel:SetTextColor(r, g, b)
+        end
+        self:SetShown(isShow)
     end
+
     frame.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', frame.unit)
+    frame.classFrame:SetScript('OnShow', function(self)
+        self:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', self:GetParent().unit)
+    end)
+
+    frame.classFrame:SetScript('OnHide', function(self)
+        self:ClearAllPoints()
+    end)
+
     frame.classFrame:SetScript('OnEvent', function(self)
-        local unit2= self:GetParent().unit
-        if WoWTools_UnitMixin:UnitIsPlayer(unit2) then
-            WoWTools_UnitMixin:GetNotifyInspect(nil, unit2)--取得玩家信息
-            C_Timer.After(2, function()
-                self:set_settings()
-            end)
-        end
+        WoWTools_UnitMixin:GetNotifyInspect(nil, self:GetParent().unit)--取得玩家信息
+        C_Timer.After(2, function()
+            self:set_settings()
+        end)
     end)
 end
 
@@ -87,25 +92,32 @@ end
 
 local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图标， 颜色
     local unit= frame.unit
-    if unit:find('nameplate') then
+    if not canaccessvalue(unit)
+        or unit:find('nameplate')
+    then
+        if frame.classFrame then
+            frame.classFrame:SetShown(false)
+        end
         return
     end
 
     local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-
     local guid
     local unitIsPlayer= WoWTools_UnitMixin:UnitIsPlayer(unit)
-    if unitIsPlayer then
-        guid= UnitGUID(frame.unit)--职业, 天赋, 图标
+
+    guid= UnitGUID(frame.unit)--职业, 天赋, 图标
+    if not canaccessvalue(guid) then
+        guid= nil
+    end
+
+    if not frame.classFrame then
         Craete_Frame(frame)
     end
 
     if frame.classFrame then
-        if unitIsPlayer then
-            frame.classFrame:set_settings()
-            frame.classFrame.Texture:SetVertexColor(r, g, b)
-            frame.classFrame.itemLevel:SetTextColor(r, g, b)
-        end
+        frame.classFrame:set_settings()
+
+
         frame.classFrame:SetShown(unitIsPlayer)
     end
 
