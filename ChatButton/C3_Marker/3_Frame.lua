@@ -776,25 +776,22 @@ local function Init()--设置标记, 框架
             btn.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
             btn.texture:SetSize(size/2.5, size/2.5)
             btn.texture:SetPoint('CENTER')
+            
+            btn:SetAttribute('type', 'raidtarget')
+            btn:SetAttribute("marker", index)
 
-            btn:SetAttribute('type1', 'raidtarget')
-            btn:SetAttribute('marker1', index)
             btn:SetAttribute("action1", "set")
             btn:SetAttribute("unit1", 'target')
 
             btn:SetAttribute("type2", "raidtarget")
-            btn:SetAttribute("marker2", index)
             btn:SetAttribute("action2", "clear")
 
-            btn:SetAttribute('alt-type1', 'raidtarget')
-            btn:SetAttribute('alt-marker1', index)
             btn:SetAttribute("alt-action1", "set")
             btn:SetAttribute("alt-unit1", 'player')
 
-            btn:SetAttribute("alt-type2", "raidtarget")
-            btn:SetAttribute("alt-marker2", index)
             btn:SetAttribute("alt-action2", "clear")
             btn:SetAttribute("alt-unit2", 'player')
+
 
 
             btn:SetScript('OnLeave', function(self)
