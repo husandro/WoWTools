@@ -49,13 +49,13 @@ local function Set_Text(self)
 
     if IsInRaid() then
         for i=1, MAX_RAID_MEMBERS do
-            if UnitIsUnit('raid'..i..'target', 'player') then
+            if WoWTools_UnitMixin:UnitIsUnit('raid'..i..'target', 'player') then
                 F=F+1
             end
         end
     elseif IsInGroup() then
         for i=1, MAX_PARTY_MEMBERS do
-            if UnitIsUnit('party'..i..'target', 'player') then
+            if WoWTools_UnitMixin:UnitIsUnit('party'..i..'target', 'player') then
                 F=F+1
             end
         end

@@ -338,8 +338,11 @@ local function ResizeButton2_Menu(self, root)
         maxValue=1,
         step=0.1,
         bit='%.1f',
-        tooltip= WoWTools_DataMixin.onlyChinese and '无法使用|n不可购买|n已收集' or (
-            MOUNT_JOURNAL_FILTER_UNUSABLE..'|n'..ERR_CANT_BUY_QUANTITY..'|n'..TRANSMOG_COLLECTED
+        tooltip= WoWTools_DataMixin.onlyChinese and '透明度|n|n无法使用|n不可购买|n已收集' or (
+            HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY
+            ..'|n|n'..MOUNT_JOURNAL_FILTER_UNUSABLE
+            ..'|n'..ERR_CANT_BUY_QUANTITY
+            ..'|n'..TRANSMOG_COLLECTED
         )
     })
 

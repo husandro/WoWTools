@@ -42,7 +42,7 @@ local function Craete_Frame(frame)
         end
 
         local texture, level
-        if UnitIsUnit(unit, 'player') then
+        if WoWTools_UnitMixin:UnitIsUnit(unit, 'player') then
             texture= select(4, PlayerUtil.GetCurrentSpecID())
         else
             local specID= GetInspectSpecialization(unit)
@@ -51,8 +51,8 @@ local function Craete_Frame(frame)
             end
         end
 
-        local guid= UnitGUID(unit)
-        if canaccessvalue(guid) and WoWTools_DataMixin.UnitItemLevel[guid] then
+        local guid= WoWTools_UnitMixin:UnitGUID(unit)
+        if guid and WoWTools_DataMixin.UnitItemLevel[guid] then
             level= WoWTools_DataMixin.UnitItemLevel[guid].itemLevel
         end
 
