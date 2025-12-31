@@ -1,6 +1,8 @@
 --添加，移动/缩放，按钮
 --创建, 一个移动按钮
-
+--[[
+raidMarkerReset:SetParentKey("raidMarkerReset");
+]]
 local function Save()
     return WoWToolsSave['Plus_Move']
 end

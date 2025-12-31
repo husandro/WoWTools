@@ -168,7 +168,7 @@ local function Create_potFrame(frame)
             self.elapsed=0
             local cur= UnitHealth(self.tt)
             local max= UnitHealthMax(self.tt) or 0
-            if canaccessvalue(max) and cur and max>0 then
+            if canaccessvalue(max) and canaccessvalue(cur) and cur and max>0 then
                 self.healthLable:SetFormattedText('%i', cur/max*100)
             else
                 self.healthLable:SetText('')

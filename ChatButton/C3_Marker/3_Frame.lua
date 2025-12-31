@@ -731,7 +731,7 @@ local function Init()--设置标记, 框架
 if not CombatLogGetCurrentEventInfo then
 --目标，标记
     for index = 0, NUM_RAID_ICONS do
-        local btn= CreateFrame('Button', Name..'TargetButton'..index, MakerFrame.target, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
+        local btn= CreateFrame('Button', 'WoWToolsMakerFrameTargetButton'..index, MakerFrame.target, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
 
         table.insert(TargetButtons, 'TargetButton'..index)
 
@@ -863,6 +863,17 @@ if not CombatLogGetCurrentEventInfo then
             btn:set_Events()
         end
    end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1029,7 +1040,7 @@ end
 
 
 
-    --世界标记
+--世界标记
     MakerFrame.marker= CreateFrame("Frame", Name..'MarkerFrame', MakerFrame)
     MakerFrame.marker:SetSize(size, size)
     table.insert(Buttons, 'MarkerFrame')
@@ -1049,14 +1060,16 @@ end
 
         table.insert(MarkerButtons, 'MakerButton'..index)
 
-        if index==0 then
+        if index==0 then--ClearRaidMarker()
+        --CompactRaidFrameManagerDisplayFrameRaidMarkers.raidMarkerReset
             btn:SetAllPoints(MakerFrame.marker)
             btn:SetNormalAtlas('jailerstower-animapowerlist-powerborder-blue')
 
             btn:SetAttribute('type', 'worldmarker')
-            btn:SetAttribute("action", 'clear')
+            btn:SetAttribute('action', 'clear')
             btn:SetAttribute('marker', 0)
-            if not CombatLogGetCurrentEventInfo then--12.0出问题
+
+            if not CombatLogGetCurrentEventInfo and not WoWTools_DataMixin.Player.husandro then--12.0出问题
                 btn:SetAlpha(0)
             end
 
@@ -1094,6 +1107,7 @@ end
             btn:SetAttribute("action2", "clear")
 
             btn:SetAttribute('marker', btn.marker)
+            btn:SetAttribute('unit', 'player')
 
             btn:SetScript('OnLeave', function(self)
                 self.elapsed=1
