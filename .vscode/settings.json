@@ -2821,7 +2821,18 @@
         "MERCHANT_ITEMS_PER_PAGE",
         "MerchantItem12ItemButton",
         "MerchantItem8ItemButtonCount",
-        "MerchantItem11MoneyFrame"
+        "MerchantItem11MoneyFrame",
+        "LOW",
+        "CRFManagerRaidIconButtonMixin",
+        "RAID_MARKER_RESET_ID",
+        "WORLD_RAID_MARKER_ORDER",
+        "CreateTexturePool",
+        "CompactRaidFrameManager_UpdateOptionsFlowContainer",
+        "LeavePartyButtonMixin",
+        "FlowContainer_GetUsedBounds",
+        "RAID_MANAGER_RESTRICT_PINGS_TO",
+        "HouseListFrame",
+        "HouseListFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

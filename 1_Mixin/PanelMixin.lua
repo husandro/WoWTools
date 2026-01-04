@@ -100,7 +100,7 @@ end
 --打开，选项
 --Settings.OpenToCategory(categoryID, scrollToElementName)
 function WoWTools_PanelMixin:Open(category, name)
-    if WoWTools_FrameMixin:IsLocked(SettingsPanel) then
+    if InCombatLockdown() then
         return
     end
     category= (category and category.GetID) and category or Category

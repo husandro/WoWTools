@@ -218,7 +218,7 @@ local function Init()
 --职责确认 RolePoll.lua
     WoWTools_DataMixin:Hook('RolePollPopup_Show', function(self)
         WoWTools_DataMixin:PlaySound()--播放, 声音
-        if not Save().autoSetPvPRole or IsModifierKeyDown() then
+        if not Save().autoSetPvPRole or IsModifierKeyDown() or InCombatLockdown() then
             return
         end
 

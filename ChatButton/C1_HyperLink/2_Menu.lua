@@ -74,7 +74,9 @@ local function Init_Menu(self, root)
 
 --设置关键词
     sub2:CreateButton(
-        '|A:mechagon-projects:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, WoWTools_DataMixin.Language.key)),
+        (InCombatLockdown() and '|cff626262' or '')
+        ..'|A:mechagon-projects:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, WoWTools_DataMixin.Language.key)),
     function()
         if not WoWTools_HyperLink.Category then
             WoWTools_PanelMixin:Open()

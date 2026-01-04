@@ -152,7 +152,10 @@ local function Init_Friends_Menu(self, root)
     end)
 
     root:CreateDivider()
-    root:CreateButton(WoWTools_FriendsMixin.addName, function()
+    root:CreateButton(
+        (InCombatLockdown() and '|cff626262' or '')
+        ..WoWTools_FriendsMixin.addName,
+    function()
         WoWTools_PanelMixin:Open(nil, WoWTools_FriendsMixin.addName)
     end)
 end

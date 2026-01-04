@@ -776,94 +776,75 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
-    
---[[展开
-    WoWTools_DataMixin:Hook('CompactRaidFrameManager_Expand', function()
-        if CompactRaidFrameManager.ResizeButton then
-            CompactRaidFrameManager.ResizeButton:SetShown(true)
-            if CompactRaidFrameManager:CanChangeAttribute() then
-                CompactRaidFrameManager:SetMovable(true)
-                print('展开')
-            end
-        end
-    end)
---收起
-    WoWTools_DataMixin:Hook('CompactRaidFrameManager_Collapse', function()
-        if CompactRaidFrameManager.ResizeButton then
-            CompactRaidFrameManager.ResizeButton:SetShown(false)
-            if CompactRaidFrameManager:CanChangeAttribute() then
-                CompactRaidFrameManager:SetMovable(false)
-            end
-        end
-    end)]]
-
-    WoWTools_DataMixin:Hook('CompactRaidFrameManager_Toggle', function()
-        if CompactRaidFrameManager.ResizeButton then
-            local isExpand= not CompactRaidFrameManager.collapsed
-            CompactRaidFrameManager.ResizeButton:SetShown(isExpand)
-            if CompactRaidFrameManager:CanChangeAttribute() then
-                CompactRaidFrameManager:SetMovable(isExpand)
-            end
-        end
+--分隔线
+    hooksecurefunc('CompactRaidFrameManager_UpdateOptionsFlowContainer', function()
+        --CompactRaidFrameManager.container.dividerVerticalPool:ReleaseAll()
+        CompactRaidFrameManager.container.dividerHorizontalPool:ReleaseAll()
     end)
 
-    local p_CompactRaidFrameManager_Expand= CompactRaidFrameManager_Expand
-    local p_CompactRaidFrameManager_Collapse= CompactRaidFrameManager_Collapse
---替换 原生
-    local function c_CompactRaidFrameManager_Expand()
+--展开，替换 原生
+    function CompactRaidFrameManager_Expand()
         CompactRaidFrameManager.collapsed = false
         CompactRaidFrameManager.displayFrame:Show()
         CompactRaidFrameManager.toggleButtonBack:Show()
         CompactRaidFrameManager.toggleButtonForward:Hide()
         CompactRaidFrameManager.BottomButtons:Show()
-        CompactRaidFrameManager:ClearAllPoints()
-        local p= self:Save().point['CompactRaidFrameManager']
-        if p and p[1] then
-            CompactRaidFrameManager:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-        else
-            CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -140)
+        if CompactRaidFrameManager:CanChangeAttribute() then
+            CompactRaidFrameManager:ClearAllPoints()
+            local p= self:Save().point['CompactRaidFrameManager']
+            if p and p[1] then
+                CompactRaidFrameManager:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+            else
+                CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -140)
+            end
+            CompactRaidFrameManager:SetMovable(true)
+            CompactRaidFrameManager:SetFrameStrata('MEDIUM')
+            local s= self:Save().scale['CompactRaidFrameManager']
+            if s and s~=1 then
+                CompactRaidFrameManager:SetScale(s)
+            end
         end
-        if CompactRaidFrameManager.ResizeButton then
-            CompactRaidFrameManager.ResizeButton:SetShown(true)
-        end
+        CompactRaidFrameManager.ResizeButton:SetShown(true)
         self:Save().CompactRaidFrameManagerIsExpand= true--保存上次显或展开
     end
-
-    local function c_CompactRaidFrameManager_Collapse()
+--收起
+    function CompactRaidFrameManager_Collapse()
         CompactRaidFrameManager.collapsed = true
         CompactRaidFrameManager.displayFrame:Hide()
         CompactRaidFrameManager.toggleButtonBack:Hide()
         CompactRaidFrameManager.toggleButtonForward:Show()
         CompactRaidFrameManager.BottomButtons:Hide()
-        CompactRaidFrameManager:ClearAllPoints()
-        CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -200, -140)
-        if CompactRaidFrameManager.ResizeButton then
-            CompactRaidFrameManager.ResizeButton:SetShown(false)
+        if CompactRaidFrameManager:CanChangeAttribute() then
+            CompactRaidFrameManager:ClearAllPoints()
+            CompactRaidFrameManager:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -200, -140)
+            CompactRaidFrameManager:SetMovable(false)
+            CompactRaidFrameManager:SetFrameStrata('BACKGROUND')
+            if CompactRaidFrameManager:GetScale()~=1 then
+                CompactRaidFrameManager:SetScale(1)
+            end
         end
+        CompactRaidFrameManager.ResizeButton:SetShown(false)
         self:Save().CompactRaidFrameManagerIsExpand= nil
     end
 
     self:Setup(CompactRaidFrameManager, {
     restPointFunc=function()
-        CompactRaidFrameManager_Collapse= p_CompactRaidFrameManager_Collapse
-        CompactRaidFrameManager_Expand= p_CompactRaidFrameManager_Expand
-        CompactRaidFrameManager:ClearAllPoints()
         WoWTools_DataMixin:Call('CompactRaidFrameManager_Expand')
     end})
 
-    if self:Save().point[CompactRaidFrameManager:GetName()] then--CompactRaidFrameManager
+    --[[if self:Save().point[CompactRaidFrameManager:GetName()] then--CompactRaidFrameManager
         CompactRaidFrameManager_Collapse= c_CompactRaidFrameManager_Collapse
         CompactRaidFrameManager_Expand= c_CompactRaidFrameManager_Expand
     end
-    CompactRaidFrameManager:HookScript('OnDragStop', function()
+    --CompactRaidFrameManager:HookScript('OnDragStop', function()
         CompactRaidFrameManager_Collapse= c_CompactRaidFrameManager_Collapse
         CompactRaidFrameManager_Expand= c_CompactRaidFrameManager_Expand
-    end)
+    end)]]
 
 --保存上次显或展开
     if self:Save().CompactRaidFrameManagerIsExpand then
         WoWTools_DataMixin:Call('CompactRaidFrameManager_Expand')
-    --else
-        --WoWTools_DataMixin:Call('CompactRaidFrameManager_Collapse')
+    else
+        WoWTools_DataMixin:Call('CompactRaidFrameManager_Collapse')
     end
 end

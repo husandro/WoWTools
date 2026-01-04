@@ -560,10 +560,10 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     showText= showText and showText..'|A:OptionsIcon-Brown:0:0|a' or ('|A:OptionsIcon-Brown:0:0|a'..(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS))
 
     local sub=root:CreateButton(
-        (WoWTools_FrameMixin:IsLocked(SettingsPanel) and '|cff828282' or '')
+        (InCombatLockdown() and '|cff828282' or '')
         ..showText,
     function(data)
-        if WoWTools_FrameMixin:IsLocked(SettingsPanel) then
+        if InCombatLockdown() then
             return
         elseif SettingsPanel:IsVisible() then--ToggleGameMenu()
             SettingsPanel:Close()

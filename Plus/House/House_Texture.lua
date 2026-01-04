@@ -188,5 +188,13 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingModelPreview()
             self:SetAlphaColor(HousingModelPreviewFrame.ModelPreview.PreviewBackground, nil, true, alpha)
         end,
     })
-    
+
+end
+
+
+
+
+function WoWTools_TextureMixin.Events:Blizzard_HouseList()
+    self:SetButton(HouseListFrameCloseButton)
+    self:SetAlphaColor(HouseListFrame.Background, true)
 end

@@ -116,7 +116,7 @@ local function Init_Create(frame)
     frame.WoWToolsInfoButton:SetNormalAtlas('Garr_Building-AddFollowerPlus')
     frame.WoWToolsInfoButton.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '更多信息' or CLICK_FOR_DETAILS)
     frame.WoWToolsInfoButton:SetScript('OnClick', function(self)
-        if C_CVar.GetCVarBool("fstack_enabled") then
+        if FrameStackTooltip:IsVisible() then
             FrameStackTooltip_ToggleDefaults()
         end
         local p= self:GetParent():GetParent()--.dataProviders focusedTable
@@ -197,7 +197,7 @@ EVENTTRACE_SECRET_FMT = "|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s"
         GameTooltip:Hide()
         ResetCursor()
         self:HighlightText()
-         if C_CVar.GetCVarBool("fstack_enabled") then
+         if FrameStackTooltip:IsVisible() then
             FrameStackTooltip_ToggleDefaults()
         end
     end)

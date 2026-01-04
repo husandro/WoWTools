@@ -249,3 +249,8 @@ function WoWTools_MoveMixin.Events:Blizzard_HousingModelPreview()
         f:SetSize(450, 545)
     end})
 end
+
+
+function WoWTools_MoveMixin.Events:Blizzard_HouseList()
+    self:Setup(HouseListFrame)
+end

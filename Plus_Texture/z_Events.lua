@@ -1457,13 +1457,81 @@ end
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     self:SetCheckBox(RaidFrameAllAssistCheckButton)
-    self:SetUIButton(CompactRaidFrameManagerLeavePartyButton)
-    self:SetUIButton(CompactRaidFrameManagerLeaveInstanceGroupButton)
 
     self:HideFrame(CompactRaidFrameManager, {show={[CompactRaidFrameManager.Background]=true}})
     self:HideTexture(CompactRaidFrameManagerDisplayFrameRaidMarkers.BG)
-    self:SetTabButton(CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerUnitTab)
-    self:SetTabButton(CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerGroundTab, 0.3)
+    self:SetFrame(CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerUnitTab, {index=1, alpha=0.3})
+    self:SetFrame(CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerGroundTab, {index=1, alpha=0.3})
+
+    hooksecurefunc('CompactRaidFrameManager_UpdateOptionsFlowContainer', function()
+--分隔线
+        for line in CompactRaidFrameManager.container.dividerVerticalPool:EnumerateActive() do
+            self:SetAlphaColor(line)
+        end
+        for line in CompactRaidFrameManager.container.dividerHorizontalPool:EnumerateActive() do
+            self:SetAlphaColor(line)
+        end
+--更新，高度
+        local container= CompactRaidFrameManager.displayFrame
+        local _, usedY = FlowContainer_GetUsedBounds(container)
+        CompactRaidFrameManager:SetHeight(usedY + 8)
+    end)
+
+--限定发送信号, 菜单
+    CompactRaidFrameManagerDisplayFrame.RestrictPingsLabel:SetText('')
+    CompactRaidFrameManagerDisplayFrame.RestrictPingsLabel:SetAlpha(0)
+    CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown:ClearAllPoints()
+    CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown:SetPoint('TOPLEFT', CompactRaidFrameManagerDisplayFrame.RestrictPingsLabel)
+    CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
+    CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown:SetScript('OnEnter', function(menu)
+        GameTooltip:SetOwner(menu, 'ANCHOR_LEFT')
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '限定发送信号' or RAID_MANAGER_RESTRICT_PINGS_TO)
+        GameTooltip:Show()
+    end)
+
+    
+    CompactRaidFrameManager.BottomButtons:SetHeight(24)
+--离开队伍，按钮
+    CompactRaidFrameManagerLeavePartyButton:ClearAllPoints()
+    CompactRaidFrameManagerLeavePartyButton:SetPoint('TOPLEFT')
+    self:HideTexture(CompactRaidFrameManagerLeavePartyButton.Left)
+    self:HideTexture(CompactRaidFrameManagerLeavePartyButton.Middle)
+    self:HideTexture(CompactRaidFrameManagerLeavePartyButton.Right)
+    CompactRaidFrameManagerLeavePartyButton.Text:SetAlpha(0)
+    CompactRaidFrameManagerLeavePartyButton.Text:ClearAllPoints()
+    CompactRaidFrameManagerLeavePartyButton:SetNormalTexture('common-icon-redx')
+    CompactRaidFrameManagerLeavePartyButton:SetWidth(CompactRaidFrameManagerLeavePartyButton:GetHeight())
+    CompactRaidFrameManagerLeavePartyButton:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
+    CompactRaidFrameManagerLeavePartyButton:SetScript('OnEnter', function(btn)
+        GameTooltip:SetOwner(btn, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '离开队伍' or PARTY_LEAVE)
+        GameTooltip:Show()
+    end)
+    CompactRaidFrameManagerLeavePartyButton:SetHighlightAtlas('Forge-ColorSwatchSelection')
+
+--离开地下堡，离开副本，按钮
+    CompactRaidFrameManagerLeaveInstanceGroupButton:ClearAllPoints()
+    CompactRaidFrameManagerLeaveInstanceGroupButton:SetPoint('LEFT', CompactRaidFrameManagerLeavePartyButton, 'RIGHT', 8, 0)
+    self:HideTexture(CompactRaidFrameManagerLeaveInstanceGroupButton.Left)
+    self:HideTexture(CompactRaidFrameManagerLeaveInstanceGroupButton.Middle)
+    self:HideTexture(CompactRaidFrameManagerLeaveInstanceGroupButton.Right)
+    CompactRaidFrameManagerLeaveInstanceGroupButton.Text:SetAlpha(0)
+    CompactRaidFrameManagerLeaveInstanceGroupButton.Text:ClearAllPoints()
+    CompactRaidFrameManagerLeaveInstanceGroupButton:SetNormalTexture('common-icon-exit')
+    CompactRaidFrameManagerLeaveInstanceGroupButton:SetWidth(CompactRaidFrameManagerLeaveInstanceGroupButton:GetHeight())
+    CompactRaidFrameManagerLeaveInstanceGroupButton:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
+    CompactRaidFrameManagerLeaveInstanceGroupButton:SetScript('OnEnter', function(btn)
+        GameTooltip:SetOwner(btn, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_TextMixin:CN(btn.Text:GetText()))
+        GameTooltip:Show()
+    end)
+    CompactRaidFrameManagerLeaveInstanceGroupButton:SetHighlightAtlas('Forge-ColorSwatchSelection')
 
 --打开
     CompactRaidFrameManagerToggleButtonBack.hoverTex= 'common-icon-rotateleft'
@@ -1486,11 +1554,32 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     icon:SetAtlas('common-icon-forwardarrow')
     icon:SetDesaturated(true)
 
-    --[[for _, child in pairs({CompactRaidFrameManagerDisplayFrameRaidMarkers:GetChildren()}) do
-        if child:IsObjectType('Button') then
-            self:SetAlphaColor(child.backgroundTexture, true)
+--标记，世界，目标，去掉背景
+    for _, child in pairs({CompactRaidFrameManagerDisplayFrameRaidMarkers:GetChildren()}) do
+        if child:IsObjectType('Button') and child.UpdateRaidIcon and child.backgroundTexture  then
+            WoWTools_DataMixin:Hook(child, 'UpdateRaidIcon', function(frame)
+                local atlas= frame.backgroundTexture:GetAtlas()
+                frame.backgroundTexture:SetAlpha(
+                    frame:IsMouseOver() and 1
+                    or (atlas=='GM-button-marker-available' and 0)
+                    or (atlas=='GM-button-marker-disabled' and 0.3)
+                    or 1
+                )
+            end)
+            child:HookScript('OnLeave', function(frame)
+                local atlas= frame.backgroundTexture:GetAtlas()
+                frame.backgroundTexture:SetAlpha(
+                    atlas=='GM-button-marker-available' and 0
+                    or (atlas=='GM-button-marker-disabled' and 0.3)
+                    or 1
+                )
+            end)
+            child:HookScript('OnEnter', function(btn)
+                btn.backgroundTexture:SetAlpha(1)
+            end)
         end
-    end]]
+    end
+
 
 
 --Background
@@ -1502,6 +1591,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     CompactRaidFrameManagerToggleButtonForward:HookScript('OnShow', function(b)
         b:GetParent().Background:SetShown(false)
     end)
+
 --BG
     self:Init_BGMenu_Frame(CompactRaidFrameManagerDisplayFrame, {
         --menuTag='MENU_RAID_FRAME_CONVERT_PARTY',
@@ -2266,7 +2356,7 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
             return DAMAGE_METER_SESSION_TYPE_SHORT_NAMES[sessionType] or "?"
         end
 
-        return sessionID or "?";
+        return sessionID or "?"
     end
     WoWTools_DataMixin:Hook(DamageMeterSessionWindowMixin, 'SetSession', function(f, sessionType, sessionID)
         f:GetSessionName():SetText(GetDamageMeterSessionShortName(sessionType, sessionID))
@@ -2337,12 +2427,12 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
     end
 
 
-    
+
 
     WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'SetupSharedStyleBackground', function(bar)
         Set_BG(bar)
     end)
-    
+
     for _, windowData in pairs(DamageMeter:GetWindowDataList()) do
         if windowData.sessionWindow then
             settins(windowData.sessionWindow)
@@ -2489,7 +2579,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PagedContent()
         local shouldHideControls = frame.hideWhenSinglePage and frame.maxPages <= 1
 	    if not shouldHideControls then
             if frame.displayMaxPages then
-                frame.PageText:SetFormattedText('%d/%d', frame.currentPage, frame.maxPages);
+                frame.PageText:SetFormattedText('%d/%d', frame.currentPage, frame.maxPages)
             else
                 frame.PageText:SetFormattedText('%d', frame.currentPage)
             end
