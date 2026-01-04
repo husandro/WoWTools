@@ -34,7 +34,7 @@ local function Init()
 
         -- Otherwise, anchor Delves tab to PVP if M+ hidden, or to M+ if both are shown - to prevent a gap if the player is ineligible for M+ and we hide the tab
             self.tab3:SetShown(true)
-            if self.tab4:IsShown() then
+            if self.tab4 and self.tab4:IsShown() then--12.0没有了
                 if self.tab2:IsShown() and not self.tab3:IsShown() then
                     self.tab4:SetPoint("TOPLEFT", self.tab2, "TOPRIGHT", 3, 0);
                 elseif self.tab2:IsShown() and self.tab3:IsShown() then
