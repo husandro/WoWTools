@@ -78,12 +78,6 @@ end
 
 
 local function Init()
-
-    if CombatLogGetCurrentEventInfo then--12.0才有
-        Init=function()end
-        return
-    end
-
     if not C_AddOns.IsAddOnLoaded('Blizzard_Transmog') then
         EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
             if arg1=='Blizzard_Transmog' then
@@ -137,7 +131,7 @@ local function Init()
             local numTotalSlots = 0
             local waitingOnQuality = false
             local primaryAppearances = C_TransmogSets.GetSetPrimaryAppearances(self.elementData.set.setID)
-            for _index, primaryAppearance in pairs(primaryAppearances) do
+            for _, primaryAppearance in pairs(primaryAppearances) do
                 numTotalSlots = numTotalSlots + 1
                 local sourceInfo = C_TransmogCollection.GetSourceInfo(primaryAppearance.appearanceID)
                 if sourceInfo and sourceInfo.quality then
@@ -152,6 +146,7 @@ local function Init()
             name= setInfo and setInfo.name
 
             if name then
+                name= WoWTools_TextMixin:CN(name)
                 if not waitingOnQuality then
                     local setQuality = (numTotalSlots > 0 and totalQuality > 0) and Round(totalQuality / numTotalSlots) or Enum.ItemQuality.Common
                     local colorData = ColorManager.GetColorDataForItemQuality(setQuality)
@@ -159,8 +154,10 @@ local function Init()
                         name= colorData.color:WrapTextInColorCode(name)
                     end
                 end
-                if setInfo.label then
-                    name= name..'|n'..(self.elementData.set.collected and setInfo.label or DISABLED_FONT_COLOR:WrapTextInColorCode(setInfo.label))
+                local label= setInfo.label
+                if label then
+                    label= WoWTools_TextMixin:CN(label)
+                    name= name..'|n'..(self.elementData.set.collected and label or DISABLED_FONT_COLOR:WrapTextInColorCode(label))
                 end
             end
         end

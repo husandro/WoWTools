@@ -38,6 +38,11 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetUIButton(LFDQueueFrameFindGroupButton)
     self:SetUIButton(RaidFinderFrameFindRaidButton)
 
+    self:SetCheckBox(RaidFinderQueueFrameRoleButtonTank.checkButton)
+    self:SetCheckBox(RaidFinderQueueFrameRoleButtonLeader.checkButton)
+    self:SetCheckBox(RaidFinderQueueFrameRoleButtonHealer.checkButton)
+    self:SetCheckBox(RaidFinderQueueFrameRoleButtonDPS.checkButton)
+
 
     self:SetNineSlice(LFGListFrame.EntryCreation.Inset)
     self:HideTexture(LFGListFrame.EntryCreation.Inset.CustomBG)
@@ -171,9 +176,6 @@ end
 
 --地下城和团队副本, PVP
 function WoWTools_TextureMixin.Events:Blizzard_PVPUI()
-    self:SetCheckBox(HonorFrame.RoleList.TankIcon.checkButton)
-    self:SetCheckBox(HonorFrame.RoleList.HealerIcon.checkButton)
-    self:SetCheckBox(HonorFrame.RoleList.DPSIcon.checkButton)
 
     self:HideTexture(HonorFrame.Inset.Bg)
     self:SetNineSlice(HonorFrame.Inset)
@@ -214,9 +216,19 @@ function WoWTools_TextureMixin.Events:Blizzard_PVPUI()
     self:HideFrame(TrainingGroundsFrame.BonusTrainingGroundList.ShadowOverlay)
     self:SetUIButton(TrainingGroundsFrame.QueueButton)
     self:HideTexture(TrainingGroundsFrame.Inset.Bg)
-    self:SetCheckBox(TrainingGroundsFrame.RoleList.TankIcon.checkButton)
-    self:SetCheckBox(TrainingGroundsFrame.RoleList.HealerIcon.checkButton)
-    self:SetCheckBox(TrainingGroundsFrame.RoleList.DPSIcon.checkButton)
+
+--职责，CheckBox
+    for _, name in pairs({
+        'HonorFrame',
+        'TrainingGroundsFrame',
+        'ConquestFrame',
+    }) do
+        if _G[name] and _G[name].RoleList then
+            self:SetCheckBox(_G[name].RoleList.TankIcon.checkButton)
+            self:SetCheckBox(_G[name].RoleList.HealerIcon.checkButton)
+            self:SetCheckBox(_G[name].RoleList.DPSIcon.checkButton)
+        end
+    end
 end
 
 

@@ -2835,7 +2835,11 @@
         "HouseListFrameCloseButton",
         "JourneysFrameMixin",
         "TrainingGroundsFrame",
-        "LFG_LIST_MORE"
+        "LFG_LIST_MORE",
+        "LFDQueueFrame",
+        "RaidFinderQueueFrameRoleButtonLeader",
+        "RaidFinderQueueFrameRoleButtonHealer",
+        "RaidFinderQueueFrameRoleButtonDPS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

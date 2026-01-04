@@ -381,10 +381,10 @@ end
 
 local function Set_CheckBox(self)
     local icon= self.GetNormalTexture and self:GetNormalTexture() or self:GetRegions()
-    icon:SetAlpha(self:GetChecked() and 0 or 1)
+    icon:SetAlpha((self:IsMouseOver() or not self:GetChecked()) and 1 or 0)
 end
 
-function WoWTools_TextureMixin:SetCheckBox(check, bgAtlas)--, alpha)
+function WoWTools_TextureMixin:SetCheckBox(check)
 --self:SetAlphaColor(icon, nil, nil, alpha or 1)
     if not check
         or not self:Save().CheckBox
@@ -397,20 +397,29 @@ function WoWTools_TextureMixin:SetCheckBox(check, bgAtlas)--, alpha)
                 or (check.GetRegions and check:GetRegions())
 
     if icon:IsObjectType("Texture") then
-        icon:SetAtlas(bgAtlas or 'UI-QuestTrackerButton-QuestItem-Frame')
+        --icon:SetAtlas(bgAtlas or 'UI-QuestTrackerButton-QuestItem-Frame')
         icon:ClearAllPoints()
         icon:SetPoint('TOPLEFT', 4, -4)
         icon:SetPoint('BOTTOMRIGHT', -4, 4)
-        icon:SetVertexColor(self.Color:GetRGB())
+        --icon:SetVertexColor(self.Color:GetRGB())
+        self:SetAlphaColor(icon, true)
 
-        icon= check:GetHighlightTexture()
+        --[[icon= check:GetHighlightTexture()
         if icon then
            check:SetHighlightAtlas('Forge-ColorSwatchSelection')
-        end
+        end]]
 
         Set_CheckBox(check)
-        WoWTools_DataMixin:Hook(check, 'SetChecked', Set_CheckBox)
-        check:HookScript('OnLeave', Set_CheckBox)
+
+        WoWTools_DataMixin:Hook(check, 'SetChecked', function(...)
+            Set_CheckBox(...)
+        end)
+        check:HookScript('OnLeave', function(...)
+            Set_CheckBox(...)
+        end)
+        check:HookScript('OnEnter', function(...)
+            Set_CheckBox(...)
+        end)
 
         check.wowTextureIsHooked=true
     end
