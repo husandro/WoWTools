@@ -2833,7 +2833,9 @@
         "RAID_MANAGER_RESTRICT_PINGS_TO",
         "HouseListFrame",
         "HouseListFrameCloseButton",
-        "JourneysFrameMixin"
+        "JourneysFrameMixin",
+        "TrainingGroundsFrame",
+        "LFG_LIST_MORE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

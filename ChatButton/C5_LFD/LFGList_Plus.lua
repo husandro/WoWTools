@@ -94,17 +94,17 @@ local function Init()--预创建队伍增强
 --显示，更多，副本，列表
     WoWTools_DataMixin:Hook('LFGListEntryCreation_SetupGroupDropdown', function(self)
         if not self.useMoreButton then
-                if self.useMoreButton then
-                return
-            end
-            self.useMoreButton= WoWTools_ButtonMixin:Cbtn(self, {
+            self.useMoreButton= CreateFrame('Button', 'WoWToolsLFGPlusUseMoreButton', self, 'WoWToolsButtonTemplate') --[[WoWTools_ButtonMixin:Cbtn(self, {
                 size=18,
                 atlas='common-icon-zoomin',
                 name='WoWToolsLFGPlusUseMoreButton',
-            })
-            self.useMoreButton:SetPoint('BOTTOMRIGHT', self.GroupDropdown, 'TOPRIGHT')
-            self.useMoreButton:SetScript('OnMouseDown', function()
-                if not WoWTools_FrameMixin:IsLocked(self) then
+            })]]
+            self.useMoreButton:SetNormalAtlas('common-icon-zoomin')
+            self.useMoreButton.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '更多...' or LFG_LIST_MORE)
+            self.useMoreButton:SetPoint('LEFT', self.GroupDropdown, 'RIGHT')
+            LFGListEntryCreationActivityDropdown:SetPoint('LEFT', self.useMoreButton, 'RIGHT')
+            self.useMoreButton:SetScript('OnClick', function()
+                if not InCombatLockdown() then
                     LFGListEntryCreationActivityFinder_Show(self.ActivityFinder, self.selectedCategory, nil, bit.bor(self.baseFilters, self.selectedFilters))
                 end
             end)
@@ -118,7 +118,7 @@ local function Init()--预创建队伍增强
                 enabled= false
             end
         end
-        self.useMoreButton:SetShown(enabled and not WoWTools_FrameMixin:IsLocked(self))
+        self.useMoreButton:SetShown(enabled and not InCombatLockdown())
     end)
 
 
@@ -143,17 +143,17 @@ local function Init()--预创建队伍增强
 
     WoWTools_DataMixin:Hook('LFGListCategorySelection_AddButton', function(self, btnIndex)--, categoryID, filter)
         local b= self.CategoryButtons[btnIndex]
-        if WoWTools_FrameMixin:IsLocked(self) or not b then
+        if InCombatLockdown() or not b then
             return
         end
 
         b:SetScript('OnDoubleClick', function()
-            if not WoWTools_FrameMixin:IsLocked(self) and LFGListFrame.CategorySelection.StartGroupButton:IsEnabled() then
+            if not InCombatLockdown() and LFGListFrame.CategorySelection.StartGroupButton:IsEnabled() then
                 LFGListFrame.CategorySelection.StartGroupButton:Click()
             end
         end)
         b:SetScript('OnMouseDown', function(f, d)
-            if not WoWTools_FrameMixin:IsLocked(self) and d=='RightButton' then
+            if not InCombatLockdown() and d=='RightButton' then
                 do
                     LFGListCategorySelectionButton_OnClick(f)
                 end
@@ -164,7 +164,7 @@ local function Init()--预创建队伍增强
         end)
         b:SetScript('OnLeave', function() GameTooltip:Hide() end)
         b:SetScript('OnEnter', function(f)
-            if WoWTools_FrameMixin:IsLocked(self) then
+            if InCombatLockdown() then
                 return
             end
             GameTooltip:SetOwner(f,  'ANCHOR_LEFT')
@@ -208,7 +208,7 @@ local function Init()--预创建队伍增强
 
     WoWTools_DataMixin:Hook('LFGListSearchEntry_Update', function(self)
         local resultID = self.resultID
-        if not resultID or not C_LFGList.HasSearchResultInfo(resultID) or WoWTools_FrameMixin:IsLocked(self) then
+        if not resultID or not C_LFGList.HasSearchResultInfo(resultID) or InCombatLockdown() then
             return
         end
 
@@ -304,7 +304,7 @@ local function Init()--预创建队伍增强
 
         if not self.OnDoubleClick then
             self:SetScript('OnDoubleClick', function(f)--LFGListApplicationDialogSignUpButton_OnClick(LFDButton) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
-                if WoWTools_FrameMixin:IsLocked(f) then
+                if InCombatLockdown() then
                     return
                 end
                 if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
@@ -386,7 +386,7 @@ local function Init()--预创建队伍增强
             --xOffset = xOffset + 18
         end
     end)
-    
+
 
 
 
@@ -401,7 +401,7 @@ local function Init()--预创建队伍增强
 
 --预创建队伍增强, 提示
     WoWTools_DataMixin:Hook('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID)--, autoAcceptOption)
-        if WoWTools_FrameMixin:IsLocked(tooltip) then
+        if InCombatLockdown() then
             return
         end
         local info = C_LFGList.GetSearchResultInfo(resultID)

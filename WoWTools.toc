@@ -73,6 +73,7 @@ Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
 Plus_Move\Transmog.lua
 Plus_Move\EncounterJournal.lua
+Plus_Move\PVEFrame.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -85,6 +86,7 @@ Plus_Texture\ActionButton.lua
 Plus_Texture\ChatBubbles.lua
 Plus_Texture\ClassPower.lua
 Plus_Texture\EncounterJournal.lua
+Plus_Texture\PVEFrame.lua
 Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
 Plus_Texture\z_SharedXML.lua
@@ -574,7 +576,6 @@ ChatButton\C5_LFD\RepopMe.lua
 ChatButton\C5_LFD\Role_Check.lua
 ChatButton\C5_LFD\Info_Plus.lua
 ChatButton\C5_LFD\Roll.lua
-ChatButton\C5_LFD\z_UI.lua
 ##世界频道
 ChatButton\C6_World\1_Init.lua
 ChatButton\C6_World\2_SetButton.lua

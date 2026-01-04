@@ -64,6 +64,9 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
     LFGListFrame.EntryCreation.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
     LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
 
+   
+
+
 --免费试玩账号无法使用该功能
     LFGListFrame.NothingAvailable.Inset.CustomBG:SetPoint('BOTTOMRIGHT', -15, 0)
 
@@ -144,6 +147,11 @@ end
 
 
 
+
+
+
+
+
 --地下城和团队副本, PVP
 function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
     PVPUIFrame:SetPoint('BOTTOMRIGHT')
@@ -161,6 +169,12 @@ function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
 
     PVEFrameBlueBg:SetPoint('BOTTOM')
     PVPQueueFrame.HonorInset.Background:SetPoint('BOTTOM')
+
+--12.0才有 训练场
+    TrainingGroundsFrame:SetPoint('BOTTOMRIGHT', PVPQueueFrame.HonorInset, 'BOTTOMLEFT')
+    TrainingGroundsFrame.BonusTrainingGroundList.WorldBattlesTexture:ClearAllPoints()
+    TrainingGroundsFrame.BonusTrainingGroundList.WorldBattlesTexture:SetAllPoints()
+
 end
 
 
