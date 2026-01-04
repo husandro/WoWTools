@@ -29,12 +29,13 @@ local function Init_Encounter()--冒险指南界面
     WoWTools_EncounterMixin:Init_Plus()
     WoWTools_EncounterMixin:Init_ListInstances()--界面, 副本击杀
     WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-
-    --[[if WoWTools_DataMixin.Player.husandro then
+    WoWTools_EncounterMixin:Init_JourneysList()--12.0才有
+    if WoWTools_DataMixin.Player.husandro then
         C_Timer.After(0.3, function()
-            WoWTools_LoadUIMixin:JournalInstance(nil, 1271)
+            WoWTools_LoadUIMixin:JournalInstance(nil)
+            --WoWTools_LoadUIMixin:JournalInstance(nil, 1271)
         end)
-    end]]
+    end
 
 --记录上次选择版本
     C_Timer.After(0.3, function()

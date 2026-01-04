@@ -359,6 +359,7 @@ Plus\Encounter\Plus.lua
 Plus\Encounter\ListInstances.lua
 Plus\Encounter\LootSpec.lua
 Plus\Encounter\Right_Info.lua
+Plus\Encounter\JourneysList.lua
 ##史诗钥石地下城, 挑战增强
 Plus\Challenge\0_ChallengeMixin.lua
 Plus\Challenge\1_Init.lua

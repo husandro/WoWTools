@@ -2832,7 +2832,8 @@
         "FlowContainer_GetUsedBounds",
         "RAID_MANAGER_RESTRICT_PINGS_TO",
         "HouseListFrame",
-        "HouseListFrameCloseButton"
+        "HouseListFrameCloseButton",
+        "JourneysFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

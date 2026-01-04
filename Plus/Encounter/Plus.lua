@@ -149,11 +149,32 @@ local function Create_BossButtonList(btn)
     btn.creatureNumLabel:SetJustifyH('RIGHT')
     btn.creatureNumLabel:SetTextColor(1, 0.88, 0.68)
     btn.creatureNumLabel:EnableMouse(true)
-    btn.creatureNumLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    btn.creatureNumLabel:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CREATURE))
+            ..' |cffffffff'..self:GetText()
+        )
+        local encounterID= self:GetParent().encounterID
+        if encounterID then
+            GameTooltip:AddLine(' ')
+            for index= 1, 9 do
+                local name= select(2, EJ_GetCreatureInfo(index, encounterID))
+                if name then
+                    GameTooltip:AddLine(
+                        HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(index..') ')
+                        ..ITEM_WOW_TOKEN_COLOR:WrapTextInColorCode(WoWTools_TextMixin:CN(name))
+                    )
+                else
+                    break
+                end
+            end
+        end
+        GameTooltip:Show()
+    end)
     btn.creatureNumLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
-    btn.creatureNumLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(
-        WoWTools_DataMixin.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CREATURE)
-    )
+
     function btn.creatureNumLabel:set_alpha()
         self:SetAlpha(self:IsMouseOver() and 0.5 or 1)
     end
@@ -301,7 +322,7 @@ local function Init()
                 numCreature= numCreature+1
             end
         end
-        self.creatureNumLabel:SetText(numCreature)
+        self.creatureNumLabel:SetText(numCreature>1 and numCreature or '')
     end)
 
 
