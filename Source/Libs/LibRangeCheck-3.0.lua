@@ -40,7 +40,7 @@ License: MIT
 -- @class file
 -- @name LibRangeCheck-3.0
 local MAJOR_VERSION = "LibRangeCheck-3.0"
-local MINOR_VERSION = 30
+local MINOR_VERSION = 31
 
 ---@class lib
 local lib, oldminor = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -52,6 +52,7 @@ local interfaceVersion = select(4, GetBuildInfo())
 
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local isTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 local isMidnight = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and interfaceVersion >= 120000
 
@@ -4594,7 +4595,7 @@ function lib:activate()
     local frame = CreateFrame("Frame")
     self.frame = frame
 
-    if not isMidnight then
+    if not (isMidnight or isTBC) then
       frame:RegisterEvent("LEARNED_SPELL_IN_TAB")
     end
     frame:RegisterEvent("CHARACTER_POINTS_CHANGED")
