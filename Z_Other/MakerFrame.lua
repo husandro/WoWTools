@@ -210,10 +210,6 @@ end
 
 --设置标记, 框架
 local function Init()--设置标记, 框架
-    if not Save().markersFrame then
-        return
-    end
-
     MakerFrame= CreateFrame('Frame', 'WoWToolsMarkerFrame', UIParent)
 
     local size= 23
@@ -1194,8 +1190,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         addName= '|A:GM-raidMarker2:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
         if WoWTools_OtherMixin:AddOption(
-            addName,
-            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            'MarkerFrame',
+           addName
         ) then
             Init()
         end
