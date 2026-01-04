@@ -1,6 +1,21 @@
+local addName
 local function Save()
-    return WoWToolsSave['ChatButton_Markers'] or {}
+    return WoWToolsSave['Other_MarkerFrame'] or {}
 end
+
+local TargetColor={
+    [1]= YELLOW_FONT_COLOR,-- {r=1, g=1, b=0, col='|cffffff00'},--星星, 黄色
+    [2]= ORANGE_FONT_COLOR,-- {r=1, g=0.45, b=0.04, col='|cffff7f3f'},--圆形, 橙色
+    [3]= EPIC_PURPLE_COLOR,--{r=1, g=0, b=1, col='|cffa335ee'},--菱形, 紫色
+    [4]= GREEN_FONT_COLOR, --CreateColor(0, 1, 0),--{r=0, g=1, b=0, col='|cff1eff00'},--三角, 绿色
+    [5]= HIGHLIGHT_FONT_COLOR,-- CreateColor(1, 1, 1),--{r=0.6, g=0.6, b=0.6, col='|cffffffff'},--月亮, 白色
+    [6]= BLUE_FONT_COLOR,-- CreateColor(),--{r=0.1, g=0.2, b=1, col='|cff0070dd'},--方块, 蓝色
+    [7]= RED_FONT_COLOR,-- CreateColor(),--{r=1, g=0, b=0, col='|cffff2020'},--十字, 红色
+    [8]= DISABLED_FONT_COLOR,--CreateColor(),--{r=1, g=1, b=1, col='|cffffffff'},--骷髅,白色
+}
+
+
+
 
 local MakerFrame
 local Name='WoWToolsMakerFrame'
@@ -686,37 +701,7 @@ local function Init()--设置标记, 框架
     end
     MakerFrame.target:set_point()
 
-    function MakerFrame.target:set_Clear_Unit(unit, index)
-        local t= GetRaidTargetIndex(unit)
-        if canaccessvalue(t) then
-            if t and t>0 and (index==t or not index) then
-                WoWTools_MarkerMixin:Set_Taget(unit, 0)--设置,目标,标记
-            end
-        end
-    end
-    function MakerFrame.target:set_Clear(index)--取消标记标    
-        local u--取消怪物标记
-        local tab= C_NamePlate.GetNamePlates(issecure()) or {}
-        for _, v in pairs(tab) do
-            u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
-            self:set_Clear_Unit(u, index)
-        end
-        if IsInGroup() then
-            u=  IsInRaid() and 'raid' or 'party'--取消队友标记
-            for i=1, GetNumGroupMembers() do
-                self:set_Clear_Unit(u..i, index)
-                self:set_Clear_Unit(u..i..'target', index)
-                self:set_Clear_Unit(u..'pet'..i, index)
-            end
-        end
-        u={
-            'player', 'target','pet','focus',
-            'boss1', 'boss2', 'boss3', 'boss4', 'boss5'
-        }
-        for _, v in pairs(u) do
-            self:set_Clear_Unit(v, index)
-        end
-    end
+
 
 
 
@@ -792,21 +777,21 @@ local function Init()--设置标记, 框架
                 if not Tooltip_SetOwner() then
                     return
                 end
-                local col= WoWTools_MarkerMixin:GetColor(self:GetID()).col
+                
                 GameTooltip:SetText(
-                    col
-                   ..WoWTools_DataMixin.Icon.left
+                    WoWTools_DataMixin.Icon.left
                    ..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
                    ..'|A:bags-button-autosort-up:0:0|a'
-                   ..WoWTools_DataMixin.Icon.right
+                   ..WoWTools_DataMixin.Icon.right,
+                   TargetColor[self:GetID()]:GetRGB()
                 )
                 GameTooltip:AddLine(
-                    col
-                    ..WoWTools_DataMixin.Icon.left
+                    WoWTools_DataMixin.Icon.left
                     ..'Alt+'
                     ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                     ..'|A:bags-button-autosort-up:0:0|a'
-                   ..WoWTools_DataMixin.Icon.right
+                   ..WoWTools_DataMixin.Icon.right,
+                   TargetColor[self:GetID()]:GetRGB()
                 )
 
                 GameTooltip:Show()
@@ -967,8 +952,7 @@ local function Init()--设置标记, 框架
 
             btn.texture=btn:CreateTexture(nil, 'BACKGROUND')
             btn.texture:SetAllPoints()
-            local col= WoWTools_MarkerMixin:GetColor(index)
-            btn.texture:SetColorTexture(col.r, col.g, col.b)
+            btn.texture:SetColorTexture(TargetColor[index]:GetRGB())
             btn.texture:SetAlpha(0.4)
 
             btn.elapsed= 1.3
@@ -1202,24 +1186,21 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if arg1== 'WoWTools' then
+        WoWToolsSave['Other_MarkerFrame']= WoWToolsSave['Other_MarkerFrame'] or {}
 
+        addName= '|A:GM-raidMarker2:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
+        if WoWTools_OtherMixin:AddOption(
+            addName,
+            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+        ) then
+            Init()
+        end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
-    Init()
-end
-
+        self:SetScript('OnEvent', nil)
+        self:UnregisterEvent(event)
+    end
+end)

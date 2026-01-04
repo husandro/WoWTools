@@ -165,6 +165,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             P_Save=nil
 
             Save().disabledTalkingPringText= nil
+            WoWToolsSave['ChatButton_Markers']= nil--12.0不能用了
 
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
             WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))

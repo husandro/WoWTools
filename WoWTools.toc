@@ -523,6 +523,8 @@ Z_Other\Brewfest.lua
 Z_Other\DormantSeeds.lua
 ##/fstack
 Z_Other\Fstack.lua
+##标记
+Z_Other\MakerFrame.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
@@ -545,14 +547,8 @@ ChatButton\C1_HyperLink\z_Welcome.lua
 
 ##ROLL
 ChatButton\C2_Roll\2_Roll.lua
-##标记
-ChatButton\C3_Marker\0_MarkerMixin.lua
-ChatButton\C3_Marker\1_Init.lua
-ChatButton\C3_Marker\2_Menu.lua
-ChatButton\C3_Marker\3_Frame.lua
-ChatButton\C3_Marker\Tank_Healer.lua
-ChatButton\C3_Marker\Ready_Info.lua
-ChatButton\C3_Marker\Ready_Auto.lua
+
+
 ##邀请， 自动接受， 拒绝，屏蔽
 ChatButton\C4_Invite\4_Invite.lua
 ChatButton\C4_Invite\Init_Menu.lua
