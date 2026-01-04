@@ -776,7 +776,7 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
-    local name= CompactRaidFrameManager:GetName() or 'CompactRaidFrameManager'
+    
 --[[展开
     WoWTools_DataMixin:Hook('CompactRaidFrameManager_Expand', function()
         if CompactRaidFrameManager.ResizeButton then
@@ -851,7 +851,7 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
         WoWTools_DataMixin:Call('CompactRaidFrameManager_Expand')
     end})
 
-    if self:Save().point[name] then
+    if self:Save().point[CompactRaidFrameManager:GetName()] then--CompactRaidFrameManager
         CompactRaidFrameManager_Collapse= c_CompactRaidFrameManager_Collapse
         CompactRaidFrameManager_Expand= c_CompactRaidFrameManager_Expand
     end
@@ -863,7 +863,7 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
 --保存上次显或展开
     if self:Save().CompactRaidFrameManagerIsExpand then
         WoWTools_DataMixin:Call('CompactRaidFrameManager_Expand')
-    else
-        WoWTools_DataMixin:Call('CompactRaidFrameManager_Collapse')
+    --else
+        --WoWTools_DataMixin:Call('CompactRaidFrameManager_Collapse')
     end
 end

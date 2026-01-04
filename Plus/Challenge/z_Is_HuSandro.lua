@@ -13,7 +13,7 @@ local function Init()
         { name = "GroupFinderFrame", addon = nil },
         { name = "PVPUIFrame", addon = "Blizzard_PVPUI" },
         { name = "ChallengesFrame", addon = "Blizzard_ChallengesUI", hideLeftInset = true },
-        { name = "DelvesDashboardFrame", addon = "Blizzard_DelvesDashboardUI", hideLeftInset = true },
+        --{ name = "DelvesDashboardFrame", addon = "Blizzard_DelvesDashboardUI", hideLeftInset = true },
     }
 
 
