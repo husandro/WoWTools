@@ -62,7 +62,7 @@ local function Init_Spec_Menu(self, root)
     if Save().specButton.isUIParent then
 
 --向上
-        WoWTools_MenuMixin:ToTop(sub2, {GetValue=function()
+        WoWTools_MenuMixin:ToTop(self, sub2, {GetValue=function()
             return Save().specButton.isToTOP
         end, SetValue=function ()
             Save().specButton.isToTOP= not Save().specButton.isToTOP and true or nil

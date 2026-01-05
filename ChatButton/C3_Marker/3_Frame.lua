@@ -90,7 +90,7 @@ local function Init_Menu(self, root)
 
 
 --位于上方
-    WoWTools_MenuMixin:ToTop(root, {
+    WoWTools_MenuMixin:ToTop(self, root, {
         name=nil,
         GetValue=function()
             return Save().H

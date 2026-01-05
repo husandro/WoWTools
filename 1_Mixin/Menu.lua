@@ -370,10 +370,10 @@ end
 
 
 
-function WoWTools_MenuMixin:ToTop(root, tab)
+function WoWTools_MenuMixin:ToTop(frame, root, tab)
     local sub=root:CreateCheckbox(
-        (tab.name or ('|A:bags-greenarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION))),
-        --('|A:editmode-up-arrow:16:11:0:3|a'..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP))),
+        (WoWTools_FrameMixin:IsLocked(frame) and '|cff626262' or '')
+        ..(tab.name or ('|A:bags-greenarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION))),
         tab.GetValue,
         tab.SetValue,
         {isReload=tab.isReload, tooltip=tab.tooltip}
@@ -395,7 +395,7 @@ function WoWTools_MenuMixin:ToTop(root, tab)
 end
 --[[
 --位于上方
-WoWTools_MenuMixin:ToTop(root, {
+WoWTools_MenuMixin:ToTop(frame, root, {
     name=nil,
     GetValue=function()
         return Save.toFrame

@@ -2839,7 +2839,10 @@
         "LFDQueueFrame",
         "RaidFinderQueueFrameRoleButtonLeader",
         "RaidFinderQueueFrameRoleButtonHealer",
-        "RaidFinderQueueFrameRoleButtonDPS"
+        "RaidFinderQueueFrameRoleButtonDPS",
+        "RAID_MARKER_REMOVE_ID",
+        "GROUPMANAGER_UNIT_MARKER",
+        "GROUPMANAGER_GROUND_MARKER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

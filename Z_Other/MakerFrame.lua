@@ -18,7 +18,7 @@ local TargetColor={
 
 
 local MakerFrame
-local Name='WoWToolsMakerFrame'
+
 
 local Buttons={}--_G[Name..Button[1]]
 local PingButtons={}
@@ -35,14 +35,15 @@ local MarkerButtons={}
 
 
 local function Init_Menu(self, root)
+
     local sub,sub2
 
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,
     function()
-        return Save().showMakerFrameHotKey
+        return Save().isShowHotKey
     end, function()
-        Save().showMakerFrameHotKey= not Save().showMakerFrameHotKey and true or nil
+        Save().isShowHotKey= not Save().isShowHotKey and true or nil
         self:set_all_hotkey()--设置全部，快捷键
     end)
     sub:SetTooltip(function(tooltip)
@@ -53,7 +54,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '信号系统' or PING_SYSTEM_LABEL,
     function()
-        if not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
+        if not InCombatLockdown() then
             Settings.OpenToCategory(Settings.PINGSYSTEM_CATEGORY_ID)--Blizzard_SettingsDefinitions_Frame/PingSystem.lua
         end
         return MenuResponse.Open
@@ -66,7 +67,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET,
     function()
-        if not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
+        if not InCombatLockdown() then
             Settings.OpenToCategory(Settings.KEYBINDINGS_CATEGORY_ID, BINDING_HEADER_RAID_TARGET)--Blizzard_SettingsDefinitions_Frame/PingSystem.lua
         end
         return MenuResponse.Open
@@ -84,35 +85,35 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:FrameStrata(self, root, function(data)
             return self:GetFrameStrata()==data
     end, function(data)
-        Save().FrameStrata= data
-        self:set_frame_strata()
+        Save().strata= data
+        self:set_strata()
     end)
 
     WoWTools_MenuMixin:Scale(self, root, function()
-        return Save().markersScale
+        return Save().scale or 1
     end, function(value)
-        Save().markersScale= value
-        self.move:set_scale()
+        Save().scale= value
+        self:set_scale()
     end)
 
 --显示背景 
     WoWTools_MenuMixin:BgAplha(root, function()
-        return Save().MakerFrameBgAlpha or 0.5
+        return Save().bgAlpha or 0.5
     end, function(value)
-        Save().MakerFrameBgAlpha=value
-        self:set_background()
+        Save().bgAlpha=value
+        self:set_bg()
     end)
 
 
 --位于上方
-    WoWTools_MenuMixin:ToTop(root, {
+    WoWTools_MenuMixin:ToTop(self, root, {
         name=nil,
         GetValue=function()
-            return Save().H
+            return Save().isToUp
         end,
         SetValue=function()
-            Save().H = not Save().H and true or nil
-            self:set_button_point()
+            Save().isToUp = not Save().isToUp and true or nil
+            self:set_all_point()
         end,
         tooltip=false,
     })
@@ -121,23 +122,24 @@ local function Init_Menu(self, root)
    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,
     function()
-        return not Save().hideMakerTooltip
+        return not Save().hideTooltip
     end, function()
-        Save().hideMakerTooltip= not Save().hideMakerTooltip and true or nil
+        Save().hideTooltip= not Save().hideTooltip and true or nil
     end)
 
     sub:CreateCheckbox(
         'ANCHOR_LEFT',
     function()
-        return Save().makerTooltipIsLeft
+        return Save().isTooltipLeft
     end, function()
-        Save().makerTooltipIsLeft= not Save().makerTooltipIsLeft and true or nil
+        Save().isTooltipLeft= not Save().isTooltipLeft and true or nil
     end)
 
+--选项
+    root:CreateDivider()
+    sub = WoWTools_OtherMixin:OpenOption(root, 'MarkerFrame', addName)
 
 --倒计时
-    root:CreateDivider()
-    sub = WoWTools_ChatMixin:Open_SettingsPanel(root, nil)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -157,11 +159,11 @@ local function Init_Menu(self, root)
     sub:CreateSpacer()
 
 --重置位置
-    WoWTools_MenuMixin:RestPoint(self, sub, Save().markersFramePoint, function()
-        Save().markersFramePoint=nil
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
+        Save().point=nil
         self:set_point()
         print(
-            WoWTools_MarkerMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.Icon.icon2..addName,
             WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
         )
     end)
@@ -184,8 +186,8 @@ end
 
 --是否显示，HUD提示信息
 local function Tooltip_SetOwner()
-    if not Save().hideMakerTooltip then
-        if Save().makerTooltipIsLeft then
+    if not Save().hideTooltip then
+        if Save().isTooltipLeft then
             GameTooltip:SetOwner(MakerFrame.RolePoll, 'ANCHOR_LEFT')
         else
             GameTooltip:SetOwner(MakerFrame, "ANCHOR_RIGHT")
@@ -210,71 +212,17 @@ end
 
 --设置标记, 框架
 local function Init()--设置标记, 框架
-    MakerFrame= CreateFrame('Frame', 'WoWToolsMarkerFrame', UIParent)
+    MakerFrame= CreateFrame('Button', 'WoWToolsMarkerFrame', UIParent, 'WoWToolsButtonTemplate')
+    MakerFrame:SetClampedToScreen(true)
+    MakerFrame:SetSize(23,23)--大小
 
-    local size= 23
 
-    --移动按钮
-    MakerFrame.move= CreateFrame('Button', 'WoWToolsMakerFrameMoveButton', MakerFrame, 'WoWToolsButtonTemplate') -- WoWTools_ButtonMixin:Cbtn(MakerFrame, {size=size, texture='Interface\\Cursor\\UI-Cursor-Move'})
-    MakerFrame.move:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
-    MakerFrame.move:SetAllPoints(MakerFrame)
-    MakerFrame.move:RegisterForDrag("RightButton")
-    MakerFrame.move:SetMovable(true)
-    MakerFrame.move:SetScript("OnDragStart", function(self, d)
-        if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self:GetParent()) then
-            self:GetParent():StartMoving()
-        end
-    end)
-    MakerFrame.move:SetScript("OnDragStop", function(frame)
-        local self= frame:GetParent()
-        ResetCursor()
-        self:StopMovingOrSizing()
-        if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().markersFramePoint={self:GetPoint(1)}
-            Save().markersFramePoint[2]=nil
-        end
-    end)
-    function MakerFrame.move:set_Alpha(enter)
-        self:SetAlpha(enter and 1 or 0.1)
-    end
-    MakerFrame.move:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self:GetParent()) then
-            SetCursor('UI_MOVE_CURSOR')
-        else
-            MenuUtil.CreateContextMenu(self:GetParent(), Init_Menu)
-        end
-        self:SetAlpha(0.3)
-    end)
-    MakerFrame.move:set_Alpha()
-    MakerFrame.move:SetScript('OnMouseUp', function(self)
-        ResetCursor()
-        self:set_Alpha(true)
-    end)
 
-    function MakerFrame.move:set_scale()
-        if MakerFrame:CanChangeAttribute() then
-            MakerFrame:SetScale(Save().markersScale or 1)--缩放
-        end
-    end
-    MakerFrame.move:set_scale()
+    MakerFrame.texture= MakerFrame:CreateTexture()
+    MakerFrame.texture:SetPoint('CENTER')
+    MakerFrame.texture:SetTexture('Interface\\Cursor\\UI-Cursor-Move')
+    MakerFrame.texture:SetSize(16, 16)
 
-    MakerFrame.move:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:set_Alpha()
-        WoWTools_ChatMixin:GetButtonForName('Markers'):SetButtonState('NORMAL')
-    end)
-    MakerFrame.move:SetScript('OnEnter', function(self)
-        if not Tooltip_SetOwner() then
-            return
-        end
-        GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, EVENTTRACE_MARKER)))
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
-        GameTooltip:Show()
-        self:set_Alpha(true)
-        WoWTools_ChatMixin:GetButtonForName('Markers'):SetButtonState('PUSHED')
-    end)
 
 
 
@@ -288,12 +236,13 @@ local function Init()--设置标记, 框架
 
 
     --Ping System Blizzard_PingUI.lua
-    MakerFrame.ping= CreateFrame('Frame', Name..'PingFrame', MakerFrame)
-    table.insert(Buttons, 'PingFrame')
+    MakerFrame.ping= CreateFrame('Frame', 'WoWToolsMarkersPingFrame', MakerFrame)
+    table.insert(Buttons, 'WoWToolsMarkersPingFrame')
 
-    MakerFrame.ping:SetSize(size, size)
+    MakerFrame.ping:SetSize(23, 23)
     function MakerFrame.ping:set_point()
-        if Save().H then
+        self:ClearAllPoints()
+        if Save().isToUp then
             self:SetPoint("BOTTOM", MakerFrame, 'TOP')
         else
             self:SetPoint('RIGHT', MakerFrame, 'LEFT')
@@ -315,24 +264,22 @@ local function Init()--设置标记, 框架
 
 
     for setIndex, index in pairs({8, 0, 1, 3, 2}) do
-        local btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.ping, {
-            name=Name..'PingButton'..index,
-            size=size,
-            atlas= MakerFrame.ping.tab[index].atlas,
-            isSecure=true,
-            setID=setIndex,
-        })
-        table.insert(PingButtons, 'PingButton'..index)
+        local btn= CreateFrame('Button', 'WoWToolsMakersPingButton'..index, MakerFrame.ping, 'WoWToolsButtonTemplate SecureActionButtonTemplate', setIndex)
+
+        table.insert(PingButtons, 'WoWToolsMakersPingButton'..index)
+
+        btn:SetNormalAtlas(MakerFrame.ping.tab[index].atlas)
 
         if setIndex==1 then
             btn:SetAllPoints(MakerFrame.ping)
 
         else
-            table.insert(Buttons, 'PingButton'..index)
+            table.insert(Buttons, 'WoWToolsMakersPingButton'..index)
 
             function btn:set_point()
-                local b= _G[Name..PingButtons[self:GetID()-1]]
-                if Save().H then
+                local b= _G[PingButtons[self:GetID()-1]]
+                self:ClearAllPoints()
+                if Save().isToUp then
                     self:SetPoint('BOTTOMRIGHT', b, 'TOPRIGHT')
                 else
                     self:SetPoint('BOTTOMRIGHT', b, 'BOTTOMLEFT')
@@ -349,19 +296,20 @@ local function Init()--设置标记, 框架
         btn:SetAttribute("macrotext1", SLASH_PING1..' [@target]'..(MakerFrame.ping.tab[index].text or ''))
         btn:SetAttribute("macrotext2", SLASH_PING1..' [@player]'..(MakerFrame.ping.tab[index].text or ''))
 
-        function btn:set_Event()
+        function btn:set_event()
             self:UnregisterAllEvents()
             if self:IsVisible() then
                 self:RegisterEvent('PLAYER_TARGET_CHANGED')
-                if Save().showMakerFrameHotKey then
+                if Save().isShowHotKey then
                     self:RegisterEvent('UPDATE_BINDINGS')
                 end
             end
             self:set_hotkey()
+            WoWTools_CooldownMixin:Setup(self)
         end
 
-        btn:SetScript('OnShow', btn.set_Event)
-        btn:SetScript('OnHide', btn.set_Event)
+        btn:SetScript('OnShow', btn.set_event)
+        btn:SetScript('OnHide', btn.set_event)
 
         btn:SetScript('OnEvent', function(self, event)
             if event=='UPDATE_BINDINGS' then
@@ -435,25 +383,25 @@ local function Init()--设置标记, 框架
         end)
 
 --快捷键
-        btn.HotKey= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+        btn.HotKey= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
         btn.HotKey:SetPoint('TOPRIGHT', 1, 2)
         function btn:set_hotkey()
             if self.action then
-                self.HotKey:SetText(Save().showMakerFrameHotKey and WoWTools_KeyMixin:GetHotKeyText(nil, self.action) or '')
+                self.HotKey:SetText(Save().isShowHotKey and WoWTools_KeyMixin:GetHotKeyText(nil, self.action) or '')
             end
         end
 
-        btn:set_Event()
+        btn:set_event()
     end
 
 
 
 --这个是被保护
     hooksecurefunc(PingListenerFrame, 'SetupCooldownTimer', function(self)--冷却，时间
-        if MakerFrame.ping:IsShown() then
+        if MakerFrame.ping:IsVisible() and canaccessvalue(self.cooldownInfo.endTimeMs) then
             local cooldownDuration = (self.cooldownInfo.endTimeMs / 1000) - GetTime()
             for _, name in pairs(PingButtons) do
-                WoWTools_CooldownMixin:Setup(_G[Name..name], nil, cooldownDuration, nil, true)
+                WoWTools_CooldownMixin:Setup(_G[name], nil, cooldownDuration, nil, true)
             end
         end
     end)
@@ -469,16 +417,16 @@ local function Init()--设置标记, 框架
 
 
 --倒计时
-    MakerFrame.countdown= WoWTools_ButtonMixin:Cbtn(MakerFrame, {
-        name=Name..'CountdownButton',
-        size=size,
-        atlas='countdown-swords'
-    })
-    table.insert(Buttons, 'CountdownButton')
+    MakerFrame.countdown= CreateFrame('Button', 'WoWToolsMarkersCountdownButton', MakerFrame, 'WoWToolsButtonTemplate')
+
+    table.insert(Buttons, 'WoWToolsMarkersCountdownButton')
+
+    MakerFrame.countdown:SetNormalAtlas('countdown-swords')
 
     function MakerFrame.countdown:set_point()
-        local b= _G[Name..PingButtons[#PingButtons]]
-        if Save().H then
+        local b= _G[PingButtons[#PingButtons]]
+        self:ClearAllPoints()
+        if Save().isToUp then
             self:SetPoint('BOTTOM', b, 'TOP')
         else
             self:SetPoint('RIGHT', b, 'LEFT')
@@ -514,7 +462,7 @@ local function Init()--设置标记, 框架
     MakerFrame.countdown:SetScript('OnLeave', function()
         GameTooltip:Hide()
     end)
-    function MakerFrame.countdown:set_Event()
+    function MakerFrame.countdown:set_event()
         if self:IsShown() then
             self:RegisterEvent('START_TIMER')
         else
@@ -522,10 +470,10 @@ local function Init()--设置标记, 框架
         end
     end
     MakerFrame.countdown:SetScript('OnShow', function(self)
-        self:set_Event()
+        self:set_event()
     end)
     MakerFrame.countdown:SetScript('OnHide', function(self)
-        self:set_Event()
+        self:set_event()
     end)
     MakerFrame.countdown:SetScript('OnEvent', function(self, event, timerType, timeRemaining, totalTime)
         if timerType==3 and event=='START_TIMER' then
@@ -540,7 +488,7 @@ local function Init()--设置标记, 框架
             WoWTools_CooldownMixin:Setup(self, nil, timeRemaining or totalTime, nil, true)--冷却条
         end
     end)
-    MakerFrame.countdown:set_Event()
+    MakerFrame.countdown:set_event()
 
 
     MakerFrame.countdown:SetScript('OnMouseWheel', function(self)
@@ -565,11 +513,11 @@ local function Init()--设置标记, 框架
         end)
     end)
 
-    MakerFrame.countdown.HotKey= WoWTools_LabelMixin:Create(MakerFrame.countdown, {color={r=1,g=1,b=1}})
+    MakerFrame.countdown.HotKey= MakerFrame.countdown:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
     MakerFrame.countdown.HotKey:SetPoint('TOPRIGHT', 1, 2)
     function MakerFrame.countdown:set_hotkey()
         local value
-        if Save().showMakerFrameHotKey then
+        if Save().isShowHotKey then
             value= Save().countdown or 7
         end
         self.HotKey:SetText(value or '')
@@ -590,15 +538,15 @@ local function Init()--设置标记, 框架
 
 
 --就绪
-    MakerFrame.check=WoWTools_ButtonMixin:Cbtn(MakerFrame, {
-        name=Name..'CheckButton',
-        size=size,
-        atlas='common-icon-checkmark-yellow',--'common-icon-checkmark'
-    })
-    table.insert(Buttons, 'CheckButton')
+    MakerFrame.check= CreateFrame('Button', 'WoWToolsMarkesCheckButton', MakerFrame, 'WoWToolsButtonTemplate')
+
+    table.insert(Buttons, 'WoWToolsMarkesCheckButton')
+
+    MakerFrame.check:SetNormalAtlas('common-icon-checkmark-yellow')
 
     function MakerFrame.check:set_point()
-        if Save().H then
+        self:ClearAllPoints()
+        if Save().isToUp then
             self:SetPoint('BOTTOM', MakerFrame.countdown, 'TOP')
         else
             self:SetPoint('RIGHT', MakerFrame.countdown, 'LEFT')
@@ -619,7 +567,7 @@ local function Init()--设置标记, 框架
     MakerFrame.check:SetScript('OnLeave', function()
         GameTooltip:Hide()
     end)
-    function MakerFrame.check:set_Event()
+    function MakerFrame.check:set_event()
         if self:IsShown() then
             self:RegisterEvent('READY_CHECK')
             self:RegisterEvent('READY_CHECK_FINISHED')
@@ -628,30 +576,30 @@ local function Init()--设置标记, 框架
         end
     end
     MakerFrame.check:SetScript('OnShow', function(self)
-        self:set_Event()
+        self:set_event()
     end)
     MakerFrame.check:SetScript('OnHide', function(self)
-        self:set_Event()
+        self:set_event()
     end)
     MakerFrame.check:SetScript('OnEvent', function(self, event, _, arg2)
         WoWTools_CooldownMixin:Setup(self, nil, event=='READY_CHECK_FINISHED' and 0 or arg2 or 0, nil, true, true)--冷却条
     end)
-    MakerFrame.check:set_Event()
+    MakerFrame.check:set_event()
 
 
 
 
-    MakerFrame.RolePoll=WoWTools_ButtonMixin:Cbtn(MakerFrame, {
-        name=Name..'RolePollButton',
-        size=size,
-        atlas='GM-icon-roles'
-    })
-    table.insert(Buttons, 'RolePollButton')
+    MakerFrame.RolePoll= CreateFrame('Button', 'WoWToolsMarkersRolePollButton', MakerFrame, 'WoWToolsButtonTemplate')
+
+    table.insert(Buttons, 'WoWToolsMarkersRolePollButton')
+
+    MakerFrame.RolePoll:SetNormalAtlas('GM-icon-roles')
 
     WoWTools_TextureMixin:SetButton(MakerFrame.RolePoll, {alpha=1})
 
     function MakerFrame.RolePoll:set_point()
-        if Save().H then
+        self:ClearAllPoints()
+        if Save().isToUp then
             self:SetPoint('BOTTOM', MakerFrame.check, 'TOP')
         else
             self:SetPoint('RIGHT', MakerFrame.check, 'LEFT')
@@ -684,12 +632,13 @@ local function Init()--设置标记, 框架
 
 
 --队伍标记
-    MakerFrame.target= CreateFrame("Frame", Name..'TargetFrame', MakerFrame)
-    MakerFrame.target:SetSize(size, size)
-    table.insert(Buttons, 'TargetFrame')
+    MakerFrame.target= CreateFrame("Frame", 'WoWToolsMakersTargetFrame', MakerFrame)
+    MakerFrame.target:SetSize(23, 23)
+    table.insert(Buttons, 'WoWToolsMakersTargetFrame')
 
     function MakerFrame.target:set_point()
-        if Save().H then
+        self:ClearAllPoints()
+        if Save().isToUp then
             self:SetPoint('RIGHT', MakerFrame, 'LEFT')
         else
             self:SetPoint('TOP', MakerFrame, 'BOTTOM')
@@ -709,32 +658,45 @@ local function Init()--设置标记, 框架
 
 --目标，标记
     for index = 0, NUM_RAID_ICONS do
-        local btn= CreateFrame('Button', 'WoWToolsMakerFrameTargetButton'..index, MakerFrame.target, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
+        local btn= CreateFrame('Button', 'WoWToolsMakersTargetButton'..index, MakerFrame.target, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
 
-        table.insert(TargetButtons, 'TargetButton'..index)
+        table.insert(TargetButtons, 'WoWToolsMakersTargetButton'..index)
 
         if index==0 then
             btn:SetAllPoints(MakerFrame.target)
-            btn:SetNormalAtlas('jailerstower-animapowerlist-powerborder-purple')
             btn:SetAttribute('type', 'raidtarget')
             btn:SetAttribute("action", "clear-all")
-            btn:SetScript('OnEnter', function()
+            btn.texture= btn:CreateTexture()
+            btn.texture:SetAtlas('jailerstower-animapowerlist-powerborder-purple')
+            btn.texture:SetPoint('CENTER')
+            btn.texture:SetSize(16,16)
+            function btn:set_alpha()
+                self.texture:SetAlpha(self:IsMouseOver() and 1 or 0.5)
+            end
+            btn:SetScript('OnLeave', function(self)
+                self:set_alpha()
+                GameTooltip:Hide()
+            end)
+            btn:SetScript('OnEnter', function(self)
+                self:set_alpha()
                 if not Tooltip_SetOwner() then
                     return
                 end
                 GameTooltip:SetText(
                     '|A:bags-button-autosort-up:0:0|a'
-                    ..(WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL)
+                    ..(WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER),
+                    EPIC_PURPLE_COLOR:GetRGB()
                 )
                 GameTooltip:Show()
             end)
-
+            btn:set_alpha()
         else
-            table.insert(Buttons, 'TargetButton'..index)
+            table.insert(Buttons, 'WoWToolsMakersTargetButton'..index)
 
             function btn:set_point()
-                local b= _G[Name..TargetButtons[self:GetID()]]
-                if Save().H then
+                local b= _G[TargetButtons[self:GetID()]]
+                self:ClearAllPoints()
+                if Save().isToUp then
                     self:SetPoint('BOTTOM', b, 'TOP')
                 else
                     self:SetPoint('RIGHT', b, 'LEFT')
@@ -745,7 +707,7 @@ local function Init()--设置标记, 框架
 
             btn.texture= btn:CreateTexture(nil, 'BACKGROUND')
             btn.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-            btn.texture:SetSize(size/2.5, size/2.5)
+            btn.texture:SetSize(23/2.5, 23/2.5)
             btn.texture:SetPoint('CENTER')
 
             btn:SetAttribute('type', 'raidtarget')
@@ -754,11 +716,11 @@ local function Init()--设置标记, 框架
             btn:SetAttribute("action1", "set")
             btn:SetAttribute("unit1", 'target')
 
-            btn:SetAttribute("type2", "raidtarget")
-            btn:SetAttribute("action2", "clear")
+            btn:SetAttribute("action2", "set")
+            btn:SetAttribute("unit2", 'player')
 
-            btn:SetAttribute("alt-action1", "set")
-            btn:SetAttribute("alt-unit1", 'player')
+            btn:SetAttribute("alt-action1", "clear")
+            btn:SetAttribute("alt-unit1", 'target')
 
             btn:SetAttribute("alt-action2", "clear")
             btn:SetAttribute("alt-unit2", 'player')
@@ -773,20 +735,18 @@ local function Init()--设置标记, 框架
                 if not Tooltip_SetOwner() then
                     return
                 end
-                
+
                 GameTooltip:SetText(
                     WoWTools_DataMixin.Icon.left
-                   ..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
-                   ..'|A:bags-button-autosort-up:0:0|a'
+                   ..(WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER)
+                   ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..self:GetID()..':26|t'
+                   ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                    ..WoWTools_DataMixin.Icon.right,
                    TargetColor[self:GetID()]:GetRGB()
                 )
                 GameTooltip:AddLine(
-                    WoWTools_DataMixin.Icon.left
-                    ..'Alt+'
-                    ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                    ..'|A:bags-button-autosort-up:0:0|a'
-                   ..WoWTools_DataMixin.Icon.right,
+                    '|A:bags-button-autosort-up:0:0|a'
+                    ..'Alt+',
                    TargetColor[self:GetID()]:GetRGB()
                 )
 
@@ -801,12 +761,12 @@ local function Init()--设置标记, 框架
                 self.texture:SetShown(check)
                 self:SetAlpha(CanBeRaidTarget('target') and 1 or 0.5)
             end
-            function btn:set_Events()
+            function btn:set_event()
                 self:UnregisterAllEvents()
                 if self:IsVisible() then
                     self:RegisterEvent('PLAYER_TARGET_CHANGED')
                     self:set_Active()
-                    if Save().showMakerFrameHotKey then
+                    if Save().isShowHotKey then
                         self:RegisterEvent('UPDATE_BINDINGS')
                     end
                     self:set_hotkey()
@@ -814,11 +774,11 @@ local function Init()--设置标记, 框架
             end
 
 --快捷键
-            btn.HotKey= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+            btn.HotKey= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
             btn.HotKey:SetPoint('TOPRIGHT', 1, 2)
             function btn:set_hotkey()
                 self.HotKey:SetText(
-                    Save().showMakerFrameHotKey and
+                    Save().isShowHotKey and
                     WoWTools_KeyMixin:GetHotKeyText(nil, 'RAIDTARGET'..self:GetID())
                     or ''
                 )
@@ -832,13 +792,13 @@ local function Init()--设置标记, 框架
                 end
             end)
             btn:SetScript('OnShow', function(self)
-                self:set_Events()
+                self:set_event()
             end)
             btn:SetScript('OnHide', function(self)
-                self:set_Events()
+                self:set_event()
             end)
 
-            btn:set_Events()
+            btn:set_event()
         end
    end
 
@@ -859,12 +819,13 @@ local function Init()--设置标记, 框架
 
 
 --世界标记
-    MakerFrame.marker= CreateFrame("Frame", Name..'MarkerFrame', MakerFrame)
-    MakerFrame.marker:SetSize(size, size)
-    table.insert(Buttons, 'MarkerFrame')
+    MakerFrame.marker= CreateFrame("Frame", 'WoWToolsMarkersWorldFrame', MakerFrame)
+    MakerFrame.marker:SetSize(23, 23)
+    table.insert(Buttons, 'WoWToolsMarkersWorldFrame')
 
     function MakerFrame.marker:set_point()
-        if Save().H then
+        self:ClearAllPoints()
+        if Save().isToUp then
             self:SetPoint('RIGHT', MakerFrame.target, 'LEFT')
         else
             self:SetPoint('TOP', MakerFrame.target, 'BOTTOM')
@@ -874,39 +835,47 @@ local function Init()--设置标记, 框架
 
     local markerTab={5,6,3,2,7,1,4,8}
     for index=0, NUM_WORLD_RAID_MARKERS do
-        local btn= CreateFrame('Button', Name..'MakerButton'..index, MakerFrame.marker, "SecureActionButtonTemplate WoWToolsButtonTemplate", index)
-
-        table.insert(MarkerButtons, 'MakerButton'..index)
+        local btn= CreateFrame('Button', 'WoWToolsMakersWorldButton'..index, MakerFrame.marker, "WoWToolsButtonTemplate SecureActionButtonTemplate", index)
+        table.insert(MarkerButtons, 'WoWToolsMakersWorldButton'..index)
 
         if index==0 then--ClearRaidMarker()
-        --CompactRaidFrameManagerDisplayFrameRaidMarkers.raidMarkerReset
-            btn:SetAllPoints(MakerFrame.marker)
-            btn:SetNormalAtlas('jailerstower-animapowerlist-powerborder-blue')
-
-            btn:SetAttribute('type', 'worldmarker')
-            btn:SetAttribute('action', 'clear')
-            btn:SetAttribute('marker', 0)
-
-            if not CombatLogGetCurrentEventInfo and not WoWTools_DataMixin.Player.husandro then--12.0出问题
-                btn:SetAlpha(0)
+            local text
+            for i=1, NUM_RAID_ICONS do
+                text= (text and text..'\n' or '').. '/cwm '..i
             end
-
-            btn:SetScript('OnEnter', function()
+            btn:SetAttribute('type', 'macro')
+            btn:SetAttribute('macrotext', text)
+            btn:SetAllPoints(MakerFrame.marker)
+            btn.texture= btn:CreateTexture()
+            btn.texture:SetAtlas('jailerstower-animapowerlist-powerborder-blue')
+            btn.texture:SetPoint('CENTER')
+            btn.texture:SetSize(16,16)
+            function btn:set_alpha()
+                self.texture:SetAlpha(self:IsMouseOver() and 1 or 0.5)
+            end
+            btn:SetScript('OnLeave', function(self)
+                self:set_alpha()
+                GameTooltip:Hide()
+            end)
+            btn:SetScript('OnEnter', function(self)
+                self:set_alpha()
                 if not Tooltip_SetOwner() then
                     return
                 end
                 GameTooltip:SetText(
                     '|A:bags-button-autosort-up:0:0|a'
-                    ..(WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL)
+                    ..(WoWTools_DataMixin.onlyChinese and '地面' or GROUPMANAGER_GROUND_MARKER),
+                    ACCOUNT_WIDE_FONT_COLOR:GetRGB()
                 )
                 GameTooltip:Show()
             end)
-
+            btn:set_alpha()
         else
-            table.insert(Buttons, 'MakerButton'..index)
+
             function btn:set_point()
-                local b= _G[Name..MarkerButtons[self:GetID()]]
-                if Save().H then
+                local b= _G[MarkerButtons[self:GetID()]]
+                self:ClearAllPoints()
+                if Save().isToUp then
                     self:SetPoint('BOTTOM', b, 'TOP')
                 else
                     self:SetPoint('RIGHT', b, 'LEFT')
@@ -925,7 +894,6 @@ local function Init()--设置标记, 框架
             btn:SetAttribute("action2", "clear")
 
             btn:SetAttribute('marker', btn.marker)
-            btn:SetAttribute('unit', 'player')
 
             btn:SetScript('OnLeave', function(self)
                 self.elapsed=1
@@ -938,9 +906,11 @@ local function Init()--设置标记, 框架
                 end
                 GameTooltip:SetText(
                     WoWTools_DataMixin.Icon.left
-                    ..WoWTools_MarkerMixin:GetIcon(self:GetID(), nil, 26)
+                    ..(WoWTools_DataMixin.onlyChinese and '地面' or GROUPMANAGER_GROUND_MARKER)
+                    ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..self:GetID()..':26|t'
                     ..'|A:bags-button-autosort-up:0:0|a'
-                    ..WoWTools_DataMixin.Icon.right
+                    ..WoWTools_DataMixin.Icon.right,
+                    TargetColor[self:GetID()]:GetRGB()
                 )
                 GameTooltip:Show()
                 self:SetAlpha(1)
@@ -968,6 +938,7 @@ local function Init()--设置标记, 框架
                 self.elapsed=1.3
             end)
         end
+
     end
 
 
@@ -983,33 +954,45 @@ local function Init()--设置标记, 框架
 
 
 
-    function MakerFrame:set_frame_strata()
+
+
+
+
+
+
+
+
+
+
+--FrameStrata
+    function MakerFrame:set_strata()
         if self:CanChangeAttribute() then
-            self:SetFrameStrata(Save().FrameStrata or 'MEDIUM')
+            self:SetFrameStrata(Save().strata or 'MEDIUM')
         end
     end
-    MakerFrame:set_frame_strata()
-
-    MakerFrame:SetMovable(true)--移动
-    MakerFrame:SetClampedToScreen(true)
-    MakerFrame:SetSize(size,size)--大小
-
-
-    function MakerFrame:set_point()--位置
-        self:ClearAllPoints()
-        if Save().markersFramePoint then
-            self:SetPoint(Save().markersFramePoint[1], UIParent, Save().markersFramePoint[3], Save().markersFramePoint[4], Save().markersFramePoint[5])
-        else
-            self:SetPoint('CENTER', -150, 50)
+--位置
+    function MakerFrame:set_point()
+        if self:CanChangeAttribute() then
+            self:ClearAllPoints()
+            if Save().point then
+                self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
+            else
+                self:SetPoint('CENTER', -150, 50)
+            end
         end
     end
-    MakerFrame:set_point()
+--缩放
+    function MakerFrame:set_scale()
+        if self:CanChangeAttribute() then
+            self:SetScale(Save().scale or 1)
+        end
+    end
 
-    function MakerFrame:set_Shown()
+    function MakerFrame:set_shown()
         if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
-        elseif C_PetBattles.IsInBattle() or not Save().markersFrame then
+        elseif C_PetBattles.IsInBattle() then
             self:SetShown(false)
             return
         end
@@ -1054,8 +1037,10 @@ local function Init()--设置标记, 框架
         self:SetShown(ping or target or marker or check or countdown or rolepoll)
     end
 
-    function MakerFrame:set_Event()
-        if Save().markersFrame then
+    function MakerFrame:set_event()
+        self:UnregisterAllEvents()
+
+        if self:IsShown() then
             self:RegisterEvent('PLAYER_ENTERING_WORLD')--显示/隐藏
             self:RegisterEvent('CVAR_UPDATE')
             self:RegisterEvent('GROUP_ROSTER_UPDATE')
@@ -1064,40 +1049,103 @@ local function Init()--设置标记, 框架
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
             self:RegisterEvent('PARTY_LEADER_CHANGED')
-        else
-            self:UnregisterAllEvents()
         end
     end
 
+    MakerFrame:RegisterForDrag("RightButton")
+    MakerFrame:SetMovable(true)
+    MakerFrame:SetScript("OnDragStart", function(self, d)
+        if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self) then
+            self:StartMoving()
+            if not self.movingOwnerID then
+                self.movingOwnerID= EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_DISABLED", function(owner)
+                    self:StopMovingOrSizing()
+                    self.movingOwnerID= nil
+                    EventRegistry:UnregisterCallback('PLAYER_REGEN_DISABLED', owner)
+                end)
+            end
 
+        end
+    end)
+    MakerFrame:SetScript("OnDragStop", function(self)
+        ResetCursor()
+        if WoWTools_FrameMixin:IsLocked(self) then
+            return
+        end
+        if self.movingOwnerID then
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_DISABLED', self.movingOwnerID)
+            self.movingOwnerID= nil
+        end
+        self:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().point={self:GetPoint(1)}
+            Save().point[2]=nil
+        end
+    end)
+    function MakerFrame:set_alpha()
+        self.texture:SetAlpha(self:IsMouseOver() and 1 or 0.3)
+    end
+    MakerFrame:SetScript('OnMouseDown', function(self, d)
+        if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self) then
+            SetCursor('UI_MOVE_CURSOR')
+        else
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+        end
+        self.texture:SetAlpha(0.1)
+    end)
+
+    MakerFrame:SetScript('OnMouseUp', function(self)
+        ResetCursor()
+        self:set_alpha()
+    end)
+    MakerFrame:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:set_alpha()
+    end)
+    MakerFrame:SetScript('OnEnter', function(self)
+        self:set_alpha()
+        if not Tooltip_SetOwner() then
+            return
+        end
+        GameTooltip:SetText(addName)
+        GameTooltip:AddLine(' ')
+        local r,g,b
+        if InCombatLockdown() then
+            r,g,b= DISABLED_FONT_COLOR:GetRGB()
+        else
+             r,g,b= HIGHLIGHT_FONT_COLOR:GetRGB()
+        end
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right, r,g,b, r,g,b)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:Show()
+    end)
 
     MakerFrame:SetScript('OnEvent', function(self, event, arg1)
         if event=='PLAYER_REGEN_ENABLED' then
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            self:set_Shown()
+            self:UnregisterEvent(event)
+            self:set_shown()
 
         elseif event=='PLAYER_ENTERING_WORLD' then
-            self:set_Shown()
+            self:set_shown()
 
         elseif event=='CVAR_UPDATE' then
             if arg1=='enablePings' then
-                self:set_Shown()
+                self:set_shown()
             end
         else
-            self:set_Shown()
+            self:set_shown()
         end
     end)
 
     WoWTools_DataMixin:Hook('MovieFrame_PlayMovie', function()
-        MakerFrame:set_Shown()
+        MakerFrame:set_shown()
     end)
 
     WoWTools_DataMixin:Hook('MovieFrame_OnMovieFinished', function()
-        MakerFrame:set_Shown()
+        MakerFrame:set_shown()
     end)
 
-    MakerFrame:set_Event()
-    MakerFrame:set_Shown()
+
 
 
 
@@ -1109,70 +1157,69 @@ local function Init()--设置标记, 框架
 
 --背景
     WoWTools_TextureMixin:CreateBG(MakerFrame.ping, {isColor=true})
-    MakerFrame.ping.Background:SetPoint('BOTTOMRIGHT', _G[Name..PingButtons[1]])
-    MakerFrame.ping.Background:SetPoint('TOPLEFT', _G[Name..PingButtons[#PingButtons]])
+    MakerFrame.ping.Background:SetPoint('BOTTOMRIGHT', _G[PingButtons[1]])
+    MakerFrame.ping.Background:SetPoint('TOPLEFT', _G[PingButtons[#PingButtons]])
 
     WoWTools_TextureMixin:CreateBG(MakerFrame.target, {isColor=true})
-    MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', _G[Name..TargetButtons[2]])
-    MakerFrame.target.Background:SetPoint('TOPLEFT', _G[Name..TargetButtons[#TargetButtons]])
+    MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', _G[TargetButtons[2]])
+    MakerFrame.target.Background:SetPoint('TOPLEFT', _G[TargetButtons[#TargetButtons]])
 
     WoWTools_TextureMixin:CreateBG(MakerFrame.marker, {isColor=true})
-    MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', _G[Name..MarkerButtons[2]])
-    MakerFrame.marker.Background:SetPoint('TOPLEFT', _G[Name..MarkerButtons[#MarkerButtons]])
+    MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', _G[MarkerButtons[2]])
+    MakerFrame.marker.Background:SetPoint('TOPLEFT', _G[MarkerButtons[#MarkerButtons]])
 
     WoWTools_TextureMixin:CreateBG(MakerFrame.countdown, {isAllPoint=true, isColor=true})
     WoWTools_TextureMixin:CreateBG(MakerFrame.check, {isAllPoint=true, isColor=true})
     WoWTools_TextureMixin:CreateBG(MakerFrame.RolePoll, {isAllPoint=true, isColor=true})
 
-    function MakerFrame:set_background()
-        local alpha= Save().MakerFrameBgAlpha or 0.5
+    function MakerFrame:set_bg()
+        local alpha= Save().bgAlpha or 0.5
         for _, name in pairs(Buttons) do
-            if _G[Name..name].Background then
-                _G[Name..name].Background:SetColorTexture(0, 0, 0, alpha)
+            if _G[name].Background then
+                _G[name].Background:SetColorTexture(0, 0, 0, alpha)
             end
         end
     end
-    MakerFrame:set_background()
 
-
-
-
-
-
---菜单用
 
 --设置全部，快捷键
     function MakerFrame:set_all_hotkey()
         for _, name in pairs(PingButtons) do
-            if _G[Name..name].set_hotkey then
-                _G[Name..name]:set_hotkey()
+            if _G[name].set_hotkey then
+                _G[name]:set_hotkey()
             end
         end
 --倒计时
         MakerFrame.countdown:set_hotkey()
 --队伍标记
         for _, name in pairs(TargetButtons) do
-            if _G[Name..name].set_hotkey then
-                _G[Name..name]:set_hotkey()
+            if _G[name].set_hotkey then
+                _G[name]:set_hotkey()
             end
         end
     end
 
 --位于上方
-    function MakerFrame:set_button_point()
+    function MakerFrame:set_all_point()
         if not self:CanChangeAttribute() then
             return
         end
         for _, name in pairs(Buttons) do
-            _G[Name..name]:ClearAllPoints()
-            _G[Name..name]:set_point()
+            _G[name]:set_point()
         end
     end
 
-    Init=function()
-        MakerFrame:set_Shown()
-        MakerFrame:set_Event()
-    end
+
+
+    MakerFrame:set_alpha()
+    MakerFrame:set_scale()
+    MakerFrame:set_point()
+    MakerFrame:set_strata()
+    MakerFrame:set_event()
+    MakerFrame:set_shown()
+    MakerFrame:set_bg()
+
+    Init=function()end
 end
 
 
@@ -1188,7 +1235,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
         WoWToolsSave['Other_MarkerFrame']= WoWToolsSave['Other_MarkerFrame'] or {}
 
-        addName= '|A:GM-raidMarker2:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
+        addName= '|A:GM-raidMarker7:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
         if WoWTools_OtherMixin:AddOption(
             'MarkerFrame',
            addName
