@@ -404,8 +404,8 @@ local function Init()--设置标记, 框架
             return
         end
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save().countdown or 7))
-        GameTooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.Player.IsCN and '取消 取消 取消' or 'STOP STOP STOP'))
+        GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' |cffffffFF'..(Save().countdown or 7))
+        GameTooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.Player.IsCN and '取消 取消 取消' or 'STOP STOP STOP')..'|A:transmog-icon-chat:0:0|a', HIGHLIGHT_FONT_COLOR:GetRGB())
         GameTooltip:AddLine(' ')
         GameTooltip_AddInstructionLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '备注：不要太快了' or format('%s: %s', LABEL_NOTE, ERR_GENERIC_THROTTLE), true)
         GameTooltip:AddLine(WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS))
@@ -1068,7 +1068,7 @@ local function Init()--设置标记, 框架
              r,g,b= HIGHLIGHT_FONT_COLOR:GetRGB()
         end
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right, r,g,b, r,g,b)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left, HIGHLIGHT_FONT_COLOR:GetRGB())
         GameTooltip:Show()
     end)
 

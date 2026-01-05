@@ -38,7 +38,6 @@ Source\Libs\LibRangeCheck-3.0.lua
 1_Mixin\Durabiliy.lua
 1_Mixin\EditBox.lua
 1_Mixin\Frame.lua
-1_Mixin\Group.lua
 1_Mixin\ItemLocation.lua
 1_Mixin\Key.lua
 1_Mixin\Label.lua
@@ -515,8 +514,7 @@ Z_Other\MoneyFrame.lua
 Z_Other\DELETE.lua
 ##隐藏教程
 Z_Other\HelpTip.lua
-##断，驱，散 12.0没有了
-Z_Other\InterruptStolenDispel.lua
+
 ##美酒节 Brewfest
 Z_Other\Brewfest.lua
 ##10.1 梦境之种
@@ -588,7 +586,8 @@ ChatButton\C7_Guild\z_CommunitiesFrame.lua
 ChatButton\C7_Guild\z_PetitionFrame.lua
 ChatButton\C7_Guild\z_UI.lua
 ##队伍
-ChatButton\C8_Group\8_Group.lua
+ChatButton\C8_Group\1_Init.lua
+ChatButton\C8_Group\Ready_Auto.lua
 ##说
 ChatButton\C9_Say\9_Say.lua
 ##表情，如不是中文，默认关闭

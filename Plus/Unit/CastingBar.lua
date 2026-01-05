@@ -117,7 +117,7 @@ end
 
 
 local function Init()
-    if WoWToolsSave['Plus_UnitFrame'].hideCastingFrame or not CombatLogGetCurrentEventInfo then--12.0会出问题
+    if WoWToolsSave['Plus_UnitFrame'].hideCastingFrame then--12.0会出问题
         return
     end
 

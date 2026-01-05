@@ -1,31 +1,24 @@
+WoWTools_GroupMixin={}
 
-local addName
-local P_Save={
-    --type='/raid'
-    --text=团队
-}
-    --[[mouseUP=  (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
-                or WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢'
-                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,SUMMON, COMBATLOG_FILTER_STRING_ME),
-    mouseDown= WoWTools_DataMixin.Player.Region~=5 and 'inv, thx' or '1' ,
- 
-}]]
-
---1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+local P_Save={}
 
 
 local GroupButton
-local roleAtlas={
-    TANK='groupfinder-icon-role-large-tank',
-    HEALER='groupfinder-icon-role-large-heal',
-    DAMAGER='groupfinder-icon-role-large-dps',
-    NONE='socialqueuing-icon-group',
-}
-
 
 local ClickType= 'p'-- p r rw i
 local ChatTab={}
 
+
+
+--[[队长(团长)或助理
+function WoWTools_GroupMixin:isLeader()--队长(团长)或助理
+    return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')
+end
+
+--在团长或助理
+function WoWTools_GroupMixin:isRaidLeader()--在团长或助理
+    return IsInRaid() and (UnitIsGroupAssistant('player') or UnitIsGroupLeader('player'))
+end]]
 
 
 
@@ -70,7 +63,9 @@ local function Settings()--队伍信息提示
 
 --职责提示
     if IsInGroup() then
-        GroupButton.texture:SetAtlas(roleAtlas[combatRole] or roleAtlas['NONE'])
+        local icon= WoWTools_DataMixin.Icon[combatRole] or WoWTools_DataMixin.Icon['NONE']
+        icon= icon:match('|A:(.-):')
+        GroupButton.texture:SetAtlas(icon)
     else
         GroupButton.texture:SetAtlas('socialqueuing-icon-group')
     end
@@ -179,50 +174,48 @@ local function Init_Menu(self, root)
     }) do
 
 
+    sub=root:CreateCheckbox(
+        '|A:'..ChatTab[tab[1]].atlas..':0:0|a'
+        ..(tab[2] and '|cff606060' or '')
+        ..ChatTab[tab[1]].text
+        ..' '
+        ..ChatTab[tab[1]].slashText,
 
+    function(data)
+        return ClickType==data.type
 
-        sub=root:CreateCheckbox(
-            '|A:'..ChatTab[tab[1]].atlas..':0:0|a'
-            ..(tab[2] and '|cff606060' or '')
-            ..ChatTab[tab[1]].text
-            ..' '
-            ..ChatTab[tab[1]].slashText,
+    end, function(data)
+        ClickType= data.type
+        WoWTools_ChatMixin:Say(ChatTab[data.type].slashText)
+        Settings()
 
-        function(data)
-            return ClickType==data.type
+    end, {type=tab[1]})
 
-        end, function(data)
-            ClickType= data.type
-            WoWTools_ChatMixin:Say(ChatTab[data.type].slashText)
-            Settings()
-
-        end, {type=tab[1]})
-
-        sub:SetTooltip(function(tooltip, desc)
-            local newTab={}
-            local slashText= ChatTab[desc.data.type].slash
-            for i=1, 12 do
-                local str=_G[slashText..i]
-                if str then
-                    if not newTab[str] then
-                        tooltip:AddLine(str)
-                        newTab[str]=1
-                    end
-                else
-                    break
+    sub:SetTooltip(function(tooltip, desc)
+        local newTab={}
+        local slashText= ChatTab[desc.data.type].slash
+        for i=1, 12 do
+            local str=_G[slashText..i]
+            if str then
+                if not newTab[str] then
+                    tooltip:AddLine(str)
+                    newTab[str]=1
                 end
+            else
+                break
             end
-        end)
+        end
+    end)
 
-        sub:AddInitializer(function(button)
-            if button.leftTexture1 then
-                button.leftTexture1:SetShown(false)
-            end
-            if button.leftTexture2 then
-                button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
-            end
-        end)
-    end
+    sub:AddInitializer(function(button)
+        if button.leftTexture1 then
+            button.leftTexture1:SetShown(false)
+        end
+        if button.leftTexture2 then
+            button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
+        end
+    end)
+end
 
         --[[if isInGroup then
             local unit
@@ -311,13 +304,13 @@ local function Init_Menu(self, root)
         if not InCombatLockdown() then
             C_CVar.SetCVar("chatBubblesParty", C_CVar.GetCVarBool("chatBubblesParty") and '0' or '1')
             print(
-                addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_DataMixin.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT,
                 WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty"))
             )
         else
             print(
-                addName..WoWTools_DataMixin.Icon.icon2,
+                WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
             )
         end
@@ -352,7 +345,7 @@ local function Init_Menu(self, root)
             ..(WoWTools_DataMixin.onlyChinese and '修改' or HUD_EDIT_MODE_RENAME_LAYOUT),
         function(data)
             StaticPopup_Show('WoWTools_EditText',
-                addName
+                WoWTools_GroupMixin.addName
                 ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '自定义发送信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, SEND_MESSAGE))
                 ..'|n|n|cnGREEN_FONT_COLOR:'..format('|A:%s:0:0|a', data.icon)..data.text..'|r|n|n'
                 ..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
@@ -632,6 +625,8 @@ local function Init()
     GroupButton:SetupMenu(Init_Menu)
 
     Settings()--队伍信息提示
+
+    Init=function()end
 end
 
 
@@ -677,8 +672,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsPlayerDate['GroupMouseDownText']= WoWToolsPlayerDate['GroupMouseDownText']
                 or (WoWTools_DataMixin.Player.Region~=5 and 'inv, thx') or '1'
 
-            addName= '|A:socialqueuing-icon-group:0:0:|a'..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
-            GroupButton= WoWTools_ChatMixin:CreateButton('Group', addName)
+            WoWTools_GroupMixin.addName= '|A:socialqueuing-icon-group:0:0:|a'..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
+            GroupButton= WoWTools_ChatMixin:CreateButton('Group', WoWTools_GroupMixin.addName)
 
             if GroupButton then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -689,6 +684,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('GROUP_ROSTER_UPDATE')
 
                 self:RegisterEvent('CVAR_UPDATE')
+
+
+                WoWTools_GroupMixin:Init_AutoReady()
+
             else
                 self:SetScript('OnEvent', nil)
             end

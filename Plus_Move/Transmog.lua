@@ -1,6 +1,3 @@
-if CombatLogGetCurrentEventInfo then--12.0才有
-    return
-end
 --[[
 12.0才有 幻化
 这个有保护，注意操作

@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['ChatButton_Markers'] or {}
+    return WoWToolsSave['ChatButtonGroup'] or {}
 end
 
 local function Get_LeftTime()
@@ -18,8 +18,14 @@ local AltCanellText--Alt, 取消提示
 
 
 
-
-
+local function Get_ReadyTextAtlas(autoReady)
+    autoReady= autoReady or Save().isAutoReady
+    if autoReady==1 then
+        return format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', WoWTools_DataMixin.onlyChinese and '就绪' or READY), 'common-icon-checkmark'
+    elseif autoReady==2 then
+        return format('|cnWARNING_FONT_COLOR:%s|r|A:XMarksTheSpot:0:0|a', WoWTools_DataMixin.onlyChinese and '未就绪' or NOT_READY_FEMALE), 'XMarksTheSpot'
+    end
+end
 
 
 
@@ -31,12 +37,12 @@ local function Set_Ready(timeLeft)
         AutoReadyTime= nil
     end
 
-    local autoReady= Save().autoReady
+    local autoReady= Save().isAutoReady
 
     if autoReady then
         print(
-            WoWTools_MarkerMixin.addName..WoWTools_DataMixin.Icon.icon2,
-            WoWTools_MarkerMixin:Get_ReadyTextAtlas(autoReady),
+            WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            Get_ReadyTextAtlas(),
             '|cffff00ffAlt', WoWTools_DataMixin.onlyChinese and '取消' or CANCEL
         )
 
@@ -72,61 +78,7 @@ end
 
 
 local function Init_UI()
-    ReadyCheckFrame:SetHeight(120)--100
-    ReadyCheckFrameText:SetPoint('TOP', 20, -45)--="TOP" x="20" y="-37"/>
-
---就位，玩家，提示
-    PlayerNameText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame, {
-        name='ReadyCheckFramePlayerNameText',
-        justifyH='CENTER'
-    })
-    PlayerNameText:SetPoint('BOTTOM', ReadyCheckFrameText, 'TOP', 0, 2)
-
-
-
-
-    for i=0, 2 do
-        Checks[i]= WoWTools_ButtonMixin:Cbtn(ReadyCheckListenerFrame, {
-            name='WoWToolsChatButtonMarkersReadyCheckButton'..i,
-            isCheck=true,
-            text= WoWTools_MarkerMixin:Get_ReadyTextAtlas(i) or (WoWTools_DataMixin.onlyChinese and '无' or NONE),
-            isRightText=true,
-        })
-
-        Checks[i]:SetPoint('RIGHT', ReadyCheckListenerFrame, 'LEFT', -2, 20-(i*20))
-        Checks[i].value= i>0 and i or nil
-
-        Checks[i]:SetScript('OnShow', function(self)
-            self:SetChecked(self.value== Save().autoReady)
-        end)
-
-        Checks[i].settings= function(self)
-            Save().autoReady= self.value
-            Set_Ready()--设置，就绪，未就绪
-            WoWTools_ChatMixin:GetButtonForName('Markers'):settings()
-            for _, btn in pairs(Checks) do
-                if btn~=self then
-                    btn:SetChecked(false)
-                end
-            end
-            AltCanellText:set_shown()
-        end
-        Checks[i].tooltip= function(_, tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.addName)
-            tooltip:AddLine(WoWTools_MarkerMixin.addName)
-        end
-
-        --table.insert(Checks, check)
-    end
-
-    AltCanellText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame)
-    AltCanellText:SetPoint('TOPRIGHT', Checks[2], 'BOTTOMLEFT', 0,-2)
-    AltCanellText:SetText('Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL))
-
-    function AltCanellText:set_shown()
-        AltCanellText:SetShown(Save().autoReady)
-    end
-    AltCanellText:set_shown()
+    
 
     Init_UI=function()end
 end
@@ -155,10 +107,6 @@ local function Init()
         if not initiator then
             return
         end
-
-
-        Init_UI()
-
 
         local name= WoWTools_UnitMixin:GetPlayerInfo(nil, nil, initiator, {reName=true})
         PlayerNameText:SetText(name~='' and name or initiator)
@@ -214,8 +162,8 @@ local function Init()
             AutoReadyTime= nil
 
             print(
-                WoWTools_MarkerMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                WoWTools_MarkerMixin:Get_ReadyTextAtlas(),
+                WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                Get_ReadyTextAtlas(),
                 '|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
             )
 
@@ -223,7 +171,68 @@ local function Init()
         end
     end)
 
-     Init=function()end
+
+
+
+
+
+    ReadyCheckFrame:SetHeight(120)--100
+    ReadyCheckFrameText:SetPoint('TOP', 20, -45)--="TOP" x="20" y="-37"/>
+
+--就位，玩家，提示
+    PlayerNameText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame, {
+        name='ReadyCheckFramePlayerNameText',
+        justifyH='CENTER'
+    })
+    PlayerNameText:SetPoint('BOTTOM', ReadyCheckFrameText, 'TOP', 0, 2)
+
+
+
+
+    for i=0, 2 do
+        Checks[i]= WoWTools_ButtonMixin:Cbtn(ReadyCheckListenerFrame, {
+            name='WoWToolsChatButtonMarkersReadyCheckButton'..i,
+            isCheck=true,
+            text= Get_ReadyTextAtlas(i) or (WoWTools_DataMixin.onlyChinese and '无' or NONE),
+            isRightText=true,
+        })
+
+        Checks[i]:SetPoint('RIGHT', ReadyCheckListenerFrame, 'LEFT', -2, 20-(i*20))
+        Checks[i].value= i>0 and i or nil
+
+        Checks[i]:SetScript('OnShow', function(self)
+            self:SetChecked(self.value== Save().isAutoReady)
+        end)
+
+        Checks[i].settings= function(self)
+            Save().isAutoReady= self.value
+            Set_Ready()--设置，就绪，未就绪
+            WoWTools_ChatMixin:GetButtonForName('Markers'):settings()
+            for _, btn in pairs(Checks) do
+                if btn~=self then
+                    btn:SetChecked(false)
+                end
+            end
+            AltCanellText:set_shown()
+        end
+        Checks[i].tooltip= function(_, tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.addName)
+            tooltip:AddLine(WoWTools_GroupMixin.addName)
+        end
+
+        --table.insert(Checks, check)
+    end
+
+    AltCanellText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame)
+    AltCanellText:SetPoint('TOPRIGHT', Checks[2], 'BOTTOMLEFT', 0,-2)
+    AltCanellText:SetText('Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL))
+
+    function AltCanellText:set_shown()
+        AltCanellText:SetShown(Save().isAutoReady)
+    end
+    AltCanellText:set_shown()
+
+    Init=function()end
 end
 
 
@@ -231,6 +240,6 @@ end
 --ReadyCheckListenerFrame
 
 
-function WoWTools_MarkerMixin:Init_AutoReady()
+function WoWTools_GroupMixin:Init_AutoReady()
     Init()
 end

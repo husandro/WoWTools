@@ -255,18 +255,14 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
     end
     CollectionWardrobeUtil.SortSources(sources, sourceInfo.visualID, itemFrame.sourceID)
 
-    local isVer12= not CombatLogGetCurrentEventInfo and true or false--12.0  C_TransmogCollection.GetAppearanceSourceInfo 返回 tab
-
     local numItems= #sources
     for i=1, numItems do
         local index = CollectionWardrobeUtil.GetValidIndexForNumSources(i, numItems)
 
         local itemLink
-        if isVer12 then--12.0才有
-            local data= C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID) or {}
+        local data= C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID) or {}
+        if data then
             itemLink= data.itemLink
-        else
-            itemLink= select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
         end
 
         local btn=itemFrame['btn'..i]

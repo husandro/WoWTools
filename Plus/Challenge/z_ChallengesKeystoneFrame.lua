@@ -356,31 +356,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
 
 
 
---标记
-if CombatLogGetCurrentEventInfo then--12.0没有了
-    local mark = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--标记
-    mark:SetText(WoWTools_DataMixin.Icon['TANK']..(WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon['HEALER'])
-    mark:SetPoint('RIGHT', ChallengesKeystoneFrame.StartButton, 'LEFT',-2, 0)
-    mark:SetSize(100,24)
-    mark:SetScript("OnMouseDown",function()
-        local n=GetNumGroupMembers()
-        for i=1,n  do
-            local u='party'..i
-            if i==n then u='player' end
-            if CanBeRaidTarget(u) then
-                local r=UnitGroupRolesAssigned(u)
-                local index=GetRaidTargetIndex(u)
-                if r=='TANK' then
-                    if index~=2 then SetRaidTarget(u, 2) end
-                elseif r=='HEALER' then
-                    if index~=1 then SetRaidTarget(u, 1) end
-                else
-                    if index and index>0 then SetRaidTarget(u, 0) end
-                end
-            end
-        end
-    end)
-end
+
 
 
 

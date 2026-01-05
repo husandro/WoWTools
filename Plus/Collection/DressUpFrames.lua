@@ -15,13 +15,9 @@ local function GetItemLink(self)
         if type(self.item)=='table' and self.item.GetItemLink then--12.0更新如下
             link= self.item:GetItemLink()
         elseif self.item then
-            if CombatLogGetCurrentEventInfo then--12.0没有了
-                link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID))
-            else
-                local data= C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID)
-                if data then
-                    link= data.itemLink
-                end
+            local data= C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID)
+            if data then
+                link= data.itemLink
             end
         else
             link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID))
@@ -75,16 +71,8 @@ local function Init()
         local co, all= 0, 0
         for _, data in pairs(setItems or {}) do
             if data.itemModifiedAppearanceID then
-                local isCollected
-                if CombatLogGetCurrentEventInfo then--12.0没有了
-                    isCollected= select(5, C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID))
-                else
-                    local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
-                    if info then
-                        isCollected= info.isCollected
-                    end
-                end
-                if isCollected then
+                local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
+                if info and info.isCollected then
                     co= co+1
                 end
             end
@@ -125,13 +113,9 @@ local function Init()
         end
         local isNotColleced
         if data.itemModifiedAppearanceID then
-            if CombatLogGetCurrentEventInfo then--12.0没有了
-                isNotColleced= select(5, C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID))==false
-            else
-                local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
-                if info then
-                    isNotColleced= info.isCollected==false
-                end
+            local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
+            if info then
+                isNotColleced= info.isCollected==false
             end
         end
         frame.collectedTexture:SetShown(isNotColleced)

@@ -248,7 +248,7 @@ local function Init_Panel()
         end
     })
 
-    if CombatLogGetCurrentEventInfo then--12.0没有了
+    --12.0  可能错误
         WoWTools_PanelMixin:OnlyCheck({
             name= WoWTools_DataMixin.onlyChinese and '生命值' or HEALTH,
             tooltip= reloadText,
@@ -259,7 +259,7 @@ local function Init_Panel()
                 WoWTools_TooltipMixin:Init_StatusBar()
             end
         })
-    end
+    
 
 --[[<右键点击设置框体>
     WoWTools_PanelMixin:OnlyCheck({
