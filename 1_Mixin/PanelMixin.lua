@@ -175,14 +175,24 @@ function WoWTools_PanelMixin:OnlyCheck(tab, root)
     end
     return sub
 end
-
+--[[
+--添加控制面板
+WoWTools_PanelMixin:OnlyCheck({
+name= WoWTools_CollectionMixin.addName,
+GetValue= function() return not Save().disabled end,
+SetValue= function()
+end,
+category= ,
+tooltip= ,
+}, root)
+]]
 
 --添加，按钮
 --CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip, addSearchTags)
 function WoWTools_PanelMixin:OnlyButton(tab, root)
     local layout= tab.layout or Layout
     local sub= CreateSettingsButtonInitializer(--Blizzard_SettingControls.lua
-        tab.title or '',
+        tab.title or tab.name or '',
         tab.buttonText or '',
         tab.SetValue,
         tab.tooltip or tab.buttonText or tab.title or nil,

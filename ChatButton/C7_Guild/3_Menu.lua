@@ -183,7 +183,7 @@ local function WoW_List(_, root)
     local sub, sub2
 
     sub=root:CreateButton(
-        WoWTools_DataMixin.Icon.net2..MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB"),
+        WoWTools_DataMixin.Icon.net2..MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '公会与社区' or COMMUNITIES_FRAME_TITLE, "TOGGLEGUILDTAB"),
     function()
         ToggleGuildFrame()
         return MenuResponse.Open

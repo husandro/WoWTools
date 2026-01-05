@@ -252,14 +252,14 @@ local function Init()--设置标记, 框架
 
     MakerFrame.ping.tab={--Enum.PingSubjectType.Warning
         [8]={name=WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Marker_Icon_NonThreat', action='TOGGLEPINGLISTENER'},
-        [7]={name=WoWTools_DataMixin.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
         [0]={name=WoWTools_DataMixin.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text=BINDING_NAME_PINGATTACK},--text='attack'},
         [1]={name=WoWTools_DataMixin.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text=BINDING_NAME_PINGWARNING},--text='warning'},
-
         [3]={name=WoWTools_DataMixin.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY', text=BINDING_NAME_PINGONMYWAY},--text='onmyway'},
         [2]={name=WoWTools_DataMixin.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST', text=BINDING_NAME_PINGASSIST},-- text='assist'},
-        [4]={name=WoWTools_DataMixin.onlyChinese and '威胁' or REPORT_THREAT , atlas='Ping_Marker_Icon_threat'},
-        [5]={name=WoWTools_DataMixin.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
+
+        --[7]={name=WoWTools_DataMixin.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
+        --[4]={name=WoWTools_DataMixin.onlyChinese and '威胁' or REPORT_THREAT , atlas='Ping_Marker_Icon_threat'},
+        --[5]={name=WoWTools_DataMixin.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
     }
 
 
@@ -288,7 +288,7 @@ local function Init()--设置标记, 框架
             btn:set_point()
         end
 
-        btn.name= '|A:'..MakerFrame.ping.tab[index].atlas..':0:0|a'..MakerFrame.ping.tab[index].name
+        btn.name= MakerFrame.ping.tab[index].name..'|A:'..MakerFrame.ping.tab[index].atlas..':26:26|a'
         btn.action= MakerFrame.ping.tab[index].action
 
         btn:SetAttribute('type1', 'macro')
@@ -315,20 +315,7 @@ local function Init()--设置标记, 框架
             if event=='UPDATE_BINDINGS' then
                 self:set_hotkey()
             else
-                local exists= WoWTools_UnitMixin:UnitExists('target')
-                if not self.action then
-                    local atlas
-                    local guid= exists and UnitGUID('target') or WoWTools_DataMixin.Player.GUID
-                    local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                    if type then
-                        local pingTab=self:GetParent().tab
-                        if pingTab[type] then
-                            atlas= pingTab[type].atlas
-                        end
-                    end
-                    self:SetNormalTexture(atlas or self.atlas)
-                end
-                self:SetAlpha(exists and 1 or 0.5)
+                self:SetAlpha(WoWTools_UnitMixin:UnitExists('target') and 1 or 0.5)
             end
         end)
         btn:SetAlpha(0.5)
@@ -338,47 +325,12 @@ local function Init()--设置标记, 框架
             if not Tooltip_SetOwner() then
                 return
             end
-            GameTooltip:ClearLines()
-            if self.action then
-                GameTooltip:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
-                GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(not UnitExists('target') and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS), 1,1,1)
-                GameTooltip:AddLine(
-                    WoWTools_DataMixin.Icon.right
-                    ..WoWTools_DataMixin.Icon.Player
-                    ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
-                    1,1,1
-                )
-            else
-                local find
-                local pingTab= self:GetParent().tab
-                for _, pingIndex in pairs({7, 0, 1, 3, 2}) do
-                    local name= pingTab[pingIndex].name
-                    local text= MicroButtonTooltipText(name, pingTab[pingIndex].action)
-                    if text and text~=name then
-                        GameTooltip:AddLine('|A:'..pingTab[pingIndex].atlas..':0:0|a'..text, 1,1,1)
-                        find=true
-                    end
-                end
-                if find then
-                    GameTooltip:AddLine(' ')
-                end
-                local guid= UnitExists('target') and UnitGUID('target')
-                local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(not UnitExists('target') and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
-                            ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
-                )
-
-                type= C_Ping.GetContextualPingTypeForUnit(WoWTools_DataMixin.Player.GUID)
-                GameTooltip:AddLine(
-                    WoWTools_DataMixin.Icon.right
-                    ..WoWTools_DataMixin.Icon.Player
-                    ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                    ..(
-                        (type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or ''
-                    )
-                )
-
-            end
+            GameTooltip:SetText(
+                WoWTools_DataMixin.Icon.left
+                ..MicroButtonTooltipText(self.name, self.action)
+                ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                ..WoWTools_DataMixin.Icon.right
+            )
             GameTooltip:Show()
         end)
 
@@ -455,7 +407,7 @@ local function Init()--设置标记, 框架
         GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save().countdown or 7))
         GameTooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.Player.IsCN and '取消 取消 取消' or 'STOP STOP STOP'))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '备注：不要太快了' or (LABEL_NOTE..': '..ERR_GENERIC_THROTTLE), 1,0,0)
+        GameTooltip_AddInstructionLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '备注：不要太快了' or format('%s: %s', LABEL_NOTE, ERR_GENERIC_THROTTLE), true)
         GameTooltip:AddLine(WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS))
         GameTooltip:Show()
     end)
@@ -1236,13 +1188,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         WoWToolsSave['Other_MarkerFrame']= WoWToolsSave['Other_MarkerFrame'] or {}
 
         addName= '|A:GM-raidMarker7:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
-        if WoWTools_OtherMixin:AddOption(
-            'MarkerFrame',
-           addName
-        ) then
+        local isEnabled, sub= WoWTools_OtherMixin:AddOption('MarkerFrame', addName)
+
+        WoWTools_PanelMixin:OnlyButton({
+        buttonText=WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+        SetValue=function()
+            StaticPopup_Show('WoWTools_RestData',
+                addName
+                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                nil,
+            function()
+                WoWToolsSave['Other_MarkerFrame']= nil
+                WoWTools_DataMixin:Reload()
+            end)
+        end,
+        tooltip= (WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)
+            ..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
+        }, sub)
+
+        if isEnabled then
             Init()
         end
-
         self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)
     end

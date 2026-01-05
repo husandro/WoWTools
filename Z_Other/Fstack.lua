@@ -232,12 +232,12 @@ EVENTTRACE_SECRET_FMT = "|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s"
     Set_CheckBox(frame.VisibilityButton)--, 'AlliedRace-UnlockingFrame-GenderSelectionGlow')
 
 
-    frame.HighlightButton.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '高亮' or frame.HighlightButton.Label:GetText())
+    frame.HighlightButton.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '高亮' or frame.HighlightButton.Label:GetText() or HIGHLIGHTING)
     frame.HighlightButton:ClearAllPoints()
     frame.HighlightButton:SetPoint('LEFT', frame.VisibilityButton, 'RIGHT')
     Set_CheckBox(frame.HighlightButton, 'loottoast-itemborder-glow')
 
-    frame.DynamicUpdateButton.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '动态更新' or frame.HighlightButton.Label:GetText())
+    frame.DynamicUpdateButton.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '动态更新' or frame.HighlightButton.Label:GetText() or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DYNAMIC, UPDATE))
     frame.DynamicUpdateButton:ClearAllPoints()
     frame.DynamicUpdateButton:SetPoint('LEFT', frame.HighlightButton, 'RIGHT')
     Set_CheckBox(frame.DynamicUpdateButton)--, 'AlliedRace-UnlockingFrame-GenderMouseOverGlow')

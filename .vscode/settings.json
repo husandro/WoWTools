@@ -2842,7 +2842,11 @@
         "RaidFinderQueueFrameRoleButtonDPS",
         "RAID_MARKER_REMOVE_ID",
         "GROUPMANAGER_UNIT_MARKER",
-        "GROUPMANAGER_GROUND_MARKER"
+        "GROUPMANAGER_GROUND_MARKER",
+        "GUILD_AND_COMMUNITIES",
+        "COMMUNITIES_FRAME_TITLE",
+        "HIGHLIGHTING",
+        "DYNAMIC"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
