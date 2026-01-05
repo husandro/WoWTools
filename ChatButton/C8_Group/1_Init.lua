@@ -1,6 +1,5 @@
 WoWTools_GroupMixin={}
 
-local P_Save={}
 
 
 local GroupButton
@@ -9,7 +8,20 @@ local ClickType= 'p'-- p r rw i
 local ChatTab={}
 
 
+local function Save()
+    return WoWToolsSave['ChatButtonGroup'] or {}
+end
 
+function WoWTools_GroupMixin:Get_ReadyTextAtlas(ready)
+    ready= ready or Save().autoReady
+    if ready==1 then
+        return format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', WoWTools_DataMixin.onlyChinese and '就绪' or READY), 'common-icon-checkmark'
+    elseif ready==2 then
+        return format('|cnWARNING_FONT_COLOR:%s|r|A:XMarksTheSpot:0:0|a', WoWTools_DataMixin.onlyChinese and '未就绪' or NOT_READY_FEMALE), 'XMarksTheSpot'
+    else
+        return WoWTools_DataMixin.onlyChinese and '手动' or TRACKER_SORT_MANUAL
+    end
+end
 --[[队长(团长)或助理
 function WoWTools_GroupMixin:isLeader()--队长(团长)或助理
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')
@@ -158,7 +170,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub
+    local sub, sub2
     local isInGroup= IsInGroup()
     local isInRaid= IsInRaid()
     local isInInstance= IsInInstance()
@@ -323,8 +335,40 @@ end
     end)
 
 
-    sub= root:C
 
+
+
+    sub= root:CreateButton(
+        Save().autoReady==0 and (WoWTools_DataMixin.onlyChinese and '就位确认' or CRF_READY_CHECK)
+        or WoWTools_GroupMixin:Get_ReadyTextAtlas(),
+    function()
+        local show= ReadyCheckFrame:IsShown()
+        ReadyCheckFrame:SetShown(not show)
+        ReadyCheckListenerFrame:SetShown(not show)
+        return MenuResponse.Refresh
+    end)
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示就绪框' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, READY))
+        tooltip:AddLine('ReadyCheckFrame')
+    end)
+
+
+ --自动, 就绪  
+    for value= 0, 2 do
+
+        sub2= sub:CreateRadio(
+            WoWTools_GroupMixin:Get_ReadyTextAtlas(value),
+        function(data)
+            return data==Save().autoReady
+        end, function(data)
+            Save().autoReady=data
+            return MenuResponse.Refresh
+        end, value>0 and value or nil)
+
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO)
+        end)
+    end
 
 
     root:CreateDivider()
@@ -664,8 +708,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or P_Save
-            P_Save=nil
+            WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or {
+                isReadyCheckPlus=WoWTools_DataMixin.Player.husandro--就位确认plus
+            }
+
+            Save().autoReady= Save().autoReady or 0
 
             WoWToolsPlayerDate['GroupMouseUpText']= WoWToolsPlayerDate['GroupMouseUpText']
                 or (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
@@ -677,6 +724,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_GroupMixin.addName= '|A:socialqueuing-icon-group:0:0:|a'..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
             GroupButton= WoWTools_ChatMixin:CreateButton('Group', WoWTools_GroupMixin.addName)
+
 
             if GroupButton then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')

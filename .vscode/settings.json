@@ -2846,7 +2846,9 @@
         "GUILD_AND_COMMUNITIES",
         "COMMUNITIES_FRAME_TITLE",
         "HIGHLIGHTING",
-        "DYNAMIC"
+        "DYNAMIC",
+        "CRF_READY_CHECK",
+        "TRACKER_SORT_MANUAL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

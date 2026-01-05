@@ -18,14 +18,7 @@ local AltCanellText--Alt, 取消提示
 
 
 
-local function Get_ReadyTextAtlas(autoReady)
-    autoReady= autoReady or Save().isAutoReady
-    if autoReady==1 then
-        return format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', WoWTools_DataMixin.onlyChinese and '就绪' or READY), 'common-icon-checkmark'
-    elseif autoReady==2 then
-        return format('|cnWARNING_FONT_COLOR:%s|r|A:XMarksTheSpot:0:0|a', WoWTools_DataMixin.onlyChinese and '未就绪' or NOT_READY_FEMALE), 'XMarksTheSpot'
-    end
-end
+
 
 
 
@@ -37,12 +30,12 @@ local function Set_Ready(timeLeft)
         AutoReadyTime= nil
     end
 
-    local autoReady= Save().isAutoReady
+    local autoReady= Save().autoReady
 
     if autoReady then
         print(
             WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,
-            Get_ReadyTextAtlas(),
+            WoWTools_GroupMixin:Get_ReadyTextAtlas(),
             '|cffff00ffAlt', WoWTools_DataMixin.onlyChinese and '取消' or CANCEL
         )
 
@@ -163,7 +156,7 @@ local function Init()
 
             print(
                 WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                Get_ReadyTextAtlas(),
+                WoWTools_GroupMixin:Get_ReadyTextAtlas(),
                 '|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
             )
 
@@ -193,7 +186,7 @@ local function Init()
         Checks[i]= WoWTools_ButtonMixin:Cbtn(ReadyCheckListenerFrame, {
             name='WoWToolsChatButtonMarkersReadyCheckButton'..i,
             isCheck=true,
-            text= Get_ReadyTextAtlas(i) or (WoWTools_DataMixin.onlyChinese and '无' or NONE),
+            text= WoWTools_GroupMixin:Get_ReadyTextAtlas(i),
             isRightText=true,
         })
 
@@ -201,11 +194,11 @@ local function Init()
         Checks[i].value= i>0 and i or nil
 
         Checks[i]:SetScript('OnShow', function(self)
-            self:SetChecked(self.value== Save().isAutoReady)
+            self:SetChecked(self.value== Save().autoReady)
         end)
 
         Checks[i].settings= function(self)
-            Save().isAutoReady= self.value
+            Save().autoReady= self.value
             Set_Ready()--设置，就绪，未就绪
             for _, btn in pairs(Checks) do
                 if btn~=self then
@@ -227,7 +220,7 @@ local function Init()
     AltCanellText:SetText('Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL))
 
     function AltCanellText:set_shown()
-        AltCanellText:SetShown(Save().isAutoReady)
+        AltCanellText:SetShown(Save().autoReady)
     end
     AltCanellText:set_shown()
 
