@@ -298,7 +298,10 @@ end
 
 
 --组队聊天泡泡
-    sub=root:CreateCheckbox((isInBat and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT), function()
+    sub=root:CreateCheckbox(
+        (isInBat and '|cff626262' or '')
+        ..(WoWTools_DataMixin.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT),
+    function()
         return C_CVar.GetCVarBool("chatBubblesParty")
     end, function()
         if not InCombatLockdown() then
@@ -315,12 +318,12 @@ end
             )
         end
     end)
-
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('C_CVar.SetCVar(\"chatBubblesParty\")')
+        tooltip:AddLine('CVar: chatBubblesParty')
     end)
 
 
+    sub= root:C
 
 
 
