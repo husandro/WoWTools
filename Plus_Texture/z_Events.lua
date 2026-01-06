@@ -1463,6 +1463,10 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     self:SetFrame(CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerUnitTab, {index=1, alpha=0.3})
     self:SetFrame(CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerGroundTab, {index=1, alpha=0.3})
 
+    for btn in CompactRaidFrameManager.filterGroupPool:EnumerateActive() do
+        self:HideTexture(btn:GetNormalTexture())
+    end
+
     hooksecurefunc('CompactRaidFrameManager_UpdateOptionsFlowContainer', function()
 --分隔线
         for line in CompactRaidFrameManager.container.dividerVerticalPool:EnumerateActive() do
