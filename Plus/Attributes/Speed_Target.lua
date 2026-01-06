@@ -188,11 +188,7 @@ local function Init()
 
         self.elapsed=0
 
-        self.nameText:SetFormattedText(
-            '%s%s',
-            not WoWToolsSave['Plus_Attributes'].disableTargetName and GetUnitName('target', false) or '',
-            WoWTools_MarkerMixin:GetIcon(nil, 'target')
-        )
+        self.nameText:SetText(not WoWToolsSave['Plus_Attributes'].disableTargetName and GetUnitName('target', false) or '')
 
         local value= GetUnitSpeed('target') or 0
         if value==0 then
