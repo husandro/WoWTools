@@ -123,10 +123,10 @@ function WoWTools_MoveMixin.Events:Blizzard_BFAMissionUI()
 end
 
 
---派系声望
+--[[派系声望 12.0没有了
 function WoWTools_MoveMixin.Events:Blizzard_MajorFactions()
     self:Setup(MajorFactionRenownFrame)
-end
+end]]
 
 
 --死亡
@@ -588,7 +588,7 @@ function WoWTools_MoveMixin.Events:Blizzard_UnitFrame()
     self:Setup(OpacityFrame)
     self:Setup(ArcheologyDigsiteProgressBar, {notZoom=true})
     self:Setup(VehicleSeatIndicator, {notZoom=true, notSave=true})
-    self:Setup(ExpansionLandingPage)
+    --self:Setup(ExpansionLandingPage)
     self:Setup(PlayerPowerBarAlt, {notMoveAlpha=true})
 
     self:Setup(BattleTagInviteFrame)
