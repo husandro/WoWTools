@@ -2852,7 +2852,9 @@
         "ReadyCheckFrame_OnHide",
         "ShowReadyCheck",
         "ReadyCheckFrameYesButton",
-        "ReadyCheckFrameNoButton"
+        "ReadyCheckFrameNoButton",
+        "ClassTrainerFrameBg",
+        "ClassTrainerFrameMoneyBg"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

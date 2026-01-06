@@ -69,7 +69,7 @@ local function Init()
 
         C_Timer.After(0.5, function()
             for i, link in pairs(tab) do
-                print('|cffff00ff'..i..'|r)', link)
+                print('|cffff00ff'..i..'|r)', WoWTools_TextMixin:CN(link))
             end
 
             print(

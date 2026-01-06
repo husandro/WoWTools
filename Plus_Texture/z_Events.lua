@@ -2,15 +2,11 @@
 
 
 function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
-    self:HideFrame(ClassTrainerFrame, {show={[ClassTrainerFramePortrait]=1}})
+
     self:SetScrollBar(ClassTrainerFrame)
-    --self:SetNineSlice(ClassTrainerFrame)
     self:SetButton(ClassTrainerFrameCloseButton)
 
-    self:HideTexture(ClassTrainerFrameInset.Bg)
     self:SetNineSlice(ClassTrainerFrameInset)
-
-    self:HideTexture(ClassTrainerFrameBottomInset.Bg)
     self:SetNineSlice(ClassTrainerFrameBottomInset)
 
     self:SetStatusBar(ClassTrainerStatusBar)
@@ -19,17 +15,21 @@ function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
     self:SetAlphaColor(ClassTrainerStatusBarLeft, nil, nil, 0.3)
     self:SetAlphaColor(ClassTrainerStatusBarMiddle, nil, nil, 0.3)
 
-    ClassTrainerFrameSkillStepButton:SetNormalTexture(0)
+   self:SetAlphaColor(ClassTrainerFrameSkillStepButton:GetNormalTexture(), nil, true, 0.3)
     WoWTools_DataMixin:Hook('ClassTrainerFrame_InitServiceButton', function(btn)
-        btn:SetNormalTexture(0)
+        self:SetAlphaColor(btn:GetNormalTexture(), nil, true, 0.3)
     end)
 
-
-    self:Init_BGMenu_Frame(ClassTrainerFrame)
+    self:Init_BGMenu_Frame(ClassTrainerFrame, {settings=function(_, textureName, alpha)
+        alpha= textureName and 0 or alpha or 1
+        self:SetAlphaColor(ClassTrainerFrame.Bg, nil, true, alpha)
+        self:SetAlphaColor(ClassTrainerFrame.BG, nil, true, alpha)
+        self:SetAlphaColor(ClassTrainerFrame.TopTileStreaks, nil, true, alpha)
+        self:SetAlphaColor(ClassTrainerFrameInset.Bg, nil, true, alpha)
+        self:SetAlphaColor(ClassTrainerFrameBottomInset.Bg, nil, true, alpha)
+        self:SetAlphaColor(ClassTrainerFrameMoneyBg, nil, true, alpha)
+    end})
 end
-
-
-
 
 
 --小时图，时间

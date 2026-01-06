@@ -50,7 +50,9 @@ local function Init_Open_Menu()
         function()
             return BankFrame and BankFrame:IsShown()
         end, function()
-            BankFrame:SetShown(not BankFrame:IsShown())
+            if IsOpend then
+                BankFrame:SetShown(not BankFrame:IsShown())
+            end
         end)
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine(
