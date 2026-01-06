@@ -366,8 +366,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
 --拍卖，所在物品，页面
     self:SetEditBox(AuctionHouseFrameAuctionsFrameBidsTab)
     self:SetEditBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
-    self:SetFrame(AuctionHouseFrameAuctionsFrameGold, {alpha=0.3})
-    self:SetFrame(AuctionHouseFrameAuctionsFrameSilver, {alpha=0.3})
+
     self:SetNineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay)
     self:SetNineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList)
 
@@ -609,17 +608,22 @@ end
 
 --装备升级,界面 
 function WoWTools_TextureMixin.Events:Blizzard_ItemUpgradeUI()
-    --self:SetNineSlice(ItemUpgradeFrame, true)
-    self:SetAlphaColor(ItemUpgradeFrameBg)
-    self:HideTexture(ItemUpgradeFrame.TopBG)
-    self:HideTexture(ItemUpgradeFrame.BottomBG)
-    self:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderMiddle)
-    self:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderLeft)
-    self:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderRight)
+    self:HideTexture(ItemUpgradeFrameBg)
+    self:SetButton(ItemUpgradeFrameCloseButton)
 
-    self:SetAlphaColor(ItemUpgradeFrameMiddle)
-    self:SetAlphaColor(ItemUpgradeFrameRight)
-    self:SetAlphaColor(ItemUpgradeFrameLeft)
+    self:SetAlphaColor(ItemUpgradeFrame.UpgradeItemButton.ButtonFrame, true)
+    self:HideTexture(ItemUpgradeFramePlayerCurrenciesBorderMiddle)
+    self:HideTexture(ItemUpgradeFramePlayerCurrenciesBorderLeft)
+    self:HideTexture(ItemUpgradeFramePlayerCurrenciesBorderRight)
+
+    self:Init_BGMenu_Frame(ItemUpgradeFrame, {
+    settings=function(_, textureName, alpha)--设置内容时，调用
+        alpha= textureName and 0 or alpha or 1
+        self:SetAlphaColor(ItemUpgradeFrame.TopBG, nil, nil, alpha)
+        self:SetAlphaColor(ItemUpgradeFrame.TopTileStreaks, nil, nil, alpha)
+        self:SetAlphaColor(ItemUpgradeFrame.BottomBG, nil, nil, alpha)
+        self:SetAlphaColor(ItemUpgradeFrame.BottomBGShadow, nil, nil, alpha)
+    end})
 end
 
 

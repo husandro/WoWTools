@@ -176,7 +176,7 @@ local function Init_Menu(self, root)
     end
 
 --清除. 当前职业
-    local classIcon= col
+    local classIcon= hex
         ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, self.classFile) or '')
         ..(WoWTools_TextMixin:CN(self.className) or self.classFile)
     sub=root:CreateButton(

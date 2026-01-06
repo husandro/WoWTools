@@ -6,24 +6,27 @@ local function Add_OpenOptionButton(frame)
         return
     end
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {
+    local btn= CreateFrame('Button', 'WoWTools'..frame:GetParent():GetName()..'ItemInfoOptionsButton', frame, 'WoWToolsButtonTemplate')
+    btn:SetSize(32,32)
+    btn:SetNormalAtlas('charactercreate-icon-customize-body-selected')
+    WoWTools_TextureMixin:SetAlphaColor(btn:GetNormalTexture(), true)
+    --[[WoWTools_ButtonMixin:Cbtn(frame, {
         atlas='charactercreate-icon-customize-body-selected',
         size=40,
         name='WoWTools'..frame:GetParent():GetName()..'ItemInfoOptionsButton'
-    })
+    })]]
 
     btn:SetPoint('TOPRIGHT',-5,-25)
     btn:SetScript('OnClick', function()
         ToggleCharacter("PaperDollFrame")
     end)
 
-    btn:SetScript('OnLeave', function() GameTooltip_Hide() end)
+    
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, WoWTools_DataMixin.Icon.left)
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ItemMixin.addName)
+        GameTooltip:AddLine(WoWTools_ItemMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:Show()
     end)
 
