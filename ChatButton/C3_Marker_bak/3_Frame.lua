@@ -356,7 +356,7 @@ local function Init()--设置标记, 框架
             if event=='UPDATE_BINDINGS' then
                 self:set_hotkey()
             else
-                local exists= WoWTools_UnitMixin:UnitExists('target')
+                local exists= UnitExists('target')
                 if not self.action then
                     local atlas
                     local guid= exists and UnitGUID('target') or WoWTools_DataMixin.Player.GUID

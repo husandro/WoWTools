@@ -2848,7 +2848,11 @@
         "HIGHLIGHTING",
         "DYNAMIC",
         "CRF_READY_CHECK",
-        "TRACKER_SORT_MANUAL"
+        "TRACKER_SORT_MANUAL",
+        "ReadyCheckFrame_OnHide",
+        "ShowReadyCheck",
+        "ReadyCheckFrameYesButton",
+        "ReadyCheckFrameNoButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

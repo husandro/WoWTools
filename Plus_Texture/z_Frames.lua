@@ -654,3 +654,10 @@ function WoWTools_TextureMixin.Frames:CinematicFrame()
     self:SetUIButton(CinematicFrameCloseDialogResumeButton)
     self:SetFrame(CinematicFrameCloseDialog.Border, {alpha=1})
 end
+
+
+--就绪
+function WoWTools_TextureMixin.Frames:ReadyCheckFrame()
+    self:SetUIButton(ReadyCheckFrameYesButton)
+    self:SetUIButton(ReadyCheckFrameNoButton)
+end

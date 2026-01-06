@@ -161,7 +161,7 @@ local function Init_Menu(self, root)
             end, function(data)
                 local name2
                 if data.isWhisper then
-                    if WoWTools_UnitMixin:UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
+                    if UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
                         name2= GetUnitName("target", true)
                     end
                 end
@@ -500,7 +500,7 @@ local function Init()
     function SayButton:set_OnMouseDown()
         if Save().type or Save().name then
             local name, wow= Save().name, Save().isWoW
-            if Save().type==SLASH_WHISPER1 and WoWTools_UnitMixin:UnitIsPlayer('target') then
+            if Save().type==SLASH_WHISPER1 and UnitIsPlayer('target') then
                 name= GetUnitName('target', true)
                 wow= false
             end

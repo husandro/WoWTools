@@ -1,13 +1,3 @@
-local P_Save={
-    --notRaidFrame= not WoWTools_DataMixin.Player.husandro,
-    raidFrameScale= WoWTools_DataMixin.Player.husandro and 0.8 or 1,
-    --raidFrameAlpha=1,
-    --healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
-
-    --hideBossFrame=true
-    --hideCastingFrame
-    --hideClassColor
-}
 
 local function Save()
     return WoWToolsSave['Plus_UnitFrame'] or {}
@@ -25,7 +15,6 @@ local function Init()
 
     WoWTools_UnitMixin:Init_BossFrame()--BOSS
     WoWTools_UnitMixin:Init_RaidFrame()--团队
-    WoWTools_UnitMixin:Init_CastingBar()--施法条
 
     WoWTools_UnitMixin:Init_ClassTexture()--职业, 图标， 颜色
 
@@ -42,8 +31,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_UnitFrame']= WoWToolsSave['Plus_UnitFrame'] or P_Save
-            P_Save= nil
+            WoWToolsSave['Plus_UnitFrame']= WoWToolsSave['Plus_UnitFrame'] or {
+                raidFrameScale= WoWTools_DataMixin.Player.husandro and 0.8 or 1
+            }
+
+
+            Save().hideCastingFrame= nil
 
             WoWTools_UnitMixin.addName= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(WoWTools_DataMixin.onlyChinese and '单位框体' or UNITFRAME_LABEL)
 

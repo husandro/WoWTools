@@ -282,7 +282,6 @@ Plus\Unit\0_UnitMixin.lua
 Plus\Unit\1_Init.lua
 Plus\Unit\2_Options.lua
 Plus\Unit\BossFrame.lua
-Plus\Unit\CastingBar.lua
 Plus\Unit\ClassTexture.lua
 Plus\Unit\PartyFrame_Compact.lua
 Plus\Unit\PartyFrame.lua

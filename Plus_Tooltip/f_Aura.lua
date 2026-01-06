@@ -53,7 +53,7 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     end
     local text= source=='player' and (WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
             or source=='pet' and (WoWTools_DataMixin.onlyChinese and '宠物' or PET)
-            or WoWTools_UnitMixin:UnitIsPlayer(source) and WoWTools_UnitMixin:GetPlayerInfo(source, nil, nil, {reName=true})
+            or UnitIsPlayer(source) and WoWTools_UnitMixin:GetPlayerInfo(source, nil, nil, {reName=true})
             or UnitName(source) or _G[source] or source
 
     tooltip:AddLine(

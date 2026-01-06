@@ -1,6 +1,6 @@
 WoWTools_UnitMixin={}
 
-function WoWTools_UnitMixin:UnitExists(unit)
+--[[function WoWTools_UnitMixin:UnitExists(unit)
     if unit then
         local guid= UnitGUID(unit)
         if not canaccessvalue(guid) or guid then
@@ -9,6 +9,24 @@ function WoWTools_UnitMixin:UnitExists(unit)
     end
     return false
 end
+
+function UnitIsPlayer(unit)
+    local guid= self:UnitGUID(unit)
+    if guid then
+        local isPlayer= UnitIsPlayer(unit)
+        if canaccessvalue(isPlayer) then
+            return isPlayer
+        end
+    end
+end]]
+
+
+--[[function UnitIsUnit(unit, unit2)
+    local guid, guid2= self:UnitGUID(unit), self:UnitGUID(unit2)
+    if guid and guid2 then
+        return UnitIsUnit(unit, unit2)
+    end
+end]]
 
 function WoWTools_UnitMixin:UnitGUID(unit, name)
     if unit then
@@ -40,27 +58,11 @@ function WoWTools_UnitMixin:UnitGUID(unit, name)
     end
 end
 
-function WoWTools_UnitMixin:UnitIsPlayer(unit)
-    local guid= self:UnitGUID(unit)
-    if guid then
-        local isPlayer= UnitIsPlayer(unit)
-        if canaccessvalue(isPlayer) then
-            return isPlayer
-        end
-    end
-end
 
-
-function WoWTools_UnitMixin:UnitIsUnit(unit, unit2)
-    local guid, guid2= self:UnitGUID(unit), self:UnitGUID(unit2)
-    if guid and guid2 then
-        return UnitIsUnit(unit, unit2)
-    end
-end
 
 
 function WoWTools_UnitMixin:NameRemoveRealm(name, realm)--玩家名称, 去服务器为*
-    if canaccessvalue(name) or not canaccessvalue(realm) or not name then
+    if not canaccessvalue(name) or not canaccessvalue(realm) or not name then
         return ''
     end
     local reName= name:match('(.+)%-') or name
@@ -70,7 +72,7 @@ function WoWTools_UnitMixin:NameRemoveRealm(name, realm)--玩家名称, 去服�
     elseif WoWTools_DataMixin.Player.Realms[reRealm] then
         return reName..'|cnGREEN_FONT_COLOR:*|r'
     elseif reRealm then
-        return reName..'*'
+        return reName.. GREEN_FONT_COLOR:WrapTextInColorCode('*')
     end
     return reName
 end
@@ -132,11 +134,15 @@ WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name,{
 function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     tab= tab or {}
 
-    if not canaccessvalue(guid) or not canaccessvalue(name) then
+    if
+        not canaccessvalue(unit)
+        or not canaccessvalue(guid)
+        or not canaccessvalue(name)
+    then
         return ''
     end
 
-    guid= guid or self:UnitGUID(guid)
+    guid= guid or self:UnitGUID(guid, name)
 
     if not guid then
         return ''
@@ -579,7 +585,7 @@ function WoWTools_UnitMixin:GetGroupMembers(inclusoMe)
         if IsInRaid() then
             for i= 1, MAX_RAID_MEMBERS, 1 do
                 unit='raid'..i
-                if self:UnitGUID(unit) and not WoWTools_UnitMixin:UnitIsUnit(unit, 'player') then
+                if self:UnitGUID(unit) and not UnitIsUnit(unit, 'player') then
                     table.insert(tab, unit)
                 end
             end
@@ -676,7 +682,7 @@ local function Set_Range_OnUpdata(self, elapsed)
 
     self.elapsed2=0
     local speed, mi, ma
-    if not WoWTools_UnitMixin:UnitIsUnit(self.unit, 'player') then
+    if not UnitIsUnit(self.unit, 'player') then
         mi, ma= LibRangeCheck:GetRange(self.unit)
         if mi and ma then
             local r,g,b

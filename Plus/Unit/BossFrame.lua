@@ -42,7 +42,7 @@ local function Create_BossButton(frame)
     function frame.BossButton:settings()
         local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.unit
         SetPortraitTexture(self.Portrait, unit)
-        self.targetTexture:SetShown(WoWTools_UnitMixin:UnitIsUnit('target', unit))
+        self.targetTexture:SetShown(UnitIsUnit('target', unit))
     end
 
     function frame.BossButton:Init()
@@ -141,17 +141,17 @@ local function Create_numSelectFrame(frame)
         if IsInRaid() then
             for index=1, MAX_RAID_MEMBERS do
                 unit= 'raid'..index
-                if WoWTools_UnitMixin:UnitIsUnit(unit..'target', self.unit)  then
+                if UnitIsUnit(unit..'target', self.unit)  then
                     n= n+1
                 end
             end
         elseif IsInGroup() then
             for index=1, GetNumGroupMembers()-1, 1 do
-                if WoWTools_UnitMixin:UnitIsUnit('party'..index..'target', self.unit) then
+                if UnitIsUnit('party'..index..'target', self.unit) then
                     n= n+1
                 end
             end
-            if WoWTools_UnitMixin:UnitIsUnit('target', self.unit) then
+            if UnitIsUnit('target', self.unit) then
                 n=n+1
             end
         end
@@ -281,12 +281,12 @@ local function Create_TotButton(frame)
         local exists= not IsInInstance() and UnitExists(unit)
         if exists then
             --图像
-            local isSelf= WoWTools_UnitMixin:UnitIsUnit(unit, 'player')
+            local isSelf= UnitIsUnit(unit, 'player')
             if BossTargetFrameContainer.isInEditMode then
                 SetPortraitTexture(self.Portrait, unit)
             elseif isSelf then--自已
                 self.Portrait:SetAtlas('auctionhouse-icon-favorite')
-            elseif WoWTools_UnitMixin:UnitIsUnit(unit, 'target') then
+            elseif UnitIsUnit(unit, 'target') then
                 self.Portrait:SetAtlas('common-icon-checkmark')
             else
                 local index = GetRaidTargetIndex(unit)

@@ -12,14 +12,20 @@ local function Save()
     return WoWToolsSave['ChatButtonGroup'] or {}
 end
 
-function WoWTools_GroupMixin:Get_ReadyTextAtlas(ready)
-    ready= ready or Save().autoReady
+function WoWTools_GroupMixin:Get_ReadyText(ready)
+    ready= ready or Save().autoReady or 0
     if ready==1 then
-        return format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', WoWTools_DataMixin.onlyChinese and '就绪' or READY), 'common-icon-checkmark'
+        return '|A:common-icon-checkmark:0:0|a'..GREEN_FONT_COLOR:WrapTextInColorCode(
+            WoWTools_DataMixin.onlyChinese and '自动就绪' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, READY)
+        )
     elseif ready==2 then
-        return format('|cnWARNING_FONT_COLOR:%s|r|A:XMarksTheSpot:0:0|a', WoWTools_DataMixin.onlyChinese and '未就绪' or NOT_READY_FEMALE), 'XMarksTheSpot'
+        return '|A:XMarksTheSpot:0:0|a'..WARNING_FONT_COLOR:WrapTextInColorCode(
+            WoWTools_DataMixin.onlyChinese and '自动未就绪' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, NOT_READY_FEMALE)
+        )
     else
-        return WoWTools_DataMixin.onlyChinese and '手动' or TRACKER_SORT_MANUAL
+        return '|A:Cursor_OpenHand_32:0:0|a'..HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(
+            WoWTools_DataMixin.onlyChinese and '手动就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, TRACKER_SORT_MANUAL)
+        )
     end
 end
 --[[队长(团长)或助理
@@ -51,14 +57,14 @@ end]]
 
 
 
-local function Settings()--队伍信息提示
+local function Settings(self)--队伍信息提示
     local isInRaid= IsInRaid()
     local isInInstance= IsInInstance()
 
     ClickType= ClickType or (isInRaid and 'r') or 'p'
 
 --使用,提示
-    GroupButton.typeText:SetText(
+    self.typeText:SetText(
         WoWTools_DataMixin.onlyChinese and ChatTab[ClickType].cn
         or ClickType
         or ''
@@ -71,22 +77,25 @@ local function Settings()--队伍信息提示
     end
 
 --队员，数量，提示
-    GroupButton.membersText:SetText(isInRaid and GetNumGroupMembers() or '')
+    self.membersText:SetText(isInRaid and GetNumGroupMembers() or '')
 
 --职责提示
     if IsInGroup() then
         local icon= WoWTools_DataMixin.Icon[combatRole] or WoWTools_DataMixin.Icon['NONE']
         icon= icon:match('|A:(.-):')
-        GroupButton.texture:SetAtlas(icon)
+        self.texture:SetAtlas(icon)
     else
-        GroupButton.texture:SetAtlas('socialqueuing-icon-group')
+        self.texture:SetAtlas('socialqueuing-icon-group')
     end
 
 --副本外，在团中提示
-    GroupButton.textureNotInstance:SetShown(isInRaid and not isInInstance)
+    self.textureNotInstance:SetShown(isInRaid and not isInInstance)
 
 --提示，聊天泡泡，开启/禁用
-    GroupButton.tipBubbles:SetShown(not C_CVar.GetCVarBool("chatBubblesParty"))
+    self.tipBubbles:SetShown(not C_CVar.GetCVarBool("chatBubblesParty"))
+
+    local text= WoWTools_GroupMixin:Get_ReadyText()
+    self.readyCheckTexture:SetAtlas(text:match('|A:(.-):'))
 end
 
 
@@ -199,7 +208,7 @@ local function Init_Menu(self, root)
     end, function(data)
         ClickType= data.type
         WoWTools_ChatMixin:Say(ChatTab[data.type].slashText)
-        Settings()
+        Settings(self)
 
     end, {type=tab[1]})
 
@@ -227,6 +236,19 @@ local function Init_Menu(self, root)
             button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
         end
     end)
+
+    if tab[1]=='r' then
+        sub2=sub:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '队员HP' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, "HP"),
+        function()
+            return Save().showRaidHPTooltip
+        end, function()
+            Save().showRaidHPTooltip= not Save().showRaidHPTooltip and true or nil
+        end)
+        sub2:SetTooltip(function (tooltip)
+            tooltip:AddLine('OnEnter')
+        end)
+    end
 end
 
         --[[if isInGroup then
@@ -235,7 +257,7 @@ end
 --队伍，子目录
                 for i=1, GetNumGroupMembers()-1, 1 do
                     unit='party'..i
-                    if UnitExists(unit) and WoWTools_UnitMixin:UnitIsPlayer(unit) then
+                    if UnitExists(unit) and UnitIsPlayer(unit) then
                         playerName=GetUnitName(unit, true)
                         sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}), function(data)
                             if data and data~=UnitName('player') then
@@ -252,7 +274,7 @@ end
             elseif index==2 and isInRaid then
                 for i=1, MAX_RAID_MEMBERS,  1 do
                     unit='raid'..i
-                   if UnitExists(unit) and not WoWTools_UnitMixin:UnitIsUnit(unit, 'player') and WoWTools_UnitMixin:UnitIsPlayer(unit) then
+                   if UnitExists(unit) and not UnitIsUnit(unit, 'player') and UnitIsPlayer(unit) then
                         sub2=sub:CreateButton(
                             WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}),
                         function(data)
@@ -339,12 +361,16 @@ end
 
 
     sub= root:CreateButton(
-        Save().autoReady==0 and (WoWTools_DataMixin.onlyChinese and '就位确认' or CRF_READY_CHECK)
-        or WoWTools_GroupMixin:Get_ReadyTextAtlas(),
+        WoWTools_GroupMixin:Get_ReadyText(),
     function()
-        local show= ReadyCheckFrame:IsShown()
+        --[[local show= ReadyCheckFrame:IsShown()
         ReadyCheckFrame:SetShown(not show)
-        ReadyCheckListenerFrame:SetShown(not show)
+        ReadyCheckListenerFrame:SetShown(not show)]]
+        if not ReadyCheckFrame:IsShown() then
+           ShowReadyCheck(UnitName('player'), 35)
+           ReadyCheckFrame:SetShown(true)
+           ReadyCheckListenerFrame:SetShown(true)
+        end
         return MenuResponse.Refresh
     end)
     sub:SetTooltip(function (tooltip)
@@ -355,15 +381,19 @@ end
 
  --自动, 就绪  
     for value= 0, 2 do
-
         sub2= sub:CreateRadio(
-            WoWTools_GroupMixin:Get_ReadyTextAtlas(value),
+            WoWTools_GroupMixin:Get_ReadyText(value),
         function(data)
             return data==Save().autoReady
         end, function(data)
             Save().autoReady=data
+            if data>0 then
+                ConfirmReadyCheck(data==1 and 1 or nil)
+                ReadyCheckFrame:SetShown(false)
+            end
+            Settings(self)
             return MenuResponse.Refresh
-        end, value>0 and value or nil)
+        end, value)
 
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO)
@@ -428,6 +458,10 @@ end
 
 
 local function show_Group_Info_Toolstip()--玩家,信息, 提示
+    if not Save().showRaidHPTooltip then
+        return
+    end
+
     local raid= IsInRaid()
     local co= raid and MAX_RAID_MEMBERS or GetNumGroupMembers()
     if not IsInGroup() or co<2 then
@@ -547,7 +581,6 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     --GameTooltip:Show()
 
     WoWTools_UnitMixin:GetNotifyInspect(UnitTab)--取得装等
-    return find
 end
 
 
@@ -620,6 +653,11 @@ local function Init()
     GroupButton.tipBubbles:SetPoint('TOPLEFT', 3, 0)
     GroupButton.tipBubbles:SetAtlas('talents-button-reset')
 
+    GroupButton.readyCheckTexture= GroupButton:CreateTexture(nil, 'OVERLAY')
+    GroupButton.readyCheckTexture:SetSize(8, 8)
+    GroupButton.readyCheckTexture:SetPoint('TOP', GroupButton.tipBubbles, 'BOTTOM')
+    
+
 --副本外，在团中提示
     GroupButton.textureNotInstance=GroupButton:CreateTexture(nil,'BACKGROUND')
     GroupButton.textureNotInstance:SetAllPoints(GroupButton)
@@ -628,11 +666,9 @@ local function Init()
     function GroupButton:set_tooltip()
         self:set_owner()
 
-        local find= show_Group_Info_Toolstip()--玩家,信息, 提示
+        show_Group_Info_Toolstip()--玩家,信息, 提示
 
-        if find then
-            GameTooltip:AddLine(' ')
-        end
+
 
         GameTooltip:AddDoubleLine(
             ChatTab[ClickType].text,
@@ -657,6 +693,7 @@ local function Init()
             nil,nil,nil, true
         )
 
+        GameTooltip:AddLine(WoWTools_GroupMixin:Get_ReadyText())
         GameTooltip:Show()
     end
 
@@ -671,7 +708,7 @@ local function Init()
 
     GroupButton:SetupMenu(Init_Menu)
 
-    Settings()--队伍信息提示
+    Settings(GroupButton)--队伍信息提示
 
     Init=function()end
 end
@@ -709,7 +746,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or {
-                isReadyCheckPlus=WoWTools_DataMixin.Player.husandro--就位确认plus
+                autoReady=0--0手动， 1就绪， 2未就绪
             }
 
             Save().autoReady= Save().autoReady or 0
@@ -750,14 +787,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         self:UnregisterEvent(event)
 
     elseif event=='GROUP_ROSTER_UPDATE' then
-        C_Timer.After(0.3, Settings)--队伍信息提示
+        C_Timer.After(0.3, function() Settings(GroupButton) end)--队伍信息提示
 
     elseif event=='GROUP_LEFT' or event=='GROUP_JOINED' or event=='GROUP_FORMED' then
         ClickType= IsInRaid() and 'r' or 'p'
-        Settings()--队伍信息提示
+        Settings(GroupButton)--队伍信息提示
 
     elseif event=='CVAR_UPDATE' and arg1=='chatBubblesParty' then
-        Settings()--提示，聊天泡泡，开启/禁用
+        Settings(GroupButton)--提示，聊天泡泡，开启/禁用
 
     end
 end)

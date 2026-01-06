@@ -124,7 +124,7 @@ local function On_Click(self)
 
         elseif value=='WHISPER' then
             local name= WoWTools_UnitMixin:UnitGUID('target')
-                and WoWTools_UnitMixin:UnitIsPlayer('target')
+                and UnitIsPlayer('target')
                 and UnitIsFriend('target', 'player')
                 and GetUnitName("target", true)
                 or nil

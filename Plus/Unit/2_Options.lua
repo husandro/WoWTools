@@ -170,25 +170,6 @@ local function Init()
         category= Category,
     })
 
---12.0可能会出现问题，没测试
---施法条
-    WoWTools_PanelMixin:OnlyCheck({
-        name= (WoWTools_DataMixin.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL),
-        GetValue= function() return not Save().hideCastingFrame end,
-        SetValue= function()
-            Save().hideCastingFrame= not Save().hideCastingFrame and true or nil
-            if Save().hideCastingFrame then
-                print(
-                    WoWTools_DataMixin.Icon.icon2,
-                    WoWTools_TextMixin:GetEnabeleDisable(false),
-                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                )
-            else
-                WoWTools_UnitMixin:Init_CastingBar()
-            end
-        end,
-        category= Category,
-    })
 
 
 

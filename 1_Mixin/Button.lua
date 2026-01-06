@@ -160,7 +160,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local template= tab.template
             or (isSecure and 'SecureActionButtonTemplate')--SecureHandlerClickTemplate SecureHandlerTemplates.xml
             or (isUI and 'UIPanelButtonTemplate')
-            or (isCheck and 'UICheckButtonTemplate')--32x32
+            or (isCheck and 'UICheckButtonTemplate')--32x32 UICheckButtonArtTemplate
 
                     --or (isType2 and isItem and 'CircularItemButtonTemplate')
     local width, height= get_size(tab.size, frameType)

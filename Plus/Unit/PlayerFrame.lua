@@ -129,7 +129,7 @@ local function Create_lootButton(frame)
 
     function frame.lootButton:set_shown()
         local find=false
-        if WoWTools_UnitMixin:UnitIsUnit(PlayerFrame.unit, 'player') then
+        if UnitIsUnit(PlayerFrame.unit, 'player') then
             local currentSpec = GetSpecialization()
             local specID= currentSpec and GetSpecializationInfo(currentSpec)
             if specID then
@@ -300,7 +300,7 @@ local function Create_instanceFrame(frame)
 
     function frame.instanceFrame:set_settings()
         local ins, findRiad, findDungeon=  IsInInstance(), false, false
-        if not ins and WoWTools_UnitMixin:UnitIsUnit(PlayerFrame.unit, 'player') then
+        if not ins and UnitIsUnit(PlayerFrame.unit, 'player') then
             local difficultyID2 = GetDungeonDifficultyID() or 0
             local difficultyID3= GetRaidDifficultyID() or 0
             local displayMythic3 = select(6, GetDifficultyInfo(difficultyID3))

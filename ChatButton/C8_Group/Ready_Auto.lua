@@ -12,8 +12,7 @@ end
 local AutoReadyTime--时间
 local PlayerNameText--就绪名称
 
-local Checks={}--选项
-local AltCanellText--Alt, 取消提示
+
 
 
 
@@ -24,18 +23,17 @@ local AltCanellText--Alt, 取消提示
 
 --设置，就绪，未就绪
 local function Set_Ready(timeLeft)
-
     if AutoReadyTime then
         AutoReadyTime:Cancel()
         AutoReadyTime= nil
     end
 
-    local autoReady= Save().autoReady
+    local autoReady= Save().autoReady or 0
 
-    if autoReady then
+    if autoReady>0 then
         print(
             WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,
-            WoWTools_GroupMixin:Get_ReadyTextAtlas(),
+            WoWTools_GroupMixin:Get_ReadyText(),
             '|cffff00ffAlt', WoWTools_DataMixin.onlyChinese and '取消' or CANCEL
         )
 
@@ -70,39 +68,28 @@ end
 
 
 
-local function Init_UI()
-    
-
-    Init_UI=function()end
-end
-
-
-
-
-
-
 
 
 
 
 --自动就绪
 local function Init()
+    ReadyCheckFrame:SetHeight(124)--100
+    --ReadyCheckFrameText:SetPoint('TOP', 20, ---45)--="TOP" x="20" y="-37"/>
 
     WoWTools_DataMixin:Hook('ShowReadyCheck', function(initiator, timeLeft)--ReadyCheckListenerFrame
+        WoWTools_DataMixin:PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
+
+        if not initiator or not ReadyCheckListenerFrame:IsVisible() then
+            return
+        end
+
         if timeLeft then
             ReadyCheckListenerFrame.time= timeLeft+ GetTime()
         end
 
-        WoWTools_DataMixin:PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
-
-        --initiator= initiator or ReadyCheckFrame.initiator
-
-        if not initiator then
-            return
-        end
-
         local name= WoWTools_UnitMixin:GetPlayerInfo(nil, nil, initiator, {reName=true})
-        PlayerNameText:SetText(name~='' and name or initiator)
+        name= name~='' and name or initiator or ''
 
         local _, difficultyID
         difficultyID = select(3, GetInstanceInfo())
@@ -121,9 +108,9 @@ local function Init()
 
             ReadyCheckFrameText:SetFormattedText(
                 (WoWTools_DataMixin.onlyChinese and "%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:" or (READY_CHECK_MESSAGE..'|n'..RAID_DIFFICULTY..': '))
-                ..difficultyName..'|r', '')
+                ..difficultyName..'|r', name)
         else
-           ReadyCheckFrameText:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s正在进行就位确认。' or READY_CHECK_MESSAGE, '')
+           ReadyCheckFrameText:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s|n正在进行就位确认。' or READY_CHECK_MESSAGE:gsub('%%s', '%%s|n'), name)
        end
 
         Set_Ready(timeLeft)--设置，就绪，未就绪
@@ -147,7 +134,6 @@ local function Init()
 
     ReadyCheckListenerFrame:HookScript('OnUpdate', function(self)
         if AutoReadyTime
-            and not AutoReadyTime:IsCancelled()
             and IsModifierKeyDown()
         then
 
@@ -156,7 +142,7 @@ local function Init()
 
             print(
                 WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                WoWTools_GroupMixin:Get_ReadyTextAtlas(),
+                WoWTools_GroupMixin:Get_ReadyText(),
                 '|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
             )
 
@@ -169,60 +155,53 @@ local function Init()
 
 
 
-    ReadyCheckFrame:SetHeight(120)--100
-    ReadyCheckFrameText:SetPoint('TOP', 20, -45)--="TOP" x="20" y="-37"/>
 
---就位，玩家，提示
-    PlayerNameText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame, {
-        name='ReadyCheckFramePlayerNameText',
-        justifyH='CENTER'
-    })
-    PlayerNameText:SetPoint('BOTTOM', ReadyCheckFrameText, 'TOP', 0, 2)
 
 
 
 
     for i=0, 2 do
-        Checks[i]= WoWTools_ButtonMixin:Cbtn(ReadyCheckListenerFrame, {
-            name='WoWToolsChatButtonMarkersReadyCheckButton'..i,
-            isCheck=true,
-            text= WoWTools_GroupMixin:Get_ReadyTextAtlas(i),
-            isRightText=true,
-        })
+        local check= CreateFrame('CheckButton', 'WoWToolsReadyCheckButton'..i, ReadyCheckListenerFrame, 'UIRadialButtonTemplate')
 
-        Checks[i]:SetPoint('RIGHT', ReadyCheckListenerFrame, 'LEFT', -2, 20-(i*20))
-        Checks[i].value= i>0 and i or nil
 
-        Checks[i]:SetScript('OnShow', function(self)
+        check:SetSize(24,24)
+        WoWTools_TextureMixin:SetCheckBox(check)
+        --check.text= check:CreateFontString(nil, "BORDER", 'GameFontHighlight')
+        check.text:ClearAllPoints()
+        check.text:SetPoint('RIGHT', check, 'LEFT')
+        check.text:SetText(WoWTools_GroupMixin:Get_ReadyText(i))
+
+        check:SetPoint('RIGHT', ReadyCheckListenerFrame, 'LEFT', -2, 20-(i*20))
+        check.value= i>0 and i or nil
+
+        check:SetScript('OnShow', function(self)
             self:SetChecked(self.value== Save().autoReady)
         end)
-
-        Checks[i].settings= function(self)
+        check.value= i
+        check:SetScript('OnMouseUp', function(self)
             Save().autoReady= self.value
             Set_Ready()--设置，就绪，未就绪
-            for _, btn in pairs(Checks) do
-                if btn~=self then
-                    btn:SetChecked(false)
+            for index=0,2 do
+                if self.value~=index then
+                    _G['WoWToolsReadyCheckButton'..index]:SetChecked(false)
                 end
             end
-            AltCanellText:set_shown()
-        end
-        Checks[i].tooltip= function(_, tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.addName)
-            tooltip:AddLine(WoWTools_GroupMixin.addName)
-        end
+            _G['WoWToolsReadyCheckAltCanellLabel']:SetShown(self.value~=0)
+        end)
 
-        --table.insert(Checks, check)
+        check:SetScript('OnLeave', function()
+            GameTooltip:Hide()
+        end)
+        check:SetScript('OnEnter', function(self)
+            GameTooltip_ShowSimpleTooltip(GameTooltip, WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2, nil, nil, self)
+        end)
     end
 
-    AltCanellText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame)
-    AltCanellText:SetPoint('TOPRIGHT', Checks[2], 'BOTTOMLEFT', 0,-2)
-    AltCanellText:SetText('Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL))
+    local altLabel= ReadyCheckListenerFrame:CreateFontString('WoWToolsReadyCheckAltCanellLabel', 'BORDER', 'GameFontNormal')--  WoWTools_LabelMixin:Create(ReadyCheckListenerFrame)
+    altLabel:SetPoint('TOPRIGHT', _G['WoWToolsReadyCheckButton2'], 'BOTTOMRIGHT', 0,-8)
+    altLabel:SetText('Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL))
 
-    function AltCanellText:set_shown()
-        AltCanellText:SetShown(Save().autoReady)
-    end
-    AltCanellText:set_shown()
+
 
     Init=function()end
 end

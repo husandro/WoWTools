@@ -42,7 +42,7 @@ local function Craete_Frame(frame)
         end
 
         local texture, level
-        if WoWTools_UnitMixin:UnitIsUnit(unit, 'player') then
+        if UnitIsUnit(unit, 'player') then
             texture= select(4, PlayerUtil.GetCurrentSpecID())
         else
             local specID= GetInspectSpecialization(unit)
@@ -115,7 +115,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
 --名称
     if frame.name then
         local name
-        if WoWTools_UnitMixin:UnitIsUnit(unit, 'pet') then
+        if UnitIsUnit(unit, 'pet') then
             frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         else
             frame.name:SetTextColor(r,g,b)

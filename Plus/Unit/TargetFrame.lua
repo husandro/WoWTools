@@ -62,7 +62,7 @@ end
         self.elapsed=0
         local text, speed
 
-        if not WoWTools_UnitMixin:UnitIsUnit('player', 'target') then
+        if not UnitIsUnit('player', 'target') then
             local mi, ma= WoWTools_UnitMixin:GetRange('target')
             if mi and ma then
                 text=mi..'|n'..ma

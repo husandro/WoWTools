@@ -85,7 +85,7 @@ local function Init()
 
 
     function btn:Is_Exists()
-        return UnitExists('target') and not WoWTools_UnitMixin:UnitIsUnit('player', 'target')
+        return UnitExists('target') and not UnitIsUnit('player', 'target')
     end
 
     function btn:Settings()
@@ -188,14 +188,23 @@ local function Init()
 
         self.elapsed=0
 
-        self.nameText:SetText(not WoWToolsSave['Plus_Attributes'].disableTargetName and GetUnitName('target', false) or '')
+        if Save().disableTargetName
+            or not UnitExists('target')
+            or UnitIsUnit('target', 'player')
+        then
+            self.nameText:SetText('')
+        else
+            self.nameText:SetText(GetUnitName('target', false))
+        end
 
-        local value= GetUnitSpeed('target') or 0
-        if value==0 then
+        local value= GetUnitSpeed('target')
+        if not canaccessvalue(value) then
+            self.Text:SetText('')
+        elseif value==0 or not value then
             self.Text:SetText('|cff8282820')
         else
             self.Text:SetFormattedText(
-                '%.0f',
+                '%.0f%%',
                 (value)*100/BASE_MOVEMENT_SPEED
             )
         end
@@ -224,7 +233,7 @@ function WoWTools_AttributesMixin:Init_Target_Speed()
         btn:Settings()
         return
     end
-    if not WoWToolsSave['Plus_Attributes'].showTargetSpeed then
+    if not Save().showTargetSpeed then
         return
     end
 

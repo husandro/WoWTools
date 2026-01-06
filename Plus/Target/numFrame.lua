@@ -41,7 +41,7 @@ local function Set_Text(self)
             and WoWTools_UnitMixin:CheckRange(unit, 40, true)
         then
             k=k+1
-            if WoWTools_UnitMixin:UnitIsUnit(unit..'target', 'player') then
+            if UnitIsUnit(unit..'target', 'player') then
                 T=T+1
             end
         end
@@ -49,13 +49,13 @@ local function Set_Text(self)
 
     if IsInRaid() then
         for i=1, MAX_RAID_MEMBERS do
-            if WoWTools_UnitMixin:UnitIsUnit('raid'..i..'target', 'player') then
+            if UnitIsUnit('raid'..i..'target', 'player') then
                 F=F+1
             end
         end
     elseif IsInGroup() then
         for i=1, MAX_PARTY_MEMBERS do
-            if WoWTools_UnitMixin:UnitIsUnit('party'..i..'target', 'player') then
+            if UnitIsUnit('party'..i..'target', 'player') then
                 F=F+1
             end
         end

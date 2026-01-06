@@ -51,7 +51,7 @@ local function Get_Unit_Text( unit)
             return WoWTools_DataMixin.Icon[role]
         end--if role=='TANK' or role=='HEALER' then
 
-    elseif not WoWTools_UnitMixin:UnitIsPlayer(unit) then
+    elseif not UnitIsPlayer(unit) then
         local tooltipData = C_TooltipInfo.GetUnit(unit)
         if tooltipData and tooltipData.lines then
             for i = 4, #tooltipData.lines do
