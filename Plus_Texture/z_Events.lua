@@ -875,10 +875,6 @@ function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI()
     self:HideTexture(ArchaeologyFrameBg)
     self:HideTexture(ArchaeologyFrameInset.Bg)
 
-    self:SetAlphaColor(ArchaeologyFrameRaceFilterMiddle, nil, nil, 0.3)
-    self:SetAlphaColor(ArchaeologyFrameRaceFilterLeft, nil, nil, 0.3)
-    self:SetAlphaColor(ArchaeologyFrameRaceFilterRight, nil, nil, 0.3)
-
     self:SetAlphaColor(ArchaeologyFrameRankBarBorder, nil, nil, 0.3)
     self:HideTexture(ArchaeologyFrameRankBarBackground)
     self:SetStatusBar(ArchaeologyFrameRankBarBar)
