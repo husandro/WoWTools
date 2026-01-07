@@ -1,8 +1,14 @@
-local function Init()
-    WoWTools_DataMixin:Hook(JourneysFrameMixin, 'SetupJourneysList', function()
+--旅程
 
+local function Init()
+    WoWTools_DataMixin:Hook(EncounterJournalJourneysFrame.JourneysList, 'Update', function(frame)
+        
     end)
 
+    
+    WoWTools_DataMixin:Hook(RenownCardButtonMixin, 'OnEnter', function()
+        print('RenownCardButtonMixin')
+    end)
     Init=function()end
 end
 
