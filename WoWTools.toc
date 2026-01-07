@@ -73,6 +73,8 @@ Plus_Move\ClassPower.lua
 Plus_Move\Transmog.lua
 Plus_Move\EncounterJournal.lua
 Plus_Move\PVEFrame.lua
+Plus_Move\Collections.lua
+
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -86,6 +88,7 @@ Plus_Texture\ChatBubbles.lua
 Plus_Texture\ClassPower.lua
 Plus_Texture\EncounterJournal.lua
 Plus_Texture\PVEFrame.lua
+Plus_Texture\Collections.lua
 Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
 Plus_Texture\z_SharedXML.lua
@@ -259,8 +262,6 @@ Plus\Collection\Wardrober_Items.lua
 Plus\Collection\Wardrober_Sets.lua
 Plus\Collection\DressUpFrames.lua
 Plus\Collection\Transmog.lua
-Plus\Collection\z_Move.lua
-Plus\Collection\z_Texture.lua
 
 ##世界地图，增强
 Plus\WorldMap\0_WorldMapMixin.lua

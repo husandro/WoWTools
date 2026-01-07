@@ -414,7 +414,9 @@ local function Init()
 
         root:CreateSpacer()
         root:CreateButton(WoWTools_DataMixin.onlyChinese and '重置' or RESET, Rest_Size)
-    end})
+    end,
+    UIName='Transmog'
+})
 
     Init=function()end
 end

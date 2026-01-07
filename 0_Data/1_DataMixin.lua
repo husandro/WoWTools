@@ -23,15 +23,14 @@ WoWTools_DataMixin= {
     Language={}
 }
 
---[[if not canaccessvalue then--12.0才有 SecureTypes.lua
+--[[
+if not canaccessvalue then--12.0才有 SecureTypes.lua
     canaccessvalue= function() return true end
     canaccesstable= function() return true end
     issecretvalue= function() return true end
     issecrettable= function() return true end
     canaccesssecrets= function() return true end
-end]]
-
---[[
+end
 UnitItemLevel[guid]={--玩家装等
     itemLevel= itemLevel,
     specID=specID,

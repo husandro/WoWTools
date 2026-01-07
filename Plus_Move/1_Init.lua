@@ -230,7 +230,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent('ADDON_LOADED')
                 self:SetScript('OnEvent', nil)
             else
-                Init_Panel()
+                do
+                    Init_Panel()
+                end
                 Init()
                 --self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end

@@ -103,9 +103,14 @@ function WoWTools_PanelMixin:Open(category, name)
     if InCombatLockdown() then
         return
     end
+
     category= (category and category.GetID) and category or Category
     Category.expanded=true
-    name= name or (category and category.GetName and category:GetName())
+
+    if not name and category and category.GetName then
+        name= category:GetName()
+    end
+
     Settings.OpenToCategory(category:GetID(), name)
 end
 
@@ -168,11 +173,13 @@ function WoWTools_PanelMixin:OnlyCheck(tab, root)
         tab.GetValue,
         tab.SetValue or tab.func
     )
+
     local sub= Settings.CreateCheckbox(tab.category or Category, setting, tab.tooltip)
 
     if root then
         sub:SetParentInitializer(root)
     end
+
     return sub
 end
 --[[

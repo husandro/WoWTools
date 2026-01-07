@@ -555,6 +555,7 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     local name2= tab.name2
 
     local category= tab.GetCategory and tab.GetCategory() or tab.category
+    local tooltip= tab.tooltip
 
     local showText= name2 or name
     showText= showText and showText..'|A:OptionsIcon-Brown:0:0|a' or ('|A:OptionsIcon-Brown:0:0|a'..(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS))
@@ -562,27 +563,27 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     local sub=root:CreateButton(
         (InCombatLockdown() and '|cff828282' or '')
         ..showText,
-    function(data)
+    function()
         if InCombatLockdown() then
             return
         elseif SettingsPanel:IsVisible() then--ToggleGameMenu()
             SettingsPanel:Close()
         end
-        WoWTools_PanelMixin:Open(data.category, data.name)
+        WoWTools_PanelMixin:Open(category, name)
         return MenuResponse.Open
-    end, {name=name, category=category, tooltip=tab.tooltip})
+    end)
 
-    sub:SetTooltip(function(tooltip, desc)
-        tooltip:AddDoubleLine(desc.data.name or WoWTools_DataMixin.addName, desc.data.name2)
-        tooltip:AddDoubleLine(
+    sub:SetTooltip(function(t)
+        t:AddDoubleLine(name and name..WoWTools_DataMixin.Icon.icon2 or WoWTools_DataMixin.addName, name2)
+        t:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
         )
-        local isType= type(desc.data.tooltip)
+        local isType= type(tooltip)
         if isType=='string' then
-            tooltip:AddLine(' ')
-            tooltip:AddLine(desc.data.tooltip)
+            t:AddLine(' ')
+            t:AddLine(tooltip)
         elseif isType=='function' then
-            desc.data.tooltip(tooltip)
+            tooltip(t)
         end
     end)
     return sub
@@ -875,7 +876,7 @@ WoWTools_MenuMixin:SetGridMode(sub, num)
 
 --SetScrollMode UIParent:GetHeight()
 function WoWTools_MenuMixin:SetScrollMode(root)
-    root:SetScrollMode(math.max(20*35,  GetScreenHeight()-70))
+    root:SetScrollMode(math.max(20*35, GetScreenHeight()-70))
 end
 --[[
 --SetScrollMod

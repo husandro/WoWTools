@@ -1,3 +1,4 @@
+--考古学
 local function Save()
     return WoWToolsSave['Plus_Professions']
 end
@@ -5,24 +6,8 @@ end
 
 
 
-local ArcheologyButton
+--[[local ArcheologyButton
 --item=87399/修复的遗物
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
     local framGameTooltipButton= frame.framGameTooltipButton
@@ -124,6 +109,18 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         ArcheologyButton.keyButton:set_text()
     end
 end
+]]
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -234,7 +231,67 @@ local function Init()
 
     ArchaeologyFrameInfoButton:SetFrameStrata('DIALOG')
 
-    ArcheologyDigsiteProgressBar:HookScript('OnShow', Init_ArcheologyDigsiteProgressBar_OnShow)
+
+
+
+
+
+
+
+    local btn= CreateFrame('Button', 'WoWToolsArcheologyProgressBarSounButton', ArcheologyDigsiteProgressBar, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(ArcheologyDigsiteProgressBar, {size=20})
+
+    btn:SetPoint('RIGHT', ArcheologyDigsiteProgressBar, 'LEFT', 0, -4)
+    function btn:set_atlas()
+        self:SetNormalAtlas(Save().ArcheologySound and 'chatframe-button-icon-voicechat' or 'chatframe-button-icon-speaker-off')
+    end
+    btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '声音提示' or  SOUND)
+
+
+    function btn:play_sound()
+        WoWTools_DataMixin:PlaySound()
+        WoWTools_FrameMixin:HelpFrame({frame=ArcheologyDigsiteProgressBar, point='left', topoint=self, size={40,40}, color={r=1,g=0,b=0,a=1}, show=true, hideTime=3, y=0})--设置，提示
+    end
+
+    btn:SetScript('OnClick', function(self)
+        Save().ArcheologySound= not Save().ArcheologySound and true or false
+        self:set_atlas()
+        self:set_event()
+        self:set_tooltips()
+        if Save().ArcheologySound then
+            self:play_sound()
+        end
+    end)
+
+    function btn:set_event()
+        self:UnregisterAllEvents()
+        if self:IsVisible() and Save().ArcheologySound then
+            self:RegisterUnitEvent('UNIT_AURA', 'player')
+        end
+        self:set_atlas()
+    end
+    btn:SetScript('OnEvent', function(self, _, _, tab)
+        if tab and tab.addedAuras then
+            for _, info in pairs(tab.addedAuras) do
+                if canaccesstable(info) and canaccessvalue(info.spellId) and info.spellId==210837 then
+                    self:play_sound()
+                    break
+                end
+            end
+        end
+    end)
+    btn:SetScript('OnShow', btn.set_event)
+    btn:SetScript('OnHide', btn.set_event)
+
+    btn:set_event()
+
+
+
+
+
+--researchFieldID
+
+
+
 
     Init=function()end
 end

@@ -562,10 +562,11 @@ local function Init_Menu(self, root)
 
 --打开，选项
     sub=root:CreateDivider()
+
     sub=WoWTools_MenuMixin:OpenOptions(root, {
         category=WoWTools_MoveMixin.Category,
-        name=WoWTools_MoveMixin.addName,
-        --name2=name,
+        name= self.UIName or (self.name and self.name:gsub('Frame', '')),
+        name2= WoWTools_MoveMixin.addName,
     })
 
 
@@ -1041,6 +1042,8 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
     btn.sizeTooltip= tab.sizeTooltip
     btn.addMenu= tab.addMenu--添加菜单
+
+    btn.UIName= tab.UIName--给，菜单，打开选项用，一般用于.Events中, 如：Blizzard_Collections, {UIName='Collections'},
 
     if setResizeButtonPoint then
         btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)

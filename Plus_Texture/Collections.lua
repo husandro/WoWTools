@@ -95,14 +95,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
     self:SetStatusBar(WardrobeCollectionFrame.progressBar)
     self:SetEditBox(WardrobeCollectionFrameSearchBox)
-    --[[for _, region in pairs({WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame:GetChildren()}) do
-        if region:IsObjectType('Button') then
-            local icon= region:GetNormalTexture()
-            if icon then
-                self:SetAlphaColor(icon, true, nil, 1)
-            end
-        end
-    end]]
+
     self:SetButton(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame.PrevPageButton, 1)
     self:SetButton(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame.NextPageButton, 1)
 
@@ -120,87 +113,19 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetCheckBox(WarbandSceneJournal.IconsFrame.Icons.Controls.ShowOwned.Checkbox)
 
 
---试衣间 WardrobeFrame
-
-if WardrobeTransmogFrame then--12.0没有了
-    for _, name in pairs({
-    'HeadButton',
-    'ShoulderButton',
-    'SecondaryShoulderButton',
-    'BackButton',
-    'ChestButton',
-    'ShirtButton',
-    'TabardButton',
-    'WristButton',
-
-    'HandsButton',
-    'WaistButton',
-    'LegsButton',
-    'FeetButton',
-
-    'MainHandButton',
-    'MainHandEnchantButton',
-    'SecondaryHandButton',
-    'SecondaryHandEnchantButton',
-    }) do
-        local btn= WardrobeTransmogFrame[name]
-        if btn then
-            self:HideTexture(btn.Border)
-            WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
-        end
-    end
-
-
-    WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetText('')
-    WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetScript('OnLeave', GameTooltip_Hide)
-    WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '两侧肩膀使用不同的幻化外观' or TRANSMOGRIFY_RIGHT_SHOULDER)
-        GameTooltip:Show()
-    end)
-
-    self:HideFrame(WardrobeFrame)
-    self:HideFrame(WardrobeTransmogFrame)
-    self:SetNineSlice(WardrobeTransmogFrame.Inset)
-    self:HideTexture(WardrobeTransmogFrame.Inset.Bg)
-    self:HideTexture(WardrobeTransmogFrame.Inset.BG)
-    self:SetButton(WardrobeFrameCloseButton)
-
-
-    --试衣间，套装
-    self:SetButton(WardrobeTransmogFrame.ModelScene.ClearAllPendingButton)
-    self:SetCheckBox(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox)
-    for _, btn in pairs(WardrobeCollectionFrame.SetsTransmogFrame.Models or {}) do
-        btn:DisableDrawLayer('BACKGROUND')
-        self:HideTexture(btn.Border)
-    end
-    WoWTools_DataMixin:Hook(WardrobeSetsTransmogModelMixin, 'OnLoad', function(btn)
-        btn:DisableDrawLayer('BACKGROUND')
-        self:HideTexture(btn.Border)
-    end)
-
---试衣间，物品
-    WoWTools_DataMixin:Hook(WardrobeItemsModelMixin, 'OnLoad', function(btn)
-        btn:DisableDrawLayer('BACKGROUND')
-        btn.Border:SetAlpha(0)
-    end)
-
-    self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.NextPageButton, 1)
-    self:SetButton(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame.PrevPageButton, 1)
-
-end
-
---试衣间, 套装
-    self:HideFrame(WardrobeCollectionFrame.SetsTransmogFrame)
-    self:SetNineSlice(WardrobeCollectionFrame.SetsTransmogFrame)
-
 
 --试衣间，物品 WardrobeItemsModelTemplate
-    for _, btn in pairs(WardrobeCollectionFrame.ItemsCollectionFrame.Models or {}) do
+    for _, btn in pairs(WardrobeCollectionFrame.ItemsCollectionFrame.Models) do
         btn:DisableDrawLayer('BACKGROUND')
         btn.Border:SetAlpha(0)
     end
 
+    WardrobeCollectionFrame:HookScript('OnSizeChanged', function(frame)
+        for _, btn in pairs(frame.ItemsCollectionFrame.Models) do
+            btn:DisableDrawLayer('BACKGROUND')
+            btn.Border:SetAlpha(0)
+        end
+    end)
 
 
     self:HideFrame(WarbandSceneJournal.IconsFrame)
@@ -222,15 +147,6 @@ end
 
 --收集
     self:Init_BGMenu_Frame(CollectionsJournal)
-
---试衣间
-if WardrobeFrame then--12.0没有了
-    self:Init_BGMenu_Frame(WardrobeFrame, {
-        newButtonPoint=function(btn)
-            btn:SetPoint('RIGHT', WardrobeFrameCloseButton, -23, 0)
-        end
-    })
-end
 end
 
 --[[
