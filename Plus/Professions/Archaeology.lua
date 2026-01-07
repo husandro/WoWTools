@@ -398,7 +398,7 @@ local function Init_ProgressBar()
 
             for i= 1, GetNumArchaeologyRaces() do
                 local num=GetNumArtifactsByRace(i)
-                --if num>0 then
+                if num>0 or WoWTools_DataMixin.Player.husandro then
                     local name, _, _,  cur, need, max =  GetArchaeologyRaceInfo(i)
                     if name and cur and need and max then
                         sub= root:CreateButton(
@@ -415,7 +415,7 @@ local function Init_ProgressBar()
                         end, {rightText=i})
                         WoWTools_MenuMixin:SetRightText(sub)
                     end
-                --end
+                end
             end
 
             WoWTools_MenuMixin:SetGridMode(root)
