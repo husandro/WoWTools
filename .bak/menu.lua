@@ -38,7 +38,7 @@ GameTooltip_ShowSimpleTooltip(GameTooltip,
 	WoWTools_DataMixin.onlyChinese and '隐藏已忽略栏位' or TRANSMOG_HIDE_UNASSIGNED_SLOTS,
 	SimpleTooltipConstants.NoOverrideColor,
 	SimpleTooltipConstants.DoNotWrapText,
-	frame,
+	self,
 	"ANCHOR_LEFT"
 )
 GameTooltip_ShowSimpleTooltip(GetAppropriateTooltip(), OPEN_DYNAMIC_FLIGHT_TREE_TOOLTIP, SimpleTooltipConstants.NoOverrideColor, SimpleTooltipConstants.DoNotWrapText, self, "ANCHOR_RIGHT");

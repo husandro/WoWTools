@@ -74,7 +74,7 @@ Plus_Move\Transmog.lua
 Plus_Move\EncounterJournal.lua
 Plus_Move\PVEFrame.lua
 Plus_Move\Collections.lua
-
+Plus_Move\CharacterFrame.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -89,6 +89,7 @@ Plus_Texture\ClassPower.lua
 Plus_Texture\EncounterJournal.lua
 Plus_Texture\PVEFrame.lua
 Plus_Texture\Collections.lua
+Plus_Texture\CharacterFrame.lua
 Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
 Plus_Texture\z_SharedXML.lua
@@ -210,7 +211,6 @@ Plus\PaperDoll\Tab2.lua
 Plus\PaperDoll\Tab3_Set_Plus.lua
 Plus\PaperDoll\Tab3.lua
 Plus\PaperDoll\TrackButton_PaperDool.lua
-Plus\PaperDoll\z_UI.lua
 
 ##声望面板
 Plus\Faction\0_FactionMixin.lua
@@ -485,8 +485,8 @@ Plus\Macro\NewEmptyButton.lua
 Plus\Macro\Select_Button.lua
 Plus\Macro\z_MacroFrame_UI.lua
 ##专业按钮
-Plus\Professions\0_Professions.lua
-Plus\Professions\ArchaeologyUI.lua
+Plus\Professions\1_Init.lua
+Plus\Professions\Archaeology.lua
 Plus\Professions\ProfessionsFrame_Button.lua
 Plus\Professions\ProfessionsFrame.lua
 Plus\Professions\TrainerUI.lua

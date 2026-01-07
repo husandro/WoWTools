@@ -553,16 +553,13 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
 
     local name= tab.name
     local name2= tab.name2
-
     local category= tab.GetCategory and tab.GetCategory() or tab.category
     local tooltip= tab.tooltip
 
-    local showText= name2 or name
-    showText= showText and showText..'|A:OptionsIcon-Brown:0:0|a' or ('|A:OptionsIcon-Brown:0:0|a'..(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS))
-
     local sub=root:CreateButton(
         (InCombatLockdown() and '|cff828282' or '')
-        ..showText,
+        ..(name2 or name or (WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS))
+        ..'|A:OptionsIcon-Brown:0:0|a',
     function()
         if InCombatLockdown() then
             return
@@ -576,7 +573,8 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     sub:SetTooltip(function(t)
         t:AddDoubleLine(name and name..WoWTools_DataMixin.Icon.icon2 or WoWTools_DataMixin.addName, name2)
         t:AddDoubleLine(
-            WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
+            WoWTools_DataMixin.onlyChinese and '打开选项界面'
+            or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
         )
         local isType= type(tooltip)
         if isType=='string' then
@@ -590,7 +588,6 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
 end
 --[[
 --打开选项界面
-WoWTools_MenuMixin:OpenOptions(root, {name=,})
 WoWTools_MenuMixin:OpenOptions(root, {
 name=,
 name2=,

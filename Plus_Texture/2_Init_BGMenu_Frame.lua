@@ -464,9 +464,11 @@ local function Add_Frame_Menu(self, root)
     local sub, sub2
     sub=root:CreateButton(
         '|A:charactercreate-icon-dice:0:0|aFrames',
-        --..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM),
     function()
         return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '统一/分开' or 'Unified/Separated')
     end)
 
     local find
@@ -537,7 +539,7 @@ local function Add_Frame_Menu(self, root)
     end)
 
     for index, tab in pairs(newTab) do
-        local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(tab.texture, {480, 240})
+        local isAtlas, _, icon2= WoWTools_TextureMixin:IsAtlas(tab.texture, {480, 240})
         sub2= sub:CreateCheckbox(
             '|cffff8000'..index..'|r '
             ..(tab.name== frameName and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
@@ -557,22 +559,29 @@ local function Add_Frame_Menu(self, root)
 
             return MenuResponse.Refresh
         end, {
-            name=tab.name,
-            alpha=tab.alpha,
-            texture=tab.texture,
-            icon2=icon2,
+            name= tab.name,
+            alpha= tab.alpha,
+            texture= tab.texture,
+            icon2= icon2,
+            isAtlas= isAtlas,
         })
 
-        sub2:AddInitializer(function(button)
-            local t = button:AttachTexture()
-            t:SetSize(248, 64)
-            t:SetPoint("LEFT", 20, 0)
-            if isAtlas then
-                t:SetAtlas(textureID)
-            else
-                t:SetTexture(textureID or RestIcon)
-            end
-        end)
+        if tab.texture then
+            sub2:AddInitializer(function(btn, desc)
+                local t = btn:AttachTexture()
+                t:SetSize(248, 64)
+                t:SetPoint("LEFT", 20, 0)
+
+                local layer, sublayer = btn.fontString:GetDrawLayer()
+                t:SetDrawLayer(layer, sublayer+1)
+
+                if desc.data.isAtlas then
+                    t:SetAtlas(desc.data.texture)
+                else
+                    t:SetTexture(desc.data.texture or 0)--RestIcon)
+                end
+            end)
+        end
 
         sub2:SetTooltip(function(tooltip, desc)
             tooltip:AddLine(desc.data.icon2)
@@ -834,9 +843,9 @@ local function Init_Menu(self, root, isSub)
 --打开选项界面
     --sub:CreateSpacer()
     sub2=WoWTools_MenuMixin:OpenOptions(sub, {
-        category=WoWTools_TextureMixin.Category,
-        name=WoWTools_TextureMixin.addName,
-        --name2=name,
+        category= WoWTools_TextureMixin.Category,
+        name= name,
+        name2= WoWTools_TextureMixin.addName,
     })
 --Web
     sub3=sub2:CreateButton(
@@ -1171,7 +1180,13 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
     tab= tab or {}
 
     local name
-    if frame then
+    if not frame then
+        if WoWTools_DataMixin.Player.husandro then
+            print(frame, 'Init_BGMenu_Frame',WARNING_FONT_COLOR:WrapTextInColorCode('没发现frame'))
+        end
+        return
+
+    else
         name= frame:GetName()
         if not name and tab.name then-- and not WoWTools_FrameMixin:IsLocked(frame) then
             if frame then
@@ -1180,22 +1195,10 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
                 end
             end
             name= tab.name
-        end
-    else
-        if WoWTools_DataMixin.Player.husandro then
-            print(frame, 'Init_BGMenu_Frame',WARNING_FONT_COLOR:WrapTextInColorCode('没发现frame'))
-        end
-        return
-    end
 
-     --[[(
-            WoWToolsSave['Plus_Texture'].disabledTexture
-            --or WoWToolsSave['Plus_Texture'].disabedBG
-        ) and not tab.enabled
-
-        or ]]
-    if not name or name=='' then
-        return
+        elseif not name or name=='' then
+            return
+        end
     end
 
     self:SetNineSlice(tab.NineSlice or frame)

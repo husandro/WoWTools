@@ -130,7 +130,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Collections()
     self:Setup(CollectionsJournal, {
         minW=703,
         minH=606,
-        sizeUpdateFunc=function(_, btn)
+        sizeUpdateFunc=function()
             if WarbandSceneJournal:IsVisible() then
                 WarbandSceneJournal:SetupJournalEntries()
             end
@@ -138,11 +138,10 @@ function WoWTools_MoveMixin.Events:Blizzard_Collections()
         sizeStopFunc=function(frame)
             self:Save().size[frame:GetName()]= {frame:GetSize()}
         end,
-        sizeRestFunc=function(frame, btn)
+        sizeRestFunc=function(frame)
             frame:SetSize(703, 606)
             self:Save().size['CollectionsJournal']=nil
         end,
-        UIName='Collections'
     })
 
 

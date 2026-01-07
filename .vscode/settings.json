@@ -2854,7 +2854,15 @@
         "ReadyCheckFrameYesButton",
         "ReadyCheckFrameNoButton",
         "ClassTrainerFrameBg",
-        "ClassTrainerFrameMoneyBg"
+        "ClassTrainerFrameMoneyBg",
+        "AsyncCallbackAPIType",
+        "ArchaeologyFrame_ShowArtifact",
+        "ArchaeologyFrame_LoadUI",
+        "ArchaeologyFrame_Show",
+        "ArchaeologyFrame_OnShow",
+        "ArchaeologyFrame_OnTabClick",
+        "ArchaeologyFrameSummarytButton",
+        "PROFESSIONS_ARCHAEOLOGY"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

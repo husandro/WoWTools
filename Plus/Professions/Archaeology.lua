@@ -134,12 +134,23 @@ end
 
 
 
-local function Init()
+local function Init_ArchaeologyFrame()
+    if not C_AddOns.IsAddOnLoaded("Blizzard_ArchaeologyUI") then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_ArchaeologyUI' then
+                Init_ArchaeologyFrame()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
+
+
     WoWTools_DataMixin:Hook(ArchaeologyFrame.completedPage, 'UpdateFrame', function(self)--提示
         if not IsArtifactCompletionHistoryAvailable() then
             return
         end
-        for i=1, ARCHAEOLOGY_MAX_COMPLETED_SHOWN do
+        for i=1, ARCHAEOLOGY_MAX_COMPLETED_SHOWN do--12
             local btn=  self["artifact"..i]
             if btn and btn:IsShown() then
                 local name, _, rarity, _, _,  _, _, _, _, completionCount = GetArtifactInfoByRace(btn.raceIndex, btn.projectIndex);
@@ -160,7 +171,7 @@ local function Init()
         end
     end)
 
-    --增加一个按钮， 提示物品
+--增加一个按钮， 提示物品
     WoWTools_DataMixin:Hook('ArchaeologyFrame_CurrentArtifactUpdate', function()
         local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))
         local btn= ArchaeologyFrame.artifactPagGameTooltipButton
@@ -232,12 +243,25 @@ local function Init()
     ArchaeologyFrameInfoButton:SetFrameStrata('DIALOG')
 
 
+    Init_ArchaeologyFrame=function()end
+end
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+local function Init_ProgressBar()
     local btn= CreateFrame('Button', 'WoWToolsArcheologyProgressBarSounButton', ArcheologyDigsiteProgressBar, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(ArcheologyDigsiteProgressBar, {size=20})
 
     btn:SetPoint('RIGHT', ArcheologyDigsiteProgressBar, 'LEFT', 0, -4)
@@ -256,7 +280,6 @@ local function Init()
         Save().ArcheologySound= not Save().ArcheologySound and true or false
         self:set_atlas()
         self:set_event()
-        self:set_tooltips()
         if Save().ArcheologySound then
             self:play_sound()
         end
@@ -288,12 +311,130 @@ local function Init()
 
 
 
---researchFieldID
+--ArcheologyDigsiteProgressBar.researchFieldID
 
 
+    btn= CreateFrame('Button', 'WoWToolsArcheologyProgressBarBranchButton', ArcheologyDigsiteProgressBar, 'WoWToolsButtonTemplate')
+
+    btn.texture= btn:CreateTexture(nil, "BORDER")
+    btn.texture:SetPoint('TOPLEFT')
+    btn.texture:SetSize(36, 36)--23x23
+
+    btn.Text= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')
+    btn.Text:SetPoint('BOTTOM', btn, 'TOP')
+
+    btn.Text2= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')
+    btn.Text2:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
+    btn.Text2:EnableMouse(true)
+    btn.Text2:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    btn.Text2:SetScript('OnEnter', function(self)
+        self:SetAlpha(0.3)
+        local itemID= self:GetParent().raceItemID
+        if not itemID then
+            return
+        end
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:ClearLines()
+        GameTooltip:SetItemByID(itemID)
+        GameTooltip:Show()
+    end)
 
 
-    Init=function()end
+    btn:SetPoint('LEFT', ArcheologyDigsiteProgressBar, 'RIGHT', 0, -4)
+    btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '显示考古' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, PROFESSIONS_ARCHAEOLOGY))
+    btn:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
+
+    --[[btn:SetScript('OnHide', function(self)
+        self.Text:SetText('')
+        self.Text2:SetText('')
+        self.raceItemID= nil
+        self.branchID= nil
+        self.texture:SetTexture(0)
+        self:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
+    end)]]
+    btn:SetScript('OnClick', function(self)
+        if not ArchaeologyFrame then
+            ArchaeologyFrame_LoadUI()
+        end
+        if not ArchaeologyFrame:IsShown() then
+            ArchaeologyFrame_Show()
+        end
+        if self.raceItemID then
+            if ArchaeologyFrame.selectedTab~=ArchaeologyFrameSummarytButton:GetID() then
+                ArchaeologyFrame_OnTabClick(ArchaeologyFrameSummarytButton)
+            end
+            ArchaeologyFrame_ShowArtifact(self.raceItemID)
+        end
+    end)
+
+    function btn:settings()
+        if not self.branchID or not self:IsVisible() then
+            return
+        end
+        local _, raceTextureID, raceItemID, numFragmentsCollected, numFragmentsRequired= GetArchaeologyRaceInfoByID(self.branchID)
+
+        self.texture:SetTexture(raceTextureID or 0)
+        if raceTextureID then
+            self:SetNormalTexture(0)
+        end
+
+        if numFragmentsCollected and numFragmentsRequired then
+            self.Text:SetText(numFragmentsCollected..'/'..numFragmentsRequired)
+            if numFragmentsCollected >= numFragmentsRequired then
+                self.Text:SetTextColor(GREEN_FONT_COLOR:GetRGB())
+            else
+                self.Text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+            end
+        else
+            self.Text:SetText('')
+        end
+
+        local count=''
+        if raceItemID then
+            WoWTools_DataMixin:Load(raceItemID, 'item')
+            count= WoWTools_ItemMixin:GetCount(raceItemID, {notZero=true}) or ''
+            local icon= select(5, C_Item.GetItemInfoInstant(raceItemID))
+            if icon then
+                count= count..'|T'..icon..':0|t'
+            end
+        end
+        self.Text2:SetText(count)
+
+        self.raceItemID= raceItemID
+    end
+
+    btn:SetScript('OnShow', function(self)
+        self:settings()
+    end)
+
+    btn:RegisterEvent('ARCHAEOLOGY_SURVEY_CAST')
+    btn:RegisterEvent('ARCHAEOLOGY_FIND_COMPLETE')
+    btn:RegisterEvent('ARTIFACT_DIGSITE_COMPLETE')
+
+    btn:RegisterEvent('RESEARCH_ARTIFACT_COMPLETE')--当通过考古学解决某个物品时触发。
+    btn:RegisterEvent('RESEARCH_ARTIFACT_UPDATE')    
+
+    btn:SetScript('OnEvent', function(self, event, ...)
+        local researchBranchID
+        if event=='ARCHAEOLOGY_SURVEY_CAST' or event=='ARCHAEOLOGY_FIND_COMPLETE' then
+            researchBranchID= select(3, ...)
+        elseif event=='ARTIFACT_DIGSITE_COMPLETE' then
+            researchBranchID= ...
+        end
+
+        self.branchID= researchBranchID or self.branchID
+        self:settings()
+    end)
+
+
+    if (WoWTools_DataMixin.Player.husandro or not InCombatLockdown()) and CanScanResearchSite() and select(3, GetProfessions()) then
+        ArcheologyDigsiteProgressBar:SetShown(true)
+    end
+
+    Init_ProgressBar=function()end
 end
 
 
@@ -305,6 +446,8 @@ end
 
 
 
+
 function WoWTools_ProfessionMixin:Init_Archaeology()
-    Init()
+    Init_ArchaeologyFrame()
+    Init_ProgressBar()
 end

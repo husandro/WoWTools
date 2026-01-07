@@ -266,8 +266,9 @@ WoWTools_PanelMixin:CheckMenu({
 
 
     local index=0
-    local function Add_Options(name)
 
+
+    local function Add_Options(name)
         WoWTools_PanelMixin:OnlyCheck({
             name= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(index..') ')..name:gsub('Blizzard_', ''),
             tooltip= tooltip,
