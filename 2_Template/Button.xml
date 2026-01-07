@@ -30,8 +30,8 @@
             <Layer level="BORDER">
                 <Texture parentKey="texture">
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="-1" y="1"/>
-                        <Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
+                        <Anchor point="TOPLEFT" x="-1" y="2"/>
+                        <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
                     </Anchors>
                 </Texture>
             </Layer>
@@ -52,7 +52,10 @@
             </Layer>
         </Layers>
         <Scripts>
-            <OnLoad function="WoWToolsButton_OnLoad"/>
+            <OnLoad>
+                WoWTools_TextureMixin:SetAlphaColor(self.border)
+                WoWToolsButton_OnLoad(self)
+            </OnLoad>
             <OnLeave function="WoWToolsButton_OnLeave"/>
             <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>

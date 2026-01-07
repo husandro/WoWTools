@@ -112,12 +112,19 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
     self:SetButton(EncounterJournalInstanceSelect.GreatVaultButton, {alpha=1})
 
---旅程
-if EncounterJournalJourneysFrame then--12.0才有
+--旅程 12.0
     self:SetButton(EncounterJournalJourneysFrame.JourneyProgress.OverviewBtn, {alpha=1})
     self:SetScrollBar(EncounterJournalJourneysFrame)
     self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyOverview.DividerTexture, nil, nil, true)
-end
+    self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBar, nil, nil, 0.3)
+
+
+
+
+
+
+
+
 
     self:Init_BGMenu_Frame(EncounterJournal, {
     settings= function(icon, textureName, alphaValue)

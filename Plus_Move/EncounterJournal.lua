@@ -240,7 +240,6 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:SetPoint('BOTTOM')
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:SetPoint('LEFT', EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.JumpLeftButton)
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:SetPoint('RIGHT', EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.JumpRightButton)
-    
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:SetAtlas('UI-HUD-CoolDownManager-Mask')
     --EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:SetAllPoints()
 

@@ -3,13 +3,16 @@
 --#############
 local function Init()
 --添加一个按钮，打开挑战界面
-    local btn= WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {
+    local btn= CreateFrame('Button', 'WoWToolsWeeklyRewardsOpenChallengesButton', WeeklyRewardsFrame,'WoWToolsButton2Template')
+    btn:SetSize(32, 32)
+    btn.texture:SetTexture('Interface\\Icons\\achievement_bg_wineos_underxminutes')
+    --[[WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {
         texture='Interface\\Icons\\achievement_bg_wineos_underxminutes',
         size=32,
         isType2=true,
         notBorder=true,
         name='WoWToolsChallengePlusOpenChallengesFrameButton',
-    })
+    })]]
     btn:SetFrameStrata('HIGH')
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -28,6 +31,9 @@ local function Init()
         self:SetButtonState('NORMAL')
     end)
     btn:SetPoint('RIGHT',-4,-42)
+
+
+
 
 --移动，图片
     WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
