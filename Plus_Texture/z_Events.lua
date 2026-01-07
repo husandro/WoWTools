@@ -1649,8 +1649,8 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
         end
     end
 
+    self:SetAlphaColor(PlayerFrame.PlayerFrameContainer.AlternatePowerFrameTexture, true)
 
-    --WoWTools_DataMixin:Hook('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
     self:SetAlphaColor(OverrideActionBarEndCapL, nil, nil, 0)
     self:SetAlphaColor(OverrideActionBarEndCapR, nil, nil, 0)
     self:SetAlphaColor(OverrideActionBarBorder, nil, nil, 0)
@@ -1683,9 +1683,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
 
     self:SetAlphaColor(MultiBarBottomLeftButton10.SlotBackground, nil, nil, 0)
 
-    self:HideTexture(PlayerFrameAlternateManaBarBorder)
-    self:HideTexture(PlayerFrameAlternateManaBarLeftBorder)
-    self:HideTexture(PlayerFrameAlternateManaBarRightBorder)
+
 --额外技能
     self:SetAlphaColor(ExtraActionButton1.style, nil, true, 0.3)
 

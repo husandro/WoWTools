@@ -2862,7 +2862,10 @@
         "ArchaeologyFrame_OnShow",
         "ArchaeologyFrame_OnTabClick",
         "ArchaeologyFrameSummarytButton",
-        "PROFESSIONS_ARCHAEOLOGY"
+        "PROFESSIONS_ARCHAEOLOGY",
+        "TransmogFrameBg",
+        "TransmogAppearanceSlotMixin",
+        "TransmogSlotFlyoutDropdownMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
