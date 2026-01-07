@@ -374,8 +374,11 @@ local function Init_ProgressBar()
             ArcheologyDigsiteProgressBar:SetShown(true)
         end
     end
-
+    bar:SetScript('OnHide', function(self)
+        self:UnregisterEvent('CHAT_MSG_CURRENCY')
+    end)
     bar:SetScript('OnShow', function(self)
+        self:RegisterEvent('CHAT_MSG_CURRENCY')
         self:settings()
     end)
 
@@ -388,10 +391,10 @@ local function Init_ProgressBar()
 
     bar:SetScript('OnEvent', function(self, event, ...)
         if event=='PLAYER_STOPPED_MOVING' then
-            bar:show_bar()
+            self:show_bar()
             return
         elseif event=='PLAYER_ENTERING_WORLD' then
-            bar:set_event()
+            self:set_event()
             return
         end
 
