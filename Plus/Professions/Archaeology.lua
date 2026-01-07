@@ -291,7 +291,7 @@ local function Init_ProgressBar()
 
             for i= 1, GetNumArchaeologyRaces() do
                 local num=GetNumArtifactsByRace(i)
-                if num>0 or WoWTools_DataMixin.Player.husandro then
+                if num>0 then
                     local name, _, _,  cur, need, max =  GetArchaeologyRaceInfo(i)
                     if name and cur and need and max then
                         sub= root:CreateButton(
@@ -310,6 +310,9 @@ local function Init_ProgressBar()
                     end
                 end
             end
+
+            root:CreateDivider()
+            WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ProfessionMixin.addName})
 
             WoWTools_MenuMixin:SetGridMode(root)
         end)
