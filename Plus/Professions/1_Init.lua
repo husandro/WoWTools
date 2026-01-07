@@ -1,25 +1,8 @@
 WoWTools_ProfessionMixin={}
 
-local P_Save={
-    setButton=true,
-    --disabledClassTrainer=true,--隐藏，全学，按钮
-    --disabledEnchant=true,--禁用，自动放入，附魔纸
-    --disabled--禁用，按钮
-    ArcheologySound=true, --考古学
-    --showFuocoButton=nil,--专业，界面上显示 烹饪用火按钮， 战斗不能隐藏
-}
-
 local function Save()
     return WoWToolsSave['Plus_Professions']
 end
-
-
-
-
-
-
-
-
 
 
 
@@ -30,8 +13,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
 
-        WoWToolsSave['Plus_Professions']= WoWToolsSave['Plus_Professions'] or P_Save
-        P_Save= nil
+        WoWToolsSave['Plus_Professions']= WoWToolsSave['Plus_Professions'] or {
+            setButton=true,
+            ArcheologySound=true, --考古学
+            showArcheologyBar=WoWTools_DataMixin.Player.husandro,
+        }
 
         WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
 
