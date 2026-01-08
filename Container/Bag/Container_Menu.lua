@@ -144,11 +144,12 @@ local function Init_Columns_Menu(self, root)
 
     local disabled= not Save().enabledCombinedColumns-- or InCombatLockdown()
 
-    for index, frame in pairs(frames) do
+    for _, frame in pairs(frames) do
         sub:CreateSpacer()
+        local hex= disabled and '|cff626262' or (frame==self and '|cnGREEN_FONT_COLOR:') or (frame:IsShown() and '|cnNORMAL_FONT_COLOR:') or ''
 
         local sub2= WoWTools_MenuMixin:CreateSlider(sub, {
-            name=(disabled and '|cff626262' or (index==1 and '|cnGREEN_FONT_COLOR:' or ''))
+            name=hex
                 ..Get_BagName(frame),
             getValue=function(_, desc)
                 return Get_Columns(desc.data.frame)
@@ -168,7 +169,7 @@ local function Init_Columns_Menu(self, root)
         end)
 
         sub:CreateSpacer()
-        if index==1 then sub:CreateSpacer() end
+        if frame==self then sub:CreateSpacer() end
     end
 
 
@@ -191,6 +192,11 @@ local function Init_Columns_Menu(self, root)
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BagMixin.addName})
 --重载
     WoWTools_MenuMixin:Reload(sub)
+--重置数据
+    WoWTools_MenuMixin:RestData(sub, WoWTools_BagMixin.addName, function()
+        WoWToolsSave['Plus_Container']= nil
+        WoWTools_DataMixin:Reload()
+    end)
 end
 
 
@@ -303,7 +309,7 @@ local function Init()
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetSortBagsRightToLeft')
+            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'|cffffffffSetSortBagsRightToLeft')
         end)
 
         sub= root:CreateCheckbox(
@@ -315,7 +321,7 @@ local function Init()
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetInsertItemsLeftToRight')
+            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'|cffffffffSetInsertItemsLeftToRight')
         end)
 
         sub= root:CreateCheckbox(
@@ -327,7 +333,7 @@ local function Init()
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetBackpackAutosortDisabled')
+            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'|cffffffffSetBackpackAutosortDisabled')
         end)
 
         sub= root:CreateCheckbox(
@@ -339,7 +345,7 @@ local function Init()
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'SetBackpackSellJunkDisabled')
+            tooltip:AddLine('C_Container'..WoWTools_DataMixin.Icon.icon2..'|cffffffffSetBackpackSellJunkDisabled')
         end)
 
         Init_Columns_Menu(self:GetParent(), root)

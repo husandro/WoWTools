@@ -82,8 +82,8 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
                     name='Border',
                     minValue=0,
                     maxValue=1,
-                    step=0.01,
-                    bit='%.2f',
+                    step=0.1,
+                    bit='%.1f',
                 })
                 root:CreateSpacer()
             end

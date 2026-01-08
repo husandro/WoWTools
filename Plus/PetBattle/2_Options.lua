@@ -129,12 +129,10 @@ local function Init()
         buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
         buttonFunc= function()
             StaticPopup_Show('WoWTools_RestData',
-                WoWTools_PetBattleMixin.addName
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                WoWTools_PetBattleMixin.addName,
                 nil,
             function()
                 WoWToolsSave['Plus_PetBattle2']= nil
-                WoWTools_DataMixin:Reload()
             end)
         end,
         tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),

@@ -1519,13 +1519,10 @@ local function Init_Right_Menu(self, root)
         allTtext,
     function()
         StaticPopup_Show('WoWTools_RestData',
-            allTtext
-            ..'|n|n|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
+            allTtext,
             nil,
             function()
                 WoWTools_WoWDate={}
-                WoWTools_DataMixin:Reload()
             end
         )
         return MenuResponse.Open

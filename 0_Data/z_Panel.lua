@@ -35,14 +35,11 @@ local function Init_Options()
         addSearchTags= optionHeader,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                (WoWTools_DataMixin.onlyChinese and '全部重置，插件设置' or (RESET_ALL_BUTTON_TEXT..', '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, SETTINGS)))
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                (WoWTools_DataMixin.onlyChinese and '全部重置，插件设置' or (RESET_ALL_BUTTON_TEXT..', '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, SETTINGS))),
                 nil,
             function()
                 WoWTools_DataMixin.ClearAllSave= true
-                --EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
                 WoWToolsSave= {}
-                WoWTools_DataMixin:Reload()
             end)
         end,
         tooltip=function()
@@ -75,14 +72,10 @@ local function Init_Options()
         addSearchTags= playerHeader,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                WoWTools_DataMixin.Icon.wow2
-                ..playerHeader
-                ..'|n|n|cnGREEN_FONT_COLOR:'
-                ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
+                WoWTools_DataMixin.Icon.wow2..playerHeader,
                 nil,
                 function()
                     WoWToolsPlayerDate= {}
-                    WoWTools_DataMixin:Reload()
                 end
             )
         end,
@@ -114,14 +107,10 @@ local function Init_Options()
         addSearchTags= wowHeader,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                WoWTools_DataMixin.Icon.wow2
-                ..wowHeader
-                ..'|n|n|cnGREEN_FONT_COLOR:'
-                ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
+                WoWTools_DataMixin.Icon.wow2..wowHeader,
                 nil,
                 function()
                     WoWTools_WoWDate= {}
-                    WoWTools_DataMixin:Reload()
                 end
             )
         end,
@@ -168,14 +157,12 @@ local function Init_Options()
         addSearchTags= header,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                WoWTools_DataMixin.addName,
                 nil,
             function()
                 WoWToolsSave={}
                 WoWToolsPlayerDate= {}
                 WoWTools_WoWDate= {}
-                WoWTools_DataMixin:Reload()
             end)
         end,
         tooltip= optionHeader..'\n'

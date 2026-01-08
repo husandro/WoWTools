@@ -78,12 +78,10 @@ local function Init_Panel()
         addSearchTags= WoWTools_DataMixin.onlyChinese and '重置' or RESET,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                WoWTools_ToolsMixin.addName
-                ..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                WoWTools_ToolsMixin.addName,
                 nil,
                 function()
                     WoWToolsSave['WoWTools_ToolsButton']=nil
-                    WoWTools_DataMixin:Reload()
                 end
             )
         end,

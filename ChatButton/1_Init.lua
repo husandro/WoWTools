@@ -485,12 +485,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 buttonText= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
                 buttonFunc= function()
                     StaticPopup_Show('WoWTools_RestData',
-                        WoWTools_ChatMixin.addName
-                        ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                        WoWTools_ChatMixin.addName,
                         nil,
                     function()
                         WoWToolsSave['ChatButton']= nil
-                        WoWTools_DataMixin:Reload()
                     end)
                 end,
                 tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),

@@ -99,10 +99,12 @@ local function Get_Name(value, isChat, isCommand, useType)
 
     return name or _G["SLASH_"..value..'1'] or value
 end
+
+
+
 local function Rest_Button()
-    StaticPopup_Show('WoWTools_RestData',
-        addName..'|n'
-        ..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+    StaticPopup_Show('WoWTools_OK',
+        addName..'|n|n'..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
         nil,
     function()
         WoWToolsSave['Plus_EmoteButton']= CopyTable(P_Save)
@@ -110,6 +112,7 @@ local function Rest_Button()
         Init_Button()
     end)
 end
+
 local function On_Click(self)
     local value= self.value
     local add= SaveUse('use')[value] and SaveUse('use')[value].add

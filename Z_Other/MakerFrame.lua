@@ -1194,12 +1194,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         buttonText=WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         SetValue=function()
             StaticPopup_Show('WoWTools_RestData',
-                addName
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                addName,
                 nil,
             function()
                 WoWToolsSave['Other_MarkerFrame']= nil
-                WoWTools_DataMixin:Reload()
             end)
         end,
         tooltip= (WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)

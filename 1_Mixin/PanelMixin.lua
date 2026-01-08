@@ -499,8 +499,10 @@ function WoWTools_PanelMixin:ReloadButton(tab)
     rest.clearTips=tab.clearTips
     rest:SetScript('OnClick', function(frame)
         StaticPopup_Show('WoWTools_RestData',
-        (frame.addName or '')..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
-        nil, frame.func)
+            frame.addName or WoWTools_DataMixin.addName,
+            nil,
+            frame.func
+        )
     end)
     rest:SetScript('OnLeave', GameTooltip_Hide)
     rest:SetScript('OnEnter', function(frame)

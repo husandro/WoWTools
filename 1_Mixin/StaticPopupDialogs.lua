@@ -46,11 +46,14 @@ StaticPopupDialogs['WoWTools_RestData']= {
     text=WoWTools_DataMixin.addName
         ..'|n|n%s|n|n|cnWARNING_FONT_COLOR:'
         ..(WoWTools_DataMixin.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
-        ..'|r|n|n',
+        ..'|r|n|n'
+        ..'|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+        ..'|n',
     button1= WoWTools_DataMixin.onlyChinese and '重置' or RESET,
     button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
     OnAccept=function(_, SetValue)
         SetValue()
+        WoWTools_DataMixin:Reload()
     end,
     whileDead=true,
     hideOnEscape=true,
