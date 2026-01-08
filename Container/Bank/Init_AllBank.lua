@@ -415,7 +415,7 @@ local function Init_Move()
         else
             Save().num= h
         end
-        frame:GenerateItemSlotsForSelectedTab()
+        BankPanel:GenerateItemSlotsForSelectedTab()
     end})
     WoWTools_MoveMixin:Setup(BankPanel.TabSettingsMenu, {frame=BankFrame})
     WoWTools_MoveMixin:Setup(BankCleanUpConfirmationPopup)
