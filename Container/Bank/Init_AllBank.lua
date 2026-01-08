@@ -402,8 +402,8 @@ local function Init_Move()
         Save().accountNum= nil
         frame:GenerateItemSlotsForSelectedTab()
     end, sizeStopFunc= function(frame)
-        if frame.PurchasePrompt:IsShown()
-            or frame.LockPrompt:IsShown()
+        if BankPanel.PurchasePrompt and BankPanel.PurchasePrompt:IsShown()
+            or BankPanel.PurchasePrompt:IsShown()
             or not C_Bank.AreAnyBankTypesViewable()
         then
             return
