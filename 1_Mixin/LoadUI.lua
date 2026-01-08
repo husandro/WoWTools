@@ -144,23 +144,19 @@ end]]
 
 
 
---概要 ExpansionLandingPage Minimap.lua
+--概要 ExpansionLandingPageMinimapButtonMixin:RefreshButton(forceUpdateIcon)
 function WoWTools_LoadUIMixin:ToggleLandingPage()
     if InCombatLockdown() then
         return
     end
-    local frame= ExpansionLandingPageMinimapButton
-    if frame then
-        if frame:IsInMajorFactionRenownMode() then
-            ToggleMajorFactionRenown(Constants.MajorFactionsConsts.PLUNDERSTORM_MAJOR_FACTION_ID)
-            return
-        elseif frame:IsInGarrisonMode() then
-            WoWTools_DataMixin:Call('GarrisonLandingPage_Toggle', frame)
-            WoWTools_DataMixin:Call('GarrisonMinimap_HideHelpTip', frame)
-            return
-        end
+    local mode= C_Garrison.GetLandingPageGarrisonType()
+    if --ExpansionLandingPageMinimapButton:IsInGarrisonMode()
+        GameRulesUtil.ShouldShowExpansionLandingPageButton()
+        and mode
+        and C_Garrison.IsLandingPageMinimapButtonVisible(mode)
+    then
+        GarrisonLandingPage_Toggle()
     end
-    ToggleExpansionLandingPage()--frame:IsExpansionOverlayMode()
 end
 
 
@@ -220,25 +216,18 @@ end
 
 --派系声望 ReputationDetailViewRenownButtonMixin:OnClick()
 function WoWTools_LoadUIMixin:MajorFaction(factionID)
-    if MajorFactionsRenownToast then--12.0才有
-        if not EncounterJournal then
-            EncounterJournal_LoadUI();
-        end
-        if not EncounterJournal:IsShown() then
-            ShowUIPanel(EncounterJournal);
-        end
-        EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID())
+    if not EncounterJournal then
+        EncounterJournal_LoadUI();
+    end
+    if not EncounterJournal:IsShown() then
+        ShowUIPanel(EncounterJournal);
+    end
+    local id= EncounterJournal.JourneysTab:GetID()
+    if EncounterJournal.selectedTab~=id then
+        EJ_ContentTab_Select(id)
+    end
+    if factionID then
         EncounterJournalJourneysFrame:ResetView(nil, factionID)
-
-    else
-        if factionID and MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID then
-            MajorFactionRenownFrame:Hide()
-        else
-            if not MajorFactionRenownFrame then
-                UIParentLoadAddOn("Blizzard_MajorFactions")
-            end
-            ToggleMajorFactionRenown(factionID)
-        end
     end
 end
 

@@ -63,7 +63,6 @@ local function Init_Plus_Menu(self, root)
     function()
         return Save().ZoomOut
     end, function()
----@diagnostic disable-next-line: assign-type-mismatch
         Save().ZoomOut= not Save().ZoomOut and 'min' or nil
         WoWTools_MinimapMixin:Init_Minimap_Zoom()
     end)

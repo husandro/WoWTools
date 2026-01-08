@@ -81,7 +81,7 @@ end
 
 --周奖励面板
 function WoWTools_MoveMixin.Events:Blizzard_WeeklyRewards()
-    self:Setup(WeeklyRewardsFrame)
+    self:Setup(WeeklyRewardsFrame, {onShowFunc=true})
     self:Setup(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
 end
 

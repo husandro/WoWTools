@@ -34,11 +34,9 @@ local function Init()
 
     HeirloomsJournalSearchBox:SetPoint('LEFT', HeirloomsJournal.progressBar, 'RIGHT', 12,0)
 
-    ListButton= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal.FilterDropdown, {
-        size=22,
-        texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
-        name='WoWTools_PlusHeirloomsClassListButton'
-    })
+    ListButton= CreateFrame('Button', 'WoWToolsCollectionsJournalClassListButton', HeirloomsJournal, 'WoWToolsButtonTemplate')
+    ListButton:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
+    ListButton:GetNormalTexture():SetAlpha(0.5)
 
     function ListButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

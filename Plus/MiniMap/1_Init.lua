@@ -4,7 +4,7 @@ WoWTools_MinimapMixin={}
 
 local P_Save={
     scale=WoWTools_DataMixin.Player.husandro and 1 or 0.85,
-    ZoomOut=true,--更新地区时,缩小化地图
+    ZoomOut=WoWTools_DataMixin.Player.husandro and 'min' or nil,--更新地区时,缩小化地图
     ZoomOutInfo=true,--小地图, 缩放, 信息
 
     vigentteButton=WoWTools_DataMixin.Player.husandro,
@@ -135,7 +135,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -145,10 +145,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save().Icons= Save().Icons or P_Save.Icons
 
-            Save().MajorFactionRenownFrame_Button_Scale=nil
-			Save().hide_MajorFactionRenownFrame_Button=nil
-            Save().Icons.hideBackground= nil
-            Save().isShowTimeManagerBackground=nil
+            if Save().ZoomOut==true then
+                Save().ZoomOut='min'
+            end
 
             P_Save= nil
 
@@ -195,6 +194,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:SetScript('OnEvent', nil)
                 self:UnregisterAllEvents()
             else
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 Init()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then
@@ -208,7 +208,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_MinimapMixin:Init_Collection_Icon()--收集插件图标
         self:UnregisterEvent(event)
     end

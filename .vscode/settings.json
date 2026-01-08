@@ -2866,7 +2866,11 @@
         "TransmogFrameBg",
         "TransmogAppearanceSlotMixin",
         "TransmogSlotFlyoutDropdownMixin",
-        "nop"
+        "nop",
+        "GameRulesUtil",
+        "GarrisonLandingPage_Toggle",
+        "GarrisonMinimap_HideHelpTip",
+        "JOURNEYS_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

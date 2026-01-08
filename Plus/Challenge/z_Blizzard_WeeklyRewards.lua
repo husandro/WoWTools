@@ -1,37 +1,33 @@
-
 --周奖励界面界面
---#############
+if WoWTools_DataMixin.Player.husandro then
+    WoWTools_LoadUIMixin:WeeklyRewards()
+end
+
+
 local function Init()
 --添加一个按钮，打开挑战界面
-    local btn= CreateFrame('Button', 'WoWToolsWeeklyRewardsOpenChallengesButton', WeeklyRewardsFrame,'WoWToolsButton2Template')
-    btn:SetSize(32, 32)
-    btn.texture:SetTexture('Interface\\Icons\\achievement_bg_wineos_underxminutes')
-    --[[WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {
-        texture='Interface\\Icons\\achievement_bg_wineos_underxminutes',
-        size=32,
-        isType2=true,
-        notBorder=true,
-        name='WoWToolsChallengePlusOpenChallengesFrameButton',
-    })]]
-    btn:SetFrameStrata('HIGH')
-    btn:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
-        GameTooltip:Show()
-        self:SetButtonState('NORMAL')
-    end)
-    btn:SetScript("OnLeave", function(self)
-        self:SetButtonState('NORMAL')
-        GameTooltip:Hide()
-    end)
+    local btn= CreateFrame('Button', 'WoWToolsWeeklyRewardsOpenChallengesButton', WeeklyRewardsFrame.CloseButton,'WoWToolsButtonTemplate')
+    btn:SetNormalTexture('Interface\\Icons\\achievement_bg_wineos_underxminutes')
+    btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
+    btn:SetPoint('RIGHT', WeeklyRewardsFrame.CloseButton, 'LEFT')
     btn:SetScript('OnClick', function()
         PVEFrame_ToggleFrame('ChallengesFrame', 3)
     end)
     btn:SetScript('OnHide', function(self)
         self:SetButtonState('NORMAL')
     end)
-    btn:SetPoint('RIGHT',-4,-42)
 
+--旅程
+    btn= CreateFrame('Button', 'WoWToolsWeeklyRewardsOpenJournalButton', btn,'WoWToolsButtonTemplate')
+    btn:SetNormalTexture('Interface\\EncounterJournal\\UI-EJ-PortraitIcon')
+    btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '旅程' or JOURNEYS_LABEL)
+    btn:SetPoint('RIGHT', WeeklyRewardsFrame.CloseButton, 'LEFT', -23, 0)
+    btn:SetScript('OnClick', function()
+        WoWTools_LoadUIMixin:MajorFaction()
+    end)
+    btn:SetScript('OnHide', function(self)
+        self:SetButtonState('NORMAL')
+    end)
 
 
 
