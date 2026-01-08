@@ -39,7 +39,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 return
             end
 
-            WoWToolsSave['Plus_Container']= WoWToolsSave['Plus_Container'] or {}
+            WoWToolsSave['Plus_Container']= WoWToolsSave['Plus_Container'] or {
+                enabledCombinedColumns= WoWTools_DataMixin.Player.husandro--背包，设置行数
+            }
 
             WoWTools_BagMixin.addName= '|A:bag-main:0:0|a'..(WoWTools_DataMixin.onlyChinese and '容器' or ITEM_CONTAINER)
 

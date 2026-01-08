@@ -332,8 +332,9 @@ Container\Guild\Item_In_Out.lua
 
 ##容器
 Container\Bag\0_BagMixin.lua
-Container\Bag\1_Init_Bag.lua
+Container\Bag\1_Init.lua
 Container\Bag\Container_Menu.lua
+Container\Bag\ItemInfo.lua
 Container\Bag\z_UI.lua
 
 ##自动对话，任务

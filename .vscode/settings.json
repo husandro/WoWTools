@@ -2870,7 +2870,14 @@
         "GameRulesUtil",
         "GarrisonLandingPage_Toggle",
         "GarrisonMinimap_HideHelpTip",
-        "JOURNEYS_LABEL"
+        "JOURNEYS_LABEL",
+        "ContainerFrameItemButtonMixin",
+        "UpdateContainerFrameAnchors",
+        "ContainerFrameMixin",
+        "ContainerFrame_GenerateFrame",
+        "BAG_NAME_BACKPACK",
+        "ContainerFrame_IsReagentBag",
+        "EQUIP_CONTAINER_REAGENT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

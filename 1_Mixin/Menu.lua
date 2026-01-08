@@ -131,6 +131,11 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
 
         WoWTools_TextureMixin:SetNineSlice(f, 1)
         WoWTools_TextureMixin:SetAlphaColor(f.Thumb, true)
+
+        local pad = 20;
+        local width = pad + f.Text:GetUnboundedStringWidth() + f.Low:GetUnboundedStringWidth()
+        width= math.max(100, width)
+	    return width, 17
     end)
 
     if tooltip then

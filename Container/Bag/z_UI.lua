@@ -5,20 +5,36 @@ NUM_REAGENTBAG_FRAMES = Constants.InventoryConstants.NumReagentBagSlots; 1
 NUM_TOTAL_BAG_FRAMES = Constants.InventoryConstants.NumBagSlots + Constants.InventoryConstants.NumReagentBagSlots; 5
 CONTAINER_OFFSET_Y = 85;
 CONTAINER_OFFSET_X = -4;
-]]
 
+ContainerFrameItemButtonMixin
+]]
 
 
 
 --背包 Bg FlatPanelBackgroundTemplate
 function WoWTools_TextureMixin.Frames:ContainerFrame1()
-    if _G['ElvUI_ContainerFrame'] then
-        return
-    end
 
     self:SetButton(BagItemAutoSortButton, {alpha=1})
 
-    local function set_script(frame)
+    local function Refresh_Bag(frame)
+        if InCombatLockdown() or not frame.AddItemsForRefresh then
+            return
+        end
+        if ContainerFrameCombinedBags and ContainerFrameCombinedBags:IsVisible() and ContainerFrameCombinedBags.AddItemsForRefresh then
+            ContainerFrameCombinedBags:AddItemsForRefresh()
+        end
+        for bagID= 1, NUM_CONTAINER_FRAMES do--NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do--6
+        local f= _G['ContainerFrame'..bagID]
+            if f and f:IsVisible() and f.AddItemsForRefresh then
+                f:AddItemsForRefresh()
+            end
+        end
+    end
+
+
+    local function Set_BGMenu(frame)
+        frame.Bg:SetFrameStrata('LOW')
+
         WoWTools_DataMixin:Hook(frame, 'UpdateItems', function(f)
             local bg= self:Save().bagBorderAlpha or 0.2
             for _, btn in f:EnumerateValidItems() do
@@ -37,26 +53,18 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
         end)
         WoWTools_DataMixin:Hook(frame, 'UpdateName', function(f) f:SetTitle('') end)
         self:SetButton(frame.CloseButton)
-    end
 
-    local function Refresh_Bag(frame)
-        if InCombatLockdown() or not frame.AddItemsForRefresh then
-            return
-        end
-        if ContainerFrameCombinedBags and ContainerFrameCombinedBags:IsVisible() and ContainerFrameCombinedBags.AddItemsForRefresh then
-            ContainerFrameCombinedBags:AddItemsForRefresh()
-        end
-        for bagID= 1, NUM_CONTAINER_FRAMES do--NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do--6
-        local f= _G['ContainerFrame'..bagID]
-            if f and f:IsVisible() and f.AddItemsForRefresh then
-                f:AddItemsForRefresh()
+--缩小字体，Cooldown
+        WoWTools_DataMixin:Hook(frame, 'AcquireNewItemButton', function(f)
+            if f.Items then
+                local btn= f.Items[#f.Items]
+                if btn and btn.Cooldown then
+                    btn.Cooldown:SetCountdownFont('NumberFontNormal')
+                end
             end
-        end
-    end
+        end)
 
-    local function Set_BGMenu(frame)
-        frame.Bg:SetFrameStrata('LOW')
-        set_script(frame)
+
         self:Init_BGMenu_Frame(frame, {
             settings=function(icon, texture, alpha)
                 icon:GetParent().Bg:SetAlpha(texture and 0 or alpha or 1)
@@ -135,7 +143,7 @@ function WoWTools_MoveMixin.Frames:ContainerFrame1()
                         if not InCombatLockdown() then
                             WoWTools_DataMixin:Call('UpdateContainerFrameAnchors')
                         end
-                    end
+                    end,
                 })
             else
                 self:Setup(frame, {notSave=true})
@@ -152,8 +160,11 @@ function WoWTools_MoveMixin.Frames:ContainerFrame1()
         end
     end)
 
---背包
+--BagsBar
     self:MoveAlpha(BagsBar)
 
+
+
+ --背包
     self:Setup(ContainerFrameCombinedBags)
 end
