@@ -2877,7 +2877,13 @@
         "ContainerFrame_GenerateFrame",
         "BAG_NAME_BACKPACK",
         "ContainerFrame_IsReagentBag",
-        "EQUIP_CONTAINER_REAGENT"
+        "EQUIP_CONTAINER_REAGENT",
+        "UnitPopup_OpenMenu",
+        "ActionBar_PageUp",
+        "ActionBar_PageDown",
+        "SecureCmdItemParse",
+        "SecureCmdUseItem",
+        "SecureHandler_OnClick"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
