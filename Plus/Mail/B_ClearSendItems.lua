@@ -7,12 +7,14 @@
 
 
 
-local clearSendItem
+
 
 local function Init()
-    clearSendItem=WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, atlas='bags-button-autosort-up'})
+    local clearSendItem= CreateFrame('Button', 'WoWToolsMailClearSendItemsButton', SendMailFrame, 'WoWToolsButtonTemplate')
+    clearSendItem:SetNormalAtlas('bags-button-autosort-up')
+    --WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, atlas='bags-button-autosort-up'})
     clearSendItem:SetPoint('BOTTOMRIGHT', SendMailAttachment7, 'TOPRIGHT')--,0, -4)
-    clearSendItem.Text= WoWTools_LabelMixin:Create(clearSendItem)
+    clearSendItem.Text= clearSendItem:CreateFontString(nil, 'BORDER', 'GameFontNormal')--WoWTools_LabelMixin:Create(clearSendItem)
     clearSendItem.Text:SetPoint('BOTTOMRIGHT', clearSendItem, 'BOTTOMLEFT',0, 4)
     clearSendItem:SetScript('OnClick', function()
         for i= 1, ATTACHMENTS_MAX_SEND do
@@ -21,14 +23,14 @@ local function Init()
             end
         end
     end)
-    clearSendItem:SetScript('OnLeave', GameTooltip_Hide)
-    clearSendItem:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-        GameTooltip:Show()
+    clearSendItem:SetScript('OnHide', function(self)
+        self:SetButtonState('NORMAL')
     end)
+    clearSendItem:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetButtonState('NORMAL')
+    end)
+    clearSendItem.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
 
 
     WoWTools_DataMixin:Hook('SendMailFrame_Update', function()--发信箱，物品，信息

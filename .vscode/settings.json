@@ -2883,7 +2883,12 @@
         "ActionBar_PageDown",
         "SecureCmdItemParse",
         "SecureCmdUseItem",
-        "SecureHandler_OnClick"
+        "SecureHandler_OnClick",
+        "OpenMailFrameIcon",
+        "RenownCardButtonMixin",
+        "JourneyProgressFrameMixin",
+        "RewardTrackJumpButtonMixin",
+        "RenownLevelMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

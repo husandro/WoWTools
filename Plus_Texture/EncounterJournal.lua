@@ -12,7 +12,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetButton(EncounterJournalCloseButton)
 
     self:HideTexture(EncounterJournalBg)
-    
+
     self:SetNineSlice(EncounterJournalInset)
     self:SetScrollBar(EncounterJournalInstanceSelect)
     self:SetEditBox(EncounterJournalSearchBox)
@@ -40,7 +40,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     EncounterJournalEncounterFrameInfo.LootContainer.slotFilter:SetPoint('RIGHT', EncounterJournalEncounterFrameInfoDifficulty, 'LEFT', -4, 0)
     EncounterJournalEncounterFrameInfo.LootContainer.filter:ClearAllPoints()
     EncounterJournalEncounterFrameInfo.LootContainer.filter:SetPoint('RIGHT', EncounterJournalEncounterFrameInfo.LootContainer.slotFilter, 'LEFT', -4, 0)
-    
+
 
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
     WoWTools_DataMixin:Hook(EncounterJournalItemMixin,'Init', function(btn)
@@ -117,6 +117,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetScrollBar(EncounterJournalJourneysFrame)
     self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyOverview.DividerTexture, nil, nil, true)
     self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBar, nil, nil, 0.3)
+    self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBg, true)
 
 
 
@@ -127,17 +128,15 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
 
     self:Init_BGMenu_Frame(EncounterJournal, {
-    settings= function(icon, textureName, alphaValue)
+    settings= function(_, textureName, alphaValue)
         local alpha= textureName and 0 or alphaValue or 1
         EncounterJournalInstanceSelectBG:SetAlpha(alpha)
         EncounterJournalInset.Bg:SetAlpha(alpha)
-        if EncounterJournalJourneysFrame then--12.0才有 
-            EncounterJournalJourneysFrame.BorderFrame.Border:SetAlpha(alpha)
-            EncounterJournalJourneysFrame.BorderFrame.TopDetail:SetAlpha(alpha)
---副本列表
-            if EncounterJournalInstanceSelect.evergreenBg then
-                EncounterJournalInstanceSelect.evergreenBg:SetAlpha(alpha)
-            end
-        end
+
+        EncounterJournalJourneysFrame.BorderFrame.Border:SetAlpha(alpha)
+        EncounterJournalJourneysFrame.BorderFrame.TopDetail:SetAlpha(alpha)
+--副本列表 12.0才有
+        EncounterJournalInstanceSelect.evergreenBg:SetAlpha(alpha)
+
     end})
 end

@@ -232,9 +232,12 @@ function WoWTools_TextureMixin.Events:Blizzard_MailFrame()
     self:HideFrame(OpenMailFrameInset)
     self:SetNineSlice(OpenMailFrameInset)
     self:SetButton(OpenMailFrameCloseButton)
+
     self:SetUIButton(OpenMailReplyButton)
     self:SetUIButton(OpenMailDeleteButton)
     self:SetUIButton(OpenMailCancelButton)
+    WoWTools_ButtonMixin:AddMask(OpenMailFrame, true, OpenMailFrameIcon)
+
     self:SetCheckBox(SendMailSendMoneyButton)
     self:SetCheckBox(SendMailCODButton)
     self:SetEditBox(SendMailNameEditBox)

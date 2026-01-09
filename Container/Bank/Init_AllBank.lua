@@ -186,11 +186,23 @@ local function Init_UI()
         icon:SetPoint('BOTTOMRIGHT', BankPanelCopperButtonText, 2, -2)
     end, isColor=true})
     local function Set_Money_Point()
+        BankFrame.Background:ClearAllPoints()
         BankPanel.MoneyFrame:ClearAllPoints()
+        BankPanel.NineSlice:ClearAllPoints()
+        BankPanel.EdgeShadows:ClearAllPoints()
         if Save().allBank then
+            BankFrame.Background:SetAllPoints()
             BankPanel.MoneyFrame:SetPoint('RIGHT', BankPanel.AutoDepositFrame.IncludeReagentsCheckbox, 'LEFT', -8, 0)
+            BankPanel.NineSlice:SetAllPoints()
+            BankPanel.EdgeShadows:SetAllPoints()
         else
+            BankFrame.Background:SetPoint('TOPLEFT', 0, -20)
+            BankFrame.Background:SetPoint('BOTTOMRIGHT', 0, 30)
             BankPanel.MoneyFrame:SetPoint('BOTTOMRIGHT', -3, 3)
+            BankPanel.NineSlice:SetPoint('TOPLEFT', 0, -20)
+            BankPanel.NineSlice:SetPoint('BOTTOMRIGHT', 0, 30)
+            BankPanel.EdgeShadows:SetPoint('TOPLEFT', 0, -20)
+            BankPanel.EdgeShadows:SetPoint('BOTTOMRIGHT', 0, 30)
         end
     end
     Set_Money_Point()
@@ -402,8 +414,7 @@ local function Init_Move()
         Save().accountNum= nil
         frame:GenerateItemSlotsForSelectedTab()
     end, sizeStopFunc= function(frame)
-        if BankPanel.PurchasePrompt and BankPanel.PurchasePrompt:IsShown()
-            or BankPanel.PurchasePrompt:IsShown()
+        if BankPanel.PurchasePrompt:IsShown()
             or not C_Bank.AreAnyBankTypesViewable()
         then
             return
@@ -428,14 +439,10 @@ local function Init_Move()
         BankFrame:SetSize(738, 460)
     end)
 
-    if BankFrame.ResizeButton then
-        BankFrame.ResizeButton.setSize= Save().allBank
-    end
+    BankFrame.ResizeButton.setSize= Save().allBank
 
     Init_Move=function()
-        if BankFrame.ResizeButton then
-            BankFrame.ResizeButton.setSize= Save().allBank
-        end
+        BankFrame.ResizeButton.setSize= Save().allBank
     end
 end
 
@@ -454,7 +461,9 @@ end
 
 function WoWTools_MoveMixin.Frames:BankFrame()
     C_Timer.After(0.3, function()
-        Init_Move()--移动，银行
+        if Save().disabled then
+            WoWTools_MoveMixin:Setup(BankFrame)
+        end
     end)
 end
 

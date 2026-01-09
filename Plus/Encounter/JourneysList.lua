@@ -29,6 +29,44 @@ local function Init()
         end
     end)
 
+
+--查看进度 JourneyProgressFrameMixin
+    WoWTools_DataMixin:Hook(EncounterJournalJourneysFrame.JourneyProgress, 'SetupProgressDetails', function(frame)
+        if not frame.infoLabel then
+            frame.infoLabel= frame:CreateFontString(nil, nil,'GameFontNormal')
+            frame.infoLabel:SetPoint('TOP', frame.ProgressDetailsFrame.JourneyLevelProgress, 'BOTTOM', 0,2)
+        end
+        local factionID= frame.majorFactionData.factionID
+        local data= WoWTools_FactionMixin:GetInfo(factionID)
+        frame.infoLabel:SetText(data.valueText or '')
+    end)
+
+--旅程 12.0才有
+    for _, frame in EncounterJournalJourneysFrame.JourneysList:EnumerateFrames() do
+        local data= frame:GetElementData()
+		if data and data.isRenownJourney and frame.OnEnter then
+            frame:HookScript('OnEnter', function(btn)
+                local factionID= btn.majorFactionData and btn.majorFactionData.factionID
+                if factionID then
+                    local tooltip= GameTooltip:IsShown() and GameTooltip or (EmbeddedItemTooltip:IsShown() and EmbeddedItemTooltip)
+                    if tooltip then
+                        WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)
+                    end
+                end
+            end)
+        end
+	end
+
+    WoWTools_DataMixin:Hook(RenownCardButtonMixin, 'OnEnter', function(btn)
+        local factionID= btn.majorFactionData and btn.majorFactionData.factionID
+        if factionID then
+            local tooltip= GameTooltip:IsShown() and GameTooltip or (EmbeddedItemTooltip:IsShown() and EmbeddedItemTooltip)
+            if tooltip then
+                WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)
+            end
+        end
+    end)
+
     Init=function()end
 end
 

@@ -27,7 +27,7 @@ local function Init_Menu(self, root)
     function()
         return Save().plusTab
     end, function()
-        Save().plusTab= not Save().plusTab and true or nil
+        Save().plusTab= not Save().plusTab and true or false
         WoWTools_BankMixin:Init_BankPlus()
     end)
     sub2:SetTooltip(function(tooltip)
@@ -38,7 +38,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '索引' or 'Index', function()
         return Save().plusIndex
     end, function()
-        Save().plusIndex= not Save().plusIndex and true or nil--显示，索引
+        Save().plusIndex= not Save().plusIndex and true or false--显示，索引
         WoWTools_BankMixin:Init_BankPlus()
     end)
     sub2:SetTooltip(function(tooltip)
@@ -49,7 +49,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO), function()
         return Save().plusItem
     end, function()
-        Save().plusItem= not Save().plusItem and true or nil--显示，索引
+        Save().plusItem= not Save().plusItem and true or false--显示，索引
         WoWTools_BankMixin:Init_BankPlus()
     end)
     sub2:SetTooltip(function(tooltip)
@@ -101,7 +101,7 @@ local function Init_Menu(self, root)
             WoWTools_DataMixin.onlyChinese and '“物品信息” 同时打，会卡' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)..': '..(TICKET_TYPE3 or 'Bug'))
         )
         tooltip:AddLine(' ')
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 

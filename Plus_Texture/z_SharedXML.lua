@@ -200,3 +200,8 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         self:SetEditBox(edit)
     end)
 end
+--[[如，名望，等级奖励，提示
+    WoWTools_DataMixin:Hook(RenownLevelMixin, 'Refresh', function(btn)
+        WoWTools_TextureMixin:SetAlphaColor(btn.IconBorder, true)
+    end)
+    ]]

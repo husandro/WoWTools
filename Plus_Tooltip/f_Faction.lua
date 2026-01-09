@@ -5,6 +5,10 @@
 
 --声望
 function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
+    if not tooltip then
+        return
+    end
+
     local info= WoWTools_FactionMixin:GetInfo(factionID, nil, true)
 
     if not info or not info.factionID or info.factionID<1 or self:IsInCombatDisabled(tooltip) then

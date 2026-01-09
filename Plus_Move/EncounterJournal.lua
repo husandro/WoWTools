@@ -96,7 +96,7 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
             break
         end
     end
-    
+
     EncounterJournal.LootJournal.ScrollBox:SetPoint('TOPLEFT', 20, -51)
     EncounterJournal.LootJournal.ScrollBox:SetPoint('RIGHT', -20, 0)
 
@@ -214,9 +214,6 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         value= math.max(1, math.modf(value))
         if frame.view:GetStride()~= value then
             frame.view:SetStride(value)
-            --if frame:IsVisible() then
-                --WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
-            --end
         end
 
         frame= EncounterJournal.LootJournal.ScrollBox
@@ -225,9 +222,6 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         value= math.max(2, math.modf(value))
         if frame.view:GetStride()~= value then
             frame.view:SetStride(value)
-            --if frame:IsVisible() then
-                --WoWTools_DataMixin:Call('EncounterJournal_ListInstances')
-            --end
         end
     end
     --EncounterJournalInstanceSelect.ScrollBox:HookScript('OnSizeChanged', Set_InstanceSelect_Stride) --EncounterInstanceButtonTemplate Size x="174" y="96"
@@ -257,12 +251,12 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     --self:Setup(EncounterJournalInstanceSelect.ScrollBox, {frame=EncounterJournal})
 
 
-    if EncounterJournal.TutorialsFrame then--11.2.7才有
-        icon= EncounterJournal.TutorialsFrame.Contents:GetRegions()
-        if icon and icon:IsObjectType('Texture') then
-            icon:SetPoint('BOTTOMRIGHT', -27, 27)
-        end
+
+    icon= EncounterJournal.TutorialsFrame.Contents:GetRegions()--11.2.7才有
+    if icon and icon:IsObjectType('Texture') then
+        icon:SetPoint('BOTTOMRIGHT', -27, 27)
     end
+
 
 
     Set_InstanceSelect_Stride()
