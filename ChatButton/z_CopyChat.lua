@@ -100,7 +100,7 @@ end]]
 
 
 --frame.fontStringPool:EnumerateActive()
-ChatFrame2.fontStringPool:EnumerateActive()
+
 local function Get_Text(frame)
 	local tab={}
 	local index= frame:GetID() or 1
@@ -113,7 +113,12 @@ local function Get_Text(frame)
 			tab.insert(tab, msg)
 
 		elseif msg then
-			if r and g and b and msg then
+			--[[local t= msg
+			local c= select(2, t:gsub('|c', '')) + select(2, t:gsub('|cn', ''))- select(2, t:gsub('|r', ''))
+			if c>0 then
+				msg= msg..string.rep('|r', c)
+			end]]
+			if r and g and b then
 				local color= CreateColor(r,g,b)
 				msg= color:WrapTextInColorCode(msg)
 			end
