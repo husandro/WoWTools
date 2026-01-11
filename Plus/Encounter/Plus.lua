@@ -818,7 +818,7 @@ local function Init()
     local up= CreateFrame('Button', 'WoWToolsEncounterUpBossSpellButton',  down, 'WoWToolsButtonTemplate')
     up:SetPoint('RIGHT', down, 'LEFT')
     up.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-    up:SetNormalAtlas('NPE_ArrowDown')
+    up:SetNormalAtlas('NPE_ArrowUp')
     up:SetScript('OnClick', function()
         for _, header in pairs(EncounterJournal.encounter.usedHeaders or {}) do
             if  header.expanded then
@@ -827,7 +827,7 @@ local function Init()
         end
     end)
 
-    --NPE_ArrowUp
+    --
 --EncounterJournal.encounter.usedHeaders
     Init=function()end
 end
