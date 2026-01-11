@@ -2898,7 +2898,8 @@
         "ChatFrame7",
         "ChatFrame8",
         "ChatFrame9",
-        "ChatFrame10"
+        "ChatFrame10",
+        "EncounterJournal_ToggleHeaders"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

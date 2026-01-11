@@ -110,11 +110,11 @@ local function Get_Text(frame)
 	for i = 1, numMessage do
 		local msg, r, g, b = frame:GetMessageInfo(i)
 		if canaccessvalue(msg) and msg then
-			--[[local t= msg
+			local t= msg
 			local c= select(2, t:gsub('|c', '')) + select(2, t:gsub('|cn', ''))- select(2, t:gsub('|r', ''))
 			if c>0 then
 				msg= msg..string.rep('|r', c)
-			end]]
+			end
 			if r and g and b then
 				local color= CreateColor(r,g,b)
 				msg= color:WrapTextInColorCode(msg)
