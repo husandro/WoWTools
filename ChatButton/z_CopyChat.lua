@@ -25,7 +25,7 @@ for _, name in pairs({--. ( ) + - * ? [ ^
 	D_DAYS,--"%d|4天:天;";
 	D_HOURS,--"%d|4小时:小时;";
 	D_MINUTES,--"%d|4分钟:分钟;";
-	D_SECONDS,"%d|4秒:秒;";
+	D_SECONDS,--"%d|4秒:秒;";
 }) do
 	JunkTabs[name:gsub('%%d', '%(%%d%+%)')]= {name:match('|4(.-):(.-);')}
 end
@@ -497,12 +497,10 @@ frame:SetScript('OnEvent', function(self, event, arg1)
 		tooltip= WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
 	})
 
-	if Save().disabled then
-		self:SetScript('OnEvent', nil)
-	else
+	if not Save().disabled then
 		Init()
-		self:SetScript('OnEvent', nil)
 	end
+	self:SetScript('OnEvent', nil)
 	self:UnregisterEvent(event)
 end)
 
