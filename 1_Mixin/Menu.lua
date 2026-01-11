@@ -566,12 +566,12 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
         ..(name2 or name or (WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS))
         ..'|A:OptionsIcon-Brown:0:0|a',
     function()
-        if InCombatLockdown() then
-            return
-        elseif SettingsPanel:IsVisible() then--ToggleGameMenu()
-            SettingsPanel:Close()
+        if not InCombatLockdown() then
+            if SettingsPanel:IsVisible() then--ToggleGameMenu()
+                SettingsPanel:Close()
+            end
+            WoWTools_PanelMixin:Open(category, name)
         end
-        WoWTools_PanelMixin:Open(category, name)
         return MenuResponse.Open
     end)
 

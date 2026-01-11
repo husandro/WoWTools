@@ -173,8 +173,14 @@ function WoWTools_FrameMixin:Create(parent, tab)
     end
 
 --CloseButton
-    frame.CloseButton=CreateFrame('Button', name..'CloseButton', frame, 'UIPanelCloseButton')--SharedUIPanelTemplates.xml
+    frame.CloseButton=CreateFrame('Button', name..'CloseButton', frame, 'UIPanelCloseButtonNoScripts')--SharedUIPanelTemplates.xml
     frame.CloseButton:SetPoint('TOPRIGHT')
+    frame.CloseButton:SetScript('OnClick', function(f)
+        local p= f:GetParent()
+        if not self:IsLocked(p) then
+            p:Hide()
+        end
+    end)
 
 --移动
     WoWTools_MoveMixin:Setup(frame, {

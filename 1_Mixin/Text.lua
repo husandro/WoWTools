@@ -29,19 +29,42 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
     tab= tab or {}
 
     headerText= tostring(headerText)
-    headerText= headerText=='nil' and WoWTools_DataMixin.addName or headerText
+    headerText= (headerText=='' or headerText=='nil') and WoWTools_DataMixin.addName or headerText
 
     local onHide= tab.onHide
-    local notClear= tab.notClear
+    --local notClear= tab.notClear
 
     local text
-    if type(data)=='table' then
-        for _, str in pairs(data) do
+
+    local function set_secret(value)
+
+        if type(value)=='table' and not canaccesstable(value) then
             text= text and text..'|n' or ''
-            text= text.. str
+            text= text..WARNING_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:***<机密 table>***|r' or format(EVENTTRACE_SECRET_FMT, 'table'))
+
+        elseif not canaccessvalue(value) then
+            text= text and text..'|n' or ''
+            text= text..WARNING_FONT_COLOR:WrapTextInColorCode(
+                format(WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, type(value))
+            )
+
+        else
+            return true
         end
-    else
-        text= text and text..'|n'..data or data
+    end
+
+    if set_secret(data) then
+        if type(data)=='table' then
+            for _, value in pairs(data) do
+                if set_secret(value) then
+                    text= text and text..'|n' or ''
+                    text= text..tostring(value)
+                end
+            end
+        else
+            text= text and text..'|n' or ''
+            text= text..data
+        end
     end
 
     local frame= _G['WoWToolsShowTextEditBoxFrame']
@@ -63,24 +86,22 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
         end)
         frame:SetFrameStrata('HIGH')
 
-    elseif notClear then
+    --[[elseif notClear then
         local p= frame.ScrollBox:GetText()
         if p and p~='' and text~=p then
             text= p..'|n|cnWARNING_FONT_COLOR: ... '..headerText..' ...|r|n'..text
-        end
+        end]]
     end
 
-    frame.ScrollBox:SetText(text or '')
+    frame:Show()
+    frame:Raise()
+
+    frame.ScrollBox.editBox:SetText(text or '')
     frame.Header:Setup(headerText or '' )
     frame.onHide= onHide
-
-    frame:SetShown(true)
-
-    --frame.ScrollBox.editBox:SetCursorPosition(1)
     frame.ScrollBox.ScrollBar:ScrollToEnd()
-    frame:Raise()
 end
-
+--frame.ScrollBox.editBox:SetCursorPosition(1)
 
 
 

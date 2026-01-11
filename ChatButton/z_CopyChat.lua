@@ -20,7 +20,7 @@ end
 local Init_Button
 local addName
 
-local JunkTabs={}
+--[[local JunkTabs={}
 for _, name in pairs({--. ( ) + - * ? [ ^
 	D_DAYS,--"%d|4天:天;";
 	D_HOURS,--"%d|4小时:小时;";
@@ -28,13 +28,13 @@ for _, name in pairs({--. ( ) + - * ? [ ^
 	D_SECONDS,--"%d|4秒:秒;";
 }) do
 	JunkTabs[name:gsub('%%d', '%(%%d%+%)')]= {name:match('|4(.-):(.-);')}
-end
+end]]
 
 
 
 local function Init_AllButton()
 	for index =1, Constants.ChatFrameConstants.MaxChatWindows do
-		if FCF_GetChatFrameByID(index) then
+		if FCF_GetChatFrameByID(index) and (index~=2 or WoWTools_DataMixin.Player.husandro) then
 			Init_Button(index)
 		end
 	end
@@ -44,7 +44,7 @@ end
 
 
 
-local function createBnetString(id, msg)
+--[[local function createBnetString(id, msg)
 	id = tonumber(id)
 	local totalBNFriends = BNGetNumFriends()
 	for friendIndex = 1, totalBNFriends do
@@ -84,7 +84,7 @@ local function removeChatJunk(currentMsg)
 	currentMsg = string.gsub(currentMsg, "|A.-|a", "")
 
 	return currentMsg
-end
+end]]
 
 
 
@@ -100,37 +100,39 @@ end
 
 
 --frame.fontStringPool:EnumerateActive()
-
-local function Get_Text(index)
-	index= index or 1
-
-	local frame= FCF_GetChatFrameByID(index)
-	if not frame then
-		return
-	end
-
-	local numMessage= frame:GetNumMessages() or 0
-
-	if numMessage==0 then
-		if WoWTools_DataMixin.Player.husandro then
-			print('GetNumMessages', frame:GetName(), index , numMessage)
-		end
-	end
-
+ChatFrame2.fontStringPool:EnumerateActive()
+local function Get_Text(frame)
 	local tab={}
-
-	local isSetText= Save().isSetText--不处理，文本
+	local index= frame:GetID() or 1
+	local numMessage= frame:GetNumMessages() or 0
+	--local isSetText= Save().isSetText--不处理，文本
 
 	for i = 1, numMessage do
-		local currentMsg, r, g, b, chatTypeID = frame:GetMessageInfo(i)
+		local msg, r, g, b = frame:GetMessageInfo(i)
+		if not canaccessvalue(msg) then
+			tab.insert(tab, msg)
 
-		if not currentMsg and WoWTools_DataMixin.Player.husandro then
-			print('没有发现 currentMsg')
+		elseif msg then
+			if r and g and b and msg then
+				local color= CreateColor(r,g,b)
+				msg= color:WrapTextInColorCode(msg)
+			end
+			table.insert(tab, msg)
 		end
+	end
 
-		currentMsg= currentMsg or ''
+	local tabFrame= _G['ChatFrame'..index..'Tab']
+	WoWTools_TextMixin:ShowText(
+		tab,
+		(tabFrame and tabFrame:GetText() or (WoWTools_DataMixin.onlyChinese and '聊天' or CHAT))
+		..' '..index..' |cffffffff#'.. numMessage
+	)
+end
 
-		if isSetText then--处理，文本
+
+		--currentMsg= currentMsg or ''
+
+		--[[if isSetText then--处理，文本
 
 			local colorCode = false
 			currentMsg = removeChatJunk(currentMsg)
@@ -151,17 +153,7 @@ local function Get_Text(index)
 			end
 		end
 
-		currentMsg= tostring(currentMsg)
-
-		table.insert(tab, currentMsg)
-	end
-
-
-	WoWTools_TextMixin:ShowText(
-		tab,
-		_G['ChatFrame'..index..'Tab']:GetText()
-	)
-end
+		currentMsg= tostring(currentMsg)]]
 
 
 
@@ -208,41 +200,33 @@ end
 
 
 
-local function Init_Menu(frame, root)
-    if not frame or not frame:IsMouseOver() then
-        return
-    end
-
-	local index= frame:GetName():match('%d+') or '1'
-
-	local self= _G['ChatFrame'..index]
-	if not self or not self.GetNumMessages then
+local function Init_Menu(self, root)
+	local index= self:GetID() or 1
+	if index==2 and not WoWTools_DataMixin.Player.husandro then
 		return
 	end
 
 	local sub, sub2
-	local num= self:GetNumMessages()
+	local num= self:GetNumMessages() or 0
 
 	sub=root:CreateButton(
 		'|A:poi-workorders:0:0|a'
-		..(num==0 and '|cff606060' or '')
+		..(index==2 and '|cnWARNING_FONT_COLOR:' or  (num==0 and '|cff606060') or '')
 		..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT)),
 	function()
-		Get_Text(index)
+		Get_Text(self)
 		return MenuResponse.Open
 	end, {rightText=num})
 	sub:SetTooltip(function(tooltip)
-		local tab=  _G['ChatFrame'..index..'Tab']
-		if tab then
-			tooltip:AddLine(tab:GetText())
-		end
-		tooltip:AddLine(
-			WoWTools_DataMixin.Icon.icon2
-			..(WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
-			..WoWTools_DataMixin.Icon.left
-			..'|cnGREEN_FONT_COLOR:#'
-			..self:GetNumMessages()
+		local tab= _G['ChatFrame'..index..'Tab']
+		tooltip:AddDoubleLine(
+			tab and tab:GetText() or (WoWTools_DataMixin.onlyChinese and '聊天' or CHAT),
+			'#|cffffffff'..num
 		)
+
+		if WoWTools_DataMixin.Player.husandro then
+			tooltip:AddLine(self:GetMessageInfo(1))
+		end
 	end)
 	WoWTools_MenuMixin:SetRightText(sub)
 
@@ -256,14 +240,14 @@ local function Init_Menu(frame, root)
 		Init_AllButton()
 	end)
 
---处理文本
+--[[处理文本
 	sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '处理文本' or 'Processing text',
 	function()
 			return Save().isSetText
 	end, function()
 		Save().isSetText= not Save().isSetText and true or nil
-	end)
+	end)]]
 
 --聊天记录
 	sub:CreateDivider()
@@ -321,6 +305,9 @@ end
 
 
 function Init_Button(index)
+	if index==2 and not WoWTools_DataMixin.Player.husandro then
+		return
+	end
 	local enabled= Save().isShowButton and true or false
 	local frame= FCF_GetChatFrameByID(index)
 
@@ -359,8 +346,9 @@ function Init_Button(index)
 		GameTooltip:ClearLines()
 
 		local tab=  _G['ChatFrame'..index..'Tab']
-		if tab then
-			GameTooltip:AddLine(tab:GetText()..' |cff626262'..index)
+		local title= tab and tab:GetText()
+		if title then
+			GameTooltip:AddLine(title..' '..(index==2 and '|cnWARNING_FONT_COLOR:' or '|cff626262')..index)
 		end
 
 		local num = self:GetParent():GetNumMessages() or 0
@@ -381,10 +369,13 @@ function Init_Button(index)
 	end)
 
 	frame.CopyChatButton:SetScript('OnMouseDown', function(self, d)
+		local parent= self:GetParent()
 		if d=='LeftButton' then
-			Get_Text(self:GetID())
+			Get_Text(parent)
 		else
-			MenuUtil.CreateContextMenu(self, Init_Menu)
+			MenuUtil.CreateContextMenu(self, function(_, root)
+				Init_Menu(parent, root)
+			end)
 		end
 	end)
 end
@@ -456,7 +447,9 @@ local function Init()
 
 
 
-	Menu.ModifyMenu("MENU_FCF_TAB", Init_Menu)
+	Menu.ModifyMenu("MENU_FCF_TAB", function(_, root)
+		Init_Menu(FCF_GetCurrentChatFrame(), root)
+	end)
 
 
 	Init=function()end

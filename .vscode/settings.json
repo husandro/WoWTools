@@ -2888,7 +2888,17 @@
         "RenownCardButtonMixin",
         "JourneyProgressFrameMixin",
         "RewardTrackJumpButtonMixin",
-        "RenownLevelMixin"
+        "RenownLevelMixin",
+        "FCF_GetChatWindowInfo",
+        "ChatFrame2",
+        "ChatFrame3",
+        "ChatFrame4",
+        "ChatFrame5",
+        "ChatFrame6",
+        "ChatFrame7",
+        "ChatFrame8",
+        "ChatFrame9",
+        "ChatFrame10"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
