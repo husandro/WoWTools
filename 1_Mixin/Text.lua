@@ -97,9 +97,10 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
     frame:Raise()
 
     frame.ScrollBox.editBox:SetText(text or '')
+    --frame.ScrollBox.editBox:SetText(text or '')
     frame.Header:Setup(headerText or '' )
     frame.onHide= onHide
-    frame.ScrollBox.ScrollBar:ScrollToEnd()
+    --frame.ScrollBox.ScrollBar:ScrollToEnd()
 end
 --frame.ScrollBox.editBox:SetCursorPosition(1)
 

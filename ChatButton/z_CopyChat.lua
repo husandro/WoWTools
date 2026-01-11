@@ -109,10 +109,7 @@ local function Get_Text(frame)
 
 	for i = 1, numMessage do
 		local msg, r, g, b = frame:GetMessageInfo(i)
-		if not canaccessvalue(msg) then
-			tab.insert(tab, msg)
-
-		elseif msg then
+		if canaccessvalue(msg) and msg then
 			--[[local t= msg
 			local c= select(2, t:gsub('|c', '')) + select(2, t:gsub('|cn', ''))- select(2, t:gsub('|r', ''))
 			if c>0 then
