@@ -87,6 +87,7 @@ function WoWTools_CurrencyMixin:Init_MaxTooltip()
         if OwerID then
             EventRegistry:UnregisterCallback('CURRENCY_DISPLAY_UPDATE', OwerID)
         end
+
     elseif not OwerID then
         OwerID= EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function(_, currencyID)
             Currency_Max(currencyID)
