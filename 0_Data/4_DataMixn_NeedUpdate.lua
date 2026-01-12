@@ -10,10 +10,10 @@
 
 --WoWTools_LabelMixin:ItemCurrencyTips
 WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
-    {type='currency', id=3008},--神勇石
+    --{type='currency', id=3008},--神勇石
 
-    {type='currency', id=3289},--符文虚灵纹章 11.2
-    {type='currency', id=3291},--鎏金虚灵纹章
+    --{type='currency', id=3289},--符文虚灵纹章 11.2
+    --{type='currency', id=3291},--鎏金虚灵纹章
 
     {type='currency', id=WoWTools_DataMixin.CurrencyUpdateItemLevelID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
