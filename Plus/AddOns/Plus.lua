@@ -375,10 +375,16 @@ local function Init()
             end
         end
 
-        if WoWTools_DataMixin.Player then
-            if C_AddOns.GetAddOnInfo('TextureAtlasViewer') then
-                C_AddOns.EnableAddOn('TextureAtlasViewer')
+        if WoWTools_DataMixin.Player.husandro then
+            for _, name in pairs({
+                'TextureAtlasViewer',
+                'WoWTools_Chinese',
+            }) do
+                if C_AddOns.GetAddOnInfo(name) then
+                    C_AddOns.EnableAddOn(name)
+                end
             end
+
             WoWTools_DataMixin:Reload()
         end
 

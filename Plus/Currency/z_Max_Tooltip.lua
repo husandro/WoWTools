@@ -11,33 +11,37 @@ local MaxTabs={}
 
 local function Currency_Max(curID)--已达到资源上限
     local tab, num= {}, 0
-    local isMax, isMaxWeek
     if curID then
         if MaxTabs[curID] then
             return
         end
-        isMax, isMaxWeek= WoWTools_CurrencyMixin:IsMax(curID)
+        local isMax, isMaxWeek= WoWTools_CurrencyMixin:IsMax(curID)
         if isMax or isMaxWeek then
             tab[curID]={isMax=isMax, isMaxWeek=isMaxWeek}
             num=1
+        else
+            return
         end
+
     else
+        for i=1, C_CurrencyInfo.GetCurrencyListSize() do
+            local isMax, isMaxWeek, currencyID= WoWTools_CurrencyMixin:IsMax(nil, i)
+            if (isMax or isMaxWeek) and not MaxTabs[currencyID] then
+                tab[currencyID]={isMax=isMax, isMaxWeek=isMaxWeek}
+                num=num+1
+            end
+        end
+
         for currencyID, _ in pairs(Save().tokens) do
-            if not MaxTabs[currencyID] then
-                isMax, isMaxWeek= WoWTools_CurrencyMixin:IsMax(curID)
+            if not MaxTabs[currencyID] and not tab[currencyID] then
+                local isMax, isMaxWeek= WoWTools_CurrencyMixin:IsMax(currencyID)
                 if isMax or isMaxWeek then
                     tab[curID]={isMax=isMax, isMaxWeek=isMaxWeek}
                     num=num+1
                 end
             end
         end
-        for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-            isMax, isMaxWeek, curID= WoWTools_CurrencyMixin:IsMax(nil, i)
-            if isMax or isMaxWeek then
-                tab[curID]={isMax=isMax, isMaxWeek=isMaxWeek}
-                num=num+1
-            end
-        end
+
     end
 
     if num>0 then
@@ -53,6 +57,7 @@ local function Currency_Max(curID)--已达到资源上限
             )
             MaxTabs[currencyID]=true
         end
+
         print(
             '|cnGREEN_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
@@ -83,7 +88,7 @@ function WoWTools_CurrencyMixin:Init_MaxTooltip()
             EventRegistry:UnregisterCallback('CURRENCY_DISPLAY_UPDATE', OwerID)
         end
     elseif not OwerID then
-        OwerID= EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function(owner, currencyID)
+        OwerID= EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function(_, currencyID)
             Currency_Max(currencyID)
         end)
 
