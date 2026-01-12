@@ -41,16 +41,15 @@ local function Currency_Max(curID)--已达到资源上限
     end
 
     if num>0 then
-        print(
-            WoWTools_CurrencyMixin.addName..WoWTools_DataMixin.Icon.icon2
-        )
+        print(WoWTools_CurrencyMixin.addName..WoWTools_DataMixin.Icon.icon2)
+
         local index=0
         for currencyID, info in pairs(tab) do
             index= index+1
             print(
                 '   '..index..')',
-                (WoWTools_CurrencyMixin:GetLink(currencyID) or currencyID)
-                ..(info.isMaxWeek and (WoWTools_DataMixin.onlyChinese and '本周' or GUILD_CHALLENGES_THIS_WEEK) or '')
+                WoWTools_CurrencyMixin:GetLink(currencyID, nil, nil, true),
+                info.isMaxWeek and (WoWTools_DataMixin.onlyChinese and '本周' or GUILD_CHALLENGES_THIS_WEEK) or ''
             )
             MaxTabs[currencyID]=true
         end
@@ -59,42 +58,35 @@ local function Currency_Max(curID)--已达到资源上限
             ..(WoWTools_DataMixin.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
             ..'|r'
             ..(num>1 and num or '')
+            ..WoWTools_DataMixin.Icon.icon2
         )
     end
 end
 
-local function Init()
-    local Frame= CreateFrame('Frame')
-    WoWTools_CurrencyMixin.MaxFrame= Frame
-
-    function Frame:settings()
-        MaxTabs={}
-
-        if Save().hideCurrencyMax then
-            self:UnregisterEvent('CURRENCY_DISPLAY_UPDATE')
-        else
-            self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-            Currency_Max()--已达到资源上限
-        end
-    end
-
-    Frame:SetScript('OnEvent', function(_, _, arg1)
-        if arg1 then
-            Currency_Max(arg1)
-        end
-    end)
-
-    if not Save().hideCurrencyMax then
-        C_Timer.After(4, function()
-            Frame:settings()
-        end)
-    end
-end
 
 
 
+
+
+
+
+
+
+
+
+local OwerID
 
 
 function WoWTools_CurrencyMixin:Init_MaxTooltip()
-    Init()
+    if Save().hideCurrencyMax then
+        if OwerID then
+            EventRegistry:UnregisterCallback('CURRENCY_DISPLAY_UPDATE', OwerID)
+        end
+    elseif not OwerID then
+        OwerID= EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function(owner, currencyID)
+            Currency_Max(currencyID)
+        end)
+
+        C_Timer.After(2, function() Currency_Max() end)
+    end
 end

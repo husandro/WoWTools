@@ -2899,7 +2899,9 @@
         "ChatFrame8",
         "ChatFrame9",
         "ChatFrame10",
-        "EncounterJournal_ToggleHeaders"
+        "EncounterJournal_ToggleHeaders",
+        "ReputationDetailFrameMixin",
+        "MajorFactionWatchFactionButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

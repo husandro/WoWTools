@@ -334,16 +334,7 @@ local function Init_Menu(self, root)
 		return not Save().hideCurrencyMax
 	end, function ()
 		Save().hideCurrencyMax= not Save().hideCurrencyMax and true or nil
-		if WoWTools_CurrencyMixin.MaxFrame then
-			WoWTools_CurrencyMixin.MaxFrame:settings()
-			if not Save().hideCurrencyMax then
-				print(
-					WoWTools_CurrencyMixin.addName..WoWTools_DataMixin.Icon.icon2,
-					'Test',
-					'|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
-				)
-			end
-		end
+		WoWTools_CurrencyMixin:Init_MaxTooltip()
 	end)
 	sub:SetTooltip(function (tooltip)
 		tooltip:AddLine('CURRENCY_DISPLAY_UPDATE')

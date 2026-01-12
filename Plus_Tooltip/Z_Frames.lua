@@ -158,38 +158,33 @@ function WoWTools_TooltipMixin.Frames:GearManagerPopupFrame()
     local function Set_SetIconTexture(btn, iconTexture)
         if not btn.Text then
             btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1, mouse=true}})
-            --btn.Text:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -6, 6)
             btn.Text:SetPoint('BOTTOM', btn, 'TOP')
-            --btn.Text:SetPoint('BOTTOMRIGHT', btn:GetParent().SelectedIconText.SelectedIconHeader, 'TOPRIGHT')
-            --GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconText
-              --GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconButton
 
             btn.Text:SetScript('OnLeave', function(label)
                 GameTooltip:Hide()
                 label:SetAlpha(1)
             end)
             btn.Text:SetScript('OnEnter', function(label)
-                GameTooltip:SetOwner(label, 'ANCHOR_LEFT')
-                GameTooltip:ClearLines()
-                local icon= label:GetText() or ''
-                GameTooltip:AddDoubleLine(
-                    self.addName..WoWTools_DataMixin.Icon.icon2,
-                    '|T'..icon..':0|t'..icon
+                local icon= label:GetText()
+                if not icon then
+                    return
+                end
+                GameTooltip_ShowSimpleTooltip(GameTooltip,
+                    WoWTools_DataMixin.Icon.icon2..' |T'..icon..':0|t'..icon,
+                    nil,
+                    nil,
+                    label,
+                    "ANCHOR_LEFT"
                 )
-                GameTooltip:Show()
                 label:SetAlpha(0.5)
             end)
         end
         btn.Text:SetText(iconTexture or '')
     end
 --装备管理
-    WoWTools_DataMixin:Hook(GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconButton, 'SetIconTexture', function(...)
-        Set_SetIconTexture(...)
-    end)
+    WoWTools_DataMixin:Hook(GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconButton, 'SetIconTexture', Set_SetIconTexture)
 --图标，修改
-    WoWTools_DataMixin:Hook(SelectedIconButtonMixin, 'SetIconTexture', function(...)
-        Set_SetIconTexture(...)
-    end)
+    WoWTools_DataMixin:Hook(SelectedIconButtonMixin, 'SetIconTexture', Set_SetIconTexture)
 end
 
 

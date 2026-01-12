@@ -199,6 +199,15 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     WoWTools_DataMixin:Hook(LargeMoneyInputBoxMixin, 'OnLoad', function(edit)
         self:SetEditBox(edit)
     end)
+
+
+
+
+
+--ReputationFrame.lua
+    WoWTools_DataMixin:Hook(ReputationDetailFrameMixin, 'OnLoad', function(frame)
+        self:SetCheckBox(frame.WatchFactionCheckbox)
+    end)
 end
 --[[如，名望，等级奖励，提示
     WoWTools_DataMixin:Hook(RenownLevelMixin, 'Refresh', function(btn)

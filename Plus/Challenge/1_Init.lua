@@ -13,7 +13,7 @@ local P_Save= {
     --hideKeyUI=true,--挑战,钥石,插入界面
     slotKeystoneSay=WoWTools_DataMixin.Player.husandro,--插入, KEY时, 说
 
-    EndKeystoneSayText= WoWTools_DataMixin.Player.Region==5 and '{rt1}你们还继续吗? ' or '{rt1}Want to continue? ',
+    --EndKeystoneSayText= WoWTools_DataMixin.Player.Region==5 and '{rt1}你们还继续吗? ' or '{rt1}Want to continue? ',
 }
 
 

@@ -215,13 +215,14 @@ local function Set_ItemStatus(tooltip, itemLink)
 
     for i=5, tooltip:NumLines() or 0, 1 do
         local line= _G[name..'TextLeft'..i]
-        local text= line:GetText()
-
-        for stat, value in pairs(stats) do
-            if text:find('%+.+ '.._G[stat]) then
-                line:SetText(text.. ' '..value)
-                stats[stat]= nil
-                break
+        local text= line and line:GetText()
+        if text then
+            for stat, value in pairs(stats) do
+                if text:find('%+.+ '.._G[stat]) then
+                    line:SetText(text.. ' '..value)
+                    stats[stat]= nil
+                    break
+                end
             end
         end
     end

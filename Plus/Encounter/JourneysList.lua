@@ -1,6 +1,10 @@
---旅程
+--旅程 12.0才有
 
 local function Init()
+    if not EncounterJournalJourneysFrame then
+        return
+    end
+
     WoWTools_DataMixin:Hook(EncounterJournalJourneysFrame.JourneysList, 'Update', function(frame)
         if not frame:HasView() then
             return
@@ -41,31 +45,48 @@ local function Init()
         frame.infoLabel:SetText(data.valueText or '')
     end)
 
---旅程 12.0才有
-    for _, frame in EncounterJournalJourneysFrame.JourneysList:EnumerateFrames() do
-        local data= frame:GetElementData()
-		if data and data.isRenownJourney and frame.OnEnter then
-            frame:HookScript('OnEnter', function(btn)
-                local factionID= btn.majorFactionData and btn.majorFactionData.factionID
-                if factionID then
-                    local tooltip= GameTooltip:IsShown() and GameTooltip or (EmbeddedItemTooltip:IsShown() and EmbeddedItemTooltip)
-                    if tooltip then
-                        WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)
-                    end
-                end
-            end)
-        end
-	end
 
-    WoWTools_DataMixin:Hook(RenownCardButtonMixin, 'OnEnter', function(btn)
-        local factionID= btn.majorFactionData and btn.majorFactionData.factionID
+--[[提示factionID, 显示CheckBox
+	view:SetElementFactory(function(factory, elementData)
+		if elementData.category then
+			factory("JourneysListCategoryNameTemplate", CategoryNameInitializer);
+		elseif elementData.divider then
+			factory("JourneysListCategoryDividerTemplate", nop);
+		elseif elementData.isRenownJourney then
+			factory("RenownCardButtonTemplate", RenownCardInitializer);
+		else
+			factory("JourneyCardButtonTemplate", JourneyCardInitializer);
+		end
+	end);
+]]
+
+    local function set_leave(self)
+        if self.WatchedFactionToggleFrame and self.majorFactionData and self.majorFactionData.isUnlocked then
+            local data= C_Reputation.GetWatchedFactionData()
+            if data and data.factionID == self.majorFactionData.factionID then
+                self.WatchedFactionToggleFrame:SetShown(true)
+            end
+        end
+    end
+    local function set_enter(self)
+        local factionID= self.majorFactionData and self.majorFactionData.factionID
         if factionID then
             local tooltip= GameTooltip:IsShown() and GameTooltip or (EmbeddedItemTooltip:IsShown() and EmbeddedItemTooltip)
             if tooltip then
                 WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)
             end
         end
-    end)
+    end
+    for _, frame in EncounterJournalJourneysFrame.JourneysList:EnumerateFrames() do
+        local data= frame:GetElementData()
+		if data and data.isRenownJourney then
+            frame:HookScript('OnEnter', set_enter)
+            frame:HookScript('OnLeave', set_leave)
+            set_leave(frame)
+        end
+	end
+    WoWTools_DataMixin:Hook(RenownCardButtonMixin, 'OnEnter', set_enter)
+    WoWTools_DataMixin:Hook(RenownCardButtonMixin, 'OnLeave', set_leave)
 
     Init=function()end
 end

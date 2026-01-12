@@ -101,7 +101,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local lineLeft1=_G[tooltipName..'TextLeft1']--名称
         if lineLeft1 then
             local t= lineLeft1:GetText()
-            if t:find('|A:') then
+            if t and t:find('|A:') then
                 text2Right= tooltip.text2Right:GetText() or ''
             else
                 text2Right= lineLeft1:GetText():gsub(name, '')
