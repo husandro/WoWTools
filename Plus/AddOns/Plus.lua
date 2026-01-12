@@ -376,11 +376,15 @@ local function Init()
         end
 
         if WoWTools_DataMixin.Player.husandro then
-            for _, name in pairs({
-                'TextureAtlasViewer',
-                'WoWTools_Chinese',
+            local isEU= WoWTools_DataMixin.Player.Region==3
+            local cn= LOCALE_zhCN
+
+            for name, value in pairs({
+                ['TextureAtlasViewer']= 1,
+                ['WoWTools_Chinese']= isEU and not cn,
+                ['WoWTools_Chinese_Scanner']= cn,
             }) do
-                if C_AddOns.GetAddOnInfo(name) then
+                if value and C_AddOns.GetAddOnInfo(name) then
                     C_AddOns.EnableAddOn(name)
                 end
             end
