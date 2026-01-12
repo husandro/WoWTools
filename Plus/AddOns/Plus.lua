@@ -365,30 +365,25 @@ local function Init()
         if not Save().enableAllButtn then
             return
         end
-        for _, name in pairs({
-            'WoWTools',
-            'BugSack',
-            '!BugGrabber',
+
+        --local isEU= WoWTools_DataMixin.Player.Region==3
+        local zh= LOCALE_zhCN
+
+        for name, value in pairs({
+            ['WoWTools']=true,
+            ['BugSack']=true,
+            ['!BugGrabber']=true,
+
+            ['TextureAtlasViewer']= WoWTools_DataMixin.Player.husandro,
+            ['WoWTools_Chinese']= not zh,
+            ['WoWTools_Chinese_Scanner']= zh,
         }) do
-            if C_AddOns.GetAddOnInfo(name) then
+            if value and C_AddOns.GetAddOnInfo(name) then
                 C_AddOns.EnableAddOn(name)
             end
         end
 
         if WoWTools_DataMixin.Player.husandro then
-            local isEU= WoWTools_DataMixin.Player.Region==3
-            local cn= LOCALE_zhCN
-
-            for name, value in pairs({
-                ['TextureAtlasViewer']= 1,
-                ['WoWTools_Chinese']= isEU and not cn,
-                ['WoWTools_Chinese_Scanner']= cn,
-            }) do
-                if value and C_AddOns.GetAddOnInfo(name) then
-                    C_AddOns.EnableAddOn(name)
-                end
-            end
-
             WoWTools_DataMixin:Reload()
         end
 
