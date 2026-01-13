@@ -88,14 +88,6 @@ local function Init_Menu(self, root)
     end)
     sub:SetEnabled(not PlayerIsTimerunning())
 
-    sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '全职业' or ALL_CLASSES,
-    function()
-        return not Save().hideHeirloomClassList
-    end, function()
-        Save().hideHeirloomClassList= not Save().hideHeirloomClassList and true or nil
-        WoWTools_CollectionMixin:Init_Heirloom()--传家宝 4
-    end)
 
 
 
@@ -126,6 +118,27 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
     end)
 
+    root:CreateDivider()
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '全职业' or ALL_CLASSES,
+    function()
+        return not Save().hideHeirloomClassList
+    end, function()
+        Save().hideHeirloomClassList= not Save().hideHeirloomClassList and true or nil
+        WoWTools_CollectionMixin:Init_ClassList()--职业列表
+    end)
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, sub,
+    function()
+        return Save().Heirlooms_Class_Scale or 1
+    end, function(value)
+        Save().Heirlooms_Class_Scale= value
+        WoWTools_CollectionMixin:Init_ClassList()--职业列表
+    end, function()
+        Save().Heirlooms_Class_Scale= nil
+        WoWTools_CollectionMixin:Init_ClassList()--职业列表
+    end)
 
     root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_CollectionMixin.addName})
@@ -145,6 +158,7 @@ local function Init()
     WoWTools_CollectionMixin:Init_Heirloom()--传家宝 4
     WoWTools_CollectionMixin:Init_Wardrober_Items()--幻化,物品 5
     WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
+    WoWTools_CollectionMixin:Init_ClassList()--职业列表
 
 
     local btn= CreateFrame('DropdownButton', 'WoWToolsCollectionsJournalMenuButton', CollectionsJournalCloseButton, 'WoWToolsMenuTemplate')

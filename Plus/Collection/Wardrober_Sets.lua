@@ -72,7 +72,8 @@ local function Init_Button(btn)
         GameTooltip:Hide()
     end)
 
-    btn.version=WoWTools_LabelMixin:Create(btn)--版本
+    btn.version= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal') --WoWTools_LabelMixin:Create(btn)--版本
+    btn.version:SetJustifyH('RIGHT')
     btn.version:SetPoint('BOTTOMRIGHT',-5, 5)
 
     btn.limited=btn.IconFrame:CreateTexture(nil, 'OVERLAY')--限时
@@ -202,6 +203,7 @@ local function Set_List_Button(btn, displayData)
 
 
     btn.version:SetText(version or '')--版本
+    btn.version:SetWidth(btn.version:GetStringWidth()+12)
     btn.version:SetTextColor(r, g, b)
 
     local numStes= #variantSets

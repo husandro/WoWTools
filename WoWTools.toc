@@ -262,6 +262,7 @@ Plus\Collection\Wardrober_Items.lua
 Plus\Collection\Wardrober_Sets.lua
 Plus\Collection\DressUpFrames.lua
 Plus\Collection\Transmog.lua
+Plus\Collection\ClassList.lua
 
 ##世界地图，增强
 Plus\WorldMap\0_WorldMapMixin.lua

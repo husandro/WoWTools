@@ -2901,7 +2901,13 @@
         "ChatFrame10",
         "EncounterJournal_ToggleHeaders",
         "ReputationDetailFrameMixin",
-        "MajorFactionWatchFactionButtonMixin"
+        "MajorFactionWatchFactionButtonMixin",
+        "WardrobeCollectionClassDropdownMixin",
+        "GameTooltip_SetBottomText",
+        "ReputationUtil",
+        "MAJOR_FACTION_BUTTON_TOOLTIP_VIEW_RENOWN",
+        "ReputationParagonWatchBar_OnEnter",
+        "EmbeddedItemTooltip_Hide"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

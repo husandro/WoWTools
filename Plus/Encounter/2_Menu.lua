@@ -173,31 +173,7 @@ end)
 
 local function Init()
     local btn= CreateFrame('DropdownButton', 'WoWToolsAdventureJournalMenuButton', EncounterJournalCloseButton, 'WoWToolsMenuTemplate')
-
-    --[[WoWTools_ButtonMixin:Menu(EncounterJournalCloseButton, {--按钮, 总开关
-        name='WoWToolsAdventureJournalMenuButton',
-        size=23,
-        texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
-
-    })]]
-
     btn:SetPoint('RIGHT', EncounterJournalCloseButton, 'LEFT')
-
-    --[[function btn:set_Tooltips()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, WoWTools_TextMixin:GetEnabeleDisable(not Save().hideEncounterJournal).. WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '奖励' or QUEST_REWARDS, WoWTools_TextMixin:GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..WoWTools_DataMixin.Icon.right)
-        GameTooltip:Show()
-    end
-    btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
-    btn:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_EncounterMixin.addName)
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.left)
-        GameTooltip:Show()
-    end)]]
     btn:SetupMenu(Init_Menu)
 
 
@@ -206,38 +182,122 @@ local function Init()
         name='WoWToolsEncounterJournalWoWButton',
         type='Instance',
     })
-    wow:SetPoint('RIGHT', btn, 'LEFT')
+    wow:SetPoint('RIGHT', btn, 'LEFT', -4, 0)
 
-    if WoWTools_DataMixin.Player.IsMaxLevel then
-        local key =WoWTools_ButtonMixin:Cbtn(btn, {size=22})--所有角色,挑战
-        key:SetPoint('RIGHT', wow, 'LEFT')
-        key:SetNormalTexture(4352494)
-        key:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            local find= WoWTools_ChallengeMixin:ActivitiesTooltip()--周奖励，提示
-            local link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
-            if link then
-                GameTooltip:AddLine(WoWTools_HyperLink:CN_Link(link, {isName=true}))
-            end
 
-            if find or link then
-                GameTooltip:AddLine(' ')
-            end
+    local key =WoWTools_ButtonMixin:Cbtn(btn, {size=22})--所有角色,挑战
+    key:SetPoint('RIGHT', wow, 'LEFT', -4, 0)
+    key:SetNormalTexture('Interface\\EncounterJournal\\UI-EJ-PortraitIcon')--4352494)
+    key:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        local find= WoWTools_ChallengeMixin:ActivitiesTooltip()--周奖励，提示
+        local link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
+        if link then
+            GameTooltip:AddLine(WoWTools_HyperLink:CN_Link(link, {isName=true}))
+        end
 
-            GameTooltip:AddLine(
-                (WoWTools_DataMixin.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS)
-                ..WoWTools_DataMixin.Icon.left
-            )
+        if find or link then
+            GameTooltip:AddLine(' ')
+        end
 
-            GameTooltip:Show()
-        end)
-        key:SetScript("OnLeave",GameTooltip_Hide)
-        key:SetScript('OnMouseDown', function()
-            PVEFrame_ToggleFrame('ChallengesFrame', 3)
-        end)
-        WoWTools_TextureMixin:SetButton(key)
+        GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS)
+            ..WoWTools_DataMixin.Icon.left
+        )
+
+        GameTooltip:Show()
+    end)
+    key:SetScript("OnLeave",GameTooltip_Hide)
+    key:SetScript('OnMouseDown', function()
+        PVEFrame_ToggleFrame('ChallengesFrame', 3)
+    end)
+    --WoWTools_TextureMixin:SetButton(key)
+
+
+
+
+
+    local com= CreateFrame('DropdownButton', 'WoWToolsEJPlayerCompanionMenuButton', btn, 'WoWToolsMenu2Template')
+
+    com.texture= com:CreateTexture()
+    com.texture:SetAllPoints()
+
+    com:SetPoint('RIGHT', key, 'LEFT', -4, 0)
+
+    function com:setting()
+        local playerCompanionID= self:Get_CompanionID()
+        local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(playerCompanionID)
+		local enabled= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
+        self.texture:SetDesaturated(not enabled)
+
+        SetPortraitTextureFromCreatureDisplayID(self.texture, C_DelvesUI.GetCreatureDisplayInfoForCompanion(playerCompanionID))
+
     end
+
+    function com:Get_CompanionID()
+        local factionID= C_DelvesUI.GetDelvesFactionForSeason() or 2272
+        local major= C_MajorFactions.GetMajorFactionData(factionID) or {}
+        return major and major.playerCompanionID or 1
+    end
+
+    function com:Is_Locked()
+        return not DelvesCompanionConfigurationFrame or WoWTools_FrameMixin:IsLocked(DelvesCompanionConfigurationFrame)
+    end
+
+    function com:ToggleCompanionConfig(playerCompanionID)
+        if self:Is_Locked() then
+            return
+        end
+        if DelvesCompanionConfigurationFrame:IsShown() then
+            HideUIPanel(DelvesCompanionConfigurationFrame)
+        end
+        DelvesCompanionConfigurationFrame.playerCompanionID = playerCompanionID
+        ShowUIPanel(DelvesCompanionConfigurationFrame)
+	        --ShowUIPanel(DelvesCompanionAbilityListFrame)
+    end
+
+    com:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+
+        self:setting()
+
+        local enabled= not self:Is_Locked()
+        local curID= self:Get_CompanionID()
+
+        for companionID=1, 22 do
+            local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID) or 0
+            if traitTreeID>0 then
+                local factionID = C_DelvesUI.GetFactionForCompanion(companionID)
+                
+                local data= WoWTools_FactionMixin:GetInfo(factionID)
+                if data then
+                    local sub=root:CreateButton(
+                        (companionID==curID and '' or '|cff626262')
+                        ..WoWTools_TextMixin:CN(data.name),
+                    function(info)
+                        self:ToggleCompanionConfig(info.companionID)
+                    end, {companionID=companionID, description= data.description})
+                    sub:AddInitializer(function(button, desc)
+                        local icon = button:AttachTexture()
+                        icon:SetSize(23, 23)
+                        icon:SetPoint("RIGHT")
+                        SetPortraitTextureFromCreatureDisplayID(icon, C_DelvesUI.GetCreatureDisplayInfoForCompanion(desc.data.companionID))
+                    end)
+                    sub:SetTooltip(function(tooltip, desc)
+                        tooltip:AddLine(WoWTools_TextMixin:CN(desc.data.description))
+                    end)
+                    sub:SetEnabled(enabled)
+                end
+            else
+                break
+            end
+        end
+    end)
+    com:HookScript('OnShow', com.setting)
+    com:setting()
 
     Init=function()end
 end

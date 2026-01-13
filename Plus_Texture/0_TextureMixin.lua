@@ -330,7 +330,7 @@ local ExpansionIcon = {
 		topTexel = 0.0625,
 		bottomTexel = 0.875
 	},
-	[6] = {  -- Legion
+    [6] = {  -- Legion
 		textureFile = "Interface\\AddOns\\WoWTools\\Source\\Texture\\WoW\\6.tga",
 		textureWidth = 64,
 		textureHeight = 16,

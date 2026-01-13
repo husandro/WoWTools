@@ -161,7 +161,7 @@ end
 
 
 
---需要GameTooltip:Show()
+--需要GameTooltip:Show() EmbeddedItemTooltip_Hide(EmbeddedItemTooltip)
 function WoWTools_SetTooltipMixin:Faction(frame)--ANCHOR_RIGHT=true
     if not frame or not frame.factionID then
 		return

@@ -1,5 +1,50 @@
 --旅程 12.0才有
 
+
+
+
+
+
+--[[
+function JourneyProgressFrameMixin:OnTrackUpdate(leftIndex, centerIndex, rightIndex, isMoving)
+	local elements = self.track:GetElements();
+	local selectedElement = elements[centerIndex];
+	local selectedLevel = selectedElement:GetLevel();
+	for i = leftIndex, rightIndex do
+		local selected = not self.moving and centerIndex == i;
+		local frame = elements[i];
+		frame:Refresh(self.actualLevel, self.displayLevel, selected);
+		local alpha = self.track:GetDesiredAlphaForIndex(i);
+		frame:ApplyAlpha(alpha);
+	end
+
+	self.rewardPool:ReleaseAll();
+	self.DelvesCompanionConfigurationFrame.CompanionConfigBtn:Hide();
+	self.DelvesCompanionConfigurationFrame:Hide();
+
+	-- If player companion ID set, we're looking at a Delve, so show those options. Otherwise show reward details.
+	if C_MajorFactions.ShouldUseJourneyRewardTrack(self.majorFactionData.factionID) then
+		local companionFactionID = C_DelvesUI.GetFactionForCompanion(self.majorFactionData.playerCompanionID);
+		local companionFactionInfo = C_Reputation.GetFactionDataByID(companionFactionID);
+		self.DelvesCompanionConfigurationFrame.CompanionConfigBtn.CompanionName:SetText(companionFactionInfo and companionFactionInfo.name or "");
+
+		
+		self.DelvesCompanionConfigurationFrame:Show();
+		self.DelvesCompanionConfigurationFrame.CompanionConfigBtn:Show();
+		self.DividerTexture:Show();
+	else
+		self:SetRewards(selectedLevel);
+		self.DividerTexture:Show();
+	end
+end
+]]
+
+
+
+
+
+
+
 local function Init()
     if not EncounterJournalJourneysFrame then
         return
@@ -34,17 +79,31 @@ local function Init()
     end)
 
 
---查看进度 JourneyProgressFrameMixin
-    WoWTools_DataMixin:Hook(EncounterJournalJourneysFrame.JourneyProgress, 'SetupProgressDetails', function(frame)
+--查看进度 JourneyProgressFrameMixin SetupProgressDetails
+    WoWTools_DataMixin:Hook(EncounterJournalJourneysFrame.JourneyProgress, 'SetupRewardTrack', function(frame)
+        local factionID= frame.majorFactionData and frame.majorFactionData.factionID
         if not frame.infoLabel then
             frame.infoLabel= frame:CreateFontString(nil, nil,'GameFontNormal')
-            frame.infoLabel:SetPoint('TOP', frame.ProgressDetailsFrame.JourneyLevelProgress, 'BOTTOM', 0,2)
+            frame.infoLabel:SetPoint('TOP', frame.JourneyName, 'BOTTOM')
+            frame.infoLabel:EnableMouse(true)
+            frame.infoLabel:SetScript('OnLeave', function(self)
+                WoWTools_SetTooltipMixin:Hide()
+                self:SetAlpha(1)
+            end)
+            frame.infoLabel:SetScript('OnEnter', function(self)
+                WoWTools_SetTooltipMixin:Faction(self)
+                self:SetAlpha(0.5)
+            end)
         end
-        local factionID= frame.majorFactionData.factionID
+
         local data= WoWTools_FactionMixin:GetInfo(factionID)
-        frame.infoLabel:SetText(data.valueText or '')
+        frame.infoLabel:SetText(data.valueText or factionID or '')
+        frame.infoLabel.factionID= factionID
     end)
 
+   
+
+    
 
 --[[提示factionID, 显示CheckBox
 	view:SetElementFactory(function(factory, elementData)
@@ -87,6 +146,10 @@ local function Init()
 	end
     WoWTools_DataMixin:Hook(RenownCardButtonMixin, 'OnEnter', set_enter)
     WoWTools_DataMixin:Hook(RenownCardButtonMixin, 'OnLeave', set_leave)
+
+
+
+
 
     Init=function()end
 end

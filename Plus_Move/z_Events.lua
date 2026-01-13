@@ -42,8 +42,12 @@ function WoWTools_MoveMixin.Events:Blizzard_GarrisonUI()
     self:Setup(GarrisonShipyardFrame)--海军行动
     self:Setup(GarrisonMissionFrame)--要塞任务
     self:Setup(GarrisonCapacitiveDisplayFrame)--要塞订单
-    self:Setup(GarrisonLandingPage)--要塞报告
 
+    self:Setup(GarrisonLandingPage,{--要塞报告
+    --[[sizeRestFunc=function(frame)
+        frame:SetSize(830, 538)
+    end]]
+    })
     self:Setup(OrderHallMissionFrame)--侦查地图
     self:Setup(AdventureMapQuestChoiceDialog, {frame=OrderHallMissionFrame})
 end

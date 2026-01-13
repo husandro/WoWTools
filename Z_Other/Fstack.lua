@@ -71,10 +71,6 @@ end
 
 
 
-
-
-
-
 local function Init_Create(frame)
     if frame.WoWToolsButton then
         return
@@ -103,7 +99,7 @@ local function Init_Create(frame)
             WoWTools_DataMixin.Icon.icon2
             ..'|cff00ff00FST|rACK'
             ..WoWTools_DataMixin.Icon.left
-            ..WoWTools_TextMixin:GetEnabeleDisable(not C_CVar.GetCVarBool('fstack_enabled')),
+            ..WoWTools_TextMixin:GetEnabeleDisable(not FrameStackTooltip:IsVisible()),--C_CVar.GetCVarBool('fstack_enabled')),
 
             WoWTools_DataMixin.Icon.right
             ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
@@ -111,17 +107,66 @@ local function Init_Create(frame)
     end
 
 --更多信息
-    frame.WoWToolsInfoButton= CreateFrame('Button', nil, frame.WoWToolsButton, 'WoWToolsButtonTemplate')
+    frame.WoWToolsInfoButton= CreateFrame('DropdownButton', nil, frame.WoWToolsButton, 'WoWToolsMenuTemplate')
     frame.WoWToolsInfoButton:SetPoint('RIGHT', frame.WoWToolsButton, 'LEFT')
     frame.WoWToolsInfoButton:SetNormalAtlas('Garr_Building-AddFollowerPlus')
+    WoWTools_TextureMixin:SetButton(frame.WoWToolsInfoButton, {alpha=1})
     frame.WoWToolsInfoButton.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '更多信息' or CLICK_FOR_DETAILS)
-    frame.WoWToolsInfoButton:SetScript('OnClick', function(self)
+    frame.WoWToolsInfoButton:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        elseif FrameStackTooltip:IsVisible() then
+            FrameStackTooltip_ToggleDefaults()
+        end
+        local focusedTable= self:GetParent():GetParent().focusedTable--.dataProviders focusedTable
+        if not focusedTable then
+            root:CreateTitle(WoWTools_DataMixin.onlyChinese and '无数据' or NONE)
+            return
+        end
+        local sub
+--FocusedTable
+        root:CreateButton(
+            'FocusedTable',
+        function()
+            WoWTools_DataMixin:Info(focusedTable)
+            return MenuResponse.Open
+        end)
+--Text
+        local text= focusedTable.GetText and focusedTable:GetText()
+        sub= root:CreateButton(
+            'Text',
+        function()
+            WoWTools_DataMixin:Info(text)
+            return MenuResponse.Open
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(text, nil, nil, nil, true)
+        end)
+        sub:SetEnabled(text and text~='')
+--Texture
+        local texture= focusedTable.GetAtlas and focusedTable:GetAtlas()
+                    or (focusedTable.GetTexture and focusedTable:GetTexture())
+                    or (focusedTable.GetNormalAtlas and focusedTable:GetNormalAtlas())
+                    or (focusedTable.GetNormalTexture and focusedTable:GetNormalTexture())
+        sub= root:CreateButton(
+            'Texture',
+        function()
+            WoWTools_DataMixin:Info(texture)
+            return MenuResponse.Open
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(texture, nil, nil, nil, true)
+        end)
+        sub:SetEnabled(texture and texture~='')
+
+    end)
+    --[[frame.WoWToolsInfoButton:SetScript('OnClick', function(self)
         if C_CVar.GetCVarBool("fstack_enabled") then
             FrameStackTooltip_ToggleDefaults()
         end
         local p= self:GetParent():GetParent()--.dataProviders focusedTable
         WoWTools_DataMixin:Info(p.focusedTable)
-    end)
+    end)]]
 
     local check
     if frame==TableAttributeDisplay then
@@ -149,9 +194,26 @@ local function Init_Create(frame)
     frame.WoWToolsLabel= frame.WoWToolsButton:CreateFontString(nil, 'ARTWORK', 'ChatFontNormal')-- WoWTools_LabelMixin:Create(frame.WoWToolsButton, {mouse=true})
     frame.WoWToolsLabel:SetJustifyH('RIGHT')
     frame.WoWToolsLabel:SetPoint('RIGHT', check or frame.WoWToolsInfoButton, 'LEFT')
+    --[[frame.WoWToolsLabel:EnableMouse(true)
     frame.WoWToolsLabel:SetScript('OnHide', function(self)
+        self.objectType= nil
         self:SetText('')
     end)
+    frame.WoWToolsLabel:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    frame.WoWToolsLabel:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(
+            'GetText GetAtlas'
+        )
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
+    frame.WoWToolsLabel:SetScript('OnMouseDown', function(self)
+    end)]]
+
 
 
 
@@ -295,20 +357,18 @@ local function Init()
 
 
     local function set_objectType(self, focusedTable)
-        if not canaccesstable(focusedTable) or not focusedTable then
-            self.WoWToolsLabel:SetText('')
-            return
-        end
         local text
-        if focusedTable.GetObjectType then
-            text= focusedTable:GetObjectType()
-            if not canaccessvalue(text) then
-                text= nil
+        if canaccesstable(focusedTable) and focusedTable then
+            if focusedTable.GetObjectType then
+                text= focusedTable:GetObjectType()
+                if not canaccessvalue(text) then
+                    text= nil
+                end
             end
-        end
-        if focusedTable.GetSize then
-            text= (text and text..' ' or '')
-                ..format('%i|cffffd200x|r%i', focusedTable:GetSize())
+            if focusedTable.GetSize then
+                text= (text and text..' ' or '')
+                    ..format('%i|cffffd200x|r%i', focusedTable:GetSize())
+            end
         end
         self.WoWToolsLabel:SetText(text or '')
     end

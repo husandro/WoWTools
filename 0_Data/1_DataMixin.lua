@@ -224,44 +224,48 @@ function WoWTools_DataMixin:Info(data1)
 
     local secret= WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r' or (EVENTTRACE_SECRET_FMT and format(EVENTTRACE_SECRET_FMT, '')) or '|cff88ff88<secret>|r'
 
-    if type(data)~='table' then
-        print(WoWTools_DataMixin.Icon.icon2, tostring(data), type(data))
-        return
-    elseif issecrettable(data) then
+    local typeData= type(data)
+    
+    if issecrettable(data) or (typeData=='table' and issecrettable(data))  then
         print(WoWTools_DataMixin.Icon.icon2, secret)
+        return
     end
-
     local t=''
-    for k, v in pairs(data) do
-        if v and type(v)=='table' then
-            if issecrettable(v) then
-                 t= t..' |n|cnWARNING_FONT_COLOR:---'..tostring(k)..'---|r'..secret
-            else
-                t= t..' |n|cff00ff00---'..tostring(k)..'---STAR|r'
+    if typeData=='table' then
+        for k, v in pairs(data) do
+            if v and type(v)=='table' then
+                if issecrettable(v) then
+                    t= t..' |n|cnWARNING_FONT_COLOR:---'..tostring(k)..'---|r'..secret
+                else
+                    t= t..' |n|cff00ff00---'..tostring(k)..'---STAR|r'
 
-                for k2, v2 in pairs(v) do
-                    if type(v2)=='table' then
-                        if issecrettable(v2) then
-                            t= t..'|n|cnWARNING_FONT_COLOR:'..tostring(k2)..'---|r'..secret
-                        else
-                            t= t..'|n|cff00ffff---'..tostring(k2)..'---STAR|r'
-                            for k3, v3 in pairs(v2) do
-                                t= t..'|n        '..(type(v3)=='function' and '|cff00ccff' or '|cffffff00')..tostring(k3)..' |r= '..tostring(v3)
+                    for k2, v2 in pairs(v) do
+                        if type(v2)=='table' then
+                            if issecrettable(v2) then
+                                t= t..'|n|cnWARNING_FONT_COLOR:'..tostring(k2)..'---|r'..secret
+                            else
+                                t= t..'|n|cff00ffff---'..tostring(k2)..'---STAR|r'
+                                for k3, v3 in pairs(v2) do
+                                    t= t..'|n        '..(type(v3)=='function' and '|cff00ccff' or '|cffffff00')..tostring(k3)..' |r= '..tostring(v3)
+                                end
+                                t= t..'|n   |cffff5e00---'..tostring(k2)..'---END|r'
                             end
-                            t= t..'|n   |cffff5e00---'..tostring(k2)..'---END|r'
+                        else
+                            t= t..'|n    '..(type(v2)=='function' and '|cff00ccff' or '|cffffff00')..tostring(k2)..' |r= '..(issecrettable(v2) and secret or tostring(v2))
                         end
-                    else
-                        t= t..'|n    '..(type(v2)=='function' and '|cff00ccff' or '|cffffff00')..tostring(k2)..' |r= '..(issecrettable(v2) and secret or tostring(v2))
                     end
+                    t= t..'  |n|cffff0000---'..tostring(k)..'---END|r'
                 end
-                t= t..'  |n|cffff0000---'..tostring(k)..'---END|r'
+            else
+                t= t..'|n'..(type(v)=='function' and '|cff00ccff' or '|cffff00ff')..tostring(k)..'|r = '..(issecretvalue(v) and secret or tostring(v))
             end
-        else
-            t= t..'|n'..(type(v)=='function' and '|cff00ccff' or '|cffff00ff')..tostring(k)..'|r = '..(issecretvalue(v) and secret or tostring(v))
         end
-    end
-    t=t..'|n|cffff00ff——————————|r'
+        t=t..'|n|cffff00ff——————————|r'
 
+    elseif typeData=='string' then
+        t=data
+    end
+    
     WoWTools_TextMixin:ShowText(t, WoWTools_DataMixin.Icon.icon2..(type(data1)=='string' and data1 or tostring(data)))--, {notClear=true})
 end
 
