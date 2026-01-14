@@ -45,7 +45,6 @@ function WoWTools_TextureMixin.Frames:QuestFrame()
     self:SetButton(QuestLogPopupDetailFrameCloseButton)
 
     self:SetFrame(QuestModelScene)
-    self:SetAlphaColor(QuestNPCModelTextFrameBg, nil, nil, 0.3)
     self:SetScrollBar(QuestNPCModelTextScrollChildFrame)
     self:SetScrollBar(QuestNPCModelTextScrollFrame)
 
@@ -602,8 +601,6 @@ end
 function WoWTools_TextureMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
     self:SetNineSlice(CatalogShopFrame)
     self:SetButton(CatalogShopFrameCloseButton)
-
-    self:HideTexture(CatalogShopFrameBg)
 
     self:SetScrollBar(CatalogShopFrame.ProductContainerFrame.ProductsScrollBoxContainer)
     self:SetFrame(CatalogShopFrame.ProductContainerFrame.ShadowLayer, {alpha=0.7})

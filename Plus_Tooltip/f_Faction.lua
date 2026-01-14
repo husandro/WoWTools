@@ -15,7 +15,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
 
     local info= WoWTools_FactionMixin:GetInfo(factionID, nil, true)
 
-    if not info then
+    if info.factionID then
         return
     end
 

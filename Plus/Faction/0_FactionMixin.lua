@@ -51,8 +51,29 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
 
     local friendshipID--个人声望
 
-    --名望
-    if isMajor then
+
+--个人声望
+    if repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID> 0 then
+        local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID) or {}
+        if rankInfo.currentLevel and rankInfo.maxLevel and rankInfo.maxLevel>0 then
+            factionStandingtext= (factionStandingtext and factionStandingtext..' ' or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
+        end
+        if repInfo.nextThreshold then
+            if rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
+                barColor= FACTION_BAR_COLORS[standingID]
+            end
+            value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
+            isCapped= false
+        else
+            value= '|cff626262'..(WoWTools_DataMixin.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+            isCapped=true
+        end
+        factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction)
+        texture=repInfo.texture--图标
+        friendshipID= repInfo.friendshipFactionID
+
+--名望
+    elseif isMajor then
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
         local info = C_MajorFactions.GetMajorFactionData(factionID)
         if info then
@@ -79,26 +100,6 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
             isUnlocked= info.isUnlocked
             unlockDescription= info.unlockDescription
         end
-
---个人声望
-    elseif repInfo and repInfo.friendshipFactionID> 0 then
-        local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID) or {}
-        if rankInfo.currentLevel and rankInfo.maxLevel and rankInfo.maxLevel>0 then
-            factionStandingtext= (factionStandingtext and factionStandingtext..' ' or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
-        end
-        if repInfo.nextThreshold then
-            if rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
-                barColor= FACTION_BAR_COLORS[standingID]
-            end
-            value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
-            isCapped= false
-        else
-            value= '|cff626262'..(WoWTools_DataMixin.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
-            isCapped=true
-        end
-        factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction)
-        texture=repInfo.texture--图标
-        friendshipID= repInfo.friendshipFactionID
 
     else
         if isHeaderWithRep or not isHeader then
@@ -274,4 +275,73 @@ function WoWTools_FactionMixin:UpdatList()
     if ReputationFrame and ReputationFrame:IsVisible() then
         WoWTools_DataMixin:Call(ReputationFrame.Update, ReputationFrame)
     end
+end
+
+
+
+
+--伙伴
+--C_DelvesUI.GetDelvesFactionForSeason()
+function WoWTools_FactionMixin:GetCompanionInfo(companionID, tooltip)
+
+    local playerCompanionID
+
+    local seasonFactionID= C_DelvesUI.GetDelvesFactionForSeason()
+    if seasonFactionID then
+        local major= C_MajorFactions.GetMajorFactionData(seasonFactionID)
+        if major and major.playerCompanionID then--地下堡，第3赛季 factionID 2272
+            companionID= companionID or major.playerCompanionID
+            playerCompanionID= major.playerCompanionID
+        end
+    end
+
+
+    local factionID = C_DelvesUI.GetFactionForCompanion(companionID)--factionID 2640 布莱恩.铜须
+    local info= factionID and C_Reputation.GetFactionDataByID(factionID)
+
+    if not info or not info.name then
+        return
+    end
+
+
+    local companionRankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
+
+
+    local compaionName= (playerCompanionID==companionID and '|A:CampCollection-icon-star:0:0|a' or '')
+            ..WoWTools_TextMixin:CN(info.name)
+
+    local level
+    if companionRankInfo then
+        level = companionRankInfo.currentLevel or 0
+        local companionRepInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+        if companionRepInfo then
+            if companionRepInfo.nextThreshold then
+                local currentExperience = companionRepInfo.standing - companionRepInfo.reactionThreshold
+                local nextLevelAt = companionRepInfo.nextThreshold - companionRepInfo.reactionThreshold
+                level= format('%d|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', level, currentExperience/nextLevelAt*100)
+            else
+                --已最高级
+                level= ACCOUNT_WIDE_FONT_COLOR:GenerateHexColorMarkup()..level..'|r'
+            end
+        end
+    end
+
+    local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
+    local configID= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
+
+
+    if tooltip then
+        local hex= configID and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup()
+        tooltip:AddDoubleLine(level and hex..level or ' ', hex..compaionName)
+    end
+
+    info.companionID= companionID
+    info.playerCompanionID= playerCompanionID
+
+    info.compaionName= compaionName
+    info.compaionLevel= level
+    info.traitTreeID= traitTreeID
+    info.configID= configID
+
+    return info
 end

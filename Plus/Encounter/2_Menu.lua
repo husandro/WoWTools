@@ -13,6 +13,17 @@ local function Init_Menu(self, root)
     end
     local sub, sub2
 
+    sub= root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '旅程' or JOURNEYS_LABEL,
+    function()
+        return not Save().hideJourneys
+    end, function()
+        Save().hideJourneys= not Save().hideJourneys and true or nil
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+    
 --Plus
     sub=root:CreateCheckbox(
         'Plus',
@@ -172,22 +183,39 @@ end)
 
 
 local function Init()
-    local btn= CreateFrame('DropdownButton', 'WoWToolsAdventureJournalMenuButton', EncounterJournalCloseButton, 'WoWToolsMenuTemplate')
-    btn:SetPoint('RIGHT', EncounterJournalCloseButton, 'LEFT')
-    btn:SetupMenu(Init_Menu)
+    local menu= CreateFrame('DropdownButton', 'WoWToolsAdventureJournalMenuButton', EncounterJournalCloseButton, 'WoWToolsMenuTemplate')
+    menu:SetPoint('RIGHT', EncounterJournalCloseButton, 'LEFT')
+    menu:SetupMenu(Init_Menu)
 
+    if EncounterJournalInstanceSelect.GreatVaultButton then
+        local btn= EncounterJournalInstanceSelect.GreatVaultButton
+        btn:ClearAllPoints()
+        btn:SetPoint('RIGHT', menu, 'LEFT', -4, 0)
+        btn:SetFrameStrata(menu:GetFrameStrata())
+        btn:SetFrameLevel(menu:GetFrameLevel())
+        btn:SetSize(23,23)
+        local icon= btn:GetNormalTexture()
+        if icon then
+            icon:ClearAllPoints()
+            icon:SetPoint('TOPLEFT', -2, 2)
+            icon:SetPoint('BOTTOMRIGHT', 2, -2)
+        end
+    end
 
-
-    local wow= WoWTools_DataMixin:CreateWoWItemListButton(btn, {
+    local wow= WoWTools_DataMixin:CreateWoWItemListButton(menu, {
         name='WoWToolsEncounterJournalWoWButton',
         type='Instance',
+        alpha=1,
     })
-    wow:SetPoint('RIGHT', btn, 'LEFT', -4, 0)
+    wow:SetPoint('RIGHT', EncounterJournalInstanceSelect.GreatVaultButton or menu, 'LEFT', -4, 0)
 
 
-    local key =WoWTools_ButtonMixin:Cbtn(btn, {size=22})--所有角色,挑战
+    local key =WoWTools_ButtonMixin:Cbtn(menu, {size=22})--所有角色,挑战
     key:SetPoint('RIGHT', wow, 'LEFT', -4, 0)
-    key:SetNormalTexture('Interface\\EncounterJournal\\UI-EJ-PortraitIcon')--4352494)
+    key.texture= key:CreateTexture(nil,'BORDER')
+    key.texture:SetPoint('TOPLEFT', 2, -2)
+    key.texture:SetPoint('BOTTOMRIGHT', -2, 2)
+    key.texture:SetTexture('Interface\\EncounterJournal\\UI-EJ-PortraitIcon')--4352494)
     key:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
@@ -218,53 +246,45 @@ local function Init()
 
 
 
-    local com= CreateFrame('Button', 'WoWToolsEJPlayerCompanionMenuButton', btn, 'WoWToolsMenu2Template')
-
+    local com= CreateFrame('Button', 'WoWToolsEJPlayerCompanionMenuButton', menu, 'WoWToolsButtonTemplate')
     com.texture= com:CreateTexture()
     com.texture:SetAllPoints()
-
     com:SetPoint('RIGHT', key, 'LEFT', -4, 0)
+    function com:tooltip(tooltip)
+        local find
+        for companionID=1, 20 do
+            local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
+            if traitTreeID and traitTreeID>0 then
+                if WoWTools_FactionMixin:GetCompanionInfo(companionID, tooltip) then
+                    find=true
+                end
+
+            else
+                break
+            end
+        end
+        if find then
+            GameTooltip:AddLine(' ')
+        end
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+    end
 
     function com:Get_CompanionID()
         local factionID= C_DelvesUI.GetDelvesFactionForSeason()-- or 2272
         if factionID then
             local major= C_MajorFactions.GetMajorFactionData(factionID)
             if major then
-                return major.playerCompanionID, factionID
+                return major.playerCompanionID
             end
         end
     end
 
     function com:setting()
         local companionID= self:Get_CompanionID() or 1
-
         local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
         local configID= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
-
         SetPortraitTextureFromCreatureDisplayID(self.texture, C_DelvesUI.GetCreatureDisplayInfoForCompanion(companionID))
         self.texture:SetDesaturated(InCombatLockdown() or not configID)
-    end
-
-
-    function com:Get_CompanionInfo(companionID)
-        local factionID = C_DelvesUI.GetFactionForCompanion(companionID);
-        if factionID then
-            local companionRankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID);
-            if companionRankInfo then
-                local companionLevel = companionRankInfo.currentLevel or 0
-                local companionRepInfo = C_GossipInfo.GetFriendshipReputation(factionID)
-                if companionRepInfo then
-                    if companionRepInfo.nextThreshold then
-                        local currentExperience = companionRepInfo.standing - companionRepInfo.reactionThreshold
-                        local nextLevelAt = companionRepInfo.nextThreshold - companionRepInfo.reactionThreshold
-                        return format('%d|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', companionLevel, currentExperience/nextLevelAt*100)
-                    else
-                        --已最高级
-                        return WARNING_FONT_COLOR:GenerateHexColorMarkup()..companionLevel..'|r'
-                    end
-                end
-            end
-        end
     end
 
     com:SetScript('OnClick', function(self, d)
@@ -273,33 +293,24 @@ local function Init()
             WoWTools_LoadUIMixin:OpenCompanion()
             return
         end
-
         MenuUtil.CreateContextMenu(self, function(_, root)
             local enabled= not InCombatLockdown()
-            local curID= self:Get_CompanionID()
-
             for companionID=1, 20 do
                 local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
                 if traitTreeID and traitTreeID>0 then
-                    local factionID = C_DelvesUI.GetFactionForCompanion(companionID)
-                    local info= C_Reputation.GetFactionDataByID(factionID)
+                    local info= WoWTools_FactionMixin:GetCompanionInfo(companionID)
                     if info then
-                        local configID= C_Traits.GetConfigIDByTreeID(traitTreeID)
                         local sub=root:CreateButton(
     --可修该
-                            (configID and enabled  and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup())
-    --当前伙伴
-                            ..(companionID==curID and '|A:CampCollection-icon-star:0:0|a' or '')
-    --名称
-                            ..WoWTools_TextMixin:CN(info.name)
-    --等级
-                            ..' '..(self:Get_CompanionInfo(companionID) or ''),
+                            (info.configID and enabled  and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup())
+                            ..info.compaionName
+                            ..(info.compaionLevel and ' '..info.compaionLevel or ''),
                         function(data)
                             WoWTools_LoadUIMixin:OpenCompanion(data.companionID)
                             return MenuResponse.Open
                         end, {
                             companionID=companionID,
-                            factionID= factionID,
+                            factionID= info.factionID,
                         })
                         sub:AddInitializer(function(button, desc)
                             local icon = button:AttachTexture()
@@ -316,8 +327,11 @@ local function Init()
             end
         end)
     end)
-    com:HookScript('OnShow', com.setting)
-    com:setting()
+
+    com:HookScript('OnShow', function(self)
+        self:setting()
+    end)
+    
 
     Init=function()end
 end

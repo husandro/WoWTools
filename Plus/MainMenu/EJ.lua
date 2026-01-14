@@ -89,74 +89,82 @@ local function Init()
                 )
             end
             GameTooltip:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), WoWTools_DataMixin.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
+
+        end
+
+        local factionInfo= WoWTools_FactionMixin:GetCompanionInfo(nil, GameTooltip)
+        if cur or factionInfo then
             GameTooltip:AddLine(' ')
         end
 
-        local col= InCombatLockdown() and '|cff626262' or '|cffffffff'
+        local isCombat= InCombatLockdown() or DISALLOW_FRAME_TOGGLING
 
         GameTooltip:AddLine(
-            col
-            --..(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
-            ..WoWTools_DataMixin.Icon.mid
-            ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
-        )
-        GameTooltip:AddLine(
-            col
-            --..(WoWTools_DataMixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
+            (isCombat and '|cff626262' or '|cffffffff')
             ..(WoWTools_DataMixin.onlyChinese and '旅程' or JOURNEYS_LABEL)..'|r'
             ..WoWTools_DataMixin.Icon.right
         )
+
+        GameTooltip:AddLine(
+            (not isCombat and factionInfo and factionInfo.configID and '|cffffffff' or '|cff626262' )
+            ..(WoWTools_DataMixin.onlyChinese and '伙伴' or COVENANT_MISSIONS_FOLLOWERS)..'|r'
+            ..WoWTools_DataMixin.Icon.mid
+        )
+        GameTooltip:Show()
+    end)
+
+        --[[
+--..(WoWTools_DataMixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
+        ..(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
+         ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         GameTooltip:AddLine(
             col
             ..(WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
-        )
+        )]]
 
-        GameTooltip:Show()
-    end)
 
     EJMicroButton:HookScript('OnClick', function(_, d)
-        if not d~='RightButton'
+        if d~='RightButton'
             or KeybindFrames_InQuickKeybindMode()
-            or Kiosk.IsEnabled()
-            or DISALLOW_FRAME_TOGGLING
         then
             return
         end
-
-        --if ToggleEncounterJournal() then
-            --MonthlyActivitiesFrame_OpenFrame()
         WoWTools_LoadUIMixin:MajorFaction()
-        
     end)
 
     EJMicroButton:EnableMouseWheel(true)
     EJMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() or DISALLOW_FRAME_TOGGLING then
             return
         end
 
-        EncounterJournal_LoadUI()
-
-        do
-            if not EncounterJournal:IsShown() then
-                ToggleEncounterJournal()
-                MonthlyActivitiesFrame_OpenFrame()
-            end
-        end
-
         if d==1 then
-            EJ_ContentTab_Select(EncounterJournal.dungeonsTab:GetID())
-
+            WoWTools_LoadUIMixin:OpenCompanion()
         elseif d==-1 then
-            EJ_ContentTab_Select(EncounterJournal.raidsTab:GetID())
+            if DelvesCompanionConfigurationFrame and DelvesCompanionConfigurationFrame:IsShown() then
+                HideUIPanel(DelvesCompanionConfigurationFrame)
+            end
         end
     end)
 
     Init=function()end
 end
+--[[
+if ToggleEncounterJournal() then
+MonthlyActivitiesFrame_OpenFrame()
+EJ_ContentTab_Select(EncounterJournal.dungeonsTab:GetID())
 
+EncounterJournal_LoadUI()
+do
+    if not EncounterJournal:IsShown() then
+        ToggleEncounterJournal()
+        MonthlyActivitiesFrame_OpenFrame()
+    end
+end
+EJ_ContentTab_Select(EncounterJournal.raidsTab:GetID())
+]]
 
 
 

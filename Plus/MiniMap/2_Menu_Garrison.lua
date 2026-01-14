@@ -139,7 +139,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
     --function()
         --return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
     function()
-        WoWTools_LoadUIMixin.WeeklyRewards()
+        WoWTools_LoadUIMixin:WeeklyRewards()
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)

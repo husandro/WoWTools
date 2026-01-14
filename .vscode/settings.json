@@ -2910,7 +2910,9 @@
         "EmbeddedItemTooltip_Hide",
         "TraitUtil",
         "DISALLOW_FRAME_TOGGLING",
-        "TUTORIAL_TITLE35"
+        "TUTORIAL_TITLE35",
+        "COVENANT_MISSIONS_FOLLOWERS",
+        "EncounterJournal_OpenToJourney"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -2121,11 +2121,7 @@ btn.type= tab.type,--Item Bank Currency Money Time Instance Rare Worldboss
 function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
     tab= tab or {}
 
-    --[[local btn= WoWTools_ButtonMixin:Cbtn(frame, {
-        name= tab.name,
-        atlas='glues-characterSelect-iconShop-hover',
-        size=23,
-    })]]
+    local alpha= tab.alpha
 
     local btn= CreateFrame('Button', tab.name, frame, 'WoWToolsButtonTemplate')
     btn:SetNormalAtlas('glues-characterSelect-iconShop-hover')
@@ -2158,7 +2154,7 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
             Init_List(s.type)
         end
     end)
-    WoWTools_TextureMixin:SetButton(btn)
+    WoWTools_TextureMixin:SetButton(btn, {alpha= alpha})
     return btn
 end
 

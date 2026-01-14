@@ -1,43 +1,148 @@
 --旅程 12.0才有
-
-
-
-
-
-
---[[
-function JourneyProgressFrameMixin:OnTrackUpdate(leftIndex, centerIndex, rightIndex, isMoving)
-	local elements = self.track:GetElements();
-	local selectedElement = elements[centerIndex];
-	local selectedLevel = selectedElement:GetLevel();
-	for i = leftIndex, rightIndex do
-		local selected = not self.moving and centerIndex == i;
-		local frame = elements[i];
-		frame:Refresh(self.actualLevel, self.displayLevel, selected);
-		local alpha = self.track:GetDesiredAlphaForIndex(i);
-		frame:ApplyAlpha(alpha);
-	end
-
-	self.rewardPool:ReleaseAll();
-	self.DelvesCompanionConfigurationFrame.CompanionConfigBtn:Hide();
-	self.DelvesCompanionConfigurationFrame:Hide();
-
-	-- If player companion ID set, we're looking at a Delve, so show those options. Otherwise show reward details.
-	if C_MajorFactions.ShouldUseJourneyRewardTrack(self.majorFactionData.factionID) then
-		local companionFactionID = C_DelvesUI.GetFactionForCompanion(self.majorFactionData.playerCompanionID);
-		local companionFactionInfo = C_Reputation.GetFactionDataByID(companionFactionID);
-		self.DelvesCompanionConfigurationFrame.CompanionConfigBtn.CompanionName:SetText(companionFactionInfo and companionFactionInfo.name or "");
-
-		
-		self.DelvesCompanionConfigurationFrame:Show();
-		self.DelvesCompanionConfigurationFrame.CompanionConfigBtn:Show();
-		self.DividerTexture:Show();
-	else
-		self:SetRewards(selectedLevel);
-		self.DividerTexture:Show();
-	end
+local function Save()
+    return WoWToolsSave['Adventure_Journal']
 end
-]]
+
+
+
+
+local function Settings_Left_Button(self)
+    local data= self.data or {}
+    self.Name:SetText(WoWTools_TextMixin:CN(self.data.name) or '')
+    --self.Name:SetTextColor(r or 1, g or 1, b or 1)
+    self.Count:SetText(data.valueText or '')
+    if data.atlas then
+        self.Icon:SetAtlas(data.atlas)
+    else
+        self.Icon:SetTexture(data.texture or 0)
+    end
+end
+
+
+local function SetScript_Left_Button(btn)
+    if btn.Count2 then
+       return
+    end
+
+    btn:SetPoint('RIGHT')
+    btn.NameFrame:SetPoint('RIGHT')
+    btn.NameFrame:SetTexture(0)
+    btn.NameFrame:SetColorTexture(0, 0, 0, 0.3)
+
+    btn.Name:ClearAllPoints()
+    btn.Name:SetHeight(0)
+    btn.Name:SetPoint('BOTTOMLEFT', btn.NameFrame, 2, 2)
+    btn.Name:SetPoint('RIGHT', btn.NameFrame,-2, 0)--, btn.Count, 'LEFT', -2, 0)
+    btn.Name:SetWordWrap(false)
+
+    btn.Count:ClearAllPoints()
+    btn.Count:SetPoint('TOPRIGHT', btn.NameFrame, -2, -2)
+    btn.Count:SetJustifyH('RIGHT')
+    btn.Count:SetFontObject('ChatFontNormal')
+
+    btn:SetScript('OnHide', function(self)
+        self.data=nil
+        self.factionID= nil
+    end)
+
+    btn:SetScript('OnShow', function(self)
+        
+    end)
+
+    btn:SetScript('OnEvent', function(self, _, itemID, success)
+        
+    end)
+
+    btn:SetScript('OnLeave', function(self)
+        WoWTools_SetTooltipMixin:Hide()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        WoWTools_SetTooltipMixin:Faction(self)
+    end)
+end
+
+
+
+
+
+
+
+local function Init_Button()
+    local menu= CreateFrame('DropdownButton', 'WoWToolsEJFactionMenuButton', EncounterJournalJourneysFrame, 'WoWToolsMenuTemplate')
+    menu:SetPoint('LEFT', EncounterJournalInstanceSelect.ExpansionDropdown, 'RIGHT', 8, 0)
+    menu:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
+
+    menu.frame= CreateFrame('Frame')
+    menu.frame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT', 2, -23)
+    menu.frame:SetPoint('BOTTOMLEFT', EncounterJournal, 'BOTTOMRIGHT', 2, 0)
+    menu.frame:SetWidth(200)
+
+    menu.ScrollBox= CreateFrame('Frame', nil, menu.frame, 'WowScrollBoxList')
+    
+    --[[menu.ScrollBox:SetPoint('TOPLEFT')
+    menu.ScrollBox:SetPoint('BOTTOMLEFT')
+    menu.ScrollBox:SetWidth(200)]]
+    menu.ScrollBox:SetAllPoints()
+
+    menu.ScrollBar= CreateFrame("EventFrame", nil, menu.frame, "MinimalScrollBar")
+    menu.ScrollBar:SetPoint("TOPLEFT", menu.ScrollBox, "TOPRIGHT", 6, -12)
+    menu.ScrollBar:SetPoint("BOTTOMLEFT", menu.ScrollBox, "BOTTOMRIGHT", 6, 12)
+    WoWTools_TextureMixin:SetScrollBar(menu.ScrollBar)
+
+
+
+    menu.view = CreateScrollBoxListLinearView()
+    ScrollUtil.InitScrollBoxListWithScrollBar(menu.ScrollBox, menu.ScrollBar, menu.view)
+    menu.view:SetElementInitializer('RenownCardButtonTemplate', function(btn, factionID)
+        btn.majorFactionData= C_MajorFactions.GetMajorFactionData(factionID)
+        btn.factionID= factionID
+
+        local data= WoWTools_FactionMixin:GetInfo(factionID)
+        btn.RenownCardFactionName:SetText(data.valueText or '')
+
+        if data.atlas then
+            btn.IconFrame.Icon:SetAtlas(data.atlas)
+        else
+            btn.IconFrame.Icon:SetTexture(data.texture or 0)
+        end
+    end)
+
+    function menu:Init()
+        local data= CreateDataProvider()
+        local major= C_MajorFactions.GetMajorFactionIDs()
+
+        table.sort(major, function(a, b) return b<a end)
+
+        for _, factionID in pairs(major) do
+            data:Insert(factionID)
+        end
+        self.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
+    end
+
+    if EncounterJournalJourneysFrame:IsShown() then
+        menu:Init()
+    end
+
+    menu:SetScript('OnHide', function(self)
+        self.view:SetDataProvider(CreateDataProvider(), ScrollBoxConstants.RetainScrollPosition)
+    end)
+    menu:SetScript('OnShow', function(self)
+        self:Init()
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -46,7 +151,7 @@ end
 
 
 local function Init()
-    if not EncounterJournalJourneysFrame then
+    if not EncounterJournalJourneysFrame or Save().hideJourneys then
         return
     end
 
@@ -101,23 +206,11 @@ local function Init()
         frame.infoLabel.factionID= factionID
     end)
 
-   
 
-    
 
---[[提示factionID, 显示CheckBox
-	view:SetElementFactory(function(factory, elementData)
-		if elementData.category then
-			factory("JourneysListCategoryNameTemplate", CategoryNameInitializer);
-		elseif elementData.divider then
-			factory("JourneysListCategoryDividerTemplate", nop);
-		elseif elementData.isRenownJourney then
-			factory("RenownCardButtonTemplate", RenownCardInitializer);
-		else
-			factory("JourneyCardButtonTemplate", JourneyCardInitializer);
-		end
-	end);
-]]
+
+
+
 
     local function set_leave(self)
         if self.WatchedFactionToggleFrame and self.majorFactionData and self.majorFactionData.isUnlocked then
@@ -149,11 +242,40 @@ local function Init()
 
 
 
+   -- Init_Button()
 
-
-    Init=function()end
+    Init=function()
+       -- _G['WoWToolsEJFactionMenuButton']:SetShown(not Save().hideJourneys)
+    end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function WoWTools_EncounterMixin:Init_JourneysList()
     Init()
 end
+
+--[[提示factionID, 显示CheckBox
+	view:SetElementFactory(function(factory, elementData)
+		if elementData.category then
+			factory("JourneysListCategoryNameTemplate", CategoryNameInitializer);
+		elseif elementData.divider then
+			factory("JourneysListCategoryDividerTemplate", nop);
+		elseif elementData.isRenownJourney then
+			factory("RenownCardButtonTemplate", RenownCardInitializer);
+		else
+			factory("JourneyCardButtonTemplate", JourneyCardInitializer);
+		end
+	end);
+]]

@@ -164,7 +164,7 @@ end]]
 
 --概要 ExpansionLandingPageMinimapButtonMixin:RefreshButton(forceUpdateIcon)
 function WoWTools_LoadUIMixin:ToggleLandingPage()
-    
+
     local mode= C_Garrison.GetLandingPageGarrisonType()
     if --ExpansionLandingPageMinimapButton:IsInGarrisonMode()
         GameRulesUtil.ShouldShowExpansionLandingPageButton()
@@ -214,7 +214,7 @@ end
 
 --宏伟宝库
 function WoWTools_LoadUIMixin:WeeklyRewards()
-    if 
+    if
         InCombatLockdown()
         or self:IsDisabledOpenFrame()
     then
@@ -237,8 +237,13 @@ end
 
 
 
-
---派系声望 ReputationDetailViewRenownButtonMixin:OnClick()
+--[[
+派系声望 ReputationDetailViewRenownButtonMixin:OnClick()
+ EncounterJournal_OpenToPowerID(powerID)
+  EncounterJournal_OpenJournal(difficultyID, instanceID, encounterID, sectionID, creatureID, itemID, tierIndex)
+  EJSuggestTab_GetPlayerTierIndex()
+   EJ_ContentTab_SelectAppropriateInstanceTab(instanceID)
+ ]]
 function WoWTools_LoadUIMixin:MajorFaction(factionID)
     if
         self:IsDisabledOpenFrame()
@@ -249,17 +254,22 @@ function WoWTools_LoadUIMixin:MajorFaction(factionID)
     if not EncounterJournal then
         EncounterJournal_LoadUI()
     end
+
     if not EncounterJournal:IsShown() then
         ShowUIPanel(EncounterJournal)
     end
-    local id= EncounterJournal.JourneysTab:GetID()
-    if EncounterJournal.selectedTab~=id then
-        EJ_ContentTab_Select(id)
-    end
     if factionID then
-        EncounterJournalJourneysFrame:ResetView(nil, factionID)
+        EncounterJournal_OpenToJourney(factionID)
+    else
+        EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID())
     end
 end
+    --[[EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID())
+
+    if factionID then
+        EncounterJournalJourneysFrame:ResetView(nil, factionID)
+    end]]
+
 
 
 
@@ -291,11 +301,11 @@ function WoWTools_LoadUIMixin:CovenantRenown(frame, covenantID)
         return
     end
 
-    
+
     if not CovenantRenownFrame or not CovenantRenownFrame:IsShown() then
         ToggleCovenantRenown()
     end
-    
+
 
     covenantID= covenantID or (frame and frame.covenantID)
     if not covenantID then
@@ -477,10 +487,14 @@ function WoWTools_LoadUIMixin:OpenCompanion(companionID)
         end
     end
 
-    local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID or 1)
+    local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
     local configID= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
-    if configID then
+    if not configID then
+        return
+    end
+
+    if DelvesCompanionConfigurationFrame then
         DelvesCompanionConfigurationFrame.playerCompanionID = companionID
-        TraitUtil.OpenTraitFrame(traitTreeID)
+        ShowUIPanel(DelvesCompanionConfigurationFrame)
     end
 end
