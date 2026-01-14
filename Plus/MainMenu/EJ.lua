@@ -96,13 +96,14 @@ local function Init()
 
         GameTooltip:AddLine(
             col
-            ..(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
+            --..(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
             col
-            ..(WoWTools_DataMixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
+            --..(WoWTools_DataMixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
+            ..(WoWTools_DataMixin.onlyChinese and '旅程' or JOURNEYS_LABEL)..'|r'
             ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
@@ -115,17 +116,19 @@ local function Init()
         GameTooltip:Show()
     end)
 
-
     EJMicroButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not Kiosk.IsEnabled() then
-            EncounterJournal_LoadUI()
-            do
-                if not EncounterJournal:IsShown() then--suggestTab
-                    ToggleEncounterJournal()
-                end
-            end
-            MonthlyActivitiesFrame_OpenFrame()
+        if not d~='RightButton'
+            or KeybindFrames_InQuickKeybindMode()
+            or Kiosk.IsEnabled()
+            or DISALLOW_FRAME_TOGGLING
+        then
+            return
         end
+
+        --if ToggleEncounterJournal() then
+            --MonthlyActivitiesFrame_OpenFrame()
+        WoWTools_LoadUIMixin:MajorFaction()
+        
     end)
 
     EJMicroButton:EnableMouseWheel(true)

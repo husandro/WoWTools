@@ -801,7 +801,7 @@ local function Get_Info(tab)
     end
 
 
-    topRightText= topRightText or ((itemID and C_Item.GetItemSpell(itemID)) and '|A:soulbinds_tree_conduit_icon_utility:0:0|a')
+    topRightText= topRightText or ((itemID and select(2, C_Item.GetItemSpell(itemID))) and '|A:soulbinds_tree_conduit_icon_utility:0:0|a')
 
 --物品数量
     if not leftText and ((tab.bag and tab.bag.bag <= NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag) then

@@ -3,9 +3,16 @@
 
 --任务
 function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
+    if self:IsInCombatDisabled(tooltip)
+        or not canaccessvalue(questID)
+        or (info and not canaccessvalue(info.questID))
+    then
+        return
+    end
+
     questID= questID or (info and info.questID or nil)
 
-    if not questID or self:IsInCombatDisabled(tooltip) then
+    if not questID or questID<1 then
         return
     end
 

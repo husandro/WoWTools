@@ -43,31 +43,16 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
 
     local factionStandingtext, value, texture, atlas, barColor--, unlockDescription
     local isUnlocked=true
+    local unlockDescription
 
     local isCapped= standingID == MAX_REPUTATION_REACTION--8
     local isMajor = C_Reputation.IsMajorFaction(factionID)
     local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
-    local friendshipID--个人声望
-    if repInfo and repInfo.friendshipFactionID> 0 then--个人声望
-        local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID) or {}
-        if rankInfo.currentLevel and rankInfo.maxLevel and rankInfo.maxLevel>0 then
-            factionStandingtext= (factionStandingtext and factionStandingtext..' ' or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
-        end
-        if repInfo.nextThreshold then
-            if rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
-                barColor= FACTION_BAR_COLORS[standingID]
-            end
-            value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
-            isCapped= false
-        else
-            value= '|cff626262'..(WoWTools_DataMixin.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
-            isCapped=true
-        end
-        factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction)
-        texture=repInfo.texture--图标
-        friendshipID= repInfo.friendshipFactionID
 
-    elseif isMajor then--名望
+    local friendshipID--个人声望
+
+    --名望
+    if isMajor then
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
         local info = C_MajorFactions.GetMajorFactionData(factionID)
         if info then
@@ -92,7 +77,29 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
                 atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
             end
             isUnlocked= info.isUnlocked
+            unlockDescription= info.unlockDescription
         end
+
+--个人声望
+    elseif repInfo and repInfo.friendshipFactionID> 0 then
+        local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID) or {}
+        if rankInfo.currentLevel and rankInfo.maxLevel and rankInfo.maxLevel>0 then
+            factionStandingtext= (factionStandingtext and factionStandingtext..' ' or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
+        end
+        if repInfo.nextThreshold then
+            if rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
+                barColor= FACTION_BAR_COLORS[standingID]
+            end
+            value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
+            isCapped= false
+        else
+            value= '|cff626262'..(WoWTools_DataMixin.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+            isCapped=true
+        end
+        factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction)
+        texture=repInfo.texture--图标
+        friendshipID= repInfo.friendshipFactionID
+
     else
         if isHeaderWithRep or not isHeader then
             factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID)
@@ -169,6 +176,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
 
         hasRep= data.hasBonusRepGain,--额外，声望
         isUnlocked= isUnlocked,
+        unlockDescription= unlockDescription,
     }
 end
 

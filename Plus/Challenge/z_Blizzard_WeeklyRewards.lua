@@ -1,7 +1,7 @@
---周奖励界面界面
+--[[周奖励界面界面
 if WoWTools_DataMixin.Player.husandro then
     WoWTools_LoadUIMixin:WeeklyRewards()
-end
+end]]
 
 
 local function Init()

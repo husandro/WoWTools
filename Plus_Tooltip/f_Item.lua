@@ -524,7 +524,11 @@ end
 
 
 function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
-    if not (itemLink or itemID) or self:IsInCombatDisabled(tooltip) then
+    if self:IsInCombatDisabled(tooltip)
+        or not canaccessvalue(itemLink)
+        or not canaccessvalue(itemID)
+        or not (itemLink or itemID)
+    then
         return
     end
 

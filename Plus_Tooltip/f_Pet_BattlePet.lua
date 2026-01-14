@@ -1,8 +1,15 @@
 --宠物面板提示
 function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQuality, maxHealth, power, speed, customName)
-    speciesID= speciesID and tonumber(speciesID) or -1
+    if self:IsInCombatDisabled(tooltip)
+        or not canaccessvalue(speciesID)
+        or not speciesID
+    then
+        return
+    end
 
-    if speciesID < 1 or self:IsInCombatDisabled(tooltip) then
+    speciesID= tonumber(speciesID)
+
+    if not speciesID or speciesID < 1 then
         return
     end
 
@@ -23,7 +30,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
             )
         end
     end
-    BattlePetTooltipTemplate_AddTextLine(tooltip, 
+    BattlePetTooltipTemplate_AddTextLine(tooltip,
         'speciesID'
         ..WoWTools_DataMixin.Icon.icon2
         ..'|cffffffff'

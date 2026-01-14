@@ -2907,7 +2907,10 @@
         "ReputationUtil",
         "MAJOR_FACTION_BUTTON_TOOLTIP_VIEW_RENOWN",
         "ReputationParagonWatchBar_OnEnter",
-        "EmbeddedItemTooltip_Hide"
+        "EmbeddedItemTooltip_Hide",
+        "TraitUtil",
+        "DISALLOW_FRAME_TOGGLING",
+        "TUTORIAL_TITLE35"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

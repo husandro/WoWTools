@@ -218,83 +218,103 @@ local function Init()
 
 
 
-    local com= CreateFrame('DropdownButton', 'WoWToolsEJPlayerCompanionMenuButton', btn, 'WoWToolsMenu2Template')
+    local com= CreateFrame('Button', 'WoWToolsEJPlayerCompanionMenuButton', btn, 'WoWToolsMenu2Template')
 
     com.texture= com:CreateTexture()
     com.texture:SetAllPoints()
 
     com:SetPoint('RIGHT', key, 'LEFT', -4, 0)
 
-    function com:setting()
-        local playerCompanionID= self:Get_CompanionID()
-        local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(playerCompanionID)
-		local enabled= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
-        self.texture:SetDesaturated(not enabled)
-
-        SetPortraitTextureFromCreatureDisplayID(self.texture, C_DelvesUI.GetCreatureDisplayInfoForCompanion(playerCompanionID))
-
-    end
-
     function com:Get_CompanionID()
-        local factionID= C_DelvesUI.GetDelvesFactionForSeason() or 2272
-        local major= C_MajorFactions.GetMajorFactionData(factionID) or {}
-        return major and major.playerCompanionID or 1
-    end
-
-    function com:Is_Locked()
-        return not DelvesCompanionConfigurationFrame or WoWTools_FrameMixin:IsLocked(DelvesCompanionConfigurationFrame)
-    end
-
-    function com:ToggleCompanionConfig(playerCompanionID)
-        if self:Is_Locked() then
-            return
-        end
-        if DelvesCompanionConfigurationFrame:IsShown() then
-            HideUIPanel(DelvesCompanionConfigurationFrame)
-        end
-        DelvesCompanionConfigurationFrame.playerCompanionID = playerCompanionID
-        ShowUIPanel(DelvesCompanionConfigurationFrame)
-	        --ShowUIPanel(DelvesCompanionAbilityListFrame)
-    end
-
-    com:SetupMenu(function(self, root)
-        if not self:IsMouseOver() then
-            return
-        end
-
-        self:setting()
-
-        local enabled= not self:Is_Locked()
-        local curID= self:Get_CompanionID()
-
-        for companionID=1, 22 do
-            local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID) or 0
-            if traitTreeID>0 then
-                local factionID = C_DelvesUI.GetFactionForCompanion(companionID)
-                
-                local data= WoWTools_FactionMixin:GetInfo(factionID)
-                if data then
-                    local sub=root:CreateButton(
-                        (companionID==curID and '' or '|cff626262')
-                        ..WoWTools_TextMixin:CN(data.name),
-                    function(info)
-                        self:ToggleCompanionConfig(info.companionID)
-                    end, {companionID=companionID, description= data.description})
-                    sub:AddInitializer(function(button, desc)
-                        local icon = button:AttachTexture()
-                        icon:SetSize(23, 23)
-                        icon:SetPoint("RIGHT")
-                        SetPortraitTextureFromCreatureDisplayID(icon, C_DelvesUI.GetCreatureDisplayInfoForCompanion(desc.data.companionID))
-                    end)
-                    sub:SetTooltip(function(tooltip, desc)
-                        tooltip:AddLine(WoWTools_TextMixin:CN(desc.data.description))
-                    end)
-                    sub:SetEnabled(enabled)
-                end
-            else
-                break
+        local factionID= C_DelvesUI.GetDelvesFactionForSeason()-- or 2272
+        if factionID then
+            local major= C_MajorFactions.GetMajorFactionData(factionID)
+            if major then
+                return major.playerCompanionID, factionID
             end
         end
+    end
+
+    function com:setting()
+        local companionID= self:Get_CompanionID() or 1
+
+        local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
+        local configID= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
+
+        SetPortraitTextureFromCreatureDisplayID(self.texture, C_DelvesUI.GetCreatureDisplayInfoForCompanion(companionID))
+        self.texture:SetDesaturated(InCombatLockdown() or not configID)
+    end
+
+
+    function com:Get_CompanionInfo(companionID)
+        local factionID = C_DelvesUI.GetFactionForCompanion(companionID);
+        if factionID then
+            local companionRankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID);
+            if companionRankInfo then
+                local companionLevel = companionRankInfo.currentLevel or 0
+                local companionRepInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+                if companionRepInfo then
+                    if companionRepInfo.nextThreshold then
+                        local currentExperience = companionRepInfo.standing - companionRepInfo.reactionThreshold
+                        local nextLevelAt = companionRepInfo.nextThreshold - companionRepInfo.reactionThreshold
+                        return format('%d|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', companionLevel, currentExperience/nextLevelAt*100)
+                    else
+                        --已最高级
+                        return WARNING_FONT_COLOR:GenerateHexColorMarkup()..companionLevel..'|r'
+                    end
+                end
+            end
+        end
+    end
+
+    com:SetScript('OnClick', function(self, d)
+        self:setting()
+        if d=='LeftButton' then
+            WoWTools_LoadUIMixin:OpenCompanion()
+            return
+        end
+
+        MenuUtil.CreateContextMenu(self, function(_, root)
+            local enabled= not InCombatLockdown()
+            local curID= self:Get_CompanionID()
+
+            for companionID=1, 20 do
+                local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
+                if traitTreeID and traitTreeID>0 then
+                    local factionID = C_DelvesUI.GetFactionForCompanion(companionID)
+                    local info= C_Reputation.GetFactionDataByID(factionID)
+                    if info then
+                        local configID= C_Traits.GetConfigIDByTreeID(traitTreeID)
+                        local sub=root:CreateButton(
+    --可修该
+                            (configID and enabled  and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup())
+    --当前伙伴
+                            ..(companionID==curID and '|A:CampCollection-icon-star:0:0|a' or '')
+    --名称
+                            ..WoWTools_TextMixin:CN(info.name)
+    --等级
+                            ..' '..(self:Get_CompanionInfo(companionID) or ''),
+                        function(data)
+                            WoWTools_LoadUIMixin:OpenCompanion(data.companionID)
+                            return MenuResponse.Open
+                        end, {
+                            companionID=companionID,
+                            factionID= factionID,
+                        })
+                        sub:AddInitializer(function(button, desc)
+                            local icon = button:AttachTexture()
+                            icon:SetSize(23, 23)
+                            icon:SetPoint("RIGHT")
+                            SetPortraitTextureFromCreatureDisplayID(icon, C_DelvesUI.GetCreatureDisplayInfoForCompanion(desc.data.companionID))
+                        end)
+                        WoWTools_SetTooltipMixin:FactionMenu(sub)
+                    end
+
+                else
+                    break
+                end
+            end
+        end)
     end)
     com:HookScript('OnShow', com.setting)
     com:setting()

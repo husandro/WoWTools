@@ -157,7 +157,7 @@ Plus_Tooltip\f_Spell.lua
 Plus_Tooltip\f_Unit_NPC.lua
 Plus_Tooltip\f_Unit_Player.lua
 Plus_Tooltip\f_URL.lua
-Plus_Tooltip\z_Tooltip.lua
+Plus_Tooltip\3_Tooltip.lua
 Plus_Tooltip\z.StatusBar.lua
 Plus_Tooltip\z_CVar_Set.lua
 Plus_Tooltip\z_Events.lua

@@ -53,7 +53,12 @@ end
 
 --设置单位, NPC
 function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
-    if self:IsInCombatDisabled(tooltip) or not UnitExists(unit) then
+    if self:IsInCombatDisabled(tooltip)
+        or not UnitExists(unit)
+        or not canaccessvalue(unit)
+        or not canaccessvalue(name)
+        or not canaccessvalue(guid)
+    then
         return
     end
 

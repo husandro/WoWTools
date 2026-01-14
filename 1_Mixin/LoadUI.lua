@@ -1,3 +1,5 @@
+WoWTools_LoadUIMixin= {}
+
 --[[
 Journal(index)加载，收藏，UI
 GenericTraitUI(systemID, treeID)加载，Trait，UI
@@ -11,8 +13,12 @@ JournalInstance(journalInstanceID)--冒险指南，副本
 ]]
 
 
+function WoWTools_LoadUIMixin:IsDisabledOpenFrame()
+    return Kiosk.IsEnabled() or DISALLOW_FRAME_TOGGLING
+end
 
-WoWTools_LoadUIMixin= {}
+
+
 --[[
        if not CollectionsJournal then
             CollectionsJournal_LoadUI();
@@ -29,17 +35,24 @@ WoWTools_LoadUIMixin= {}
 ]]
 
 function WoWTools_LoadUIMixin:Journal(index, tab)--加载，收藏，UI
+    if
+        self:IsDisabledOpenFrame()
+        or InCombatLockdown()
+        or not index
+    then
+        return
+    end
+
     if not CollectionsJournal then
         CollectionsJournal_LoadUI()
-    end
-    if not index or InCombatLockdown()then
-        return
     end
 
     if not CollectionsJournal:IsShown() then
         ShowUIPanel(CollectionsJournal)
     end
+
     CollectionsJournal_SetTab(CollectionsJournal, index)
+
     if not tab then
         return
     end
@@ -98,10 +111,15 @@ end
 --打开/关闭角色界面
 --MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")
 function WoWTools_LoadUIMixin:PaperDoll_Sidebar(index)--打开/关闭角色界面
-    if PaperDollFrame:IsShown() then
-        ToggleCharacter("PaperDollFrame")
-        PaperDollFrame_SetSidebar(PaperDollFrame, index)
+    if self:IsDisabledOpenFrame() then
+        return
     end
+
+    if not PaperDollFrame:IsShown() then
+        ToggleCharacter("PaperDollFrame")
+    end
+
+    PaperDollFrame_SetSidebar(PaperDollFrame, index)
 end
 --[[
 local name = self:GetName();
@@ -146,14 +164,13 @@ end]]
 
 --概要 ExpansionLandingPageMinimapButtonMixin:RefreshButton(forceUpdateIcon)
 function WoWTools_LoadUIMixin:ToggleLandingPage()
-    if InCombatLockdown() then
-        return
-    end
+    
     local mode= C_Garrison.GetLandingPageGarrisonType()
     if --ExpansionLandingPageMinimapButton:IsInGarrisonMode()
         GameRulesUtil.ShouldShowExpansionLandingPageButton()
         and mode
         and C_Garrison.IsLandingPageMinimapButtonVisible(mode)
+        and not self:IsDisabledOpenFrame()
     then
         GarrisonLandingPage_Toggle()
     end
@@ -165,6 +182,10 @@ end
 
 --专业
 function WoWTools_LoadUIMixin:Professions(recipeID)
+    if self:IsDisabledOpenFrame() then
+        return
+    end
+
     do
         if not ProfessionsFrame then
             ProfessionsFrame_LoadUI()
@@ -193,7 +214,10 @@ end
 
 --宏伟宝库
 function WoWTools_LoadUIMixin:WeeklyRewards()
-    if InCombatLockdown() then
+    if 
+        InCombatLockdown()
+        or self:IsDisabledOpenFrame()
+    then
         return
     end
 
@@ -216,11 +240,17 @@ end
 
 --派系声望 ReputationDetailViewRenownButtonMixin:OnClick()
 function WoWTools_LoadUIMixin:MajorFaction(factionID)
+    if
+        self:IsDisabledOpenFrame()
+    then
+        return
+    end
+
     if not EncounterJournal then
-        EncounterJournal_LoadUI();
+        EncounterJournal_LoadUI()
     end
     if not EncounterJournal:IsShown() then
-        ShowUIPanel(EncounterJournal);
+        ShowUIPanel(EncounterJournal)
     end
     local id= EncounterJournal.JourneysTab:GetID()
     if EncounterJournal.selectedTab~=id then
@@ -255,11 +285,17 @@ end
 
 --盟约 9.0
 function WoWTools_LoadUIMixin:CovenantRenown(frame, covenantID)
-    do
-        if not CovenantRenownFrame or not CovenantRenownFrame:IsShown() then
-            ToggleCovenantRenown()
-        end
+    if
+        self:IsDisabledOpenFrame()
+    then
+        return
     end
+
+    
+    if not CovenantRenownFrame or not CovenantRenownFrame:IsShown() then
+        ToggleCovenantRenown()
+    end
+    
 
     covenantID= covenantID or (frame and frame.covenantID)
     if not covenantID then
@@ -339,14 +375,12 @@ PlayerSpellsUtil={
 }
 ]]
 function WoWTools_LoadUIMixin:SpellBook(index, spellID)
-    if InCombatLockdown() then
+    if InCombatLockdown()
+        or self:IsDisabledOpenFrame()
+    then
         return
     end
-    --[[do
-        if not PlayerSpellsFrame then
-            PlayerSpellsFrame_LoadUI();
-        end
-    end]]
+
     if index==2 then
         if PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsVisible() then
             PlayerSpellsUtil.TogglePlayerSpellsFrame(2)
@@ -371,7 +405,10 @@ end
 --AchievementFrameAchievements.selection ~= achievementID
 --CanShowAchievementUI()
 function WoWTools_LoadUIMixin:Achievement(achievementID)
-    if not achievementID or not C_AchievementInfo.IsValidAchievement(achievementID) then
+    if not achievementID
+        or not C_AchievementInfo.IsValidAchievement(achievementID)
+        or self:IsDisabledOpenFrame()
+    then
         return
     end
 
@@ -411,8 +448,39 @@ function WoWTools_LoadUIMixin:JournalInstance(journalType, journalInstanceID, di
     if not AdventureGuideUtil.IsAvailable()
         or not journalInstanceID
         or (InCombatLockdown() and (not EncounterJournal or not EncounterJournal:IsShown()))
+        or self:IsDisabledOpenFrame()
     then
         return
     end
     AdventureGuideUtil.OpenJournalLink(journalType or 0, journalInstanceID, difficultyID or 23)
+end
+
+
+--[[
+DelvesCompanionConfigurationFrame.playerCompanionID = companionID
+TraitUtil.OpenTraitFrame(traitTreeID)
+ShowUIPanel(DelvesCompanionConfigurationFrame)
+ShowUIPanel(DelvesCompanionAbilityListFrame)
+]]
+function WoWTools_LoadUIMixin:OpenCompanion(companionID)
+    if InCombatLockdown() or self:IsDisabledOpenFrame() then
+        return
+    end
+
+    if not companionID then
+        local factionID= C_DelvesUI.GetDelvesFactionForSeason()-- or 2272
+        if factionID then
+            local major= C_MajorFactions.GetMajorFactionData(factionID)
+            if major then
+                companionID= major.playerCompanionID
+            end
+        end
+    end
+
+    local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID or 1)
+    local configID= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
+    if configID then
+        DelvesCompanionConfigurationFrame.playerCompanionID = companionID
+        TraitUtil.OpenTraitFrame(traitTreeID)
+    end
 end

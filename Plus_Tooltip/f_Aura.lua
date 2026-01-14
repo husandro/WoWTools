@@ -3,10 +3,11 @@
 
 
 function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
-    if not tooltip
+    if self:IsInCombatDisabled(tooltip)
+        or not canaccesstable(data)
         or not data
+        or not canaccessvalue(data.id)
         or not data.id
-        or self:IsInCombatDisabled(tooltip)
     then
         return
     end
@@ -38,11 +39,20 @@ end
 
 --来源
 function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
-    local data= not self:IsInCombatDisabled(tooltip) and C_UnitAuras.GetAuraDataByIndex(...)
-    local source= data and data.sourceUnit
-    if not source then
+    local unit= ...
+    if self:IsInCombatDisabled(tooltip) or not canaccessvalue(unit) then
         return
     end
+
+    local data= C_UnitAuras.GetAuraDataByIndex(...)
+    if not canaccessvalue(data)
+        or not data
+        or not canaccessvalue(data.sourceUnit)
+        or not data.sourceUnit
+    then
+        return
+    end
+    local source= data.sourceUnit
 
     local r, g ,b , col= select(2, WoWTools_UnitMixin:GetColor(source, nil))
     if r and g and b and tooltip.Set_BG_Color then

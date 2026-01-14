@@ -2,9 +2,16 @@
 
 
 function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
-    speciesID = speciesID and tonumber(speciesID) or -1
+    if self:IsInCombatDisabled(tooltip)
+        or not canaccessvalue(speciesID)
+        or not speciesID
+    then
+        return
+    end
 
-    if speciesID< 1 or self:IsInCombatDisabled(tooltip) then
+    speciesID = tonumber(speciesID)
+
+    if not speciesID or speciesID< 1 then
         return
     end
 

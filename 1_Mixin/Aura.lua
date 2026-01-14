@@ -22,7 +22,7 @@ AuraUtil.AuraFilters = {
 AuraUtil.AuraFilters.Harmful
 ]]
 function WoWTools_AuraMixin:Get(unit, spellTab, filter)--HELPFUL HARMFUL
-    if not canaccesssecrets() and InCombatLockdown() then
+    if not canaccessvalue(unit) or not UnitExists(unit) then
         return
     end
 
