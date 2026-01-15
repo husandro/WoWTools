@@ -34,7 +34,7 @@ end
 
 
 local function get_Faction_Info(index, factionID)
-	local data= WoWTools_FactionMixin:GetInfo(factionID, index, Save().toRightTrackText)
+	local data= WoWTools_FactionMixin:GetInfo(factionID, index, not Save().toRightTrackText)
 	factionID= data.factionID
 	local name
 	name= data.name

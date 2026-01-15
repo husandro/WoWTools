@@ -148,6 +148,7 @@ WoWTools_DataMixin.Icon={
 
 
 --[[
+questlog-questtypeicon-account
 disabled='talents-button-reset', ChallengeMode-icon-redline
 select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
 common-dropdown-icon-checkmark-yellow 黄色

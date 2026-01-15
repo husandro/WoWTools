@@ -12,7 +12,6 @@ local Buttons={}
 
 --取得，等级，派系声望
 local function Get_Major_Faction_Level(factionID, level)
-    --WoWTools_FactionMixin:GetInfo(factionID, nil, nil)
 
     local text= ''
     local hasRewardPending= false

@@ -2919,7 +2919,10 @@
         "PanelTemplates_TabResize",
         "PanelTemplates_SelectTab",
         "RaidNotice_AddMessage",
-        "RaidWarningFrame"
+        "RaidWarningFrame",
+        "JOURNEYS_RENOWN_LABEL",
+        "REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION",
+        "JOURNEYS_TOOLTIP_VIEW_JOURNEY"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

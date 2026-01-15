@@ -1,4 +1,4 @@
-
+--[[
 
 local function AddRenownRewardsToTooltip(self, renownRewards)
 	if not renownRewards then
@@ -104,6 +104,7 @@ local function ShowMajorFactionRenownTooltip(self)
 		return
 	end
 
+	
 	GameTooltip:SetOwner(self, self.ANCHOR_RIGHT and 'ANCHOR_RIGHT' or "ANCHOR_LEFT")
 	GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(majorFactionData.name), HIGHLIGHT_FONT_COLOR)
 
@@ -120,11 +121,11 @@ local function ShowMajorFactionRenownTooltip(self)
 		AddRenownRewardsToTooltip(self, nextRenownRewards)
 	end
 
-	if majorFactionData.unlockOrder then
+	if not majorFactionData.isUnlocked then
 		GameTooltip_AddBlankLineToTooltip(GameTooltip)
 		GameTooltip_AddErrorLine(GameTooltip, format(
 			WoWTools_DataMixin.onlyChinese and  '%s尚未解锁' or ERR_AZERITE_ESSENCE_SELECTION_FAILED_ESSENCE_NOT_UNLOCKED,
-			majorFactionData.unlockOrder..' '
+			majorFactionData.unlockOrder or ''
 		))
 		GameTooltip_AddInstructionLine(GameTooltip, WoWTools_TextMixin:CN(majorFactionData.unlockDescription), true)
 	end
@@ -152,22 +153,158 @@ local function ShowStandardTooltip(self)
 end
 
 
+]]
 
 
+--ReputationEntryMixin
+local function ShowParagonRewardsTooltip(frame)
+	EmbeddedItemTooltip:SetOwner(frame, frame.anchor or "ANCHOR_LEFT")
+	ReputationParagonFrame_SetupParagonTooltip(frame)
+	if frame.canClickForOptions then
+		GameTooltip_SetBottomText(EmbeddedItemTooltip, WoWTools_DataMixin.onlyChinese and '<点击查看旅程>' or JOURNEYS_TOOLTIP_VIEW_JOURNEY or REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION, GREEN_FONT_COLOR)
+	end
+	WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, frame.factionID)
+	EmbeddedItemTooltip:Show()
+end
 
+local function ShowFriendshipReputationTooltip(frame)
+	local factionID= frame.factionID
+	local friendshipData = C_GossipInfo.GetFriendshipReputation(factionID)
+	if not friendshipData or friendshipData.friendshipFactionID < 0 then
+		return
+	end
+	GameTooltip:SetOwner(frame, frame.anchor or  "ANCHOR_LEFT")
+	local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(friendshipData.friendshipFactionID)
+	if rankInfo.maxLevel > 0 then
+		GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(friendshipData.name).." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", HIGHLIGHT_FONT_COLOR)
+	else
+		GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(friendshipData.name), HIGHLIGHT_FONT_COLOR)
+	end
+	ReputationUtil.TryAppendAccountReputationLineToTooltip(GameTooltip, factionID)
+	GameTooltip_AddBlankLineToTooltip(GameTooltip)
+	GameTooltip:AddLine(WoWTools_TextMixin:CN(friendshipData.text), nil, nil, nil, true)
+	if friendshipData.nextThreshold then
+		local current = friendshipData.standing - friendshipData.reactionThreshold
+		local max = friendshipData.nextThreshold - friendshipData.reactionThreshold
+		GameTooltip_AddHighlightLine(GameTooltip, WoWTools_TextMixin:CN(friendshipData.reaction).." ("..current.." / "..max..")")
+	else
+		GameTooltip_AddHighlightLine(GameTooltip, WoWTools_TextMixin:CN(friendshipData.reaction))
+	end
+	if frame.canClickForOptions then
+		GameTooltip_AddBlankLineToTooltip(GameTooltip)
+		GameTooltip_AddInstructionLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '<点击查看选项>' or REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION)
+	end
+	WoWTools_TooltipMixin:Set_Faction(GameTooltip, factionID)
+	GameTooltip:Show()
+end
 
+local function ShowMajorFactionRenownTooltip(frame)
+	local factionID= frame.factionID
+	GameTooltip:SetOwner(frame, frame.anchor or  "ANCHOR_LEFT")
+	RenownRewardUtil.AddMajorFactionToTooltip(GameTooltip, factionID, GenerateClosure(ShowMajorFactionRenownTooltip, frame))
+--未解锁
+	local major= C_MajorFactions.GetMajorFactionData(factionID)
+	if major and not major.isUnlocked and major.unlockDescription and major.unlockDescription~='' then
+		GameTooltip_AddBlankLineToTooltip(GameTooltip)
+		GameTooltip_AddErrorLine(GameTooltip, WoWTools_TextMixin:CN(major.unlockDescription), true)
+	end
+	if frame.canClickForOptions then
+		GameTooltip_AddBlankLineToTooltip(GameTooltip)
+		GameTooltip_AddInstructionLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '<点击查看选项>>' or REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION)
+	end
+	WoWTools_TooltipMixin:Set_Faction(GameTooltip, factionID)
+	EventRegistry:TriggerEvent("ShowMajorFactionRenown.Tooltip.OnEnter", frame, GameTooltip, factionID)
+	GameTooltip:Show()
+end
 
-
-
+local function ShowStandardTooltip(frame)
+	local factionID= frame.factionID
+	local factionData = C_Reputation.GetFactionDataByID(factionID)
+	if factionData then
+		GameTooltip:SetOwner(frame, frame.anchor or  "ANCHOR_LEFT")
+		GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(factionData.name))
+		ReputationUtil.TryAppendAccountReputationLineToTooltip(GameTooltip, factionID)
+		if frame.canClickForOptions then
+			GameTooltip_AddBlankLineToTooltip(GameTooltip)
+			GameTooltip_AddInstructionLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '<点击查看选项>' or REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION)
+		end
+		WoWTools_TooltipMixin:Set_Faction(GameTooltip, factionID)
+		GameTooltip:Show()
+	end
+end
 
 
 --需要GameTooltip:Show() EmbeddedItemTooltip_Hide(EmbeddedItemTooltip)
 function WoWTools_SetTooltipMixin:Faction(frame)--ANCHOR_RIGHT=true
-    if not frame or not frame.factionID then
+	local factionID
+	if frame then
+		factionID= frame.factionID or (frame.data and frame.data.factionID)
+	end
+
+    if not factionID then
 		return
 	end
 
-	if C_Reputation.IsFactionParagon(frame.factionID) then
+	local friendshipData = C_GossipInfo.GetFriendshipReputation(factionID)
+	local isMajor= C_Reputation.IsMajorFaction(factionID)
+
+	if C_Reputation.IsFactionParagonForCurrentPlayer(factionID) then
+		ShowParagonRewardsTooltip(frame)
+
+	elseif friendshipData and friendshipData.friendshipFactionID>0 then
+		ShowFriendshipReputationTooltip(frame)
+
+	elseif isMajor then
+		ShowMajorFactionRenownTooltip(frame)
+	else
+		ShowStandardTooltip(frame)
+	end
+
+end
+	--[[
+	local function GetReputationTypeFromElementData(elementData)
+	if not elementData then
+		return nil
+	end
+
+	local friendshipData = C_GossipInfo.GetFriendshipReputation(elementData.factionID)
+	local isFriendshipReputation = friendshipData and friendshipData.friendshipFactionID > 0
+	if isFriendshipReputation then
+		return ReputationType.Friendship
+	end
+
+	if C_Reputation.IsMajorFaction(elementData.factionID) then
+		return ReputationType.MajorFaction
+	end
+
+	return ReputationType.Standard
+end
+	]]
+	
+	--[[local major= C_Reputation.IsMajorFaction(factionID)
+	if major then
+		if major.isUnlocked and major.unlockDescription then
+			GameTooltip:SetOwner(frame, "ANCHOR_CURSOR_RIGHT")
+			GameTooltip_AddErrorLine(GameTooltip, major.unlockDescription)
+			GameTooltip:Show()
+		
+		end
+
+	elseif C_Reputation.IsFactionParagonForCurrentPlayer(factionID) then
+			ShowParagonRewardsTooltip(frame, factionID)
+		else
+			ShowRenownRewardsTooltip(frame, factionID)
+		end
+	end]]
+	--[[elseif C_Reputation.IsFactionParagon(frame.factionID) then
+		ShowParagonRewardsTooltip(frame, factionID)
+
+	elseif not ShowFriendshipReputationTooltip(frame) then
+			ShowStandardTooltip(frame)
+	end]]
+
+
+	--[[if C_Reputation.IsFactionParagon(frame.factionID) then
 		ShowParagonRewardsTooltip(frame)
 
 	elseif C_Reputation.IsMajorFaction(frame.factionID) then
@@ -177,8 +314,7 @@ function WoWTools_SetTooltipMixin:Faction(frame)--ANCHOR_RIGHT=true
 		if not ShowFriendshipReputationTooltip(frame) then
 			ShowStandardTooltip(frame)
 		end
-	end
-end
+	end]]
 
 function WoWTools_SetTooltipMixin:FactionMenu(root)
 	root:SetOnEnter(function(btn, description)

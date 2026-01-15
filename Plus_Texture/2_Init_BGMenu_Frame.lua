@@ -131,6 +131,14 @@ local TextureTab={
 ['UI-Frame-CypherChoice-FX-BottomGlow']=1,
 ['ui-frame-genericplayerchoice-cardframe-bottomglow']=1,
 
+['shop-card-wide-bg-blue']=1,
+['shop-card-wide-bg-purple']=1,
+['shop-card-wide-bg-red']=1,
+['shop-card-wide-bg-green']=1,
+['shop-card-wide-bg-teal']=1,
+['shop-card-wide-bg-magenta']=1,
+
+
 --[[['QuestBG-Alliance']=1,
 ['QuestBG-Horde']=1,
 ['QuestBG-Parchment']=1,

@@ -473,7 +473,7 @@ ShowUIPanel(DelvesCompanionConfigurationFrame)
 ShowUIPanel(DelvesCompanionAbilityListFrame)
 ]]
 function WoWTools_LoadUIMixin:OpenCompanion(companionID)
-    if InCombatLockdown() or self:IsDisabledOpenFrame() then
+    if InCombatLockdown() or self:IsDisabledOpenFrame() or not DelvesCompanionConfigurationFrame then
         return
     end
 
@@ -489,12 +489,11 @@ function WoWTools_LoadUIMixin:OpenCompanion(companionID)
 
     local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
     local configID= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
+
     if not configID then
         return
     end
 
-    if DelvesCompanionConfigurationFrame then
-        DelvesCompanionConfigurationFrame.playerCompanionID = companionID
-        ShowUIPanel(DelvesCompanionConfigurationFrame)
-    end
+    DelvesCompanionConfigurationFrame.playerCompanionID = companionID
+    ShowUIPanel(DelvesCompanionConfigurationFrame)
 end

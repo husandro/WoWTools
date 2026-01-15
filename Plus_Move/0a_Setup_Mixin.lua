@@ -172,11 +172,9 @@ local function Set_Move_Frame(frame, target, click, notSave, isAltKeyDown)
     frame:HookScript("OnMouseDown", function(...)
        Set_OnMouseDown(...)
     end)
---[[--还原光标
-    frame:HookScript("OnMouseUp", function()
-        ResetCursor()
-    end)
-还原光标
+--还原光标
+   frame:HookScript("OnMouseUp", ResetCursor)
+ --[[还原光标
     frame:HookScript("OnLeave", function()
         ResetCursor()
     end)]]

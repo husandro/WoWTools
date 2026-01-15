@@ -590,6 +590,7 @@ local function Init_TrackButton()
 	end
 	function TrackButton:set_bg()
 		if self.numButton==0 then
+			self.Bg:SetShown(false)
 			return
 		end
 		self.Bg:ClearAllPoints()
@@ -611,6 +612,7 @@ local function Init_TrackButton()
 			end
 		end
 		self.Bg:SetWidth(self.bgWidth+1)
+		self.Bg:SetShown(true)
 	end
 
 	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')

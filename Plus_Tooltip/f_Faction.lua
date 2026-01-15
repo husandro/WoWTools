@@ -13,9 +13,9 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         return
     end
 
-    local info= WoWTools_FactionMixin:GetInfo(factionID, nil, true)
+    local info= WoWTools_FactionMixin:GetInfo(factionID)
 
-    if info.factionID then
+    if not info.factionID then
         return
     end
 
@@ -25,19 +25,22 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
                 or (info.atlas and '|A:'..info.atlas..':'..size..':'..size..'|a')
                 or info.textureKit and ('|A:MajorFactions_Icons_'..info.textureKit..'512:'..size..':'..size..'|a')--..info.textureKit)
                 or ''
+    
+    local account= C_Reputation.IsAccountWideReputation(factionID) and '|A:questlog-questtypeicon-account:0:0|a' or WoWTools_DataMixin.Icon.icon2
+
     if info.friendshipID then
         tooltip:AddDoubleLine(
-            (factionID~=info.friendshipID and 'factionID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..info.factionID..' ' or '')
+            (factionID~=info.friendshipID and 'friendshipID'..account..'|cffffffff'..info.factionID..' ' or '')
             ..icon
             ..(info.texture and '|cffffffff'..info.texture or ' '),
 
-            'friendshipID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..info.friendshipID
+            'friendshipID'..account..'|cffffffff'..info.friendshipID
         )
     elseif info.isMajor then
         tooltip:AddLine(
             icon
-            ..(WoWTools_DataMixin.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)
-            ..WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '名望' or JOURNEYS_RENOWN_LABEL)
+            ..account
             ..'|cffffffff'
             ..info.factionID
         )
@@ -46,7 +49,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
             icon..(info.texture or ' '),
 
             'factionID'
-            ..WoWTools_DataMixin.Icon.icon2
+            ..account
             ..'|cffffffff'
             ..info.factionID
         )

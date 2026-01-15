@@ -4,67 +4,56 @@ local function Save()
 end
 
 
+local Buttons={}
 
 
-local function Settings_Left_Button(self)
-    local data= self.data or {}
-    self.Name:SetText(WoWTools_TextMixin:CN(self.data.name) or '')
-    --self.Name:SetTextColor(r or 1, g or 1, b or 1)
-    self.Count:SetText(data.valueText or '')
-    if data.atlas then
-        self.Icon:SetAtlas(data.atlas)
-    else
-        self.Icon:SetTexture(data.texture or 0)
+
+
+local function Create_Button(frame, index)
+    local btn= CreateFrame('Button', nil, frame, 'WoWToolsButtonTemplate')
+
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')
+    btn.text:SetFontHeight(18)
+    btn.text:SetPoint('LEFT', btn, 'RIGHT')
+
+    btn:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT', 0, -(index-1)*23)
+
+    function btn:Init()
+        local data= WoWTools_FactionMixin:GetInfo(self.factionID)
+        if data.atlas then
+            self:SetNormalAtlas(data.atlas)
+        else
+            self:SetNormalTexture(data.texture or 0)
+        end
+        local name= data.name
+        local factionStandingtext= not data.isCapped and data.factionStandingtext
+        local valueText= data.valueText
+        self.text:SetText(
+            (name or '')
+            ..(name and ' ' or '')
+            ..(factionStandingtext and HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(factionStandingtext) or '')
+            ..(factionStandingtext and ' ' or '')
+            ..(valueText or '')
+        )
     end
-end
-
-
-local function SetScript_Left_Button(btn)
-    if btn.Count2 then
-       return
-    end
-
-    btn:SetPoint('RIGHT')
-    btn.NameFrame:SetPoint('RIGHT')
-    btn.NameFrame:SetTexture(0)
-    btn.NameFrame:SetColorTexture(0, 0, 0, 0.3)
-
-    btn.Name:ClearAllPoints()
-    btn.Name:SetHeight(0)
-    btn.Name:SetPoint('BOTTOMLEFT', btn.NameFrame, 2, 2)
-    btn.Name:SetPoint('RIGHT', btn.NameFrame,-2, 0)--, btn.Count, 'LEFT', -2, 0)
-    btn.Name:SetWordWrap(false)
-
-    btn.Count:ClearAllPoints()
-    btn.Count:SetPoint('TOPRIGHT', btn.NameFrame, -2, -2)
-    btn.Count:SetJustifyH('RIGHT')
-    btn.Count:SetFontObject('ChatFontNormal')
 
     btn:SetScript('OnHide', function(self)
-        self.data=nil
-        self.factionID= nil
+        self.text:SetText('')
+        self:SetNormalTexture(0)
     end)
-
-    btn:SetScript('OnShow', function(self)
-        
-    end)
-
-    btn:SetScript('OnEvent', function(self, _, itemID, success)
-        
-    end)
-
+    btn:SetScript('OnShow', btn.Init)
     btn:SetScript('OnLeave', function(self)
         WoWTools_SetTooltipMixin:Hide()
     end)
     btn:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Faction(self)
     end)
+    btn:SetScript('OnClick', function(self)
+        WoWTools_LoadUIMixin:MajorFaction(self.factionID)
+    end)
+    Buttons[index]= btn
+    return btn
 end
-
-
-
-
-
 
 
 local function Init_Button()
@@ -72,40 +61,51 @@ local function Init_Button()
     menu:SetPoint('LEFT', EncounterJournalInstanceSelect.ExpansionDropdown, 'RIGHT', 8, 0)
     menu:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
 
-    menu.frame= CreateFrame('Frame')
-    menu.frame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT', 2, -23)
-    menu.frame:SetPoint('BOTTOMLEFT', EncounterJournal, 'BOTTOMRIGHT', 2, 0)
-    menu.frame:SetWidth(200)
+    menu.frame= CreateFrame('Frame', nil, menu)
+    menu.frame:SetPoint('TOPLEFT', EncounterJournalCloseButton, 'BOTTOMRIGHT', 8, 0)
+    menu.frame:SetSize(1,1)
 
-    menu.ScrollBox= CreateFrame('Frame', nil, menu.frame, 'WowScrollBoxList')
+    function menu:Init()
+        local major= C_MajorFactions.GetMajorFactionIDs()
+        table.sort(major, function(a, b) return b<a end)
+
+        local height, num= EncounterJournal:GetHeight()-46, 0
+
+        for index, factionID in pairs(major) do
+            local y= num*23
+            if y > height then
+                break
+            end
+            num= num+1
+            local btn= Buttons[index] or Create_Button(self.frame, index)
+            btn.factionID= factionID
+            btn:Init()
+        end
+
+        for index=num+1, #Buttons do
+            Buttons[index]:Hide()
+        end
+    end
+
+    menu:Init()
+end
+
+    --[[menu.ScrollBox= CreateFrame('Frame', nil, menu.frame, 'WowScrollBoxList')
     
-    --[[menu.ScrollBox:SetPoint('TOPLEFT')
-    menu.ScrollBox:SetPoint('BOTTOMLEFT')
-    menu.ScrollBox:SetWidth(200)]]
-    menu.ScrollBox:SetAllPoints()
+    menu.ScrollBox:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT', 8, -23)
+    menu.ScrollBox:SetPoint('BOTTOMLEFT', EncounterJournal, 'BOTTOMRIGHT', 8, 0)
+    menu.ScrollBox:SetWidth(200)
 
-    menu.ScrollBar= CreateFrame("EventFrame", nil, menu.frame, "MinimalScrollBar")
-    menu.ScrollBar:SetPoint("TOPLEFT", menu.ScrollBox, "TOPRIGHT", 6, -12)
-    menu.ScrollBar:SetPoint("BOTTOMLEFT", menu.ScrollBox, "BOTTOMRIGHT", 6, 12)
+    menu.ScrollBar= CreateFrame("EventFrame", nil, menu, "MinimalScrollBar")
+    menu.ScrollBar:SetPoint("TOPRIGHT", menu.ScrollBox, "TOPLEFT", 0, -12)
+    menu.ScrollBar:SetPoint("BOTTOMRIGHT", menu.ScrollBox, "BOTTOMLEFT", 0, 12)
     WoWTools_TextureMixin:SetScrollBar(menu.ScrollBar)
 
 
 
     menu.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(menu.ScrollBox, menu.ScrollBar, menu.view)
-    menu.view:SetElementInitializer('RenownCardButtonTemplate', function(btn, factionID)
-        btn.majorFactionData= C_MajorFactions.GetMajorFactionData(factionID)
-        btn.factionID= factionID
-
-        local data= WoWTools_FactionMixin:GetInfo(factionID)
-        btn.RenownCardFactionName:SetText(data.valueText or '')
-
-        if data.atlas then
-            btn.IconFrame.Icon:SetAtlas(data.atlas)
-        else
-            btn.IconFrame.Icon:SetTexture(data.texture or 0)
-        end
-    end)
+    menu.view:SetElementInitializer('WoWToolsButtonTemplate', Set_Button)
 
     function menu:Init()
         local data= CreateDataProvider()
@@ -128,8 +128,7 @@ local function Init_Button()
     end)
     menu:SetScript('OnShow', function(self)
         self:Init()
-    end)
-end
+    end)]]
 
 
 
@@ -231,10 +230,12 @@ local function Init()
     end
     for _, frame in EncounterJournalJourneysFrame.JourneysList:EnumerateFrames() do
         local data= frame:GetElementData()
-		if data and data.isRenownJourney then
-            frame:HookScript('OnEnter', set_enter)
-            frame:HookScript('OnLeave', set_leave)
-            set_leave(frame)
+        if data then
+            if data.isRenownJourney then
+                frame:HookScript('OnEnter', set_enter)
+                frame:HookScript('OnLeave', set_leave)
+                set_leave(frame)
+            end
         end
 	end
     WoWTools_DataMixin:Hook(RenownCardButtonMixin, 'OnEnter', set_enter)
@@ -242,10 +243,10 @@ local function Init()
 
 
 
-   -- Init_Button()
+    Init_Button()
 
     Init=function()
-       -- _G['WoWToolsEJFactionMenuButton']:SetShown(not Save().hideJourneys)
+        _G['WoWToolsEJFactionMenuButton']:SetShown(not Save().hideJourneys)
     end
 end
 
