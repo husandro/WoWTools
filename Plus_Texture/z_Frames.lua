@@ -658,3 +658,7 @@ function WoWTools_TextureMixin.Frames:ReadyCheckFrame()
     self:SetUIButton(ReadyCheckFrameYesButton)
     self:SetUIButton(ReadyCheckFrameNoButton)
 end
+function WoWTools_TextureMixin.Frames:SplashFrame()
+    self:SetButton(SplashFrame.TopCloseButton)
+    self:SetUIButton(SplashFrame.BottomCloseButton)
+end

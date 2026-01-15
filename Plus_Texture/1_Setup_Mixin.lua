@@ -385,7 +385,6 @@ local function Set_CheckBox(self)
 end
 
 function WoWTools_TextureMixin:SetCheckBox(check)
---self:SetAlphaColor(icon, nil, nil, alpha or 1)
     if not check
         or not self:Save().CheckBox
         or check.wowTextureIsHooked
@@ -397,30 +396,14 @@ function WoWTools_TextureMixin:SetCheckBox(check)
                 or (check.GetRegions and check:GetRegions())
 
     if icon:IsObjectType("Texture") then
-        --icon:SetAtlas(bgAtlas or 'UI-QuestTrackerButton-QuestItem-Frame')
         icon:ClearAllPoints()
         icon:SetPoint('TOPLEFT', 4, -4)
         icon:SetPoint('BOTTOMRIGHT', -4, 4)
-        --icon:SetVertexColor(self.Color:GetRGB())
         self:SetAlphaColor(icon, true)
-
-        --[[icon= check:GetHighlightTexture()
-        if icon then
-           check:SetHighlightAtlas('Forge-ColorSwatchSelection')
-        end]]
-
         Set_CheckBox(check)
-
-        WoWTools_DataMixin:Hook(check, 'SetChecked', function(...)
-            Set_CheckBox(...)
-        end)
-        check:HookScript('OnLeave', function(...)
-            Set_CheckBox(...)
-        end)
-        check:HookScript('OnEnter', function(...)
-            Set_CheckBox(...)
-        end)
-
+        WoWTools_DataMixin:Hook(check, 'SetChecked', Set_CheckBox)
+        check:HookScript('OnLeave', Set_CheckBox)
+        check:HookScript('OnEnter', Set_CheckBox)
         check.wowTextureIsHooked=true
     end
 end

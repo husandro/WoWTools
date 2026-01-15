@@ -167,6 +167,9 @@ local function Init()
         return
     end
 
+    btn.NumPet=0
+    btn.Pets={}
+
     btn.Text=WoWTools_LabelMixin:Create(btn, {size=10, color=true})-- size,nil,nil, true)
     btn.Text:SetPoint('BOTTOM',0 , -2)
 
@@ -352,8 +355,7 @@ local function Init()
         end
     end)
 
-    btn.NumPet=0
-    btn.Pets={}
+
 
     C_Timer.After(2, function()
         local b= WoWTools_ToolsMixin:Get_ButtonForName('SummonPet')

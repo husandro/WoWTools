@@ -28,14 +28,6 @@ local function Init()
     end
 
     WoWTools_DataMixin:Hook('MoneyFrame_Update', function(frameName, money)
-        if not canaccessvalue(money)
-            or not money
-            or not canaccessvalue(frameName)
-            or not frameName
-        then
-            return
-        end
-
         local gold = money and floor(money / (COPPER_PER_SILVER * SILVER_PER_GOLD)) or 0
         local frame = gold>=1000 and GetMoneyFrame(frameName)
         if frame and not frame:GetParent():HasAnySecretAspect() then
@@ -78,9 +70,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             nil
         ) then
             Init()
+        else
+            Init=function()end
         end
 
-        Init=function()end
+
 
         self:SetScript('OnEvent', nil)
         self:UnregisterEvent(event)

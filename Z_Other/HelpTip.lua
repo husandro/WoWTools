@@ -5,8 +5,12 @@ local function Init()
         C_CVar.SetCVar("showNPETutorials",'0')
     end
 
-    WoWTools_DataMixin:Hook(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua
-        local find
+    WoWTools_DataMixin:Hook(HelpTip, 'Show', function(self)--, parent)--隐藏所有HelpTip HelpTip.lua
+        for frame in self.framePool:EnumerateActive() do
+            frame:Hide()
+        end
+    end)
+        --[[local find
         for frame in self.framePool:EnumerateActive() do
             local btn= frame.OkayButton:IsShown() and frame.OkayButton or (frame.CloseButton:IsShown() and frame.CloseButton)
             if btn then
@@ -17,7 +21,7 @@ local function Init()
         if not find then
             self:HideAll(parent)
         end
-    end)
+    end)]]
 
 
 --Blizzard_TutorialPointerFrame.lua 隐藏, 新手教程
@@ -41,7 +45,7 @@ local function Init()
     WoWTools_DataMixin:Hook(ReportFrame, 'UpdateThankYouMessage', function(self, showThankYouMessage)
         if showThankYouMessage then
             C_Timer.After(1, function()
-                if self:IsShown() then
+                if not WoWTools_FrameMixin:IsLocked(self) and self:IsShown() then
                     self:Hide()
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
@@ -53,25 +57,19 @@ local function Init()
         end
     end)
 
-    if SplashFrame then
-        WoWTools_TextureMixin:SetButton(SplashFrame.TopCloseButton)
-        WoWTools_TextureMixin:SetUIButton(SplashFrame.BottomCloseButton)
+
+
+
+
+    if ScriptErrorsFrame:IsShown() then
+        ScriptErrorsFrame:Hide()
     end
 
-    C_Timer.After(2, function()
-        if ScriptErrorsFrame then
-            if ScriptErrorsFrame:IsShown() then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName)
-                print(WoWTools_TextMixin:CN(ScriptErrorsFrame.ScrollFrame.Text:GetText()))
-                ScriptErrorsFrame.Close:Click()
-            end
-            ScriptErrorsFrame:HookScript('OnShow', function(self)
-                print(WoWTools_TextureMixin.addName, WoWTools_TextureMixin.addName)
-                print(WoWTools_TextMixin:CN(self.ScrollFrame.Text:GetText()))
-                ScriptErrorsFrame.Close:Click()
-            end)
-        end
+    ScriptErrorsFrame:HookScript('OnShow', function(self)
+        self:Hide()
     end)
+
+    Init=function()end
 end
 
 
@@ -93,9 +91,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             ) then
                 Init()
             end
-
-            Init=function()end
-
             self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end

@@ -2912,7 +2912,14 @@
         "DISALLOW_FRAME_TOGGLING",
         "TUTORIAL_TITLE35",
         "COVENANT_MISSIONS_FOLLOWERS",
-        "EncounterJournal_OpenToJourney"
+        "EncounterJournal_OpenToJourney",
+        "HideParentPanel",
+        "ReloadUI",
+        "PanelTemplates_DeselectTab",
+        "PanelTemplates_TabResize",
+        "PanelTemplates_SelectTab",
+        "RaidNotice_AddMessage",
+        "RaidWarningFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
