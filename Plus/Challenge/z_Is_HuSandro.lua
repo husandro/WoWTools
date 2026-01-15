@@ -4,7 +4,7 @@
 
 
 local function Init()
-    if WoWTools_DataMixin.Player.IsMaxLevel or not WoWTools_DataMixin.Player.husandro then
+    if not WoWTools_DataMixin.Player.husandro or UnitLevel("player") >= GetMaxLevelForPlayerExpansion() then
         Init=function()end
         return
     end
@@ -134,6 +134,6 @@ end
 
 
 function WoWTools_ChallengeMixin:Is_HuSandro()
-    --Init()
+    Init()
 end
 
