@@ -53,34 +53,9 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
 
     local friendshipID--个人声望
 
---名望
-    if isMajor then
-        isCapped=C_MajorFactions.HasMaximumRenown(factionID)
-        local info = C_MajorFactions.GetMajorFactionData(factionID)
-        if info then
-            if info.isUnlocked then
-                factionStandingtext= (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..(info.renownLevel or 0)
-                local levels = C_MajorFactions.GetRenownLevels(factionID)
-                if levels then
-                    factionStandingtext= factionStandingtext..'/'..#levels
-                end
-
-                if not isCapped then
-                    value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
-                end
-            else
-                factionStandingtext= '|A:AdventureMapIcon-Lock:0:0|a'
-            end
-            if info.textureKit then
-                atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
-            end
-
-            isUnlocked= info.isUnlocked
-            unlockDescription= info.unlockDescription
-        end
 
 --个人声望
-    elseif repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID> 0 then
+    if repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID> 0 then
 
         factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction) or ''
         texture=repInfo.texture--图标
@@ -103,6 +78,31 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
 
         else
             isCapped= true
+        end
+--名望
+    elseif isMajor then
+        isCapped=C_MajorFactions.HasMaximumRenown(factionID)
+        local info = C_MajorFactions.GetMajorFactionData(factionID)
+        if info then
+            if info.isUnlocked then
+                factionStandingtext= (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..(info.renownLevel or 0)
+                local levels = C_MajorFactions.GetRenownLevels(factionID)
+                if levels then
+                    factionStandingtext= factionStandingtext..'/'..#levels
+                end
+
+                if not isCapped then
+                    value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
+                end
+            else
+                factionStandingtext= '|A:AdventureMapIcon-Lock:0:0|a'
+            end
+            if info.textureKit then
+                atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
+            end
+
+            isUnlocked= info.isUnlocked
+            unlockDescription= info.unlockDescription
         end
 
     elseif isHeaderWithRep or not isHeader then
