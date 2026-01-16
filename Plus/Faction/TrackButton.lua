@@ -470,10 +470,10 @@ local function Init()
 		self.Bg:SetColorTexture(0, 0, 0, Save().trackBgAlpha or 0.5)
 	end
 	function TrackButton:set_bg()
+		self.Bg:ClearAllPoints()
 		if self.numButton==0 then
 			return
 		end
-		self.Bg:ClearAllPoints()
 		if Save().toTopTrack then
 			if Save().toRightTrackText then
 				self.Bg:SetPoint("TOPLEFT", _G[Name..self.numButton], -1, 1)
