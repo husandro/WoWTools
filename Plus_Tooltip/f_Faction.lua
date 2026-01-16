@@ -5,17 +5,12 @@
 
 --声望
 function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
-    if self:IsInCombatDisabled(tooltip)
-        or not canaccessvalue(factionID)
-        or not factionID
-        or factionID<1
-    then
-        return
-    end
+    local info= not self:IsInCombatDisabled(tooltip)
+            and canaccessvalue(factionID)
+            and factionID
+            and WoWTools_FactionMixin:GetInfo(factionID)
 
-    local info= WoWTools_FactionMixin:GetInfo(factionID)
-
-    if not info.factionID then
+    if not info or not info.factionID then
         return
     end
 
@@ -25,8 +20,10 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
                 or (info.atlas and '|A:'..info.atlas..':'..size..':'..size..'|a')
                 or info.textureKit and ('|A:MajorFactions_Icons_'..info.textureKit..'512:'..size..':'..size..'|a')--..info.textureKit)
                 or ''
-    
+
     local account= C_Reputation.IsAccountWideReputation(factionID) and '|A:questlog-questtypeicon-account:0:0|a' or WoWTools_DataMixin.Icon.icon2
+
+  
 
     if info.friendshipID then
         tooltip:AddDoubleLine(

@@ -174,7 +174,10 @@ local function Init()
 
                 local factionID= btn.majorFactionData and btn.majorFactionData.factionID
                 local data= WoWTools_FactionMixin:GetInfo(factionID)
-
+                                
+                if data.isUnlocked and not data.isCapped and data.factionStandingtext then
+                    btn.RenownCardFactionLevel:SetText(data.factionStandingtext)
+                end
                 btn.infoLabe:SetText(data.valueText or '')
 
                 btn.NormalTexture:SetShown(btn.majorFactionData.isUnlocked)

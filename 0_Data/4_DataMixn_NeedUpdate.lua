@@ -28,17 +28,17 @@ WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物
 
 --挑战数据 Challenges.lua C_MythicPlus.GetRewardLevelForDifficultyLevel(
 local endOfRunRewardLevel={--15
-    [2]=684,
-    [3]=684,
-    [4]=688,
-    [5]=691,
-    [6]=694,
-    [7]=694,
-    [8]=697,
-    [9]=697,
-    [10]=701,
-    [11]=701,
-    [12]=701,
+    [2]=134,
+    [3]=134,
+    [4]=137,
+    [5]=141,
+    [6]=144,
+    [7]=144,
+    [8]=144,
+    [9]=144,
+    [10]=147,
+    [11]=147,
+    [12]=147,
 }
 
 local WeekItemLevel, Init_WeekItemLevel
@@ -211,11 +211,12 @@ WoWTools_ChallengesSpellData={
     --[541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.5
     [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'},
 
-    [556]= {spell=1254555, ins=658, name='萨隆矿坑', spellName='不屈凋零之路', spellDes='传送至萨隆矿坑入口。'},
-    [557]= {spell=1254400, ins=2805, name='风行者之塔', spellName='风行者之路', spellDes='传送至风行者尖塔入口'},
-    [558]= {spell=1254572, ins=2811, name='魔导师平台', spellName='虔心魔导之路', spellDes='传送至魔导师平台入口。'},
-    [559]= {spell=1254563, ins=2915, name='节点希纳斯', spellName=nil, spellDes='传送至节点希纳斯入口。'},
-    [560]= {spell=1254559, ins=2874, name='迈萨拉洞窟', spellName=nil, spellDes='传送至迈萨拉洞窟入口。'},
+    [556]= {spell=1254555, ins=658, name='萨隆矿坑', spellName='不屈凋零之路', spellDes='传送到萨隆矿坑的入口。'},
+    [557]= {spell=1254400, ins=2805, name='风行者之塔', spellName='风行者之路', spellDes='传送到风行者之塔的入口。'},
+    [558]= {spell=1254572, ins=2811, name='魔导师平台', spellName='虔心魔导之路', spellDes='传送到魔导师平台的入口。'},
+    
+    [559]= {spell=1254563, ins=2915, name='节点希纳斯', spellName=nil, spellDes='传送到节点希纳斯入口。'},
+    [560]= {spell=1254559, ins=2874, name='迈萨拉洞窟', spellName=nil, spellDes='传送到迈萨拉洞窟入口。'},
 
 }
 --https://www.wowhead.com/cn/spell=1254557/加冕巅峰之路 传送至天际之巅入口。

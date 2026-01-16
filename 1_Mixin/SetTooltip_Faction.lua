@@ -202,6 +202,7 @@ local function ShowMajorFactionRenownTooltip(frame)
 	local factionID= frame.factionID
 	GameTooltip:SetOwner(frame, frame.anchor or  "ANCHOR_LEFT")
 	RenownRewardUtil.AddMajorFactionToTooltip(GameTooltip, factionID, GenerateClosure(ShowMajorFactionRenownTooltip, frame))
+
 --未解锁
 	local major= C_MajorFactions.GetMajorFactionData(factionID)
 	if major and not major.isUnlocked and major.unlockDescription and major.unlockDescription~='' then
@@ -251,7 +252,7 @@ function WoWTools_SetTooltipMixin:Faction(frame)--ANCHOR_RIGHT=true
 	if C_Reputation.IsFactionParagonForCurrentPlayer(factionID) then
 		ShowParagonRewardsTooltip(frame)
 
-	elseif friendshipData and friendshipData.friendshipFactionID>0 then
+	elseif friendshipData and friendshipData.friendshipFactionID and friendshipData.friendshipFactionID>0 then
 		ShowFriendshipReputationTooltip(frame)
 
 	elseif isMajor then
