@@ -194,9 +194,9 @@ local function Get_areaPoiID_Text(uiMapID, areaPoiID)
         local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
         if info and info.textureKit then
             if not atlas then
-                atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
+                atlas= 'majorfactions_icons_'..info.textureKit..'512'
             else
-                name= name..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+                name= name..'|A:majorfactions_icons_'..info.textureKit..'512:0:0|a'
             end
         end
     end
@@ -266,9 +266,9 @@ local function Get_Current_Vignettes()
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
                     name= name..'|T1059121:0|t'
                 elseif info.vignetteID== 5485 then
-                    name= name..'|A:MajorFactions_Icons_Tuskarr512:0:0|a'
+                    name= name..'|A:majorfactions_icons_Tuskarr512:0:0|a'
                 elseif info.vignetteID==5468 then
-                    name= name..'|A:MajorFactions_Icons_Expedition512:0:0|a'
+                    name= name..'|A:majorfactions_icons_Expedition512:0:0|a'
                 end
 
                 if info.rewardQuestID then--任务，奖励

@@ -14,16 +14,18 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         return
     end
 
+    
+
     local size= self.iconSize
 
     local icon= info.texture and ('|T'..info.texture..':'..size..'|t')
                 or (info.atlas and '|A:'..info.atlas..':'..size..':'..size..'|a')
-                or info.textureKit and ('|A:MajorFactions_Icons_'..info.textureKit..'512:'..size..':'..size..'|a')--..info.textureKit)
+                or info.textureKit and ('|A:majorfactions_icons_'..info.textureKit..'512:'..size..':'..size..'|a')--..info.textureKit)
                 or ''
 
     local account= C_Reputation.IsAccountWideReputation(factionID) and '|A:questlog-questtypeicon-account:0:0|a' or WoWTools_DataMixin.Icon.icon2
 
-  
+
 
     if info.friendshipID then
         tooltip:AddDoubleLine(

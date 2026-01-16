@@ -205,7 +205,7 @@ local function Settings()
 
             btn.SelectTexture:SetShown(isSelect)
 
-            --btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
+            --btn:SetPushedAtlas('majorfactions_icons_'..(info.textureKit or '')..'512')
             text, isLocked= Get_Major_Faction_Level(factionID, info.renownLevel)
             btn.Text:SetText(text)--等级
             btn:SetShown(true)

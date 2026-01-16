@@ -12,19 +12,28 @@ end
 local function Create_Frame(btn)
 	btn.Content.AccountWideIcon:SetScale(0.6)
 --完成次数
-	btn.completed= WoWTools_LabelMixin:Create(btn.ParagonIcon, {size=10})
-	btn.completed:SetPoint('BOTTOMRIGHT', btn.ParagonIcon)
---等级
-	btn.levelText= WoWTools_LabelMixin:Create(btn.ReputationBar, {size=10})
-	btn.levelText:SetPoint('TOPRIGHT', 8, 3)
+	--[[btn.completed= btn.Content.ReputationBar:CreateFontString(nil, 'BORDER', 'GameFontNormal')-- WoWTools_LabelMixin:Create(btn.Content.ParagonIcon, {size=10})
+	--btn.completed:SetFontHeight(10)
+	--btn.completed:SetPoint('RIGHT', btn.Content.ParagonIcon, 'LEFT')
+	btn.completed:SetPoint('BOTTOMRIGHT')]]
+	btn.Content.ReputationBar.BarText:SetAlpha(0)
+	btn.barText2= btn.Content.ReputationBar:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
+	btn.barText2:SetPoint('CENTER')
+	btn.barText2:SetJustifyH('CENTER')
+
+
 --图标
 	local h=btn:GetHeight() or 20
-	btn.texture= btn:CreateTexture(nil, 'OVERLAY')
-	btn.texture:SetPoint('RIGHT', btn.Name, 'RIGHT',6,0)
+	btn.texture= btn.Content.ReputationBar:CreateTexture(nil, 'OVERLAY')
+	btn.texture:SetPoint('RIGHT', btn.Content.Name, 'RIGHT',6,0)
 	btn.texture:SetSize(h, h)
+--等级
+	btn.levelText= btn.Content.ReputationBar:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')--WoWTools_LabelMixin:Create(btn.Content.ReputationBar, {size=10})
+	--btn.levelText:SetFontHeight(10)
+	btn.levelText:SetPoint('LEFT')
 
 --check
-	btn.check= CreateFrame('CheckButton', nil, btn, "InterfaceOptionsCheckButtonTemplate")
+	btn.check= CreateFrame('CheckButton', nil, btn.Content, "InterfaceOptionsCheckButtonTemplate")
 	btn.check:SetPoint('LEFT',-12,0)
 	function btn.check:get_info()
 		return self:GetParent().elementData or {}
@@ -52,7 +61,7 @@ local function Create_Frame(btn)
 	end)
 	btn.check:SetScript('OnLeave', function(self)
 		GameTooltip:Hide()
-		self:SetAlpha(0.3)
+		self:SetAlpha(0.4)
 	end)
 	btn.check:SetSize(18,22)
 	btn.check:SetAlpha(0.3)
@@ -94,35 +103,65 @@ local function Init()
 
 
 
-	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'Initialize', function(btn, data)--factionRow, elementData)--ReputationFrame.lua
-		data= data or btn.elementData
-		local factionID = data.factionID --or btn.factionIndex
-
-		if factionID==0 then
-			if btn.clear_all then
-				btn:clear_all()
-			end
-			return
+	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'Initialize', function(btn)--factionRow, elementData)--ReputationFrame.lua
+		local data= {}
+		if not Save().notPlus then
+			data= WoWTools_FactionMixin:GetInfo(btn.factionID, btn.factionIndex)
 		end
+
+		if not btn.barText2 then
+			Create_Frame(btn)
+		end
+
+		local text
+		if data.isCapped then
+			text= data.valueText or ''
+		elseif data.factionStandingtext then
+			text= data.factionStandingtext..(data.valueText and ' '..data.valueText or '')
+		end
+
+		btn.barText2:SetText(text or '')
+
+		btn.Content.ReputationBar.BarText:SetAlpha(text and 0 or 1)
+
+		if data.color then
+			btn.Content.Name:SetTextColor(data.color:GetRGB())
+--这个，替换原生，可能会出现错误 ReputationBarMixin.UpdateBarColor
+			--btn.Content.ReputationBar.UpdateBarColor= function()end
+			btn.Content.ReputationBar:SetStatusBarColor(data.color:GetRGB());
+		else
+			--btn.UpdateBarColor= 
+		end
+
+		if data.atlas then
+			btn.texture:SetAtlas(data.atlas)
+		else
+			btn.texture:SetTexture(data.texture or 0)
+		end
+
+		btn.check:SetShown(Save().btn and Save().indicato)
+		btn.check:SetChecked(Save().factions[data.factionID])
+	end)
+	--[[	
+		local factionID = data.factionID --or btn.factionIndex
 
 		if not btn.clear_all then
 			Create_Frame(btn)
 		end
-
+--[]
 		local barColor, levelText, texture, atlas,isCapped
 		local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
 		local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
 
 		if repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0 then--好友声望
 			local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
+
 			texture= repInfo and repInfo.texture
-			if rankInfo and rankInfo.maxLevel>0 then
-				if repInfo.nextThreshold then
-					levelText= rankInfo.currentLevel..'/'..rankInfo.maxLevel
-				else
-					barColor= FACTION_ORANGE_COLOR
-					isCapped= true
-				end
+
+			if rankInfo and repInfo.nextThreshold then
+				levelText= rankInfo.maxLevel
+			else
+				isCapped= true
 			end
 
 		elseif isMajorFaction then-- 名望
@@ -130,22 +169,17 @@ local function Init()
 			if info then
 				atlas= info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
 				if C_MajorFactions.HasMaximumRenown(factionID) then
-					barColor=FACTION_ORANGE_COLOR
 					isCapped=true
 				else
-					barColor = GREEN_FONT_COLOR
-					if info.renownLevel then
-						local levels = C_MajorFactions.GetRenownLevels(factionID)
-						if levels then
-							levelText= #levels
-						end
+					local levels = C_MajorFactions.GetRenownLevels(factionID)
+					if levels then
+						levelText= #levels
 					end
 				end
 			end
 
 		elseif data.reaction then
 			if data.reaction == MAX_REPUTATION_REACTION then--已满
-				barColor=FACTION_ORANGE_COLOR
 				isCapped=true
 			else
 				barColor = FACTION_BAR_COLORS[data.reaction]
@@ -153,47 +187,44 @@ local function Init()
 			end
 		end
 
-		if isCapped then
-			btn.Content.Name:SetTextColor(1, 0.62, 0)
-		elseif barColor then
-			btn.Content.Name:SetTextColor(barColor.r, barColor.g, barColor.b)
-		else
-			btn.Content.Name:SetTextColor(1, 1, 1)
-		end
 
 		local completedParagon--完成次数
 		if isCapped and C_Reputation.IsFactionParagon(factionID) then--奖励
-			local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-			local completed=0
-			if currentValue and threshold then
-				if not tooLowLevelForParagon then
-					completed= math.modf(currentValue/threshold)--完成次数
-					completedParagon= completed>0 and completed
-				end
+			--local currentValue, threshold, rewardQuestID, _, tooLowLevelForParagon, paragonStorageLevel = C_Reputation.GetFactionParagonInfo(factionID)
+			local _, _, rewardQuestID, _, _, paragonStorageLevel = C_Reputation.GetFactionParagonInfo(factionID)
+			if paragonStorageLevel and paragonStorageLevel>0 then
+				completedParagon= paragonStorageLevel
+			end
+			if rewardQuestID then
+				barColor= GREEN_FONT_COLOR
 			end
 		end
 
 		btn.completed:SetText(completedParagon or '')
+		
 
-		if barColor and isCapped then
-			btn.Content.ReputationBar:SetStatusBarColor(barColor.r, barColor.g, barColor.b)
+		if isCapped then
+			btn.Content.Name:SetTextColor(FACTION_ORANGE_COLOR:GetRGB())
+			btn.Content.ReputationBar:SetStatusBarColor(FACTION_ORANGE_COLOR:GetRGB())
+		elseif barColor then
+			btn.Content.Name:SetTextColor(barColor:GetRGB())
+			btn.Content.ReputationBar:SetStatusBarColor(barColor:GetRGB())
+		else
+			btn.Content.Name:SetTextColor(1, 1, 1)
 		end
 
 		btn.levelText:SetText(levelText or '')
-
-		if texture then
-			btn.texture:SetTexture(texture)
-		elseif atlas then
+		if atlas then
 			btn.texture:SetAtlas(atlas)
 		else
-			btn.texture:SetTexture(0)
+			btn.texture:SetTexture(texture or 0)
 		end
 
 		btn.check:SetShown(Save().btn and Save().indicato)
 		btn.check:SetChecked(Save().factions[factionID])
 	end)
 
-
+]]
 
 
 

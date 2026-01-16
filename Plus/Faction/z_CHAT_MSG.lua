@@ -99,7 +99,7 @@ local function Init_Check()
             elseif C_Reputation.IsMajorFaction(factionID) then
                 local info = C_MajorFactions.GetMajorFactionData(factionID)
                 if info and info.textureKit then
-                    text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+                    text= text..'|A:majorfactions_icons_'..info.textureKit..'512:0:0|a'
                 end
             end
             text= text..WoWTools_TextMixin:CN(name)

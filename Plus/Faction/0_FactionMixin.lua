@@ -7,9 +7,6 @@ end
 
 
 
-local function Get_MajorFaction(factionID)
-
-end
 
 
 
@@ -33,31 +30,31 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
     end
 
     factionID= data.factionID or factionID
+    local name= data.name
     local toRight= not toLeft
 
     local isHeader= data.isHeader
     local isHeaderWithRep= data.isHeaderWithRep
 
 
-    local factionStandingtext, value, texture, atlas, barColor, unlockDescription, isUnlocked, isCapped
+    local factionStandingtext, value, texture, atlas, barColor, unlockDescription, isCapped
+    local isUnlocked= true
 
-    local friendshipID--个人声望
-    local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+
 --个人声望
+    local friendshipID
+    local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
     if repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID> 0 then
+        name= repInfo.name
 
-        factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction) or ''
+        --factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction) or ''
         texture=repInfo.texture--图标
         friendshipID= repInfo.friendshipFactionID
 
         if repInfo.nextThreshold then
             local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
             if rankInfo then
-                if toRight then
-                    factionStandingtext= factionStandingtext..' '..rankInfo.currentLevel..'/'..rankInfo.maxLevel
-                else
-                    factionStandingtext= (rankInfo.currentLevel..'/'..rankInfo.maxLevel)..' '..factionStandingtext
-                end
+                factionStandingtext= rankInfo.currentLevel..'/'..rankInfo.maxLevel
             end
 
             local currentExperience = repInfo.standing - repInfo.reactionThreshold
@@ -68,26 +65,26 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
         else
             isCapped= true
         end
+
 --名望
     elseif isMajor then
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
         local info = C_MajorFactions.GetMajorFactionData(factionID)
         if info then
-            if info.isUnlocked then
-                factionStandingtext= (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..(info.renownLevel or 0)
-                local levels = C_MajorFactions.GetRenownLevels(factionID)
-                if levels then
-                    factionStandingtext= factionStandingtext..'/'..#levels
-                end
+            name= info.name
 
+            if info.isUnlocked then
                 if not isCapped then
+                    --factionStandingtext= (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..(info.renownLevel or 0)
+                    factionStandingtext= (info.renownLevel or 0)..'/'..#C_MajorFactions.GetRenownLevels(factionID)
+
                     value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
                 end
             else
                 factionStandingtext= '|A:AdventureMapIcon-Lock:0:0|a'
             end
             if info.textureKit then
-                atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
+                atlas= 'majorfactions_icons_'..info.textureKit..'512'
             end
 
             isUnlocked= info.isUnlocked
@@ -103,8 +100,9 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
         local barMax= data.nextReactionThreshold
 
         isCapped= standingID == MAX_REPUTATION_REACTION--8
-        isUnlocked= true
-        factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID)
+
+
+        --factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID)
 
         if not isCapped then
             if barValue and barMax and barMin then
@@ -113,29 +111,26 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
                 else
                     value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', barValue/barMax*100)
                 end
-                if toRight then--向右平移 
-                    factionStandingtext= factionStandingtext..' '..standingID..'/'..MAX_REPUTATION_REACTION
-                else
-                    factionStandingtext= standingID..'/'..MAX_REPUTATION_REACTION..' '..factionStandingtext
-                end
+
+                factionStandingtext= standingID..'/'..MAX_REPUTATION_REACTION
             end
         end
 
-        barColor= FACTION_BAR_COLORS[standingID]
+        --barColor= FACTION_BAR_COLORS[standingID]
     end
 
-    barColor= not isUnlocked and DISABLED_FONT_COLOR or (isCapped and WARNING_FONT_COLOR) or FACTION_ORANGE_COLOR
 
 
-    local isParagon = C_Reputation.IsFactionParagon(factionID)--已是最高级
-    local hasRewardPending, itemID
+
+    local isParagon = C_Reputation.IsFactionParagon(factionID)--巅峰声望
+    local hasRewardPending
 --是否有，奖励
     if isParagon and isUnlocked and isCapped then
         --local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon, paragonStorageLevel = C_Reputation.GetFactionParagonInfo(factionID)
-        local currentValue, threshold, rewardQuestID, _, tooLowLevelForParagon, paragonStorageLevel = C_Reputation.GetFactionParagonInfo(factionID)
+        local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon, paragonStorageLevel = C_Reputation.GetFactionParagonInfo(factionID)
 
-        if rewardQuestID then
-            itemID = select(6, GetQuestLogRewardInfo(1, rewardQuestID))
+        if hasRewardPending2 then
+            local itemID =rewardQuestID and select(6, GetQuestLogRewardInfo(1, rewardQuestID))
             local icon= itemID and select(5, C_Item.GetItemInfoInstant(itemID))
             hasRewardPending= icon and '|T'..icon..':0|t' or format('|A:GarrMission-%sChest:0:0|a', WoWTools_DataMixin.Player.Faction)
         end
@@ -154,20 +149,36 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
 --等级太低
             if tooLowLevelForParagon then
                 value= DISABLED_FONT_COLOR:WrapTextInColorCode(value)
-            elseif rewardQuestID then
+            elseif hasRewardPending2 then
                 value= GREEN_FONT_COLOR:WrapTextInColorCode(value)
             end
         end
     end
 
+
+    if not isUnlocked then
+        barColor= DISABLED_FONT_COLOR
+    elseif isCapped then
+        if hasRewardPending then
+            barColor= GREEN_FONT_COLOR
+        elseif C_Reputation.IsAccountWideReputation(factionID) then
+            barColor= ACCOUNT_WIDE_FONT_COLOR
+        else
+            barColor= ACHIEVEMENT_COMPLETE_COLOR
+        end
+    else
+        barColor= NORMAL_FONT_COLOR
+    end
+
+
     return {
-        name= data.name,
+        factionID= factionID,
+        name= name or data.name,
         description= data.description,
         color= barColor,
 
         isMajor=isMajor,
         isParagon= isParagon,
-        factionID= factionID,
         friendshipID= friendshipID,
 
         texture= texture,
@@ -177,7 +188,6 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
         valueText= value,
 
         hasRewardPending=hasRewardPending,
-        itemID= itemID,
 
         isCapped= isCapped,
         isHeader= data.isHeader,
@@ -196,12 +206,8 @@ end
 
 function WoWTools_FactionMixin:GetName(factionID, index)
     local data= self:GetInfo(factionID, index)
-    if not data.name or not data.factionID then
-        if data.name then
-            return WoWTools_TextMixin:CN(data.name)
-        else
-            return factionID or index
-        end
+    if not data.name then
+        return factionID or index
     end
 
     local isAccount= C_Reputation.IsAccountWideReputation(factionID)

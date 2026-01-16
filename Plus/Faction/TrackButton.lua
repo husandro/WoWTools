@@ -36,12 +36,9 @@ end
 local function get_Faction_Info(index, factionID)
 	local data= WoWTools_FactionMixin:GetInfo(factionID, index, not Save().toRightTrackText)
 	factionID= data.factionID
-	local name
-	name= data.name
 
 	if not factionID
-		or not name
-		or name==HIDE
+		or data.name==HIDE
 		or (not data.isHeaderWithRep and data.isHeader)
 		or not data.isUnlocked
 	then
@@ -52,14 +49,15 @@ local function get_Faction_Info(index, factionID)
 	local value= data.valueText
 	local texture= data.texture
 	local atlas= data.atlas
-	local barColor= data.barColor
 	local isCapped= data.isCapped
 	local isParagon= data.isParagon
-
+	
 
 	if (isCapped and not isParagon and index)--声望已满，没有奖励
 		or (Save().onlyIcon and not atlas and not texture)
 	then
+		return
+	elseif Save().onlyMajor and not data.isMajor then
 		return
 	end
 
@@ -68,24 +66,15 @@ local function get_Faction_Info(index, factionID)
 		factionStandingtext= data.factionStandingtext
 	end
 
-	local text
+	local text, name
+
 	if Save().onlyIcon then--仅显示有图标
 		name=nil
-	else
-		name= WoWTools_TextMixin:CN(name)
+	elseif data.name then
+		name= WoWTools_TextMixin:CN(data.name)
 		name= name:match('%- (.+)') or name
 	end
 
-	if barColor then
-		if value and not factionStandingtext then--值
-			value= barColor:WrapTextInColorCode(value)
-		end
-		if factionStandingtext  then--等级
-			factionStandingtext= barColor:WrapTextInColorCode(factionStandingtext)
-		end
-	elseif value then
-		value= '|cffffffff'..value..'|r'
-	end
 
 	if Save().toRightTrackText then--向右平移 
 		text= (name or '')
@@ -103,6 +92,11 @@ local function get_Faction_Info(index, factionID)
 			..(data.hasRep and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
 			..(name or '')
 	end
+
+	if text and data.color then
+		text= data.color:WrapTextInColorCode(text)
+	end
+	
 	return text, texture, atlas, data
 end
 
@@ -218,7 +212,8 @@ local function TrackButton_Settings()
 			end
 		end
 		table.sort(faction, function(a, b) return a.data.factionID > b.data.factionID end)
-	else
+	else--if Save().onlyMajor then
+
 		for index=1, C_Reputation.GetNumFactions() do
 			local text, texture, atlas, data= get_Faction_Info(index, nil)
 			if text then
@@ -316,7 +311,6 @@ local function Init_Menu(self, root)
 	end)
 
 --向右平移
-	sub:CreateDivider()
 	sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
 	function()
@@ -368,6 +362,15 @@ local function Init_Menu(self, root)
 			WoWTools_DataMixin.onlyChinese and '仅显示有图标声望'
 			or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL))
 		)
+		TrackButton_Settings()
+	end)
+--仅限名望
+	sub2= sub:CreateCheckbox(
+		WoWTools_DataMixin.onlyChinese and '仅限名望' or format(LFG_LIST_CROSS_FACTION, JOURNEYS_RENOWN_LABEL or LANDING_PAGE_RENOWN_LABEL),
+	function()
+		return Save().onlyMajor
+	end, function()
+		Save().onlyMajor= not Save().onlyMajor and true or nil
 		TrackButton_Settings()
 	end)
 
