@@ -47,7 +47,7 @@ local function Set_FactionText(self, bountyInfo)
 
     self.factionText:SetText(
         (t or '')
-        ..(data.hasRep and '|cnGREEN_FONT_COLOR:*|r' or '')
+        ..(data.isParagon and '|cnGREEN_FONT_COLOR:*|r' or '')
         ..(data.hasRewardPending or '')
     )
 

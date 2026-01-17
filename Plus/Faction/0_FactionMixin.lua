@@ -1,9 +1,9 @@
 
 WoWTools_FactionMixin={}
 
-local function GetText(string)
+--[[local function GetText(string)
     return WoWTools_TextMixin:CN(_G[string..(WoWTools_DataMixin.Player.Sex==3 and '_FEMALE' or '')])
-end
+end]]
 
 
 
@@ -11,31 +11,31 @@ end
 
 
 
-function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
+function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
     local isMajor, data
     if factionID then
         isMajor = C_Reputation.IsMajorFaction(factionID)
-        data= C_Reputation.GetFactionDataByID(factionID) or C_MajorFactions.GetMajorFactionData(factionID)
+        data= C_Reputation.GetFactionDataByID(factionID)
+        --or C_MajorFactions.GetMajorFactionData(factionID)
 
-    elseif index then
+    --[[elseif index then
         data= C_Reputation.GetFactionDataByIndex(index)
+        if data and data.factionID then
+            isMajor= C_Reputation.IsMajorFaction(factionID)
+            factionID= data.factionID
+        end]]
     end
 
-
-
-
-
-    if not data or not data.factionID then
-        return {}
-    end
-
-    factionID= data.factionID or factionID
-    local name= data.name
     local toRight= not toLeft
 
-    local isHeader= data.isHeader
-    local isHeaderWithRep= data.isHeaderWithRep
+    local name, isHeader, isHeaderWithRep
+    if data then
+        name, isHeader, isHeaderWithRep= data.name, data.isHeader, data.isHeaderWithRep
+    end
 
+    if not factionID or not (data or isMajor) then
+        return {}
+    end
 
     local factionStandingtext, value, texture, atlas, barColor, unlockDescription, isCapped
     local isUnlocked= true
@@ -69,31 +69,35 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
 --名望
     elseif isMajor then
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
-        local info = C_MajorFactions.GetMajorFactionData(factionID)
-        if info then
-            name= info.name
+        local major = C_MajorFactions.GetMajorFactionData(factionID)
+        if major then
+            name= major.name
 
-            if info.isUnlocked then
+            if major.isUnlocked then
                 if not isCapped then
                     --factionStandingtext= (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..(info.renownLevel or 0)
-                    factionStandingtext= (info.renownLevel or 0)..'/'..#C_MajorFactions.GetRenownLevels(factionID)
+                    factionStandingtext= (major.renownLevel or 0)..'/'..#C_MajorFactions.GetRenownLevels(factionID)
 
-                    value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
+                    value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', major.renownReputationEarned/major.renownLevelThreshold*100)
                 end
             else
                 factionStandingtext= '|A:AdventureMapIcon-Lock:0:0|a'
             end
-            if info.textureKit then
-                atlas= 'majorfactions_icons_'..info.textureKit..'512'
+
+            	print(WoWTools_TextMixin:CN(major.name), major.textureKit)
+            if major.textureKit then
+                atlas= 'majorfactions_icons_'..major.textureKit..'512'
             end
 
-            isUnlocked= info.isUnlocked
-            if info.unlockDescription~='' then
-                unlockDescription= info.unlockDescription
+            isUnlocked= major.isUnlocked
+            if major.unlockDescription~='' then
+                unlockDescription= major.unlockDescription
             end
+        else
+            factionID= nil
         end
 
-    elseif isHeaderWithRep or not isHeader then
+    elseif data and (isHeaderWithRep or not isHeader) then
         local standingID= data.reaction
         local barMin= data.currentReactionThreshold
         local barValue= data.currentStanding
@@ -173,13 +177,13 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
 
     return {
         factionID= factionID,
-        name= name or data.name,
-        description= data.description,
+        name= name,
         color= barColor,
+        --description= data.description,
 
         isMajor=isMajor,
-        isParagon= isParagon,
         friendshipID= friendshipID,
+        isParagon= isParagon,--巅峰声望
 
         texture= texture,
         atlas= atlas,
@@ -188,26 +192,25 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toLeft)
         valueText= value,
 
         hasRewardPending=hasRewardPending,
-
         isCapped= isCapped,
-        isHeader= data.isHeader,
-        isHeaderWithRep= data.isHeaderWithRep,
+        isHeader= isHeader,
+        isHeaderWithRep= isHeaderWithRep,
+        --hasRep=  data.hasBonusRepGain,-- or isMajor,--额外，声望
 
-        hasRep= data.hasBonusRepGain or isMajor,--额外，声望
         isUnlocked= isUnlocked,
         unlockDescription= unlockDescription,
 
-        data= data,
+        --data= data,
     }
 end
 
 
 
 
-function WoWTools_FactionMixin:GetName(factionID, index)
-    local data= self:GetInfo(factionID, index)
-    if not data.name then
-        return factionID or index
+function WoWTools_FactionMixin:GetName(factionID)
+    local data= self:GetInfo(factionID)
+    if not data.factionID then
+        return factionID
     end
 
     local isAccount= C_Reputation.IsAccountWideReputation(factionID)
@@ -226,7 +229,7 @@ function WoWTools_FactionMixin:GetName(factionID, index)
                 or (data.factionStandingtext and data.factionStandingtext..' ')
                 or ''
             )
-            ..((data.isCapped or data.hasRep) and data.valueText or '')--值
+            ..((data.isCapped or data.isParagon) and data.valueText or '')--值
             ..'|r'
 
             or '|A:Professions_Specialization_Lock_Glow:0:0|a'--未解锁

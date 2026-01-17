@@ -33,31 +33,26 @@ end
 
 
 
-local function get_Faction_Info(index, factionID)
-	local data= WoWTools_FactionMixin:GetInfo(factionID, index, not Save().toRightTrackText)
-	factionID= data.factionID
-
-	if not factionID
-		or data.name==HIDE
-		or (not data.isHeaderWithRep and data.isHeader)
-		or not data.isUnlocked
-	then
-		return
-	end
-
-
+local function get_Faction_Info(factionID)
+	local data= WoWTools_FactionMixin:GetInfo(factionID, not Save().toRightTrackText) or {}
+	
 	local value= data.valueText
 	local texture= data.texture
 	local atlas= data.atlas
 	local isCapped= data.isCapped
 	local isParagon= data.isParagon
-	
+	factionID= data.factionID
 
-	if (isCapped and not isParagon and index)--声望已满，没有奖励
-		or (Save().onlyIcon and not atlas and not texture)
+
+
+	if not data.factionID
+		or data.name==HIDE
+		--or (not data.isHeaderWithRep and data.isHeader)
+		or not data.isUnlocked
+		or (isCapped and not isParagon) --声望已满，没有奖励
+		or (Save().onlyIcon and not (atlas or texture))
+		or (Save().onlyMajor and not data.isMajor)
 	then
-		return
-	elseif Save().onlyMajor and not data.isMajor then
 		return
 	end
 
@@ -78,7 +73,7 @@ local function get_Faction_Info(index, factionID)
 
 	if Save().toRightTrackText then--向右平移 
 		text= (name or '')
-			..(data.hasRep and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
+			..(data.isParagon and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
 			..(name and ' ' or '')
 			..(factionStandingtext or '')
 			..(value and ' '..value or '')
@@ -89,7 +84,7 @@ local function get_Faction_Info(index, factionID)
 			..(value or '')
 			..(factionStandingtext and ' '..factionStandingtext or '')
 			..(name and ' ' or '')
-			..(data.hasRep and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
+			..(data.isParagon and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
 			..(name or '')
 	end
 
@@ -206,7 +201,7 @@ local function TrackButton_Settings()
 
 	if Save().indicato then
 		for factionID in pairs(Save().factions) do
-			local text, texture, atlas, data= get_Faction_Info(nil, factionID)
+			local text, texture, atlas, data= get_Faction_Info(factionID)
 			if text then
 				table.insert(faction, {text= text, texture=texture, atlas=atlas, data=data})
 			end
@@ -215,7 +210,9 @@ local function TrackButton_Settings()
 	else--if Save().onlyMajor then
 
 		for index=1, C_Reputation.GetNumFactions() do
-			local text, texture, atlas, data= get_Faction_Info(index, nil)
+			local info= C_Reputation.GetFactionDataByIndex(index) or {}
+			
+			local text, texture, atlas, data= get_Faction_Info(info.factionID)
 			if text then
 				table.insert(faction, {text= text, texture=texture, atlas=atlas, data=data})
 			end

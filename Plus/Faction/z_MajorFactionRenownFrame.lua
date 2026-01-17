@@ -288,7 +288,7 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
     for index, factionID in pairs(Get_Major_Faction_List()) do--取得，所有，派系声望
         sub2=sub:CreateCheckbox(
-           index..')'.. WoWTools_FactionMixin:GetName(factionID, nil),
+           index..')'.. WoWTools_FactionMixin:GetName(factionID),
         function(data)
             return Save().hideRenownFrame[data.factionID]
         end, function(data)

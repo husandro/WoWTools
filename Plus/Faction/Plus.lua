@@ -106,7 +106,7 @@ local function Init()
 	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'Initialize', function(btn)--factionRow, elementData)--ReputationFrame.lua
 		local data= {}
 		if not Save().notPlus then
-			data= WoWTools_FactionMixin:GetInfo(btn.factionID, btn.factionIndex)
+			data= WoWTools_FactionMixin:GetInfo(btn.factionID)
 		end
 
 		if not btn.barText2 then
