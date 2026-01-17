@@ -25,7 +25,8 @@ local function Create_Button(frame, index)
         else
             self:SetNormalTexture(data.texture or 0)
         end
-        local name= data.name
+        
+        local name= (WoWTools_TextMixin:CN(data.name))
         local factionStandingtext= not data.isCapped and data.factionStandingtext
         local valueText= data.valueText
         self.text:SetText(

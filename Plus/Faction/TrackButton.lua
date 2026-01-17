@@ -73,7 +73,7 @@ local function get_Faction_Info(factionID)
 
 	if Save().toRightTrackText then--向右平移 
 		text= (name or '')
-			..(data.isParagon and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
+			--..(data.isParagon and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
 			..(name and ' ' or '')
 			..(factionStandingtext or '')
 			..(value and ' '..value or '')
@@ -84,7 +84,7 @@ local function get_Faction_Info(factionID)
 			..(value or '')
 			..(factionStandingtext and ' '..factionStandingtext or '')
 			..(name and ' ' or '')
-			..(data.isParagon and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
+			--..(data.isParagon and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
 			..(name or '')
 	end
 
@@ -347,9 +347,9 @@ local function Init_Menu(self, root)
 
 --隐藏名称
 	sub2=sub:CreateCheckbox(
-		WoWTools_DataMixin.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
+		WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
 	function()
-		return Save().onlyIcon
+		return not Save().onlyIcon
 	end, function()
 		Save().onlyIcon= not Save().onlyIcon and true or nil
 		TrackButton_Settings()

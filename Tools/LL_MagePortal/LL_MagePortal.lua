@@ -161,7 +161,7 @@ local function Init_Options(category, layout)
 
     WoWTools_PanelMixin:OnlyCheck({
         category= category,
-        name= '|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME))..'|r',
+        name= '|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)..'|r',
         tooltip= addName,
         GetValue= function() return Save().showText end,
         SetValue= function()

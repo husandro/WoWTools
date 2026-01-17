@@ -30,7 +30,12 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
 
     local name, isHeader, isHeaderWithRep
     if data then
+        if not data.isHeaderWithRep and data.isHeader then
+            return {}
+        end
+
         name, isHeader, isHeaderWithRep= data.name, data.isHeader, data.isHeaderWithRep
+
     end
 
     if not factionID or not (data or isMajor) then
@@ -84,7 +89,6 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
                 factionStandingtext= '|A:AdventureMapIcon-Lock:0:0|a'
             end
 
-            	print(WoWTools_TextMixin:CN(major.name), major.textureKit)
             if major.textureKit then
                 atlas= 'majorfactions_icons_'..major.textureKit..'512'
             end

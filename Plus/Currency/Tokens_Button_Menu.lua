@@ -115,7 +115,7 @@ local function Init_TrackButton_Menu(self, root)
 --显示名称
     root:CreateDivider()
     root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME),
+        WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
     function ()
         return Save().nameShow
     end, function ()

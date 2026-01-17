@@ -10,13 +10,16 @@ end
 
 
 local function Create_Frame(btn)
+	btn.Content.ReputationBar.BarText:SetAlpha(0)
+	btn.Content.ReputationBar.BarText:ClearAllPoints()
+
 	btn.Content.AccountWideIcon:SetScale(0.6)
 --完成次数
 	--[[btn.completed= btn.Content.ReputationBar:CreateFontString(nil, 'BORDER', 'GameFontNormal')-- WoWTools_LabelMixin:Create(btn.Content.ParagonIcon, {size=10})
 	--btn.completed:SetFontHeight(10)
 	--btn.completed:SetPoint('RIGHT', btn.Content.ParagonIcon, 'LEFT')
 	btn.completed:SetPoint('BOTTOMRIGHT')]]
-	btn.Content.ReputationBar.BarText:SetAlpha(0)
+	--btn.Content.ReputationBar.BarText:SetAlpha(0)
 	btn.barText2= btn.Content.ReputationBar:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
 	btn.barText2:SetPoint('CENTER')
 	btn.barText2:SetJustifyH('CENTER')
@@ -115,14 +118,18 @@ local function Init()
 
 		local text
 		if data.isCapped then
-			text= data.valueText or ''
+			text= data.valueText
 		elseif data.factionStandingtext then
 			text= data.factionStandingtext..(data.valueText and ' '..data.valueText or '')
 		end
 
+		text= text or (WoWTools_TextMixin:CN(btn.Content.ReputationBar.BarText:GetText()))
 		btn.barText2:SetText(text or '')
+		--btn.Content.ReputationBar.BarText:SetAlpha(text and 0 or 1)
+		--[[if text and btn.Content.ReputationBar.reputationStandingText then
+			btn.Content.ReputationBar.reputationStandingText= nil
+		end]]
 
-		btn.Content.ReputationBar.BarText:SetAlpha(text and 0 or 1)
 
 		if data.color then
 			btn.Content.Name:SetTextColor(data.color:GetRGB())
@@ -247,14 +254,17 @@ local function Init()
 		self.Content.AccountWideIcon:SetScale(0.6)
 	end)
 
---去掉 名望等级
+--[[去掉 名望等级
 	local c_RENOWN_LEVEL_LABEL= WoWTools_TextMixin:Magic(RENOWN_LEVEL_LABEL)-- = "名望等级 %d";
 	WoWTools_DataMixin:Hook(ReputationBarMixin, 'TryShowReputationStandingText', function(self)
-		local t= self.reputationStandingText and self.reputationStandingText:match(c_RENOWN_LEVEL_LABEL)
+		if not self.reputationStandingText or self.BarText:GetAlpha()==0 then
+			return
+		end
+		local t= self.reputationStandingText:match(c_RENOWN_LEVEL_LABEL)
 		if t then
 			self.BarText:SetText(t)
 		end
-	end)
+	end)]]
 
 
 
