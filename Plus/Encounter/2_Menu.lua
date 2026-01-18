@@ -24,6 +24,15 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
     
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '列表' or WHO_LIST:gsub(GUILD_TAB_ROSTER , ''),
+    function()
+        return not Save().hideJourneysList
+    end, function()
+        Save().hideJourneysList= not Save().hideJourneysList and true or nil
+        WoWTools_EncounterMixin:Init_JourneysList()
+    end)
+    
 --Plus
     sub=root:CreateCheckbox(
         'Plus',

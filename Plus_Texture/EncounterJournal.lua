@@ -116,7 +116,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetButton(EncounterJournalJourneysFrame.JourneyProgress.OverviewBtn, {alpha=1})
     self:SetScrollBar(EncounterJournalJourneysFrame)
     self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyOverview.DividerTexture, nil, nil, true)
-    self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBar, nil, nil, 0.3)
+    --self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBar, nil, nil, 0.3)
     self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBg, true)
 
 

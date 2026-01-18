@@ -6,6 +6,49 @@ end
 
 local Buttons={}
 
+local function Set_Text(self)
+    local data= WoWTools_FactionMixin:GetInfo(self.factionID)
+    if data.atlas then
+        self:SetNormalAtlas(data.atlas)
+    else
+        self:SetNormalTexture(data.texture or 0)
+    end
+
+    local text
+    if not data.isCapped then
+        text= data.factionStandingtext
+    end
+    if data.valueText then
+        text= (text and text..' ' or '')..data.valueText
+    end
+
+    if text and data.barColor then
+        text= data.barColor:WrapTextInColorCode(text)
+    end
+
+    if data.name and self.isCurVer then
+        local name= WoWTools_TextMixin:CN(data.name)
+        if not data.isUnlocked then
+            name= DISABLED_FONT_COLOR:WrapTextInColorCode(name)
+        end
+        text= name..(text and ' '..text or '')
+    end
+
+    self.text:SetText(text or '')
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20,38 +63,18 @@ local function Create_Button(frame, index)
 
     btn:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT', 0, -(index-1)*23)
 
-    function btn:Init()
-        local data= WoWTools_FactionMixin:GetInfo(self.factionID)
-        if data.atlas then
-            self:SetNormalAtlas(data.atlas)
-        else
-            self:SetNormalTexture(data.texture or 0)
-        end
-
-        local name= (WoWTools_TextMixin:CN(data.name))
-        local factionStandingtext= not data.isCapped and data.factionStandingtext
-        local valueText= data.valueText
-        self.text:SetText(
-            (name or '')
-            ..(name and ' ' or '')
-            ..(factionStandingtext and HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(factionStandingtext) or '')
-            ..(factionStandingtext and ' ' or '')
-            ..(valueText or '')
-        )
-    end
-
     btn:SetScript('OnHide', function(self)
         self.text:SetText('')
         self:SetNormalTexture(0)
         self:UnregisterAllEvents()
     end)
     btn:SetScript('OnShow', function(self)
-        self:Init()
+        Set_Text(self)
         self:RegisterEvent('MAJOR_FACTION_RENOWN_LEVEL_CHANGED')
     end)
     btn:SetScript('OnEvent', function(self, _, factionID)
         if factionID== self.factionID then
-            self:Init()
+            Set_Text(self)
         end
     end)
     btn:SetScript('OnLeave', function()
@@ -82,6 +105,10 @@ end
 
 
 local function Init_Button()
+    if Save().hideJourneys or Save().hideJourneysList then
+        return
+    end
+
     local menu= CreateFrame('DropdownButton', 'WoWToolsEJFactionMenuButton', EncounterJournalJourneysFrame, 'WoWToolsMenuTemplate')
     menu:SetPoint('LEFT', EncounterJournalInstanceSelect.ExpansionDropdown, 'RIGHT', 8, 0)
     menu:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
@@ -97,38 +124,51 @@ local function Init_Button()
 
 
     function menu:Init()
-        local tab= C_MajorFactions.GetMajorFactionIDs()
 
-        table.sort(tab, function(a, b) return a>b end)
-
-        local height= EncounterJournal:GetHeight()-23
-        local num= 0
+        local tab= {}
         local w= 0
+        local num= 0
+        
 
-        for _, factionID in pairs(tab) do
-
-            local major
-            if not C_MajorFactions.IsMajorFactionHiddenFromExpansionPage(factionID) then
-                major= C_MajorFactions.GetMajorFactionData(factionID)
+            for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs()) do
+                if not C_MajorFactions.IsMajorFactionHiddenFromExpansionPage(factionID) then
+                    local major= C_MajorFactions.GetMajorFactionData(factionID)
+                    if major and major.factionID and major.name then
+                        table.insert(tab, major)
+                    end
+                end
             end
-            if major then
-                num= num+1
 
-                local btn= Buttons[num] or Create_Button(self.frame, num)
-                btn.factionID= factionID
-                btn:Init()
-                btn:SetShown(true)
+            table.sort(tab, function(a, b)
+                if a.expansionID==b.expansionID then
+                    return a.factionID> b.factionID
+                else
+                    return a.expansionID> b.expansionID
+                end
+            end)
 
-                w= math.max(w, btn.text:GetWidth()+23)
+            local height= EncounterJournal:GetHeight()
 
-                local y= num*23
+
+
+            for index, major in pairs(tab) do
+                local y= index*23
                 if y > height then
                     break
                 end
-            end
-        end
+                num= index
 
-        self.frame.Bg:SetPoint('BOTTOMLEFT', Buttons[num])
+                local btn= Buttons[index] or Create_Button(self.frame, index)
+                btn.factionID= major.factionID
+                btn.isCurVer= major.expansionID== WoWTools_DataMixin.ExpansionLevel
+                Set_Text(btn)
+                btn:SetShown(true)
+
+                w= math.max(w, btn.text:GetWidth()+23)
+            end
+
+
+        self.frame.Bg:SetPoint('BOTTOMLEFT', Buttons[num] or self.frame)
         self.frame.Bg:SetWidth(w)
 
         for index=num+1, #Buttons do
@@ -155,7 +195,9 @@ local function Init_Button()
     end)
 
     Init_Button= function()
-        _G['WoWToolsEJFactionMenuButton']:SetShown(not Save().hideJourneys)
+        _G['WoWToolsEJFactionMenuButton']:SetShown(
+            not (Save().hideJourneys or  Save().hideJourneysList)
+        )
         _G['WoWToolsEJFactionMenuButton']:Init()
     end
 end
@@ -267,8 +309,9 @@ local function Init()
     WoWTools_DataMixin:Hook(EncounterJournalJourneysFrame.JourneyProgress, 'SetupRewardTrack', function(frame)
         local factionID= frame.majorFactionData and frame.majorFactionData.factionID
         if not frame.infoLabel then
-            frame.infoLabel= frame:CreateFontString(nil, nil,'GameFontNormal')
-            frame.infoLabel:SetPoint('TOP', frame.JourneyName, 'BOTTOM')
+            frame.infoLabel= frame.ProgressDetailsFrame:CreateFontString(nil, nil,'GameFontNormal')
+            --frame.infoLabel:SetPoint('TOP', frame.JourneyName, 'BOTTOM')
+            frame.infoLabel:SetPoint('LEFT', frame.ProgressDetailsFrame, 'RIGHT')
             frame.infoLabel:EnableMouse(true)
             frame.infoLabel:SetScript('OnLeave', function(self)
                 WoWTools_SetTooltipMixin:Hide()
@@ -278,6 +321,7 @@ local function Init()
                 WoWTools_SetTooltipMixin:Faction(self)
                 self:SetAlpha(0.5)
             end)
+            frame.ProgressDetailsFrame.JourneyLevelBar:SetPoint('RIGHT', frame.infoLabel, 6, 0)
         end
 
         local data= WoWTools_FactionMixin:GetInfo(factionID)
