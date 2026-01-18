@@ -53,7 +53,7 @@ local function Init_Menu(self, root)
         self:SetButtonState('NORMAL')
         if self:GetScale()==value then
             C_Timer.After(3, function()
-                self:set_Sacle_InCombat(UnitAffectingCombat('player'))
+                self:set_Sacle_InCombat(PlayerIsInCombat())
             end)
         end
     end)
@@ -195,7 +195,7 @@ local function Init()
         end
     end)
 
-    btn:set_Sacle_InCombat(UnitAffectingCombat('player'))--提示，战斗中  
+    btn:set_Sacle_InCombat(PlayerIsInCombat())--提示，战斗中  
     btn:set_texture()
 
     btn:SetupMenu(Init_Menu)

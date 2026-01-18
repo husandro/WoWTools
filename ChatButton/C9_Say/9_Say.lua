@@ -142,7 +142,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2, sub3, col, icon, name, num
-    --local isInCombat= UnitAffectingCombat('player')
+    --local isInCombat= PlayerIsInCombat()
 
     local chatType={
         {text= WoWTools_DataMixin.onlyChinese and '说' or SAY, type= SLASH_SAY1, type2='SLASH_SAY'},--/s
@@ -406,7 +406,7 @@ local function Init_Menu(self, root)
     sub2=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT, function()
         return C_CVar.GetCVarBool("chatBubbles")
     end, function()
-        if not UnitAffectingCombat('player') then
+        if not PlayerIsInCombat() then
             C_CVar.SetCVar("chatBubbles", not C_CVar.GetCVarBool("chatBubbles") and '1' or '0')
         else
             print(

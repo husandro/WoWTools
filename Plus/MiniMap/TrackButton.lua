@@ -1114,7 +1114,7 @@ local function Init_Button()
             or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
             or C_PetBattles.IsInBattle()
             or UnitInVehicle('player')
-            or UnitAffectingCombat('player')
+            or PlayerIsInCombat()
             or WorldMapFrame:IsShown()
 
         self:SetShown(not hide)

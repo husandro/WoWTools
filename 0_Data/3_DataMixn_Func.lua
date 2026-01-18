@@ -235,7 +235,7 @@ end
 
 
 function WoWTools_DataMixin:Reload()
-    --if not (UnitAffectingCombat('player') and e.IsEncouter_Start) or not IsInInstance() then
+    --if not (PlayerIsInCombat() and e.IsEncouter_Start) or not IsInInstance() then
     --if not issecure() then
     self:Call(C_UI.Reload)
             --C_UI.Reload()

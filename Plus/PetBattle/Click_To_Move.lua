@@ -34,7 +34,7 @@ end
 
 local function Lock_CVar(name)
     local value= Save().ClickMoveButton['lock_'..name]
-    if UnitAffectingCombat('player') then
+    if PlayerIsInCombat() then
         if value then
             ClickToMoveButton:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -62,7 +62,7 @@ end
 
 local function Lock_ClickToMove_CVar()
     local value=  Get_Lock_ClickToMove_Value()
-    if UnitAffectingCombat('player') then
+    if PlayerIsInCombat() then
         if value then
             ClickToMoveButton:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -82,7 +82,7 @@ end
 
 
 local function Set_ClickToMove_CVar()
-    if not UnitAffectingCombat('player') then
+    if not PlayerIsInCombat() then
         C_CVar.SetCVar("autoInteract", C_CVar.GetCVarBool("autoInteract") and '0' or '1')
     end
 end
@@ -164,7 +164,7 @@ local function Init_CVar_Menu(root, name, col)
             return C_CVar.GetCVar(data.name)==data.value
 
         end, function(data)
-            if not UnitAffectingCombat('player') and not Is_Lock_CVar(name) then
+            if not PlayerIsInCombat() and not Is_Lock_CVar(name) then
                 if C_CVar.GetCVar(data.name)~=data.value then
                     C_CVar.SetCVar(data.name, data.value)
                 end
@@ -219,7 +219,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2
-    local col= UnitAffectingCombat('player') and '|cff828282' or ''
+    local col= PlayerIsInCombat() and '|cff828282' or ''
 
 --点击移动
     sub=root:CreateCheckbox(
@@ -236,7 +236,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:SetTooltip(function(tooltip)
-        if UnitAffectingCombat('player') then
+        if PlayerIsInCombat() then
             tooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         end
     end)
@@ -410,7 +410,7 @@ local function Init_Button()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName3)
         GameTooltip:AddLine(' ')
-        local col= UnitAffectingCombat('player') and '|cff626262' or ''
+        local col= PlayerIsInCombat() and '|cff626262' or ''
         GameTooltip:AddDoubleLine(
             (Get_Lock_ClickToMove_Value() and '|cff828282' or col)
             ..CVarNameTabs['autoInteract']

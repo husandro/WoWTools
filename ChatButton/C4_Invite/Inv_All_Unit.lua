@@ -15,7 +15,7 @@ local function Inv_All_Unit()
         )
         return
 
-    elseif UnitAffectingCombat('player') and (not p or not all) then
+    elseif PlayerIsInCombat() and (not p or not all) then
         print(
             WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
             '|cnWARNING_FONT_COLOR:',

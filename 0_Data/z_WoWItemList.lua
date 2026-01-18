@@ -1742,13 +1742,13 @@ local function Init_List(showListType, isShow)
 
     Frame:SetScript('OnShow', function(self)
         Init_Right_List()
-        if not InCombatLockdown() then
+        if not WoWTools_FrameMixin:IsLocked(self) then
             self:Raise()
         end
         --self.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
     end)
 
-    if not InCombatLockdown() then
+    if not WoWTools_FrameMixin:IsLocked(Frame) then
         Frame:Raise()
     end
 

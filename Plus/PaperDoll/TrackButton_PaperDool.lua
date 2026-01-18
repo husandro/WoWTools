@@ -204,7 +204,7 @@ local function Create_Button(index)
     btn:RegisterEvent('PLAYER_REGEN_DISABLED')
     btn:RegisterEvent('PLAYER_REGEN_ENABLED')
     function btn:set_shown()
-        self:SetShown(self.setID and (self.isEquipped or not UnitAffectingCombat('player')))
+        self:SetShown(self.setID and (self.isEquipped or not PlayerIsInCombat()))
     end
     function btn:set_alpha()
         self:SetAlpha((self.numItems==0 and not self.isEquipped) and 0.3 or 1)

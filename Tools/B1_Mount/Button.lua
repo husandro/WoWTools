@@ -190,7 +190,7 @@ local function setClickAtt(self)--设置 Click属性
 
     local isFlyableArea= IsFlyableArea()
     local isMoving= IsPlayerMoving()
-    local isBat= UnitAffectingCombat('player')
+    local isBat= PlayerIsInCombat()
     local spellID
     local isAdvancedFlyableArea = IsAdvancedFlyableArea()
 

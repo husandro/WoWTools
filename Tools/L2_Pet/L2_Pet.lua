@@ -235,7 +235,7 @@ local function Init()
                 or WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中                
                 or UnitCastingInfo('player')
                 or UnitChannelInfo('player')
-                or UnitAffectingCombat('player')
+                or PlayerIsInCombat()
                 or UnitInVehicle('player')
     )
     end
@@ -286,7 +286,7 @@ local function Init()
             end
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            if self.NumPet>0 and not UnitAffectingCombat('player') then
+            if self.NumPet>0 and not PlayerIsInCombat() then
                 self:RegisterEvent('PLAYER_STOPPED_MOVING')
                 self:RegisterEvent('COMPANION_UPDATE')
                 self:summoned_pet()

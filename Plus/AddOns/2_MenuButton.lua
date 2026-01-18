@@ -20,7 +20,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, num
-    --local isInCombat= InCombatLockdown()
+
 --快捷键
     num=0
     for _ in pairs(Save().fast) do

@@ -903,7 +903,7 @@ local function Init()
         local hide= IsInInstance()
             or C_PetBattles.IsInBattle()
             or UnitInVehicle('player')
-            or UnitAffectingCombat('player')
+            or PlayerIsInCombat()
 
         local showFrame= not hide and not Save().hide
 

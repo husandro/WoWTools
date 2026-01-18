@@ -332,7 +332,7 @@ function WoWTools_TooltipMixin.Frames:BattlePetTooltip()
         frame.WoWToolsLabel:SetText(
             'abilityID '..abilityID
             ..(icon and '  |T'..icon..':'..self.iconSize..'|t'..icon or '')
-            ..(self:Save().ctrl and not UnitAffectingCombat('player') and '  |A:NPE_Icon:0:0|aCtrl+Shift|TInterface\\AddOns\\WoWTools\\Source\\Texture\\Wowhead.tga:0|t' or '')
+            ..(self:Save().ctrl and not PlayerIsInCombat() and '  |A:NPE_Icon:0:0|aCtrl+Shift|TInterface\\AddOns\\WoWTools\\Source\\Texture\\Wowhead.tga:0|t' or '')
         )
 
         self:Set_Web_Link(frame, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency

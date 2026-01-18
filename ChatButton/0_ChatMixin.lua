@@ -41,7 +41,7 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
 
         elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
             C_ChatInfo.SendChatMessage(text, 'PARTY')
-            --elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
+            --elseif isNotDead and IsOutdoors() and not PlayerIsInCombat() then
                 --C_ChatInfo.SendChatMessage(text, 'YELL')
             -- elseif setPrint then
         else

@@ -16,7 +16,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local isSelf= UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and WoWTools_DataMixin.GroupGuid[guid]) and true or nil--队友
     local r, g, b, col = select(2, WoWTools_UnitMixin:GetColor(unit, nil))--颜色
-    local isInCombat= UnitAffectingCombat('player')
+    local isInCombat= PlayerIsInCombat()
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     local textLeft, text2Left, textRight, text2Right='', '', '', ''
     local tooltipName=tooltip:GetName() or 'GameTooltip'

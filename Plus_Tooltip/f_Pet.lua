@@ -81,7 +81,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     })
 
     if obtainable
-        and not UnitAffectingCombat('player')
+        and not PlayerIsInCombat()
         and (not tooltip.JournalClick or not tooltip.JournalClick:IsShown())
     then
         if IsAltKeyDown() then--宠物手册，设置名称

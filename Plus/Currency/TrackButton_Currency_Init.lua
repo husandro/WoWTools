@@ -215,7 +215,7 @@ end
 
 local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
     local btn= WoWTools_ButtonMixin:Cbtn(Frame, {
-		size=14,
+		size=23,
 		isSecure=itemButtonUse,
 		isType2=itemButtonUse,
 
@@ -226,10 +226,10 @@ local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
     if itemButtonUse then
 		if not btn.texture then
 			btn.texture= btn:CreateTexture(nil,'BORDER')
-			btn.texture:SetSize(14,14)
+			btn.texture:SetSize(23,23)
 			btn.texture:SetPoint('CENTER',-0.5,0.5)
 			btn.border=btn:CreateTexture(nil, 'ARTWORK')
-			btn.border:SetSize(18,18)
+			btn.border:SetSize(27,27)
 			btn.border:SetPoint('CENTER',-0.5,0.3)
 		end
 
@@ -242,7 +242,7 @@ local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
 
 
 
-    btn.text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlight') -- WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
 
 
     if Save().toTopTrack then
@@ -366,7 +366,7 @@ end
 
 
 function WoWTools_CurrencyMixin:Set_TrackButton_Text()
-	if not TrackButton then
+	if not TrackButton or WoWTools_FrameMixin:IsLocked(TrackButton) then
         return
     elseif not TrackButton:IsShown() or not Save().str then
 		Frame:set_shown()
@@ -431,8 +431,8 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
         local itemButtonUse=(Save().itemButtonUse and tables.itemID) and true or nil--使用物品
 		local btn= _G[Name..index] or Create_Button(index, endTokenIndex, itemButtonUse, tables)
 
-		size= itemButtonUse and 22 or 14
-		btn:SetSize(size, size)
+		--size= itemButtonUse and 22 or 14
+		--btn:SetSize(23, 23)
 
 
 		btn.itemID= tables.itemID
@@ -575,7 +575,7 @@ local function Init_TrackButton()
 		WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	end)
 	function Frame:set_shown()
-		if self:CanChangeAttribute() then
+		if not WoWTools_FrameMixin:IsLocked(self) then
 			self:SetShown(Save().str)
 		end
 	end
@@ -631,7 +631,7 @@ local function Init_TrackButton()
 	end
 
 	function TrackButton:set_point()
-		if not self:CanChangeAttribute() then
+		if WoWTools_FrameMixin:IsLocked(self) then
 			return
 		end
 		self:ClearAllPoints()
@@ -649,7 +649,7 @@ local function Init_TrackButton()
 	end
 
 	function TrackButton:set_shown()--显示,隐藏
-		if not self:CanChangeAttribute() then
+		if WoWTools_FrameMixin:IsLocked(self) then
 			return
 		end
 		local hide= Save().Hide
@@ -658,7 +658,7 @@ local function Init_TrackButton()
 					IsInInstance()
 					or C_PetBattles.IsInBattle()
 					or UnitHasVehicleUI('player')
-					or InCombatLockdown()
+					or PlayerIsInCombat()
 				)
 			)
 		self:SetShown(not hide)
@@ -670,7 +670,8 @@ local function Init_TrackButton()
 
 	function TrackButton:set_event()
 		self:UnregisterAllEvents()
-		if not Save().Hide then
+		if not Save().notAutoHideTrack and not Save().Hide then
+			
 			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
 			self:RegisterEvent('PLAYER_ENTERING_WORLD')
 			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
@@ -690,7 +691,7 @@ local function Init_TrackButton()
 		end
 		GameTooltip:ClearLines()
 
-		if not self:CanChangeAttribute() then
+		if WoWTools_FrameMixin:IsLocked(self) then
 			GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
 			GameTooltip:Show()
 			return
@@ -722,7 +723,7 @@ local function Init_TrackButton()
 	end
 
 
-	TrackButton:SetScript('OnEvent', function(self)
+	TrackButton:SetScript('OnEvent', function(self, event)
 		self:set_shown()
 	end)
 
@@ -776,10 +777,8 @@ local function Init_TrackButton()
 
 
 	TrackButton:SetScript("OnEnter", function(self)
-		if self:CanChangeAttribute() then
-			if not InCombatLockdown() then
-				WoWTools_CurrencyMixin:Set_TrackButton_Text()
-			end
+		if not WoWTools_FrameMixin:IsLocked(self) then
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 			self:set_shown()
 		end
 		self:set_Tooltip()
@@ -791,7 +790,7 @@ local function Init_TrackButton()
 		self:set_texture()
 	end)
 	TrackButton:SetScript('OnMouseWheel', function(self, d)
-		if self:CanChangeAttribute() then
+		if not WoWTools_FrameMixin:IsLocked(self) then
 			Save().str= d==-1
 			self:set_texture()
 			Frame:set_shown()

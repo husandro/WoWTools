@@ -219,7 +219,7 @@ local function Init_Date(self)--初始, 数据
     end
 
 --战斗时间
-    if UnitAffectingCombat('player') then
+    if PlayerIsInCombat() then
         OnCombatTime= OnCombatTime or time
         LastText=nil
     elseif OnCombatTime then

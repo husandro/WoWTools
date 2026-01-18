@@ -111,7 +111,7 @@ end
 
 
 function WoWTools_KeyMixin:Setup(btn, isDisabled)
-    --if UnitAffectingCombat('player') then
+    --if PlayerIsInCombat() then
     if not btn:CanChangeAttribute() then
         Frame.buttons[btn]={isDisabled=isDisabled}
         Frame:set_event(true)
@@ -179,7 +179,7 @@ function WoWTools_KeyMixin:SetMenu(frame, root, tab)
             }
         )
     end, tab)
-    sub:SetEnabled(frame:CanChangeAttribute() and not InCombatLockdown())
+    sub:SetEnabled(not WoWTools_FrameMixin:IsLocked(frame))
 
     sub:SetTooltip(function(tooltip, desc)
         tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS, desc.data.name)
@@ -190,7 +190,7 @@ function WoWTools_KeyMixin:SetMenu(frame, root, tab)
         tooltip:AddLine(frame:get_key_text())
     end)
 
-    --sub:SetEnabled(not UnitAffectingCombat('player'))
+    --sub:SetEnabled(not PlayerIsInCombat())
     return sub
 end
 

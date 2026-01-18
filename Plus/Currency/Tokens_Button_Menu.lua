@@ -105,7 +105,7 @@ local function Init_TrackButton_Menu(self, root)
     function()
         return Save().str
     end, function ()
-		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
+		if Save().itemButtonUse and not PlayerIsInCombat() or not Save().itemButtonUse then
 			Save().str= not Save().str and true or false
 			btn:set_texture()
 			_G['WoWToolsCurrencyTrackMainFrame']:set_shown()

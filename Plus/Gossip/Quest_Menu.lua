@@ -181,14 +181,14 @@ local function Init_Menu(self, root)
     function()
         return C_CVar.GetCVarBool("autoQuestWatch")
     end, function()
-        if not UnitAffectingCombat('player') then
+        if not PlayerIsInCombat() then
             C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
         end
     end)
     sub:SetTooltip(function (tooltip)
         tooltip:AddLine('CVar|cffffffff autoQuestWatch')
     end)
-    sub:SetEnabled(not UnitAffectingCombat('player'))
+    sub:SetEnabled(not PlayerIsInCombat())
 
 
 --当前地图

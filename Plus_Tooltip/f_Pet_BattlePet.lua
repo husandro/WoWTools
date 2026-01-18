@@ -71,7 +71,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     end
 
     if obtainable
-        and not UnitAffectingCombat('player')
+        and not PlayerIsInCombat()
         and (not tooltip.JournalClick or not tooltip.JournalClick:IsShown())
     then
         if IsAltKeyDown() then--宠物手册，设置名称

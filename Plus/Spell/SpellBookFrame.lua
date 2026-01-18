@@ -43,7 +43,7 @@ local function Init_Menu(self, root)
             spells[spellinfo.spell]=true
         end
     end
-    local isInCombat= PlayerIsInCombat()
+    local isInCombat= InCombatLockdown()
     for slot= 1, numSlots2 do
         local flyoutSpellID, overrideSpellID, isKnown, spellName = GetFlyoutSlotInfo(self.flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID

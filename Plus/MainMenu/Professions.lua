@@ -13,7 +13,7 @@ local function Init()
         local prof1, prof2, _, fishing= GetProfessions()
         local prof1Text, prof2Text, fishingText, name, icon
 
-        local bat= UnitAffectingCombat('player')
+        local bat= PlayerIsInCombat()
 
         if prof1 and prof1>0 then
             name, icon= GetProfessionInfo(prof1)

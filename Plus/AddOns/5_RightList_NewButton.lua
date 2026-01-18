@@ -205,7 +205,7 @@ local function Init()
 
     NewButton:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 3) +elapsed
-        if self.elapsed>3 or UnitAffectingCombat('player') then
+        if self.elapsed>3 or PlayerIsInCombat() then
             self.elapsed=0
             WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
             local value, text= 0, ''

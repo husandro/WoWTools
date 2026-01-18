@@ -89,7 +89,7 @@ local function Init()
     Frame:SetScript('OnUpdate', function(self, elapsed)--启用
         self.elapsed= self.elapsed  + elapsed
 
-        if IsIndoors() or UnitAffectingCombat('player') or IsPlayerMoving() or UnitIsDeadOrGhost('player') then
+        if IsIndoors() or PlayerIsInCombat() or IsPlayerMoving() or UnitIsDeadOrGhost('player') then
             self:Hide()
             self.specialEffects=nil
             return

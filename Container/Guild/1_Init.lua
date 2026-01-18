@@ -48,9 +48,7 @@ local function Init()
             do
                 WoWTools_BagMixin:OpenBag(nil, false)
             end
-            if not InCombatLockdown() then
-                self:Raise()
-            end
+            self:Raise()
         end
     end)
 

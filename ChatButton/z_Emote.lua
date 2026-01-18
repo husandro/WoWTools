@@ -747,9 +747,7 @@ local function Set_Menu(root, tab, tabName, rootName)
     local isCommand= tabName=='command'
     local isChat= tabName=='chat'
     local useType= tabName=='useChat' and 'chat' or (tabName=='useCommand' and 'command') or nil
-    --local isUse= tabName=='useCommand' or tabName=='useChat'
 
-    --local isInCombat= InCombatLockdown()
     local sub
 
     root= root:CreateButton(
