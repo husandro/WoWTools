@@ -2923,7 +2923,8 @@
         "JOURNEYS_RENOWN_LABEL",
         "REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION",
         "JOURNEYS_TOOLTIP_VIEW_JOURNEY",
-        "COVENANT_SANCTUM_TAB_RENOWN"
+        "COVENANT_SANCTUM_TAB_RENOWN",
+        "GetClampedCurrentExpansionLevel"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

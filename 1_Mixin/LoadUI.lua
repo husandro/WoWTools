@@ -110,27 +110,33 @@ end
 
 --打开/关闭角色界面
 --MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")
-function WoWTools_LoadUIMixin:PaperDoll_Sidebar(index)--打开/关闭角色界面
-    if self:IsDisabledOpenFrame() then
+--C_CurrencyInfo.GetCurrencyListSize() <= 0
+function WoWTools_LoadUIMixin:OpenPaperDoll(frameIndex, tabIndex)--打开/关闭角色界面
+    if not CharacterFrame:IsShown()
+        and self:IsDisabledOpenFrame()
+        or C_GameRules.IsGameRuleActive(Enum.GameRule.CharacterPanelDisabled)
+    then
         return
     end
 
-    if not PaperDollFrame:IsShown() then
+    if not CharacterFrame:IsShown() then
         ToggleCharacter("PaperDollFrame")
     end
 
-    PaperDollFrame_SetSidebar(PaperDollFrame, index)
+    if frameIndex==1 then
+        if tabIndex then
+            PaperDollFrame_SetSidebar(PaperDollFrame, tabIndex)
+        end
+
+    elseif frameIndex==2 then
+        if not ReputationFrame:IsShown() then
+            ToggleCharacter("ReputationFrame")
+        end
+
+    elseif frameIndex==3 then
+        CharacterFrame:ToggleTokenFrame()
+    end
 end
---[[
-local name = self:GetName();
-if ( name == "CharacterFrameTab1" ) then
-    ToggleCharacter("PaperDollFrame");
-elseif ( name == "CharacterFrameTab2" ) then
-    ToggleCharacter("ReputationFrame");
-elseif ( name == "CharacterFrameTab3" ) then
-    CharacterFrame:ToggleTokenFrame();
-end
-]]
 
 
 
@@ -239,30 +245,73 @@ end
 
 --[[
 派系声望 ReputationDetailViewRenownButtonMixin:OnClick()
- EncounterJournal_OpenToPowerID(powerID)
-  EncounterJournal_OpenJournal(difficultyID, instanceID, encounterID, sectionID, creatureID, itemID, tierIndex)
-  EJSuggestTab_GetPlayerTierIndex()
-   EJ_ContentTab_SelectAppropriateInstanceTab(instanceID)
- ]]
-function WoWTools_LoadUIMixin:MajorFaction(factionID)
+EncounterJournal_OpenToPowerID(powerID)
+EncounterJournal_OpenJournal(difficultyID, instanceID, encounterID, sectionID, creatureID, itemID, tierIndex)
+EJSuggestTab_GetPlayerTierIndex()
+EJ_ContentTab_SelectAppropriateInstanceTab(instanceID)
+function ReputationDetailViewRenownButtonMixin:OnClick()
+	if not EncounterJournal then
+		EncounterJournal_LoadUI();
+	end
+
+	if not EncounterJournal:IsShown() then
+		ShowUIPanel(EncounterJournal);
+	end
+
+	EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID());
+	EncounterJournalJourneysFrame:ResetView(nil, self.factionID);
+end
+
+]]
+function WoWTools_LoadUIMixin:OpenFaction(factionID)
     if
         self:IsDisabledOpenFrame()
     then
         return
     end
 
-    if not EncounterJournal then
-        EncounterJournal_LoadUI()
+    local isMajor= factionID and C_Reputation.IsMajorFaction(factionID)
+
+    if isMajor or not factionID then
+        if not EncounterJournal then
+            EncounterJournal_LoadUI()
+        end
+
+        if WoWTools_FrameMixin:IsLocked(EncounterJournal) then
+            return
+        end
+
+        if ReputationFrame:IsVisible() then
+            HideUIPanel(CharacterFrame)
+        end
+
+        if not EncounterJournal:IsShown() then
+            ShowUIPanel(EncounterJournal)
+        end
+
+        EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID())
+
+        if factionID then
+            EncounterJournalJourneysFrame:ResetView(C_MajorFactions.GetMajorFactionData(factionID), factionID)
+            EncounterJournal_OpenToJourney(factionID)
+        end
+
+    elseif factionID then
+        self:OpenPaperDoll(2)
+        if not ReputationFrame or not ReputationFrame:IsShown() then
+            return
+        end
+
+        if EncounterJournal and EncounterJournal:IsShown() then
+            HideUIPanel(EncounterJournal)
+        end
+
+        if C_Reputation.GetReputationSortType()~=Enum.ReputationSortType.None then
+            C_Reputation.SetReputationSortType(Enum.ReputationSortType.None)
+        end
+        WoWTools_FactionMixin:Find(factionID)
     end
 
-    if not EncounterJournal:IsShown() then
-        ShowUIPanel(EncounterJournal)
-    end
-    if factionID then
-        EncounterJournal_OpenToJourney(factionID)
-    else
-        EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID())
-    end
 end
     --[[EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID())
 

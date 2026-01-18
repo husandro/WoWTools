@@ -16,7 +16,7 @@ WoWTools_DataMixin= {
 
     LeftButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp',
     RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp',
-    ExpansionLevel= GetExpansionLevel() or 1,--版本数据
+    ExpansionLevel=  math.max(GetAccountExpansionLevel(), GetExpansionLevel()),-- GetClampedCurrentExpansionLevel() math.max(GetAccountExpansionLevel(), GetExpansionLevel()),-- GetExpansionLevel() or 1,--版本数据
 
     StausText={},--属性，截取表 API_Panel.lua
     UnitItemLevel={},

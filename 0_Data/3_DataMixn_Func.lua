@@ -201,12 +201,12 @@ function WoWTools_DataMixin:GetExpansionText(expacID, questID)
     if not expacID and questID then
         expacID= GetQuestExpansion(questID)
     end
-
+    
     local text= expacID and WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..expacID])
     if text then
-        text= (WoWTools_TextureMixin:GetWoWLog(expacID) or '')..' '..text..' '..(expacID+1)
-        if WoWTools_DataMixin.ExpansionLevel < expacID then
-            text='|cff828282'..text..'|r'
+        text= (WoWTools_TextureMixin:GetWoWLog(expacID) or '')..text..' '..(expacID+1)
+        if GetAccountExpansionLevel() < expacID then
+            text= DISABLED_FONT_COLOR:WrapTextInColorCode(text)
         end
         return text
     end

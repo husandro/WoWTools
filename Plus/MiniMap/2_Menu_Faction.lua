@@ -21,6 +21,8 @@ local function Set_Faction_Menu(root, factionID)
     local name= WoWTools_TextMixin:CN(info.name)
     if not info.isUnlocked then
         name= DISABLED_FONT_COLOR:WrapTextInColorCode(name)
+    else
+        name= NORMAL_FONT_COLOR:WrapTextInColorCode(name)
     end
 
     local sub=root:CreateRadio(
@@ -38,7 +40,7 @@ local function Set_Faction_Menu(root, factionID)
             return EncounterJournalJourneysFrame and EncounterJournalJourneysFrame.JourneyProgress.majorFactionData.factionID==data.factionID
         end
     end, function(data)
-        WoWTools_LoadUIMixin:MajorFaction(data.factionID)
+        WoWTools_LoadUIMixin:OpenFaction(data.factionID)
         return MenuResponse.Refresh
     end, {factionID=factionID})
 
@@ -65,50 +67,56 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
     --function()
         --return MajorFactionRenownFrame and MajorFactionRenownFrame:IsShown()
     function()
-        WoWTools_LoadUIMixin:MajorFaction(2593)
+        WoWTools_LoadUIMixin:OpenFaction(2593)
         return MenuResponse.Refresh
     end)
 
-    local index=0
+
 
 --当前版本
-    local tab=C_MajorFactions.GetMajorFactionIDs(WoWTools_DataMixin.ExpansionLevel) or {}
-    local find={}
 
---MajorFactionsConstantsDocumentation.lua
+    local tab= C_MajorFactions.GetMajorFactionIDs()
+
+    table.sort(tab, function(a, b)
+        local a2= C_MajorFactions.GetMajorFactionData(a) or {expansionID=0}
+        local b2= C_MajorFactions.GetMajorFactionData(b) or {expansionID=0}
+        if a2.expansionID==b2.expansionID then
+            return a>b
+        else
+            return a2.expansionID>b2.expansionID
+        end
+    end)
+
+    local expansionID= WoWTools_DataMixin.ExpansionLevel
+
+    for index, factionID in pairs(tab) do
+        local major= C_MajorFactions.GetMajorFactionData(factionID)
+        if major and major.expansionID<expansionID then
+            expansionID= major.expansionID
+            table.insert(tab, index, '-')
+        end
+    end
+--[[MajorFactionsConstantsDocumentation.lua
     for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do
         if not find[factionID] then
             table.insert(tab, factionID)
             find[factionID]=true
         end
     end
-    table.sort(tab, function(a, b) return a>b end)
+    table.sort(tab, function(a, b) return a>b end)]]
 
+    
     for _, factionID in pairs(tab) do
-        if Set_Faction_Menu(sub, factionID) then
-            index=index+1
+        if factionID=='-' then
+            sub:CreateDivider()
+        elseif not C_MajorFactions.IsMajorFactionHiddenFromExpansionPage(factionID) then
+
+            Set_Faction_Menu(sub, factionID)
         end
     end
 
 
 --旧数据
-    for expacID= WoWTools_DataMixin.ExpansionLevel-1, 9, -1 do
-        tab=C_MajorFactions.GetMajorFactionIDs(expacID)
-        if tab then
-            table.sort(tab, function(a, b) return a>b end)
-            sub:CreateDivider()
-            for _, factionID in pairs(tab) do
-                if not find[factionID] then
-                    if Set_Faction_Menu(sub, factionID) then
-                        index= index+1
-                    end
-                    find[factionID]=true
-                end
-            end
-        end
-    end
-
-    find=nil
     WoWTools_MenuMixin:SetScrollMode(sub)
 end
 

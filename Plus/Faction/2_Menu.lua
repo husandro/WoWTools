@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
 		table.insert(new, factionID)
 	end
 	num= #new
-	table.sort(new)
+	table.sort(new, function(a,b) return a> b end)
 
 	sub=root:CreateCheckbox(
 		(Save().btn and '' or '|cff626262')

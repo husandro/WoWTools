@@ -39,26 +39,22 @@ local function Create_Frame(btn)
 	btn.check= CreateFrame('CheckButton', nil, btn.Content, "InterfaceOptionsCheckButtonTemplate")
 	btn.check:SetPoint('LEFT',-12,0)
 	function btn.check:get_info()
-		return self:GetParent().elementData or {}
+		return self:GetParent():GetParent().elementData or {}
 	end
 	btn.check:SetScript('OnClick', function(self)
-		local info= self:get_info()
-		if info.factionID then
-			Save().factions[info.factionID]= not Save().factions[info.factionID] and true or nil
-			WoWTools_FactionMixin:UpdatList()
-		end
+		local factionID= self:GetParent():GetParent().elementData.factionID
+		Save().factions[factionID]= not Save().factions[factionID] and true or nil
+		WoWTools_FactionMixin:UpdatList()
 	end)
 	btn.check:SetScript('OnEnter', function(self)
-		local info= self:get_info()
-		if not info.factionID then
-			return
-		end
+		local data= self:GetParent():GetParent().elementData
+
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:ClearLines()
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_FactionMixin.addName)
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING, WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 		GameTooltip:AddLine(' ')
-		GameTooltip:AddDoubleLine(WoWTools_TextMixin:CN(info.name), info.factionID, 0,1,0,0,1,0)
+		GameTooltip:AddDoubleLine(WoWTools_TextMixin:CN(data.name), data.factionID, 0,1,0,0,1,0)
 		GameTooltip:Show()
 		self:SetAlpha(1)
 	end)

@@ -8,10 +8,7 @@ local Name='WoWToolsFactionTrackButton'
 local NumButton= 0
 
 local function Set_TrackButton_Pushed(show, label)--TrackButton，提示
-	TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
-	if label then
-		label:SetAlpha(show and 0.5 or 1)
-	end
+	
 end
 
 
@@ -35,64 +32,85 @@ end
 
 local function get_Faction_Info(factionID)
 	local data= WoWTools_FactionMixin:GetInfo(factionID, not Save().toRightTrackText) or {}
-	
-	local value= data.valueText
-	local texture= data.texture
-	local atlas= data.atlas
-	local isCapped= data.isCapped
-	local isParagon= data.isParagon
-	factionID= data.factionID
+
 
 
 
 	if not data.factionID
-		or data.name==HIDE
-		--or (not data.isHeaderWithRep and data.isHeader)
 		or not data.isUnlocked
-		or (isCapped and not isParagon) --声望已满，没有奖励
-		or (Save().onlyIcon and not (atlas or texture))
+		or (data.isCapped and not data.isParagon) --声望已满，没有奖励
+		or (Save().onlyIcon and not (data.atlas or data.texture))
 		or (Save().onlyMajor and not data.isMajor)
+		or not (data.factionStandingtext or data.valueText)
 	then
 		return
 	end
 
-	local factionStandingtext
-	if not data.isCapped then
-		factionStandingtext= data.factionStandingtext
-	end
-
-	local text, name
-
+--名称
+	local name
 	if Save().onlyIcon then--仅显示有图标
 		name=nil
 	elseif data.name then
 		name= WoWTools_TextMixin:CN(data.name)
 		name= name:match('%- (.+)') or name
 	end
+--等级
+	local factionStandingtext
+	if not data.isCapped and data.isUnlocked then
+		factionStandingtext= data.factionStandingtext
+	end
 
+--值
+	local value= data.valueText
 
+--有奖励
+	local hasRewardPending= data.hasRewardPending or ''
+
+	local text
 	if Save().toRightTrackText then--向右平移 
-		text= (name or '')
-			--..(data.isParagon and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
-			..(name and ' ' or '')
-			..(factionStandingtext or '')
-			..(value and ' '..value or '')
-			..(data.hasRewardPending or '')--有奖励
+
+		text= factionStandingtext
+
+		if value then
+			text= (text or '')..(text and ' ' or '')..value
+		end
+
+		if text then
+			if not data.isCapped then
+				text= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(text)
+			elseif data.color then
+				text= data.color:WrapTextInColorCode(text)
+			end
+		end
+		if hasRewardPending then
+			text= (text or '')..hasRewardPending
+		end
+		if name then
+			text= name..(text and ' '..text or '')
+		end
 
 	else
-		text=(data.hasRewardPending or '')--有奖励
-			..(value or '')
-			..(factionStandingtext and ' '..factionStandingtext or '')
-			..(name and ' ' or '')
-			--..(data.isParagon and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
-			..(name or '')
+		text= value
+		if factionStandingtext then
+			text= (text or '')..(text and ' ' or '').. factionStandingtext
+		end
+		if text then
+			if not data.isCapped then
+				text= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(text)
+			elseif data.color then
+				text= data.color:WrapTextInColorCode(text)
+			end
+		end
+		if name then
+			text= (text or '')..(text and ' ' or '')..name
+		end
+		if hasRewardPending then
+			text= hasRewardPending..(text or '')
+		end
 	end
 
-	if text and data.color then
-		text= data.color:WrapTextInColorCode(text)
-	end
-	
-	return text, texture, atlas, data
+
+	return text, data.texture, data.atlas, data
 end
 
 
@@ -134,12 +152,8 @@ end
 
 local function Crated_Button(index)
 
-    --[[local btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {
-		size=14,
-		name=Name..index,
-	})]]
 	local btn= CreateFrame("Button", Name..index, Frame, 'WoWToolsButtonTemplate')
-	btn:SetSize(16, 16)
+	--btn:SetSize(16, 16)
 
     if Save().toTopTrack then
         btn:SetPoint('BOTTOM', _G[Name..(index-1)] or TrackButton, 'TOP')
@@ -151,16 +165,23 @@ local function Crated_Button(index)
         if EmbeddedItemTooltip:IsShown() then
 			EmbeddedItemTooltip:Hide()
 		end
-        Set_TrackButton_Pushed(false, self.text)--TrackButton，提示
+		TrackButton:SetButtonState( "NORMAL")
+		self.text:SetAlpha(1)
 		WoWTools_FactionMixin:Find(nil, nil)
     end)
     btn:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Faction(self)
         Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
+		TrackButton:SetButtonState('PUSHED')
+		self.text:SetAlpha(0.5)
 		WoWTools_FactionMixin:Find(self.factionID)
     end)
 
-    btn.text= WoWTools_LabelMixin:Create(btn)
+	btn:SetScript('OnClick', function(self)
+		WoWTools_LoadUIMixin:OpenFaction(self.factionID)
+	end)
+
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')--  WoWTools_LabelMixin:Create(btn)
     function btn:set_text_point()
 		self.text:ClearAllPoints()
         if Save().toRightTrackText then
@@ -170,6 +191,8 @@ local function Crated_Button(index)
         end
         self.text:SetJustifyH(Save().toRightTrackText and 'LEFT' or 'RIGHT')
     end
+
+	btn.canClickForOptions= true
 
     btn:set_text_point()
 
@@ -200,21 +223,24 @@ local function TrackButton_Settings()
 	local faction={}
 
 	if Save().indicato then
-		for factionID in pairs(Save().factions) do
-			local text, texture, atlas, data= get_Faction_Info(factionID)
+		for factionID in pairs(Save().factions or {}) do
+			local text, texture, atlas= get_Faction_Info(factionID)
 			if text then
-				table.insert(faction, {text= text, texture=texture, atlas=atlas, data=data})
+				table.insert(faction, {text= text, texture=texture, atlas=atlas, factionID=factionID})
 			end
 		end
-		table.sort(faction, function(a, b) return a.data.factionID > b.data.factionID end)
+		table.sort(faction, function(a, b) return a.factionID > b.factionID end)
 	else--if Save().onlyMajor then
 
 		for index=1, C_Reputation.GetNumFactions() do
 			local info= C_Reputation.GetFactionDataByIndex(index) or {}
-			
-			local text, texture, atlas, data= get_Faction_Info(info.factionID)
-			if text then
-				table.insert(faction, {text= text, texture=texture, atlas=atlas, data=data})
+			if info.name==HIDE then
+				break
+			else
+				local text, texture, atlas= get_Faction_Info(info.factionID)
+				if text then
+					table.insert(faction, {text= text, texture=texture, atlas=atlas, factionID=info.factionID})
+				end
 			end
 		end
 	end
@@ -225,11 +251,7 @@ local function TrackButton_Settings()
 		local btn= _G[Name..index] or Crated_Button(index)
 		btn:SetShown(true)
 		btn.text:SetText(tab.text)
-		btn.factionID= tab.data.factionID
-		btn.friendshipID= tab.data.friendshipID
-		btn.isMajor= tab.data.isMajor
-		btn.isParagon= tab.data.isParagon
-		btn.name= tab.data.name
+		btn.factionID= tab.factionID
 
 		if tab.texture then
 			btn:SetNormalTexture(tab.texture)
@@ -252,10 +274,6 @@ local function TrackButton_Settings()
 		btn:SetShown(false)
 		btn:SetNormalTexture(0)
 		btn.factionID= nil
-		btn.isFriend= nil
-		btn.isMajor= nil
-		btn.isParagon= nil
-		btn.name= nil
 	end
 
 	faction=nil

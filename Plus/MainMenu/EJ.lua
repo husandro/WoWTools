@@ -131,7 +131,7 @@ local function Init()
         then
             return
         end
-        WoWTools_LoadUIMixin:MajorFaction()
+        WoWTools_LoadUIMixin:OpenFaction()
     end)
 
     EJMicroButton:EnableMouseWheel(true)

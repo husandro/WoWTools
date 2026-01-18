@@ -36,7 +36,7 @@ local function Init_Menu(self, root)
         root:CreateButton(
             WoWTools_DataMixin.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
         function()
-            WoWTools_LoadUIMixin:PaperDoll_Sidebar(3)
+            WoWTools_LoadUIMixin:OpenPaperDoll(1, 3)
             return MenuResponse.Open
         end)
     end
@@ -433,12 +433,6 @@ local function Init_TrackButton()--添加装备管理框
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().Equipment={self:GetPoint(1)}
             Save().Equipment[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
     TrackButton:SetScript('OnMouseDown', function(_, d)
@@ -453,7 +447,7 @@ local function Init_TrackButton()--添加装备管理框
             return
         end
         if d=='LeftButton' then
-            WoWTools_LoadUIMixin:PaperDoll_Sidebar(3)--打开/关闭角色界面
+            WoWTools_LoadUIMixin:OpenPaperDoll(1,3)--打开/关闭角色界面
 
         elseif d=='RightButton' then
             MenuUtil.CreateContextMenu(self, function(...)

@@ -63,26 +63,8 @@ end
 
 --取得，所有，派系声望
 local function Get_Major_Faction_List()
-    local tab={}
-    local find={}
-    for i= LE_EXPANSION_DRAGONFLIGHT, WoWTools_DataMixin.ExpansionLevel, 1 do
-        for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs(i) or {}) do--if C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(i) then
-            if not find[factionID] then
-                table.insert(tab, factionID)
-                find[factionID]=true
-            end
-        end
-    end
-
-    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do--MajorFactionsConstantsDocumentation.lu
-        if not find[factionID] then
-            table.insert(tab, factionID)
-            find[factionID]=true
-        end
-    end
-
+    local tab=C_MajorFactions.GetMajorFactionIDs()
     table.sort(tab, function(a,b) return a>b end)
-    find=nil
     return tab
 end
 
@@ -328,10 +310,6 @@ end
 
 --派系，列表 MajorFactionRenownFrame
 local function Init()
-    if not MajorFactionRenownFrame then--12.0没发现
-        return
-    end
-
     Button= WoWTools_ButtonMixin:Cbtn(MajorFactionRenownFrame.CloseButton, {size=22})
 
     function Button:set_scale()
@@ -434,8 +412,10 @@ end
 
 
 function WoWTools_FactionMixin:Init_MajorFactionRenownFrame()
-    self:Init_CovenantRenown(MajorFactionRenownFrame)--盟约 9.0
-    Init()
+    if MajorFactionRenownFrame then
+        self:Init_CovenantRenown(MajorFactionRenownFrame)--盟约 9.0
+        Init()
+    end
 end
 
 

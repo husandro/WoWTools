@@ -89,7 +89,7 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
             elseif data.type=='spell' then
                 PlayerSpellsUtil.OpenToSpellBookTab()
             else
-                WoWTools_LoadUIMixin:PaperDoll_Sidebar(1)--打开/关闭角色界面
+                WoWTools_LoadUIMixin:OpenPaperDoll(1, 1)--打开/关闭角色界面
             end
             return MenuResponse.Open
         end, {type=type})
