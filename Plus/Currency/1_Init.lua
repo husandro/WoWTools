@@ -155,6 +155,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			--WoWTools_DataMixin.CurrencyUpdateItemLevelID= Save().ItemInteractionID--套装，转换，货币
 			--WoWTools_CurrencyMixin:Init_ItemInteractionFrame()
+			--Save().ItemInteractionID= nil
 
 			if Save().disabled then
 				self:UnregisterAllEvents()
