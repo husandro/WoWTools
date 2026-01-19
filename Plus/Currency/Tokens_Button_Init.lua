@@ -26,7 +26,7 @@ local function click(self)
 			itemLink or itemID
 		)
 		ClearCursor()
-		WoWTools_CurrencyMixin:Set_TrackButton_Text()
+		WoWTools_CurrencyMixin:Init_TrackButton()
 	else
 		WoWTools_CurrencyMixin:Init_Menu(self)
 	end

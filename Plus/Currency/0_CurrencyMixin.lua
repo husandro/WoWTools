@@ -291,8 +291,10 @@ end
 
 
 function WoWTools_CurrencyMixin:UpdateTokenFrame()
-	if not WoWTools_FrameMixin:IsLocked(TokenFrame) then
+	if TokenFrame and not WoWTools_FrameMixin:IsLocked(TokenFrame) then
+        if TokenFramePopup:IsShown() then
+		    TokenFramePopup:Hide()
+        end
 		WoWTools_DataMixin:Call(TokenFrame.Update, TokenFrame)
-		WoWTools_DataMixin:Call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
 	end
 end

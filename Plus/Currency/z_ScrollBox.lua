@@ -38,7 +38,7 @@ local function Create(frame)
 		local id= self:GetCurrencyID()
 		if id then
 			Save().tokens[id]= not Save().tokens[id] and true or nil
-			WoWTools_CurrencyMixin:Set_TrackButton_Text()
+			WoWTools_CurrencyMixin:Init_TrackButton()
 		end
 	end)
 	frame.check:SetScript('OnEnter', function(self)
@@ -111,7 +111,7 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 	end
 
 	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(self.elementData.currencyID, self.elementData.currencyIndex)
-	
+
 	if not info then
 		self.check:SetShown(false)
 		self.Content.Count:SetTextColor(1,1,1)

@@ -178,17 +178,12 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetUIButton(CurrencyTransferMenu.Content.CancelButton)
     self:SetUIButton(CurrencyTransferMenu.Content.AmountSelector.MaxQuantityButton)
     self:SetAlphaColor(CurrencyTransferMenu.Content.TransactionDivider)
-        self:SetNineSlice(CurrencyTransferMenu)
+    self:SetNineSlice(CurrencyTransferMenu)
     self:SetAlphaColor(CurrencyTransferMenu.TransactionDivider)
     self:HideTexture(CurrencyTransferMenuBg)
     self:SetNineSlice(CurrencyTransferMenuInset)
-    if CurrencyTransferMenu.AmountSelector then--11.2 没有了
-        self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
-        self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
-    else
-        self:SetEditBox(CurrencyTransferMenu.Content.AmountSelector.InputBox)
-        self:SetMenu(CurrencyTransferMenu.Content.SourceSelector.Dropdown)
-    end
+    self:SetEditBox(CurrencyTransferMenu.Content.AmountSelector.InputBox)
+    self:SetMenu(CurrencyTransferMenu.Content.SourceSelector.Dropdown)
 
     self:SetFrame(TokenFrame)
     self:SetMenu(TokenFrame.filterDropdown)

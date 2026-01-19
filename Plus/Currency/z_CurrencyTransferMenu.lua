@@ -10,9 +10,7 @@ end
 
 --货币，转移
 local function Init()
---不能点击，关闭按钮
-	--CurrencyTransferLogCloseButton:SetFrameLevel(CurrencyTransferLog.TitleContainer:GetFrameLevel()+2)
-	--CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenu.TitleContainer:GetFrameLevel()+2)
+
 
 --有时会有BUG, 加个 重新加载UI 按钮
 	local reload= CreateFrame('Button', nil, CurrencyTransferMenuCloseButton, 'WoWToolsButtonTemplate')
@@ -21,18 +19,16 @@ local function Init()
     reload.tooltip=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
     reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
 
-	--[[WoWTools_DataMixin:Hook(CurrencyTransferLogEntryMixin, 'Initialize', function(self, elementData)
+	WoWTools_DataMixin:Hook(CurrencyTransferLogEntryMixin, 'Initialize', function(self, elementData)
 		local name= WoWTools_UnitMixin:GetPlayerInfo(nil, elementData.sourceCharacterGUID, nil, {reName=true, reRealm=true})
 		if name~='' then
 			self.SourceName:SetText(name)
 		end
-
-		name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid=elementData.destinationCharacterGUID, nil, {reName=true, reRealm=true})
+		name= WoWTools_UnitMixin:GetPlayerInfo(nil, elementData.destinationCharacterGUID, nil, {reName=true, reRealm=true})
 		if name~='' then
 			self.DestinationName:SetText(name)
 		end
-
-	end)]]--货币转移，bug
+	end)
 
 	WoWTools_DataMixin:Hook(CurrencyTransferLog.ScrollBox, 'Update', function(self)
 		if not self:HasView() or Save().notPlus or WoWTools_FrameMixin:IsLocked(self:GetParent()) then
@@ -54,8 +50,17 @@ local function Init()
 		end
 	end)
 
-local content= CurrencyTransferMenu.Content--11.2
-	or CurrencyTransferMenu
+	local content= CurrencyTransferMenu.Content
+	
+	WoWTools_DataMixin:Hook(content.SourceSelector.Dropdown.Text, 'SetText', function(self)
+		local data= CurrencyTransferMenu.sourceCharacterData
+		if data then
+			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.characterGUID, nil, {reName=true, reRealm=true})
+			if name ~='' and self:GetText()~=name then
+				self:SetText(name)
+			end
+		end
+	end)
 
 	WoWTools_DataMixin:Hook(content.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
 		if not Save().notPlus and not IsLocked() then

@@ -213,7 +213,12 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     self:Setup(ReputationFrame, {frame=CharacterFrame})
     self:Setup(ReputationFrame.ReputationDetailFrame, {frame=CharacterFrame})
 
-    self:Setup(CurrencyTransferMenu)
+    CurrencyTransferMenu.Content.SourceSelector.Dropdown.LongArrow:ClearAllPoints()
+    CurrencyTransferMenu.Content.SourceSelector.Dropdown.LongArrow:SetPoint('RIGHT', CurrencyTransferMenu.Content.SourceSelector.PlayerName, 'LEFT')
+    CurrencyTransferMenu.Content.SourceSelector.Dropdown:SetPoint('RIGHT', CurrencyTransferMenu.Content.SourceSelector.Dropdown.LongArrow, 'LEFT')
+    self:Setup(CurrencyTransferMenu, {sizeRestFunc= function(frame)
+        frame:SetSize(460, 294)
+    end})
     self:Setup(CurrencyTransferLog, {
         sizeRestFunc=function(frame)
             frame:ClearAllPoints()
