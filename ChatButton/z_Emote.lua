@@ -1162,7 +1162,7 @@ local function Init()
     end
 
     MainButton.pool= CreateFramePool('Button', UIParent, 'WoWToolsEmojiButtonTemplate')
-    MainButton.poolSecur= CreateFramePool('Button', UIParent, 'WoWToolsEmojiButtonTemplate SecureActionButtonTemplate')-- 'WoWToolsButtonTemplate SecureActionButtonTemplate')
+    MainButton.poolSecur= CreateFramePool('Button', UIParent, 'WoWToolsEmojiButtonTemplate SecureActionButtonTemplate')
     MainButton.Background=MainButton:CreateTexture(nil, 'BACKGROUND')
     MainButton.Background:SetColorTexture(0,0,0)
 

@@ -521,6 +521,15 @@ end
 
 
 
+   --[[ItemLocation:
+    local conversionCurrencyInfo = itemLocation and C_ItemInteraction.GetItemConversionCurrencyCost(itemLocation) or nil;
+	if (conversionCurrencyInfo and conversionCurrencyInfo.currencyID and conversionCurrencyInfo.amount and conversionCurrencyInfo.currencyID ~= 0 and conversionCurrencyInfo.amount ~= 0) then
+		self.currencyTypeId = conversionCurrencyInfo.currencyID;
+		self.cost = conversionCurrencyInfo.amount;
+	else
+		self.currencyTypeId = nil;
+		self.cost = nil;
+	end]]
 
 
 function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
@@ -532,6 +541,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         return
     end
 
+ 
     local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID, setID =  C_Item.GetItemInfo(itemLink or itemID)
     itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
 

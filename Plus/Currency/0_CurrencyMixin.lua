@@ -298,3 +298,4 @@ function WoWTools_CurrencyMixin:UpdateTokenFrame()
 		WoWTools_DataMixin:Call(TokenFrame.Update, TokenFrame)
 	end
 end
+

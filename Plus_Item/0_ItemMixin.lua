@@ -732,7 +732,7 @@ function WoWTools_ItemMixin:GetCount(itemID, tab)
     end
     if zoro or bag>0 then
         text= (text and text..' ' or '')
-            ..(bag==0 and '|cff626262' or '|cffffffff')..WoWTools_DataMixin:MK(bag, 3)..'|r|A:bag-main:0:0|a'
+            ..(bag==0 and '|cff626262' or '|cffffffff')..WoWTools_DataMixin:MK(bag, 3)..(bag==1 and C_Item.IsEquippedItem(itemID) and '|A:charactercreate-icon-customize-body-selected:0:0|a' or '|r|A:bag-main:0:0|a')
     end
 
     return

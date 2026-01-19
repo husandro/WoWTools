@@ -4,7 +4,186 @@ local function Save()
     return WoWToolsSave['Currency2']
 end
 local TrackButton, Frame
-local Name='WoWToolsCurrencyTrackButton'
+
+
+
+
+
+
+
+--物品，菜单
+local function MenuList_Item(self, root)
+	local sub, sub2
+	sub=root:CreateCheckbox(
+		(Save().Hide and '|cff626262' or'')..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS),
+	function ()
+		return not Save().disabledItemTrack
+	end, function()
+		Save().disabledItemTrack = not Save().disabledItemTrack and true or nil
+		self:settings()
+	end)
+
+
+	local itemTab={}
+	for itemID in pairs(Save().item  or {}) do
+		table.insert(itemTab, {
+			itemID= itemID,
+			itemQuality=C_Item.GetItemQualityByID(itemID) or 0
+		})
+	end
+	table.sort(itemTab, function(a, b)
+		if a.itemQuality== b.itemQuality then
+			return a.itemID> b.itemID
+		else
+			return a.itemQuality> b.itemQuality
+		end
+	end)
+
+	for _, info in pairs(itemTab) do
+		sub2=sub:CreateCheckbox(
+			WoWTools_ItemMixin:GetName(info.itemID),
+		function(data)
+			return Save().item[data.itemID]
+		end, function(data)
+			Save().item[data.itemID]= not Save().item[data.itemID] and true or nil
+			self:settings()
+		end, {itemID=info.itemID})
+		WoWTools_SetTooltipMixin:Set_Menu(sub2)
+	end
+
+	sub:SetData({rightText=#itemTab})
+	WoWTools_MenuMixin:SetRightText(sub)
+
+
+
+--全部清除
+	sub:CreateDivider()
+	WoWTools_MenuMixin:ClearAll(sub, function()
+		Save().item={}
+		self:settings()
+	end)
+
+
+
+
+--使用物品
+	sub2=sub:CreateCheckbox(
+		WARNING_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM),
+	function()
+		return Save().itemButtonUse
+	end, function()
+		Save().itemButtonUse= not Save().itemButtonUse and true or nil
+	end)
+	sub2:SetTooltip(function(tooltip)
+		tooltip:AddLine('SecureActionButton')
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH))
+	end)
+
+	WoWTools_MenuMixin:SetScrollMode(sub)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--指定货币
+local function Init_CurrencyMenu(self, root)
+	local  sub, sub2
+
+	sub=root:CreateCheckbox(
+		(WoWTools_DataMixin.onlyChinese and '指定货币' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TOKENS)),
+	function()
+		return Save().indicato
+	end, function()
+		Save().indicato= not Save().indicato and true or nil
+		self:settings()
+		TokenFrame:Update()
+	end)
+
+
+	local tab={}
+	for currencyID in pairs(Save().tokens) do
+		table.insert(tab, currencyID)
+	end
+	table.sort(tab, function(a, b) return a.currencyID> b.currencyID end)
+
+	for _, currencyID in pairs(tab) do
+		sub2=sub:CreateCheckbox(
+			WoWTools_CurrencyMixin:GetName(currencyID, nil, nil) or currencyID,
+		function(data)
+			return Save().tokens[data.currencyID]
+
+		end, function(data)
+			Save().tokens[data.currencyID]= not Save().tokens[data.currencyID] and true or nil
+			TokenFrame:Update()
+			self:settings()
+		end, {currencyID=currencyID})
+
+		sub2:SetTooltip(function(tooltip, description)
+			tooltip:SetCurrencyByID(description.data.currencyID)
+			WoWTools_CurrencyMixin:Find(description.data.currencyID, nil)--选中提示
+		end)
+		sub2:SetOnLeave(function()
+			WoWTools_CurrencyMixin:Find(nil, nil)--选中提示
+			GameTooltip:Hide()
+		end)
+	end
+
+	sub:SetData({rightText=#tab})
+	WoWTools_MenuMixin:SetRightText(sub)
+
+--添加
+	sub:CreateDivider()
+	sub:CreateButton(
+		WoWTools_DataMixin.onlyChinese and '添加' or ADD,
+	function()
+		StaticPopup_Show('WoWTools_Currency', nil, nil, {
+		GetValue=function()
+		end, CheckValue=function(button1, currencyID)
+			button1:SetText(
+				Save().tokens[currencyID] and (WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
+				or (WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+			)
+		end, SetValue=function(currencyID)
+			Save().tokens[currencyID]=true
+			self:settings()
+		end})
+	end)
+
+
+--全部清除
+	sub:CreateDivider()
+	WoWTools_MenuMixin:ClearAll(sub, function()
+		Save().tokens={}
+		self:settings()
+		TokenFrame:Update()
+	end)
+
+	WoWTools_MenuMixin:SetScrollMode(sub)
+end
+
+
+
 
 
 
@@ -23,92 +202,22 @@ local function Init_Menu(self, root)
     local sub
 
 --显示
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
     function()
         return Save().str
     end, function ()
-		if Save().itemButtonUse and not PlayerIsInCombat() or not Save().itemButtonUse then
-			Save().str= not Save().str and true or false
-			WoWTools_CurrencyMixin:Init_TrackButton()
-		end
+		Save().str= not Save().str and true or false
+		self:settings()
     end)
-
---显示名称
-    root:CreateDivider()
-    root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
-    function ()
-        return Save().nameShow
-    end, function ()
-        Save().nameShow= not Save().nameShow and true or nil
-        WoWTools_CurrencyMixin:Init_TrackButton()
-    end)
-
---向右平移
-    root:CreateCheckbox(
-        (WoWTools_DataMixin.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT)..'|A:NPE_ArrowRight:0:0|a',
-    function ()
-        return Save().toRightTrackText
-    end, function ()
-        Save().toRightTrackText = not Save().toRightTrackText and true or false
-        WoWTools_CurrencyMixin:Init_TrackButton()
-    end)
-
-
---上
-    root:CreateCheckbox(
-        (WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a',
-    function ()
-        return Save().toTopTrack
-    end, function ()
-        Save().toTopTrack = not Save().toTopTrack and true or nil
-		WoWTools_CurrencyMixin:Init_TrackButton()
-    end)
-
---reload
-	--WoWTools_MenuMixin:Reload(sub)
-
-    --缩放
-    WoWTools_MenuMixin:Scale(self, root, function()
-        return Save().scaleTrackButton
-    end, function(value)
-        Save().scaleTrackButton= value
-        WoWTools_CurrencyMixin:Init_TrackButton()
-    end)
-
---FrameStrata
-    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
-		if _G['WoWToolsCurrencyTrackMainButton'] then
-			return _G['WoWToolsCurrencyTrackMainButton']:GetFrameStrata()==data
-		else
-			return Save().strata== data
-		end
-    end, function(data)
-        Save().strata= data
-        WoWTools_CurrencyMixin:Init_TrackButton()
-    end)
-
---背景, 透明度
-	WoWTools_MenuMixin:BgAplha(root,
-	function()--GetValue
-		return Save().trackBgAlpha or 0.5
-	end, function(value)--SetValue
-		Save().trackBgAlpha= value
-		WoWTools_CurrencyMixin:Init_TrackButton()
-	end, function()--RestFunc
-		Save().bgAlpha= nil
-		WoWTools_CurrencyMixin:Init_TrackButton()
-	end)--onlyRoot
-
---自动隐藏
-	sub=root:CreateCheckbox(
+	--自动隐藏
+	sub=sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
 	function()
 		return not Save().notAutoHideTrack
 	end, function()
 		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
-		WoWTools_CurrencyMixin:Init_TrackButton()
+		self:settings()
 	end)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
@@ -119,14 +228,100 @@ local function Init_Menu(self, root)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '载具控制' or BINDING_HEADER_VEHICLE)
 	end)
 
+	Init_CurrencyMenu(self, root)
+
+--物品
+	MenuList_Item(self, root)
+
+
 --重置位置
 	root:CreateDivider()
-	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
+	sub = WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
 		Save().point=nil
-		WoWTools_CurrencyMixin:Init_TrackButton()
+		self:settings()
 	end)
+
+
+
+
+
+
+
+
+
+
+
+	
+--显示名称
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
+    function ()
+        return Save().nameShow
+    end, function ()
+        Save().nameShow= not Save().nameShow and true or nil
+        self:settings()
+    end)
+
+--向右平移
+    sub:CreateCheckbox(
+        (WoWTools_DataMixin.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT),
+    function ()
+        return Save().toRightTrackText
+    end, function ()
+        Save().toRightTrackText = not Save().toRightTrackText and true or false
+        self:settings()
+    end)
+
+
+--上
+    sub:CreateCheckbox(
+        (WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a',
+    function ()
+        return Save().toTopTrack
+    end, function ()
+        Save().toTopTrack = not Save().toTopTrack and true or nil
+		self:settings()
+    end)
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, sub, function()
+        return Save().scaleTrackButton
+    end, function(value)
+        Save().scaleTrackButton= value
+        self:settings()
+    end)
+
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
+		if _G['WoWToolsCurrencyTrackMainButton'] then
+			return _G['WoWToolsCurrencyTrackMainButton']:GetFrameStrata()==data
+		else
+			return Save().strata== data
+		end
+    end, function(data)
+        Save().strata= data
+        self:settings()
+    end)
+
+--背景, 透明度
+	WoWTools_MenuMixin:BgAplha(sub,
+	function()--GetValue
+		return Save().trackBgAlpha or 0.5
+	end, function(value)--SetValue
+		Save().trackBgAlpha= value
+		self:settings()
+	end, function()--RestFunc
+		Save().bgAlpha= nil
+		self:settings()
+	end)--onlyRoot
+
+
+
+
+
 --重新加载UI
-	WoWTools_MenuMixin:Reload(root)
+	sub:CreateDivider()
+	WoWTools_MenuMixin:Reload(sub)
 end
 
 
@@ -178,17 +373,20 @@ local qualityToIconBorderAtlas = AUCTION_HOUSE_ITEM_QUALITY_ICON_BORDER_ATLASES 
 --###########
 --物品
 local function Get_Item(itemID)
+	WoWTools_DataMixin:Load(itemID, 'item')
+
 	local text
 	local icon= select(5, C_Item.GetItemInfoInstant(itemID))
-	local num= C_Item.GetItemCount(itemID , true, true, true, true)
-	local bag= C_Item.GetItemCount(itemID)
+	local numText= WoWTools_ItemMixin:GetCount(itemID, {notZero=true})
+	--local num= C_Item.GetItemCount(itemID , true, true, true, true)
+	--local bag= C_Item.GetItemCount(itemID)
 	local name= C_Item.GetItemNameByID(itemID)
 	local itemQuality
-	if num>0 then
+	--if num>0 then
 
 		itemQuality = C_Item.GetItemQualityByID(itemID)
 
-		local numText
+		--[[local numText
 		if bag==num then
 			numText= WoWTools_DataMixin:MK(num, 3)
 		else
@@ -202,7 +400,7 @@ local function Get_Item(itemID)
 					numText= (bank>0 and bank..'|A:Levelup-Icon-Bag:0:0|a' or '')..(bag>0 and bag..'|A:bag-main:0:0|a' or '')
 				end
 			end
-		end
+		end]]
 
 
 		if Save().nameShow then
@@ -218,28 +416,41 @@ local function Get_Item(itemID)
 	--设置颜色
 			text= WoWTools_ItemMixin:GetColor(itemQuality, {text= text})
 		end
-	end
+	--
 
 	return text, icon, itemQuality, name
 end
 
 
 
-
-
 local function Set_ItemTexture(btn, icon)
-	if btn.texture then
+	if icon then
 		btn.texture:SetTexture(icon or 0)
 	else
-		btn:SetNormalTexture(icon or 0)--设置，图片
-	end
-	if not icon and btn.itemID then
 		ItemEventListener:AddCancelableCallback(btn.itemID, function()
-            Set_ItemTexture(btn, select(5, C_Item.GetItemInfoInstant(btn.itemID)))
-        end)
+			if btn.itemID then
+				Set_ItemTexture(btn, select(5, C_Item.GetItemInfoInstant(btn.itemID)))
+			end
+		end)
 	end
 end
 
+local function Set_ItemAttribute(btn)
+	ItemEventListener:AddCancelableCallback(btn.itemID, function()
+		if btn.itemID then
+			if btn:CanChangeAttribute() then
+				btn:SetAttribute('item',  C_Item.GetItemNameByID(btn.itemID))
+			else
+				EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+					if btn.itemID then
+						btn:SetAttribute('item',  C_Item.GetItemNameByID(btn.itemID))
+					end
+					EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+				end)
+			end
+		end
+	end)
+end
 
 
 
@@ -327,14 +538,6 @@ end
 
 
 
-function WoWTools_CurrencyMixin:Set_TrackButton_Pushed(show, label)--提示
-    if TrackButton then
-		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
-	end
-	if label then
-		label:SetAlpha(show and 0.5 or 1)
-	end
-end
 
 
 
@@ -344,63 +547,13 @@ end
 
 
 
-
-
-
-
-
-
-local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
-    local btn= WoWTools_ButtonMixin:Cbtn(Frame, {
-		size=23,
-		isSecure=itemButtonUse,
-		isType2=itemButtonUse,
-		name=Name..index,
-		setID=index,
-	})
-    btn.itemButtonUse= itemButtonUse
-
-    if itemButtonUse then
-		if not btn.texture then
-			btn.texture= btn:CreateTexture(nil,'BORDER')
-			btn.texture:SetSize(23,23)
-			btn.texture:SetPoint('CENTER',-0.5,0.5)
-			btn.border=btn:CreateTexture(nil, 'ARTWORK')
-			btn.border:SetSize(27,27)
-			btn.border:SetPoint('CENTER',-0.5,0.3)
-		end
-
-    elseif tables.itemID then
-		if not btn.border then
-			btn.border=btn:CreateTexture(nil, 'ARTWORK')
-			btn.border:SetAllPoints()
-		end
-    end
-
-
+local function Set_ScripButton(btn)
 
     btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlight') -- WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
 
-    btn.endTokenIndex= endTokenIndex
-	function btn:settings()
-		local id= self:GetID()
-		self:ClearAllPoints()
-		if Save().toTopTrack then
-			self:SetPoint("BOTTOM", _G[Name..(id-1)] or TrackButton, 'TOP', 0,  (self.endTokenIndex>1 and id==self.endTokenIndex) and 10 or 0) --货物，物品，分开
-		else
-			self:SetPoint("TOP", _G[Name..(id-1)] or TrackButton, 'BOTTOM', 0,  (self.endTokenIndex>1 and id==self.endTokenIndex) and -10 or 0) --货物，物品，分开
-		end
-		self.text:ClearAllPoints()
- 		if Save().toRightTrackText then
-            self.text:SetPoint('LEFT', self, 'RIGHT')
-        else
-            self.text:SetPoint('RIGHT', self, 'LEFT')
-        end
-	end
 
     btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
-        WoWTools_CurrencyMixin:Set_TrackButton_Pushed(false, self.text)--提示
         if self.itemID then
             WoWTools_BagMixin:Find(false)--查询，背包里物品
 		elseif self.currencyID then
@@ -416,26 +569,30 @@ local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
         end
         GameTooltip:ClearLines()
         if self.itemID then
+
             GameTooltip:SetItemByID(self.itemID)
             GameTooltip:AddLine(' ')
-            local col= C_Item.GetItemCount(self.itemID)==0 and '|cff626262' or '|cnGREEN_FONT_COLOR:'
+
+			local notFind= C_Item.GetItemCount(self.itemID, false, false, true, false)==0
+            local col= notFind and '|cff626262' or '|cnGREEN_FONT_COLOR:'
+
             if self.itemButtonUse then
                 GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM), WoWTools_DataMixin.Icon.left)
             end
+
+			col= C_Item.IsEquippedItem(self.itemID) and '|cff626262' or col
+
             GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..WoWTools_DataMixin.Icon.left))
             WoWTools_BagMixin:Find(true, {itemID=self.itemID})--查询，背包里物品
+
         elseif self.currencyID then
             GameTooltip:SetCurrencyByID(self.currencyID)
             local link= C_CurrencyInfo.GetCurrencyLink(self.currencyID) or (WoWTools_DataMixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK)
             GameTooltip:AddDoubleLine(link..'|A:transmog-icon-chat:0:0|a', WoWTools_DataMixin.Icon.left)
 			WoWTools_CurrencyMixin:Find(self.currencyID, nil)--选中提示
-
-        elseif self.index then
-            GameTooltip:SetCurrencyToken(self.index)
         end
         GameTooltip:Show()
-		self:set_item_cool()
-        WoWTools_CurrencyMixin:Set_TrackButton_Pushed(true, self.text)--提示
+
     end)
 
     btn:SetScript("OnMouseDown", function(self)
@@ -443,48 +600,52 @@ local function Create_Button(index, endTokenIndex, itemButtonUse, tables)
             WoWTools_ChatMixin:Chat(C_CurrencyInfo.GetCurrencyLink(self.currencyID), nil, true)
             return
         end
-        if not self.itemID or not IsAltKeyDown() or C_Item.GetItemCount(self.itemID)==0 then return end
 
-        for bag= Enum.BagIndex.Backpack, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-            for slot=1, C_Container.GetContainerNumSlots(bag) do
-                if C_Container.GetContainerItemID(bag, slot)== self.itemID then
-                    C_Container.PickupContainerItem(bag, slot)
-                    return
-                end
-            end
+        if not self.itemID or not IsAltKeyDown() or C_Item.GetItemCount(self.itemID)==0 then
+			return
+		end
+
+		
+		local bag, slot= select(2, WoWTools_BagMixin:Ceca(self.itemID, {findAll=true}))
+		if bag and slot then
+			C_Container.PickupContainerItem(bag, slot)
         end
     end)
 
-    function btn:set_item_cool()
-        WoWTools_CooldownMixin:SetFrame(self, {itemID=self.itemID, type= self.itemButtonUs })
-    end
-    function btn:set_btn_Event()
-        if self.itemID then
-            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-        end
-    end
-    btn:SetScript('OnEvent', function(self)
-        self:set_item_cool()
-    end)
+	function btn:set_item_cool()
+		WoWTools_CooldownMixin:SetFrame(self, {itemID=self.itemID, type= self.itemButtonUs })
+	end
+	function btn:set_btn_Event()
+		if self.itemID then
+			self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+		end
+	end
+	btn:SetScript('OnEvent', btn.set_item_cool)
 
-    btn:SetScript('OnShow', function(self)
-        self:set_item_cool()
-        self:set_btn_Event()
-    end)
-    btn:SetScript('OnHide', function(self)
-        self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
-    end)
-    btn:set_btn_Event()
+	btn:SetScript('OnShow', function(self)
+		self:set_item_cool()
+		self:set_btn_Event()
+	end)
+	btn:SetScript('OnHide', function(self)
+		self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
+	end)
 
-    if itemButtonUse then--使用物品
-        btn:SetAttribute('type', 'item')
-    end
-    btn.itemButtonUse= itemButtonUse--使用物品
-
-    TrackButton.allNumButton= index
-
-    return btn
+	if btn.itemID then
+		if btn.border then
+			btn.border:SetAlpha(1)
+		elseif not btn.border then
+			btn.texture= btn:CreateTexture(nil, 'BORDER')
+			btn.texture:SetAllPoints()
+			btn.border= btn:CreateTexture(nil, 'ARTWORK')
+			btn.border:SetAllPoints()
+		end
+	end
 end
+
+
+
+
+
 
 
 
@@ -502,20 +663,22 @@ end
 
 
 local function Init_Button()
-	if not TrackButton:IsShown() or WoWTools_FrameMixin:IsLocked(TrackButton) then
+	if not Frame:IsShown() or WoWTools_FrameMixin:IsLocked(Frame) then
         return
 	end
 
+	TrackButton.pool:ReleaseAll()
+	TrackButton.itemPool:ReleaseAll()
+	TrackButton.itemPool2:ReleaseAll()
+
 	local tab={}
-	local endTokenIndex=1--货物，物品，分开
 	local bat= InCombatLockdown()
 
 	if Save().indicato then
-		for currencyID, _ in pairs(Save().tokens) do
+		for currencyID in pairs(Save().tokens) do
 			local text, icon= Get_Currency(currencyID, nil)--货币
 			if text then
 				table.insert(tab, {text= text, icon=icon, currencyID=currencyID})
-				endTokenIndex= endTokenIndex+1--货物，物品，分开
 			end
 		end
 		table.sort(tab, function(a, b)
@@ -526,7 +689,6 @@ local function Init_Button()
 			local text, icon, currencyID = Get_Currency(nil, index)--货币
 			if text then
 				table.insert(tab, {text= text, icon=icon, index=index, currencyID= currencyID})
-				endTokenIndex= endTokenIndex+1--货物，物品，分开
 			end
 		end
 	end
@@ -552,94 +714,84 @@ local function Init_Button()
 				table.insert(tab, tables)
 			end
 		end
+
 		if Save().itemButtonUse then
 			Frame:RegisterEvent('PLAYER_REGEN_ENABLED')
 		end
 	end
 
-	--local size
 	local bgWidth= 0
+	local toTopTrack= Save().toTopTrack
+	local toRightTrackText= Save().toRightTrackText
+	local last= TrackButton
+
+
 
 	for index, tables in pairs(tab) do
-        local itemButtonUse=(Save().itemButtonUse and tables.itemID) and true or nil--使用物品
-		local btn= _G[Name..index] or Create_Button(index, endTokenIndex, itemButtonUse, tables)
+		local itemID= tables.itemID
+        local itemButtonUse=(Save().itemButtonUse and itemID) and true or nil--使用物品
 
-		--size= itemButtonUse and 22 or 14
-		--btn:SetSize(23, 23)
+		local btn
+		if itemButtonUse then
+			btn= TrackButton.itemPool2:Acquire()
+			btn:SetAttribute('type', 'item')
+			if tables.name then
+				btn:SetAttribute('item',  tables.name)
+			else
+				Set_ItemAttribute(btn)
+			end
+
+		elseif itemID then
+			btn= TrackButton.itemPool:Acquire()
+		else
+			btn= TrackButton.pool:Acquire()
+		end
 
 
-		btn.itemID= tables.itemID
-		btn.index= tables.index
+		btn.itemButtonUse= itemButtonUse
+		btn.itemID= itemID
+		btn.index= index
 		btn.name= tables.name
 		btn.currencyID= tables.currencyID
 
-		local can= btn:CanChangeAttribute()
 
-		Set_ItemTexture(btn, tables.icon)
+		if not btn.text then
+			Set_ScripButton(btn)
+		end
 
 		if btn.border then
-			local atlas= btn.itemButtonUse and qualityToIconBorderAtlas[tables.itemQuality] or WoWTools_DataMixin.Icon[tables.itemQuality]--qualityToIconBorderAtlas4[tables.itemQuality]
-			if atlas then
-				btn.border:SetAtlas(atlas)
-			end
-			if can then
-				btn:SetShown(atlas and true or false)
-			end
+			btn:set_item_cool()
+			btn.border:SetAtlas(itemButtonUse and qualityToIconBorderAtlas[tables.itemQuality] or WoWTools_DataMixin.Icon[tables.itemQuality] or WoWTools_DataMixin.Icon[1])
+			Set_ItemTexture(btn, tables.icon)
+		else
+			btn:SetNormalTexture(tables.icon or 0)
 		end
 
 		btn.text:SetText(tables.text)--设置，文本
 
-		btn:set_item_cool()
 
-		if itemButtonUse and can then--使用物品
-			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
+		local y= (not last.itemID and btn.itemID) and 10 or 0
+		if toTopTrack then
+			btn:SetPoint("BOTTOM", last, 'TOP', 0,  y)
+		else
+			btn:SetPoint("TOP", last, 'BOTTOM', 0,  -y)
 		end
 
-		if btn.itemButtonUse and can or not btn.itemButtonUse then
-			btn:settings()
-			btn:SetShown(true)
-		end
+		btn.text:ClearAllPoints()
+ 		if toRightTrackText then
+            btn.text:SetPoint('LEFT', btn, 'RIGHT')
+        else
+            btn.text:SetPoint('RIGHT', btn, 'LEFT')
+        end
 
 		bgWidth= math.max(btn.text:GetStringWidth() + 23, bgWidth)
+		btn:Show()
+		last= btn
 	end
 
-	TrackButton.numButton= #tab
-	TrackButton.bgWidth= bgWidth
-	TrackButton:set_bg()
-
-	if TrackButton.endTokenIndex and TrackButton.endTokenIndex~= endTokenIndex then--货物，物品，分开
-		for i= 1, TrackButton.allNumButton do
-			local btn= _G[Name..i]
-			if btn and btn:CanChangeAttribute() then
-				btn:ClearAllPoints()
-				if endTokenIndex>1 and i==endTokenIndex then--货物，物品，分开
-					btn:SetPoint("TOP", _G[Name..(i-1)] or TrackButton, 'BOTTOM',0, -10)
-				else
-					btn:SetPoint("TOP", _G[Name..(i-1)] or TrackButton, 'BOTTOM',0, -1)
-				end
-			end
-		end
-	end
-	TrackButton.endTokenIndex= endTokenIndex
-
-
-
-	for i= #tab+1, TrackButton.allNumButton do--隐藏，多余
-		local btn= _G[Name..i]
-		if btn then
-			btn.text:SetText('')
-			btn:SetNormalTexture(0)
-			if btn:CanChangeAttribute() then
-				btn:SetShown(false)
-			end
-			btn.itemID= nil
-			btn.index= nil
-			btn.name= nil
-			btn.currencyID= nil
-		end
-	end
-
-	tab=nil
+	--TrackButton.numButton= #tab
+	--TrackButton.bgWidth= bgWidth
+	--TrackButton:set_bg()
 end
 
 
@@ -684,40 +836,42 @@ local function Init()
 
 	TrackButton= CreateFrame('Button', 'WoWToolsCurrencyTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
 
-	TrackButton.allNumButton=0
-
 	Frame= CreateFrame('Frame', 'WoWToolsCurrencyTrackMainFrame', TrackButton)
-	Frame:SetSize(1, 1)
-	Frame:SetPoint('BOTTOM')
 
-	Frame:SetScript('OnShow', function()
+	TrackButton.pool= CreateFramePool('Button', Frame, 'WoWToolsButtonTemplate')
+	TrackButton.itemPool= CreateFramePool('Button', Frame, 'WoWToolsButtonTemplate')
+    TrackButton.itemPool2= CreateFramePool('Button', Frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
+
+
+	Frame:SetSize(1, 1)
+	Frame:SetPoint('CENTER')
+	Frame:Hide()
+
+	Frame:SetScript('OnShow', function(self)
+		self:RegisterEvent('BAG_UPDATE_DELAYED')
+		self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
 		Init_Button()
 	end)
 
-	Frame:RegisterEvent('BAG_UPDATE_DELAYED')
-	Frame:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+
+
 	Frame:SetScript('OnEvent', function(self, event)
 		if event=='PLAYER_REGEN_ENABLED' then
 			self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 		end
-		Init_Button()
-	end)
-	function Frame:set_shown()
-		if not WoWTools_FrameMixin:IsLocked(self) then
-			self:SetShown(Save().str)
+		if self:IsShown() then
+			Init_Button()
 		end
-	end
-	Frame:set_shown()
-
+	end)
 
 	TrackButton.Bg= Frame:CreateTexture(nil, "BACKGROUND")
-	TrackButton.numButton=0
+
 	TrackButton.bgWidth=0
 	function TrackButton:set_bgalpha()
 		self.Bg:SetColorTexture(0, 0, 0, Save().trackBgAlpha or 0.5)
 	end
 	function TrackButton:set_bg()
-		if self.numButton==0 then
+		--[[if self.numButton==0 then
 			self.Bg:SetShown(false)
 			return
 		end
@@ -740,7 +894,7 @@ local function Init()
 			end
 		end
 		self.Bg:SetWidth(self.bgWidth+1)
-		self.Bg:SetShown(true)
+		self.Bg:SetShown(true)]]
 	end
 
 	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
@@ -790,7 +944,9 @@ local function Init()
 					or PlayerIsInCombat()
 				)
 			)
+		self:set_texture()
 		self:SetShown(not hide)
+		Frame:SetShown(Save().str and not hide)
 	end
 
 	function TrackButton:set_strata()
@@ -837,16 +993,16 @@ local function Init()
 			)
 			self:set_texture(select(5, C_Item.GetItemInfoInstant(itemID)))
 		else
-			local canFrame= Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
 			GameTooltip:AddLine(WoWTools_CurrencyMixin.addName..WoWTools_DataMixin.Icon.icon2)
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, WoWTools_DataMixin.Icon.left)
 			GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
 			GameTooltip:AddLine(' ')
-			GameTooltip:AddDoubleLine(canFrame..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..WoWTools_DataMixin.Icon.right)
-			GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(Frame:IsShown(), true)..' |cffffffff#'..self.numButton, WoWTools_DataMixin.Icon.mid)
+			GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..WoWTools_DataMixin.Icon.right)
+			local num= self.pool:GetNumActive()+ self.itemPool:GetNumActive()+ self.itemPool2:GetNumActive()
+			GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(Frame:IsShown(), true), '|cffffffff#'..num..WoWTools_DataMixin.Icon.mid)
 			GameTooltip:AddLine(' ')
-			GameTooltip:AddDoubleLine(canFrame..(WoWTools_DataMixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS), WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
+			GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS), WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
 		end
 		GameTooltip:Show()
 	end
@@ -922,7 +1078,7 @@ local function Init()
 		if not WoWTools_FrameMixin:IsLocked(self) then
 			Save().str= d==-1
 			self:set_texture()
-			Frame:set_shown()
+			self:set_shown()
 			self:set_Tooltip()
 		end
 	end)
@@ -933,7 +1089,6 @@ local function Init()
 		self:set_point()
 		self:set_scale()
 		self:set_event()
-		self:set_texture()
 		self:set_bgalpha()
 		Init_Button()
 	end

@@ -9,7 +9,8 @@ local MaxTabs={}
 
 
 
-local function Currency_Max(curID)--已达到资源上限
+local function Currency_Max(_, curID)--已达到资源上限
+
     local tab, num= {}, 0
     if curID then
         if MaxTabs[curID] then
@@ -89,9 +90,7 @@ function WoWTools_CurrencyMixin:Init_MaxTooltip()
         end
 
     elseif not OwerID then
-        OwerID= EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function(_, currencyID)
-            Currency_Max(currencyID)
-        end)
+        OwerID= EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", Currency_Max)
 
         C_Timer.After(2, function() Currency_Max() end)
     end

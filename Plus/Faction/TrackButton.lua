@@ -7,9 +7,6 @@ local TrackButton, Frame
 local Name='WoWToolsFactionTrackButton'
 local NumButton= 0
 
-local function Set_TrackButton_Pushed(show, label)--TrackButton，提示
-	
-end
 
 
 
@@ -171,7 +168,6 @@ local function Crated_Button(index)
     end)
     btn:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Faction(self)
-        Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
 		TrackButton:SetButtonState('PUSHED')
 		self.text:SetAlpha(0.5)
 		WoWTools_FactionMixin:Find(self.factionID)

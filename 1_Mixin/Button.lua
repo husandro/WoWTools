@@ -202,7 +202,8 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 --添加 Border
         if isBorder then
             btn.border=btn:CreateTexture(nil, 'ARTWORK')
-            btn.border:SetAllPoints(btn)
+            btn.border:SetPoint('TOPLEFT', -1 ,1)
+            btn.border:SetPoint('BOTTOMRIGHT', 1, -1)
             btn.border:SetAtlas('bag-reagent-border')
             WoWTools_TextureMixin:SetAlphaColor(btn.border, nil, nil, 0.3)
         end

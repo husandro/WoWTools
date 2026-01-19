@@ -224,15 +224,12 @@ Plus\Faction\z_MajorFactionRenownFrame.lua
 
 ##货币面板
 Plus\Currency\0_CurrencyMixin.lua
-Plus\Currency\1_Currency.lua
-Plus\Currency\Tokens_Button_Init.lua
-Plus\Currency\Tokens_Button_Other.lua
-Plus\Currency\Tokens_Button_Menu.lua
-Plus\Currency\TrackButton_Currency_Init.lua
+Plus\Currency\1_Init.lua
+Plus\Currency\2_Plus.lua
 Plus\Currency\z_CurrencyTransferMenu.lua
-Plus\Currency\z_ItemInteractionFrame.lua
+##Plus\Currency\z_ItemInteractionFrame.lua
 Plus\Currency\z_Max_Tooltip.lua
-Plus\Currency\z_ScrollBox.lua
+Plus\Currency\z_TrackButton.lua
 
 ##属性
 Plus\Attributes\0_Init.lua

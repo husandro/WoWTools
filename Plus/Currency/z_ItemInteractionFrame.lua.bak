@@ -1,0 +1,115 @@
+
+local function Save()
+	return WoWToolsSave['Currency2']
+end
+
+
+
+
+
+
+
+
+--#############
+--套装,转换,货币
+--Blizzard_ItemInteractionUI.lua
+
+
+
+
+
+
+local function Init()
+
+	--记录，套装，转换，货币
+	if Save().disabled or Save().notPlus then
+		WoWTools_DataMixin:Hook(ItemInteractionFrame, 'SetupChargeCurrency', function()--C_ItemInteraction.GetChargeInfo()
+			local itemInfo= C_ItemInteraction.GetItemInteractionInfo()
+			if itemInfo then
+				Save().ItemInteractionID= itemInfo.currencyTypeId
+				WoWTools_DataMixin.CurrencyUpdateItemLevelID= itemInfo.currencyTypeId
+			end
+		end)
+		Init=function()end
+		return
+	end
+
+
+
+
+
+	WoWTools_DataMixin:Hook(ItemInteractionFrame, 'SetupChargeCurrency', function(self)
+		local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
+
+		local currencyID= itemInfo.currencyTypeId
+		if currencyID then
+			Save().ItemInteractionID= currencyID
+			WoWTools_DataMixin.CurrencyUpdateItemLevelID= currencyID
+		else
+			currencyID= WoWTools_DataMixin.CurrencyUpdateItemLevelID--套装，转换，货币
+		end
+
+
+		if not currencyID then
+			return
+		end
+
+		local info= (not Save().notPlus) and C_CurrencyInfo.GetCurrencyInfo(currencyID)
+		local text
+		if info and info.quantity and (info.discovered or info.quantity>0) then
+			text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
+			text= text.. info.quantity
+			text= info.maxQuantity and text..'/'..info.maxQuantity or text
+			if not self.ItemInteractionFrameCurrencyText then
+				self.ItemInteractionFrameCurrencyText= WoWTools_LabelMixin:Create(self)
+				self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 55, -38)
+				self.ItemInteractionFrameCurrencyText:EnableMouse(true)
+				self.ItemInteractionFrameCurrencyText:SetScript('OnEnter', function(self2)
+					if self2.chargeCurrencyTypeId then
+						GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+						GameTooltip:ClearLines()
+						GameTooltip:SetCurrencyByID(self2.chargeCurrencyTypeId)
+						GameTooltip:AddLine(' ')
+						GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CurrencyMixin.addName)
+						GameTooltip:Show()
+					end
+				end)
+				self.ItemInteractionFrameCurrencyText:SetScript('OnLeave', GameTooltip_Hide)
+			end
+			self.ItemInteractionFrameCurrencyText.chargeCurrencyTypeId= currencyID
+
+			local chargeInfo = C_ItemInteraction.GetChargeInfo()
+			local timeToNextCharge = chargeInfo.timeToNextCharge
+
+			if timeToNextCharge and (self.interactionType == Enum.UIItemInteractionType.ItemConversion) then
+				text= text ..' |cnGREEN_FONT_COLOR:'..(WoWTools_TimeMixin:SecondsToClock(timeToNextCharge, true) or '')..'|r'
+			end
+
+			if info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0 then
+				text= text..' ('..info.quantityEarnedThisWeek..'/'..info.maxWeeklyQuantity..')'
+			end
+		end
+
+		if self.ItemInteractionFrameCurrencyText then
+			self.ItemInteractionFrameCurrencyText:SetText(text or '')
+		end
+	end)
+
+	Init=function()end
+end
+
+
+
+
+function WoWTools_CurrencyMixin:Init_ItemInteractionFrame()
+    if C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
+		Init()
+	else
+		EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+			if arg1=='Blizzard_ItemInteractionUI' then
+				EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+			end
+		end)
+	end
+end
+

@@ -1,65 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\..\..\..\WoW\Data\Interface\AddOns\Blizzard_SharedXML\UI.xsd">
-
-    <Button name="WoWToolsButtonTemplate" virtual="true">
+    <Button name="WoWToolTemplate" virtual="true">
         <Size x="23" y="23"/>
         <PushedTexture atlas="Forge-ColorSwatchHighlight"/>
         <HighlightTexture atlas="Forge-ColorSwatchSelection"/>        
-        <Scripts>
-            <OnLoad function="WoWToolsButton_OnLoad"/>
-            <OnLeave function="WoWToolsButton_OnLeave"/>
-            <OnEnter function="WoWToolsButton_OnEnter"/>
-        </Scripts>
     </Button>
 
-    <Button name="WoWToolsButton2Template" virtual="true">
-        <Size x="23" y="23"/>
-        <HighlightTexture atlas="bag-border" setAllPoints="true"/>
-        <PushedTexture atlas="bag-border-highlight" setAllPoints="true"/>>
-        <Layers>
-            <Layer level="BORDER">
-                <Texture parentKey="texture" setAllPoints="true"/>>
-            </Layer>
-            <Layer level="ARTWORK">
-                <Texture parentKey="border" atlas='bag-reagent-border' setAllPoints="true"/>
-            </Layer>
-            <Layer level="OVERLAY">
-                <MaskTexture parentKey="IconMask" atlas="CircleMaskScalable" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
-                <Anchors>
-                    <Anchor point="TOPLEFT" x="0" y="0"/>
-                    <Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
-                </Anchors>
-                <MaskedTextures>
-                    <MaskedTexture childKey="texture"/>
-                </MaskedTextures>
-				</MaskTexture>
-            </Layer>
-        </Layers>
-        <Scripts>
-            <OnLoad>
-                WoWTools_TextureMixin:SetAlphaColor(self.border, nil, nil, 0)
-                WoWToolsButton_OnLoad(self)
-            </OnLoad>
-            <OnLeave function="WoWToolsButton_OnLeave"/>
-            <OnEnter function="WoWToolsButton_OnEnter"/>
-        </Scripts>
-    </Button>
-
-
-    <DropdownButton name="WoWToolsMenuTemplate" virtual="true">
-        <Size x="23" y="23"/>
-        <NormalTexture atlas="ui-questtrackerbutton-filter"/>
-        <Scripts>
-            <OnLoad>
-                WoWToolsButton_MenuOnLoad(self)
-                WoWTools_TextureMixin:SetButton(self, {alpha=0.5})
-            </OnLoad>
-            <OnLeave function="WoWToolsButton_OnLeave"/>
-            <OnEnter function="WoWToolsButton_OnEnter"/>
-        </Scripts>
-    </DropdownButton>
-
-    <DropdownButton name="WoWToolsMenu2Template" virtual="true">
+    <Button name="WoWTool2Template" virtual="true">
         <Size x="23" y="23"/>        
         <HighlightTexture atlas="Azerite-Trait-RingGlow">
             <Anchors>
@@ -75,22 +22,15 @@
         </PushedTexture>
         <Layers>
             <Layer level="BORDER">
-                <Texture parentKey="texture">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" x="-1" y="2"/>
-                        <Anchor point="BOTTOMRIGHT" x="1" y="-1"/>
-                    </Anchors>
-                </Texture>
+                <Texture parentKey="texture" setAllPoints="true"/>
             </Layer>
             <Layer level="ARTWORK">
                 <Texture parentKey="border" atlas='bag-reagent-border'>
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="-7" y="7"/>
-                        <Anchor point="BOTTOMRIGHT" x="7" y="-7"/>
+                        <Anchor point="TOPLEFT" x="-3" y="3"/>
+                        <Anchor point="BOTTOMRIGHT" x="3" y="-3"/>
                     </Anchors>
                 </Texture>
-            </Layer>
-            <Layer level="OVERLAY">
                 <MaskTexture parentKey="IconMask" setAllPoints="true" atlas="CircleMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
 					<MaskedTextures>
 						<MaskedTexture childKey="texture"/>
@@ -98,10 +38,47 @@
 				</MaskTexture>
             </Layer>
         </Layers>
+    </Button>
+
+
+
+
+    <Button name="WoWToolsButtonTemplate" inherits="WoWToolTemplate" virtual="true">     
+        <Scripts>
+            <OnLoad function="WoWToolsButton_OnLoad"/>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
+        </Scripts>
+    </Button>
+
+    <Button name="WoWToolsButton2Template" inherits="WoWTool2Template"  virtual="true">
         <Scripts>
             <OnLoad>
-                self:EnableMouseWheel(true)
-                self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+                WoWTools_TextureMixin:SetAlphaColor(self.border, nil, nil, 0)
+                WoWToolsButton_OnLoad(self)
+            </OnLoad>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
+        </Scripts>
+    </Button>
+
+
+    <DropdownButton name="WoWToolsMenuTemplate" inherits="WoWToolTemplate" virtual="true">
+        <NormalTexture atlas="ui-questtrackerbutton-filter"/>
+        <Scripts>
+            <OnLoad>
+                WoWToolsMenu_OnLoad(self)
+                WoWTools_TextureMixin:SetAlphaColor(self:GetNormalTexture(), nil, nil, true)
+            </OnLoad>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
+        </Scripts>
+    </DropdownButton>
+
+    <DropdownButton name="WoWToolsMenu2Template" inherits="WoWTool2Template" virtual="true">
+        <Scripts>
+            <OnLoad>
+                WoWToolsMenu_OnLoad(self)
                 WoWTools_TextureMixin:SetAlphaColor(self.border, nil, nil, 0)
             </OnLoad>
             <OnLeave function="WoWToolsButton_OnLeave"/>

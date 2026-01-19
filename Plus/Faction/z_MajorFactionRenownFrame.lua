@@ -387,6 +387,9 @@ local function Init()
     Button:set_scale()
     Button:set_texture()
 
+    Init=function ()
+        
+    end
 end
 
 

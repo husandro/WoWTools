@@ -10,7 +10,9 @@ end
 
 --货币，转移
 local function Init()
-
+	if not Save().notPlus  then
+		return
+	end
 
 --有时会有BUG, 加个 重新加载UI 按钮
 	local reload= CreateFrame('Button', nil, CurrencyTransferMenuCloseButton, 'WoWToolsButtonTemplate')
@@ -31,7 +33,7 @@ local function Init()
 	end)
 
 	WoWTools_DataMixin:Hook(CurrencyTransferLog.ScrollBox, 'Update', function(self)
-		if not self:HasView() or Save().notPlus or WoWTools_FrameMixin:IsLocked(self:GetParent()) then
+		if not self:HasView() then
             return
         end
 
@@ -62,31 +64,25 @@ local function Init()
 		end
 	end)
 
-	WoWTools_DataMixin:Hook(content.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
-		if not Save().notPlus and not IsLocked() then
-			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
-			if name~='' then
-				self.PlayerName:SetFormattedText(WoWTools_DataMixin.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
-			end
+	WoWTools_DataMixin:Hook(content.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示
+		local name= WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
+		if name~='' then
+			self.PlayerName:SetFormattedText(WoWTools_DataMixin.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
 		end
 	end)
 
 	WoWTools_DataMixin:Hook(content.SourceBalancePreview, 'SetCharacterName', function(self)
-		if not Save().notPlus and not IsLocked() then
-			local data= self:GetParent().sourceCharacterData or {}
-			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.characterGUID, nil, {reName=true, reRealm=true})
-			if name~='' then
-				self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnWARNING_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
-			end
+		local data= self:GetParent().sourceCharacterData or {}
+		local name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.characterGUID, nil, {reName=true, reRealm=true})
+		if name~='' then
+			self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnWARNING_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 		end
     end)
 
     WoWTools_DataMixin:Hook(content.PlayerBalancePreview, 'SetCharacterName', function(self)
-		if not Save().notPlus and not IsLocked() then
-			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true, reRealm=true})
-			if name~='' then
-				self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
-			end
+		local name= WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true, reRealm=true})
+		if name~='' then
+			self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 		end
     end)
 
@@ -94,7 +90,7 @@ local function Init()
 	content.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0, 1, 0)
 
 --总数
-	CurrencyTransferMenu.wowNumLabel= WoWTools_LabelMixin:Create(content, {color={r=0,g=0.8,b=1}, size=16, mouse=true})
+	CurrencyTransferMenu.wowNumLabel= CurrencyTransferMenu:CreateFontString(nil, 'BORDER', 'GameFontNormal') -- WoWTools_LabelMixin:Create(content, {color={r=0,g=0.8,b=1}, size=16, mouse=true})
 	CurrencyTransferMenu.wowNumLabel:SetPoint('BOTTOM', content.SourceSelector.Dropdown, 'TOP', 0, 2)
 	CurrencyTransferMenu.wowNumLabel:SetScript('OnLeave', function(self)
 		GameTooltip_Hide()
@@ -106,18 +102,17 @@ local function Init()
 	end)
 
 	WoWTools_DataMixin:Hook(CurrencyTransferMenu, 'FullRefresh', function(self)
-		if IsLocked() or not self.currencyInfo or Save().notPlus then
-			self.wowNumLabel:SetText('')
-			return
-		end
 
-		local text= '|T'..(self.currencyInfo.iconFileID or 0)..':0|t'
+		local text, currencyID
+		if self.currencyInfo then
+			text= '|T'..(self.currencyInfo.iconFileID or 0)..':0|t'
 
-		local currencyID= self.currencyInfo.currencyID-- self:GetCurrencyID()
-		if currencyID and currencyID>0 then
-			local num, tab= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
-			if num>0 then
-				text= text..#tab..WoWTools_DataMixin.Icon.wow2..WoWTools_DataMixin:MK(num, 3)
+			currencyID= self.currencyInfo.currencyID-- self:GetCurrencyID()
+			if currencyID and currencyID>0 then
+				local num, tab= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
+				if num>0 then
+					text= text..#tab..WoWTools_DataMixin.Icon.wow2..WoWTools_DataMixin:MK(num, 3)
+				end
 			end
 		end
 		self.wowNumLabel:SetText(text)
@@ -138,3 +133,4 @@ end
 function WoWTools_CurrencyMixin:Init_Currency_Transfer()
     Init()
 end
+--conversionCost = C_ItemInteraction.GetItemConversionCurrencyCost(item)

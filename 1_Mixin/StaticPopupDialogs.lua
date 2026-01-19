@@ -368,7 +368,7 @@ end})
             edit:SetNumber(data.GetValue() or 0)
         end,
         OnHide= function(s)
-            local edit= s.editBox or s:GetEditBox()
+            local edit= s:GetEditBox()
             edit:SetNumeric(false)
             edit:ClearFocus()
         end,
@@ -393,7 +393,7 @@ end})
                 end
                 data.CheckValue(b1, currencyID)
             end
-            p.text:SetText(text)
+            p.Text:SetText(text)
             b1:SetEnabled(name and info)
             p.AlertIcon:SetTexture(icon or 0)
         end,
