@@ -136,6 +136,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				--showID=true,--显示ID
 			}
 
+			Save().ItemInteractionID= nil
+
 			WoWTools_CurrencyMixin.addName= '|A:bags-junkcoin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '货币' or TOKENS)
 
 --添加控制面板
@@ -155,7 +157,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			--WoWTools_DataMixin.CurrencyUpdateItemLevelID= Save().ItemInteractionID--套装，转换，货币
 			--WoWTools_CurrencyMixin:Init_ItemInteractionFrame()
-			--Save().ItemInteractionID= nil
+			
 
 			if Save().disabled then
 				self:UnregisterAllEvents()

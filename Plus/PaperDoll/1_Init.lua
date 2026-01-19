@@ -58,7 +58,19 @@ local function Init()
         WoWTools_PaperDollMixin:Settings_Tab3()
         WoWTools_PaperDollMixin:Settings_Tab1()--总装等
     end)
-
+--[[
+    if WoWTools_DataMixin.Player.husandro then
+        for slot= 1, 19 do
+            local item= ItemLocation:CreateFromEquipmentSlot(slot)
+            if item:IsValid() then
+                local data= C_ItemInteraction.GetItemConversionCurrencyCost(item)
+                if data then
+                    info=data
+                    for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+                end
+            end
+        end
+    end]]
     Init=function()end
 end
 
