@@ -11,7 +11,7 @@ if not canaccessvalue then--12.0才有 SecureTypes.lua
     C_Reputation.IsFactionParagonForCurrentPlayer= function(factionID)
         return C_Reputation.IsFactionParagon(factionID)
     end
-    local GetAppearanceSourceInfo=  C_TransmogCollection.GetAppearanceSourceInfo
+    --[[local GetAppearanceSourceInfo=  C_TransmogCollection.GetAppearanceSourceInfo
 ---@diagnostic disable-next-line: duplicate-set-field
     C_TransmogCollection.GetAppearanceSourceInfo= function(sourceID)
         local categoryID, visualID, canEnchant, icon, isCollected, itemLink, transmogLink, unknown1, itemSubTypeIndex = GetAppearanceSourceInfo(sourceID)
@@ -37,7 +37,7 @@ if not canaccessvalue then--12.0才有 SecureTypes.lua
             icon= icon,
             itemLink= itemLink,
         }
-    end
+    end]]
 end
 
 

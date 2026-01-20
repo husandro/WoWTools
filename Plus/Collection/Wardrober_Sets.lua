@@ -262,9 +262,14 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
         local index = CollectionWardrobeUtil.GetValidIndexForNumSources(i, numItems)
 
         local itemLink
-        local data= C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID) or {}
-        if data then
-            itemLink= data.itemLink
+
+         if CombatLogGetCurrentEventInfo then--12.0没有了
+            itemLink= select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
+        else
+            local data= C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID) or {}
+            if data then
+                itemLink= data.itemLink
+            end
         end
 
         local btn=itemFrame['btn'..i]
