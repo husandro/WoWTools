@@ -227,7 +227,7 @@ local function Init_Menu(self, root)
             ..'|T'..(select(4, GetSpecializationInfoByID(data.specID)) or 0)..':0|t'
             ..'|T'..(data.bossIcon or "Interface\\EncounterJournal\\UI-EJ-BOSS-Default")..':0|t'
 --副本名称
-            ..(data.bossName or data.encounterID),
+            ..(WoWTools_TextMixin:CN(data.bossName) or data.encounterID),
         function(d)
                 return SaveUse()[d.dungeonEncounterID] and SaveUse()[d.dungeonEncounterID].class[self.classFile]
         end, function(d)
@@ -269,7 +269,7 @@ local function Init_Menu(self, root)
 
 
 
-
+    root:CreateDivider()
 --全部清除
     sub=root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
