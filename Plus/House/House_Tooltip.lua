@@ -56,7 +56,73 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         texture:SetScript('OnEnter', WoWToolsButton_OnEnter)
     end
 
-     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', function(btn)
+
+
+
+
+
+
+
+
+
+    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'AddTooltipTrackingLines', function(btn, tooltip)
+        local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
+        if not entryInfo then
+            return
+        end
+        tooltip:AddLine(' ')
+        local textLeft, portrait= WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
+        if tooltip.textLeft then
+            tooltip.textLeft:SetText(textLeft or '')
+            tooltip.Portrait:settings(portrait)
+            local r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
+            tooltip:Set_BG_Color(r,g,b, 0.15)
+        end
+
+        tooltip:Show()
+    end)
+
+
+
+
+
+
+
+
+
+
+--列表，数量
+    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'OnLoad', function(frame)
+        frame.numItemLabel= frame:CreateFontString(nil, nil, 'GameFontWhite')
+        frame.numItemLabel:SetPoint('LEFT', frame.CategoryText, 'RIGHT', 5, 0)
+        frame.numItemLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
+        frame.numItemLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+        frame.numItemLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '家具数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CATALOG_SHOP_TYPE_DECOR))
+        function frame.numItemLabel:set_alpha()
+            self:SetAlpha(self:IsMouseOver() and 0.5 or 1)
+        end
+    end)
+
+    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'SetCatalogElements', function(frame)
+        local num= not self:Save().disabledHousingItemsPlus and frame.ScrollBox:GetDataProviderSize()
+        frame.numItemLabel:SetText(num or '')
+    end)
+    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'ClearCatalogData', function(frame)
+        frame.numItemLabel:SetText('')
+    end)
+
+
+
+
+
+
+
+
+    if not HousingCatalogDecorEntryMixin.OnLoad then--12.0才有
+        return
+    end
+
+    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', function(btn)
 --有点大
         btn.InfoText:SetFontObject('GameFontWhite')
         btn.InfoText:ClearAllPoints()
@@ -175,59 +241,5 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.Outdoors:SetShown(isOutdoors)
         btn.notAsset:SetShown(isNotAsset)
         btn.canDelete:SetShown(isCanDelete==false)
-    end)
-
-
-
-
-
-
-
-
-
-    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'AddTooltipTrackingLines', function(btn, tooltip)
-        local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
-        if not entryInfo then
-            return
-        end
-        tooltip:AddLine(' ')
-        local textLeft, portrait= WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
-        if tooltip.textLeft then
-            tooltip.textLeft:SetText(textLeft or '')
-            tooltip.Portrait:settings(portrait)
-            local r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
-            tooltip:Set_BG_Color(r,g,b, 0.15)
-        end
-
-        tooltip:Show()
-    end)
-
-
-
-
-
-
-
-
-
-
---列表，数量
-    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'OnLoad', function(frame)
-        frame.numItemLabel= frame:CreateFontString(nil, nil, 'GameFontWhite')
-        frame.numItemLabel:SetPoint('LEFT', frame.CategoryText, 'RIGHT', 5, 0)
-        frame.numItemLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
-        frame.numItemLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
-        frame.numItemLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '家具数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CATALOG_SHOP_TYPE_DECOR))
-        function frame.numItemLabel:set_alpha()
-            self:SetAlpha(self:IsMouseOver() and 0.5 or 1)
-        end
-    end)
-
-    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'SetCatalogElements', function(frame)
-        local num= not self:Save().disabledHousingItemsPlus and frame.ScrollBox:GetDataProviderSize()
-        frame.numItemLabel:SetText(num or '')
-    end)
-    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'ClearCatalogData', function(frame)
-        frame.numItemLabel:SetText('')
     end)
 end

@@ -11,7 +11,7 @@ WoWTools_TooltipMixin={
 
 --设置，宽度
 function WoWTools_TooltipMixin:Set_Width(tooltip)
-    if tooltip:HasAnySecretAspect() then
+    if tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect() then--12.0才有
         return
     end
 
@@ -46,7 +46,10 @@ function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
 end
 
 function WoWTools_TooltipMixin:IsInCombatDisabled(tooltip)
-    return not tooltip or WoWTools_FrameMixin:IsLocked(tooltip) or (self:Save().isInCombatDisabled and InCombatLockdown()) or tooltip:HasAnySecretAspect()
+    return not tooltip
+        or WoWTools_FrameMixin:IsLocked(tooltip)
+        or (self:Save().isInCombatDisabled and InCombatLockdown())
+        or (tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect())--12.0才有
 end
 
 function WoWTools_TooltipMixin:OpenOption(root, name2)

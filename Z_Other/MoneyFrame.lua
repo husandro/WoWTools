@@ -32,9 +32,18 @@ local function Init()
     end
 
     WoWTools_DataMixin:Hook('MoneyFrame_Update', function(frameName, money)
+        local frame= GetMoneyFrame(frameName)
+        if not frame
+            or (frame.HasAnySecretAspect and frame:GetParent():HasAnySecretAspect())
+            or issecretvalue(money)
+            or not money
+        then--12.0才有
+            return
+        end
+
         local gold = money and floor(money / (COPPER_PER_SILVER * SILVER_PER_GOLD)) or 0
-        local frame = gold>=1000 and GetMoneyFrame(frameName)
-        if frame and not frame:GetParent():HasAnySecretAspect() then
+
+        if gold>=1000 then
             local goldButton = frame.GoldButton
 
             local bit= gold<1e4 and 3 or gold<1e8 and 4 or 5
