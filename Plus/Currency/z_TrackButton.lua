@@ -754,6 +754,7 @@ local function Init_Button(self)
 	local toTopTrack= Save().toTopTrack
 	local toRightTrackText= Save().toRightTrackText
 	local last= self
+	local prima
 
 
 	local isUsaButton= Save().itemButtonUse
@@ -761,23 +762,12 @@ local function Init_Button(self)
 		local itemID= tables.itemID
         local itemButtonUse=(isUsaButton and itemID) and true or nil--使用物品
 
-		local btn
-		if itemButtonUse then
-			btn= self.frame.itemPool2:Acquire()
-
-
-
-		elseif itemID then
-			btn= self.frame.itemPool:Acquire()
-		else
-			btn= self.frame.pool:Acquire()
-		end
+		local btn= itemButtonUse and self.frame.itemPool2:Acquire() or (itemID and self.frame.itemPool:Acquire()) or self.frame.pool:Acquire()
 
 
 		btn.itemButtonUse= itemButtonUse
 		btn.itemID= itemID
 		btn.currencyID= tables.currencyID
-
 
 		if not btn.text then
 			if btn.itemID then
@@ -793,11 +783,6 @@ local function Init_Button(self)
 		if itemButtonUse then
 			Set_ItemAttribute(btn)
 		end
-		--[[if btn.itemID then
-			Set_ItemName(btn)
-		else
-			Set_CurrencyName(btn)
-		end]]
 
 		local y= (not last.itemID and btn.itemID) and 10 or 0
 		if toTopTrack then
@@ -813,15 +798,33 @@ local function Init_Button(self)
             btn.text:SetPoint('RIGHT', btn, 'LEFT')
         end
 
-		bgWidth= math.max(btn.text:GetStringWidth() + 23, bgWidth)
+		bgWidth= math.max(btn.text:GetStringWidth() + 27, bgWidth)
 
 		btn:Show()
+		prima= prima or btn
 		last= btn
 	end
 
-	--TrackButton.numButton= #tab
-	--TrackButton.bgWidth= bgWidth
-	--TrackButton:set_bg()
+	if last then
+		if toTopTrack then
+			if toRightTrackText then
+				self.Bg:SetPoint("TOPLEFT", last, -2, 2)
+				self.Bg:SetPoint('BOTTOMLEFT', prima, -2, -2)
+			else
+				self.Bg:SetPoint("TOPRIGHT", last, 2, 2)
+				self.Bg:SetPoint('BOTTOMRIGHT', prima, 2, -2)
+			end
+		else
+			if toRightTrackText then
+				self.Bg:SetPoint('TOPLEFT', prima, -2, 2)
+				self.Bg:SetPoint('BOTTOMLEFT', last, -2, -2)
+			else
+				self.Bg:SetPoint('TOPRIGHT', prima, 2, 2)
+				self.Bg:SetPoint('BOTTOMRIGHT', last, 2, -2)
+			end
+		end
+	end
+	TrackButton.Bg:SetWidth(bgWidth)
 end
 
 
@@ -865,12 +868,10 @@ local function Init()
 	end
 
 	TrackButton= CreateFrame('Button', 'WoWToolsCurrencyTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
-	TrackButton:Hide()
 
 	TrackButton.frame= CreateFrame('Frame', nil, TrackButton)
 	TrackButton.frame:SetSize(1, 1)
 	TrackButton.frame:SetPoint('CENTER')
-	TrackButton.frame:Hide()
 
 	function TrackButton.frame:ReleaseAll()
 		self.pool:ReleaseAll()
@@ -889,52 +890,6 @@ local function Init()
     TrackButton.frame.itemPool2= CreateFramePool('Button', TrackButton.frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
 
 
-
-	--[[Frame:SetScript('OnShow', function(self)
-		self:RegisterEvent('BAG_UPDATE_DELAYED')
-		self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-		Init_Button()
-	end)
-
-
-
-	Frame:SetScript('OnEvent', function(self, event)
-		if event=='PLAYER_REGEN_ENABLED' then
-			self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-		end
-		if self:IsShown() then
-			Init_Button()
-		end
-	end)]]
-
-	TrackButton.bgWidth=0
-
-	function TrackButton:set_bg()
-		--[[if self.numButton==0 then
-			self.Bg:SetShown(false)
-			return
-		end
-		self.Bg:ClearAllPoints()
-		if Save().toTopTrack then
-			if Save().toRightTrackText then
-				self.Bg:SetPoint("TOPLEFT", _G[Name..self.numButton], -1, 1)
-				self.Bg:SetPoint('BOTTOMLEFT', _G[Name..1], -1, -1)
-			else
-				self.Bg:SetPoint("TOPRIGHT", _G[Name..self.numButton], 1, 1)
-				self.Bg:SetPoint('BOTTOMRIGHT', _G[Name..1], 1, -1)
-			end
-		else
-			if Save().toRightTrackText then
-				self.Bg:SetPoint('TOPLEFT', _G[Name..1], -1, 1)
-				self.Bg:SetPoint('BOTTOMLEFT', _G[Name..self.numButton], -1, -1)
-			else
-				self.Bg:SetPoint('TOPRIGHT', _G[Name..1], 1, 1)
-				self.Bg:SetPoint('BOTTOMRIGHT', _G[Name..self.numButton], 1, -1)
-			end
-		end
-		self.Bg:SetWidth(self.bgWidth+1)
-		self.Bg:SetShown(true)]]
-	end
 
 	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetPoint('CENTER')
@@ -1012,7 +967,8 @@ local function Init()
 	end
 
 
-	TrackButton:SetScript('OnEvent', function(self)
+	TrackButton:SetScript('OnEvent', function(self, event)
+		print(event)
 		self:set_shown()
 	end)
 
@@ -1075,21 +1031,7 @@ local function Init()
 	end)
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
 
-	TrackButton:SetScript('OnHide', function(self)
-		self:UnregisterAllEvents()
-	end)
-	TrackButton:SetScript('OnShow', function(self)
-		if not Save().notAutoHideTrack  then
-			self:RegisterEvent('PLAYER_ENTERING_WORLD')
-			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
-			self:RegisterEvent('PET_BATTLE_CLOSE')
-			self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-			self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
-			self:RegisterEvent('PLAYER_REGEN_DISABLED')
-			self:RegisterEvent('PLAYER_REGEN_ENABLED')
-		end
-	end)
+
 
 	TrackButton:SetScript('OnMouseWheel', function(self, d)
 		if not WoWTools_FrameMixin:IsLocked(self) then
@@ -1100,11 +1042,28 @@ local function Init()
 	end)
 
 	function TrackButton:settings()
+		self:UnregisterAllEvents()
+		if not Save().notAutoHideTrack  then
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
+			self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+			self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+			self:RegisterEvent('PLAYER_REGEN_DISABLED')
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
+		end
+	
 		if WoWTools_FrameMixin:IsLocked(self) then
 			return
 		end
-		self:SetShown(false)
 
+		self.Bg:SetColorTexture(0, 0, 0, Save().trackBgAlpha or 0.5)
+		self.Bg:ClearAllPoints()
+
+		self.frame:SetScale(Save().scaleTrackButton or 1)
+
+	
 		self:set_shown()
 		self:SetFrameStrata(Save().strata or 'MEDIUM')
 
@@ -1117,16 +1076,18 @@ local function Init()
 			self:SetPoint('CENTER', -100, -100)
 		end
 
-		self.Bg:SetColorTexture(0, 0, 0, Save().trackBgAlpha or 0.5)
-
-		self.frame:SetScale(Save().scaleTrackButton or 1)
 		self.frame:SetShown(false)
-
 		self:set_frameshown()
 	end
 
 
+
 	TrackButton:settings()
+	C_Timer.After(2, function()
+		if WoWTools_ChineseMixin then
+			TrackButton:settings()
+		end
+	end)
 
 
 	WoWTools_DataMixin:Hook(TokenFrame, 'Update', function()
