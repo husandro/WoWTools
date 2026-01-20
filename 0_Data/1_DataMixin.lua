@@ -30,6 +30,9 @@ if not canaccessvalue then--12.0才有 SecureTypes.lua
     issecretvalue= function() return true end
     issecrettable= function() return true end
     canaccesssecrets= function() return true end
+    C_Reputation.IsFactionParagonForCurrentPlayer= function(factionID)
+        return C_Reputation.IsFactionParagon(factionID)
+    end
 end
 --[[
 UnitItemLevel[guid]={--玩家装等
