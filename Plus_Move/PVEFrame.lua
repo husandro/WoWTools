@@ -171,10 +171,11 @@ function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
     PVPQueueFrame.HonorInset.Background:SetPoint('BOTTOM')
 
 --12.0才有 训练场
-    TrainingGroundsFrame:SetPoint('BOTTOMRIGHT', PVPQueueFrame.HonorInset, 'BOTTOMLEFT')
-    TrainingGroundsFrame.BonusTrainingGroundList.WorldBattlesTexture:ClearAllPoints()
-    TrainingGroundsFrame.BonusTrainingGroundList.WorldBattlesTexture:SetAllPoints()
-
+    if TrainingGroundsFrame then    
+        TrainingGroundsFrame:SetPoint('BOTTOMRIGHT', PVPQueueFrame.HonorInset, 'BOTTOMLEFT')
+        TrainingGroundsFrame.BonusTrainingGroundList.WorldBattlesTexture:ClearAllPoints()
+        TrainingGroundsFrame.BonusTrainingGroundList.WorldBattlesTexture:SetAllPoints()
+    end
 end
 
 

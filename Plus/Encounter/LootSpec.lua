@@ -96,8 +96,8 @@ local function Init_Menu(self, root)
     bossName= WoWTools_TextMixin:CN(bossName) or dungeonEncounterID
     sub=root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
-        ..bossName
-        ..' #'..classNum,
+        ..bossName,
+        --..' #'..classNum,
     function()
         StaticPopup_Show('WoWTools_OK',
             bossName
@@ -110,7 +110,7 @@ local function Init_Menu(self, root)
                 WoWTools_DataMixin:Call('EncounterJournal_Refresh')
             end}
         )
-    end)
+    end, {rightText=classNum})
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
     end)
@@ -139,7 +139,7 @@ local function Init_Menu(self, root)
         end)
     end
 
-
+    WoWTools_MenuMixin:SetRightText(sub)
 
 
 
@@ -181,8 +181,8 @@ local function Init_Menu(self, root)
         ..(WoWTools_TextMixin:CN(self.className) or self.classFile)
     sub=root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
-        ..classIcon
-        ..' #'..#classSpecTab,
+        ..classIcon,
+        --..' #'..#classSpecTab,
     function()
         StaticPopup_Show('WoWTools_OK',
             classIcon
@@ -196,7 +196,7 @@ local function Init_Menu(self, root)
                 WoWTools_DataMixin:Call('EncounterJournal_Refresh')
             end}
         )
-    end)
+    end, {rightText=#classSpecTab})
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
     end)
@@ -255,6 +255,7 @@ local function Init_Menu(self, root)
         end)
     end
 
+    WoWTools_MenuMixin:SetRightText(sub)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 

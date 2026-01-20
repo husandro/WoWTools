@@ -291,7 +291,7 @@ function WoWTools_LoadUIMixin:OpenFaction(factionID)
 
         EJ_ContentTab_Select(EncounterJournal.JourneysTab:GetID())
 
-        if factionID then
+        if factionID and EncounterJournalJourneysFrame then--12.0才有
             EncounterJournalJourneysFrame:ResetView(C_MajorFactions.GetMajorFactionData(factionID), factionID)
             EncounterJournal_OpenToJourney(factionID)
         end

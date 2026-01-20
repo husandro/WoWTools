@@ -243,7 +243,7 @@ end
 --https://wago.tools/db2/SpellFlyout?locale=zhCN
 --Interface\\AddOns\\WoWTools\\Source\\Texture\\WoW\\0.tga
 WoWTools_DataMixin.FlyoutID={
-    {flyoutID= 246, ver=11},--英雄之路：“至暗之夜”
+    --{flyoutID= 246, ver=11},--英雄之路：“至暗之夜”
 
     {flyoutID= 244, ver=10},--英雄之路：“地心之战”第3赛季
     {flyoutID= 232, ver=10},--'英雄之路：地心之战--11
@@ -265,3 +265,6 @@ WoWTools_DataMixin.FlyoutID={
     --经典旧世 1
 }
 
+if not CombatLogGetCurrentEventInfo then--12.0没有了
+    table.insert(WoWTools_DataMixin.FlyoutID, 1, {flyoutID= 246, ver=11})--英雄之路：“至暗之夜”
+end

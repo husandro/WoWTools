@@ -2,6 +2,16 @@
 --EventRegistry:RegisterCallback("PerksProgram.UpdateCartShown", self.OnShoppingCartVisibilityUpdated, self);
 --TimerunningUtil.TimerunningEnabledForPlayer() PlayerIsTimerunning(),--1=幻境新生：潘达利亚 
 
+if not canaccessvalue then--12.0才有 SecureTypes.lua
+    canaccessvalue= function() return true end
+    canaccesstable= function() return true end
+    issecretvalue= function() return true end
+    issecrettable= function() return true end
+    canaccesssecrets= function() return true end
+    C_Reputation.IsFactionParagonForCurrentPlayer= function(factionID)
+        return C_Reputation.IsFactionParagon(factionID)
+    end
+end
 
 
 WoWTools_DataMixin= {
@@ -24,16 +34,6 @@ WoWTools_DataMixin= {
 }
 
 
-if not canaccessvalue then--12.0才有 SecureTypes.lua
-    canaccessvalue= function() return true end
-    canaccesstable= function() return true end
-    issecretvalue= function() return true end
-    issecrettable= function() return true end
-    canaccesssecrets= function() return true end
-    C_Reputation.IsFactionParagonForCurrentPlayer= function(factionID)
-        return C_Reputation.IsFactionParagon(factionID)
-    end
-end
 --[[
 UnitItemLevel[guid]={--玩家装等
     itemLevel= itemLevel,

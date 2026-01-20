@@ -86,7 +86,7 @@ local function Create_Button(frame, index)
     btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             WoWTools_LoadUIMixin:OpenFaction(self.factionID)
-        else
+        elseif EncounterJournalJourneysFrame then
             EncounterJournalJourneysFrame:ResetView(nil, self.factionID)
         end
     end)
@@ -386,8 +386,10 @@ end
 
 
 function WoWTools_EncounterMixin:Init_JourneysList()
-    Init()
-    Init_Button()
+    if EncounterJournalJourneysFrame then
+        Init()
+        Init_Button()
+    end
 end
 
 --[[提示factionID, 显示CheckBox
