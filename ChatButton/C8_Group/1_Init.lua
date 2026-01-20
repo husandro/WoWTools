@@ -400,6 +400,9 @@ end
         end)
     end
 
+    sub:CreateDivider()
+    WoWTools_OtherMixin:OpenOption(sub, 'MarkerFrame', '|A:GM-raidMarker7:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)))
+
 
     root:CreateDivider()
     for _, tab in pairs({

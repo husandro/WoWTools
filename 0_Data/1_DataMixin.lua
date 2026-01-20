@@ -1,8 +1,8 @@
 --EventRegistry:TriggerEvent("PerksProgram.UpdateCartShown", showCart)
 --EventRegistry:RegisterCallback("PerksProgram.UpdateCartShown", self.OnShoppingCartVisibilityUpdated, self);
 --TimerunningUtil.TimerunningEnabledForPlayer() PlayerIsTimerunning(),--1=幻境新生：潘达利亚 
-
-if not canaccessvalue then--12.0才有 SecureTypes.lua
+--CombatLogGetCurrentEventInfo
+if not canaccessvalue then--12.0才有 SecureTypes.lua 
     canaccessvalue= function() return true end
     canaccesstable= function() return true end
     issecretvalue= function() return true end
