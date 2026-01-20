@@ -111,7 +111,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
---panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -164,9 +164,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				self:SetScript('OnEvent', nil)
 
 			else
-				for itemID in pairs(Save().item) do
+				--[[for itemID in pairs(Save().item) do
 					WoWTools_DataMixin:Load(itemID, 'item')--加载 item quest spell
-				end
+				end]]
 
 				WoWTools_CurrencyMixin:Init_MaxTooltip()
 

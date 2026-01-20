@@ -2926,7 +2926,8 @@
         "COVENANT_SANCTUM_TAB_RENOWN",
         "GetClampedCurrentExpansionLevel",
         "CurrencyTransferLogEntryMixin",
-        "CurrencyTransferMenuMixin"
+        "CurrencyTransferMenuMixin",
+        "WoWTools_CurrencyMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

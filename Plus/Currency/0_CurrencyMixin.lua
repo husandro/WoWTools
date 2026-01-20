@@ -288,8 +288,6 @@ end
 
 
 
-
-
 function WoWTools_CurrencyMixin:UpdateTokenFrame()
 	if TokenFrame and not WoWTools_FrameMixin:IsLocked(TokenFrame) then
         if TokenFramePopup:IsShown() then

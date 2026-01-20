@@ -16,24 +16,41 @@ end
 
 
 local function Create(frame)
-	frame.Content.AccountWideIcon:SetScript('OnLeave', nil)
-	frame.Content.AccountWideIcon.Icon:SetAlpha(0.5)
-
+	
 	frame.check= CreateFrame('CheckButton', nil, frame, "MinimalCheckboxArtTemplate")
-	frame.check:SetCheckedTexture('AlliedRace-UnlockingFrame-Checkmark')
-	frame.check:SetSize(18,18)
+	--frame.check:SetCheckedTexture('AlliedRace-UnlockingFrame-Checkmark')
+	frame.check:SetSize(23,23)
 	function frame.check:GetCurrencyID()
-		local currencyIndex= self:GetParent().currencyIndex
-		if currencyIndex then
-			local data= C_CurrencyInfo.GetCurrencyListInfo(currencyIndex)
-			if data then
-				return data.currencyID
-			end
+		local data= self:GetParent().elementData
+		if data then
+			return data.currencyID
 		end
 	end
 
-	frame.check:SetPoint('LEFT', frame.Content.WatchedCurrencyCheck, 'RIGHT', -2, 0)
+	frame.check:SetPoint('RIGHT', frame.Content.AccountWideIcon, 'LEFT', -2, 0)
 	frame.check:SetAlpha(0.5)
+	frame.check:SetScript('OnLeave', function(self)
+		GameTooltip_Hide()
+		self:SetAlpha(0.5)
+	end)
+	frame.check:SetScript('OnEnter', function(self)
+		self:SetAlpha(1)
+		local currencyID= self:GetCurrencyID()
+		if not currencyID then
+			return
+		end
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+		GameTooltip:ClearLines()
+		GameTooltip:SetCurrencyByID(currencyID)
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(
+			WoWTools_DataMixin.Icon.icon2
+			..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
+			..': '..(Save().indicato and '|cnGREEN_FONT_COLOR:' or '|cff626262')
+			..(WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+		)
+		GameTooltip:Show()
+	end)
 	frame.check:SetScript('OnClick', function(self)
 		local id= self:GetCurrencyID()
 		if id then
@@ -41,52 +58,40 @@ local function Create(frame)
 			WoWTools_CurrencyMixin:Init_TrackButton()
 		end
 	end)
-	frame.check:SetScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 12, -12)
-		GameTooltip:ClearLines()
-		local currencyIndex= self:GetParent().currencyIndex
-		if currencyIndex then
-			GameTooltip:SetCurrencyToken(currencyIndex)
-			GameTooltip:AddLine(" ")
-		end
-		GameTooltip:AddLine(
-			WoWTools_DataMixin.Icon.icon2
-			..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
-			..': '..(Save().indicato and '|cnGREEN_FONT_COLOR:' or '|cff626262')
-			..(WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-		)
-
-		GameTooltip:Show()
-	end)
-	frame.check:SetScript('OnLeave', function() GameTooltip_Hide() end)
-	frame.check:SetSize(18,18)
 	WoWTools_TextureMixin:SetCheckBox(frame.check)
 
 --已获取，百分比
-	frame.percentText= WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
+	frame.percentText= frame:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')-- WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
+	frame.percentText:SetTextColor(ACCOUNT_WIDE_FONT_COLOR:GetRGB())
 	frame.percentText:SetPoint('RIGHT', frame.Content.Count, 'LEFT')
 
 --战团总数量
-	frame.accountWideText= WoWTools_LabelMixin:Create(frame, {color={r=0, g=0.8, b=1}})
+	frame.accountWideText= frame:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')-- WoWTools_LabelMixin:Create(frame, {color={r=0, g=0.8, b=1}})
 	frame.accountWideText:SetPoint('RIGHT', frame.percentText, 'LEFT', -2, 0)
 
 
 --替换，原生，都显示图标
+	frame.Content.AccountWideIcon:SetAlpha(0.7)
+	frame.Content.AccountWideIcon:SetScale(0.7)
+	frame.Content.AccountWideIcon:SetScript('OnLeave', function(self)
+		GameTooltip_Hide()
+		self:SetAlpha(0.7)
+	end)
+	frame.Content.AccountWideIcon:HookScript('OnEnter', function(self)
+		self:SetAlpha(1)
+	end)
+	
 	function frame:RefreshAccountCurrencyIcon()
-		local show=true
+		local atlas
 		if self.elementData.isAccountWide then
-			self.Content.AccountWideIcon.Icon:SetAtlas("warbands-icon", TextureKitConstants.UseAtlasSize)
-			self.Content.AccountWideIcon.Icon:SetScale(0.9)
-
+			atlas= "warbands-icon"
 		elseif self.elementData.isAccountTransferable then
-			self.Content.AccountWideIcon.Icon:SetAtlas("warbands-transferable-icon", TextureKitConstants.UseAtlasSize)
-			self.Content.AccountWideIcon.Icon:SetScale(0.9)
-
-		else
-			self.Content.AccountWideIcon.Icon:SetAtlas(nil)
-			show=false
+			atlas= 'warbands-transferable-icon'
 		end
-		self.Content.AccountWideIcon:SetShown(show)
+		if atlas then
+			self.Content.AccountWideIcon.Icon:SetAtlas(atlas, TextureKitConstants.UseAtlasSize)
+		end
+		self.Content.AccountWideIcon:SetShown(atlas)
 	end
 end
 
@@ -113,7 +118,7 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(self.elementData.currencyID, self.elementData.currencyIndex)
 
 	if not info then
-		self.check:SetShown(false)
+		--self.check:SetShown(false)
 		self.Content.Count:SetTextColor(1,1,1)
 		local lable= self.Content.Name2 or self.Content.Name--汉化，新建
 		lable:SetTextColor(1,1,1)
@@ -125,7 +130,7 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 	info= self.elementData or info
 
 	self.check:SetChecked(Save().tokens[info.currencyID])
-	self.check:SetShown(info.currencyID and not Save().Hide and Save().indicato)
+	--self.check:SetShown(info.currencyID and not Save().Hide and Save().indicato)
 
 
 	local accountWide
@@ -448,7 +453,21 @@ end
 
 
 
+--[[
+    if WoWTools_DataMixin.Player.husandro then
+        for slot= 1, 19 do
+            local item= ItemLocation:CreateFromEquipmentSlot(slot)
+            if item:IsValid() then
+                local data= C_ItemInteraction.GetItemConversionCurrencyCost(item)
+                if data then
+                    info=data
+                    for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+                end
+            end
+        end
+    end]]
 
+	
 
 function WoWTools_CurrencyMixin:Init_Plus()
   	Init()

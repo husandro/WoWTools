@@ -74,7 +74,6 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
 
 
 --当前版本
-
     local tab= C_MajorFactions.GetMajorFactionIDs()
 
     table.sort(tab, function(a, b)
@@ -96,21 +95,20 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
             table.insert(tab, index, '-')
         end
     end
---[[MajorFactionsConstantsDocumentation.lua
-    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do
-        if not find[factionID] then
-            table.insert(tab, factionID)
-            find[factionID]=true
-        end
-    end
-    table.sort(tab, function(a, b) return a>b end)]]
 
-    
+--[[MajorFactionsConstantsDocumentation.lua
+    if Constants.MajorFactionsConsts then
+        table.insert(tab, '-')
+        for _, factionID in pairs(Constants.MajorFactionsConsts) do
+            print(factionID)
+            table.insert(tab, factionID)
+        end
+    end]]
+
     for _, factionID in pairs(tab) do
         if factionID=='-' then
             sub:CreateDivider()
         elseif not C_MajorFactions.IsMajorFactionHiddenFromExpansionPage(factionID) then
-
             Set_Faction_Menu(sub, factionID)
         end
     end
