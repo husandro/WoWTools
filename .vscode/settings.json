@@ -2927,7 +2927,9 @@
         "GetClampedCurrentExpansionLevel",
         "CurrencyTransferLogEntryMixin",
         "CurrencyTransferMenuMixin",
-        "WoWTools_CurrencyMixin"
+        "WoWTools_CurrencyMixin",
+        "WoWTools_PaperDollMixin",
+        "WoWTools_ChallengesSpellData"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

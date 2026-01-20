@@ -480,7 +480,7 @@ local function Set_CurrencyName(btn)
 		local num= WoWTools_DataMixin:MK(num2, 3)
 		local max
 		if isMax then
-				max= WoWTools_CurrencyMixin:GetAccountIcon(btn.currencyID or info.currencyID, index) or '|A:quest-important-available:0:0|a'
+			max= WoWTools_CurrencyMixin:GetAccountIcon(btn.currencyID) or '|A:quest-important-available:0:0|a'
 			num= '|cnWARNING_FONT_COLOR:'..num..'|r'
 		elseif canWeek or canEarned or canQuantity then
 			num= '|cnGREEN_FONT_COLOR:'..num..'|r'
@@ -720,7 +720,7 @@ local function Init_Button(self)
 			--local text, icon, currencyID = Get_Currency(nil, index)--货币
 			local data= C_CurrencyInfo.GetCurrencyListInfo(index)
 			if data and data.currencyID and not data.isHeader and data.quantity>0 then
-				table.insert(tab, {currencyID==data.currencyID})
+				table.insert(tab, {currencyID=data.currencyID})
 				--table.insert(tab, {text= text, icon=icon, index=index, currencyID= currencyID})
 			end
 		end
