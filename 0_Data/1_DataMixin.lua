@@ -11,6 +11,33 @@ if not canaccessvalue then--12.0才有 SecureTypes.lua
     C_Reputation.IsFactionParagonForCurrentPlayer= function(factionID)
         return C_Reputation.IsFactionParagon(factionID)
     end
+    local GetAppearanceSourceInfo=  C_TransmogCollection.GetAppearanceSourceInfo
+---@diagnostic disable-next-line: duplicate-set-field
+    C_TransmogCollection.GetAppearanceSourceInfo= function(sourceID)
+        local categoryID, visualID, canEnchant, icon, isCollected, itemLink, transmogLink, unknown1, itemSubTypeIndex = GetAppearanceSourceInfo(sourceID)
+        if not visualID then
+            return
+        end
+        local itemSubclass, canHaveIllusion, appearanceID
+        if itemLink then
+            itemSubclass= select(7,  C_Item.GetItemInfoInstant(itemLink))
+            appearanceID= C_TransmogCollection.GetItemInfo(itemLink)
+            if appearanceID then
+                canHaveIllusion= C_TransmogCollection.CanAppearanceHaveIllusion(appearanceID)
+            end
+        end
+        return {
+            sourceType=nil,
+            isCollected= isCollected,
+            canHaveIllusion=canHaveIllusion,
+            transmoglink=transmogLink,
+            itemAppearanceID= appearanceID,
+            category= categoryID,
+            itemSubclass= itemSubclass,
+            icon= icon,
+            itemLink= itemLink,
+        }
+    end
 end
 
 
@@ -230,7 +257,7 @@ function WoWTools_DataMixin:Info(data1)
     local secret= WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r' or (EVENTTRACE_SECRET_FMT and format(EVENTTRACE_SECRET_FMT, '')) or '|cff88ff88<secret>|r'
 
     local typeData= type(data)
-    
+
     if issecrettable(data) or (typeData=='table' and issecrettable(data))  then
         print(WoWTools_DataMixin.Icon.icon2, secret)
         return
@@ -270,7 +297,7 @@ function WoWTools_DataMixin:Info(data1)
     elseif typeData=='string' then
         t=data
     end
-    
+
     WoWTools_TextMixin:ShowText(t, WoWTools_DataMixin.Icon.icon2..(type(data1)=='string' and data1 or tostring(data)))--, {notClear=true})
 end
 
