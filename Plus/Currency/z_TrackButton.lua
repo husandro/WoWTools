@@ -805,7 +805,7 @@ local function Init_Button(self)
 		last= btn
 	end
 
-	if last then
+	if last~=self then
 		self.Bg:ClearAllPoints()
 		if toTopTrack then
 			if toRightTrackText then
@@ -959,8 +959,13 @@ local function Init()
 			GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..WoWTools_DataMixin.Icon.right)
+
 			local num= self.frame.pool:GetNumActive()+ self.frame.itemPool:GetNumActive()+ self.frame.itemPool2:GetNumActive()
-			GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(self.frame:IsShown(), true), '|cffffffff#'..num..WoWTools_DataMixin.Icon.mid)
+			GameTooltip:AddDoubleLine(
+				WoWTools_TextMixin:GetShowHide(self.frame:IsShown(), true),
+				(num==0 and '|cff626262' or '|cffffffff')..'#'..num..WoWTools_DataMixin.Icon.mid
+			)
+
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS), WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
 		end

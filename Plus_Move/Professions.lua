@@ -6,7 +6,10 @@ end
 
 
 
-
+local function Update_Frame()
+    --WoWTools_DataMixin:Call(ProfessionsFrame, 'Refresh', ProfessionsFrame)
+    ProfessionsFrame:Refresh()
+end
 
 
 
@@ -17,7 +20,9 @@ end
 
 
 local function initFunc()
+
     ProfessionsFrame.CraftingPage.P_GetDesiredPageWidth= ProfessionsFrame.CraftingPage.GetDesiredPageWidth
+--替换，原生
     function ProfessionsFrame.CraftingPage:GetDesiredPageWidth()--Blizzard_ProfessionsCrafting.lua
         local size, scale
         local frame= self:GetParent()
@@ -92,8 +97,8 @@ local function initFunc()
             size= Save().size[name..'Normal']
             self.ResizeButton.minWidth= 830
             self.ResizeButton.minHeight= 580
-            if size then
-                self:Refresh()
+            if size or scale then
+                Update_Frame()
             end
         elseif self.TabSystem.selectedTabID==2 then
             scale= Save().scale[name..'Spec']
@@ -105,8 +110,8 @@ local function initFunc()
             size= Save().size[name..'Order']
             self.ResizeButton.minWidth= 1050
             self.ResizeButton.minHeight= 240
-            if size then
-                self:Refresh()
+            if size or scale then
+                Update_Frame()
             end
         end
         if scale then
@@ -204,12 +209,19 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
 
     initFunc()
 
-    local name= ProfessionsFrame:GetName()
+    WoWTools_DataMixin:Hook(ProfessionsRecipeListRecipeMixin, 'OnLoad', function(btn)
+        btn.SelectedOverlay:SetPoint('RIGHT')
+        btn.SelectedOverlay:SetPoint('LEFT')
+        btn.HighlightOverlay:SetPoint('RIGHT')
+        btn.HighlightOverlay:SetPoint('LEFT')
+        
+    end)
 
     self:Setup(ProfessionsFrame, {
 
     scaleStopFunc=function(frame)
         local sacle= frame:GetScale()
+        local name= ProfessionsFrame:GetName()
         if ProfessionsUtil.IsCraftingMinimized() then
             Save().scale[name..'Mini']= sacle
         elseif frame.TabSystem.selectedTabID==2 then
@@ -221,6 +233,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
         end
     end,
     scaleRestFunc=function()
+        local name= ProfessionsFrame:GetName()
         if ProfessionsUtil.IsCraftingMinimized() then
             Save().scale[name..'Mini']= nil
         elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
@@ -232,6 +245,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
         end
     end,
     sizeRestTooltipColorFunc=function()
+        local name= ProfessionsFrame:GetName()
         if ProfessionsUtil.IsCraftingMinimized() then
             return Save().size[name..'Mini'] and '' or '|cff626262'
         elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
@@ -244,7 +258,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
     end,
     sizeStopFunc=function(frame)
         local size= {frame:GetSize()}
-
+        local name= ProfessionsFrame:GetName()
         if ProfessionsUtil.IsCraftingMinimized() then
             name= name..'Mini'
         elseif frame.TabSystem.selectedTabID==2 then
@@ -255,9 +269,10 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
             name= name..'Normal'
         end
         Save().size[name]= size
-        frame:Refresh()
+        Update_Frame()
     end,
     sizeRestFunc=function(f)
+        local name= ProfessionsFrame:GetName()
         if ProfessionsUtil.IsCraftingMinimized() then
             f:SetSize(404, 658)
 
@@ -270,7 +285,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
         else
             f:SetSize(942, 658)
         end
-        f:Refresh()
+        Update_Frame()
         Save().size[name..'Spec']=nil
         Save().size[name..'Order']=nil
         Save().size[name..'Normal']=nil
@@ -278,4 +293,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
     end})
 
     self:Setup(ProfessionsFrame.CraftingPage.CraftingOutputLog, {frame=ProfessionsFrame})
+
+
+    ProfessionsFrame:ApplyDesiredWidth()
 end

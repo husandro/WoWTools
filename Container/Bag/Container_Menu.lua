@@ -84,8 +84,9 @@ local function Get_BagName(frame)--frame:GetBagID()
             ..' '..(name:match('%d') or '')
 
     else
+        local inventoryID = C_Container.ContainerIDToInventoryID(bagID)
         bagName= (
-                WoWTools_TextMixin:CN(C_Container.GetBagName(bagID))
+                WoWTools_TextMixin:CN(C_Container.GetBagName(bagID), {itemID=GetInventoryItemID('player', inventoryID), isName=true})
                 or (WoWTools_DataMixin.onlyChinese and '行囊' or BAG_NAME_BACKPACK)
             )
             ..' '..(name:match('%d') or '')
@@ -93,7 +94,7 @@ local function Get_BagName(frame)--frame:GetBagID()
         if bagID==0 then
             bagName= '|A:hud-backpack:0:0|a'..bagName
         else
-            local inventoryID = C_Container.ContainerIDToInventoryID(bagID)
+
             local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)
             if texture then
                 bagName= '|T'..texture..':0|t'..bagName
@@ -112,22 +113,27 @@ end
 
 
 local function Init_Columns_Menu(self, root)
-    local sub= root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
+     local sub= root:CreateCheckbox(
+        '|cnWARNING_FONT_COLOR:'
+        ..(WoWTools_DataMixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS),
     function()
         return Save().enabledCombinedColumns
     end, function()
         Save().enabledCombinedColumns= not Save().enabledCombinedColumns and true or false
+        return MenuResponse.Close
     end, {rightText= Get_Columns(self)})
 
-    WoWTools_MenuMixin:SetRightText(sub)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '可能会出现错误' or 'Errors may occur')
     end)
 
-    sub:CreateSpacer()
+    if not Save().enabledCombinedColumns then
+        return
+    end
+    WoWTools_MenuMixin:SetRightText(sub)
 
+    sub:CreateSpacer()
     local frames= {
         ContainerFrameCombinedBags,
     }
@@ -142,18 +148,19 @@ local function Init_Columns_Menu(self, root)
         end
     end
 
-    local disabled= not Save().enabledCombinedColumns-- or InCombatLockdown()
+
 
     for _, frame in pairs(frames) do
         sub:CreateSpacer()
-        local hex= disabled and '|cff626262' or (frame==self and '|cnGREEN_FONT_COLOR:') or (frame:IsShown() and '|cnNORMAL_FONT_COLOR:') or ''
+        local hex= frame==self and '|cnGREEN_FONT_COLOR:' or (frame:IsShown() and '|cnNORMAL_FONT_COLOR:') or ''
 
         local sub2= WoWTools_MenuMixin:CreateSlider(sub, {
             name=hex
                 ..Get_BagName(frame),
             getValue=function(_, desc)
                 return Get_Columns(desc.data.frame)
-            end, setValue=function(value, _, desc)
+            end,
+            setValue=function(value, _, desc)
                 Save()[desc.data.name..'Columns']= value
                 Set_GetColumns(desc.data.frame)
                 Update_Frame(desc.data.frame)
@@ -164,12 +171,15 @@ local function Init_Columns_Menu(self, root)
         })
 
         sub2:SetData({frame=frame, name=frame:GetName()})
+
         sub2:SetTooltip(function(tooltip,desc)
             tooltip:AddLine(desc.data.name)
         end)
 
         sub:CreateSpacer()
-        if frame==self then sub:CreateSpacer() end
+        if frame==self then
+            sub:CreateSpacer()
+        end
     end
 
 
@@ -192,6 +202,7 @@ local function Init_Columns_Menu(self, root)
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BagMixin.addName})
 --重载
     WoWTools_MenuMixin:Reload(sub)
+    sub:CreateDivider()
 --重置数据
     WoWTools_MenuMixin:RestData(sub, WoWTools_BagMixin.addName, function()
         WoWToolsSave['Plus_Container']= nil
@@ -216,12 +227,6 @@ end
 
 
 local function Init()
-
-
-
-
-
-
     Menu.ModifyMenu("MENU_CONTAINER_FRAME", function(self, root)
         if not self:IsMouseOver() then
             return
