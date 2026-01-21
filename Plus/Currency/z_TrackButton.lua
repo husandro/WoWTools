@@ -806,6 +806,7 @@ local function Init_Button(self)
 	end
 
 	if last then
+		self.Bg:ClearAllPoints()
 		if toTopTrack then
 			if toRightTrackText then
 				self.Bg:SetPoint("TOPLEFT", last, -2, 2)
@@ -968,7 +969,6 @@ local function Init()
 
 
 	TrackButton:SetScript('OnEvent', function(self, event)
-		print(event)
 		self:set_shown()
 	end)
 
@@ -1053,17 +1053,16 @@ local function Init()
 			self:RegisterEvent('PLAYER_REGEN_DISABLED')
 			self:RegisterEvent('PLAYER_REGEN_ENABLED')
 		end
-	
+
 		if WoWTools_FrameMixin:IsLocked(self) then
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
 			return
 		end
 
 		self.Bg:SetColorTexture(0, 0, 0, Save().trackBgAlpha or 0.5)
-		self.Bg:ClearAllPoints()
 
 		self.frame:SetScale(Save().scaleTrackButton or 1)
 
-	
 		self:set_shown()
 		self:SetFrameStrata(Save().strata or 'MEDIUM')
 

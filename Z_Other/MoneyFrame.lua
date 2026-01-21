@@ -15,7 +15,7 @@ local function Init()
         end
         return nil
     end
-    local function MoneyFrame_GetIconSizeData(frame)
+    --[[local function MoneyFrame_GetIconSizeData(frame)
         local iconWidth = MONEY_ICON_WIDTH or 19
         local spacing = MONEY_BUTTON_SPACING or -4
         if frame.small then
@@ -29,7 +29,7 @@ local function Init()
         end
 
         return iconWidth, spacing;
-    end
+    end]]
 
     WoWTools_DataMixin:Hook('MoneyFrame_Update', function(frameName, money)
         local frame= GetMoneyFrame(frameName)
@@ -50,17 +50,17 @@ local function Init()
             local goldText= WoWTools_DataMixin:MK(gold, bit)
             if CVarCallbackRegistry:GetCVarValueBool("colorblindMode") then
                 goldButton:SetText(goldText..(WoWTools_DataMixin.onlyChinese and '金' or GOLD_AMOUNT_SYMBOL))
-                goldButton:SetWidth(goldButton:GetTextWidth())
+                --goldButton:SetWidth(goldButton:GetTextWidth())
             else
                 goldButton:SetText(goldText)
-                local iconWidth= MoneyFrame_GetIconSizeData(frame)
-                goldButton:SetWidth(goldButton:GetTextWidth()+iconWidth)
+                --local iconWidth= MoneyFrame_GetIconSizeData(frame)
+                --goldButton:SetWidth(goldButton:GetTextWidth()+iconWidth)
             end
-            frame:SetWidth(
+            --[[frame:SetWidth(
                 goldButton:GetWidth()+12
                 +(frame.SilverButton:IsShown() and frame.SilverButton:GetWidth() or 0)
                 +(frame.CopperButton:IsShown() and frame.CopperButton:GetWidth() or 0)
-            )
+            )]]
         end
     end)
 
