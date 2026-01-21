@@ -906,10 +906,6 @@ local function Init()--设置标记, 框架
             btn:SetAttribute('action', 'clear')
             btn:SetAttribute('marker', 0)
 
-            if not CombatLogGetCurrentEventInfo and not WoWTools_DataMixin.Player.husandro then--12.0出问题
-                btn:SetAlpha(0)
-            end
-
             btn:SetScript('OnEnter', function()
                 if not Tooltip_SetOwner() then
                     return

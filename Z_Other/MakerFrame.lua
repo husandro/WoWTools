@@ -663,36 +663,20 @@ local function Init()--设置标记, 框架
             btn.texture:SetSize(23/2.5, 23/2.5)
             btn.texture:SetPoint('CENTER')
 
-            if CombatLogGetCurrentEventInfo then--12.0没有了
-                btn.index=index
-                btn:SetScript('OnClick', function(self, d)
-                    local u= d=='LeftButton' and 'target' or 'player'
-                    if CanBeRaidTarget(u) then
-                        if not IsAltKeyDown() then
-                            SetRaidTarget(u, self.index)
-                        else
-                            SetRaidTarget(u, 0)
-                        end
-                    else
-                    end
-                end)
-            else
-                btn:SetAttribute('type', 'raidtarget')
-                btn:SetAttribute("marker", index)
+            btn:SetAttribute('type', 'raidtarget')
+            btn:SetAttribute("marker", index)
 
-                btn:SetAttribute("action1", "set")
-                btn:SetAttribute("unit1", 'target')
+            btn:SetAttribute("action1", "set")
+            btn:SetAttribute("unit1", 'target')
 
-                btn:SetAttribute("action2", "set")
-                btn:SetAttribute("unit2", 'player')
+            btn:SetAttribute("action2", "set")
+            btn:SetAttribute("unit2", 'player')
 
-                btn:SetAttribute("alt-action1", "clear")
-                btn:SetAttribute("alt-unit1", 'target')
+            btn:SetAttribute("alt-action1", "clear")
+            btn:SetAttribute("alt-unit1", 'target')
 
-                btn:SetAttribute("alt-action2", "clear")
-                btn:SetAttribute("alt-unit2", 'player')
-            end
-
+            btn:SetAttribute("alt-action2", "clear")
+            btn:SetAttribute("alt-unit2", 'player')
 
             btn:SetScript('OnLeave', function(self)
                 GameTooltip:Hide()
@@ -806,18 +790,12 @@ local function Init()--设置标记, 框架
         table.insert(MarkerButtons, 'WoWToolsMakersWorldButton'..index)
 
         if index==0 then--ClearRaidMarker()
-            if CombatLogGetCurrentEventInfo then--12.0没有了
-                    btn:SetAttribute('type', 'worldmarker')
-                    btn:SetAttribute("action", 'clear')
-                    btn:SetAttribute('marker', 0)
-            else
-                local text
-                for i=1, NUM_RAID_ICONS do
-                    text= (text and text..'\n' or '').. '/cwm '..i
-                end
-                btn:SetAttribute('type', 'macro')
-                btn:SetAttribute('macrotext', text)
+            local text
+            for i=1, NUM_RAID_ICONS do
+                text= (text and text..'\n' or '').. '/cwm '..i
             end
+            btn:SetAttribute('type', 'macro')
+            btn:SetAttribute('macrotext', text)
 
             btn:SetAllPoints(MakerFrame.marker)
             btn.texture= btn:CreateTexture()

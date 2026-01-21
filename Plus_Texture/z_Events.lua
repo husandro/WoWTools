@@ -1173,10 +1173,6 @@ end
 
 --派系声望
 function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
-if not MajorFactionRenownFrame then
-    return
-end
-
 --解锁
     WoWTools_DataMixin:Hook(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(frame)--Blizzard_MajorFactionsLandingTemplates.lua
         self:SetAlphaColor(frame.Background, nil, nil, 0.75)

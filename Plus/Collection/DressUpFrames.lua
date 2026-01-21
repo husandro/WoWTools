@@ -71,15 +71,9 @@ local function Init()
         local co, all= 0, 0
         for _, data in pairs(setItems or {}) do
             if data.itemModifiedAppearanceID then
-                if CombatLogGetCurrentEventInfo then
-                    if select(5, C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)) then
-                        co= co+1
-                    end
-                else
-                    local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
-                    if info and info.isCollected then
-                        co= co+1
-                    end
+                local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
+                if info and info.isCollected then
+                    co= co+1
                 end
             end
             all= all+1

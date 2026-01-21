@@ -209,15 +209,12 @@ function WoWTools_TextureMixin.Events:Blizzard_PVPUI()
         end
     end
 
-
-
-if TrainingGroundsFrame then--12.0才有
+--12.0才有
     self:SetNineSlice(TrainingGroundsFrame.Inset)
     self:HideTexture(TrainingGroundsFrame.BonusTrainingGroundList.WorldBattlesTexture)
     self:HideFrame(TrainingGroundsFrame.BonusTrainingGroundList.ShadowOverlay)
     self:SetUIButton(TrainingGroundsFrame.QueueButton)
     self:HideTexture(TrainingGroundsFrame.Inset.Bg)
-end
 
 --职责，CheckBox
     for _, name in pairs({
