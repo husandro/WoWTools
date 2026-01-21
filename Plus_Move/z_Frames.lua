@@ -52,14 +52,7 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
         frame:SetPoint('CENTER')
         frame:SetSize(s, s)
     end
-    if DressUpFrame.SetShownOutfitDetailsPanel then--12.0没有了
-        WoWTools_DataMixin:Hook(DressUpFrame, 'SetShownOutfitDetailsPanel', function(frame)
-            if frame.ResizeButton and not GetCVarBool("miniDressUpFrame") then
-                Set_Max(frame)
-            end
-            frame:Raise()
-        end)
-    end
+
     WoWTools_DataMixin:Hook(DressUpFrame, 'ConfigureSize', function(frame, isMinimized)
         if not frame.ResizeButton then
             return

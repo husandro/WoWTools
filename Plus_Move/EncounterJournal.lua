@@ -227,7 +227,6 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     --EncounterJournalInstanceSelect.ScrollBox:HookScript('OnSizeChanged', Set_InstanceSelect_Stride) --EncounterInstanceButtonTemplate Size x="174" y="96"
 
 --12.0才有旅程
-if EncounterJournalJourneysFrame then
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame:SetPoint('LEFT', 21+17+21+30+21, 0)
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame:SetPoint('RIGHT', -(21+17+21+30+21), 0)
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:ClearAllPoints()
@@ -236,7 +235,7 @@ if EncounterJournalJourneysFrame then
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:SetPoint('LEFT', EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.JumpLeftButton)
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:SetPoint('RIGHT', EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.JumpRightButton)
     EncounterJournalJourneysFrame.JourneyProgress.RenownTrackFrame.ClipFrame.Mask:SetAtlas('UI-HUD-CoolDownManager-Mask')
-end
+
 
     self:Setup(EncounterJournal, {
         minW=400,--800,

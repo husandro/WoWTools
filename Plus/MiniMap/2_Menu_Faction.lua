@@ -34,10 +34,11 @@ local function Set_Faction_Menu(root, factionID)
         ..(info.hasRewardPending and '|A:BonusLoot-Chest:0:0|a' or ''),
 
     function(data)
-        if MajorFactionRenownFrame then--12.0没有了
-            return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
-        else
+        if EncounterJournalJourneysFrame then
             return EncounterJournalJourneysFrame and EncounterJournalJourneysFrame.JourneyProgress.majorFactionData.factionID==data.factionID
+
+        elseif MajorFactionRenownFrame then--12.0没有了
+            return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
         end
     end, function(data)
         WoWTools_LoadUIMixin:OpenFaction(data.factionID)

@@ -128,7 +128,7 @@ local spellLoadTab={
     404468,--/飞行模式：稳定
     80451,--勘测
     431280,--/瞬息全战团地图
-    
+
 }
 
 
@@ -201,7 +201,7 @@ function WoWTools_DataMixin:GetExpansionText(expacID, questID)
     if not expacID and questID then
         expacID= GetQuestExpansion(questID)
     end
-    
+
     local text= expacID and WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..expacID])
     if text then
         text= (WoWTools_TextureMixin:GetWoWLog(expacID) or '')..text..' '..(expacID+1)

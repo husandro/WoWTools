@@ -199,7 +199,6 @@ end
 
 
 
---12.0才有
 function WoWTools_CollectionMixin:Init_Transmog()
     Init()
 end

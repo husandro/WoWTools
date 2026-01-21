@@ -247,29 +247,12 @@ local function Init()
     end)
 
 
-
-
-
-
-
-
-
     questFrame:settings()
 
 
-
-
-
-
-    if NamePlateBaseMixin.OnRemoved then--12.0没有了
-        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
-           RestPlate(plate)
-        end)
-    else
-        WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'ClearUnit', function(plate)--移除所有
-            RestPlate(plate)
-        end)
-    end
+    WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'ClearUnit', function(plate)--移除所有
+        RestPlate(plate)
+    end)
 
 
     Init=function()
