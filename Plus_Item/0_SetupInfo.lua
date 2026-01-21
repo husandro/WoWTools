@@ -429,7 +429,7 @@ local function Get_Info(tab)
             if entryInfo.firstAcquisitionBonus>0 then
                 rightText= '|A:GarrMission_CurrencyIcon-Xp:18:18:3|a'
             end
-            if entryInfo.showQuantity then
+            if entryInfo.showQuantity and entryInfo.numPlaced and entryInfo.numStored then
                 bottomRightText=entryInfo.numPlaced..'/'..entryInfo.numStored--..'|A:house-chest-icon:0:0|a'
             end
         end

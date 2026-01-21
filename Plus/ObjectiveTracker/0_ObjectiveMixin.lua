@@ -273,7 +273,7 @@ function WoWTools_ObjectiveMixin:Clear_ContentTracking(isPring)
                     C_ContentTracking.StopTracking(trackableType, trackableID, Enum.ContentTrackingStopType.Manual)
                     num= num+1
                     if isPring then
-                        print(num..') ', title, 'type'..trackableType, 'id'..trackableID)
+                        print(num..') ', WoWTools_TextMixin:CN(title), 'type '..trackableType, 'id '..trackableID)
                     end
                 end
             end
