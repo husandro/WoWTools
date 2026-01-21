@@ -257,7 +257,7 @@ local function createButton(name, object, db, customCompartmentIcon)
 	button:SetFrameLevel(8)
 	button:SetFixedFrameLevel(true)
 	button:SetSize(31, 31)
-	button:RegisterForClicks("AnyUp")
+	button:RegisterForClicks("anyUp")
 	button:RegisterForDrag("LeftButton")
 	button:SetHighlightTexture(136477) --"Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight"
 	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
