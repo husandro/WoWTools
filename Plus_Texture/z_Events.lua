@@ -1062,12 +1062,10 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
 
     self:SetUIButton(CooldownViewerSettings.UndoButton)
 --给新布局起名
-    if CooldownViewerLayoutDialog then--12.0才有
-        self:SetFrame(CooldownViewerLayoutDialog.Border, {alpha=1})
-        self:SetUIButton(CooldownViewerLayoutDialog.AcceptButton)
-        self:SetUIButton(CooldownViewerLayoutDialog.CancelButton)
-        self:SetEditBox(CooldownViewerLayoutDialog.LayoutNameEditBox)
-    end
+    self:SetFrame(CooldownViewerLayoutDialog.Border, {alpha=1})
+    self:SetUIButton(CooldownViewerLayoutDialog.AcceptButton)
+    self:SetUIButton(CooldownViewerLayoutDialog.CancelButton)
+    self:SetEditBox(CooldownViewerLayoutDialog.LayoutNameEditBox)
 
     --CooldownViewerSettingsCategoryMixin 标题
     --CooldownViewerSettingsItemMixin 追踪的状态栏
@@ -1175,7 +1173,9 @@ end
 
 --派系声望
 function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
-
+if not MajorFactionRenownFrame then
+    return
+end
 
 --解锁
     WoWTools_DataMixin:Hook(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(frame)--Blizzard_MajorFactionsLandingTemplates.lua

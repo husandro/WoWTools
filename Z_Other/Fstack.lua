@@ -184,7 +184,7 @@ local function Init_Create(frame)
         check:SetChecked(Save().autoHideTableAttributeDisplay)
         check:SetPoint('RIGHT', frame.WoWToolsInfoButton, 'LEFT')
         check:SetScript('OnHide', function()
-            if Save().autoHideTableAttributeDisplay and C_CVar.GetCVarBool("fstack_enabled") then
+            if Save().autoHideTableAttributeDisplay and FrameStackTooltip:IsShown() then--C_CVar.GetCVarBool("fstack_enabled") then
                 FrameStackTooltip_ToggleDefaults()
             end
         end)
@@ -259,7 +259,7 @@ EVENTTRACE_SECRET_FMT = "|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s"
         GameTooltip:Hide()
         ResetCursor()
         self:HighlightText()
-         if C_CVar.GetCVarBool("fstack_enabled") then
+        if FrameStackTooltip:IsShown() then--C_CVar.GetCVarBool("fstack_enabled") then
             FrameStackTooltip_ToggleDefaults()
         end
     end)

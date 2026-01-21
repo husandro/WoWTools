@@ -1,11 +1,6 @@
-if not WoWTools_DataMixin.Player.husandro then
-    return
-end
-
 
 --更改, 金, mk
 local function Init()
-
     local function GetMoneyFrame(frameOrName)
         local argType = type(frameOrName);
         if argType == "table" then
@@ -15,21 +10,6 @@ local function Init()
         end
         return nil
     end
-    --[[local function MoneyFrame_GetIconSizeData(frame)
-        local iconWidth = MONEY_ICON_WIDTH or 19
-        local spacing = MONEY_BUTTON_SPACING or -4
-        if frame.small then
-            iconWidth = MONEY_ICON_WIDTH_SMALL or 13
-            spacing = MONEY_BUTTON_SPACING_SMALL or -4
-        end
-
-        if frame.userScaledTextScale then
-            iconWidth = iconWidth * frame.userScaledTextScale;
-            spacing = spacing * frame.userScaledTextScale;
-        end
-
-        return iconWidth, spacing;
-    end]]
 
     WoWTools_DataMixin:Hook('MoneyFrame_Update', function(frameName, money)
         local frame= GetMoneyFrame(frameName)
@@ -37,7 +17,7 @@ local function Init()
             or (frame.HasAnySecretAspect and frame:GetParent():HasAnySecretAspect())
             or issecretvalue(money)
             or not money
-        then--12.0才有
+        then
             return
         end
 
@@ -50,17 +30,9 @@ local function Init()
             local goldText= WoWTools_DataMixin:MK(gold, bit)
             if CVarCallbackRegistry:GetCVarValueBool("colorblindMode") then
                 goldButton:SetText(goldText..(WoWTools_DataMixin.onlyChinese and '金' or GOLD_AMOUNT_SYMBOL))
-                --goldButton:SetWidth(goldButton:GetTextWidth())
             else
                 goldButton:SetText(goldText)
-                --local iconWidth= MoneyFrame_GetIconSizeData(frame)
-                --goldButton:SetWidth(goldButton:GetTextWidth()+iconWidth)
             end
-            --[[frame:SetWidth(
-                goldButton:GetWidth()+12
-                +(frame.SilverButton:IsShown() and frame.SilverButton:GetWidth() or 0)
-                +(frame.CopperButton:IsShown() and frame.CopperButton:GetWidth() or 0)
-            )]]
         end
     end)
 

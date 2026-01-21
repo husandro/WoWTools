@@ -408,15 +408,11 @@ end
 function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:HideFrame(DressUpFrame)
 
-    if DressUpFrameOutfitDropdown then--12.0没有了
-        self:SetMenu(DressUpFrameOutfitDropdown)
-        self:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
-    else
-        self:SetMenu(DressUpFrameCustomSetDropdown)
-        self:SetUIButton(DressUpFrameCustomSetDropdown.SaveButton)
-        self:SetButton(DressUpFrame.ToggleCustomSetDetailsButton, {alpha=1})
-        self:SetFrame(DressUpFrame.CustomSetDetailsPanel, {alpha=0.3})
-    end
+
+    self:SetMenu(DressUpFrameCustomSetDropdown)
+    self:SetUIButton(DressUpFrameCustomSetDropdown.SaveButton)
+    self:SetButton(DressUpFrame.ToggleCustomSetDetailsButton, {alpha=1})
+
 
     self:SetModelZoom(DressUpFrame.ModelScene.ControlFrame)
     self:SetButton(DressUpFrame.ToggleOutfitDetailsButton)
@@ -437,6 +433,7 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:Init_BGMenu_Frame(DressUpFrame, {
         settings=function(_, texture, alpha)
             DressUpFrame.ModelBackground:SetAlpha(texture and 0 or alpha or 1)
+            self:SetFrame(DressUpFrame.CustomSetDetailsPanel, {alpha=alpha or 1})
         end
     })
 end

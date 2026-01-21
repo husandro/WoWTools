@@ -112,14 +112,14 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
     self:SetButton(EncounterJournalInstanceSelect.GreatVaultButton, {alpha=1})
 
---旅程 12.0
-    if EncounterJournalJourneysFrame then
-        self:SetButton(EncounterJournalJourneysFrame.JourneyProgress.OverviewBtn, {alpha=1})
-        self:SetScrollBar(EncounterJournalJourneysFrame)
-        self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyOverview.DividerTexture, nil, nil, true)
-        --self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBar, nil, nil, 0.3)
-        self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBg, true)
-    end
+--旅程 12.0才有
+
+    self:SetButton(EncounterJournalJourneysFrame.JourneyProgress.OverviewBtn, {alpha=1})
+    self:SetScrollBar(EncounterJournalJourneysFrame)
+    self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyOverview.DividerTexture, nil, nil, true)
+    --self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBar, nil, nil, 0.3)
+    self:SetAlphaColor(EncounterJournalJourneysFrame.JourneyProgress.ProgressDetailsFrame.JourneyLevelBg, true)
+
 
 
 
@@ -135,10 +135,9 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
         EncounterJournalInstanceSelectBG:SetAlpha(alpha)
         EncounterJournalInset.Bg:SetAlpha(alpha)
 
-        if EncounterJournalJourneysFrame then--副本列表 12.0才有
-            EncounterJournalJourneysFrame.BorderFrame.Border:SetAlpha(alpha)
-            EncounterJournalJourneysFrame.BorderFrame.TopDetail:SetAlpha(alpha)
-            EncounterJournalInstanceSelect.evergreenBg:SetAlpha(alpha)
-        end
+--副本列表 12.0才有
+        EncounterJournalJourneysFrame.BorderFrame.Border:SetAlpha(alpha)
+        EncounterJournalJourneysFrame.BorderFrame.TopDetail:SetAlpha(alpha)
+        EncounterJournalInstanceSelect.evergreenBg:SetAlpha(alpha)
     end})
 end
