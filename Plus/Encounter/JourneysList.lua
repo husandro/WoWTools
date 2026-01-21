@@ -110,7 +110,7 @@ local function Init_Button()
     end
 
     local menu= CreateFrame('DropdownButton', 'WoWToolsEJFactionMenuButton', EncounterJournalJourneysFrame, 'WoWToolsMenuTemplate')
-    menu:SetPoint('LEFT', EncounterJournalInstanceSelect.ExpansionDropdown, 'RIGHT', 8, 0)
+    --menu:SetPoint('LEFT', EncounterJournalInstanceSelect.ExpansionDropdown, 'RIGHT', 8, 0)
     menu:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
 
     menu.frame= CreateFrame('Frame', nil, menu)
@@ -128,7 +128,7 @@ local function Init_Button()
         local tab= {}
         local w= 0
         local num= 0
-        
+
 
             for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs()) do
                 if not C_MajorFactions.IsMajorFactionHiddenFromExpansionPage(factionID) then
