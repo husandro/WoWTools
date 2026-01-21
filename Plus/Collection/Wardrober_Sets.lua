@@ -262,14 +262,9 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
         local index = CollectionWardrobeUtil.GetValidIndexForNumSources(i, numItems)
 
         local itemLink
-
-         if CombatLogGetCurrentEventInfo then--12.0没有了
-            itemLink= select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
-        else
-            local data= C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID) or {}
-            if data then
-                itemLink= data.itemLink
-            end
+        local data= C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID)
+        if data then
+            itemLink= data.itemLink
         end
 
         local btn=itemFrame['btn'..i]
@@ -365,12 +360,6 @@ local function Init()
             TipsLabel:SetText('')
         end
     end)
-
---幻化，套装，索引
-    if WardrobeCollectionFrame.SetsTransmogFrame then--12.0没有了
-        WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(...) set_Sets_Tooltips(...) end)
-    end
-
 
 --套装，列表
     WoWTools_DataMixin:Hook(WardrobeSetsScrollFrameButtonMixin, 'Init', function(...) Set_List_Button(...) end)

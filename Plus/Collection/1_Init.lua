@@ -160,19 +160,9 @@ local function Init()
     WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
     WoWTools_CollectionMixin:Init_ClassList()--职业列表
 
-
     local btn= CreateFrame('DropdownButton', 'WoWToolsCollectionsJournalMenuButton', CollectionsJournalCloseButton, 'WoWToolsMenuTemplate')
-    --WoWTools_ButtonMixin:Menu(CollectionsJournalCloseButton)
     btn:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT')
-
     btn:SetupMenu(Init_Menu)
-
-    if WardrobeFrameCloseButton then--12.0没有了
-        btn=CreateFrame('DropdownButton', 'WoWToolsWardrobeFrameMenuButton', WardrobeFrameCloseButton, 'WoWToolsMenuTemplate')
-        --WoWTools_ButtonMixin:Menu(WardrobeFrameCloseButton)
-        btn:SetPoint('RIGHT', WardrobeFrameCloseButton, 'LEFT')
-        btn:SetupMenu(Init_Menu)
-    end
 
     Init=function()end
 end

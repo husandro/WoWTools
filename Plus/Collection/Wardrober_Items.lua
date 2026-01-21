@@ -79,13 +79,9 @@ local function UpdateSlotButtons(self)
                     else
                         local _appliedSourceID, _appliedVisualID, selectedSourceID, _selectedVisualID = self:GetActiveSlotInfo();
                         if selectedSourceID and selectedSourceID ~= Constants.Transmog.NoTransmogID then
-                            if CombatLogGetCurrentEventInfo then--12.0没有了
-                                category= C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID)
-                            else
-                                local data= C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID)
-                                if data then
-                                    category= data.category
-                                end
+                            local data= C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID)
+                            if data then
+                                category= data.category
                             end
                             if category and not self:IsValidWeaponCategoryForSlot(category) then
                                 category = nil;
@@ -240,12 +236,8 @@ end
 --外观，物品，提示，索引 WardrobeCollectionFrame.ItemsCollectionFrame
 local function get_Link_Item_Type_Source(sourceID, itemOrIllusion)
     if sourceID then
-        if itemOrIllusion=='item'  then
-            if WardrobeCollectionFrame.GetAppearanceItemHyperlink then--12.0没有了
-                return WardrobeCollectionFrame:GetAppearanceItemHyperlink(sourceID)
-            else
-                return CollectionWardrobeUtil.GetAppearanceItemHyperlink(sourceID)--12.0为表格
-            end
+        if itemOrIllusion=='item' then
+            return CollectionWardrobeUtil.GetAppearanceItemHyperlink(sourceID)--12.0为表格
         else
             return select(2, C_TransmogCollection.GetIllusionStrings(sourceID))
         end
@@ -521,15 +513,6 @@ local function Init()
 
     --物品, 幻化, 界面
     Init_Wardrober_Items()
-
-    --幻化，套装，索引
-    if WardrobeCollectionFrame.SetsTransmogFrame then--12.0没有了
-        WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', set_Items_Tooltips)
-        WardrobeCollectionFrameSearchBox:ClearAllPoints()
-        WardrobeCollectionFrameSearchBox:SetPoint('LEFT',WardrobeCollectionFrame.progressBar ,'RIGHT', 12, 0)
-        WardrobeCollectionFrameSearchBox:SetPoint('LEFT', WardrobeCollectionFrame.progressBar, 'RIGHT')
-    end
-
 
     Init=function()end
 end

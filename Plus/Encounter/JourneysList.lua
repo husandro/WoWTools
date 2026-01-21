@@ -386,10 +386,8 @@ end
 
 
 function WoWTools_EncounterMixin:Init_JourneysList()
-    if EncounterJournalJourneysFrame then
-        Init()
-        Init_Button()
-    end
+    Init()
+    Init_Button()
 end
 
 --[[提示factionID, 显示CheckBox

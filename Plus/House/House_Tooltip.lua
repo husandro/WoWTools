@@ -111,17 +111,6 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         frame.numItemLabel:SetText('')
     end)
 
-
-
-
-
-
-
-
-    if not HousingCatalogDecorEntryMixin.OnLoad then--12.0才有
-        return
-    end
-
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', function(btn)
 --有点大
         btn.InfoText:SetFontObject('GameFontWhite')
@@ -203,32 +192,44 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
 
         if entryInfo then
-            show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
-                and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--追踪功能对此物品可用
-
-            isTrackable= show and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--正在追踪
-
             r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             placementCost= entryInfo.placementCost
 
-            if btn.IsBundleEntry and btn:IsBundleEntry() then--12.0没有了 IsBundleEntry 
-            elseif btn.IsInMarketView and btn:IsInMarketView() then
-            else
+            if btn.InfoText:IsShown() then
+                local numPlaced, quantity
+                if btn:IsBundleItem() then
+                    numPlaced= btn:GetNumDecorPlaced()
+                    quantity= btn.bundleItemInfo.quantity
 
-                local numPlaced= entryInfo.numPlaced or 0
-                local quantity= (entryInfo.quantity or 0)+ (entryInfo.remainingRedeemable or 0)
+                elseif btn:IsInMarketView() then
 
-                numPlaced= numPlaced==0 and '|cff6262620|r' or numPlaced
-                quantity= quantity==0 and '|cff6262620|r' or quantity
-                btn.InfoText:SetText(numPlaced..'/'..quantity..'|A:house-chest-icon:0:0|a')
+                elseif btn.entryInfo.isUniqueTrophy then
 
-                isCanDelete= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
+                elseif btn.entryInfo.showQuantity then
+                    numPlaced= entryInfo.numPlace
+                    if entryInfo.quality and entryInfo.remainingRedeemable then
+                        quantity= entryInfo.quantity + entryInfo.remainingRedeemable
+                    end
+                end
+                if numPlaced and quantity then
+                    numPlaced= numPlaced==0 and '|cff6262620|r' or numPlaced
+                    quantity= quantity==0 and '|cff6262620|r' or quantity
+                    btn.InfoText:SetText(numPlaced..'/'..quantity..'|A:house-chest-icon:0:0|a')
+                end
             end
 
+            if entryInfo.entryID then
+                isCanDelete= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
+
+                show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
+                    and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--追踪功能对此物品可用
+
+                isTrackable= show and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--正在追踪
+
+            end
             isXP= entryInfo.firstAcquisitionBonus and entryInfo.firstAcquisitionBonus>0
             isIndoors= entryInfo.isAllowedIndoors
             isOutdoors= entryInfo.isAllowedOutdoors
-
             isNotAsset= not entryInfo.asset
         end
 

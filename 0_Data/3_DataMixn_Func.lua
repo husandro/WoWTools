@@ -294,20 +294,10 @@ function WoWTools_DataMixin:PlayText(text)
     local volume = C_TTSSettings.GetSpeechVolume() or 0
     volume= volume==0 and 50 or volume
 
-    if Enum.VoiceTtsDestination then--12.0没有了
-        C_VoiceChat.SpeakText(
-            C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard) or 0,
-            text,
-            Enum.VoiceTtsDestination.QueuedLocalPlayback,
-            C_TTSSettings.GetSpeechRate(),
-            volume
-        )
-    else
-        local neverQueue= false--永不排队
-        local allowOverlappedSpeech= false--允许重叠发言
-        local voice= {voiceID=C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard) or 0}
-        TextToSpeech_Speak(text, voice, neverQueue, allowOverlappedSpeech)
-    end
+    local neverQueue= false--永不排队
+    local allowOverlappedSpeech= false--允许重叠发言
+    local voice= {voiceID=C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard) or 0}
+    TextToSpeech_Speak(text, voice, neverQueue, allowOverlappedSpeech)
 end
 
 

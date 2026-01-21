@@ -15,14 +15,9 @@ local function GetItemLink(self)
         if type(self.item)=='table' and self.item.GetItemLink then--12.0更新如下
             link= self.item:GetItemLink()
         elseif self.item then
-            local data
-            if CombatLogGetCurrentEventInfo then--12.0没有了
-                link= select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID))
-            else
-                data= C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID)
-                if data then
-                    link= data.itemLink
-                end
+            local data= C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID)
+            if data then
+                link= data.itemLink
             end
         else
             link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID))
@@ -124,15 +119,9 @@ local function Init()
         end
         local isNotColleced
         if data.itemModifiedAppearanceID then
-            if CombatLogGetCurrentEventInfo then--12.0没有了
-                if not select(5, C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)) then
-                    isNotColleced=true
-                end
-            else
-                local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
-                if info then
-                    isNotColleced= info.isCollected==false
-                end
+            local info= C_TransmogCollection.GetAppearanceSourceInfo(data.itemModifiedAppearanceID)
+            if info then
+                isNotColleced= info.isCollected==false
             end
         end
         frame.collectedTexture:SetShown(isNotColleced)
