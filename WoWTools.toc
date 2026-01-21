@@ -149,7 +149,7 @@ Plus_Tooltip\f_Currency.lua
 Plus_Tooltip\f_Faction.lua
 Plus_Tooltip\f_Flyout.lua
 Plus_Tooltip\f_Item.lua
-Plus_Tooltip\f_Item_House.lua
+Plus_Tooltip\f_House.lua
 Plus_Tooltip\f_Mount.lua
 Plus_Tooltip\f_Pet.lua
 Plus_Tooltip\f_Pet_BattlePet.lua

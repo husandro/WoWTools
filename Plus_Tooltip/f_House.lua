@@ -42,6 +42,16 @@ local ValueTypePortraits = {
 }
 
 entryInfo.isPrefab 匠心房间
+
+if C_Item.IsDecorItem(itemLink or itemID) then
+    local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink or itemID, true)
+    if entryInfo then
+        textLeft, portrait= self:Set_HouseItem(tooltip, entryInfo)
+        if entryInfo.quality then
+            r, g, b, col= WoWTools_ItemMixin:GetColor(entryInfo.quality)
+        end
+    end
+end
 ]]
 
 
@@ -94,21 +104,28 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
 --关键词
     local tag
     for _, name in pairs(entryInfo.dataTagsByID or {}) do
-        tag= (tag and tag.. NORMAL_FONT_COLOR:WrapTextInColorCode(PLAYER_LIST_DELIMITER) or '')..WoWTools_TextMixin:CN(name)
+        tag= (tag and tag..NORMAL_FONT_COLOR:WrapTextInColorCode(PLAYER_LIST_DELIMITER) or '')
+            ..WoWTools_TextMixin:CN(name)
     end
     if tag then
+        tooltip:AddLine(' ')
         tooltip:AddLine(tag, 1,1,1, true)
     end
 --来源
     if entryInfo.sourceText and entryInfo.sourceText~='' then
+        tooltip:AddLine(' ')
         tooltip:AddLine(WoWTools_TextMixin:CN(entryInfo.sourceText), 1,1,1)
     end
 
     if entryInfo.canCustomize then
         portrait='housing-dyable-palette-icon'
     end
-    if entryInfo.showQuantity and entryInfo.numPlaced and entryInfo.numStored then
-        textLeft=entryInfo.numPlaced..'/'..entryInfo.numStored..'|A:house-chest-icon:0:0|a'
+    if entryInfo.showQuantity then--entryInfo.showQuantity and 
+        local numPlaced= entryInfo.numPlaced or 0
+        local quantity= (entryInfo.quantity or 0)+ (entryInfo.remainingRedeemable or 0)
+        numPlaced= numPlaced==0 and '|cff6262620|r' or numPlaced
+        quantity= quantity==0 and '|cff6262620|r' or quantity
+        textLeft=numPlaced..'/'..quantity..'|A:house-chest-icon:0:0|a'
     end
 
     return textLeft, portrait

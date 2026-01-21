@@ -214,11 +214,14 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             if btn.IsBundleEntry and btn:IsBundleEntry() then--12.0没有了 IsBundleEntry 
             elseif btn.IsInMarketView and btn:IsInMarketView() then
             else
-                local numPlaced= entryInfo.numPlaced or 0--已放置
-                local numStored=  entryInfo.numStored or 0--储存空间
-                if numPlaced>0 or numStored>0 then
-                    btn.InfoText:SetText(numPlaced..'/'..numStored..'|A:house-chest-icon:0:0|a')
-                end
+
+                local numPlaced= entryInfo.numPlaced or 0
+                local quantity= (entryInfo.quantity or 0)+ (entryInfo.remainingRedeemable or 0)
+
+                numPlaced= numPlaced==0 and '|cff6262620|r' or numPlaced
+                quantity= quantity==0 and '|cff6262620|r' or quantity
+                btn.InfoText:SetText(numPlaced..'/'..quantity..'|A:house-chest-icon:0:0|a')
+
                 isCanDelete= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
             end
 

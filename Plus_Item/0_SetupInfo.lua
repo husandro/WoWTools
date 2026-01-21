@@ -412,9 +412,9 @@ local function Get_Info(tab)
         local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
         if entryInfo then
 
-            --if entryInfo.canCustomize then
+            if entryInfo.canCustomize then
                 topLeftText= '|A:housing-dyable-palette-icon:0:0|a'
-            --end
+            end
             if entryInfo.isAllowedIndoors then
                 leftText='|A:house-room-limit-icon:0:0|a'
             end
@@ -429,8 +429,13 @@ local function Get_Info(tab)
             if entryInfo.firstAcquisitionBonus>0 then
                 rightText= '|A:GarrMission_CurrencyIcon-Xp:18:18:3|a'
             end
-            if entryInfo.showQuantity and entryInfo.numPlaced and entryInfo.numStored then
-                bottomRightText=entryInfo.numPlaced..'/'..entryInfo.numStored--..'|A:house-chest-icon:0:0|a'
+            if entryInfo.showQuantity then
+                local numPlaced= entryInfo.numPlaced or 0
+                local quantity= (entryInfo.quantity or 0)+ (entryInfo.remainingRedeemable or 0)
+                numPlaced= numPlaced==0 and '|cff6262620|r' or numPlaced
+                quantity= quantity==0 and '|cff6262620|r' or quantity
+
+                bottomRightText=numPlaced..'/'..quantity--..'|A:house-chest-icon:0:0|a'
             end
         end
 
