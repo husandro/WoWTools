@@ -21,13 +21,13 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingDashboard()
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         end)
 
+    root:CreateDivider()
 --摧毁
         WoWTools_OtherMixin:OpenOption(root,
             '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING),
             '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING)
         )
 
-        root:CreateDivider()
         self:OpenOption(root)
     end)
 end
