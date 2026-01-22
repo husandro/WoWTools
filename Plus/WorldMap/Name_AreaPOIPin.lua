@@ -3,11 +3,9 @@ local function Save()
     return  WoWToolsSave['Plus_WorldMap']
 end
 
-local INSTANCE_DIFFICULTY_FORMAT='('..WoWTools_TextMixin:Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 
 
-
-local function set_Widget_Text_OnUpDate(self, elapsed)
+local function Set_Update(self, elapsed)
     self.elapsed= (self.elapsed or 1) + elapsed
     if self.elapsed>1 then
         self.elapsed= 0
@@ -17,54 +15,22 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
 
             if time and time>0 then
                 if time<86400 then
-                    self.Text:SetText(WoWTools_TimeMixin:SecondsToClock(time))
+                 self.Text:SetText(WoWTools_TimeMixin:SecondsToClock(time))
                 else
                     self.Text:SetText(SecondsToTime(time, true))
                 end
-                return
             end
-        end
 
-        if self.widgetID then
+
+        elseif self.widgetID then
             local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(self.widgetID)
             if widgetInfo and widgetInfo.shownState== 1 and widgetInfo.text and widgetInfo.hasTimer then--剩余时间：
-                self.Text:SetText(widgetInfo.text:gsub(HEADER_COLON, '|n'))
+                local cn= WoWTools_TextMixin:CN(widgetInfo.text)
+                self.Text:SetText(cn:gsub(HEADER_COLON, '|n'))
             end
         end
     end
 end
-
-
-
-
-
-
-
-local function Create_Label(frame)
-    frame.WoWToolsFrame= CreateFrame('Frame', nil, frame)
-    frame.WoWToolsFrame:SetAllPoints()
-
-    function frame.WoWToolsFrame:Clear()
-        self.elapsed=1
-        self.areaPoiID= nil
-        self.widgetID= nil
-        self:SetScript('OnUpdate', nil)
-        self.Text:SetText('')
-        self.Text:SetFontHeight(Save().areaPoinFontSize or 10)
-    end
-
-    frame.WoWToolsFrame.Text= frame.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
-    frame.WoWToolsFrame.Text:SetPoint('TOP', frame.WoWToolsFrame, 'BOTTOM', 0, 3)
-    frame.WoWToolsFrame.Text:SetFontHeight(8)
-
-    frame.WoWToolsFrame:SetScript('OnHide', function(self)
-        self.Text:SetText('')
-        self.elapsed= 1
-    end)
-end
-
-
-
 
 
 
@@ -77,61 +43,65 @@ local function Init()
         return
     end
 
-    WoWTools_DataMixin:Hook(AreaPOIPinMixin, 'OnLoad', Create_Label)
-
     WoWTools_DataMixin:Hook(AreaPOIPinMixin, 'OnAcquired', function(self, poiInfo)
         if not self.WoWToolsFrame then
-            Create_Label(self)
+            self.WoWToolsFrame= CreateFrame('Frame', nil, self)
+            self.WoWToolsFrame:SetAllPoints()
+            self.WoWToolsFrame.Text= self.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
+            self.WoWToolsFrame.Text:SetPoint('TOP', self.Texture or self, 'BOTTOM')
         else
-            self.WoWToolsFrame:Clear()
+            self:SetScript('OnUpdate', nil)
+            self.WoWToolsFrame.elapsed= nil
+            self.WoWToolsFrame.areaPoiID= poiInfo.areaPoiID
+            self.WoWToolsFrame.widgetID= nil
+        end
+        if Save().ShowAreaPOI_Name then
+            poiInfo= {}
+        else
+            poiInfo= poiInfo or self.poiInfo or {}
         end
 
-        poiInfo= poiInfo or self.poiInfo
-
-        if not Save().ShowAreaPOI_Name
-            or not poiInfo
-            or not (poiInfo.name or poiInfo.widgetSetID or poiInfo.areaPoiID)
-        then
-            return
-        end
+        local text
 
         if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
             self.WoWToolsFrame.areaPoiID= poiInfo.areaPoiID
-            self.WoWToolsFrame:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
-            return
+            self.WoWToolsFrame:SetScript('OnUpdate', Set_Update)
 
         elseif poiInfo.widgetSetID then
             for _, widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
                 if widget and widget.widgetID and  widget.widgetType==Enum.UIWidgetVisualizationType.TextWithState then
                     local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
-                    if widgetInfo and widgetInfo.shownState==Enum.WidgetShownState.Shown and widgetInfo.text then
+                    if widgetInfo and widgetInfo.shownState==Enum.WidgetShownState.Shown then
+
                         if widgetInfo.hasTimer then--剩余时间：
                             self.WoWToolsFrame.widgetID= widget.widgetID
-                            self.WoWToolsFrame:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
-                            return
-                        else
+                            self.WoWToolsFrame:SetScript('OnUpdate', Set_Update)
+                            break
+
+                        elseif widgetInfo.text and widgetInfo.text~='' then
                             local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
                             local text2= widgetInfo.text:match('(%d+/%d+)')--次数
-                            local text
+
                             if icon and num then
                                 text= icon..'|cff00ff00'..num..'|r'
                             end
                             if text2 then
                                 text= (text or '')..'|cffff00ff'..text2..'|r'
                             end
-                            self.Text:SetText(text or '')
+                            break
                         end
-                        return
                     end
                 end
             end
         end
 
-        local text= WoWTools_TextMixin:CN(poiInfo.name or self.name, {areaPoiID=poiInfo.areaPoiID, isName=true})
+        text= text or WoWTools_TextMixin:CN(poiInfo.name)
         if text then
-            text= text:match(INSTANCE_DIFFICULTY_FORMAT) or text
+            text= text:match('%((.+)%)') or text:match('（(.+)）')  or text
         end
+
         self.WoWToolsFrame.Text:SetText(text or '')
+        self.WoWToolsFrame.Text:SetFontHeight(Save().areaPoinFontSize or 10)
     end)
 
 
@@ -152,7 +122,7 @@ local function Init()
                 and (poiInfo.areaPoiID or poiInfo.widgetSetID)
                 and GetAppropriateTooltip()
 
-        if not tooltip or not tooltip:IsShown() or WoWTools_FrameMixin:IsLocked(tooltip) then
+        if not tooltip or not tooltip:IsShown() or WoWTools_FrameMixin:IsLocked(tooltip) or not poiInfo then
             return
         end
 

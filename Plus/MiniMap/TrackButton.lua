@@ -396,13 +396,12 @@ local function set_OnEnter_btn_tips(self)
             local verticalPadding = nil
 
             if hasName then
-                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(poiInfo.name, {areaPoiID=poiInfo.areaPoiID or self.areaPoiID, isName=true}), HIGHLIGHT_FONT_COLOR)
+                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(poiInfo.name), HIGHLIGHT_FONT_COLOR)
                 addedTooltipLine = true
             end
 
             if hasDescription then
-                local data= WoWTools_TextMixin:CN(nil, {areaPoiID=poiInfo.areaPoiID or self.areaPoiID})
-                local desc= data and data[2] or WoWTools_TextMixin:CN(poiInfo.description)
+                local desc= WoWTools_TextMixin:CN(poiInfo.description)
                 GameTooltip_AddNormalLine(GameTooltip, desc)
                 addedTooltipLine = true
             end
@@ -586,7 +585,7 @@ local function Create_Button(index, info)
         self.uiMapID= tables.uiMapID
 
         self.name= tables.name
-        local name= WoWTools_TextMixin:CN(tables.name, {areaPoiID=tables.areaPoiID, isName=true}) or tables.name
+        local name= WoWTools_TextMixin:CN(tables.name)
         name= name=='' and ' ' or name or ''
         self.nameText:SetText(name)
 
