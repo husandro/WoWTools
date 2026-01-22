@@ -55,7 +55,7 @@ local function Init()
             self.WoWToolsFrame.areaPoiID= poiInfo.areaPoiID
             self.WoWToolsFrame.widgetID= nil
         end
-        if Save().ShowAreaPOI_Name then
+        if not Save().ShowAreaPOI_Name then
             poiInfo= {}
         else
             poiInfo= poiInfo or self.poiInfo or {}
