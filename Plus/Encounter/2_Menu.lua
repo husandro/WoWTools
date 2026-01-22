@@ -196,19 +196,18 @@ local function Init()
     menu:SetPoint('RIGHT', EncounterJournalCloseButton, 'LEFT')
     menu:SetupMenu(Init_Menu)
 
-    if EncounterJournalInstanceSelect.GreatVaultButton then
-        local btn= EncounterJournalInstanceSelect.GreatVaultButton
-        btn:ClearAllPoints()
-        btn:SetPoint('RIGHT', menu, 'LEFT', -4, 0)
-        btn:SetFrameStrata(menu:GetFrameStrata())
-        btn:SetFrameLevel(menu:GetFrameLevel())
-        btn:SetSize(23,23)
-        local icon= btn:GetNormalTexture()
-        if icon then
-            icon:ClearAllPoints()
-            icon:SetPoint('TOPLEFT', -2, 2)
-            icon:SetPoint('BOTTOMRIGHT', 2, -2)
-        end
+
+    local great= EncounterJournalInstanceSelect.GreatVaultButton
+    great:ClearAllPoints()
+    great:SetPoint('RIGHT', menu, 'LEFT', -4, 0)
+    great:SetFrameStrata(menu:GetFrameStrata())
+    great:SetFrameLevel(menu:GetFrameLevel())
+    great:SetSize(23,23)
+    local icon= great:GetNormalTexture()
+    if icon then
+        icon:ClearAllPoints()
+        icon:SetPoint('TOPLEFT', -2, 2)
+        icon:SetPoint('BOTTOMRIGHT', 2, -2)
     end
 
     local wow= WoWTools_DataMixin:CreateWoWItemListButton(menu, {
@@ -216,7 +215,7 @@ local function Init()
         type='Instance',
         alpha=1,
     })
-    wow:SetPoint('RIGHT', EncounterJournalInstanceSelect.GreatVaultButton or menu, 'LEFT', -4, 0)
+    wow:SetPoint('RIGHT', great, 'LEFT', -4, 0)
 
 
     local key =WoWTools_ButtonMixin:Cbtn(menu, {size=22})--所有角色,挑战
