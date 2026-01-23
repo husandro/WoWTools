@@ -50,7 +50,7 @@ local function Init()
             unit= unit or f:GetAttribute('unit')
             if WoWTools_UnitMixin:UnitIsUnit('player', unit)==false
                 and unit
-                and UnitExists(unit)
+                and WoWTools_UnitMixin:UnitExists(unit)
                 and UnitIsPlayer(unit)
                 and UnitIsFriend('player', unit)
             then

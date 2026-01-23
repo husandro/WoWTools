@@ -3,7 +3,7 @@
 --设置单位, 玩家
 function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     if self:IsInCombatDisabled(tooltip)
-        or not UnitExists(unit)
+        or not WoWTools_UnitMixin:UnitExists(unit)
         or not canaccessvalue(name)
         or not canaccessvalue(unit)
         or not canaccessvalue(guid)

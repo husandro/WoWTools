@@ -24,7 +24,7 @@ AuraUtil.AuraFilters.Harmful
 function WoWTools_AuraMixin:Get(unit, spellTab, filter)--HELPFUL HARMFUL
     if not canaccessvalue(unit)
         or not WoWTools_UnitMixin:UnitGUID(unit)
-        or not UnitExists(unit) then
+        or not WoWTools_UnitMixin:UnitExists(unit) then
         return
     end
 

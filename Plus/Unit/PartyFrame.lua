@@ -44,8 +44,9 @@ end
 
 --目标的目标
 local function Create_potFrame(frame)
+    local unit= frame:GetUnit()
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {
+    frame.ToTButton= WoWTools_ButtonMixin:Cbtn(frame, {
         isSecure=true,
         size=35,
         isType2=true,
@@ -54,52 +55,29 @@ local function Create_potFrame(frame)
         name= 'WoWToolsParty'..frame.unit..'ToTButton',
     })
 
-    function btn:set_unit()
-        local unit=self:GetParent():GetUnit()
-        self.unit= unit
-        self.tt= btn.unit..'target'
-
-        self.frame.unit= self.unit
-        self.frame.tt= self.tt
-    end
+    frame.ToTButton.unit= unit
+    frame.ToTButton.target= unit..'target'
 
 
-    btn:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
-    btn:SetAttribute('type', 'target')
-    btn:SetAttribute('unit', frame.unit..'target')
-    btn:SetScript('OnLeave', function()
-        GameTooltip:Hide()
-    end)
+    frame.ToTButton:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
+    frame.ToTButton:SetAttribute('type', 'target')
+    frame.ToTButton:SetAttribute('unit', frame.ToTButton.target)
+    frame.ToTButton:SetScript('OnLeave', GameTooltip_Hide)
 
-    btn:SetScript('OnEnter', function(self)
+    frame.ToTButton:SetScript('OnEnter', function(self)
+        if not WoWTools_UnitMixin:UnitExists(self.unit) then
+            return
+        end
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        if UnitExists(self.tt) then
-            GameTooltip:SetUnit(self.tt)
-        else
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
-            GameTooltip:AddDoubleLine(self.tt, WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
-        end
+        GameTooltip:SetUnit(self.unit)
         GameTooltip:Show()
     end)
 
 
-    btn.frame= CreateFrame('Frame', nil, btn)
-    btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
-    btn.frame:SetAllPoints()
-   -- btn.frame:Hide()
-
---[[目标，也是我的目标
-    btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
-    btn.frame.isPlayerTargetTexture:SetSize(42,42)
-    btn.frame.isPlayerTargetTexture:SetPoint('CENTER',2,-2)
-    btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
-    btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
-    btn.frame.isPlayerTargetTexture:Hide()]]
-
 --目标，图像
-    btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')
-    btn.frame.Portrait:SetAllPoints()
+    frame.ToTButton.Portrait= frame.ToTButton:CreateTexture(nil, 'BORDER')
+    frame.ToTButton.Portrait:SetAllPoints()
 
 
     --[[btn.frame.healthLable= WoWTools_LabelMixin:Create(btn.frame, {size=14})
@@ -109,15 +87,6 @@ local function Create_potFrame(frame)
     btn.frame.class= btn.frame:CreateTexture(nil, "ARTWORK")
     btn.frame.class:SetSize(14,14)
     btn.frame.class:SetPoint('TOPRIGHT')]]
-
-
-
-    btn:set_unit()
-
-
-    function btn.frame:settings()
-        SetPortraitTexture(self.Portrait, self.tt, true)--图像
-    end
 
  --目标， 生命条
     --[[btn.frame:SetScript('OnUpdate', function(self, elapsed)
@@ -135,40 +104,19 @@ local function Create_potFrame(frame)
     end)]]
 
 
-    btn:SetScript('OnEvent', function(self)
-        self.frame:settings()
+    frame.ToTButton:SetScript('OnEvent', function (self)
+        SetPortraitTexture(self.Portrait, self.target, true)--图像
     end)
 
-    function btn:Init()
-        self:set_unit()
-        self:RegisterEvent('RAID_TARGET_UPDATE')
-        self:RegisterUnitEvent('UNIT_TARGET', self.unit)
-        self:RegisterUnitEvent('UNIT_FLAGS', self.tt)
-        self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.tt)
-        self:RegisterEvent('PLAYER_TARGET_CHANGED')
-        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.tt)
-        self.frame:settings()
+    function frame.ToTButton:settings()
+        SetPortraitTexture(self.Portrait, self.target, true)--图像
     end
-
-    if frame:IsShown() then
-        btn:Init()
-    end
-
-    btn:SetScript('OnShow', function(self)
-        self:Init()
+    frame.ToTButton:RegisterUnitEvent('UNIT_TARGET', unit)
+    frame.ToTButton:RegisterUnitEvent('UNIT_TARGETABLE_CHANGED', unit)
+    frame.ToTButton:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit)
+    frame.ToTButton:SetScript('OnHide', function(self)
+        SetPortraitTexture(self.Portrait, self.target, true)--图像
     end)
-
-    btn:SetScript('OnHide', function(self)
-        --self.frame.elapsed=nil
-        --self.frame.healthLable:SetText('')
-        --self.frame.class:SetTexture(0)
-        --self.frame.Portrait:SetTexture(0)
-        self:UnregisterAllEvents()
-    end)
-
-    frame.ToTButton= btn
-
-    Create_potFrame=function()end
 end
 
 
@@ -189,7 +137,8 @@ end
 
 --队友，施法
 local function Create_castFrame(frame)
-    local castFrame= CreateFrame("Frame", 'WoWTools'..frame.unit..'ToTCastingFrame', frame)
+    local unit= frame:GetUnit()
+    local castFrame= CreateFrame("Frame", 'WoWTools'..unit..'ToTCastingFrame', frame)
     castFrame:SetPoint('BOTTOMLEFT', frame.ToTButton, 'BOTTOMRIGHT')
     castFrame:SetSize(20,20)
 
@@ -271,7 +220,6 @@ local function Create_castFrame(frame)
         self:Init()
     end)
 
-    Create_castFrame=function()end
 end
 
 
@@ -291,7 +239,7 @@ end
 local function Create_raidTargetFrame(frame)
     local raidTargetFrame= CreateFrame("Frame", nil, frame)
 
-    raidTargetFrame.texture= raidTargetFrame:CreateTexture()
+    --[[raidTargetFrame.texture= raidTargetFrame:CreateTexture()
     raidTargetFrame.texture:SetSize(12,12)
     raidTargetFrame.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
     raidTargetFrame.texture:SetPoint('RIGHT', frame.PartyMemberOverlay.RoleIcon, 'LEFT')
@@ -303,15 +251,9 @@ local function Create_raidTargetFrame(frame)
             index=1
         else
             index = GetRaidTargetIndex(self.unit)
-            if not canaccessvalue(index) or (index and (index<=0 or index>=9)) then
-                index= nil
-            end
         end
-        if index then
-            SetRaidTargetIconTexture(self.texture, index)
-        end
-        self.texture:SetShown(index)
-    end
+        SetRaidTargetIconTexture(self.texture, index)
+    end]]
 
 --成员派系
     raidTargetFrame.faction=raidTargetFrame:CreateTexture(nil, 'ARTWORK')
@@ -340,13 +282,13 @@ local function Create_raidTargetFrame(frame)
         self:RegisterUnitEvent('UNIT_FACTION', self.unit)
         self:RegisterEvent('RAID_TARGET_UPDATE')
         self:set_faction()
-        self:set_mark()
+        --self:set_mark()
     end
 
     raidTargetFrame:SetScript('OnEvent', function(self, event)
-        if event=='RAID_TARGET_UPDATE' then
-            self:set_mark()
-        elseif event=='UNIT_FACTION' then
+        --if event=='RAID_TARGET_UPDATE' then
+            --self:set_mark()
+        if event=='UNIT_FACTION' then
             self:set_faction()--成员派系
         end
     end)
@@ -365,7 +307,6 @@ local function Create_raidTargetFrame(frame)
         self:Init()
     end)
 
-    Create_raidTargetFrame=function()end
 end
 
 
@@ -437,7 +378,6 @@ local function Create_combatFrame(frame)
         self.unit= self:GetParent():GetUnit()
     end)
 
-    Create_combatFrame=function()end
 end
 
 
@@ -556,7 +496,6 @@ local function Create_positionFrame(frame)
         self:Init()
     end)
 
-    Create_positionFrame=function()end
 end
 
 
@@ -683,7 +622,6 @@ local function Create_deadFrame(frame)
         self:Init()
     end)
 
-    Create_deadFrame=function()end
 end
 
 
@@ -712,7 +650,54 @@ end
 
 
 
+local function Init_CreateButton(frame)
 
+    Create_potFrame(frame)--目标的目标
+
+
+    frame.ManaBar.RightText:SetAlpha(0)
+    frame.ManaBar.LeftText:SetAlpha(0)
+    frame.HealthBarContainer.RightText:SetAlpha(0)
+
+    frame.HealthBarContainer.LeftText:ClearAllPoints()
+    frame.HealthBarContainer.LeftText:SetPoint('RIGHT', -2,0)
+    frame.HealthBarContainer.LeftText:SetJustifyH('RIGHT')
+
+    --frame.HealthBarContainer.CenterText:SetAlpha(0)
+    frame.HealthBarContainer.CenterText:ClearAllPoints()
+    frame.HealthBarContainer.CenterText:SetPoint('RIGHT')
+    frame.HealthBarContainer.CenterText:SetJustifyH('RIGHT')
+    frame.ManaBar.TextString:SetAlpha(0)
+
+
+    frame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
+
+
+    Create_castFrame(frame)--队友，施法
+    Create_raidTargetFrame(frame)--队伍, 标记, 成员派系
+    Create_combatFrame(frame)--战斗指示
+    Create_positionFrame(frame)--队友位置
+    Create_deadFrame(frame)--队友，死亡
+
+
+    frame.Name:SetPoint('RIGHT')
+    frame.Name:SetFontObject(GameFontNormalSmall2)
+
+    WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
+        if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
+            self.PartyMemberOverlay.RoleIcon:SetShown(false)
+        end
+    end)
+
+    WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
+        local unit= frame:GetUnit() or frame.unit
+        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
+
+    --外框
+        self.Texture:SetVertexColor(r, g, b)
+        self.PortraitMask:SetVertexColor(r, g, b)
+    end)
+end
 
 
 --先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
@@ -724,52 +709,20 @@ local function Init()--PartyFrame.lua
     PartyFrame.Background:SetWidth(124)--144
 
     --local showPartyFrames = PartyFrame:ShouldShow();
-    for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
-        frame.ManaBar.RightText:SetAlpha(0)
-        frame.ManaBar.LeftText:SetAlpha(0)
-        frame.HealthBarContainer.RightText:SetAlpha(0)
-
-        frame.HealthBarContainer.LeftText:ClearAllPoints()
-        frame.HealthBarContainer.LeftText:SetPoint('RIGHT', -2,0)
-        frame.HealthBarContainer.LeftText:SetJustifyH('RIGHT')
-
-        --frame.HealthBarContainer.CenterText:SetAlpha(0)
-        frame.HealthBarContainer.CenterText:ClearAllPoints()
-        frame.HealthBarContainer.CenterText:SetPoint('RIGHT')
-        frame.HealthBarContainer.CenterText:SetJustifyH('RIGHT')
-        frame.ManaBar.TextString:SetAlpha(0)
-
-
-        frame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
-
-        do
-            Create_potFrame(frame)--目标的目标
+    for i=1, 4 do --PartyFrame.MemberFrame4.HealthBarContainer.HealthBarMask
+        local frame= PartyFrame['MemberFrame'..i]
+        if frame then
+           Init_CreateButton(frame)
         end
-        Create_castFrame(frame)--队友，施法
-        Create_raidTargetFrame(frame)--队伍, 标记, 成员派系
-        Create_combatFrame(frame)--战斗指示
-        Create_positionFrame(frame)--队友位置
-        Create_deadFrame(frame)--队友，死亡
-
-
-        frame.Name:SetPoint('RIGHT')
-        frame.Name:SetFontObject(GameFontNormalSmall2)
-
-        WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
-            if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
-                self.PartyMemberOverlay.RoleIcon:SetShown(false)
-            end
-        end)
-
-        WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
-            local unit= frame:GetUnit() or frame.unit
-            local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-
-        --外框
-            self.Texture:SetVertexColor(r, g, b)
-            self.PortraitMask:SetVertexColor(r, g, b)
-        end)
     end
+
+    WoWTools_DataMixin:Hook(PartyFrame, 'UpdatePartyFrames', function(self)
+        for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+            if not frame.ToTButton then
+                Init_CreateButton(frame)
+            end
+        end
+    end)
 
 
     Init=function()end

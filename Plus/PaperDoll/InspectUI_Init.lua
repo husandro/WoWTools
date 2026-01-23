@@ -19,7 +19,7 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
     local unit= InspectFrame.unit or 'target'
 
     local slot= frame:GetID()
-	local link= (UnitExists(unit) and not Save().hide) and GetInventoryItemLink(unit, slot) or nil
+	local link= (WoWTools_UnitMixin:UnitExists(unit) and not Save().hide) and GetInventoryItemLink(unit, slot) or nil
 	WoWTools_DataMixin:Load(link, 'item')--加载 item quest spell
 
     --set_Gem(frame, slot, link)
@@ -105,7 +105,7 @@ end
 local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
     local key
     local unit= InspectFrame.unit or 'target'
-    if not Save().hide and unit and UnitExists(unit) then
+    if not Save().hide and unit and WoWTools_UnitMixin:UnitExists(unit) then
         local guid= unit and UnitGUID(unit)
         local info= guid and WoWTools_DataMixin.UnitItemLevel[guid]
         if info then
@@ -183,7 +183,7 @@ local function Init_UI()
     function InspectFrame:set_status_label()
         local unit=self.unit
         local text
-        if not Save().hide and UnitExists(unit) then
+        if not Save().hide and WoWTools_UnitMixin:UnitExists(unit) then
             local tab={ 1,2,3,15,5,9, 10,6,7,8,11,12,13,14, 16,17}
             local sta, newSta={}, {}
             for _, slotID in pairs(tab) do

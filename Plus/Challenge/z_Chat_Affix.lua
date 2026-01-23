@@ -10,7 +10,7 @@ local function Affix_136177()
     local n=GetNumGroupMembers()
     for i=1, n do
         local unit= i==n and 'player' or 'party'..i
-        if UnitExists(unit) then
+        if WoWTools_UnitMixin:UnitExists(unit) then
             link= WoWTools_UnitMixin:GetLink(unit, nil, nil, true) or unit
             data= WoWTools_AuraMixin:Get(unit, {
                 [373113]=true,

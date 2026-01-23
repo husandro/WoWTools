@@ -257,7 +257,7 @@ end
 --队伍，子目录
                 for i=1, GetNumGroupMembers()-1, 1 do
                     unit='party'..i
-                    if UnitExists(unit) and UnitIsPlayer(unit) then
+                    if WoWTools_UnitMixin:UnitExists(unit) and UnitIsPlayer(unit) then
                         playerName=GetUnitName(unit, true)
                         sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}), function(data)
                             if data and data~=UnitName('player') then
@@ -274,7 +274,7 @@ end
             elseif index==2 and isInRaid then
                 for i=1, MAX_RAID_MEMBERS,  1 do
                     unit='raid'..i
-                   if UnitExists(unit) and not WoWTools_UnitMixin:UnitIsUnit(unit, 'player') and UnitIsPlayer(unit) then
+                   if WoWTools_UnitMixin:UnitExists(unit) and not WoWTools_UnitMixin:UnitIsUnit(unit, 'player') and UnitIsPlayer(unit) then
                         sub2=sub:CreateButton(
                             WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}),
                         function(data)

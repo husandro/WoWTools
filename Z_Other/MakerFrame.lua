@@ -315,7 +315,7 @@ local function Init()--设置标记, 框架
             if event=='UPDATE_BINDINGS' then
                 self:set_hotkey()
             else
-                self:SetAlpha(UnitExists('target') and 1 or 0.5)
+                self:SetAlpha(WoWTools_UnitMixin:UnitExists('target') and 1 or 0.5)
             end
         end)
         btn:SetAlpha(0.5)

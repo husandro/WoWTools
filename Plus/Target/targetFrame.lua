@@ -179,7 +179,7 @@ local function Init()
                 self:RegisterEvent('PLAYER_REGEN_ENABLED')
             end
             Set_Texture()
-            self:SetShown(UnitExists('target'))
+            self:SetShown(WoWTools_UnitMixin:UnitExists('target'))
         end
     end
 

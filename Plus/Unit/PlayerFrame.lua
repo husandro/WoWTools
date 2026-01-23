@@ -570,7 +570,7 @@ end
 
 --等级，颜色
     WoWTools_DataMixin:Hook('PlayerFrame_UpdateLevel', function()
-        if UnitExists("player") then
+        if WoWTools_UnitMixin:UnitExists("player") then
             local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit)
             if effectiveLevel== GetMaxLevelForLatestExpansion() then
                 PlayerLevelText:SetText('')

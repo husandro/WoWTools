@@ -69,7 +69,7 @@ local function Set_TankHealer(set)--设置队伍标记
     elseif IsInGroup() then--设置队伍标记
         for index=1, MAX_PARTY_MEMBERS+1 do
             local unit= index <= MAX_PARTY_MEMBERS and 'party'..index or 'player'
-            if UnitExists(unit) and UnitIsConnected(unit) then
+            if WoWTools_UnitMixin:UnitExists(unit) and UnitIsConnected(unit) then
                 local role=  UnitGroupRolesAssigned(unit)
                 if role=='TANK' then
                     if not tank then

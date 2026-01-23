@@ -188,7 +188,7 @@ local MacroList={
     },
     {text='@target',  macro='[@target]',
         tab={
-            {text='exists', tips='UnitExists()'},
+            {text='exists', tips='WoWTools_UnitMixin:UnitExists()'},
             {text='help', tips='UnitCanAssist()'},
             {text='harm', tips='UnitCanAttack()'},
             {text='dead', tips='UnitIsDeadOrGhost()'},

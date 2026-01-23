@@ -33,7 +33,7 @@ local function Init()--设置,团队
     end
 
     WoWTools_DataMixin:Hook('CompactUnitFrame_SetUnit', function(frame, unit)--队伍标记
-        if UnitExists(unit) and not unit:find('nameplate') and not frame.RaidTargetIcon and frame.name then
+        if WoWTools_UnitMixin:UnitExists(unit) and not unit:find('nameplate') and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
             frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
             frame.RaidTargetIcon:SetPoint('TOPRIGHT')
@@ -62,7 +62,7 @@ local function Init()--设置,团队
     end)
 
     WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateRoleIcon', function(frame)--隐藏, DPS，图标 
-        if not UnitExists(frame.unit) or frame.unit:find('nameplate') then
+        if not WoWTools_UnitMixin:UnitExists(frame.unit) or frame.unit:find('nameplate') then
             return
         end
         local bool=true
@@ -95,7 +95,7 @@ local function Init()--设置,团队
     WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
         local isSelf= WoWTools_UnitMixin:UnitIsUnit(frame.unit, 'player')
         if isSelf==nil
-            or not UnitExists(frame.unit)
+            or not WoWTools_UnitMixin:UnitExists(frame.unit)
             or frame.unit:find('nameplate')
             or not frame.name
             or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame)
@@ -119,7 +119,7 @@ local function Init()--设置,团队
     end)
 
     WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
-        if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
+        if not WoWTools_UnitMixin:UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
         end
         local text= frame.statusText:GetText()

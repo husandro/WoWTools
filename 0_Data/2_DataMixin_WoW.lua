@@ -183,7 +183,7 @@ local function GetGroupGuidDate()--队伍数据收集
     if IsInRaid() then
         for index= 1, MAX_RAID_MEMBERS do --GetNumGroupMembers() do
             local unit= 'raid'..index
-            if UnitExists(unit) then
+            if WoWTools_UnitMixin:UnitExists(unit) then
                 local guid= UnitGUID(unit)
                 local _, _, subgroup, _, _, _, _, _, _, role, _, combatRole = GetRaidRosterInfo(index)
                 if guid then
@@ -205,7 +205,7 @@ local function GetGroupGuidDate()--队伍数据收集
     elseif IsInGroup() then
         for index= 1, 4 do
             local unit= 'party'..index
-            local guid= UnitExists(unit) and UnitGUID(unit)
+            local guid= WoWTools_UnitMixin:UnitExists(unit) and UnitGUID(unit)
             if guid then
                 WoWTools_DataMixin.GroupGuid[guid]= {
                     unit= unit,

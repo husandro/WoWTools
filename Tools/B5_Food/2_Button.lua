@@ -96,7 +96,8 @@ local function Init()
     end
     btn.CheckFrame:SetScript('OnEvent', function(self, event)
         WoWTools_FoodMixin:Check_Items()--检查,物品
-        if event=='PLAYER_REGEN_ENABLED' then
+        if event=='PLAYER_REGEN_DISABLED' then
+            self:StopMovingOrSizing()
             self:UnregisterEvent(event)
         end
     end)

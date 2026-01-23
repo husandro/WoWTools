@@ -1,15 +1,14 @@
 WoWTools_UnitMixin={}
 
---[[function WoWTools_UnitMixin:UnitExists(unit)
-    if unit then
-        local guid= UnitGUID(unit)
-        if not canaccessvalue(guid) or guid then
-            return true
-        end
+function WoWTools_UnitMixin:UnitExists(unit)
+    local exits= UnitExists(unit)
+    if issecretvalue(exits) or exits then
+        return true
+    else
+        return false
     end
-    return false
 end
-
+--[[
 function UnitIsPlayer(unit)
     local guid= self:UnitGUID(unit)
     if guid then

@@ -49,7 +49,7 @@ local function Create_BossButton(frame)
         self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit)
         self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
 --颜色
-        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(UnitExists(self.unit) and self.unit or 'player'))
+        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(WoWTools_UnitMixin:UnitExists(self.unit) and self.unit or 'player'))
         local p= self:GetParent()
         p.healthbar:SetStatusBarColor(r,g,b)--颜色
         p.TargetFrameContent.TargetFrameContentMain.ReputationColor:SetVertexColor(r,g,b)
@@ -212,7 +212,7 @@ local function Create_TotButton(frame)
     frame.TotButton:SetScript('OnEnter', function(self)
         GameTooltip_SetDefaultAnchor(GameTooltip, self);
         GameTooltip:ClearLines()
-        if UnitExists(self.targetUnit) then
+        if WoWTools_UnitMixin:UnitExists(self.targetUnit) then
             GameTooltip:SetUnit(self.targetUnit)
         else
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
@@ -277,7 +277,7 @@ local function Create_TotButton(frame)
 
         SetPortraitTexture(self.Portrait, unit)
     end
-        --[[local exists= not IsInInstance() and UnitExists(unit)
+        --[[local exists= not IsInInstance() and WoWTools_UnitMixin:UnitExists(unit)
         if exists then
             --图像
             local isSelf= WoWTools_UnitMixin:UnitIsUnit(unit, 'player')

@@ -34,7 +34,7 @@ local function Init_RaidGroupFrame_Update()
         if button and button.subframes then
             local subframes = button.subframes
             local unit = "raid"..i
-            if subframes and UnitExists(unit) then
+            if subframes and WoWTools_UnitMixin:UnitExists(unit) then
                 local name, _, _, level, _, fileName, _, online, isDead, role, _, combatRole = GetRaidRosterInfo(i)
                 local guid= UnitGUID(unit)
 
