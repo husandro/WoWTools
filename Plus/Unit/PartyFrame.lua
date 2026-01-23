@@ -87,28 +87,28 @@ local function Create_potFrame(frame)
     btn.frame= CreateFrame('Frame', nil, btn)
     btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
     btn.frame:SetAllPoints()
-    btn.frame:Hide()
+   -- btn.frame:Hide()
 
---目标，也是我的目标
+--[[目标，也是我的目标
     btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
     btn.frame.isPlayerTargetTexture:SetSize(42,42)
     btn.frame.isPlayerTargetTexture:SetPoint('CENTER',2,-2)
     btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
-    btn.frame.isPlayerTargetTexture:Hide()
+    btn.frame.isPlayerTargetTexture:Hide()]]
 
 --目标，图像
     btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')
     btn.frame.Portrait:SetAllPoints()
 
 
-    btn.frame.healthLable= WoWTools_LabelMixin:Create(btn.frame, {size=14})
+    --[[btn.frame.healthLable= WoWTools_LabelMixin:Create(btn.frame, {size=14})
     btn.frame.healthLable:SetPoint('BOTTOMRIGHT')
     btn.frame.healthLable:SetTextColor(1,1,1)
 
     btn.frame.class= btn.frame:CreateTexture(nil, "ARTWORK")
     btn.frame.class:SetSize(14,14)
-    btn.frame.class:SetPoint('TOPRIGHT')
+    btn.frame.class:SetPoint('TOPRIGHT')]]
 
 
 
@@ -116,53 +116,11 @@ local function Create_potFrame(frame)
 
 
     function btn.frame:settings()
-        local exists2= UnitExists(self.tt)
-        if exists2 then
-
---目标，图像
-            if UnitIsUnit(self.tt, self.unit) then--队员，选中他自已
-                self.Portrait:SetAtlas('common-icon-rotateleft')
-
-            elseif UnitIsUnit(self.tt, 'player') then--我
-                self.Portrait:SetAtlas('auctionhouse-icon-favorite')
-            else
-                local atlas, texture=  Get_Unit_Status(self.unit)
-                if atlas then
-                    self.Portrait:SetAtlas(atlas)
-
-                elseif texture then
-                    self.Portrait:SetTexture(texture)
-
-                else
-                    local index = GetRaidTargetIndex(self.tt)--标记
-                    if canaccessvalue(index) and index and index>0 and index< 9 then
-                        self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-                    else
-                        SetPortraitTexture(self.Portrait, self.tt, true)--图像
-                    end
-                end
-            end
-
---目标，职业
-            if UnitIsPlayer(self.tt) then
-                self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(self.tt, nil, nil, {reAtlas=true}))
-            elseif UnitIsBossMob(self.tt) then
-                self.class:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
-            else
-                self.class:SetTexture(0)
-            end
---目标，生命条
-            local r2,g2,b2= select(2, WoWTools_UnitMixin:GetColor(self.tt))
-            self.healthLable:SetTextColor(r2, g2, b2)
---目标，也是我的目标
-            self.isPlayerTargetTexture:SetShown(UnitIsUnit(self.tt, 'target'))
-        end
---目标是否存在
-        self:SetShown(exists2)
+        SetPortraitTexture(self.Portrait, self.tt, true)--图像
     end
 
  --目标， 生命条
-    btn.frame:SetScript('OnUpdate', function(self, elapsed)
+    --[[btn.frame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) +elapsed
         if self.elapsed>0.3 and canaccessvalue(self.tt) then
             self.elapsed=0
@@ -174,7 +132,7 @@ local function Create_potFrame(frame)
                 self.healthLable:SetText('')
             end
         end
-    end)
+    end)]]
 
 
     btn:SetScript('OnEvent', function(self)
@@ -201,10 +159,10 @@ local function Create_potFrame(frame)
     end)
 
     btn:SetScript('OnHide', function(self)
-        self.frame.elapsed=nil
-        self.frame.healthLable:SetText('')
-        self.frame.class:SetTexture(0)
-        self.frame.Portrait:SetTexture(0)
+        --self.frame.elapsed=nil
+        --self.frame.healthLable:SetText('')
+        --self.frame.class:SetTexture(0)
+        --self.frame.Portrait:SetTexture(0)
         self:UnregisterAllEvents()
     end)
 
@@ -270,7 +228,7 @@ local function Create_castFrame(frame)
 
 
     castFrame:SetScript('OnEvent', function(self, event, arg1)
-        if event=='UNIT_SPELLCAST_SENT' and not UnitIsUnit(self.unit, arg1) then
+        if event=='UNIT_SPELLCAST_SENT' and not WoWTools_UnitMixin:UnitIsUnit(self.unit, arg1) then
             return
         end
             self:settings()

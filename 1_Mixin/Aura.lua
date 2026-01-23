@@ -29,7 +29,7 @@ function WoWTools_AuraMixin:Get(unit, spellTab, filter)--HELPFUL HARMFUL
     filter= filter or AuraUtil.AuraFilters.Helpful
     local data
 
-    if UnitIsUnit(unit, 'player') then
+    if WoWTools_UnitMixin:UnitIsUnit(unit, 'player') then
         for spellID in pairs(spellTab) do
             data= C_UnitAuras.GetPlayerAuraBySpellID(spellID)
             if data then
@@ -39,7 +39,8 @@ function WoWTools_AuraMixin:Get(unit, spellTab, filter)--HELPFUL HARMFUL
     else
         for index = 1, 255 do
             data= C_UnitAuras.GetAuraDataByIndex(unit, index ,filter)
-            if not data then
+
+            if not canaccessvalue(data) or  not data then
                 return
             elseif spellTab[data.spellId] then
                 return data, index

@@ -193,13 +193,9 @@ local function Init()
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
         if IsInRaid()
-                or WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
-                or C_ChallengeMode.IsChallengeModeActive()
-                or (
-                    IsInInstance()
-                    and not UnitInPartyIsAI('party1')
-                    and not Save().questShowInstance
-                )
+            or IsInInstance()
+            or WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
+            or C_ChallengeMode.IsChallengeModeActive()
         then
             RestAllPlate()
             return

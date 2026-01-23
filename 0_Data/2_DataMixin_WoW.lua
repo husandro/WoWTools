@@ -117,7 +117,7 @@ end)
 --########
 WoWTools_DataMixin.UnitItemLevel={}
 EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--取得玩家信息
-    local unit= guid and UnitTokenFromGUID(guid)
+    local unit= canaccessvalue(guid) and guid and UnitTokenFromGUID(guid)
     if not unit then
         return
     end
@@ -137,13 +137,13 @@ EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--
     }
     if UnitInParty(unit) and not IsInRaid() then
         for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
-            if memberFrame.classFrame and UnitIsUnit(memberFrame.unit, unit) then
+            if memberFrame.classFrame and WoWTools_UnitMixin:UnitIsUnit(memberFrame.unit, unit) then
                 memberFrame.classFrame:set_settings(guid)
                 break
             end
         end
     end
-    if UnitIsUnit(unit, 'target') and TargetFrame.classFrame then
+    if WoWTools_UnitMixin:UnitIsUnit(unit, 'target') and TargetFrame.classFrame then
         TargetFrame.classFrame:set_settings(guid)
     end
 
@@ -160,7 +160,6 @@ EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel= itemLevel
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].specID= specID
     end
-    --if UnitIsUnit(unit, 'mouseover') and GameTooltip.textLeft and GameTooltip:IsShown() then
 end)
 
 

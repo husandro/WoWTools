@@ -36,23 +36,21 @@ local function Craete_Frame(frame)
     function frame.classFrame:set_settings()
         local unit= self:GetParent().unit
 
-        if not canaccessvalue(unit) or not UnitIsPlayer(unit) then
+        local guid= WoWTools_UnitMixin:UnitGUID(unit)
+
+        if not guid or not UnitIsPlayer(unit) then
             self:SetShown(false)
             return
         end
 
         local texture, level
-        if UnitIsUnit(unit, 'player') then
-            texture= select(4, PlayerUtil.GetCurrentSpecID())
-        else
-            local specID= GetInspectSpecialization(unit)
-            if specID and specID>0 then
-                texture= select(4, GetSpecializationInfoByID(specID, UnitSex(unit)))
-            end
+
+        local specID= GetInspectSpecialization(unit)
+        if canaccessvalue(specID) and specID and specID>0 then
+            texture= select(4, GetSpecializationInfoByID(specID, UnitSex(unit)))
         end
 
-        local guid= WoWTools_UnitMixin:UnitGUID(unit)
-        if guid and WoWTools_DataMixin.UnitItemLevel[guid] then
+        if WoWTools_DataMixin.UnitItemLevel[guid] then
             level= WoWTools_DataMixin.UnitItemLevel[guid].itemLevel
         end
 
@@ -94,7 +92,7 @@ end
 
 local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图标， 颜色
     local unit= frame.unit
-    if not canaccessvalue(unit)
+    if WoWTools_UnitMixin:UnitIsUnit(unit, 'player')==nil
         or unit:find('nameplate')
     then
         if frame.classFrame then
@@ -115,7 +113,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
 --名称
     if frame.name then
         local name
-        if UnitIsUnit(unit, 'pet') then
+        if WoWTools_UnitMixin:UnitIsUnit(unit, 'pet') then
             frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         else
             frame.name:SetTextColor(r,g,b)

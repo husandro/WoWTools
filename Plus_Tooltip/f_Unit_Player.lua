@@ -13,7 +13,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
     local realm= select(2, UnitName(unit)) or WoWTools_DataMixin.Player.Realm--服务器
     local isPlayer = UnitIsPlayer(unit)
-    local isSelf= UnitIsUnit('player', unit)--我
+    local isSelf= WoWTools_UnitMixin:UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and WoWTools_DataMixin.GroupGuid[guid]) and true or nil--队友
     local r, g, b, col = select(2, WoWTools_UnitMixin:GetColor(unit, nil))--颜色
     local isInCombat= PlayerIsInCombat()

@@ -48,11 +48,10 @@ local function Init()
         frame:HookScript('OnMouseWheel', function(f, d)
             local unit= canaccessvalue(f.unit) and f.unit
             unit= unit or f:GetAttribute('unit')
-            if canaccessvalue(unit)
+            if WoWTools_UnitMixin:UnitIsUnit('player', unit)==false
                 and unit
                 and UnitExists(unit)
                 and UnitIsPlayer(unit)
-                and not UnitIsUnit('player', unit)
                 and UnitIsFriend('player', unit)
             then
                 if d==1 then

@@ -85,7 +85,7 @@ local function Init()
 
 
     function btn:Is_Exists()
-        return UnitExists('target') and not UnitIsUnit('player', 'target')
+        return WoWTools_UnitMixin:UnitIsUnit('player', 'target')==false
     end
 
     function btn:Settings()
@@ -189,8 +189,7 @@ local function Init()
         self.elapsed=0
 
         if Save().disableTargetName
-            or not UnitExists('target')
-            or UnitIsUnit('target', 'player')
+            or WoWTools_UnitMixin:UnitIsUnit('target', 'player')~=false
         then
             self.nameText:SetText('')
         else

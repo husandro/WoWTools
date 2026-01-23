@@ -432,7 +432,7 @@ local function Init()
 
     function listButton:Settings()
         local name
-        if WoWTools_UnitMixin:UnitGUID('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+        if WoWTools_UnitMixin:UnitGUID('target') and UnitIsPlayer('target') and WoWTools_UnitMixin:UnitIsUnit('player', 'target')==false then
             name= WoWTools_UnitMixin:GetFullName(nil, 'target', nil)--取得全名
             if name then
                 local atlas, texture

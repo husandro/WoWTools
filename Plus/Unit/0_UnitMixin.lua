@@ -21,12 +21,12 @@ function UnitIsPlayer(unit)
 end]]
 
 
---[[function UnitIsUnit(unit, unit2)
-    local guid, guid2= self:UnitGUID(unit), self:UnitGUID(unit2)
-    if guid and guid2 then
-        return UnitIsUnit(unit, unit2)
+function WoWTools_UnitMixin:UnitIsUnit(unit, unit2)
+    local isUnit= UnitIsUnit(unit, unit2)
+    if canaccessvalue(isUnit) then
+        return isUnit
     end
-end]]
+end
 
 function WoWTools_UnitMixin:UnitGUID(unit, name)
     if unit then
@@ -585,7 +585,7 @@ function WoWTools_UnitMixin:GetGroupMembers(inclusoMe)
         if IsInRaid() then
             for i= 1, MAX_RAID_MEMBERS, 1 do
                 unit='raid'..i
-                if self:UnitGUID(unit) and not UnitIsUnit(unit, 'player') then
+                if self:UnitGUID(unit) and self:UnitIsUnit(unit, 'player')==false then
                     table.insert(tab, unit)
                 end
             end
@@ -682,7 +682,7 @@ local function Set_Range_OnUpdata(self, elapsed)
 
     self.elapsed2=0
     local speed, mi, ma
-    if not UnitIsUnit(self.unit, 'player') then
+    --if WoWTools_UnitMixin:UnitIsUnit(self.unit, 'player')==false then
         mi, ma= LibRangeCheck:GetRange(self.unit)
         if mi and ma then
             local r,g,b
@@ -714,7 +714,7 @@ local function Set_Range_OnUpdata(self, elapsed)
         else
             speed= format('%.0f', (value)*100/BASE_MOVEMENT_SPEED)
         end
-    end
+    --end
     self.Text:SetText(mi or '')
     self.Text2:SetText(ma or '')
     self.Text3:SetText(speed or '')

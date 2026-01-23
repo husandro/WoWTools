@@ -68,14 +68,12 @@ local function Set_Plate(plate, unit)
         return
     end
 
-        local isMe= UnitIsUnit(unit, 'player')
+    if not plate.UnitIsMe then
+        Set_Texture(plate)--设置，参数
+    end
 
-        if not plate.UnitIsMe then
-            Set_Texture(plate)--设置，参数
-        end
-        
     if plate.UnitIsMe then
-        plate.UnitIsMe:SetShown(isMe)
+        plate.UnitIsMe:SetShown(WoWTools_UnitMixin:UnitIsUnit(unit, 'player')==true)
     end
 end
 

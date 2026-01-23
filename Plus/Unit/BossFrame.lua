@@ -33,16 +33,15 @@ local function Create_BossButton(frame)
     frame.BossButton.Portrait= frame.BossButton:CreateTexture(nil, 'BACKGROUND')
     frame.BossButton.Portrait:SetAllPoints()
 
-    frame.BossButton.targetTexture= frame.BossButton:CreateTexture(nil, 'OVERLAY')
+    --[[frame.BossButton.targetTexture= frame.BossButton:CreateTexture(nil, 'OVERLAY')
     frame.BossButton.targetTexture:SetSize(52,52)
     frame.BossButton.targetTexture:SetPoint('CENTER')
-    frame.BossButton.targetTexture:SetAtlas('DK-Blood-Rune-CDFill')
+    frame.BossButton.targetTexture:SetAtlas('DK-Blood-Rune-CDFill')]]
 
 
     function frame.BossButton:settings()
-        local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.unit
-        SetPortraitTexture(self.Portrait, unit)
-        self.targetTexture:SetShown(UnitIsUnit('target', unit))
+        SetPortraitTexture(self.Portrait, BossTargetFrameContainer.isInEditMode and 'player' or self.unit)
+        --self.targetTexture:SetShown(WoWTools_UnitMixin:UnitIsUnit('target', unit)==true)
     end
 
     function frame.BossButton:Init()
@@ -141,17 +140,17 @@ local function Create_numSelectFrame(frame)
         if IsInRaid() then
             for index=1, MAX_RAID_MEMBERS do
                 unit= 'raid'..index
-                if UnitIsUnit(unit..'target', self.unit)  then
+                if WoWTools_UnitMixin:UnitIsUnit(unit..'target', self.unit) then
                     n= n+1
                 end
             end
         elseif IsInGroup() then
             for index=1, GetNumGroupMembers()-1, 1 do
-                if UnitIsUnit('party'..index..'target', self.unit) then
+                if WoWTools_UnitMixin:UnitIsUnit('party'..index..'target', self.unit) then
                     n= n+1
                 end
             end
-            if UnitIsUnit('target', self.unit) then
+            if WoWTools_UnitMixin:UnitIsUnit('target', self.unit) then
                 n=n+1
             end
         end
@@ -263,30 +262,30 @@ local function Create_TotButton(frame)
 
         local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
         local text=''
-        if canaccessvalue(unit) then
-            local value, max= UnitHealth(unit), UnitHealthMax(unit)
-            if canaccessvalue(value) and canaccessvalue(max) then
-                value= (not value or value<=0) and 0 or value
-                if value and max and max>0 then
-                    local per= value/max*100
-                    text= format('%0.f', per)
-                end
-            end
+
+        local value, max= UnitHealth(unit), UnitHealthMax(unit)
+        if canaccessvalue(value) and canaccessvalue(max) and value and max and max>0 then
+            value= (not value or value<=0) and 0 or value
+            local per= value/max*100
+            text= format('%0.f', per)
         end
         self.healthLable:SetText(text)
     end)
 
     function frame.TotButton.frame:set_settings()
         local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
-        local exists= not IsInInstance() and UnitExists(unit)
+
+        SetPortraitTexture(self.Portrait, unit)
+    end
+        --[[local exists= not IsInInstance() and UnitExists(unit)
         if exists then
             --图像
-            local isSelf= UnitIsUnit(unit, 'player')
+            local isSelf= WoWTools_UnitMixin:UnitIsUnit(unit, 'player')
             if BossTargetFrameContainer.isInEditMode then
                 SetPortraitTexture(self.Portrait, unit)
             elseif isSelf then--自已
                 self.Portrait:SetAtlas('auctionhouse-icon-favorite')
-            elseif UnitIsUnit(unit, 'target') then
+            elseif WoWTools_UnitMixin:UnitIsUnit(unit, 'target') then
                 self.Portrait:SetAtlas('common-icon-checkmark')
             else
                 local index = GetRaidTargetIndex(unit)
@@ -306,8 +305,7 @@ local function Create_TotButton(frame)
             self.Portrait:SetTexture(0)
             self.elapsed=nil
         end
-        self:SetShown(exists)
-    end
+        self:SetShown(exists)]]
 
     function frame.TotButton.frame:Init()
         self:RegisterUnitEvent('UNIT_TARGET', self.unit)

@@ -449,7 +449,7 @@ local function Init_Options()
 
 
 
-
+--[[
     local sel2= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     sel2.Text:SetText('2) '..(WoWTools_DataMixin.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)))
     sel2:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -32)
@@ -507,6 +507,7 @@ local function Init_Options()
 
 
 
+]]
 
 
 
@@ -524,8 +525,7 @@ local function Init_Options()
 
 
 
-
-
+--[[
     local unitIsMeCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     unitIsMeCheck.Text:SetText(
         '3) '
@@ -720,7 +720,7 @@ local function Init_Options()
     end})
     unitIsMeSize:SetPoint("LEFT", unitIsMeY, 'RIGHT',15,0)
 
-
+]]
 
 
 
@@ -741,7 +741,8 @@ local function Init_Options()
 
     local questCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     questCheck.Text:SetText('4) '..(WoWTools_DataMixin.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER))))
-    questCheck:SetPoint('TOPLEFT', unitIsMeCheck, 'BOTTOMLEFT',0,-64)
+    --questCheck:SetPoint('TOPLEFT', sel2, 'BOTTOMLEFT',0,-64)
+    questCheck:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -32)
     questCheck:SetChecked(Save().quest)
     questCheck:SetScript('OnClick', function()
         Save().quest= not Save().quest and true or false
@@ -770,14 +771,14 @@ local function Init_Options()
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
-    local instanceCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
+    --[[local instanceCheck= CreateFrame('CheckButton', nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     instanceCheck.Text:SetText(WoWTools_DataMixin.onlyChinese and '在副本里显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INSTANCE))
     instanceCheck:SetPoint('TOPLEFT', questCheck, 'BOTTOMRIGHT')
     instanceCheck:SetChecked(Save().questShowInstance)
     instanceCheck:SetScript('OnClick', function()
         Save().questShowInstance= not Save().questShowInstance and true or nil
         WoWTools_TargetMixin:Set_All_Init()
-    end)
+    end)]]
 
 
 

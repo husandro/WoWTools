@@ -434,8 +434,8 @@ Plus\Target\1_Init.lua
 Plus\Target\2_Blizzard_Settings.lua
 Plus\Target\targetFrame.lua
 Plus\Target\questFrame.lua
-Plus\Target\isMeFrame.lua
-Plus\Target\numFrame.lua
+##Plus\Target\isMeFrame.lua
+##Plus\Target\numFrame.lua
 ##主菜单，增强
 Plus\MainMenu\0_Init.lua
 Plus\MainMenu\1_Options.lua

@@ -53,9 +53,10 @@ function WoWTools_TargetMixin:Set_All_Init()
 
 
     WoWTools_TargetMixin:Init_targetFrame()
-    WoWTools_TargetMixin:Init_numFrame()
+    
     WoWTools_TargetMixin:Init_questFrame()
-    WoWTools_TargetMixin:Init_isMeFrame()
+    --WoWTools_TargetMixin:Init_isMeFrame()
+    --WoWTools_TargetMixin:Init_numFrame()
 end
 
 

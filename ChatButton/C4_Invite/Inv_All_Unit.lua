@@ -52,10 +52,21 @@ local function Inv_All_Unit()
             local tab= C_NamePlate.GetNamePlates(issecure()) or {}
             do for _, v in pairs(tab) do
                 local u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
-                if u then
-                    local name= GetUnitName(u,true)
+                if canaccessvalue(u) and u then
+                    local name= GetUnitName(u, true)
                     local guid= UnitGUID(u)
-                    if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
+                    if WoWTools_UnitMixin:UnitIsUnit('player', u)==false
+                        and canaccessvalue(name)
+                        and name
+                        and name~=UNKNOWNOBJECT
+                        and canaccessvalue(guid)
+                        and guid
+                        and not UnitInAnyGroup(u)
+                        and not UnitIsAFK(u)
+                        and UnitIsConnected(u)
+                        and UnitIsPlayer(u)
+                        and UnitIsFriend(u, 'player')
+                    then
                         if not WoWTools_InviteMixin.InvPlateGuid[guid] then
                             C_PartyInfo.InviteUnit(name)
                             WoWTools_InviteMixin.InvPlateGuid[guid]=name
