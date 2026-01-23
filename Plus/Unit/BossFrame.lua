@@ -359,11 +359,12 @@ local function Init()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
         if frame then
+
             frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，颜色，材质
-            do
-                Create_BossButton(frame)--Boss图标，按钮
-            end
-            Create_numSelectFrame(frame)--队友，选中BOSS，数量
+            
+            Create_BossButton(frame)--Boss图标，按钮
+            
+            --Create_numSelectFrame(frame)--队友，选中BOSS，数量
             Create_TotButton(frame)--目标的目标，点击
         end
     end

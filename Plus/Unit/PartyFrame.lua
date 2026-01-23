@@ -716,6 +716,12 @@ local function Init()--PartyFrame.lua
         end
     end
 
+
+
+
+    Init=function()end
+end
+--[[
     WoWTools_DataMixin:Hook(PartyFrame, 'UpdatePartyFrames', function(self)
         for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
             if not frame.ToTButton then
@@ -723,11 +729,6 @@ local function Init()--PartyFrame.lua
             end
         end
     end)
-
-
-    Init=function()end
-end
---[[
  WoWTools_DataMixin:Hook(PartyFrame, 'UpdatePartyFrames', function(unitFrame)
     for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
         set_memberFrame(memberFrame)
