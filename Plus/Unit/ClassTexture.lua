@@ -92,7 +92,8 @@ end
 
 local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图标， 颜色
     local unit= frame.unit
-    if WoWTools_UnitMixin:UnitIsUnit(unit, 'player')==nil
+    local isSelf= WoWTools_UnitMixin:UnitIsUnit(unit, 'player')
+    if isSelf==nil
         or unit:find('nameplate')
     then
         if frame.classFrame then

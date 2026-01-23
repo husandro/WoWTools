@@ -93,11 +93,19 @@ local function Init()--设置,团队
     end)
 
     WoWTools_DataMixin:Hook('CompactUnitFrame_UpdateName', function(frame)--修改, 名字
-        if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.name or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame) then
+        local isSelf= WoWTools_UnitMixin:UnitIsUnit(frame.unit, 'player')
+        if isSelf==nil
+            or not UnitExists(frame.unit)
+            or frame.unit:find('nameplate')
+            or not frame.name
+            or (frame.UpdateNameOverride and frame:UpdateNameOverride()) or not ShouldShowName(frame)
+        then
             return
         end
-        if WoWTools_UnitMixin:UnitIsUnit('player', frame.unit) then
+
+        if isSelf then
             frame.name:SetText(WoWTools_DataMixin.Icon.Player)
+
         elseif frame.unit:find('pet') then
             frame.name:SetText('')
         else
