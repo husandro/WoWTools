@@ -7,7 +7,14 @@ local function Init()
     if not WoWTools_DataMixin.Player.husandro or UnitLevel("player") >= GetMaxLevelForPlayerExpansion() then
         Init=function()end
         return
+    elseif InCombatLockdown() then
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+            Init()
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end)
+        return
     end
+
 
 
     local panels = {
@@ -134,6 +141,7 @@ end
 
 
 function WoWTools_ChallengeMixin:Is_HuSandro()
+
     Init()
 end
 

@@ -190,7 +190,7 @@ local function Init()
             or event=='UNIT_FLAGS'
             or event=='PLAYER_ENTERING_WORLD'
             or (event=='CVAR_UPDATE'
-                and (arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends')
+                and (arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriendlyPlayers')
             )
         then
             C_Timer.After(0.15, function() Set_Target() end)

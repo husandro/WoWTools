@@ -62,7 +62,7 @@ local function Init()
         if InCombatLockdown() then
             return
         end
-        C_CVar.SetCVar('nameplateShowFriends', C_CVar.GetCVarBool('nameplateShowFriends') and '0' or '1')
+        C_CVar.SetCVar('nameplateShowFriendlyPlayers', C_CVar.GetCVarBool('nameplateShowFriendlyPlayers') and '0' or '1')
     end)
 
     local check= CreateFrame('CheckButton', 'PetitionFrameAutoPetitionTargetCheckBox', PetitionFrame, 'InterfaceOptionsCheckButtonTemplate')

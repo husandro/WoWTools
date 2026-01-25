@@ -2,9 +2,8 @@
 local InvPlateTimer
 
 
-
-local function Inv_All_Unit()
-    local p=C_CVar.GetCVarBool('nameplateShowFriends')
+function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
+    local p= C_CVar.GetCVarBool('nameplateShowFriendlyPlayers')
     local all= C_CVar.GetCVarBool('nameplateShowAll')
 
     if not WoWTools_InviteMixin:Get_Leader() then--取得权限
@@ -29,7 +28,7 @@ local function Inv_All_Unit()
             C_CVar.SetCVar('nameplateShowAll', '1')
         end
         if not p then
-            C_CVar.SetCVar('nameplateShowFriends', '1')
+            C_CVar.SetCVar('nameplateShowFriendlyPlayers', '1')
         end
     end
 
@@ -50,11 +49,14 @@ local function Inv_All_Unit()
         else
             --toRaidOrParty(co)--自动, 转团
             local tab= C_NamePlate.GetNamePlates(issecure()) or {}
-            do for _, v in pairs(tab) do
+            do 
+            for _, v in pairs(tab) do
                 local u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
+                
                 if canaccessvalue(u) and u then
                     local name= GetUnitName(u, true)
                     local guid= UnitGUID(u)
+
                     if WoWTools_UnitMixin:UnitIsUnit('player', u)==false
                         and canaccessvalue(name)
                         and name
@@ -67,6 +69,9 @@ local function Inv_All_Unit()
                         and UnitIsPlayer(u)
                         and UnitIsFriend(u, 'player')
                     then
+
+                                            print(name, guid)
+
                         if not WoWTools_InviteMixin.InvPlateGuid[guid] then
                             C_PartyInfo.InviteUnit(name)
                             WoWTools_InviteMixin.InvPlateGuid[guid]=name
@@ -88,12 +93,15 @@ local function Inv_All_Unit()
                             n=n+1
                         end
                     end
+                else
+                    print(u)
                 end
-            end end
+            end
+            end
         end
 
         if not p and not InCombatLockdown() then
-            C_CVar.SetCVar('nameplateShowFriends', '0')
+            C_CVar.SetCVar('nameplateShowFriendlyPlayers', '0')
         end
         if n==1 then
             print(
@@ -104,12 +112,6 @@ local function Inv_All_Unit()
             )
         end
     end)
-end
-
-
-
-function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
-    Inv_All_Unit()
 end
 
 

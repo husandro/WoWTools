@@ -19,7 +19,7 @@ local function Init_Menu(self, root)
 
     local sub
 
-    for i=1, all, 1 do
+    for i=1, all do
         local name = GetTitleName(i)
         if name then
             local cn= WoWTools_TextMixin:CN(name, {titleID=i})
@@ -29,24 +29,26 @@ local function Init_Menu(self, root)
                 cn= cn~=name and cn or nil
             end
             sub=root:CreateButton(
-                i..') '
-                ..(IsTitleKnown(i) and '|cffffffff' or '|cff606060')
+
+                (IsTitleKnown(i) and '|cffffffff' or '|cff606060')
                 ..(cn or name),
 
             function(data)
-                WoWTools_TooltipMixin:Show_URL(true, 'title', data.index, nil)
+                WoWTools_TooltipMixin:Show_URL(true, 'title', data.rightText, nil)
                 return MenuResponse.Open
 
-            end, {index=i, name=name, cn=cn})
+            end, {rightText=i, name=name, cn=cn})
 
             sub:SetTooltip(function(tooltip, description)
                 tooltip:AddLine(WoWTools_DataMixin.Icon.left..'wowhead.com')
-                tooltip:AddLine('index '..description.data.index)
+                tooltip:AddLine('index '..description.data.rightText)
                 tooltip:AddLine(description.data.name..' ')
                 if description.data.cn then
                     tooltip:AddLine(description.data.cn)
                 end
             end)
+            WoWTools_MenuMixin:SetRightText(sub)
+
         end
     end
 
