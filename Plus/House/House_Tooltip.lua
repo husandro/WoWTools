@@ -42,28 +42,164 @@ end
 
 
 
-function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
-    local function Set_Texture(texture)
-        if texture:IsObjectType('Texture') then
-            texture:SetSize(16,16)
+
+
+
+
+
+
+
+
+local function Set_Texture(texture)
+    if texture:IsObjectType('Texture') then
+        texture:SetSize(16,16)
+    end
+    texture:SetAlpha(0.7)
+    texture:EnableMouse(true)
+    texture:SetScript('OnLeave', WoWToolsButton_OnLeave)
+    function texture:set_alpha()
+        self:SetAlpha(self:IsMouseOver() and 0.2 or 0.7)
+    end
+    texture:SetScript('OnEnter', WoWToolsButton_OnEnter)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', function(btn)
+local function Create_Button(btn)
+--有点大
+    btn.InfoText:SetFontObject('GameFontWhite')
+    btn.InfoText:ClearAllPoints()
+    btn.InfoText:SetPoint('BOTTOMRIGHT' , -6, 2)
+--可制定
+    btn.CustomizeIcon:ClearAllPoints()--size 16,16
+    btn.CustomizeIcon:SetPoint('BOTTOM', btn.InfoText, 'TOP')
+
+
+--添加，追踪，按钮
+    btn.trackableButton= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
+    btn.trackableButton:Hide()
+    btn.trackableButton:SetSize(18,18)
+    btn.trackableButton:SetPoint('TOPLEFT', 3, -2)
+    btn.trackableButton.texture= btn.trackableButton:CreateTexture(nil, 'BORDER')
+    btn.trackableButton.texture:SetAllPoints()
+    btn.trackableButton.texture:SetAtlas('Waypoint-MapPin-Tracked')
+    btn.trackableButton:SetScript('OnLeave', GameTooltip_Hide)
+
+    function btn.trackableButton:tooltip()
+        local entryInfo= self:GetParent().entryInfo
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING))
+        if entryInfo then
+            GameTooltip:AddLine(' ')
+            local objectiveText= C_ContentTracking.GetObjectiveText(entryInfo.entryID.entryType, entryInfo.entryID.recordID)
+            GameTooltip_AddHighlightLine(GameTooltip,
+                WoWTools_TextMixin:CN(objectiveText), true
+            )
         end
-        texture:SetAlpha(0.7)
-        texture:EnableMouse(true)
-        texture:SetScript('OnLeave', WoWToolsButton_OnLeave)
-        function texture:set_alpha()
-            self:SetAlpha(self:IsMouseOver() and 0.2 or 0.7)
-        end
-        texture:SetScript('OnEnter', WoWToolsButton_OnEnter)
+        GameTooltip:Show()
     end
 
+    function btn.trackableButton:settings()
+        local recordID= self:GetParent().entryInfo.entryID.recordID
+        local isTrackable = C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID)
+        self.texture:SetDesaturated(not isTrackable)
+        self.texture:SetAlpha(isTrackable and 1 or 0.5)
+    end
+
+    function btn.trackableButton:set_event()
+        self:RegisterEvent('CONTENT_TRACKING_UPDATE')
+    end
+
+    btn.trackableButton:SetScript('OnEvent', function(frame)
+        frame:settings()
+    end)
+    btn.trackableButton:SetScript('OnHide', function(frame)
+        frame:UnregisterAllEvents()
+    end)
+    btn.trackableButton:SetScript('OnShow', function(frame)
+        frame:set_event()
+        frame:settings()
+    end)
+    btn.trackableButton:SetScript('OnLeave', function(frame)
+        frame:settings()
+    end)
+    btn.trackableButton:SetScript('OnLeave', function(frame)
+        frame:tooltip()
+    end)
+
+    btn.trackableButton:SetScript('OnClick', function(self)
+        local recordID= self:GetParent().entryInfo.entryID.recordID
+        if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID) then
+            C_ContentTracking.StopTracking(Enum.ContentTrackingType.Decor, recordID, Enum.ContentTrackingStopType.Manual)
+        else
+            C_ContentTracking.StartTracking(Enum.ContentTrackingType.Decor, recordID)
+        end
+        C_Timer.After(0.3, function()
+            self:settings()
+            if self:IsMouseOver() then
+                self:tooltip()
+            end
+        end)
+        self:tooltip()
+    end)
+
+--可放置，室内，提示
+    btn.Indoors= btn:CreateTexture()
+    btn.Indoors:SetPoint('TOP', btn.trackableButton, 'BOTTOM')
+    btn.Indoors:SetAtlas('house-room-limit-icon')
+    btn.Indoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室内' or HOUSING_DECOR_ONLY_PLACEABLE_INSIDE
+    Set_Texture(btn.Indoors)
+--可放置，室外，提示
+    btn.Outdoors= btn:CreateTexture()
+    btn.Outdoors:SetPoint('TOP', btn.Indoors, 'BOTTOM')
+    btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
+    btn.Outdoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室外' or HOUSING_DECOR_ONLY_PLACEABLE_OUTSIDE
+    Set_Texture(btn.Outdoors)
+--是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
+    btn.canDelete= btn:CreateTexture()
+    btn.canDelete:SetPoint('TOPLEFT', btn.Outdoors, 'BOTTOMLEFT')
+    btn.canDelete:SetAtlas('Objective-Fail')
+    btn.canDelete.tooltip= WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY
+    Set_Texture(btn.canDelete)
+    btn.canDelete:SetAlpha(1)
+    function btn.canDelete:set_alpha()
+        self:SetAlpha(self:IsMouseOver() and 0.3 or 1)
+    end
+--可获得首次收集奖励
+    btn.firstXP= btn:CreateTexture()
+    btn.firstXP:SetPoint('TOP', btn.canDelete,'BOTTOM', -1, 4)
+    btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
+    btn.firstXP.tooltip= WoWTools_DataMixin.onlyChinese and '|cnLIGHTBLUE_FONT_COLOR:可获得首次收集奖励|r' or HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE
+    Set_Texture(btn.firstXP)
+    btn.firstXP:SetSize(20,20)
+--空间，大小
+    btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
+    btn.placementCostLabel:SetPoint('TOPLEFT', btn.firstXP, 'BOTTOMLEFT', 5, 5)
+    btn.placementCostLabel.tooltip= WoWTools_DataMixin.onlyChinese and '装饰放置成本|cnNORMAL_FONT_COLOR:|n放置此装饰所需占用的装饰放置预算|r' or HOUSING_DECOR_PLACEMENT_COST_TOOLTIP
+    Set_Texture(btn.placementCostLabel)
+
+--预览不可用
+    btn.notAsset= btn:CreateTexture()
+    btn.notAsset:SetPoint('LEFT', btn.trackableButton, 'RIGHT')
+    btn.notAsset:SetSize(16,16)
+    btn.notAsset:SetAtlas('transmog-icon-hidden')
+end
 
 
 
 
-
-
-
-
+function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'AddTooltipTrackingLines', function(btn, tooltip)
         local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
@@ -111,83 +247,25 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         frame.numItemLabel:SetText('')
     end)
 
-    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', function(btn)
---有点大
-        btn.InfoText:SetFontObject('GameFontWhite')
-        btn.InfoText:ClearAllPoints()
-        btn.InfoText:SetPoint('BOTTOMRIGHT' , -6, 2)
---可制定
-        btn.CustomizeIcon:ClearAllPoints()--size 16,16
-        btn.CustomizeIcon:SetPoint('BOTTOM', btn.InfoText, 'TOP')
 
 
---添加，追踪，按钮
-        btn.trackableButton= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
-        btn.trackableButton:SetSize(18,18)
-        btn.trackableButton:SetPoint('TOPLEFT', 3, -2)
-        btn.trackableButton.texture= btn.trackableButton:CreateTexture(nil, 'BORDER')
-        btn.trackableButton.texture:SetAllPoints()
-        btn.trackableButton.texture:SetAtlas('Waypoint-MapPin-Tracked')
-        btn.trackableButton:SetScript('OnLeave', GameTooltip_Hide)
-        btn.trackableButton.tooltip= self.addName..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
-        btn.trackableButton:SetScript('OnClick', function(b)
-            local recordID= b:GetParent().entryInfo.entryID.recordID
-            if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID) then
-                C_ContentTracking.StopTracking(Enum.ContentTrackingType.Decor, recordID, Enum.ContentTrackingStopType.Manual)
-            else
-                C_ContentTracking.StartTracking(Enum.ContentTrackingType.Decor, recordID)
-            end
-            C_Timer.After(0.2, function()
-                local isTrackable = C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID)
-                b.texture:SetDesaturated(not isTrackable)
-                b.texture:SetAlpha(isTrackable and 1 or 0.5)
-            end)
-        end)
---可放置，室内，提示
-        btn.Indoors= btn:CreateTexture()
-        btn.Indoors:SetPoint('TOP', btn.trackableButton, 'BOTTOM')
-        btn.Indoors:SetAtlas('house-room-limit-icon')
-        btn.Indoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室内' or HOUSING_DECOR_ONLY_PLACEABLE_INSIDE
-        Set_Texture(btn.Indoors)
---可放置，室外，提示
-        btn.Outdoors= btn:CreateTexture()
-        btn.Outdoors:SetPoint('TOP', btn.Indoors, 'BOTTOM')
-        btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
-        btn.Outdoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室外' or HOUSING_DECOR_ONLY_PLACEABLE_OUTSIDE
-        Set_Texture(btn.Outdoors)
---是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
-        btn.canDelete= btn:CreateTexture()
-        btn.canDelete:SetPoint('TOPLEFT', btn.Outdoors, 'BOTTOMLEFT')
-        btn.canDelete:SetAtlas('Objective-Fail')
-        btn.canDelete.tooltip= WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY
-        Set_Texture(btn.canDelete)
-        btn.canDelete:SetAlpha(1)
-        function btn.canDelete:set_alpha()
-            self:SetAlpha(self:IsMouseOver() and 0.3 or 1)
-        end
---可获得首次收集奖励
-        btn.firstXP= btn:CreateTexture()
-        btn.firstXP:SetPoint('TOP', btn.canDelete,'BOTTOM', -1, 4)
-        btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
-        btn.firstXP.tooltip= WoWTools_DataMixin.onlyChinese and '|cnLIGHTBLUE_FONT_COLOR:可获得首次收集奖励|r' or HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE
-        Set_Texture(btn.firstXP)
-        btn.firstXP:SetSize(20,20)
---空间，大小
-        btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
-        btn.placementCostLabel:SetPoint('TOPLEFT', btn.firstXP, 'BOTTOMLEFT', 5, 5)
-        btn.placementCostLabel.tooltip= WoWTools_DataMixin.onlyChinese and '装饰放置成本|cnNORMAL_FONT_COLOR:|n放置此装饰所需占用的装饰放置预算|r' or HOUSING_DECOR_PLACEMENT_COST_TOOLTIP
-        Set_Texture(btn.placementCostLabel)
 
---预览不可用
-        btn.notAsset= btn:CreateTexture()
-        btn.notAsset:SetPoint('LEFT', btn.trackableButton, 'RIGHT')
-        btn.notAsset:SetSize(16,16)
-        btn.notAsset:SetAtlas('transmog-icon-hidden')
-    end)
+
+
+
+
+
+
+
+
+
+   
+
+    WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', Create_Button)
 
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'UpdateVisuals', function(btn)
 
-        local isTrackable= nil
+        --local isTrackable= nil
         local placementCost, r,g,b, show, isXP, isIndoors, isOutdoors, isCanDelete, isNotAsset
         local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
 
@@ -224,7 +302,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
                 show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
                     and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--追踪功能对此物品可用
 
-                isTrackable= show and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--正在追踪
+                --isTrackable= show and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--正在追踪
 
             end
             isXP= entryInfo.firstAcquisitionBonus and entryInfo.firstAcquisitionBonus>0
@@ -237,8 +315,6 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.placementCostLabel:SetText(placementCost and '|A:House-Decor-budget-icon:0:0|a'..placementCost or ' ')
 
         btn.trackableButton:SetShown(show)
-        btn.trackableButton.texture:SetDesaturated(isTrackable==false)
-        btn.trackableButton.texture:SetAlpha(isTrackable==true and 1 or 0.3)
 
         btn.firstXP:SetShown(isXP)
         btn.Indoors:SetShown(isIndoors)
