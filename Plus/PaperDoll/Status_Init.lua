@@ -23,7 +23,7 @@ local function Init_Button()
         name='WoWTools_PlsuPaperDollStatusButton',
         icon='hide',
     })
-    WoWTools_PaperDollMixin.StatusPlusButton= Button
+    --WoWTools_PaperDollMixin.StatusPlusButton= Button
 
     Button:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -22, 0)
     Button:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())

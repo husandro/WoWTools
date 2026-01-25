@@ -174,8 +174,7 @@ end
 
 
 
-
-local StatsValue={
+local StatsValue= {
     ['ITEM_MOD_VERSATILITY']= CR_VERSATILITY_DAMAGE_DONE,--全能 29
 
     ['ITEM_MOD_HASTE_RATING_SHORT']= CR_HASTE_MELEE,--急速 18
@@ -188,6 +187,25 @@ local StatsValue={
     ['ITEM_MOD_BLOCK_RATING_SHORT']= CR_BLOCK,--格挡 5
     ['ITEM_MOD_PARRY_RATING_SHORT'] = CR_PARRY,--招架 4
 }
+--[[C_Timer.After(2, function()
+    if WoWTools_ChineseMixin then--中文
+        StatsValue= {
+            ['全能']= CR_VERSATILITY_DAMAGE_DONE,--全能 29
+
+            ['急速']= CR_HASTE_MELEE,--急速 18
+            ['精通']= CR_MASTERY,--精通 26
+            ['爆击']= CR_CRIT_MELEE,--爆击 9
+
+            ['闪避']= CR_AVOIDANCE,--闪避 21
+            ['吸血']= CR_LIFESTEAL,--吸血 17
+            ['加速']= CR_SPEED,--加速 14
+            ['格挡']= CR_BLOCK,--格挡 5
+            ['招架']= CR_PARRY,--招架 4
+        }
+    end
+end)]]
+
+
 --次属性 %值
 local function Set_ItemStatus(tooltip, itemLink)
     local stats= C_Item.GetItemStats(itemLink)
@@ -218,7 +236,8 @@ local function Set_ItemStatus(tooltip, itemLink)
         local text= line and line:GetText()
         if text then
             for stat, value in pairs(stats) do
-                if text:find('%+.+ '.._G[stat]) then
+                local t= WoWTools_TextMixin:CN(_G[stat])
+                if text:find('^%+.+ '..t) then
                     line:SetText(text.. ' '..value)
                     stats[stat]= nil
                     break
