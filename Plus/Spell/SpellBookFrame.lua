@@ -28,7 +28,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub
+    local sub, sub2
     local name, _, numSlots2= GetFlyoutInfo(self.flyoutID)
     if not name or not numSlots2 then
         return
@@ -43,7 +43,7 @@ local function Init_Menu(self, root)
             spells[spellinfo.spell]=true
         end
     end
-    local isInCombat= InCombatLockdown()
+
     for slot= 1, numSlots2 do
         local flyoutSpellID, overrideSpellID, isKnown, spellName = GetFlyoutSlotInfo(self.flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
@@ -61,15 +61,18 @@ local function Init_Menu(self, root)
             end, {spellID=spellID})
             WoWTools_SetTooltipMixin:Set_Menu(sub)
 
-            sub= sub:CreateButton(--bug
-                WoWTools_DataMixin.onlyChinese and '查询' or WHO,
-            function(data)
-                if not InCombatLockdown() then
-                    PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
-                end
-                return MenuResponse.Open
-            end, {spellID=spellID})
-            sub:SetEnabled(not isInCombat)
+            if isKnown then
+--bug
+                sub2= sub:CreateButton(
+                    WARNING_FONT_COLOR:WrapTextInColorCode((WoWTools_DataMixin.onlyChinese and '查询' or WHO)),
+                function(data)
+                    WoWTools_LoadUIMixin:SpellBook(nil, data.spellID)
+                    return MenuResponse.Open
+                end, {spellID=spellID})
+                sub2:SetTooltip(function(tooltip)
+                    GameTooltip_AddErrorLine(tooltip, 'Bug')
+                end)
+            end
         end
     end
 

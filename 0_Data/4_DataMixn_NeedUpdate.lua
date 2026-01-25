@@ -211,16 +211,17 @@ WoWTools_ChallengesSpellData={
     --[541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.5
     [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'},
 
-    [556]= {spell=1254555, ins=658, name='萨隆矿坑', spellName='不屈凋零之路', spellDes='传送到萨隆矿坑的入口。'},
-    [557]= {spell=1254400, ins=2805, name='风行者之塔', spellName='风行者之路', spellDes='传送到风行者之塔的入口。'},
-    [558]= {spell=1254572, ins=2811, name='魔导师平台', spellName='虔心魔导之路', spellDes='传送到魔导师平台的入口。'},
-    
-    [559]= {spell=1254563, ins=2915, name='节点希纳斯', spellName=nil, spellDes='传送到节点希纳斯入口。'},
-    [560]= {spell=1254559, ins=2874, name='迈萨拉洞窟', spellName=nil, spellDes='传送到迈萨拉洞窟入口。'},
+    [556]= {spell=1254555, ins=658, name='萨隆矿坑', spellName='不屈凋零之路', spellDes='传送到|cff00ccff萨隆矿坑|r的入口。'},
+    [557]= {spell=1254400, ins=2805, name='风行者之塔', spellName='风行者之路', spellDes='传送到|cff00ccff风行者之塔|r的入口。'},
+    [558]= {spell=1254572, ins=2811, name='魔导师平台', spellName='虔心魔导之路', spellDes='传送到|cff00ccff魔导师平台|r的入口。'},
 
+    [559]= {spell=1254563, ins=2915, name='节点希纳斯', spellName=nil, spellDes='传送到|cff00ccff节点希纳斯|r入口。'},
+    [560]= {spell=1254559, ins=2874, name='迈萨拉洞窟', spellName=nil, spellDes='传送到|cff00ccff迈萨拉洞窟|r入口。'},
+
+    [239]= {spell=1254551, ins=1753, name='执政团之座', spellName='黑暗废弃之路', spellDes='传送到|cff00ccff执政团之座|r的入口。'},
 }
---https://www.wowhead.com/cn/spell=1254557/加冕巅峰之路 传送至天际之巅入口。
---https://www.wowhead.com/cn/spell=1254551/黑暗废弃之路 传送至三巨头宝座入口。
+--[161]={spell=159898, ins=476, name='通天峰', spellName='通天之路', spellDes='传送至|cff00ccff通天峰|r入口处。'},
+--https://www.wowhead.com/cn/spell=1254557/加冕巅峰之路 传送到通天峰的入口
 
 --双法术，
 if WoWTools_DataMixin.Player.Faction=='Alliance' then

@@ -478,12 +478,23 @@ WoWTools_MenuMixin:OpenJournal(root, {--战团藏品
 --PlayerSpellsUtil.OpenToSpellBookTab() bug
 
 function WoWTools_MenuMixin:OpenSpellBook(root, index)--天赋和法术书
-    return root:CreateButton(
-        MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"),
+    index= index or 1
+    local isSpellBook= index==3
+
+    local sub= root:CreateButton(
+        (isSpellBook and '|cnWARNING_FONT_COLOR:' or '')
+        ..MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"),
     function()
         WoWTools_LoadUIMixin:SpellBook(index)
         return MenuResponse.Open
     end)
+    if isSpellBook then
+        sub:SetTooltip(function(tooltip)
+            GameTooltip_AddErrorLine(tooltip, 'Bug')
+        end)
+    end
+
+    return sub
 end
 
 

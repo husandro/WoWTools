@@ -513,12 +513,16 @@ local function Sub_Menu(root, tab)
     if tab.spellID then
         sub=root:CreateButton(--bug
             '|A:common-search-magnifyingglass:0:0|a'
-            ..(C_SpellBook.IsSpellKnown(tab.spellID) and '' or '|cff626262')
+            ..(C_SpellBook.IsSpellKnown(tab.spellID) and '|cnWARNING_FONT_COLOR:' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '查询' or WHO),
         function(spellID)
             WoWTools_LoadUIMixin:SpellBook(3, spellID)
             return MenuResponse.Open
         end, tab.spellID)
+
+        sub:SetTooltip(function(tooltip)
+            GameTooltip_AddErrorLine(tooltip, 'Bug')
+        end)
     end
 
 --链接至聊天栏

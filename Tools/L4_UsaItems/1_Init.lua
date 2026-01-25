@@ -116,7 +116,12 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
                 WoWTools_DataMixin:Load(spellID, 'spell')
             end
 
-            sub2=sub:CreateButton(name, function(data)
+            local isSpell= spellID and C_SpellBook.IsSpellInSpellBook(spellID)
+
+            sub2=sub:CreateButton(
+                (isSpell and '|cnWARNING_FONT_COLOR:' or '')
+                ..name,
+            function(data)
 --玩具箱
                 if data.isToy then
                     WoWTools_LoadUIMixin:Journal(3, {toyItemID=data.itemID})

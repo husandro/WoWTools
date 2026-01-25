@@ -440,17 +440,21 @@ function WoWTools_LoadUIMixin:SpellBook(index, spellID)
         return
     end
 
-    if index==2 then
-        if PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsVisible() then
+    if index==1 then
+        PlayerSpellsUtil.OpenToClassSpecializationsTab()
+    elseif index==2 then
+        PlayerSpellsUtil.OpenToClassTalentsTab()
+        --[[if PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsVisible() then
             PlayerSpellsUtil.TogglePlayerSpellsFrame(2)
         else
             PlayerSpellsUtil.ToggleClassTalentOrSpecFrame()
-        end
-    else
-        PlayerSpellsUtil.OpenToClassSpecializationsTab()
+        end]]
+    else--这个有BUG
         if spellID then
-            local knownSpellsOnly, toggleFlyout, flyoutReason = true, false, nil;
+            local knownSpellsOnly, toggleFlyout, flyoutReason = true, true, nil;
             PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
+        else
+            PlayerSpellsUtil.OpenToSpellBookTab()
         end
     end
 end
