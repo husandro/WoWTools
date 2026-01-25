@@ -223,7 +223,7 @@ WoWTools_ChallengesSpellData={
 --[161]={spell=159898, ins=476, name='通天峰', spellName='通天之路', spellDes='传送至|cff00ccff通天峰|r入口处。'},
 --https://www.wowhead.com/cn/spell=1254557/加冕巅峰之路 传送到通天峰的入口
 
---双法术，
+--双法术
 if WoWTools_DataMixin.Player.Faction=='Alliance' then
     WoWTools_ChallengesSpellData[353].spell= 445418 --围攻伯拉勒斯
     WoWTools_ChallengesSpellData[247].spell= 467553 --暴富矿区
