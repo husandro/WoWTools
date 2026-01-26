@@ -13,8 +13,7 @@ local function Init()
         name='WoWToolsCombinedBagsWoWButton',
         type='Item',
     })
-    btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT', -23, 0)
-
+    btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT')
 
     WoWTools_BagMixin:Init_Container_Menu()--背包，菜单，增强
 
