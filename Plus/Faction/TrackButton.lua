@@ -625,7 +625,7 @@ local function Init()
 	end)
 
 	TrackButton:SetScript('OnMouseWheel', function(self, d)
-		Save().btnstr= d==1
+		Save().btnstr= d~=1
 		self:set_Shown()
 		TrackButton_Settings()
 		self:set_tooltip()
