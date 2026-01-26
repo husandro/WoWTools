@@ -365,8 +365,10 @@ local function Init_HousingModelPreview()
     local function Set_EntryInfo(frame, entryInfo)
         entryInfo= entryInfo or frame.catalogEntryInfo
 
-        local obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
-
+        local obj
+        if entryInfo and (not entryInfo.sourceText or entryInfo.sourceText=='') then
+            obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
+        end
         frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
 
         if obj then

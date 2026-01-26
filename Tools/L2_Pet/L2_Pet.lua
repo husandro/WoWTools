@@ -39,7 +39,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
 
     if not frame.sumButton then
         frame.sumButton= CreateFrame('CheckButton', nil, frame, 'UICheckButtonArtTemplate')--"ChatConfigCheckButtonTemplate")
-        WoWTools_TextureMixin:SetCheckBox(frame.sumButton)
+
 
         frame.sumButton:SetSize(18,18)
         frame.sumButton:SetPoint('RIGHT')
@@ -63,6 +63,8 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
 
         frame:HookScript('OnLeave', function(self) self.sumButton:set_alpha() end)
         frame:HookScript('OnEnter', function(self) self.sumButton:SetAlpha(1) end)
+
+        WoWTools_TextureMixin:SetCheckBox(frame.sumButton)
     end
 
     frame.sumButton:set_alpha()

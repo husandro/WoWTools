@@ -21,11 +21,11 @@ local function Init_Menu(self, root)
         Save().hideJourneys= not Save().hideJourneys and true or nil
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANDING_PAGE_RENOWN_LABEL, 'List'))
     end)
     
     sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '列表' or WHO_LIST:gsub(GUILD_TAB_ROSTER , ''),
+        WoWTools_DataMixin.onlyChinese and '列表' or 'Faction list',
     function()
         return not Save().hideJourneysList
     end, function()
