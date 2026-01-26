@@ -259,7 +259,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
 
 
-   
+
 
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', Create_Button)
 
