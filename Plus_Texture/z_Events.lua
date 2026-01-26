@@ -1441,6 +1441,9 @@ function WoWTools_TextureMixin.Events:Blizzard_EditMode()
     self:SetUIButton(EditModeUnsavedChangesDialog.ProceedButton)
     self:SetUIButton(EditModeUnsavedChangesDialog.CancelButton)
     --self:SetButton(EditModeManagerFrame.GridSpacingSlider.Slider.Back, 1)
+
+    --保存布局
+    --self:SetEditBox(EditModeLayoutDialog.LayoutNameEditBox)
 end
 
 
@@ -1864,6 +1867,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
     self:SetNineSlice(EventTraceInset)
     self:SetButton(EventTrace.ResizeButton)
     self:SetScrollBar(EventTrace.Log.Events)
+    self:SetScrollBar(EventTrace.Log.Search)
     self:SetEditBox(EventTrace.Log.Bar.SearchBox)
 
     set_button(EventTrace.SubtitleBar.ViewLog)

@@ -2930,7 +2930,12 @@
         "WoWTools_CurrencyMixin",
         "WoWTools_PaperDollMixin",
         "WoWTools_ChallengesSpellData",
-        "ProfessionsMixin"
+        "ProfessionsMixin",
+        "HousingModelPreviewMixin",
+        "PetitionFrameCloseButton",
+        "PetitionFrameSignButton",
+        "PetitionFrameCancelButton",
+        "AUCTION_CATEGORY_HOUSING"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

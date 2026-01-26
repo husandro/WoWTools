@@ -143,6 +143,9 @@ end
     self:SetInset(PetitionFrameInset)
     self:SetNineSlice(PetitionFrameInset)
     self:SetScrollBar(PetitionFrame)
+    self:SetButton(PetitionFrameCloseButton)
+    self:SetUIButton(PetitionFrameSignButton)
+    self:SetUIButton(PetitionFrameCancelButton)
 
 
 

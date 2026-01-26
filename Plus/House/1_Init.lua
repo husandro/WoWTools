@@ -2,50 +2,10 @@
 	<Button name="HousingCatalogDecorEntryTemplate" mixin="HousingCatalogDecorEntryMixin" inherits="BaseHousingCatalogEntryTemplate" virtual="true"/>
 	<Button name="HousingCatalogRoomEntryTemplate" mixin="HousingCatalogRoomEntryMixin" inherits="BaseHousingCatalogEntryTemplate" virtual="true">
 ]]
-function WoWTools_TooltipMixin.Events:Blizzard_HousingDashboard()
-    local menu= CreateFrame('DropdownButton', 'WoWToolsHousingDashboardMenuButton', HousingDashboardFrameCloseButton, 'WoWToolsMenuTemplate')
-    menu:SetPoint('RIGHT', HousingDashboardFrameCloseButton, 'LEFT')
-    menu:SetupMenu(function(btn, root)
-        if not btn:IsMouseOver() then
-            return
-        end
---物品信息 plus
-        local sub= root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO),
-        function()
-            return not self:Save().disabledHousingItemsPlus
-        end, function()
-            self:Save().disabledHousingItemsPlus= not self:Save().disabledHousingItemsPlus and true or nil
-        end)
-        sub:SetTooltip(function (tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-        end)
 
-    root:CreateDivider()
---摧毁
-        WoWTools_OtherMixin:OpenOption(root,
-            '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING),
-            '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING)
-        )
-
-        self:OpenOption(root)
-    end)
+local function Save()
+    return WoWToolsSave['Plus_House']
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -68,14 +28,6 @@ end
 
 
 
-
-
-
-
-
-
-
---WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', function(btn)
 local function Create_Button(btn)
 --有点大
     btn.InfoText:SetFontObject('GameFontWhite')
@@ -96,23 +48,33 @@ local function Create_Button(btn)
     btn.trackableButton.texture:SetAtlas('Waypoint-MapPin-Tracked')
     btn.trackableButton:SetScript('OnLeave', GameTooltip_Hide)
 
+    function btn.trackableButton:get_entryInfo()
+        return self:GetParent().entryInfo
+    end
     function btn.trackableButton:tooltip()
-        local entryInfo= self:GetParent().entryInfo
+        if not self:IsMouseOver() then
+            return
+        end
+        local entryInfo= self:get_entryInfo()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:SetText(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING))
-        if entryInfo then
+
+        local obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
+        if obj then
             GameTooltip:AddLine(' ')
-            local objectiveText= C_ContentTracking.GetObjectiveText(entryInfo.entryID.entryType, entryInfo.entryID.recordID)
-            GameTooltip_AddHighlightLine(GameTooltip,
-                WoWTools_TextMixin:CN(objectiveText), true
-            )
+            GameTooltip_AddHighlightLine(GameTooltip, obj, true)
         end
+
         GameTooltip:Show()
     end
 
     function btn.trackableButton:settings()
-        local recordID= self:GetParent().entryInfo.entryID.recordID
-        local isTrackable = C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID)
+        local entryInfo= self:get_entryInfo()
+        local isTrackable
+        if entryInfo then
+            local recordID= entryInfo.entryID.recordID
+            isTrackable = C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID)
+        end
         self.texture:SetDesaturated(not isTrackable)
         self.texture:SetAlpha(isTrackable and 1 or 0.5)
     end
@@ -131,14 +93,18 @@ local function Create_Button(btn)
         frame:set_event()
         frame:settings()
     end)
-    btn.trackableButton:SetScript('OnLeave', function(frame)
+    btn.trackableButton:SetScript('OnEnter', function(frame)
         frame:settings()
-    end)
-    btn.trackableButton:SetScript('OnLeave', function(frame)
         frame:tooltip()
+        C_Timer.After(1, function() frame:tooltip() end)
     end)
+    
 
     btn.trackableButton:SetScript('OnClick', function(self)
+        local entryInfo= self:get_entryInfo()
+        if not entryInfo then
+            return
+        end
         local recordID= self:GetParent().entryInfo.entryID.recordID
         if C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, recordID) then
             C_ContentTracking.StopTracking(Enum.ContentTrackingType.Decor, recordID, Enum.ContentTrackingStopType.Manual)
@@ -199,10 +165,52 @@ end
 
 
 
-function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_HousingTemplates()
+
+    if not C_AddOns.IsAddOnLoaded('Blizzard_HousingTemplates') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_HousingTemplates' then
+                Init_HousingTemplates()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
 
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'AddTooltipTrackingLines', function(btn, tooltip)
-        local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
+        local entryInfo= btn:HasValidData() and btn.entryInfo
         if not entryInfo then
             return
         end
@@ -214,12 +222,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
             local r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             tooltip:Set_BG_Color(r,g,b, 0.15)
         end
-
         tooltip:Show()
     end)
-
-
-
 
 
 
@@ -240,24 +244,12 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
     end)
 
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'SetCatalogElements', function(frame)
-        local num= not self:Save().disabledHousingItemsPlus and frame.ScrollBox:GetDataProviderSize()
+        local num= frame.ScrollBox:GetDataProviderSize()
         frame.numItemLabel:SetText(num or '')
     end)
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'ClearCatalogData', function(frame)
         frame.numItemLabel:SetText('')
     end)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -267,7 +259,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
 
         --local isTrackable= nil
         local placementCost, r,g,b, show, isXP, isIndoors, isOutdoors, isCanDelete, isNotAsset
-        local entryInfo= not self:Save().disabledHousingItemsPlus and btn:HasValidData() and btn.entryInfo
+        local entryInfo= btn:HasValidData() and btn.entryInfo
 
         if entryInfo then
             r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
@@ -322,4 +314,165 @@ function WoWTools_TooltipMixin.Events:Blizzard_HousingTemplates()
         btn.notAsset:SetShown(isNotAsset)
         btn.canDelete:SetShown(isCanDelete==false)
     end)
+
+    Init_HousingTemplates=function()end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_HousingModelPreview()
+
+    if not C_AddOns.IsAddOnLoaded('Blizzard_HousingModelPreview') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_HousingModelPreview' then
+                Init_HousingModelPreview()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
+
+    WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'OnLoad', function(frame)
+        frame.TextContainer.TrackingObjectiveText= frame.TextContainer:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+        frame.TextContainer.TrackingObjectiveText:SetJustifyH('LEFT')
+        frame.TextContainer.TrackingObjectiveText:SetHeight(0)
+        frame.TextContainer.TrackingObjectiveText.layoutIndex=4
+        frame.TextContainer.TrackingObjectiveText.expand= true
+        frame.TextContainer:AddLayoutChildren(frame.TextContainer.TrackingObjectiveText)
+    end)
+
+
+    local function Set_EntryInfo(frame, entryInfo)
+        entryInfo= entryInfo or frame.catalogEntryInfo
+
+        local obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
+
+        frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
+
+        if obj then
+            frame.TextContainer:SetFixedWidth(frame.TextContainer:GetWidth())
+            frame.TextContainer:Layout()
+        end
+    end
+
+    WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'PreviewCatalogEntryInfo', function(frame, entryInfo)
+        Set_EntryInfo(frame, entryInfo)
+        C_Timer.After(1, function() Set_EntryInfo(frame) end)
+    end)
+
+    Init_HousingModelPreview=function()end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--住宅信息板
+local function Init_HousingDashboard()
+    if not C_AddOns.IsAddOnLoaded('Blizzard_HousingDashboard') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_HousingDashboard' then
+                Init_HousingDashboard()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
+
+    local menu= CreateFrame('DropdownButton', 'WoWToolsHousingDashboardMenuButton', HousingDashboardFrameCloseButton, 'WoWToolsMenuTemplate')
+    menu:SetPoint('RIGHT', HousingDashboardFrameCloseButton, 'LEFT')
+    menu:SetupMenu(function(btn, root)
+        if not btn:IsMouseOver() then
+            return
+        end
+
+        local sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_HouseMixin.addName})
+--摧毁
+        WoWTools_OtherMixin:OpenOption(sub,
+            '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING),
+            '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING)
+        )
+    end)
+
+    Init_HousingDashboard=function()end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local panel= CreateFrame("Frame")
+panel:RegisterEvent('ADDON_LOADED')
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if arg1~= 'WoWTools' then
+        return
+    end
+
+    WoWToolsSave['Plus_House']= WoWToolsSave['Plus_House'] or {}
+    WoWTools_HouseMixin.addName= '|A:house-chest-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '住宅' or AUCTION_CATEGORY_HOUSING)
+
+    WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_HouseMixin.addName,
+        GetValue= function() return not Save().disabled end,
+        func= function()
+            Save().disabled= not Save().disabled and true or nil
+            Init_HousingDashboard()
+            Init_HousingTemplates()
+            Init_HousingModelPreview()
+        end,
+        tooltip= WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+    })
+
+    if not Save().disable then
+        Init_HousingDashboard()
+        Init_HousingTemplates()
+        Init_HousingModelPreview()
+    end
+
+    self:SetScript('OnEvent', nil)
+    self:UnregisterEvent(event)
+end)
+

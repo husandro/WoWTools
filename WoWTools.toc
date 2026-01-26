@@ -398,10 +398,7 @@ Plus\AuctionHouse\B_Sell_Menu.lua
 Plus\AuctionHouse\B_Sell_Other.lua
 Plus\AuctionHouse\C_AllAuctionsList.lua
 Plus\AuctionHouse\z_AccountStore.lua
-##12.2.7住宅
-Plus\House\House_Move.lua
-Plus\House\House_Texture.lua
-Plus\House\House_Tooltip.lua
+
 ##宠物对战
 Plus\PetBattle\0_PetBattleMixin.lua
 Plus\PetBattle\1_Init.lua
@@ -498,6 +495,13 @@ Plus\Hunter\All_List.lua
 Plus\Hunter\Plus.lua
 Plus\Hunter\Tooltips.lua
 Plus\Hunter\UI.lua
+
+##11.2.7住宅
+Plus\House\0_HouseMixin.lua
+Plus\House\1_Init.lua
+Plus\House\House_Move.lua
+Plus\House\House_Texture.lua
+
 ##其它
 Z_Other\0_Init.lua
 
