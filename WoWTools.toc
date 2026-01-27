@@ -233,6 +233,7 @@ Plus\Currency\z_Max_Tooltip.lua
 Plus\Currency\z_TrackButton.lua
 
 ##属性
+##Plus\Attributes\0_AttributesMixin.lua
 Plus\Attributes\0_Init.lua
 Plus\Attributes\1_Setup.lua
 Plus\Attributes\2_Button.lua

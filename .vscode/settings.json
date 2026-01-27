@@ -2935,7 +2935,12 @@
         "PetitionFrameCloseButton",
         "PetitionFrameSignButton",
         "PetitionFrameCancelButton",
-        "AUCTION_CATEGORY_HOUSING"
+        "AUCTION_CATEGORY_HOUSING",
+        "TimerunningUtil",
+        "CR_HASTE_SPELL",
+        "GameTooltip_ShowProgressBar",
+        "STAT_SPEED",
+        "GameTooltipTextLeft1"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

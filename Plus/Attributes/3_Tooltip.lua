@@ -15,7 +15,7 @@ local Show_Tooltip={}
 
 --set_STATUS_Tooltip
 --主属性
-Show_Tooltip.STATUS= function(frame, owner)
+Show_Tooltip.STATUS= function(frame)
     local currentSpec= GetSpecialization() or 0
     local PrimaryStat= select(6, GetSpecializationInfo(currentSpec, nil, nil, nil, WoWTools_DataMixin.Player.Sex))
 
@@ -141,6 +141,7 @@ Show_Tooltip.CRITCHANCE= function(frame)
             ), nil, nil, nil,true
         )
 	end
+    
 end
 
 
