@@ -270,5 +270,3 @@ if not _G[SLASH_INFOSLASH1] then
 	    WoWTools_DataMixin:Info(msg)
     end
 end
-
-
