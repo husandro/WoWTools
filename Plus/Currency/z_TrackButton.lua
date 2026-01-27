@@ -132,13 +132,14 @@ local function Init_CurrencyMenu(self, root)
 		WoWTools_CurrencyMixin:UpdateTokenFrame()
 	end)
 
-
 	local tab={}
 	for currencyID in pairs(Save().tokens) do
 		table.insert(tab, currencyID)
 	end
 	table.sort(tab, function(a, b) return a> b end)
 
+	sub:SetData({rightText=#tab})
+	WoWTools_MenuMixin:SetRightText(sub)
 
 	local numTokens = C_CurrencyInfo.GetCurrencyListSize()
 	if numTokens>0 then
@@ -188,8 +189,7 @@ local function Init_CurrencyMenu(self, root)
 		end
 	end
 
-	sub:SetData({rightText=index})
-	WoWTools_MenuMixin:SetRightText(sub)
+
 
 --添加
 	sub:CreateDivider()

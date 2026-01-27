@@ -5,7 +5,7 @@ end
 local MakerFrame
 local Name='WoWToolsMakerFrame'
 
-local Buttons={}--_G[Name..Button[1]]
+local Buttons={}
 local PingButtons={}
 local TargetButtons={}
 local MarkerButtons={}
