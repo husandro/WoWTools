@@ -12,6 +12,7 @@ end
 
 local function Set_Target()
     local plate= C_NamePlate.GetNamePlateForUnit("target", issecure())
+
     if not plate or not plate.UnitFrame then
         targetFrame:SetShown(false)
         return

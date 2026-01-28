@@ -356,8 +356,24 @@ local function Init()
 
 
 
-    local function set_objectType(self, focusedTable)
+    local function set_objectType(self)--, focusedTable)
         local text
+        local parent = self.focusedTable and self.focusedTable.GetParent and self.focusedTable:GetParent() or nil;
+        if parent then
+               if parent.GetObjectType then
+                text= parent:GetObjectType()
+                if not canaccessvalue(text) then
+                    text= nil
+                end
+            end
+            if parent.GetSize then
+                text= (text and text..' ' or '')
+                    ..format('%i|cffffd200x|r%i', parent:GetSize())
+            end
+        end
+        self.WoWToolsLabel:SetText(text or '')
+    end
+        --[[local text
         if canaccesstable(focusedTable) and focusedTable then
             if focusedTable.GetObjectType then
                 text= focusedTable:GetObjectType()
@@ -369,9 +385,8 @@ local function Init()
                 text= (text and text..' ' or '')
                     ..format('%i|cffffd200x|r%i', focusedTable:GetSize())
             end
-        end
-        self.WoWToolsLabel:SetText(text or '')
-    end
+        end]]
+
     WoWTools_DataMixin:Hook(TableInspectorMixin, 'InspectTable', set_objectType)
     WoWTools_DataMixin:Hook(TableAttributeDisplay, 'InspectTable', set_objectType)--self.focusedTable= focusedTable
 

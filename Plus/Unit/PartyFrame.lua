@@ -709,7 +709,7 @@ local function Init()--PartyFrame.lua
     PartyFrame.Background:SetWidth(124)--144
 
     --local showPartyFrames = PartyFrame:ShouldShow();
-    for i=1, 4 do --PartyFrame.MemberFrame4.HealthBarContainer.HealthBarMask
+    for i=1, 4 do
         local frame= PartyFrame['MemberFrame'..i]
         if frame then
            Init_CreateButton(frame)

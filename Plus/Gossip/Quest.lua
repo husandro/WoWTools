@@ -73,12 +73,14 @@ local function select_Reward(questID)--自动:选择奖励
                     end
                 end)
                 frame.check:SetScript('OnLeave', GameTooltip_Hide)
+                WoWTools_TextureMixin:SetCheckBox(frame.check)
             end
             frame.check:SetChecked(Save().questRewardCheck[questID] and Save().questRewardCheck[questID]==i)
             frame.check.index= i
             frame.check.questID= questID
             frame.check.numQuests= numQuests
             frame.check:SetShown(true)
+            
         end
     end
 
