@@ -12,16 +12,15 @@ local function calendar_Uptate()
     local info= indexInfo and C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex) or {}
     local text
     if info.eventID then
-        local title= WoWTools_TextMixin:CN(nil, {holydayID= info.eventID, isName=true})
-        text= (info.iconTexture and '|T'..info.iconTexture..':0|t'..info.iconTexture..'|n' or '')
-            ..'eventID '..info.eventID
-            ..(info.title and '|n'..info.title or '')
-            ..(title and '|n'..title or '')
+        text= (info.iconTexture and '|T'..info.iconTexture..':0|t'..info.iconTexture or '')
+            ..' '..WoWTools_DataMixin.Icon.icon2..'eventID '..info.eventID
+            --..'|n'..WoWTools_TextMixin:CN(info.title, {holydayID= info.eventID, isName=true})
     end
 
     if text and not CalendarViewHolidayFrame.Text then
         CalendarViewHolidayFrame.Text= WoWTools_LabelMixin:Create(CalendarViewHolidayFrame, {mouse=true, color={r=0, g=0.68, b=0.94, a=1}})
-        CalendarViewHolidayFrame.Text:SetPoint('BOTTOMLEFT',12,12)
+        CalendarViewHolidayFrame.Text:SetPoint('BOTTOM',0,12)
+        CalendarViewHolidayFrame.Text:SetJustifyH('CENTER')
         CalendarViewHolidayFrame.Text:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
         CalendarViewHolidayFrame.Text:SetScript('OnEnter', function(self)
             self:SetAlpha(0.3)
