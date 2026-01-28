@@ -245,7 +245,7 @@ local function Init_HousingTemplates()
 
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'SetCatalogElements', function(frame)
         local num= frame.ScrollBox:GetDataProviderSize()
-        frame.numItemLabel:SetText(num or '')
+        frame.numItemLabel:SetText(WoWTools_DataMixin:MK(num, 3) or '')
     end)
     WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'ClearCatalogData', function(frame)
         frame.numItemLabel:SetText('')
@@ -315,6 +315,13 @@ local function Init_HousingTemplates()
         btn.canDelete:SetShown(isCanDelete==false)
     end)
 
+
+
+    --[[WoWTools_DataMixin:Hook(HousingCatalogCategoryMixin, 'Init', function(frame, categoryInfo)
+        info= categoryInfo
+        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+    end)]]
+    
     Init_HousingTemplates=function()end
 end
 

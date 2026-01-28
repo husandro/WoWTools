@@ -2940,7 +2940,8 @@
         "CR_HASTE_SPELL",
         "GameTooltip_ShowProgressBar",
         "STAT_SPEED",
-        "GameTooltipTextLeft1"
+        "GameTooltipTextLeft1",
+        "HousingCatalogCategoriesMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
