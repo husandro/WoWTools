@@ -86,6 +86,8 @@ function WoWTools_TextureMixin.Frames:GroupLootHistoryFrame()
     --[[self:SetAlphaColor(GroupLootHistoryFrameMiddle)
     self:SetAlphaColor(GroupLootHistoryFrameLeft)
     self:SetAlphaColor(GroupLootHistoryFrameRight)]]
+    self:SetMenu(GroupLootHistoryFrame.EncounterDropdown)
+    
     self:SetFrame(GroupLootHistoryFrame.ResizeButton, {alpha=0.3})
 end
 

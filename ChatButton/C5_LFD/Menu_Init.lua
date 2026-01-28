@@ -1341,8 +1341,8 @@ local function Init_Menu(self, root)
 		end
     end
     if shouldtext then
-        root:CreateDivider()
         root:CreateTitle('|cnGREEN_FONT_COLOR:'..shouldtext)
+        root:CreateDivider()
     end
 
 

@@ -12,9 +12,10 @@ ChatEdit_LinkItem(itemID, itemLink)
 ChatFrameUtil.OpenChat 11.2.7才有
 --]]
 function WoWTools_ChatMixin:Chat(text, name, printText)
-    if not text then
+    if not canaccessvalue(text) or not canaccessvalue(name) or  not text then
         return
     end
+
     if name then
         C_ChatInfo.SendChatMessage(text, 'WHISPER', nil, name)
     elseif printText then
@@ -28,9 +29,18 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
             WoWTools_DataMixin:Call(ChatFrame_OpenChat, text)
         end]]
     else
-        local isNotDead= not UnitIsDeadOrGhost('player')
-        local isInInstance= IsInInstance()
-        if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
+        --local isNotDead= not UnitIsDeadOrGhost('player')
+        --local isInInstance= IsInInstance()
+        if IsInRaid() then
+            C_ChatInfo.SendChatMessage(text, 'RAID')
+        elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
+            C_ChatInfo.SendChatMessage(text, 'PARTY')
+
+        elseif IsInInstance() and GetNumGroupMembers()>0 then
+            C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
+
+        --[[
+        if isInInstance and not UnitIsDeadOrGhost('player') and not InCombatLockdown() then-- and C_CVar.GetCVarBool("chatBubbles") then
             C_ChatInfo.SendChatMessage(text, 'YELL')
 
         elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
@@ -43,7 +53,7 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
             C_ChatInfo.SendChatMessage(text, 'PARTY')
             --elseif isNotDead and IsOutdoors() and not PlayerIsInCombat() then
                 --C_ChatInfo.SendChatMessage(text, 'YELL')
-            -- elseif setPrint then
+            -- elseif setPrint then]]
         else
             if text:find('{rt%d}') then
                 text= text:gsub('{rt%d}', function(s)
