@@ -12,7 +12,7 @@ ChatEdit_LinkItem(itemID, itemLink)
 ChatFrameUtil.OpenChat 11.2.7才有
 --]]
 function WoWTools_ChatMixin:Chat(text, name, printText)
-    if not canaccessvalue(text) or not canaccessvalue(name) or  not text then
+    if not canaccessvalue(text) or not canaccessvalue(name) or not text then
         return
     end
 
@@ -22,7 +22,6 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
         if not ChatEdit_InsertLink(text) then
             WoWTools_DataMixin:Call(ChatFrame_OpenChat, text)
         end
-        
         --[[if ChatEdit_GetActiveWindow() then
             WoWTools_DataMixin:Call(ChatEdit_InsertLink, text)
         else
