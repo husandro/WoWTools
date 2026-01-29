@@ -108,10 +108,11 @@ local function Set_Quest_Text(plate)
         return
     end
 
-    local unit = frame.unit
+
     local text
-    if canaccessvalue(unit) and unit and not UnitIsPlayer(unit) then
-        text= Get_Unit_Text(unit)
+    local exists= UnitExists(frame.unit)
+    if canaccessvalue(exists) and exists then
+        text= Get_Unit_Text(frame.unit)
     end
 
     if text and not frame.questProgress then
