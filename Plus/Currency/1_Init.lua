@@ -118,22 +118,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
 			WoWToolsSave['Currency2']= WoWToolsSave['Currency2'] or {
-				--notPlus=true,
-				tokens={},--{[currencyID]=true}指定显示，表
-				item={},--[202196]= true
-				--indicato=nil,--指定显示
-
+				tokens={},
+				item={},
 				Hide=not WoWTools_DataMixin.Player.husandro,
 				str=true,
-				--scaleTrackButton=1,
 				toRightTrackText=true,--向右平移
-				--toTopTrack=true,--向上
-				--notAutoHideTrack=true,--自动隐藏
 				itemButtonUse=WoWTools_DataMixin.Player.husandro,
-				--disabledItemTrack=true,禁用，追踪物品
-
-				--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
-				--showID=true,--显示ID
 			}
 
 			Save().ItemInteractionID= nil

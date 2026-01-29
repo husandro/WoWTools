@@ -731,8 +731,9 @@ local function Init_Button(self)
 		if (Save().itemButtonUse and not bat or not Save().itemButtonUse) then
 			local itemTab={}
 			for itemID in pairs(Save().item) do
+				WoWTools_DataMixin:Load(itemID, 'item')
 				if C_Item.GetItemInfoInstant(itemID) and C_Item.GetItemCount(itemID)>0 then
-					table.insert(itemTab, {itemQuality=C_Item.GetItemQualityByID(itemID), itemID=itemID})--{text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
+					table.insert(itemTab, {itemQuality=C_Item.GetItemQualityByID(itemID) or 1, itemID=itemID})--{text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
 				end
 			end
 			table.sort(itemTab, function(a, b)
@@ -866,6 +867,10 @@ end
 local function Init()
 	if Save().Hide then
 		return
+	end
+
+	for itemID in pairs(Save().item) do
+		WoWTools_DataMixin:Load(itemID, 'item')
 	end
 
 	TrackButton= CreateFrame('Button', 'WoWToolsCurrencyTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
