@@ -731,14 +731,14 @@ local function Init_Button(self)
 		if (Save().itemButtonUse and not bat or not Save().itemButtonUse) then
 			local itemTab={}
 			for itemID in pairs(Save().item) do
-				--local itemQuality= C_Item.GetItemQualityByID(itemID)
-				--local text, icon, itemQuality, name= Get_Item(itemID)
 				if C_Item.GetItemInfoInstant(itemID) and C_Item.GetItemCount(itemID)>0 then
 					table.insert(itemTab, {itemQuality=C_Item.GetItemQualityByID(itemID), itemID=itemID})--{text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
 				end
 			end
 			table.sort(itemTab, function(a, b)
-				if a.itemQuality== b.itemQuality then
+				if not a or not b then
+					return false
+				elseif a.itemQuality== b.itemQuality then
 					return a.itemID> b.itemID
 				else
 					return a.itemQuality> b.itemQuality
