@@ -409,7 +409,7 @@ local function Set_EntryInfo(frame, entryInfo)
             r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
         end
         frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
-        
+
 --拥有数量
         local totalOwned = entryInfo.numPlaced + entryInfo.quantity + entryInfo.remainingRedeemable;
 	    local totalOwnedText = format('|A:house-decor-budget-icon:0:0|a%d |A:house-chest-icon:16:16|a %d', entryInfo.numPlaced, totalOwned)
@@ -460,7 +460,7 @@ local function Init_HousingModelPreview()
     end)
 
 
-    
+
 
     WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'PreviewCatalogEntryInfo', function(frame, entryInfo)
         Set_EntryInfo(frame, entryInfo)
