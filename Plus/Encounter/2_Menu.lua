@@ -203,6 +203,7 @@ local function Init()
     great:SetFrameStrata(menu:GetFrameStrata())
     great:SetFrameLevel(menu:GetFrameLevel())
     great:SetSize(23,23)
+    great:SetParent(EncounterJournalCloseButton)
     local icon= great:GetNormalTexture()
     if icon then
         icon:ClearAllPoints()
