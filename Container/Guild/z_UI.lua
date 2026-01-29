@@ -68,6 +68,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
 
     self:SetScrollBar(GuildBankFrame.Log)
     self:SetScrollBar(GuildBankInfoScrollFrame)
+    self:SetUIButton(GuildBankInfoSaveButton)
 
 --右边 Tab
     for index, tab in pairs(GuildBankFrame.BankTabs) do

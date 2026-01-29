@@ -2941,7 +2941,8 @@
         "GameTooltip_ShowProgressBar",
         "STAT_SPEED",
         "GameTooltipTextLeft1",
-        "HousingCatalogCategoriesMixin"
+        "HousingCatalogCategoriesMixin",
+        "GuildBankInfoSaveButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
