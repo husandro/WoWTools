@@ -6,14 +6,22 @@ local TrackButton
 local NumButton=0
 local Name='WoWToolsHolidayTrackButton'
 
-
-
-
-
-
-
-
-
+--时空漫游,事件ID
+local TimeWalkerEvent= {
+    [1063]= true,
+    [616]= true,
+    [617]= true,
+    [623]= true,
+    [629]= true,
+    [643]= true,--熊猫人之迷
+    [654]= true,
+    [1068]= true,
+    [1277]= true,
+    [1269]= true,
+    [1669]= true,
+    
+    [1703]=true,--暗影
+}
 
 
 
@@ -21,8 +29,14 @@ local Name='WoWToolsHolidayTrackButton'
 
 local function Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
     for _, questID in pairs({
-        40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
-        72725, 83362,--迷离的时光之路 熊猫人之迷
+        83360,--邪能的时光之路
+        88805,--战痕的时光之路
+        92649,--蔽影的时光之路
+        83364,--蛮荒的时光之路
+        83362,--迷离的时光之路
+        83365,--冰冻的时光之路
+        83363,--燃烧的时光之路
+        83359,--崩裂的时光之路
     }) do
         if C_QuestLog.IsQuestFlaggedCompleted(questID) then
             return format('|A:%s:0:0|a', 'common-icon-checkmark')
@@ -169,21 +183,9 @@ local function Get_Button_Text(event)
         atlas='worldquest-icon-raid'
 
     elseif event.calendarType=='HOLIDAY' then
-        if title:find(PLAYER_DIFFICULTY_TIMEWALKER) or--时空漫游
-            event.eventID==1063 or
-            event.eventID==616 or
-            event.eventID==617 or
-            event.eventID==623 or
-            event.eventID==629 or
-            event.eventID==643 or--熊猫人之迷
-            event.eventID==654 or
-            event.eventID==1068 or
-            event.eventID==1277 or
-            event.eventID==1269 or
-            event.eventID==1669
-        then
+        if title:find(PLAYER_DIFFICULTY_TIMEWALKER) or TimeWalkerEvent[event.eventID] then--时空漫游
 
-            local isCompleted= Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
+            local isCompleted= Check_TimeWalker_Quest_Completed(event.eventID)--迷离的时光之路，任务是否完成
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             title=(WoWTools_DataMixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
             findQuest= isCompleted and true or findQuest
@@ -214,19 +216,8 @@ local function Get_Button_Text(event)
 
     elseif event.calendarType=='HOLIDAY' and event.eventID then
 
-        if event.title:find(PLAYER_DIFFICULTY_TIMEWALKER)--时空漫游 559
-            --[[or event.eventID==1063
-            or event.eventID==616
-            or event.eventID==617
-            or event.eventID==623
-            or event.eventID==629
-            or event.eventID==643--熊猫人之迷
-            or event.eventID==654
-            or event.eventID==1068
-            or event.eventID==1277
-            or event.eventID==1269]]
-         then
-            local isCompleted= Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
+        if event.title:find(PLAYER_DIFFICULTY_TIMEWALKER) or TimeWalkerEvent[event.eventID] then--时空漫游 559
+            local isCompleted= Check_TimeWalker_Quest_Completed(event.eventID)--迷离的时光之路，任务是否完成
 
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             findQuest= isCompleted

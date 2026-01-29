@@ -201,23 +201,6 @@ local function Create_Button(btn)
         self.Background:SetAlpha(1)
     end)
 end
-    --btn.selectFrame= CreateFrame('Frame', nil, btn)
-    --btn.selectFrame:SetScript('OnShow', function(self)
-      --  print('show')
-    --end)
-    --btn.selectFrame:SetScript('OnHide', function(self)
-      --  print('hide')
-    --end)
-   -- btn.selectFrame:SetFrameLevel(btn:GetFrameLevel()-1)
-   -- btn.selectFrame:SetPoint('TOPLEFT', -4, 4)
-    --btn.selectFrame:SetPoint('BOTTOMRIGHT', 4, -4)
-    --btn.selectFrame.texture= btn.selectFrame:CreateTexture(nil, 'OVERLAY')
-    --btn.selectFrame.texture:SetAtlas('house-chest-list-item-active')
-    --btn.selectFrame.texture:SetVertexColor(0,1,0)
-
-
-
-
 
 
 
@@ -396,10 +379,6 @@ end
 
 
 
-
-
-
-
 local function Add_label(frame, name, layoutIndex, text)
     frame.TextContainer[name]= frame.TextContainer:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
     frame.TextContainer[name]:SetJustifyH('LEFT')
@@ -411,6 +390,47 @@ local function Add_label(frame, name, layoutIndex, text)
     end
     frame.TextContainer:AddLayoutChildren(frame.TextContainer[name])
 end
+
+
+local function Set_EntryInfo(frame, entryInfo)
+        if not frame:IsVisible() then
+            return
+        end
+
+        entryInfo= entryInfo or frame.catalogEntryInfo
+
+        local obj, r,g,b
+
+--来源
+        if entryInfo then
+            if (not entryInfo.sourceText or entryInfo.sourceText=='') then
+                obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
+            end
+            r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
+        end
+        frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
+        
+--拥有数量
+        local totalOwned = entryInfo.numPlaced + entryInfo.quantity + entryInfo.remainingRedeemable;
+	    local totalOwnedText = format('|A:house-decor-budget-icon:0:0|a%d |A:house-chest-icon:16:16|a %d', entryInfo.numPlaced, totalOwned)
+        frame:SetTextOrHide(frame.TextContainer.NumOwned, totalOwnedText);
+
+--关键词
+        frame:SetTextOrHide(frame.TextContainer.TagsText, WoWTools_HouseMixin:GetTagsText(entryInfo))
+--室内，外
+        frame.TextContainer.InDoorsText:SetShown(entryInfo.isAllowedIndoors)
+        frame.TextContainer.OutDoorsText:SetShown(entryInfo.isAllowedOutdoors)
+--品质
+        frame.NameContainer.Name:SetTextColor(r or 1, g or 1, b or 1)
+
+--设置，内容
+        frame.TextContainer:SetFixedWidth(frame.TextContainer:GetWidth())
+        frame.TextContainer:Layout()
+    end
+
+
+
+
 
 
 local function Init_HousingModelPreview()
@@ -438,39 +458,9 @@ local function Init_HousingModelPreview()
         Add_label(frame, 'InDoorsText', layoutIndex+3, '|A:house-room-limit-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室内' or HOUSING_CATALOG_FILTERS_INDOORS))
         Add_label(frame, 'OutDoorsText', layoutIndex+4, '|A:house-outdoor-budget-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS))
     end)
- 
 
-    local function Set_EntryInfo(frame, entryInfo)
-        if not frame:IsVisible() then
-            return
-        end
 
-        entryInfo= entryInfo or frame.catalogEntryInfo
-
-        local obj, tag, r,g,b
-
---来源
-        if entryInfo then
-            if (not entryInfo.sourceText or entryInfo.sourceText=='') then
-                obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
-            end
-            r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
-        end
---品质
-        frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
---关键词
-        frame:SetTextOrHide(frame.TextContainer.TagsText, WoWTools_HouseMixin:GetTagsText(entryInfo))
---室内，外
-        frame.TextContainer.InDoorsText:SetShown(entryInfo.isAllowedIndoors)
-        frame.TextContainer.OutDoorsText:SetShown(entryInfo.isAllowedOutdoors)
---品质
-        frame.NameContainer.Name:SetTextColor(r or 1, g or 1, b or 1)
-
---设置，内容
-        frame.TextContainer:SetFixedWidth(frame.TextContainer:GetWidth())
-        frame.TextContainer:Layout()
-        
-    end
+    
 
     WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'PreviewCatalogEntryInfo', function(frame, entryInfo)
         Set_EntryInfo(frame, entryInfo)

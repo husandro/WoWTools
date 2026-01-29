@@ -2943,7 +2943,8 @@
         "GameTooltipTextLeft1",
         "HousingCatalogCategoriesMixin",
         "GuildBankInfoSaveButton",
-        "EVENTTRACE_SECRET_FMT"
+        "EVENTTRACE_SECRET_FMT",
+        "HOUSING_DECOR_OWNED_ICON_FMT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
