@@ -183,7 +183,7 @@ local function Create_Button(btn)
                     and HousingDashboardFrame:IsVisible()
                     and HousingDashboardFrame.CatalogContent.PreviewFrame.catalogEntryInfo
 
-            if data and  self.entryInfo.asset== data.asset then
+            if data and  self.entryInfo.name== data.name then
                 show=true
             end
             self.selectBG:SetShown(show)
