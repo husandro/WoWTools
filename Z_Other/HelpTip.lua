@@ -97,7 +97,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
     elseif event=='PLAYER_ENTERING_WORLD' then
-
         if SplashFrame and SplashFrame:IsShown() and not WoWTools_FrameMixin:IsLocked(SplashFrame) then
             SplashFrame:Hide()
         end
