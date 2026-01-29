@@ -240,7 +240,7 @@ local function Init_Create(frame)
         self:SetText('')
         self:ClearFocus()
     end)
-EVENTTRACE_SECRET_FMT = "|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s"
+
     frame.WoWToolsEdit:SetScript('OnEditFocusGained', function(self)
         local label=self:GetParent():GetParent().TitleButton.Text
 

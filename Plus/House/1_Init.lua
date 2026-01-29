@@ -160,6 +160,11 @@ local function Create_Button(btn)
     btn.notAsset:SetPoint('LEFT', btn.trackableButton, 'RIGHT')
     btn.notAsset:SetSize(16,16)
     btn.notAsset:SetAtlas('transmog-icon-hidden')
+
+--索引
+    btn.indexLabel= btn:CreateFontString(nil, 'BORDER', 'GameFontDisable')
+    btn.indexLabel:SetFontHeight(10)
+    btn.indexLabel:SetPoint('TOPLEFT',0, 7)
 end
 
 
@@ -313,6 +318,8 @@ local function Init_HousingTemplates()
         btn.Outdoors:SetShown(isOutdoors)
         btn.notAsset:SetShown(isNotAsset)
         btn.canDelete:SetShown(isCanDelete==false)
+
+        btn.indexLabel:SetText(btn.GetElementDataIndex and btn:GetElementDataIndex() or '')
     end)
 
 

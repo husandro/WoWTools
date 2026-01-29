@@ -2942,7 +2942,8 @@
         "STAT_SPEED",
         "GameTooltipTextLeft1",
         "HousingCatalogCategoriesMixin",
-        "GuildBankInfoSaveButton"
+        "GuildBankInfoSaveButton",
+        "EVENTTRACE_SECRET_FMT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
