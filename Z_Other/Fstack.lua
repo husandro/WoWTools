@@ -356,7 +356,28 @@ local function Init()
 
 
 
-    local function set_objectType(self)--, focusedTable)
+    local function set_objectType(self, focusedTable)
+        local text
+        if canaccesstable(focusedTable) and focusedTable then
+            if focusedTable.GetFrameLayoutType then
+                text= focusedTable:GetFrameLayoutType()
+            elseif focusedTable.GetObjectType then
+                WoWTools_DataMixin:Info(focusedTable)
+                
+                text= focusedTable:GetObjectType()
+                if not canaccessvalue(text) then
+                    text= nil
+                end
+            end
+            if focusedTable.GetSize then
+                text= (text and text..' ' or '')
+                    ..format('%i|cffffd200x|r%i', focusedTable:GetSize())
+            end
+        end
+        self.WoWToolsLabel:SetText(text or '')
+    end
+        
+    --[[local function set_objectType(self, focusedTable)
         local text
         local parent = self.focusedTable and self.focusedTable.GetParent and self.focusedTable:GetParent() or nil;
         if parent then
@@ -372,20 +393,8 @@ local function Init()
             end
         end
         self.WoWToolsLabel:SetText(text or '')
-    end
-        --[[local text
-        if canaccesstable(focusedTable) and focusedTable then
-            if focusedTable.GetObjectType then
-                text= focusedTable:GetObjectType()
-                if not canaccessvalue(text) then
-                    text= nil
-                end
-            end
-            if focusedTable.GetSize then
-                text= (text and text..' ' or '')
-                    ..format('%i|cffffd200x|r%i', focusedTable:GetSize())
-            end
-        end]]
+    end]]
+
 
     WoWTools_DataMixin:Hook(TableInspectorMixin, 'InspectTable', set_objectType)
     WoWTools_DataMixin:Hook(TableAttributeDisplay, 'InspectTable', set_objectType)--self.focusedTable= focusedTable

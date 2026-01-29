@@ -98,7 +98,7 @@ local function Create_Button(btn)
         frame:tooltip()
         C_Timer.After(1, function() frame:tooltip() end)
     end)
-    
+
 
     btn.trackableButton:SetScript('OnClick', function(self)
         local entryInfo= self:get_entryInfo()
@@ -165,6 +165,56 @@ local function Create_Button(btn)
     btn.indexLabel= btn:CreateFontString(nil, 'BORDER', 'GameFontDisable')
     btn.indexLabel:SetFontHeight(10)
     btn.indexLabel:SetPoint('TOPLEFT',0, 7)
+    
+
+--选定，提示
+    btn.selectBG= btn:CreateTexture()
+    --btn.selectBG:SetAllPoints()
+    btn.selectBG:SetPoint('TOPLEFT', -16, 18)
+    btn.selectBG:SetAlpha(0.4)
+    btn.selectBG:SetPoint('BOTTOMRIGHT', 16, -18)
+    btn.selectBG:SetAtlas('AlliedRace-UnlockingFrame-BottomButtonsMouseOverGlow')
+
+    function btn:set_selectBG()
+        C_Timer.After(0.1, function()
+            local show=false
+            local data= self.entryInfo
+                    and HousingDashboardFrame
+                    and HousingDashboardFrame:IsVisible()
+                    and HousingDashboardFrame.CatalogContent.PreviewFrame.catalogEntryInfo
+
+            if data and  self.entryInfo.asset== data.asset then
+                show=true
+            end
+            self.selectBG:SetShown(show)
+        end)
+    end
+
+    EventRegistry:RegisterCallback("HousingCatalogEntry.OnInteract", btn.set_selectBG, btn)
+    btn:set_selectBG()
+
+    btn:HookScript('OnShow', function(self)
+        EventRegistry:RegisterCallback("HousingCatalogEntry.OnInteract", self.set_selectBG, self)
+        self:set_selectBG()
+    end)
+    btn:HookScript('OnHide', function(self)
+        EventRegistry:UnregisterCallback("HousingCatalogEntry.OnInteract", self);
+        self.Background:SetAlpha(1)
+    end)
+
+    --btn.selectFrame= CreateFrame('Frame', nil, btn)
+    --btn.selectFrame:SetScript('OnShow', function(self)
+      --  print('show')
+    --end)
+    --btn.selectFrame:SetScript('OnHide', function(self)
+      --  print('hide')
+    --end)
+   -- btn.selectFrame:SetFrameLevel(btn:GetFrameLevel()-1)
+   -- btn.selectFrame:SetPoint('TOPLEFT', -4, 4)
+    --btn.selectFrame:SetPoint('BOTTOMRIGHT', 4, -4)
+    --btn.selectFrame.texture= btn.selectFrame:CreateTexture(nil, 'OVERLAY')
+    --btn.selectFrame.texture:SetAtlas('house-chest-list-item-active')
+    --btn.selectFrame.texture:SetVertexColor(0,1,0)
 end
 
 
@@ -328,7 +378,7 @@ local function Init_HousingTemplates()
         info= categoryInfo
         for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
     end)]]
-    
+
     Init_HousingTemplates=function()end
 end
 
@@ -379,11 +429,16 @@ local function Init_HousingModelPreview()
     local function Set_EntryInfo(frame, entryInfo)
         entryInfo= entryInfo or frame.catalogEntryInfo
 
-        local obj
-        if entryInfo and (not entryInfo.sourceText or entryInfo.sourceText=='') then
-            obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
+        local obj, r,g,b
+        if entryInfo then
+            if (not entryInfo.sourceText or entryInfo.sourceText=='') then
+                obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
+            end
+            r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
         end
+
         frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
+        frame.NameContainer.Name:SetTextColor(r or 1, g or 1, b or 1)
 
         if obj then
             frame.TextContainer:SetFixedWidth(frame.TextContainer:GetWidth())
