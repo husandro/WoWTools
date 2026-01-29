@@ -90,9 +90,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 nil
             ) then
                 Init()
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            else
+                self:SetScript('OnEvent', nil)
             end
-            self:SetScript('OnEvent', nil)
             self:UnregisterEvent(event)
         end
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if SplashFrame and SplashFrame:IsShown() then
+            SplashFrame:Hide()
+        end
+        self:UnregisterEvent(event)
+        self:SetScript('OnEvent', nil)
     end
 end)
