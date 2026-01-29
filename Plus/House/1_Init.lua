@@ -379,6 +379,13 @@ end
 
 
 
+
+
+
+
+
+
+
 local function Add_label(frame, name, layoutIndex, text)
     frame.TextContainer[name]= frame.TextContainer:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
     frame.TextContainer[name]:SetJustifyH('LEFT')

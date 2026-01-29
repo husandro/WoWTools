@@ -1,60 +1,3 @@
-
-
-
---[[
-Name = "HousingCatalogEntryInfo",
-Type = "Structure",
-Fields =
-{
-    { Name = "entryID", Type = "HousingCatalogEntryID", Nilable = false },
-    { Name = "name", Type = "cstring", Nilable = false },
-    { Name = "asset", Type = "ModelAsset", Nilable = true },
-    { Name = "iconTexture", Type = "FileAsset", Nilable = true },
-    { Name = "iconAtlas", Type = "textureAtlas", Nilable = true },
-    { Name = "uiModelSceneID", Type = "number", Nilable = true },
-    { Name = "quantity", Type = "number", Nilable = false },
-    { Name = "showQuantity", Type = "bool", Nilable = false },
-    { Name = "categoryIDs", Type = "table", InnerType = "number", Nilable = false },
-    { Name = "subcategoryIDs", Type = "table", InnerType = "number", Nilable = false },
-    { Name = "dataTagsByID", Type = "LuaValueVariant", Nilable = false },
-    { Name = "size", Type = "HousingCatalogEntrySize", Nilable = false },
-    { Name = "placementCost", Type = "number", Nilable = false },
-    { Name = "numPlaced", Type = "number", Nilable = false },
-    { Name = "numStored", Type = "number", Nilable = false },
-    { Name = "isAllowedOutdoors", Type = "bool", Nilable = false },
-    { Name = "isAllowedIndoors", Type = "bool", Nilable = false },
-    { Name = "canCustomize", Type = "bool", Nilable = false },
-    { Name = "isPrefab", Type = "bool", Nilable = false },
-    { Name = "quality", Type = "ItemQuality", Nilable = true },
-    { Name = "customizations", Type = "table", InnerType = "cstring", Nilable = false },
-    { Name = "marketInfo", Type = "HousingMarketInfo", Nilable = true },
-    { Name = "remainingRedeemable", Type = "number", Nilable = false },
-    { Name = "firstAcquisitionBonus", Type = "number", Nilable = false },
-    { Name = "sourceText", Type = "cstring", Nilable = false },
-},
-},
-
-local ValueTypePortraits = {
-	[Enum.HouseLevelRewardValueType.InteriorDecor] = "house-decor-budget-icon",
-	[Enum.HouseLevelRewardValueType.ExteriorDecor] = "house-outdoor-budget-icon",
-	[Enum.HouseLevelRewardValueType.Rooms] =         "house-room-limit-icon",
-	[Enum.HouseLevelRewardValueType.Fixtures] =      "house-fixture-budget-icon",
-}
-
-entryInfo.isPrefab 匠心房间
-
-if C_Item.IsDecorItem(itemLink or itemID) then
-    local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink or itemID, true)
-    if entryInfo then
-        textLeft, portrait= self:Set_HouseItem(tooltip, entryInfo)
-        if entryInfo.quality then
-            r, g, b, col= WoWTools_ItemMixin:GetColor(entryInfo.quality)
-        end
-    end
-end
-]]
-
-
 function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     if not entryInfo then
         return
@@ -123,7 +66,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     local tag= WoWTools_HouseMixin:GetTagsText(entryInfo)
     if tag then
         tooltip:AddLine(' ')
-        tooltip:AddLine('|A:Map-Filter-Button:0:0|a'..tag, 1, 0.82, 0, true)
+        tooltip:AddLine(tag, 1, 0.82, 0, true)
     end
 
     if entryInfo.canCustomize then
