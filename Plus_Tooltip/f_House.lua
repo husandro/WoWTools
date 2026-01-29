@@ -105,12 +105,8 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
         )
     end
 
---关键词
-    local tag
-    for _, name in pairs(entryInfo.dataTagsByID or {}) do
-        tag= (tag and tag..PLAYER_LIST_DELIMITER or '')
-            ..WoWTools_TextMixin:CN(name)
-    end
+
+
 --来源
     local sourceText
     if entryInfo.sourceText and entryInfo.sourceText~='' then
@@ -118,10 +114,16 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     else
         sourceText= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
     end
-    if sourceText or tag then
+    if sourceText then
         tooltip:AddLine(' ')
-        tooltip:AddLine(tag, 1, 0.82, 0, true)
         tooltip:AddLine(sourceText, 1, 0.82, 0, true)
+    end
+
+--关键词
+    local tag= WoWTools_HouseMixin:GetTagsText(entryInfo)
+    if tag then
+        tooltip:AddLine(' ')
+        tooltip:AddLine('|A:Map-Filter-Button:0:0|a'..tag, 1, 0.82, 0, true)
     end
 
     if entryInfo.canCustomize then

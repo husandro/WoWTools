@@ -165,13 +165,12 @@ local function Create_Button(btn)
     btn.indexLabel= btn:CreateFontString(nil, 'BORDER', 'GameFontDisable')
     btn.indexLabel:SetFontHeight(10)
     btn.indexLabel:SetPoint('TOPLEFT',0, 7)
-    
 
 --选定，提示
     btn.selectBG= btn:CreateTexture()
     --btn.selectBG:SetAllPoints()
     btn.selectBG:SetPoint('TOPLEFT', -16, 18)
-    btn.selectBG:SetAlpha(0.4)
+    btn.selectBG:SetAlpha(0.5)
     btn.selectBG:SetPoint('BOTTOMRIGHT', 16, -18)
     btn.selectBG:SetAtlas('AlliedRace-UnlockingFrame-BottomButtonsMouseOverGlow')
 
@@ -201,7 +200,7 @@ local function Create_Button(btn)
         EventRegistry:UnregisterCallback("HousingCatalogEntry.OnInteract", self);
         self.Background:SetAlpha(1)
     end)
-
+end
     --btn.selectFrame= CreateFrame('Frame', nil, btn)
     --btn.selectFrame:SetScript('OnShow', function(self)
       --  print('show')
@@ -215,7 +214,7 @@ local function Create_Button(btn)
     --btn.selectFrame.texture= btn.selectFrame:CreateTexture(nil, 'OVERLAY')
     --btn.selectFrame.texture:SetAtlas('house-chest-list-item-active')
     --btn.selectFrame.texture:SetVertexColor(0,1,0)
-end
+
 
 
 
@@ -401,7 +400,14 @@ end
 
 
 
-
+local function Add_label(frame, name, layoutIndex)
+    frame.TextContainer[name]= frame.TextContainer:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+    frame.TextContainer[name]:SetJustifyH('LEFT')
+    frame.TextContainer[name]:SetHeight(0)
+    frame.TextContainer[name].layoutIndex= layoutIndex
+    frame.TextContainer[name].expand= true
+    frame.TextContainer:AddLayoutChildren(frame.TextContainer[name])
+end
 
 
 local function Init_HousingModelPreview()
@@ -417,30 +423,36 @@ local function Init_HousingModelPreview()
     end
 
     WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'OnLoad', function(frame)
-        frame.TextContainer.TrackingObjectiveText= frame.TextContainer:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
-        frame.TextContainer.TrackingObjectiveText:SetJustifyH('LEFT')
-        frame.TextContainer.TrackingObjectiveText:SetHeight(0)
-        frame.TextContainer.TrackingObjectiveText.layoutIndex=4
-        frame.TextContainer.TrackingObjectiveText.expand= true
-        frame.TextContainer:AddLayoutChildren(frame.TextContainer.TrackingObjectiveText)
+        local layoutIndex=3
+        for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
+            layoutIndex= math.max(label.layoutIndex or 0, layoutIndex)
+        end
+        Add_label(frame, 'TrackingObjectiveText', layoutIndex+1)
+        Add_label(frame, 'TagsText', layoutIndex+2)
     end)
 
 
     local function Set_EntryInfo(frame, entryInfo)
         entryInfo= entryInfo or frame.catalogEntryInfo
 
-        local obj, r,g,b
+        local obj, tag, r,g,b
+
+--来源
         if entryInfo then
             if (not entryInfo.sourceText or entryInfo.sourceText=='') then
                 obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
             end
             r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
         end
-
         frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
+
+--关键词
+        frame:SetTextOrHide(frame.TextContainer.TagsText, WoWTools_HouseMixin:GetTagsText(entryInfo))
+
+--品质
         frame.NameContainer.Name:SetTextColor(r or 1, g or 1, b or 1)
 
-        if obj then
+        if obj or tag then
             frame.TextContainer:SetFixedWidth(frame.TextContainer:GetWidth())
             frame.TextContainer:Layout()
         end
@@ -498,6 +510,12 @@ local function Init_HousingDashboard()
             '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY_CONFIRMATION_STRING)
         )
     end)
+
+--添加一个图标
+    HousingDashboardFrame.CatalogContent.PreviewFrame.TextContainer.CollectionBonus:SetText(
+        '|A:GarrMission_CurrencyIcon-Xp:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '|cnLIGHTBLUE_FONT_COLOR:可获得首次收集奖励|r' or HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE)
+    )
 
     Init_HousingDashboard=function()end
 end
