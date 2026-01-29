@@ -11,7 +11,7 @@ function WoWTools_HouseMixin:GetObjectiveText(entryInfo)
         if targetType then
             local obj= C_ContentTracking.GetObjectiveText(targetType, targetID)
             if obj and obj~='' then
-                return CreateAtlasMarkup("|A:waypoint-mappin-minimap-untracked:0:0|a"..WoWTools_TextMixin:CN(obj))
+                return "|A:waypoint-mappin-minimap-untracked:0:0|a"..WoWTools_TextMixin:CN(obj)
             end
         end
     end

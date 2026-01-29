@@ -570,16 +570,9 @@ end
 
 --等级，颜色
     WoWTools_DataMixin:Hook('PlayerFrame_UpdateLevel', function()
-        if WoWTools_UnitMixin:UnitExists("player") then
-            local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit)
-            if effectiveLevel== GetMaxLevelForLatestExpansion() then
-                PlayerLevelText:SetText('')
-            --[[else
-                --PlayerLevelText:SetText(effectiveLevel)
-                local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-                PlayerLevelText:SetTextColor(r,g,b)--设置颜色]]
-            end
-        end
+        PlayerLevelText:SetAlpha(
+            UnitEffectiveLevel(PlayerFrame.unit or 'player')== GetMaxLevelForLatestExpansion() and 0 or 1
+        )
     end)
 
 

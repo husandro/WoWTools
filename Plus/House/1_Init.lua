@@ -371,6 +371,8 @@ local function Init_HousingTemplates()
         btn.indexLabel:SetText(btn.GetElementDataIndex and btn:GetElementDataIndex() or '')
     end)
 
+    Init_HousingTemplates=function()end
+end
 
 
     --[[WoWTools_DataMixin:Hook(HousingCatalogCategoryMixin, 'Init', function(frame, categoryInfo)
@@ -378,8 +380,6 @@ local function Init_HousingTemplates()
         for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
     end)]]
 
-    Init_HousingTemplates=function()end
-end
 
 
 
@@ -400,12 +400,15 @@ end
 
 
 
-local function Add_label(frame, name, layoutIndex)
+local function Add_label(frame, name, layoutIndex, text)
     frame.TextContainer[name]= frame.TextContainer:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
     frame.TextContainer[name]:SetJustifyH('LEFT')
     frame.TextContainer[name]:SetHeight(0)
     frame.TextContainer[name].layoutIndex= layoutIndex
     frame.TextContainer[name].expand= true
+    if text then
+        frame.TextContainer[name]:SetText(text)
+    end
     frame.TextContainer:AddLayoutChildren(frame.TextContainer[name])
 end
 
@@ -427,12 +430,21 @@ local function Init_HousingModelPreview()
         for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
             layoutIndex= math.max(label.layoutIndex or 0, layoutIndex)
         end
+--来源
         Add_label(frame, 'TrackingObjectiveText', layoutIndex+1)
+--关键词
         Add_label(frame, 'TagsText', layoutIndex+2)
+--室内，外
+        Add_label(frame, 'InDoorsText', layoutIndex+3, '|A:house-room-limit-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室内' or HOUSING_CATALOG_FILTERS_INDOORS))
+        Add_label(frame, 'OutDoorsText', layoutIndex+4, '|A:house-outdoor-budget-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS))
     end)
-
+ 
 
     local function Set_EntryInfo(frame, entryInfo)
+        if not frame:IsVisible() then
+            return
+        end
+
         entryInfo= entryInfo or frame.catalogEntryInfo
 
         local obj, tag, r,g,b
@@ -444,18 +456,20 @@ local function Init_HousingModelPreview()
             end
             r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
         end
+--品质
         frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
-
 --关键词
         frame:SetTextOrHide(frame.TextContainer.TagsText, WoWTools_HouseMixin:GetTagsText(entryInfo))
-
+--室内，外
+        frame.TextContainer.InDoorsText:SetShown(entryInfo.isAllowedIndoors)
+        frame.TextContainer.OutDoorsText:SetShown(entryInfo.isAllowedOutdoors)
 --品质
         frame.NameContainer.Name:SetTextColor(r or 1, g or 1, b or 1)
 
-        if obj or tag then
-            frame.TextContainer:SetFixedWidth(frame.TextContainer:GetWidth())
-            frame.TextContainer:Layout()
-        end
+--设置，内容
+        frame.TextContainer:SetFixedWidth(frame.TextContainer:GetWidth())
+        frame.TextContainer:Layout()
+        
     end
 
     WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'PreviewCatalogEntryInfo', function(frame, entryInfo)
@@ -548,14 +562,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         GetValue= function() return not Save().disabled end,
         func= function()
             Save().disabled= not Save().disabled and true or nil
-            Init_HousingDashboard()
-            Init_HousingTemplates()
-            Init_HousingModelPreview()
         end,
         tooltip= WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
     })
 
-    if not Save().disable then
+    if not Save().disabled then
         Init_HousingDashboard()
         Init_HousingTemplates()
         Init_HousingModelPreview()
