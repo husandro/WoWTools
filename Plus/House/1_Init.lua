@@ -8,19 +8,22 @@ local function Save()
 end
 
 
-
+local function Set_Alpha(region)
+    region:EnableMouse(true)
+    region:SetScript('OnLeave', WoWToolsButton_OnLeave)
+    region:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    region:SetAlpha(region.alpha or 1)
+    function region:set_alpha()
+        self:SetAlpha(self:IsMouseOver() and  0.3 or self.alpha or 1)
+    end
+end
 
 local function Set_Texture(texture)
     if texture:IsObjectType('Texture') then
         texture:SetSize(16,16)
     end
-    texture:SetAlpha(0.7)
-    texture:EnableMouse(true)
-    texture:SetScript('OnLeave', WoWToolsButton_OnLeave)
-    function texture:set_alpha()
-        self:SetAlpha(self:IsMouseOver() and 0.2 or 0.7)
-    end
-    texture:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    texture.alpha=0.7
+    Set_Alpha(texture)
 end
 
 
@@ -396,6 +399,11 @@ local function Add_label(frame, name, layoutIndex, text)
         frame.TextContainer[name]:SetText(text)
     end
     frame.TextContainer:AddLayoutChildren(frame.TextContainer[name])
+
+    if name=='TagsText' then
+        frame.TextContainer[name].tooltip= WoWTools_DataMixin.onlyChinese and '标签' or format('CHAT_TAB_NAME', '')
+        Set_Alpha(frame.TextContainer[name])
+    end
 end
 
 
@@ -419,7 +427,7 @@ local function Set_EntryInfo(frame, entryInfo)
 
 --拥有数量
         local totalOwned = entryInfo.numPlaced + entryInfo.quantity + entryInfo.remainingRedeemable;
-	    local totalOwnedText = format('|A:house-decor-budget-icon:0:0|a%d |A:house-chest-icon:16:16|a %d', entryInfo.numPlaced, totalOwned)
+	    local totalOwnedText = format('|A:house-decor-budget-icon:16:16|a%d |A:house-chest-icon:16:16|a %d', entryInfo.numPlaced, totalOwned)
         frame:SetTextOrHide(frame.TextContainer.NumOwned, totalOwnedText);
 
 --关键词
@@ -452,27 +460,52 @@ local function Init_HousingModelPreview()
         return
     end
 
-    WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'OnLoad', function(frame)
+    
+
+    WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'OnLoad', function(self)
         local layoutIndex=3
-        for _, label in pairs({AddonList.ForceLoad:GetRegions()}) do
+        for _, label in pairs({self.TextContainer:GetRegions()}) do
             layoutIndex= math.max(label.layoutIndex or 0, layoutIndex)
         end
 --来源
-        Add_label(frame, 'TrackingObjectiveText', layoutIndex+1)
+        Add_label(self, 'TrackingObjectiveText', layoutIndex+1)
 --关键词
-        Add_label(frame, 'TagsText', layoutIndex+2)
+        Add_label(self, 'TagsText', layoutIndex+2)
 --室内，外
-        Add_label(frame, 'InDoorsText', layoutIndex+3, '|A:house-room-limit-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室内' or HOUSING_CATALOG_FILTERS_INDOORS))
-        Add_label(frame, 'OutDoorsText', layoutIndex+4, '|A:house-outdoor-budget-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS))
+        Add_label(self, 'InDoorsText', layoutIndex+3, '|A:house-room-limit-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室内' or HOUSING_CATALOG_FILTERS_INDOORS))
+        Add_label(self, 'OutDoorsText', layoutIndex+4, '|A:house-outdoor-budget-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS))
+    end)
+
+    WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'PreviewCatalogEntryInfo', function(self, entryInfo)
+        Set_EntryInfo(self, entryInfo)
+        C_Timer.After(1, function() Set_EntryInfo(self) end)
     end)
 
 
+    local frame= HousingModelPreviewFrame
+    if frame then
+        local layoutIndex=3
+        for _, label in pairs({frame.ModelPreview.TextContainer:GetRegions()}) do
+            layoutIndex= math.max(label.layoutIndex or 0, layoutIndex)
+        end
+--来源
+        Add_label(frame.ModelPreview, 'TrackingObjectiveText', layoutIndex+1)
+--关键词
+        Add_label(frame.ModelPreview, 'TagsText', layoutIndex+2)
+--室内，外
+        Add_label(frame.ModelPreview, 'InDoorsText', layoutIndex+3, '|A:house-room-limit-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室内' or HOUSING_CATALOG_FILTERS_INDOORS))
+        Add_label(frame.ModelPreview, 'OutDoorsText', layoutIndex+4, '|A:house-outdoor-budget-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS))
+
+        WoWTools_DataMixin:Hook(frame.ModelPreview, 'PreviewCatalogEntryInfo', function(self, entryInfo)
+            Set_EntryInfo(self, entryInfo)
+            C_Timer.After(1, function() Set_EntryInfo(self) end)
+        end)
+    end
 
 
-    WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'PreviewCatalogEntryInfo', function(frame, entryInfo)
-        Set_EntryInfo(frame, entryInfo)
-        C_Timer.After(1, function() Set_EntryInfo(frame) end)
-    end)
+
+
+    
 
     Init_HousingModelPreview=function()end
 end
