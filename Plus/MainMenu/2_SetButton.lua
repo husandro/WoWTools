@@ -120,10 +120,12 @@ local function Set_Alpha()
         local btn= _G[name]
         if btn then
             if not IsHookAlpha then
-                btn:HookScript('OnEnter', function(...) Set_MicroButton_OnEnter_Alpha(...) end)
-                btn:HookScript('OnLeave', function(...) Set_MicroButton_OnLeave_Alpha(...) end)
+                btn:HookScript('OnEnter', Set_MicroButton_OnEnter_Alpha)
+                btn:HookScript('OnLeave', Set_MicroButton_OnLeave_Alpha)
             end
             Set_MicroButton_OnLeave_Alpha(btn)
+
+            WoWTools_MainMenuMixin:SetNotificationOverlay(btn)
         end
     end
 
@@ -131,8 +133,8 @@ local function Set_Alpha()
         local btn= _G[name]
         if btn then
             if not IsHookAlpha then
-                btn:HookScript('OnEnter', function(...) Set_Bag_OnEnter_Alpha(...) end)
-                btn:HookScript('OnLeave', function(...) Set_Bag_OnLeave_Alpha(...) end)
+                btn:HookScript('OnEnter', Set_Bag_OnEnter_Alpha)
+                btn:HookScript('OnLeave', Set_Bag_OnLeave_Alpha)
                 WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0)
             end
             Set_Bag_OnLeave_Alpha(btn)

@@ -9,7 +9,7 @@ local function Init()
     local frame= CreateFrame('Frame')
 
     frame.Text= WoWTools_LabelMixin:Create(AchievementMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
-    frame.Text:SetPoint('TOP', AchievementMicroButton, 0,  -3)
+    frame.Text:SetPoint('BOTTOM', AchievementMicroButton, 0,  3)
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
 
     function frame:settings()

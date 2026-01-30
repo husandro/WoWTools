@@ -47,7 +47,8 @@ local function Init()
     local frame= CreateFrame('Frame')
 
     frame.Text= WoWTools_LabelMixin:Create(EJMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
-    frame.Text:SetPoint('TOP', EJMicroButton, 0,  -3)
+    --frame.Text:SetPoint('TOP', EJMicroButton, 0,  -3)
+    frame.Text:SetPoint('BOTTOM', EJMicroButton, 0,  3)
 
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
 

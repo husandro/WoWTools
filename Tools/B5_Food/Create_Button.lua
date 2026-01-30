@@ -295,13 +295,14 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
         table.insert(new, 1, itemID)
     end
 
+
+
     for index, itemID in pairs(new) do
         local b= _G[Buttons[index]] or Create_Button(index)--创建
         b.itemID= itemID
         b:settings()
         b:set_attribute()
         b:set_point()
-        btn.Background:SetPoint('LEFT', b, -1, 1)
 
         if not b:IsShown() then
             b:set_event()
@@ -310,16 +311,17 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     end
 
     local num= #new
-    btn.Background:SetPoint('TOP', btn, 1, 1)
     for i=Save().numLine, num, Save().numLine do
         local b= _G[Buttons[i]]
         if b then
             b:ClearAllPoints()
             b:SetPoint('BOTTOM', _G[Buttons[i-Save().numLine]] or btn, 'TOP')
-            btn.Background:SetPoint('TOP', b, 1, 1)
         end
     end
-    --btn.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[num-1]] or btn, -1, -1)
+
+    --btn.Background:SetPoint('BOTTOMRIGHT', 1, -1)
+    btn.Background:SetPoint('TOP',_G[Buttons[num]] or btn, 0, 1)
+    btn.Background:SetPoint('LEFT', _G[Buttons[Save().numLine-1]] or _G[Buttons[num]] or btn, -1, 0)
 
     for i= num+1 , #Buttons do
         _G[Buttons[i]]:SetShown(false)

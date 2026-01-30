@@ -111,9 +111,7 @@ local function Init()
         isColor=true,
         alpha= Save().bgAlpha or 0.5,
         point=function(bg)
-            bg:SetPoint('BOTTOMRIGHT', 1 , 1)
-            bg:SetPoint('TOP', btn, 1 , 1)
-            bg:SetPoint('LEFT', btn, -1 , -1)
+           bg:SetPoint('BOTTOMRIGHT', 1, -1)
         end,
     })
     function btn:set_background()

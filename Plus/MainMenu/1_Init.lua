@@ -13,13 +13,8 @@ local Category, Layout
 
 
 
-
-
-
-
-
 local function Init_Options()--初始, 选项
-    WoWTools_PanelMixin:Header(Layout, 
+    WoWTools_PanelMixin:Header(Layout,
         (Save().disabled and '|cff828282' or '')
         ..'1) Plus'
     )
@@ -144,33 +139,58 @@ end
 
 
 
-local function Init()
-    Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-        name= WoWTools_MainMenuMixin.addName,
-        disabled= Save().disabled and not Save().frameratePlus,
-    })
 
-    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+
+
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if arg1== 'WoWTools' then
+
+        WoWToolsSave['Plus_MainMenu']= WoWToolsSave['Plus_MainMenu'] or {
+                                                                        plus=true,
+                                                                        size=10,
+                                                                        enabledMainMenuAlpha= true,
+                                                                        mainMenuAlphaValue=0.7,
+                                                                    }
+
+        WoWTools_MainMenuMixin.addName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL, 'Plus'))
+
+        Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+            name= WoWTools_MainMenuMixin.addName,
+            disabled= Save().disabled and not Save().frameratePlus,
+        })
+
+
+        if not WoWToolsSave['Plus_MainMenu'].disabled then
+            WoWTools_MainMenuMixin:Settings()
+            WoWTools_MainMenuMixin:Init_Character()--角色
+            WoWTools_MainMenuMixin:Init_Professions()--专业
+            WoWTools_MainMenuMixin:Init_Talent()--天赋
+            WoWTools_MainMenuMixin:Init_Achievement()--成就
+            WoWTools_MainMenuMixin:Init_Quest()--任务
+            WoWTools_MainMenuMixin:Init_Guild()--公会
+            WoWTools_MainMenuMixin:Init_LFD()--地下城查找器
+            WoWTools_MainMenuMixin:Init_Collections()--收藏
+            WoWTools_MainMenuMixin:Init_EJ()--冒险指南
+            WoWTools_MainMenuMixin:Init_Store()--商店
+            WoWTools_MainMenuMixin:Init_Help()--帮助
+            WoWTools_MainMenuMixin:Init_Bag()--背包
+            --WoWTools_MainMenuMixin:HousingMicro()--住宅信息板
+        end
+
+        WoWTools_MainMenuMixin:Init_Framerate_Plus()--系统，fts
+
+        if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+            Init_Options()
+            self:SetScript('OnEvent', nil)
+            self:UnregisterEvent(event)
+        end
+
+    elseif arg1=='Blizzard_Settings' then
         Init_Options()
-    else
-        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-            if arg1=='Blizzard_Settings' then
-                Init_Options()
-                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-            end
-        end)
+        self:SetScript('OnEvent', nil)
+        self:UnregisterEvent(event)
     end
-
-    Init=function()end
-end
-
-
-
-
-
-
-
-function WoWTools_MainMenuMixin:Init_Options()
-    Init()
-end
-
+end)

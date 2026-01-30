@@ -14,10 +14,11 @@ local function Init()
     local frame= CreateFrame('Frame')
 
     frame.Text= WoWTools_LabelMixin:Create(StoreMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
-    frame.Text:SetPoint('TOP', StoreMicroButton, 0,  -3)
+    frame.Text:SetPoint('BOTTOM', StoreMicroButton, 0, 3)
 
     frame.Text2= WoWTools_LabelMixin:Create(StoreMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
-    frame.Text2:SetPoint('BOTTOM', StoreMicroButton, 0, 3)
+    frame.Text2:SetPoint('TOP', StoreMicroButton, 0,  -3)
+
 
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text2)

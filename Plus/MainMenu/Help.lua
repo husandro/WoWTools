@@ -139,7 +139,8 @@ local function Init()
         MainMenuMicroButton.NotificationOverlay:ClearAllPoints()
         MainMenuMicroButton.NotificationOverlay:SetSize(1,1)
         MainMenuMicroButton.NotificationOverlay:SetPoint('CENTER', MainMenuMicroButton, 0,4)
-        MainMenuMicroButton.NotificationOverlay:SetAlpha(0.7)
+        WoWTools_MainMenuMixin:SetNotificationOverlay(MainMenuMicroButton)
+        --MainMenuMicroButton.NotificationOverlay:SetAlpha(0.5)
     end
 
     Init=function()end

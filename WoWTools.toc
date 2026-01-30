@@ -435,10 +435,9 @@ Plus\Target\questFrame.lua
 ##Plus\Target\isMeFrame.lua
 ##Plus\Target\numFrame.lua
 ##主菜单，增强
-Plus\MainMenu\0_Init.lua
-Plus\MainMenu\1_Options.lua
-Plus\MainMenu\2_Setings.lua
-Plus\MainMenu\3_Framerate.lua
+Plus\MainMenu\0_MainMenuMixin.lua
+Plus\MainMenu\1_Init.lua
+Plus\MainMenu\2_SetButton.lua
 Plus\MainMenu\Achievement.lua
 Plus\MainMenu\Bag.lua
 Plus\MainMenu\Character.lua
@@ -451,7 +450,9 @@ Plus\MainMenu\PlayerSpells.lua
 Plus\MainMenu\Professions.lua
 Plus\MainMenu\Quest.lua
 Plus\MainMenu\Store.lua
+Plus\MainMenu\z_Framerate.lua
 ##Plus\MainMenu\HousingMicro.lua
+
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
 Plus\Cursor\1_Init.lua
 Plus\Cursor\2_Blizzard_Settings.lua

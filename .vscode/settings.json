@@ -2970,6 +2970,7 @@
         "missing-parameter",
         "redundant-parameter",
         "inject-field",
-        "undefined-field"
+        "undefined-field",
+        "param-type-mismatch"
     ],
 }
