@@ -335,6 +335,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
             WoWTools_DataMixin.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE)
         )
     end
+
     IsChecking=nil
 end
 
