@@ -131,6 +131,10 @@ function WoWTools_MoveMixin.Frames:QuestFrame()
         end
     end
 
+    QuestProgressScrollChildFrame:SetPoint('RIGHT')
+    QuestProgressTitleText:SetPoint('RIGHT', -12, 0)
+    QuestProgressText:SetPoint('RIGHT', -12, 0)
+
     self:Setup(QuestFrame, {
         minW=164,
         minH=128,
