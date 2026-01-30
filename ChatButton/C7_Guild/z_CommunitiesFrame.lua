@@ -66,7 +66,7 @@ end
 
 
 
-local COMMUNITIES_DELETE_CONFIRM_STRING= COMMUNITIES_DELETE_CONFIRM_STRING
+--local COMMUNITIES_DELETE_CONFIRM_STRING= COMMUNITIES_DELETE_CONFIRM_STRING
 --公会，社区，在线人数
 local function Init()
     WoWTools_DataMixin:Hook(CommunitiesListEntryMixin, 'Init', function(btn, elementData)

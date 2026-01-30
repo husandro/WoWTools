@@ -362,8 +362,7 @@ local function Init()
             if focusedTable.GetFrameLayoutType then
                 text= focusedTable:GetFrameLayoutType()
             elseif focusedTable.GetObjectType then
-                WoWTools_DataMixin:Info(focusedTable)
-                
+                --WoWTools_DataMixin:Info(focusedTable)
                 text= focusedTable:GetObjectType()
                 if not canaccessvalue(text) then
                     text= nil
