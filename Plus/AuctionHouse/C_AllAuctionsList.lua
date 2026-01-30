@@ -1,6 +1,3 @@
-if WoWTools_AuctionHouseMixin.disabled then
-    return
-end
 --所有，出售物品, 列表
 
 
@@ -68,7 +65,7 @@ local function Init_Cancel_Button()
         end)
         if tab[1] and tab[1].auctionID then
             local auctionID= tab[1].auctionID
-            local itemLink, itemID, isPet = WoWTools_AuctionHouseMixin:GetItemLink(tab[1])
+            local itemLink, itemID, _, isPet = WoWTools_AuctionHouseMixin:GetItemLink(tab[1])
             return auctionID, itemLink, itemID, isPet
         end
     end

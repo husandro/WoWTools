@@ -1,13 +1,3 @@
---拍卖行, 受限模式
-if WoWTools_AuctionHouseMixin.disabled then
-    return
-end
-
-
-
-
-
-
 local function Save()
     return WoWToolsSave['Plus_AuctionHouse'] or {}
 end

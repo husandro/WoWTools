@@ -15,6 +15,7 @@ function WoWTools_TextureMixin.Events:Blizzard_HousingCornerstone()
 
     self:SetButton(HousingCornerstonePurchaseFrameCloseButton)
     self:SetNineSlice(HousingCornerstonePurchaseFrame.MoneyFrameBackdrop)
+    self:SetUIButton(HousingCornerstonePurchaseFrame.BuyButton)
 
     self:SetButton(HousingCornerstoneHouseInfoFrameCloseButton)
     self:SetAlphaColor(HousingCornerstoneHouseInfoFrame.GearDropdown.Icon, true)

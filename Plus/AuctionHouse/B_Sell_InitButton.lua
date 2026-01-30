@@ -1,6 +1,3 @@
-if WoWTools_AuctionHouseMixin.disabled then
-    return
-end
 --拍卖行
 
 local function Save()

@@ -2947,7 +2947,8 @@
         "HOUSING_DECOR_OWNED_ICON_FMT",
         "QuestFrameCompleteButton",
         "QuestProgressScrollChildFrame",
-        "QuestProgressTitleText"
+        "QuestProgressTitleText",
+        "AuctionHouseItemListMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

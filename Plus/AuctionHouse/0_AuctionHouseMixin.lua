@@ -21,9 +21,9 @@ function WoWTools_AuctionHouseMixin:GetItemLink(rowData)
         itemLink= WoWTools_ItemMixin:GetLink(itemID)
     end
     local battlePetSpeciesID= rowData.battlePetSpeciesID or (itemKey and itemKey.battlePetSpeciesID) or 0
-    local isPet= battlePetSpeciesID>0
+    --local isPet= battlePetSpeciesID>0
 
-    return itemLink, itemID, isPet
+    return itemLink, itemID, itemKey, battlePetSpeciesID
 end
 
 --显示模式
