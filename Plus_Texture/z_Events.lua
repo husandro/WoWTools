@@ -331,6 +331,9 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
 
     self:SetEditBox(AuctionHouseFrame.SearchBar.SearchBox)
 
+    self:SetUIButton(AuctionHouseFrame.BuyDialog.OkayButton)
+    self:SetFrame(AuctionHouseFrame.BuyDialog.Border, {alpha=1})
+
 --出售, 商品
     self:SetButton(AuctionHouseFrame.CommoditiesSellFrame.PostButton, {alpha=1})
     self:SetNineSlice(AuctionHouseFrame.CommoditiesSellList)

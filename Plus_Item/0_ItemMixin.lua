@@ -434,6 +434,7 @@ end
 
 
 --GetButtonOverlayQualityColor {itemID, itemLocation}
+--ColorManager.GetColorDataForItemQuality
 function WoWTools_ItemMixin:GetColor(quality, tab)
     tab= tab or {}
 
@@ -448,7 +449,7 @@ function WoWTools_ItemMixin:GetColor(quality, tab)
         or (itemLocation and C_Item.GetItemQuality(itemLocation))
         or 1
     --local color= ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[Enum.ItemQuality.Common]
-    local color= C_ColorOverrides.GetColorForQuality(quality) or C_ColorOverrides.GetColorForQuality(Enum.ItemQuality.Common)
+    local color= C_ColorOverrides.GetColorForQuality(quality) or C_ColorOverrides.GetColorForQuality(Enum.ItemQuality.Common) or HIGHLIGHT_FONT_COLOR
     if text then
         return color:WrapTextInColorCode(tab.text)
     elseif texture then

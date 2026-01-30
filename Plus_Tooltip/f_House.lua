@@ -39,7 +39,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
             entryInfo.isAllowedOutdoors and  NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS)..'|A:house-outdoor-budget-icon:0:0|a'
         )
     end
-
+--无法被摧毁
     if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
         tooltip:AddLine(
             '|cnGREEN_FONT_COLOR:|A:Objective-Fail:0:0|a'
