@@ -71,7 +71,7 @@ local function Craete_Frame(frame)
     end)
 
     frame.classFrame:SetScript('OnHide', function(self)
-        self:ClearAllPoints()
+        self:UnregisterAllEvents()
     end)
 
     frame.classFrame:SetScript('OnEvent', function(self)
@@ -80,8 +80,6 @@ local function Craete_Frame(frame)
             self:set_settings()
         end)
     end)
-
-    frame.classFrame:set_settings()
 end
 
 
@@ -105,9 +103,8 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
 
     if not frame.classFrame then
         Craete_Frame(frame)
-    else
-        frame.classFrame:set_settings()
     end
+    frame.classFrame:set_settings()
 
     local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
 
