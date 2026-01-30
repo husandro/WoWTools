@@ -1092,11 +1092,11 @@ local function Init()
 
 
 	TrackButton:settings()
-	C_Timer.After(2, function()
+	--[[C_Timer.After(2, function()
 		if WoWTools_ChineseMixin then
 			TrackButton:settings()
 		end
-	end)
+	end)]]
 
 
 	WoWTools_DataMixin:Hook(TokenFrame, 'Update', function()

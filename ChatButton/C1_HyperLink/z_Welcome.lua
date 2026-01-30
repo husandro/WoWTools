@@ -27,7 +27,7 @@ local function Init()
     end
 
     EventRegistry:RegisterFrameEventAndCallback("CHAT_MSG_SYSTEM", function(_, text)
-        if not text then
+        if not canaccessvalue(text) or not text then
             return
         end
 

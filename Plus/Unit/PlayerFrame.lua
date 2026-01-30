@@ -361,8 +361,10 @@ local function Create_instanceFrame(frame)
                 self:RegisterEvent('CHAT_MSG_SYSTEM')
             end
             self:set_settings()--副本, 地下城，指示
-        elseif arg1 and (arg1:find(self.dungeonDifficultyStr) or arg1:find(self.raidDifficultyStr) or arg1:find(self.legacyRaidDifficultyStr)) then
-            self:set_settings()--副本, 地下城，指示
+        elseif canaccessvalue(arg1) and arg1 then
+            if arg1:find(self.dungeonDifficultyStr) or arg1:find(self.raidDifficultyStr) or arg1:find(self.legacyRaidDifficultyStr) then
+                self:set_settings()--副本, 地下城，指示
+            end
         end
     end)
 

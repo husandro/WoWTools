@@ -139,26 +139,19 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
 --专精图标
     local specTable = itemLink and C_Item.GetItemSpecInfo(itemLink)
     if specTable and #specTable>0 then
-        local player=''
+        
         local other=''
         local otherTab={}
 
         for _, specID in pairs(specTable) do
             local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
-            if classFile and icon2 then
-
-
-                if WoWTools_DataMixin.Player.Class==classFile then
-                    player=player..'|T'..icon2..':'..self.iconSize..'|t'
-
-                elseif not otherTab[classFile] then
-                    other= other..(WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile) or '')
-                end
+            if classFile and icon2 and not otherTab[classFile] then
+                other= other..(WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile) or '')
+                otherTab[classFile]= true
             end
         end
-        otherTab=nil
 
-        tooltip:AddDoubleLine(player or ' ', other)
+        tooltip:AddLine(other, nil, nil, nil, true)
     end
 
     return textLeft, text2Left, portrait
@@ -448,7 +441,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         return
     end
 
- 
+
     local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID, setID =  C_Item.GetItemInfo(itemLink or itemID)
     itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
 

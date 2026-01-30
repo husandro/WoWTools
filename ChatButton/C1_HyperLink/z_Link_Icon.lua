@@ -478,13 +478,13 @@ local function Perksactivity(link)
 
     local t=link
 --汉化
-    local info= WoWTools_ChineseMixin and WoWTools_ChineseMixin:GetPerksActivityInfo(tonumber(perksActivityID))
-    if info and info[1] then
-        t= t:gsub(name, info[1])
+    local cnName= WoWTools_TextMixin:CN(name)
+    if cnName and name~=cnName then
+        t= t:gsub('|h%[(.+)]|h', '|h['..cnName..']|h')
     end
 
 --是否完成
-    info= C_PerksActivities.GetPerksActivityInfo(perksActivityID)
+    local info= C_PerksActivities.GetPerksActivityInfo(perksActivityID)
     if info then
         t= t..Get_CompletedIcon(info.completed)
     end

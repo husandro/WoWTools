@@ -31,7 +31,7 @@ end
 local rollText= WoWTools_TextMixin:Magic(RANDOM_ROLL_RESULT)--"%s掷出%d（%d-%d）";
 
 local function setCHAT_MSG_SYSTEM(text)
-    if not text then
+    if not canaccessvalue(text) or not text then
         return
     end
     local name, roll, minText, maxText=text:match(rollText)

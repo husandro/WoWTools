@@ -184,7 +184,7 @@ local function Init()
 
 --公会创立，信息
         elseif event=='CHAT_MSG_SYSTEM' then
-            if arg1 and arg1:find(G_GUILD_INFO_TEMPLATE) then
+            if canaccessvalue(arg1) and arg1 and arg1:find(G_GUILD_INFO_TEMPLATE) then
                 WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text= arg1
                 self:UnregisterEvent(event)
             end

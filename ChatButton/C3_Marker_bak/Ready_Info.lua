@@ -136,7 +136,7 @@ local function Init()
 
     ReadyTipsButton:SetScript('OnEvent', function(self, event, arg1, arg2)
         if event=='CHAT_MSG_SYSTEM' then
-            if arg1== READY_CHECK_ALL_READY then--所有人都已准备就绪
+            if canaccessvalue(arg1) and arg1== READY_CHECK_ALL_READY then--所有人都已准备就绪
                 self:set_Hide()
             end
             return
