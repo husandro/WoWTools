@@ -22,6 +22,8 @@ end
 
 --任务
 function WoWTools_TextureMixin.Frames:QuestFrame()
+    self:SetUIButton(QuestFrameGoodbyeButton)
+    self:SetUIButton(QuestFrameCompleteButton)
     self:SetUIButton(QuestFrameAcceptButton)
     self:SetUIButton(QuestFrameDeclineButton)
     self:HideFrame(QuestFrame)
