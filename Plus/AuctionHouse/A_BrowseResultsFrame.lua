@@ -216,7 +216,7 @@ local function Get_Item(btn)
 --幻化
     elseif C_Item.IsCosmeticItem(itemLink or itemID) then
         text= WoWTools_CollectionMixin:Item(itemID, nil, true)
-        stats= WoWTools_ItemMixin:GetCount(itemID, {notZero= true})
+        stats= (WoWTools_ItemMixin:GetCount(itemID, {notZero= true}) or '')..'|A:transmog-gearSlot-transmogrified-HL:0:0|a'
 
 --玩具,是否收集    
     elseif C_ToyBox.GetToyInfo(itemID) then
@@ -289,7 +289,7 @@ local function Create_Label(btn)
 end
 
 
-local function Load_Item(btn, itemKey)
+--[[local function Load_Item(btn, itemKey)
     if itemKey.itemID then--and not C_Item.IsItemDataCachedByID(itemKey.itemID) then
         ItemEventListener:AddCancelableCallback(itemKey.itemID, function()
             if btn.rowData and btn.rowData.itemKey and btn.rowData.itemKey.itemID==itemKey.itemID then
@@ -315,7 +315,7 @@ local function Set_BrowseResultsFrame(frame)
             Load_Item(btn, btn.rowData.itemKey)
         end
     end
-end
+end]]
 
 
 
@@ -390,7 +390,7 @@ local function Init()
         end)
     end)
 
-    WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
+    --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
    --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetDataProvider', Set_BrowseResultsFrame)
     --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
 
