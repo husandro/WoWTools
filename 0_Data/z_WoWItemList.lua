@@ -56,12 +56,13 @@ TypeTabs= {
     end,
     isItems=true,
     set_num=function(self, guid)
-        local num=0
         guid= guid or Frame.guid
-        local wowData= WoWTools_WoWDate[guid]
-        for _ in pairs(wowData and wowData.Item or {}) do
-            num=num+1
+
+        local num=0
+        if WoWTools_WoWDate[guid] and WoWTools_WoWDate[guid].Item then
+            num= CountTable(WoWTools_WoWDate[guid].Item)
         end
+
         self.Text:SetText(num>0 and num or '')
         if self.texture then
             self.texture:SetAlpha(num>0 and 1 or 0.3)
@@ -163,10 +164,11 @@ TypeTabs= {
     set_num=function(self, guid)
         local num=0
         guid= guid or Frame.guid
-        local wowData= WoWTools_WoWDate[guid]
-        for _ in pairs(wowData and wowData.Bank or {}) do
-            num=num+1
+
+        if WoWTools_WoWDate[guid] and WoWTools_WoWDate[guid].Bank then
+            num= CountTable(WoWTools_WoWDate[guid].Bank)
         end
+
         self.Text:SetText(num>0 and num or '')
         if self.texture then
             self.texture:SetAlpha(num>0 and 1 or 0.3)
@@ -245,10 +247,11 @@ TypeTabs= {
     set_num=function(self, guid)
         local num=0
         guid= guid or Frame.guid
-        local wowData= WoWTools_WoWDate[guid]
-        for _ in pairs(wowData and wowData.Currency or {}) do
-            num=num+1
+
+        if WoWTools_WoWDate[guid] and WoWTools_WoWDate[guid].Currency then
+            num= CountTable(WoWTools_WoWDate[guid].Currency)
         end
+
         self.Text:SetText(num>0 and num or '')
         if self.texture then
             self.texture:SetAlpha(num>0 and 1 or 0.3)
@@ -507,10 +510,12 @@ TypeTabs= {
     set_num=function(self, guid)
         local num=0
         guid= guid or Frame.guid
-        local wowData= WoWTools_WoWDate[guid]
-        for _ in pairs(wowData and wowData.Instance and wowData.Instance.ins or {}) do
-            num= num+1
+
+        if WoWTools_WoWDate[guid] and WoWTools_WoWDate[guid].Instance and WoWTools_WoWDate[guid].Instance.ins then
+            num= CountTable( WoWTools_WoWDate[guid].Instance.ins)
         end
+
+
         self.Text:SetText(num>0 and num or '')
         if self.texture then
             self.texture:SetAlpha(num>0 and 1 or 0.3)
@@ -570,10 +575,11 @@ TypeTabs= {
     set_num=function(self, guid)
         local num=0
         guid= guid or Frame.guid
-        local wowData= WoWTools_WoWDate[guid]
-        for _ in pairs(wowData and wowData.Rare and wowData.Rare.boss or {}) do
-            num= num+1
+
+        if WoWTools_WoWDate[guid] and WoWTools_WoWDate[guid].Rare and WoWTools_WoWDate[guid].Rare.Currency then
+            num= CountTable(WoWTools_WoWDate[guid].Rare.Currency)
         end
+
         self.Text:SetText(num>0 and num or '')
         if self.texture then
             self.texture:SetAlpha(num>0 and 1 or 0.3)
@@ -655,10 +661,11 @@ TypeTabs= {
     set_num=function(self, guid)
         local num=0
         guid= guid or Frame.guid
-        local wowData= WoWTools_WoWDate[guid]
-        for _ in pairs(wowData and wowData.Worldboss and wowData.Worldboss.boss or {}) do
-            num= num+1
+
+        if WoWTools_WoWDate[guid] and WoWTools_WoWDate[guid].Worldboss and WoWTools_WoWDate[guid].Worldboss.boss then
+            num= CountTable(WoWTools_WoWDate[guid].Worldboss.boss)
         end
+
         self.Text:SetText(num>0 and num or '')
         if self.texture then
             self.texture:SetAlpha(num>0 and 1 or 0.3)

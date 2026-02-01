@@ -543,11 +543,7 @@ local function Init_UseFrame()
 
     local function Get_TypeNum(t)
         t= t or frame.type
-        local num=0
-        for _ in pairs(SaveUse(t)) do
-            num= num+1
-        end
-        return num
+        return CountTable(SaveUse(t) or {})
     end
 
     local menu= CreateFrame("DropdownButton", nil, frame, "WowStyle1DropdownTemplate")

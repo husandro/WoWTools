@@ -857,10 +857,7 @@ local function Init_Menu(self, root)
 
 --数量
     sub:CreateSpacer()
-    num=0
-    for _ in pairs(Get_All_Objects()) do
-        num=num+1
-    end
+    num= CountTable(Get_All_Objects() or {})
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
             return Save().Icons.numLine or 1

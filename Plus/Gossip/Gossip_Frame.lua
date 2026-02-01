@@ -228,9 +228,8 @@ local function Init(isShow)
                     gossipNum
                 )
 
-                for _ in pairs(PlayerDataSave()) do
-                    n=n+1
-                end
+                n= CountTable(PlayerDataSave() or {})
+
             else
                 for gossipID, data in pairs(PlayerDataSave()) do
                     self.dataProvider:Insert({gossipID=gossipID, icon=data.icon, name=data.name or gossipID, hex=data.hex})
@@ -800,10 +799,8 @@ local function Init(isShow)
     List.System.Text= WoWTools_LabelMixin:Create(List.System)
     List.System.Text:SetPoint('CENTER')
     function List.System:set_num()--默认，自定义，列表        
-        local n=0
-        for _ in pairs(WoWTools_GossipMixin:Get_GossipData()) do
-            n= n+1
-        end
+        local n= CountTable(WoWTools_GossipMixin:Get_GossipData() or {})
+
         self:SetNormalTexture(0)
         self.Text:SetText(n)
         self.num=n

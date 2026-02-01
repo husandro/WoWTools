@@ -822,10 +822,7 @@ local function Init_Menu(self, root)
     end, {})
 
     root:CreateDivider()
-    num=0
-    for _ in pairs(Save().favorites) do
-        num= num+1
-    end
+    num= CountTable(Save().favorites or {})
 
     root:CreateButton(
         '|A:auctionhouse-icon-favorite:0:0|a'
@@ -840,11 +837,8 @@ local function Init_Menu(self, root)
     end)
 
 --清除左边
-    num= 0
-    for _ in pairs(Save().gemLeft) do
-        num= num+1
+    num= CountTable(Save().gemLeft or {})
 
-    end
     root:CreateButton(
          '|A:common-icon-rotateright:0:0|a'
          ..(WoWTools_DataMixin.onlyChinese and '清除左边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT))
@@ -857,10 +851,8 @@ local function Init_Menu(self, root)
     end)
 
 --清除上面
-    num= 0
-    for _ in pairs(Save().gemTop) do
-        num= num+1
-    end
+    num= CountTable(Save().gemTop or {})
+    
     root:CreateButton(
         '|A:bags-greenarrow:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '清除上面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP))
@@ -873,10 +865,8 @@ local function Init_Menu(self, root)
     end)
 
 --清除右边
-    num= 0
-    for _ in pairs(Save().gemRight) do
-        num= num+1
-    end
+    num= CountTable(Save().gemRight or {})
+    
     root:CreateButton(
          '|A:common-icon-rotateleft:0:0|a'
          ..(WoWTools_DataMixin.onlyChinese and '清除右边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT))

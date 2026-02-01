@@ -1,29 +1,41 @@
 
 WoWTools_AuctionHouseMixin= {}
 --物品Link
+--itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey [, restrictQualityToFilter])
 function WoWTools_AuctionHouseMixin:GetItemLink(rowData)
-    if not rowData then
+    local itemKey= rowData and rowData.itemKey
+
+    if not itemKey then
         return
     end
-    local itemKey= rowData.itemKey
 
     local itemLink= rowData.itemLink
-    local itemID= rowData.itemID or (itemKey and itemKey.itemID) or nil
+    local itemID= rowData.itemID or itemKey.itemID
+
     if not itemLink and rowData.auctionID then
-        local priceInfo = C_AuctionHouse.GetAuctionInfoByID(rowData.auctionID) or {}
-        itemLink= priceInfo.itemLink or priceInfo.battlePetLink
+        local priceInfo = C_AuctionHouse.GetAuctionInfoByID(rowData.auctionID)
+        if priceInfo then
+            itemLink= priceInfo.itemLink or priceInfo.battlePetLink
+        end
     end
-    if not itemLink and itemKey then
+
+    if not itemLink then
         local data= C_TooltipInfo.GetItemKey(itemKey.itemID, itemKey.itemLevel, itemKey.itemSuffix, C_AuctionHouse.GetItemKeyRequiredLevel(itemKey))
-        itemLink= data and data.hyperlink
+        if data then
+            itemLink= data.hyperlink
+        end
     end
+
     if not itemLink and itemID then
         itemLink= WoWTools_ItemMixin:GetLink(itemID)
     end
 
-    local battlePetSpeciesID= rowData.battlePetSpeciesID or (itemKey and itemKey.battlePetSpeciesID)
+    local battlePetSpeciesID= rowData.battlePetSpeciesID or itemKey.battlePetSpeciesID
+    if battlePetSpeciesID and battlePetSpeciesID<=0 then
+        battlePetSpeciesID= nil
+    end
 
-    return itemLink, itemID, itemKey, battlePetSpeciesID
+    return itemLink, itemID, battlePetSpeciesID
 end
 
 --显示模式

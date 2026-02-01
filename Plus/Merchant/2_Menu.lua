@@ -23,10 +23,7 @@ end
 --出售自定义
 local function Player_Sell_Menu(_, root)
     local num, sub, sub2
-    num=0
-    for _ in pairs(WoWToolsPlayerDate['SellBuyItems'].sell) do
-        num=num+1
-    end
+    num= CountTable(WoWToolsPlayerDate['SellBuyItems'].sell or {})
     sub=root:CreateCheckbox(
         '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM))
@@ -277,10 +274,7 @@ local function Init_Menu(self, root)
 
 
 --出售BOSS掉落
-    num=0
-    for _ in pairs(Save().bossItems) do
-        num=num+1
-    end
+    num= CountTable(Save().bossItems or {})
 
     sub=root:CreateCheckbox(
         '|A:bags-button-autosort-up:0:0|a'

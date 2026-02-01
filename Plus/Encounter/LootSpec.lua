@@ -87,9 +87,7 @@ local function Init_Menu(self, root)
     local classTab={}
     local classNum=0
     if SaveUse()[dungeonEncounterID] then
-        for _ in pairs(SaveUse()[dungeonEncounterID].class) do
-            classNum= classNum+1
-        end
+        classNum= CountTable(SaveUse()[dungeonEncounterID].class or {})
         classTab= SaveUse()[dungeonEncounterID].class
     end
 

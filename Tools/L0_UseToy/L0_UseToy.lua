@@ -367,10 +367,7 @@ local function Init_Menu(self, root)
 
 
 --还原
-    local all= 0
-    for _ in pairs(P_Items) do
-        all=all+1
-    end
+    local all= CountTable(P_Items or {})
     name= '|A:common-icon-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all
     sub2=sub:CreateButton(
         name,

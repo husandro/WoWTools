@@ -466,10 +466,7 @@ end
 local function Init_Menu(_, root)
     local sub, sub2
 --视频
-    local num=0
-    for _ in pairs(Save().movie) do
-        num=num+1
-    end
+    local num= CountTable(Save().movie or {})
 
     root= root:CreateButton(
         '|T0:0|t'..(WoWTools_DataMixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU),--..(num==0 and ' |cff626262' or ' ')..num,

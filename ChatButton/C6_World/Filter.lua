@@ -50,15 +50,9 @@ end
 local function Init_Filter_Menu(self, root)
     local sub, sub2, sub3
 
-    local filterNum=0
-    for _ in pairs(FilterTextTab) do
-        filterNum= filterNum+1
-    end
+    local filterNum= CountTable(FilterTextTab or {})
 
-    local filterPlayer=0
-    for _ in pairs(Save().myChatFilterPlayers) do
-        filterPlayer= filterPlayer+1
-    end
+    local filterPlayer= CountTable(Save().myChatFilterPlayers or {})
 
 
 

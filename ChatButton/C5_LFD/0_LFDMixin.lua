@@ -18,9 +18,7 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
     --pve
     for i=1, NUM_LE_LFG_CATEGORYS do
         if GetLFGQueueStats(i) then
-            for _ in pairs(GetLFGQueuedList(i) or {}) do
-                num= num+1
-            end
+            num= num+ CountTable(GetLFGQueuedList(i) or {})
         end
         if isLeavel then
             LeaveLFG(i)

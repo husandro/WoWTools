@@ -548,11 +548,8 @@ local function Init_Menu(self, root)
     local sub
 
 --过滤器
+    local num= CountTable(Save().filterSaveMoney or {})
     root:CreateDivider()
-    local num=0
-    for _ in pairs(Save().filterSaveMoney) do
-        num= num+1
-    end
     sub=root:CreateButton(
         (WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)
         ..'|r |cnGREEN_FONT_COLOR:#'..num,

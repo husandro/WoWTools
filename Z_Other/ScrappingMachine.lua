@@ -364,11 +364,7 @@ local function Init_Button()
     ItemsButton:SetPoint('TOPLEFT', ScrappingMachineFrame.ItemSlots, 'TOPRIGHT', 12, 0)
 
     function ItemsButton:get_num()
-        local n=0
-        for _ in pairs(Save().items) do
-            n=n+1
-        end
-        return n
+        return CountTable(Save().items or {})
     end
     function ItemsButton:settings()
         local num= self:get_num()

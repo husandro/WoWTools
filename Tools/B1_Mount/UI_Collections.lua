@@ -275,10 +275,7 @@ local function Create_Button(frame)
             if ID then
                 text= text and text..'|n' or ''
                 if mountType=='Floor' and type(ID)=='table' then
-                    local num=0
-                    for _ in pairs(ID) do
-                        num=num+1
-                    end
+                    local num=CountTable(ID)
                     if num >1 then
                         text=text..HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(num)
                     end

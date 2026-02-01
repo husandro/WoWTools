@@ -1,124 +1,148 @@
 
 local function Get_Item(btn)
     local text, stats
-    local itemLink, itemID, itemKey, battlePetSpeciesID= WoWTools_AuctionHouseMixin:GetItemLink(btn.rowData)
-  
-
-    if not itemLink or not itemID then
+    local rowData= btn:GetRowData()
+    if not rowData then
         return
     end
 
-        --local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey)
+    local itemLink, itemID, battlePetSpeciesID= WoWTools_AuctionHouseMixin:GetItemLink(rowData)
+    local itemKey= rowData.itemKey
+    local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)
+
+
+    if not itemLink or not itemID or not itemKeyInfo then
+        return
+    end
+
 --itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
     --local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)
     --if itemKeyInfo then
 
-        local classID= select(6, C_Item.GetItemInfoInstant(itemID))
+    local classID= select(6, C_Item.GetItemInfoInstant(itemID))
 
-        if C_Item.IsDecorItem(itemID) then
+    if C_Item.IsDecorItem(itemID) then
 
-            local entryInfo= C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink or itemID, true)
-            if entryInfo then
+        local entryInfo= C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink or itemID, true)
+        if entryInfo then
 --装饰放置成本
-                if entryInfo.placementCost then
-                    stats= format('|cffffffff%d|r|A:House-Decor-budget-icon:0:0|a', entryInfo.placementCost)
-                end
+            if entryInfo.placementCost then
+                stats= format('|cffffffff%d|r|A:House-Decor-budget-icon:0:0|a', entryInfo.placementCost)
+            end
 --室内, 室外
-                if entryInfo.isAllowedIndoors then
-                    stats= (stats or '')..'|A:house-room-limit-icon:0:0|a'
-                end
-                if entryInfo.isAllowedOutdoors then
-                    stats= (stats or '')..'|A:house-outdoor-budget-icon:0:0|a'
-                end
+            if entryInfo.isAllowedIndoors then
+                stats= (stats or '')..'|A:house-room-limit-icon:0:0|a'
+            end
+            if entryInfo.isAllowedOutdoors then
+                stats= (stats or '')..'|A:house-outdoor-budget-icon:0:0|a'
+            end
 
 --无法被摧毁
-                if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
-                    text= '|A:Objective-Fail:0:0|a'
-                end
+            if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
+                text= '|A:Objective-Fail:0:0|a'
+            end
 
 --XP
-                if entryInfo.firstAcquisitionBonus and entryInfo.firstAcquisitionBonus>0 then
-                     text= (text or '')..'|A:GarrMission_CurrencyIcon-Xp:0:0|a'
-                else--if entryInfo.showQuantity then
+            if entryInfo.firstAcquisitionBonus and entryInfo.firstAcquisitionBonus>0 then
+                    text= (text or '')..'|A:GarrMission_CurrencyIcon-Xp:0:0|a'
+            else--if entryInfo.showQuantity then
 --数量
-                    local num= (entryInfo.numPlace or 0) + (entryInfo.quality or 0)+ (entryInfo.remainingRedeemable or 0)
-                    text= num..'|A:house-chest-icon:0:0|a'
-                    if num==0 then
-                        text= DISABLED_FONT_COLOR:WrapTextInColorCode(num)
-                    end
+                local num= (entryInfo.numPlace or 0) + (entryInfo.quality or 0)+ (entryInfo.remainingRedeemable or 0)
+                text= num..'|A:house-chest-icon:0:0|a'
+                if num==0 then
+                    text= DISABLED_FONT_COLOR:WrapTextInColorCode(num)
                 end
             end
+        end
 
 --宠物
-        elseif battlePetSpeciesID and battlePetSpeciesID>0 then
-            local isCollectedAll
-            text, isCollectedAll= select(3, WoWTools_PetBattleMixin:Collected(battlePetSpeciesID, itemID, true))
-            if isCollectedAll then
-                text= '|A:common-icon-checkmark-yellow:0:0|a'
-            end
+    elseif itemKeyInfo.isPet then
+        local isCollectedAll
+        text, isCollectedAll= select(3, WoWTools_PetBattleMixin:Collected(itemKeyInfo.battlePetSpeciesID or battlePetSpeciesID, itemID, true))
+        if isCollectedAll then
+            text= '|A:common-icon-checkmark-yellow:0:0|a'
+        end
+
+    elseif itemKeyInfo.isEquipment then
+--物品，属性
+    for _, tab in pairs(WoWTools_ItemMixin:GetItemStats(itemLink)) do
+        stats= (stats and stats..PLAYER_LIST_DELIMITER or '')..tab.text
+    end
+--物品, 宝石插槽
+    local numSockets= C_Item.GetItemNumSockets(itemLink or itemID) or 0--MAX_NUM_SOCKETS
+    for n= 1, numSockets do
+        stats= '|A:socket-cogwheel-closed:0:0|a'..(stats or '')
+    end
 
 --显示, 宝石, 属性
-        elseif classID==3 then
-            local t1, t2= WoWTools_ItemMixin:SetGemStats(nil, itemLink)
-            if t1 then
-                text= t1..(t2 and PLAYER_LIST_DELIMITER..t2 or '')
-            end
+    elseif classID==3 then
+        local t1, t2= WoWTools_ItemMixin:SetGemStats(nil, itemLink)
+        if t1 then
+            text= t1..(t2 and PLAYER_LIST_DELIMITER..t2 or '')
+        end
 --玩具,是否收集    
-        elseif C_ToyBox.GetToyInfo(itemID) then
-            local isToy= select(2, WoWTools_CollectionMixin:Toy(itemID))
-            if isToy==true then
-                text= '|A:common-icon-checkmark-yellow:0:0|a'
-            elseif isToy==false then
-                text= '|A:QuestNormal:0:0|a'
-            end
+    elseif C_ToyBox.GetToyInfo(itemID) then
+        local isToy= select(2, WoWTools_CollectionMixin:Toy(itemID))
+        if isToy==true then
+            text= '|A:common-icon-checkmark-yellow:0:0|a'
+        elseif isToy==false then
+            text= '|A:QuestNormal:0:0|a'
         end
+    end
 
---物品，属性
-        for _, tab in pairs(WoWTools_ItemMixin:GetItemStats(itemLink) or {}) do
-            stats= (stats and stats..PLAYER_LIST_DELIMITER or '')..tab.text
-        end
---物品, 宝石插槽
-        local numSockets= C_Item.GetItemNumSockets(itemLink or itemID) or 0--MAX_NUM_SOCKETS
-        for n= 1, numSockets do
-            stats= '|A:socket-cogwheel-closed:0:0|a'..(stats or '')
-        end
 
 
 --物品是否收
-        local isCollectedText= WoWTools_CollectionMixin:Item(itemID, nil, true)
-        if isCollectedText then
-            text= WoWTools_CollectionMixin:Item(itemID, nil, true)..(text or '')
-        end
+    local isCollectedText= WoWTools_CollectionMixin:Item(itemID, nil, true)
+    if isCollectedText then
+        text= WoWTools_CollectionMixin:Item(itemID, nil, true)..(text or '')
+    end
 
 --坐骑
-        local isMountCollected= select(2, WoWTools_CollectionMixin:Mount(nil, itemID))
-        if isMountCollected~=nil then
-            if isMountCollected==true then
-                text= '|A:common-icon-checkmark-yellow:0:0|a'..(text or '')
-            elseif isMountCollected==false then
-                text= '|A:QuestNormal:0:0|a'..(text or '')
-            end
+    local isMountCollected= select(2, WoWTools_CollectionMixin:Mount(nil, itemID))
+    if isMountCollected~=nil then
+        if isMountCollected==true then
+            text= '|A:common-icon-checkmark-yellow:0:0|a'..(text or '')
+        elseif isMountCollected==false then
+            text= '|A:QuestNormal:0:0|a'..(text or '')
         end
+    end
 
 
-    --是否，学习
-        if not text then
-            local redInfo= WoWTools_ItemMixin:GetTooltip({
-                itemKey=itemKey,
-                red=true,
-                text={ITEM_SPELL_KNOWN},
-            })
-            if redInfo.text[ITEM_SPELL_KNOWN] then
-                text= '|A:common-icon-checkmark:0:0|a'
-            elseif redInfo.red then
-                text= '|A:worldquest-icon-firstaid:0:0|a'
-            else
-                text= '|A:Recurringavailablequesticon:0:0|a'
-            end
+--是否，学习
+    if not text then
+        local redInfo= WoWTools_ItemMixin:GetTooltip({
+            itemKey=itemKey,
+            red=true,
+            text={ITEM_SPELL_KNOWN},
+        })
+        if redInfo.text[ITEM_SPELL_KNOWN] then
+            text= '|A:common-icon-checkmark:0:0|a'
+        elseif redInfo.red then
+            text= '|A:worldquest-icon-firstaid:0:0|a'
+        else
+            text= '|A:Recurringavailablequesticon:0:0|a'
         end
+    end
 
     return text, stats
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function Set_Button(btn)
     local text, stats= Get_Item(btn)
@@ -156,7 +180,7 @@ end
 
 
 local function Load_Item(btn, itemKey)
-    if itemKey.itemID and not C_Item.IsItemDataCachedByID(itemKey.itemID) then
+    if itemKey.itemID then--and not C_Item.IsItemDataCachedByID(itemKey.itemID) then
         ItemEventListener:AddCancelableCallback(itemKey.itemID, function()
             if btn.rowData and btn.rowData.itemKey and btn.rowData.itemKey.itemID==itemKey.itemID then
                 Set_Button(btn)
@@ -241,10 +265,26 @@ local function Init()
         return
     end
 
+--AuctionHouseItemListMixin:Init()
 
-    WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
+    ScrollUtil.RegisterAlternateRowBehavior(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, function(btn)
+        local rowData= btn:GetRowData()
+        if not rowData then
+            return
+        end
+
+        if not btn.OwnerItemTexture then
+            Create_Label(btn)
+        end
+
+        ItemEventListener:AddCancelableCallback(rowData.itemKey.itemID, function()
+            Set_Button(btn)
+        end)
+    end)
+
+    --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
    --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetDataProvider', Set_BrowseResultsFrame)
-    WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
+    --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
 
     WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', Set_ItemBuyFrame)
     --WoWTools_DataMixin:Hook(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'SetDataProvider', Set_ItemBuyFrame)

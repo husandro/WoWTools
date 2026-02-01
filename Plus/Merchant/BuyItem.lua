@@ -608,10 +608,8 @@ local function Init()
 
 
     function BuyItemButton:set_text()--回购，数量，提示
-        local num= 0
-        for _ in pairs(WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID]) do
-            num= num +1
-        end
+        local num=  CountTable(WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID] or {})
+
         self.Text:SetText(not Save().notAutoBuy and num or '')
         self.texture:SetDesaturated(Save().notAutoBuy or num==0)
         return num

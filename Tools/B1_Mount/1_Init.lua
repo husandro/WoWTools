@@ -117,11 +117,7 @@ WoWTools_MountMixin={
 }
 
 function WoWTools_MountMixin:Get_Table_Num(mountType)--检测,表里的数量
-    local num= 0
-    for _ in pairs(WoWToolsPlayerDate['Tools_Mounts'][mountType] or {}) do
-        num=num+1
-    end
-    return num
+    return CountTable(WoWToolsPlayerDate['Tools_Mounts'][mountType] or {})
 end
 
 function WoWTools_MountMixin:P_Mouts_Tab()

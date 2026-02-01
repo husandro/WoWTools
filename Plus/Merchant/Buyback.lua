@@ -293,10 +293,8 @@ local function Init()
     BuybackButton.Text:SetPoint('BOTTOMRIGHT')
 
     function BuybackButton:set_text()--回购，数量，提示
-        local num= 0
-        for _ in pairs(WoWToolsPlayerDate['SellBuyItems'].noSell) do
-            num= num +1
-        end
+        local num= CountTable(WoWToolsPlayerDate['SellBuyItems'].noSell or {})
+
         self.Text:SetText(num>0 and num or '')
         self.texture:SetDesaturated(num==0)
         return num

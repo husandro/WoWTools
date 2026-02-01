@@ -557,18 +557,15 @@ local function Get_Info(tab)
             bottomLeftText= get_has_text(select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true)))
         elseif PlayerIsTimerunning() then
 
-            local stat= WoWTools_ItemMixin:GetItemStats(itemLink)
-            for i=1 ,4 do
-                if stat[i] then
-                    if i==1 then
-                        bottomLeftText= stat[i].text
-                    elseif i==2 then
-                        bottomRightText= stat[i].text
-                    elseif i==3 then
-                        topLeftText= stat[i].text
-                    elseif i==4 then
-                        topRightText= stat[i].text
-                    end
+            for i, stat in pairs(WoWTools_ItemMixin:GetItemStats(itemLink)) do
+                if i==1 then
+                    bottomLeftText= stat.text
+                elseif i==2 then
+                    bottomRightText= stat.text
+                elseif i==3 then
+                    topLeftText= stat.text
+                elseif i==4 then
+                    topRightText= stat.text
                 else
                     break
                 end

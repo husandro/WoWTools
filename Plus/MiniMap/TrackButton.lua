@@ -908,10 +908,8 @@ local function Init_Menu(self, root)--菜单
     end
 
 --areaPoiIDs
-    num=0
-    for _ in pairs(Save().areaPoiIDs) do
-        num= num+1
-    end
+    num= CountTable(Save().areaPoiIDs or {})
+
     sub=root:CreateButton(
         'AreaPoiID |cnGREEN_FONT_COLOR:#'..num,
     function()
@@ -942,10 +940,8 @@ local function Init_Menu(self, root)--菜单
     end
 
 --地图
-    num=0
-    for _ in pairs(Save().uiMapIDs) do
-        num= num+1
-    end
+    num= CountTable(Save().uiMapIDs or {})
+
     sub=root:CreateButton(
         (WoWTools_DataMixin.onlyChinese and '地图' or WORLD_MAP)..'|cnGREEN_FONT_COLOR:#'..num,
     function()

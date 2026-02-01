@@ -22,10 +22,8 @@ local function Init_Menu(self, root)
     local sub, num
 
 --快捷键
-    num=0
-    for _ in pairs(Save().fast) do
-        num=num+1
-    end
+    num= CountTable(Save().fast or {})
+
     sub=root:CreateCheckbox(
         (num==0 and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '快捷键列表 ' or 'Solution List ')
@@ -132,10 +130,8 @@ local function Init_Menu(self, root)
 
 
 --方案列表 Right
-    num=0
-    for _ in pairs(Save().buttons) do
-        num=num+1
-    end
+    num= CountTable(Save().buttons or {})
+
     sub=root:CreateCheckbox(
         (num==0 and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '方案列表 ' or 'Solution List ')

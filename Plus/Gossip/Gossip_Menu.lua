@@ -60,15 +60,11 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当选项只有一个时，自动对话' or 'When there is only one option, automatic dialogue.', nil, nil,nil, true)
     end)
 
-  
-    root:CreateDivider()
-
 
 --自定义,闲话
-    num=0
-    for _ in pairs(Save().gossipOption) do
-        num=num+1
-    end
+    root:CreateDivider()
+    num= CountTable(Save().gossipOption or {})
+
     sub=root:CreateButton(
         '|T0:0|t'
         ..(WoWTools_DataMixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG)),
@@ -103,13 +99,9 @@ local function Init_Menu(self, root)
 
 --对话替换
     --root:CreateDivider()
-    num, num2= 0, 0
-    for _ in pairs(WoWToolsPlayerDate['GossipTextIcon']) do
-        num=num+1
-    end
-    for _ in pairs(WoWTools_GossipMixin:Get_GossipData()) do
-        num2=num2+1
-    end
+    num= CountTable(WoWToolsPlayerDate['GossipTextIcon'] or {})
+    num2= CountTable(WoWTools_GossipMixin:Get_GossipData() or {})
+
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE))
         ..WoWTools_DataMixin.Icon.mid,
@@ -135,10 +127,8 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetRightText(sub)
 
 --默认
-    num=0
-    for _ in pairs(WoWTools_GossipMixin:Get_GossipData()) do
-        num= num+1
-    end
+    num= CountTable(WoWTools_GossipMixin:Get_GossipData() or {})
+    
     sub:CreateDivider()
     sub:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT),--..(num==0 and ' |cff626262' or ' ')..num,
@@ -152,10 +142,8 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetRightText(sub)
 
 --禁用NPC, 闲话,任务, 选项
-    num=0
-    for _ in pairs(Save().NPC) do
-        num=num+1
-    end
+    num= CountTable(Save().NPC or {})
+    
     sub=root:CreateButton(
         '|T0:0|t'..(WoWTools_DataMixin.onlyChinese and '禁用NPC' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, 'NPC')),--..(num==0 and ' |cff626262' or ' ')..num,
     function()
@@ -190,10 +178,8 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 --PlayerChoiceFrame
-    num=0
-    for _ in pairs(Save().choice) do
-        num=num+1
-    end
+    num= CountTable(Save().choice or {})
+    
     sub=root:CreateButton(
         '|T0:0|t'..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE),--..(num==0 and ' |cff626262' or ' ')..num,
     function()

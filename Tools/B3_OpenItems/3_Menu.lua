@@ -218,13 +218,8 @@ local function Init_Menu(self, root)
     end
     root:CreateDivider()
 
-    local no, use= 0, 0
-    for _ in pairs(Save().no) do
-        no=no+1
-    end
-    for _ in pairs(Save().use) do
-        use=use+1
-    end
+    local no= CountTable(Save().no or {})
+    local use= CountTable(Save().use or {})
 
 --自定义禁用列表
     sub= root:CreateButton(

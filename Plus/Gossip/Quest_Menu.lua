@@ -43,10 +43,7 @@ local function Init_Menu(self, root)
 
 --自动:选择奖励
     root:CreateDivider()
-    num=0
-    for _ in pairs(Save().questRewardCheck) do
-        num=num+1
-    end
+    num= CountTable(Save().questRewardCheck or {})
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, CHOOSE)))
         ..(num==0 and ' |cff626262' or ' ')
@@ -85,10 +82,8 @@ local function Init_Menu(self, root)
 
 
 --自定义任务
-    num=0
-    for _ in pairs(Save().questOption) do
-        num=num+1
-    end
+    num= CountTable(Save().questOption or {})
+    
     sub=root:CreateButton(
         '     '..(WoWTools_DataMixin.onlyChinese and '自定义任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, QUESTS_LABEL))
         ..(num==0 and ' |cff626262' or ' ')

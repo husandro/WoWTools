@@ -128,11 +128,7 @@ local function Init(btn)
     function btn:set_tooltip()
         self:set_owner()
 
-        local find
-        find=0
-        for _ in pairs(WoWTools_WorldMixin:Get_FilterTextTab()) do
-            find= find+1
-        end
+        local find= CountTable(WoWTools_WorldMixin:Get_FilterTextTab() or {})
 
         GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM))..' #'..find, WoWTools_TextMixin:GetEnabeleDisable(Save().myChatFilter))
         GameTooltip:AddLine(' ')

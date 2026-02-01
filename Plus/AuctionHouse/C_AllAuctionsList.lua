@@ -65,8 +65,8 @@ local function Init_Cancel_Button()
         end)
         if tab[1] and tab[1].auctionID then
             local auctionID= tab[1].auctionID
-            local itemLink, itemID, _, isPet = WoWTools_AuctionHouseMixin:GetItemLink(tab[1])
-            isPet= isPet and isPet>0
+            local itemLink, itemID, battlePetSpeciesID = WoWTools_AuctionHouseMixin:GetItemLink(tab[1])
+            local isPet= battlePetSpeciesID and true or false
             return auctionID, itemLink, itemID, isPet
         end
     end

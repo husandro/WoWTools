@@ -99,50 +99,62 @@ end
 
 
 
+--value zPanel.lua  WoWTools_DataMixin.StausText 
+--[ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '急' or WoWTools_TextMixin:sub(ITEM_MOD_HASTE_RATING_SHORT, 1, 2, true),
+local StatTab={
+    {value='ITEM_MOD_CRIT_RATING_SHORT', index=1},--爆击
+    {value='ITEM_MOD_HASTE_RATING_SHORT', index=1},--急速
+    {value='ITEM_MOD_MASTERY_RATING_SHORT', index=1},--精通
+    {value='ITEM_MOD_VERSATILITY', index=1},--全能
+
+    {value='ITEM_MOD_CR_AVOIDANCE_SHORT', index=2},--闪避
+    {value='ITEM_MOD_CR_LIFESTEAL_SHORT', index=2},--吸血
+    {value='ITEM_MOD_CR_SPEED_SHORT', index=2},--速度
+
+    {value='ITEM_MOD_BLOCK_RATING_SHORT', index=3},--格挡
+    {value='ITEM_MOD_ATTACK_POWER_SHORT', index=3},--攻击强度
+    {value='ITEM_MOD_EXTRA_ARMOR_SHORT', index=3},--护甲
+
+    {value='ITEM_MOD_MODIFIED_CRAFTING_STAT_1', index=4},--随机属性1
+    {value='ITEM_MOD_MODIFIED_CRAFTING_STAT_2', index=4},--随机属性2
+}
 
 
+function WoWTools_ItemMixin:GetItemStats(itemLink)--取得，物品，次属性，表
+    local info= itemLink and C_Item.GetItemStats(itemLink)
 
-
-function WoWTools_ItemMixin:GetItemStats(link)--取得，物品，次属性，表
-    if not link then
+    if not info then
         return {}
     end
+
     local num, tab= 0, {}
-    local info= C_Item.GetItemStats(link) or {}
-    if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_CRIT_RATING_SHORT], value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
-        num= num +1
+    for _, stat in pairs(StatTab) do
+        local value= info[stat.value]
+        local name= _G[stat.value]
+        if value and value>0 and name then
+
+            local text= WoWTools_DataMixin.StausText[name]
+            if not text then
+                text= WoWTools_TextMixin:CN(name)
+                text= WoWTools_TextMixin:sub(text, 1, 2, true)
+            end
+
+            table.insert(tab, {text=text, value=value, index=stat.index})
+
+            num= num+1
+            if num==4 then
+                break
+            end
+        end
     end
-    if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_HASTE_RATING_SHORT], value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
-        num= num +1
-    end
-    if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_MASTERY_RATING_SHORT], value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
-        num= num +1
-    end
-    if info['ITEM_MOD_VERSATILITY'] then
-        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_VERSATILITY], value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
-        num= num +1
-    end
-    if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_CR_AVOIDANCE_SHORT], value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
-        num= num +1
-    end
-    if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
-        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_CR_LIFESTEAL_SHORT], value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
-        num= num +1
-    end
-    if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
-        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_CR_SPEED_SHORT], value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
-        num= num +1
-    end
-    --[[if num<4 and info['ITEM_MOD_EXTRA_ARMOR_SHORT'] then
-        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_EXTRA_ARMOR_SHORT], value=info['ITEM_MOD_EXTRA_ARMOR_SHORT'] or 1, index=2})
-        num= num +1
-    end]]
+
+
     table.sort(tab, function(a,b)
-        return a.value>b.value and a.index== b.index
+        if a.index== b.index then
+            return a.value> b.value
+        else
+            return a.index< b.index
+        end
     end)
     return tab
 end
