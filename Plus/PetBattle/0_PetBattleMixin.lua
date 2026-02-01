@@ -36,59 +36,66 @@ end
 
 
 function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner, petIndex)--总收集数量， 25 25 25， 3/3
-    if petOwner and petIndex then
-        speciesID= C_PetBattles.GetPetSpeciesID(petOwner, petIndex)
-    elseif (not speciesID or speciesID==0) and itemID then--宠物物品
-        speciesID= select(13, C_PetJournal.GetPetInfoByItemID(itemID))
+    if not speciesID then
+        if petOwner and petIndex then
+            speciesID= C_PetBattles.GetPetSpeciesID(petOwner, petIndex)
+        elseif itemID then--宠物物品
+            speciesID= select(13, C_PetJournal.GetPetInfoByItemID(itemID))
+        end
+    else
+        speciesID= tonumber(speciesID)
     end
 
-    if not speciesID or speciesID==0 then
+    local numCollected, limit
+    if speciesID and speciesID>0 then
+        numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
+    end
+
+    if not numCollected or not limit then
         return
     end
 
-    local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-    if numCollected and limit then
-        local AllCollected, CollectedNum, CollectedText
+    local AllCollected, CollectedNum, CollectedText
 
 --返回所有，数据
-        if not onlyNum then
-            local numPets = C_PetJournal.GetNumPets()
-            local ownedPetIDs = C_PetJournal.GetOwnedPetIDs()
-            local numOwned= #ownedPetIDs
-            if numPets and numPets>0 then
-                if numPets<numOwned or numPets<3 then
-                    AllCollected= WoWTools_DataMixin:MK(numOwned, 3)
-                else
-                    AllCollected= WoWTools_DataMixin:MK(numOwned,3)..'/'..WoWTools_DataMixin:MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
-                end
-            else
-
+    if not onlyNum then
+        local numPets = C_PetJournal.GetNumPets()
+        local ownedPetIDs = C_PetJournal.GetOwnedPetIDs()
+        local numOwned= #ownedPetIDs
+        if numPets and numPets>0 then
+            if numPets<numOwned or numPets<3 then
                 AllCollected= WoWTools_DataMixin:MK(numOwned, 3)
+            else
+                AllCollected= WoWTools_DataMixin:MK(numOwned,3)..'/'..WoWTools_DataMixin:MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
             end
-            if numCollected and numCollected>0 and limit and limit>0 then
-                local text2
-                for index= 1, numOwned do
-                    local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
-                    if speciesID2==speciesID and petID and level then
-                        local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                        text2= text2 and text2..' ' or ''
-                        text2= text2..WoWTools_ItemMixin:GetColor(rarity, {text=level})
-                    end
-                end
-                CollectedNum= text2
-            end
-        end
-        local isCollectedAll= false--是否已全部收集
-        if numCollected==0 then
-            CollectedText='|cnWARNING_FONT_COLOR:'..numCollected..'|r/'..limit
-        elseif limit and numCollected==limit and limit>0 then
-            CollectedText= '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r'
-            isCollectedAll= true
         else
-            CollectedText= numCollected..'/'..limit
+            AllCollected= WoWTools_DataMixin:MK(numOwned, 3)
         end
-        return AllCollected, CollectedNum, CollectedText, isCollectedAll
+        if numCollected>0 and  limit>0 then
+            local text2
+            for index= 1, numOwned do
+                local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
+                if speciesID2==speciesID and petID and level then
+                    local rarity = select(5, C_PetJournal.GetPetStats(petID))
+                    text2= text2 and text2..PLAYER_LIST_DELIMITER or ''
+                    text2= text2..WoWTools_ItemMixin:GetColor(rarity, {text=level})
+                end
+            end
+            CollectedNum= text2
+        end
     end
+
+    local isCollectedAll= false--是否已全部收集
+    if numCollected==0 then
+        CollectedText='|cnWARNING_FONT_COLOR:'..numCollected..'|r/'..limit
+    elseif limit and numCollected==limit and limit>0 then
+        CollectedText= '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r'
+        isCollectedAll= true
+    else
+        CollectedText= numCollected..'/'..limit
+    end
+
+    return AllCollected, CollectedNum, CollectedText, isCollectedAll
 end
 
 

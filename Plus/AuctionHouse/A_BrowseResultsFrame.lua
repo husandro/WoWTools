@@ -1,5 +1,5 @@
 
-local bgAtlas = "|A:socket-%s-background:0:0|a"
+--local bgAtlas = "|A:socket-%s-background:0:0|a"
 --local closedBracketAtlas = "|A:socket-%s-closed:0:0|a"
 --local openBracketAtlas = "socket-%s-open"
 
@@ -29,26 +29,35 @@ local GEM_TYPE_INFO={
 --[EMPTY_SOCKET_SINGING_WIND] =  'red', --"吟风插槽";
 
 --[ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '急' or WoWTools_TextMixin:sub(ITEM_MOD_HASTE_RATING_SHORT, 1, 2, true),
-local MainStats={
 
-}
 
---物品, 宝石插槽
 
-local function Get_Gem(itemID, itemLink)
+
+
+--物品, 宝石插槽, 属性
+local function Get_StatsGem(itemID, itemLink)
     local numSockets= C_Item.GetItemNumSockets(itemLink or itemID) or 0--MAX_NUM_SOCKETS
-    if numSockets==0 then
-        return ''
-    end
-    local gem, rep= nil, 0
+    local gem
+    local stats={}
+    local rep= 0
 
     if itemLink then
         local find= 0
-        for stat in pairs(C_Item.GetItemStats(itemLink) or {}) do
-            local atlas= GEM_TYPE_INFO[stat]
-            if atlas then
-                gem= format(bgAtlas, atlas)..(gem or '')
-                find= find+1
+        for s, value in pairs(C_Item.GetItemStats(itemLink) or {}) do
+
+            if GEM_TYPE_INFO[s] then
+                gem= string.rep(format('|A:socket-%s-background:0:0|a', GEM_TYPE_INFO[s]), value)..(gem or '')
+                find= find+ value
+
+            else
+                local g= _G[s]
+                local text= WoWTools_DataMixin.StausText[g]
+                if text then
+                    if g==ITEM_MOD_MODIFIED_CRAFTING_STAT_1 or g==ITEM_MOD_MODIFIED_CRAFTING_STAT_2 then--随机
+                        text= DISABLED_FONT_COLOR:WrapTextInColorCode(text)
+                    end
+                    table.insert(stats, text)
+                end
             end
         end
         rep= numSockets-find
@@ -61,7 +70,9 @@ local function Get_Gem(itemID, itemLink)
         gem= string.rep('|A:socket-cogwheel-closed:0:0|a', rep)..(gem or '')
     end
 
-    return gem or ''
+    return (select(2, C_Item.GetItemSpell(itemLink or itemID)) and '|A:soulbinds_tree_conduit_icon_utility:0:0|a' or '')
+        ..(gem or '')
+        ..table.concat(stats, PLAYER_LIST_DELIMITER)
 end
 
 
@@ -73,8 +84,23 @@ end
 
 
 
+local function Get_Stat(itemLink)
+    local tab= {}
+    for text in pairs(C_Item.GetItemStats(itemLink) or {}) do
+        local g= _G[text] or text
 
+        local t= WoWTools_DataMixin.StausText[g]
+        if t then
+            table.insert(tab, t)
+        else
+            t= WoWTools_TextMixin:CN(g)
+            t= WoWTools_TextMixin:sub(t, 1, 3, true)
+            table.insert(tab, t)
+        end
 
+    end
+    return table.concat(tab, PLAYER_LIST_DELIMITER)
+end
 
 
 
@@ -89,7 +115,7 @@ local function Get_Item(btn)
         return
     end
 
-    local itemLink, itemID, battlePetSpeciesID= WoWTools_AuctionHouseMixin:GetItemLink(rowData)
+    local itemLink, itemID= WoWTools_AuctionHouseMixin:GetItemLink(rowData)
     local itemKey= rowData.itemKey
     local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)
 
@@ -104,8 +130,42 @@ local function Get_Item(btn)
 
     local classID= select(6, C_Item.GetItemInfoInstant(itemID))
 
-    if C_Item.IsDecorItem(itemID) then
 
+--专业装备
+    if classID==19 then
+        text= WoWTools_CollectionMixin:Item(itemLink or itemID, nil, true)
+        stats= Get_Stat(itemLink)
+
+--配方 是否，学习
+    elseif classID==9 then
+        local redInfo= WoWTools_ItemMixin:GetTooltip({
+            itemKey=itemKey,
+            red=true,
+            text={ITEM_SPELL_KNOWN},
+        })
+        if redInfo.text[ITEM_SPELL_KNOWN] then
+            text= '|A:CovenantSanctum-Renown-Checkmark-Large:0:0|a'
+        elseif redInfo.red then
+            text= '|A:worldquest-icon-firstaid:0:0|a'
+        end
+
+--背包, 多少格
+    elseif classID==1 then
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({itemID=itemID, hyperLink=itemLink, index=3})
+        local indexText= dateInfo.indexText
+        if indexText then
+            text= indexText:match('%d+')
+        end
+
+--显示, 宝石, 属性
+    elseif classID==3 then
+        local t1, t2= WoWTools_ItemMixin:SetGemStats(nil, itemLink)
+        if t1 then
+            stats= t1..(t2 and PLAYER_LIST_DELIMITER..t2 or '')
+        end
+
+--住宅
+    elseif C_Item.IsDecorItem(itemID) then
         local entryInfo= C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink or itemID, true)
         if entryInfo then
 --装饰放置成本
@@ -140,71 +200,40 @@ local function Get_Item(btn)
 
 --宠物
     elseif itemKeyInfo.isPet then
-        local isCollectedAll
-        text, isCollectedAll= select(3, WoWTools_PetBattleMixin:Collected(itemKeyInfo.battlePetSpeciesID or battlePetSpeciesID, itemID, true))
+        local isCollectedAll, CollectedNum
+        CollectedNum, text, isCollectedAll= select(2, WoWTools_PetBattleMixin:Collected(itemKeyInfo.battlePetSpeciesID, itemID))
         if isCollectedAll then
-            text= '|A:common-icon-checkmark-yellow:0:0|a'
+            stats= (CollectedNum or '')..' '..text
+            text= '|A:CovenantSanctum-Renown-Checkmark-Large:0:0|a'
         end
+        stats= CollectedNum
 
+--物品，属性, 宝石, 幻化
     elseif itemKeyInfo.isEquipment then
---物品，属性, 宝石
-        --stats= Get_Gem(itemID, itemLink)..Get_Stats(itemLink)
-        stats= Get_Gem(itemID, itemLink)
-            ..table.concat(WoWTools_ItemMixin:GetItemStats(itemLink), PLAYER_LIST_DELIMITER)
-        --stats= Get_Stats(itemLink)-- table.concat(WoWTools_ItemMixin:GetItemStats(itemLink), PLAYER_LIST_DELIMITER)
+        text= WoWTools_CollectionMixin:Item(itemID, nil, true)
+        stats= Get_StatsGem(itemID, itemLink)
 
-        
+--幻化
+    elseif C_Item.IsCosmeticItem(itemLink or itemID) then
+        text= WoWTools_CollectionMixin:Item(itemID, nil, true)
+        stats= WoWTools_ItemMixin:GetCount(itemID, {notZero= true})
 
---显示, 宝石, 属性
-    elseif classID==3 then
-        local t1, t2= WoWTools_ItemMixin:SetGemStats(nil, itemLink)
-        if t1 then
-            text= t1..(t2 and PLAYER_LIST_DELIMITER..t2 or '')
-        end
 --玩具,是否收集    
     elseif C_ToyBox.GetToyInfo(itemID) then
-        local isToy= select(2, WoWTools_CollectionMixin:Toy(itemID))
-        if isToy==true then
-            text= '|A:common-icon-checkmark-yellow:0:0|a'
-        elseif isToy==false then
-            text= '|A:QuestNormal:0:0|a'
-        end
-    end
+        text= select(3, WoWTools_CollectionMixin:Toy(itemID))
+        stats= WoWTools_ItemMixin:GetCount(itemID, {notZero= true})
+
+--商品
+    --elseif itemKeyInfo.isCommodity then
 
 
-
---物品是否收
-    local isCollectedText= WoWTools_CollectionMixin:Item(itemID, nil, true)
-    if isCollectedText then
-        text= WoWTools_CollectionMixin:Item(itemID, nil, true)..(text or '')
-    end
-
+    else
 --坐骑
-    local isMountCollected= select(2, WoWTools_CollectionMixin:Mount(nil, itemID))
-    if isMountCollected~=nil then
-        if isMountCollected==true then
-            text= '|A:common-icon-checkmark-yellow:0:0|a'..(text or '')
-        elseif isMountCollected==false then
-            text= '|A:QuestNormal:0:0|a'..(text or '')
-        end
+        text= select(3, WoWTools_CollectionMixin:Mount(nil, itemID))
+
+        stats= WoWTools_ItemMixin:GetCount(itemID, {notZero= true})
     end
 
-
---是否，学习
-    if not text then
-        local redInfo= WoWTools_ItemMixin:GetTooltip({
-            itemKey=itemKey,
-            red=true,
-            text={ITEM_SPELL_KNOWN},
-        })
-        if redInfo.text[ITEM_SPELL_KNOWN] then
-            text= '|A:common-icon-checkmark:0:0|a'
-        elseif redInfo.red then
-            text= '|A:worldquest-icon-firstaid:0:0|a'
-        else
-            text= '|A:Recurringavailablequesticon:0:0|a'
-        end
-    end
 
     return text, stats
 end
@@ -361,7 +390,7 @@ local function Init()
         end)
     end)
 
-    --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
+    WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
    --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetDataProvider', Set_BrowseResultsFrame)
     --WoWTools_DataMixin:Hook(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
 

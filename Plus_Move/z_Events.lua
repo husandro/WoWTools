@@ -378,11 +378,36 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
         end
     end)
 
+    --AuctionHouseItemListMixin:UpdateTableBuilderLayout()
+    local function Rest()
+        for _, frame in pairs({
+            AuctionHouseFrame.BrowseResultsFrame.ItemList,
+
+            AuctionHouseFrameAuctionsFrame.AllAuctionsList,
+            AuctionHouseFrameAuctionsFrame.ItemList,
+            AuctionHouseFrameAuctionsFrame.CommoditiesList,
+            AuctionHouseFrameAuctionsFrame.BidsList,
+
+            AuctionHouseFrame.ItemSellList,
+            AuctionHouseFrame.ItemBuyFrame.ItemList,
+
+        }) do
+
+            if frame.UpdateTableBuilderLayout and frame.tableBuilder and not frame.tableBuilderLayoutDirty then
+                frame.tableBuilderLayoutDirty=true
+                frame:UpdateTableBuilderLayout()
+            end
+        end
+    end
+
     self:Setup(AuctionHouseFrame, {
+        sizeUpdateFunc=Rest,
         sizeRestFunc=function(f)
             f:SetSize(800, 538)
+            Rest()
         end
     })
+
 
     self:Setup(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
     self:Setup(AuctionHouseFrame.ItemSellFrame.Overlay, {frame=AuctionHouseFrame})

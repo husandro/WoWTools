@@ -23,9 +23,9 @@ function WoWTools_CollectionMixin:Mount(mountID, itemID)--坐骑, 收集数量
     mountID= mountID or (itemID and C_MountJournal.GetMountFromItem(itemID))
     if mountID then
         if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-            return '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r', true
+            return '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r', true, '|A:CovenantSanctum-Renown-Checkmark-Large:0:0|a'
         else
-            return '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false
+            return '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false, '|A:QuestNormal:0:0|a'
         end
     end
 end
@@ -33,15 +33,15 @@ end
 function WoWTools_CollectionMixin:Toy(itemID)--玩具,是否收集
     if C_ToyBox.GetToyInfo(itemID) then
         if PlayerHasToy(itemID) then
-            return '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r', true
+            return '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r', true, '|A:CovenantSanctum-Renown-Checkmark-Large:0:0|a'
         else
-            return '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false
+            return '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false, '|A:QuestNormal:0:0|a'
         end
     end
 end
 
 
-function WoWTools_CollectionMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--物品是否收集 --if itemIDOrLink and IsCosmeticItem(itemIDOrLink) then isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
+function WoWTools_CollectionMixin:Item(itemIDOrLink, sourceID, isIcon, onlyBool)--物品是否收集 --if itemIDOrLink and IsCosmeticItem(itemIDOrLink) then isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
     sourceID= sourceID or (itemIDOrLink and select(2, C_TransmogCollection.GetItemInfo(itemIDOrLink)))
 
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
@@ -64,7 +64,7 @@ function WoWTools_CollectionMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--
     local text
     if not onlyBool then
         if isCollected==true then
-            if icon then
+            if isIcon then
                 if isSelf then
                     text='|A:common-icon-checkmark:0:0|a'--绿色√
                 else
@@ -74,7 +74,7 @@ function WoWTools_CollectionMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--
                 text= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
             end
         else
-            if icon then
+            if isIcon then
                 if isSelf then
                     text='|T132288:0|t'
                 else
