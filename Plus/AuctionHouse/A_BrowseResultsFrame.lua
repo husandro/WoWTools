@@ -207,16 +207,16 @@ local function Get_Item(btn)
             text= '|A:CovenantSanctum-Renown-Checkmark-Large:0:0|a'
         end
         stats= CollectedNum
+--幻化
+    elseif C_Item.IsCosmeticItem(itemLink or itemID) then
+        text= WoWTools_CollectionMixin:Item(itemID, nil, true)
+        stats= (WoWTools_ItemMixin:GetCount(itemID, {notZero= true}) or '')..'|A:transmog-gearSlot-transmogrified-HL:0:0|a'
 
 --物品，属性, 宝石, 幻化
     elseif itemKeyInfo.isEquipment then
         text= WoWTools_CollectionMixin:Item(itemID, nil, true)
         stats= Get_StatsGem(itemID, itemLink)
 
---幻化
-    elseif C_Item.IsCosmeticItem(itemLink or itemID) then
-        text= WoWTools_CollectionMixin:Item(itemID, nil, true)
-        stats= (WoWTools_ItemMixin:GetCount(itemID, {notZero= true}) or '')..'|A:transmog-gearSlot-transmogrified-HL:0:0|a'
 
 --玩具,是否收集    
     elseif C_ToyBox.GetToyInfo(itemID) then
@@ -372,9 +372,17 @@ local function Init()
     if WoWToolsSave['Plus_AuctionHouse'].disabledBuyPlus then
         return
     end
-
+  --[[
 --AuctionHouseItemListMixin:Init()
-
+print(AuctionHouseFrame.BrowseResultsFrame.ItemList.tableBuilder)
+    if AuctionHouseFrame.BrowseResultsFrame.ItemList.tableBuilder then
+        print('a', AuctionHouseFrame.BrowseResultsFrame.ItemList.tableBuilder:AddColumnInternal(AuctionHouseFrame.BrowseResultsFrame.ItemList, 0, 50, 0, 10, nil, "AuctionHouseTableCellTimeLeftTemplate"))
+    end
+  
+AuctionHouseTableCellTextTemplate
+tableBuilder:AddFixedWidthColumn(owner, 0, 50, 0, STANDARD_PADDING, Enum.AuctionHouseSortOrder.TimeRemaining, "AuctionHouseTableCellTimeLeftTemplate");
+                                 owner, padding, width, leftCellPadding, rightCellPadding, sortOrder, cellTemplate, ...
+]]
     ScrollUtil.RegisterAlternateRowBehavior(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, function(btn)
         local rowData= btn:GetRowData()
         if not rowData then
