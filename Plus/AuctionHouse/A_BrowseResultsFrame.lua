@@ -1,4 +1,87 @@
 
+local bgAtlas = "|A:socket-%s-background:0:0|a"
+--local closedBracketAtlas = "|A:socket-%s-closed:0:0|a"
+--local openBracketAtlas = "socket-%s-open"
+
+local GEM_TYPE_INFO={
+['EMPTY_SOCKET_BLUE'] = "blue",-- "蓝色插槽";
+['EMPTY_SOCKET_COGWHEEL'] = 'cogwheel',--"齿轮插槽";
+['EMPTY_SOCKET_CYPHER'] = 'meta',--"晶态插槽"
+['EMPTY_SOCKET_DOMINATION'] = 'domination',--"统御插槽";
+['EMPTY_SOCKET_FIBER'] = 'hydraulic',-- "纤维镶孔";
+['EMPTY_SOCKET_FRAGRANCE'] = 'hydraulic',--"芬芳镶孔";
+['EMPTY_SOCKET_HYDRAULIC'] = 'hydraulic',--"染煞";
+['EMPTY_SOCKET_META'] = 'meta', --"多彩插槽";
+['EMPTY_SOCKET_PRIMORDIAL'] = 'meta',--"始源镶孔";
+['EMPTY_SOCKET_PRISMATIC'] = 'prismatic', --"棱彩插槽";
+['EMPTY_SOCKET_PUNCHCARDBLUE'] = 'punchcard-blue',-- "蓝色打孔卡插槽";
+['EMPTY_SOCKET_PUNCHCARDRED'] = 'punchcard-red',-- "红色打孔卡插槽";
+['EMPTY_SOCKET_PUNCHCARDYELLOW'] = 'punchcard-yellow', "黄色打孔卡插槽";
+['EMPTY_SOCKET_RED'] = 'red',-- "红色插槽";
+['EMPTY_SOCKET_SINGINGSEA'] =  'blue',--"吟海插槽";
+['EMPTY_SOCKET_SINGINGTHUNDER'] = 'yellow',-- "吟雷插槽";
+['EMPTY_SOCKET_SINGINGWIND'] = 'red', --"吟风插槽";
+['EMPTY_SOCKET_TINKER'] = 'punchcard-red',--"匠械插槽";
+['EMPTY_SOCKET_YELLOW'] = 'yellow',--"黄色插槽";
+}
+--[EMPTY_SOCKET_SINGING_SEA] = 'blue',--"吟海插槽";
+--[EMPTY_SOCKET_SINGING_THUNDER] = 'yellow',--"吟雷插槽";
+--[EMPTY_SOCKET_SINGING_WIND] =  'red', --"吟风插槽";
+
+--[ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '急' or WoWTools_TextMixin:sub(ITEM_MOD_HASTE_RATING_SHORT, 1, 2, true),
+local MainStats={
+
+}
+
+--物品, 宝石插槽
+
+local function Get_Gem(itemID, itemLink)
+    local numSockets= C_Item.GetItemNumSockets(itemLink or itemID) or 0--MAX_NUM_SOCKETS
+    if numSockets==0 then
+        return ''
+    end
+    local gem, rep= nil, 0
+
+    if itemLink then
+        local find= 0
+        for stat in pairs(C_Item.GetItemStats(itemLink) or {}) do
+            local atlas= GEM_TYPE_INFO[stat]
+            if atlas then
+                gem= format(bgAtlas, atlas)..(gem or '')
+                find= find+1
+            end
+        end
+        rep= numSockets-find
+    else
+
+        rep= numSockets
+    end
+
+    if rep>0 then
+        gem= string.rep('|A:socket-cogwheel-closed:0:0|a', rep)..(gem or '')
+    end
+
+    return gem or ''
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Get_Item(btn)
     local text, stats
     local rowData= btn:GetRowData()
@@ -64,15 +147,13 @@ local function Get_Item(btn)
         end
 
     elseif itemKeyInfo.isEquipment then
---物品，属性
-    for _, tab in pairs(WoWTools_ItemMixin:GetItemStats(itemLink)) do
-        stats= (stats and stats..PLAYER_LIST_DELIMITER or '')..tab.text
-    end
---物品, 宝石插槽
-    local numSockets= C_Item.GetItemNumSockets(itemLink or itemID) or 0--MAX_NUM_SOCKETS
-    for n= 1, numSockets do
-        stats= '|A:socket-cogwheel-closed:0:0|a'..(stats or '')
-    end
+--物品，属性, 宝石
+        --stats= Get_Gem(itemID, itemLink)..Get_Stats(itemLink)
+        stats= Get_Gem(itemID, itemLink)
+            ..table.concat(WoWTools_ItemMixin:GetItemStats(itemLink), PLAYER_LIST_DELIMITER)
+        --stats= Get_Stats(itemLink)-- table.concat(WoWTools_ItemMixin:GetItemStats(itemLink), PLAYER_LIST_DELIMITER)
+
+        
 
 --显示, 宝石, 属性
     elseif classID==3 then
@@ -228,9 +309,7 @@ local function Set_ItemBuyFrame(frame)
                     itemLink= data and data.hyperlink
                 end
                 if itemLink then
-                    for _, tab in pairs(WoWTools_ItemMixin:GetItemStats(itemLink) or {}) do
-                        stats= (stats and stats..' ' or '')..tab.text
-                    end
+                    stats= table.concat(WoWTools_ItemMixin:GetItemStats(itemLink), PLAYER_LIST_DELIMITER)
                 end
             end
         end

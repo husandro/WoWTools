@@ -557,19 +557,12 @@ local function Get_Info(tab)
             bottomLeftText= get_has_text(select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true)))
         elseif PlayerIsTimerunning() then
 
-            for i, stat in pairs(WoWTools_ItemMixin:GetItemStats(itemLink)) do
-                if i==1 then
-                    bottomLeftText= stat.text
-                elseif i==2 then
-                    bottomRightText= stat.text
-                elseif i==3 then
-                    topLeftText= stat.text
-                elseif i==4 then
-                    topRightText= stat.text
-                else
-                    break
-                end
-            end
+            local stat= WoWTools_ItemMixin:GetItemStats(itemLink)
+            bottomLeftText= stat[1]
+            bottomRightText= stat[2]
+            topLeftText= stat[3]
+            topRightText= stat[4]
+
             leftText= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, nil)--装等，提示
 
         else

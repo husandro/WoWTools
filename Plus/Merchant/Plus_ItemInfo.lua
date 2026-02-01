@@ -235,11 +235,8 @@ local function Set_Item_Info()
 --物品，属性
             local classID= select(6, C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
-                local stat= WoWTools_ItemMixin:GetItemStats(itemLink)--物品，属性，表
-                for _, tab in pairs(stat) do
-                    stats= stats and stats..' ' or ''
-                    stats= (stats and stats..' ' or '')..tab.text
-                end
+                stats= table.concat(WoWTools_ItemMixin:GetItemStats(itemLink), PLAYER_LIST_DELIMITER)--物品，属性，表
+                
                 spellID= select(2, C_Item.GetItemSpell(itemLink))
                 if spellID then
                     stats= (stats or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'

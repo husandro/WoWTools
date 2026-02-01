@@ -110,20 +110,21 @@ local StatTab={
     {value='ITEM_MOD_CR_AVOIDANCE_SHORT', index=2},--闪避
     {value='ITEM_MOD_CR_LIFESTEAL_SHORT', index=2},--吸血
     {value='ITEM_MOD_CR_SPEED_SHORT', index=2},--速度
-
-    {value='ITEM_MOD_BLOCK_RATING_SHORT', index=3},--格挡
-    {value='ITEM_MOD_ATTACK_POWER_SHORT', index=3},--攻击强度
-    {value='ITEM_MOD_EXTRA_ARMOR_SHORT', index=3},--护甲
-
-    {value='ITEM_MOD_MODIFIED_CRAFTING_STAT_1', index=4},--随机属性1
-    {value='ITEM_MOD_MODIFIED_CRAFTING_STAT_2', index=4},--随机属性2
+    {value='ITEM_MOD_PARRY_RATING_SHORT', index=2},--"招架"
 }
+    --{value='ITEM_MOD_BLOCK_RATING_SHORT', index=3},--格挡
+    --{value='ITEM_MOD_ATTACK_POWER_SHORT', index=3},--攻击强度
+    --{value='ITEM_MOD_EXTRA_ARMOR_SHORT', index=3},--护甲
+
+    --{value='ITEM_MOD_MODIFIED_CRAFTING_STAT_1', index=4},--随机属性1
+    --{value='ITEM_MOD_MODIFIED_CRAFTING_STAT_2', index=4},--随机属性2
+
 
 
 function WoWTools_ItemMixin:GetItemStats(itemLink)--取得，物品，次属性，表
     local info= itemLink and C_Item.GetItemStats(itemLink)
 
-    if not info then
+    if not info or TableIsEmpty(info) then
         return {}
     end
 
@@ -134,10 +135,6 @@ function WoWTools_ItemMixin:GetItemStats(itemLink)--取得，物品，次属性�
         if value and value>0 and name then
 
             local text= WoWTools_DataMixin.StausText[name]
-            if not text then
-                text= WoWTools_TextMixin:CN(name)
-                text= WoWTools_TextMixin:sub(text, 1, 2, true)
-            end
 
             table.insert(tab, {text=text, value=value, index=stat.index})
 
@@ -148,6 +145,12 @@ function WoWTools_ItemMixin:GetItemStats(itemLink)--取得，物品，次属性�
         end
     end
 
+--[[if num==0 then
+    for k, v in pairs(info )  do
+        print(WoWTools_TextMixin:CN(_G[k]), k, v)
+    end
+    print(WoWTools_ItemMixin:GetLink(C_Item.GetItemInfoInstant( itemLink)))
+end]]
 
     table.sort(tab, function(a,b)
         if a.index== b.index then
@@ -156,7 +159,13 @@ function WoWTools_ItemMixin:GetItemStats(itemLink)--取得，物品，次属性�
             return a.index< b.index
         end
     end)
-    return tab
+
+    local new= {}
+    for _, stat in pairs(tab) do
+        table.insert(new, stat.text)
+    end
+
+    return new
 end
 
 
@@ -265,24 +274,28 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
 
     local tab= not hideStats and self:GetItemStats(link) or {}--物品，次属性，表
     for index=1 ,4 do
-        local text=frame['statText'..index]
+        local lable=frame['statText'..index]
         if tab[index] then
-            if not text then
-                text= WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
+            if not lable then
+                lable= frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormalOutline', nil, 7) -- WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
+                lable:SetJustifyH((index==2 or index==4) and 'RIGHT' or 'LEFT')
+                --lable:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+
+                lable:SetShadowOffset(1, -1)
                 if index==1 then
-                    text:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT')
+                    lable:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT')
                 elseif index==2 then
-                    text:SetPoint('BOTTOMRIGHT', point, 'BOTTOMRIGHT', 4,0)
+                    lable:SetPoint('BOTTOMRIGHT', point, 'BOTTOMRIGHT', 4,0)
                 elseif index==3 then
-                    text:SetPoint('TOPLEFT', point, 'TOPLEFT')
+                    lable:SetPoint('TOPLEFT', point, 'TOPLEFT')
                 else
-                    text:SetPoint('TOPRIGHT', point, 'TOPRIGHT',4,0)
+                    lable:SetPoint('TOPRIGHT', point, 'TOPRIGHT',4,0)
                 end
-                frame['statText'..index]=text
+                frame['statText'..index]=lable
             end
-            text:SetText(tab[index].text)
-        elseif text then
-            text:SetText('')
+            lable:SetText(tab[index])
+        elseif lable then
+            lable:SetText('')
         end
     end
 end
