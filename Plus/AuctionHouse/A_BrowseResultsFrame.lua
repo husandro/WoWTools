@@ -191,10 +191,10 @@ local function Get_Item(btn)
 --XP
             if entryInfo.firstAcquisitionBonus and entryInfo.firstAcquisitionBonus>0 then
                     text= (text or '')..'|A:GarrMission_CurrencyIcon-Xp:0:0|a'
-            else--if entryInfo.showQuantity then
+            end--if entryInfo.showQuantity then
 --数量
-                text= (WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, false) or '')..(text or '')
-            end
+               -- text= (WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, false) or '')..(text or '')
+            --end
         end
 
 --宠物

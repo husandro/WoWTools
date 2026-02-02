@@ -727,6 +727,7 @@ function WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, showZero)
     if not entryInfo then
         return
     end
+   -- print( entryInfo.showQuantity, itemID, entryInfo.numPlace ,entryInfo.quality ,entryInfo.remainingRedeemable )
 
 --数量 if entryInfo.showQuantity then
     local num= (entryInfo.numPlace or 0) + (entryInfo.quality or 0)+ (entryInfo.remainingRedeemable or 0)

@@ -169,9 +169,11 @@ local function Create_Button(btn)
     btn.indexLabel:SetFontHeight(10)
     btn.indexLabel:SetPoint('TOPLEFT',0, 7)
 
+
+
+
 --选定，提示
     btn.selectBG= btn:CreateTexture()
-    --btn.selectBG:SetAllPoints()
     btn.selectBG:SetPoint('TOPLEFT', -16, 18)
     btn.selectBG:SetAlpha(0.5)
     btn.selectBG:SetPoint('BOTTOMRIGHT', 16, -18)
