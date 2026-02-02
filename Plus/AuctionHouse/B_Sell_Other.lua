@@ -21,6 +21,7 @@ end
 
 --下一个，拍卖，物品  
 local function Init_NextItem()
+
     AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetHeight(32)--<Size x="194" y="22"/>
     AuctionHouseFrame.ItemSellFrame.PostButton:SetHeight(32)
 
@@ -56,6 +57,52 @@ local function Init_NextItem()
         C_Timer.After(0.3, function() WoWTools_AuctionHouseMixin:SetPostNextSellItem() end)--放入，第一个，物品
         self.isNextItem=nil
     end)
+
+
+    --local btn= CreateFrame('Button', 'WoWToolsCommoditiesSellAutoPostButton', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'WoWToolsButtonTemplate')
+    local btn= CreateFrame("Button","WoWToolsCommoditiesSellAutoPostButton", AuctionHouseFrame.CommoditiesSellFrame.PostButton,"WoWToolsButtonTemplate SecureActionButtonTemplate")
+    btn:SetAttribute("type","click")
+    btn:SetAttribute("clickbutton", AuctionHouseFrame.CommoditiesSellFrame.PostButton)
+
+    btn:SetPoint('RIGHT', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'LEFT', -23, 0)
+    function btn:Stop()
+        self.isRun= nil
+        self:setting()
+    end
+
+    function btn:setting()
+        self:SetNormalAtlas(self.isRun and 'common-dropdown-icon-stop' or 'common-dropdown-icon-back')
+        if self.isRun then
+            self:SetScript('OnUpdate', self.Run)
+        else
+            self:SetScript('OnUpdate', nil)
+            self.elapse= nil
+        end
+    end
+    function btn:Run(elapse)
+        self.elapse= (self.elapse or 0.4)+ elapse
+        if IsModifierKeyDown() then
+            self:Stop()
+            return
+        elseif self.elapse<0.4 then
+            return
+        end
+        self.elapse= 0
+        if self:GetParent():IsEnabled() then
+            self:Click()
+        end
+    end
+
+    btn:SetScript('OnHide', btn.Stop)
+    btn:SetScript('OnMouseUp', function(self)
+        self.isRun= not self.isRun and true or nil
+        self:setting()
+    end)
+    btn.tooltip= WoWTools_DataMixin.onlyChinese and '自动出售' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, AUCTION_HOUSE_SELL_TAB)
+
+    btn:setting()
+
+    Init_NextItem=function()end
 end
 
 
@@ -211,15 +258,25 @@ local function OnShowToSellFrame()
     if not Save().intShowSellItem or not AuctionHouseFrame:IsShown() then
         return
     end
-    local isCommodity
+
+    local itemCommodityStatus
+
+    --AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.ItemSell)
+
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
-            isCommodity= select(2, WoWTools_AuctionHouseMixin:GetItemSellStatus(bag, slot, true))
-            if isCommodity then
-                AuctionHouseFrame:SetDisplayMode(isCommodity==Enum.ItemCommodityStatus.Commodity and AuctionHouseFrameDisplayMode.CommoditiesSell or AuctionHouseFrameDisplayMode.ItemSell)
-                C_Timer.After(0.3, function()
+            itemCommodityStatus= select(2, WoWTools_AuctionHouseMixin:GetItemSellStatus(bag, slot, true))
+
+            if itemCommodityStatus then
+                AuctionHouseFrame:SetDisplayMode(
+                    itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and AuctionHouseFrameDisplayMode.CommoditiesSell
+                    or AuctionHouseFrameDisplayMode.ItemSell
+                )
+
+                --C_Timer.After(0.3, function()
                     WoWTools_AuctionHouseMixin:SetPostNextSellItem() --放入，第一个，物品
-                end)
+                --end)
+
                 return
             end
         end
@@ -242,30 +299,42 @@ end
 --默认价格，替换，原生func
 local function GetDefaultPrice(itemLocation)
     local price= 100000
+
+    local itemLink, itemID
     if itemLocation and itemLocation:IsValid() then
-        local itemLink = C_Item.GetItemLink(itemLocation);
-        local itemID= C_Item.GetItemID(itemLocation)
+        itemLink = C_Item.GetItemLink(itemLocation)
+        itemID= C_Item.GetItemID(itemLocation)
+    end
 
-        if itemID and Save().SellItemDefaultPrice[itemID] then--上次保存的，物价
-            price= Save().SellItemDefaultPrice[itemID]
+    if not itemID or not itemLink then
+        return price
+    end
 
-        elseif itemID and C_MountJournal.GetMountFromItem(itemID) or C_ToyBox.GetToyInfo(itemID) then--坐骑
-            price= 999999900--9.9万
+    if Save().SellItemDefaultPrice[itemID] then--上次保存的，物价
+        price= Save().SellItemDefaultPrice[itemID]
 
-        elseif itemID and C_PetJournal.GetPetInfoByItemID(itemID)--宠物
-            or (itemLink and (itemLink:find('Hbattlepet:(%d+)')))
-        then
-            price= 99999900--0.9万
+    elseif C_MountJournal.GetMountFromItem(itemID) or C_ToyBox.GetToyInfo(itemID) then--坐骑
+        price= 999999900--9.9万
 
-        elseif itemLink and LinkUtil.IsLinkType(itemLink, "item") then
-            local vendorPrice = select(11, C_Item.GetItemInfo(itemLink));
-            if vendorPrice then
+    elseif C_PetJournal.GetPetInfoByItemID(itemID)--宠物
+        or itemLink:find('Hbattlepet:(%d+)')
+        or C_Item.IsCosmeticItem(itemID)
+        or C_Item.IsDecorItem(itemID)
+        or C_Item.IsDressableItemByID(itemID)
+    then
+        price= 99999900--0.9万
 
-                local defaultPrice = vendorPrice * 500--倍数，原1.5倍
-                price = defaultPrice + (COPPER_PER_SILVER - (defaultPrice % COPPER_PER_SILVER)); -- AH prices must be in silver increments.
-            end
+    else--if LinkUtil.IsLinkType(itemLink, "item") then
+        local vendorPrice = select(11, C_Item.GetItemInfo(itemLink))
+        if vendorPrice then
+            local defaultPrice = vendorPrice * 500--倍数，原1.5倍
+            local price2 = defaultPrice + (COPPER_PER_SILVER - (defaultPrice % COPPER_PER_SILVER))-- AH prices must be in silver increments.
+
+            price= math.max(price2, 200000)--20g
         end
     end
+
+
     return price
 end
 
@@ -473,6 +542,10 @@ end
 
 
 local function Init()
+    if Save().disabledSellPlus then
+        return
+    end
+
     Init_ShowCommoditiesButton()--转到，商品，模式，按钮
     Init_NextItem()--下一个，拍卖，物品
     Init_PercentLabel()--单价，倍数
@@ -486,11 +559,6 @@ local function Init()
         return GetDefaultPrice(self:GetItem())
     end
 
---显示拍卖行时，转到出售物品
-    C_Timer.After(0.3, function()
-        AuctionHouseFrame:HookScript('OnShow', OnShowToSellFrame)
-        OnShowToSellFrame()
-    end)
 
 
 --移动, Frame
@@ -524,8 +592,21 @@ local function Init()
     AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:ClearAllPoints()
     AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'TOPRIGHT', -25, 0)
 
+--显示拍卖行时，转到出售物品
+    C_Timer.After(1, function()
+        AuctionHouseFrame:HookScript('OnShow', OnShowToSellFrame)
+        --[[local itemCommodityStatus= WoWTools_AuctionHouseMixin:SetPostNextSellItem(true)
+        if itemCommodityStatus then
+            AuctionHouseFrame:SetDisplayMode(
+                itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and AuctionHouseFrameDisplayMode.CommoditiesSell
+                or AuctionHouseFrameDisplayMode.ItemSell
+            )
+            OnShowToSellFrame()
+        end]]
+        OnShowToSellFrame()
+    end)
 
-    return true
+   Init=function()end
 end
 
 
@@ -539,7 +620,5 @@ end
 
 
 function WoWTools_AuctionHouseMixin:Sell_Other()
-    if not Save().disabledSellPlus and Init() then
-        Init=function()end
-    end
+    Init()
 end

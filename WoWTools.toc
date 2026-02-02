@@ -392,7 +392,6 @@ Plus\Mail\PlayerName_List.lua
 ##拍卖行
 Plus\AuctionHouse\0_AuctionHouseMixin.lua
 Plus\AuctionHouse\1_Init.lua
-Plus\AuctionHouse\2_Init_Menu.lua
 Plus\AuctionHouse\A_BrowseResultsFrame.lua
 Plus\AuctionHouse\B_Sell_InitButton.lua
 Plus\AuctionHouse\B_Sell_Menu.lua

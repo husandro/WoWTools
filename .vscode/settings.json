@@ -2978,7 +2978,10 @@
         "EMPTY_SOCKET_TINKER",
         "EMPTY_SOCKET_YELLOW",
         "ITEM_MOD_PARRY_RATING_SHORT",
-        "PARRY"
+        "PARRY",
+        "AuctionHouseTableCellFavoriteMixin",
+        "TableBuilderMixin",
+        "AuctionHouseFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

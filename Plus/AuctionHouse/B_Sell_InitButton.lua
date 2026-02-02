@@ -57,7 +57,8 @@ local function Create_Button()
                 function(tooltip)
                     tooltip:AddLine(' ')
                     tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '开始拍卖' or CREATE_AUCTION..WoWTools_DataMixin.Icon.left, WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE))
-                end
+                end,
+            anchor= 'ANCHOR_RIGHT',
         })
         local itemName
         if itemLink then
@@ -210,7 +211,8 @@ end
 
 
 local function Init()
-    AuctionHouseButton= WoWTools_ButtonMixin:Menu(AuctionHouseFrame, {name='WoWToolsAuctionHouseSellListButton', icon='hide'})
+    AuctionHouseButton= CreateFrame('DropdownButton', 'WoWToolsAuctionHouseSellListButton', AuctionHouseFrame, 'WoWToolsMenu2Template')
+    --WoWTools_ButtonMixin:Menu(AuctionHouseFrame, {name='WoWToolsAuctionHouseSellListButton', icon='hide'})
 
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,0)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
@@ -225,11 +227,11 @@ local function Init()
 
 --按钮
     function AuctionHouseButton:set_tooltips()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AuctionHouseMixin.addName)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(WoWTools_AuctionHouseMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:Show()
     end
 
     function AuctionHouseButton:Settings()

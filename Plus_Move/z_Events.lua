@@ -378,7 +378,8 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
         end
     end)
 
-    --AuctionHouseItemListMixin:UpdateTableBuilderLayout()
+    --AuctionHouseItemListMixin:UpdateTableBuilderLayout() TableBuilderMixin:ArrangeHeaders()
+--添加，数据，可能会污染
     local function Rest()
         for _, frame in pairs({
             AuctionHouseFrame.BrowseResultsFrame.ItemList,
@@ -393,9 +394,11 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
 
         }) do
 
-            if frame.UpdateTableBuilderLayout and frame.tableBuilder and not frame.tableBuilderLayoutDirty then
+            if frame.UpdateTableBuilderLayout and not frame.tableBuilderLayoutDirty then
                 frame.tableBuilderLayoutDirty=true
-                frame:UpdateTableBuilderLayout()
+                if frame.tableBuilder then
+                    frame:UpdateTableBuilderLayout()
+                end
             end
         end
     end

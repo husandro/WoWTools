@@ -26,9 +26,6 @@ function WoWTools_AuctionHouseMixin:GetItemLink(rowData)
         end
     end
 
-    if not itemLink and itemID then
-        itemLink= WoWTools_ItemMixin:GetLink(itemID)
-    end
 
     local battlePetSpeciesID= rowData.battlePetSpeciesID or itemKey.battlePetSpeciesID
     if battlePetSpeciesID and battlePetSpeciesID<=0 then
@@ -72,8 +69,27 @@ function WoWTools_AuctionHouseMixin:GetItemSellStatus(bag, slot, isCheckHideItem
 end
 
 --放入，第一个，物品
-function WoWTools_AuctionHouseMixin:SetPostNextSellItem()
+function WoWTools_AuctionHouseMixin:SetPostNextSellItem(onlyFind)
+    if onlyFind then
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local itemLocation, itemCommodityStatus= self:GetItemSellStatus(bag, slot, true)
+                if itemLocation
+                    and (
+                        (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity)
+                        or (itemCommodityStatus==Enum.ItemCommodityStatus.Item)
+                    )
+                then
+                    return itemCommodityStatus
+                end
+            end
+        end
+        return false
+    end
+
+
     local isCommoditiesSellFrame, isItemSellFrame= self:GetDisplayMode()
+
     if not C_AuctionHouse.IsThrottledMessageSystemReady()
         or (isCommoditiesSellFrame and AuctionHouseFrame.CommoditiesSellFrame:GetItem())
         or (isItemSellFrame and AuctionHouseFrame.ItemSellFrame:GetItem())
@@ -81,7 +97,7 @@ function WoWTools_AuctionHouseMixin:SetPostNextSellItem()
     then
         return
     end
-    
+
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local itemLocation, itemCommodityStatus= self:GetItemSellStatus(bag, slot, true)

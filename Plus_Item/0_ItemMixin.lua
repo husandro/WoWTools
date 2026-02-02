@@ -721,20 +721,40 @@ function WoWTools_ItemMixin:IsLocked_EquipmentSet(setID)--装备管理，能否�
 		return '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
 	end
 end]]
+function WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, showZero)
+    entryInfo= entryInfo or (itemID and C_HousingCatalog.GetCatalogEntryInfoByItem(itemID, true))
 
+    if not entryInfo then
+        return
+    end
 
+--数量 if entryInfo.showQuantity then
+    local num= (entryInfo.numPlace or 0) + (entryInfo.quality or 0)+ (entryInfo.remainingRedeemable or 0)
+
+    if num>0 then
+        return num..'|A:house-chest-icon:0:0|a'
+    elseif showZero then
+        return DISABLED_FONT_COLOR:WrapTextInColorCode(num)..'|A:house-chest-icon:0:0|a'
+    end
+end
 
 function WoWTools_ItemMixin:GetCount(itemID, tab)
     tab= tab or {}
     itemID= itemID
         or (tab.itemKey and tab.itemKey.itemID)
-    --local isWoW= tab.isWoW
 
+    local showZero= not tab.notZero
+
+    local text
     if not itemID then
-        return nil, 0, 0, 0, 0, 0
+        return text, 0, 0, 0, 0, 0
+
+    elseif C_Item.IsDecorItem(itemID) then
+        text= self:GetDecorItemCount(itemID, nil, showZero)
+        return text, 0, 0, 0, 0, 0
     end
 
-    local zoro= not tab.notZero
+
 
     local wow= self:GetWoWCount(itemID)
 
@@ -744,19 +764,19 @@ function WoWTools_ItemMixin:GetCount(itemID, tab)
     bank= bank- bag
     net= net-bag
 
-    local text
-    if zoro or wow>0 then
+
+    if showZero or wow>0 then
         text= (wow==0 and '|cff626262' or '|cff00ccff')..WoWTools_DataMixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a'
     end
-    if zoro or net>0 then
+    if showZero or net>0 then
         text= (text and text..' ' or '')
             ..(net==0 and '|cff626262' or '|cff00ccff')..WoWTools_DataMixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a'--..CreateAtlasMarkup("questlog-questtypeicon-account", 18, 18)--|A:questlog-questtypeicon-account:0:0|a'
     end
-    if zoro or bank>0 then
+    if showZero or bank>0 then
         text= (text and text..' ' or '')
             ..(bank==0 and '|cff626262' or '|cffffffff')..WoWTools_DataMixin:MK(bank, 3)..'|r|A:Banker:0:0|a'
     end
-    if zoro or bag>0 then
+    if showZero or bag>0 then
         text= (text and text..' ' or '')
             ..(bag==0 and '|cff626262' or '|cffffffff')..WoWTools_DataMixin:MK(bag, 3)..(bag==1 and C_Item.IsEquippedItem(itemID) and '|A:charactercreate-icon-customize-body-selected:0:0|a' or '|r|A:bag-main:0:0|a')
     end

@@ -116,6 +116,8 @@ local function Get_Item(btn)
     end
 
     local itemLink, itemID= WoWTools_AuctionHouseMixin:GetItemLink(rowData)
+    --local itemLink= rowData.itemLink
+
     local itemKey= rowData.itemKey
     local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)
 
@@ -190,11 +192,7 @@ local function Get_Item(btn)
                     text= (text or '')..'|A:GarrMission_CurrencyIcon-Xp:0:0|a'
             else--if entryInfo.showQuantity then
 --数量
-                local num= (entryInfo.numPlace or 0) + (entryInfo.quality or 0)+ (entryInfo.remainingRedeemable or 0)
-                text= num..'|A:house-chest-icon:0:0|a'
-                if num==0 then
-                    text= DISABLED_FONT_COLOR:WrapTextInColorCode(num)
-                end
+                text= WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, false)
             end
         end
 
@@ -210,7 +208,8 @@ local function Get_Item(btn)
 --幻化
     elseif C_Item.IsCosmeticItem(itemLink or itemID) then
         text= WoWTools_CollectionMixin:Item(itemID, nil, true)
-        stats= (WoWTools_ItemMixin:GetCount(itemID, {notZero= true}) or '')..'|A:transmog-gearSlot-transmogrified-HL:0:0|a'
+        --stats= (WoWTools_ItemMixin:GetCount(itemID, {notZero= true}) or '')..'|A:transmog-gearSlot-transmogrified-HL:0:0|a'
+        stats= '|A:transmog-gearSlot-transmogrified-HL:0:0|a'
 
 --物品，属性, 宝石, 幻化
     elseif itemKeyInfo.isEquipment then
@@ -221,7 +220,7 @@ local function Get_Item(btn)
 --玩具,是否收集    
     elseif C_ToyBox.GetToyInfo(itemID) then
         text= select(3, WoWTools_CollectionMixin:Toy(itemID))
-        stats= WoWTools_ItemMixin:GetCount(itemID, {notZero= true})
+        --stats= WoWTools_ItemMixin:GetCount(itemID, {notZero= true})
 
 --商品
     --elseif itemKeyInfo.isCommodity then
@@ -230,8 +229,7 @@ local function Get_Item(btn)
     else
 --坐骑
         text= select(3, WoWTools_CollectionMixin:Mount(nil, itemID))
-
-        stats= WoWTools_ItemMixin:GetCount(itemID, {notZero= true})
+        --stats= WoWTools_ItemMixin:GetCount(itemID, {notZero= true})
     end
 
 
@@ -258,16 +256,16 @@ local function Set_Button(btn)
     local text, stats= Get_Item(btn)
 
 --各种提示
-    btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
+    --btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
     btn.lable:SetText(text or '')
 
 --自已出售，物品
     local isOwnerItem= btn.rowData and btn.rowData.containsOwnerItem
-    btn.OwnerItemTexture:SetPoint('RIGHT', btn.cells[4].FavoriteButton, 'LEFT')
+    --btn.OwnerItemTexture:SetPoint('RIGHT', btn.cells[4].FavoriteButton, 'LEFT')
     btn.OwnerItemTexture:SetShown(isOwnerItem)
 
 --属性
-    btn.statsLabel:SetPoint('RIGHT', btn.cells[2])
+    --btn.statsLabel:SetPoint('RIGHT', btn.cells[2])
     btn.statsLabel:SetText(stats)
 end
 
@@ -286,7 +284,9 @@ local function Create_Label(btn)
     btn.statsLabel= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
     btn.statsLabel:SetJustifyH('RIGHT')
     btn.statsLabel:SetPoint('RIGHT', btn.cells[2])
+
 end
+
 
 
 --[[local function Load_Item(btn, itemKey)
@@ -328,6 +328,7 @@ local function Set_ItemBuyFrame(frame)
     for _, btn in pairs(frame:GetFrames() or {}) do
         local stats
         local itemKey= btn.rowData and btn.rowData.itemKey
+
 --itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
         local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)
         if itemKeyInfo then
@@ -342,6 +343,7 @@ local function Set_ItemBuyFrame(frame)
                 end
             end
         end
+
 --自已出售，物品
         if btn.rowData and btn.rowData.containsOwnerItem then
             stats= WoWTools_DataMixin.Icon.Player..(stats or '')
@@ -372,6 +374,15 @@ local function Init()
     if WoWToolsSave['Plus_AuctionHouse'].disabledBuyPlus then
         return
     end
+--数量，提示
+    hooksecurefunc(AuctionHouseTableCellFavoriteMixin, 'Populate', function(btn, rowData)
+        if not btn.CountLabel then
+            btn.CountLabel= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
+            btn.CountLabel:SetPoint('RIGHT', btn, 'LEFT')
+        end
+        btn.CountLabel:SetText(rowData.itemKey and WoWTools_ItemMixin:GetCount(rowData.itemKey.itemID, {notZero= true}) or '')
+    end)
+
   --[[
 --AuctionHouseItemListMixin:Init()
 print(AuctionHouseFrame.BrowseResultsFrame.ItemList.tableBuilder)
@@ -394,6 +405,9 @@ tableBuilder:AddFixedWidthColumn(owner, 0, 50, 0, STANDARD_PADDING, Enum.Auction
         end
 
         ItemEventListener:AddCancelableCallback(rowData.itemKey.itemID, function()
+            Set_Button(btn)
+        end)
+        C_Timer.After(0.3, function()
             Set_Button(btn)
         end)
     end)
