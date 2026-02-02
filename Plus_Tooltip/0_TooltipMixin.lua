@@ -46,10 +46,10 @@ function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
 end
 
 function WoWTools_TooltipMixin:IsInCombatDisabled(tooltip)
-    return not tooltip
+    return --(tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect())--12.0才有
+        not tooltip
         or WoWTools_FrameMixin:IsLocked(tooltip)
         or (self:Save().isInCombatDisabled and InCombatLockdown())
-        or (tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect())--12.0才有
 end
 
 function WoWTools_TooltipMixin:OpenOption(root, name2)

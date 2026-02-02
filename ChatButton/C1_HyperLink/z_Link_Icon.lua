@@ -173,8 +173,9 @@ local function Item(link)
     end
 
 --物品数量
-    if not Save().notShowItemCount then
-        t=t..WoWTools_ItemMixin:GetCount(itemID, {isWoW=true})
+    local count= not Save().notShowItemCount and WoWTools_ItemMixin:GetCount(itemID, {isWoW=true})
+    if count then
+        t=t..count
     end
 
     if t~=link then

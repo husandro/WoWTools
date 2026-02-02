@@ -8,10 +8,57 @@ end
 
 
 
+--[[
+local function Create_AutPost(frame)
+    local btn= CreateFrame("Button","WoWToolsCommoditiesSellAutoPostButton", frame,"WoWToolsButtonTemplate SecureActionButtonTemplate")
+    btn:SetAttribute("type","click")
+    btn:SetAttribute("clickbutton", frame)
 
+    btn:SetPoint('RIGHT', frame, 'LEFT', -31, 0)
+    function btn:Stop()
+        self.isRun= nil
+        self:setting()
+    end
 
+    function btn:setting()
+        self:SetNormalAtlas(self.isRun and 'common-dropdown-icon-stop' or 'common-dropdown-icon-back')
+        if self.isRun then
+            self:SetScript('OnUpdate', self.Run)
+        else
+            self:SetScript('OnUpdate', nil)
+            self.elapse= nil
+        end
+    end
+    function btn:Run(elapse)
+        self.elapse= (self.elapse or 0.4)+ elapse
+        if IsModifierKeyDown() then
+            self:Stop()
+            return
+        elseif self.elapse<0.4 then
+            return
+        end
+        self.elapse= 0
+        if self:GetParent():IsEnabled() then
+            self:Click('LeftButton')
+            print('a')
+        end
+    end
 
+    btn:SetScript('OnHide', btn.Stop)
+    btn:SetScript('OnMouseUp', function(self)
+        self.isRun= not self.isRun and true or nil
+        self:setting()
+    end)
+    btn.tooltip= WoWTools_DataMixin.Icon.icon2
+        ..(WoWTools_DataMixin.onlyChinese and '自动出售' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, AUCTION_HOUSE_SELL_TAB))
+        ..'|n|cnGREEN_FONT_COLOR:Alt+ '..(WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT)
+        ..'|r|n|n|cnWARNING_FONT_COLOR:'
+        ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
 
+    btn:setting()
+end
+
+]]
 
 
 
@@ -58,49 +105,8 @@ local function Init_NextItem()
         self.isNextItem=nil
     end)
 
-
-    --local btn= CreateFrame('Button', 'WoWToolsCommoditiesSellAutoPostButton', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'WoWToolsButtonTemplate')
-    local btn= CreateFrame("Button","WoWToolsCommoditiesSellAutoPostButton", AuctionHouseFrame.CommoditiesSellFrame.PostButton,"WoWToolsButtonTemplate SecureActionButtonTemplate")
-    btn:SetAttribute("type","click")
-    btn:SetAttribute("clickbutton", AuctionHouseFrame.CommoditiesSellFrame.PostButton)
-
-    btn:SetPoint('RIGHT', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'LEFT', -23, 0)
-    function btn:Stop()
-        self.isRun= nil
-        self:setting()
-    end
-
-    function btn:setting()
-        self:SetNormalAtlas(self.isRun and 'common-dropdown-icon-stop' or 'common-dropdown-icon-back')
-        if self.isRun then
-            self:SetScript('OnUpdate', self.Run)
-        else
-            self:SetScript('OnUpdate', nil)
-            self.elapse= nil
-        end
-    end
-    function btn:Run(elapse)
-        self.elapse= (self.elapse or 0.4)+ elapse
-        if IsModifierKeyDown() then
-            self:Stop()
-            return
-        elseif self.elapse<0.4 then
-            return
-        end
-        self.elapse= 0
-        if self:GetParent():IsEnabled() then
-            self:Click()
-        end
-    end
-
-    btn:SetScript('OnHide', btn.Stop)
-    btn:SetScript('OnMouseUp', function(self)
-        self.isRun= not self.isRun and true or nil
-        self:setting()
-    end)
-    btn.tooltip= WoWTools_DataMixin.onlyChinese and '自动出售' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, AUCTION_HOUSE_SELL_TAB)
-
-    btn:setting()
+    --Create_AutPost(AuctionHouseFrame.CommoditiesSellFrame.PostButton)
+    --Create_AutPost(AuctionHouseFrame.ItemSellFrame.PostButton)
 
     Init_NextItem=function()end
 end
@@ -298,7 +304,7 @@ end
 
 --默认价格，替换，原生func
 local function GetDefaultPrice(itemLocation)
-    local price= 100000
+    local price= 2000000--200g
 
     local itemLink, itemID
     if itemLocation and itemLocation:IsValid() then
@@ -309,6 +315,9 @@ local function GetDefaultPrice(itemLocation)
     if not itemID or not itemLink then
         return price
     end
+
+
+    local classID= select(6, C_Item.GetItemInfoInstant(itemID))
 
     if Save().SellItemDefaultPrice[itemID] then--上次保存的，物价
         price= Save().SellItemDefaultPrice[itemID]
@@ -321,6 +330,7 @@ local function GetDefaultPrice(itemLocation)
         or C_Item.IsCosmeticItem(itemID)
         or C_Item.IsDecorItem(itemID)
         or C_Item.IsDressableItemByID(itemID)
+        or classID==12--任务
     then
         price= 99999900--0.9万
 
@@ -330,7 +340,7 @@ local function GetDefaultPrice(itemLocation)
             local defaultPrice = vendorPrice * 500--倍数，原1.5倍
             local price2 = defaultPrice + (COPPER_PER_SILVER - (defaultPrice % COPPER_PER_SILVER))-- AH prices must be in silver increments.
 
-            price= math.max(price2, 200000)--20g
+            price= math.max(price2, price)--200g
         end
     end
 

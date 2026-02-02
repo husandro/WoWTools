@@ -257,9 +257,9 @@ local function Init_HousingTemplates()
             return
         end
         tooltip:AddLine(' ')
-        local textLeft, portrait= WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
-        if tooltip.textLeft then
-            tooltip.textLeft:SetText(textLeft or '')
+        local portrait= WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
+        if tooltip.Portrait then
+            --tooltip.textLeft:SetText(textLeft or '')
             tooltip.Portrait:settings(portrait)
             local r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             tooltip:Set_BG_Color(r,g,b, 0.15)

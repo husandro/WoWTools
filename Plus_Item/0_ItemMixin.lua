@@ -724,18 +724,33 @@ end]]
 function WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, showZero)
     entryInfo= entryInfo or (itemID and C_HousingCatalog.GetCatalogEntryInfoByItem(itemID, true))
 
-    if not entryInfo then
+    if not entryInfo
+        or not entryInfo.showQuantity
+        --or not entryInfo.numPlace
+        or not entryInfo.quality
+        or not entryInfo.remainingRedeemable
+    then
         return
     end
-   -- print( entryInfo.showQuantity, itemID, entryInfo.numPlace ,entryInfo.quality ,entryInfo.remainingRedeemable )
 
---数量 if entryInfo.showQuantity then
-    local num= (entryInfo.numPlace or 0) + (entryInfo.quality or 0)+ (entryInfo.remainingRedeemable or 0)
+    --local stored = entryInfo.quantity + entryInfo.remainingRedeemable;
+	--local total = entryInfo.numPlaced + stored
+--数量
+    local num= (entryInfo.numPlace or 0)+ entryInfo.quality+ entryInfo.remainingRedeemable
 
     if num>0 then
-        return num..'|A:house-chest-icon:0:0|a'
+        local numPlace, quality, remainingRedeemable= entryInfo.numPlace, entryInfo.quality, entryInfo.remainingRedeemable
+
+        numPlace= numPlace or 0
+
+
+        return
+            (numPlace>0 and '|cffffffff' or '|cff626262')..numPlace..'|A:house-chest-room-prefab-icon:0:0|a|r'
+            ..(quality>0 and '|cffffffff' or '|cff626262')..quality..'|A:house-chest-icon:0:0|a|r'
+            ..(remainingRedeemable>0 and '|cffffffff' or '|cff626262')..remainingRedeemable..'|A:Levelup-Icon-Bag:0:0|a'
+
     elseif showZero then
-        return DISABLED_FONT_COLOR:WrapTextInColorCode(num)..'|A:house-chest-icon:0:0|a'
+        return DISABLED_FONT_COLOR:WrapTextInColorCode('0')..'|A:house-chest-icon:0:0|a'
     end
 end
 

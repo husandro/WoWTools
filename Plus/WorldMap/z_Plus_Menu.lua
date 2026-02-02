@@ -345,7 +345,7 @@ AbandoList= {
 
     StaticPopupDialogs["WoWTools_WORLDMAP_ABANDONQUEST"] =  {
         text= '\n'..(WoWTools_DataMixin.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)
-            ..'|n|n|cnYELLOW_FONT_COLOR:'
+            ..'|n|n|cnWARNING_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
             ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
             ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)

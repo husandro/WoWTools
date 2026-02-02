@@ -72,15 +72,17 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     if entryInfo.canCustomize then
         portrait='housing-dyable-palette-icon'
     end
-    if entryInfo.showQuantity then--entryInfo.showQuantity and 
+
+    --textLeft= WoWTools_ItemMixin:GetDecorItemCount(nil, entryInfo, true)
+    --[[if entryInfo.showQuantity then--entryInfo.showQuantity and 
         local numPlaced= entryInfo.numPlaced or 0
         local quantity= (entryInfo.quantity or 0)+ (entryInfo.remainingRedeemable or 0)
         numPlaced= numPlaced==0 and '|cff6262620|r' or numPlaced
         quantity= quantity==0 and '|cff6262620|r' or quantity
         textLeft=numPlaced..'/'..quantity..'|A:house-chest-icon:0:0|a'
-    end
+    end]]
 
-    return textLeft, portrait
+    return portrait
 end
 
 
