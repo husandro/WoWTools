@@ -110,7 +110,8 @@ end
 
 local function Get_Item(btn)
     local text, stats
-    local rowData= btn:GetRowData()
+    local rowData= btn.rowData or btn:GetRowData()
+
     if not rowData then
         return
     end
@@ -192,7 +193,7 @@ local function Get_Item(btn)
                     text= (text or '')..'|A:GarrMission_CurrencyIcon-Xp:0:0|a'
             else--if entryInfo.showQuantity then
 --数量
-                text= WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, false)
+                text= (WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, false) or '')..(text or '')
             end
         end
 
@@ -256,35 +257,33 @@ local function Set_Button(btn)
     local text, stats= Get_Item(btn)
 
 --各种提示
-    --btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
+    btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
     btn.lable:SetText(text or '')
+
+--属性
+    btn.statsLabel:SetPoint('RIGHT', btn.cells[2])
+    btn.statsLabel:SetText(stats)
 
 --自已出售，物品
     local isOwnerItem= btn.rowData and btn.rowData.containsOwnerItem
     --btn.OwnerItemTexture:SetPoint('RIGHT', btn.cells[4].FavoriteButton, 'LEFT')
     btn.OwnerItemTexture:SetShown(isOwnerItem)
+    btn.OwnerItemTexture:SetPoint('LEFT', btn.cells[1].MoneyDisplay, 15, 0)
 
---属性
-    --btn.statsLabel:SetPoint('RIGHT', btn.cells[2])
-    btn.statsLabel:SetText(stats)
 end
 
 local function Create_Label(btn)
 --各种提示
     btn.lable= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
-    btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
+--属性
+    btn.statsLabel= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
+    btn.statsLabel:SetJustifyH('RIGHT')
 
 --自已出售，物品
     btn.OwnerItemTexture= btn:CreateTexture(nil, 'ARTWORK')
     btn.OwnerItemTexture:SetSize(14,14)
     btn.OwnerItemTexture:SetAtlas(WoWTools_DataMixin.Icon.Player:match('|A:(.-):'))
-    btn.OwnerItemTexture:SetPoint('RIGHT', btn.cells[4].FavoriteButton, 'LEFT')
-
---属性
-    btn.statsLabel= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
-    btn.statsLabel:SetJustifyH('RIGHT')
-    btn.statsLabel:SetPoint('RIGHT', btn.cells[2])
-
+    
 end
 
 
@@ -380,7 +379,7 @@ local function Init()
             btn.CountLabel= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall')
             btn.CountLabel:SetPoint('RIGHT', btn, 'LEFT')
         end
-        btn.CountLabel:SetText(rowData.itemKey and WoWTools_ItemMixin:GetCount(rowData.itemKey.itemID, {notZero= true}) or '')
+        btn.CountLabel:SetText(rowData.itemKey and WoWTools_ItemMixin:GetCount(rowData.itemKey.itemID, {notZero=true}) or '')
     end)
 
   --[[
