@@ -41,23 +41,27 @@ local function Set_PvPRoles()--检测是否选定角色pvp
     end
 
     local tank, healer, dps = GetPVPRoles()
-    if  not tank and not  healer and not dps then
-        tank, healer, dps=true,true,true
-        local sid=GetSpecialization()
-        if sid then
-            local role = select(5, GetSpecializationInfo(sid))
-            if role then
-                if role=='TANK' then
-                    tank, healer, dps = true, false, false
-                elseif role=='HEALER' then
-                    tank, healer, dps= false, true, false
-                elseif role=='DAMAGER' then
-                    tank, healer, dps= false, false,true
-                end
+    if  tank or healer or not dps then
+        return
+    end
+
+    tank, healer, dps=true,true,true
+
+    local sid=GetSpecialization()
+    if sid then
+        local role = select(5, GetSpecializationInfo(sid))
+        if role then
+            if role=='TANK' then
+                tank, healer, dps = true, false, false
+            elseif role=='HEALER' then
+                tank, healer, dps= false, true, false
+            elseif role=='DAMAGER' then
+                tank, healer, dps= false, false,true
             end
         end
-        SetPVPRoles(tank, healer, dps)
     end
+
+    SetPVPRoles(tank, healer, dps)
 end
 
 --StaticPopupTimeoutSec = 60
@@ -91,14 +95,14 @@ end
 
 
 local function Init()
-    PVPReadyDialog:HookScript('OnShow', function(self2)
+    PVPReadyDialog:HookScript('OnShow', function(self)
         WoWTools_DataMixin:PlaySound()--播放, 声音
-        WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
+        WoWTools_CooldownMixin:Setup(self, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 
-    PVPTimerFrame:HookScript('OnShow', function(self2)
+    PVPTimerFrame:HookScript('OnShow', function(self)
         WoWTools_DataMixin:PlaySound()--播放, 声音
-        WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
+        WoWTools_CooldownMixin:Setup(self, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 
 

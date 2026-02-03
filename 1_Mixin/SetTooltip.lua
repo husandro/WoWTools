@@ -401,8 +401,11 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
         tooltip:SetAchievementByID(achievementID)
 
     elseif questID then
-        GameTooltip_AddQuest(frame or {}, questID)
-
+        if frame and frame.questID then
+            GameTooltip_AddQuest(frame)
+        else
+            GameTooltip_AddQuest({questID=questID})
+        end
     elseif rewardQuestID then
         GameTooltip_AddQuestRewardsToTooltip(tooltip, rewardQuestID)
         GameTooltip_AddQuestTimeToTooltip(tooltip, questID)
