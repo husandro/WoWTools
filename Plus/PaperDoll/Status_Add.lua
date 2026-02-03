@@ -496,7 +496,7 @@ local function Init()
     menu.texture= menu:CreateTexture()
     menu.texture:SetSize(18,18)
     menu.texture:SetPoint('CENTER')
-    menu.texture:SetAtlas(UnitSex("player")==Enum.UnitSex.Female and 'charactercreate-gendericon-female-selected' or 'charactercreate-gendericon-male-selected')
+    menu.texture:SetAtlas(WoWTools_DataMixin.Player.Sex==Enum.UnitSex.Female and 'charactercreate-gendericon-female-selected' or 'charactercreate-gendericon-male-selected')
 
     menu:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -22, 0)
     menu:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())

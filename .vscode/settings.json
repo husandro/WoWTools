@@ -2988,7 +2988,8 @@
         "BODY_1",
         "BODY_2",
         "VAS_REALM_LABEL",
-        "CharacterTrialLevelErrorText"
+        "CharacterTrialLevelErrorText",
+        "CharacterFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

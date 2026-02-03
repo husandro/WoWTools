@@ -79,7 +79,7 @@ WoWTools_DataMixin.Player={
 
     Name_Realm= UnitName('player')..'-'..playerRealm,
     --Name= UnitName('player'),
-    --Sex= UnitSex("player"),--1	Neutrum / Unknown 2	Male 3	Female
+    Sex= UnitSex("player"),--Enum.UnitSex.Female 0Male 1Female 2None 3Both 4Neutral
     Class= baseClass,--1WARRIOR 2PALADIN 3HUNTER 4ROGUE 5PRIEST 6DEATHKNIGHT 7SHAMAN 8MAGE 9WARLOCK 10MONK 11DRUID 12DEMONHUNTER 13EVOKER
 
     Region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China

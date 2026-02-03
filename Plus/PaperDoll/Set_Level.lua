@@ -130,6 +130,27 @@ local function Init()
         )
     end)
 
+
+    CharacterFrame.PortraitContainer.specRole= CharacterFrame.PortraitContainer:CreateTexture('WoWToolsPaperDollSpecRoleTexture', 'ARTWORK')
+    CharacterFrame.PortraitContainer.specRole:SetSize(22,22)
+    CharacterFrame.PortraitContainer.specRole:SetPoint('BOTTOMRIGHT')
+
+
+
+    WoWTools_DataMixin:Hook(CharacterFrame.PortraitContainer, 'SetPortraitToSpecIcon', function(self)
+        local specialization = C_SpecializationInfo.GetSpecialization()
+        local atlas
+        if specialization ~= nil then
+            local role = select(5, C_SpecializationInfo.GetSpecializationInfo(specialization));
+            atlas= WoWTools_DataMixin.Icon[role]
+        end
+        if atlas then
+            self.specRole:SetAtlas(atlas)
+        else
+            self.specRole:SetTexture(0)
+        end
+    end)
+
     Init=function()
         WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
     end

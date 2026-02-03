@@ -23,10 +23,6 @@ local function Init()
     frame.text:EnableMouse(true)
     WoWTools_ColorMixin:SetLabelColor(frame.text)
 
-
-
-
-
     frame.text:SetScript("OnLeave",function(self)
         GameTooltip:Hide()
         self:SetAlpha(1)
@@ -78,66 +74,50 @@ local function Init()
                 (WoWTools_DataMixin.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION)..' |cffffffff'..(profCap or '')
             )
         end
-        
-        GameTooltip:AddLine(' ')
-
-        C_WowTokenPublic.UpdateMarketPrice()
-
-        local price= C_WowTokenPublic.GetCurrentMarketPrice()
-        if price and price>0 then
-            GameTooltip:AddDoubleLine('|A:token-choice-wow:0:0|a'..WoWTools_DataMixin:MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price))
-        end
-
-        GameTooltip:AddLine(WoWTools_ItemMixin:GetName(122284))
 
         GameTooltip:Show()
-        self:SetAlpha(0.5)
+        self:SetAlpha(0.3)
     end)
---[[
-C_WowTokenPublic.UpdateMarketPrice()
-        local price= C_WowTokenPublic.GetCurrentMarketPrice()
-        if price and price>0 then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('|A:token-choice-wow:0:0|a'..WoWTools_DataMixin:MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
-            GameTooltip:AddLine(' ')
-        end
-        local bagAll,bankAll,numPlayer= 0,0,0--帐号数据
-        for guid, info in pairs(WoWTools_WoWDate or {}) do
-            local tab=info.Item[122284]
-            if tab and guid then
-                GameTooltip:AddDoubleLine(
-                    WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true}),
 
-                    '|A:Banker:0:0|a'..(tab.bank==0 and '|cff626262'..tab.bank..'|r' or tab.bank)
-                    ..' '
-                    ..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff626262'..tab.bag..'|r' or tab.bag)
-                )
-                bagAll=bagAll +tab.bag
-                bankAll=bankAll +tab.bank
-                numPlayer=numPlayer +1
-            end
-        end
 
-        local all= bagAll+ bankAll
-        GameTooltip:AddDoubleLine('|A:groupfinder-waitdot:0:0|a'..numPlayer, '|T1120721:0|t'..all)
-]]
+    local ser= GetAutoCompleteRealms() or {}
+    local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm, nil, nil)
+    local num= #ser
+    frame.text:SetText(
+        (GameLimitedMode_IsActive() and '|cnWARNING_FONT_COLOR:' or '')
+        ..(num>1 and num..' ' or '')
+        ..WoWTools_DataMixin.Player.Realm
+        ..(server and ' '..server.col or '')
+    )
+
+
+    frame.texture= frame:CreateTexture(nil, 'ARTWORK')
+    frame.texture:SetPoint('LEFT', frame.text, 'RIGHT', 2, 0)
+    frame.texture:SetSize(16,16)
+    frame.texture:EnableMouse(true)
+    frame.texture:SetTexture(1120721)
+    frame.texture.itemID= 122284
+    frame.texture:SetScript("OnLeave",function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+
+    frame.texture:SetScript("OnEnter",function(self)
+        WoWTools_SetTooltipMixin:Frame(self)
+        self:SetAlpha(0.3)
+    end)
+
+    frame.text2= frame:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'GameFontNormal')
+    frame.text2:SetPoint('LEFT', frame.texture, 'RIGHT', 2, 0)
+    WoWTools_ColorMixin:SetLabelColor(frame.text2)
+
 
     function frame:settings()
-        local ser= GetAutoCompleteRealms() or {}
-        local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm, nil, nil)
-        local num= #ser
-
-        local all= WoWTools_ItemMixin:GetWoWCount(122284)
-
-        frame.text:SetText(
-            (GameLimitedMode_IsActive() and '|cnWARNING_FONT_COLOR:' or '')
-            ..(num>1 and num..' ' or '')
-            ..WoWTools_DataMixin.Player.Realm
-            ..(server and ' '..server.col or '')
-            ..'|A:shop-header-menu-iconShop:0:0:0:-2|a'
-            ..all
-        )
+        local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)
+        frame.text2:SetText(all..(numPlayer>1 and '('..numPlayer..')' or ''))
     end
+
+    frame:SetScript('OnShow', frame.settings)
 
     frame:settings()
 

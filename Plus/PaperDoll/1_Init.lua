@@ -235,7 +235,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 itemSlotScale=1, --栏位，按钮，缩放
             }
 
-            WoWTools_PaperDollMixin.addName= (WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
+            WoWTools_PaperDollMixin.addName= (WoWTools_DataMixin.Player.Sex==Enum.UnitSex.Female and '|A:charactercreate-gendericon-female-selected:0:0|a' or '|A:charactercreate-gendericon-male-selected:0:0|a')
                                         ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
 
             WoWTools_PaperDollMixin.addName2= '|A:bags-icon-equipment:0:0|a'..(WoWTools_DataMixin.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)

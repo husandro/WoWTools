@@ -124,7 +124,7 @@ end
 
 
 local function Create_Spec_Button(index)
-    local specID, name, _, texture= GetSpecializationInfo(index, false, false, nil, UnitSex("player"))
+    local specID, name, _, texture= GetSpecializationInfo(index, false, false, nil, WoWTools_DataMixin.Player.Sex)
     local btn= WoWTools_ButtonMixin:Cbtn(SpecFrame, {
         texture= texture,
         name='WoWToolsPlayerSpellsFrameSpecButton'..index,
