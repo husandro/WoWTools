@@ -11,6 +11,12 @@ end
 
 
 local function Init()
+    if Save().notLevel then
+        return
+    end
+
+    CharacterLevelText:SetFontObject('GameFontNormal')
+    CharacterTrialLevelErrorText:SetFontObject('GameFontNormalSmall2')
     WoWTools_ColorMixin:SetLabelColor(CharacterLevelText)
 
     CharacterLevelText:SetJustifyH('LEFT')
@@ -18,19 +24,30 @@ local function Init()
     CharacterLevelText:HookScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     CharacterLevelText:HookScript('OnEnter', function(self)
         local info = C_PlayerInfo.GetPlayerCharacterData()
-        if Save().hide or not info then
+        if Save().notLevel or not info then
             return
         end
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
+        GameTooltip:SetText(WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine('name |cnGREEN_FONT_COLOR:'..info.name)
-        GameTooltip:AddLine('fileName |cnGREEN_FONT_COLOR:'..info.fileName)
-        GameTooltip:AddLine('sex |cnGREEN_FONT_COLOR:'..info.sex)
-        GameTooltip:AddLine('displayID |cnGREEN_FONT_COLOR:'..C_PlayerInfo.GetDisplayID())
-        GameTooltip:AddDoubleLine((info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..'createScreenIconAtlas', info.createScreenIconAtlas)
-        GameTooltip:AddDoubleLine('GUID', UnitGUID('player'))
+        GameTooltip:AddDoubleLine(
+            'name |cffffffff'..info.name,
+            'fileName |cffffffff'..info.fileName
+        )
+        GameTooltip:AddDoubleLine(
+            'sex |cffffffff'
+            ..(info.sex==Enum.UnitSex.Male and '|A:charactercreate-gendericon-male-selected:0:0|a'..(WoWTools_DataMixin.onlyChinese and '男' or BODY_1)
+                or (info.sex==Enum.UnitSex.Female and '|A:charactercreate-gendericon-female-selected:0:0|a'..(WoWTools_DataMixin.onlyChinese and '女' or BODY_2))
+                or ''
+            )
+            ..' '..info.sex,
+            info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a|cffffffff'..info.createScreenIconAtlas
+        )
+
+        GameTooltip:AddDoubleLine('GUID |cffffffff'..WoWTools_DataMixin.Player.GUID,
+                'displayID |cffffffff'..C_PlayerInfo.GetDisplayID()
+        )
+
         GameTooltip:AddLine(' ')
 
         local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
@@ -40,11 +57,12 @@ local function Init()
             expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
         end
 
-        GameTooltip:AddDoubleLine(
+        GameTooltip:AddLine(
             (WoWTools_DataMixin.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))
             ..': '
-            ..WoWTools_TextMixin:GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
-
+            ..WoWTools_TextMixin:GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime())
+        )
+        GameTooltip:AddLine(
             format(
                 WoWTools_DataMixin.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION,
 
@@ -52,10 +70,24 @@ local function Init()
             )
         )
 
-        GameTooltip:AddLine(' ')
-        for _, info2 in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
-            local col= info2.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-            GameTooltip:AddDoubleLine((info2.alreadyOn and '|A:common-icon-rotateright:0:0|a' or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and '|A:common-icon-rotateleft:0:0|a' or '')..col..' ID '.. info2.id, col..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info2.completed))
+       -- GameTooltip:AddLine(' ')
+        for _, data in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
+            local col= data.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
+            local icon=data.previewAtlas and '|A:'..data.previewAtlas..':0:0|a' or ''
+            GameTooltip:AddDoubleLine(
+                (data.alreadyOn and '|A:common-icon-rotateright:0:0|a' or '')
+                ..col
+                ..icon
+                ..WoWTools_TextMixin:CN(data.name)
+                ..(data.alreadyOn and '|A:common-icon-rotateleft:0:0|a' or '')
+                ..' |cffffffff'
+                .. data.id,
+
+                col
+                ..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..': '
+                ..WoWTools_TextMixin:GetYesNo(data.completed)
+                ..icon
+            )
         end
 
         GameTooltip:Show()
@@ -63,29 +95,44 @@ local function Init()
     end)
 
     WoWTools_DataMixin:Hook('PaperDollFrame_SetLevel', function()
-         if Save().hide then
+         if Save().notLevel then
             return
         end
 
+        local size= 18
+
         local level
+--专精
+        local spec
+        local icon, role= select(4, PlayerUtil.GetCurrentSpecID())
+        if icon then
+            spec= '|T'..icon..':'.. size..'|t'
+            if role then
+                spec= spec..'|A:spec-role-'..role..':'..size..':'..size..'|a'
+            end
+        end
+--等级
         level= UnitLevel("player") or 1
         local effectiveLevel = UnitEffectiveLevel("player") or 1
-
         if effectiveLevel ~= level then
             level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
         else
             level= format('%d', level)
         end
 
+
         CharacterLevelText:SetText(
-            (WoWTools_UnitMixin:GetFaction('player', nil, true, {size=26}) or '')
-            ..(WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {size=26}) or '')
-            ..(WoWTools_UnitMixin:GetClassIcon('player', nil, nil, {size=26}) or '')
+            (WoWTools_UnitMixin:GetFaction('player', nil, true, {size=size}) or '')
+            ..(WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {size=size}) or '')
+            ..(WoWTools_UnitMixin:GetClassIcon('player', nil, nil, {size=size}) or '')
+            ..(spec or '')
             ..format(WoWTools_DataMixin.onlyChinese and '等级 %s' or TOOLTIP_UNIT_LEVEL, level)
         )
     end)
 
-    Init=function()end
+    Init=function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
+    end
 end
 
 

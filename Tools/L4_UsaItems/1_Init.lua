@@ -80,9 +80,7 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
     }) do
         num= #Save()[type]
         sub=root:CreateButton(
-            text
-            ..(num==0 and ' |cff626262' or ' |cnGREEN_FONT_COLOR:')
-            ..num,
+            text,
         function(data)
             if data.type=='item' then
                 WoWTools_LoadUIMixin:Journal(3)--加载，收藏，UI
@@ -92,7 +90,8 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
                 WoWTools_LoadUIMixin:OpenPaperDoll(1, 1)--打开/关闭角色界面
             end
             return MenuResponse.Open
-        end, {type=type})
+        end, {type=type, rightText= num})
+        WoWTools_MenuMixin:SetRightText(sub)
 
 
         for index, ID in pairs(Save()[type]) do
@@ -139,9 +138,10 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
                     )
                 end
                 return MenuResponse.Open
-            end, {index=index, type=type, isToy=isToy, spellID=spellID, itemID=itemID, name=name})
+            end, {index=index, type=type, isToy=isToy, spellID=spellID, itemID=itemID, name=name, rightText=index})
 --tooltip
             WoWTools_SetTooltipMixin:Set_Menu(sub2)
+            WoWTools_MenuMixin:SetRightText(sub2)
         end
 
         if num>0 then
@@ -237,7 +237,8 @@ local function Init()
 
     local btn=WoWTools_ButtonMixin:Cbtn(WoWTools_ToolsMixin:Get_MainButton().Frame, {
         atlas='Soulbinds_Tree_Conduit_Icon_Utility',
-        size=22
+        size=22,
+        name='WoWToolsToolsUseItemsAddMainButton'
     })
     btn:SetPoint('TOPLEFT', WoWTools_ToolsMixin:Get_MainButton(), 'TOPRIGHT')
 

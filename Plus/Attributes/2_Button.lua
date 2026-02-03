@@ -114,7 +114,7 @@ local function Init()
     function button:set_strata()
         self:SetFrameStrata(Save().strata or 'MEDIUM')
     end
-    
+
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
@@ -136,8 +136,7 @@ local function Init()
 
     function button:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AttributesMixin.addName)
+        GameTooltip:SetText(WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
@@ -187,7 +186,11 @@ local function Init()
         self:set_tooltip()
     end)
 
-    button:SetScript("OnLeave",function(self) ResetCursor() GameTooltip:Hide() self:set_Show_Hide() end)
+    button:SetScript("OnLeave",function(self)
+        ResetCursor()
+        GameTooltip:Hide()
+        self:set_Show_Hide()
+    end)
 
     button:SetScript('OnEnter', function(self)
         self:set_tooltip()
@@ -196,11 +199,12 @@ local function Init()
     end)
 
 
-    function button:settings()
+    function button:settings(sceneType)
         if Save().hideInPetBattle then
             self:SetShown(
                 not C_PetBattles.IsInBattle()
                 and not UnitHasVehicleUI('player')
+                and sceneType~= Enum.ClientSceneType.MinigameSceneType
             )
         else
             self:SetShown(true)
@@ -214,9 +218,18 @@ local function Init()
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
             self:RegisterEvent('UNIT_ENTERED_VEHICLE')
             self:RegisterEvent('UNIT_EXITED_VEHICLE')
+
+            self:RegisterEvent('CLIENT_SCENE_OPENED')
+            self:RegisterEvent('CLIENT_SCENE_CLOSED')
         end
     end
-    button:SetScript('OnEvent', button.settings)
+    button:SetScript('OnEvent', function(self, event, arg1)
+        if event=='CLIENT_SCENE_OPENED' then
+            self:settings(arg1)
+        else
+            self:settings()
+        end
+    end)
 
 
 

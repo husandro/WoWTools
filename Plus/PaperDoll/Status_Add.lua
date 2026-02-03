@@ -1,54 +1,15 @@
+
+--属性，增强 PaperDollFrame.lua
 local function Save()
     return WoWToolsSave['Plus_PaperDoll']
 end
+local AttributesCategory={}
 local P_PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
 
 
 
 
 
-local AttributesCategory={}
-
-local function Init_AttributesCategory()
-    AttributesCategory={
-        {stat='STRENGTH', index=1, name=WoWTools_DataMixin.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH, primary=LE_UNIT_STAT_STRENGTH},--AttributesCategory
-        {stat='AGILITY', index=1, name=WoWTools_DataMixin.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY, rimary=LE_UNIT_STAT_AGILITY},
-        {stat='INTELLECT', index=1, name=WoWTools_DataMixin.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT, primary=LE_UNIT_STAT_INTELLECT},
-        {stat='-'},
-        {stat='STAMINA', index=1, name= WoWTools_DataMixin.onlyChinese and '耐力' or STA_LCD},
-        {stat='ARMOR', index=1},
-        {stat='STAGGER', index=1},
-        {stat='MANAREGEN', index=1, name=WoWTools_DataMixin.onlyChinese and '法力回复' or MANA_REGEN},
-        {stat='SPELLPOWER', index=1, name=WoWTools_DataMixin.onlyChinese and '法术强度' or STAT_SPELLPOWER},
-
-        {stat='HEALTH', index=1},
-        {stat='POWER', index=1, name=WoWTools_DataMixin.onlyChinese and '能量' or POWER_TYPE_POWER},
-        {stat='ALTERNATEMANA', index=1, name=WoWTools_DataMixin.onlyChinese and '法力值' or  MANA},
-
-        {stat='-'},
-    --}
-    --local EnhancementsCategory={
-        {stat='CRITCHANCE', index=2, name=WoWTools_DataMixin.onlyChinese and '爆击' or STAT_CRITICAL_STRIKE},
-        {stat='HASTE', index=2},
-        {stat='MASTERY', index=2},
-        {stat='VERSATILITY', index=2},
-        {stat='LIFESTEAL', index=2},
-        {stat='AVOIDANCE', index=2},
-        {stat='SPEED', index=2},
-        {stat='DODGE', index=2},
-        {stat='PARRY', index=2},
-        {stat='BLOCK', index=2},
-
-        {stat='ENERGY_REGEN', index=2},
-        {stat='RUNE_REGEN', index=2},
-        {stat='FOCUS_REGEN', index=2},
-
-        {stat='MOVESPEED', index=2, name=WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE},
-        {stat='ATTACK_DAMAGE', index=2, name=WoWTools_DataMixin.onlyChinese and '伤害' or DAMAGE, },
-        {stat='ATTACK_AP', index=2,  name=WoWTools_DataMixin.onlyChinese and '攻击强度' or STAT_ATTACK_POWER, },
-        {stat='ATTACK_ATTACKSPEED', index=2, name=WoWTools_DataMixin.onlyChinese and '攻击速度' or ATTACK_SPEED},
-    }
-end
 
 
 
@@ -169,7 +130,7 @@ local function Get_Role_Text(roleIndex)--职责
         or (roleIndex==Enum.LFGRole.Healer and format('%s%s', WoWTools_DataMixin.Icon.TANK, WoWTools_DataMixin.onlyChinese and '治疗' or HEALER))
         or (roleIndex==Enum.LFGRole.Damage and format('%s%s', WoWTools_DataMixin.Icon.DAMAGER, WoWTools_DataMixin.onlyChinese and '伤害' or DAMAGER))
         or (WoWTools_DataMixin.onlyChinese and '无' or NONE)
-    
+
 end
 
 
@@ -338,8 +299,30 @@ end
 
 
 
-local function Init_Status_Menu(self, root)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
     local sub
+
+
+--属性，选项
     for _, tab in pairs(AttributesCategory) do
         if tab.stat=='-' then
             root:CreateDivider()
@@ -347,7 +330,7 @@ local function Init_Status_Menu(self, root)
             local index= tab.index
             local stat= tab.stat
             local name= tab.name or WoWTools_TextMixin:CN(_G[stat] or _G['STAT_'..stat]) or stat
-            --tab.name= tab.name or name
+
             local stats= Find_Stats(stat, index, false)
             local role, autoHide ='', ''
             if stats then
@@ -375,68 +358,37 @@ local function Init_Status_Menu(self, root)
             Init_Sub_Menu(self, sub, stat, index, name)
         end
     end
-end
 
 
+    root:CreateDivider()
+--打开选项界面
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName, name2=WoWTools_PaperDollMixin.addName3})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init_Menu(self, root)
-    if not self:IsMouseOver() then
-        return
-    end
-
-    local sub, sub2, name
---启用    
-    sub= root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-    function()
-        return not Save().notStatusPlus
-    end, function ()
-        self:set_enabel_disable()
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
 
 --全部清除
-    name= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
-    sub2=sub:CreateButton(
-        name,
-    function(data)
+    local clearName= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+    sub:CreateButton(
+        clearName,
+    function()
         StaticPopup_Show('WoWTools_OK',
-        data.name,
+        clearName,
         nil,
         {SetValue=function()
             PAPERDOLL_STATCATEGORIES= {}
             Data_Save()
         end})
         return MenuResponse.Open
-    end, {name=name})
+    end)
 
 --还原
-    name= (Save().PAPERDOLL_STATCATEGORIES and '' or '|cff626262')
+    local restName= (Save().PAPERDOLL_STATCATEGORIES and '' or '|cff626262')
         ..'|A:uitools-icon-refresh:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
     sub:CreateButton(
-        name,
-    function(data)
+        restName,
+    function()
         StaticPopup_Show('WoWTools_OK',
-        data.name,
+        restName,
         nil,
         {SetValue=function()
             PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
@@ -444,49 +396,118 @@ local function Init_Menu(self, root)
             WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
         end})
         return MenuResponse.Open
-    end, {name=name})
-
---Plus
-    sub:CreateDivider()
-    sub2=sub:CreateCheckbox(
-        'Plus|A:communities-icon-addchannelplus:0:0|a',
-    function()
-        return not Save().notStatusPlusFunc
-    end, function()
-        Save().notStatusPlusFunc= not Save().notStatusPlusFunc and true or nil
     end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '急速' or SPELL_HASTE)..': |cffffffff9037|r|cnGREEN_FONT_COLOR:[+13%]|r  13|cffff00ff.69|r%')
-        tooltip:AddLine(' ')
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
+end
 
---小数点
-    for i=-1, 4 do
-        sub2:CreateRadio(
-            i==-1 and (WoWTools_DataMixin.onlyChinese and '无' or NONE)
-             or ((WoWTools_DataMixin.onlyChinese and '小数点 ' or 'bit ')..i),
-        function(data)
-            return Save().itemLevelBit==data.bit
-        end, function(data)
-            Save().itemLevelBit= data.bit
-            WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
-            return MenuResponse.Refresh
-        end, {bit=i})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--CharacterStatsPane
+--显示/藏装备管理框选项
+local function Init()
+    if Save().notStatusPlus then
+        return
     end
 
-    sub:CreateDivider()
-    --sub:CreateTitle(self.addName)
---打开选项界面
-    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_PaperDollMixin.addName, name2=self.addName})
 
---reload
-    sub:CreateDivider()
-    WoWTools_MenuMixin:Reload(sub)
+    if Save().PAPERDOLL_STATCATEGORIES then--加载，数据
+        PAPERDOLL_STATCATEGORIES= Save().PAPERDOLL_STATCATEGORIES
+    end
 
---属性，选项
-    root:CreateDivider()
-    Init_Status_Menu(self, root)
+
+    AttributesCategory={
+        {stat='STRENGTH', index=1, name=WoWTools_DataMixin.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH, primary=LE_UNIT_STAT_STRENGTH},--AttributesCategory
+        {stat='AGILITY', index=1, name=WoWTools_DataMixin.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY, rimary=LE_UNIT_STAT_AGILITY},
+        {stat='INTELLECT', index=1, name=WoWTools_DataMixin.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT, primary=LE_UNIT_STAT_INTELLECT},
+        {stat='-'},
+        {stat='STAMINA', index=1, name= WoWTools_DataMixin.onlyChinese and '耐力' or STA_LCD},
+        {stat='ARMOR', index=1},
+        {stat='STAGGER', index=1},
+        {stat='MANAREGEN', index=1, name=WoWTools_DataMixin.onlyChinese and '法力回复' or MANA_REGEN},
+        {stat='SPELLPOWER', index=1, name=WoWTools_DataMixin.onlyChinese and '法术强度' or STAT_SPELLPOWER},
+
+        {stat='HEALTH', index=1},
+        {stat='POWER', index=1, name=WoWTools_DataMixin.onlyChinese and '能量' or POWER_TYPE_POWER},
+        {stat='ALTERNATEMANA', index=1, name=WoWTools_DataMixin.onlyChinese and '法力值' or  MANA},
+
+        {stat='-'},
+    --}
+    --local EnhancementsCategory={
+        {stat='CRITCHANCE', index=2, name=WoWTools_DataMixin.onlyChinese and '爆击' or STAT_CRITICAL_STRIKE},
+        {stat='HASTE', index=2},
+        {stat='MASTERY', index=2},
+        {stat='VERSATILITY', index=2},
+        {stat='LIFESTEAL', index=2},
+        {stat='AVOIDANCE', index=2},
+        {stat='SPEED', index=2},
+        {stat='DODGE', index=2},
+        {stat='PARRY', index=2},
+        {stat='BLOCK', index=2},
+
+        {stat='ENERGY_REGEN', index=2},
+        {stat='RUNE_REGEN', index=2},
+        {stat='FOCUS_REGEN', index=2},
+
+        {stat='MOVESPEED', index=2, name=WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE},
+        {stat='ATTACK_DAMAGE', index=2, name=WoWTools_DataMixin.onlyChinese and '伤害' or DAMAGE, },
+        {stat='ATTACK_AP', index=2,  name=WoWTools_DataMixin.onlyChinese and '攻击强度' or STAT_ATTACK_POWER, },
+        {stat='ATTACK_ATTACKSPEED', index=2, name=WoWTools_DataMixin.onlyChinese and '攻击速度' or ATTACK_SPEED},
+    }
+
+
+
+
+
+    local menu= CreateFrame('DropdownButton', 'WoWToolsPaperDollStatusMenuButton', PaperDollFrame, 'WoWToolsMenu3Template')
+    menu.texture= menu:CreateTexture()
+    menu.texture:SetSize(18,18)
+    menu.texture:SetPoint('CENTER')
+    menu.texture:SetAtlas(UnitSex("player")==Enum.UnitSex.Female and 'charactercreate-gendericon-female-selected' or 'charactercreate-gendericon-male-selected')
+
+    menu:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -22, 0)
+    menu:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
+    menu:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
+    menu.tooltip= WoWTools_PaperDollMixin.addName2..WoWTools_DataMixin.Icon.left
+
+    menu:SetupMenu(Init_Menu)
+
+    Init=function()
+        _G['WoWToolsPaperDollStatusMenuButton']:SetShown(not Save().notStatusPlus)
+    end
 end
 
 
@@ -494,10 +515,8 @@ end
 
 
 
-function WoWTools_PaperDollMixin:Init_Status_Menu(btn)
-    btn:SetupMenu(Init_Menu)
-end
 
-function WoWTools_PaperDollMixin:Init_AttributesCategory_Menu()
-    Init_AttributesCategory()
+--属性，增强 PaperDollFrame.lua
+function WoWTools_PaperDollMixin:Init_Status()
+    Init()
 end

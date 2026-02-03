@@ -74,7 +74,9 @@ end
 
 
 --耐久度, 提示
-function WoWTools_DurabiliyMixin:OnEnter()
+function WoWTools_DurabiliyMixin:OnEnter(tootip)
+    tootip = tootip or GameTooltip
+
     local tabSlot={
         {1, 10},
         {2, 6},
@@ -130,7 +132,7 @@ function WoWTools_DurabiliyMixin:OnEnter()
         end
         b= b or  WoWTools_ItemMixin:GetEquipSlotIcon(tab[2])
         local s= index==9 and '    ' or ''
-        GameTooltip:AddDoubleLine(s..(a or ' '), b..s)
+        tootip:AddDoubleLine(s..(a or ' '), b..s)
     end
 
     local euip=''--装备管理
@@ -148,8 +150,8 @@ function WoWTools_DurabiliyMixin:OnEnter()
         coText= ' |cnWARNING_FONT_COLOR:'..GetMoneyString(co)..'|r'
     end
 
-    GameTooltip:AddLine(' ')
-    GameTooltip:AddDoubleLine(
+    tootip:AddLine(' ')
+    tootip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '耐久度' or DURABILITY)..' ('..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
          '('..(num>0 and '|cnWARNING_FONT_COLOR:' or '|cff626262')..num..'|r) '..(WoWTools_DataMixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
     )
@@ -158,7 +160,7 @@ function WoWTools_DurabiliyMixin:OnEnter()
     cur3= cur3 or 0
     item= item or 0
     pvp= pvp or 0
-    GameTooltip:AddDoubleLine(
+    tootip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '物品' or ITEMS)
         ..(WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
         ..(cur3==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur3) or format(' |cnWARNING_FONT_COLOR:%.2f|r/%.2f', cur3, item)),

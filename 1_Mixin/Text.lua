@@ -225,9 +225,9 @@ function WoWTools_TextMixin:GetShowHide(sh, all)
             return WoWTools_DataMixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)
         end
     elseif sh then
-		return '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)..'|r'
+		return WoWTools_DataMixin.onlyChinese and '显示' or SHOW
 	else
-		return '|cff828282'..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..'|r'
+		return DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
 	end
 end
 
@@ -244,7 +244,7 @@ function WoWTools_TextMixin:GetEnabeleDisable(ed, all)--启用或禁用字符
         if ed then
             return WoWTools_DataMixin.onlyChinese and '启用' or ENABLE
         else
-            return WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE
+            return DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
         end
     end
 end
@@ -253,7 +253,7 @@ function WoWTools_TextMixin:GetYesNo(yesno)
     if yesno then
         return WoWTools_DataMixin.onlyChinese and '是' or YES
     else
-        return WoWTools_DataMixin.onlyChinese and '否' or NO
+        return DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '否' or NO)
     end
 end
 

@@ -201,17 +201,16 @@ Plus\PaperDoll\Duration.lua
 Plus\PaperDoll\Flyout_Equipment.lua
 Plus\PaperDoll\InspectUI_Init.lua
 Plus\PaperDoll\Item_PoaperDll.lua
-Plus\PaperDoll\Server_Info.lua
+Plus\PaperDoll\Reaml.lua
 Plus\PaperDoll\Set_Level.lua
 Plus\PaperDoll\Show_Hide_Button.lua
-Plus\PaperDoll\Status_Func.lua
-Plus\PaperDoll\Status_Init.lua
-Plus\PaperDoll\Status_Menu.lua
+Plus\PaperDoll\Status_Bit.lua
+Plus\PaperDoll\Status_Add.lua
 Plus\PaperDoll\Tab1.lua
 Plus\PaperDoll\Tab2.lua
 Plus\PaperDoll\Tab3_Set_Plus.lua
 Plus\PaperDoll\Tab3.lua
-Plus\PaperDoll\TrackButton_PaperDool.lua
+Plus\PaperDoll\EquipButton.lua
 
 ##声望面板
 Plus\Faction\0_FactionMixin.lua

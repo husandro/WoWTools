@@ -2981,7 +2981,14 @@
         "PARRY",
         "AuctionHouseTableCellFavoriteMixin",
         "TableBuilderMixin",
-        "AuctionHouseFrameMixin"
+        "AuctionHouseFrameMixin",
+        "UpdateUIElementsForClientScene",
+        "EQUIPMENT_SET_ASSIGN_TO_SPEC",
+        "PaperDollFrame_SetLevel",
+        "BODY_1",
+        "BODY_2",
+        "VAS_REALM_LABEL",
+        "CharacterTrialLevelErrorText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

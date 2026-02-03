@@ -2353,7 +2353,3 @@ function WoWTools_TextureMixin.Events:Blizzard_NamePlates()
         self:HideTexture(frame.HealthBarsContainer.healthBar.bgTexture)
     end)
 end
-
-
-
-

@@ -10,7 +10,7 @@ end
 
 
  --自定，数据
- local function status_set_rating(frame, rating)
+local function status_set_rating(frame, rating)
     local num= GetCombatRating(rating) or 0
     if num == 0 then
         frame.numLabel:SetText('')
@@ -25,9 +25,11 @@ end
         frame.numLabel:SetFormattedText('%s%s', BreakUpLargeNumbers(num), extra)
     end
 end
+
 local function create_status_label(frame, rating)
-    local save=Save()
-    if not save.hide and save.itemLevelBit>=0 and frame:IsShown() then
+    local bit= Save().itemLevelBit or -1
+
+    if bit>=0 and frame:IsShown() then
         if not frame.numLabel then
             frame.numLabel=WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
             frame.numLabel:SetPoint('LEFT', frame.Label, 'RIGHT',2,0)
@@ -36,6 +38,7 @@ local function create_status_label(frame, rating)
             status_set_rating(frame, rating)
         end
         return true
+
     elseif frame.numLabel then
         frame.numLabel:SetText("")
     end
@@ -338,9 +341,9 @@ local function Init_Defense()
     end)
 
     WoWTools_DataMixin:Hook('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
-        local save= Save()
-        if not save.hide and save.itemLevelBit>=0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
-            statFrame.Value:SetFormattedText('%.0'..save.itemLevelBit..'f%%', numericValue)
+        local bit= Save().itemLevelBit or -1
+        if bit>=0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then
+            statFrame.Value:SetFormattedText('%.0'..bit..'f%%', numericValue)
         end
     end)
 end
@@ -389,8 +392,8 @@ local function Init()
     end
 
     WoWTools_DataMixin:Hook('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
-        local save= Save()
-        if statFrame:IsShown() and not save.hide and save.itemLevelBit>=0 then
+        local bit= Save().itemLevelBit or -1
+        if statFrame:IsShown() and bit>=0 then
             local avgItemLevel, avgItemLevelEquipped, avgItemLevelPvP = GetAverageItemLevel()
 	        local minItemLevel = C_PaperDollInfo.GetMinItemLevel()
 	        local displayItemLevel = math.max(minItemLevel or 0, avgItemLevelEquipped)
@@ -399,17 +402,25 @@ local function Init()
                 pvp= format('/|cffff7f00%i|r', avgItemLevelPvP)
             end
             if statFrame.numericValue ~= displayItemLevel then
-                statFrame.Value:SetFormattedText('%.0'..save.itemLevelBit..'f%s', displayItemLevel, pvp)
+                statFrame.Value:SetFormattedText('%.0'..bit..'f%s', displayItemLevel, pvp)
             end
         end
     end)
     CharacterStatsPane.ItemLevelFrame.Value:EnableMouse(true)
     function CharacterStatsPane.ItemLevelFrame.Value:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        
+        local bit= Save().itemLevelBit or -1
         GameTooltip:SetText(WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)--, WoWTools_PaperDollMixin.StatusPlusButton)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '小数点 ' or 'bit ')..(Save().itemLevelBit==-1 and '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save().itemLevelBit)), '-1'..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '小数 ' or 'Decimals ')
+            ..(
+                bit==-1 and '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)..'|r'
+                or ('|cnGREEN_FONT_COLOR:'..bit)
+            ),
+
+            '-1'..WoWTools_DataMixin.Icon.left
+        )
         GameTooltip:AddDoubleLine(' ', '+1'..WoWTools_DataMixin.Icon.right)
         GameTooltip:AddLine('-1 '..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
         GameTooltip:Show()
@@ -419,23 +430,16 @@ local function Init()
         GameTooltip_Hide()
     end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnEnter', function(self)
-        if not Save().hide then
-            self:set_tooltips()
-            self:SetAlpha(0.7)
-        end
+        self:set_tooltips()
+        self:SetAlpha(0.7)
     end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseUp', function(self)
         self:SetAlpha(0.7)
     end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseDown', function(self, d)
-        if Save().hide then
-            return
-        end
-        local n= Save().itemLevelBit or 3
-        n= d=='LeftButton' and n-1 or n
-        n= d=='RightButton' and n+1 or n
-        n= n>4 and 4 or n
-        n= n<-1 and -1 or n
+        local n= (Save().itemLevelBit or -1)+ (d=='LeftButton' and -1 or 1)
+        n= math.min(-1, n)
+        n= math.max(4, n)
         Save().itemLevelBit=n
         WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
         self:set_tooltips()
@@ -463,6 +467,8 @@ local function Init()
 
 -- Defense
     Init_Defense()
+
+    Init=function()end
 end
 
 
@@ -479,6 +485,6 @@ end
 
 
 
-function WoWTools_PaperDollMixin:Init_Status_Func()
+function WoWTools_PaperDollMixin:Init_Status_Bit()
     Init()
 end

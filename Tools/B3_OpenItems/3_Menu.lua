@@ -76,7 +76,7 @@ local function Edit_Item(self, info)
         end,
     }
     )
-    
+
 end
 
 
@@ -93,7 +93,7 @@ end
 
 
 
-local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
+local function Remove_NoUse_Menu(self, root, itemID, type, numUse, index)
     WoWTools_DataMixin:Load(itemID, 'item')
 
     local sub=root:CreateButton(
@@ -102,8 +102,9 @@ local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
     function(data)
         Edit_Item(self, data)
         return MenuResponse.Open
-    end, {itemID=itemID, type=type})
+    end, {itemID=itemID, type=type, rightText= index})
 
+    WoWTools_MenuMixin:SetRightText(sub)
     WoWTools_SetTooltipMixin:Set_Menu(sub)
 
     if type=='use' then
@@ -167,7 +168,7 @@ local function Remove_All_Menu(self, root, type, num)
                 WoWTools_OpenItemMixin:Get_Item()
         end})
         return MenuResponse.Open
-        
+
     end, {type=type, name=name})
     root:CreateDivider()
 end
@@ -223,8 +224,11 @@ local function Init_Menu(self, root)
 
 --自定义禁用列表
     sub= root:CreateButton(
-        self.noText..' #'..no,
-    function() return MenuResponse.Open end)
+        self.noText,
+    function()
+        return MenuResponse.Open
+    end, {rightText= no})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     if no>2 then
         Remove_All_Menu(self, sub, 'no', no)
@@ -232,15 +236,18 @@ local function Init_Menu(self, root)
     local index=0
     for itemID in pairs(Save().no) do
         index= index+1
-        Remove_NoUse_Menu(self, sub, itemID, 'no', nil)
+        Remove_NoUse_Menu(self, sub, itemID, 'no', nil, index)
     end
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 
 --自定义使用列表
     sub=root:CreateButton(
-        self.useText..' #'..use,
-    function() return MenuResponse.Open end)
+        self.useText,
+    function()
+        return MenuResponse.Open
+    end, {rightText= use})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     if use>2 then
         Remove_All_Menu(self, sub, 'use', use)
@@ -248,7 +255,7 @@ local function Init_Menu(self, root)
     index=0
     for itemID, numUse in pairs(Save().use) do
         index= index+1
-        Remove_NoUse_Menu(self, sub, itemID, 'use', numUse)
+        Remove_NoUse_Menu(self, sub, itemID, 'use', numUse, index)
     end
     WoWTools_MenuMixin:SetScrollMode(sub)
 

@@ -940,11 +940,14 @@ local function Init()--设置标记, 框架
         end
     end
 
-    function MakerFrame:set_shown()
+    function MakerFrame:set_shown(sceneType)
         if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
-        elseif C_PetBattles.IsInBattle() then
+
+        elseif C_PetBattles.IsInBattle()
+            or sceneType== Enum.ClientSceneType.MinigameSceneType
+        then
             self:SetShown(false)
             return
         end
@@ -992,16 +995,20 @@ local function Init()--设置标记, 框架
     function MakerFrame:set_event()
         self:UnregisterAllEvents()
 
-        if self:IsShown() then
-            self:RegisterEvent('PLAYER_ENTERING_WORLD')--显示/隐藏
-            self:RegisterEvent('CVAR_UPDATE')
-            self:RegisterEvent('GROUP_ROSTER_UPDATE')
-            self:RegisterEvent('GROUP_LEFT')
-            self:RegisterEvent('GROUP_JOINED')
-            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
-            self:RegisterEvent('PET_BATTLE_CLOSE')
-            self:RegisterEvent('PARTY_LEADER_CHANGED')
+        if not self:IsShown() then
+            return
         end
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')--显示/隐藏
+        self:RegisterEvent('CVAR_UPDATE')
+        self:RegisterEvent('GROUP_ROSTER_UPDATE')
+        self:RegisterEvent('GROUP_LEFT')
+        self:RegisterEvent('GROUP_JOINED')
+        self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+        self:RegisterEvent('PET_BATTLE_CLOSE')
+        self:RegisterEvent('PARTY_LEADER_CHANGED')
+
+        self:RegisterEvent('CLIENT_SCENE_OPENED')
+        self:RegisterEvent('CLIENT_SCENE_CLOSED')
     end
 
     MakerFrame:RegisterForDrag("RightButton")
@@ -1084,6 +1091,8 @@ local function Init()--设置标记, 框架
             if arg1=='enablePings' then
                 self:set_shown()
             end
+        elseif event=='CLIENT_SCENE_OPENED' then
+            self:set_shown(arg1)
         else
             self:set_shown()
         end

@@ -20,9 +20,17 @@ WoWTools_DataMixin= {
 
     StausText={},--属性，截取表 API_Panel.lua
     UnitItemLevel={},
-    Language={}
+    Language={},--
+    ClientSceneType= nil, 
 }
 
+
+--[[EventRegistry:RegisterFrameEventAndCallback("CLIENT_SCENE_OPENED", function(owner, arg1)
+    print('open')
+end)
+EventRegistry:RegisterFrameEventAndCallback("CLIENT_SCENE_CLOSED", function(owner, arg1)
+    print('CLOSED')
+end)]]
 
 --[[
 UnitItemLevel[guid]={--玩家装等

@@ -576,14 +576,15 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
         end
     else
         if not notCount then
-            local num= C_Item.GetItemCount(itemID, true, false, true, true) or 0
-            if num==0 then
+            local countText= self:GetCount(itemID, {notZero=true})--C_Item.GetItemCount(itemID, true, false, true, true) or 0
+            if not countText then
                 col='|cff626262'
             else
                 cool= WoWTools_CooldownMixin:GetText(nil, itemID)
             end
-
-            desc= ' x'..num..' '
+            if countText then
+                desc= ' '..countText..' '
+            end
         end
     end
 

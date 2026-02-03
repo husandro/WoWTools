@@ -242,12 +242,13 @@ local function Init_Menu_Toy(_, root)
             ..(Save().Ctrl==itemID and 'C' or '')
             ..(Save().Shift==itemID and 'S' or '')
         alt= alt~='' and '|cnGREEN_FONT_COLOR:['..alt..']|r' or alt
+
 --名称，锁定
         local has= PlayerHasToy(itemID)
         local isLoked= Save().lockedToy==itemID
+
         sub=root:CreateCheckbox(
             (isLoked and '|cnGREEN_FONT_COLOR:' or (has and '' or '|cff626262'))
-            ..index..') '
             ..alt..icon
             ..name
             ..(isLoked and '|A:AdventureMapIcon-Lock:0:0|a' or '')--锁定
@@ -261,8 +262,9 @@ local function Init_Menu_Toy(_, root)
                     ToyButton:Set_SelectValue_Random(toy)
                 end
             end
-        end, {itemID=itemID, name=toyName, has=has})
+        end, {itemID=itemID, name=toyName, has=has, rightText=index})
         sub:SetTooltip(Set_Menu_Tooltip)
+        WoWTools_MenuMixin:SetRightText(sub)
 
         sub2=sub:CreateCheckbox(
             (has and '' or '|cff626262')

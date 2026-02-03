@@ -1,12 +1,11 @@
 local function Save()
     return WoWToolsSave['Plus_PaperDoll']
 end
+
+
 local TrackButton
-local EquipButton
 local NumButton=0--添加装备管理按钮
 local Name='WoWToolsEquipSetButton'
-local addName
-
 
 
 
@@ -23,28 +22,19 @@ local addName
 
 local function Init_Menu(self, root)
     local sub
+    root:CreateButton(
+        WoWTools_DataMixin.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
+    function()
+        WoWTools_LoadUIMixin:OpenPaperDoll(1, 3)
+        return MenuResponse.Open
+    end)
 
-    if self==EquipButton then
-        root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
-        function()
-            return Save().equipment
-        end, function()
-            EquipButton:set_show_hide()
-        end)
-    else
-        root:CreateButton(
-            WoWTools_DataMixin.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
-        function()
-            WoWTools_LoadUIMixin:OpenPaperDoll(1, 3)
-            return MenuResponse.Open
-        end)
-    end
+
     root:CreateDivider()
 
 
 
-
+--装等
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '装等' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
     function()
@@ -93,16 +83,17 @@ local function Init_Menu(self, root)
         TrackButton:settings()
     end)
 
---重置位置
+
     root:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(self, root, Save().Equipment, function()
+--打开选项界面
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName, name2=WoWTools_PaperDollMixin.addName2})
+
+--重置位置
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().Equipment, function()
         Save().Equipment=nil
         TrackButton:set_point()
-        print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+        print(WoWTools_PaperDollMixin.addName2.WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
     end)
-
---打开选项界面
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName, name2=addName})
 end
 
 
@@ -141,15 +132,17 @@ end
 
 --建立，按钮
 local function Create_Button(index)
-    local btn=WoWTools_ButtonMixin:Cbtn(TrackButton, {
+    --[[local btn=WoWTools_ButtonMixin:Cbtn(TrackButton, {
         size=22,
         name=Name..index
-    })
+    })]]
+    local btn= CreateFrame('Button', Name..index, TrackButton, 'WoWToolsButtonTemplate')
+
     btn.texture= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
     btn.texture:SetSize(28,28)
     btn.texture:SetPoint('CENTER')
     btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
-    btn.text= WoWTools_LabelMixin:Create(btn, {size=10, color={r=1,g=1,b=1}})
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlightSmall') --WoWTools_LabelMixin:Create(btn, {size=10, color={r=1,g=1,b=1}})
     btn.text:SetPoint('BOTTOMRIGHT')
 
     Set_Point(btn, index)--设置位置
@@ -176,24 +169,30 @@ local function Create_Button(index)
 
         if C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID) then
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(' ',
-                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
+            GameTooltip_AddErrorLine(
+                GameTooltip,
+                WoWTools_DataMixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT,
+                true
             )
         end
 
         local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)
+        local specName
         if specIndex then
-            local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
-            if icon3 and specName2 then
-                GameTooltip:AddLine(' ')
-                GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
+            local _, specName2, _, icon3, role = GetSpecializationInfo(specIndex)
+            if specName2 then
+                specName='|T'..(icon3 or 0)..':0|t'.. (WoWTools_DataMixin.Icon[role] or '').. '|cffff00ff'..WoWTools_TextMixin:CN(specName2)..'|r'
             end
         end
+
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
+        GameTooltip:AddLine(
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '指定专精：' or EQUIPMENT_SET_ASSIGN_TO_SPEC)
+            ..(specName or DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '无' or NONE))
+        )
         GameTooltip:Show()
-        EquipButton:SetButtonState('PUSHED')
-        EquipButton:SetAlpha(1)
+
         self:SetAlpha(1)
     end)
 
@@ -296,25 +295,45 @@ end
 --#######
 --装备管理
 --#######
-local function Init_TrackButton()--添加装备管理框
-    TrackButton=WoWTools_ButtonMixin:Cbtn(UIParent, {size={23, 16}})--添加移动按钮
-    TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {size=Save().trackButtonFontSize or 10, color=true, justifyH='CENTER'})
+local function Init()--添加装备管理框
+    if not Save().equipment then
+        return
+    end
+
+    TrackButton= CreateFrame('Button', Name, UIParent, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(UIParent, {size={23, 16}})--添加移动按钮
+    --TrackButton:SetHeight(16)
+
+    TrackButton.texture= TrackButton:CreateTexture(nil, 'BACKGROUND')
+    TrackButton.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
+    TrackButton.texture:SetSize(14,14)
+    TrackButton.texture:SetPoint('CENTER')
+    TrackButton.texture:SetAlpha(0.5)
+
+    TrackButton.text= TrackButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2') -- WoWTools_LabelMixin:Create(TrackButton, {size=Save().trackButtonFontSize or 10, color=true, justifyH='CENTER'})
+    WoWTools_ColorMixin:SetLabelColor(TrackButton.text)
+
     TrackButton.text:SetPoint('CENTER')
     TrackButton:Hide()
 
 --装等
     function TrackButton:set_player_itemLevel()
-        if self:IsShown() and Save().trackButtonShowItemLeve then
-            local text= format('%i', select(2, GetAverageItemLevel()) or 0)
-            if Save().EquipmentH then
-                self:SetSize(16, 23)
-                self.text:SetText(WoWTools_TextMixin:Vstr(text))
-            else
-                self:SetSize(23, 16)
-                self.text:SetText(text)
+        local text
+        local isEquipmentH= Save().EquipmentH
+
+        if Save().trackButtonShowItemLeve then
+            text= format('%i', select(2, GetAverageItemLevel()) or 0)
+            if isEquipmentH then
+                text=WoWTools_TextMixin:Vstr(text)
             end
+        end
+
+        self.text:SetText(text or '')
+        self.texture:SetShown(not text)
+
+        if isEquipmentH then
+            self:SetSize(16, 23)
         else
-            self.text:SetText("")
+            self:SetSize(23, 16)
         end
     end
 
@@ -450,34 +469,35 @@ local function Init_TrackButton()--添加装备管理框
             WoWTools_LoadUIMixin:OpenPaperDoll(1,3)--打开/关闭角色界面
 
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(...)
-                Init_Menu(...)
-            end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
     TrackButton:SetScript("OnEnter", function (self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
+
+        GameTooltip:SetText(WoWTools_PaperDollMixin.addName2..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
 
         WoWTools_DurabiliyMixin:OnEnter()--耐久度, 提示
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(
-            MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")..WoWTools_DataMixin.Icon.left,
-            WoWTools_DataMixin.Icon.right..'|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        GameTooltip_AddInstructionLine(
+            GameTooltip,
+            WoWTools_DataMixin.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")
         )
-        GameTooltip:AddDoubleLine(' ', 'Alt+'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE))
+
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL),
+            'Alt+'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE),
+            0,1,0, 0,1,0
+        )
         GameTooltip:Show()
-        EquipButton:SetButtonState('PUSHED')
     end)
 
     TrackButton:SetScript("OnLeave", function()
         ResetCursor()
         GameTooltip:Hide()
-        EquipButton:SetButtonState('NORMAL')
     end)
 
     TrackButton:SetScript('OnEvent', function(self, event)
@@ -508,6 +528,10 @@ local function Init_TrackButton()--添加装备管理框
 --更新
     WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_Update',  Init_buttons)
     TrackButton:settings()
+
+    Init=function()
+        TrackButton:settings()
+    end
 end
 
 
@@ -523,89 +547,8 @@ end
 
 
 
-
-
-
-
-
-
-
-
---装备管理, 总开关, 显示/隐藏装备管理框选项
-function Init_EquipButton()
-    --PaperDollFrame.EquipmentManagerPane
-    EquipButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame, {size=20})
-    EquipButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
-    EquipButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
-    EquipButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
-    EquipButton:SetAlpha(0.2)
-
-
-    function EquipButton:set_texture()
-        self:SetNormalAtlas(Save().equipment and 'bags-icon-equipment' or 'talents-button-reset')
-    end
-
-    function EquipButton:set_shown()
-        self:SetShown(not Save().hide)
-    end
-
-    function EquipButton:settings()
-        self:set_shown()
-        self:set_texture()
-    end
-
-    function EquipButton:set_show_hide()
-        Save().equipment= not Save().equipment and true or nil
-        self:set_texture()
-        TrackButton:set_shown()
-    end
-
-    EquipButton:SetScript("OnClick", function(self)
-        MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
-    end)
-
-    EquipButton:SetScript("OnEnter", function (self)
-        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.left)
-        GameTooltip:Show()
-        self:SetAlpha(1)
-        TrackButton:SetButtonState('PUSHED')
-    end)
-    EquipButton:SetScript("OnLeave",function(self)
-        GameTooltip_Hide()
-        TrackButton:SetButtonState("NORMAL")
-        self:SetAlpha(0.2)
-    end)
-
-    EquipButton:settings()
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_PaperDollMixin:TrackButton_Settings()
-    EquipButton:settings()
-    TrackButton:settings()
-end
-
-function WoWTools_PaperDollMixin:Init_TrackButton()
-    addName= '|A:bags-icon-equipment:0:0|a'..(WoWTools_DataMixin.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)
-    Init_EquipButton()
-    Init_TrackButton()
+function WoWTools_PaperDollMixin:Init_EquipButton()
+    Init()
 end
 
 

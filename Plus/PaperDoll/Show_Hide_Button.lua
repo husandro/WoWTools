@@ -22,15 +22,14 @@ end
 
 
 local function Settings()
-    WoWTools_PaperDollMixin:Set_Duration()--装备, 总耐久度
+    
     WoWTools_PaperDollMixin:Init_ServerInfo()--显示服务器名称
     WoWTools_PaperDollMixin:Settings_Tab2()--头衔数量
     WoWTools_PaperDollMixin:Settings_Tab1()--总装等
     WoWTools_PaperDollMixin:Settings_Tab3()--标签, 内容,提示
 
-    WoWTools_PaperDollMixin:TrackButton_Settings()--添加装备管理框
+    WoWTools_PaperDollMixin:Init_EquipButton()--添加装备管理框
 
-    WoWTools_PaperDollMixin:Init_Status_Plus()--属性，增强
 
     WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
     WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
@@ -51,7 +50,7 @@ local function Settings()
             WoWTools_DataMixin:Call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
         end
     end
-    PaperDollItemsFrame.ShowHideButton:settings()
+    
 end
 
 

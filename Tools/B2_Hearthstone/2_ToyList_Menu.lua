@@ -44,7 +44,7 @@ function WoWTools_HearthstoneMixin:Init_Menu_Toy(frame, root)
         local isLoked= Save().lockedToy==itemID
         sub=root:CreateCheckbox(
             (isLoked and '|cnGREEN_FONT_COLOR:' or (has and '' or '|cff626262'))
-            ..index..') '..icon
+            ..icon
             ..name
             ..(isLoked and '|A:AdventureMapIcon-Lock:0:0|a' or '')--锁定
             ..(has and WoWTools_CooldownMixin:GetText(nil, itemID) or ''),--CD
@@ -56,9 +56,10 @@ function WoWTools_HearthstoneMixin:Init_Menu_Toy(frame, root)
                     frame:Set_SelectValue_Random(toy)
                 end
             end,
-            {itemID=itemID, name=toyName, has=has}
+            {itemID=itemID, name=toyName, has=has, rightText=index}
         )
         sub:SetTooltip(Set_Menu_Tooltip)
+        WoWTools_MenuMixin:SetRightText(sub)
 
         sub2=sub:CreateCheckbox(
             (has and '' or '|cff626262')

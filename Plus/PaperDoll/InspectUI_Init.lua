@@ -240,6 +240,7 @@ local function Init_UI()
     WoWTools_DataMixin:Hook('InspectPaperDollItemSlotButton_Update', function(self)--目标, 装备
         set_InspectPaperDollItemSlotButton_Update(self)
     end)
+    
     WoWTools_DataMixin:Hook('InspectPaperDollFrame_SetLevel', function()--目标,天赋 装等
         set_InspectPaperDollFrame_SetLevel()
     end)
