@@ -210,8 +210,6 @@ local function Create_Button(btn)
     btn:SetScript('OnEvent', btn.set_shown)
 
     function btn:settings()
-
-
         local _, iconFileID, _, isEquipped, numItems, _, _, numLost= C_EquipmentSet.GetEquipmentSetInfo(self.setID)
         numItems= numItems or 0
         local specIndex = C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)
@@ -285,7 +283,6 @@ local function Init_buttons(self)
             btn:SetPoint('TOP', last, 'BOTTOM')
         end
         btn:settings()
-
 
         last= btn
     end
