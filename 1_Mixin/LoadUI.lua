@@ -112,8 +112,7 @@ end
 --MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")
 --C_CurrencyInfo.GetCurrencyListSize() <= 0
 function WoWTools_LoadUIMixin:OpenPaperDoll(frameIndex, tabIndex)--打开/关闭角色界面
-    if not CharacterFrame:IsShown()
-        and self:IsDisabledOpenFrame()
+    if self:IsDisabledOpenFrame()
         or C_GameRules.IsGameRuleActive(Enum.GameRule.CharacterPanelDisabled)
     then
         return

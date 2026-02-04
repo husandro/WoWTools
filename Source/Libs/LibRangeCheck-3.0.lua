@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-index, undefined-global, cast-local-type
 --[[
 Name: LibRangeCheck-3.0
 Author(s): mitch0, WoWUIDev Community
@@ -71,6 +72,7 @@ local tremove = tremove
 local tostring = tostring
 local setmetatable = setmetatable
 local BOOKTYPE_SPELL = BOOKTYPE_SPELL or Enum.SpellBookSpellBank.Player
+---@diagnostic disable-next-line: undefined-global
 local GetSpellBookItemName = GetSpellBookItemName or C_SpellBook.GetSpellBookItemName
 local C_Item = C_Item
 local UnitCanAttack = UnitCanAttack
@@ -108,6 +110,7 @@ local HandSlotId = GetInventorySlotInfo("HANDSSLOT")
 local math_floor = math.floor
 local UnitIsVisible = UnitIsVisible
 
+---@diagnostic disable-next-line: undefined-global
 local GetSpellInfo = GetSpellInfo or function(spellID)
   if not spellID then
     return nil;
@@ -4508,7 +4511,7 @@ function lib:processItemRequests(itemRequests)
     end
     while true do
       local i, item = next(items)
-      if not i then
+      if not i or not item then
         itemRequests[range] = nil
         break
       elseif Item:CreateFromItemID(item):IsItemEmpty() or self.failedItemRequests[item] then

@@ -2989,7 +2989,9 @@
         "BODY_2",
         "VAS_REALM_LABEL",
         "CharacterTrialLevelErrorText",
-        "CharacterFrameMixin"
+        "CharacterFrameMixin",
+        "GUILD_RECRUITMENT_MAXLEVEL",
+        "DoEmote"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

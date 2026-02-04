@@ -139,7 +139,7 @@ local function Set_OnLoad(btn)
 --右击，菜单
     btn:HookScript('OnMouseDown', function(frame, d)
         if d=='RightButton' then
-            MenuUtil.CreateContextMenu(frame, function(...) Init_Menu(...) end)
+            MenuUtil.CreateContextMenu(frame, Init_Menu)
             frame:set_on_enter()
         end
     end)

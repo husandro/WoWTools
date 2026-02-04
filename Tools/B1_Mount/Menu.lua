@@ -678,7 +678,7 @@ end
 
 
 function WoWTools_MountMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, function(...) Init_Menu(...) end)
+    MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
 
 function WoWTools_MountMixin:Init_Menu_Spell(frame)

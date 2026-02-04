@@ -717,9 +717,10 @@ function WoWTools_MenuMixin:Set_Specialization(root)
                 s:set_loot()
             end)
             btn:SetScript('OnHide', function(s)
-                s:UnregisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
-                s:UnregisterEvent('PLAYER_LOOT_SPEC_UPDATED')
+                s:UnregisterAllEvents()
                 s:SetScript('OnHide', nil)
+                s:SetScript('OnEnter', nil)
+                s.set_loot= nil
                 s.set_loot=nil
             end)
         end)

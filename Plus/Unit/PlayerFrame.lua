@@ -464,7 +464,7 @@ end
 
 --设置, 战争模式 Blizzard_WarmodeButtonTemplate.lua
 local function Create_warModeButton(frame)
-    frame.warModeButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, isType2=true})
+    frame.warModeButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, isType2=true, name='WoWToolsPlayerFrameWarModeButton'})
     frame.warModeButton:SetPoint('LEFT', frame, 5, 12)
     frame.warModeButton:SetScript('OnClick',  function(self)
         --C_PvP.ToggleWarMode()
@@ -481,8 +481,7 @@ local function Create_warModeButton(frame)
         end
 
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
+        GameTooltip:SetText(WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())..WoWTools_DataMixin.Icon.left)
 
@@ -510,12 +509,13 @@ local function Create_warModeButton(frame)
     frame.warModeButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     frame.warModeButton:RegisterEvent('PLAYER_FLAGS_CHANGED')
     frame.warModeButton:RegisterEvent('PLAYER_UPDATE_RESTING')
+    
+    frame.warModeButton.bg= frame.warModeButton:CreateTexture(nil, 'ARTWORK')
+    frame.warModeButton.bg:SetAllPoints()
+    frame.warModeButton.bg:SetAtlas('pvptalents-talentborder-glow')
+
     function frame.warModeButton:set_settings()
-        local isCan= C_PvP.CanToggleWarModeInArea()
-        if isCan then
-            self:SetNormalAtlas(C_PvP.IsWarModeDesired() and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
-        end
-        self:SetShown(isCan)
+        self:SetNormalAtlas(C_PvP.IsWarModeDesired() and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
     end
     frame.warModeButton:SetScript('OnEvent', function(self, event)
         C_Timer.After(1, function() self:set_settings() end)

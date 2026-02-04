@@ -362,7 +362,7 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
 --打开选项界面
-    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName, name2=WoWTools_PaperDollMixin.addName3})
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})
 
 
 --全部清除

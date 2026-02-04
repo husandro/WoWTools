@@ -70,5 +70,5 @@ end
 
 
 function WoWTools_WorldMixin:MENU_UNIT_FRIEND()
-    Menu.ModifyMenu("MENU_UNIT_FRIEND", function(...) Init_Menu(...) end)
+    Menu.ModifyMenu("MENU_UNIT_FRIEND", Init_Menu)
 end

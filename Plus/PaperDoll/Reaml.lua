@@ -36,43 +36,62 @@ local function Init()
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '服务器:' or FRIENDS_LIST_REALM),
-            server and server.col..' '..server.realm
+            server and server.col..' '..server.realm or WoWTools_DataMixin.Player.Realm,
+            nil,nil,nil, 1,1,1
         )
 
+        GameTooltip:AddLine(' ')
         local ok2
-        for k, v in pairs(GetAutoCompleteRealms()) do
+        for k, v in pairs(GetAutoCompleteRealms() or {}) do
             if v==WoWTools_DataMixin.Player.Realm then
-                GameTooltip:AddDoubleLine(v..'|A:auctionhouse-icon-favorite:0:0|a', k, 0,1,0)
+                GameTooltip:AddDoubleLine(v..'|A:auctionhouse-icon-favorite:0:0|a', k, 0,1,0, 0,1,0)
             else
-                GameTooltip:AddDoubleLine(v, k)
+                GameTooltip:AddDoubleLine(v, k, nil,nil,nil, 1,1,1)
             end
             ok2=true
         end
         if not ok2 then
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '唯一' or ITEM_UNIQUE, WoWTools_DataMixin.Player.Realm)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '唯一' or ITEM_UNIQUE, WoWTools_DataMixin.Player.Realm, 0,1,0, 0,1,0)
         end
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('realmID', GetRealmID())
-        GameTooltip:AddDoubleLine('regionID '..WoWTools_DataMixin.Player.Region,  GetCurrentRegionName())
+        GameTooltip:AddDoubleLine('realmID', GetRealmID(), nil,nil,nil, 1,1,1)
+        GameTooltip:AddDoubleLine('regionID |cffffffff',  WoWTools_DataMixin.Player.Region..' '..GetCurrentRegionName(), nil,nil,nil, 1,1,1)
 
+        local curExp= GetExpansionLevel()
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.onlyChinese and '扩展' or 'Expansion',
+            curExp..' '..(WoWTools_TextureMixin:GetWoWLog(curExp) or '')..WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..curExp]),
+            nil,nil,nil, 1,1,1
+        )
+
+
+        --BAG_FILTER_CURRENT_EXPANSION = "仅限当前内容";
 
         if GameLimitedMode_IsActive() then
             GameTooltip:AddLine(' ')
             local rLevel, rMoney, profCap = GetRestrictedAccountData()
             GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED)
-            GameTooltip_AddErrorLine(
-                GameTooltip,
-                (WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' |cffffffff'..(rLevel or '')
+
+            GameTooltip:AddDoubleLine(
+                WoWTools_DataMixin.onlyChinese and '等级' or LEVEL,
+                rLevel,
+                1,0,0, 1,1,1
             )
-            GameTooltip_AddErrorLine(
-                GameTooltip,
-                (WoWTools_DataMixin.onlyChinese and '钱' or MONEY)..' |cffffffff'..(rMoney and GetMoneyString(rMoney) or '')
+            if rMoney then
+                GameTooltip:AddDoubleLine(
+                    WoWTools_DataMixin.onlyChinese and '钱' or MONEY,
+                    GetMoneyString(rMoney),
+                    1,0,0, 1,1,1
+                )
+            end
+
+            GameTooltip:AddDoubleLine(
+                WoWTools_DataMixin.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION,
+                profCap,
+                1,0,0, 1,1,1
             )
-            GameTooltip_AddErrorLine(
-                GameTooltip,
-                (WoWTools_DataMixin.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION)..' |cffffffff'..(profCap or '')
-            )
+
         end
 
         GameTooltip:Show()

@@ -1,7 +1,7 @@
 
 
 local function Save()
-    return WoWToolsSave['Plus_Attributes'] or {}
+    return WoWToolsSave['Plus_Attributes']
 end
 
 
@@ -15,13 +15,9 @@ local function Init()
         isType2=true,
         name='WoWToolsAttributesButton'
     })
-    --_G['WoWToolsAttributesButton']= button
+
 
     button.frame= CreateFrame("Frame",nil,button)
-
-    --[[button.texture= button:CreateTexture(nil, 'BORDER')
-    button.texture:SetSize(18,18)
-    button.texture:SetPoint('CENTER')]]
 
     button.classPortrait= button:CreateTexture(nil, 'OVERLAY', nil)--加个外框
     button.classPortrait:SetPoint('CENTER')

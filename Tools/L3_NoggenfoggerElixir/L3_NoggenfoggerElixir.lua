@@ -232,7 +232,7 @@ local function Init()
     end)
     button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(...) Init_Menu(...) end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 

@@ -306,7 +306,7 @@ local function Init()
             end
 
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(...) Init_Menu(...) end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
@@ -343,7 +343,8 @@ local function Init()
         elseif event=='PLAYER_TARGET_CHANGED' then
             local info= self:get_speciesID_data()
             if info.emote and UnitIsBattlePetCompanion('target') and C_PetJournal.GetSummonedPetGUID()==info.petID then
-                DoEmote(info.emote)
+                --DoEmote(info.emote)
+                C_ChatInfo.PerformEmote(info.emote, UnitName('target'), nil)
                 if info.auraName and not InCombatLockdown() and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') and self:can_summon() then
                     C_PetJournal.SummonRandomPet(true)
                 end

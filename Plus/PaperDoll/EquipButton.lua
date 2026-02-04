@@ -1,11 +1,10 @@
 local function Save()
-    return WoWToolsSave['Plus_PaperDoll']
+    return WoWToolsSave['Plus_PaperDoll'].EquipSet
 end
 
 
 local TrackButton
-local NumButton=0--添加装备管理按钮
-local Name='WoWToolsEquipSetButton'
+
 
 
 
@@ -38,21 +37,21 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '装等' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
     function()
-        return Save().trackButtonShowItemLeve
+        return Save().itemLevel
     end, function()
-        Save().trackButtonShowItemLeve= not Save().trackButtonShowItemLeve and true or nil
-        TrackButton:set_player_itemLevel()
+        Save().itemLevel= not Save().itemLevel and true or nil
+        self:settings()
     end)
 
 --缩放, 单行
     WoWTools_MenuMixin:ScaleRoot(self, sub, function()
-        return Save().trackButtonTextScale or 1
+        return Save().itemLevelScale or 1
     end, function(value)
-        Save().trackButtonTextScale= value
-        TrackButton:set_text_scale()
+        Save().itemLevelScale= value
+        self:settings()
     end, function()
-        Save().trackButtonTextScale= nil
-        TrackButton:set_text_scale()
+        Save().itemLevelScale= nil
+        self:settings()
     end)
 
 
@@ -61,26 +60,27 @@ local function Init_Menu(self, root)
     root:CreateCheckbox(
         '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '向右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT),
     function()
-        return Save().EquipmentH
+        return Save().toRight
     end, function()
-        Save().EquipmentH= not Save().EquipmentH and true or nil
-        TrackButton:set_to_right()
+        Save().toRight= not Save().toRight and true or nil
+        self:settings()
     end)
 
+    root:CreateDivider()
 --缩放
     WoWTools_MenuMixin:Scale(self, root, function()
-        return Save().equipmentFrameScale
+        return Save().scale
     end, function(value)
-        Save().equipmentFrameScale= value
-        TrackButton:settings()
+        Save().scale= value
+        self:settings()
     end)
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(self, root, function(data)
-        return TrackButton:GetFrameStrata()==data
+        return self:GetFrameStrata()==data
     end, function(data)
-        Save().trackButtonStrata= data
-        TrackButton:settings()
+        Save().strata= data
+        self:settings()
     end)
 
 
@@ -89,10 +89,13 @@ local function Init_Menu(self, root)
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName, name2=WoWTools_PaperDollMixin.addName2})
 
 --重置位置
-    WoWTools_MenuMixin:RestPoint(self, sub, Save().Equipment, function()
-        Save().Equipment=nil
-        TrackButton:set_point()
-        print(WoWTools_PaperDollMixin.addName2.WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
+        Save().point=nil
+        self:settings()
+        print(
+            WoWTools_PaperDollMixin.addName2..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
+        )
     end)
 end
 
@@ -105,18 +108,6 @@ end
 
 
 
-
-
-
-
-local function Set_Point(button, index)
-    local btn= index==1 and TrackButton or _G[Name..(index-1)]
-    if Save().EquipmentH then
-        button:SetPoint('LEFT', btn, 'RIGHT')
-    else
-        button:SetPoint('TOP', btn, 'BOTTOM')
-    end
-end
 
 
 
@@ -131,21 +122,27 @@ end
 
 
 --建立，按钮
-local function Create_Button(index)
-    --[[local btn=WoWTools_ButtonMixin:Cbtn(TrackButton, {
-        size=22,
-        name=Name..index
-    })]]
-    local btn= CreateFrame('Button', Name..index, TrackButton, 'WoWToolsButtonTemplate')
+local function Create_Button(btn)
+    --local btn= CreateFrame('Button', nil, TrackButton, 'WoWToolsButtonTemplate')
+    btn.texture= btn:CreateTexture(nil, 'BORDER')
+    btn.texture:SetAllPoints()
+    WoWTools_ButtonMixin:AddMask(btn, false, btn.texture)
 
-    btn.texture= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
-    btn.texture:SetSize(28,28)
-    btn.texture:SetPoint('CENTER')
-    btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
-    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlightSmall') --WoWTools_LabelMixin:Create(btn, {size=10, color={r=1,g=1,b=1}})
+    btn.select= btn:CreateTexture(nil, 'OVERLAY', nil, 1)
+    btn.select:SetSize(25,25)
+    btn.select:SetPoint('CENTER')
+    btn.select:SetAtlas('UI-HUD-ActionBar-IconFrame-Mouseover')
+    btn.select:SetVertexColor(0,1,0)
+
+    btn.spec= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
+    btn.spec:SetSize(8,8)
+    btn.spec:SetPoint('BOTTOMLEFT')
+
+    btn.text= btn:CreateFontString(nil, 'OVERLAY', 'GameFontHighlightOutline', 2) --WoWTools_LabelMixin:Create(btn, {size=10, color={r=1,g=1,b=1}})
+    btn.text:SetFontHeight(8)
+    btn.text:SetJustifyH('RIGHT')
+    btn.text:SetShadowOffset(1,-1)
     btn.text:SetPoint('BOTTOMRIGHT')
-
-    Set_Point(btn, index)--设置位置
 
     btn:SetScript("OnClick",function(self)
         if self.setID and not C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID) then--装备管理，能否装备
@@ -200,8 +197,10 @@ local function Create_Button(index)
         GameTooltip:Hide()
         self:set_alpha()
     end)
+
     btn:RegisterEvent('PLAYER_REGEN_DISABLED')
     btn:RegisterEvent('PLAYER_REGEN_ENABLED')
+
     function btn:set_shown()
         self:SetShown(self.setID and (self.isEquipped or not PlayerIsInCombat()))
     end
@@ -210,9 +209,42 @@ local function Create_Button(index)
     end
     btn:SetScript('OnEvent', btn.set_shown)
 
-    NumButton= index
+    function btn:settings()
 
-    return btn
+
+        local _, iconFileID, _, isEquipped, numItems, _, _, numLost= C_EquipmentSet.GetEquipmentSetInfo(self.setID)
+        numItems= numItems or 0
+        local specIndex = C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)
+        self.spec:SetTexture(
+            specIndex and select(4, GetSpecializationInfo(specIndex))
+            or 0
+        )
+
+        if numItems==0 then
+            self.text:SetText('')
+        else
+            self.text:SetText(
+                (numLost and numLost>0 and '|cnWARNING_FONT_COLOR:' or '')
+                ..numItems
+            )
+        end
+
+         if numItems==0 then
+            self.texture:SetAtlas('groupfinder-eye-highlight')
+            self:SetAlpha(0.5)
+        else
+            self.texture:SetTexture(iconFileID or 134400)
+            self.texture:SetAlpha(1)
+        end
+
+        self.select:SetShown(isEquipped)
+        self.isEquipped= isEquipped
+        self.numItems=numItems
+
+
+        self:set_shown()
+        self:set_alpha()
+    end
 end
 
 
@@ -225,50 +257,39 @@ end
 
 
 --设置，初始，按钮
-local function Init_buttons()
-    if not TrackButton:IsShown() then
+local function Init_buttons(self)
+    self.pool:ReleaseAll()
+
+    local setIDs= C_EquipmentSet.GetEquipmentSetIDs()
+
+    if not setIDs then
         return
     end
 
+    setIDs= SortEquipmentSetIDs(setIDs)--PaperDollFrame.lua
 
-    local setIDs= SortEquipmentSetIDs(C_EquipmentSet.GetEquipmentSetIDs() or {})--PaperDollFrame.lua
-    local numIndex=0
-    for index, setID in pairs(setIDs) do
-        local texture, _, isEquipped, numItems, _, _, numLost= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
+    local last= self
+    for _, setID in pairs(setIDs) do
 
-        local btn= _G[Name..index] or Create_Button(index)
-        if numItems==0 then
-            btn:SetNormalAtlas('groupfinder-eye-highlight')
-        else
-            if texture==134400 then--?图标
-                local specIndex = C_EquipmentSet.GetEquipmentSetAssignedSpec(setID)
-                if specIndex then
-                    texture= select(4, GetSpecializationInfo(specIndex))
-                end
-            end
-            btn:SetNormalTexture(texture or 0)
+        local btn= self.pool:Acquire()
+
+        if not btn.settings then
+            Create_Button(btn)
         end
-        if numItems==0 then
-            btn.text:SetText('')
-        else
-            btn.text:SetText(numLost>0 and '|cnWARNING_FONT_COLOR:'..numLost or numItems)
-        end
-        btn.texture:SetShown(isEquipped)
+
         btn.setID=setID
-        btn.isEquipped= isEquipped
-        btn.numItems=numItems
-        numIndex=index
-        btn:set_shown()
-        btn:set_alpha()
+
+        if Save().toRight then
+            btn:SetPoint('LEFT', last, 'RIGHT')
+        else
+            btn:SetPoint('TOP', last, 'BOTTOM')
+        end
+        btn:settings()
+
+
+        last= btn
     end
 
-    for index= numIndex+1, NumButton, 1 do
-        local btn= _G[Name..index]
-        btn.setID=nil
-        btn.isEquipped=nil
-        btn.numItems=0
-        btn:set_shown()
-    end
 end
 
 
@@ -296,90 +317,91 @@ end
 --装备管理
 --#######
 local function Init()--添加装备管理框
-    if not Save().equipment then
+    if Save().disabled then
         return
     end
 
-    TrackButton= CreateFrame('Button', Name, UIParent, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(UIParent, {size={23, 16}})--添加移动按钮
-    --TrackButton:SetHeight(16)
-
-    TrackButton.texture= TrackButton:CreateTexture(nil, 'BACKGROUND')
+    TrackButton= CreateFrame('Button', 'WoWToolsEquipSetMainButton', UIParent, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(UIParent, {size={23, 16}})--添加移动按钮
+    TrackButton.pool= CreateFramePool('Button', TrackButton, 'WoWToolsButtonTemplate')
+--图标
+    TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
-    TrackButton.texture:SetSize(14,14)
+    TrackButton.texture:SetSize(12,12)
     TrackButton.texture:SetPoint('CENTER')
-    TrackButton.texture:SetAlpha(0.5)
-
-    TrackButton.text= TrackButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2') -- WoWTools_LabelMixin:Create(TrackButton, {size=Save().trackButtonFontSize or 10, color=true, justifyH='CENTER'})
-    WoWTools_ColorMixin:SetLabelColor(TrackButton.text)
-
-    TrackButton.text:SetPoint('CENTER')
-    TrackButton:Hide()
+    TrackButton.texture:SetAlpha(0.3)
 
 --装等
-    function TrackButton:set_player_itemLevel()
-        local text
-        local isEquipmentH= Save().EquipmentH
+    TrackButton.frame= CreateFrame('Frame', nil, TrackButton)
+    TrackButton.frame:SetAllPoints()
+    TrackButton.frame.text= TrackButton.frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2') -- WoWTools_LabelMixin:Create(TrackButton, {size=Save().trackButtonFontSize or 10, color=true, justifyH='CENTER'})
+    TrackButton.frame.text:SetShadowOffset(1,-1)
 
-        if Save().trackButtonShowItemLeve then
-            text= format('%i', select(2, GetAverageItemLevel()) or 0)
-            if isEquipmentH then
-                text=WoWTools_TextMixin:Vstr(text)
-            end
+    WoWTools_ColorMixin:SetLabelColor(TrackButton.frame.text)
+    TrackButton.frame.text:SetPoint('CENTER')
+
+    function TrackButton.frame:set_itemleve()
+        local text= format('%i', select(2, GetAverageItemLevel()) or 0)
+        if Save().toRight then
+            text=WoWTools_TextMixin:Vstr(text)
         end
-
         self.text:SetText(text or '')
-        self.texture:SetShown(not text)
-
-        if isEquipmentH then
-            self:SetSize(16, 23)
-        else
-            self:SetSize(23, 16)
-        end
     end
+
+    function TrackButton.frame:settings()
+        local isShowItemLevel= Save().itemLevel
+
+        if isShowItemLevel then
+            self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+            self.text:ClearAllPoints()
+            if Save().toRight then
+                self.text:SetPoint('RIGHT')
+            else
+                self.text:SetPoint('BOTTOM')
+            end
+            self.text:SetScale(Save().itemLevelScale or 1)
+            self:set_itemleve()
+        else
+            self:UnregisterAllEvents()
+            self.text:SetText('')
+        end
+        self:GetParent().texture:SetShown(not isShowItemLevel)
+
+    end
+
+    TrackButton.frame:SetScript('OnEvent', TrackButton.frame.set_itemleve)
+
+
+
+
 
 
 --位置保存
     function TrackButton:set_point()
         self:ClearAllPoints()
-        if Save().Equipment then
-            self:SetPoint(Save().Equipment[1], UIParent, Save().Equipment[3], Save().Equipment[4], Save().Equipment[5])
+        local p= Save().point
+        if p and p[1] then
+            self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         elseif WoWTools_DataMixin.Player.husandro then
             self:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
         else
-            self:SetPoint('CENTER', UIParent)
+            self:SetPoint('CENTER', UIParent, -150, -150)
         end
     end
 
---向右，向下
-    function TrackButton:set_to_right()
-        for i=1, NumButton do
-            local btn= _G[Name..i]
-            btn:ClearAllPoints()
-            Set_Point(btn, i)--设置位置
-        end
-        self:set_player_itemLevel()
-    end
 
---缩放
-    function TrackButton:set_scale()
-        self:SetScale(Save().equipmentFrameScale or 1)
-    end
 
---FrameStrata
-    function TrackButton:set_strata()
-        local strata= Save().trackButtonStrata
-        if strata then
-            self:SetFrameStrata(strata)
-        end
-    end
+
+
 
 
 --设置，显示
-    function TrackButton:set_shown()
+    function TrackButton:main_shown(sceneType)
         self:SetShown(
-            Save().equipment
-            and not C_PetBattles.IsInBattle()
+            not C_PetBattles.IsInBattle()
             and not UnitHasVehicleUI('player')
+            and sceneType~= Enum.ClientSceneType.MinigameSceneType
         )
     end
 
@@ -403,34 +425,7 @@ local function Init()--添加装备管理框
         WoWTools_FrameMixin:HelpFrame({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0, hideTime=10})
     end
 
-    function TrackButton:set_event()
-        self:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
-        self:RegisterEvent('EQUIPMENT_SETS_CHANGED')
-        self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
-        self:RegisterEvent('BAG_UPDATE_DELAYED')
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        self:RegisterEvent('READY_CHECK')
-        self:RegisterEvent('PET_BATTLE_OPENING_DONE')
-        self:RegisterEvent('PET_BATTLE_CLOSE')
-        self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-        self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
-        Init_buttons()
-        self:set_player_itemLevel()
-    end
 
-    function TrackButton:set_text_scale()
-        self.text:SetScale(Save().trackButtonTextScale or 1)
-    end
-
-    function TrackButton:settings()
-        self:set_shown()
-        self:set_point()
-        self:set_scale()
-        self:set_player_itemLevel()
-        self:tips_not_equipment()
-        self:set_strata()
-        self:set_text_scale()
-    end
 
 
 
@@ -450,8 +445,8 @@ local function Init()--添加装备管理框
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().Equipment={self:GetPoint(1)}
-            Save().Equipment[2]=nil
+            Save().point={self:GetPoint(1)}
+            Save().point[2]=nil
         end
     end)
     TrackButton:SetScript('OnMouseDown', function(_, d)
@@ -500,33 +495,77 @@ local function Init()--添加装备管理框
         GameTooltip:Hide()
     end)
 
-    TrackButton:SetScript('OnEvent', function(self, event)
+
+
+
+
+    TrackButton:SetScript('OnEvent', function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' or event=='READY_CHECK' then
             self:tips_not_equipment()
 
-        elseif event=='PET_BATTLE_CLOSE'
-            or event=='PET_BATTLE_OPENING_DONE'
-            or event=='UNIT_ENTERED_VEHICLE'
-            or event=='UNIT_EXITED_VEHICLE'
-        then
-            self:set_shown()
+        elseif event=='EQUIPMENT_SETS_CHANGED' then
+            Init_buttons(self)
 
-        elseif not self.time then
-            self.time= C_Timer.NewTimer(0.6, function()
-                Init_buttons()
-                self:set_player_itemLevel()
-                self.time:Cancel()
-                self.time=nil
-            end)
+        elseif event=='CLIENT_SCENE_OPENED' then
+            self:main_shown(arg1)
 
+        else
+
+            self:main_shown()
         end
     end)
 
-    TrackButton:SetScript('OnHide', TrackButton.UnregisterAllEvents)
-    TrackButton:SetScript('OnShow', TrackButton.set_event)
+    function TrackButton:settings()
+        self:UnregisterAllEvents()
+        if Save().disabled then
+            self:SetShown(false)
+            return
+        else
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent('READY_CHECK')
+
+            --self:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
+            self:RegisterEvent('EQUIPMENT_SETS_CHANGED')
+
+
+
+
+            --self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+            --self:RegisterEvent('BAG_UPDATE_DELAYED')
+
+
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+            self:RegisterEvent('PET_BATTLE_CLOSE')
+            self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+            self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+
+            self:RegisterEvent('CLIENT_SCENE_OPENED')
+            self:RegisterEvent('CLIENT_SCENE_CLOSED')
+        end
+
+        self:main_shown()
+        self:set_point()
+
+
+        self:tips_not_equipment()
+
+
+        if Save().toRight then
+            self:SetSize(12, 23)
+        else
+            self:SetSize(23, 12)
+        end
+
+        self:SetScale(Save().scale or 1)
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
+
+        self.frame:settings()
+        Init_buttons(self)
+    end
+
 
 --更新
-    WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_Update',  Init_buttons)
+    --WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_Update',  Init_buttons)
     TrackButton:settings()
 
     Init=function()

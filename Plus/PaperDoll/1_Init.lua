@@ -39,7 +39,7 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-    local sub, sub2
+    local sub
 
     root:CreateCheckbox(
         WoWTools_PaperDollMixin.addName,
@@ -57,13 +57,15 @@ local function Init_Menu(self, root)
     function()
         return Save().equipment
     end, function()
-        Save().equipment= not Save().equipment and true or nil
+        Save().EquipSet.disabled= not Save().EquipSet.disabled and true or nil
         WoWTools_PaperDollMixin:Init_EquipButton()
     end)
 
+
 --属性
+    root:CreateDivider()
     sub=root:CreateCheckbox(
-        WoWTools_PaperDollMixin.addName3,
+        WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES,
     function()
         return not Save().notStatusPlus
     end, function ()
@@ -108,8 +110,9 @@ local function Init_Menu(self, root)
     end
 
 
-    root:CreateDivider()
+
  --服务器
+    root:CreateDivider()
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '服务器' or VAS_REALM_LABEL,
     function()
@@ -117,19 +120,6 @@ local function Init_Menu(self, root)
     end, function()
         Save().notRealm= not Save().notRealm and true or nil
         WoWTools_PaperDollMixin:Init_Reaml()
-    end)
-
---装备, 总耐久度
-    sub=root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '耐久度' or DURABILITY,
-    function()
-        return not Save().notAllDurability
-    end, function()
-        Save().notAllDurability= not Save().notAllDurability and true or nil
-        WoWTools_PaperDollMixin:Init_Duration()
-    end)
-    sub:SetTooltip(function(tooltip)
-        WoWTools_DurabiliyMixin:OnEnter(tooltip)
     end)
 
 
@@ -184,9 +174,8 @@ local function Init()
     WoWTools_PaperDollMixin:Init_Status_Bit()--属性，位数
 
     WoWTools_PaperDollMixin:Init_Reaml()--服务器
-    WoWTools_PaperDollMixin:Init_Duration()--装备, 总耐久度
     WoWTools_PaperDollMixin:Init_SetLevel()--更改,等级文本
-    
+
 
     WoWTools_PaperDollMixin:Init_Tab1()--总装等
     WoWTools_PaperDollMixin:Init_Tab2()--头衔数量    
@@ -227,20 +216,47 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_PaperDoll']= WoWToolsSave['Plus_PaperDoll'] or {
-                equipment= WoWTools_DataMixin.Player.husandro,--装备管理, 开关,
-                equipmentFrameScale=1.1,--装备管理, 缩放
-                trackButtonShowItemLeve= WoWTools_DataMixin.Player.husandro,--装等
+                
+                
                 StatusPlus_OnEnter_show_menu=true,--移过图标时，显示菜单
                 itemLevelBit= 1,--物品等级，位数
                 itemSlotScale=1, --栏位，按钮，缩放
+
+                EquipSet={--装备管理，数据
+                    disabled= not WoWTools_DataMixin.Player.husandro,
+                    itemLevel= WoWTools_DataMixin.Player.husandro,
+                }
             }
+
+            if not Save().EquipSet then--旧数据
+                Save().EquipSet= {
+                    disabled= Save().equipment,
+                    point= Save().Equipment,
+                    toRight= Save().EquipmentH,
+                    scale= Save().equipmentFrameScale,
+                    strata= Save().trackButtonStrata,
+
+                    itemLevel= Save().trackButtonShowItemLeve,
+                    itemLevelScale= Save().trackButtonTextScale,
+                }
+                Save().equipment= nil
+                Save().Equipment= nil
+                Save().EquipmentH= nil
+                Save().equipmentFrameScale=nil
+                Save().trackButtonStrata= nil
+
+                Save().trackButtonTextScale= nil
+                Save().trackButtonShowItemLeve= nil
+            end
+
+
 
             WoWTools_PaperDollMixin.addName= (WoWTools_DataMixin.Player.Sex==Enum.UnitSex.Female and '|A:charactercreate-gendericon-female-selected:0:0|a' or '|A:charactercreate-gendericon-male-selected:0:0|a')
                                         ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
 
             WoWTools_PaperDollMixin.addName2= '|A:bags-icon-equipment:0:0|a'..(WoWTools_DataMixin.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)
 
-            WoWTools_PaperDollMixin.addName3= '|A:loottoast-arrow-orange:0:0|a'..(WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+            --WoWTools_PaperDollMixin.addName3= '|A:loottoast-arrow-orange:0:0|a'..(WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -262,12 +278,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 self:RegisterEvent('SOCKET_INFO_UPDATE')
+
+
             end
             self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_PaperDollMixin:Init_EquipButton()--装备管理框
+
+        if WoWTools_DataMixin.Player.husandro then WoWTools_LoadUIMixin:OpenPaperDoll() end
+
         self:UnregisterEvent(event)
 
     elseif event=='SOCKET_INFO_UPDATE' then

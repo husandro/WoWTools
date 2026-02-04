@@ -572,7 +572,7 @@ end
 
 --移动12
 local function set_SPEED_Text(frame, elapsed)
-    frame.elapsed= (frame.elapsed or 0.3) + elapsed
+    frame.elapsed= frame.elapsed + elapsed
     if frame.elapsed < 0.3 then
         return
     end
@@ -836,11 +836,23 @@ end
 
 --移动12
 EventsTable.SPEED= function(frame)
-    frame:SetScript('OnUpdate', set_SPEED_Text)
+    frame.frame=CreateFrame('Frame', nil, frame)
+    frame.frame.elapsed= 0.3
+    frame.frame:SetScript('OnHide', function(self)
+        self.elapsed= nil
+        self.text:SetText('')
+    end)
+    frame.frame:SetScript('OnShow', function(self)
+        self.elapsed= 0.3
+    end)
+    frame.frame:SetScript('OnUpdate', set_SPEED_Text)
+
+    frame.frame.text= frame.text
+    frame.frame:SetAllPoints()
     frame:RegisterEvent("PLAYER_STARTED_MOVING")
     frame:RegisterEvent("PLAYER_STOPPED_MOVING")
-    frame:SetScript('OnEvent', function(self)
-        self.elapsed= 3
+    frame:SetScript('OnEvent', function(self, event)
+        self.frame:SetShown(event=='PLAYER_STARTED_MOVING')
     end)
 end
 
@@ -870,7 +882,8 @@ local function Frame_Init(rest)
         local frame, find= _G['WoWToolsAttributesButton'][info.name], nil
         if not info.hide then
             if not frame then
-                frame= CreateFrame('Frame', nil, _G['WoWToolsAttributesButton'].frame)
+                _G['WoWToolsAttributesButton'][info.name]= CreateFrame('Frame', nil, _G['WoWToolsAttributesButton'].frame)
+                frame= _G['WoWToolsAttributesButton'][info.name]
 
                 frame.label= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
 
@@ -907,8 +920,6 @@ local function Frame_Init(rest)
                         prent:SetAlpha(0.3)
                     end)
                 end
-
-                _G['WoWToolsAttributesButton'][info.name]= frame
             end
 
             --重置, 数值

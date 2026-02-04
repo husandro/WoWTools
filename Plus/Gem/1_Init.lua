@@ -539,15 +539,15 @@ local function Init_Spell_Button()
                 break
             end
         end
-        if not spellID and HasExtraActionBar() then
+        if not spellID and C_ActionBar.HasExtraActionBar() then
             local i = 1
-            local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
+            local slot = i + ((C_ActionBar.GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
             local actionType, spell = GetActionInfo(slot)
             if actionType== "spell" and spell then--and ActionTab[spell] then
                 self:SetAttribute("type", 'action')
                 self:SetAttribute('action', slot)
                 self:SetAttribute("spell", nil)
-                self.texture:SetTexture(GetActionTexture(slot) or 0)
+                self.texture:SetTexture(C_ActionBar.GetActionTexture(slot) or 0)
                 action= slot
                 spellID= spell
             end
@@ -619,7 +619,7 @@ end
 local function Init_ItemSocketingFrame_Update()
     ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
 
-    local numSockets = GetNumSockets() or 0
+    local numSockets = C_ItemSocketInfo.GetNumSockets() or 0
     CurTypeGemTab={}
     local itemEquipLoc
     if PlayerIsTimerunning() then
@@ -648,7 +648,7 @@ local function Init_ItemSocketingFrame_Update()
 
     for i, btn in ipairs(Sockets) do--插槽，名称
         if ( i <= numSockets ) then
-            local name= GetSocketTypes(i)
+            local name= C_ItemSocketInfo.GetSocketTypes(i)
             name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
             if name then
                 local text= EMPTY_SOCKET_BLUE:gsub(BLUE_GEM, '')
@@ -714,8 +714,8 @@ local function Init_ItemSocketingFrame_Update()
                 end)
             end
 
-            local gemLinkExist= GetExistingSocketLink(i)
-            local gemLink= GetNewSocketLink(i) or gemLinkExist
+            local gemLinkExist= C_ItemSocketInfo.GetExistingSocketLink(i)
+            local gemLink= C_ItemSocketInfo.GetNewSocketLink(i) or gemLinkExist
             local left, right= WoWTools_ItemMixin:SetGemStats(nil, gemLink)
             local atlas
             if gemLink then

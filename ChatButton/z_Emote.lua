@@ -151,7 +151,9 @@ local function On_Click(self)
                 value = EMOTE455_TOKEN
             end
         end
-        DoEmote(value)
+        --DoEmote(value)
+        
+        C_ChatInfo.PerformEmote(value, UnitName('player'), nil)
     end
 end
 local function On_Enter(self)

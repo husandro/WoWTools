@@ -127,6 +127,6 @@ end
 
 function WoWTools_GossipMixin:Init_Delves()
     DelvesDifficultyPickerFrame:HookScript('OnShow', Init_OnShow)
-    Menu.ModifyMenu("MENU_DELVES_DIFFICULTY", function(...) Init_Menu(...) end)
+    Menu.ModifyMenu("MENU_DELVES_DIFFICULTY", Init_Menu)
     WoWTools_GossipMixin.Init_Delves=function()end
 end

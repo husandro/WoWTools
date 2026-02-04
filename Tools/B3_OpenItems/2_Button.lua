@@ -266,7 +266,7 @@ local function Init()
     function btn:get_key()
         local key= Save().KEY
         if key then
-            local col= GetBindingByKey(key)==self:GetName()..':LeftButton' and '|cnGREEN_FONT_COLOR:' or '|cff828282'
+            local col= C_KeyBindings.GetBindingByKey(key)==self:GetName()..':LeftButton' and '|cnGREEN_FONT_COLOR:' or '|cff828282'
             return col..(WoWTools_DataMixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|r'
         end
     end
