@@ -195,7 +195,6 @@ local function Create_Button(btn)
 
     btn:SetScript("OnLeave",function(self)
         GameTooltip:Hide()
-        self:set_alpha()
     end)
 
     btn:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -204,10 +203,10 @@ local function Create_Button(btn)
     function btn:set_shown()
         self:SetShown(self.setID and (self.isEquipped or not PlayerIsInCombat()))
     end
-    function btn:set_alpha()
-        self:SetAlpha((self.numItems==0 and not self.isEquipped) and 0.3 or 1)
-    end
-    btn:SetScript('OnEvent', btn.set_shown)
+
+    btn:SetScript('OnEvent', function(self)
+
+    end)
 
     function btn:settings()
         local _, iconFileID, _, isEquipped, numItems, _, _, numLost= C_EquipmentSet.GetEquipmentSetInfo(self.setID)
@@ -241,7 +240,7 @@ local function Create_Button(btn)
 
 
         self:set_shown()
-        self:set_alpha()
+        self:SetAlpha((numItems==0 and not isEquipped) and 0.3 or 1)
     end
 end
 
