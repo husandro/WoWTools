@@ -35,6 +35,20 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
@@ -52,13 +66,19 @@ local function Init_Menu(self, root)
 
 
 --装备管理
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_PaperDollMixin.addName2,
     function()
         return Save().equipment
     end, function()
         Save().EquipSet.disabled= not Save().EquipSet.disabled and true or nil
         WoWTools_PaperDollMixin:Init_EquipButton()
+    end)
+--重置位置
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().EquipSet.point, function()
+        Save().EquipSet.point=nil
+        WoWTools_PaperDollMixin:Init_EquipButton()
+        return MenuResponse.Open
     end)
 
 

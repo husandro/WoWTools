@@ -758,7 +758,7 @@ local function Set_Menu(root, tab, tabName, rootName)
 --是否使用，安全按钮
     if isCommand then
         sub= root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '安全按钮' or'Secure Button',
+            'SecureActionButton',
         function()
             return Save().isSecure
         end, function()

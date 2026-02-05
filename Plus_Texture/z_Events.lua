@@ -1871,6 +1871,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
     self:SetButton(EventTrace.ResizeButton)
     self:SetScrollBar(EventTrace.Log.Events)
     self:SetScrollBar(EventTrace.Log.Search)
+    self:SetScrollBar(EventTrace.Filter)
     self:SetEditBox(EventTrace.Log.Bar.SearchBox)
 
     set_button(EventTrace.SubtitleBar.ViewLog)
@@ -1883,6 +1884,9 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
     set_button(EventTrace.Filter.Bar.DiscardAllButton)
     set_button(EventTrace.Filter.Bar.UncheckAllButton)
     set_button(EventTrace.Filter.Bar.CheckAllButton)
+
+
+
 
     self:SetFrame(EventTrace.Log.Events.ScrollBox, {index=1, isMinAlpha=true})
     self:SetFrame(EventTrace.Filter.ScrollBox, {index=1, isMinAlpha=true})

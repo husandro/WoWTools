@@ -2991,7 +2991,7 @@
         "CharacterTrialLevelErrorText",
         "CharacterFrameMixin",
         "GUILD_RECRUITMENT_MAXLEVEL",
-        "DoEmote"
+        "ITEMS_VARIABLE_QUANTITY"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
