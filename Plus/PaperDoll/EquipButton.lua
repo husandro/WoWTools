@@ -68,7 +68,7 @@ local function Init_Menu(self, root)
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
     function()
-        return Save().notNumItem
+        return not Save().notNumItem
     end, function()
         Save().notNumItem = not Save().notNumItem and true or nil
         self:settings()
@@ -94,7 +94,6 @@ local function Init_Menu(self, root)
         GameTooltip_AddHighlightLine(tooltip, WoWTools_DataMixin.onlyChinese and '战斗中可更换武器' or 'Weapons can be switched during combat')
         tooltip:AddLine(' ')
         GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        tooltip:AddLine(' ')
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and'友情提示: 可能会出现错误' or 'Note: Errors may occur')
     end)
 
@@ -175,7 +174,7 @@ local function Create_Button(btn)
 
     btn.select= btn:CreateTexture(nil, 'ARTWORK', nil, 1)
     --btn.select:SetAllPoints()
-    btn.select:SetSize(28,28)
+    btn.select:SetSize(25,25)
     btn.select:SetPoint('CENTER')
     btn.select:SetAtlas('UI-HUD-ActionBar-IconFrame-Down')
     btn.select:SetVertexColor(0,1,0)
