@@ -116,6 +116,21 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateDivider()
+
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            WoWTools_PaperDollMixin.addName2..WoWTools_DataMixin.Icon.icon2
+            ..'|n|n'
+            ..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
+            nil,
+            {SetValue=function()
+                WoWToolsSave['Plus_PaperDoll'].EquipSet={}
+                self:settings()
+            end}
+        )
+    end)
 --重置位置
     WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
         Save().point=nil
