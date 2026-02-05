@@ -2991,7 +2991,12 @@
         "CharacterTrialLevelErrorText",
         "CharacterFrameMixin",
         "GUILD_RECRUITMENT_MAXLEVEL",
-        "ITEMS_VARIABLE_QUANTITY"
+        "ITEMS_VARIABLE_QUANTITY",
+        "PaperDollEquipmentManagerPane_InitButton",
+        "GearSetButton_OnEnter",
+        "GearSetButton_OnClick",
+        "GearSetButton_OpenPopup",
+        "PaperDollEquipmentManagerPane_OnShow"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

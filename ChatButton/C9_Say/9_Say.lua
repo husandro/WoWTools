@@ -477,7 +477,7 @@ local function Init()
     SayButton.numWhisper=WoWTools_LabelMixin:Create(SayButton, {color={r=0,g=1,b=0}})--最后密语,数量, 提示
     SayButton.numWhisper:SetPoint('TOPRIGHT',-3, 0)
 
-    SayButton.texture:SetAtlas('transmog-icon-chat')
+    SayButton.texture:SetAtlas('common-icon-speak')--transmog-icon-chat')
 
     function SayButton:set_tooltip()
         self:set_owner()

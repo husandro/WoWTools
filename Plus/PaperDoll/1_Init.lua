@@ -86,9 +86,9 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(
         WoWTools_PaperDollMixin.addName2..' Plus',
     function()
-        return not Save().ntoEquipSetPLus
+        return not Save().notEquipSetPLus
     end, function()
-        Save().ntoEquipSetPLus= not Save().ntoEquipSetPLus and true or nil
+        Save().notEquipSetPLus= not Save().notEquipSetPLus and true or nil
         WoWTools_PaperDollMixin:Init_EquipSetPlus()--装备管理，Plus
     end)
 
@@ -314,7 +314,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-        if WoWTools_DataMixin.Player.husandro then WoWTools_LoadUIMixin:OpenPaperDoll() end
+        if WoWTools_DataMixin.Player.husandro then WoWTools_LoadUIMixin:OpenPaperDoll(1, 3) end
         WoWTools_PaperDollMixin:Init_EquipSetButton()--装备管理框
 
         self:UnregisterEvent(event)
