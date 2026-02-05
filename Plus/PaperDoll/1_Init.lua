@@ -163,6 +163,17 @@ local function Init_Menu(self, root)
         WoWTools_PaperDollMixin:Init_SetLevel()--更改,等级文本
 
     end)
+
+    root:CreateDivider()
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '弹出框' or 'Flyout',
+    function()
+        return not Save().notFlyout
+    end, function()
+        Save().notFlyout= not Save().notFlyout and true or false
+        WoWTools_PaperDollMixin:Init_EquipmentFlyout()
+    end)
+    
 --打开选项界面
     root:CreateDivider()
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})

@@ -1,5 +1,4 @@
---装备弹出
---EquipmentFlyout.lua
+--装备弹出 EquipmentFlyout.lua
 local function Save()
     return WoWToolsSave['Plus_PaperDoll']
 end
@@ -13,7 +12,7 @@ local PVP_ITEM_LEVEL_TOOLTIP= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"
 
 local function set_item_Set(self, link)--套装
     local set
-    if link and not Save().hide then
+    if link and not Save().notFlyout then
         set=select(16 , C_Item.GetItemInfo(link))
         if set then
             if set and not self.set then
@@ -91,7 +90,7 @@ end
 
 local function setFlyout(self)--, itemLink, slot)
 	local locationData, itemLink
-    if not Save().hide and self.location then
+    if not Save().notFlyout and self.location then
         locationData= EquipmentManager_GetLocationData(self.location)
     end
 
@@ -187,6 +186,7 @@ end
 
 local function Init()
     WoWTools_DataMixin:Hook('EquipmentFlyout_UpdateItems', function()
+
         for _, btn in ipairs(EquipmentFlyoutFrame.buttons) do
             if btn and btn:IsShown()  then
                 setFlyout(btn)
@@ -194,16 +194,11 @@ local function Init()
         end
     end)
 
-    --[[WoWTools_DataMixin:Hook('EquipmentFlyout_Show', function()
-        print('aaa')
-       for _, btn in ipairs(EquipmentFlyoutFrame.buttons) do
-            if btn and btn:IsShown()  then
-                setFlyout(btn)
-            end
-        end
-    end)]]
-
-   Init=function()end
+   Init=function()
+    if EquipmentFlyoutFrame:IsVisible() then
+        WoWTools_DataMixin:Call('EquipmentFlyout_UpdateItems')
+    end
+   end
 end
 
 

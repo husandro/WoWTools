@@ -197,7 +197,7 @@ Plus\MiniMap\Collection_Icon.lua
 ##角色面板
 Plus\PaperDoll\0_PaperDollMixin.lua
 Plus\PaperDoll\1_Init.lua
-Plus\PaperDoll\Flyout_Equipment.lua
+Plus\PaperDoll\EquipmentFlyout.lua
 Plus\PaperDoll\InspectUI_Init.lua
 Plus\PaperDoll\Item_PoaperDll.lua
 Plus\PaperDoll\Reaml.lua
