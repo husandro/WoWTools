@@ -1,4 +1,4 @@
-## Interface: 120000
+## Interface: 120000, 120001
 ## Title: |cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: @project-version@
