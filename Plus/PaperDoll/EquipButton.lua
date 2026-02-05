@@ -115,8 +115,19 @@ local function Init_Menu(self, root)
         self:settings()
     end)
 
-    sub:CreateDivider()
+--背景, 透明度
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()
+        return Save().bgAlpha or 0.5
+    end, function(value)
+        Save().bgAlpha= value
+        self:settings()
+    end, function()
+        Save().bgAlpha= nil
+        self:settings()
+    end)
 
+    sub:CreateDivider()
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
     function()
@@ -131,6 +142,8 @@ local function Init_Menu(self, root)
             end}
         )
     end)
+
+
 --重置位置
     WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
         Save().point=nil
@@ -335,6 +348,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --设置，初始，按钮
 local function Init_buttons()
     if WoWTools_FrameMixin:IsLocked(TrackButton) then
@@ -343,6 +372,8 @@ local function Init_buttons()
     end
 
     TrackButton.pool:ReleaseAll()
+    TrackButton.Bg:ClearAllPoints()
+
     local setIDs= C_EquipmentSet.GetEquipmentSetIDs()
 
     if not setIDs then
@@ -353,7 +384,7 @@ local function Init_buttons()
     local toRight= Save().toRight
     local last= TrackButton
 
-    for _, setID in pairs(setIDs) do
+    for index, setID in pairs(setIDs) do
 
         local btn= TrackButton.pool:Acquire()
         btn.setID=setID
@@ -373,9 +404,17 @@ local function Init_buttons()
             btn:SetPoint('TOP', last, 'BOTTOM')
         end
 
+        if index==1 then
+            TrackButton.Bg:SetPoint('TOPLEFT', btn, -1, 1)
+        end
+
         btn:SetShown(true)
 
         last= btn
+    end
+
+    if last~=TrackButton then
+        TrackButton.Bg:SetPoint('BOTTOMRIGHT', last, 1, -1)
     end
 end
 
@@ -417,6 +456,9 @@ local function Init()--添加装备管理框
     else
         TrackButton.pool= CreateFramePool('Button', TrackButton, 'WoWToolsButtonTemplate')
     end
+
+    TrackButton.Bg= TrackButton:CreateTexture(nil, 'BACKGROUND')
+    TrackButton.Bg:SetColorTexture(0,0,0)
 
 --图标
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
@@ -668,6 +710,7 @@ local function Init()--添加装备管理框
         self:SetFrameStrata(Save().strata or 'MEDIUM')
 
         self.frame:settings()
+        self.Bg:SetAlpha(Save().bgAlpha or 0.5)
         Init_buttons()
     end
 
