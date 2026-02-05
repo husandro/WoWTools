@@ -171,7 +171,7 @@ end
 
 --截取, 字符
 function WoWTools_TextMixin:sub(text, size, letterSize, lower)
-    if not text or text=='' or not size or size==0  then
+    if not canaccessvalue(text) or not text or text=='' or not size or size==0  then
         return text
     end
 

@@ -110,7 +110,7 @@ local function Init()--设置,团队
             frame.name:SetText('')
         else
             local name= frame.name:GetText()
-            if name then
+            if canaccessvalue(name) and name then
                 name= name:match('(.-)%-') or name
                 name= WoWTools_TextMixin:sub(name, 4, 8)
                 frame.name:SetText(name)
