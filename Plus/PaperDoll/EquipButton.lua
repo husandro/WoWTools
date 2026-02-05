@@ -28,10 +28,17 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
-
     root:CreateDivider()
 
-
+--向右
+    root:CreateCheckbox(
+        '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '向右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT),
+    function()
+        return Save().toRight
+    end, function()
+        Save().toRight= not Save().toRight and true or nil
+        self:settings()
+    end)
 
 --装等
     sub=root:CreateCheckbox(
@@ -56,15 +63,7 @@ local function Init_Menu(self, root)
 
 
 
---向右
-    root:CreateCheckbox(
-        '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '向右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT),
-    function()
-        return Save().toRight
-    end, function()
-        Save().toRight= not Save().toRight and true or nil
-        self:settings()
-    end)
+
 
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
@@ -90,7 +89,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().useSecureAction= not Save().useSecureAction and true or nil
     end)
-    sub:SetTooltip(function(tooltip)
+    sub2:SetTooltip(function(tooltip)
         tooltip:AddLine('SecureActionButtonTemplate')
         GameTooltip_AddHighlightLine(tooltip, WoWTools_DataMixin.onlyChinese and '战斗中可更换武器' or 'Weapons can be switched during combat')
         tooltip:AddLine(' ')
@@ -98,8 +97,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(' ')
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and'友情提示: 可能会出现错误' or 'Note: Errors may occur')
     end)
---重新加载UI
-    WoWTools_MenuMixin:Reload(sub2)
+
 
 --缩放
     sub:CreateDivider()
@@ -128,6 +126,11 @@ local function Init_Menu(self, root)
             WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
         )
     end)
+
+
+--重新加载UI
+    sub:CreateDivider()
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 
@@ -158,23 +161,24 @@ local function Create_Button(btn)
     btn.texture:SetAllPoints()
     WoWTools_ButtonMixin:AddMask(btn, false, btn.texture)
 
-    btn.select= btn:CreateTexture(nil, 'BORDER', nil, 2)
-    btn.select:SetSize(25,25)
-    btn.select:SetPoint('CENTER')
-    btn.select:SetAtlas('UI-HUD-ActionBar-IconFrame-Mouseover')
-    btn.select:SetVertexColor(0,1,0)
 
-    btn.spec= btn:CreateTexture(nil, 'BORDER', nil, 3)
+
+    btn.spec= btn:CreateTexture(nil, 'BORDER', nil, 2)
     btn.spec:SetSize(8,8)
     btn.spec:SetPoint('BOTTOMLEFT', 1,1)
 
 
-    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlightOutline', 4) --WoWTools_LabelMixin:Create(btn, {size=10, color={r=1,g=1,b=1}})
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlightOutline', 3)
     btn.text:SetFontHeight(8)
     btn.text:SetShadowOffset(1,-1)
     btn.text:SetPoint('BOTTOMRIGHT', -1, 1)
 
-
+    btn.select= btn:CreateTexture(nil, 'ARTWORK', nil, 1)
+    --btn.select:SetAllPoints()
+    btn.select:SetSize(28,28)
+    btn.select:SetPoint('CENTER')
+    btn.select:SetAtlas('UI-HUD-ActionBar-IconFrame-Down')
+    btn.select:SetVertexColor(0,1,0)
 
 
     btn:SetScript("OnEnter", function(self)
@@ -305,7 +309,6 @@ end
         self.texture:SetTexture(0)
         self.spec:SetTexture(0)
         self.text:SetText('')
-        self.setID= nil
         self.isEquipped= nil
     end)
     btn:SetScript('OnShow', function(self)
@@ -350,7 +353,6 @@ local function Init_buttons()
             end
         end
 
-        btn:ClearAllPoints()
         if toRight then
             btn:SetPoint('LEFT', last, 'RIGHT')
         else
@@ -419,11 +421,7 @@ local function Init()--添加装备管理框
     TrackButton.frame.text:SetPoint('CENTER')
 
     function TrackButton.frame:set_itemleve()
-        local text= format('%i', select(2, GetAverageItemLevel()) or 0)
-        if Save().toRight then
-            text=WoWTools_TextMixin:Vstr(text)
-        end
-        self.text:SetText(text or '')
+        self.text:SetFormattedText('%i', select(2, GetAverageItemLevel()) or 0)
     end
 
     function TrackButton.frame:settings()
@@ -435,10 +433,10 @@ local function Init()--添加装备管理框
 
             self.text:ClearAllPoints()
             if Save().toRight then
-                self.text:SetPoint('RIGHT', -1, 0)
+                self.text:SetPoint('RIGHT', -2, 0)
                 self.text:SetJustifyH('RIGHT')
             else
-                self.text:SetPoint('BOTTOM', 0, 1)
+                self.text:SetPoint('BOTTOM', 0, 2)
                 self.text:SetJustifyH('CENTER')
             end
             self.text:SetScale(Save().itemLevelScale or 1)
@@ -469,6 +467,11 @@ local function Init()--添加装备管理框
 
 --设置，显示
     function TrackButton:main_shown(sceneType)
+        if WoWTools_FrameMixin:IsLocked(self) then
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            return
+        end
+
         self:SetShown(
             not C_PetBattles.IsInBattle()
             and not UnitHasVehicleUI('player')
@@ -509,18 +512,15 @@ local function Init()--添加装备管理框
 
     TrackButton:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self) then
-            self:SetScript('OnUpdate', function(f)
-                if InCombatLockdown() and WoWTools_FrameMixin:IsLocked(self) then
-                    self:StopMovingOrSizing()
-                end
-            end)
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:StartMoving()
         end
     end)
     TrackButton:SetScript("OnDragStop", function(self)
         ResetCursor()
-        self:StopMovingOrSizing()
-        self:SetScript('OnUpdate', nil)
+        if not WoWTools_FrameMixin:IsLocked(self) then
+            self:StopMovingOrSizing()
+        end
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().point={self:GetPoint(1)}
             Save().point[2]=nil
@@ -589,14 +589,18 @@ local function Init()--添加装备管理框
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:settings()
             self:UnregisterEvent(event)
+
+        elseif event=='PLAYER_REGEN_DISABLED' then
+            self:StopMovingOrSizing()
+            self:UnregisterEvent(event)
         else
             self:main_shown()
         end
     end)
 
     function TrackButton:settings()
-        if WoWTools_FrameMixin:IsLocked(TrackButton) then
-            TrackButton:RegisterEvent('PLAYER_REGEN_ENABLED')
+        if WoWTools_FrameMixin:IsLocked(self) then
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         end
 
@@ -630,7 +634,7 @@ local function Init()--添加装备管理框
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
 
         elseif WoWTools_DataMixin.Player.husandro then
-            self:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT', -4,-3)
+            self:SetPoint('TOPLEFT', PlayerFrame, 'TOPRIGHT', -20,-15)
 
         else
             self:SetPoint('CENTER', UIParent, -150, -150)
