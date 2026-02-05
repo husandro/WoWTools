@@ -31,7 +31,7 @@ local function Init()
 --新建 空装，按钮 .addSetButton GearSetButtonTemplate
     WoWTools_DataMixin:Hook('PaperDollEquipmentManagerPane_InitButton', function(btn)
         local isShow= not btn.setID and true or false
-        
+
 
         if not btn.createButton and isShow then
             btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {
@@ -129,6 +129,6 @@ end
 
 
 
-function WoWTools_PaperDollMixin:Init_Tab3_Set_Plus()
+function WoWTools_PaperDollMixin:Init_EquipSetPlus()--装备管理，Plus
     Init()
 end

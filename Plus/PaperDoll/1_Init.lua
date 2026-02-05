@@ -72,15 +72,25 @@ local function Init_Menu(self, root)
         return not Save().EquipSet.disabled
     end, function()
         Save().EquipSet.disabled= not Save().EquipSet.disabled and true or nil
-        WoWTools_PaperDollMixin:Init_EquipButton()
+        WoWTools_PaperDollMixin:Init_EquipSetButton()
     end)
 --重置位置
     WoWTools_MenuMixin:RestPoint(self, sub, Save().EquipSet.point, function()
         Save().EquipSet.point=nil
-        WoWTools_PaperDollMixin:Init_EquipButton()
+        WoWTools_PaperDollMixin:Init_EquipSetButton()
         return MenuResponse.Open
     end)
 
+
+--装备管理 Plus
+    sub=root:CreateCheckbox(
+        WoWTools_PaperDollMixin.addName2..' Plus',
+    function()
+        return not Save().ntoEquipSetPLus
+    end, function()
+        Save().ntoEquipSetPLus= not Save().ntoEquipSetPLus and true or nil
+        WoWTools_PaperDollMixin:Init_EquipSetPlus()--装备管理，Plus
+    end)
 
 --属性
     root:CreateDivider()
@@ -181,7 +191,6 @@ end
 
 
 local function Init()
-    --WoWTools_PaperDollMixin:Init_ShowHideButton(PaperDollItemsFrame)--显示，隐藏，按钮
     local menu= CreateFrame('DropdownButton', 'WoWToolsPaperDollMenuButton', PaperDollFrame, 'WoWToolsMenuTemplate')
     menu:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     menu:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
@@ -189,21 +198,23 @@ local function Init()
     menu:SetupMenu(Init_Menu)
 
 
-    WoWTools_PaperDollMixin:Init_EquipmentFlyout()--装备弹出
+    WoWTools_PaperDollMixin:Init_EquipSetPlus()--装备管理，Plus
+
+
     WoWTools_PaperDollMixin:Init_Status()--属性，增强
     WoWTools_PaperDollMixin:Init_Status_Bit()--属性，位数
 
     WoWTools_PaperDollMixin:Init_Reaml()--服务器
     WoWTools_PaperDollMixin:Init_SetLevel()--更改,等级文本
 
-
+    WoWTools_PaperDollMixin:Init_EquipmentFlyout()--装备弹出
     WoWTools_PaperDollMixin:Init_Tab1()--总装等
     WoWTools_PaperDollMixin:Init_Tab2()--头衔数量    
     WoWTools_PaperDollMixin:Init_Tab3()
     WoWTools_PaperDollMixin:Init_InspectUI()--目标, 装备
 
     WoWTools_PaperDollMixin:Init_Item_PoaperDll()--物品
-    WoWTools_PaperDollMixin:Init_Tab3_Set_Plus()--装备管理，Plus
+
 
 
     WoWTools_DataMixin:Hook('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
@@ -298,16 +309,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 self:RegisterEvent('SOCKET_INFO_UPDATE')
-
-
             end
             self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-        WoWTools_PaperDollMixin:Init_EquipButton()--装备管理框
-
         if WoWTools_DataMixin.Player.husandro then WoWTools_LoadUIMixin:OpenPaperDoll() end
+        WoWTools_PaperDollMixin:Init_EquipSetButton()--装备管理框
 
         self:UnregisterEvent(event)
 

@@ -420,9 +420,8 @@ local function Init()
             ),
 
             '-1'..WoWTools_DataMixin.Icon.left
+            ..WoWTools_DataMixin.Icon.right..'+1'
         )
-        GameTooltip:AddDoubleLine(' ', '+1'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddLine('-1 '..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
         GameTooltip:Show()
     end
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnLeave', function(self)
@@ -438,8 +437,8 @@ local function Init()
     end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseDown', function(self, d)
         local n= (Save().itemLevelBit or -1)+ (d=='LeftButton' and -1 or 1)
-        n= math.min(-1, n)
-        n= math.max(4, n)
+        n= math.max(-1, n)
+        n= math.min(4, n)
         Save().itemLevelBit=n
         WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
         self:set_tooltips()

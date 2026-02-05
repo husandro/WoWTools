@@ -207,9 +207,9 @@ Plus\PaperDoll\Status_Bit.lua
 Plus\PaperDoll\Status_Add.lua
 Plus\PaperDoll\Tab1.lua
 Plus\PaperDoll\Tab2.lua
-Plus\PaperDoll\Tab3_Set_Plus.lua
 Plus\PaperDoll\Tab3.lua
-Plus\PaperDoll\EquipButton.lua
+Plus\PaperDoll\EquipSetButton.lua
+Plus\PaperDoll\EquipSetPlus.lua
 
 ##声望面板
 Plus\Faction\0_FactionMixin.lua

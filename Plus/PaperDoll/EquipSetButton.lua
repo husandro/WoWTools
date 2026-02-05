@@ -742,7 +742,7 @@ end
 
 
 
-function WoWTools_PaperDollMixin:Init_EquipButton()
+function WoWTools_PaperDollMixin:Init_EquipSetButton()
     Init()
 end
 
