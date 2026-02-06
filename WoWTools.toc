@@ -205,9 +205,7 @@ Plus\PaperDoll\Set_Level.lua
 Plus\PaperDoll\Show_Hide_Button.lua
 Plus\PaperDoll\Status_Bit.lua
 Plus\PaperDoll\Status_Add.lua
-Plus\PaperDoll\Tab1.lua
-Plus\PaperDoll\Tab2.lua
-Plus\PaperDoll\Tab3.lua
+Plus\PaperDoll\TabPlus.lua
 Plus\PaperDoll\EquipSetButton.lua
 Plus\PaperDoll\EquipSetPlus.lua
 

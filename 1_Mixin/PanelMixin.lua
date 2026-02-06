@@ -107,9 +107,11 @@ function WoWTools_PanelMixin:Open(category, name)
     category= (category and category.GetID) and category or Category
     Category.expanded=true
 
-    if not name and category and category.GetName then
-        name= category:GetName()
-    end
+    
+        name= name or category:GetName()
+    
+
+    category.OnEvaluateState= category.OnEvaluateState or function()end
 
     Settings.OpenToCategory(category:GetID(), name)
 end
@@ -324,6 +326,9 @@ end})
 
 
 --添加，Check 和 按钮
+
+--CreateSettingsCheckboxWithButtonInitializer(setting, buttonText, buttonClick, evaluateState, clickRequiresSet, tooltip)
+
 function WoWTools_PanelMixin:Check_Button(tab, root)
     local layout= tab.layout or Layout
     local checkSetting=Settings.RegisterProxySetting(
@@ -336,11 +341,11 @@ function WoWTools_PanelMixin:Check_Button(tab, root)
         tab.SetValue
     )
     local sub= CreateSettingsCheckboxWithButtonInitializer(
-        checkSetting,
-        tab.buttonText,
-        tab.buttonFunc,
-        true,
-        tab.tooltip
+        checkSetting,--setting
+        tab.buttonText,--buttonText
+        tab.buttonFunc,--buttonClick
+        nil,--evaluateState
+        tab.tooltip--tooltip
     )
     layout:AddInitializer(sub)
 

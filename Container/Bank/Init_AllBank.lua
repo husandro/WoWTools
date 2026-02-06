@@ -6,13 +6,17 @@ local PURCHASE_TAB_ID= -1
 local BODER_LEFT= 3
 
 local function Set_TabInfoText(label, tabData, isName)
-    label:SetText(
-        '|T'..(tabData.icon or 0)..':0|t'
-        ..(isName and tabData.name and tabData.name..' ' or '')
-        ..(WoWTools_BankMixin:GetFlagsText(tabData.depositFlags, false) or '')
-        ..'|cnGREEN_FONT_COLOR:'
-        ..(C_Container.GetContainerNumFreeSlots(tabData.ID) or '')
-    )
+    if tabData then
+        label:SetText(
+            '|T'..(tabData.icon or 0)..':0|t'
+            ..(isName and tabData.name and tabData.name..' ' or '')
+            ..(WoWTools_BankMixin:GetFlagsText(tabData.depositFlags, false) or '')
+            ..'|cnGREEN_FONT_COLOR:'
+            ..(C_Container.GetContainerNumFreeSlots(tabData.ID) or '')
+        )
+    else
+        label:SetText('')
+    end
 end
 
 local function Set_Tab_Label_OnEnter(self, tabID)
@@ -432,6 +436,7 @@ local function Init_Move()
     WoWTools_MoveMixin:Setup(BankCleanUpConfirmationPopup)
 
 
+    
     BankPanel.PurchasePrompt:HookScript('OnShow', function()
         BankFrame:SetSize(738, 460)
     end)

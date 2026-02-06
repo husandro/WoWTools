@@ -24,9 +24,8 @@ local function Set_Tooltip(frame)
             GameTooltip:AddLine(' ')
         end
         GameTooltip:AddDoubleLine(self.tooltip, self.tooltip2, 0,1,0,0,1,0)
-        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
         GameTooltip:Show()
-        self:SetAlpha(0)
+        self:SetAlpha(0.3)
     end)
 end
 
@@ -133,11 +132,11 @@ end
 
 
 
-function WoWTools_PaperDollMixin:Init_Tab3()
+--[[function WoWTools_PaperDollMixin:Init_Tab3()
     Init()
 end
 
 
 function WoWTools_PaperDollMixin:Settings_Tab3()
     Settings()
-end
+end]]

@@ -2996,7 +2996,8 @@
         "GearSetButton_OnEnter",
         "GearSetButton_OnClick",
         "GearSetButton_OpenPopup",
-        "PaperDollEquipmentManagerPane_OnShow"
+        "PaperDollEquipmentManagerPane_OnShow",
+        "CONFIRM_BUY_CHARACTER_BANK_TAB"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

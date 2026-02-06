@@ -24,9 +24,9 @@ end
 local function Settings()
     
 
-    WoWTools_PaperDollMixin:Settings_Tab2()--头衔数量
+    --[[WoWTools_PaperDollMixin:Settings_Tab2()--头衔数量
     WoWTools_PaperDollMixin:Settings_Tab1()--总装等
-    WoWTools_PaperDollMixin:Settings_Tab3()--标签, 内容,提示
+    WoWTools_PaperDollMixin:Settings_Tab3()--标签, 内容,提示]]
 
 
 

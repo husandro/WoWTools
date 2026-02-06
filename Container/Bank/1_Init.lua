@@ -106,17 +106,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-
-                    if Save().disabled  then
-                        print(
-                            WoWTools_BankMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                            WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
-                        )
-                    else
-                        Init()
-                    end
-                end
+                    Init()
+                end,
+                tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
             })
 
             if Save().disabled then

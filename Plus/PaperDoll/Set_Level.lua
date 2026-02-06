@@ -126,7 +126,7 @@ local function Init()
 --专精，职责
     CharacterFrame.specRole= CharacterFrame.PortraitContainer:CreateTexture('WoWToolsPaperDollSpecRoleTexture', 'OVERLAY', nil, 7)
     CharacterFrame.specRole:SetSize(22,22)
-    CharacterFrame.specRole:SetPoint('BOTTOMRIGHT',10,10)
+    CharacterFrame.specRole:SetPoint('BOTTOMRIGHT',2,0)
 
 
 

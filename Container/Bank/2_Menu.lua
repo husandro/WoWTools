@@ -97,9 +97,16 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
+
         GameTooltip_AddErrorLine(tooltip,
             WoWTools_DataMixin.onlyChinese and '“物品信息” 同时打，会卡' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)..': '..(TICKET_TYPE3 or 'Bug'))
         )
+
+        GameTooltip_AddErrorLine(tooltip,
+            'Bug|n'..(WoWTools_DataMixin.onlyChinese and '你是否想要购买一个银行标签？' or CONFIRM_BUY_CHARACTER_BANK_TAB),
+            true
+        )
+
         tooltip:AddLine(' ')
         GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)

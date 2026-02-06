@@ -144,7 +144,7 @@ end
 
 
 
-function WoWTools_PaperDollMixin:Init_Tab2()--头衔数量
+--[[function WoWTools_PaperDollMixin:Init_Tab2()--头衔数量
     Init_Button()
 end
 
@@ -152,6 +152,6 @@ function WoWTools_PaperDollMixin:Settings_Tab2()--头衔数量
     local show= PAPERDOLL_SIDEBARS[2].IsActive() and not Save().hide
     Title:SetShown(show)
     Button:SetShown(show)
-end
+end]]
 
 

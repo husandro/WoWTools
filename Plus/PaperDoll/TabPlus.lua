@@ -1,0 +1,407 @@
+local function Save()
+    return WoWToolsSave['Plus_PaperDoll']
+end
+local frame
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Title_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
+    local all= GetNumTitles()
+    root:CreateTitle('|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r/'..all..' ')
+
+    local sub
+
+    for i=1, all do
+        local name = GetTitleName(i)
+        if name then
+            local cn= WoWTools_TextMixin:CN(name, {titleID=i})
+            if cn then
+                cn= cn:gsub('%%s', '')
+                cn= cn=='' and name or cn
+                cn= cn~=name and cn or nil
+            end
+            sub=root:CreateButton(
+
+                (IsTitleKnown(i) and '|cffffffff' or '|cff606060')
+                ..(cn or name),
+
+            function(data)
+                WoWTools_TooltipMixin:Show_URL(true, 'title', data.rightText, nil)
+                return MenuResponse.Open
+
+            end, {rightText=i, name=name, cn=cn})
+
+            sub:SetTooltip(function(tooltip, description)
+                tooltip:AddLine(WoWTools_DataMixin.Icon.left..'wowhead.com')
+                tooltip:AddLine('index '..description.data.rightText)
+                tooltip:AddLine(description.data.name..' ')
+                if description.data.cn then
+                    tooltip:AddLine(description.data.cn)
+                end
+            end)
+            WoWTools_MenuMixin:SetRightText(sub)
+
+        end
+    end
+
+    WoWTools_MenuMixin:SetScrollMode(root)
+end
+
+
+
+
+
+
+
+local function Set_Tooltip(region)
+    region:EnableMouse(true)
+    region:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
+    region:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab3, 3)--PaperDollFrame.lua
+    end)
+    region:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        if self.setID then
+            GameTooltip:SetEquipmentSet(self.setID)
+            GameTooltip:AddLine(' ')
+        end
+        GameTooltip:AddDoubleLine(self.tooltip, self.tooltip2, 0,1,0,0,1,0)
+        GameTooltip:Show()
+        self:SetAlpha(0.3)
+    end)
+end
+
+
+local function Get_SetInfo()
+    local name, icon, specIcon, nu, specName, setID
+    local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
+    for _, v in pairs(setIDs) do
+        local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
+        if isEquipped then
+            name=name2
+            name=WoWTools_TextMixin:sub(name, 2, 5)
+            if icon2 and icon2~=134400 then
+                icon=icon2
+            end
+            local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(v)
+            if specIndex then
+                local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
+                specName= specName2
+                if icon3 then
+                    specIcon=icon3
+                end
+            end
+            nu=numItems
+            setID= v
+            break
+        end
+    end
+
+    return name, icon, specIcon, nu, specName, setID
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    if Save().notTabPlus then
+        return
+    end
+
+    frame= CreateFrame('Frame', nil, PaperDollSidebarTab1)
+    frame:SetFrameLevel(PaperDollSidebarTab1:GetFrameLevel()+1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+    frame.pve= frame:CreateFontString('WoWToolsPaperItemPvELevelLabel', 'OVERLAY', 'GameFontHighlightOutline')
+    frame.pve:SetFontHeight(12)
+    frame.pve:SetShadowOffset(1,-1)
+    frame.pve:SetPoint('BOTTOM', PaperDollSidebarTab1)
+    frame.pve:SetJustifyH('CENTER')
+    frame.pve:EnableMouse(true)
+    frame.pve:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    frame.pve:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(PaperDollSidebarTab1, "ANCHOR_RIGHT")
+        GameTooltip:SetText(CharacterStatsPane.ItemLevelFrame.tooltip)
+        GameTooltip:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
+    frame.pve:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab1, 1)
+    end)
+
+
+
+
+
+
+    frame.pvp= PaperDollSidebarTab1:CreateFontString('WoWToolsPaperItemPvPLevelLabel', 'OVERLAY', 'GameFontHighlightOutline')
+    frame.pvp:SetFontHeight(12)
+    frame.pvp:SetShadowOffset(1,-1)
+    frame.pvp:SetPoint('TOP', PaperDollSidebarTab1, 0, -2)
+    frame.pvp:SetJustifyH('CENTER')
+    frame.pvp:EnableMouse(true)
+    frame.pvp:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab1, 1)
+    end)
+    frame.pvp:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    frame.pvp:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(PaperDollSidebarTab1, "ANCHOR_RIGHT")
+        GameTooltip:SetText(CharacterStatsPane.ItemLevelFrame.tooltip)
+        GameTooltip:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
+    local pvpTexture= frame:CreateTexture(nil, 'OVERLAY')
+    pvpTexture:SetSize(12,12)
+    pvpTexture:SetPoint('RIGHT', frame.pvp, 'LEFT')
+    pvpTexture:SetAtlas('pvptalents-warmode-swords')
+
+
+
+
+
+
+
+
+
+
+
+
+--已收集数量
+    frame.title= frame:CreateFontString('WoWToolsPaperTitleLabel', 'OVERLAY', 'GameFontHighlightOutline')
+    frame.title:SetFontHeight(12)
+    frame.title:SetShadowOffset(1,-1)
+    frame.title:SetPoint('BOTTOM', PaperDollSidebarTab2)
+    frame.title:SetJustifyH('CENTER')
+    frame.title:EnableMouse(true)
+    function frame:get_title_num()
+        local tab= PaperDollFrame.TitleManagerPane.titles or GetKnownTitles() or {}
+        local num= #tab
+        num= num-1
+        num= math.max(num, 0)
+        return num, GetNumTitles()-num
+    end
+
+    frame.title:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab2, 2)--PaperDollFrame.lua
+    end)
+    frame.title:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    frame.title:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(PaperDollSidebarTab2, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        local num, notTitle= frame:get_title_num()
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)
+        )
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED, num)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED, notTitle)
+        GameTooltip:Show()
+        self:SetAlpha(0.3)
+    end)
+
+
+
+
+
+
+--未收集
+    frame.titleButton= CreateFrame('DropdownButton', 'WoWToolsTitleMenuButton', PaperDollFrame.TitleManagerPane, 'WoWToolsButtonTemplate')
+    frame.titleButton:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    frame.titleButton.tooltip= WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED
+    frame.titleButton.text= frame.titleButton:CreateFontString(nil, 'ARTWORK', 'GameFontDisableSmall')
+    frame.titleButton.text:SetPoint('CENTER')
+    frame.titleButton:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
+    frame.titleButton:SetPoint('TOPRIGHT', -16, 2)
+    frame.titleButton:SetupMenu(Init_Title_Menu)
+
+
+
+
+
+    local w, h
+--套装，名称
+    --frame.setName=WoWTools_LabelMixin:Create(PaperDollSidebarTab3, {justifyH='CENTER'})
+    frame.setName= frame:CreateFontString('WoWToolsPaperTitleLabel', 'OVERLAY', 'GameFontHighlightOutline')
+    frame.setName:SetFontHeight(12)
+    frame.setName:SetShadowOffset(1,-1)
+    frame.setName:SetPoint('BOTTOM', PaperDollSidebarTab3, 2, 0)
+    Set_Tooltip(frame.setName)
+    frame.setName.tooltip= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '名称' or NAME)..'|r'
+
+--套装图标图标
+    frame.setTexture= frame:CreateTexture(nil, 'OVERLAY')
+    frame.setTexture:SetPoint('CENTER', PaperDollSidebarTab3, 1,-2)
+    w, h= PaperDollSidebarTab3:GetSize()
+    frame.setTexture:SetSize(w-4, h-4)
+
+--天赋图标
+    frame.specTexture=frame:CreateTexture(nil, 'OVERLAY')
+    frame.specTexture:SetPoint('BOTTOMLEFT', PaperDollSidebarTab3, 'BOTTOMRIGHT')
+    h, w= PaperDollSidebarTab3:GetSize()
+    frame.specTexture:SetSize(h/3+2, w/3+2)
+    Set_Tooltip(frame.specTexture)
+    frame.specTexture.tooltip= '|cnGREEN_FONT_COLOR:'..format(WoWTools_DataMixin.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, WoWTools_DataMixin.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..'|r'
+
+--套装数量
+    --NumLabel=WoWTools_LabelMixin:Create(PaperDollSidebarTab3, {justifyH='RIGHT'})
+    frame.setNum= frame:CreateFontString('WoWToolsPaperTitleLabel', 'OVERLAY', 'GameFontHighlightOutline')
+    frame.setNum:SetFontHeight(12)
+    frame.setNum:SetPoint('LEFT', PaperDollSidebarTab3, 'RIGHT',0, 4)
+    frame.setNum.tooltip= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP)
+    Set_Tooltip(frame.setNum)
+
+
+    function frame:set_item_set()
+        local name, icon, specIcon, nu, specName, setID
+
+        if not Save().notTabPlus then
+            name, icon, specIcon, nu, specName, setID= Get_SetInfo()
+        end
+
+--套装，名称
+    self.setName:SetText(name or '')
+    self.setName.tooltip2= name
+    self.setName.setID= setID
+
+--套装图标图标
+    self.setTexture:SetTexture(icon or 0)
+    self.setTexture:SetShown(icon and true or false)
+
+--天赋图标
+    self.specTexture:SetTexture(specIcon or 0)
+    self.specTexture:SetShown(specIcon and true or false)
+    self.specTexture.tooltip2= specIcon and (specIcon and "|T"..specIcon..':0|t' or '')..specName or nil
+    self.specTexture.setID= setID
+
+--套装数量
+    self.setNum:SetText(nu or '')
+    self.setNum.tooltip2= nu and (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..nu or nil
+    self.setNum.setID= setID
+    end
+
+
+
+    function frame:get_data()
+        if Save().notTabPlus then
+            return
+        end
+
+        local pve, cur, pvp
+
+        pve, cur, pvp= GetAverageItemLevel()
+
+--物品等级 pvp
+        --[[if pvp==0 or pvp==pve then
+            pvp=nil
+        else
+            pvp= format('%i', pvp)
+        end]]
+        pvp= format('%i', pvp or 0)
+--物品等级 pvp
+        pve= format('%i', pve or 0)
+        if pve==0 or cur-pve<=-5 then
+            pve= '|cnWARNING_FONT_COLOR:'..pve..'|r'
+        end
+--头衔
+        local title, notCollected= self:get_title_num()
+
+
+        return pve, pvp, title, notCollected
+    end
+
+
+
+    function frame:settings()
+        local pve, pvp, title, notCollected= self:get_data()
+        self.pve:SetText(pve or '')
+        self.pvp:SetText(pvp or '')
+        self.title:SetText(title and title>0 and title or '')
+
+        self.titleButton.text:SetText(notCollected or '')
+        self.titleButton:SetWidth(math.max(self.titleButton.text:GetStringWidth()+12, 23))
+
+        self:set_item_set()
+    end
+
+    frame:SetScript('OnHide', function(self)
+        self:UnregisterAllEvents()
+        self.pve:SetText('')
+        self.pvp:SetText('')
+        self.title:SetText('')
+    end)
+    frame:SetScript('OnShow', function(self)
+        if Save().notTabPlus then
+            return
+        end
+        self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+        self:settings()
+    end)
+    frame:SetScript('OnEvent', frame.settings)
+
+
+    if PaperDollFrame:IsShown() then
+        frame:settings()
+    end
+
+    Init=function()
+        frame:SetShown(not Save().notTabPlus)
+        frame.titleButton:SetShown(not Save().notTabPlus)
+    end
+end
+
+
+
+
+
+
+
+
+
+function WoWTools_PaperDollMixin:Init_TabPlus()
+    Init()
+end

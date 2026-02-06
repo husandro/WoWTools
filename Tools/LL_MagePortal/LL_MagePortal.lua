@@ -6,8 +6,9 @@ end
 local Tab={}
 if WoWTools_DataMixin.Player.Faction=='Horde' then--部落
     Tab={
-        {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
-        {spell=3567, spell2=11417, name='奥格瑞玛', luce=true,},
+        {spell=1259190, spell2=1259194, name='银月城', luce=true},
+
+        {spell=3567, spell2=11417, name='奥格瑞玛', luce=true},
         {spell=3563, spell2=11418, name='幽暗城'},
         {spell=3566, spell2=11420, name='雷霆崖'},
         {spell=32272, spell2=32267, name='银月城'},
@@ -21,13 +22,14 @@ if WoWTools_DataMixin.Player.Faction=='Horde' then--部落
         {spell=281404, spell2=281402, name='达萨罗'},
         {spell=344587, spell2=344597, name='奥利波斯'},
         {spell=395277, spell2=395289,  name='瓦德拉肯'},
+        {spell=446540, spell2=446534, name='多恩诺嘉尔'},
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }
 elseif WoWTools_DataMixin.Player.Faction=='Alliance' then
     Tab={
-        {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
-        {spell=3561, spell2=10059,  name='暴风城', luce=true,},
+        {spell=1259190, spell2=1259194, name='银月城', luce=true},
+        {spell=3561, spell2=10059,  name='暴风城', luce=true},
         {spell=3562, spell2=11416, name='铁炉堡'},
         {spell=3565, spell2=11419, name='达纳苏斯'},
         {spell=32271, spell2=32266, name='埃索达'},
@@ -41,6 +43,7 @@ elseif WoWTools_DataMixin.Player.Faction=='Alliance' then
         {spell=281403, spell2=281400, name='伯拉勒斯'},
         {spell=344587, spell2=344597, name='奥利波斯'},
         {spell=395277, spell2=395289,  name='瓦德拉肯'},
+        {spell=446540, spell2=446534, name='多恩诺嘉尔'},
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }

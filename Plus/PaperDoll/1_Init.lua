@@ -170,6 +170,14 @@ local function Init_Menu(self, root)
         Save().notFlyout= not Save().notFlyout and true or false
         WoWTools_PaperDollMixin:Init_EquipmentFlyout()
     end)
+    root:CreateCheckbox(
+        'Tab',
+    function()
+        return not Save().notTabPlus
+    end, function()
+        Save().notTabPlus= not Save().notTabPlus and true or nil
+        WoWTools_PaperDollMixin:Init_TabPlus()
+    end)
     
 --打开选项界面
     root:CreateDivider()
@@ -216,16 +224,18 @@ local function Init()
     WoWTools_PaperDollMixin:Init_SetLevel()--更改,等级文本
 
     WoWTools_PaperDollMixin:Init_EquipmentFlyout()--装备弹出
-    WoWTools_PaperDollMixin:Init_Tab1()--总装等
+    WoWTools_PaperDollMixin:Init_TabPlus()
+
+    --[[WoWTools_PaperDollMixin:Init_Tab1()--总装等
     WoWTools_PaperDollMixin:Init_Tab2()--头衔数量    
-    WoWTools_PaperDollMixin:Init_Tab3()
+    WoWTools_PaperDollMixin:Init_Tab3()]]
     WoWTools_PaperDollMixin:Init_InspectUI()--目标, 装备
 
     WoWTools_PaperDollMixin:Init_Item_PoaperDll()--物品
 
 
 
-    WoWTools_DataMixin:Hook('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
+    --[[WoWTools_DataMixin:Hook('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
         WoWTools_PaperDollMixin:Settings_Tab2()--总装等
         WoWTools_PaperDollMixin:Settings_Tab3()
     end)
@@ -237,7 +247,7 @@ local function Init()
     WoWTools_DataMixin:Hook('GearSetButton_SetSpecInfo', function()--装备管理,修该专精
         WoWTools_PaperDollMixin:Settings_Tab3()
         WoWTools_PaperDollMixin:Settings_Tab1()--总装等
-    end)
+    end)]]
 
 
     Init=function()end
