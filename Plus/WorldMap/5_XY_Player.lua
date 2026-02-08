@@ -82,10 +82,15 @@ local function Init()
         self:SetScale(Save().PlayerXY_Scale or 1)
 --位置
         self:ClearAllPoints()
-        if not Save().PlayerXYPoint then
-            self:SetPoint('BOTTOMRIGHT', WorldMapFrame, 'TOPRIGHT',-50, 5)
+        local p= Save().PlayerXYPoint
+        if not p then
+            self:Setpoint('CENTER', 100, -100)
+
+        elseif WoWTools_DataMixin.Player.husandro then
+            self:SetPoint('BOTTOM', PlayerFrame, 'TOP')
+
         else
-            self:SetPoint(Save().PlayerXYPoint[1], UIParent, Save().PlayerXYPoint[3], Save().PlayerXYPoint[4], Save().PlayerXYPoint[5])
+            self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         end
 --Strata
         self:SetFrameStrata(Save().PlayerXY_Strata or 'HIGH')

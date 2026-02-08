@@ -819,11 +819,17 @@ local function Init()
     WoWTools_TextureMixin:CreateBG(TrackButton, {isColor=true})
 
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
-    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
+    --TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
     TrackButton.texture:SetPoint('CENTER')
     TrackButton.texture:SetSize(20,10)
     function TrackButton:set_alpha()
-        self.texture:SetAlpha(Save().hide and 1 or 0.3)
+        local isShow= not Save().hide
+        self.texture:SetAlpha(isShow and 0.3 or 1)
+        if isShow then
+            self.texture:SetAtlas('Adventure-MissionEnd-Line')
+        else
+            self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
+        end
     end
 
 
@@ -936,7 +942,7 @@ local function Init()
         end
     end)
     TrackButton:SetScript('OnMouseWheel', function(self, d)
-		Save().hide= d==-1
+		Save().hide= d==1
         self:set_event()--设置事件
         self:set_shown()
         self:set_tooltip()

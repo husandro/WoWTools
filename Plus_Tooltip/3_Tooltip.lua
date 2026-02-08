@@ -158,6 +158,8 @@ function WoWTools_TooltipMixin.Frames:ShoppingTooltip1()
             if itemLink then
                 if itemLink== select(2, GameTooltip:GetItem()) then
                     atlas='QuestNormal'
+                elseif C_Item.IsEquippableItem(itemLink) and not C_Item.IsEquippedItem(itemLink) then
+                    atlas= 'bag-main'
                 elseif itemLink==GetInventoryItemLink('player', 11) or itemLink==GetInventoryItemLink('player', 13) then
                     atlas='Adventures-Target-Indicator'
                     isUp=true

@@ -784,40 +784,6 @@ local function Init_Menu(self, root)--菜单
     end)
 
 
-    sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
-    function()
-        return Save().textToDown
-    end, function()
-        Save().textToDown= not Save().textToDown and true or nil
-        for i=1, #Buttons do
-            local btn= _G[Name..i]
-            btn:ClearAllPoints()
-            btn.text:ClearAllPoints()
-            btn:set_point()
-        end
-    end)
-
---缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save().vigentteButtonTextScale
-    end, function(value)
-        Save().vigentteButtonTextScale= value
-        self:set_scale()
-    end)
-
-
---FrameStrata    
-    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
-        return self:GetFrameStrata()==data
-    end, function(data)
-        Save().trackButtonStrata= data
-        self:set_strata()
-    end)
-
---重置位置
-    sub:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(self, sub, Save().pointVigentteButton, WoWTools_MinimapMixin.Rest_TrackButton_Point)
 
 --当前
     root:CreateDivider()
@@ -933,7 +899,7 @@ local function Init_Menu(self, root)--菜单
     if num>1 then
         sub:CreateDivider()
 --全部清除
-        WoWTools_MenuMixin:ClearAll(sub, function() 
+        WoWTools_MenuMixin:ClearAll(sub, function()
             Save().areaPoiIDs={}
         end)
         WoWTools_MenuMixin:SetScrollMode(sub)
@@ -965,7 +931,7 @@ local function Init_Menu(self, root)--菜单
     if num>1 then
         sub:CreateDivider()
 --全部清除
-        WoWTools_MenuMixin:ClearAll(sub, function() 
+        WoWTools_MenuMixin:ClearAll(sub, function()
             Save().uiMapIDs={}
         end)
         WoWTools_MenuMixin:SetScrollMode(sub)
@@ -974,7 +940,42 @@ local function Init_Menu(self, root)--菜单
 
 --打开选项
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_MinimapMixin.addName})
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MinimapMixin.addName})
+    
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
+    function()
+        return Save().textToDown
+    end, function()
+        Save().textToDown= not Save().textToDown and true or nil
+        for i=1, #Buttons do
+            local btn= _G[Name..i]
+            btn:ClearAllPoints()
+            btn.text:ClearAllPoints()
+            btn:set_point()
+        end
+    end)
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, sub, function()
+        return Save().vigentteButtonTextScale
+    end, function(value)
+        Save().vigentteButtonTextScale= value
+        self:set_scale()
+    end)
+
+
+--FrameStrata    
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().trackButtonStrata= data
+        self:set_strata()
+    end)
+
+--重置位置
+    sub:CreateDivider()
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().pointVigentteButton, WoWTools_MinimapMixin.Rest_TrackButton_Point)
 end
 
 
@@ -1001,7 +1002,9 @@ end
 --小地图, 标记, 文本
 local function Init_Button()
     TrackButton= CreateFrame('Button', Name, UIParent, 'WoWToolsButtonTemplate')
-    TrackButton:SetNormalAtlas('VignetteKillElite')
+    TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
+    TrackButton.texture:SetAllPoints()
+    --TrackButton:SetNormalAtlas('VignetteKillElite')
 
 
     TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
@@ -1018,7 +1021,13 @@ local function Init_Button()
 
 
     function TrackButton:set_texture()
-        self:GetNormalTexture():SetAlpha(Save().vigentteButtonShowText and 0.3 or 0.7)
+        local isShow= Save().vigentteButtonShowText
+        self.texture:SetAlpha(isShow and 0.3 or 1)
+        if isShow then
+            self.texture:SetAtlas('VignetteKillElite')
+        else
+            self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
+        end
     end
 
     function TrackButton:set_point()--设置，位置
@@ -1051,17 +1060,7 @@ local function Init_Button()
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         else
-            local key= IsModifierKeyDown()
-            if d=='LeftButton' and not key then
-                Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or false
-                self:set_shown()
-                self:set_texture()
-
-            elseif d=='RightButton' and not key then
-                MenuUtil.CreateContextMenu(self, function(...)
-                    Init_Menu(...)
-                end)
-            end
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
@@ -1074,15 +1073,18 @@ local function Init_Button()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(nil, true), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '主菜单' or MAINMENU_BUTTON, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '主菜单' or MAINMENU_BUTTON, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().vigentteButtonTextScale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(self.Frame:IsShown(), true), WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end
 
     TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save().vigentteButtonTextScale= WoWTools_FrameMixin:ScaleFrame(self, d, Save().vigentteButtonTextScale, nil)
+        --Save().vigentteButtonTextScale= WoWTools_FrameMixin:ScaleFrame(self, d, Save().vigentteButtonTextScale, nil)
+        Save().vigentteButtonShowText= d==-1
+        self:set_shown()
+        self:set_texture()
+        self:set_tooltip()
     end)
 
     TrackButton:SetScript('OnEnter',function(self)

@@ -110,30 +110,35 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
         return
     end
 
-    local invSlot, invSlot2 = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
-    if not invSlot then
+    local invSlots={WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}
+
+    if TableIsEmpty(invSlots) then
         return itemLevel
     end
 
-    local isTimerunning= PlayerIsTimerunning()
-
+--取得最小，武器, sp, 戒指
     local upLevel, downLevel
-    local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
-    if invSlot2 then
-        if not itemLinkPlayer then--武器, sp, 戒指
-            itemLinkPlayer= GetInventoryItemLink('player', invSlot2)
-        else
-            local itemLinkPlayer2= GetInventoryItemLink('player', invSlot2)
-            if itemLinkPlayer2 then
-                local level= C_Item.GetDetailedItemLevelInfo(itemLink) or 0
-                local level2= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer2) or 0
-                if level>level2 then
-                    itemLinkPlayer= itemLinkPlayer2
-                end
+    local itemLinkPlayer, equipedLevel
+    for _, slot in pairs(invSlots) do
+        local link = GetInventoryItemLink('player', slot)
+        if link then
+            local level= WoWTools_ItemMixin:GetItemLevel(link)
+
+            if not itemLinkPlayer then
+                itemLink= link
+                equipedLevel= level
+
+            elseif level<itemLevel then
+                itemLinkPlayer= link
+                equipedLevel= level
             end
         end
     end
 
+
+
+
+    local isTimerunning= PlayerIsTimerunning()
 
     if itemLinkPlayer then
         if isTimerunning then
@@ -147,7 +152,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
             upLevel= numItem>numPlayer
             downLevel= numItem<numPlayer
         else
-            local equipedLevel= WoWTools_ItemMixin:GetItemLevel(itemLinkPlayer)
+            --local equipedLevel= WoWTools_ItemMixin:GetItemLevel(itemLinkPlayer)
             if equipedLevel then
                 local equipedInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
                 if equipedInfo.text[upgradeStr] then--"升级：%s/%s"

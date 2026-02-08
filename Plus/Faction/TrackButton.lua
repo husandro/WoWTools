@@ -509,7 +509,7 @@ local function Init()
 	end
 
 	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
-    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
+    --TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
     TrackButton.texture:SetPoint('CENTER')
     TrackButton.texture:SetSize(20,10)
 
@@ -574,7 +574,13 @@ local function Init()
 	end
 
 	function TrackButton:set_alpha()
-		self.texture:SetAlpha(Save().btnstr and 0.3 or 1)
+		local isShow= Save().btnstr
+		self.texture:SetAlpha(isShow and 0.3 or 1)
+		if isShow then
+			self.texture:SetAtlas('Adventure-MissionEnd-Line')
+		else
+			self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
+		end
 	end
 
 	function TrackButton:set_Point()

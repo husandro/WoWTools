@@ -906,10 +906,15 @@ local function Init()
 			self.texture:SetPoint('TOPLEFT',0,0)
 			self.texture:SetPoint('BOTTOMRIGHT',0,0)
 		else
-			self.texture:SetAtlas('Adventure-MissionEnd-Line')
 			self.texture:SetPoint('TOPLEFT', 1.5,-6)
 			self.texture:SetPoint('BOTTOMRIGHT',-1.5,6)
-			self.texture:SetAlpha(Save().str and 0.5 or 1)
+			local isShow= Save().str
+			self.texture:SetAlpha(isShow and 0.5 or 1)
+			if isShow then
+				self.texture:SetAtlas('Adventure-MissionEnd-Line')
+			else
+				self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
+			end
 		end
 	end
 
