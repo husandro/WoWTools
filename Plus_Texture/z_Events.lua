@@ -1840,7 +1840,7 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
 	self:HideTexture(InspectMainHandSlotFrame)
 	self:HideTexture(InspectSecondaryHandSlotFrame)
 
-    self:HideFrame(InspectMainHandSlot)
+    --self:HideFrame(InspectMainHandSlot)
 
     self:Init_BGMenu_Frame(InspectFrame)
 end
