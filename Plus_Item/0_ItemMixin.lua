@@ -272,19 +272,19 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                 frame['statText'..index]= frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormalOutline', nil, 1) -- WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
                 lable= frame['statText'..index]
 
-                lable:SetFontHeight(12)
+                lable:SetFontHeight(14)
                 lable:SetShadowOffset(1,-1)
                 lable:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
                 lable:SetJustifyH((index==2 or index==4) and 'RIGHT' or 'LEFT')
 
                 if index==1 then
-                    lable:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT', -2, 0)
+                    lable:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT', -4, 0)
                 elseif index==2 then
-                    lable:SetPoint('BOTTOMRIGHT', point, 'BOTTOMRIGHT', 2, 0)
+                    lable:SetPoint('BOTTOMRIGHT', point, 'BOTTOMRIGHT', 4, 0)
                 elseif index==3 then
-                    lable:SetPoint('TOPLEFT', point, 'TOPLEFT', -2, 0)
+                    lable:SetPoint('TOPLEFT', point, 'TOPLEFT', -4, 0)
                 else
-                    lable:SetPoint('TOPRIGHT', point, 'TOPRIGHT', 2, 0)
+                    lable:SetPoint('TOPRIGHT', point, 'TOPRIGHT',4, 0)
                 end
                 frame['statText'..index]=lable
             end

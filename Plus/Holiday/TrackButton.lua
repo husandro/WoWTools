@@ -689,7 +689,7 @@ end
 
 
 local function Init_Menu(self, root)
-    --local sub
+    local sub
 
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
@@ -702,23 +702,6 @@ local function Init_Menu(self, root)
     end)
 
     root:CreateDivider()
-    root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
-    function()
-        return Save().left
-    end, function()
-        Save().left= not Save().left and true or nil
-        WoWTools_HolidayMixin:Init_TrackButton()
-    end)
-
-    root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
-    function()
-        return Save().toTopTrack
-    end, function()
-        Save().toTopTrack = not Save().toTopTrack and true or nil
-       WoWTools_HolidayMixin:Init_TrackButton()
-    end)
 
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
@@ -738,9 +721,31 @@ local function Init_Menu(self, root)
         Set_Text()
     end)
 
+
     root:CreateDivider()
+--打开选项界面
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_HolidayMixin.addName})
+
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
+    function()
+        return Save().left
+    end, function()
+        Save().left= not Save().left and true or nil
+        WoWTools_HolidayMixin:Init_TrackButton()
+    end)
+
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
+    function()
+        return Save().toTopTrack
+    end, function()
+        Save().toTopTrack = not Save().toTopTrack and true or nil
+       WoWTools_HolidayMixin:Init_TrackButton()
+    end)
+
 --缩放
-    WoWTools_MenuMixin:Scale(self, root, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale or 1
     end, function(value)
         Save().scale=value
@@ -748,7 +753,7 @@ local function Init_Menu(self, root)
     end)
 
 --背景, 透明度
-    WoWTools_MenuMixin:BgAplha(root,
+    WoWTools_MenuMixin:BgAplha(sub,
     function()
         return Save().bgAlpha or 0.5
     end, function(value)
@@ -757,7 +762,7 @@ local function Init_Menu(self, root)
     end)
 
 --FrameStrata    
-    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().strata= data
@@ -765,8 +770,8 @@ local function Init_Menu(self, root)
     end)
 
 --重置位置
-	root:CreateDivider()
-	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
+	sub:CreateDivider()
+	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
 		self:set_point()
 		print(
@@ -776,11 +781,8 @@ local function Init_Menu(self, root)
 	end)
 
 --重新加载UI
-   -- WoWTools_MenuMixin:Reload(root)
-
-    root:CreateDivider()
-    --打开选项界面
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_HolidayMixin.addName})
+    sub:CreateDivider()
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 
