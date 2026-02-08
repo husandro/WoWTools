@@ -711,9 +711,7 @@ local function Init()
 --装备属性
     WoWTools_DataMixin:Hook('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
         local slot= self:GetID()
-        if not slot  then
-            return
-        end
+
         if PaperDoll_IsEquippedSlot(slot) then
             local show= not Save().hide
             local textureName = GetInventoryItemTexture("player", slot)

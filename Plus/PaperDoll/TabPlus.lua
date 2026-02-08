@@ -423,6 +423,9 @@ local function Init()
     end)
     frame:SetScript('OnEvent', frame.settings)
 
+    WoWTools_DataMixin:Hook('GearSetButton_SetSpecInfo', function()
+       frame:settings()
+    end)
 
     if PaperDollFrame:IsShown() then
         frame:settings()
