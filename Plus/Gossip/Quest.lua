@@ -104,7 +104,7 @@ local function select_Reward(questID)--自动:选择奖励
                         for _, invSlot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do
                             local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
                             if itemLinkPlayer then
-                                local lv=C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
+                                local lv=WoWTools_ItemMixin:GetItemLevel(itemLinkPlayer)
                                 if lv and lv>1 and itemLevel-lv>0 and (bestLevel and bestLevel<lv or not bestLevel) then
                                     bestLevel= lv
                                     bestItem = i

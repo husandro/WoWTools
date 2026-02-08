@@ -139,7 +139,7 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 	if info.isAccountTransferable then
 		label:SetTextColor(0, 0.8, 1)
 		accountWide= WoWTools_DataMixin:MK(WoWTools_CurrencyMixin:GetAccountInfo(info.currencyID, true), 3)
-
+		accountWide= ACCOUNT_WIDE_FONT_COLOR:WrapTextInColorCode(accountWide..'|A:warbands-transferable-icon:0:0|a')
 --战团共享
 	elseif info.isAccountWide then
 		label:SetTextColor(1, 0.49, 0.04)

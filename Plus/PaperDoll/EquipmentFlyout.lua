@@ -113,7 +113,7 @@ local function setFlyout(self)--, itemLink, slot)
         local dateInfo= WoWTools_ItemMixin:GetTooltip({itemLInk=itemLink, text={ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT, PVP_ITEM_LEVEL_TOOLTIP, ITEM_LEVEL}, onlyText=true})--物品提示，信息
 
         level= dateInfo.text[ITEM_LEVEL]
-        level= level and tonumber(level) or C_Item.GetDetailedItemLevelInfo(itemLink)
+        level= level and tonumber(level) or WoWTools_ItemMixin:GetItemLevel(itemLink)
 
         local slotID
         if level then
@@ -134,7 +134,7 @@ local function setFlyout(self)--, itemLink, slot)
         if level and slotID then
             local link = GetInventoryItemLink('player', slotID)
             if link then
-                updown = C_Item.GetDetailedItemLevelInfo(link)
+                updown = WoWTools_ItemMixin:GetItemLevel(link)
                 if updown then
                     updown=level-updown
                     if updown>0 then

@@ -72,7 +72,7 @@ local function Get_SlotLevel(slot)
     for _, slotID in ipairs(slot) do
         local itemLink= GetInventoryItemLink('player', slotID)
         if itemLink then
-            local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or 0
+            local itemLevel= WoWTools_ItemMixin:GetItemLevel(itemLink) or 0
             if itemLevel>1 then
                 level= (not level or itemLevel<level) and itemLevel or level
             end
@@ -85,7 +85,7 @@ end
 local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
     local textLeft, text2Left
 --装等
-    itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
+    itemLevel= itemLink and WoWTools_ItemMixin:GetItemLevel(itemLink) or itemLevel
     local portrait
     if itemLevel and itemLevel>1 then
 --比较装等
@@ -584,6 +584,6 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     --setItemCooldown(tooltip, itemID)--物品冷却
     self:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
-    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
+    WoWTools_TooltipMixin:CalculatePadding(tooltip)
     --tooltip:Show()
 end

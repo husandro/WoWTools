@@ -129,7 +129,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
             upLevel= numItem>numPlayer
             downLevel= numItem<numPlayer
         else
-            local equipedLevel= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
+            local equipedLevel= WoWTools_ItemMixin:GetItemLevel(itemLinkPlayer)
             if equipedLevel then
                 local equipedInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
                 if equipedInfo.text[upgradeStr] then--"升级：%s/%s"
@@ -381,7 +381,7 @@ local function Get_Info(tab)
 --套装：炎阳珠衣装
     local transmogSetID= C_Item.GetItemLearnTransmogSet(itemLink)
 
-    itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel or itemLevel2
+    itemLevel= WoWTools_ItemMixin:GetItemLevel(itemLink) or itemLevel or itemLevel2
     itemQuality= itemQuality or itemQuality2
     expacID= expacID or 0
 
@@ -576,6 +576,7 @@ local function Get_Info(tab)
 
                 if dateInfo.text[itemLevelStr] then--物品等级：%d
                     itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
+                    print(dateInfo.text[itemLevelStr], itemLink)
                 end
 
 

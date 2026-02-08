@@ -63,6 +63,6 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 
-    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
+    WoWTools_TooltipMixin:CalculatePadding(tooltip)
 end
 

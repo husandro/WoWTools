@@ -164,7 +164,9 @@ local function Init()
     end)
     btn:SetScript("OnDragStop", function(self)
         ResetCursor()
-        self:StopMovingOrSizing()
+        if not WoWTools_FrameMixin:IsLocked(self) then
+            self:StopMovingOrSizing()
+        end
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().point={self:GetPoint(1)}
             Save().point[2]=nil

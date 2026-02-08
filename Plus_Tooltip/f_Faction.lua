@@ -74,6 +74,6 @@ end
         GameTooltip_AddBlankLineToTooltip(tooltip)
     end
 
-    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
+    WoWTools_TooltipMixin:CalculatePadding(tooltip)
 ]]
 

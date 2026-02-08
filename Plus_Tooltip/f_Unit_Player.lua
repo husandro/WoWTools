@@ -318,7 +318,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
     self:Set_Width(tooltip)--设置，宽度
 
-    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
+    WoWTools_TooltipMixin:CalculatePadding(tooltip)
     --if hideLine then
         --tooltip:Show()
     --end

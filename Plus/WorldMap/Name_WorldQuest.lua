@@ -19,7 +19,6 @@ local function Create_Pin(self)
 
     self.Display.rewardText=self.Display:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')-- WoWTools_WorldMapMixin:Create_Wolor_Font(self, 12)
     self.Display.rewardText:SetJustifyH('CENTER')
-    self.Display.rewardText:SetFontHeight(12)
     self.Display.rewardText:SetPoint('TOP', self, 'BOTTOM', 0, 2)
 
     function self:wowtools_Clear()
@@ -78,7 +77,7 @@ local function Init()
                 if invSlot and data.name and data.itemLevel and data.itemLevel>1 then--装等
                     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                     if itemLinkPlayer then
-                        local lv= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
+                        local lv= WoWTools_ItemMixin:GetItemLevel(itemLinkPlayer)
                         if lv and data.itemLevel-lv>0 then
                             text= (text or '')..'|A:bags-greenarrow:0:0|a'
                             setLevelUp=true
@@ -131,7 +130,8 @@ local function Init()
             self.Display.typeTexure:SetTexture(0)
         end
 
-       self.Display.rewardText:SetText(text or '')
+        self.Display.rewardText:SetText(text or '')
+        self.Display.rewardText:SetFontHeight(12)
     end)
 
 

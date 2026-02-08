@@ -72,8 +72,8 @@ local function set_ROLL_Check(frame, notPrint)
     for _, slot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do--比较装等
         local slotLink= GetInventoryItemLink('player', slot)
         if slotLink then
-            local slotItemLevel= C_Item.GetDetailedItemLevelInfo(slotLink) or 0
-            local itemLevel= C_Item.GetDetailedItemLevelInfo(link)
+            local slotItemLevel= WoWTools_ItemMixin:GetItemLevel(slotLink) or 0
+            local itemLevel= WoWTools_ItemMixin:GetItemLevel(link)
             if itemLevel then
                 local num=itemLevel-slotItemLevel
                 if num>0 then

@@ -121,5 +121,5 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
 --PetBattle.lua 联动
     WoWTools_PetBattleMixin.Set_TypeButton_Tips(petType)
 
-    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
+    WoWTools_TooltipMixin:CalculatePadding(tooltip)
 end

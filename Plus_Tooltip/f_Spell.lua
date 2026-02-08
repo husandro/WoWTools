@@ -108,7 +108,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
 
     tooltip.Portrait:settings(spellTexture)
 
-    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
+    WoWTools_TooltipMixin:CalculatePadding(tooltip)
     --tooltip:Show()
 end
 

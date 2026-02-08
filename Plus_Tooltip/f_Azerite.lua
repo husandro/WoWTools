@@ -18,6 +18,6 @@ function WoWTools_TooltipMixin:Set_Azerite(tooltip, powerID)
     if info and info.spellID then
         WoWTools_TooltipMixin:Set_Spell(tooltip, info.spellID)
     else
-        WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
+        WoWTools_TooltipMixin:CalculatePadding(tooltip)
     end
 end

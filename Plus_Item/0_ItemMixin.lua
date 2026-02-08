@@ -32,9 +32,6 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 
 
 
-
-
-
 --local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
 function WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
     local leftText, bottomLeftText
@@ -145,12 +142,7 @@ function WoWTools_ItemMixin:GetItemStats(itemLink)--取得，物品，次属性�
         end
     end
 
---[[if num==0 then
-    for k, v in pairs(info )  do
-        print(WoWTools_TextMixin:CN(_G[k]), k, v)
-    end
-    print(WoWTools_ItemMixin:GetLink(C_Item.GetItemInfoInstant( itemLink)))
-end]]
+
 
     table.sort(tab, function(a,b)
         if a.index== b.index then
@@ -239,12 +231,11 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
             else
                 --local quality = C_Item.GetItemQualityByID(link)--颜色
                 --if quality==7 then
-                local dataInfo= self:GetTooltip({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
-                if dataInfo.text[itemLevelStr] then
-                    itemLevel= tonumber(dataInfo.text[itemLevelStr])
-                end
+                
+                itemLevel= self:GetItemLevel(link)
+                
 
-                itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(link)
+                itemLevel= itemLevel or WoWTools_ItemMixin:GetItemLevel(link)
                 if itemLevel and itemLevel>3 then
                     local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等
                     if avgItemLevel then
@@ -622,6 +613,15 @@ end
 
 
 
+function WoWTools_ItemMixin:GetItemLevel(itemLink)
+    if itemLink then
+        local dataInfo= self:GetTooltip({hyperLink=itemLink, text={itemLevelStr}, onlyText=true})--物品提示，信息
+        local itemLevel= dataInfo.text[itemLevelStr] or WoWTools_ItemMixin:GetItemLevel(itemLink)
+        if itemLevel then
+            return tonumber(itemLevel)
+        end
+    end
+end
 
 
 
@@ -838,3 +838,4 @@ function WoWTools_ItemMixin:GetWoWCount(itemID, checkGUID, checkRegion)--WoWTool
     end
     return all, numPlayer
 end
+

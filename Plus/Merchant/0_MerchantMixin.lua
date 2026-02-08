@@ -24,7 +24,7 @@ function WoWTools_MerchantMixin:CheckSellItem(itemID, itemLink, quality, isBound
     if not PlayerIsTimerunning() and not Save().notSellBoss and itemLink then
         local level= Save().bossItems[itemID]
         if level then
-            local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
+            local itemLevel= WoWTools_ItemMixin:GetItemLevel(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
             if level== itemLevel  then
                 return WoWTools_DataMixin.onlyChinese and '首领' or BOSS
             end

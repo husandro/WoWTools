@@ -316,7 +316,7 @@ function Set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 and info.itemID
                 and info.quality
             then
-                local level= C_Item.GetDetailedItemLevelInfo(info.hyperlink) or 0
+                local level= WoWTools_ItemMixin:GetItemLevel(info.hyperlink) or 0
                 local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
                 if classID==3
                     and (PlayerIsTimerunning() or (WoWTools_DataMixin.Player.IsMaxLevel and WoWTools_DataMixin.ExpansionLevel== expacID or not WoWTools_DataMixin.Player.IsMaxLevel))--最高等级
@@ -733,7 +733,7 @@ local function Init_ItemSocketingFrame_Update()
             btn.type:SetText(name or '')
             btn.leftText:SetText(left or '')
             btn.rightText:SetText(right or '')
-            local itemLevel= gemLink and C_Item.GetDetailedItemLevelInfo(gemLink) or 1
+            local itemLevel= gemLink and WoWTools_ItemMixin:GetItemLevel(gemLink) or 1
             btn.levelText:SetText(itemLevel>10 and itemLevel or '')
             btn.levelText:SetTextColor(Get_Item_Color(gemLink))
             if atlas then

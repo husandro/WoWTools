@@ -139,7 +139,7 @@ local function Item(link)
     local t= WoWTools_HyperLink:CN_Link(link, {itemID=itemID, isName=true})
     t= icon and '|T'..icon..Size..'|t'..t or t--加图标
     if classID==2 or classID==4 then
-        local lv=C_Item.GetDetailedItemLevelInfo(link)--装等
+        local lv= WoWTools_ItemMixin:GetItemLevel(link)--装等
         if lv and lv>10 then
             t=t..'['..lv..']'
         end

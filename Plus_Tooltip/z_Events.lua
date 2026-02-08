@@ -22,7 +22,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_Professions()
             local name= self.WoWHead..'profession-trait/'..(f.nodeID or '')
             self:Set_Web_Link(GameTooltip, {name=name})
             --GameTooltip:Show()
-            WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', GameTooltip)
+            WoWTools_TooltipMixin:CalculatePadding()
         end
     end)
 end
@@ -269,7 +269,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerChoice()
         if f.optionInfo and f.optionInfo.spellID then
             GameTooltip:ClearLines()
             GameTooltip:SetSpellByID(f.optionInfo.spellID)
-            WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', GameTooltip)
+            WoWTools_TooltipMixin:CalculatePadding()
         end
     end)
 end
@@ -303,7 +303,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_OrderHallUI()
         if info.ability and info.ability.id and info.ability.id>0 then
             GameTooltip:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
         end
-        WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', GameTooltip)
+        WoWTools_TooltipMixin:CalculatePadding()
     end)
     WoWTools_DataMixin:Hook(GarrisonTalentButtonMixin, 'SetTalent', function(f)--是否已激活, 和等级
         local info= f.talent
@@ -465,7 +465,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_ChallengesUI()
         end
         GameTooltip:AddDoubleLine('affixID '..f.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
         self:Set_Web_Link(GameTooltip, {type='affix', id=f.affixID, name=name, isPetUI=false})--取得网页，数据链接
-        WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', GameTooltip)
+        WoWTools_TooltipMixin:CalculatePadding()
         --GameTooltip:Show()
     end)
 end
@@ -526,7 +526,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_OverrideActionBar()
                             subType and 'subType|cffffffff'..WoWTools_DataMixin.Icon.icon2..subType
                         )
                     --end
-                    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', GameTooltip)
+                    WoWTools_TooltipMixin:CalculatePadding()
                 end
             end)
         end
