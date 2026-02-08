@@ -2997,7 +2997,11 @@
         "GearSetButton_OnClick",
         "GearSetButton_OpenPopup",
         "PaperDollEquipmentManagerPane_OnShow",
-        "CONFIRM_BUY_CHARACTER_BANK_TAB"
+        "CONFIRM_BUY_CHARACTER_BANK_TAB",
+        "PAPERDOLL_SIDEBAR_STATS",
+        "GEARSETS_TITLE",
+        "LFG_LIST_ITEM_LEVEL_PVP_INSTR_SHORT",
+        "LFG_LIST_ITEM_LEVEL_INSTR_SHORT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

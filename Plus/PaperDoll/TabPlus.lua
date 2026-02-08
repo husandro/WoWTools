@@ -70,29 +70,32 @@ local function Init_Title_Menu(self, root)
     end
 
     local all= GetNumTitles()
-    root:CreateTitle('|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r/'..all..' ')
+ 
 
     local sub
+    local find= 0
 
     for i=1, all do
         local name = GetTitleName(i)
-        if name then
+        if name and name~='' and not name:find('PH') then
+            find= find+1
             local cn= WoWTools_TextMixin:CN(name, {titleID=i})
             if cn then
                 cn= cn:gsub('%%s', '')
                 cn= cn=='' and name or cn
                 cn= cn~=name and cn or nil
             end
+            local col= IsTitleKnown(i) and '|cff606060' or '|cffffffff'
             sub=root:CreateButton(
 
-                (IsTitleKnown(i) and '|cffffffff' or '|cff606060')
+                col
                 ..(cn or name),
 
             function(data)
                 WoWTools_TooltipMixin:Show_URL(true, 'title', data.rightText, nil)
                 return MenuResponse.Open
 
-            end, {rightText=i, name=name, cn=cn})
+            end, {rightText=col..i, name=name, cn=cn})
 
             sub:SetTooltip(function(tooltip, description)
                 tooltip:AddLine(WoWTools_DataMixin.Icon.left..'wowhead.com')
@@ -106,33 +109,9 @@ local function Init_Title_Menu(self, root)
 
         end
     end
-
+    root:CreateDivider()
+    root:CreateTitle('|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r/'..all..' (|cffffffff'..find..'|r)')
     WoWTools_MenuMixin:SetScrollMode(root)
-end
-
-
-
-
-
-
-
-local function Set_Tooltip(region)
-    region:EnableMouse(true)
-    region:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-    region:SetScript('OnMouseDown', function()
-        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab3, 3)--PaperDollFrame.lua
-    end)
-    region:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        if self.setID then
-            GameTooltip:SetEquipmentSet(self.setID)
-            GameTooltip:AddLine(' ')
-        end
-        GameTooltip:AddDoubleLine(self.tooltip, self.tooltip2, 0,1,0,0,1,0)
-        GameTooltip:Show()
-        self:SetAlpha(0.3)
-    end)
 end
 
 
@@ -179,8 +158,13 @@ local function Init()
     end)
     frame.pve:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(PaperDollSidebarTab1, "ANCHOR_RIGHT")
-        GameTooltip:SetText(CharacterStatsPane.ItemLevelFrame.tooltip)
-        GameTooltip:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
+        GameTooltip_SetTitle(GameTooltip,
+            (WoWTools_DataMixin.onlyChinese and '物品等级' or LFG_LIST_ITEM_LEVEL_INSTR_SHORT)
+            ..WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)
+        )
+        --GameTooltip:SetText(CharacterStatsPane.ItemLevelFrame.tooltip)
+        --GameTooltip:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
@@ -193,7 +177,7 @@ local function Init()
 
 
 
-    frame.pvp= PaperDollSidebarTab1:CreateFontString('WoWToolsPaperItemPvPLevelLabel', 'OVERLAY', 'GameFontHighlightOutline')
+    frame.pvp= frame:CreateFontString('WoWToolsPaperItemPvPLevelLabel', 'OVERLAY', 'GameFontHighlightOutline')
     frame.pvp:SetFontHeight(12)
     frame.pvp:SetShadowOffset(1,-1)
     frame.pvp:SetPoint('TOP', PaperDollSidebarTab1, 0, -2)
@@ -208,8 +192,14 @@ local function Init()
     end)
     frame.pvp:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(PaperDollSidebarTab1, "ANCHOR_RIGHT")
-        GameTooltip:SetText(CharacterStatsPane.ItemLevelFrame.tooltip)
-        GameTooltip:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
+        GameTooltip_SetTitle(GameTooltip,
+            (WoWTools_DataMixin.onlyChinese and 'PvP物品等级' or LFG_LIST_ITEM_LEVEL_PVP_INSTR_SHORT)
+            ..WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)
+        )
+        --GameTooltip:AddLine(' ')
+        --GameTooltip:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
+        --GameTooltip:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
@@ -236,8 +226,6 @@ local function Init()
     frame.title:SetPoint('BOTTOM', PaperDollSidebarTab2)
     frame.title:SetJustifyH('CENTER')
     frame.title:EnableMouse(true)
-
-
     frame.title:SetScript('OnMouseDown', function()
         WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab2, 2)--PaperDollFrame.lua
     end)
@@ -249,12 +237,12 @@ local function Init()
         GameTooltip:SetOwner(PaperDollSidebarTab2, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         local num, notTitle= Get_Title_Num()
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip,
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)
         )
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED, num)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED, notTitle)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED, num, nil,nil,nil,1,1,1)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED, notTitle, nil,nil,nil,1,1,1)
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -267,7 +255,8 @@ local function Init()
 --未收集
     frame.titleButton= CreateFrame('DropdownButton', 'WoWToolsTitleMenuButton', PaperDollFrame.TitleManagerPane, 'WoWToolsButtonTemplate')
     frame.titleButton:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-    frame.titleButton.tooltip= WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED
+    frame.titleButton.owner= 'ANCHOR_RIGHT'
+    frame.titleButton.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
     frame.titleButton.text= frame.titleButton:CreateFontString(nil, 'ARTWORK', 'GameFontDisableSmall')
     frame.titleButton.text:SetPoint('CENTER')
     frame.titleButton:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
@@ -285,8 +274,23 @@ local function Init()
     frame.setName:SetFontHeight(12)
     frame.setName:SetShadowOffset(1,-1)
     frame.setName:SetPoint('BOTTOM', PaperDollSidebarTab3, 2, 0)
-    Set_Tooltip(frame.setName)
-    frame.setName.tooltip= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '名称' or NAME)..'|r'
+    frame.setName:EnableMouse(true)
+    frame.setName:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab3, 3)--PaperDollFrame.lua
+    end)
+    frame.setName:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    frame.setName:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(PaperDollSidebarTab3, "ANCHOR_RIGHT")
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '名称' or NAME)
+        )
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
 
 --套装图标图标
     frame.setTexture= frame:CreateTexture(nil, 'OVERLAY')
@@ -299,16 +303,49 @@ local function Init()
     frame.specTexture:SetPoint('BOTTOMLEFT', PaperDollSidebarTab3, 'BOTTOMRIGHT')
     h, w= PaperDollSidebarTab3:GetSize()
     frame.specTexture:SetSize(h/3+2, w/3+2)
-    Set_Tooltip(frame.specTexture)
-    frame.specTexture.tooltip= '|cnGREEN_FONT_COLOR:'..format(WoWTools_DataMixin.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, WoWTools_DataMixin.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..'|r'
+    frame.specTexture:EnableMouse(true)
+    frame.specTexture:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab3, 3)--PaperDollFrame.lua
+    end)
+    frame.specTexture:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    frame.specTexture:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(PaperDollSidebarTab3, "ANCHOR_RIGHT")
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '专精' or SPECIALIZATION)
+        )
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
 
 --套装数量
     --NumLabel=WoWTools_LabelMixin:Create(PaperDollSidebarTab3, {justifyH='RIGHT'})
     frame.setNum= frame:CreateFontString('WoWToolsPaperTitleLabel', 'OVERLAY', 'GameFontHighlightOutline')
     frame.setNum:SetFontHeight(12)
     frame.setNum:SetPoint('LEFT', PaperDollSidebarTab3, 'RIGHT',0, 4)
-    frame.setNum.tooltip= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP)
-    Set_Tooltip(frame.setNum)
+    frame.setNum:EnableMouse(true)
+    frame.specTexture:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab3, 3)--PaperDollFrame.lua
+    end)
+    frame.setNum:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    frame.setNum:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(PaperDollSidebarTab3, "ANCHOR_RIGHT")
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..format(
+                WoWTools_DataMixin.onlyChinese and "%d件物品" or ITEMS_VARIABLE_QUANTITY,
+                tonumber(self:GetText() or 0) or 0
+            )
+        )
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
 
 
 
@@ -364,9 +401,11 @@ local function Init()
     end
 
     frame:SetScript('OnHide', function(self)
+        print('OnHide')
         self:UnregisterAllEvents()
     end)
     frame:SetScript('OnShow', function(self)
+        print('OnShow')
         if Save().notTabPlus then
             return
         end
@@ -377,6 +416,7 @@ local function Init()
 
 
     if PaperDollFrame:IsShown() then
+        print('IsShown')
         frame:settings()
     end
 

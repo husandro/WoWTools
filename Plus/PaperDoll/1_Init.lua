@@ -170,13 +170,19 @@ local function Init_Menu(self, root)
         Save().notFlyout= not Save().notFlyout and true or false
         WoWTools_PaperDollMixin:Init_EquipmentFlyout()
     end)
-    root:CreateCheckbox(
+    
+    sub=root:CreateCheckbox(
         'Tab',
     function()
         return not Save().notTabPlus
     end, function()
         Save().notTabPlus= not Save().notTabPlus and true or nil
         WoWTools_PaperDollMixin:Init_TabPlus()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '角色属性' or PAPERDOLL_SIDEBAR_STATS)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '装备管理' or GEARSETS_TITLE)
     end)
     
 --打开选项界面

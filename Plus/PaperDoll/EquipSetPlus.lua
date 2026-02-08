@@ -136,6 +136,10 @@ local function Init()
         if not setID or Save().notEquipSetPLus then
             return
         end
+        GameTooltip:SetOwner(btn:GetParent(), 'ANCHOR_RIGHT')
+        --GameTooltip_SetDefaultAnchor(GameTooltip, btn)
+        GameTooltip:SetEquipmentSet(setID)
+
         GameTooltip:AddLine(' ')
         GameTooltip_AddInstructionLine(GameTooltip,
             '<'
