@@ -6,8 +6,59 @@ local frame
 
 
 
+--头衔
+local function Get_Title_Num()
+    local tab= PaperDollFrame.TitleManagerPane.titles or GetKnownTitles() or {}
+    local num= #tab
+    num= num-1
+    num= math.max(num, 0)
+    return num, GetNumTitles()-num
+end
 
 
+local function Get_PvEPvPLevel()
+    local pve, cur, pvp
+    pve, cur, pvp= GetAverageItemLevel()
+--物品等级 pvp
+    pvp= format('%i', pvp or 0)
+--物品等级 pvp
+    pve= format('%i', pve or 0)
+    if pve==0 or cur-pve<=-5 then
+        pve= '|cnWARNING_FONT_COLOR:'..pve..'|r'
+    end
+    return pve, pvp
+end
+
+
+
+
+local function Get_EquipmentSet()
+    local name, icon, specIcon, nu, specName, setID
+    local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
+    for _, v in pairs(setIDs) do
+        local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
+        if isEquipped then
+            name=name2
+            name=WoWTools_TextMixin:sub(name, 2, 5)
+            if icon2 and icon2~=134400 then
+                icon=icon2
+            end
+            local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(v)
+            if specIndex then
+                local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
+                specName= specName2
+                if icon3 then
+                    specIcon=icon3
+                end
+            end
+            nu=numItems
+            setID= v
+            break
+        end
+    end
+
+    return name, icon, specIcon, nu, specName, setID
+end
 
 
 
@@ -83,36 +134,6 @@ local function Set_Tooltip(region)
         self:SetAlpha(0.3)
     end)
 end
-
-
-local function Get_SetInfo()
-    local name, icon, specIcon, nu, specName, setID
-    local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
-    for _, v in pairs(setIDs) do
-        local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
-        if isEquipped then
-            name=name2
-            name=WoWTools_TextMixin:sub(name, 2, 5)
-            if icon2 and icon2~=134400 then
-                icon=icon2
-            end
-            local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(v)
-            if specIndex then
-                local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
-                specName= specName2
-                if icon3 then
-                    specIcon=icon3
-                end
-            end
-            nu=numItems
-            setID= v
-            break
-        end
-    end
-
-    return name, icon, specIcon, nu, specName, setID
-end
-
 
 
 
@@ -215,13 +236,7 @@ local function Init()
     frame.title:SetPoint('BOTTOM', PaperDollSidebarTab2)
     frame.title:SetJustifyH('CENTER')
     frame.title:EnableMouse(true)
-    function frame:get_title_num()
-        local tab= PaperDollFrame.TitleManagerPane.titles or GetKnownTitles() or {}
-        local num= #tab
-        num= num-1
-        num= math.max(num, 0)
-        return num, GetNumTitles()-num
-    end
+
 
     frame.title:SetScript('OnMouseDown', function()
         WoWTools_DataMixin:Call('PaperDollFrame_SetSidebar', PaperDollSidebarTab2, 2)--PaperDollFrame.lua
@@ -233,7 +248,7 @@ local function Init()
     frame.title:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(PaperDollSidebarTab2, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        local num, notTitle= frame:get_title_num()
+        local num, notTitle= Get_Title_Num()
         GameTooltip:SetText(
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)
@@ -296,83 +311,60 @@ local function Init()
     Set_Tooltip(frame.setNum)
 
 
-    function frame:set_item_set()
-        local name, icon, specIcon, nu, specName, setID
-
-        if not Save().notTabPlus then
-            name, icon, specIcon, nu, specName, setID= Get_SetInfo()
-        end
-
---套装，名称
-    self.setName:SetText(name or '')
-    self.setName.tooltip2= name
-    self.setName.setID= setID
-
---套装图标图标
-    self.setTexture:SetTexture(icon or 0)
-    self.setTexture:SetShown(icon and true or false)
-
---天赋图标
-    self.specTexture:SetTexture(specIcon or 0)
-    self.specTexture:SetShown(specIcon and true or false)
-    self.specTexture.tooltip2= specIcon and (specIcon and "|T"..specIcon..':0|t' or '')..specName or nil
-    self.specTexture.setID= setID
-
---套装数量
-    self.setNum:SetText(nu or '')
-    self.setNum.tooltip2= nu and (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..nu or nil
-    self.setNum.setID= setID
-    end
 
 
 
-    function frame:get_data()
-        if Save().notTabPlus then
-            return
-        end
-
-        local pve, cur, pvp
-
-        pve, cur, pvp= GetAverageItemLevel()
-
---物品等级 pvp
-        --[[if pvp==0 or pvp==pve then
-            pvp=nil
-        else
-            pvp= format('%i', pvp)
-        end]]
-        pvp= format('%i', pvp or 0)
---物品等级 pvp
-        pve= format('%i', pve or 0)
-        if pve==0 or cur-pve<=-5 then
-            pve= '|cnWARNING_FONT_COLOR:'..pve..'|r'
-        end
---头衔
-        local title, notCollected= self:get_title_num()
 
 
-        return pve, pvp, title, notCollected
-    end
+
 
 
 
     function frame:settings()
-        local pve, pvp, title, notCollected= self:get_data()
-        self.pve:SetText(pve or '')
-        self.pvp:SetText(pvp or '')
-        self.title:SetText(title and title>0 and title or '')
 
+       local pve, pvp, title, notCollected
+       local name, icon, specIcon, nu, specName, setID
+        if not Save().notTabPlus then
+--物品等级
+            pve, pvp= Get_PvEPvPLevel()
+--头衔
+            title, notCollected= Get_Title_Num()
+--装备管理
+            name, icon, specIcon, nu, specName, setID= Get_EquipmentSet()
+        end
+
+--pve装等
+        self.pve:SetText(pve or '')
+--pvp装有情
+        self.pvp:SetText(pvp or '')
+--头衔
+        self.title:SetText(title and title>0 and title or '')
         self.titleButton.text:SetText(notCollected or '')
         self.titleButton:SetWidth(math.max(self.titleButton.text:GetStringWidth()+12, 23))
 
-        self:set_item_set()
+--套装，名称
+        self.setName:SetText(name or '')
+        self.setName.tooltip2= name
+        self.setName.setID= setID
+
+    --套装图标图标
+        self.setTexture:SetTexture(icon or 0)
+        self.setTexture:SetShown(icon and true or false)
+
+    --天赋图标
+        self.specTexture:SetTexture(specIcon or 0)
+        self.specTexture:SetShown(specIcon and true or false)
+        self.specTexture.tooltip2= specIcon and (specIcon and "|T"..specIcon..':0|t' or '')..specName or nil
+        self.specTexture.setID= setID
+
+    --套装数量
+        self.setNum:SetText(nu or '')
+        self.setNum.tooltip2= nu and (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..nu or nil
+        self.setNum.setID= setID
     end
 
     frame:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()
-        self.pve:SetText('')
-        self.pvp:SetText('')
-        self.title:SetText('')
     end)
     frame:SetScript('OnShow', function(self)
         if Save().notTabPlus then
