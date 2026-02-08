@@ -21,7 +21,7 @@ end
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
-local equipStr= WoWTools_TextMixin:Magic(EQUIPMENT_SETS)--:gsub('|cFFFFFFFF', ''):gsub('|r', ''))
+--local equipStr= WoWTools_TextMixin:Magic(EQUIPMENT_SETS)--:gsub('|cFFFFFFFF', ''):gsub('|r', ''))
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
@@ -29,6 +29,8 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
 local ITEM_SPELL_KNOWN= ITEM_SPELL_KNOWN
+
+--local EQUIPMENT_SETS=EQUIPMENT_SETS--  "装备配置方案：|cFFFFFFFF%s|r";
 
 --local size= 10--字体大小
 
@@ -571,19 +573,31 @@ local function Get_Info(tab)
                 local upItemLevel= 0
                 local dateInfo= WoWTools_ItemMixin:GetTooltip({
                     bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
-                    text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
+                    text={pvpItemStr, upgradeStr, classStr, itemLevelStr}, wow=true, red=true})--物品提示，信息 , 'Set di equipaggiamenti(.-)' equipStr
                 isRedItem= dateInfo.red
 
                 if dateInfo.text[itemLevelStr] then--物品等级：%d
                     itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
-                    print(dateInfo.text[itemLevelStr], itemLink)
                 end
 
-
-
-                if dateInfo.text[equipStr] then--套装名称，                
-                    local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
+                
+                local setList
+                if tab.bag then
+                    local inSet
+                    inSet, setList=  C_Container.GetContainerItemEquipmentSetInfo(tab.bag.bag or -1, tab.bag.slot or -1)
+                    if setList and inSet then
+                        local text= setList:match('(.+),') or setList:match('(.+)，') or setList
+                        setList= (inSet and '|cnGREEN_FONT_COLOR:' or '|cff00ccff')..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
+                    end
+                end
+                
+                if setList then
+                    local text= setList:match('(.+),') or setList:match('(.+)，') or setList
                     bottomLeftText= '|cff00ccff'..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
+
+                --[[elseif dateInfo.text[equipStr] then--套装名称
+                    local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
+                    bottomLeftText= '|cff00ccff'..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r']]
 
                 elseif dateInfo.wow then--战网
                     bottomLeftText= dateInfo.wow--WoWTools_DataMixin.Icon.wow2

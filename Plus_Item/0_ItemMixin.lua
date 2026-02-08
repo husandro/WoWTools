@@ -616,7 +616,7 @@ end
 function WoWTools_ItemMixin:GetItemLevel(itemLink)
     if itemLink then
         local dataInfo= self:GetTooltip({hyperLink=itemLink, text={itemLevelStr}, onlyText=true})--物品提示，信息
-        local itemLevel= dataInfo.text[itemLevelStr] or WoWTools_ItemMixin:GetItemLevel(itemLink)
+        local itemLevel= dataInfo.text[itemLevelStr] or C_Item.GetDetailedItemLevelInfo(itemLink)
         if itemLevel then
             return tonumber(itemLevel)
         end
@@ -838,4 +838,5 @@ function WoWTools_ItemMixin:GetWoWCount(itemID, checkGUID, checkRegion)--WoWTool
     end
     return all, numPlayer
 end
+
 
