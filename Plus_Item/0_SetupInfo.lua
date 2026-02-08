@@ -121,14 +121,10 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     local itemLinkPlayer, equipedLevel
     for _, slot in pairs(invSlots) do
         local link = GetInventoryItemLink('player', slot)
-        if link then
+        if link then--and C_Item.IsEquippableItem(link) then
             local level= WoWTools_ItemMixin:GetItemLevel(link)
 
-            if not itemLinkPlayer then
-                itemLink= link
-                equipedLevel= level
-
-            elseif level<itemLevel then
+            if not itemLinkPlayer or level<equipedLevel then
                 itemLinkPlayer= link
                 equipedLevel= level
             end
