@@ -183,6 +183,7 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
     local itemID= setting.itemID
     local hideStats= setting.hideStats
 
+
     link= link or (itemID and select(2, C_Item.GetItemInfo(itemID)))
 
     if link then
@@ -231,9 +232,9 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
             else
                 --local quality = C_Item.GetItemQualityByID(link)--颜色
                 --if quality==7 then
-                
+
                 itemLevel= self:GetItemLevel(link)
-                
+
 
                 itemLevel= itemLevel or WoWTools_ItemMixin:GetItemLevel(link)
                 if itemLevel and itemLevel>3 then
@@ -268,23 +269,27 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
         local lable=frame['statText'..index]
         if tab[index] then
             if not lable then
-                lable= frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormalOutline', nil, 7) -- WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
-                lable:SetJustifyH((index==2 or index==4) and 'RIGHT' or 'LEFT')
-                --lable:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+                frame['statText'..index]= frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormalOutline', nil, 1) -- WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
+                lable= frame['statText'..index]
 
-                lable:SetShadowOffset(1, -1)
+                lable:SetFontHeight(12)
+                lable:SetShadowOffset(1,-1)
+                lable:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+                lable:SetJustifyH((index==2 or index==4) and 'RIGHT' or 'LEFT')
+
                 if index==1 then
-                    lable:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT')
+                    lable:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT', -2, 0)
                 elseif index==2 then
-                    lable:SetPoint('BOTTOMRIGHT', point, 'BOTTOMRIGHT', 4,0)
+                    lable:SetPoint('BOTTOMRIGHT', point, 'BOTTOMRIGHT', 2, 0)
                 elseif index==3 then
-                    lable:SetPoint('TOPLEFT', point, 'TOPLEFT')
+                    lable:SetPoint('TOPLEFT', point, 'TOPLEFT', -2, 0)
                 else
-                    lable:SetPoint('TOPRIGHT', point, 'TOPRIGHT',4,0)
+                    lable:SetPoint('TOPRIGHT', point, 'TOPRIGHT', 2, 0)
                 end
                 frame['statText'..index]=lable
             end
             lable:SetText(tab[index])
+
         elseif lable then
             lable:SetText('')
         end

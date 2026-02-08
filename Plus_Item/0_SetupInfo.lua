@@ -597,20 +597,19 @@ local function Get_Info(tab)
                     itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
                 end
 
-
+--装备配置方案：|cFFFFFFFF%s|r
                 local setList
                 if tab.bag then
                     local inSet
                     inSet, setList=  C_Container.GetContainerItemEquipmentSetInfo(tab.bag.bag or -1, tab.bag.slot or -1)
-                    if setList and inSet then
+                    if setList then
                         local text= setList:match('(.+),') or setList:match('(.+)，') or setList
                         setList= (inSet and '|cnGREEN_FONT_COLOR:' or '|cff00ccff')..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
                     end
                 end
 
                 if setList then
-                    local text= setList:match('(.+),') or setList:match('(.+)，') or setList
-                    bottomLeftText= '|cff00ccff'..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
+                    bottomLeftText= setList
 
                 --[[elseif dateInfo.text[equipStr] then--套装名称
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
