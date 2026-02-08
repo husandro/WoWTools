@@ -557,7 +557,7 @@ end
 
 local function Create_Button(index)
     local btn= CreateFrame('Button', 'WoWToolsMinimapTrackButton'..index, TrackButton.Frame, 'WoWToolsButtonTemplate', index)
-    btn:SetSize(14,14)
+    --btn:SetSize(14,14)
     btn.nameText= WoWTools_LabelMixin:Create(btn)
     btn.nameText:SetPoint('LEFT', btn, 'RIGHT')
     btn.onMinimap= btn:CreateTexture(nil, 'ARTWORK')
@@ -736,18 +736,17 @@ local function set_Button_Text()
         btn:set_point()
         w= math.max(w, btn.nameText:GetStringWidth()+ 25)
         w= math.max(w, btn.text:GetStringWidth()+ 25)
-        
     end
 
     TrackButton.Bg:ClearAllPoints()
     if num>0 then
         TrackButton.Bg:SetPoint('LEFT', _G['WoWToolsMinimapTrackButton'..1], -1, 0)
-        if not Save().textToDown then
-           TrackButton.Bg:SetPoint('TOP' ,_G['WoWToolsMinimapTrackButton'..num].nameText, 0, 1)
-           TrackButton.Bg:SetPoint('BOTTOM' ,_G['WoWToolsMinimapTrackButton'..1].text, 0, -1)
+        if Save().textToDown then--向下滚动
+           TrackButton.Bg:SetPoint('TOP' ,_G['WoWToolsMinimapTrackButton'..1].nameText, 0, 1)
+            TrackButton.Bg:SetPoint('BOTTOM' ,_G['WoWToolsMinimapTrackButton'..num].text, 0, -1)
         else
-            TrackButton.Bg:SetPoint('TOP' ,_G['WoWToolsMinimapTrackButton'..1].text, 0, 1)
-            TrackButton.Bg:SetPoint('BOTTOM' ,_G['WoWToolsMinimapTrackButton'..num].nameText, 0, -1)
+            TrackButton.Bg:SetPoint('TOP' ,_G['WoWToolsMinimapTrackButton'..num].text, 0, 1)
+            TrackButton.Bg:SetPoint('BOTTOM' ,_G['WoWToolsMinimapTrackButton'..1].nameText, 0, -1)
         end
         TrackButton.Bg:SetWidth(w)
     end
