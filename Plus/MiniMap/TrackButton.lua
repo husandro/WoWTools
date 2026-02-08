@@ -3,7 +3,6 @@ local TrackButton
 local WorldMapButton--世界地图，添加一个按钮
 
 local Buttons={}
-local Name='WoWToolsMinimapTrackButton'
 
 local function Save()
     return WoWToolsSave['Minimap_Plus']
@@ -557,14 +556,7 @@ end
 
 
 local function Create_Button(index, info)
-    local btn = _G[Name..index]
-    if btn then
-        btn:settings(info)
-        return
-    end
-
-    --btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size=12})
-    btn= CreateFrame('Button', Name..index, TrackButton.Frame, 'WoWToolsButtonTemplate', index)
+    local btn= CreateFrame('Button', 'WoWToolsMinimapTrackButton'..index, TrackButton.Frame, 'WoWToolsButtonTemplate', index)
     btn:SetSize(14,14)
     btn.nameText= WoWTools_LabelMixin:Create(btn)
     btn.nameText:SetPoint('LEFT', btn, 'RIGHT')
@@ -616,14 +608,14 @@ local function Create_Button(index, info)
             if i==1 then
                 self:SetPoint('TOP', TrackButton, 'BOTTOM')
             else
-                self:SetPoint('TOPRIGHT', _G[Name..(i-1)].text, 'BOTTOMLEFT')
+                self:SetPoint('TOPRIGHT', _G['WoWToolsMinimapTrackButton'..(i-1)].text, 'BOTTOMLEFT')
             end
             self.text:SetPoint('TOPLEFT', self.nameText, 'BOTTOMLEFT')
         else
             if i==1 then
                 self:SetPoint('BOTTOM', TrackButton, 'TOP')
             else
-                self:SetPoint('BOTTOMRIGHT', _G[Name..(i-1)].text, 'TOPLEFT')
+                self:SetPoint('BOTTOMRIGHT', _G['WoWToolsMinimapTrackButton'..(i-1)].text, 'TOPLEFT')
             end
             self.text:SetPoint('BOTTOMLEFT', self.nameText, 'TOPLEFT')
         end
@@ -636,7 +628,6 @@ local function Create_Button(index, info)
     end)
     btn:SetScript("OnLeave", function(self)
         GameTooltip:Hide()
-        TrackButton:SetButtonState('NORMAL')
         self.nameText:SetAlpha(1)
         self.text:SetAlpha(1)
     end)
@@ -652,16 +643,12 @@ local function Create_Button(index, info)
             )
         end
         GameTooltip:Show()
-        TrackButton:SetButtonState('PUSHED')
         self.nameText:SetAlpha(0.5)
         self.text:SetAlpha(0.5)
     end)
 
-    btn:set_point()
-    btn:settings(info)
     table.insert(Buttons, index)
-
-    return
+    return btn
 end
 
 
@@ -737,12 +724,33 @@ local function set_Button_Text()
         end
     end
 
+
+    local num= #allTable
     for index, info in pairs(allTable) do
-        Create_Button(index, info)
+        local btn = _G['WoWToolsMinimapTrackButton'..index]
+        if not btn then
+            btn= Create_Button(index)
+        end
+        btn:settings(info)
+        btn:set_point()
     end
 
-    for i= #allTable+1, #Buttons do
-        _G[Name..(i)]:settings({})
+    TrackButton.Bg:ClearAllPoints()
+    if num>0 then
+        if Save().textToDown then
+           TrackButton.Bg:SetPoint('TOPLEFT' ,_G['WoWToolsMinimapTrackButton'..num], -1, 1)
+           TrackButton.Bg:SetPoint('BOTTOMRIGHT' ,_G['WoWToolsMinimapTrackButton'..1].nameText, 1, -1)
+        else
+            TrackButton.Bg:SetPoint('TOPLEFT' ,_G['WoWToolsMinimapTrackButton'..1], -1, 1)
+           TrackButton.Bg:SetPoint('BOTTOMRIGHT' ,_G['WoWToolsMinimapTrackButton'..num].nameText, 1, -1)
+        end
+    end
+
+    for i= num+1, #Buttons do
+        local btn=_G['WoWToolsMinimapTrackButton'..i]
+        if btn then
+            btn:settings({})
+        end
     end
 end
 
@@ -780,7 +788,6 @@ local function Init_Menu(self, root)--菜单
         Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or false
         self:set_shown()
         self:set_texture()
-        self:set_state()
     end)
 
 
@@ -949,10 +956,12 @@ local function Init_Menu(self, root)--菜单
     end, function()
         Save().textToDown= not Save().textToDown and true or nil
         for i=1, #Buttons do
-            local btn= _G[Name..i]
-            btn:ClearAllPoints()
-            btn.text:ClearAllPoints()
-            btn:set_point()
+            local btn= _G['WoWToolsMinimapTrackButton'..i]
+            if btn then
+                btn:ClearAllPoints()
+                btn.text:ClearAllPoints()
+                btn:set_point()
+            end
         end
     end)
 
@@ -964,6 +973,17 @@ local function Init_Menu(self, root)--菜单
         self:set_scale()
     end)
 
+    --背景, 透明度
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()
+        return Save().trackBgAlpha or 0.5
+    end, function(value)
+        Save().trackBgAlpha= value
+        self:set_bgalpha()
+    end, function()
+        Save().trackBgAlpha= nil
+        self:set_bgalpha()
+    end)
 
 --FrameStrata    
     WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
@@ -1001,9 +1021,10 @@ end
 
 --小地图, 标记, 文本
 local function Init_Button()
-    TrackButton= CreateFrame('Button', Name, UIParent, 'WoWToolsButtonTemplate')
+    TrackButton= CreateFrame('Button', 'WoWToolsMinimapTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAllPoints()
+
     --TrackButton:SetNormalAtlas('VignetteKillElite')
 
 
@@ -1011,8 +1032,9 @@ local function Init_Button()
     TrackButton.Frame:SetAllPoints()
 
     TrackButton.Bg= TrackButton.Frame:CreateTexture(nil, 'BACKGROUND')
+    TrackButton.Bg:SetColorTexture(0,0,0)
     function TrackButton:set_bgalpha()
-        self.Bg:SetColorTexture(0,0,0, Save().trackBgAlpha or 0.5)
+        self.Bg:SetAlpha(Save().trackBgAlpha or 0.5)
     end
 
     function TrackButton:set_strata()
@@ -1070,12 +1092,14 @@ local function Init_Button()
 
     function TrackButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(
+            GameTooltip, WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2
+        )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '主菜单' or MAINMENU_BUTTON, WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(self.Frame:IsShown(), true), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -1226,18 +1250,7 @@ local function Init_Button()
     end
 
 
-    function TrackButton:set_state()
-        if self:GetButtonState()~='PUSHED' then
-            self:SetButtonState('PUSHED')
-            C_Timer.After(5, function()
-                if not self:IsMouseOver() then
-                    self:SetButtonState('NORMAL')
-                end
-            end)
-        end
-    end
-    TrackButton:SetScript('OnShow', TrackButton.set_state)
-    TrackButton:set_state()
+
 
 
     TrackButton:set_VIGNETTES_UPDATED(true)

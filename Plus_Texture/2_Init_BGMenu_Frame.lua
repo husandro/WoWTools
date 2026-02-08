@@ -297,7 +297,7 @@ end
 --材质，列表, 菜单
 local function texture_list(self, root, name, icon, texture, isAdd)
     local sub
-    local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(texture, {480, 240})
+    local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(texture, {248, 126})
     if not textureID then
         return
     end
@@ -547,7 +547,7 @@ local function Add_Frame_Menu(self, root)
     end)
 
     for index, tab in pairs(newTab) do
-        local isAtlas, _, icon2= WoWTools_TextureMixin:IsAtlas(tab.texture, {480, 240})
+        local isAtlas, _, icon2= WoWTools_TextureMixin:IsAtlas(tab.texture, {248, 126})
         sub2= sub:CreateCheckbox(
             '|cffff8000'..index..'|r '
             ..(tab.name== frameName and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
@@ -690,7 +690,7 @@ local function Init_Menu(self, root, isSub)
         return MenuResponse.Refresh
     end)
     sub2:SetTooltip(function(tooltip)
-        local textureID, icon2= select(2, WoWTools_TextureMixin:IsAtlas(SaveData(name).texture, {480, 240}))
+        local textureID, icon2= select(2, WoWTools_TextureMixin:IsAtlas(SaveData(name).texture, {248, 126}))
         tooltip:AddLine(icon2)
         tooltip:AddLine((IsEnabledSaveBg(name) and '|cnGREEN_FONT_COLOR:' or '')..name)
         if textureID then
