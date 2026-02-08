@@ -109,8 +109,13 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     if not itemLevel or itemLevel==1 then
         return
     end
+    local invSlots
+    if itemEquipLoc=='INVTYPE_HOLDABLE' or itemEquipLoc=='INVTYPE_SHIELD' then--17 副手武器
+        invSlots={17, 16}
+    else
+        invSlots={WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}
+    end
 
-    local invSlots={WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}
 
     if TableIsEmpty(invSlots) then
         return itemLevel
