@@ -3001,7 +3001,10 @@
         "PAPERDOLL_SIDEBAR_STATS",
         "GEARSETS_TITLE",
         "LFG_LIST_ITEM_LEVEL_PVP_INSTR_SHORT",
-        "LFG_LIST_ITEM_LEVEL_INSTR_SHORT"
+        "LFG_LIST_ITEM_LEVEL_INSTR_SHORT",
+        "SPOILS",
+        "HOUSING_DECOR_UNIQUE_TROPHY_TOOLTIP",
+        "HOUSING_ITEM_TOAST_TYPE_DECOR"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

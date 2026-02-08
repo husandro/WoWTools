@@ -3,7 +3,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
         return
     end
 
-    local textLeft, portrait
+    local portrait
     if entryInfo.entryID then
         tooltip:AddLine(
             'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.entryID.recordID
@@ -46,8 +46,12 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
             ..(WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY),
             nil, nil, nil, true
         )
+    else
+        tooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '独特装饰' or HOUSING_DECOR_UNIQUE_TROPHY_TOOLTIP)
+            ..': '..WoWTools_TextMixin:GetYesNo(entryInfo.isUniqueTrophy)
+        )
     end
-
 
 
 --来源

@@ -110,7 +110,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
         return
     end
 
-    local invSlot = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
+    local invSlot, invSlot2 = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
     if not invSlot then
         return itemLevel
     end
@@ -118,7 +118,23 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     local isTimerunning= PlayerIsTimerunning()
 
     local upLevel, downLevel
-    local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+    local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
+    if invSlot2 then
+        if not itemLinkPlayer then--武器, sp, 戒指
+            itemLinkPlayer= GetInventoryItemLink('player', invSlot2)
+        else
+            local itemLinkPlayer2= GetInventoryItemLink('player', invSlot2)
+            if itemLinkPlayer2 then
+                local level= C_Item.GetDetailedItemLevelInfo(itemLink) or 0
+                local level2= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer2) or 0
+                if level>level2 then
+                    itemLinkPlayer= itemLinkPlayer2
+                end
+            end
+        end
+    end
+
+
     if itemLinkPlayer then
         if isTimerunning then
             local numItem, numPlayer= 0, 0
@@ -580,7 +596,7 @@ local function Get_Info(tab)
                     itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
                 end
 
-                
+
                 local setList
                 if tab.bag then
                     local inSet
@@ -590,7 +606,7 @@ local function Get_Info(tab)
                         setList= (inSet and '|cnGREEN_FONT_COLOR:' or '|cff00ccff')..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
                     end
                 end
-                
+
                 if setList then
                     local text= setList:match('(.+),') or setList:match('(.+)，') or setList
                     bottomLeftText= '|cff00ccff'..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
