@@ -6,6 +6,8 @@ local frame
 
 
 
+
+
 --头衔
 local function Get_Title_Num()
     local tab= PaperDollFrame.TitleManagerPane.titles or GetKnownTitles() or {}
@@ -70,7 +72,6 @@ local function Init_Title_Menu(self, root)
     end
 
     local all= GetNumTitles()
- 
 
     local sub
     local find= 0
@@ -113,6 +114,16 @@ local function Init_Title_Menu(self, root)
     root:CreateTitle('|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r/'..all..' (|cffffffff'..find..'|r)')
     WoWTools_MenuMixin:SetScrollMode(root)
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -401,11 +412,9 @@ local function Init()
     end
 
     frame:SetScript('OnHide', function(self)
-        print('OnHide')
         self:UnregisterAllEvents()
     end)
     frame:SetScript('OnShow', function(self)
-        print('OnShow')
         if Save().notTabPlus then
             return
         end
@@ -416,13 +425,13 @@ local function Init()
 
 
     if PaperDollFrame:IsShown() then
-        print('IsShown')
         frame:settings()
     end
 
     Init=function()
-        frame:SetShown(not Save().notTabPlus)
-        frame.titleButton:SetShown(not Save().notTabPlus)
+        local show= not Save().notTabPlus
+        frame:SetShown(show)
+        frame.titleButton:SetShown(show)
     end
 end
 
