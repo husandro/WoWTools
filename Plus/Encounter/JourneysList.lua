@@ -57,8 +57,11 @@ local function Create_Button(frame, index)
 
     btn.canClickForOptions= true
 
-    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')
-    btn.text:SetFontHeight(18)
+    --btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')
+    btn.text=btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
+    btn.text:SetFontHeight(12)
+    btn.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+    btn.text:SetShadowOffset(1,-1)
     btn.text:SetPoint('LEFT', btn, 'RIGHT')
 
     btn:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT', 0, -(index-1)*23)

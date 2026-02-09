@@ -389,7 +389,7 @@ local function Create_Button(index)
         name=Name..index
     })]]
     local btn= CreateFrame('Button', Name..index, TrackButton.Frame, 'WoWToolsButtonTemplate', index)
-    btn:SetSize(16,16)
+    --btn:SetSize(16,16)
 
     btn.texture=btn:CreateTexture(nil, 'BORDER')
 --自定义，图标大小
@@ -456,9 +456,10 @@ local function Create_Button(index)
     end)
 
 
-    btn.text= WoWTools_LabelMixin:Create(btn)
-
-
+    btn.text= btn:CreateFontString(nil,'BORDER', 'ChatFontNormal')--WoWTools_LabelMixin:Create(btn)
+    btn.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+    btn.text:SetFontHeight(12)
+    btn.text:SetShadowOffset(1,-1)
 
     function btn:settings()
         self.text:ClearAllPoints()

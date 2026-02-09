@@ -177,7 +177,10 @@ local function Crated_Button(index)
 		WoWTools_LoadUIMixin:OpenFaction(self.factionID)
 	end)
 
-    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')--  WoWTools_LabelMixin:Create(btn)
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontSmall')--  WoWTools_LabelMixin:Create(btn)
+	btn.text:SetFontHeight(12)
+	btn.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+	btn.text:SetShadowOffset(1,-1)
     function btn:set_text_point()
 		self.text:ClearAllPoints()
         if Save().toRightTrackText then
