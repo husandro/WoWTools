@@ -760,6 +760,15 @@ function WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, showZero)
     end
 end
 
+
+
+
+
+
+
+
+
+
 function WoWTools_ItemMixin:GetCount(itemID, tab)
     tab= tab or {}
     itemID= itemID
