@@ -616,10 +616,6 @@ local function Get_Info(tab)
                 if setList then
                     bottomLeftText= setList
 
-                --[[elseif dateInfo.text[equipStr] then--套装名称
-                    local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
-                    bottomLeftText= '|cff00ccff'..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r']]
-
                 elseif dateInfo.wow then--战网
                     bottomLeftText= dateInfo.wow--WoWTools_DataMixin.Icon.wow2
                     if subclassID==0 then
@@ -695,6 +691,18 @@ local function Get_Info(tab)
                         local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
                         if text then
                             topLeftText= topLeftText and topLeftText..'|r'..text or text
+
+--属性提示
+                        elseif upItemLevel==0 and itemQuality==Enum.ItemQuality.Epic then
+
+                            leftText= bottomLeftText
+                            rightText= bottomRightText
+
+                            local stat= WoWTools_ItemMixin:GetItemStats(itemLink)
+                            bottomLeftText= stat[1]
+                            bottomRightText= stat[2]
+                            topLeftText= stat[3]
+                            topRightText= stat[4]
                         end
 
                     elseif itemMinLevel<=WoWTools_DataMixin.Player.Level and itemQuality~=7 then--不可使用
