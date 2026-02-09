@@ -609,7 +609,7 @@ local function Get_Info(tab)
                     inSet, setList=  C_Container.GetContainerItemEquipmentSetInfo(tab.bag.bag or -1, tab.bag.slot or -1)
                     if setList then
                         local text= setList:match('(.+),') or setList:match('(.+)，') or setList
-                        setList= (inSet and '|cnGREEN_FONT_COLOR:' or '|cff00ccff')..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
+                        setList= WoWTools_TextMixin:sub(text,3,4, true)
                     end
                 end
 

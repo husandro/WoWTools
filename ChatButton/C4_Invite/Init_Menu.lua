@@ -36,7 +36,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
 
             print(
                 n..')'
-                ..WoWTools_UnitMixin:GetLink(nil, guid, name, false)
+                ..WoWTools_UnitMixin:GetLink(nil, guid, name, false), ''
             )
         end
     end
@@ -376,7 +376,7 @@ local function Init_Menu(self, root)
             Save().InvNoFriend[data]=nil
             print(
                 WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true})
+                WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}),''
             )
         end, guid)
         sub2:SetTooltip(function(tooltip)

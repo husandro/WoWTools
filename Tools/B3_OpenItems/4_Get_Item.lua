@@ -80,7 +80,7 @@ end
 
 
 
-
+local ITEM_COSMETIC_LEARN= WoWTools_TextMixin:Magic(ITEM_COSMETIC_LEARN)--使用：将此外观添加到你的战团收藏中。
 
 
 
@@ -99,18 +99,23 @@ local function Get_Items(self)--取得背包物品信息
     self:Clear()
 
 
-    local itemMinLevel, classID, subclassID, _, info
+
+
     local bagMax= Save().reagent and (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES ) or NUM_BAG_FRAMES
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
-            info = C_Container.GetContainerItemInfo(bag, slot)
-
-            local duration, enable
+            local info = C_Container.GetContainerItemInfo(bag, slot)
+            local itemMinLevel, classID, subclassID, _, duration, enable
             if info and info.itemID then
                 itemMinLevel, _, _, _, _, _, _, classID, subclassID= select(5, C_Item.GetItemInfo(info.itemID))
                 duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
             end
 
+            local isCosmeticLearn
+            if info and info.hyperlink then
+               local data= WoWTools_ItemMixin:GetTooltip({text={ITEM_COSMETIC_LEARN}, onlyText=true, bag=bag, slot=slot})
+               isCosmeticLearn= data.text[ITEM_COSMETIC_LEARN] and true or false
+            end
 
             if info
                 and info.itemID
@@ -120,9 +125,18 @@ local function Get_Items(self)--取得背包物品信息
                 and (not Save().no[info.itemID] or Save().use[info.itemID])--禁用使用
                 --and C_PlayerInfo.CanUseItem(info.itemID)--是否可使用
                 and not (duration and duration>2 or enable==0) and classID~=8--冷却
-                and ((itemMinLevel and itemMinLevel<=WoWTools_DataMixin.Player.Level) or not itemMinLevel)--使用等级
+                and (
+                    (itemMinLevel and itemMinLevel<=WoWTools_DataMixin.Player.Level)
+                     or not itemMinLevel
+                     --or C_Item.IsItemBindToAccount(info.hyperlink)
+                     --or C_Item.IsItemBindToAccountUntilEquip(info.hyperlink)
+                     or isCosmeticLearn
+                    )--使用等级
                 and classID~=13
             then
+
+
+
                 if Save().use[info.itemID] then--自定义
                     if Save().use[info.itemID]<=info.stackCount then
                         Set_Att(self, bag, slot, info.iconFileID, info.itemID)
@@ -131,8 +145,8 @@ local function Get_Items(self)--取得背包物品信息
 
                 elseif C_Item.IsCosmeticItem(info.hyperlink) then--装饰品
                     if Save().mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
-                        local  isCollected, isSelf= select(2, WoWTools_CollectionMixin:Item(info.hyperlink, nil, nil, true))
-                        if not isCollected and isSelf then
+                        local isCollected, isSelf= select(2, WoWTools_CollectionMixin:Item(info.hyperlink, nil, nil, true))
+                        if isCollected==false and isSelf then
                             Set_Att(self, bag, slot, info.iconFileID, info.itemID, nil, true)
                             return
                         end
@@ -147,9 +161,14 @@ local function Get_Items(self)--取得背包物品信息
 
 
                 elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
+
+
                     if Save().mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
-                        local  isCollected, isSelf= select(2, WoWTools_CollectionMixin:Item(info.hyperlink, nil, nil, true))
-                        if not isCollected and isSelf then
+                        local isCollected, isSelf= select(2, WoWTools_CollectionMixin:Item(info.hyperlink, nil, nil, true))
+                        --[[if info.itemID==258877 then
+                            print(info.hyperlink, isCollected, isSelf)
+                        end]]
+                        if isCollected==false and (isSelf or isCosmeticLearn) then
                             Set_Att(self, bag, slot, info.iconFileID, info.itemID)
                             self.IsEquipItem= true
                             return

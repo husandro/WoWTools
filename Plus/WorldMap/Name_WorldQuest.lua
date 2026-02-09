@@ -88,7 +88,7 @@ local function Init()
                     local sourceID = select(2, C_TransmogCollection.GetItemInfo(data.itemID))--幻化
                     if sourceID then
                         local collectedText, isCollected= WoWTools_CollectionMixin:Item(nil, sourceID, true)--物品是否收集 
-                        if collectedText and not isCollected then
+                        if collectedText and isCollected==false then
                             text= (text or '')..collectedText
                         end
                     end

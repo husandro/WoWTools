@@ -61,6 +61,10 @@ function WoWTools_CollectionMixin:Item(itemIDOrLink, sourceID, isIcon, onlyBool)
         return
     end
 
+    --[[if itemIDOrLink and not isSelf then
+        isSelf= C_Item.IsItemBindToAccount(itemIDOrLink)--C_Item.IsItemBindToAccountUntilEquip
+    end]]
+
     local text
     if not onlyBool then
         if isCollected==true then

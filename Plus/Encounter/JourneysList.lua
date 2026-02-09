@@ -109,6 +109,7 @@ local function Init_Button()
             end
         end
     end
+
     if #tab==0 then
         return
     end
@@ -175,7 +176,7 @@ local function Init_Menu(self, root)
         Save().name= not Save().name and true or nil
         self:settings()
     end)
-    
+
     root:CreateDivider()
     --背景, 透明度
     WoWTools_MenuMixin:BgAplha(root,
@@ -250,7 +251,7 @@ local function Init()
     end
 
     EncounterJournalJourneysFrame:HookScript('OnSizeChanged', function()
-        if Save().disabled then
+        if not Save().disabled then
             Init_Button()
         end
     end)
