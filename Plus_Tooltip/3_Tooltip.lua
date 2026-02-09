@@ -40,9 +40,9 @@ function WoWTools_TooltipMixin.Frames:TooltipDataProcessor()
 --BattlePet 6
 
 --UnitAura 7 12.0 会出错
-    --[[TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, function(tooltip, data)  
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, function(tooltip, data)  
        WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
-    end)]]
+    end)
 --艾泽拉斯之心 8
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.AzeriteEssence, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Azerite(tooltip, data.id)

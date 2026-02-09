@@ -39,8 +39,7 @@ end
 
 --来源
 function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
-    local unit= ...
-    if self:IsInCombatDisabled(tooltip) or not canaccessvalue(unit) then
+    if self:IsInCombatDisabled(tooltip) then
         return
     end
 
@@ -52,6 +51,7 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     then
         return
     end
+
     local source= data.sourceUnit
 
     local r, g ,b , col= select(2, WoWTools_UnitMixin:GetColor(source, nil))
