@@ -189,16 +189,10 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
-		if _G['WoWToolsFactionTrackMainButton'] then
-			_G['WoWToolsFactionTrackMainButton']:SetButtonState('PUSHED')
-		end
 	end)
 
 	btn:SetScript('OnLeave', function()
 		GameTooltip:Hide()
-		if _G['WoWToolsFactionTrackMainButton'] then
-			_G['WoWToolsFactionTrackMainButton']:SetButtonState("NORMAL")
-		end
 	end)
 end
 
