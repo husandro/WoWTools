@@ -19,20 +19,25 @@ local function Init_Menu(self, root)
         return not Save().hideJourneys
     end, function()
         Save().hideJourneys= not Save().hideJourneys and true or nil
+         WoWTools_EncounterMixin:Init_JourneysList()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANDING_PAGE_RENOWN_LABEL, 'List'))
     end)
-    
-    sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '列表' or 'Faction list',
+
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '名望列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, JOURNEYS_RENOWN_LABEL, 'List'),
     function()
-        return not Save().hideJourneysList
+        return not Save().JourneysList.disabled
     end, function()
-        Save().hideJourneysList= not Save().hideJourneysList and true or nil
+        Save().JourneysList.disabled= not Save().JourneysList.disabled and true or nil
         WoWTools_EncounterMixin:Init_JourneysList()
     end)
-    
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '旅程' or JOURNEYS_LABEL)
+    end)
+
+
 --Plus
     sub=root:CreateCheckbox(
         'Plus',
@@ -340,7 +345,7 @@ local function Init()
     com:HookScript('OnShow', function(self)
         self:setting()
     end)
-    
+
 
     Init=function()end
 end

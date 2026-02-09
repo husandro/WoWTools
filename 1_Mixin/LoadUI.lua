@@ -38,7 +38,6 @@ function WoWTools_LoadUIMixin:Journal(index, tab)--加载，收藏，UI
     if
         self:IsDisabledOpenFrame()
         or InCombatLockdown()
-        or not index
     then
         return
     end
@@ -49,7 +48,10 @@ function WoWTools_LoadUIMixin:Journal(index, tab)--加载，收藏，UI
 
     if not CollectionsJournal:IsShown() then
         ShowUIPanel(CollectionsJournal)
+        --CollectionsJournal:Show()
     end
+
+    index= index or 1
 
     CollectionsJournal_SetTab(CollectionsJournal, index)
 

@@ -218,6 +218,15 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
 
     return sub, sub2
 end
+--[[
+--缩放
+WoWTools_MenuMixin:Scale(self, sub,
+function()--GetValue
+end, function(alpha)--SetValue
+end, function()--SetValue
+end)
+]]
+
 
 --FrameStrata
 function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)

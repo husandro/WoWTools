@@ -338,7 +338,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-        if WoWTools_DataMixin.Player.husandro then WoWTools_LoadUIMixin:OpenPaperDoll(1, 3) end
+        --if WoWTools_DataMixin.Player.husandro then WoWTools_LoadUIMixin:OpenPaperDoll(1, 3) end
         WoWTools_PaperDollMixin:Init_EquipSetButton()--装备管理框
 
         self:UnregisterEvent(event)

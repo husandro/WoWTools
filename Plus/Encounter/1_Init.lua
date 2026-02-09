@@ -1,16 +1,4 @@
-local P_Save={
-    favorites={},--副本收藏 WoWTools_DataMixin.Player.GUID= {}
 
---拾取专精
-    LootSpec= {},
-    --lootScale=1,
-
-    isSaveTier=WoWTools_DataMixin.Player.husandro,--保存改变
-    --EncounterJournalTier=9, 内容
-
-    --hideInsList=false,--界面, 副本击杀
-    --insListScale=1,
-}
 
 local function Save()
     return WoWToolsSave['Adventure_Journal']
@@ -30,12 +18,8 @@ local function Init_Encounter()--冒险指南界面
     WoWTools_EncounterMixin:Init_ListInstances()--界面, 副本击杀
     WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     WoWTools_EncounterMixin:Init_JourneysList()--12.0才有
-    if WoWTools_DataMixin.Player.husandro then
-        C_Timer.After(0.3, function()
-            WoWTools_LoadUIMixin:JournalInstance(nil)
-            --WoWTools_LoadUIMixin:JournalInstance(nil, 1271)
-        end)
-    end
+    WoWTools_EncounterMixin:Init_JourneysPlus()
+
 
 --记录上次选择版本
     C_Timer.After(0.3, function()
@@ -117,12 +101,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or P_Save
-            P_Save= nil
+            WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or {
+                favorites={},--副本收藏 WoWTools_DataMixin.Player.GUID= {}
+                LootSpec= {},--拾取专精
+                isSaveTier=WoWTools_DataMixin.Player.husandro,--保存改变
+                JourneysList= {
+                    list=true
+                },
+            }
 
             WoWToolsPlayerDate['BossKilled']= WoWToolsPlayerDate['BossKilled'] or {}
 
             Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
+            if not Save().JourneysList then
+                Save().JourneysList={
+                    disabled= Save().hideJourneysList,
+                }
+            end
 
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
@@ -162,6 +157,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
                 self:SetScript('OnEvent', nil)
             else
+
+                --[[if WoWTools_DataMixin.Player.husandro then
+                    EventRegistry:RegisterFrameEventAndCallback("UPDATE_FACTION", function(owner)
+                        WoWTools_LoadUIMixin:JournalInstance(nil)
+                        --WoWTools_LoadUIMixin:JournalInstance(nil, 1271)
+                        EventRegistry:UnregisterCallback('UPDATE_FACTION', owner)
+                    end)
+                end]]
 
                 Init()
 
