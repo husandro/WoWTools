@@ -116,6 +116,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save().JourneysList then
                 Save().JourneysList={
                     disabled= Save().hideJourneysList,
+                    name=true,
+                    onlyCurVerName=true
                 }
             end
 

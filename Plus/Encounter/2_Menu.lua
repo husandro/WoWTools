@@ -151,8 +151,9 @@ local function Init_Menu(self, root)
 
 --打开选项界面
     root:CreateDivider()
-    sub= WoWTools_MenuMixin:Reload(root)
-    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_EncounterMixin.addName})
+    
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_EncounterMixin.addName})
+    WoWTools_MenuMixin:Reload(sub)
 --重新加载UI
 
 end

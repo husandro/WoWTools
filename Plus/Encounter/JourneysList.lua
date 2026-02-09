@@ -27,7 +27,7 @@ local function Set_Text(self)
         text= data.barColor:WrapTextInColorCode(text)
     end
 
-    if Save().name and data.name then-- and self.isCurVer then
+    if Save().name and data.name and (not Save().onlyCurVerName or self.isCurVer) then
         local name= WoWTools_TextMixin:CN(data.name)
         if not data.isUnlocked then
             name= DISABLED_FONT_COLOR:WrapTextInColorCode(name)
@@ -101,13 +101,13 @@ end
 local function Init_Button()
     Button.pool:ReleaseAll()
     local tab= {}
-    for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs()) do
-        if not C_MajorFactions.IsMajorFactionHiddenFromExpansionPage(factionID) then
+    for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs() or {}) do
+        --if not C_MajorFactions.IsMajorFactionHiddenFromExpansionPage(factionID) then
             local major= C_MajorFactions.GetMajorFactionData(factionID)
             if major and major.factionID and major.name then
                 table.insert(tab, major)
             end
-        end
+        --end
     end
 
     if #tab==0 then
@@ -139,7 +139,7 @@ local function Init_Button()
         end
 
         btn.factionID= major.factionID
-        --btn.isCurVer= major.expansionID== WoWTools_DataMixin.ExpansionLevel
+        btn.isCurVer= major.expansionID== WoWTools_DataMixin.ExpansionLevel
         Set_Text(btn)
         btn:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
         btn:SetShown(true)
@@ -167,13 +167,22 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
+    local sub
 --显示名称
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
     function ()
         return Save().name
     end, function ()
         Save().name= not Save().name and true or nil
+        self:settings()
+    end)
+    sub:CreateCheckbox(
+        WoWTools_DataMixin:GetExpansionText(WoWTools_DataMixin.ExpansionLevel),
+    function()
+        return Save().onlyCurVerName
+    end, function()
+        Save().onlyCurVerName= not Save().onlyCurVerName and true or nil
         self:settings()
     end)
 
@@ -201,7 +210,17 @@ local function Init_Menu(self, root)
         Save().scale= nil
         self:settings()
     end)
+
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_EncounterMixin.addName})
 end
+
+
+
+
+
+
+
 
 
 
@@ -215,9 +234,14 @@ local function Init()
 
     Button= CreateFrame('DropdownButton', 'WoWToolsEJFactionMenuButton', EncounterJournalJourneysFrame, 'WoWToolsMenuTemplate')
     Button:SetPoint('LEFT', EncounterJournalInstanceSelect.ExpansionDropdown, 'RIGHT', 8, 0)
-    Button:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
+    Button:SetNormalTexture(0)
     Button.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '名望列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, JOURNEYS_RENOWN_LABEL, 'List'))
     Button:SetupMenu(Init_Menu)
+
+    Button.text= Button:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
+    Button.text:SetPoint('CENTER')
+    Button.text:SetShadowOffset(1,-1)
+    Button.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
 
     Button.frame= CreateFrame('Frame', nil, Button)
     Button.frame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT', 0, 1)
@@ -228,7 +252,10 @@ local function Init()
 
     Button.pool= CreateFramePool('Button', Button.frame, 'WoWToolsButtonTemplate')
 
-
+    Button:SetScript('OnShow', function(self)
+        self.text:SetFormattedText('%d', #C_MajorFactions.GetMajorFactionIDs())
+        self:SetWidth(math.max(self.text:GetStringWidth()+8, 23))
+    end)
 
 
 
@@ -240,7 +267,7 @@ local function Init()
     end)
     Button.frame:SetScript('OnShow', function(self)
         --self:RegisterEvent('MAJOR_FACTION_UNLOCKED')
-        self:GetParent():settings()
+        Button:settings()
     end)
     --Button.frame:SetScript('OnEvent', Init_Button)
 
