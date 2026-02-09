@@ -579,6 +579,7 @@ local function Get_Info(tab)
     elseif classID==2 or classID==4 then
         if C_Item.IsCosmeticItem(itemLink) then--装饰品
             bottomLeftText= get_has_text(select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true)))
+
         elseif PlayerIsTimerunning() then
 
             local stat= WoWTools_ItemMixin:GetItemStats(itemLink)
@@ -605,8 +606,7 @@ local function Get_Info(tab)
 --装备配置方案：|cFFFFFFFF%s|r
                 local setList
                 if tab.bag then
-                    local inSet
-                    inSet, setList=  C_Container.GetContainerItemEquipmentSetInfo(tab.bag.bag or -1, tab.bag.slot or -1)
+                    setList= select(2,C_Container.GetContainerItemEquipmentSetInfo(tab.bag.bag or -1, tab.bag.slot or -1))
                     if setList then
                         local text= setList:match('(.+),') or setList:match('(.+)，') or setList
                         setList= WoWTools_TextMixin:sub(text,3,4, true)
@@ -805,20 +805,6 @@ local function Get_Info(tab)
                 end
             end
         end
-
---[[套装：炎阳珠衣装
-    elseif classID==0 and subclassID==8 and itemName:find(WARDROBE_SETS) then
-        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, '外观仅供(.-)使用'}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会"
-        local text= dateInfo.text['外观仅供(.-)使用']
-        if dateInfo.text[ITEM_SPELL_KNOWN] then
-            bottomLeftText= get_has_text(true)
-        elseif text then
-            bottomLeftText= Get_Class_Icon_da_Text(text)
-        elseif dateInfo.wow then
-            topRightText= WoWTools_DataMixin.Icon.wow2
-        elseif dateInfo.red then
-            topRightText= format('|A:%s:0:0|a', 'talents-button-reset')
-        end]]
 
 --仅一个
     elseif itemStackCount==1 then

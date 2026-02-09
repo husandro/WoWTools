@@ -4,7 +4,7 @@ local function Save()
 end
 
 local TrackButton, Frame
-local Name='WoWToolsFactionTrackButton'
+
 local NumButton= 0
 
 
@@ -149,13 +149,13 @@ end
 
 local function Crated_Button(index)
 
-	local btn= CreateFrame("Button", Name..index, Frame, 'WoWToolsButtonTemplate')
+	local btn= CreateFrame("Button", 'WoWToolsFactionTrackButton'..index, Frame, 'WoWToolsButtonTemplate')
 	--btn:SetSize(16, 16)
 
     if Save().toTopTrack then
-        btn:SetPoint('BOTTOM', _G[Name..(index-1)] or TrackButton, 'TOP')
+        btn:SetPoint('BOTTOM', _G['WoWToolsFactionTrackButton'..(index-1)] or TrackButton, 'TOP')
     else
-        btn:SetPoint('TOP', _G[Name..(index-1)] or TrackButton, 'BOTTOM')
+        btn:SetPoint('TOP', _G['WoWToolsFactionTrackButton'..(index-1)] or TrackButton, 'BOTTOM')
     end
     btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -247,7 +247,7 @@ local function TrackButton_Settings()
 
 	local bgWidth= 0
 	for index, tab in pairs(faction) do
-		local btn= _G[Name..index] or Crated_Button(index)
+		local btn= _G['WoWToolsFactionTrackButton'..index] or Crated_Button(index)
 		btn:SetShown(true)
 		btn.text:SetText(tab.text)
 		btn.factionID= tab.factionID
@@ -268,7 +268,7 @@ local function TrackButton_Settings()
 	TrackButton:set_bg()
 
 	for index= #faction+1, NumButton do
-		local btn= _G[Name..index]
+		local btn= _G['WoWToolsFactionTrackButton'..index]
 		btn.text:SetText('')
 		btn:SetShown(false)
 		btn:SetNormalTexture(0)
@@ -332,7 +332,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().toRightTrackText= not Save().toRightTrackText and true or false
 		for index=1, NumButton do
-			local btn= _G[Name..index]
+			local btn= _G['WoWToolsFactionTrackButton'..index]
 			if btn then
 				btn:set_text_point()
 			end
@@ -349,13 +349,13 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().toTopTrack= not Save().toTopTrack and true or nil
 		for index= 1, NumButton do
-			local btn=_G[Name..index]
+			local btn=_G['WoWToolsFactionTrackButton'..index]
 			if btn then
 				btn:ClearAllPoints()
 				if Save().toTopTrack then
-					btn:SetPoint('BOTTOM', _G[Name..(index-1)] or self, 'TOP')
+					btn:SetPoint('BOTTOM', _G['WoWToolsFactionTrackButton'..(index-1)] or self, 'TOP')
 				else
-					btn:SetPoint('TOP', _G[Name..(index-1)] or self, 'BOTTOM')
+					btn:SetPoint('TOP', _G['WoWToolsFactionTrackButton'..(index-1)] or self, 'BOTTOM')
 				end
 			end
 		end
@@ -493,19 +493,19 @@ local function Init()
 		end
 		if Save().toTopTrack then
 			if Save().toRightTrackText then
-				self.Bg:SetPoint("TOPLEFT", _G[Name..self.numButton], -1, 1)
-				self.Bg:SetPoint('BOTTOMLEFT', _G[Name..1], -1, -1)
+				self.Bg:SetPoint("TOPLEFT", _G['WoWToolsFactionTrackButton'..self.numButton], -1, 1)
+				self.Bg:SetPoint('BOTTOMLEFT', _G['WoWToolsFactionTrackButton'..1], -1, -1)
 			else
-				self.Bg:SetPoint("TOPRIGHT", _G[Name..self.numButton], 1, 1)
-				self.Bg:SetPoint('BOTTOMRIGHT', _G[Name..1], 1, -1)
+				self.Bg:SetPoint("TOPRIGHT", _G['WoWToolsFactionTrackButton'..self.numButton], 1, 1)
+				self.Bg:SetPoint('BOTTOMRIGHT', _G['WoWToolsFactionTrackButton'..1], 1, -1)
 			end
 		else
 			if Save().toRightTrackText then
-				self.Bg:SetPoint('TOPLEFT', _G[Name..1], -1, 1)
-				self.Bg:SetPoint('BOTTOMLEFT', _G[Name..self.numButton], -1, -1)
+				self.Bg:SetPoint('TOPLEFT', _G['WoWToolsFactionTrackButton'..1], -1, 1)
+				self.Bg:SetPoint('BOTTOMLEFT', _G['WoWToolsFactionTrackButton'..self.numButton], -1, -1)
 			else
-				self.Bg:SetPoint('TOPRIGHT', _G[Name..1], 1, 1)
-				self.Bg:SetPoint('BOTTOMRIGHT', _G[Name..self.numButton], 1, -1)
+				self.Bg:SetPoint('TOPRIGHT', _G['WoWToolsFactionTrackButton'..1], 1, 1)
+				self.Bg:SetPoint('BOTTOMRIGHT', _G['WoWToolsFactionTrackButton'..self.numButton], 1, -1)
 			end
 		end
 		self.Bg:SetWidth(self.bgWidth+1)
@@ -665,7 +665,7 @@ local function Init()
 			return
 		end
 		for index= 1, NumButton do
-			local btn= _G[Name..index]
+			local btn= _G['WoWToolsFactionTrackButton'..index]
 			if btn then
 				if factionID== btn.factionID then
 					btn:SetScale(2)
@@ -677,7 +677,7 @@ local function Init()
     end)
 	WoWTools_DataMixin:Hook(ReputationEntryMixin, 'OnLeave', function()--角色栏,声望
 		for index= 1, NumButton do
-			local btn= _G[Name..index]
+			local btn= _G['WoWToolsFactionTrackButton'..index]
 			if btn then
 				btn:SetScale(1)
 			end

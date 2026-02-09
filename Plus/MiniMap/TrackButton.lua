@@ -524,10 +524,11 @@ local function set_OnClick_btn(self)
         text= GetQuestLink(self.questID) or C_TaskQuest.GetQuestInfoByQuestID(self.questID)
 
     elseif self.vignetteGUID then
-        local info= C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
+        C_SuperTrack.SetSuperTrackedVignette(self.vignetteGUID)
+        --[[local info= C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
         if info then
             text= info.name
-        end
+        end]]
     end
 
     if not text then
@@ -751,6 +752,11 @@ local function set_Button_Text()
         TrackButton.Bg:SetWidth(w)
     end
 
+    if num>0 then
+        TrackButton.text:SetText(num)
+    else
+        TrackButton.text:SetText('|A:VignetteKillElite:0:0|a')
+    end
     for i= num+1, #Buttons do
         local btn=_G['WoWToolsMinimapTrackButton'..i]
         if btn then
@@ -953,7 +959,7 @@ local function Init_Menu(self, root)--菜单
 --打开选项
     root:CreateDivider()
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MinimapMixin.addName})
-    
+
     sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
     function()
@@ -1029,6 +1035,14 @@ local function Init_Button()
     TrackButton= CreateFrame('Button', 'WoWToolsMinimapTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAllPoints()
+    TrackButton.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
+
+    TrackButton.text= TrackButton:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
+    TrackButton.text:SetPoint('CENTER')
+    TrackButton.text:SetFontHeight(12)
+    TrackButton.text:SetShadowOffset(1,-1)
+    WoWTools_ColorMixin:SetLabelColor(TrackButton.text)
+
 
     --TrackButton:SetNormalAtlas('VignetteKillElite')
 
@@ -1049,12 +1063,14 @@ local function Init_Button()
 
     function TrackButton:set_texture()
         local isShow= Save().vigentteButtonShowText
-        self.texture:SetAlpha(isShow and 0.3 or 1)
+        self.texture:SetShown(not isShow)
+        self.text:SetShown(isShow)
+        --[[self.texture:SetAlpha(isShow and 0.3 or 1)
         if isShow then
             self.texture:SetAtlas('VignetteKillElite')
         else
             self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
-        end
+        end]]
     end
 
     function TrackButton:set_point()--设置，位置
