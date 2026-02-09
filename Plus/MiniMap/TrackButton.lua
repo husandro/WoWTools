@@ -525,10 +525,10 @@ local function set_OnClick_btn(self)
 
     elseif self.vignetteGUID then
         C_SuperTrack.SetSuperTrackedVignette(self.vignetteGUID)
-        --[[local info= C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
+        local info= C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
         if info then
             text= info.name
-        end]]
+        end
     end
 
     if not text then
