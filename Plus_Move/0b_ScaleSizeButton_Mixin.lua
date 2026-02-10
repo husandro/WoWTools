@@ -987,7 +987,7 @@ end
 
 
 function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
-    local name= frame:GetName()
+    local name= frame and frame:GetName()
     tab= tab or {}
 
     if not name

@@ -66,7 +66,7 @@ local function set_Engineering(btn, slot, link, use, isPaperDollItemSlot)
         if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
             btn.engineering:SetPoint('TOPLEFT', btn, 'TOPRIGHT', 8, 0)
         else
-            btn.engineering:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -8, 0)
+            btn.engineering:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -9, 0)
         end
         btn.engineering.spell= slot==15 and 126392 or 55016
 
@@ -164,7 +164,7 @@ local function set_no_Enchant(btn, slot, find, isPaperDollItemSlot)--附魔，�
             if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
                 btn.noEnchant:SetPoint('LEFT', btn, 'RIGHT', 8, 0)
             else
-                btn.noEnchant:SetPoint('RIGHT', btn, 'LEFT', -8, 0)
+                btn.noEnchant:SetPoint('RIGHT', btn, 'LEFT', -9, 0)
             end
             btn.noEnchant:SetScript('OnMouseDown', function()
                 if MerchantFrame:IsVisible() then
@@ -282,7 +282,7 @@ local function Set_Item_Gem(self, link, isLeftSlot)
                         end
                     else
                         if n==1 then
-                            gem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', -8, 0)
+                            gem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', -9, 0)
                         else
                             gem:SetPoint('RIGHT',  self['gem'..n-1], 'LEFT')
                         end
@@ -339,7 +339,7 @@ local function Set_Item_Gem(self, link, isLeftSlot)
                     if isLeftSlot then
                         self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT', 8, 0)
                     else
-                        self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT', -8, 0)
+                        self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT', -9, 0)
                     end
                     frame:SetSize(14, 14)
                     frame:SetFrameStrata('HIGH')
@@ -476,7 +476,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
         if isLeftSlot then
             btn.enchant:SetPoint('LEFT', btn, 'RIGHT', 8, 0)
         else
-            btn.enchant:SetPoint('RIGHT', btn, 'LEFT', -8, 0)
+            btn.enchant:SetPoint('RIGHT', btn, 'LEFT', -9, 0)
         end
         btn.enchant:SetTexture(463531)
         btn.enchant:EnableMouse(true)
@@ -506,7 +506,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
         if isLeftSlot then
             btn.use:SetPoint('TOPLEFT', btn, 'TOPRIGHT', 8, 0)
         else
-            btn.use:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -8, 0)
+            btn.use:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -9, 0)
         end
         btn.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
         btn.use:EnableMouse(true)
@@ -561,7 +561,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
             btn.upgradeItem:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT',1,0)
         else
             btn.upgradeItem= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
-            btn.upgradeItem:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT',2,0)
+            btn.upgradeItem:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT',-2,0)
         end
         btn.upgradeItem:SetScript('OnEnter', function(self2)
             if self2.tips then
@@ -602,7 +602,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
                 btn.upgradeItemText:SetPoint('LEFT', btn, 'RIGHT',h+8,0)
             else
                 btn.upgradeItemText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
-                btn.upgradeItemText:SetPoint('RIGHT', btn, 'LEFT',-h-8,0)
+                btn.upgradeItemText:SetPoint('RIGHT', btn, 'LEFT',-h-9,0)
             end
             btn.upgradeItemText:SetScript('OnEnter', function(self2)
                 if self2.tips then

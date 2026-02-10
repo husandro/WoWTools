@@ -82,5 +82,4 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
         end,
     })
     WoWTools_MoveMixin:Setup(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
-    WoWTools_MoveMixin:Setup(InspectRecipeFrame)
 end

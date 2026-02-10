@@ -21,6 +21,20 @@ end
 
 local function initFunc()
 
+
+    Init=function()end
+end
+
+
+
+
+
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_Professions()
+
+    
     ProfessionsFrame.CraftingPage.P_GetDesiredPageWidth= ProfessionsFrame.CraftingPage.GetDesiredPageWidth
 --替换，原生
     function ProfessionsFrame.CraftingPage:GetDesiredPageWidth()--Blizzard_ProfessionsCrafting.lua
@@ -195,27 +209,16 @@ local function initFunc()
         self.Label:SetPoint('RIGHT', -22, 0)
     end)
 
-    initFunc=function()end
-end
 
-
-
-
-
-
-
-
-function WoWTools_MoveMixin.Events:Blizzard_Professions()
-
-    initFunc()
 
     WoWTools_DataMixin:Hook(ProfessionsRecipeListRecipeMixin, 'OnLoad', function(btn)
         btn.SelectedOverlay:SetPoint('RIGHT')
         btn.SelectedOverlay:SetPoint('LEFT')
         btn.HighlightOverlay:SetPoint('RIGHT')
         btn.HighlightOverlay:SetPoint('LEFT')
-        
     end)
+
+    self:Setup(InspectRecipeFrame)
 
     self:Setup(ProfessionsFrame, {
 
