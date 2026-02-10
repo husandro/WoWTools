@@ -269,13 +269,14 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
         local lable=frame['statText'..index]
         if tab[index] then
             if not lable then
-                frame['statText'..index]= frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormalOutline', nil, 1) -- WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
+                frame['statText'..index]= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont', nil, 1) -- WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
                 lable= frame['statText'..index]
 
-                lable:SetFontHeight(14)
+                --lable:SetFontHeight(12)
                 lable:SetShadowOffset(1,-1)
-                lable:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-                lable:SetJustifyH((index==2 or index==4) and 'RIGHT' or 'LEFT')
+                if (index==2 or index==4) then
+                    lable:SetJustifyH('RIGHT')
+                end
 
                 if index==1 then
                     lable:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT', -4, 0)
