@@ -41,7 +41,6 @@ end
 
 
 
-
 local function Init()
     if not Save().ShowWorldQues_Name then
         return
