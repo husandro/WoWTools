@@ -307,7 +307,7 @@ local function Init_Menu(self, root)
                         ..data.name
                         ..'|r|n'
                 end
-                WoWTools_TextMixin:ShowText(text, WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, data.name, {reName=true, reRealm=true}))
+                WoWTools_TextMixin:ShowText({text}, WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, data.name, {reName=true, reRealm=true}))
                 return MenuResponse.Open
             end, tab)
 

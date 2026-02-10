@@ -269,7 +269,7 @@ function WoWTools_DataMixin:Info(data1)
         t=data
     end
 
-    WoWTools_TextMixin:ShowText(t, WoWTools_DataMixin.Icon.icon2..(type(data1)=='string' and data1 or tostring(data)))--, {notClear=true})
+    WoWTools_TextMixin:ShowText({t}, WoWTools_DataMixin.Icon.icon2..(type(data1)=='string' and data1 or tostring(data)))--, {notClear=true})
 end
 
 if not _G[SLASH_INFOSLASH1] then

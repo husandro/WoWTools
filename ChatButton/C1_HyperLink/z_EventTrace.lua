@@ -402,7 +402,7 @@ local function Init_EditBox()
     end)
     Frame.View:SetScript('OnMouseDown', function(self)
         WoWTools_TextMixin:ShowText(
-            self:GetParent():GetText(),
+            {self:GetParent():GetText()},
             WoWTools_DataMixin.onlyChinese and '事件' or EVENTS_LABEL,
             nil
         )

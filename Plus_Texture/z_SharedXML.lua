@@ -35,6 +35,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
 --DropdownButton.lua
     WoWTools_DataMixin:Hook(DropdownButtonMixin, 'OnLoad', function(frame)
         self:SetMenu(frame)
+        
     end)
 
 --MenuTemplates.lua    

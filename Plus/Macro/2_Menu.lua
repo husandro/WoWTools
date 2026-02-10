@@ -32,7 +32,7 @@ local function Init_Menu(self, root)
             WoWToolsPlayerDate['MacroNoteText']= NoteEditBox:GetText()
         end
         WoWTools_TextMixin:ShowText(
-            WoWToolsPlayerDate['MacroNoteText'],
+            {WoWToolsPlayerDate['MacroNoteText']},
             WoWTools_DataMixin.onlyChinese and '宏' or MACRO,
             {onHide=function(t)
                 WoWToolsPlayerDate['MacroNoteText']= t

@@ -3008,7 +3008,8 @@
         "INVTYPE_HOLDABLE",
         "ITEM_COSMETIC_LEARN",
         "VignetteDataProviderMixin",
-        "VignettePinBaseMixin"
+        "VignettePinBaseMixin",
+        "EVENTTRACE_SECRET_COLOR"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -253,17 +253,18 @@ local function Init_Filter_Menu(self, root)
 
 
 --显示, 内容
-        sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '显示' or SHOW, function(data)
-            local str=''
-            local player2
+        sub2:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+        function(data)
+            local _list={}
             for guid, name in pairs(data.guid or {}) do
                 local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reName=true, reRealm=true})
-                str= str..player..'|n'
-                player2= player2 or player
+                if player then
+                    table.insert(_list, player)
+                end
             end
-            str=str..'|n'..data.text
-
-            WoWTools_TextMixin:ShowText(str, player2 or data.playerName)
+            table.insert(_list, data.text)
+            WoWTools_TextMixin:ShowText(_list, data.text)
             return MenuResponse.Open
         end, {text=text, guid=tab.guid, playerName=playerName})
 

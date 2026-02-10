@@ -26,46 +26,39 @@ text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
 
 
 function WoWTools_TextMixin:ShowText(data, headerText, tab)
+    if not canaccesstable(data) then
+        print(WoWTools_DataMixin.Icon.icon2..'|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '显示机密数值' or EVENTTRACE_SHOW_SECRET_VALUES))
+        return
+    end
     tab= tab or {}
 
     headerText= tostring(headerText)
     headerText= (headerText=='' or headerText=='nil') and WoWTools_DataMixin.addName or headerText
 
     local onHide= tab.onHide
-    --local notClear= tab.notClear
+    local notClear= tab.notClear
 
     local text
 
-    local function set_secret(value)
-
-        if type(value)=='table' and not canaccesstable(value) then
-            text= text and text..'|n' or ''
-            text= text..WARNING_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:***<机密 table>***|r' or format(EVENTTRACE_SECRET_FMT, 'table'))
-
-        elseif not canaccessvalue(value) then
-            text= text and text..'|n' or ''
-            text= text..WARNING_FONT_COLOR:WrapTextInColorCode(
-                format(WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, type(value))
-            )
-
+    local function add_text(value)
+        text= text and text..'|n' or ''
+        if not canaccessvalue(value) then
+            text= text..EVENTTRACE_SECRET_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and "显示机密数值" or EVENTTRACE_SHOW_SECRET_VALUES)
+        elseif type(value)=='string' then
+            text= text..value
         else
-            return true
+            text= text..tostring(value)
         end
     end
 
-    if set_secret(data) then
-        if type(data)=='table' then
-            for _, value in pairs(data) do
-                if set_secret(value) then
-                    text= text and text..'|n' or ''
-                    text= text..tostring(value)
-                end
-            end
-        else
-            text= text and text..'|n' or ''
-            text= text..data
+    if type(data)~='table' then
+        text= add_text(data)
+    else
+        for _, value in pairs(data) do
+            add_text(value)
         end
     end
+
 
     local frame= _G['WoWToolsShowTextEditBoxFrame']
     if not frame then
@@ -86,11 +79,11 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
         end)
         frame:SetFrameStrata('HIGH')
 
-    --[[elseif notClear then
+    elseif notClear then
         local p= frame.ScrollBox:GetText()
-        if p and p~='' and text~=p then
-            text= p..'|n|cnWARNING_FONT_COLOR: ... '..headerText..' ...|r|n'..text
-        end]]
+        if canaccessvalue(p) and p~='' and text~=p then
+            text= p..'|n|n'..text
+        end
     end
 
     frame:Show()

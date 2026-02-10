@@ -108,19 +108,31 @@ local function Get_Text(frame)
 	--local isSetText= Save().isSetText--不处理，文本
 
 	for i = 1, numMessage do
-		local msg, r, g, b = frame:GetMessageInfo(i)
-		if canaccessvalue(msg) and msg then
-			local t= msg
-			local c= select(2, t:gsub('|c', '')) + select(2, t:gsub('|cn', ''))- select(2, t:gsub('|r', ''))
-			if c>0 then
-				msg= msg..string.rep('|r', c)
-			end
-			if r and g and b then
-				local color= CreateColor(r,g,b)
-				msg= color:WrapTextInColorCode(msg)
-			end
+		--local msg, r, g, b = frame:GetMessageInfo(i)
+		local msg= frame:GetMessageInfo(i)
+		if not canaccessvalue(msg) then
+			table.insert(tab, EVENTTRACE_SECRET_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and "显示机密数值" or EVENTTRACE_SHOW_SECRET_VALUES))
+		elseif type(msg)=='nil' then
+			table.insert(tab, nil)
+		else
 			table.insert(tab, msg)
 		end
+		--[[if canaccessvalue(msg) then
+			if msg then
+				local t= msg
+				local c= select(2, t:gsub('|c', '')) + select(2, t:gsub('|cn', ''))- select(2, t:gsub('|r', ''))
+				if c>0 then
+					msg= msg..string.rep('|r', c)
+				end
+				if r and g and b then
+					local color= CreateColor(r,g,b)
+					msg= color:WrapTextInColorCode(msg)
+				end
+				table.insert(tab, msg)
+			end
+		else
+			table.insert(tab, msg)
+		end]]
 	end
 
 	local tabFrame= _G['ChatFrame'..index..'Tab']
@@ -211,26 +223,23 @@ local function Init_Menu(self, root)
 	local sub, sub2
 	local num= self:GetNumMessages() or 0
 
+	local tabFrame= _G['ChatFrame'..index..'Tab']
+	local name= tabFrame and tabFrame:GetText() or (WoWTools_DataMixin.onlyChinese and '聊天' or CHAT)
+
 	sub=root:CreateButton(
 		'|A:poi-workorders:0:0|a'
 		..(index==2 and '|cnWARNING_FONT_COLOR:' or  (num==0 and '|cff606060') or '')
-		..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT)),
+		..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
+		..' '..num,
+
 	function()
 		Get_Text(self)
 		return MenuResponse.Open
-	end, {rightText=num})
+	end)--, {rightText=num})
 	sub:SetTooltip(function(tooltip)
-		local tab= _G['ChatFrame'..index..'Tab']
-		tooltip:AddDoubleLine(
-			tab and tab:GetText() or (WoWTools_DataMixin.onlyChinese and '聊天' or CHAT),
-			'#|cffffffff'..num
-		)
-
-		if WoWTools_DataMixin.Player.husandro then
-			tooltip:AddLine(self:GetMessageInfo(1))
-		end
+		tooltip:AddLine(name..' #|cffffffff'..num)
 	end)
-	WoWTools_MenuMixin:SetRightText(sub)
+	--WoWTools_MenuMixin:SetRightText(sub)
 
 --选项
 	sub:CreateCheckbox(
@@ -293,6 +302,38 @@ local function Init_Menu(self, root)
 --打开，选项面板
 	sub:CreateDivider()
 	WoWTools_ChatMixin:Open_SettingsPanel(sub, addName)
+
+	sub:CreateDivider()
+	sub2= sub:CreateButton(
+		name,
+	function()
+		return MenuResponse.Open
+	end, {rightText=num})
+	WoWTools_MenuMixin:SetRightText(sub2)
+
+	for i = 1, num do
+		local msg= self:GetMessageInfo(i)
+		local sub3= sub2:CreateButton(
+			msg,
+		function(data)
+			WoWTools_TextMixin:ShowText(
+				{data.msg},
+				name,
+				{notClear=true}
+			)
+			return MenuResponse.Open
+		end, {msg=msg, rightText=i})
+		sub3:SetTooltip(function(tooltip, desc)
+			tooltip:AddLine(format(
+				WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT,
+				WoWTools_TextMixin:GetYesNo(not canaccessvalue(desc.data.msg))
+			))
+			
+		end)
+		WoWTools_MenuMixin:SetRightText(sub3)
+	end
+
+	WoWTools_MenuMixin:SetScrollMode(sub2)
 end
 
 
