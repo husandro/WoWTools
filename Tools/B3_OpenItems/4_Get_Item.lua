@@ -102,15 +102,18 @@ local function Get_ValeItem(bag, slot)
 
 
     local itemMinLevel, _, _, _, _, _, _, classID, subclassID= select(5, C_Item.GetItemInfo(info.itemID))
---13 钥匙
-    if classID==Enum.ItemClass.Key then
+
+    if classID==Enum.ItemClass.Key--13 钥匙
+        or classID==Enum.ItemClass.Gem--3 宝石
+        or classID==Enum.ItemClass.ItemEnhancement--8 附魔
+    then
         return
     end
 
     local duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
 
---冷却 8 附魔
-    if duration and duration>2 and enable~=0 and classID~=Enum.ItemClass.ItemEnhancement then
+--冷却
+    if duration and duration>2 and enable~=0 then
         return
     end
 
@@ -153,77 +156,81 @@ local function Get_ValeItem(bag, slot)
         end
 
     else
+        
 --是否可使用 then--不出售, 可以使用
         local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, text={LOCKED}})
 
-        if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then
+        if dateInfo.red then-- or not C_PlayerInfo.CanUseItem(info.itemID) then
+            return
+        end
+
 --可打开
-            if info.hasLoot then
-                if Save().open then
-                    if dateInfo.text[LOCKED] and WoWTools_DataMixin.Player.Class=='ROGUE' then--DZ
-                        return info--开锁 Pick Lock
-                    else--if not dateInfo.text[LOCKED] then
-                        return info
-                    end
-                end
---配方 9
-            elseif classID==Enum.ItemClass.Recipe then
-                if Save().ski then
-                    if subclassID == 0 then
-                        if C_Item.GetItemSpell(info.hyperlink) then
-                            return info
-                        end
-                    else
-                        return info
-                    end
-                end
---坐骑 15 5
-            elseif classID==Enum.ItemClass.Miscellaneous and subclassID==Enum.ItemMiscellaneousSubclass.Mount then
-                if Save().mount then
-                    local mountID = C_MountJournal.GetMountFromItem(info.itemID)
-                    if mountID then
-                        local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
-                        if isCollected==false then
-                            return info
-                        end
-                    end
-                end
---玩具
-            elseif C_ToyBox.GetToyInfo(info.itemID) then
-                if Save().toy and not PlayerHasToy(info.itemID) then
+        if info.hasLoot then
+            if Save().open then
+                if dateInfo.text[LOCKED] and WoWTools_DataMixin.Player.Class=='ROGUE' then--DZ
+                    return info--开锁 Pick Lock
+                else--if not dateInfo.text[LOCKED] then
                     return info
                 end
-
---宠物, 收集数量 15 2
-            elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==Enum.ItemClass.Miscellaneous and subclassID==Enum.ItemMiscellaneousSubclass.CompanionPet) then
-                if Save().pet then
-                    local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
-                    if speciesID then
-                        local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
-                        if numCollected and limit and numCollected <  limit then
-                            return info
-                        end
-                    end
-                end
-
-            elseif Save().alt
-                and C_Item.IsUsableItem(info.hyperlink)
-                and (
-                    (classID~=Enum.ItemClass.Questitem
-                        and (classID==Enum.ItemClass.Consumable and subclassID==Enum.ItemConsumableSubclass.Other or classID~=Enum.ItemClass.Consumable)
-                    )
-                    or (classID==Enum.ItemClass.Miscellaneous and subclassID==Enum.ItemMiscellaneousSubclass.Other)
-                )
-            then-- 8 使用: 在龙鳞探险队中的声望提高1000点
-                local spell= select(2, C_Item.GetItemSpell(info.hyperlink))
-                if spell and not C_Item.IsAnimaItemByID(info.hyperlink) then-- or C_Item.IsArtifactPowerItem(info.hyperlink)) then
-                    if info.itemID==207002 then--封装命运
-                        if not WoWTools_AuraMixin:Get('player', {[415603]=true}) then
-                            return info
-                        end
-                    else
+            end
+--配方 9
+        elseif classID==Enum.ItemClass.Recipe then
+            if Save().ski then
+                if subclassID == 0 then
+                    if C_Item.GetItemSpell(info.hyperlink) then
                         return info
                     end
+                else
+                    return info
+                end
+            end
+--坐骑 15 5
+        elseif classID==Enum.ItemClass.Miscellaneous and subclassID==Enum.ItemMiscellaneousSubclass.Mount then
+            if Save().mount then
+                local mountID = C_MountJournal.GetMountFromItem(info.itemID)
+                if mountID then
+                    local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+                    if isCollected==false then
+                        return info
+                    end
+                end
+            end
+--玩具
+        elseif C_ToyBox.GetToyInfo(info.itemID) then
+            if Save().toy and not PlayerHasToy(info.itemID) then
+                return info
+            end
+
+--宠物, 收集数量 15 2
+        elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==Enum.ItemClass.Miscellaneous and subclassID==Enum.ItemMiscellaneousSubclass.CompanionPet) then
+            if Save().pet then
+                local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
+                if speciesID then
+                    local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
+                    if numCollected and limit and numCollected <  limit then
+                        return info
+                    end
+                end
+            end
+
+        elseif Save().alt
+            and C_Item.IsUsableItem(info.hyperlink)
+            and (
+                (classID~=Enum.ItemClass.Questitem
+                    and (classID==Enum.ItemClass.Consumable and subclassID==Enum.ItemConsumableSubclass.Other or classID~=Enum.ItemClass.Consumable)
+                )
+                or (classID==Enum.ItemClass.Miscellaneous and subclassID==Enum.ItemMiscellaneousSubclass.Other)
+            )
+        then-- 8 使用: 在龙鳞探险队中的声望提高1000点
+            local spell= select(2, C_Item.GetItemSpell(info.hyperlink))
+            if spell and not C_Item.IsAnimaItemByID(info.hyperlink) then-- or C_Item.IsArtifactPowerItem(info.hyperlink)) then
+                if info.itemID==207002 then--封装命运
+                    if not WoWTools_AuraMixin:Get('player', {[415603]=true}) then
+                        return info
+                    end
+                else
+                                print(info.hyperlink)
+                    return info
                 end
             end
         end
@@ -257,22 +264,19 @@ local function Get_Items(self)--取得背包物品信息
     self.IsInCheck=nil
     self:Clear()
 
-
-
-
     local bagMax= Save().reagent and (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES ) or NUM_BAG_FRAMES
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info= Get_ValeItem(bag, slot)
             if info then
                 self.IsEquipItem= info.IsEquipItem
+
                 return Set_Att(self, bag, slot, info.iconFileID, info.itemID)
             end
         end
     end
 
     Set_Att(self)
-
     self:set_key(true)
 end
 
