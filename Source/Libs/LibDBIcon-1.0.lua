@@ -176,11 +176,7 @@ end
 
 local function onClick(self, b)
 	if self.dataObject.OnClick then
-		if self==SettingsPanel and  WoWTools_FrameMixin:IsLocked(self) then
-			return
-		end
-			self.dataObject.OnClick(self, b)
-		
+		self.dataObject.OnClick(self, b)
 	end
 end
 
