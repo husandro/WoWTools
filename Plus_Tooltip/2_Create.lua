@@ -143,7 +143,6 @@ local function Create(tooltip)
 
     local scale= Save().scale or 1
     if scale~=1 then
-        print(scale)
         tooltip:SetScale(scale)
     end
 end
