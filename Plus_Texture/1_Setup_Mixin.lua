@@ -189,18 +189,31 @@ local NineSliceTabs={
     'Center',
     'Background',
     'Bg',
+
+    WoWTools_DataMixin:Hook(NineSlicePanelMixin, 'OnLoad', function(frame)
+        self:SetNineSlice(frame)
+    end)
 }]]
 function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
-    if frame and not frame.NineSlice then
-        for _, t in pairs({frame:GetChildren()})do
-            if t.NineSlice then
-                frame= t
-                break
+    if not frame then
+        return
+    end
+
+    local nineSlice= frame.NineSlice
+    if not nineSlice then
+        if frame.SetBorderColor and frame.SetCenterColor then
+            nineSlice= frame
+        else
+            for _, t in pairs({frame:GetChildren()})do
+                if t.NineSlice then
+                    nineSlice= t.NineSlice
+                    break
+                end
             end
         end
     end
 
-    if not frame or not frame.NineSlice then
+    if not nineSlice then
         return
     end
 
@@ -210,50 +223,15 @@ function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
         or (type(alpha)=='number' and alpha)
         or self.min
 
-    frame.NineSlice:SetBorderColor(r, g, b, alpha)
+    nineSlice:SetBorderColor(r, g, b, alpha)
     if not notBg then
-        frame.NineSlice:SetCenterColor(0, 0, 0, alpha)
+        nineSlice:SetCenterColor(0, 0, 0, alpha)
     end
 end
 
---function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, isFind)
-    --[[if not frame then
-        return
-    end
-
-    local f= frame.NineSlice
-    if not f and isFind then
-        for _, t in pairs({frame:GetChildren()})do
-            if t.NineSlice then
-                f= t.NineSlice
-                break
-            end
-        end
-    end
-
-    if not f then
-        if frame.TopEdge or not isFind then
-            f=frame
-        else
-            return
-        end
-    end
-
-    local alpha= min and (type(min)=='number' and min or self.min) or 0.3
-    for index, text in pairs(NineSliceTabs) do
-        if hide then
-            self:HideTexture(f[text])
-        else
-            self:SetAlphaColor(f[text], notAlpha, nil, alpha)
-        end
-        if notBg and index==8 then
-            break
-        end
-    end]]
 
 
 --设置，滚动条，颜色
-
 function WoWTools_TextureMixin:SetScrollBar(bar)--, isHideBar)
     bar= bar and bar.ScrollBar or bar
     if not bar
