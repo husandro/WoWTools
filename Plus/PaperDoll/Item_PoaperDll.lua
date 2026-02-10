@@ -14,7 +14,7 @@ local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 
-local ITEM_CREATED_BY_Str= ITEM_CREATED_BY:gsub('%%s','(.+)')--"|cff00ff00<由%s制造>|r"
+local ITEM_CREATED_BY= ITEM_CREATED_BY:gsub('%%s','(.+)')--"|cff00ff00<由%s制造>|r"
 
 
 
@@ -25,95 +25,6 @@ for i=1, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
         InventSlot_To_ContainerSlot[bag]=i
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---增加 [潘达利亚工程学: 地精滑翔器] recipeID 126392
---[诺森德工程学: 氮气推进器] ricipeID 55016
-local function set_Engineering(btn, slot, link, use, isPaperDollItemSlot)
-    if not (
-            (slot==15 and C_TradeSkillUI.IsRecipeProfessionLearned(126392))
-            or (slot==6 and C_TradeSkillUI.IsRecipeProfessionLearned(55016))
-        )
-        or use
-        or not link
-        or not isPaperDollItemSlot
-    then
-        if btn.engineering  then
-            btn.engineering:SetShown(false)
-        end
-        return
-    end
-
-    if not btn.engineering then
-        local h=btn:GetHeight()/3
-        btn.engineering=CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(btn, {size=h, texture=136243})
-        btn.engineering:SetSize(h, h)
-        btn.engineering:SetNormalTexture(136243)
-        if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
-            btn.engineering:SetPoint('TOPLEFT', btn, 'TOPRIGHT', 8, 0)
-        else
-            btn.engineering:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -8, 0)
-        end
-        btn.engineering.spell= slot==15 and 126392 or 55016
-
-        btn.engineering:SetScript('OnMouseDown' ,function(frame, d)
-            if d=='LeftButton' then
-                local n=C_Item.GetItemCount(90146, true, false, true, false)
-                if n==0 then
-                    print(WoWTools_ItemMixin:GetLink(90146) or (WoWTools_DataMixin.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE))
-                    return
-                end
-                local isShow= ProfessionsFrame and ProfessionsFrame:IsShown()
-                do
-                    WoWTools_LoadUIMixin:Professions(frame.spell)
-                end
-                do
-                    C_TradeSkillUI.CraftRecipe(frame.spell)
-                    if not isShow then
-                        C_TradeSkillUI.CloseTradeSkill()
-                    end
-                end
-                ToggleCharacter("PaperDollFrame", true)
-
-            elseif d=='RightButton' then
-                WoWTools_LoadUIMixin:Professions(frame.spell)
-                --OpenProfessionUIToSkillLine(parentTradeSkillID)
-            end
-        end)
-        btn.engineering:SetScript('OnEnter' ,function(frame)
-                GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:SetSpellByID(frame.spell)
-                GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '商业技能' or TRADESKILLS), WoWTools_DataMixin.Icon.right)
-                --GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需求' or NEED), (WoWTools_DataMixin.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP)..')')
-                GameTooltip:Show()
-        end)
-        btn.engineering:SetScript('OnLeave',GameTooltip_Hide)
-    end
-    btn.engineering:SetShown(true)
-end
-
-
-
-
-
-
-
 
 
 
@@ -148,16 +59,95 @@ local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot
     end
 end
 
-local function set_no_Enchant(btn, slot, find, isPaperDollItemSlot)--附魔，按钮
-    if not subClassToSlot[slot] then
-        return
-    end
 
-    local tab
-    if find and isPaperDollItemSlot then
-        tab=get_no_Enchant_Bag(slot)--取得，物品，bag, slot
-        if tab and not btn.noEnchant then
-            local h=btn:GetHeight()/3
+
+
+
+
+
+
+
+local function Create_Button(btn)
+    local slot= btn:GetID() or -1
+    local isLeftSlot= WoWTools_PaperDollMixin:Is_Left_Slot(slot)
+    local h=btn:GetHeight()/3
+
+--地精滑翔,氮气推进器
+
+    btn.engineering=CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(btn, {size=h, texture=136243})
+    btn.engineering:SetSize(h, h)
+    btn.engineering:SetNormalTexture(136243)
+    if isLeftSlot then
+        btn.engineering:SetPoint('TOPLEFT', btn, 'TOPRIGHT', 8, 0)
+    else
+        btn.engineering:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -8, 0)
+    end
+    btn.engineering.spell= slot==15 and 126392 or 55016
+
+    btn.engineering:SetScript('OnMouseDown' ,function(frame, d)
+        if d=='LeftButton' then
+            local n=C_Item.GetItemCount(90146, true, false, true, false)
+            if n==0 then
+                print(WoWTools_ItemMixin:GetLink(90146) or
+                    (WoWTools_DataMixin.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE),
+                    '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)
+                )
+                return
+            end
+            local isShow= ProfessionsFrame and ProfessionsFrame:IsShown()
+            do
+                WoWTools_LoadUIMixin:Professions(frame.spell)
+            end
+            do
+                C_TradeSkillUI.CraftRecipe(frame.spell)
+                if not isShow then
+                    C_TradeSkillUI.CloseTradeSkill()
+                end
+            end
+            ToggleCharacter("PaperDollFrame", true)
+
+        elseif d=='RightButton' then
+            WoWTools_LoadUIMixin:Professions(frame.spell)
+            --OpenProfessionUIToSkillLine(parentTradeSkillID)
+        end
+    end)
+    btn.engineering:SetScript('OnEnter' ,function(frame)
+        GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetSpellByID(frame.spell)
+        GameTooltip:AddLine(' ')
+        GameTooltip_AddInstructionLine(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '商业技能' or TRADESKILLS)
+            ..'>'
+        )
+        GameTooltip:Show()
+    end)
+    btn.engineering:SetScript('OnLeave',GameTooltip_Hide)
+
+--附魔，提示
+    btn.enchant= btn:CreateTexture()
+    btn.enchant:SetSize(h,h)
+    if isLeftSlot then
+        btn.enchant:SetPoint('LEFT', btn, 'RIGHT', 8, 0)
+    else
+        btn.enchant:SetPoint('RIGHT', btn, 'LEFT', -8, 0)
+    end
+    btn.enchant:SetTexture(463531)
+    btn.enchant:EnableMouse(true)
+    btn.enchant:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
+    btn.enchant:SetScript('OnEnter' ,function(self2)
+        if self2.tips then
+            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(self2.tips)
+            GameTooltip:Show()
+            self2:SetAlpha(0.3)
+        end
+    end)
+
+
+local h=btn:GetHeight()/3
             btn.noEnchant= WoWTools_ButtonMixin:Cbtn(btn, {size=h, isSecure=true})
             btn.noEnchant:SetAttribute("type", "item")
             btn.noEnchant.slot= slot
@@ -216,6 +206,40 @@ local function set_no_Enchant(btn, slot, find, isPaperDollItemSlot)--附魔，�
             local texture= btn.noEnchant:CreateTexture(nil, 'OVERLAY')
             texture:SetAllPoints()
             texture:SetAtlas('bags-icon-addslots')
+
+    function btn:rest_stat()
+        self.engineering:SetShown(false)
+        self.enchant:SetShown(false)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function set_no_Enchant(btn, slot, find, isPaperDollItemSlot)--附魔，按钮
+    if not subClassToSlot[slot] then
+        return
+    end
+
+    local tab
+    if find and isPaperDollItemSlot then
+        tab= get_no_Enchant_Bag(slot)--取得，物品，bag, slot
+        if tab and not btn.noEnchant then
+            
         end
     end
 
@@ -457,7 +481,14 @@ end
 
 local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
     if Save().hide then
-        link= nil
+        if btn.rest_stat then
+            btn:rest_stat()
+        end
+        return
+    end
+
+    if not btn.rest_stat then
+        Create_Button(btn, slot)
     end
 
     local enchant, use, pvpItem, upgradeItem, createItem
@@ -465,36 +496,13 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
     local isLeftSlot= WoWTools_PaperDollMixin:Is_Left_Slot(slot)
 
     if link and not C_Item.IsCorruptedItem(link) then
-        local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr,ITEM_CREATED_BY_Str}, onlyText=true})--物品提示，信息
-        enchant, use, pvpItem, upgradeItem, createItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr], dateInfo.text[upgradeStr], dateInfo.text[ITEM_CREATED_BY_Str]
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr,ITEM_CREATED_BY}, onlyText=true})--物品提示，信息
+        enchant, use, pvpItem, upgradeItem, createItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr], dateInfo.text[upgradeStr], dateInfo.text[ITEM_CREATED_BY]
     end
 
-    if enchant and not btn.enchant then--附魔
-        local h=btn:GetHeight()/3
-        btn.enchant= btn:CreateTexture()
-        btn.enchant:SetSize(h,h)
-        if isLeftSlot then
-            btn.enchant:SetPoint('LEFT', btn, 'RIGHT', 8, 0)
-        else
-            btn.enchant:SetPoint('RIGHT', btn, 'LEFT', -8, 0)
-        end
-        btn.enchant:SetTexture(463531)
-        btn.enchant:EnableMouse(true)
-        btn.enchant:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
-        btn.enchant:SetScript('OnEnter' ,function(self2)
-            if self2.tips then
-                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:AddLine(self2.tips)
-                GameTooltip:Show()
-                self2:SetAlpha(0.3)
-            end
-        end)
-    end
-    if btn.enchant then
-        btn.enchant.tips= enchant
-        btn.enchant:SetShown(enchant and true or false)
-    end
+    btn.enchant.tips= enchant
+    btn.enchant:SetShown(enchant and true or false)
+
 
     set_no_Enchant(btn, slot, not enchant and link, isPaperDollItemSlot)--附魔，按钮
 
@@ -526,7 +534,20 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
         btn.use.spellID= use
         btn.use:SetShown(use and true or false)
     end
-    set_Engineering(btn, slot, link, use, isPaperDollItemSlot)--地精滑翔,氮气推进器
+
+
+--地精滑翔,氮气推进器
+    btn.engineering:SetShown(
+        (
+            (slot==15 and C_TradeSkillUI.IsRecipeProfessionLearned(126392))--增加 [潘达利亚工程学: 地精滑翔器] recipeID 126392
+            or (slot==6 and C_TradeSkillUI.IsRecipeProfessionLearned(55016))--[诺森德工程学: 氮气推进器] ricipeID 55016
+        )
+        and not use
+        and link
+        and isPaperDollItemSlot
+        or WoWTools_DataMixin.Player.husandro
+    )
+
 
     if pvpItem and not btn.pvpItem then--提示PvP装备
         local h=btn:GetHeight()/3
