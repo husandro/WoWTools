@@ -396,6 +396,8 @@ local function Get_Info(tab)
     end
 
 
+
+
     itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
 
     local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
@@ -479,10 +481,6 @@ local function Get_Info(tab)
     elseif itemID==6948 then
         bottomLeftText=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GetBindLocation()), 3, 6, true)
 --住宅装饰--11.2.7
-
---    elseif C_Item.IsDecorItem and C_Item.IsDecorItem(itemID) then
-
--- C_Item.IsCurioItem(itemIDOrLink) or C_Item.IsRelicItem(itemIDOrLink)
 
 --宝箱
     elseif containerInfo and containerInfo.hasLoot then

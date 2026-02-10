@@ -234,9 +234,6 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                 --if quality==7 then
 
                 itemLevel= self:GetItemLevel(link)
-
-
-                itemLevel= itemLevel or WoWTools_ItemMixin:GetItemLevel(link)
                 if itemLevel and itemLevel>3 then
                     local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等
                     if avgItemLevel then
@@ -254,8 +251,8 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                 end
             end
             if not frame.itemLevel and itemLevel then
-                frame.itemLevel= WoWTools_LabelMixin:Create(frame, {justifyH='CENTER'})
-                frame.itemLevel:SetShadowOffset(2,-2)
+                frame.itemLevel= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont', nil, 1)
+                frame.itemLevel:SetJustifyH('CENTER')
                 frame.itemLevel:SetPoint('CENTER', point)
             end
         end
@@ -272,8 +269,6 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                 frame['statText'..index]= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont', nil, 1) -- WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
                 lable= frame['statText'..index]
 
-                --lable:SetFontHeight(12)
-                lable:SetShadowOffset(1,-1)
                 if (index==2 or index==4) then
                     lable:SetJustifyH('RIGHT')
                 end
@@ -622,10 +617,8 @@ end
 function WoWTools_ItemMixin:GetItemLevel(itemLink)
     if itemLink then
         local dataInfo= self:GetTooltip({hyperLink=itemLink, text={itemLevelStr}, onlyText=true})--物品提示，信息
-        local itemLevel= dataInfo.text[itemLevelStr] or C_Item.GetDetailedItemLevelInfo(itemLink)
-        if itemLevel then
-            return tonumber(itemLevel)
-        end
+        local itemLevel= dataInfo.text[itemLevelStr]
+        return itemLevel and tonumber(itemLevel) or C_Item.GetDetailedItemLevelInfo(itemLink)
     end
 end
 
