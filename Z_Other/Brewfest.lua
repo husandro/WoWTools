@@ -97,7 +97,7 @@ local function Init()
 
         Save().scale=sacle
         self:set_Scale()
-        print(WoWTools_DataMixin.Icon.icon2..addName, (WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
+        print(WoWTools_DataMixin.Icon.icon2..addName, (WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
     end)
 
     function btn:set_Point()
@@ -227,7 +227,7 @@ local function Init()
         GameTooltip:AddLine(col..'/click ExtraActionButton1')
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..' '..(Save().scale or 1), WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end)
     btn:SetScript('OnLeave', GameTooltip_Hide)

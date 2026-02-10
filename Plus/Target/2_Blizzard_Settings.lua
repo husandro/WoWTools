@@ -275,7 +275,7 @@ local function Init_Options()
 
 
     local sliderScale = WoWTools_SliderMixin:CSlider(Frame, {min=0.2, max=4, value=Save().scale or 1, setp=0.1, w= 100,
-    text= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
+    text= WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE,
     func=function(self2, value)
         value= tonumber(format('%.1f', value))
         self2:SetValue(value)

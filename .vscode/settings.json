@@ -148,7 +148,7 @@
         "PVP_LABEL_WAR_MODE",
         "GameTooltip_AddErrorLine",
         "GameTooltip_SetTitle",
-        "UI_SCALE",
+        "HOUSING_EXPERT_DECOR_SUBMODE_SCALE",
         "HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY",
         "HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND",
         "GenericTraitFrame",

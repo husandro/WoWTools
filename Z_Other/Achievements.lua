@@ -142,7 +142,7 @@ end
 
 
 local function Create_Button(frame, point)
-    frame.achievementButton= CreateFrame('DropdownButton', 'WoWToolsEJAchievementsMenuButton', frame)
+    frame.achievementButton= CreateFrame('DropdownButton', nil, frame)
 
     frame.achievementButton.Text= frame.achievementButton:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2')
     frame.achievementButton.Text:SetPoint('CENTER')
@@ -160,8 +160,9 @@ local function Create_Button(frame, point)
     frame.achievementButton:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     frame.achievementButton:SetPushedAtlas('PetList-ButtonSelect')
     frame.achievementButton:SetHighlightAtlas('PetList-ButtonHighlight')
+    frame.achievementButton.tooltip= addName..WoWTools_DataMixin.Icon.icon2
 
-    frame.achievementButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
+    --[[frame.achievementButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
     frame.achievementButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
@@ -180,7 +181,7 @@ local function Create_Button(frame, point)
             end
         end
         GameTooltip:Show()
-    end)
+    end)]]
     frame.achievementButton:SetScript('OnHide', function(self)
         self.Text:SetText('')
     end)

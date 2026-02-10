@@ -168,12 +168,12 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
     local sub= self:CreateSlider(root, {
         getValue=GetValue,
         setValue=SetValue,
-        name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
+        name= WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE,
         minValue=0.2,
         maxValue=4,
         step=0.1,
         bit='%0.1f',
-        tooltip=function(tooltip) tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE) end,
+        tooltip=function(tooltip) tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE) end,
     })
     sub:SetEnabled(not isLocked)
 
@@ -189,7 +189,7 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
             return MenuResponse.Refresh
         end, {resetValue=ResetValue})
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..': 1')
+            tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..': 1')
         end)
         sub2:SetEnabled(not isLocked)
     end
@@ -207,7 +207,7 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
     local sub= root:CreateButton(
         (isLocked and '|cff626262' or '')
         ..'|A:common-icon-zoomin:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE),
+        ..(WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE),
     function()
         return MenuResponse.Open
     end, {rightText= tonumber(format('%.1f', GetValue() or 1))})

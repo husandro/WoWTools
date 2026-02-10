@@ -215,7 +215,7 @@ WoWTools_PanelMixin:CheckMenu({
 
 
     WoWTools_PanelMixin:OnlySlider({
-        name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
+        name= WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE,
         GetValue= function() return Save().chatBubbleSacal or 0.85 end,
         minValue= 0.3,
         maxValue= 1,

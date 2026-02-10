@@ -163,7 +163,7 @@ local function Init_BountyDropdown(frame)
             return
         end
         root:CreateDivider()
-        local sub= WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_WorldMapMixin.addName})--root:CreateButton(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)
+        local sub= WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_WorldMapMixin.addName})--root:CreateButton(WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)
 
 --声望，字体，缩放
         sub:CreateSpacer()

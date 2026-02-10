@@ -18,7 +18,7 @@ local function set_Cursor_Tips(self)
     WoWTools_TooltipMixin:Set_PlayerModel(ItemRefTooltip)
 
     GameTooltip_SetDefaultAnchor(GameTooltip, self or UIParent)
-
+    GameTooltip:SetScale(Save().scale or 1)
     GameTooltip:ClearLines()
     GameTooltip:SetUnit('player')
     GameTooltip:Show()
@@ -235,7 +235,7 @@ local function Init_Panel()
                 WoWTools_TooltipMixin:Init_StatusBar()
             end
         })
-    
+
 
 --[[<右键点击设置框体>
     WoWTools_PanelMixin:OnlyCheck({
@@ -261,16 +261,7 @@ local function Init_Panel()
     })
 
 
-    WoWTools_PanelMixin:OnlyCheck({
-        name= (WoWTools_DataMixin.onlyChinese and '物品数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, STATUS_TEXT_VALUE))..' mk',
-        tooltip= '1k008',
-        GetValue= function() return Save().showItemMK end,
-        category= WoWTools_TooltipMixin.Category,
-        SetValue= function()
-            Save().showItemMK= not Save().showItemMK and true or nil
-            set_Cursor_Tips()
-        end
-    })
+
 
 
     WoWTools_PanelMixin:OnlySlider({
@@ -289,8 +280,33 @@ local function Init_Panel()
         end
     })
 
+    WoWTools_PanelMixin:OnlyCheck({
+        name= (WoWTools_DataMixin.onlyChinese and '物品数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, STATUS_TEXT_VALUE))..' mk',
+        tooltip= '1k008, 2w008, 3m008',
+        GetValue= function() return Save().showItemMK end,
+        category= WoWTools_TooltipMixin.Category,
+        SetValue= function()
+            Save().showItemMK= not Save().showItemMK and true or nil
+            set_Cursor_Tips()
+        end
+    })
 
-
+    WoWTools_PanelMixin:OnlySlider({
+        name= WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE,
+        GetValue= function() return Save().scale or 1 end,
+        minValue=0.2,
+        maxValue=4,
+        step=0.1,
+        tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+        category= WoWTools_TooltipMixin.Category,
+        SetValue= function(_, _, value2)
+            if value2 then
+                value2= tonumber(format('%.1f', value2))
+                Save().scale= value2
+                set_Cursor_Tips()
+            end
+        end
+    })
 
 
     WoWTools_PanelMixin:Header(Layout, 'CVar')
@@ -514,7 +530,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 no={}--禁用
             }
 
-            
+
             Save().no= Save().no or {}
             WoWTools_TooltipMixin.iconSize= Save().iconSize or 0
 

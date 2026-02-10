@@ -622,7 +622,7 @@ local function Init_Options()--设置 Frame
 
     --缩放
     local slider4= WoWTools_SliderMixin:CSlider(Frame, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
-        text=WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
+        text=WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE,
         func=function(self, value)
             value= tonumber(format('%.1f', value)) or 1
             self:SetValue(value)
@@ -649,7 +649,7 @@ local function Init_Options()--设置 Frame
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
     local sliderButtonScale = WoWTools_SliderMixin:CSlider(Frame, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
-    text=WoWTools_DataMixin.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
+    text=WoWTools_DataMixin.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, HOUSING_EXPERT_DECOR_SUBMODE_SCALE),
     func=function(self, value)
         value= tonumber(format('%.01f', value))
         value= value<0.4 and 0.4 or value

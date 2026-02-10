@@ -83,7 +83,7 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         local col= not self:CanChangeAttribute() and '|cff626262' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), col..('Alt+'..WoWTools_DataMixin.Icon.mid))
+        GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..' '..(Save().scale or 1), col..('Alt+'..WoWTools_DataMixin.Icon.mid))
         col= not Save().point and '|cff626262' or ''
         GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()

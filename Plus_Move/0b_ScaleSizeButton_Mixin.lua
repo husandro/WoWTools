@@ -714,7 +714,7 @@ local function Set_Tooltip(self)
     local scale
     scale= tonumber(format('%.2f', target:GetScale() or 1))
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnWARNING_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
-    GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), scale..WoWTools_DataMixin.Icon.left)
+    GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE), scale..WoWTools_DataMixin.Icon.left)
 
     if self.setSize then
         GameTooltip:AddLine(' ')

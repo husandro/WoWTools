@@ -44,7 +44,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, (WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)..WoWTools_DataMixin.Icon.right, 'Alt+'..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), Save().compactPartyFrameScale or 1)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, (WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)..WoWTools_DataMixin.Icon.right, 'Alt+'..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE), Save().compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", ResetCursor)
@@ -53,7 +53,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
             return
         end
         if not self:CanChangeAttribute() then
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE, '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT))
             return
         end
         local sacle= Save().compactPartyFrameScale or 1
@@ -67,7 +67,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         elseif sacle<0.5 then
             sacle=0.5
         end
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, (WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), sacle)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, (WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE), sacle)
         CompactPartyFrame:SetScale(sacle)
         Save().compactPartyFrameScale=sacle
     end)

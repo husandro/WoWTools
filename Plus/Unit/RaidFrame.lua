@@ -173,7 +173,7 @@ local function Init()--设置,团队
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         local col= InCombatLockdown() and '|cff626262' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().raidFrameScale or 1), col..'Alt+'..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..' '..(Save().raidFrameScale or 1), col..'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self:SetAlpha(1)
     end

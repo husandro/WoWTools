@@ -415,7 +415,7 @@ local function Init_StopwatchFrame()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MinimapMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.right)
         if Save().StopwatchOnClickPause then
             GameTooltip:AddLine(' ')
@@ -641,7 +641,7 @@ local function Init()
             --GameTooltip:AddLine(' ')
 
             GameTooltip:AddDoubleLine('|cffffffff'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..WoWTools_DataMixin.Icon.right)
-            GameTooltip:AddDoubleLine('|cffffffff'..((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+            GameTooltip:AddDoubleLine('|cffffffff'..((WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
         end
         GameTooltip:Show()
     end)

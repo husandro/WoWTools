@@ -33,7 +33,7 @@ local function Set_Tooltip(self)
     )
     if self.setZoom then
         GameTooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
+            (WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
             'Alt+'..WoWTools_DataMixin.Icon.mid
         )
     end

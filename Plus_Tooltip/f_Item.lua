@@ -15,7 +15,7 @@ THIRD_NUMBER = "亿"
 
 local function Set_Value_Text(line)
     local text= line and line:GetText()
-    if not issecretvalue(text) or not text or text=='' or text==' ' then
+    if not canaccessvalue(text) or not text or text=='' or text==' ' then
         return
     end
 

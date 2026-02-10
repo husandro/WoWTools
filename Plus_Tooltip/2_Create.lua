@@ -140,6 +140,12 @@ local function Create(tooltip)
     tooltip:HookScript("OnHide", function(self)--隐藏
         WoWTools_TooltipMixin:Set_Rest_Item(self)--清除，数据
     end)
+
+    local scale= Save().scale or 1
+    if scale~=1 then
+        print(scale)
+        tooltip:SetScale(scale)
+    end
 end
 
 
