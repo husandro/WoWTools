@@ -112,10 +112,13 @@ local function Get_Text(frame)
 		local msg= frame:GetMessageInfo(i)
 		if not canaccessvalue(msg) then
 			table.insert(tab, EVENTTRACE_SECRET_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and "显示机密数值" or EVENTTRACE_SHOW_SECRET_VALUES))
-		elseif type(msg)=='nil' then
-			table.insert(tab, nil)
 		else
-			table.insert(tab, msg)
+			local t= type(msg)
+			if t~='string' then
+				table.insert(tab, t)
+			else
+				table.insert(tab, msg)
+			end
 		end
 		--[[if canaccessvalue(msg) then
 			if msg then
