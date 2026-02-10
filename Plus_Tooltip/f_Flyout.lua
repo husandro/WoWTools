@@ -48,7 +48,7 @@ function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
         ..'|cffffffff'
         ..flyoutID
     )
-    WoWTools_TooltipMixin:CalculatePadding(tooltip)
+    WoWTools_TooltipMixin:Show(tooltip)
 end
 
 

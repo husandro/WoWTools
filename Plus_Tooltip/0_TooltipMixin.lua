@@ -11,7 +11,7 @@ WoWTools_TooltipMixin={
 
 
 
-function WoWTools_TooltipMixin:CalculatePadding(tooltip)
+function WoWTools_TooltipMixin:Show(tooltip)
     tooltip= tooltip or GameTooltip
 
 

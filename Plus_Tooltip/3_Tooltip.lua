@@ -201,7 +201,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
                     (data.iconID and '|T'..data.iconID..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..data.iconID or ' '),
                     data.actionID and 'actionID|cffffffff'..WoWTools_DataMixin.Icon.icon2..data.actionID
                 )
-                WoWTools_TooltipMixin:CalculatePadding()
+                WoWTools_TooltipMixin:Show()
             end
         end
     end)
@@ -218,7 +218,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
     WoWTools_DataMixin:Hook('GameTooltip_AddWidgetSet', function(tooltip, uiWidgetSetID)
         if uiWidgetSetID then
             tooltip:AddLine('widgetSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..uiWidgetSetID)
-            WoWTools_TooltipMixin:CalculatePadding(tooltip)
+            WoWTools_TooltipMixin:Show(tooltip)
         end
     end)
 

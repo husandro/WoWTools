@@ -138,7 +138,7 @@ function WoWTools_TooltipMixin.Frames:QuestFrame()
                     (WoWTools_DataMixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)),
                     WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(questID))
                 )
-                WoWTools_TooltipMixin:CalculatePadding()
+                WoWTools_TooltipMixin:Show()
             end
         end
     end)
@@ -222,6 +222,6 @@ function WoWTools_TooltipMixin.Frames:WarbandSceneEntryMixin()
             )
         end
 
-        WoWTools_TooltipMixin:CalculatePadding(tooltip)
+        WoWTools_TooltipMixin:Show(tooltip)
     end)
 end

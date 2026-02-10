@@ -229,7 +229,6 @@ local function Get_ValeItem(bag, slot)
                         return info
                     end
                 else
-                                print(info.hyperlink)
                     return info
                 end
             end

@@ -105,12 +105,12 @@ local function Init()
             return
         end
 
-        GameTooltip:AddDoubleLine(
-            'nodeID|cffffffff'..WoWTools_DataMixin.Icon.icon2..info.nodeID,
-            info.slotIndex and 'slotIndex|cffffffff'..WoWTools_DataMixin.Icon.icon2..info.slotIndex
-        )
-
-        WoWTools_TooltipMixin:CalculatePadding()
+        GameTooltip:AddLine('nodeID|cffffffff'..WoWTools_DataMixin.Icon.icon2..info.nodeID)
+        if info.slotIndex then
+            GameTooltip:AddLine('slotIndex|cffffffff'..WoWTools_DataMixin.Icon.icon2..info.slotIndex)
+        end
+        --WoWTools_TooltipMixin:Show()
+        GameTooltip:Show()
     end)
 
     Init=function()end
