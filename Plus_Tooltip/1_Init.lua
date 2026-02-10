@@ -1,27 +1,3 @@
-local P_Save={
-    setDefaultAnchor=true,--指定点
-    --AnchorPoint={},--指定点，位置
-    --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
-
-    setCVar=WoWTools_DataMixin.Player.husandro,
-    ShowOptionsCVarTips=WoWTools_DataMixin.Player.husandro,--显示选项中的CVar
-    inCombatDefaultAnchor=true,
-    ctrl= WoWTools_DataMixin.Player.husandro,--取得网页，数据链接
-
-    --模型
-    modelSize=100,--大小
-    --modelLeft=true,--左边
-    modelX= 0,
-    modelY= -15,
-    modelFacing= -0.3,--方向
-    showModelFileID=WoWTools_DataMixin.Player.husandro,--显示，文件ID
-    --WidgetSetID=848,--自定义，监视 WidgetSetID
-    --disabledNPCcolor=true,--禁用NPC颜色
-    --hideHealth=true,----生命条提示
-    --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体> 12.0移除
-
-    no={}--禁用
-}
 local Layout
 local function Save()
     return WoWToolsSave['Plus_Tootips']
@@ -285,6 +261,16 @@ local function Init_Panel()
     })
 
 
+    WoWTools_PanelMixin:OnlyCheck({
+        name= (WoWTools_DataMixin.onlyChinese and '物品数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, STATUS_TEXT_VALUE))..' mk',
+        tooltip= '1k008',
+        GetValue= function() return Save().showItemMK end,
+        category= WoWTools_TooltipMixin.Category,
+        SetValue= function()
+            Save().showItemMK= not Save().showItemMK and true or nil
+            set_Cursor_Tips()
+        end
+    })
 
 
     WoWTools_PanelMixin:OnlySlider({
@@ -503,10 +489,35 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Tootips']= WoWToolsSave['Plus_Tootips'] or P_Save
+            WoWToolsSave['Plus_Tootips']= WoWToolsSave['Plus_Tootips'] or {
+                setDefaultAnchor=true,--指定点
+                --AnchorPoint={},--指定点，位置
+                --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
+
+                setCVar=WoWTools_DataMixin.Player.husandro,
+                ShowOptionsCVarTips=WoWTools_DataMixin.Player.husandro,--显示选项中的CVar
+                inCombatDefaultAnchor=true,
+                ctrl= WoWTools_DataMixin.Player.husandro,--取得网页，数据链接
+
+                --模型
+                modelSize=100,--大小
+                --modelLeft=true,--左边
+                modelX= 0,
+                modelY= -15,
+                modelFacing= -0.3,--方向
+                showModelFileID=WoWTools_DataMixin.Player.husandro,--显示，文件ID
+                --WidgetSetID=848,--自定义，监视 WidgetSetID
+                --disabledNPCcolor=true,--禁用NPC颜色
+                --hideHealth=true,----生命条提示
+                --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体> 12.0移除
+                showItemMK=WoWTools_DataMixin.Player.husandro,
+                no={}--禁用
+            }
+
+            
             Save().no= Save().no or {}
             WoWTools_TooltipMixin.iconSize= Save().iconSize or 0
-            P_Save= nil
+
 
             WoWTools_TooltipMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
                 name=WoWTools_TooltipMixin.addName,
