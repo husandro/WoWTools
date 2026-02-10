@@ -61,6 +61,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 2_Template\CheckBox.xml
 2_Template\PlayerFrame.xml
 2_Template\ChallengeAffix.xml
+2_Template\Font.xml
 
 ##移动框架, 缩放
 Plus_Move\0a_Setup_Mixin.lua

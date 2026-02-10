@@ -232,7 +232,7 @@ local function Set_Label(label, tab)
         font= label:GetFont()
     end
     label:SetFont(font, tab.size, 'OUTLINE')
-    label:SetTextColor(1,1,1,1)
+    label:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
 end
 
 
@@ -241,46 +241,45 @@ end
 
 
 local function Create_Label(frame, tab)
-    tab= tab or {}
-    if tab.size then
-        tab.size= tab.size + (Save().size or 10)
-    else
-        tab.size= Save().size or 10
+    local h= Save().size or 10
+    local parent= frame
+    if tab then
+        h= (tab.size or 0)+h
+        parent= tab.point or frame
     end
 
-    local font= 'ChatFontNormal'--'SystemFont_Shadow_Small_Outline'
-    local layer= 'OVERLAY'
-
 --右边
-    frame.topRightText= frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.topRightText:SetPoint('TOPRIGHT', tab.point or frame, 2, 1)
-    Set_Label(frame.topRightText, tab)
+    frame.topRightText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.topRightText:SetPoint('TOPRIGHT', parent, 2, 1)
     frame.topRightText:SetJustifyH('RIGHT')
+    frame.topRightText:SetFontHeight(h)
 
-    frame.rightText= frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.rightText:SetPoint('RIGHT', tab.point or frame, 2, 0)
-    Set_Label(frame.rightText, tab)
+    frame.rightText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.rightText:SetPoint('RIGHT', parent, 2, 0)
     frame.rightText:SetJustifyH('RIGHT')
+    frame.rightText:SetFontHeight(h)
 
-    frame.bottomRightText= frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.bottomRightText:SetPoint('BOTTOMRIGHT', tab.point or frame, 2, -1)
-    Set_Label(frame.bottomRightText, tab)
+
+
+    frame.bottomRightText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.bottomRightText:SetPoint('BOTTOMRIGHT', parent, 2, -1)
     frame.bottomRightText:SetJustifyH('RIGHT')
+    frame.bottomRightText:SetFontHeight(h)
 
 --左边
-    frame.topLeftText= frame:CreateFontString(nil, layer, font) --WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.topLeftText:SetPoint('TOPLEFT', tab.point or frame, -2, 1)
-    Set_Label(frame.topLeftText, tab)
+    frame.topLeftText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1) --WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.topLeftText:SetPoint('TOPLEFT', parent, -2, 1)
+    frame.topLeftText:SetFontHeight(h)
 
-    frame.leftText= frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.leftText:SetPoint('LEFT', tab.point or frame, -2, 0)
-    Set_Label(frame.leftText, tab)
+    frame.leftText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.leftText:SetPoint('LEFT', parent, -2, 0)
+    frame.leftText:SetFontHeight(h)
 
-    frame.bottomLeftText=frame:CreateFontString(nil, layer, font)--WoWTools_LabelMixin:Create(frame, labelInfo)
-    frame.bottomLeftText:SetPoint('BOTTOMLEFT', tab.point or frame, -2, -1)
-    Set_Label(frame.bottomLeftText, tab)
+    frame.bottomLeftText=frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.bottomLeftText:SetPoint('BOTTOMLEFT', parent, -2, -1)
+    frame.bottomLeftText:SetFontHeight(h)
 
-    frame.setIDItem=frame:CreateTexture()
+    frame.setIDItem=frame:CreateTexture(nil, 'BORDER')
     frame.setIDItem:SetPoint('TOPLEFT', -4, 4)
     frame.setIDItem:SetPoint('BOTTOMRIGHT', 4, -4)
     frame.setIDItem:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
@@ -686,7 +685,7 @@ local function Get_Info(tab)
                     end
                 end
 
-                if not topLeftText then
+                if not topLeftText or topLeftText=='' then
                     if not dateInfo.red then--装等，提示
                         local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
                         if text then
