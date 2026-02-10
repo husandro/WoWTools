@@ -55,8 +55,7 @@ end
 
 local function Create_Button(btn)
     btn.canClickForOptions= true
-    btn.text=btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
-    btn.text:SetFontHeight(12)
+    btn.text=btn:CreateFontString(nil, 'BORDER', 'ChatFontSmall')
     btn.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
     btn.text:SetShadowOffset(1,-1)
     btn.text:SetPoint('LEFT', btn, 'RIGHT')
@@ -238,7 +237,7 @@ local function Init()
     Button.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '名望列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, JOURNEYS_RENOWN_LABEL, 'List'))
     Button:SetupMenu(Init_Menu)
 
-    Button.text= Button:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
+    Button.text= Button:CreateFontString(nil, 'BORDER', 'ChatFontSmall')
     Button.text:SetPoint('CENTER')
     Button.text:SetShadowOffset(1,-1)
     Button.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())

@@ -456,9 +456,8 @@ local function Create_Button(index)
     end)
 
 
-    btn.text= btn:CreateFontString(nil,'BORDER', 'ChatFontNormal')--WoWTools_LabelMixin:Create(btn)
+    btn.text= btn:CreateFontString(nil,'BORDER', 'ChatFontSmall')--WoWTools_LabelMixin:Create(btn)
     btn.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-    btn.text:SetFontHeight(12)
     btn.text:SetShadowOffset(1,-1)
 
     function btn:settings()

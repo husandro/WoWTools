@@ -640,8 +640,7 @@ end
 
 local function Set_CurrencyButton(btn)
     --btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlight') -- WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-	btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
-	btn.text:SetFontHeight(12)
+	btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontSmall')
 	btn.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
 	btn.text:SetShadowOffset(1,-1)
 
