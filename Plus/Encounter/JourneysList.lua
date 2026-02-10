@@ -176,13 +176,16 @@ local function Init_Menu(self, root)
         Save().name= not Save().name and true or nil
         self:settings()
     end)
-    sub:CreateCheckbox(
+    sub=sub:CreateCheckbox(
         WoWTools_DataMixin:GetExpansionText(WoWTools_DataMixin.ExpansionLevel),
     function()
         return Save().onlyCurVerName
     end, function()
         Save().onlyCurVerName= not Save().onlyCurVerName and true or nil
         self:settings()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅显示' or format(LFG_LIST_CROSS_FACTION, SHOW))
     end)
 
     root:CreateDivider()
