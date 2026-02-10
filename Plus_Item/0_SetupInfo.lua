@@ -396,8 +396,6 @@ local function Get_Info(tab)
     end
 
 
-
-
     itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
 
     local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
