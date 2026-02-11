@@ -488,18 +488,26 @@ local function Init_WidthX2()
 
 --回购
     WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', function()
+        if not MerchantFrame:IsShown() then
+            return
+        end
 
-        local numBuybackItems = GetNumBuybackItems() or 0
         local btn
+        local numBuybackItems = GetNumBuybackItems() or 0
         local numWidth= Save().numWidth or 153
         local moneyAlpha= numWidth<=45 and 0 or 1
         for i = 1, BUYBACK_ITEMS_PER_PAGE do
             btn= _G['MerchantItem'..i]
+
+            if not btn.init_rest then
+                btn:init_rest()
+            end
+
             btn:SetShown(true)
             if i>1 then
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
-            
+
             btn.itemBG:SetShown(numBuybackItems>=i)
 
             _G['MerchantItem'..i..'MoneyFrame']:SetAlpha(moneyAlpha)

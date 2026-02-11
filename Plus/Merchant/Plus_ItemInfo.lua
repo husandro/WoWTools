@@ -186,9 +186,6 @@ end
 
 --物品，信息 WoWTools_ItemMixin
 local function Set_Item_Info()
-    if not MerchantFrame:IsShown() then
-        return
-    end
 
     local numMerchantNumItems= GetMerchantNumItems()
     local numBuybackItems= GetNumBuybackItems()
@@ -358,9 +355,17 @@ local function Init_SetItem_Info()
 
 
 --物品信息
-    WoWTools_DataMixin:Hook('MerchantFrame_UpdateMerchantInfo', Set_Item_Info)
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateMerchantInfo', function()
+        if MerchantFrame:IsShown() then
+            Set_Item_Info()
+        end
+    end)
 
-    WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', Set_Item_Info)
+    WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', function()
+        if MerchantFrame:IsShown() then
+            Set_Item_Info()
+        end
+    end)
 
 
 
