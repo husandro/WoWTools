@@ -365,8 +365,8 @@ local function Init()--好友列表, 初始化
         local alpha= 1
         if Save().Friends[WoWTools_DataMixin.Player.GUID]=='Availabel' then
             if bnetAFK or bnetDND then
-                BNSetAFK(false)
-                BNSetDND(false)
+                C_BattleNet.SetAFK(false)
+                C_BattleNet.SetDND(false)
                 text= format(OptionText, FRIENDS_TEXTURE_ONLINE, WoWTools_DataMixin.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE)
 
             end
@@ -374,14 +374,14 @@ local function Init()--好友列表, 初始化
 
         elseif Save().Friends[WoWTools_DataMixin.Player.GUID]=='Away' then
             if not bnetAFK then
-                BNSetAFK(true)
+                C_BattleNet.SetAFK(true)
                 text= format(OptionText, FRIENDS_TEXTURE_AFK, WoWTools_DataMixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY)
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_AFK)
 
         elseif Save().Friends[WoWTools_DataMixin.Player.GUID]=='DND' then
             if not bnetDND then
-                BNSetDND(true)
+                C_BattleNet.SetDND(true)
                 text= format(OptionText, FRIENDS_TEXTURE_DND, WoWTools_DataMixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY)
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_DND)
