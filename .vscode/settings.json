@@ -3009,7 +3009,8 @@
         "ITEM_COSMETIC_LEARN",
         "VignetteDataProviderMixin",
         "VignettePinBaseMixin",
-        "EVENTTRACE_SECRET_COLOR"
+        "EVENTTRACE_SECRET_COLOR",
+        "CompactRaidFrameManager_OnLoad"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -3024,7 +3025,7 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.22.1\\Annotations\\Core"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.22.2\\Annotations\\Core"
     ],
     "Lua.runtime.unicodeName": true,
     "Lua.type.weakUnionCheck": true,

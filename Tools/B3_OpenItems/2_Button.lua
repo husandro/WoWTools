@@ -320,5 +320,5 @@ end
 
 
 function WoWTools_OpenItemMixin:Init_Button()
-    Init(WoWTools_ToolsMixin:Get_ButtonForName('OpenItems'))
+    Init()
 end
