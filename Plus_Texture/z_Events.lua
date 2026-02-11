@@ -1465,17 +1465,11 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     self:SetFrame(CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerUnitTab, {index=1, alpha=0.3})
     self:SetFrame(CompactRaidFrameManagerDisplayFrameRaidMarkersRaidMarkerGroundTab, {index=1, alpha=0.3})
 
-    --[[print(CompactRaidFrameManager_OnLoad, CompactRaidFrameManager.filterGroupPool)
-    WoWTools_DataMixin:Hook('CompactRaidFrameManager_OnLoad', function()
-        print('CompactRaidFrameManager_OnLoad')
-    end)]]
-
-    if CompactRaidFrameManager.filterGroupPool then--12.01没有了
+    if CompactRaidFrameManager.filterGroupPool then--12.01 没有找到，但数据里有这个
         for btn in CompactRaidFrameManager.filterGroupPool:EnumerateActive() do
             self:HideTexture(btn:GetNormalTexture())
         end
     end
-
 
     hooksecurefunc('CompactRaidFrameManager_UpdateOptionsFlowContainer', function()
 --分隔线

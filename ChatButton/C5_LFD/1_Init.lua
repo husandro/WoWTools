@@ -1,30 +1,22 @@
 
---local addName
-local P_Save={
-    leaveInstance=WoWTools_DataMixin.Player.husandro,--自动离开,指示图标
-    autoROLL= WoWTools_DataMixin.Player.husandro,--自动,战利品掷骰
-    --disabledLootPlus=true 禁用，战利品Plus
-    --hideDontEnterMenu=true 隐藏，不可能副本，列表
-    ReMe=true,--仅限战场，释放，复活
-    autoSetPvPRole=WoWTools_DataMixin.Player.husandro,--自动职责确认， 排副本
-    LFGPlus= WoWTools_DataMixin.Player.husandro,--预创建队伍增强
-    tipsScale=1,--提示内容,缩放
-    sec=5,--时间 timer
-    wow={
-        --['island']=0,
-        --[副本名称]=0,
+
+
+
+
+
+
+
+--[[
+    LFG_CATEGORY_NAMES = {
+        [LE_LFG_CATEGORY_LFD] = LOOKING_FOR_DUNGEON, 地下城查找器1
+        [LE_LFG_CATEGORY_RF] = RAID_FINDER, 团队查找器 3
+        [LE_LFG_CATEGORY_SCENARIO] = SCENARIOS, 场景战役 4
+        [LE_LFG_CATEGORY_LFR] = LOOKING_FOR_RAID, 其他团队 2
+        [LE_LFG_CATEGORY_FLEXRAID] = FLEX_RAID, 弹性团队 5
+        [LE_LFG_CATEGORY_WORLDPVP] = WORLD_PVP, 阿什兰 6
+        [LE_LFG_CATEGORY_BATTLEFIELD] = LFG_CATEGORY_BATTLEFIELD,乱斗 7
     }
-}
-
-
-
-
-
-
-
-
-
-
+]]
 
 local function Init(btn)
     if not btn then
@@ -64,13 +56,14 @@ local function Init(btn)
 
     function btn:set_OnMouseDown()
         if self.dungeonID then
-            if self.type==LE_LFG_CATEGORY_LFD then
+            print(self.dungeonID, self.type)
+            if self.type==LE_LFG_CATEGORY_LFD then--1
                 WoWTools_DataMixin:Call('LFDQueueFrame_SetType', self.dungeonID)
                 WoWTools_DataMixin:Call('LFDQueueFrame_Join')
-            elseif self.type==LE_LFG_CATEGORY_RF then
+            elseif self.type==LE_LFG_CATEGORY_RF then--3
                 WoWTools_DataMixin:Call('RaidFinderQueueFrame_SetRaid', self.dungeonID)
                 WoWTools_DataMixin:Call('RaidFinderQueueFrame_Join')
-            elseif self.type==LE_LFG_CATEGORY_SCENARIO then
+            elseif self.type==LE_LFG_CATEGORY_SCENARIO then--4
 
             end
             self:CloseMenu()
@@ -125,9 +118,21 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['ChatButton_LFD']=  WoWToolsSave['ChatButton_LFD'] or P_Save
-    P_Save= nil
-
+    WoWToolsSave['ChatButton_LFD']=  WoWToolsSave['ChatButton_LFD'] or {
+        leaveInstance=WoWTools_DataMixin.Player.husandro,--自动离开,指示图标
+        autoROLL= WoWTools_DataMixin.Player.husandro,--自动,战利品掷骰
+        --disabledLootPlus=true 禁用，战利品Plus
+        --hideDontEnterMenu=true 隐藏，不可能副本，列表
+        ReMe=true,--仅限战场，释放，复活
+        autoSetPvPRole=WoWTools_DataMixin.Player.husandro,--自动职责确认， 排副本
+        LFGPlus= WoWTools_DataMixin.Player.husandro,--预创建队伍增强
+        tipsScale=1,--提示内容,缩放
+        sec=5,--时间 timer
+        wow={
+            --['island']=0,
+            --[副本名称]=0,
+        }
+    }
     WoWToolsSave['ChatButton_LFD'].sec= WoWToolsSave['ChatButton_LFD'].sec or 5
 
     WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
