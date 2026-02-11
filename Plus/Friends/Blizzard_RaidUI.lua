@@ -38,7 +38,7 @@ local function Init_RaidGroupFrame_Update()
                 local name, _, _, level, _, fileName, _, online, isDead, role, _, combatRole = GetRaidRosterInfo(i)
                 local guid= UnitGUID(unit)
 
-                afkNum= UnitIsAFK(unit) and (afkNum+1) or afkNum
+                afkNum= WoWTools_UnitMixin:UnitIsAFK(unit) and (afkNum+1) or afkNum
                 deadNum= isDead and (deadNum+1) or deadNum
                 notOnlineNum= not online and (notOnlineNum+1) or notOnlineNum
 

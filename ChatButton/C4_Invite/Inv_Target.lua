@@ -34,7 +34,7 @@ local function Init()
         or not WoWTools_UnitMixin:UnitGUID('target')
         or not WoWTools_InviteMixin:Get_Leader()--取得权限
         or UnitInAnyGroup('target')
-        or UnitIsAFK('target')
+        or WoWTools_UnitMixin:UnitIsAFK('target')
         or not UnitIsConnected('target')
         or not UnitIsPlayer('target')
         or not UnitIsFriend('target', 'player')

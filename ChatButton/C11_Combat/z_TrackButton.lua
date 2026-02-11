@@ -198,8 +198,9 @@ local function Init_Date(self)--初始, 数据
     local log= SaveLog()
     local timeTypeText= Save().timeTypeText
 
+
 --AFK时间
-    if UnitIsAFK('player') then
+    if WoWTools_UnitMixin:UnitIsAFK('player') then
         if not OnAFKTime then--AFk时,播放声音
             OnAFKTime= time
             WoWTools_DataMixin:PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音

@@ -103,14 +103,12 @@ local function Create_potFrame(frame)
         end
     end)]]
 
-
-    frame.ToTButton:SetScript('OnEvent', function (self)
-        SetPortraitTexture(self.Portrait, self.target, true)--图像
-    end)
-
     function frame.ToTButton:settings()
         SetPortraitTexture(self.Portrait, self.target, true)--图像
     end
+
+    frame.ToTButton:SetScript('OnEvent', frame.ToTButton.settings)
+
     frame.ToTButton:RegisterUnitEvent('UNIT_TARGET', unit)
     frame.ToTButton:RegisterUnitEvent('UNIT_TARGETABLE_CHANGED', unit)
     frame.ToTButton:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit)
@@ -179,8 +177,9 @@ local function Create_castFrame(frame)
     castFrame:SetScript('OnEvent', function(self, event, arg1)
         if event=='UNIT_SPELLCAST_SENT' and not WoWTools_UnitMixin:UnitIsUnit(self.unit, arg1) then
             return
-        end
+        else
             self:settings()
+        end
     end)
 
     castFrame:SetScript('OnHide', function(self)
@@ -706,7 +705,7 @@ local function Init()--PartyFrame.lua
         return
     end
 
-    PartyFrame.Background:SetWidth(124)--144
+    --PartyFrame.Background:SetWidth(124)--144
 
     --local showPartyFrames = PartyFrame:ShouldShow();
     for i=1, 4 do

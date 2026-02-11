@@ -64,13 +64,11 @@ function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
                         and canaccessvalue(guid)
                         and guid
                         and not UnitInAnyGroup(u)
-                        and not UnitIsAFK(u)
+                        and WoWTools_UnitMixin:UnitIsAFK(u)==false
                         and UnitIsConnected(u)
                         and UnitIsPlayer(u)
                         and UnitIsFriend(u, 'player')
                     then
-
-                                            print(name, guid)
 
                         if not WoWTools_InviteMixin.InvPlateGuid[guid] then
                             C_PartyInfo.InviteUnit(name)

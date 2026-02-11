@@ -73,7 +73,7 @@ local function Init()
 
     Frame:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_FLAGS_CHANGED' then
-            if UnitIsAFK('player') then
+            if WoWTools_UnitMixin:UnitIsAFK('player') then
                 self:set_shown()
             end
 

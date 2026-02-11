@@ -92,7 +92,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateButton(
         '|T'..FRIENDS_TEXTURE_AFK..':0|t'
-        ..(UnitIsAFK('player') and '|cff626262' or '')
+        ..(WoWTools_UnitMixin:UnitIsAFK('player') and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '暂离' or 'AFK'),
     function()
         WoWTools_ChatMixin:SendText(SLASH_CHAT_AFK1)

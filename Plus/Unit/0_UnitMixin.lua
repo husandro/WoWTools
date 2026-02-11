@@ -8,6 +8,13 @@ function WoWTools_UnitMixin:UnitExists(unit)
         return false
     end
 end
+
+function WoWTools_UnitMixin:UnitIsAFK(unit)
+    local isAFK= UnitIsAFK(unit)
+    if canaccessvalue(isAFK) then
+        return isAFK
+    end
+end
 --[[
 function UnitIsPlayer(unit)
     local guid= self:UnitGUID(unit)
@@ -277,7 +284,7 @@ function WoWTools_UnitMixin:GetOnlineInfo(unit)--单位，状态信息
     if self:UnitGUID(unit) then
         if not UnitIsConnected(unit) then
             return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), WoWTools_DataMixin.onlyChinese and '离线' or PLAYER_OFFLINE
-        elseif UnitIsAFK(unit) then
+        elseif WoWTools_UnitMixin:UnitIsAFK(unit) then
             return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK), WoWTools_DataMixin.onlyChinese and '离开' or AFK
         elseif UnitIsGhost(unit) then
             return '|A:poi-soulspiritghost:0:0|a', WoWTools_DataMixin.onlyChinese and '幽灵' or DEAD
