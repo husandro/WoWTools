@@ -85,7 +85,7 @@ local function Init()
         if loot and loot>0 then
             texture= select(4, GetSpecializationInfoByID(loot))
         else
-            texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
+            texture= select(4, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0))
         end
 
         --SetPortraitToTexture(self.texture, texture or 0)

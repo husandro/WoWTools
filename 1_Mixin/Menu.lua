@@ -666,7 +666,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
     local sex= WoWTools_DataMixin.Player.Sex
 
     for specIndex=1, numSpec, 1 do
-        specID, name, _, icon= GetSpecializationInfo(specIndex, false, false, nil, sex)
+        specID, name, _, icon= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil, sex)
 
         sub=root:CreateRadio(
             '|T'..(icon or 0)..':0|t'
@@ -746,7 +746,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
 
         sub:CreateDivider()
         sub:CreateButton(
-            --'|T'..(PlayerUtil.GetSpecIconBySpecID(GetSpecializationInfo(curSpecIndex), sex) or 0)..':0|t'
+            --'|T'..(PlayerUtil.GetSpecIconBySpecID(C_SpecializationInfo.GetSpecializationInfo(curSpecIndex), sex) or 0)..':0|t'
             WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT,
         function()
             SetLootSpecialization(0)

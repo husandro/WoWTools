@@ -26,7 +26,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerSpells()
                     GameTooltip:ClearLines()
                     local specIndex= s:GetParent().specIndex
                     if specIndex then
-                        local specID, name, _, icon= GetSpecializationInfo(specIndex)
+                        local specID, name, _, icon= C_SpecializationInfo.GetSpecializationInfo(specIndex)
                         if specID then
                             GameTooltip:AddDoubleLine(
                                 WoWTools_TextMixin:CN(name),
@@ -44,7 +44,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerSpells()
             end
             local specID, icon, _
             if frame.specIndex then
-                specID, _, _, icon= GetSpecializationInfo(frame.specIndex)
+                specID, _, _, icon= C_SpecializationInfo.GetSpecializationInfo(frame.specIndex)
             end
             frame.specIDLabel:SetText(specID or '')
             frame.specIcon:SetTexture(icon or 0)

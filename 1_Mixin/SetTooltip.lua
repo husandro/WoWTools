@@ -143,7 +143,7 @@ end
 local function Set_Specialization(tooltip, specIndex, specID)
     local name, description, icon, role, primaryStat, roleIcon
     if specIndex then
-        specID, name, description, icon, role, primaryStat= GetSpecializationInfo(specIndex, false, false, nil, WoWTools_DataMixin.Player.Sex)
+        specID, name, description, icon, role, primaryStat= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil, WoWTools_DataMixin.Player.Sex)
         roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false))
 
     elseif specID and specID>0 then

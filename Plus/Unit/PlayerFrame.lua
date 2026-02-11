@@ -131,7 +131,7 @@ local function Create_lootButton(frame)
         local find=false
         if WoWTools_UnitMixin:UnitIsUnit(PlayerFrame.unit, 'player') then
             local currentSpec = GetSpecialization()
-            local specID= currentSpec and GetSpecializationInfo(currentSpec)
+            local specID= currentSpec and C_SpecializationInfo.GetSpecializationInfo(currentSpec)
             if specID then
                 local lootSpecID = GetLootSpecialization()
                 if lootSpecID and lootSpecID>0 and lootSpecID~=specID then
@@ -158,7 +158,7 @@ local function Create_lootButton(frame)
     frame.lootButton:SetScript('OnClick', function()
         SetLootSpecialization(0)
         local currentSpec = GetSpecialization()
-        local specID= currentSpec and GetSpecializationInfo(currentSpec)
+        local specID= currentSpec and C_SpecializationInfo.GetSpecializationInfo(currentSpec)
         local name, _, texture= select(2, GetSpecializationInfoByID(specID or 0))
 
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName,

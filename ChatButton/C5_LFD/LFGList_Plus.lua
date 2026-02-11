@@ -314,7 +314,7 @@ local function Init()--预创建队伍增强
                 if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
                     local specID=GetSpecialization()--当前专精
                     if specID then
-                        local role = select(5, GetSpecializationInfo(specID))
+                        local role = select(5, C_SpecializationInfo.GetSpecializationInfo(specID))
                         if role=='DAMAGER' and frame.DamagerButton:IsShown() then
                             frame.DamagerButton.CheckButton:SetChecked(true)
 

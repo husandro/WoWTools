@@ -72,7 +72,7 @@ local function Init()
         local index= GetSpecialization()--当前专精
         local specID
         if index then
-            local ID, _, _, icon, role = GetSpecializationInfo(index)
+            local ID, _, _, icon, role = C_SpecializationInfo.GetSpecializationInfo(index)
             specID= ID
             if icon then
                 a= '|T'..icon..':0|t'..(WoWTools_DataMixin.Icon[role] or '')

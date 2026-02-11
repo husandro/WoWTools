@@ -17,7 +17,7 @@ local Show_Tooltip={}
 --主属性
 Show_Tooltip.STATUS= function(frame)
     local currentSpec= GetSpecialization() or 0
-    local PrimaryStat= select(6, GetSpecializationInfo(currentSpec, nil, nil, nil, WoWTools_DataMixin.Player.Sex))
+    local PrimaryStat= select(6, C_SpecializationInfo.GetSpecializationInfo(currentSpec, nil, nil, nil, WoWTools_DataMixin.Player.Sex))
 
     local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat)
     local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat or 0)

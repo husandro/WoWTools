@@ -1,23 +1,29 @@
 local function Save()
     return WoWToolsSave['Plus_Spell']
 end
-
-local Category, Layout
-
+local Layout
 
 
-local function Init_Category()
-    Category, Layout= WoWTools_PanelMixin:AddSubCategory({
-        name=WoWTools_SpellMixin.addName,
-        disabled=Save().disabled
-    })
-    WoWTools_SpellMixin.Category= Category
-    
+
+
+local function Init()
+    if not C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_Settings' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+        return
+    end
+
+
+
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
         tooltip= WoWTools_SpellMixin.addName,
         GetValue= function() return not Save().disabled end,
-        category= Category,
+        category= WoWTools_SpellMixin.Category,
         func= function()
             Save().disabled= not Save().disabled and true or nil
             print(
@@ -28,28 +34,6 @@ local function Init_Category()
         end
     })
 
-    Init_Category= function()end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Blizzard_Settings()
-    if not C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-        return
-    end
     WoWTools_PanelMixin:Header(Layout, 'Plus')
 
 --法术弹出框
@@ -57,7 +41,7 @@ local function Blizzard_Settings()
         name= '|A:common-icon-backarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '法术弹出框' or 'SpellFlyout'),
         tooltip= WoWTools_PanelMixin.addName,
         GetValue= function() return Save().flyoutText end,
-        category= Category,
+        category= WoWTools_SpellMixin.Category,
         SetValue= function()
             Save().flyoutText= not Save().flyoutText and true or false
             WoWTools_SpellMixin:Init_Spell_Flyout()
@@ -77,7 +61,7 @@ local function Blizzard_Settings()
         name= '|A:UI-HUD-ActionBar-Interrupt:0:0|a'..(WoWTools_DataMixin.onlyChinese and '动作条颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACTIONBARS_LABEL, COLOR)),
         tooltip= WoWTools_PanelMixin.addName,
         GetValue= function() return Save().actionButtonRangeColor end,
-        category= Category,
+        category= WoWTools_SpellMixin.Category,
         SetValue= function()
             Save().actionButtonRangeColor= not Save().actionButtonRangeColor and true or false
             WoWTools_SpellMixin:Init_ActionButton_UpdateRange()--法术按键, 颜色
@@ -97,7 +81,7 @@ local function Blizzard_Settings()
         name= '|A:talents-node-choiceflyout-circle-greenglow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Button')),
         tooltip= WoWTools_PanelMixin.addName,
         GetValue= function() return Save().specButton.enabled end,
-        category= Category,
+        category= WoWTools_SpellMixin.Category,
         SetValue= function()
             Save().specButton.enabled= not Save().specButton.enabled and true or false
             WoWTools_SpellMixin:Init_Spec_Button()
@@ -117,7 +101,7 @@ local function Blizzard_Settings()
         name= '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '天赋' or TALENT),
         tooltip= WoWTools_PanelMixin.addName,
         GetValue= function() return Save().talentsFramePlus end,
-        category= Category,
+        category= WoWTools_SpellMixin.Category,
         SetValue= function()
             Save().talentsFramePlus= not Save().talentsFramePlus and true or false
             WoWTools_SpellMixin:Init_TalentsFrame()
@@ -137,7 +121,7 @@ local function Blizzard_Settings()
         name= '|A:spellbook-item-iconframe:0:0|a'..(WoWTools_DataMixin.onlyChinese and '法术书' or SPELLBOOK),
         tooltip= WoWTools_PanelMixin.addName,
         GetValue= function() return Save().spellBookPlus end,
-        category= Category,
+        category= WoWTools_SpellMixin.Category,
         SetValue= function()
             Save().spellBookPlus= not Save().spellBookPlus and true or false
             WoWTools_SpellMixin:Init_SpellBookFrame()
@@ -155,7 +139,7 @@ local function Blizzard_Settings()
 
 
 
-    Blizzard_Settings=function()end
+    Init=function()end
 end
 
 
@@ -172,8 +156,14 @@ end
 
 
 function WoWTools_SpellMixin:Init_Options()
-    Init_Category()
-    Blizzard_Settings()
+    if not Layout then
+        WoWTools_SpellMixin.Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+            name=WoWTools_SpellMixin.addName,
+            disabled=Save().disabled
+        })
+    end
+
+    Init()
 end
      --[[添加控制面板
      WoWTools_PanelMixin:OnlyCheck({

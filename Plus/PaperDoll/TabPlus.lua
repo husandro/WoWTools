@@ -47,7 +47,7 @@ local function Get_EquipmentSet()
             end
             local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(v)
             if specIndex then
-                local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
+                local _, specName2, _, icon3 = C_SpecializationInfo.GetSpecializationInfo(specIndex)
                 specName= specName2
                 if icon3 then
                     specIcon=icon3

@@ -1,41 +1,43 @@
-
-
 --法术按键, 颜色 ActionButton.lua
-local function set_ActionButton_UpdateRangeIndicator(frame, checksRange, inRange)
-    if not frame.setHooksecurefunc and frame.UpdateUsable then
-        WoWTools_DataMixin:Hook(frame, 'UpdateUsable', function(self)--, _, isUsable)
-            if C_ActionBar.IsUsableAction(self.action) and C_ActionBar.HasRangeRequirements(self.action) and C_ActionBar.IsActionInRange(self.action)==false then
-                self.icon:SetVertexColor(1,0,0)
-            end
-        end)
-        frame.setHooksecurefunc= true
-    end
-
-    if ( frame.HotKey:GetText() == RANGE_INDICATOR ) then
-        if ( checksRange ) then
-            if ( inRange ) then
-                if frame.UpdateUsable then
-                    frame:UpdateUsable()
-                end
-            else
-                frame.icon:SetVertexColor(1,0,0)
-            end
-        end
-    else
-        if ( checksRange and not inRange ) then
-            frame.icon:SetVertexColor(1,0,0)
-        elseif frame.UpdateUsable then
-            frame:UpdateUsable()
-        end
-    end
-
-end
-
-
-
-
 local function Init()
-    WoWTools_DataMixin:Hook('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
+    if not WoWToolsSave['Plus_Spell'].actionButtonRangeColor then
+        return
+    end
+
+    WoWTools_DataMixin:Hook('ActionButton_UpdateRangeIndicator', function(frame, checksRange, inRange)
+        if not canaccessvalue(checksRange) then
+            return
+        end
+
+        if not frame.setHooksecurefunc and frame.UpdateUsable then
+            WoWTools_DataMixin:Hook(frame, 'UpdateUsable', function(self)
+                if C_ActionBar.IsUsableAction(self.action) and C_ActionBar.HasRangeRequirements(self.action) and C_ActionBar.IsActionInRange(self.action)==false then
+                    self.icon:SetVertexColor(1,0,0)
+                end
+            end)
+            frame.setHooksecurefunc= true
+        end
+
+        if ( frame.HotKey:GetText() == RANGE_INDICATOR ) then
+            if ( checksRange ) then
+                if ( inRange ) then
+                    if frame.UpdateUsable then
+                        frame:UpdateUsable()
+                    end
+                else
+                    frame.icon:SetVertexColor(1,0,0)
+                end
+            end
+        else
+            if ( checksRange and not inRange ) then
+                frame.icon:SetVertexColor(1,0,0)
+            elseif frame.UpdateUsable then
+                frame:UpdateUsable()
+            end
+        end
+    end)
+
+
     Init=function()end
 end
 
@@ -44,7 +46,5 @@ end
 
 
 function WoWTools_SpellMixin:Init_ActionButton_UpdateRange()--法术按键, 颜色
-    if WoWToolsSave['Plus_Spell'].actionButtonRangeColor then
-        Init()
-    end
+    Init()
 end

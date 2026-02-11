@@ -29,7 +29,7 @@ local function Init()
         local text=''
         local specIndex= GetSpecialization()
         if specIndex then
-            local specID= GetSpecializationInfo(specIndex)
+            local specID= C_SpecializationInfo.GetSpecializationInfo(specIndex)
             if specID then
                 local specTab= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
                 for _, spellID in pairs (specTab) do

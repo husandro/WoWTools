@@ -79,7 +79,7 @@ local function Init()--快速加入, 初始化 QuickJoin.lua
                     if not frame2.TankButton.CheckButton:GetChecked() and not frame2.HealerButton.CheckButton:GetChecked() and not frame2.DamagerButton.CheckButton:GetChecked() then
                         local specID=GetSpecialization()--当前专精
                         if specID then
-                            local role = select(5, GetSpecializationInfo(specID))
+                            local role = select(5, C_SpecializationInfo.GetSpecializationInfo(specID))
                             if role=='DAMAGER' and frame2.DamagerButton:IsShown() then
                                 frame2.DamagerButton.CheckButton:SetChecked(true)
 
@@ -138,7 +138,7 @@ local function Init()--快速加入, 初始化 QuickJoin.lua
         if not t3 and not h3 and not dps3 then
             local sid=GetSpecialization()
             if sid and sid>0 then
-                local role = select(5, GetSpecializationInfo(sid))
+                local role = select(5, C_SpecializationInfo.GetSpecializationInfo(sid))
                 if role=='TANK' then
                     t:Click()
                 elseif role=='HEALER' then

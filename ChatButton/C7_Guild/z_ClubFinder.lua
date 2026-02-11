@@ -39,7 +39,7 @@ local function set_RequestToJoinFrame(frame)
     local text2
     if frame.SpecsPool then--专精，职责，图标，自动选取当前专精
         local _, name, _, icon, role
-        local currSpecID= GetSpecializationInfo(GetSpecialization() or 0)
+        local currSpecID= C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0)
 
         for btn in frame.SpecsPool:EnumerateActive() do
             local check= not currSpecID or currSpecID==btn.specID

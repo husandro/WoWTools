@@ -1,5 +1,5 @@
 local function Save()
-    return WoWToolsSave['Plus_Spell']
+    return WoWToolsSave['Plus_Spell'].specButton
 end
 
 
@@ -43,62 +43,64 @@ local function Init_Spec_Menu(self, root)
 --SetParent
     sub2=sub:CreateCheckbox(
         (PlayerSpellsFrame and '' or '|cff828282')
-        ..(WoWTools_DataMixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON),
+        ..'UIParent',--..(WoWTools_DataMixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON),
     function()
-        return not Save().specButton.isUIParent
+        return Save().isUIParent
     end, function()
-        Save().specButton.isUIParent= not Save().specButton.isUIParent and true or nil
+        Save().isUIParent= not Save().isUIParent and true or nil
         SpecFrame:Settings()
         SpecFrame:set_point()
-        return MenuResponse.Close
+        --return MenuResponse.Close
     end)
     sub2:SetTooltip(function(tooltip)
-        local isUIParent= Save().specButton.isUIParent
+        local isUIParent= Save().isUIParent
         tooltip:AddLine('SetParent')
         tooltip:AddDoubleLine(' ',  (isUIParent and '|cnGREEN_FONT_COLOR:' or '').. 'UIParent')
         tooltip:AddDoubleLine(' ', (isUIParent and '' or '|cnGREEN_FONT_COLOR:').. 'PlayerSpellsFrame')
+
+        tooltip:AddLine(' ')
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    if Save().specButton.isUIParent then
+
 
 --向上
         WoWTools_MenuMixin:ToTop(self, sub2, {GetValue=function()
-            return Save().specButton.isToTOP
+            return Save().isToTOP
         end, SetValue=function ()
-            Save().specButton.isToTOP= not Save().specButton.isToTOP and true or nil
+            Save().isToTOP= not Save().isToTOP and true or nil
             SpecFrame:Settings()
 
         end})
 
---FrameStrata
-        WoWTools_MenuMixin:FrameStrata(self, sub2, function(data)
-            return SpecFrame:GetFrameStrata()==data
-        end, function(data)
-            Save().specButton.strata= data
-            SpecFrame:set_strata()
-        end)
+
 
 --战斗中隐藏
         sub2:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '战斗中隐藏'
             or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, HIDE),
         function()
-            return Save().specButton.hideInCombat
+            return Save().hideInCombat
         end, function()
-            Save().specButton.hideInCombat= not Save().specButton.hideInCombat and true or nil
+            Save().hideInCombat= not Save().hideInCombat and true or nil
             SpecFrame:Settings()
         end)
-    end
 
 
-
+--FrameStrata
+        WoWTools_MenuMixin:FrameStrata(self, sub2, function(data)
+            return SpecFrame:GetFrameStrata()==data
+        end, function(data)
+            Save().strata= data
+            SpecFrame:set_strata()
+        end)
 
 --    sub:CreateDivider()
 --缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save().specButton.scale or 1
+    WoWTools_MenuMixin:Scale(self, sub2, function()
+        return Save().scale or 1
     end, function(value)
-        Save().specButton.scale= value
+        Save().scale= value
         SpecFrame:Settings()
     end)
 
@@ -123,14 +125,36 @@ end
 
 
 
+
+
+
+
+
+
+
 local function Create_Spec_Button(index)
-    local specID, name, _, texture= GetSpecializationInfo(index, false, false, nil, WoWTools_DataMixin.Player.Sex)
-    local btn= WoWTools_ButtonMixin:Cbtn(SpecFrame, {
+    local specID, name, _, texture= C_SpecializationInfo.GetSpecializationInfo(index, false, false, nil, WoWTools_DataMixin.Player.Sex)
+    if not specID or specID==-1 then
+        return
+    end
+
+    SpecFrame.Buttons[index]= CreateFrame('Button', 'WoWToolsPlayerSpellsFrameSpecButton'..index, SpecFrame, 'WoWToolsButtonTemplate', index)
+
+
+    local btn= SpecFrame.Buttons[index]
+
+    btn:SetSize(32,32)
+    btn:SetNormalTexture(texture or 0)
+    WoWTools_ButtonMixin:AddMask(btn, false)
+    --btn:SetClampedToScreen(true)
+    --table.insert(SpecFrame.Buttons, btn)
+
+    --[[local btn= WoWTools_ButtonMixin:Cbtn(SpecFrame, {
         texture= texture,
         name='WoWToolsPlayerSpellsFrameSpecButton'..index,
         size=32,
         isMask=true,
-    })
+    })]]
 
     btn.specIndex= index
     btn.specID= specID
@@ -165,7 +189,7 @@ local function Create_Spec_Button(index)
 
 
     btn:RegisterForDrag("RightButton")
-    btn:SetScript('OnDragStart', function(self, d)
+    btn:SetScript('OnDragStart', function(_, d)
         if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(SpecFrame) and SpecFrame:IsMovable() then
             SpecFrame:StartMoving()
         end
@@ -176,8 +200,8 @@ local function Create_Spec_Button(index)
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().specButton.point= {self:GetPoint(1)}
-            Save().specButton.point[2]= nil
+            Save().point= {self:GetPoint(1)}
+            Save().point[2]= nil
         end
     end)
 
@@ -193,9 +217,10 @@ local function Create_Spec_Button(index)
     end)
 
 
-    btn:SetScript('OnLeave', function()
+    btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         ResetCursor()
+        self:set_alpha()
     end)
     btn:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {
@@ -218,8 +243,16 @@ local function Create_Spec_Button(index)
                 end
             end
         })
+        self:set_alpha()
     end)
 
+
+    function btn:set_alpha()
+        self:SetAlpha(
+            (self:IsMouseOver() or self.isActive) and 1
+            or 0.5
+        )
+    end
 
     function btn:settings()
         local spec= GetSpecialization(nil, false, 1)
@@ -233,6 +266,7 @@ local function Create_Spec_Button(index)
 
         self.SelectIcon:SetShown(isActive)
 
+
         if isLoot then
             if lootID==0 then
                 self.LootIcon:SetVertexColor(0,1,0)
@@ -241,13 +275,13 @@ local function Create_Spec_Button(index)
             end
         end
         self.LootIcon:SetShown(isLoot)
+        self:set_alpha()
     end
+
     btn:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
     btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
     btn:SetScript('OnEvent',  btn.settings)
     btn:settings()
-
-    table.insert(SpecFrame.Buttons, btn)
 end
 
 
@@ -270,12 +304,16 @@ end
 
 --天赋，添加专精按钮
 local function Init()
-    local numSpec= GetNumSpecializations(false, false) or 0
-    if numSpec==0 or (not Save().specButton.isUIParent and not PlayerSpellsFrame) then--not C_SpecializationInfo.IsInitialized() or
+    if not Save().enabled then
         return
     end
 
-    SpecFrame= CreateFrame('Frame', 'WoWToolsOtherSpecFrame', Save().specButton.isUIParent and UIParent or PlayerSpellsFrame)
+    local numSpec= GetNumSpecializations(false, false) or 0
+    if numSpec==0 or (not Save().isUIParent and not PlayerSpellsFrame) then--not C_SpecializationInfo.IsInitialized() or
+        return
+    end
+
+    SpecFrame= CreateFrame('Frame', 'WoWToolsOtherSpecFrame', Save().isUIParent and UIParent or PlayerSpellsFrame)
     SpecFrame:SetSize(10,10)
 
     SpecFrame.numSpec= numSpec
@@ -288,8 +326,8 @@ local function Init()
 
 
     function SpecFrame:Settings()
-        local isToTOP= Save().specButton.isToTOP
-        local isUIParent= Save().specButton.isUIParent
+        local isToTOP= Save().isToTOP
+        local isUIParent= Save().isUIParent
         for index, btn in pairs(self.Buttons) do
             btn:ClearAllPoints()
             if isToTOP and isUIParent then
@@ -297,13 +335,13 @@ local function Init()
             else
                 btn:SetPoint('TOPLEFT', self.Buttons[index-1] or self, 'TOPRIGHT', 1, 0)
             end
+            btn:SetClampedToScreen(isUIParent and true or false)
         end
 
 
 
         self:SetMovable(isUIParent and true or false)
-        self:SetClampedToScreen(isUIParent and true or false)
-        self:SetScale(Save().specButton.scale or 1)
+        self:SetScale(Save().scale or 1)
 
         if isUIParent then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -315,17 +353,19 @@ local function Init()
     end
 
     function SpecFrame:set_strata()
-        self:SetFrameStrata(Save().specButton.strata or 'MEDIUM')
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
     end
 
     function SpecFrame:set_point()
         self:ClearAllPoints()
 
-        if Save().specButton.isUIParent then
-            local p= Save().specButton.point
+        if Save().isUIParent then
+            local p= Save().point
             self:SetParent(UIParent)
             if p and p[1] then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+            elseif WoWTools_DataMixin.Player.husandro then
+                self:SetPoint('BOTTOMLEFT', PlayerFrame, 'TOPLEFT', 0, 20)
             else
                 self:SetPoint('CENTER', UIParent, -150, 150)
             end
@@ -339,14 +379,13 @@ local function Init()
             print(
                 WoWTools_SpellMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnGREEN_FONT_COLOR:'
-                ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-            )
+                ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             )
         end
     end
 
     SpecFrame:SetScript('OnEvent', function(self, event)
-        local hide= Save().specButton.hideInCombat
+        local hide= Save().hideInCombat
         local show= event=='PLAYER_REGEN_ENABLED'
         if hide then
             self:SetShown(show)
@@ -378,7 +417,5 @@ end
 
 
 function WoWTools_SpellMixin:Init_Spec_Button()
-    if Save().specButton.enabled then
-        Init()
-    end
+    Init()
 end

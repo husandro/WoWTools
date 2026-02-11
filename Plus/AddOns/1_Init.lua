@@ -17,8 +17,8 @@ local P_Save={
         }, [WoWTools_DataMixin.Player.husandro and '副本' or INSTANCE]={
             ['BugSack']=true,
             ['!BugGrabber']=true,
-            ['WeakAuras']=true,
-            ['WeakAurasOptions']=true,
+            --['WeakAuras']=true,
+            --['WeakAurasOptions']=true,
             ['Details']=true,
             ['DBM-Core']=true,
             ['DBM-Challenges']=true,
@@ -29,8 +29,8 @@ local P_Save={
     fast={
         ['TextureAtlasViewer']=true,
         ['WoWTools']=true,
-        ['WeakAuras']=true,
-        ['WeakAurasOptions']=true,
+        --['WeakAuras']=true,
+        --['WeakAurasOptions']=true,
     },
     enableAllButtn= WoWTools_DataMixin.Player.husandro,--全部禁用时，不禁用本插件
 

@@ -858,7 +858,7 @@ end
 local function Init_All_Role(_, root)
     local sub, isLeader, isTank, isHealer, isDPS, tank, healer, dps
     local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
-    local cursorRole = select(5, GetSpecializationInfo(GetSpecialization() or 0))
+    local cursorRole = select(5, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0))
 
     sub=root:CreateButton('PvE', function()
         PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame)
@@ -1114,7 +1114,7 @@ local function Init_Menu(self, root)
     sub:CreateTitle(
         (WoWTools_DataMixin.onlyChinese and '战场' or BATTLEFIELDS)
         ..(tank and WoWTools_DataMixin.Icon.TANK or '')
-        ..(healer and WoWTools_DataMixin.Icon.TANK or '')
+        ..(healer and WoWTools_DataMixin.Icon.HEALER or '')
         ..(dps and WoWTools_DataMixin.Icon.DAMAGER or '')
     )
 

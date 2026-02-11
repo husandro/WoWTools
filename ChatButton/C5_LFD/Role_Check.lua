@@ -20,7 +20,7 @@ local function Set_PvERoles()
     end
 
 
-    local role = select(5, GetSpecializationInfo(GetSpecialization() or 0))
+    local role = select(5, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0))
     if role=='TANK' then
         isTank, isHealer, isDPS=true, false, false
     elseif role=='HEALER' then
@@ -49,7 +49,7 @@ local function Set_PvPRoles()--检测是否选定角色pvp
 
     local sid=GetSpecialization()
     if sid then
-        local role = select(5, GetSpecializationInfo(sid))
+        local role = select(5, C_SpecializationInfo.GetSpecializationInfo(sid))
         if role then
             if role=='TANK' then
                 tank, healer, dps = true, false, false
@@ -230,7 +230,7 @@ local function Init()
         local btn2
 
         local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
-        local role = select(5, GetSpecializationInfo(GetSpecialization() or 0))
+        local role = select(5, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0))
         if role=='DAMAGER' and canBeDamager then
             btn2= RolePollPopupRoleButtonDPS
             icon= WoWTools_DataMixin.Icon['DAMAGER']

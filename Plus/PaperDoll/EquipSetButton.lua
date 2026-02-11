@@ -228,7 +228,7 @@ local function Create_Button(btn)
         local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)
         local specName
         if specIndex then
-            local _, specName2, _, icon3, role = GetSpecializationInfo(specIndex)
+            local _, specName2, _, icon3, role = C_SpecializationInfo.GetSpecializationInfo(specIndex)
             if specName2 then
                 specName='|T'..(icon3 or 0)..':0|t'
                     ..(WoWTools_DataMixin.Icon[role] or '')
@@ -284,7 +284,7 @@ end
         numItems= numItems or 0
 
         self.spec:SetTexture(
-            specIndex and select(4, GetSpecializationInfo(specIndex))
+            specIndex and select(4, C_SpecializationInfo.GetSpecializationInfo(specIndex))
             or 0
         )
 
