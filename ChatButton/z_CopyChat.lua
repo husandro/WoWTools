@@ -20,16 +20,6 @@ end
 local Init_Button
 local addName
 
---[[local JunkTabs={}
-for _, name in pairs({--. ( ) + - * ? [ ^
-	D_DAYS,--"%d|4天:天;";
-	D_HOURS,--"%d|4小时:小时;";
-	D_MINUTES,--"%d|4分钟:分钟;";
-	D_SECONDS,--"%d|4秒:秒;";
-}) do
-	JunkTabs[name:gsub('%%d', '%(%%d%+%)')]= {name:match('|4(.-):(.-);')}
-end]]
-
 
 
 local function Init_AllButton()
@@ -44,71 +34,13 @@ end
 
 
 
---[[local function createBnetString(id, msg)
-	id = tonumber(id)
-	local totalBNFriends = BNGetNumFriends()
-	for friendIndex = 1, totalBNFriends do
-		local presenceID, tag
-		local data = C_BattleNet.GetFriendAccountInfo(friendIndex)
-		if (data) then
-			presenceID = data.bnetAccountID
-			tag = data.battleTag
-		end
-		if (tag and id == presenceID) then
-			tag = strsplit("#", tag)
-			return gsub(msg, "|HBNplayer:.*:.*:.*:BN_WHISPER:.*:", "[" .. tag .. "]:")
-		end
-	end
-	return msg
-end
-
-
-local function removeChatJunk(currentMsg)
-	if currentMsg=='' then
-		return currentMsg
-	end
-
-	for text, tab in pairs(JunkTabs) do
-		local chatNumber = string.match(currentMsg, text)
-		local number= chatNumber and tonumber(chatNumber)
-		if number then
-			if number == 0 then
-				currentMsg = string.gsub(currentMsg, text, chatNumber..tab[1])
-			elseif (number > 1) then
-				currentMsg = string.gsub(currentMsg, text, chatNumber..tab[2])
-			end
-		end
-	end
-
-	currentMsg = string.gsub(currentMsg, "|T.-|t", "")
-	currentMsg = string.gsub(currentMsg, "|A.-|a", "")
-
-	return currentMsg
-end]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---frame.fontStringPool:EnumerateActive()
 
 local function Get_Text(frame)
 	local tab={}
 	local index= frame:GetID() or 1
 	local numMessage= frame:GetNumMessages() or 0
-	--local isSetText= Save().isSetText--不处理，文本
 
 	for i = 1, numMessage do
-		--local msg, r, g, b = frame:GetMessageInfo(i)
 		local msg= frame:GetMessageInfo(i)
 		if not canaccessvalue(msg) then
 			table.insert(tab, EVENTTRACE_SECRET_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and "显示机密数值" or EVENTTRACE_SHOW_SECRET_VALUES))
@@ -120,64 +52,15 @@ local function Get_Text(frame)
 				table.insert(tab, msg)
 			end
 		end
-		--[[if canaccessvalue(msg) then
-			if msg then
-				local t= msg
-				local c= select(2, t:gsub('|c', '')) + select(2, t:gsub('|cn', ''))- select(2, t:gsub('|r', ''))
-				if c>0 then
-					msg= msg..string.rep('|r', c)
-				end
-				if r and g and b then
-					local color= CreateColor(r,g,b)
-					msg= color:WrapTextInColorCode(msg)
-				end
-				table.insert(tab, msg)
-			end
-		else
-			table.insert(tab, msg)
-		end]]
 	end
 
 	local tabFrame= _G['ChatFrame'..index..'Tab']
 	WoWTools_TextMixin:ShowText(
 		tab,
 		(tabFrame and tabFrame:GetText() or (WoWTools_DataMixin.onlyChinese and '聊天' or CHAT))
-		..' '..index..' |cffffffff#'.. numMessage
+		..' |cffffffff#'.. numMessage
 	)
 end
-
-
-		--currentMsg= currentMsg or ''
-
-		--[[if isSetText then--处理，文本
-
-			local colorCode = false
-			currentMsg = removeChatJunk(currentMsg)
-
-			if (string.match(currentMsg, "k:(%d+):(%d+):BN_WHISPER:")) then
-				local presenceID = string.match(currentMsg, "k:(%d+):%d+:BN_WHISPER:")
-				currentMsg = createBnetString(presenceID, currentMsg)
-			end
-
-			if (r and g and b and chatTypeID) then
-				colorCode = RGBToColorCode(r, g, b)
-				currentMsg = string.gsub(currentMsg, "|r", "|r" .. colorCode)
-				currentMsg = colorCode .. currentMsg
-			end
-
-			if (string.find(currentMsg, GUILD_MOTD_LABEL2)) then--GUILD_MOTD_LABEL2 公会今日信息
-				currentMsg = RGBTableToColorCode(ChatTypeInfo.GUILD) .. currentMsg
-			end
-		end
-
-		currentMsg= tostring(currentMsg)]]
-
-
-
-
-
-
-
 
 
 
@@ -234,15 +117,13 @@ local function Init_Menu(self, root)
 		..(index==2 and '|cnWARNING_FONT_COLOR:' or  (num==0 and '|cff606060') or '')
 		..(WoWTools_DataMixin.onlyChinese and '复制聊天' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_COPY_EVENT, CHAT))
 		..' '..num,
-
 	function()
 		Get_Text(self)
 		return MenuResponse.Open
-	end)--, {rightText=num})
+	end)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(name..' #|cffffffff'..num)
 	end)
-	--WoWTools_MenuMixin:SetRightText(sub)
 
 --选项
 	sub:CreateCheckbox(
@@ -253,15 +134,6 @@ local function Init_Menu(self, root)
 		Save().isShowButton= not Save().isShowButton and true or false
 		Init_AllButton()
 	end)
-
---[[处理文本
-	sub:CreateCheckbox(
-		WoWTools_DataMixin.onlyChinese and '处理文本' or 'Processing text',
-	function()
-			return Save().isSetText
-	end, function()
-		Save().isSetText= not Save().isSetText and true or nil
-	end)]]
 
 --聊天记录
 	sub:CreateDivider()
@@ -331,7 +203,6 @@ local function Init_Menu(self, root)
 				WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT,
 				WoWTools_TextMixin:GetYesNo(not canaccessvalue(desc.data.msg))
 			))
-			
 		end)
 		WoWTools_MenuMixin:SetRightText(sub3)
 	end
