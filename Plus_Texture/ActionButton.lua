@@ -141,13 +141,10 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     WoWTools_ColorMixin:SetLabelColor(MainActionBar.ActionBarPageNumber.Text)
 
     if MainActionBar.EndCaps then
-        if WoWTools_DataMixin.Player.husandro then
-            MainActionBar.EndCaps.LeftEndCap:Hide()
-            MainActionBar.EndCaps.RightEndCap:Hide()
-        else
-            self:SetAlphaColor(MainActionBar.EndCaps.LeftEndCap, true, nil, nil)
-            self:SetAlphaColor(MainActionBar.EndCaps.RightEndCap, true, nil, nil)
-        end
+        self:SetAlphaColor(MainActionBar.EndCaps.LeftEndCap, true, nil, nil)
+        self:SetAlphaColor(MainActionBar.EndCaps.RightEndCap, true, nil, nil)
+        MainActionBar.EndCaps.LeftEndCap:Hide()
+        MainActionBar.EndCaps.RightEndCap:Hide()
     end
     self:SetAlphaColor(MainActionBar.BorderArt, nil, nil, 0)
 
