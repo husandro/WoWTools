@@ -176,10 +176,14 @@ local function Get_Button_Text(event)
 
 
     elseif ( event.calendarType == "RAID_LOCKOUT" ) then
-        title= format(
-            CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType],
-            GetDungeonNameWithDifficulty(title, event.difficultyName)
-        )
+        if canaccessvalue(event.sequenceType) then
+            title= format(
+                CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType],
+                GetDungeonNameWithDifficulty(title, event.difficultyName)
+            )
+        else
+            title= GetDungeonNameWithDifficulty(title, event.difficultyName)
+        end
         atlas='worldquest-icon-raid'
 
     elseif event.calendarType=='HOLIDAY' then
@@ -538,14 +542,19 @@ local function Set_Text(monthOffset, day)
             local event = C_Calendar.GetDayEvent(monthOffset, day, i);
             if event and event.title then
                 local isValid
-                if (event.sequenceType == "ONGOING") then
-                    event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month, event.startTime.year), FormatShortDate(event.endTime.monthDay, event.endTime.month, event.endTime.year));
-                    isValid=true
-                elseif (event.sequenceType == "END") then
-                    event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
+                if canaccessvalue(event.sequenceType) then
+                    if (event.sequenceType == "ONGOING") then
+                        event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month, event.startTime.year), FormatShortDate(event.endTime.monthDay, event.endTime.month, event.endTime.year));
+                        isValid=true
+                    elseif (event.sequenceType == "END") then
+                        event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
+                    else
+                        event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.startTime.hour, event.startTime.minute, true), event.startTime.hour, event.startTime.minute, true)
+                    end
                 else
                     event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.startTime.hour, event.startTime.minute, true), event.startTime.hour, event.startTime.minute, true)
                 end
+                
 
                 if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)
                     or not isToDay--今天
@@ -566,10 +575,12 @@ local function Set_Text(monthOffset, day)
             end
         end
         table.sort(events, function(a, b)
-            if ((a.sequenceType == "ONGOING") ~= (b.sequenceType == "ONGOING")) then
-                return a.sequenceType ~= "ONGOING";
-            elseif (a.sequenceType == "ONGOING" and a.sequenceIndex ~= b.sequenceIndex) then
-                return a.sequenceIndex > b.sequenceIndex;
+            if canaccessvalue(b.sequenceType) and canaccessvalue(a.sequenceType) then
+                if ((a.sequenceType == "ONGOING") ~= (b.sequenceType == "ONGOING")) then
+                    return a.sequenceType ~= "ONGOING";
+                elseif (a.sequenceType == "ONGOING" and a.sequenceIndex ~= b.sequenceIndex) then
+                    return a.sequenceIndex > b.sequenceIndex;
+                end
             end
             if (a.startTime.hour ~= b.startTime.hour) then
                 return a.startTime.hour < b.startTime.hour;
