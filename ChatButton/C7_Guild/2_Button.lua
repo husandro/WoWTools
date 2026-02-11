@@ -116,8 +116,8 @@ local function Init()
     function btn:set_new_application(isInit)
         local isInviete, isMessage= false, false
         local clubs= C_ClubFinder.IsEnabled() and C_Club.GetSubscribedClubs()
-        if clubs then
-            for _, data in pairs(clubs or {}) do
+        if canaccesstable(clubs) and clubs then
+            for _, data in pairs(clubs) do
                 if not isInviete and WoWTools_GuildMixin:GetApplicantList(data.clubId) then
                     isInviete=true
 

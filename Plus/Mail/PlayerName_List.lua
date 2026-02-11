@@ -332,18 +332,21 @@ local function Init_Menu(_, root)
     Init_Guild(sub)
 
 --社区
-    for _, tab in pairs(C_Club.GetSubscribedClubs() or {}) do
-        if tab.clubId and tab.clubType ~= Enum.ClubType.Guild then
-            sub=root:CreateButton(
-                (tab.avatarId==1
-                    and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
-                    or ('|T'..(tab.avatarId or 0)..':0|t')
-                )
-                ..(tab.shortName or tab.name),
-            function()
-                return MenuResponse.Open
-            end)
-            Init_Club(sub, tab.clubId)
+    local clubs= C_Club.GetSubscribedClubs()
+    if canaccesstable(clubs) and clubs then
+        for _, tab in pairs(clubs) do
+            if tab.clubId and tab.clubType ~= Enum.ClubType.Guild then
+                sub=root:CreateButton(
+                    (tab.avatarId==1
+                        and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
+                        or ('|T'..(tab.avatarId or 0)..':0|t')
+                    )
+                    ..(tab.shortName or tab.name),
+                function()
+                    return MenuResponse.Open
+                end)
+                Init_Club(sub, tab.clubId)
+            end
         end
     end
 

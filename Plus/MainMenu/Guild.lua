@@ -29,21 +29,25 @@ local function Init()
         self.Text:SetText((online and online>1) and online-1 or '')
 
         online=0
-        local guildClubId= C_Club.GetGuildClubId()
-        for _, tab in pairs(C_Club.GetSubscribedClubs() or {}) do
-            local members= C_Club.GetClubMembers(tab.clubId) or {}
-            if tab.clubId~=guildClubId then
-                for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
-                    local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
-                    if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
-                        online= online+1
+
+        local clubs= C_Club.GetSubscribedClubs()
+        if canaccesstable(clubs) and clubs then
+            local guildClubId= C_Club.GetGuildClubId()
+            for _, tab in pairs(clubs) do
+                local members= C_Club.GetClubMembers(tab.clubId) or {}
+                if tab.clubId~=guildClubId then
+                    for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
+                        local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
+                        if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
+                            online= online+1
+                        end
                     end
                 end
             end
         end
         self.Text2:SetText(online>0 and online or '')
     end
-    
+
     local COMMUNITIES_LIST_EVENTS = {
         "CLUB_ADDED",
         "CLUB_REMOVED",

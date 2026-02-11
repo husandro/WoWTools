@@ -55,7 +55,7 @@ local function Set_Aura()--光环取消
     for i = 1, 255 do
         local data=C_UnitAuras.GetAuraDataByIndex('player', i, 'HELPFUL')
         if data then
-            if Save().aura[data.spellId] then
+            if canaccessvalue(data.spellId) and Save().aura[data.spellId] then
                 CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
                 print(addName,
                     WoWTools_DataMixin.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS),
