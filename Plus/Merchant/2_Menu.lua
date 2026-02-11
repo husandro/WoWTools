@@ -150,7 +150,11 @@ end
 
 
 --购买物品
-local function BuyItem_Menu(_, root)
+local function BuyItem_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
     local num, sub, sub2
     num=''
     if _G['WoWTools_BuyItemButton'] then
@@ -237,7 +241,7 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-    
+
     local sub, sub2, num
 
 --自动出售垃圾
@@ -343,7 +347,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().addButtonMenu= not Save().addButtonMenu and true or nil
     end)]]
-    
+
 
 
 --回购

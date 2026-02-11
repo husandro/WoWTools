@@ -5,6 +5,9 @@ local function Save()
 end
 
 function WoWTools_MerchantMixin:Update_MerchantFrame()
+    if not MerchantFrame:IsShown() then
+        return
+    end
     if MerchantFrame.selectedTab == 2 then
         WoWTools_DataMixin:Call('MerchantFrame_UpdateBuybackInfo')
     else

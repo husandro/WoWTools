@@ -29,13 +29,12 @@ MAX_MERCHANT_CURRENCIES = 6;
 
 
 local function Create_Lable(btn)
-    if btn.itemBG then
-        return
-    end
-
     local name= btn:GetName()
 
-    _G[name..'NameFrame']:SetTexture(0)
+    if _G[name..'NameFrame'] then
+        _G[name..'NameFrame']:SetTexture(0)
+    end
+
     btn.ItemButton.NormalTexture:SetTexture(0)
     btn.SlotTexture:SetTexture(0)
 
@@ -83,7 +82,7 @@ local function Create_Lable(btn)
     end)
 
     --btn:HookScript('OnHide', function(self)
-    function btn:init_reset()
+    function btn:init_rest()
         self.ItemButton:Reset()
         self.ItemButton.price = nil
         self.ItemButton.hasItem = nil
@@ -97,26 +96,43 @@ end
 
 
 
+--隐藏，多余
+local function Hide_OtherButton(PER_PAGE)
+    local index= (PER_PAGE +1) * 2--多加点，可能与其它插件冲突
+
+    local btn= _G['MerchantItem'..index]
+    while btn do
+        if not btn.init_rest then
+            Create_Lable(btn)
+        end
+        btn:init_rest()
+        btn:SetShown(false)
+        index= index+1
+        btn= _G['MerchantItem'..index]
+    end
+end
+
+
 --创建，设置，按钮
 local function Create_ItemButton()
     local width= Save().numWidth or 153
     local bgAlpha= Save().btnBgAlpha or 1
     local btnNameScale= Save().btnNameScale or 1
-    for i= 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do--建立，索引，文本
+    local maxNum= math.max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE)
+    for i= 1, maxNum do--建立，索引，文本
         local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'..i, MerchantFrame, 'MerchantItemTemplate', i)
-        Create_Lable(btn)
-
+        if not btn.init_rest then
+            Create_Lable(btn)
+        end
         btn:SetWidth(width)
         btn.itemBG:SetAlpha(bgAlpha)
         btn.Name:SetScale(btnNameScale)
     end
 
-    local index= MERCHANT_ITEMS_PER_PAGE+1
-    while _G['MerchantItem'..index] do--隐藏，多余
-        _G['MerchantItem'..index]:SetShown(false)
-        index= index+1
-    end
+--隐藏，多余
+    Hide_OtherButton(maxNum)
 end
+
 
 
 
@@ -174,11 +190,6 @@ local function Size_Update()
 
     local numMerchantItems = GetMerchantNumItems()
     MerchantPageText:SetText(MerchantFrame.page..'/'..math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
-    --[[MerchantPageText:SetFormattedText(
-        WoWTools_DataMixin.onlyChinese and '页数 %s/%s' or MERCHANT_PAGE_NUMBER,
-        MerchantFrame.page,
-        math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE)
-    )]]
 
     -- Handle paging buttons
     if ( numMerchantItems > MERCHANT_ITEMS_PER_PAGE ) then
@@ -207,7 +218,7 @@ end
 
 --增加，按钮宽度，按钮，菜单
 local function ResizeButton2_Menu(self, root)
-    if not MerchantFrame.ResizeButton2 then
+    if not MerchantFrame.ResizeButton2 or not self:IsMouseOver() then
         return
     end
 
@@ -405,6 +416,9 @@ local function Init_WidthX2()
 
 --出售，卖
     WoWTools_DataMixin:Hook('MerchantFrame_UpdateMerchantInfo', function()
+        if not MerchantFrame:IsShown() then
+            return
+        end
         local numMerchantItems= GetMerchantNumItems()
         local index, info, btn
         local curNum= 0
@@ -414,6 +428,10 @@ local function Init_WidthX2()
             btn= _G['MerchantItem'..i]
             index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
 
+            if not btn.init_rest then
+                btn:init_rest()
+            end
+
             if index <= numMerchantItems then
                 info = C_MerchantFrame.GetItemInfo(index);
                 btn:SetShown(true)
@@ -421,7 +439,7 @@ local function Init_WidthX2()
                 btn.itemBG:SetShown(info)--Texture.lua
                 curNum= curNum+1
             else
-                btn:init_reset()
+                btn:init_rest()
                 btn:SetShown(false)
             end
 
@@ -451,14 +469,7 @@ local function Init_WidthX2()
         MerchantFrame:SetSize(max(w, 336), max(h, 444))
 
 --隐藏，多余
-        index= MERCHANT_ITEMS_PER_PAGE+1
-        btn= _G['MerchantItem'..index]
-        while btn do
-            btn:SetShown(false)
-            btn:init_reset()
-            index= index+1
-            btn= _G['MerchantItem'..index]
-        end
+        Hide_OtherButton(MERCHANT_ITEMS_PER_PAGE)
 
         MerchantPageText:SetText(MerchantFrame.page..'/'..math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
 
@@ -477,6 +488,7 @@ local function Init_WidthX2()
 
 --回购
     WoWTools_DataMixin:Hook('MerchantFrame_UpdateBuybackInfo', function()
+
         local numBuybackItems = GetNumBuybackItems() or 0
         local btn
         local numWidth= Save().numWidth or 153
@@ -487,6 +499,7 @@ local function Init_WidthX2()
             if i>1 then
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
+            
             btn.itemBG:SetShown(numBuybackItems>=i)
 
             _G['MerchantItem'..i..'MoneyFrame']:SetAlpha(moneyAlpha)
@@ -501,14 +514,8 @@ local function Init_WidthX2()
         MerchantFrame:SetSize(width, 444)
 
 --隐藏，多余
-        local index= BUYBACK_ITEMS_PER_PAGE+1
-        btn= _G['MerchantItem'..index]
-        while btn do
-            btn:SetShown(false)
-            btn:init_reset()
-            index= index+1
-            btn= _G['MerchantItem'..index]
-        end
+        Hide_OtherButton(BUYBACK_ITEMS_PER_PAGE)
+
         if MerchantFrame.ResizeButton then
             MerchantFrame.ResizeButton.setSize=nil
         end

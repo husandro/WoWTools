@@ -186,6 +186,10 @@ end
 
 --物品，信息 WoWTools_ItemMixin
 local function Set_Item_Info()
+    if not MerchantFrame:IsShown() then
+        return
+    end
+
     local numMerchantNumItems= GetMerchantNumItems()
     local numBuybackItems= GetNumBuybackItems()
 

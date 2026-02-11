@@ -2259,8 +2259,14 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     end
 
 --物品
-    self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeUnassignedButton.NormalTexture)
-    self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypeEquippedButton.NormalTexture)
+    if TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypes then--12.01才有
+        self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypes.DisplayTypeUnassignedButton.NormalTexture)
+        self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypes.DisplayTypeEquippedButton.NormalTexture)
+    else
+        self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypes.DisplayTypeUnassignedButton.NormalTexture)
+        self:HideTexture(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.DisplayTypes.DisplayTypeEquippedButton.NormalTexture)
+    end
+
     self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.ItemsFrame.Divider, true)
     WoWTools_DataMixin:Hook(TransmogItemModelMixin, 'OnLoad', function(frame)
         self:HideTexture(frame.Background)
