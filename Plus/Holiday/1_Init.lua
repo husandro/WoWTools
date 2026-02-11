@@ -2,13 +2,7 @@
 
 WoWTools_HolidayMixin={}
 
-local P_Save={
-    onGoing=true,--仅限: 正在活动
-    --disabled= not WoWTools_DataMixin.Player.husandro
-    --left=WoWTools_DataMixin.Player.husandro,--内容靠左
-    --toTopTrack=true,--向上
-    --showDate= true,--时间
-}
+
 
 local function Save()
     return WoWToolsSave['Plus_Holiday']
@@ -70,8 +64,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Holiday']= WoWToolsSave['Plus_Holiday'] or P_Save
-            P_Save=nil
+            WoWToolsSave['Plus_Holiday']= WoWToolsSave['Plus_Holiday'] or {
+                onGoing=true,--仅限: 正在活动
+                disabled= not WoWTools_DataMixin.Player.husandro
+                --left=WoWTools_DataMixin.Player.husandro,--内容靠左
+                --toTopTrack=true,--向上
+                --showDate= true,--时间
+            }
 
             WoWTools_HolidayMixin.addName= '|A:GarrisonTroops-Health:0:0|a'..(WoWTools_DataMixin.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)
 
