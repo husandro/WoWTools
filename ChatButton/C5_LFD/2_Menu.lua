@@ -266,7 +266,7 @@ local function Init_Follower_Specific_Menu(root, listType)--追随者，副本
                     ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
 
                 function(data)
-                    
+
                     if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
                         WoWTools_DataMixin:Call('LeaveSingleLFG', LE_LFG_CATEGORY_LFD, data.dungeonID)
                     else

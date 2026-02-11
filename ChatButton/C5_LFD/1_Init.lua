@@ -18,6 +18,89 @@
     }
 ]]
 
+
+--节日, 提示, button.texture
+--[[local canTank, canHealer, canDamage = C_LFGList.GetAvailableRoles()--额外 奖励
+for shortageIndex=1, LFG_ROLE_NUM_SHORTAGE_TYPES or 3 do--3
+    local eligible, forTank, forHealer, forDamage, itemCount= GetLFGRoleShortageRewards(dungeonID, shortageIndex)
+    if eligible and itemCount~=0 and (forTank and canTank or forHealer and canHealer or forDamage and canDamage) then
+        atlas= format('groupfinder-icon-role-large-%s', forTank and 'tank' or forHealer and 'heal' or 'dps')
+        break
+    end
+end]]
+local function Check_Holiday(dungeonIndex)
+    local dungeonID, name = GetLFGRandomDungeonInfo(dungeonIndex)
+    if not dungeonID or not name then
+        return
+    end
+
+    local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(dungeonID)
+    if not isAvailableForAll or not isAvailableForPlayer then
+        return
+    end
+
+    local isHoliday, _, _, isTimeWalker = select(14, GetLFGDungeonInfo(dungeonID))
+    if not isHoliday and not isTimeWalker then
+        return
+    end
+
+--奖励物品
+    local numRewards = select(6, GetLFGDungeonRewards(dungeonID)) or 0
+    if numRewards==0 then
+        return
+    end
+
+    local texturePath
+    for rewardIndex=1 , numRewards do
+        local _, texture, _, isBonusReward, rewardType= GetLFGDungeonRewardInfo(dungeonID, rewardIndex)
+        if texture then
+            if rewardType == "currency"
+                or rewardType=='item'
+                or (isBonusReward and not texturePath)
+            then
+                texturePath= texture
+                break
+            end
+        end
+    end
+
+    if texturePath then
+        return dungeonID, name, texturePath
+    end
+end
+
+
+
+
+
+local function Set_Holiday()
+    local dungeonID, name, texture, atlas
+    local group= IsInGroup()
+
+    if group and UnitIsGroupLeader('player') or not group then
+        for dungeonIndex=1, GetNumRandomDungeons() do
+            dungeonID, name, texture= Check_Holiday(dungeonIndex)
+            if dungeonID then
+                break
+            end
+        end
+    end
+
+    local categoryType= dungeonID and LE_LFG_CATEGORY_LFD or nil
+
+    WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, categoryType, WoWTools_TextMixin:CN(name), texture,  atlas)--设置图标
+end
+
+
+
+
+
+
+
+
+
+
+
 local function Init(btn)
     if not btn then
         return
@@ -25,9 +108,6 @@ local function Init(btn)
 
     btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 5, -5)
     btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -7, 7)
-
-    --btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
-    --btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
 
     --自动离开,指示图标
     btn.leaveInstance=btn:CreateTexture(nil, 'ARTWORK', nil, 1)
@@ -45,18 +125,15 @@ local function Init(btn)
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(self.name..WoWTools_DataMixin.Icon.left)
         end
-        if _G['WoWToolsChatToolsLFDTooltipButton'] then
+        --[[if _G['WoWToolsChatToolsLFDTooltipButton'] then
             _G['WoWToolsChatToolsLFDTooltipButton']:SetButtonState('PUSHED')
-        end
+        end]]
         GameTooltip:Show()
     end
 
-    WoWTools_LFDMixin:Init_Menu(btn)
-
-
     function btn:set_OnMouseDown()
         if self.dungeonID then
-            print(self.dungeonID, self.type)
+            --print(self.dungeonID, self.type)
             if self.type==LE_LFG_CATEGORY_LFD then--1
                 WoWTools_DataMixin:Call('LFDQueueFrame_SetType', self.dungeonID)
                 WoWTools_DataMixin:Call('LFDQueueFrame_Join')
@@ -74,14 +151,17 @@ local function Init(btn)
     end
 
 
-    function btn:set_OnLeave()
+    --[[function btn:set_OnLeave()
         if _G['WoWToolsChatToolsLFDTooltipButton'] then
            _G['WoWToolsChatToolsLFDTooltipButton']:SetButtonState('NORMAL')
         end
-    end
+    end]]
+
+     EventRegistry:RegisterFrameEventAndCallback("LFG_UPDATE_RANDOM_INFO", Set_Holiday)
+    C_Timer.After(2, Set_Holiday)
 
 
-
+    WoWTools_LFDMixin:Init_Menu(btn)
 
 
 
@@ -92,8 +172,7 @@ local function Init(btn)
     WoWTools_LFDMixin:Init_RolePollPopup()
     WoWTools_LFDMixin:Init_Exit_Instance()--离开副本
     WoWTools_LFDMixin:Init_LFG_Plus()--
-    WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息    
-    WoWTools_LFDMixin:Init_Holiday()--节日, 提示, button.texture
+    WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息
     WoWTools_LFDMixin:Init_RepopMe()--释放, 复活
 
     Init=function()end

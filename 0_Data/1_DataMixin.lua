@@ -20,8 +20,8 @@ WoWTools_DataMixin= {
 
     StausText={},--属性，截取表 API_Panel.lua
     UnitItemLevel={},
-    Language={},--
-    ClientSceneType= nil, 
+    Language={},
+    ClientSceneType= nil,
 }
 
 

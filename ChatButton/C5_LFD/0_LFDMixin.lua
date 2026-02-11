@@ -91,15 +91,16 @@ end
 
 
 
+
 --设置图标, 点击,提示
-function WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, type, name, texture, atlas)
+function WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, categoryType, name, texture, atlas)
     local btn= WoWTools_ChatMixin:GetButtonForName('LFD')
     if not btn then
         return
     end
     btn.dungeonID=dungeonID
     btn.name=name
-    btn.type=type--LE_LFG_CATEGORY_LFD LE_LFG_CATEGORY_RF LE_LFG_CATEGORY_SCENARIO
+    btn.type=categoryType--LE_LFG_CATEGORY_LFD LE_LFG_CATEGORY_RF LE_LFG_CATEGORY_SCENARIO
     if atlas then
         btn.texture:SetAtlas(atlas)
     elseif texture then

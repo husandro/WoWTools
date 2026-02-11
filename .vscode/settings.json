@@ -3010,7 +3010,9 @@
         "VignetteDataProviderMixin",
         "VignettePinBaseMixin",
         "EVENTTRACE_SECRET_COLOR",
-        "CompactRaidFrameManager_OnLoad"
+        "CompactRaidFrameManager_OnLoad",
+        "CATEGORY",
+        "EDIT_MODE_MODERN_SYSTEM_MAP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

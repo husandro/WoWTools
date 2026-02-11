@@ -7,44 +7,12 @@ WoWTools_MailMixin={}
 end]]
 
 
-
-
-local P_Save={
-    --hide=true,--隐藏
-    --hideUIPlus=true,
-    --hideSendNameList=true,
-    --hideHistoryList=true,
-    --hideItemButtonList=true
-
-    --notAutoToSendFrame=true,--自动转到，收件箱
-    --autoToSendFrameSecond=1,
-
-    lastSendPlayerList= {},--历史记录, {'名字-服务器',},
-    --hideSendPlayerList=true,--隐藏，历史记录
-    lastMaxSendPlayerList=20,--记录, 最大数
-    show={--显示离线成员
-        ['FRIEND']=true,--好友
-        --['GUILD']=true,--公会
-    },
-    fast={},--快速，加载，物品，指定玩家
-    fastShow=true,--显示/隐藏，快速，加载，按钮
-    --CtrlFast= WoWTools_DataMixin.Player.husandro,--Ctrl+RightButton,快速，加载，物品
-    --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
-    scaleFastButton=1.3,
-    --INBOXITEMS_TO_DISPLAY=7,
-    logSendInfo= WoWTools_DataMixin.Player.husandro,--隐藏时不,清除，内容
-    --lastSendPlayer='Fuocco-server',--收件人
-    --lastSendSub=主题
-    --lastSendBody=内容
-}
-
-
 local function Save()
     return WoWToolsSave['Plus_Mail']
 end
 
 
-
+--[[
 local function Is_Sandro()
     if not WoWTools_DataMixin.Player.husandro or #Save().lastSendPlayerList~=0 then
         return
@@ -80,7 +48,7 @@ local function Is_Sandro()
         }
         Save().fast={}
     end
-end
+end]]
 
 
 
@@ -172,15 +140,6 @@ end
 
 
 
-local function set_to_send()
-    
-end
-
-
-
-
-
-
 
 
 
@@ -249,9 +208,34 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Mail']= WoWToolsSave['Plus_Mail'] or P_Save
-            Save().INBOXITEMS_TO_DISPLAY= nil
-            P_Save= nil
+            WoWToolsSave['Plus_Mail']= WoWToolsSave['Plus_Mail'] or {
+                --hide=true,--隐藏
+                --hideUIPlus=true,
+                --hideSendNameList=true,
+                --hideHistoryList=true,
+                --hideItemButtonList=true
+
+                --notAutoToSendFrame=true,--自动转到，收件箱
+                --autoToSendFrameSecond=1,
+
+                lastSendPlayerList= {},--历史记录, {'名字-服务器',},
+                --hideSendPlayerList=true,--隐藏，历史记录
+                lastMaxSendPlayerList=20,--记录, 最大数
+                show={--显示离线成员
+                    ['FRIEND']=true,--好友
+                    --['GUILD']=true,--公会
+                },
+                fast={},--快速，加载，物品，指定玩家
+                fastShow=true,--显示/隐藏，快速，加载，按钮
+                --CtrlFast= WoWTools_DataMixin.Player.husandro,--Ctrl+RightButton,快速，加载，物品
+                --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
+                scaleFastButton=1.3,
+                --INBOXITEMS_TO_DISPLAY=7,
+                logSendInfo= WoWTools_DataMixin.Player.husandro,--隐藏时不,清除，内容
+                --lastSendPlayer='Fuocco-server',--收件人
+                --lastSendSub=主题
+                --lastSendBody=内容
+            }
 
             WoWTools_MailMixin.addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
 

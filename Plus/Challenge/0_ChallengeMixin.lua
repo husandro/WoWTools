@@ -31,7 +31,7 @@ end
 
 local function GetActivities()
     local R = {}
-    for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
+    for  _, info in pairs( C_WeeklyRewards.GetActivities() or {}) do
         if info.type and info.type>0 and info.level then--and info.type>= 1 and info.type<= 3
             local head
             local difficultyText
@@ -96,14 +96,16 @@ end
 
 
 function WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)
-    if not WoWTools_DataMixin.Player.IsMaxLevel and not WoWTools_DataMixin.Player.husandro then--不是，最高等级时，退出
+    if (not WoWTools_DataMixin.Player.IsMaxLevel or PlayerIsTimerunning())--不是，最高等级时，退出
+        and not WoWTools_DataMixin.Player.husandro
+    then
         return
     end
 
     tooltip= tooltip or GameTooltip
     local find
     for head, tab in pairs(GetActivities()) do
-        tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..head)
+        tooltip:AddLine('|cnNORMAL_FONT_COLOR:|A:common-icon-rotateright:0:0|a'..head)
         for index, info in pairs(tab) do
             if info.unlocked then
                 local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
@@ -122,10 +124,10 @@ function WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)
         end
         find=true
     end
-
+--local rating, seasonBest, weeklyBest, seasonPlayed, seasonWon, weeklyPlayed, weeklyWon, lastWeeksBest, hasWon, pvpTier, ranking, roundsSeasonPlayed, roundsSeasonWon, roundsWeeklyPlayed, roundsWeeklyWon = GetPersonalRatedInfo(1)
     local CONQUEST_SIZE_STRINGS = {'', '2v2', '3v3', '10v10'}--PVP
     for i = 2, 4 do
-        local rating, seasonBest, weeklyBest, seasonPlayed, seasonWon, weeklyPlayed, weeklyWon, lastWeeksBest, hasWon, pvpTier, ranking, roundsSeasonPlayed, roundsSeasonWon, roundsWeeklyPlayed, roundsWeeklyWon = GetPersonalRatedInfo(1)
+        local rating, seasonBest, _, seasonPlayed, seasonWon, _, _, _, _, pvpTier = GetPersonalRatedInfo(1)
         local tierInfo = pvpTier and C_PvP.GetPvpTierInfo(pvpTier)
         if tierInfo and rating then
             seasonBest= seasonBest or 0
@@ -139,7 +141,9 @@ function WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)
                 end
                 text= ' ('..best..'|cnGREEN_FONT_COLOR:'..seasonWon..'|r/'..seasonPlayed..')'
             end
-            text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff626262' or ' |cffffffff')..rating..'|r' ..text
+            text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')
+                ..NORMAL_FONT_COLOR:WrapTextInColorCode(CONQUEST_SIZE_STRINGS[i])
+                ..(rating==0 and ' |cff626262' or ' |cffffffff')..rating..'|r' ..text
             tooltip:AddLine(text)
             find=true
         end
@@ -147,8 +151,6 @@ function WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)
 
     return find
 end
-
-
 
 
 

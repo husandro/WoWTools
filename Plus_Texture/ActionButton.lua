@@ -141,8 +141,13 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
     WoWTools_ColorMixin:SetLabelColor(MainActionBar.ActionBarPageNumber.Text)
 
     if MainActionBar.EndCaps then
-        self:SetAlphaColor(MainActionBar.EndCaps.LeftEndCap, true, nil, nil)
-        self:SetAlphaColor(MainActionBar.EndCaps.RightEndCap, true, nil, nil)
+        if WoWTools_DataMixin.Player.husandro then
+            MainActionBar.EndCaps.LeftEndCap:Hide()
+            MainActionBar.EndCaps.RightEndCap:Hide()
+        else
+            self:SetAlphaColor(MainActionBar.EndCaps.LeftEndCap, true, nil, nil)
+            self:SetAlphaColor(MainActionBar.EndCaps.RightEndCap, true, nil, nil)
+        end
     end
     self:SetAlphaColor(MainActionBar.BorderArt, nil, nil, 0)
 
@@ -157,8 +162,7 @@ end
 
 
 
-
-
+--EDIT_MODE_MODERN_SYSTEM_MAP[Enum.EditModeSystem.ActionBar][Enum.EditModeActionBarSystemIndices.MainBar].settings[Enum.EditModeActionBarSetting.HideBarArt]=1
 
 
 

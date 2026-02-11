@@ -565,7 +565,6 @@ ChatButton\C5_LFD\0_LFDMixin.lua
 ChatButton\C5_LFD\1_Init.lua
 ChatButton\C5_LFD\2_Menu.lua
 ChatButton\C5_LFD\Exit_Instance.lua
-ChatButton\C5_LFD\Hooliday.lua
 ChatButton\C5_LFD\LFGList_Plus.lua
 ChatButton\C5_LFD\Loot_Plus.lua
 ChatButton\C5_LFD\Queue_Status.lua
