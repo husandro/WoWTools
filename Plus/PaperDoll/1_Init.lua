@@ -283,8 +283,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_PaperDoll']= WoWToolsSave['Plus_PaperDoll'] or {
-
-
                 StatusPlus_OnEnter_show_menu=true,--移过图标时，显示菜单
                 itemLevelBit= 1,--物品等级，位数
                 itemSlotScale=1, --栏位，按钮，缩放
@@ -292,7 +290,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 EquipSet={--装备管理，数据
                     disabled= not WoWTools_DataMixin.Player.husandro,
                     itemLevel= WoWTools_DataMixin.Player.husandro,
-                }
+                },
+
+                flyoutScale= WoWTools_DataMixin.Player.husandro and 1.5 or nil,
             }
 
             if not Save().EquipSet then--旧数据
