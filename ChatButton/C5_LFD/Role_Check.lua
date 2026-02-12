@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['ChatButton_LFD'] or {}
+    return WoWToolsSave['ChatButton_LFD']
 end
 
 
@@ -10,58 +10,49 @@ end
 
 
 local function Set_PvERoles()
-    if not Save().autoSetPvPRole then
-        return
+    local isTank, isHealer, isDPS = select(2, GetLFGRoles())--检测是否选定角色pve
+
+    if Save().autSetRole or not (isTank or isHealer or isDPS) then
+        local role = select(5, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0))
+        if role=='TANK' then
+            isTank, isHealer, isDPS=true, false, false
+        elseif role=='HEALER' then
+            isTank, isHealer, isDPS=false, true, false
+        elseif role=='DAMAGER' then
+            isTank, isHealer, isDPS=false, false ,true
+        else
+            isTank, isHealer, isDPS=true, true, true
+        end
+
+        SetLFGRoles(true , isTank, isHealer, isDPS)
     end
-
-    local _, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
-    if isTank or isHealer or isDPS then
-        return
-    end
-
-
-    local role = select(5, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0))
-    if role=='TANK' then
-        isTank, isHealer, isDPS=true, false, false
-    elseif role=='HEALER' then
-        isTank, isHealer, isDPS=false, true, false
-    elseif role=='DAMAGER' then
-        isTank, isHealer, isDPS=false, false ,true
-    else
-        isTank, isHealer, isDPS=true, true, true
-    end
-
-
-    SetLFGRoles(true , isTank, isHealer, isDPS)
 end
 
+
+
+
+
 local function Set_PvPRoles()--检测是否选定角色pvp
-    if not Save().autoSetPvPRole then
-        return
-    end
-
     local tank, healer, dps = GetPVPRoles()
-    if  tank or healer or not dps then
-        return
-    end
 
-    tank, healer, dps=true,true,true
-
-    local sid=GetSpecialization()
-    if sid then
-        local role = select(5, C_SpecializationInfo.GetSpecializationInfo(sid))
-        if role then
-            if role=='TANK' then
-                tank, healer, dps = true, false, false
-            elseif role=='HEALER' then
-                tank, healer, dps= false, true, false
-            elseif role=='DAMAGER' then
-                tank, healer, dps= false, false,true
+    if Save().autSetRole or not (tank or healer or dps) then
+        tank, healer, dps= true,true,true
+        local sid=GetSpecialization()
+        if sid then
+            local role = select(5, C_SpecializationInfo.GetSpecializationInfo(sid))
+            if role then
+                if role=='TANK' then
+                    tank, healer, dps = true, false, false
+                elseif role=='HEALER' then
+                    tank, healer, dps= false, true, false
+                elseif role=='DAMAGER' then
+                    tank, healer, dps= false, false,true
+                end
             end
         end
-    end
 
-    SetPVPRoles(tank, healer, dps)
+        SetPVPRoles(tank, healer, dps)
+    end
 end
 
 --StaticPopupTimeoutSec = 60
@@ -95,6 +86,11 @@ end
 
 
 local function Init()
+    if not Save().autSetRole then
+        return
+    end
+
+
     PVPReadyDialog:HookScript('OnShow', function(self)
         WoWTools_DataMixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
@@ -156,7 +152,7 @@ local function Init()
         self.onShowTime= GetTime()
 
         WoWTools_DataMixin:PlaySound()--播放, 声音
-        if not Save().autoSetPvPRole or IsModifierKeyDown() then
+        if IsModifierKeyDown() then
             return
         end
 
@@ -176,16 +172,16 @@ local function Init()
 
             '|cnGREEN_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL)
-            ..': |cfff00fff'.. SecondsToTime(Save().sec)..'|r '
+            ..': |cfff00fff'.. SecondsToTime(Save().sec or 5)..'|r '
             ..(WoWTools_DataMixin.onlyChinese and '接受' or ACCEPT)..'|r',
 
             '|cnWARNING_FONT_COLOR:'..'Alt '
             ..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
         )
 
-        self:CancellORSetTime(Save().sec)
+        self:CancellORSetTime(Save().sec or 5)
 
-        self.acceptTime= C_Timer.NewTimer(Save().sec, function()
+        self.acceptTime= C_Timer.NewTimer(Save().sec or 5, function()
             if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
                 local t=LFDRoleCheckPopupDescriptionText:GetText()
                 if t~='' then
@@ -222,7 +218,7 @@ local function Init()
 --职责确认 RolePoll.lua
     WoWTools_DataMixin:Hook('RolePollPopup_Show', function(self)
         WoWTools_DataMixin:PlaySound()--播放, 声音
-        if not Save().autoSetPvPRole or IsModifierKeyDown() or InCombatLockdown() then
+        if IsModifierKeyDown() or InCombatLockdown() then
             return
         end
 
@@ -246,8 +242,8 @@ local function Init()
         if btn2 then
             btn2.checkButton:SetChecked(true)
             WoWTools_DataMixin:Call('RolePollPopupRoleButtonCheckButton_OnClick', btn2.checkButton, btn2)
-            WoWTools_CooldownMixin:Setup(self, nil, Save().sec, nil, true)--冷却条
-            self.aceTime=C_Timer.NewTimer(Save().sec, function()
+            WoWTools_CooldownMixin:Setup(self, nil, Save().sec or 5, nil, true)--冷却条
+            self.aceTime=C_Timer.NewTimer(Save().sec or 5, function()
                 if self.acceptButton:IsEnabled()
                     and self:IsShown()
                     and not IsMetaKeyDown()
@@ -506,27 +502,31 @@ local function Init()
 
 
 
-
-
-
-
-
-    C_Timer.After(2, function()
-        Set_PvERoles()
-        Set_PvPRoles()
-
---确定，进入副本
-        if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
-            StaticPopupSpecial_Show(LFGDungeonReadyPopup)
-            WoWTools_DataMixin:Call('LFGDungeonReadyPopup_Update')
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function(owner, arg1)
+        if arg1=='player' and Save().autSetRole then
+            Set_PvERoles()
+            Set_PvPRoles()
         end
     end)
 
 
 
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
+        Set_PvERoles()
+        Set_PvPRoles()
 
+--确定，进入副本
+            if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
+                StaticPopupSpecial_Show(LFGDungeonReadyPopup)
+                WoWTools_DataMixin:Call('LFGDungeonReadyPopup_Update')
+            end
+        EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
+    end)
 
-    Init=function()end
+    Init=function()
+        Set_PvERoles()
+        Set_PvPRoles()
+    end
 end
 
 

@@ -904,6 +904,7 @@ local function Init_All_Role(_, root)
         end
     end
 
+
     sub=root:CreateButton('PvP', function()
         PVEFrame_ToggleFrame("GroupFinderFrame", RaidFinderFrame)
         return MenuResponse.Open
@@ -951,7 +952,24 @@ local function Init_All_Role(_, root)
         end
     end
 
-    root:SetGridMode(MenuConstants.VerticalGridDirection, 2)
+    sub=root:CreateCheckbox(
+        (WoWTools_DataMixin.onlyChinese and '自动设置' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, SETTINGS))
+        ..'|A:'..(select(5, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0)) or '')..':0:0|a',
+    function()
+        return Save().autSetRole
+    end, function()
+        Save().autSetRole= not Save().autSetRole and true or nil
+        WoWTools_LFDMixin:Init_RolePollPopup()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅用于当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)
+    end)
+    root:CreateSpacer()
+    root:CreateSpacer()
+    root:CreateSpacer()
+    root:CreateSpacer()
+
+    root:SetGridMode(MenuConstants.VerticalGridDirection, 3)
 
 end
 
@@ -1098,6 +1116,10 @@ local function Init_Menu(self, root)
         return Save().autoSetPvPRole
     end, function()
         Save().autoSetPvPRole= not Save().autoSetPvPRole and true or nil
+        WoWTools_LFDMixin:Init_RolePollPopup()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --职责，可选列表

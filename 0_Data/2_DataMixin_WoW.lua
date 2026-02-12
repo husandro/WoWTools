@@ -620,6 +620,7 @@ end)
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_EQUIPMENT_CHANGED", function()
     WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 end)
+
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function()
     WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 end)

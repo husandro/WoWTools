@@ -127,9 +127,9 @@ local function Init_Frame()
                 print(
                     WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND),
-                    SecondsToTime(Save().sec)
+                    SecondsToTime(Save().sec or 5)
                 )
-                C_Timer.After(Save().sec, function()
+                C_Timer.After(Save().sec or 5, function()
                     if not IsModifierKeyDown() then
                         if IsInLFDBattlefield() then
                             ConfirmOrLeaveLFGParty()
@@ -151,7 +151,12 @@ end
 
 local function Init()
     StaticPopupDialogs['WoWTools_LFD_ExitIns']={
-        text =WoWTools_DataMixin.addName..' '..WoWTools_LFDMixin.addName..'|n|n|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '离开' or LEAVE)..'|r: ' ..(WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..Save().sec..' |r'..(WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
+        text = WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2
+            ..'|n|n|cff00ff00'
+            ..(WoWTools_DataMixin.onlyChinese and '离开' or LEAVE)..'|r: '
+            ..(WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE)
+            ..'|cff00ff00 '..(Save().sec or 5)..' |r'
+            ..(WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
         button1 = WoWTools_DataMixin.onlyChinese and '离开' or  LEAVE,
         button2 = WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnAccept=function()
@@ -186,7 +191,7 @@ local function Init()
             s:GetParent():Hide()
         end,]]
         whileDead=true, exclusive=true,--hideOnEscape=true, 
-        timeout=Save().sec}
+        timeout=Save().sec or 5}
 
     Init_Frame()
 
