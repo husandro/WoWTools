@@ -952,6 +952,7 @@ local function Init_All_Role(_, root)
         end
     end
     root:CreateSpacer()
+        root:CreateSpacer()
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '自动设置' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, SETTINGS))
         ..'|T'..(select(4, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0)) or '0')..':0|t',
@@ -965,7 +966,7 @@ local function Init_All_Role(_, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅用于当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)
     end)
 
-    root:CreateSpacer()
+
     root:CreateSpacer()
     root:CreateSpacer()
 
