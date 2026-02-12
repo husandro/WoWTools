@@ -206,18 +206,25 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         autoSetPvPRole=WoWTools_DataMixin.Player.husandro,--自动职责确认， 排副本
         LFGPlus= WoWTools_DataMixin.Player.husandro,--预创建队伍增强
         tipsScale=1,--提示内容,缩放
-        sec=5,--时间 timer
+        sec=3,--时间 timer
         wow={
             --['island']=0,
             --[副本名称]=0,
-        }
+        },
     }
-    WoWToolsSave['ChatButton_LFD'].sec= WoWToolsSave['ChatButton_LFD'].sec or 5
+
+    if not WoWToolsSave['ChatButton_LFD'].sec then
+        WoWToolsSave['ChatButton_LFD'].sec= 5
+    end
+
 
     WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
     --WoWTools_ChatMixin:GetButtonForName('LFD')
-    Init(WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName))
+    Init(
+        WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
+    )
 
     self:UnregisterEvent(event)
+    self:SetScript('OnEvent', nil)
 end)

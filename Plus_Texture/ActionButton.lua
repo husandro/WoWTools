@@ -109,7 +109,11 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
 
     --WoWTools_DataMixin:Hook(MainMenuBar, 'UpdateDividers', function(bar)--主动作条 
 
-    C_Timer.After(0.3, Set_MainMenuBarPool)
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
+        Set_MainMenuBarPool()
+        EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
+    end)
+    --C_Timer.After(1, Set_MainMenuBarPool)
 
 
     EditModeManagerFrame:HookScript('OnHide', function()

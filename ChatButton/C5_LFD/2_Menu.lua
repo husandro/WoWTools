@@ -989,7 +989,7 @@ local function Init_Menu(self, root)
     local text=''
     if (isTank or isHealer or isDPS) then
         text= (isTank and WoWTools_DataMixin.Icon.TANK or '')
-                ..(isHealer and WoWTools_DataMixin.Icon.TANK or '')
+                ..(isHealer and WoWTools_DataMixin.Icon.HEALER or '')
                 ..(isDPS and WoWTools_DataMixin.Icon.DAMAGER or '')
                 ..(isLeader and '|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a' or '')
     else
@@ -1025,7 +1025,7 @@ local function Init_Menu(self, root)
         return Save().leaveInstance
     end, function()
         Save().leaveInstance= not Save().leaveInstance and true or nil
-        WoWTools_LFDMixin:Set_Queue_Status()--小眼睛, 信息
+        WoWTools_LFDMixin:Init_Exit_Instance()
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '离开副本和战场' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, BATTLEFIELDS)))

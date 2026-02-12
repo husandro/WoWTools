@@ -201,7 +201,11 @@ local function Init()
         end
     end)
 
-    Init=function()end
+    WoWTools_ChatMixin:GetButtonForName('LFD').leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
+
+    Init=function()
+         WoWTools_ChatMixin:GetButtonForName('LFD').leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
+    end
 end
 
 

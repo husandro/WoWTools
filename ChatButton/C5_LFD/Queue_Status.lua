@@ -1,7 +1,7 @@
 --小眼睛, 更新信息
 
 local function Save()
-    return WoWToolsSave['ChatButton_LFD'] or {}
+    return WoWToolsSave['ChatButton_LFD']
 end
 local Button
 
@@ -28,7 +28,7 @@ local function get_InviteButton_Frame(index)
         frame= CreateFrame("Frame", nil, Button)
         frame:SetSize(20,20)
         if index==1 then
-            frame:SetPoint('TOPLEFT', Button.text, 'BOTTOMLEFT')
+            frame:SetPoint('TOPLEFT',  Button.text, 'BOTTOMLEFT')
         else
             frame:SetPoint('TOPLEFT', Button.lfgTextTab[index-1], 'BOTTOMLEFT')
         end
@@ -94,7 +94,9 @@ local function get_InviteButton_Frame(index)
             GameTooltip:Show()
         end)
 
-        frame.text= WoWTools_LabelMixin:Create(frame, {size=Save().tipsFrameTextSize, color=true})
+        --frame.text= WoWTools_LabelMixin:Create(frame, { color=true})
+        frame.text= Button:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
+        WoWTools_ColorMixin:SetLabelColor(frame.text)
         frame.text:SetPoint('BOTTOMLEFT', frame.DeclineButton, 'BOTTOMRIGHT')
 
         Button.lfgTextTab[index]= frame
@@ -122,6 +124,10 @@ local function set_tipsFrame_Tips(text, LFGListTab)
             return a.index< b.index
         end
     end)
+
+    
+
+    local w= Button.text:GetStringWidth()
     for index, tab in pairs(LFGListTab) do
         local frame= get_InviteButton_Frame(index)
         frame.text:SetText((index<10 and ' ' or '')..index..') '..tab.text)
@@ -131,16 +137,18 @@ local function set_tipsFrame_Tips(text, LFGListTab)
         frame.tooltip= tab.text
         frame.name= tab.name
         frame:SetShown(true)
+        w= math.max(w, frame.text:GetStringWidth()+ 20+ 16*3)
     end
 
-    for index= #LFGListTab+1, #Button.lfgTextTab do
+    local num= #LFGListTab
+
+    Button.Bg:SetPoint('BOTTOMLEFT', Button.lfgTextTab[num] or Button.text, 1,-1)
+    Button.Bg:SetWidth(w)
+
+    for index= num+1, #Button.lfgTextTab do
         Button.lfgTextTab[index].text:SetText('')
         Button.lfgTextTab[index]:SetShown(false)
     end
-
-
-
-    WoWTools_ChatMixin:GetButtonForName('LFD').leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
 end
 
 
@@ -497,7 +505,8 @@ local function Init_Menu(self, root)
     local sub
 --队伍查找器
     root:CreateButton(
-        MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"),
+        WoWTools_DataMixin.Icon.mid
+        ..MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"),
     function ()
         WoWTools_DataMixin:Call('PVEFrame_ToggleFrame')
         return MenuResponse.Open
@@ -506,7 +515,8 @@ local function Init_Menu(self, root)
 --离开所有队列
     root:CreateDivider()
     sub=root:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES,
+        WoWTools_DataMixin.Icon.left
+        ..(WoWTools_DataMixin.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
     function()
         WoWTools_LFDMixin:Leave_All_LFG()
     end)
@@ -525,7 +535,7 @@ local function Init_Menu(self, root)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().queueStatusStrata= data
-        self:set_strata()
+        self:settings()
     end)
 
 --缩放
@@ -533,14 +543,25 @@ local function Init_Menu(self, root)
         return Save().tipsScale or 1
     end, function(value)
         Save().tipsScale= value
-        self:set_scale()
+        self:settings()
     end)
+--背景, 透明度
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()
+        return Save().tipsAlpha or 0.5
+    end, function(value)
+        Save().tipsAlpha= value
+        self:settings()
+    end, function()
+        Save().tipsAlpha= nil
+        self:settings()
+end)
 
     sub:CreateDivider()
 --重置位置
     WoWTools_MenuMixin:RestPoint(self, sub, Save().tipsFramePoint, function()
         Save().tipsFramePoint=nil
-        self:set_Point()
+        self:settings()
         return MenuResponse.Open
     end)
 end
@@ -559,39 +580,45 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(nil, {
+    --[[Button= WoWTools_ButtonMixin:Cbtn(nil, {
         size=23,
         atlas='UI-HUD-MicroMenu-Groupfinder-Mouseover',
         name='WoWToolsChatToolsLFDTooltipButton'
-    })
+    })]]
+    Button= CreateFrame('Button', 'WoWToolsChatToolsLFDTooltipButton', UIParent, 'WoWToolsButtonTemplate')
+    Button:SetNormalAtlas('UI-HUD-MicroMenu-Groupfinder-Mouseover')
 
-    function Button:set_Point()
-        self:ClearAllPoints()
-        if Save().tipsFramePoint then
-            Button:SetPoint(Save().tipsFramePoint[1], UIParent, Save().tipsFramePoint[3], Save().tipsFramePoint[4], Save().tipsFramePoint[5])
-        else
-            Button:SetPoint('BOTTOMLEFT', WoWTools_ChatMixin:GetButtonForName('LFD'), 'TOPLEFT',0, 4)
-        end
-    end
 
-    function Button:set_strata()
-        self:SetFrameStrata(Save().queueStatusStrata or 'MEDIUM')
-    end
 
-    function Button:set_scale()
-        self.text:SetScale(Save().tipsScale or 1)
-    end
+
 
     function Button:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_LFDMixin.addName, WoWTools_DataMixin.onlyChinese and '列表信息' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_QUEUE_TOOLTIP_HEADER, INFO))
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '列表信息' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_QUEUE_TOOLTIP_HEADER, INFO))
+        )
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.Icon.left
+            ..(WoWTools_DataMixin.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES)
+        )
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.Icon.right
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        )
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.Icon.mid
+            ..MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER")
+        )
+        GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
+    Button:RegisterForDrag("RightButton")
+    Button:SetMovable(true)
+    Button:SetClampedToScreen(true)
     Button:SetScript("OnDragStart", function(self, d)
         if IsAltKeyDown() then
             self:StartMoving()
@@ -609,11 +636,24 @@ local function Init()
     Button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
+        elseif d=='LeftButton' then
+            WoWTools_LFDMixin:Leave_All_LFG()
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
         self:set_tooltip()
     end)
+
+    Button:SetScript('OnMouseWheel', function(_, d)
+        if d==1 then
+            if not PVEFrame:IsVisible() then
+                WoWTools_DataMixin:Call('PVEFrame_ToggleFrame')
+            end
+        elseif PVEFrame:IsVisible() then
+            WoWTools_DataMixin:Call('PVEFrame_ToggleFrame')
+        end
+    end)
+
     Button:SetScript('OnMouseUp', ResetCursor)
 
     Button:SetScript("OnLeave", function()
@@ -629,20 +669,34 @@ local function Init()
 
 
 
-    Button.text= WoWTools_LabelMixin:Create(Button, {size=Save().tipsFrameTextSize, color=true})--Save().tipsFrameTextSize, nil, nil, true)
+    Button.text= Button:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
+    WoWTools_ColorMixin:SetLabelColor(Button.text)
+    --WoWTools_LabelMixin:Create(Button, {color=true})--Save().tipsFrameTextSize, nil, nil, true)
     Button.text:SetPoint('BOTTOMLEFT', Button, 'BOTTOMRIGHT')
 
     Button.lfgTextTab= {}
     Button.lfgTextTab[1]= get_InviteButton_Frame(1)
 
 
-    Button:set_Point()
-    Button:set_scale()--设置, 缩放
-    Button:set_strata()
-    Button:RegisterForDrag("RightButton")
-    Button:SetMovable(true)
-    Button:SetClampedToScreen(true)
+    Button.Bg= Button:CreateTexture(nil, "BACKGROUND")
+    Button.Bg:SetColorTexture(0,0,0)
+    Button.Bg:SetPoint('TOPLEFT', Button.text, -1,1)
 
+    function Button:settings()
+        self:ClearAllPoints()
+        local p= Save().tipsFramePoint
+        if p and p[2] then
+            Button:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        else
+            Button:SetPoint('BOTTOMLEFT', WoWTools_ChatMixin:GetButtonForName('LFD'), 'TOPLEFT',0, 4)
+        end
+
+        self:SetScale(Save().tipsScale or 1)
+        self:SetFrameStrata(Save().queueStatusStrata or 'MEDIUM')
+        self.Bg:SetAlpha(Save().tipsAlpha or 0.5)
+    end
+
+    Button:settings()
 end
 
 
