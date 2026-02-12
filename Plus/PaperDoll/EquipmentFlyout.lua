@@ -235,8 +235,7 @@ local function Init()
 
     EquipmentFlyoutFrame.slotNameFrame.Label= EquipmentFlyoutFrame.slotNameFrame:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
     EquipmentFlyoutFrame.slotNameFrame.Label:SetPoint('BOTTOMLEFT', 12, 6)
---设置，Bg颜色
-    WoWTools_TextureMixin:SetAlphaColor(EquipmentFlyoutFrameButtons.bg1, true)
+
 
     WoWTools_DataMixin:Hook('EquipmentFlyout_Show', function(btn)
         local flyout = EquipmentFlyoutFrame;
@@ -249,21 +248,18 @@ local function Init()
         flyout.slotNameFrame.Label:SetText(slotName or '')
         flyout.slotNameFrame.Bg:SetWidth(flyout.slotNameFrame.Label:GetStringWidth()+24)
         flyout.slotNameFrame:SetShown(not Save().notFlyout and slotName)
---设置，Bg颜色
-        for i= 2, flyout.numItemButtons or 0 do
-            local bg= EquipmentFlyoutFrameButtons['bg'..i]
-            if bg then
-                WoWTools_TextureMixin:SetAlphaColor(bg, true)
-            else
-                break
-            end
-        end
     end)
+
+
+--缩放
+    EquipmentFlyoutFrameButtons:SetScale(not Save().notFlyout and Save().flyoutScale or 1)
 
     Init=function()
         if EquipmentFlyoutFrame:IsVisible() then
             WoWTools_DataMixin:Call('EquipmentFlyout_UpdateItems')
         end
+--缩放
+        EquipmentFlyoutFrameButtons:SetScale(not Save().notFlyout and Save().flyoutScale or 1)
     end
 end
 
@@ -273,10 +269,6 @@ end
 
 function WoWTools_PaperDollMixin:Init_EquipmentFlyout()
     Init()
-
---缩放
-    local scale= not Save().notFlyout and Save().flyoutScale or 1
-    EquipmentFlyoutFrameButtons:SetScale(scale)
 end
 
 

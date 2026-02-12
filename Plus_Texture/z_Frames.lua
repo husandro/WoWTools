@@ -89,7 +89,7 @@ function WoWTools_TextureMixin.Frames:GroupLootHistoryFrame()
     self:SetAlphaColor(GroupLootHistoryFrameLeft)
     self:SetAlphaColor(GroupLootHistoryFrameRight)]]
     self:SetMenu(GroupLootHistoryFrame.EncounterDropdown)
-    
+
     self:SetFrame(GroupLootHistoryFrame.ResizeButton, {alpha=0.3})
 end
 
@@ -662,4 +662,26 @@ end
 function WoWTools_TextureMixin.Frames:SplashFrame()
     self:SetButton(SplashFrame.TopCloseButton)
     self:SetUIButton(SplashFrame.BottomCloseButton)
+end
+
+
+
+
+
+
+
+
+function WoWTools_TextureMixin.Frames:EquipmentFlyoutFrame()
+    self:SetAlphaColor(EquipmentFlyoutFrameButtons.bg1, true)
+    self:SetAlphaColor(EquipmentFlyoutFrame.buttonFrame.bg1, true)
+    self:SetAlphaColor(EquipmentFlyoutFrame.NavigationFrame.BottomBackground, true)
+
+    WoWTools_DataMixin:Hook('EquipmentFlyout_Show', function()
+        local flyout = EquipmentFlyoutFrame
+        self:SetAlphaColor(flyout.NavigationFrame.BottomBackground, true)
+        self:SetAlphaColor(flyout.buttonFrame.bg1, true)
+        for i = 2, flyout.buttonFrame["numBGs"] or 0 do
+            self:SetAlphaColor(flyout.buttonFrame["bg" .. i], true)
+        end
+    end)
 end
