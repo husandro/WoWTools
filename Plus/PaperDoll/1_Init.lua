@@ -7,8 +7,6 @@ end
 
 
 local function Settings()
-
-
     WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
     WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
 
@@ -53,7 +51,7 @@ local function Init_Menu(self, root)
     local sub
 
     root:CreateCheckbox(
-        WoWTools_PaperDollMixin.addName,
+        WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS,
     function()
         return not Save().hide
     end, function()
@@ -162,7 +160,7 @@ local function Init_Menu(self, root)
     end)
 
     root:CreateDivider()
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '弹出框' or 'Flyout',
     function()
         return not Save().notFlyout
@@ -170,7 +168,21 @@ local function Init_Menu(self, root)
         Save().notFlyout= not Save().notFlyout and true or false
         WoWTools_PaperDollMixin:Init_EquipmentFlyout()
     end)
-    
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('EquipmentFlyoutFrame')
+    end)
+
+--缩放, 单行
+    WoWTools_MenuMixin:ScaleRoot(self, sub, function()
+        return Save().flyoutScale or 1
+    end, function(value)
+        Save().flyoutScale= value
+        WoWTools_PaperDollMixin:Init_EquipmentFlyout()
+    end, function()
+        Save().flyoutScale= nil
+        WoWTools_PaperDollMixin:Init_EquipmentFlyout()
+    end)
+
     sub=root:CreateCheckbox(
         'Tab',
     function()
@@ -184,7 +196,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '装备管理' or GEARSETS_TITLE)
     end)
-    
+
 --打开选项界面
     root:CreateDivider()
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})

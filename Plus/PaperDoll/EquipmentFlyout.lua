@@ -4,6 +4,34 @@ local function Save()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local ITEM_LEVEL= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 local PVP_ITEM_LEVEL_TOOLTIP= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
@@ -185,20 +213,58 @@ end
 
 
 local function Init()
-    WoWTools_DataMixin:Hook('EquipmentFlyout_UpdateItems', function()
 
-        for _, btn in ipairs(EquipmentFlyoutFrame.buttons) do
+    WoWTools_DataMixin:Hook('EquipmentFlyout_UpdateItems', function()
+        for _, btn in ipairs(EquipmentFlyoutFrame.buttons or {}) do
             if btn and btn:IsShown()  then
                 setFlyout(btn)
             end
         end
     end)
 
-   Init=function()
-    if EquipmentFlyoutFrame:IsVisible() then
-        WoWTools_DataMixin:Call('EquipmentFlyout_UpdateItems')
+
+    EquipmentFlyoutFrame.slotNameFrame= CreateFrame('Frame', nil, EquipmentFlyoutFrame.buttonFrame)
+    EquipmentFlyoutFrame.slotNameFrame:SetPoint('BOTTOMLEFT', EquipmentFlyoutFrame.buttonFrame, 'TOPLEFT', 4, 1)
+    EquipmentFlyoutFrame.slotNameFrame:SetSize(1,1)
+
+    EquipmentFlyoutFrame.slotNameFrame.Bg= EquipmentFlyoutFrame.slotNameFrame:CreateTexture(nil, 'BACKGROUND')
+    EquipmentFlyoutFrame.slotNameFrame.Bg:SetHeight(26)
+    EquipmentFlyoutFrame.slotNameFrame.Bg:SetAtlas('tooltip-compare-label')
+    EquipmentFlyoutFrame.slotNameFrame.Bg:SetPoint('BOTTOMLEFT')
+    WoWTools_TextureMixin:SetAlphaColor(EquipmentFlyoutFrame.slotNameFrame.Bg, true)
+
+    EquipmentFlyoutFrame.slotNameFrame.Label= EquipmentFlyoutFrame.slotNameFrame:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
+    EquipmentFlyoutFrame.slotNameFrame.Label:SetPoint('BOTTOMLEFT', 12, 6)
+--设置，Bg颜色
+    WoWTools_TextureMixin:SetAlphaColor(EquipmentFlyoutFrameButtons.bg1, true)
+
+    WoWTools_DataMixin:Hook('EquipmentFlyout_Show', function(btn)
+        local flyout = EquipmentFlyoutFrame;
+        if not flyout:IsShown() then
+            return
+        end
+        local slotID = btn.id or btn:GetID()
+        local slotName= WoWTools_ItemMixin:GetEquipSlotName(slotID)
+
+        flyout.slotNameFrame.Label:SetText(slotName or '')
+        flyout.slotNameFrame.Bg:SetWidth(flyout.slotNameFrame.Label:GetStringWidth()+24)
+        flyout.slotNameFrame:SetShown(not Save().notFlyout and slotName)
+--设置，Bg颜色
+        for i= 2, flyout.numItemButtons or 0 do
+            local bg= EquipmentFlyoutFrameButtons['bg'..i]
+            if bg then
+                WoWTools_TextureMixin:SetAlphaColor(bg, true)
+            else
+                break
+            end
+        end
+    end)
+
+    Init=function()
+        if EquipmentFlyoutFrame:IsVisible() then
+            WoWTools_DataMixin:Call('EquipmentFlyout_UpdateItems')
+        end
     end
-   end
 end
 
 
@@ -207,6 +273,10 @@ end
 
 function WoWTools_PaperDollMixin:Init_EquipmentFlyout()
     Init()
+
+--缩放
+    local scale= not Save().notFlyout and Save().flyoutScale or 1
+    EquipmentFlyoutFrameButtons:SetScale(scale)
 end
 
 

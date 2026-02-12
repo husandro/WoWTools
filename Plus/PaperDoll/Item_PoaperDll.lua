@@ -95,13 +95,13 @@ local function set_Engineering(btn, slot, link, use, isPaperDollItemSlot)
             end
         end)
         btn.engineering:SetScript('OnEnter' ,function(frame)
-                GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:SetSpellByID(frame.spell)
-                GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '商业技能' or TRADESKILLS), WoWTools_DataMixin.Icon.right)
-                --GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需求' or NEED), (WoWTools_DataMixin.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP)..')')
-                GameTooltip:Show()
+            GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:SetSpellByID(frame.spell)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '商业技能' or TRADESKILLS), WoWTools_DataMixin.Icon.right)
+            --GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需求' or NEED), (WoWTools_DataMixin.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP)..')')
+            GameTooltip:Show()
         end)
         btn.engineering:SetScript('OnLeave',GameTooltip_Hide)
     end
@@ -677,12 +677,17 @@ local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
         frame.slotText:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, self.slot)
+            GameTooltip:SetText(
+                WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
+                ..' |cffffffff'..self.slot
+            )
             local name= self:GetParent():GetName()
             if name then
-                GameTooltip:AddDoubleLine(_G[strupper(strsub(name, 10))], name)
+                local text= _G[strupper(strsub(name, 10))]
+                GameTooltip:AddLine(
+                    (WoWTools_TextMixin:CN(text) or '')
+                    ..' |cffffffff'..name
+                )
             end
             GameTooltip:Show()
             self:SetAlpha(1)

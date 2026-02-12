@@ -700,6 +700,20 @@ function WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
     end
 end
 
+function WoWTools_ItemMixin:GetEquipSlotName(slotID)
+    local slotName= itemSlotName[slotID]
+    if slotName then
+        local name= WoWTools_TextMixin:CN(_G[slotName])
+        if name then
+            if slotID==11 or slotID==13 then--戒指, 饰品
+                name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, name, '1')
+            elseif slotID==12 or slotID==14 then
+                name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, name, '2')
+            end
+            return name, slotName
+        end
+    end
+end
 --[[function WoWTools_ItemMixin:OpenOption(root, name2)
     return WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_ItemMixin.Category, name=self.addName, nam2=name2})
 end]]
