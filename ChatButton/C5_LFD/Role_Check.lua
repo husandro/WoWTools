@@ -12,7 +12,7 @@ end
 local function Set_PvERoles()
     local isTank, isHealer, isDPS = select(2, GetLFGRoles())--检测是否选定角色pve
 
-    if Save().autSetRole or not (isTank or isHealer or isDPS) then
+    if Save().autoSetRole or not (isTank or isHealer or isDPS) then
         local role = select(5, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0))
         if role=='TANK' then
             isTank, isHealer, isDPS=true, false, false
@@ -35,7 +35,7 @@ end
 local function Set_PvPRoles()--检测是否选定角色pvp
     local tank, healer, dps = GetPVPRoles()
 
-    if Save().autSetRole or not (tank or healer or dps) then
+    if Save().autoSetRole or not (tank or healer or dps) then
         tank, healer, dps= true,true,true
         local sid=GetSpecialization()
         if sid then
@@ -86,7 +86,7 @@ end
 
 
 local function Init()
-    if not Save().autSetRole then
+    if not Save().autoSetPvPRole then
         return
     end
 
@@ -503,7 +503,7 @@ local function Init()
 
 
     EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function(owner, arg1)
-        if arg1=='player' and Save().autSetRole then
+        if arg1=='player' and Save().autoSetRole then
             Set_PvERoles()
             Set_PvPRoles()
         end

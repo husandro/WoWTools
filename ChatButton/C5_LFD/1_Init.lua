@@ -204,6 +204,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         --hideDontEnterMenu=true 隐藏，不可能副本，列表
         ReMe=true,--仅限战场，释放，复活
         autoSetPvPRole=WoWTools_DataMixin.Player.husandro,--自动职责确认， 排副本
+        autoSetRole=true,
         LFGPlus= WoWTools_DataMixin.Player.husandro,--预创建队伍增强
         tipsScale=1,--提示内容,缩放
         sec=3,--时间 timer

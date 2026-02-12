@@ -14,7 +14,10 @@ local function Get_InstanceID()
 end
 
 local function Get_List_Tab(instanceID)
-    local mapData= instanceID and WoWTools_MapIDAchievementData[instanceID]
+    local mapData
+    if WoWTools_MapIDAchievementData and instanceID then
+        mapData= WoWTools_MapIDAchievementData[instanceID]
+    end
     local to= mapData and #mapData or 0
     if to==0 then
         return
