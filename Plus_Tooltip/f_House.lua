@@ -21,16 +21,18 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
         tooltip:AddDoubleLine(nil,
             '|T'..entryInfo.iconTexture..':'..size..':'..size..'|t'
         )
+
     end
 
-
-    tooltip:AddDoubleLine(
-        format(
-            NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY),
-            '|cffffffff'..WoWTools_ItemMixin.QualityText[entryInfo.quality or 1]..'|r'
-        ),
-        '|T'..entryInfo.iconTexture..':23|t|cffffffff'..entryInfo.iconTexture
-    )
+    if entryInfo.quality then
+        tooltip:AddDoubleLine(
+            format(
+                NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY),
+                '|cffffffff'..WoWTools_ItemMixin.QualityText[entryInfo.quality or 1]..'|r'
+            ),
+            entryInfo.iconTexture and '|T'..entryInfo.iconTexture..':23|t|cffffffff'..entryInfo.iconTexture
+        )
+    end
 
 --室内, 室外
     if entryInfo.isAllowedIndoors or entryInfo.isAllowedOutdoors then
