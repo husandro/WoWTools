@@ -389,13 +389,14 @@ local function Set_Item_Num(tooltip, itemID)
         table.sort(new, function(n1, n2) return n1.num> n2.num end)
 
         for index, info in pairs(new) do
-            local col= select(5, WoWTools_UnitMixin:GetColor(nil, info.guid))
+            local color= WoWTools_UnitMixin:GetColor(nil, info.guid)
+            local hex= color:GenerateHexColorMarkup()
 
             tooltip:AddDoubleLine(
                 WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
 
-                (info.bank==0 and '|cff626262' or col)..WoWTools_DataMixin:MK(info.bank, 3)..'|r|A:Banker:0:0|a '
-                ..(info.bag==0 and '|cff626262' or col)..WoWTools_DataMixin:MK(info.bag, 3)..'|r|A:bag-main:0:0|a'
+                (info.bank==0 and '|cff626262' or hex)..WoWTools_DataMixin:MK(info.bank, 3)..'|r|A:Banker:0:0|a '
+                ..(info.bag==0 and '|cff626262' or hex)..WoWTools_DataMixin:MK(info.bag, 3)..'|r|A:bag-main:0:0|a'
             )
 
             if index>2 and not IsShiftKeyDown() then

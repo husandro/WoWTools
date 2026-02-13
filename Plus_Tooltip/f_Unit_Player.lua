@@ -3,7 +3,7 @@
 --设置单位, 玩家
 function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     if self:IsInCombatDisabled(tooltip)
-        or not WoWTools_UnitMixin:UnitExists(unit)
+        --or not WoWTools_UnitMixin:UnitExists(unit)
         or not canaccessvalue(name)
         or not canaccessvalue(unit)
         or not canaccessvalue(guid)
@@ -15,7 +15,11 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= WoWTools_UnitMixin:UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and WoWTools_DataMixin.GroupGuid[guid]) and true or nil--队友
-    local r, g, b, col = select(2, WoWTools_UnitMixin:GetColor(unit, nil))--颜色
+
+    local color= WoWTools_UnitMixin:GetColor(unit, guid)
+    local r,g,b= color:GetRGB()
+
+
     local isInCombat= PlayerIsInCombat()
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     local textLeft, text2Left, textRight, text2Right='', '', '', ''
@@ -306,8 +310,8 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             hideLine:SetText('')
             hideLine:SetShown(false)
         end
-    else     
-        self:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
+    else
+        self:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=color:GenerateHexColorMarkup()})--取得单位, raider.io 网页，数据链接
     end
 
     if tooltip.StatusBar then

@@ -522,7 +522,9 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
                 info.maxHP= maxHP
 
-                info.hex= select(5, WoWTools_UnitMixin:GetColor(unit, nil))
+                local color=  WoWTools_UnitMixin:GetColor(unit, nil)
+                info.hex= color:GenerateHexColorMarkup()
+
                 if uiMapID then--不在同地图
                     local text, mapID=WoWTools_MapMixin:GetUnit(unit)
                     if text and mapID and mapID~=uiMapID then

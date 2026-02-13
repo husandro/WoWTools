@@ -807,7 +807,8 @@ local function OnEnter_Left_Button(self)
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
     GameTooltip:ClearLines()
     if data.guid then
-        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(nil, data.guid))
+        local color= WoWTools_UnitMixin:GetColor(nil, data.guid)
+        local r,g,b= color:GetRGB()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_UnitMixin:GetFullName(nil, nil, data.guid), r,g,b)
@@ -1095,7 +1096,10 @@ end
 
 
 local function Settings_Right_Button(btn, data)
-    local r,g,b,hex= select(2, WoWTools_UnitMixin:GetColor(nil, data.guid))
+    --local r,g,b,hex= select(2, WoWTools_UnitMixin:GetColor(nil, data.guid))
+    local color= WoWTools_UnitMixin:GetColor(nil, data.guid)
+    local r,g,b= color:GetRGB()
+    local hex= color:GenerateHexColorMarkup()
 
     local isNotBattle= data.battleTag~=WoWTools_DataMixin.Player.BattleTag
 --玩家，图标
@@ -1597,10 +1601,12 @@ local function Init_IsMe_Menu(self, root)
 
         s[realm]= (s[realm] or 0)+1
 
+        local color= WoWTools_UnitMixin:GetColor(nil, nil, englishClass)
+
         c[class]= {
             num=(c[class] and c[class].num or 0)+1,
             icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, englishClass) or '',
-            hex= select(5, WoWTools_UnitMixin:GetColor(nil, nil, englishClass)) or ''
+            hex= color:GenerateHexColorMarkup()
         }
 
         if tab.faction=='Alliance' then

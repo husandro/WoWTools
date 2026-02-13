@@ -141,7 +141,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub, sub2, sub3, col, icon, name, num
+    local sub, sub2, sub3, name, num
     --local isInCombat= PlayerIsInCombat()
 
     local chatType={
@@ -234,6 +234,10 @@ local function Init_Menu(self, root)
         for index, tab in pairs(Save().WhisperTab) do
             local playerName= WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {faction=tab.faction, reName=true, reRealm=true})
             playerName= playerName=='' and tab.name or playerName
+            
+            local color= WoWTools_UnitMixin:GetColor(tab.unit, tab.guid)
+            tab.hex= color:GenerateHexColorMarkup()
+
             sub2=sub:CreateButton('|cff626262'..index..')|r '..(tab.wow and WoWTools_DataMixin.Icon.wow2 or '')..(playerName or ' '), function(data)
                 WoWTools_ChatMixin:Say(nil, data.name, data.wow)
                 self:settings(SLASH_WHISPER1, WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, data.name, data.wow)
@@ -241,7 +245,6 @@ local function Init_Menu(self, root)
             end, tab)
 
             sub2:SetTooltip(function(tooltip, desc)
-                col= select(5, WoWTools_UnitMixin:GetColor(nil, desc.data.guid))
                 local find
                 for _, msg in pairs(desc.data.msg) do
                     local player= msg.player and msg.player~=WoWTools_DataMixin.Player.Name_Realm and msg.player
@@ -250,9 +253,9 @@ local function Init_Menu(self, root)
                         tooltip:AddLine((player and '|cnGREEN_FONT_COLOR:' or '|cff626262')..msg.time..' |A:voicechat-icon-textchat-silenced:0:0|a'..msg.text..'|r')
                     else--接收
                         tooltip:AddDoubleLine(
-                            col..msg.time,
+                            desc.data.hex..msg.time,
 
-                            col
+                            desc.data.hex
                             ..(
                                 WoWTools_UnitMixin:GetIsFriendIcon(nil, desc.data.guid, desc.data.name)
                                 or '|A:common-icon-rotateright:0:0|a'
@@ -270,16 +273,18 @@ local function Init_Menu(self, root)
                 rest_numWhisper_Tips()--重置密语，数量
             end)
 
-            sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '显示' or SHOW, function(data)
-                col= select(5, WoWTools_UnitMixin:GetColor(nil, data.guid)) or '|cffffffff'
+            sub2:CreateButton(
+                WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+            function(data)
                 local text= '|cff626262'
-                            ..WoWTools_DataMixin.Player.Name_Realm
-                            ..'|r'..WoWTools_DataMixin.Icon.Player
-                            ..' <-> '
-                            ..(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil) or '')
-                            ..col
-                            ..data.name
-                            ..'|r|n|n'
+                        ..WoWTools_DataMixin.Player.Name_Realm
+                        ..'|r'..WoWTools_DataMixin.Icon.Player
+                        ..' <-> '
+                        ..(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil) or '')
+                        ..data.hex
+                        ..data.name
+                        ..'|r|n|n'
+    
                 local playerList={}
                 for _, msg in pairs(data.msg) do
                     text= text and text..'|n' or ''
@@ -290,7 +295,7 @@ local function Init_Menu(self, root)
                             text=text..' |cnGREEN_FONT_COLOR:*|r'
                         end
                     else--接收
-                        text= text..col..msg.time..' '..data.name..': '..msg.text..'|r'
+                        text= text..data.hex..msg.time..' '..data.name..': '..msg.text..'|r'
                         if msg.player and msg.player~=WoWTools_DataMixin.Player.Name_Realm then
                             playerList[msg.player]= true
                             text=text..' ->|cnGREEN_FONT_COLOR:'..msg.player'|r'
@@ -303,7 +308,7 @@ local function Init_Menu(self, root)
                         ..'|n|cff626262'
                         ..player..'|r <-> '
                         ..(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil) or '')
-                        ..col
+                        ..data.hex
                         ..data.name
                         ..'|r|n'
                 end
@@ -358,9 +363,11 @@ local function Init_Menu(self, root)
 
     local maxLevel= GetMaxLevelForLatestExpansion()
     for _, wow in pairs(onlineList) do
-        col, icon=select(2, FriendsFrame_GetBNetAccountNameAndStatus(wow,true))
+        local color, icon= select(2, FriendsFrame_GetBNetAccountNameAndStatus(wow, true))
         local text=wow.accountName
-        text= col and col:WrapTextInColorCode(wow.accountName) or text
+
+        text= color and color:WrapTextInColorCode(wow.accountName) or text
+
         local gameAccountInfo= wow.gameAccountInfo
         local zone
         if gameAccountInfo then

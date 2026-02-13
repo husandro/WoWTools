@@ -58,12 +58,13 @@ local function Craete_Frame(frame)
         if isShow then
             self.itemLevel:SetText(level or '')
             self.Portrait:SetTexture(texture or 0)
-            local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-            self.Texture:SetVertexColor(r or 1, g or 1, b or 1)
-            self.itemLevel:SetTextColor(r, g, b)
+            local color= WoWTools_UnitMixin:GetColor(unit)
+            local r,g,b= color:GetRGB()
+            self.Texture:SetVertexColor(r,g,b)
+            self.itemLevel:SetTextColor(r,g,b)
         end
         self:SetShown(isShow)
-        self.Texture:SetShown(level)
+        self.Texture:SetShown(texture)
     end
 
     frame.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', frame.unit)
@@ -108,7 +109,8 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     end
     frame.classFrame:set_settings()
 
-    local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
+    local color= WoWTools_UnitMixin:GetColor(unit)
+    local r,g,b= color:GetRGB()
 
 --名称
     if frame.name then
@@ -116,6 +118,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
         if WoWTools_UnitMixin:UnitIsUnit(unit, 'pet') then
             frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         else
+
             frame.name:SetTextColor(r,g,b)
             if isParty then
                 name= UnitName(unit)

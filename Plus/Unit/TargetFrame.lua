@@ -9,7 +9,8 @@
 local function Init()
     --目标，生命条，颜色，材质
     WoWTools_DataMixin:Hook(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
-        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(frame.unit))
+        local color= WoWTools_UnitMixin:GetColor(frame.unit)
+        local r,g,b= color:GetRGB()
         frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
         frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，材质
@@ -23,8 +24,8 @@ local function Init()
     WoWTools_DataMixin:Hook(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
         local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText
         if levelText then
-            local r,g,b= select(2, WoWTools_UnitMixin:GetColor(self.unit))
-            levelText:SetTextColor(r,g,b)
+            local color= WoWTools_UnitMixin:GetColor(self.unit)
+            levelText:SetTextColor(color:GetRGB())
         end
     end)
 

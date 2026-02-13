@@ -71,25 +71,26 @@ local function Set_Text()
             ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
             ..WoWTools_DataMixin.Icon.Player
     elseif data.name then
-        local col= select(5,WoWTools_UnitMixin:GetColor(nil, nil, data.classFilename))
+        local color= WoWTools_UnitMixin:GetColor(nil, nil, data.classFilename)
         local icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, data.classFilename)
         text= text..'|n|n'
-            ..(col or '')
+            ..color:GenerateHexColorMarkup()
             ..data.name
             ..(icon or '')
-            ..(col and '|r' or '')
+            ..'|r'
     end
 
     for i=1, #data.members do
         local member= data.members[i]
         if member.name and member.name~=data.name then
-            local col= select(5,WoWTools_UnitMixin:GetColor(nil, nil, member.classFileName))
+            local color= WoWTools_UnitMixin:GetColor(nil, nil, member.classFileName)
+
             local icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, member.classFileName)
             text= text..'|n'
-                ..(col or '')
+                ..color:GenerateHexColorMarkup()
                 ..member.name
                 ..(icon or '')
-                ..(col and '|r' or '')
+                ..'|r'
         end
     end
     Frame.Text:SetText(text)

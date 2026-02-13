@@ -461,8 +461,8 @@ local function Create_positionFrame(frame)
         self.map.unit= unit
         self.xy.unit= unit
 
-        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-        self.map.Text:SetTextColor(r,g,b)
+        local color= WoWTools_UnitMixin:GetColor(unit)
+        self.map.Text:SetTextColor(color:GetRGB())
 
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
         self:set_shown()
@@ -689,12 +689,12 @@ local function Init_CreateButton(frame)
     end)
 
     WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
-        local unit= frame:GetUnit() or frame.unit
-        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
+        local color= WoWTools_UnitMixin:GetColor(frame:GetUnit() or frame.unit)
+        local r,g,b= color:GetRGB()
 
     --外框
-        self.Texture:SetVertexColor(r, g, b)
-        self.PortraitMask:SetVertexColor(r, g, b)
+        self.Texture:SetVertexColor(r or 1, g or 1, b or 1)
+        self.PortraitMask:SetVertexColor(r or 1, g or 1, b or 1)
     end)
 end
 

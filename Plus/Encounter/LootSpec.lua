@@ -36,7 +36,9 @@ local function Init_Menu(self, root)
 
     local curID= PlayerUtil.GetCurrentSpecID() or 0
     local sex= self.classFile== WoWTools_DataMixin.Player.Class and WoWTools_DataMixin.Player.Sex or nil
-    local hex= select(5, WoWTools_UnitMixin:GetColor(nil, nil, self.classFile))
+    local color= WoWTools_UnitMixin:GetColor(nil, nil, self.classFile)
+
+    local hex= color:GenerateHexColorMarkup()
 
     for specIndex= 1, C_SpecializationInfo.GetNumSpecializationsForClassID(self.classID) or 0 do
         local specID, name, desc, icon, role= GetSpecializationInfoForClassID(self.classID, specIndex, sex)
@@ -116,8 +118,10 @@ local function Init_Menu(self, root)
 --清除 Boss 所有职业, 列表
     for className, specID in pairs(classTab) do
         local _, name, desc, icon, role = GetSpecializationInfoByID(specID)
+        local color2= WoWTools_UnitMixin:GetColor(nil, nil, className)
+
         sub2=sub:CreateCheckbox(
-            (select(5, WoWTools_UnitMixin:GetColor(nil, nil, className)) or '')
+            color2:GenerateHexColorMarkup()
             ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, className) or '')
             ..'|T'..(icon or 0)..':0|t'
             ..(WoWTools_DataMixin.Icon[role] or '')
@@ -333,10 +337,12 @@ local function Init_Button(btn)
             b.texture2:SetPoint('BOTTOMRIGHT', b, 1, -2)
             b.texture2:SetAtlas('groupfinder-icon-class-color-'..classInfo.classFile)
 --tooltip
+            local color= WoWTools_UnitMixin:GetColor(nil, nil, classInfo.classFile)
+
             b.tooltip= (WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
-                    ..(select(5, WoWTools_UnitMixin:GetColor(nil, nil, classInfo.classFile)) or '')
-                        ..((WoWTools_UnitMixin:GetClassIcon(nil, nil, classInfo.classFile) or '')
-                        ..(WoWTools_TextMixin:CN(classInfo.className) or classInfo.classFile))
+                    ..color:GenerateHexColorMarkup()
+                    ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, classInfo.classFile) or '')
+                    ..(WoWTools_TextMixin:CN(classInfo.className) or classInfo.classFile)
             b.classID= classInfo.classID
             b.classFile= classInfo.classFile
             b.className= classInfo.className

@@ -49,10 +49,12 @@ local function Create_BossButton(frame)
         self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit)
         self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
 --颜色
-        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(WoWTools_UnitMixin:UnitExists(self.unit) and self.unit or 'player'))
+        local color= WoWTools_UnitMixin:GetColor(self.unit)
+        local r,g,b= color:GetRGB()
+
         local p= self:GetParent()
-        p.healthbar:SetStatusBarColor(r,g,b)--颜色
-        p.TargetFrameContent.TargetFrameContentMain.ReputationColor:SetVertexColor(r,g,b)
+        p.healthbar:SetStatusBarColor(r, g, b)--颜色
+        p.TargetFrameContent.TargetFrameContentMain.ReputationColor:SetVertexColor(r, g, b)
 
         self:settings()
     end
@@ -361,9 +363,9 @@ local function Init()
         if frame then
 
             frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，颜色，材质
-            
+
             Create_BossButton(frame)--Boss图标，按钮
-            
+
             --Create_numSelectFrame(frame)--队友，选中BOSS，数量
             Create_TotButton(frame)--目标的目标，点击
         end

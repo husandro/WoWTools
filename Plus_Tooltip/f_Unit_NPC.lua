@@ -54,7 +54,7 @@ end
 --设置单位, NPC
 function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     if self:IsInCombatDisabled(tooltip)
-        or not WoWTools_UnitMixin:UnitExists(unit)
+        --or not WoWTools_UnitMixin:UnitExists(unit)
         or not canaccessvalue(unit)
         or not canaccessvalue(name)
         or not canaccessvalue(guid)
@@ -128,7 +128,9 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     tooltip:Set_TopLabel(textLeft, text2Left, textRight, text2Right)
 
     if not WoWToolsSave['Plus_Tootips'].disabledNPCcolor then
-        local r, g, b = select(2, WoWTools_UnitMixin:GetColor(unit, nil))--颜色
+        local color= WoWTools_UnitMixin:GetColor(unit, guid)--颜色
+        local r,g,b= color:GetRGB()
+
         local lineLeft, lineRight
         local tooltipName=tooltip:GetName() or 'GameTooltip'
         for i=1, tooltip:NumLines() do

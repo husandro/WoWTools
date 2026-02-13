@@ -99,32 +99,17 @@ end
 
 --职业颜色
 function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
-    if not canaccessvalue(unit) or not canaccessvalue(guid) or not canaccessvalue(classFilename) then
-        return CreateColor(1, 1, 1),
-                1,--2
-                1,
-                1,
-                '|cffffffff'--5
-    end
-
-
-    local r, g, b, hex
-
-    classFilename= classFilename or (unit and UnitClassBase(unit))
-    if classFilename then
-        r, g, b, hex= GetClassColor(classFilename)
-        if hex then
-            hex= '|c'..hex
+    if canaccessvalue(unit) and canaccessvalue(guid) and canaccessvalue(classFilename) then
+        classFilename= classFilename or (unit and UnitClassBase(unit))
+        if classFilename then
+            local r, g, b= GetClassColor(classFilename)
+            if r and g and b then
+                return CreateColor(r, g, b)
+            end
         end
     end
 
-    r, g, b, hex =r or 1, g or 1, b or 1, hex or '|cffffffff'
-
-    return CreateColor(r, g, b),
-        r,--2
-        g,
-        b,
-        hex--5
+    return HIGHLIGHT_FONT_COLOR
 end
 
 

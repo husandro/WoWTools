@@ -33,7 +33,8 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
             return
         end
 
-        local r, g, b = select(2, WoWTools_UnitMixin:GetColor(unit))
+        local color= WoWTools_UnitMixin:GetColor(unit)
+        local r, g, b = color:GetRGB()
 
         local left, right, text
         local value= UnitHealth(unit)
@@ -76,9 +77,8 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
         frame.textLeft:SetText(left)
         frame.textRight:SetText(right)
 
-
-        frame.textLeft:SetTextColor(r, g, b)
-        frame.textRight:SetTextColor(r , g, b)
+        frame.textLeft:SetTextColor(r or 1, g or 1, b or 1)
+        frame.textRight:SetTextColor(r or 1, g or 1, b or 1)
     end)
 
 
