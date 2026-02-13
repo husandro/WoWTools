@@ -382,33 +382,19 @@ local ExpansionIcon = {
 	},
     [11] = {  -- The War Within
 		textureFile = "Interface\\AddOns\\WoWTools\\Source\\Texture\\WoW\\11.tga",
-		textureWidth = 128,
-		textureHeight = 64,
-		aspectRatio = 42 / 17,
-		leftTexel = 0,
-		rightTexel = 1,
-		topTexel = 0,
-		bottomTexel = 1
+		textureWidth = 64,
+		textureHeight = 32,
+		aspectRatio = 36 / 17,
+		leftTexel = 0.21875,
+		rightTexel = 0.78125,
+		topTexel = 0.109375,
+		bottomTexel = 0.875
 	}
 }
 
 
 
 function WoWTools_TextureMixin:GetWoWLog(expacID, texture, size)
-
-    if expacID==11 then
-        local icon= "Interface\\AddOns\\WoWTools\\Source\\Texture\\WoW\\11.png"--ItemVersion
-        if texture then
-            texture:SetTexture(icon)
-        else
-            if size then
-                return format('|T%s:%d:%d|t', size*2, size)
-            else
-                return format('|T%s:16:32|t', icon)
-            end
-        end
-    end
-
     local info= ExpansionIcon[expacID]
     if not info then
         return
