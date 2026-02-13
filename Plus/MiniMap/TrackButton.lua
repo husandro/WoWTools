@@ -752,11 +752,7 @@ local function set_Button_Text()
         TrackButton.Bg:SetWidth(w)
     end
 
-    if num>0 then
-        TrackButton.text:SetText(num)
-    else
-        TrackButton.text:SetText('|A:VignetteKillElite:0:0|a')
-    end
+    TrackButton.text:SetText(num)
 
     for i= num+1, #Buttons do
         local btn=_G['WoWToolsMinimapTrackButton'..i]
@@ -1036,7 +1032,8 @@ local function Init_Button()
     TrackButton= CreateFrame('Button', 'WoWToolsMinimapTrackMainButton', UIParent, 'WoWToolsButtonTemplate')
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAllPoints()
-    TrackButton.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
+    --TrackButton.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
+    TrackButton.texture:SetAtlas('VignetteKillElite')
 
     TrackButton.text= TrackButton:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
     TrackButton.text:SetPoint('CENTER')
@@ -1067,11 +1064,11 @@ local function Init_Button()
         local isShow= Save().vigentteButtonShowText
         self.texture:SetAlpha(isShow and 0 or 1)
         self.text:SetAlpha(isShow and 1 or 0)
-        if isShow then
+        --[[if isShow then
             self.texture:SetAtlas('VignetteKillElite')
         else
             self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
-        end
+        end]]
     end
 
     function TrackButton:set_point()--设置，位置
