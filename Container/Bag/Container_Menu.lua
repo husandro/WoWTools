@@ -113,7 +113,9 @@ end
 
 
 local function Init_Columns_Menu(self, root)
-     local sub= root:CreateCheckbox(
+    local sub, sub2
+
+    root= root:CreateCheckbox(
         '|cnWARNING_FONT_COLOR:'
         ..(WoWTools_DataMixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS),
     function()
@@ -123,7 +125,7 @@ local function Init_Columns_Menu(self, root)
         return MenuResponse.Close
     end, {rightText= Get_Columns(self)})
 
-    sub:SetTooltip(function(tooltip)
+    root:SetTooltip(function(tooltip)
         GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '可能会出现错误' or 'Errors may occur')
     end)
@@ -131,9 +133,12 @@ local function Init_Columns_Menu(self, root)
     if not Save().enabledCombinedColumns then
         return
     end
-    WoWTools_MenuMixin:SetRightText(sub)
+    WoWTools_MenuMixin:SetRightText(root)
 
-    sub:CreateSpacer()
+
+
+
+
     local frames= {
         ContainerFrameCombinedBags,
     }
@@ -149,14 +154,59 @@ local function Init_Columns_Menu(self, root)
     end
 
 
+    --[[for index, frame in pairs(frames) do
+        local name= frame:GetName()
+        if name then
+            local sub2= sub:CreateButton(
+                (frame==self and '|cnGREEN_FONT_COLOR:' or (frame:IsShown() and '|cnNORMAL_FONT_COLOR:') or '')
+                    ..Get_BagName(frame),
+            function()
+                return MenuResponse.Open
+            end, {rightText= Save()[name..'Columns']})
+        end
+        if index==1 then
+            sub:CreateDivider()
+        end
+    end]]
+
+    root:CreateSpacer()
 
     for _, frame in pairs(frames) do
-        sub:CreateSpacer()
-        local hex= frame==self and '|cnGREEN_FONT_COLOR:' or (frame:IsShown() and '|cnNORMAL_FONT_COLOR:') or ''
 
-        local sub2= WoWTools_MenuMixin:CreateSlider(sub, {
-            name=hex
-                ..Get_BagName(frame),
+        local name= frame:GetName()
+        local isCurBag= frame==self
+        local showName= (isCurBag and '|cnGREEN_FONT_COLOR:' or (frame:IsShown() and '|cnNORMAL_FONT_COLOR:') or '')
+            ..Get_BagName(frame)
+
+        sub= root:CreateButton(
+            showName,
+        function()
+            return MenuResponse.Open
+        end, {rightText= Get_Columns(frame)})
+        WoWTools_MenuMixin:SetRightText(sub)
+
+        if isCurBag then
+            root:CreateDivider()
+        end
+
+
+--列表
+        for _, num in pairs({5, 10, 15, 20, 25, 30, 35 ,40}) do
+            sub:CreateRadio(
+                num,
+            function(data)
+                return data.value== Get_Columns(data.frame)
+            end, function(data)
+                Save()[data.name..'Columns']= data.value
+                Set_GetColumns(data.frame)
+                Update_Frame(data.frame)
+                return MenuResponse.Refresh
+            end, {frame=frame, name=name, value=num})
+        end
+
+        sub:CreateSpacer()
+        sub2= WoWTools_MenuMixin:CreateSlider(sub, {
+            name=showName,
             getValue=function(_, desc)
                 return Get_Columns(desc.data.frame)
             end,
@@ -164,23 +214,22 @@ local function Init_Columns_Menu(self, root)
                 Save()[desc.data.name..'Columns']= value
                 Set_GetColumns(desc.data.frame)
                 Update_Frame(desc.data.frame)
+                return MenuResponse.Refresh
             end,
             minValue=1,
             maxValue=50,
             step=1,
         })
-
-        sub2:SetData({frame=frame, name=frame:GetName()})
-
-        sub2:SetTooltip(function(tooltip,desc)
-            tooltip:AddLine(desc.data.name)
-        end)
-
+        sub2:SetData({frame=frame, name=name})
         sub:CreateSpacer()
-        if frame==self then
-            sub:CreateSpacer()
-        end
     end
+
+
+
+
+
+
+
 
 
 

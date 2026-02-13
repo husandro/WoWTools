@@ -306,7 +306,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             hideLine:SetText('')
             hideLine:SetShown(false)
         end
-    else
+    else     
         self:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
     end
 

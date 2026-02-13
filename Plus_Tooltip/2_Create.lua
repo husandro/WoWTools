@@ -141,10 +141,13 @@ local function Create(tooltip)
         WoWTools_TooltipMixin:Set_Rest_Item(self)--清除，数据
     end)
 
-    local scale= Save().scale or 1
-    if scale~=1 then
-        tooltip:SetScale(scale)
-    end
+--缩放
+    tooltip:HookScript("OnShow", function(self)
+        local scale= Save().scale or 1
+        if scale~=tooltip:GetScale() then
+            tooltip:SetScale(scale)
+        end
+    end)
 end
 
 

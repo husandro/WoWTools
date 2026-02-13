@@ -113,6 +113,9 @@ function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
     classFilename= classFilename or (unit and UnitClassBase(unit))
     if classFilename then
         r, g, b, hex= GetClassColor(classFilename)
+        if hex then
+            hex= '|c'..hex
+        end
     end
 
     r, g, b, hex =r or 1, g or 1, b or 1, hex or '|cffffffff'
