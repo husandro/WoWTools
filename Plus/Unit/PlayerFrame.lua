@@ -462,7 +462,7 @@ end
 
 
 
---设置, 战争模式 Blizzard_WarmodeButtonTemplate.lua
+--[[设置, 战争模式 Blizzard_WarmodeButtonTemplate.lua
 local function Create_warModeButton(frame)
     frame.warModeButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, isType2=true, name='WoWToolsPlayerFrameWarModeButton'})
     frame.warModeButton:SetPoint('LEFT', frame, 5, 12)
@@ -522,7 +522,7 @@ local function Create_warModeButton(frame)
     end)
 
     frame.warModeButton:set_settings()
-end
+end]]
 
 
 
@@ -545,9 +545,9 @@ end
 do
     Create_keystoneFrame(PlayerFrame)--挑战，数据
 end
-do
+--[[do
     Create_warModeButton(PlayerFrame)--设置, 战争模式
-end
+end]]
 
 --移动，小队，号
     PlayerFrameGroupIndicatorText:ClearAllPoints()
