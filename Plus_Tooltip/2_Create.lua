@@ -144,8 +144,8 @@ local function Create(tooltip)
 --缩放
     tooltip:HookScript("OnShow", function(self)
         local scale= Save().scale or 1
-        if scale~=tooltip:GetScale() then
-            tooltip:SetScale(scale)
+        if scale~=self:GetScale() then
+            self:SetScale(scale)
         end
     end)
 end
