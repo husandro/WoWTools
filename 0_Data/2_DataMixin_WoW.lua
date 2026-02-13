@@ -136,16 +136,19 @@ EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--
         level=UnitLevel(unit),
     }
 
-    if UnitInParty(unit) and not IsInRaid() then
+    if UnitInParty(unit) and PartyFrame:IsVisible() then
         --先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
         for i=1, 4 do
             local frame= PartyFrame['MemberFrame'..i]
-            if frame.classFrame and WoWTools_UnitMixin:UnitIsUnit(frame.unit, unit) then
-                frame.classFrame:set_settings(guid)
-                break
+            if frame:IsShown() and frame.classFrame then
+                if UnitGUID('party'..i)==guid then
+                    frame.classFrame:set_settings(guid)
+                    break
+                end
             end
         end
     end
+
     if WoWTools_UnitMixin:UnitIsUnit(unit, 'target') and TargetFrame.classFrame then
         TargetFrame.classFrame:set_settings(guid)
     end

@@ -63,6 +63,7 @@ local function Craete_Frame(frame)
             self.itemLevel:SetTextColor(r, g, b)
         end
         self:SetShown(isShow)
+        self.Texture:SetShown(level)
     end
 
     frame.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', frame.unit)
@@ -92,7 +93,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     local unit= frame.unit
 
     if not WoWTools_UnitMixin:UnitExists(unit)
-        or not UnitIsPlayer(unit)
+        --or not UnitIsPlayer(unit)
         or unit:find('nameplate')
     then
         if frame.classFrame then

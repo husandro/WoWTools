@@ -616,34 +616,29 @@ end
 
 
 
-
+local function Cached_Player(time, unit)
+    C_Timer.After(time, function()
+        NotifyInspect(unit)
+    end)
+end
 
 
 
 
 --#######
 --取得装等
---#######
-local NotifyInspectTicker
+----and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1) self:UnitGUID(unit)
 function WoWTools_UnitMixin:GetNotifyInspect(tab, unit)
     if unit then
-        if self:UnitGUID(unit) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1)
+        if CanInspect(unit) then
             NotifyInspect(unit)
         end
-    else
-        tab=tab or {}
-        local num, index= #tab, 1
-        if num>0 then
-            if NotifyInspectTicker and not NotifyInspectTicker:IsCancelled() then
-                NotifyInspectTicker:Cancel()
+    elseif tab then
+        local time= 1
+        for _, u in pairs(tab) do
+            if CanInspect(u) then
+               Cached_Player(time, unit)
             end
-            NotifyInspectTicker=C_Timer.NewTimer(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
-                local unit2=tab[index]
-                if self:UnitGUID(unit2) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit2, 1)
-                    NotifyInspect(tab[index])
-                    index= index+ 1
-                end
-            end, num)
         end
     end
 end
