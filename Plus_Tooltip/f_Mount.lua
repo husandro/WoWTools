@@ -32,7 +32,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
         ..WoWTools_DataMixin.Icon.icon2
         ..'|cffffffff'..spellID,
 
-        'mountID'
+        (WoWTools_DataMixin.onlyChinese and '坐骑' or PERKS_VENDOR_CATEGORY_MOUNT)
         ..WoWTools_DataMixin.Icon.icon2
         ..'|cffffffff'
         ..mountID
@@ -59,7 +59,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID, spellVisualKitID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
         tooltip:AddDoubleLine(
-            'creatureDisplayInfoID'
+            'displayID'
             ..WoWTools_DataMixin.Icon.icon2
             ..'|cffffffff'
             ..creatureDisplayInfoID,

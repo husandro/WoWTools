@@ -92,7 +92,8 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
     tooltip:AddDoubleLine(
         spellTexture and '|T'..spellTexture..':'..self.iconSize..'|t|cffffffff'..spellTexture or ' ',
 
-        'spellID|cffffffff'
+        --'spellID|cffffffff'
+        (WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)
         ..WoWTools_DataMixin.Icon.icon2
         ..spellID
     )

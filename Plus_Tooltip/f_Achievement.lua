@@ -31,7 +31,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
     tooltip:AddDoubleLine(
         icon and '|T'..icon..':'..self.iconSize..'|t|cffffffff'..icon or ' ',
 
-        'achievementID'
+        (WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENTS)
         ..WoWTools_DataMixin.Icon.icon2
         ..(flags==0x20000 and '|cff00ccff'..WoWTools_DataMixin.Icon.wow2 or '|cffffffff')
         ..achievementID

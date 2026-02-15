@@ -21,7 +21,8 @@ function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
 
     tooltip:AddDoubleLine(
         icon and '|T'..icon..':'..self.iconSize..'|t|cffffffff'..icon or ' ',
-        'auraID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..spellID
+        (WoWTools_DataMixin.onlyChinese and '光环' or AURAS)
+        ..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..spellID
     )
 
     local mountID = C_MountJournal.GetMountFromSpell(spellID)
@@ -75,5 +76,6 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
         ..format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)
     )
 
-    WoWTools_TooltipMixin:Show(tooltip)
+    tooltip:Show()
+    --WoWTools_TooltipMixin:Show(tooltip)
 end

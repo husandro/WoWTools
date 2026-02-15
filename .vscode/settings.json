@@ -3032,7 +3032,11 @@
         "TalentDisplayMixin",
         "AchievementButton_LocalizeMiniAchievement",
         "ITEM_LEVEL_PLUS",
-        "BATTLE_PET_CAGE_TOOLTIP_LEVEL"
+        "BATTLE_PET_CAGE_TOOLTIP_LEVEL",
+        "ACHIEVEMENT_BUTTON",
+        "PERKS_VENDOR_CATEGORY_MOUNT",
+        "ACCESSIBILITY_MOUNT_LABEL",
+        "ICON_FILTER_SPELL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

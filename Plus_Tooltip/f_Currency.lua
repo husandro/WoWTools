@@ -22,7 +22,7 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     tooltip:AddDoubleLine(
        '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'..col..(info2.iconFileID or ''),
 
-        'currencyID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..currencyID..icon
+        (WoWTools_DataMixin.onlyChinese and '货币' or CURRENCY)..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..currencyID..icon
     )
 
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望

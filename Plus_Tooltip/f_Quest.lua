@@ -32,7 +32,9 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     end
 
     tooltip:AddDoubleLine(
-        'questID|cffffffff'
+        --'questID|cffffffff'
+        (WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)
+        ..'|cffffffff'
         ..WoWTools_DataMixin.Icon.icon2
         ..questID,
 
