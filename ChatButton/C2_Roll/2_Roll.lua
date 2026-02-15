@@ -14,6 +14,7 @@ local RollTab={}
 
 local panel= CreateFrame('Frame')
 
+local RANDOM_ROLL_RESULT= WoWTools_TextMixin:Magic(RANDOM_ROLL_RESULT)--"%s掷出%d（%d-%d）";
 
 
 --local MaxPlayer, MinPlayer
@@ -28,13 +29,27 @@ local function findRolled(name)--查找是否ROLL过
     end
 end
 
-local rollText= WoWTools_TextMixin:Magic(RANDOM_ROLL_RESULT)--"%s掷出%d（%d-%d）";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function setCHAT_MSG_SYSTEM(text)
     if not canaccessvalue(text) or not text then
         return
     end
-    local name, roll, minText, maxText=text:match(rollText)
+    local name, roll, minText, maxText=text:match(RANDOM_ROLL_RESULT)
     roll=  roll and tonumber(roll)
     if not (name and roll and minText=='1' and (maxText=='100' or maxText=='1000')) then
         return
@@ -61,6 +76,7 @@ local function setCHAT_MSG_SYSTEM(text)
     if name==WoWTools_DataMixin.Player.Name_Realm then
         faction= WoWTools_DataMixin.Player.Faction
         guid= WoWTools_DataMixin.Player.GUID
+    
     elseif WoWTools_DataMixin.GroupGuid[name] then
         faction= WoWTools_DataMixin.GroupGuid[name].faction
         guid= WoWTools_DataMixin.GroupGuid[name].guid
@@ -430,5 +446,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         setRest()--重置
+
     end
 end)
+

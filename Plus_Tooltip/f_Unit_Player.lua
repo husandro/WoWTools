@@ -34,17 +34,14 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     --tooltip.Portrait:SetShown(true)
 
 --取得玩家信息
-    local info= WoWTools_DataMixin.PlayerInfo[guid]
-    if info then
+    local data= WoWTools_DataMixin.PlayerInfo[guid]
+    if data then
         if not isInCombat then
             WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得装等
         end
 
-        if info.itemLevel then--设置装等
-            if info.itemLevel>1 then
-                textLeft= info.itemLevel
-            end
-        end
+        textLeft= info.itemLevel----设置装等
+
         if info.specID then--设置天赋
             local icon, role= select(4, GetSpecializationInfoByID(info.specID))
             if icon then

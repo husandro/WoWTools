@@ -122,66 +122,6 @@ end)
 
 
 
---队伍数据收集
-local function GetGroupGuidDate()--队伍数据收集
-    WoWTools_DataMixin.GroupGuid={}
-    local UnitTab={}
-    if IsInRaid() then
-        for index= 1, MAX_RAID_MEMBERS do --GetNumGroupMembers() do
-            local unit= 'raid'..index
-            if WoWTools_UnitMixin:UnitExists(unit) then
-                local guid= UnitGUID(unit)
-                local _, _, subgroup, _, _, _, _, _, _, role, _, combatRole = GetRaidRosterInfo(index)
-                if guid then
-                    local tab={
-                        unit=unit,
-                        subgroup= subgroup,
-                        combatRole= role or combatRole,
-                        faction= UnitFactionGroup(unit),
-                    }
-                    WoWTools_DataMixin.GroupGuid[guid]= tab
-                    tab.guid= guid
-                    WoWTools_DataMixin.GroupGuid[GetUnitName(unit, true)]= tab
-                    if not WoWTools_DataMixin.PlayerInfo[guid] or not WoWTools_DataMixin.PlayerInfo[guid].itemLevel then
-                        table.insert(UnitTab, unit)
-                    end
-                end
-            end
-        end
-    elseif IsInGroup() then
-        for index= 1, 4 do
-            local unit= 'party'..index
-            local guid= WoWTools_UnitMixin:UnitExists(unit) and UnitGUID(unit)
-            if guid then
-                WoWTools_DataMixin.GroupGuid[guid]= {
-                    unit= unit,
-                    combatRole= UnitGroupRolesAssigned(unit),
-                    faction= UnitFactionGroup(unit),
-                }
-                WoWTools_DataMixin.GroupGuid[GetUnitName(unit, true)]= {
-                    unit= unit,
-                    combatRole= UnitGroupRolesAssigned(unit),
-                    guid=guid,
-                    faction= UnitFactionGroup(unit),
-                }
-                if not WoWTools_DataMixin.PlayerInfo[guid] or not WoWTools_DataMixin.PlayerInfo[guid].itemLevel then
-                    table.insert(UnitTab, unit)
-                end
-            end
-        end
-    end
-    WoWTools_UnitMixin:GetNotifyInspect(UnitTab)--取得装等
-end
-
-
-EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", function()
-    GetGroupGuidDate()
-end)
-EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", function()
-    GetGroupGuidDate()
-end)
-
-
 
 
 

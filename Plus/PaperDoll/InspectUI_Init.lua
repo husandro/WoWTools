@@ -107,15 +107,15 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
     local unit= InspectFrame.unit or 'target'
     if not Save().hide and unit and WoWTools_UnitMixin:UnitExists(unit) then
         local guid= unit and UnitGUID(unit)
-        local info= guid and WoWTools_DataMixin.PlayerInfo[guid]
-        if info then
+        local data= guid and WoWTools_DataMixin.PlayerInfo[guid]
+        if data then
             local level= UnitLevel(unit)
             local effectiveLevel= UnitEffectiveLevel(unit)
             local sex = UnitSex(unit)
 
             local text= WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil)
 
-            local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
+            local icon, role = select(4, GetSpecializationInfoByID(data.specID or 0, sex))
             if icon and role then
                 text=text..'|T'..icon..':0|t'..WoWTools_DataMixin.Icon[role]
             end
@@ -126,14 +126,14 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
                 end
             end
             text= text..(sex== 2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or sex==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or '|A:charactercreate-icon-customize-body-selected:0:0|a')
-            text= text.. info.itemLevel
-            if info.col then
-                text= info.col..text..'|r'
+            text= text.. data.itemLevel
+            if data.color then
+                text= data.color:WrapTextInColorCode(text)
             end
             InspectLevelText:SetText(text)
         end
 
-        info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+        local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
         if info and info.currentSeasonScore and info.currentSeasonScore>0 then
             key= WoWTools_ChallengeMixin:KeystoneScorsoColor(info.currentSeasonScore,true)
         end

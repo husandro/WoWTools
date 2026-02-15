@@ -77,7 +77,7 @@ local function Craete_Frame(frame)
             self.itemLevel:SetTextColor(r,g,b)
             self.Texture:SetShown(texture)
         end
-        print(texture,itemLevel)
+        print(unit, texture,itemLevel)
         self:SetShown(isShow)
        
     end
@@ -102,7 +102,7 @@ local function Craete_Frame(frame)
         local unit= self:GetParent().unit
         if event=='PLAYER_SPECIALIZATION_CHANGED' then
             WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得玩家信息
-        else
+        elseif canaccessvalue(guid) and guid and WoWTools_UnitMixin:UnitIsUnit(unit, UnitTokenFromGUID(guid)) then
             C_Timer.After(0.3, function()
                 self:set_settings()
             end)

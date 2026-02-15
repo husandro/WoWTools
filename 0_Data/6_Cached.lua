@@ -2,9 +2,7 @@
 
 WoWTools_DataMixin.WoWGUID={}--战网，好友GUID--WoWTools_DataMixin.WoWGUID[名称-服务器]=guid
 WoWTools_DataMixin.PlayerInfo={}--玩家装等
-WoWTools_DataMixin.GroupGuid={}--队伍数据收集
-
-WoWTools_DataMixin.PlayerInfo={}
+WoWTools_DataMixin.GroupGuid={}--队伍数据收集 name={faction=, guid=}
 
 
 
@@ -14,26 +12,6 @@ WoWTools_DataMixin.PlayerInfo={}
 
 
 
-
-
-local function Cached_Group(unit)
-    local guid= UnitGUID(unit)
-    if not canaccessvalue(guid) or not guid then
-        return
-    end
-
-    WoWTools_DataMixin.GroupGuid[guid]= {
-        unit= unit,
-        combatRole= UnitGroupRolesAssigned(unit),
-        faction= UnitFactionGroup(unit),
-    }
-    WoWTools_DataMixin.GroupGuid[GetUnitName(unit, true)]= {
-        unit= unit,
-        combatRole= UnitGroupRolesAssigned(unit),
-        guid=guid,
-        faction= UnitFactionGroup(unit),
-    }
-end
 
 
 
@@ -146,3 +124,78 @@ EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--
     end]]
 end)
 
+
+
+
+
+
+
+
+
+
+
+
+
+--队伍数据收集
+local function GetGroupGuidDate()--队伍数据收集
+    local UnitTab={}
+
+    if IsInRaid() then
+        for index= 1, MAX_RAID_MEMBERS do --GetNumGroupMembers() do
+            local unit= 'raid'..index
+            if WoWTools_UnitMixin:UnitExists(unit) then
+                local _, _, subgroup, _, _, _, _, _, _, role, _, combatRole = GetRaidRosterInfo(index)
+                table.insert(UnitTab, {
+                    name= UnitName(unit),
+                    faction= UnitFactionGroup(unit),
+                    unit=unit,
+                    guid= UnitGUID(unit),
+                    combatRole= combatRole or role,
+                    subgroup= subgroup
+                })
+            end
+        end
+
+    elseif IsInGroup() then
+        for index= 1, 4 do
+            local unit= 'party'..index
+            if WoWTools_UnitMixin:UnitExists(unit) then
+                table.insert(UnitTab, {
+                    name= UnitName(unit),
+                    faction= UnitFactionGroup(unit),
+                    unit= unit,
+                    guid= UnitGUID(unit),
+                    combatRole=UnitGroupRolesAssigned(unit),
+                })
+            end
+        end
+    end
+
+    local unitList= {}
+    for _, tab in pairs(UnitTab) do
+        if tab.name then
+            WoWTools_DataMixin.GroupGuid[tab.name]= tab
+        end
+        if tab.guid then
+            WoWTools_DataMixin.GroupGuid[tab.guid]= tab
+        end
+        table.insert(unitList, tab.unit)
+    end
+
+    WoWTools_UnitMixin:GetNotifyInspect(unitList)--取得装等
+end
+
+
+
+
+
+
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", function()
+    GetGroupGuidDate()
+end)
+EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", function()
+    GetGroupGuidDate()
+end)

@@ -176,16 +176,12 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
         local _, englishClass, _, englishRace, sex, name2, realm = GetPlayerInfoByGUID(guid)
         name= name2
 
-        if guid and (not faction or unit) then
-            if WoWTools_DataMixin.GroupGuid[guid] then
-                unit = unit or WoWTools_DataMixin.GroupGuid[guid].unit
-                faction= faction or WoWTools_DataMixin.GroupGuid[guid].faction
-            end
-        end
-
-        local friend= self:GetIsFriendIcon(nil, guid, nil)--检测, 是否好友
         local groupInfo= WoWTools_DataMixin.GroupGuid[guid] or {}--队伍成员
+        local friend= self:GetIsFriendIcon(nil, guid, nil)--检测, 是否好友
         local server= not reNotRegion and WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
+
+        unit= groupInfo.unit or unit
+        faction= groupInfo.faction or faction
 
         text= (server and server.col or '')
                     ..(friend or '')
@@ -602,31 +598,27 @@ end
 
 local function Cached_Player(time, unit)
     C_Timer.After(time, function()
-        NotifyInspect(unit)
+        if CanInspect(unit) then
+            NotifyInspect(unit)
+        end
     end)
 end
 
 
 
 
---#######
 --取得装等
-----and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1) self:UnitGUID(unit)
 function WoWTools_UnitMixin:GetNotifyInspect(tab, unit)
     if canaccessvalue(unit) and unit then
-        if InspectFrame and InspectPaperDollFrame.unit==unit then
-            return
-        end
-
         if CanInspect(unit) then
             NotifyInspect(unit)
         end
     elseif tab then
         local time= 1
         for _, u in pairs(tab) do
-            if canaccessvalue(u) and CanInspect(u) then
+            if canaccessvalue(u) then
                Cached_Player(time, u)
-               time= time+ 2
+               time= time+ 1
             end
         end
     end

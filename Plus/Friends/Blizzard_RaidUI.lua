@@ -72,8 +72,9 @@ local function Init_RaidGroupFrame_Update()
 
                 if subframes.class and fileName then
                     local text
-                    if WoWTools_DataMixin.PlayerInfo[guid] and WoWTools_DataMixin.PlayerInfo[guid].specID then
-                        local texture= select(4, GetSpecializationInfoForSpecID(WoWTools_DataMixin.PlayerInfo[guid].specID))
+                    local data= WoWTools_DataMixin.PlayerInfo[guid] or {}
+                    if data.specID then
+                        local texture= select(4, GetSpecializationInfoForSpecID(data.specID))
                         if texture then
                             text= "|T"..texture..':0|t'
                         end
@@ -81,9 +82,9 @@ local function Init_RaidGroupFrame_Update()
                     text= text or WoWTools_UnitMixin:GetClassIcon(nil, nil, fileName)--职业图标
 
                     if text then
-                        if guid and WoWTools_DataMixin.PlayerInfo[guid] and WoWTools_DataMixin.PlayerInfo[guid].itemLevel then
-                            text= WoWTools_DataMixin.PlayerInfo[guid].itemLevel..text
-                            itemLevel= itemLevel+ WoWTools_DataMixin.PlayerInfo[guid].itemLevel
+                        if data.itemLevel then
+                            text= data[guid].itemLevel..text
+                            itemLevel= itemLevel+ data.itemLevel
                             itemNum= itemNum+1
                         else
                             table.insert(getItemLevelTab, unit)--取得装等

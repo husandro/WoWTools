@@ -437,7 +437,7 @@ local function WoWTools_Word_Filters(_, _, msg, name, _, _, _, _, _, _, _, _, _,
         elseif not guid
             or guid== WoWTools_DataMixin.Player.GUID
             or WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, name)
-            or WoWTools_DataMixin.GroupGuid[guid]
+            or WoWTools_DataMixin.GroupGuid[name]
         then--自已, 好友
             return false
 

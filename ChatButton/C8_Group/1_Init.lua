@@ -71,7 +71,7 @@ local function Settings(self)--队伍信息提示
     )
 
     local combatRole
-    local tab=WoWTools_DataMixin.GroupGuid[WoWTools_DataMixin.Player.GUID]
+    local tab=WoWTools_DataMixin.PlayerInfo[WoWTools_DataMixin.Player.GUID]
     if tab then
         combatRole=tab.combatRole
     end
