@@ -50,9 +50,9 @@ local function Init()
     end)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '开启友方姓名板' or NAMEPLATES_MESSAGE_FRIENDLY_ON)
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '开启友方姓名板' or NAMEPLATES_MESSAGE_FRIENDLY_ON)
+        )
         if InCombatLockdown() then
             GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end

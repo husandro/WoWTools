@@ -932,8 +932,9 @@ local function Init()
             else
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             end
+            GameTooltip:ClearLines()
         end
-        GameTooltip:SetText(WoWTools_HolidayMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip:AddLine(WoWTools_HolidayMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)

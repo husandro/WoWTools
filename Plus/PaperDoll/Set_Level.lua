@@ -29,7 +29,7 @@ local function Init()
             return
         end
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             'name |cffffffff'..info.name,
@@ -185,8 +185,7 @@ local function Init()
         end
 
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:SetText(WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())..WoWTools_DataMixin.Icon.left)
 
@@ -223,7 +222,7 @@ local function Init()
     end)
     Frame.durabiliy:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         WoWTools_DurabiliyMixin:OnEnter()
         GameTooltip:Show()

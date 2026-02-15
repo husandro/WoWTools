@@ -126,7 +126,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
@@ -154,7 +154,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '本周完成次数' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHALLENGE_MODE_THIS_WEEK, COMPLETE))
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '本周完成次数' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHALLENGE_MODE_THIS_WEEK, COMPLETE))
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
@@ -183,7 +183,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
@@ -244,7 +244,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
@@ -269,7 +269,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '公会' or GUILD)
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '公会' or GUILD)
                         GameTooltip:Show()
                         self:SetAlpha(0.3)
                     </OnEnter>
@@ -306,7 +306,7 @@
                     <OnEnter>
                         local data= self:GetParent().data
                         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '名称' or NAME)
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '名称' or NAME)
                         local guid= data and data.guid
                         if guid then
                             local name, realmName = select(6, GetPlayerInfoByGUID(guid))
@@ -350,7 +350,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(
+                        GameTooltip_SetTitle(GameTooltip, 
                             '|A:tokens-guildRealmTransfer-small:0:0|a'
                             ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
                         )
@@ -387,7 +387,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
@@ -415,7 +415,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
@@ -443,7 +443,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '世界' or WORLD)
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '世界' or WORLD)
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
@@ -471,7 +471,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText('PvP')
+                        GameTooltip_SetTitle(GameTooltip, 'PvP')
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
@@ -499,7 +499,7 @@
                     </OnLeave>
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '钥石' or CHALLENGE_MODE_KEYSTONE_NAME:format(''))
+                        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '钥石' or CHALLENGE_MODE_KEYSTONE_NAME:format(''))
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>

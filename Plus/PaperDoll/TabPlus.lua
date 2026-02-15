@@ -174,8 +174,6 @@ local function Init()
             ..WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)
         )
-        --GameTooltip:SetText(CharacterStatsPane.ItemLevelFrame.tooltip)
-        --GameTooltip:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)

@@ -10,7 +10,7 @@ local function Set_Sctipt(object)
     object:SetScript('OnEnter', function(self)
         self:SetAlpha(0.3)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..self.tooltip)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.Icon.icon2..self.tooltip)
         GameTooltip:Show()
     end)
 end

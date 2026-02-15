@@ -1792,8 +1792,7 @@ local function Init_List(showListType, isShow)
     end)
     Frame.IsMe:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:ClearLines()
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip,
             '|A:common-search-magnifyingglass:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
@@ -2146,7 +2145,7 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
 
     btn:SetScript('OnEnter', function(s)
         GameTooltip:SetOwner(s, "ANCHOR_LEFT")
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             WoWTools_DataMixin.Icon.wow2
             ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
         )

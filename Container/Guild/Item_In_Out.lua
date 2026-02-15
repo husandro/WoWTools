@@ -645,7 +645,7 @@ local function Init()
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
 
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip,
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
             ..'|A:dressingroom-button-appearancelist-up:0:0|a'
@@ -671,7 +671,7 @@ local function Init()
     btn2:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
 
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip,
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)
             ..'|A:dressingroom-button-appearancelist-up:0:0|a'

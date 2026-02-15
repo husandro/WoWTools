@@ -87,7 +87,7 @@ local function set_areaPoiID(tooltip, uiMapID, areaPoiID)
         local verticalPadding = nil
 
         if hasName then
-            GameTooltip_SetTitle(tooltip, WoWTools_TextMixin:CN(poiInfo.name), HIGHLIGHT_FONT_COLOR)
+            GameTooltip_SetTitle(tooltip, WoWTools_TextMixin:CN(poiInfo.name))
             addedTooltipLine = true
         end
 

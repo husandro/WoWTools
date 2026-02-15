@@ -116,7 +116,9 @@ local function Init_General()
     end
     function MovementSpeed_OnEnter(statFrame)
         GameTooltip:SetOwner(statFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText(HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, WoWTools_DataMixin.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED).." "..format("%d%%", statFrame.speed+0.5)..FONT_COLOR_CODE_CLOSE)
+        GameTooltip_SetTitle(GameTooltip,
+            format(PAPERDOLLFRAME_TOOLTIP_FORMAT, WoWTools_DataMixin.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED).." "..format("%d%%", statFrame.speed+0.5)
+        )
         GameTooltip:AddLine(" ")
         GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '奔跑速度：%d%%' or STAT_MOVEMENT_GROUND_TOOLTIP, statFrame.runSpeed+0.5))
         GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '游泳速度：%d%%' or STAT_MOVEMENT_SWIM_TOOLTIP, statFrame.swimSpeed+0.5))
@@ -410,7 +412,9 @@ local function Init()
     function CharacterStatsPane.ItemLevelFrame.Value:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         local bit= Save().itemLevelBit or -1
-        GameTooltip:SetText(WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)--, WoWTools_PaperDollMixin.StatusPlusButton)
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2
+        )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '小数 ' or 'Decimals ')

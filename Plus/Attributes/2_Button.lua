@@ -132,7 +132,7 @@ local function Init()
 
     function button:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')

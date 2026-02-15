@@ -60,7 +60,10 @@ local function Create_Button(btn)
         end
         local entryInfo= self:get_entryInfo()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:SetText(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING))
+        GameTooltip_SetTitle(GameTooltip,
+            --WoWTools_TooltipMixin.addName..
+            WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
+        )
 
         local obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
         if obj then

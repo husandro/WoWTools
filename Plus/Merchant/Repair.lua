@@ -172,7 +172,9 @@ local function Init()
 
     MerchantRepairItemButton:SetScript('OnEnter', function(self)--替换，源FUNC
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-		GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '修理一件物品' or REPAIR_AN_ITEM)
+		GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '修理一件物品' or REPAIR_AN_ITEM)
+        )
         GameTooltip:AddLine(' ')
         WoWTools_DurabiliyMixin:OnEnter()
         GameTooltip:Show()
@@ -221,7 +223,9 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
         local repairAllCost, canRepair = GetRepairAllCost()
         if ( canRepair and (repairAllCost > 0) ) then
-            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS)
+            GameTooltip_SetTitle(GameTooltip,
+                WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS)
+            )
             SetTooltipMoney(GameTooltip, repairAllCost)
             local personalMoney = GetMoney()
             if(repairAllCost > personalMoney) then

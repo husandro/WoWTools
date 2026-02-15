@@ -50,7 +50,7 @@ local function Init()
     end)
 
     function btn:tootip()
-        GameTooltip:SetText(WoWTools_DataMixin.addName, WoWTools_DataMixin.Icon.Player..' XY'..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.Icon.Player..' XY'..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)

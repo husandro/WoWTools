@@ -168,7 +168,7 @@ local function Init()--预创建队伍增强
                 return
             end
             GameTooltip:SetOwner(f,  'ANCHOR_LEFT')
-            GameTooltip:SetText(
+            GameTooltip_SetTitle(GameTooltip, 
                 (WoWTools_DataMixin.onlyChinese and '创建' or CREATE_ARENA_TEAM)
                 ..' ('..(WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)..')'
                 ..WoWTools_DataMixin.Icon.left

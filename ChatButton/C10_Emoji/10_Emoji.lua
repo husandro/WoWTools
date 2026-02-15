@@ -194,7 +194,7 @@ local function Init_EmojiFrame()
     end)
     Frame:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             (WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
             ..WoWTools_DataMixin.Icon.icon2
             ..'Alt+'..WoWTools_DataMixin.Icon.left
@@ -231,7 +231,7 @@ local function Init_EmojiFrame()
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self:GetParent().texture2, "ANCHOR_TOP")
-            GameTooltip:SetText(
+            GameTooltip_SetTitle(GameTooltip, 
                 '|T'..EmojiButton:get_texture(self:GetID())..':26|t'
                 ..self.text
             )

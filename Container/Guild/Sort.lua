@@ -206,7 +206,7 @@ local function Init()
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
 
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip,
             '|A:bags-button-autosort-up:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '整理银行' or BAG_CLEANUP_BANK)
             ..WoWTools_DataMixin.Icon.left

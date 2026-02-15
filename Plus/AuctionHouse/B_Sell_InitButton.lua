@@ -228,7 +228,7 @@ local function Init()
 --按钮
     function AuctionHouseButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(WoWTools_AuctionHouseMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_AuctionHouseMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()

@@ -57,7 +57,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
         local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(f.traitCurrencyID))
 
         GameTooltip:SetOwner(f, "ANCHOR_BOTTOM")
-        GameTooltip:SetText('traitCurrencyID'..WoWTools_DataMixin.Icon.icon2..f.traitCurrencyID)
+        GameTooltip_SetTitle(GameTooltip, 'traitCurrencyID|cffffffff'..WoWTools_DataMixin.Icon.icon2..f.traitCurrencyID)
         if overrideIcon then
             GameTooltip:AddLine('|T'..overrideIcon..':0|t'..overrideIcon)
         end
@@ -137,7 +137,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
     end)
     RemixArtifactFrame.NeedostLabe:SetScript('OnEnter', function(f)
         GameTooltip:SetOwner(f, "ANCHOR_BOTTOM")
-        GameTooltip:SetText(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(
             format(
                 WoWTools_DataMixin.onlyChinese and "还需要再花费%i点%s" or GARRISON_TALENT_TREE_REQUIRED_CURRENCY_SPENT_FORMAT,
@@ -174,7 +174,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
     b:SetScript('OnLeave', function() GameTooltip:Hide() end)
     b:SetScript('OnEnter', function(f)
         GameTooltip:SetOwner(f, 'ANCHOR_BOTTOM')
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             (InCombatLockdown() and '|cff606060' or '')
             ..(WoWTools_DataMixin.onlyChinese and '学习' or LEARN)
             ..WoWTools_DataMixin.Icon.left
@@ -237,7 +237,7 @@ C_Timer.After(0.5, function()
             end)
             b:SetScript('OnEnter', function(f)
                 GameTooltip:SetOwner(f, 'ANCHOR_RIGHT')
-                GameTooltip:SetText(
+                GameTooltip_SetTitle(GameTooltip, 
                     WoWTools_DataMixin.Icon.icon2
                     ..(WoWTools_DataMixin.onlyChinese and '升到最高级' or format(LEARN_SKILL_TEMPLATE, HONOR_HIGHEST_RANK))
                 )
@@ -460,7 +460,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_ChallengesUI()
                 name= WoWTools_TextMixin:CN(name)
                 description= WoWTools_TextMixin:CN(description)
             end
-            GameTooltip:SetText(name, 1, 1, 1, 1, true)
+            GameTooltip_SetTitle(GameTooltip, name, nil, true)
             GameTooltip:AddLine(description, nil, nil, nil, true)
         end
         GameTooltip:AddDoubleLine('affixID '..f.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
@@ -542,7 +542,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_ObjectiveTracker()
     WoWTools_DataMixin:Hook(ScenarioChallengeModeAffixMixin, 'OnEnter', function(frame)--ScenarioObjectiveTracker 12.0 才有
         if frame.affixID then
             local name, description, filedataid = C_ChallengeMode.GetAffixInfo(frame.affixID)
-            GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
+            GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(name), nil, true)
             GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
             GameTooltip:AddDoubleLine(
                 filedataid and '|T'..filedataid..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..filedataid,

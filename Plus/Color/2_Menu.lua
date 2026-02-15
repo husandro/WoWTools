@@ -173,7 +173,10 @@ local function Init()
 	btn.autoHideTexture:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)	
 	btn.autoHideTexture:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-		GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
+		GameTooltip_SetTitle(GameTooltip,
+			WoWTools_DataMixin.Icon.icon2
+			..(WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
+		)
 		GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '框架外点击：自动隐藏' or 'Click outside the ColorFrame: Auto-hide')
 		GameTooltip:Show()
 		self:SetAlpha(0.3)

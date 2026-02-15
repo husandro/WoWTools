@@ -604,7 +604,7 @@ local function Init()--添加装备管理框
     TrackButton:SetScript("OnEnter", function (self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 
-        GameTooltip:SetText(WoWTools_PaperDollMixin.addName2..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_PaperDollMixin.addName2..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
 
         WoWTools_DurabiliyMixin:OnEnter()--耐久度, 提示

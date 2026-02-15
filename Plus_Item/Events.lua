@@ -24,7 +24,7 @@ local function Add_OpenOptionButton(frame)
     
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0)
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(WoWTools_ItemMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:Show()

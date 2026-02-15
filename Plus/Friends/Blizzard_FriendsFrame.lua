@@ -672,7 +672,7 @@ local function Init()--好友列表, 初始化
         btn.indexLable:SetScript('OnLeave', function(region) GameTooltip:Hide() region:SetAlpha(1) end)
         btn.indexLable:SetScript('OnEnter', function(region)
             GameTooltip:SetOwner(region, 'ANCHOR_RIGHT')
-            GameTooltip:SetText(
+            GameTooltip_SetTitle(GameTooltip, 
                 WoWTools_DataMixin.Icon.icon2
                 ..(WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)
                 ..WoWTools_DataMixin.Icon.left

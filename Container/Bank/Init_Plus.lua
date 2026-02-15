@@ -196,10 +196,9 @@ local function AddBankTabSettingsToTooltip(self, tabData)
     local isAccount= BankPanel:GetActiveBankType() == Enum.BankType.Account
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip_SetTitle(GameTooltip,
-        (isAccount and '|cff00ccff' or '|cffff8000')
-        ..'|T'..(tabData.icon or 0)..':0|t'
+        '|T'..(tabData.icon or 0)..':0|t'
         ..(tabData.name or ''),
-        NORMAL_FONT_COLOR
+        isAccount and ACCOUNT_WIDE_FONT_COLOR or HIGHLIGHT_FONT_COLOR
     )
     if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionCurrent) then
         local icon= '|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent]..':0:0|a'

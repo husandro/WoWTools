@@ -28,7 +28,7 @@ end
 
 local function Init_OnEnter(self)
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-    GameTooltip:SetText(WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
+    GameTooltip_SetTitle(GameTooltip, WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
     GameTooltip:AddLine(' ')
 
 --位面

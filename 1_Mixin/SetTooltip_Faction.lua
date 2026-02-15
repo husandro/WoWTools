@@ -23,9 +23,9 @@ local function ShowFriendshipReputationTooltip(frame)
 
 	local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(friendshipData.friendshipFactionID)
 	if rankInfo.maxLevel > 0 then
-		GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(friendshipData.name).." ("..rankInfo.currentLevel.."/"..rankInfo.maxLevel..")", HIGHLIGHT_FONT_COLOR)
+		GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(friendshipData.name).." ("..rankInfo.currentLevel.."/"..rankInfo.maxLevel..")")
 	else
-		GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(friendshipData.name), HIGHLIGHT_FONT_COLOR)
+		GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(friendshipData.name))
 	end
 	ReputationUtil.TryAppendAccountReputationLineToTooltip(GameTooltip, factionID)
 	GameTooltip:AddLine(WoWTools_TextMixin:CN(friendshipData.text), nil, nil, nil, true)

@@ -332,7 +332,10 @@ local function Init_Achievement()
             Set_AchievementTemplate(self:GetParent():GetParent(), true)
             self:SetAlpha(0.5)
             GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '进度' or PVP_PROGRESS_REWARDS_HEADER)
+            GameTooltip_SetTitle(GameTooltip,
+                WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '进度' or PVP_PROGRESS_REWARDS_HEADER)
+            )
             GameTooltip:Show()
         end)
 --是否是统计成就
@@ -350,7 +353,9 @@ local function Init_Achievement()
             Set_AchievementTemplate(btn, true)
             self:SetAlpha(0.5)
             GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '统计' or STATISTICS)
+            GameTooltip_SetTitle(GameTooltip,
+                WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '统计' or STATISTICS)
+            )
             GameTooltip:Show()
         end)
 --是否是此角色完成 wasEarnedByMe
@@ -367,7 +372,10 @@ local function Init_Achievement()
             Set_AchievementTemplate(self:GetParent():GetParent(), true)
             self:SetAlpha(0.5)
             GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '完成：|cffffffff我|r' or format(STATISTICS, COMBATLOG_FILTER_STRING_ME))
+            GameTooltip_SetTitle(GameTooltip,
+                WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '完成：|cffffffff我|r' or format('%s: %s', COMPLETE, COMBATLOG_FILTER_STRING_ME))
+            )
             GameTooltip:Show()
         end)
 --奖励提示

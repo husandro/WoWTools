@@ -549,7 +549,7 @@ local function Init()
 
 	function TrackButton:set_tooltip()
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:SetText(WoWTools_FactionMixin.addName..WoWTools_DataMixin.Icon.icon2)
+		GameTooltip_SetTitle(GameTooltip, WoWTools_FactionMixin.addName..WoWTools_DataMixin.Icon.icon2)
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, WoWTools_DataMixin.Icon.left)
 		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)

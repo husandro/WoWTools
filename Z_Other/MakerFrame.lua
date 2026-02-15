@@ -4,6 +4,7 @@ local function Save()
 end
 
 local TargetColor={
+    --[0]= NORMAL_FONT_COLOR,
     [1]= YELLOW_FONT_COLOR,-- {r=1, g=1, b=0, col='|cffffff00'},--星星, 黄色
     [2]= ORANGE_FONT_COLOR,-- {r=1, g=0.45, b=0.04, col='|cffff7f3f'},--圆形, 橙色
     [3]= EPIC_PURPLE_COLOR,--{r=1, g=0, b=1, col='|cffa335ee'},--菱形, 紫色
@@ -18,9 +19,7 @@ local TargetColor={
 
 
 local MakerFrame
-
-
-local Buttons={}--_G[Name..Button[1]]
+local Buttons={}
 local PingButtons={}
 local TargetButtons={}
 local MarkerButtons={}
@@ -325,7 +324,7 @@ local function Init()--设置标记, 框架
             if not Tooltip_SetOwner() then
                 return
             end
-            GameTooltip:SetText(
+            GameTooltip_SetTitle(GameTooltip,
                 WoWTools_DataMixin.Icon.left
                 ..MicroButtonTooltipText(self.name, self.action)
                 ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
@@ -513,7 +512,7 @@ local function Init()--设置标记, 框架
         if not Tooltip_SetOwner() then
             return
         end
-        GameTooltip:SetText(EMOTE127_CMD3)
+        GameTooltip_SetTitle(GameTooltip, EMOTE127_CMD3..' ')
         GameTooltip:Show()
     end)
     MakerFrame.check:SetScript('OnLeave', function()
@@ -566,7 +565,10 @@ local function Init()--设置标记, 框架
         if not Tooltip_SetOwner() then
             return
         end
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '职责选定' or CRF_ROLE_POLL)
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '职责选定' or CRF_ROLE_POLL)
+        )
         GameTooltip:Show()
     end)
     MakerFrame.RolePoll:SetScript('OnLeave', function()
@@ -616,7 +618,7 @@ local function Init()--设置标记, 框架
 
         if index==0 then
             btn:SetAllPoints(MakerFrame.target)
-            
+
             btn:SetAttribute('type', 'raidtarget')
             btn:SetAttribute("action", "clear-all")
             btn.texture= btn:CreateTexture()
@@ -635,10 +637,10 @@ local function Init()--设置标记, 框架
                 if not Tooltip_SetOwner() then
                     return
                 end
-                GameTooltip:SetText(
+                GameTooltip_SetTitle(GameTooltip,
                     '|A:bags-button-autosort-up:0:0|a'
                     ..(WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER),
-                    EPIC_PURPLE_COLOR:GetRGB()
+                    EPIC_PURPLE_COLOR
                 )
                 GameTooltip:Show()
             end)
@@ -687,13 +689,13 @@ local function Init()--设置标记, 框架
                     return
                 end
 
-                GameTooltip:SetText(
+                GameTooltip_SetTitle(GameTooltip,
                     WoWTools_DataMixin.Icon.left
                    ..(WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER)
                    ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..self:GetID()..':26|t'
                    ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                    ..WoWTools_DataMixin.Icon.right,
-                   TargetColor[self:GetID()]:GetRGB()
+                   TargetColor[self:GetID()]
                 )
                 GameTooltip:AddLine(
                     '|A:bags-button-autosort-up:0:0|a'
@@ -814,7 +816,7 @@ local function Init()--设置标记, 框架
                 if not Tooltip_SetOwner() then
                     return
                 end
-                GameTooltip:SetText(
+                GameTooltip_SetTitle(GameTooltip,
                     '|A:bags-button-autosort-up:0:0|a'
                     ..(WoWTools_DataMixin.onlyChinese and '地面' or GROUPMANAGER_GROUND_MARKER),
                     ACCOUNT_WIDE_FONT_COLOR:GetRGB()
@@ -856,13 +858,14 @@ local function Init()--设置标记, 框架
                 if not Tooltip_SetOwner() then
                     return
                 end
-                GameTooltip:SetText(
+
+                GameTooltip_SetTitle(GameTooltip,
                     WoWTools_DataMixin.Icon.left
                     ..(WoWTools_DataMixin.onlyChinese and '地面' or GROUPMANAGER_GROUND_MARKER)
                     ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..self:GetID()..':26|t'
                     ..'|A:bags-button-autosort-up:0:0|a'
                     ..WoWTools_DataMixin.Icon.right,
-                    TargetColor[self:GetID()]:GetRGB()
+                    TargetColor[self:GetID()]
                 )
                 GameTooltip:Show()
                 self:SetAlpha(1)
@@ -1066,7 +1069,7 @@ local function Init()--设置标记, 框架
         if not Tooltip_SetOwner() then
             return
         end
-        GameTooltip:SetText(addName)
+        GameTooltip_SetTitle(GameTooltip, addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         local r,g,b
         if InCombatLockdown() then

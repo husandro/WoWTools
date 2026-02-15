@@ -115,7 +115,7 @@ local function Init()
 	ColorPickerFrame.Content.ColorPicker.Value:HookScript('OnEnter', function(self)
 		if not Save().hide then
 			GameTooltip:SetOwner(ColorPickerFrame, 'ANCHOR_RIGHT')
-			GameTooltip:SetText('+0.01 '..WoWTools_DataMixin.Icon.mid..' -0.01')
+			GameTooltip_SetTitle(GameTooltip, '+0.01 '..WoWTools_DataMixin.Icon.mid..' -0.01')
 			GameTooltip:Show()
 		end
 	end)
@@ -124,7 +124,7 @@ local function Init()
 	ColorPickerFrame.Content.ColorPicker.Alpha:HookScript('OnEnter', function(self)
 		if not Save().hide then
 			GameTooltip:SetOwner(ColorPickerFrame, 'ANCHOR_RIGHT')
-			GameTooltip:SetText('+0.01 Alt+'..WoWTools_DataMixin.Icon.mid..' -0.01')
+			GameTooltip_SetTitle(GameTooltip, '+0.01 Alt+'..WoWTools_DataMixin.Icon.mid..' -0.01')
 			GameTooltip:Show()
 		end
 	end)]]

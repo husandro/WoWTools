@@ -395,7 +395,7 @@ local function set_OnEnter_btn_tips(self)
             local verticalPadding = nil
 
             if hasName then
-                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(poiInfo.name), HIGHLIGHT_FONT_COLOR)
+                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(poiInfo.name))
                 addedTooltipLine = true
             end
 
@@ -1111,8 +1111,8 @@ local function Init_Button()
 
     function TrackButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip_SetTitle(
-            GameTooltip, WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '主菜单' or MAINMENU_BUTTON, WoWTools_DataMixin.Icon.left)

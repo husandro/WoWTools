@@ -594,7 +594,7 @@ local function Init()
 
     function Button:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '列表信息' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_QUEUE_TOOLTIP_HEADER, INFO))
         )

@@ -24,7 +24,7 @@ local function Create_BossButtonList(btn)
     btn.indexLabel:SetAlpha(0.5)
     btn.indexLabel:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '索引' or 'index')
             ..' |cffffffff'..(self:GetText() or '')
@@ -123,7 +123,7 @@ local function Create_BossButtonList(btn)
 
         local cn= WoWTools_TextMixin:CN(bossName) or bossName
         bossName= cn~=bossName and cn..' '..bossName or bossName or self.encounterID
-        GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..bossName)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.Icon.icon2..bossName)
 --journalEncounterID journalInstanceID
         journalEncounterID= journalEncounterID or self.encounterID
         GameTooltip:AddDoubleLine('journalEncounterID |cffffffff'..journalEncounterID, journalInstanceID  and 'journalInstanceID |cffffffff'..journalInstanceID)
@@ -151,7 +151,7 @@ local function Create_BossButtonList(btn)
     btn.creatureNumLabel:EnableMouse(true)
     btn.creatureNumLabel:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CREATURE))
             ..' |cffffffff'..self:GetText()

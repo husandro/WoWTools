@@ -37,7 +37,7 @@ local function Create_Button(btn)
     btn.useButton:SetScript('OnLeave', GameTooltip_Hide)
     btn.useButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             WoWTools_DataMixin.Icon.icon2
             ..(C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID) and '|cff606060' or '')
             ..(WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP)
@@ -72,8 +72,7 @@ local function Create_Button(btn)
     end)
     btn.createButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:SetText(WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip, WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(self.str,
             C_EquipmentSet.GetEquipmentSetID(self.str)

@@ -393,7 +393,10 @@ local function Init_Buttons()--挑战,钥石,插入界面
     stop:SetScript('OnLeave', GameTooltip_Hide)
     stop:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.Player.IsCN and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'))
+        GameTooltip_SetTitle(GameTooltip,
+            '|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.Player.IsCN and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'),
+            WARNING_FONT_COLOR
+        )
         GameTooltip:Show()
     end)
 

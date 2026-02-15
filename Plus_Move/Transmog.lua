@@ -193,7 +193,10 @@ local function Init()
     TransmogFrame.OutfitCollection.PurchaseOutfitButton.Icon:SetPoint('BOTTOMRIGHT', -4, 4)
     TransmogFrame.OutfitCollection.PurchaseOutfitButton:SetScript('OnEnter', function(button)
         GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '购买外观方案栏位' or TRANSMOG_PURCHASE_OUTFIT_SLOT)
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '购买外观方案栏位' or TRANSMOG_PURCHASE_OUTFIT_SLOT)
+        )
         local maxSlot= C_TransmogOutfitInfo.GetMaxNumberOfUsableOutfits()
         if not button:IsEnabled() then
             GameTooltip_AddErrorLine(GameTooltip, format(

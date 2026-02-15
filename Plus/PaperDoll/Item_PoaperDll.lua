@@ -676,8 +676,7 @@ local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
         frame.slotText:SetAlpha(0.3)
         frame.slotText:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:SetText(
+            GameTooltip_SetTitle(GameTooltip, 
                 WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
                 ..' |cffffffff'..self.slot
             )

@@ -176,10 +176,10 @@ local function Init()
     btn:SetScript('OnLeave', function() GameTooltip:Hide() end)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(
-            (BankPanel:GetActiveBankType()== Enum.BankType.Account and '|cff00ccff' or '|cffff8000')
-            ..'|A:dressingroom-button-appearancelist-up:0:0|a'
-            ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+        GameTooltip_SetTitle(GameTooltip,
+            '|A:dressingroom-button-appearancelist-up:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL),
+            BankPanel:GetActiveBankType()==Enum.BankType.Account and ACCOUNT_WIDE_FONT_COLOR or HIGHLIGHT_FONT_COLOR
         )
         GameTooltip:Show()
     end)

@@ -475,7 +475,10 @@ local function Init()
     LFGDungeonReadyDialogCloseButton:HookScript('OnLeave', GameTooltip_Hide)
     LFGDungeonReadyDialogCloseButton:HookScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+        )
         GameTooltip:Show()
     end)
 

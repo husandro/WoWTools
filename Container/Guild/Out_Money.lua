@@ -369,7 +369,9 @@ local function Init()
 
    function btn:tooltip()
         GameTooltip:SetOwner(btn, 'ANCHOR_LEFT')
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '打开公会银行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OPENING, GUILD_BANK))
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.onlyChinese and '打开公会银行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OPENING, GUILD_BANK)
+        )
         GameTooltip:AddLine(' ')
 
         local r

@@ -455,7 +455,7 @@ local function Init_Button()
         end)
         btn:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-            GameTooltip:SetText(self.tooltip..WoWTools_DataMixin.Icon.icon2)
+            GameTooltip_SetTitle(GameTooltip, self.tooltip..WoWTools_DataMixin.Icon.icon2)
             GameTooltip:Show()
         end)
 

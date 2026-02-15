@@ -29,6 +29,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Data\3_DataMixn_Func.lua
 0_Data\4_DataMixn_NeedUpdate.lua
 0_Data\5_MapIDAchievements.lua
+0_Data\6_Cached.lua
 0_Data\z_WoWItemList.lua
 
 1_Mixin\StaticPopupDialogs.lua

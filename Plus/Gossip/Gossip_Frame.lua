@@ -685,7 +685,7 @@ local function Init(isShow)
     List.DeleteAllPlayerData:SetScript('OnLeave', GameTooltip_Hide)
     List.DeleteAllPlayerData:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
         )

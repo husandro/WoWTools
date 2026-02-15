@@ -1294,11 +1294,12 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
             return
         end
         GameTooltip:SetOwner(btn, 'ANCHOR_BOTTOMRIGHT')
-        GameTooltip:SetText(
+        GameTooltip_SetTitle(GameTooltip, 
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '显示冷却时间' or COUNTDOWN_FOR_COOLDOWNS_TEXT)
             ..WoWTools_DataMixin.Icon.right
-            ..WoWTools_TextMixin:GetShowHide(C_CVar.GetCVarBool('buffDurations'), nil)
+            ..WoWTools_TextMixin:GetShowHide(C_CVar.GetCVarBool('buffDurations'), nil),
+            nil
         )
         GameTooltip:Show()
     end)
@@ -1497,7 +1498,10 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     end)
     CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown:SetScript('OnEnter', function(menu)
         GameTooltip:SetOwner(menu, 'ANCHOR_LEFT')
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '限定发送信号' or RAID_MANAGER_RESTRICT_PINGS_TO)
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '限定发送信号' or RAID_MANAGER_RESTRICT_PINGS_TO:gsub(':', ''))
+        )
         GameTooltip:Show()
     end)
 
@@ -1518,7 +1522,10 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     end)
     CompactRaidFrameManagerLeavePartyButton:SetScript('OnEnter', function(btn)
         GameTooltip:SetOwner(btn, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '离开队伍' or PARTY_LEAVE)
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '离开队伍' or PARTY_LEAVE)
+        )
         GameTooltip:Show()
     end)
     CompactRaidFrameManagerLeavePartyButton:SetHighlightAtlas('Forge-ColorSwatchSelection')
@@ -1538,7 +1545,7 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
     end)
     CompactRaidFrameManagerLeaveInstanceGroupButton:SetScript('OnEnter', function(btn)
         GameTooltip:SetOwner(btn, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_TextMixin:CN(btn.Text:GetText()))
+        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.Icon.icon2..(WoWTools_TextMixin:CN(btn.Text:GetText())))
         GameTooltip:Show()
     end)
     CompactRaidFrameManagerLeaveInstanceGroupButton:SetHighlightAtlas('Forge-ColorSwatchSelection')
