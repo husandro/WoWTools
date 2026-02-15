@@ -77,9 +77,8 @@ local function Craete_Frame(frame)
             self.itemLevel:SetTextColor(r,g,b)
             self.Texture:SetShown(texture)
         end
-        print(unit, texture,itemLevel)
+        --print(unit, texture,itemLevel, guid)
         self:SetShown(isShow)
-       
     end
 
     function frame.classFrame:set_event()
@@ -92,30 +91,29 @@ local function Craete_Frame(frame)
     frame.classFrame:SetScript('OnShow', function(self)
         self:set_event()
     end)
-    
 
     frame.classFrame:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()
     end)
 
     frame.classFrame:SetScript('OnEvent', function(self, event, guid)
-        local unit= self:GetParent().unit
+
         if event=='PLAYER_SPECIALIZATION_CHANGED' then
-            WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得玩家信息
-        elseif canaccessvalue(guid) and guid and WoWTools_UnitMixin:UnitIsUnit(unit, UnitTokenFromGUID(guid)) then
-            C_Timer.After(0.3, function()
-                self:set_settings()
-            end)
+            WoWTools_UnitMixin:GetNotifyInspect(nil, self:GetParent().unit)--取得玩家信息
+        else
+            local unit2=UnitTokenFromGUID(guid)
+            if canaccessvalue(unit2) and unit2 and WoWTools_UnitMixin:UnitIsUnit(unit2, frame:GetParent().unt) then
+                C_Timer.After(0.3, function()
+                    self:set_settings()
+                end)
+            end
         end
-        --if event=='PLAYER_SPECIALIZATION_CHANGED' then
-        --elseif canaccessvalue(guid) and guid and WoWTools_UnitMixin:UnitIsUnit(unit, UnitTokenFromGUID(guid)) then    
-        --end
     end)
 
     frame:HookScript('OnEnter', function(self)
         WoWTools_UnitMixin:GetNotifyInspect(nil, self.unit)--取得玩家信息
     end)
-    if frame.classFrame:IsVisible() then
+    if frame:IsShown() then
         frame.classFrame:set_event()
     end
 end
@@ -140,22 +138,26 @@ local function Init()
         return
     end
 
-
-
+    for _, frame in pairs({
+        PlayerFrame,
+        TargetFrame,
+        PartyFrame.MemberFrame1,
+        PartyFrame.MemberFrame2,
+        PartyFrame.MemberFrame3,
+        PartyFrame.MemberFrame4,
+    }) do
+        if frame then
+            Craete_Frame(frame)
+        end
+    end
 
 
     WoWTools_DataMixin:Hook('UnitFrame_Update', function(frame, isParty)
             local unit= frame.unit
-            if not canaccessvalue(unit) or not FindTab[unit] then
-                if frame.classFrame then
-                    frame.classFrame:SetShown(false)
-                end
+            if not canaccessvalue(unit) or not frame.classFrame then
                 return
             end
 
-            if not frame.classFrame then
-                Craete_Frame(frame)
-            end
 
             frame.classFrame:set_settings()
             WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得玩家信息

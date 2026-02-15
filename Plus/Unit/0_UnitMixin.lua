@@ -28,9 +28,11 @@ end]]
 
 
 function WoWTools_UnitMixin:UnitIsUnit(unit, unit2)
-    local isUnit= UnitIsUnit(unit, unit2)
-    if canaccessvalue(isUnit) then
-        return isUnit
+    if canaccessvalue(unit) and unit and canaccessvalue(unit2) and unit2 then
+        local isUnit= UnitIsUnit(unit, unit2)
+        if canaccessvalue(isUnit) then
+            return isUnit
+        end
     end
 end
 

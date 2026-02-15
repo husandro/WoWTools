@@ -211,7 +211,13 @@ FrameUtil.RegisterFrameForEvents(frame, {
 
     'BN_FRIEND_INFO_CHANGED',
 
+    'ZONE_CHANGED_NEW_AREA',
+
 })
+
+
+
+
 frame:SetScript('OnEnter', function(_, event, arg1, ...)
     if event=='PLAYER_ENTERING_WORLD' then
         GetGroupGuidDate()
@@ -225,13 +231,6 @@ frame:SetScript('OnEnter', function(_, event, arg1, ...)
 
     elseif event=='GROUP_LEFT' or event=='GROUP_ROSTER_UPDATE' then
         GetGroupGuidDate()
-
-    elseif event=='PLAYER_EQUIPMENT_CHANGED'
-        or event=='PLAYER_SPECIALIZATION_CHANGED'
-        or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE'
-    then
-        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
-
 
     elseif event=='BARBER_SHOP_RESULT' then
         local success= arg1
@@ -253,6 +252,10 @@ frame:SetScript('OnEnter', function(_, event, arg1, ...)
             WoWTools_DataMixin.Player.Faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
         end
 
+    elseif event=='BN_FRIEND_INFO_CHANGED' then--战网，好友GUID
+        local friendIndex= arg1
+        Get_WoW_GUID_Info(_, friendIndex)
+
     elseif event=='INSPECT_READY' then--取得玩家信息
         local guid= arg1
         local unit= canaccessvalue(guid) and guid and UnitTokenFromGUID(guid)
@@ -266,8 +269,11 @@ frame:SetScript('OnEnter', function(_, event, arg1, ...)
             end
         end
 
-    elseif event=='BN_FRIEND_INFO_CHANGED' then--战网，好友GUID
-        local friendIndex= arg1
-        Get_WoW_GUID_Info(_, friendIndex)
+    elseif event=='PLAYER_EQUIPMENT_CHANGED'
+        or event=='PLAYER_SPECIALIZATION_CHANGED'
+        or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE'
+    then
+        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
+
     end
 end)

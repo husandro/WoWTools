@@ -40,10 +40,10 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得装等
         end
 
-        textLeft= info.itemLevel----设置装等
+        textLeft= data.itemLevel----设置装等
 
-        if info.specID then--设置天赋
-            local icon, role= select(4, GetSpecializationInfoByID(info.specID))
+        if data.specID then--设置天赋
+            local icon, role= select(4, GetSpecializationInfoByID(data.specID))
             if icon then
                 text2Left= '|T'..icon..':0|t'..(WoWTools_DataMixin.Icon[role] or '')
             end
@@ -210,7 +210,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
         end
 
-        info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+        local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
         if info and info.currentSeasonScore and info.currentSeasonScore>0 then
             text= text..' '..(WoWTools_UnitMixin:GetRaceIcon(unit, guid, raceFile, {sex=sex, size=self.iconSize}) or '')
                     ..' '..WoWTools_UnitMixin:GetClassIcon(nil, nil, classFilename, {size=self.iconSize})
