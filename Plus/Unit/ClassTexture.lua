@@ -1,4 +1,18 @@
 
+
+
+
+
+local FindTab= {
+    ['player']=1,
+    ['target']=1,
+    ['party1']=1,
+    ['party2']=1,
+    ['party3']=1,
+    ['party4']=1,
+}
+
+
 --职业, 图标， 颜色
 local function Craete_Frame(frame)
     frame.classFrame= CreateFrame('Frame', nil, frame)
@@ -35,112 +49,74 @@ local function Craete_Frame(frame)
 
     function frame.classFrame:set_settings()
         local unit= self:GetParent().unit
-
-        local guid= WoWTools_UnitMixin:UnitGUID(unit)
-
-        if not guid or not UnitIsPlayer(unit) then
-            self:SetShown(false)
-            return
+        local guid
+        if canaccessvalue(unit) and unit and UnitIsPlayer(unit) then
+            guid= UnitGUID(unit)
         end
 
-        local texture, level
-
-        local specID= GetInspectSpecialization(unit)
-        if canaccessvalue(specID) and specID and specID>0 then
-            texture= select(4, GetSpecializationInfoByID(specID, UnitSex(unit)))
+        local texture, itemLevel
+        if guid then
+            local data= WoWTools_DataMixin.PlayerInfo[guid] or {}
+            local specID= data.specID or GetInspectSpecialization(unit)
+            local item= data.itemLevel or C_PaperDollInfo.GetInspectItemLevel(unit)
+            if specID and specID>0 then
+                texture= select(4, GetSpecializationInfoByID(specID, UnitSex(unit)))
+            end
+            if item>0 then
+                itemLevel= item
+            end
         end
 
-        if WoWTools_DataMixin.UnitItemLevel[guid] then
-            level= WoWTools_DataMixin.UnitItemLevel[guid].itemLevel
-        end
-
-        local isShow= (texture or level) and true or false
+        local isShow= (texture or itemLevel) and true or false
         if isShow then
-            self.itemLevel:SetText(level or '')
+            self.itemLevel:SetText(itemLevel or '')
             self.Portrait:SetTexture(texture or 0)
             local color= WoWTools_UnitMixin:GetColor(unit)
             local r,g,b= color:GetRGB()
             self.Texture:SetVertexColor(r,g,b)
             self.itemLevel:SetTextColor(r,g,b)
+            self.Texture:SetShown(texture)
         end
+        print(texture,itemLevel)
         self:SetShown(isShow)
-        self.Texture:SetShown(texture)
+       
     end
 
-    frame.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', frame.unit)
+    function frame.classFrame:set_event()
+        local unit= self:GetParent().unit
+        self:RegisterEvent('INSPECT_READY')
+        self:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', unit)
+        --self:RegisterEvent('PLAYER_ENTERING_WORLD')
+    end
+
     frame.classFrame:SetScript('OnShow', function(self)
-        self:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', self:GetParent().unit)
+        self:set_event()
     end)
+    
 
     frame.classFrame:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()
     end)
 
-    frame.classFrame:SetScript('OnEvent', function(self)
-        WoWTools_UnitMixin:GetNotifyInspect(nil, self:GetParent().unit)--取得玩家信息
-        C_Timer.After(2, function()
-            self:set_settings()
-        end)
-    end)
-end
-
-
-
-
-
-
-
-local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图标， 颜色
-    local unit= frame.unit
-
-    if not WoWTools_UnitMixin:UnitExists(unit)
-        --or not UnitIsPlayer(unit)
-        or unit:find('nameplate')
-    then
-        if frame.classFrame then
-            frame.classFrame:SetShown(false)
-        end
-        return
-    end
-
-
-    if not frame.classFrame then
-        Craete_Frame(frame)
-    end
-    frame.classFrame:set_settings()
-
-    local color= WoWTools_UnitMixin:GetColor(unit)
-    local r,g,b= color:GetRGB()
-
---名称
-    if frame.name then
-        local name
-        if WoWTools_UnitMixin:UnitIsUnit(unit, 'pet') then
-            frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
+    frame.classFrame:SetScript('OnEvent', function(self, event, guid)
+        local unit= self:GetParent().unit
+        if event=='PLAYER_SPECIALIZATION_CHANGED' then
+            WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得玩家信息
         else
-
-            frame.name:SetTextColor(r,g,b)
-            if isParty then
-                name= UnitName(unit)
-                name= WoWTools_TextMixin:sub(name, 4, 8)
-                frame.name:SetText(name)
-            elseif unit=='target' then
-                local wow= WoWTools_UnitMixin:GetIsFriendIcon(unit)
-                if wow then
-                    name= wow..GetUnitName(unit, false)
-                end
-            end
+            C_Timer.After(0.3, function()
+                self:set_settings()
+            end)
         end
-        if name then
-            frame.name:SetText(name)
-        end
-    end
+        --if event=='PLAYER_SPECIALIZATION_CHANGED' then
+        --elseif canaccessvalue(guid) and guid and WoWTools_UnitMixin:UnitIsUnit(unit, UnitTokenFromGUID(guid)) then    
+        --end
+    end)
 
-
---生命条，颜色，材质
-    if frame.healthbar then
-        frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        frame.healthbar:SetStatusBarColor(r,g,b)--颜色
+    frame:HookScript('OnEnter', function(self)
+        WoWTools_UnitMixin:GetNotifyInspect(nil, self.unit)--取得玩家信息
+    end)
+    if frame.classFrame:IsVisible() then
+        frame.classFrame:set_event()
     end
 end
 
@@ -154,6 +130,11 @@ end
 
 
 
+
+
+
+--UnitFrame.lua
+--职业, 图标， 颜色
 local function Init()
     if WoWToolsSave['Plus_UnitFrame'].hideClassColor then
         return
@@ -163,7 +144,56 @@ local function Init()
 
 
 
-    WoWTools_DataMixin:Hook('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
+    WoWTools_DataMixin:Hook('UnitFrame_Update', function(frame, isParty)
+            local unit= frame.unit
+            if not canaccessvalue(unit) or not FindTab[unit] then
+                if frame.classFrame then
+                    frame.classFrame:SetShown(false)
+                end
+                return
+            end
+
+            if not frame.classFrame then
+                Craete_Frame(frame)
+            end
+
+            frame.classFrame:set_settings()
+            WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得玩家信息
+
+            local color= WoWTools_UnitMixin:GetColor(unit)
+            local r,g,b= color:GetRGB()
+
+        --名称
+            if frame.name then
+                local name
+                if WoWTools_UnitMixin:UnitIsUnit(unit, 'pet') then
+                    frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
+                else
+
+                    frame.name:SetTextColor(r,g,b)
+                    if isParty then
+                        name= UnitName(unit)
+                        name= WoWTools_TextMixin:sub(name, 4, 8)
+                        frame.name:SetText(name)
+                    elseif unit=='target' then
+                        local wow= WoWTools_UnitMixin:GetIsFriendIcon(unit)
+                        if wow then
+                            name= wow..GetUnitName(unit, false)
+                        end
+                    end
+                end
+                if name then
+                    frame.name:SetText(name)
+                end
+            end
+
+
+        --生命条，颜色，材质
+            if frame.healthbar then
+                frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+                frame.healthbar:SetStatusBarColor(r,g,b)--颜色
+            end
+    end)
     Init=function()end
 end
 

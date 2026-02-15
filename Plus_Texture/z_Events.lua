@@ -1481,11 +1481,11 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
             self:SetAlphaColor(line)
         end
 --更新，高度
-        local container= CompactRaidFrameManager.displayFrame
+        --[[local container= CompactRaidFrameManager.displayFrame
         local _, usedY = FlowContainer_GetUsedBounds(container)
         if canaccessvalue(usedY) then
             CompactRaidFrameManager:SetHeight(usedY + 8)
-        end
+        end]]
     end)
 
 --限定发送信号, 菜单

@@ -117,7 +117,7 @@ local function Init()
 --职业
                 t= t..(WoWTools_UnitMixin:GetClassIcon(nil, guid) or '')
 --等级
-                local data= WoWTools_DataMixin.UnitItemLevel[guid]
+                local data= WoWTools_DataMixin.PlayerInfo[guid]
                 if data then
 --专精
                     if data.specID then

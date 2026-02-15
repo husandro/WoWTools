@@ -492,7 +492,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         if guid then
             playerNum= playerNum+1
 
-            if (not WoWTools_DataMixin.UnitItemLevel[guid] or not WoWTools_DataMixin.UnitItemLevel[guid].itemLeve) then
+            if (not WoWTools_DataMixin.PlayerInfo[guid] or not WoWTools_DataMixin.PlayerInfo[guid].itemLeve) then
                 table.insert(UnitTab, unit)
             end
 
@@ -510,7 +510,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
                 if UnitIsPlayer(unit) then
                     info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')
                         ..WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {reName=true, reRealm=true})
-                        ..(WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLeve or '')
+                        ..(WoWTools_DataMixin.PlayerInfo[guid] and WoWTools_DataMixin.PlayerInfo[guid].itemLeve or '')
                 else
                     info.name= UnitName(unit)
                     local classFilename= UnitClassBase(unit)

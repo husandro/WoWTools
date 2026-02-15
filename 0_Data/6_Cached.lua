@@ -1,8 +1,10 @@
 
 
 WoWTools_DataMixin.WoWGUID={}--战网，好友GUID--WoWTools_DataMixin.WoWGUID[名称-服务器]=guid
-WoWTools_DataMixin.UnitItemLevel={}--玩家装等
+WoWTools_DataMixin.PlayerInfo={}--玩家装等
 WoWTools_DataMixin.GroupGuid={}--队伍数据收集
+
+WoWTools_DataMixin.PlayerInfo={}
 
 
 
@@ -37,27 +39,63 @@ end
 
 
 local function Cached_ItemLevel(unit, guid)
-    unit= unit or (canaccessvalue(guid) and guid and UnitTokenFromGUID(guid))
-    if not unit then
+    if not canaccessvalue(unit) or not canaccessvalue(guid) then
+        return
+    end
+
+    unit= unit or (guid and UnitTokenFromGUID(guid))
+    guid= guid or (unit and UnitGUID(unit))
+
+    if not unit or not guid then
         return
     end
 
 
-    local color= WoWTools_UnitMixin:GetColor(unit, guid)
-    local r,g,b= color:GetRGB()
-    local hex= color:GenerateHexColorMarkup()
+    --local color= WoWTools_UnitMixin:GetColor(unit, guid)
+    --local r,g,b= color:GetRGB()
+    --local hex= color:GenerateHexColorMarkup()
+    local itemLevel, specID
+    local data= WoWTools_DataMixin.PlayerInfo[guid] or {}
 
-    local data= WoWTools_DataMixin.UnitItemLevel[guid] or {}
+    local combatRole= UnitGroupRolesAssigned(unit)-- TANK, HEALER, DAMAGER, NONE
+    local faction= UnitFactionGroup('player')
 
-    WoWTools_DataMixin.UnitItemLevel[guid] = {--玩家装等
-        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or data.itemLevel,
-        specID= GetInspectSpecialization(unit) or data.specID,
-        faction= UnitFactionGroup(unit) or data.faction,
-        col= hex,
-        r=r,
-        g=g,
-        b=b,
+    combatRole= combatRole~='NONE' and combatRole or nil
+    faction= faction~='' and faction or data.faction
+
+    if guid==WoWTools_DataMixin.Player.GUID then
+        itemLevel= GetAverageItemLevel()
+        specID= PlayerUtil.GetCurrentSpecID()
+        WoWTools_WoWDate[guid].itemLevel= itemLevel
+        WoWTools_WoWDate[guid].specID= specID
+        WoWTools_WoWDate[guid].faction= faction
+    else
+        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit)
+        itemLevel= itemLevel>0 and itemLevel or data.itemLevel or nil
+
+        specID= GetInspectSpecialization(unit) or 0
+        specID= specID>0 and specID or data.specID or nil
+    end
+
+    if itemLevel then
+        itemLevel= math.floor(itemLevel+ 0.5)
+    end
+
+    WoWTools_DataMixin.PlayerInfo[guid] = {--玩家装等
+        faction= faction,
         level=UnitLevel(unit),
+
+        itemLevel= itemLevel,
+        specID= specID,
+
+        color= WoWTools_UnitMixin:GetColor(unit, guid),
+        combatRole= combatRole,
+        --sex= UnitSex(unit),
+        --col= hex,
+        --r=r,
+        --g=g,
+        --b=b,
+
     }
 end
 
@@ -66,28 +104,32 @@ end
 
 EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--取得玩家信息
     local unit= canaccessvalue(guid) and guid and UnitTokenFromGUID(guid)
+
     if not unit then
         return
     end
 
     Cached_ItemLevel(unit, guid)
 
-    if UnitInParty(unit) and PartyFrame:IsVisible() then
-        --先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
-        for i=1, 4 do
-            local frame= PartyFrame['MemberFrame'..i]
-            if frame:IsShown() and frame.classFrame then
-                if UnitGUID('party'..i)==guid then
-                    frame.classFrame:set_settings(guid)
+    --[[f UnitInParty(unit) and PartyFrame['MemberFrame'..1].classFrame then
+        C_Timer.After(0.3, function()
+            for i=1, 4 do
+                local frame= PartyFrame['MemberFrame'..i]
+                if frame:IsShown() and frame.classFrame then
+                    if UnitGUID('party'..i)==guid then
+                        frame.classFrame:set_settings()
+                        break
+                    end
+                else
                     break
                 end
             end
-        end
+        end)
     end
 
-    if WoWTools_UnitMixin:UnitIsUnit(unit, 'target') and TargetFrame.classFrame then
-        TargetFrame.classFrame:set_settings(guid)
-    end
+    if TargetFrame.classFrame and WoWTools_UnitMixin:UnitIsUnit(unit, 'target') then
+        TargetFrame.classFrame:set_settings()
+    end]]
 
 --设置 GameTooltip
     if  GameTooltip.textLeft and GameTooltip:IsShown() then
@@ -97,10 +139,10 @@ EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--
         end
     end
 
---保存，自已，装等
+--[[保存，自已，装等
     if guid==WoWTools_DataMixin.Player.GUID then
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel= GetAverageItemLevel()
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].specID= PlayerUtil.GetCurrentSpecID()
-    end
+    end]]
 end)
 

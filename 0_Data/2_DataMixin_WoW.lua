@@ -33,8 +33,8 @@ WoWTools_WoWDate[guid]= {--默认数据
     --battleTag
 }
 
-WoWTools_DataMixin.UnitItemLevel=[guid] = {--玩家装等
-        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel),
+WoWTools_DataMixin.PlayerInfo=[guid] = {--玩家装等
+        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (WoWTools_DataMixin.PlayerInfo[guid] and WoWTools_DataMixin.PlayerInfo[guid].itemLevel),
         specID= GetInspectSpecialization(unit),
         faction= UnitFactionGroup(unit),
         col= hex,
@@ -142,7 +142,7 @@ local function GetGroupGuidDate()--队伍数据收集
                     WoWTools_DataMixin.GroupGuid[guid]= tab
                     tab.guid= guid
                     WoWTools_DataMixin.GroupGuid[GetUnitName(unit, true)]= tab
-                    if not WoWTools_DataMixin.UnitItemLevel[guid] or not WoWTools_DataMixin.UnitItemLevel[guid].itemLevel then
+                    if not WoWTools_DataMixin.PlayerInfo[guid] or not WoWTools_DataMixin.PlayerInfo[guid].itemLevel then
                         table.insert(UnitTab, unit)
                     end
                 end
@@ -164,7 +164,7 @@ local function GetGroupGuidDate()--队伍数据收集
                     guid=guid,
                     faction= UnitFactionGroup(unit),
                 }
-                if not WoWTools_DataMixin.UnitItemLevel[guid] or not WoWTools_DataMixin.UnitItemLevel[guid].itemLevel then
+                if not WoWTools_DataMixin.PlayerInfo[guid] or not WoWTools_DataMixin.PlayerInfo[guid].itemLevel then
                     table.insert(UnitTab, unit)
                 end
             end

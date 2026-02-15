@@ -838,22 +838,22 @@ end
 EventsTable.SPEED= function(frame)
     frame.frame=CreateFrame('Frame', nil, frame)
     frame.frame.elapsed= 0.3
-    frame.frame:SetScript('OnHide', function(self)
+    --[[frame.frame:SetScript('OnHide', function(self)
         self.elapsed= nil
         self.text:SetText('')
     end)
     frame.frame:SetScript('OnShow', function(self)
         self.elapsed= 0.3
-    end)
+    end)]]
     frame.frame:SetScript('OnUpdate', set_SPEED_Text)
 
     frame.frame.text= frame.text
     frame.frame:SetAllPoints()
-    frame:RegisterEvent("PLAYER_STARTED_MOVING")
+    --[[frame:RegisterEvent("PLAYER_STARTED_MOVING")
     frame:RegisterEvent("PLAYER_STOPPED_MOVING")
     frame:SetScript('OnEvent', function(self, event)
         self.frame:SetShown(event=='PLAYER_STARTED_MOVING')
-    end)
+    end)]]
 end
 
 

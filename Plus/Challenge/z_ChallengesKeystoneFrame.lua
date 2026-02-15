@@ -63,7 +63,7 @@ local function UI_Party_Info()--队友位置
                 text= format('%s|A:%s:0:0|a', text, 'talents-button-reset')
             end
 
-            local tab= WoWTools_DataMixin.UnitItemLevel[guid]--装等
+            local tab= WoWTools_DataMixin.PlayerInfo[guid]--装等
             if tab then
                 if tab.itemLevel then
                     text= text..'|A:charactercreate-icon-customize-body-selected:0:0|a'..tab.itemLevel
