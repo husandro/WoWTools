@@ -59,6 +59,7 @@ local function get_Faction_Info(factionID)
 
 --值
 	local value= data.valueText
+	local xp= data.xp
 
 --有奖励
 	local hasRewardPending= data.hasRewardPending or ''
@@ -69,7 +70,7 @@ local function get_Faction_Info(factionID)
 		text= factionStandingtext
 
 		if value then
-			text= (text or '')..(text and ' ' or '')..value
+			text= (text or '')..(text and ' ' or '')..value..(xp and ' '..xp or '')
 		end
 
 		if text then
@@ -87,7 +88,7 @@ local function get_Faction_Info(factionID)
 		end
 
 	else
-		text= value
+		text= (xp and xp..' ' or '')..value
 		if factionStandingtext then
 			text= (text or '')..(text and ' ' or '').. factionStandingtext
 		end
@@ -184,11 +185,11 @@ local function Crated_Button(index)
     function btn:set_text_point()
 		self.text:ClearAllPoints()
         if Save().toRightTrackText then
-            self.text:SetPoint('LEFT', self, 'RIGHT', -3, 0)
+            self.text:SetPoint('LEFT', self, 'RIGHT')
         else
-            self.text:SetPoint('RIGHT', self, 'LEFT',3, 0)
+            self.text:SetPoint('RIGHT', self, 'LEFT')
         end
-        self.text:SetJustifyH(Save().toRightTrackText and 'LEFT' or 'RIGHT')
+        self.text:SetJustifyH(Save().toRightTrackText and 'RIGHT' or 'LEFT')
     end
 
 	btn.canClickForOptions= true
@@ -225,7 +226,7 @@ local function TrackButton_Settings()
 		for factionID in pairs(Save().factions or {}) do
 			local text, texture, atlas= get_Faction_Info(factionID)
 			if text then
-				table.insert(faction, {text= text, texture=texture, atlas=atlas, factionID=factionID})
+				table.insert(faction, {text=text, texture=texture, atlas=atlas, factionID=factionID})
 			end
 		end
 		table.sort(faction, function(a, b) return a.factionID > b.factionID end)
@@ -260,7 +261,7 @@ local function TrackButton_Settings()
 			btn:SetNormalTexture(0)
 		end
 
-		bgWidth= math.max(btn.text:GetWidth()+16, bgWidth)
+		bgWidth= math.max(btn.text:GetWidth()+25, bgWidth)
 	end
 
 	TrackButton.numButton= #faction

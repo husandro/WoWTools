@@ -40,7 +40,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
         return {}
     end
 
-    local name, factionStandingtext, value, texture, atlas, barColor, isCapped, isUnlocked, expansionID
+    local name, factionStandingtext, value, texture, atlas, barColor, isCapped, isUnlocked, expansionID, xp
     local toRight= not toLeft
 
 --个人声望
@@ -62,6 +62,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
         if not isCapped then
             local currentExperience = repInfo.standing - repInfo.reactionThreshold
             local nextLevelAt = repInfo.nextThreshold - repInfo.reactionThreshold
+            xp= nextLevelAt- currentExperience
             value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', currentExperience/nextLevelAt*100)
         end
 
@@ -75,17 +76,17 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
             isUnlocked= major.isUnlocked
             expansionID= major.expansionID
 
-
             if isUnlocked then
                 if not isCapped then
-                    value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', major.renownReputationEarned/major.renownLevelThreshold*100)                    
+                    xp= major.renownLevelThreshold- major.renownReputationEarned
+                    value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', major.renownReputationEarned/major.renownLevelThreshold*100)
                 end
             else
                 factionStandingtext= '|A:AdventureMapIcon-Lock:0:0|a'
             end
 
             if major.textureKit then
-                
+
                 if major.textureKit=='delve' then
                     atlas= 'delves-bountiful'
                 else
@@ -114,8 +115,11 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
         then
 
             if data.nextReactionThreshold==0 then
+                xp= data.currentReactionThreshold-data.currentStanding
                 value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', (data.currentReactionThreshold-data.currentStanding)/data.currentReactionThreshold*100)
+
             else
+                xp= data.nextReactionThreshold- data.currentStanding
                 value= format('|A:GarrMission_CurrencyIcon-Xp:0:0|a%i%%', data.currentStanding/data.nextReactionThreshold*100)
             end
         end
@@ -159,6 +163,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
             else
                 value= '('..completed..') '..format('%i%%', currentValue/threshold*100)
             end
+
 --等级太低
             if tooLowLevelForParagon then
                 barColor= DISABLED_FONT_COLOR
@@ -185,7 +190,14 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
         end
     end
 
-    
+
+    if xp then
+        if xp<=0 then
+            xp= nil
+        else
+            xp= '|cnWARNING_FONT_COLOR:'..WoWTools_DataMixin:MK(xp, 3)..'|r'
+        end
+    end
 
 
     return {
@@ -202,6 +214,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
 
         factionStandingtext= factionStandingtext,
         valueText= value,
+        xp= xp,
 
         hasRewardPending=hasRewardPending,
         isCapped= isCapped,

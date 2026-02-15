@@ -184,7 +184,11 @@ function WoWTools_DataMixin:MK(number, bit)
         if point==0 then
             return num..t
         else---0.5/10^bit
-            return format('%0.'..bit..'f', number)..t
+            local n= format('%0.'..bit..'f', number)
+            while n:find('0$') do--去掉尾 0
+                n= n:gsub('0$', '')
+            end
+            return n..t
         end
     end
 end

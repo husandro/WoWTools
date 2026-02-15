@@ -145,11 +145,13 @@ local function Init_Menu(self, root)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 	end)
 
---重新加载UI
-	root:CreateDivider()
-    WoWTools_MenuMixin:Reload(root)
+
 --打开选项界面
-	WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_FactionMixin.addName})
+	root:CreateDivider()
+	sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_FactionMixin.addName})
+
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 

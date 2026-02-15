@@ -613,15 +613,20 @@ end
 --取得装等
 ----and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1) self:UnitGUID(unit)
 function WoWTools_UnitMixin:GetNotifyInspect(tab, unit)
-    if unit then
+    if canaccessvalue(unit) and unit then
+        if InspectFrame and InspectPaperDollFrame.unit==unit then
+            return
+        end
+
         if CanInspect(unit) then
             NotifyInspect(unit)
         end
     elseif tab then
         local time= 1
         for _, u in pairs(tab) do
-            if CanInspect(u) then
-               Cached_Player(time, unit)
+            if canaccessvalue(u) and CanInspect(u) then
+               Cached_Player(time, u)
+               time= time+ 2
             end
         end
     end

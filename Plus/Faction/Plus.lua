@@ -10,8 +10,8 @@ end
 
 
 local function Create_Frame(btn)
-	btn.Content.ReputationBar.BarText:SetAlpha(0)
-	btn.Content.ReputationBar.BarText:ClearAllPoints()
+	
+	--btn.Content.ReputationBar.BarText:ClearAllPoints()
 
 	btn.Content.AccountWideIcon:SetScale(0.6)
 --完成次数
@@ -23,6 +23,15 @@ local function Create_Frame(btn)
 	btn.barText2= btn.Content.ReputationBar:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
 	btn.barText2:SetPoint('CENTER')
 	btn.barText2:SetJustifyH('CENTER')
+
+	btn:HookScript('OnLeave', function(self)
+		self.Content.ReputationBar.BarText:SetAlpha(0)
+		self.barText2:SetAlpha(1)
+	end)
+	btn:HookScript('OnEnter', function(self)
+		self.Content.ReputationBar.BarText:SetAlpha(1)
+		self.barText2:SetAlpha(0)
+	end)
 
 
 --图标
@@ -108,6 +117,8 @@ local function Init()
 			data= WoWTools_FactionMixin:GetInfo(btn.factionID)
 		end
 
+		btn.Content.ReputationBar.BarText:SetAlpha(0)
+		
 		if not btn.barText2 then
 			Create_Frame(btn)
 		end

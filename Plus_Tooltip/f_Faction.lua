@@ -40,6 +40,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         (info.factionStandingtext and (WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' |cffffffff'..info.factionStandingtext)
         ..' '
         ..(info.valueText or '')
+        ..' '..(info.xp or '')
     )
 
 

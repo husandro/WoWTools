@@ -80,7 +80,7 @@ local function Init_Title_Menu(self, root)
         local name = GetTitleName(i)
         if name and name~='' and not name:find('PH') then
             find= find+1
-            local cn= WoWTools_TextMixin:CN(name, {titleID=i})
+            local cn= WoWTools_TextMixin:CN(name)--, {titleID=i})
             if cn then
                 cn= cn:gsub('%%s', '')
                 cn= cn=='' and name or cn
