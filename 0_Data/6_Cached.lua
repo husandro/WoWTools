@@ -80,50 +80,6 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--取得玩家信息
-    local unit= canaccessvalue(guid) and guid and UnitTokenFromGUID(guid)
-
-    if not unit then
-        return
-    end
-
-    Cached_ItemLevel(unit, guid)
-
-    --[[f UnitInParty(unit) and PartyFrame['MemberFrame'..1].classFrame then
-        C_Timer.After(0.3, function()
-            for i=1, 4 do
-                local frame= PartyFrame['MemberFrame'..i]
-                if frame:IsShown() and frame.classFrame then
-                    if UnitGUID('party'..i)==guid then
-                        frame.classFrame:set_settings()
-                        break
-                    end
-                else
-                    break
-                end
-            end
-        end)
-    end
-
-    if TargetFrame.classFrame and WoWTools_UnitMixin:UnitIsUnit(unit, 'target') then
-        TargetFrame.classFrame:set_settings()
-    end]]
-
---设置 GameTooltip
-    if  GameTooltip.textLeft and GameTooltip:IsShown() then
-        local name2, unit2, guid2= TooltipUtil.GetDisplayedUnit(GameTooltip)
-        if canaccessvalue(guid2) and guid2==guid then
-            WoWTools_TooltipMixin:Set_Unit_Player(GameTooltip, name2, unit2, guid2)
-        end
-    end
-
---[[保存，自已，装等
-    if guid==WoWTools_DataMixin.Player.GUID then
-        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel= GetAverageItemLevel()
-        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].specID= PlayerUtil.GetCurrentSpecID()
-    end]]
-end)
-
 
 
 
@@ -139,6 +95,9 @@ end)
 --队伍数据收集
 local function GetGroupGuidDate()--队伍数据收集
     local UnitTab={}
+    if not IsInGroup() then
+        return
+    end
 
     if IsInRaid() then
         for index= 1, MAX_RAID_MEMBERS do --GetNumGroupMembers() do
@@ -156,7 +115,7 @@ local function GetGroupGuidDate()--队伍数据收集
             end
         end
 
-    elseif IsInGroup() then
+    else
         for index= 1, 4 do
             local unit= 'party'..index
             if WoWTools_UnitMixin:UnitExists(unit) then
@@ -171,7 +130,7 @@ local function GetGroupGuidDate()--队伍数据收集
         end
     end
 
-    local unitList= {}
+    local unitList= {'player'}
     for _, tab in pairs(UnitTab) do
         if tab.name then
             WoWTools_DataMixin.GroupGuid[tab.name]= tab
@@ -193,9 +152,122 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", function()
-    GetGroupGuidDate()
-end)
-EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", function()
-    GetGroupGuidDate()
+
+
+
+
+
+
+
+--战网，好友GUID
+local function setwowguidTab(info)
+    if info and info.characterName then
+        local name= WoWTools_UnitMixin:GetFullName(info.characterName)
+        if name then
+            if info.isOnline and info.wowProjectID==1 then
+                WoWTools_DataMixin.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName, level= info.characterLevel}
+            else
+                WoWTools_DataMixin.WoWGUID[name]=nil
+            end
+        end
+    end
+end
+
+local function Get_WoW_GUID_Info(_, friendIndex)
+    if friendIndex then
+        local accountInfo =C_BattleNet.GetFriendAccountInfo(friendIndex)
+        setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
+    else
+        WoWTools_DataMixin.WoWGUID={}
+        for i=1 ,BNGetNumFriends() do
+            local accountInfo =C_BattleNet.GetFriendAccountInfo(i);
+            setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+local frame= CreateFrame('Frame')
+FrameUtil.RegisterFrameForEvents(frame, {
+    'PLAYER_ENTERING_WORLD',
+
+    'GROUP_LEFT',
+    'GROUP_ROSTER_UPDATE',
+
+    'PLAYER_EQUIPMENT_CHANGED',
+    'PLAYER_SPECIALIZATION_CHANGED',
+    'PLAYER_AVG_ITEM_LEVEL_UPDATE',
+    'BARBER_SHOP_RESULT',
+    'PLAYER_LEVEL_UP',
+    'NEUTRAL_FACTION_SELECT_RESULT',
+
+    'BN_FRIEND_INFO_CHANGED',
+
+})
+frame:SetScript('OnEnter', function(_, event, arg1, ...)
+    if event=='PLAYER_ENTERING_WORLD' then
+        GetGroupGuidDate()
+        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
+
+        WoWTools_DataMixin.Player.Layer=nil--位面, 清除
+        Get_WoW_GUID_Info()--战网，好友GUID
+
+    elseif event=='ZONE_CHANGED_NEW_AREA' then
+        WoWTools_DataMixin.Player.Layer=nil--位面, 清除
+
+    elseif event=='GROUP_LEFT' or event=='GROUP_ROSTER_UPDATE' then
+        GetGroupGuidDate()
+
+    elseif event=='PLAYER_EQUIPMENT_CHANGED'
+        or event=='PLAYER_SPECIALIZATION_CHANGED'
+        or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE'
+    then
+        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
+
+
+    elseif event=='BARBER_SHOP_RESULT' then
+        local success= arg1
+        if success then
+            WoWTools_DataMixin.Player.Sex= UnitSex("player")
+            WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player') or ''
+        end
+
+    elseif event=='PLAYER_LEVEL_UP' then--玩家是否最高等级
+        local level= arg1
+        level= level or UnitLevel('player')
+        WoWTools_DataMixin.Player.IsMaxLevel= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
+        WoWTools_DataMixin.Player.Level= level
+        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].level= level
+
+    elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then--玩家, 派系
+        local success= arg1
+        if success then
+            WoWTools_DataMixin.Player.Faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
+        end
+
+    elseif event=='INSPECT_READY' then--取得玩家信息
+        local guid= arg1
+        local unit= canaccessvalue(guid) and guid and UnitTokenFromGUID(guid)
+        if unit then
+            Cached_ItemLevel(unit, guid)
+            if  GameTooltip.textLeft and GameTooltip:IsShown() then
+                local name2, unit2, guid2= TooltipUtil.GetDisplayedUnit(GameTooltip)
+                if canaccessvalue(guid2) and guid2==guid then
+                    WoWTools_TooltipMixin:Set_Unit_Player(GameTooltip, name2, unit2, guid2)
+                end
+            end
+        end
+
+    elseif event=='BN_FRIEND_INFO_CHANGED' then--战网，好友GUID
+        local friendIndex= arg1
+        Get_WoW_GUID_Info(_, friendIndex)
+    end
 end)

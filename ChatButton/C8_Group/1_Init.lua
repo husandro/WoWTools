@@ -117,7 +117,7 @@ end
 local function set_Text(text)--处理%s
     local groupTab= WoWTools_DataMixin.GroupGuid[WoWTools_DataMixin.Player.GUID]
     if text:find('%%s') and groupTab and groupTab.subgroup then
-        text= text:format(groupTab.subgroup..' '..GROUP..' ')
+        text= text:format(groupTab.subgroup..' '..(WoWTools_DataMixin.onlyChinese and '队' or GROUP)..' ')
     else
         text= text:gsub('%%s','')
     end

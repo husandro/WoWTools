@@ -4,7 +4,6 @@
 --[[
 WoWTools_BagMixin:GetItem_WoW_Num(itemID)--取得WOW物品数量  return all, numPlayer
 
-WoWTools_DataMixin.WoWGUID={}--WoWTools_DataMixin.WoWGUID[名称-服务器]=guid
 
 WoWTools_WoWDate[guid]= {--默认数据
     Item={},--{itemID={bag=包, bank=银行}},
@@ -66,35 +65,6 @@ GetGroupGuidDate()--队伍数据收集
 
 
 
---战网，好友GUID
-local function setwowguidTab(info)
-    if info and info.characterName then
-        local name= WoWTools_UnitMixin:GetFullName(info.characterName)
-        if name then
-            if info.isOnline and info.wowProjectID==1 then
-                WoWTools_DataMixin.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName, level= info.characterLevel}
-            else
-                WoWTools_DataMixin.WoWGUID[name]=nil
-            end
-        end
-    end
-end
-local function Get_WoW_GUID_Info(_, friendIndex)
-    if friendIndex then
-        local accountInfo =C_BattleNet.GetFriendAccountInfo(friendIndex)
-        setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
-    else
-        WoWTools_DataMixin.WoWGUID={}
-        for i=1 ,BNGetNumFriends() do
-            local accountInfo =C_BattleNet.GetFriendAccountInfo(i);
-            setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
-        end
-    end
-end
-
-EventRegistry:RegisterFrameEventAndCallback("BN_FRIEND_INFO_CHANGED", function(_, friendIndex)
-    Get_WoW_GUID_Info(_, friendIndex)
-end)
 
 
 
@@ -272,16 +242,6 @@ end)
 
 
 
-
-
-
-
-
-
-
-
-
-
 --更新货币 {currencyID = 数量}
 EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function(_, arg1)
     if arg1 and arg1~=2032 then
@@ -317,6 +277,47 @@ end)
 
 
 
+
+
+
+--##
+--钱
+--##
+local function Set_Money()--钱
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Money= GetMoney() or 0
+end
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_MONEY", function()
+    Set_Money()--钱
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--总游戏时间：%s
+EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1, arg2)
+    if arg1 and arg2 then
+        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time={
+            totalTime= arg1,
+            levelTime= arg2,
+            upData= date('%Y-%m-%d %H:%M:%S'),
+        }
+    end
+end)
 
 
 
@@ -365,16 +366,6 @@ end)
 
 
 
-
-
-
-
-
-
-
-
-
-
 EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function()
     if IsInInstance() then
         return
@@ -393,88 +384,6 @@ end)
 
 
 
-
-
-
-
-
-
-
-
-
-
---##
---钱
---##
-local function Set_Money()--钱
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Money= GetMoney() or 0
-end
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_MONEY", Set_Money)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---总游戏时间：%s
-EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1, arg2)
-    if arg1 and arg2 then
-        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time={
-            totalTime= arg1,
-            levelTime= arg2,
-            upData= date('%Y-%m-%d %H:%M:%S'),
-        }
-    end
-end)
-
-
-
-
-
-
---位面, 清除
-EventRegistry:RegisterFrameEventAndCallback("ZONE_CHANGED_NEW_AREA", function()
-    WoWTools_DataMixin.Player.Layer=nil
-end)
-EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function()
-    WoWTools_DataMixin.Player.Layer=nil
-end)
-
 EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", function()
     RequestRaidInfo()
 end)
@@ -484,32 +393,12 @@ end)
 
 
 
---玩家是否最高等级
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEVEL_UP", function(_, level)
-    level= level or UnitLevel('player')
-    WoWTools_DataMixin.Player.IsMaxLevel= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
-    WoWTools_DataMixin.Player.Level= level
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].level= level
-end)
 
---玩家, 派系
-EventRegistry:RegisterFrameEventAndCallback("NEUTRAL_FACTION_SELECT_RESULT", function(_, success)
-    if success then
-        WoWTools_DataMixin.Player.Faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
-    end
-end)
 
---取得装等, 更新自已
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_EQUIPMENT_CHANGED", function()
-    WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
-end)
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function()
-    WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
-end)
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_AVG_ITEM_LEVEL_UPDATE", function()
-    WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
-end)
+
+
+
 
 --[[给 e.Reload用
 EventRegistry:RegisterFrameEventAndCallback("ENCOUNTER_START", function(_, encounterID)
@@ -519,13 +408,6 @@ EventRegistry:RegisterFrameEventAndCallback("ENCOUNTER_END", function(_, arg1)
     e.IsEncouter_Start= nil
 end)]]
 
-
-EventRegistry:RegisterFrameEventAndCallback("BARBER_SHOP_RESULT", function(_, success)
-    if success then
-        WoWTools_DataMixin.Player.Sex= UnitSex("player")
-        WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player') or ''
-    end
-end)
 
 
 
@@ -702,15 +584,14 @@ EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(ow
     RequestRaidInfo()
 
     --C_Calendar.OpenCalendar()
-    WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
-    GetGroupGuidDate()--队伍数据收集
+
 
     --Update_Currency()--{currencyID = 数量}
     --Update_Bag_Items()
     Set_Money()--钱
     Update_Challenge_Mode()
 
-    Get_WoW_GUID_Info()--战网，好友GUID
+
 
     EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
 end)

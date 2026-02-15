@@ -48,7 +48,7 @@ local function Init()
                         local name, _, subgroup= GetRaidRosterInfo(i)
                         if name==player then
                             if subgroup then
-                                nu= ' '..subgroup..GROUP
+                                nu= ' '..subgroup..' '..(WoWTools_DataMixin.onlyChinese and '队' or GROUP)
                             end
                             break
                         end
