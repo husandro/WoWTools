@@ -28,9 +28,9 @@ function WoWTools_TooltipMixin:Show(tooltip)
 end
 
 
---设置，宽度
+--[[设置，宽度
 function WoWTools_TooltipMixin:Set_Width(tooltip)
-    --[[if tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect() then--12.0才有
+    if tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect() then--12.0才有
         return
     end
 
@@ -41,8 +41,8 @@ function WoWTools_TooltipMixin:Set_Width(tooltip)
         if w<w2 then
             tooltip:SetMinimumWidth(w2)
         end
-    end]]
-end
+    end
+end]]
 
 
 --设置单位

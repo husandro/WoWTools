@@ -8,48 +8,26 @@
 local function Craete_Frame(frame, portrait)
     frame.classFrame= CreateFrame('Frame', nil, frame)
     frame.classFrame:SetFrameStrata('HIGH')
-    --frame.classFrame:SetShown(false)
     frame.classFrame:SetSize(14,14)
-    --frame.classFrame:SetPoint('TOP', portrait, -8, 12)
     frame.classFrame:SetPoint('BOTTOM', portrait, -7, -2)
 
     frame.classFrame.Portrait= frame.classFrame:CreateTexture(nil, "BORDER")
     frame.classFrame.Portrait:SetAllPoints()
     WoWTools_ButtonMixin:AddMask(frame.classFrame, true, frame.classFrame.Portrait)
 
-
-    --[[if frame==TargetFrame then
-        frame.classFrame:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
-    elseif frame==PetFrame then
-        frame.classFrame:SetPoint('LEFT', frame.name,-10,0)
-    elseif frame==PlayerFrame then
-        frame.classFrame:SetPoint('TOPLEFT', frame.portrait, 'TOPRIGHT',-14,8)
-    elseif frame==FocusFrame then
-        frame.classFrame:SetPoint('BOTTOMRIGHT', frame.TargetFrameContent.TargetFrameContentMain.ReputationColor, 'TOPRIGHT')
-    else
-        frame.classFrame:SetPoint('TOPLEFT', frame.portrait, 'TOPRIGHT',-14,10)
-    end]]
-
     frame.classFrame.Texture= frame.classFrame:CreateTexture(nil, 'BACKGROUND')--加个外框
-    --frame.classFrame.Texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     frame.classFrame.Texture:SetAtlas('talents-node-choiceflyout-circle-greenglow')
     frame.classFrame.Texture:SetPoint('TOPLEFT', frame.classFrame, -2, 2)
     frame.classFrame.Texture:SetPoint('BOTTOMRIGHT', frame.classFrame, 2, -2)
-    --frame.classFrame.Texture:SetSize(20,20)
-
     frame.classFrame.itemLevel= frame.classFrame:CreateFontString(nil, 'BORDER', 'WoWToolsFont')-- WoWTools_LabelMixin:Create(frame.classFrame, {size=12})--装等
-    frame.classFrame.itemLevel:SetPoint('LEFT', frame.classFrame.Portrait, 'RIGHT', -3, 0)
-    --[[if frame.unit=='target' or frame.unit=='focus' then
-        frame.classFrame.itemLevel:SetPoint('RIGHT', frame.classFrame, 'LEFT')
-    else
-        frame.classFrame.itemLevel:SetPoint('TOPRIGHT', frame.classFrame, 'TOPLEFT')
-    end]]
+    frame.classFrame.itemLevel:SetPoint('LEFT', frame.classFrame.Portrait, 'RIGHT', -1, 0)
 
     function frame.classFrame:get_guid()
         local unit= self:GetParent().unit
         if canaccessvalue(unit) and unit and UnitIsPlayer(unit) then
-            return UnitGUID(unit)
+            return UnitGUID(unit), unit
         end
+
     end
 
     function frame.classFrame:get_playerinfo()
@@ -62,15 +40,14 @@ local function Craete_Frame(frame, portrait)
     function frame.classFrame:set_settings()
         self:get_playerinfo()
 
-        local unit= self:GetParent().unit
-        local guid= self:get_guid()
+        local guid, unit= self:get_guid()
 
         local texture, itemLevel
         if guid then
             local data= WoWTools_DataMixin.PlayerInfo[guid] or {}
-            local specID= data.specID or GetInspectSpecialization(unit)
-            local item= data.itemLevel or C_PaperDollInfo.GetInspectItemLevel(unit)
-            if specID and specID>0 then
+            local specID= data.specID or GetInspectSpecialization(unit) or 0
+            local item= data.itemLevel or C_PaperDollInfo.GetInspectItemLevel(unit) or 0
+            if specID>0 then
                 texture= select(4, GetSpecializationInfoByID(specID, UnitSex(unit)))
             end
             if item>0 then
@@ -134,11 +111,6 @@ end
 
 
 
-
-
-
-
-
 --UnitFrame.lua
 --职业, 图标， 颜色
 local function Init()
@@ -153,6 +125,7 @@ local function Init()
         [PartyFrame.MemberFrame2]=PartyFrame.MemberFrame2.Portrait,
         [PartyFrame.MemberFrame3]=PartyFrame.MemberFrame3.Portrait,
         [PartyFrame.MemberFrame4]=PartyFrame.MemberFrame4.Portrait,
+        [TargetFrameToT]= TargetFrameToT.Portrait,
     }) do
         if frame and portrait then
             Craete_Frame(frame, portrait)
@@ -203,6 +176,8 @@ local function Init()
             frame.healthbar:SetStatusBarColor(r,g,b)--颜色
         end
     end)
+
+
     Init=function()end
 end
 

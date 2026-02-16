@@ -533,6 +533,10 @@ local function Init()
     if WoWToolsSave['Plus_UnitFrame'].hidePlayerFrame then
         return
     end
+
+    local contextual= PlayerFrame_GetPlayerFrameContentContextual()--PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual
+    
+
 do
     Craete_assisterButton()--全部有权限，助手，提示
 end
@@ -568,27 +572,47 @@ end]]
     WoWTools_ColorMixin:SetLabelColor(PlayerFrameGroupIndicatorText)
 
 --隐藏，小队号，背景
-    WoWTools_TextureMixin:HideFrame(PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator)
+    WoWTools_TextureMixin:HideFrame(contextual.GroupIndicator)
 
---等级，颜色
-    WoWTools_DataMixin:Hook('PlayerFrame_UpdateLevel', function()
-        PlayerLevelText:SetAlpha(
-            UnitEffectiveLevel(PlayerFrame.unit or 'player')== GetMaxLevelForLatestExpansion() and 0 or 1
-        )
-    end)
+
 
 
 --玩家, 治疗，爆击，数字
     if PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator then
         local label= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText
         if label then
+            label:SetScale(0.75)
             WoWTools_ColorMixin:SetLabelColor(label)--设置颜色
             label:ClearAllPoints()
             label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
         end
     end
 
+    WoWTools_TextureMixin:SetFrame(TargetFrame.TargetFrameContent.TargetFrameContentContextual.NumericalThreat, {index=1})
 
+
+    contextual.AttackIcon:ClearAllPoints()
+    contextual.AttackIcon:SetPoint('RIGHT', PlayerLevelText, 'LEFT')
+    contextual.AttackIcon:SetVertexColor(1,0,0)
+    contextual.AttackIcon.Bg= contextual:CreateTexture(nil, 'BACKGROUND')--加个外框
+    contextual.AttackIcon.Bg:SetAtlas('talents-node-choiceflyout-circle-greenglow')
+    contextual.AttackIcon.Bg:SetPoint('TOPLEFT', contextual.AttackIcon, -2, 2)
+    contextual.AttackIcon.Bg:SetPoint('BOTTOMRIGHT', contextual.AttackIcon, 2, -2)
+    contextual.AttackIcon:HookScript('OnShow', function(self)
+        self.Bg:Show()
+    end)
+    contextual.AttackIcon:HookScript('OnHide', function(self)
+        self.Bg:Hide()
+    end)
+    contextual.AttackIcon.Bg:SetShown(contextual.AttackIcon:IsShown())
+
+--等级，颜色
+    WoWTools_DataMixin:Hook('PlayerFrame_UpdateLevel', function()
+        PlayerLevelText:SetAlpha(
+            UnitEffectiveLevel(PlayerFrame.unit or 'player')== GetMaxLevelForLatestExpansion() and 0 or 1
+        )
+        WoWTools_ColorMixin:SetLabelColor(PlayerLevelText)
+    end)
 --宠物
     if PetHitIndicator then
         PetHitIndicator:ClearAllPoints()
@@ -602,8 +626,8 @@ end]]
 
 --移动，缩小，开启战争模式时，PVP图标
     WoWTools_DataMixin:Hook('PlayerFrame_UpdatePvPStatus', function()--开启战争模式时，PVP图标
-        local contextual = PlayerFrame_GetPlayerFrameContentContextual();
-        local icon= contextual and contextual.PVPIcon
+        local contextual2 = PlayerFrame_GetPlayerFrameContentContextual()
+        local icon= contextual2 and contextual2.PVPIcon
         if icon then
             icon:SetSize(25,25)
             icon:ClearAllPoints()
