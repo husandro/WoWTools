@@ -66,6 +66,8 @@ function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
     self:SetScrollBar(MacroFrameScrollFrame)
     self:SetButton(MacroFrameCloseButton)
 
+    WoWTools_ButtonMixin:AddMask(MacroFrameSelectedMacroButton, false, MacroFrameSelectedMacroButton.Icon)
+
     self:Init_BGMenu_Frame(MacroFrame, {
         bgPoint=function(icon)
             bgPoint(icon)
@@ -212,7 +214,8 @@ local function Init()
     MacroFrameTextBackground:SetPoint('TOPLEFT',MacroFrameScrollFrame, -4, 4)
     MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', MacroFrameScrollFrame, 4,-4)
 
-
+    MacroFrameSelectedMacroBackground:SetTexture(0)
+    --MacroFrameSelectedMacroBackground:SetPoint('CENTER', MacroFrameSelectedMacroButton)
 
     WoWTools_MoveMixin:Setup(MacroFrame, {
         minW=260, minH=250,

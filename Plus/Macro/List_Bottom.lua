@@ -145,10 +145,10 @@ local MacroList={
             {text='/wm [@cursor]6\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
             {text='/wm [@cursor]7\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
             {text='/wm [@cursor]8\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
-            {text='/cwm 0\n', icon='talents-button-reset'},
+            {text='/cwm 1\n/cwm 2\n/cwm 3\n/cwm 4\n/cwm 5\n/cwm 6\n/cwm 7\n/cwm 8', icon='talents-button-reset'},
         }
     },
-    {text= 'SetRaidTarget', macro='/target [@mouseover]\n/script SetRaidTarget("target",1)',
+    --[[{text= 'SetRaidTarget', macro='/target [@mouseover]\n/script SetRaidTarget("target",1)',
         tab={
             {text='/target [@mouseover]\n/script SetRaidTarget("target",1)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
             {text='/target [@mouseover]\n/script SetRaidTarget("target",2)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
@@ -159,7 +159,7 @@ local MacroList={
             {text='/target [@mouseover]\n/script SetRaidTarget("target",7)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
             {text='/target [@mouseover]\n/script SetRaidTarget("target",8)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
         }
-    },
+    },]]
     {text='rt', macro='{rt1}',
         tab={
             {text='{rt1}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
@@ -948,8 +948,9 @@ local function Init()
     local Frame= CreateFrame("Frame", 'WoWToolsMacroBottomListFrame', MacroFrame)
     --WoWTools_MacroMixin.BottomListFrame= Frame
 
-    WoWTools_TextureMixin:CreateBG(Frame, {isColor=true})
-    Frame.Background:SetPoint('TOPLEFT', Frame, -2, 5)
+    Frame.Bg= Frame:CreateTexture()
+    Frame.Bg:SetColorTexture(0,0,0)
+    Frame.Bg:SetPoint('TOPLEFT', Frame, -2, 5)
 
     Frame:SetSize(1, 1)
     Frame:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 6, -2)
@@ -1042,10 +1043,11 @@ local function Init()
     function Frame:settings()
         self:SetScale(Save().bottomListScale or 1)
         self:SetShown(not Save().hideBottomList)
+        self.Bg:SetAlpha(Save().bottomListAlpha or 0.5)
     end
 
 
-    Frame.Background:SetPoint('BOTTOMRIGHT', macroListButton, 2, -2)
+    Frame.Bg:SetPoint('BOTTOMRIGHT', macroListButton, 2, -2)
 
     Frame:settings()
 

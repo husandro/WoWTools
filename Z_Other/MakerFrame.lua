@@ -793,7 +793,7 @@ local function Init()--设置标记, 框架
 
         if index==0 then--ClearRaidMarker()
             local text
-            for i=1, NUM_RAID_ICONS do
+            for i=1, NUM_RAID_ICONS do--8
                 text= (text and text..'\n' or '').. '/cwm '..i
             end
             btn:SetAttribute('type', 'macro')

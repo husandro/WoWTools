@@ -22,7 +22,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub, sub2, num, num2, text
+    local sub, sub2, sub3
 
 --备注
     root:CreateButton(
@@ -97,7 +97,7 @@ local PointTab={
     end)
 
 --缩放
-    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    WoWTools_MenuMixin:Scale(self, sub,
     function()
         return Save().bottomListScale or 1
     end, function(value)
@@ -108,29 +108,45 @@ local PointTab={
         WoWTools_MacroMixin:Init_List_Button()
     end)
 
-
+--背景, 透明度
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()
+        return Save().bottomListAlpha or 0.5
+    end, function(value)
+        Save().bottomListAlpha= value
+        WoWTools_MacroMixin:Init_List_Button()
+    end, function()
+        Save().bottomListAlpha= nil
+        WoWTools_MacroMixin:Init_List_Button()
+    end)
 
 --打开，选项界面
     root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MacroMixin.addName,})
 
+    local num, num2= GetNumMacros()
 
+    local delete= WARNING_FONT_COLOR:WrapTextInColorCode(
+        WoWTools_DataMixin.onlyChinese and '全部删除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL)
+    )
 --全部删除
-    root:CreateDivider()
+    --root:CreateDivider()
     sub2=sub:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '全部删除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL),
+        delete,
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText= num..' + '..num2})
+    WoWTools_MenuMixin:SetRightText(sub2)
 
 --删除，通用宏
-    num, num2= GetNumMacros()
-    text= (WoWTools_DataMixin.onlyChinese and '通用宏' or GENERAL_MACROS)..(num==0 and ' |cff626262#' or ' #')..num
-    sub2:CreateButton(
-        '|A:XMarksTheSpot:0:0|a'..text,
+    sub3=sub2:CreateButton(
+        '|A:XMarksTheSpot:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '通用宏' or GENERAL_MACROS),
     function()
         StaticPopup_Show('WoWTools_OK',
-        '|A:XMarksTheSpot:32:32|a|n'..text..'|n|n',
+        '|A:XMarksTheSpot:42:42|a'..delete..'|n'
+        ..(WoWTools_DataMixin.onlyChinese and '通用宏' or GENERAL_MACROS)
+        ..' #'..num..'|n|n',
         nil,
         {SetValue=function()
             if WoWTools_FrameMixin:IsLocked(MacroFrame) then
@@ -153,7 +169,13 @@ local PointTab={
                 )
             end
         end})
+    end, {rightText=num})
+    WoWTools_MenuMixin:SetRightText(sub3)
+    sub3:SetTooltip(function(tooltip)
+        tooltip:AddLine(delete)
     end)
+
+
 
 --删除,专用宏
     sub2:CreateDivider()
@@ -161,13 +183,11 @@ local PointTab={
             WoWTools_DataMixin.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,
             WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
         )
-        ..(num2==0 and ' |cff626262#' or ' #')..num2
-
-    sub2:CreateButton(
+    sub3=sub2:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text2,
     function()
         StaticPopup_Show('WoWTools_OK',
-        '|A:XMarksTheSpot:32:32|a|n'..text2..'|n|n',
+        '|A:XMarksTheSpot:42:42|a'..delete..'|n'..text2..' #'..num2..'|n|n',
         nil,
         {SetValue=function()
             if WoWTools_FrameMixin:IsLocked(MacroFrame) then
@@ -189,13 +209,15 @@ local PointTab={
                 )
             end
         end})
+    end, {rightText=num2})
+    WoWTools_MenuMixin:SetRightText(sub3)
+    sub3:SetTooltip(function(tooltip)
+        tooltip:AddLine(delete)
     end)
-
 
     sub:CreateDivider()
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub)
-
 end
 
 
