@@ -957,9 +957,9 @@ local function Init_All_Role(_, root)
         (WoWTools_DataMixin.onlyChinese and '自动设置' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, SETTINGS))
         ..'|T'..(select(4, C_SpecializationInfo.GetSpecializationInfo(GetSpecialization() or 0)) or '0')..':0|t',
     function()
-        return Save().autSetRole
+        return Save().autoSetRole
     end, function()
-        Save().autSetRole= not Save().autSetRole and true or nil
+        Save().autoSetRole= not Save().autoSetRole and true or false
         WoWTools_LFDMixin:Init_RolePollPopup()
     end)
     sub:SetTooltip(function(tooltip)
