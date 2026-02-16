@@ -24,10 +24,12 @@ local function Craete_Frame(frame, portrait)
 
     function frame.classFrame:get_guid()
         local unit= self:GetParent().unit
-        if canaccessvalue(unit) and unit and UnitIsPlayer(unit) then
-            return UnitGUID(unit), unit
+        local guid= UnitGUID(unit)
+        if canaccessvalue(guid) then
+            return guid, unit
+        else
+            return nil, unit
         end
-
     end
 
     function frame.classFrame:get_playerinfo()
@@ -126,7 +128,7 @@ local function Init()
         [PartyFrame.MemberFrame3]=PartyFrame.MemberFrame3.Portrait,
         [PartyFrame.MemberFrame4]=PartyFrame.MemberFrame4.Portrait,
         [TargetFrameToT]= TargetFrameToT.Portrait,
-        [FocusFrame]= FocusFrame.TargetFrameContainer.Portrait,
+        --[FocusFrame]= FocusFrame.TargetFrameContainer.Portrait,
     }) do
         if frame and portrait then
             Craete_Frame(frame, portrait)
