@@ -74,7 +74,6 @@ local function Craete_Frame(frame, portrait)
         local unit= self:GetParent().unit
         self:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', unit)
         EventRegistry:RegisterCallback("WoWTools_Cached_ItemLevel", function(_, guid)
-            --print('WoWTools_Cached_ItemLevel|cnGREEN_FONT_COLOR:',guid, guid==self:get_guid())
             if guid==self:get_guid() then
                 self:set_settings()
             end
@@ -137,16 +136,16 @@ local function Init()
 
 
     WoWTools_DataMixin:Hook('UnitFrame_Update', function(frame, isParty)
-        if not frame.classFrame or not canaccessvalue(frame.unit) then
-            return
-        end
+        --if not canaccessvalue(frame.unit) then
+
 
         local unit= frame.unit
 
-        frame.classFrame:set_settings()
+        if frame.classFrame then
+            frame.classFrame:set_settings()
+        end
 
         local color= WoWTools_UnitMixin:GetColor(unit)
-        local r,g,b= color:GetRGB()
 
     --名称
         if frame.name then
@@ -155,7 +154,7 @@ local function Init()
                 frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
             else
 
-                frame.name:SetTextColor(r,g,b)
+                frame.name:SetTextColor(color:GetRGB())
                 if isParty then
                     name= UnitName(unit)
                     name= WoWTools_TextMixin:sub(name, 4, 8)
@@ -176,7 +175,7 @@ local function Init()
     --生命条，颜色，材质
         if frame.healthbar then
             frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-            frame.healthbar:SetStatusBarColor(r,g,b)--颜色
+            frame.healthbar:SetStatusBarColor(color:GetRGB())--颜色
         end
     end)
 

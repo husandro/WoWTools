@@ -581,10 +581,10 @@ end]]
     if PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator then
         local label= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText
         if label then
-            label:SetScale(0.75)
+            label:SetScale(0.65)
             WoWTools_ColorMixin:SetLabelColor(label)--设置颜色
             label:ClearAllPoints()
-            label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
+            label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT', 0, -5)
         end
     end
 
