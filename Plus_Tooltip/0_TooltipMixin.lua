@@ -19,17 +19,18 @@ function WoWTools_TooltipMixin:Show(tooltip)
     if itemTooltip then
         if issecretvalue(itemTooltip:IsShown()) or issecretvalue(itemTooltip:GetWidth()) then
             tooltip:Show()
-             return
         end
+        return
     end
 
+    --tooltip:Show()
     WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
 end
 
 
 --设置，宽度
 function WoWTools_TooltipMixin:Set_Width(tooltip)
-    if tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect() then--12.0才有
+    --[[if tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect() then--12.0才有
         return
     end
 
@@ -40,7 +41,7 @@ function WoWTools_TooltipMixin:Set_Width(tooltip)
         if w<w2 then
             tooltip:SetMinimumWidth(w2)
         end
-    end
+    end]]
 end
 
 

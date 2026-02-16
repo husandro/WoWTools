@@ -39,10 +39,10 @@ local function Create(tooltip)
         return
     end
 
-    tooltip.textLeft= tooltip:CreateFontString(name..'TextLeft', 'ARTWORK', 'ChatFontNormal')
+    tooltip.textLeft= tooltip:CreateFontString(name..'TextLeft', 'ARTWORK', 'WoWToolsFont')
     tooltip.textLeft:SetFontHeight(16)
-    tooltip.textLeft:SetJustifyH('LEFT')
-    tooltip.textLeft:SetShadowOffset(2, -2)
+    --tooltip.textLeft:SetJustifyH('LEFT')
+    --tooltip.textLeft:SetShadowOffset(2, -2)
     tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip.CompareHeader or tooltip, 'TOPLEFT', 3, 0)
 
     --[[tooltip.textLeftBg= tooltip:CreateTexture(nil, 'BACKGROUND')
@@ -50,20 +50,20 @@ local function Create(tooltip)
     tooltip.textLeftBg:SetColorTexture(0,0,0,0.5)]]
 
 --左上角字符2
-    tooltip.text2Left= tooltip:CreateFontString(name..'Text2Left', 'ARTWORK', 'ChatFontNormal')
+    tooltip.text2Left= tooltip:CreateFontString(name..'Text2Left', 'ARTWORK', 'WoWToolsFont')
     tooltip.text2Left:SetFontHeight(16)
-    tooltip.text2Left:SetJustifyH('LEFT')
-    tooltip.text2Left:SetShadowOffset(2, -2)
+    --tooltip.text2Left:SetJustifyH('LEFT')
+    --tooltip.text2Left:SetShadowOffset(2, -2)
     tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
     --[[tooltip.text2LeftBg= tooltip:CreateTexture(nil, 'BACKGROUND')
     tooltip.text2LeftBg:SetAllPoints(tooltip.text2Left)
     tooltip.text2LeftBg:SetColorTexture(0,0,0,0.5)]]
 
 --右上角字符
-    tooltip.textRight= tooltip:CreateFontString(name..'textRight', 'ARTWORK', 'ChatFontNormal')
-    tooltip.textRight:SetFontHeight(12)
+    tooltip.textRight= tooltip:CreateFontString(name..'textRight', 'BORDER', 'WoWToolsFont')
+    --tooltip.textRight:SetFontHeight(12)
     tooltip.textRight:SetJustifyH('RIGHT')
-    tooltip.textRight:SetShadowOffset(2, -2)
+    --tooltip.textRight:SetShadowOffset(2, -2)
     if tooltip.CloseButton then
         tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', -3, 3)
     else
@@ -74,10 +74,10 @@ local function Create(tooltip)
     tooltip.textRightBg:SetColorTexture(0,0,0,0.5)]]
 
 --右上角字符2
-    tooltip.text2Right= tooltip:CreateFontString(name..'text2Right', 'ARTWORK', 'ChatFontNormal')
-    tooltip.text2Right:SetFontHeight(12)
+    tooltip.text2Right= tooltip:CreateFontString(name..'text2Right', 'BORDER', 'WoWToolsFont')
+    --tooltip.text2Right:SetFontHeight(12)
     tooltip.text2Right:SetJustifyH('RIGHT')
-    tooltip.text2Right:SetShadowOffset(2, -2)
+    --tooltip.text2Right:SetShadowOffset(2, -2)
     tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 2)
     --[[tooltip.text2RightBg= tooltip:CreateTexture(nil, 'BACKGROUND')
     tooltip.text2RightBg:SetAllPoints(tooltip.text2Right)

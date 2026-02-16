@@ -59,7 +59,7 @@ local function Cached_ItemLevel(unit, guid)
         itemLevel= math.floor(itemLevel+ 0.5)
     end
 
-    WoWTools_DataMixin.PlayerInfo[guid] = {--玩家装等
+    local info= {--玩家装等
         faction= faction,
         level=UnitLevel(unit),
 
@@ -73,8 +73,10 @@ local function Cached_ItemLevel(unit, guid)
         --r=r,
         --g=g,
         --b=b,
-
     }
+
+    WoWTools_DataMixin.PlayerInfo[guid] = info
+    EventRegistry:TriggerEvent("WoWTools_Cached_ItemLevel", guid, unit, info)
 end
 
 
@@ -198,6 +200,7 @@ end
 local frame= CreateFrame('Frame')
 FrameUtil.RegisterFrameForEvents(frame, {
     'PLAYER_ENTERING_WORLD',
+    'INSPECT_READY',
 
     'GROUP_LEFT',
     'GROUP_ROSTER_UPDATE',
@@ -218,7 +221,7 @@ FrameUtil.RegisterFrameForEvents(frame, {
 
 
 
-frame:SetScript('OnEnter', function(_, event, arg1)
+frame:SetScript('OnEvent', function(_, event, arg1)
     if event=='PLAYER_ENTERING_WORLD' then
         GetGroupGuidDate()
         WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
@@ -252,12 +255,20 @@ frame:SetScript('OnEnter', function(_, event, arg1)
             WoWTools_DataMixin.Player.Faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
         end
 
+    elseif event=='PLAYER_EQUIPMENT_CHANGED'
+        or event=='PLAYER_SPECIALIZATION_CHANGED'
+        or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE'
+    then
+        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
+
+
     elseif event=='BN_FRIEND_INFO_CHANGED' then--战网，好友GUID
         local friendIndex= arg1
         Get_WoW_GUID_Info(_, friendIndex)
 
     elseif event=='INSPECT_READY' then--取得玩家信息
         local guid= arg1
+        
         local unit= canaccessvalue(guid) and guid and UnitTokenFromGUID(guid)
         if unit then
             Cached_ItemLevel(unit, guid)
@@ -269,11 +280,6 @@ frame:SetScript('OnEnter', function(_, event, arg1)
             end
         end
 
-    elseif event=='PLAYER_EQUIPMENT_CHANGED'
-        or event=='PLAYER_SPECIALIZATION_CHANGED'
-        or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE'
-    then
-        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 
     end
 end)

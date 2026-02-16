@@ -524,7 +524,8 @@ local function Create_deadFrame(frame)
 
 
     deadFrame.Text= WoWTools_LabelMixin:Create(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
-    deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
+    --deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
+    deadFrame.Text:SetPoint('TOPRIGHT', deadFrame, -2, 0)
 
     deadFrame.Text:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
