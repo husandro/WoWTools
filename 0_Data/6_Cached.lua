@@ -218,7 +218,7 @@ FrameUtil.RegisterFrameForEvents(frame, {
 
 
 
-frame:SetScript('OnEnter', function(_, event, arg1, ...)
+frame:SetScript('OnEnter', function(_, event, arg1)
     if event=='PLAYER_ENTERING_WORLD' then
         GetGroupGuidDate()
         WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
