@@ -136,7 +136,9 @@ local function Init()
 
 
     WoWTools_DataMixin:Hook('UnitFrame_Update', function(frame, isParty)
-        --if not canaccessvalue(frame.unit) then
+        if not canaccessvalue(frame.unit) then
+            return
+        end
 
 
         local unit= frame.unit

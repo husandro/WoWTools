@@ -160,7 +160,6 @@ local function Create_Label(btn)
     btn.buyItemNum:SetPoint('BOTTOMRIGHT', btn.Name)
     btn.buyItemNum:SetFontHeight(10)
 
-
 --属性
     btn.stats= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')--WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
     btn.stats:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT',0,6)
@@ -177,6 +176,33 @@ local function Create_Label(btn)
         end
         self:SetAlpha(0.5)
     end)
+
+--无法使用物品，alpha
+    btn:HookScript('OnLeave', function(self)
+        local notIsUsableAlpha= self.notIsUsableAlpha or 1
+        if self:GetAlpha() ~= notIsUsableAlpha then
+            self:SetAlpha(notIsUsableAlpha)
+        end
+    end)
+    btn:HookScript('OnEnter', function(self)
+        if self:GetAlpha() ~= 1 then
+            self:SetAlpha(1)
+        end
+    end)
+    btn.ItemButton:HookScript('OnLeave', function(self)
+        local p= self:GetParent()
+        local notIsUsableAlpha= p.notIsUsableAlpha or 1
+        if p:GetAlpha() ~= notIsUsableAlpha then
+            p:SetAlpha(notIsUsableAlpha)
+        end
+    end)
+    btn.ItemButton:HookScript('OnEnter', function(self)
+        local p= self:GetParent()
+        if p:GetAlpha() ~= 1 then
+            p:SetAlpha(1)
+        end
+    end)
+    
 end
 
 
@@ -237,7 +263,7 @@ local function Set_Item_Info()
             local classID= select(6, C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
                 stats= table.concat(WoWTools_ItemMixin:GetItemStats(itemLink), PLAYER_LIST_DELIMITER)--物品，属性，表
-                
+
                 spellID= select(2, C_Item.GetItemSpell(itemLink))
                 if spellID then
                     stats= (stats or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
@@ -296,6 +322,8 @@ local function Set_Item_Info()
             end
         end
         btn:SetAlpha(alpha)
+
+        btn.notIsUsableAlpha= alpha
     end
 
 --回购，物品，信息
