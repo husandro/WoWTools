@@ -42,60 +42,10 @@ local function Init()
     end)
 
 --目标的目标
-    --TargetFrameToT.Name:SetWidth(0)
+    WoWTools_TextureMixin:SetFrame(TargetFrame.TargetFrameContent.TargetFrameContentContextual.NumericalThreat, {index=1})
+
     Init=function()end
 end
-
-    --[[TargetFrame.rangeText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT'})
-    TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22, 6)
-    TargetFrame.speedText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT', color={r=1,g=1,b=1}})
-    TargetFrame.speedText:SetPoint('TOPRIGHT', TargetFrame.rangeText, 'BOTTOMRIGHT', 0, -2)
-
-    TargetFrame:HookScript('OnHide', function(self)
-        self.elapsed= nil
-    end)
-    WoWTools_DataMixin:Hook(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
-        self.elapsed= (self.elapsed or 0.3) + elapsed
-        if self.elapsed<0.3 then
-            return
-        end
-
-        self.elapsed=0
-        local text, speed
-
-        if not WoWTools_UnitMixin:UnitIsUnit('player', 'target') then
-            local mi, ma= WoWTools_UnitMixin:GetRange('target')
-            if mi and ma then
-                text=mi..'|n'..ma
-                if mi>40 then
-                    text='|cFFFF4800'..text--红色
-
-                elseif mi>35 then
-                    text='|cFFFFD000'..text
-                elseif mi>30 then
-                    text='|cFFFF00FF'..text
-                elseif mi >8 then
-                    text ='|cFFFFFF00'..text
-                elseif mi>5 then
-                    text='|cFFAF00FF'..text
-                elseif mi>2 then
-                    text='|cFF00FF00'..text
-                else
-                    text='|cFFFFFFFF'..text----白色
-                end
-            end
-
-            local value= GetUnitSpeed('target') or 0
-            if value==0 then
-                speed= '|cff8282820%'
-            else
-                speed= format( '%.0f%%', (value)*100/BASE_MOVEMENT_SPEED)
-            end
-
-        end
-        self.rangeText:SetText(text or '')
-        self.speedText:SetText(speed or '')
-    end)]]
 
 
 

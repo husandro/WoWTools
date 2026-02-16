@@ -126,6 +126,7 @@ local function Init()
         [PartyFrame.MemberFrame3]=PartyFrame.MemberFrame3.Portrait,
         [PartyFrame.MemberFrame4]=PartyFrame.MemberFrame4.Portrait,
         [TargetFrameToT]= TargetFrameToT.Portrait,
+        [FocusFrame]= FocusFrame.TargetFrameContainer.Portrait,
     }) do
         if frame and portrait then
             Craete_Frame(frame, portrait)

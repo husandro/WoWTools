@@ -588,7 +588,6 @@ end]]
         end
     end
 
-    WoWTools_TextureMixin:SetFrame(TargetFrame.TargetFrameContent.TargetFrameContentContextual.NumericalThreat, {index=1})
 
 
     contextual.AttackIcon:ClearAllPoints()
