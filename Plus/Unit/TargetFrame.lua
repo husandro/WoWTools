@@ -41,8 +41,8 @@ local function Init()
         self.Text3:SetText('')
     end)
 
---目标的目标
-    WoWTools_TextureMixin:SetFrame(TargetFrame.TargetFrameContent.TargetFrameContentContextual.NumericalThreat, {index=1})
+
+    --WoWTools_TextureMixin:SetFrame(TargetFrame.TargetFrameContent.TargetFrameContentContextual.NumericalThreat, {index=1})
 
     Init=function()end
 end
