@@ -108,9 +108,16 @@ local PointTab={
         WoWTools_MacroMixin:Init_List_Button()
     end)
 
+
+
+--打开，选项界面
+    root:CreateDivider()
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MacroMixin.addName,})
+
+
 --全部删除
     root:CreateDivider()
-    sub=root:CreateButton(
+    sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '全部删除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL),
     function()
         return MenuResponse.Open
@@ -119,11 +126,11 @@ local PointTab={
 --删除，通用宏
     num, num2= GetNumMacros()
     text= (WoWTools_DataMixin.onlyChinese and '通用宏' or GENERAL_MACROS)..(num==0 and ' |cff626262#' or ' #')..num
-    sub:CreateButton(
+    sub2:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text,
-    function(data)
+    function()
         StaticPopup_Show('WoWTools_OK',
-        '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
+        '|A:XMarksTheSpot:32:32|a|n'..text..'|n|n',
         nil,
         {SetValue=function()
             if WoWTools_FrameMixin:IsLocked(MacroFrame) then
@@ -146,21 +153,21 @@ local PointTab={
                 )
             end
         end})
-    end, {text=text})
+    end)
 
 --删除,专用宏
-    sub:CreateDivider()
-    text=format(
+    sub2:CreateDivider()
+    local text2=format(
             WoWTools_DataMixin.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,
             WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
         )
         ..(num2==0 and ' |cff626262#' or ' #')..num2
 
-    sub:CreateButton(
-        '|A:XMarksTheSpot:0:0|a'..text,
-    function(data)
+    sub2:CreateButton(
+        '|A:XMarksTheSpot:0:0|a'..text2,
+    function()
         StaticPopup_Show('WoWTools_OK',
-        '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
+        '|A:XMarksTheSpot:32:32|a|n'..text2..'|n|n',
         nil,
         {SetValue=function()
             if WoWTools_FrameMixin:IsLocked(MacroFrame) then
@@ -182,12 +189,10 @@ local PointTab={
                 )
             end
         end})
-    end, {text=text})
+    end)
 
 
---打开，选项界面
-    root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MacroMixin.addName,})
+    sub:CreateDivider()
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub)
 
