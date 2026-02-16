@@ -119,17 +119,17 @@ local StatTab={
 
 
 function WoWTools_ItemMixin:GetItemStats(itemLink)--取得，物品，次属性，表
-    local info= itemLink and C_Item.GetItemStats(itemLink)
+    local info= itemLink and C_Item.GetItemStats(itemLink) or {}
 
-    if not info or TableIsEmpty(info) then
-        return {}
+    if TableIsEmpty(info) then
+        return info
     end
 
     local num, tab= 0, {}
     for _, stat in pairs(StatTab) do
         local value= info[stat.value]
         local name= _G[stat.value]
-        if value and value>0 and name then
+        if type(value)=='number' and value>0 and name then
 
             local text= WoWTools_DataMixin.StausText[name]
 
