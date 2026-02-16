@@ -335,11 +335,12 @@ local function ResizeButton2_Menu(self, root)
         WoWTools_MerchantMixin:Update_MerchantFrame()
     end)
 
+    root:CreateDivider()
 --无法使用
     sub=root:CreateButton(
         WoWTools_DataMixin.onlyChinese and '无法使用' or MOUNT_JOURNAL_FILTER_UNUSABLE,
     function()
-        return MenuResponse.Refresh
+        return MenuResponse.Open
     end, {rightText=Save().notIsUsableAlpha or 1})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '透明度' or HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY)
@@ -348,15 +349,17 @@ local function ResizeButton2_Menu(self, root)
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '不可购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PURCHASE, DISABLE))
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '已收集' or TRANSMOG_COLLECTED)
     end)
+    WoWTools_MenuMixin:SetRightText(sub)
 
-    for i= 0, 1, 0.1 do
+    for i= 0, 1.0, 0.1 do
         sub:CreateRadio(
             i,
         function(data)
-            return (Save().notIsUsableAlpha or 1)==data
+            return (Save().notIsUsableAlpha or 1.0)==data
         end, function(data)
             Save().notIsUsableAlpha= data
             WoWTools_MerchantMixin:Update_MerchantFrame()
+            return MenuResponse.Refresh
         end, i)
     end
 end

@@ -454,14 +454,16 @@ local function Init_Menu(self, root)
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
---删除字符
-    WoWTools_OtherMixin:OpenOption(root, '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING))
 
 --打开选项界面
     root:CreateDivider()
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MerchantMixin.addName})
 
+--删除字符
+    WoWTools_OtherMixin:OpenOption(sub, '|A:XMarksTheSpot:0:0|a'..(WoWTools_DataMixin.onlyChinese and 'DELETE' or DELETE_ITEM_CONFIRM_STRING))
+
 --重置数据
+    sub:CreateDivider()
     WoWTools_MenuMixin:RestData(sub, WoWTools_MerchantMixin.addName, function()
         WoWToolsPlayerDate['Plus_SellBuy']=nil
         WoWToolsSave['Plus_SellBuy']= nil
