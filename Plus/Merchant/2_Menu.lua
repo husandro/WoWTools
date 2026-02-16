@@ -26,17 +26,18 @@ local function Player_Sell_Menu(_, root)
     num= CountTable(WoWToolsPlayerDate['SellBuyItems'].sell or {})
     sub=root:CreateCheckbox(
         '|A:bags-button-autosort-up:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM))
-        ..(num==0 and '|cff626262' or '')
-        ..' #'..num,
+        ..(WoWTools_DataMixin.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM)),
+        --..(num==0 and '|cff626262' or '')
+        --..' #'..num,
     function()
         return not Save().notSellCustom
     end, function()
         Save().notSellCustom= not Save().notSellCustom and true or nil
-    end)
+    end, {rightText= num})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
     end)
+    WoWTools_MenuMixin:SetRightText(sub)
 
     --列表, 出售自定义
     num=0
@@ -88,10 +89,12 @@ local function Buyback_Menu(_, root)
         num= _G['WoWTools_BuybackButton']:set_text()--回购，数量，提示
     end
     sub=root:CreateButton(
-        '    |A:common-icon-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '回购' or BUYBACK)..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
+        '    |A:common-icon-undo:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '回购' or BUYBACK),--..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
     function()
        return MenuResponse.Open
-    end)
+    end, {rightText=num or 0})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --列表，回购
     num=0
@@ -161,7 +164,8 @@ local function BuyItem_Menu(self, root)
         num= _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
     end
     sub=root:CreateCheckbox(
-        '|A:Perks-ShoppingCart:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
+        '|A:Perks-ShoppingCart:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)),--..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
     function()
         return not Save().notAutoBuy
     end, function()
@@ -170,7 +174,8 @@ local function BuyItem_Menu(self, root)
         if _G['WoWTools_BuyItemButton'] then
             _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
         end
-    end)
+    end, {rightText=num})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 
     --列表，购买
@@ -282,19 +287,20 @@ local function Init_Menu(self, root)
 
     sub=root:CreateCheckbox(
         '|A:bags-button-autosort-up:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '出售首领掉落' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB,TRANSMOG_SOURCE_1))
-        ..(num==0 and '|cff626262' or '')
-        ..' #'..num,
+        ..(WoWTools_DataMixin.onlyChinese and '出售首领掉落' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB,TRANSMOG_SOURCE_1)),
+        --..(num==0 and '|cff626262' or '')
+        --..' #'..num,
     function()
         return not Save().notSellBoss
     end, function()
         Save().notSellBoss= not Save().notSellBoss and true or nil
-    end)
+    end, {rightText=num})
     sub:SetTooltip(function(tooltip)
         local avgItemLevel= (GetAverageItemLevel() or 60)- 30
         tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..' < ' ..math.ceil(avgItemLevel))
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
     end)
+    WoWTools_MenuMixin:SetRightText(sub)
 
     num=0
     for itemLink, itemLevel in pairs(Save().bossItems) do
