@@ -552,11 +552,11 @@ end]]
             end)
         elseif (UnitIsGroupLeader("player") or not IsInGroup()) and GetDungeonDifficultyID()~=DifficultyUtil.ID.DungeonMythic then
             SetDungeonDifficultyID(DifficultyUtil.ID.DungeonMythic)
-            C_Timer.After(0.5, function()
+            --[[C_Timer.After(0.5, function()
                 if self:IsMouseOver() then
                     self:tooltip()
                 end
-            end)
+            end)]]
         end
     end)
 
