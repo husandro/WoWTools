@@ -8,7 +8,7 @@
 local function Craete_Frame(frame, portrait)
     frame.classFrame= CreateFrame('Frame', nil, frame)
     frame.classFrame:SetFrameStrata('HIGH')
-    frame.classFrame:SetSize(14,14)
+    frame.classFrame:SetSize(18,18)
     frame.classFrame:SetPoint('BOTTOM', portrait, -7, -2)
 
     frame.classFrame.Portrait= frame.classFrame:CreateTexture(nil, "BORDER")
@@ -20,7 +20,7 @@ local function Craete_Frame(frame, portrait)
     frame.classFrame.Texture:SetPoint('TOPLEFT', frame.classFrame, -2, 2)
     frame.classFrame.Texture:SetPoint('BOTTOMRIGHT', frame.classFrame, 2, -2)
     frame.classFrame.itemLevel= frame.classFrame:CreateFontString(nil, 'BORDER', 'WoWToolsFont')-- WoWTools_LabelMixin:Create(frame.classFrame, {size=12})--装等
-    frame.classFrame.itemLevel:SetPoint('LEFT', frame.classFrame.Portrait, 'RIGHT', -1, 0)
+    frame.classFrame.itemLevel:SetPoint('LEFT', frame.classFrame.Portrait, 'RIGHT', -2, 0)
 
     function frame.classFrame:get_guid()
         local unit= self:GetParent().unit
@@ -57,8 +57,6 @@ local function Craete_Frame(frame, portrait)
             end
         end
 
-        --local isShow= (texture or itemLevel) and true or false
-
         self.itemLevel:SetText(itemLevel or '')
         self.Portrait:SetTexture(texture or 0)
         local color= WoWTools_UnitMixin:GetColor(unit)
@@ -66,8 +64,6 @@ local function Craete_Frame(frame, portrait)
         self.Texture:SetVertexColor(r,g,b)
         self.itemLevel:SetTextColor(r,g,b)
         self.Texture:SetShown(texture)
-
-        --self:SetShown(isShow)
     end
 
     function frame.classFrame:set_event()

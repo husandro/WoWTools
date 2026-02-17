@@ -819,13 +819,13 @@ local function Init()--设置标记, 框架
                 GameTooltip_SetTitle(GameTooltip,
                     '|A:bags-button-autosort-up:0:0|a'
                     ..(WoWTools_DataMixin.onlyChinese and '地面' or GROUPMANAGER_GROUND_MARKER),
-                    ACCOUNT_WIDE_FONT_COLOR:GetRGB()
+                    ACCOUNT_WIDE_FONT_COLOR
                 )
                 GameTooltip:Show()
             end)
             btn:set_alpha()
         else
-
+            table.insert(Buttons, 'WoWToolsMakersWorldButton'..index)
             function btn:set_point()
                 local b= _G[MarkerButtons[self:GetID()]]
                 self:ClearAllPoints()
@@ -1069,7 +1069,9 @@ local function Init()--设置标记, 框架
         if not Tooltip_SetOwner() then
             return
         end
-        GameTooltip_SetTitle(GameTooltip, addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip_SetTitle(GameTooltip,
+            addName..WoWTools_DataMixin.Icon.icon2
+        )
         GameTooltip:AddLine(' ')
         local r,g,b
         if InCombatLockdown() then

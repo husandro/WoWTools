@@ -142,6 +142,9 @@ local function Init()
         return
     end
 
+
+
+
     frame= CreateFrame('Frame', nil, PaperDollSidebarTab1)
     frame:SetFrameLevel(PaperDollSidebarTab1:GetFrameLevel()+1)
 
@@ -157,9 +160,9 @@ local function Init()
 
 
 
-    frame.pve= frame:CreateFontString('WoWToolsPaperItemPvELevelLabel', 'OVERLAY', 'GameFontHighlightOutline')
-    frame.pve:SetFontHeight(12)
-    frame.pve:SetShadowOffset(1,-1)
+    frame.pve= frame:CreateFontString('WoWToolsPaperItemPvELevelLabel', 'OVERLAY', 'WoWToolsFont2')
+    --frame.pve:SetFontHeight(12)
+    --frame.pve:SetShadowOffset(1,-1)
     frame.pve:SetPoint('BOTTOM', PaperDollSidebarTab1)
     frame.pve:SetJustifyH('CENTER')
     frame.pve:EnableMouse(true)
@@ -186,9 +189,9 @@ local function Init()
 
 
 
-    frame.pvp= frame:CreateFontString('WoWToolsPaperItemPvPLevelLabel', 'OVERLAY', 'GameFontHighlightOutline')
-    frame.pvp:SetFontHeight(12)
-    frame.pvp:SetShadowOffset(1,-1)
+    frame.pvp= frame:CreateFontString('WoWToolsPaperItemPvPLevelLabel', 'OVERLAY', 'WoWToolsFont2')
+    --frame.pvp:SetFontHeight(12)
+    --frame.pvp:SetShadowOffset(1,-1)
     frame.pvp:SetPoint('TOP', PaperDollSidebarTab1, 0, -2)
     frame.pvp:SetJustifyH('CENTER')
     frame.pvp:EnableMouse(true)
@@ -229,9 +232,9 @@ local function Init()
 
 
 --已收集数量
-    frame.title= frame:CreateFontString('WoWToolsPaperTitleLabel', 'OVERLAY', 'GameFontHighlightOutline')
-    frame.title:SetFontHeight(12)
-    frame.title:SetShadowOffset(1,-1)
+    frame.title= frame:CreateFontString('WoWToolsPaperTitleLabel', 'OVERLAY', 'WoWToolsFont2')
+    --frame.title:SetFontHeight(12)
+    --frame.title:SetShadowOffset(1,-1)
     frame.title:SetPoint('BOTTOM', PaperDollSidebarTab2)
     frame.title:SetJustifyH('CENTER')
     frame.title:EnableMouse(true)
@@ -279,9 +282,9 @@ local function Init()
     local w, h
 --套装，名称
     --frame.setName=WoWTools_LabelMixin:Create(PaperDollSidebarTab3, {justifyH='CENTER'})
-    frame.setName= frame:CreateFontString('WoWToolsPaperTitleLabel', 'OVERLAY', 'GameFontHighlightOutline')
-    frame.setName:SetFontHeight(12)
-    frame.setName:SetShadowOffset(1,-1)
+    frame.setName= frame:CreateFontString('WoWToolsPaperTitleLabel', 'OVERLAY', 'WoWToolsFont2')
+    --frame.setName:SetFontHeight(12)
+    --frame.setName:SetShadowOffset(1,-1)
     frame.setName:SetPoint('BOTTOM', PaperDollSidebarTab3, 2, 0)
     frame.setName:EnableMouse(true)
     frame.setName:SetScript('OnMouseDown', function()
@@ -303,7 +306,7 @@ local function Init()
 
 --套装图标图标
     frame.setTexture= frame:CreateTexture(nil, 'OVERLAY')
-    frame.setTexture:SetPoint('CENTER', PaperDollSidebarTab3, 1,-2)
+    frame.setTexture:SetPoint('CENTER', PaperDollSidebarTab3, 1, -2)
     w, h= PaperDollSidebarTab3:GetSize()
     frame.setTexture:SetSize(w-4, h-4)
 
@@ -389,7 +392,7 @@ local function Init()
         self.titleButton:SetWidth(math.max(self.titleButton.text:GetStringWidth()+12, 23))
 
 --套装，名称
-        self.setName:SetText(name or '')
+        self.setName:SetText(WoWTools_TextMixin:sub(name, 2, 4,true) or '')
         self.setName.tooltip2= name
         self.setName.setID= setID
 

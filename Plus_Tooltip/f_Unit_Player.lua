@@ -80,26 +80,32 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         text2Left= text2Left..'|T236347:0|t'
     end
 
---设置 textRight
-    local region= WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US
-    textRight=realm
-        ..(isSelf
-            and '|A:auctionhouse-icon-favorite:0:0|a'
-            or (realm==WoWTools_DataMixin.Player.Realm and '|A:common-icon-checkmark:0:0|a')
-            or (WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a')
-            or ''
-        )
-        ..(region and region.col or '')
+        if isSelf then
 
---设置 text2Right
+        end
+
+--设置 textRight text2Right
     if isSelf then
+--魔兽世界时光徽章
+        C_WowTokenPublic.UpdateMarketPrice()
+        local price= C_WowTokenPublic.GetCurrentMarketPrice()
+        if price and price>0 then
+--取得WOW物品数量
+            local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)
+            text2Right= all
+                ..(numPlayer>1 and '('..numPlayer..')' or '')
+                ..'|A:token-choice-wow:0:0|a '
+                ..WoWTools_DataMixin:MK(price/10000,1)
+                ..'|A:Front-Gold-Icon:0:0|a'
+        end
+
 --头衔
         local titleID= GetCurrentTitle()
         if titleID and titleID>0 then
             local titleName= GetTitleName(titleID)
-            text2Right= WoWTools_TextMixin:CN(titleName)--, {titleID= titleID})
-            if text2Right then
-                text2Right= format(text2Right, '')
+            textRight= WoWTools_TextMixin:CN(titleName)--, {titleID= titleID})
+            if textRight then
+                textRight= format(textRight, '')
             end
         end
     else
@@ -108,10 +114,10 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         if lineLeft1 then
             local t= lineLeft1:GetText()
             if t and t:find('|A:') then
-                text2Right= tooltip.text2Right:GetText() or ''
+                textRight= tooltip.textRight:GetText() or ''
             else
-                text2Right= lineLeft1:GetText():gsub(name, '')
-                text2Right= text2Right:gsub('-'..realm, '')
+                textRight= lineLeft1:GetText():gsub(name, '')
+                textRight= textRight:gsub('-'..realm, '')
             end
         end
     end
@@ -136,7 +142,9 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         )
         local lineRight1= _G[tooltipName..'TextRight1']
         if lineRight1 then
-            local text= ' '
+
+
+            --[[local text= ' '
 --魔兽世界时光徽章
             if isSelf then
                 C_WowTokenPublic.UpdateMarketPrice()
@@ -150,8 +158,18 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                         ..WoWTools_DataMixin:MK(price/10000,1)
                         ..'|A:Front-Gold-Icon:0:0|a'
                 end
-            end
-            lineRight1:SetText(text)
+            else
+
+            end]]
+            local region= WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US
+            lineRight1:SetText(realm
+                ..(isSelf
+                and '|A:auctionhouse-icon-favorite:0:0|a'
+                or (realm==WoWTools_DataMixin.Player.Realm and '|A:common-icon-checkmark:0:0|a')
+                or (WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a')
+                or ''
+            )
+            ..(region and region.col or ''))
             lineRight1:SetShown(true)
         end
     end

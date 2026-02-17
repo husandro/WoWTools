@@ -3036,7 +3036,9 @@
         "ACHIEVEMENT_BUTTON",
         "PERKS_VENDOR_CATEGORY_MOUNT",
         "ACCESSIBILITY_MOUNT_LABEL",
-        "ICON_FILTER_SPELL"
+        "ICON_FILTER_SPELL",
+        "LOOT_SPECIALIZATION_DEFAULT",
+        "ERR_LOOT_SPEC_CHANGED_S"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

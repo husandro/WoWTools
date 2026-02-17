@@ -207,7 +207,7 @@ local function Init()
     Frame.warModeBg= Frame:CreateTexture(nil, 'BACKGROUND')
     Frame.warModeBg:SetSize(26, 26)
     Frame.warModeBg:SetPoint('CENTER', Frame.warMode)
-    Frame.warModeBg:SetAtlas('pvptalents-talentborder-glow')
+    Frame.warModeBg:SetAtlas('talents-node-choiceflyout-circle-greenglow')
 
 
 --装备,总耐久度
@@ -232,8 +232,9 @@ local function Init()
     function Frame:settings()
         self.durabiliy:SetText(WoWTools_DurabiliyMixin:Get(true))
         self.warMode:SetDesaturated(not C_PvP.IsWarModeDesired())
-        self.warMode:SetShown(C_PvP.ArePvpTalentsUnlocked())
-        self.warModeBg:SetShown(C_PvP.CanToggleWarMode(true) or C_PvP.CanToggleWarMode(false))
+        local show= C_PvP.ArePvpTalentsUnlocked()
+        self.warMode:SetShown(show)
+        self.warModeBg:SetShown(show and (C_PvP.CanToggleWarMode(true) or C_PvP.CanToggleWarMode(false)))
     end
 
     function Frame:set_event()
