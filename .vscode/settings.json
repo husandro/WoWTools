@@ -3038,7 +3038,11 @@
         "ACCESSIBILITY_MOUNT_LABEL",
         "ICON_FILTER_SPELL",
         "LOOT_SPECIALIZATION_DEFAULT",
-        "ERR_LOOT_SPEC_CHANGED_S"
+        "ERR_LOOT_SPEC_CHANGED_S",
+        "DIFFICULTY_LOCKED_REASON_STORY_RAID",
+        "UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LEGACY_RAID",
+        "SetRaidDifficulties",
+        "NormalizeLegacyDifficultyID"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

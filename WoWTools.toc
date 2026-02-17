@@ -45,6 +45,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 1_Mixin\LoadUI.lua
 1_Mixin\Map.lua
 1_Mixin\Menu.lua
+1_Mixin\Menu_List.lua
 1_Mixin\Quest.lua
 1_Mixin\Random.lua
 1_Mixin\Text.lua

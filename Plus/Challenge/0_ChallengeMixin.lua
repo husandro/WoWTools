@@ -31,7 +31,7 @@ end
 
 local function GetActivities()
     local R = {}
-    for  _, info in pairs( C_WeeklyRewards.GetActivities() or {}) do
+    for  _, info in pairs(C_WeeklyRewards.GetActivities() or {}) do
         if info.type and info.type>0 and info.level then--and info.type>= 1 and info.type<= 3
             local head
             local difficultyText

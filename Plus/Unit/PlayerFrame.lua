@@ -344,7 +344,6 @@ end]]
     --lootTipsTexture:SetAlpha(0.7)
     lootTipsTexture:SetPoint('TOP', 0, 4)
     lootTipsTexture:SetAtlas('Banker')
-    LootButton.owner='ANCHOR_RIGHT'
     function LootButton:tooltip(tooltip)
 
         local text=''
@@ -451,46 +450,42 @@ end]]
 
 --Riad 副本, 地下城，指示, 
     local InsFrame= CreateFrame("Frame", 'WoWToolsPlayerFrameInstanceFrame', contextual)
-    --InsFrame:SetPoint('TOP', LootButton, 'BOTTOM')
     InsFrame:SetPoint('BOTTOMLEFT', LootButton, 'BOTTOMRIGHT')
     InsFrame:SetSize(size, size)
 
-
 --图标
-    InsFrame.raid= InsFrame:CreateTexture()
+    InsFrame.raid= CreateFrame('Button', nil, InsFrame, 'WoWToolsButtonTemplate')
     InsFrame.raid:SetAllPoints(InsFrame)
-    InsFrame.raid:SetAtlas('UI-HUD-Minimap-GuildBanner-Mythic-Large')
+    InsFrame.raid:SetNormalAtlas('UI-HUD-Minimap-GuildBanner-Mythic-Large')
 
 --10人，25人
-    InsFrame.raid.text= InsFrame:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont') WoWTools_LabelMixin:Create(InsFrame, {color=true})
+    InsFrame.raid.text= InsFrame.raid:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont')-- WoWTools_LabelMixin:Create(InsFrame, {color=true})
     InsFrame.raid.text:SetPoint('TOP',0,8)
 
---提示
-    InsFrame.raid:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) self.text:SetAlpha(1) end)
     InsFrame.raid:SetScript('OnEnter', function(self)
-        if self.tips then
-            GameTooltip:SetOwner(contextual, "ANCHOR_LEFT")
-            GameTooltip_SetTitle(GameTooltip, WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
-            GameTooltip:AddLine(' ')
-            local dungeonID= GetRaidDifficultyID()
-            local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
-            GameTooltip:AddDoubleLine(self.tips, '|A:GM-icon-difficulty-mythicSelected-hover:0:0|a')
-            GameTooltip:AddLine(' ')
-            local tab={
-                DifficultyUtil.ID.DungeonNormal,
-                DifficultyUtil.ID.DungeonHeroic,
-                DifficultyUtil.ID.DungeonMythic
-            }
-            for _, ID in pairs(tab) do
-                text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
-                text= ID==dungeonID and '|A:common-icon-rotateright:0:0|a'..text..'|A:common-icon-rotateleft:0:0|a' or text
-                GameTooltip:AddLine((text==self.name and '|A:common-icon-rotateright:0:0|a' or '')..text..(text==self.name and '|A:common-icon-rotateleft:0:0|a' or ''))
-            end
-
-            GameTooltip:Show()
-            self:SetAlpha(0.3)
-            self.text:SetAlpha(0.3)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        local dungeonID= GetRaidDifficultyID()
+        GameTooltip:AddLine(self.tooltip)
+        GameTooltip:AddLine(' ')
+        local tab={
+            DifficultyUtil.ID.DungeonNormal,
+            DifficultyUtil.ID.DungeonHeroic,
+            DifficultyUtil.ID.DungeonMythic
+        }
+        for _, ID in pairs(tab) do
+            local text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
+            text= ID==dungeonID and '|A:common-icon-rotateright:0:0|a'..text..'|A:common-icon-rotateleft:0:0|a' or text
+            GameTooltip:AddLine(
+                (text==self.name and '|A:common-icon-rotateright:0:0|a' or '')
+                ..text
+                ..(text==self.name and '|A:common-icon-rotateleft:0:0|a' or '')
+            )
         end
+
+        GameTooltip:Show()
+        self:SetAlpha(0.3)
+        self.text:SetAlpha(0.3)
     end)
 
 
@@ -514,11 +509,11 @@ end]]
         self:SetAlpha(1)
     end)
 
-    InsFrame.dungeon.owner= 'ANCHOR_RIGHT'
-    function InsFrame.dungeon:tooltip(tooltip)
+    function InsFrame.dungeon:tooltip()
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         local dungeonID= GetDungeonDifficultyID()
-        local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
-        GameTooltip_SetTitle(tooltip,
+        --local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
+        GameTooltip_SetTitle(GameTooltip,
             '|A:DungeonSkull:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)
             ..WoWTools_DataMixin.Icon.icon2
         )
@@ -528,46 +523,47 @@ end]]
             DifficultyUtil.ID.DungeonHeroic,
             DifficultyUtil.ID.DungeonMythic
         }) do
-            text= WoWTools_MapMixin:GetDifficultyColor(nil, id)
-            text= id==dungeonID and '|A:common-icon-rotateright:0:0|a'..text..'|A:common-icon-rotateleft:0:0|a' or text
+            local isCur= id==dungeonID
+            local text= WoWTools_MapMixin:GetDifficultyColor(nil, id)
+            if isCur then
+                text= '|A:common-icon-rotateright:0:0|a'..text..'|A:common-icon-rotateleft:0:0|a'
+            end
 
             local set
             if id==DifficultyUtil.ID.DungeonMythic then
                 set= (
-                        (UnitIsGroupLeader("player") or not IsInGroup()) and '|cnWARNING_FONT_COLOR:' or '|cnDISABLED_FONT_COLOR:'
+                        (UnitIsGroupLeader("player") or not IsInGroup() and not isCur) and '|cnGREEN_FONT_COLOR:' or '|cnDISABLED_FONT_COLOR:'
                     )
                     ..WoWTools_DataMixin.Icon.left
                     ..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
                     ..'|r'
-                    
             end
 
-            GameTooltip:AddLine(text
-                ..(set or '')
+            GameTooltip:AddLine(text..(set or '')
             )
         end
-        self:SetAlpha(0.5)
+        GameTooltip:Show()
     end
 
-
-    InsFrame.dungeon:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
-    InsFrame.dungeon:SetScript('OnMouseDown', function(self)
-        if (UnitIsGroupLeader("player") or not IsInGroup()) and GetDungeonDifficultyID()~=DifficultyUtil.ID.DungeonMythic then
+    InsFrame.dungeon:SetScript('OnClick', function(self, d)
+        if d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, function(_, root)
+                WoWTools_MenuMixin:DungeonDifficulty(self, root)
+            end)
+        elseif (UnitIsGroupLeader("player") or not IsInGroup()) and GetDungeonDifficultyID()~=DifficultyUtil.ID.DungeonMythic then
             SetDungeonDifficultyID(DifficultyUtil.ID.DungeonMythic)
             C_Timer.After(0.5, function()
                 if self:IsMouseOver() then
-                    self:tooltip(GameTooltip)
-                    GameTooltip:Show()
+                    self:tooltip()
                 end
             end)
         end
-        self:SetAlpha(0.1)
     end)
 
 
     function InsFrame:set_settings()
         local ins, findRiad, findDungeon=  IsInInstance(), false, false
-        if not ins and WoWTools_UnitMixin:UnitIsUnit(PlayerFrame.unit, 'player') then
+        if not ins and WoWTools_UnitMixin:UnitIsUnit(PlayerFrame.unit, 'player') and not DifficultyUtil.InStoryRaid() then
             local difficultyID2 = GetDungeonDifficultyID() or 0
             local difficultyID3= GetRaidDifficultyID() or 0
             local displayMythic3 = select(6, GetDifficultyInfo(difficultyID3))
@@ -587,8 +583,8 @@ end]]
             end
 
             if name3 and (name3~=name2 or not displayMythic3) then
-                self.raid:SetVertexColor(color3:GetRGB())
-                self.raid.tips= text3
+                self.raid:GetNormalTexture():SetVertexColor(color3:GetRGB())
+                self.raid.tooltip= text3
                 self.raid.name= name3
                 self.raid.text:SetText((size3 and not displayMythic3) and size3 or '')
                 self.raid.text:SetTextColor(color3:GetRGB())
@@ -604,7 +600,7 @@ end]]
                 if not findRiad then
                     text2= text2..(text3 and '|n|n'..text3 or '')
                 end
-                self.dungeon.tips=text2
+                self.dungeon.tooltip=text2
                 self.dungeon.name= name2
                 findDungeon= true
             end
@@ -614,25 +610,27 @@ end]]
         self:SetShown(not ins)
     end
 
-    InsFrame.dungeonDifficultyStr= ERR_DUNGEON_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"地下城难度已设置为%s。"
-    InsFrame.raidDifficultyStr= ERR_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
-    InsFrame.legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
+    --InsFrame.t= WoWTools_TextMixin:Magic(ERR_DUNGEON_DIFFICULTY_CHANGED_S)--:gsub('%%s', '(.+)')--"地下城难度已设置为%s。"
+    --InsFrame.t2= WoWTools_TextMixin:Magic(ERR_RAID_DIFFICULTY_CHANGED_S)--:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
+    --InsFrame.t3= WoWTools_TextMixin:Magic(ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S)--:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
 
     InsFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     InsFrame:SetScript('OnEvent', function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' then
             if IsInInstance() then
-                self:UnregisterEvent('CHAT_MSG_SYSTEM')--会出错误，冒险指南，打开世界BOSS
+                self:UnregisterEvent('PLAYER_DIFFICULTY_CHANGED')--会出错误，冒险指南，打开世界BOSS
             else
-                self:RegisterEvent('CHAT_MSG_SYSTEM')
-            end
-            self:set_settings()--副本, 地下城，指示
-        elseif canaccessvalue(arg1) and arg1 then
-            if arg1:find(self.dungeonDifficultyStr) or arg1:find(self.raidDifficultyStr) or arg1:find(self.legacyRaidDifficultyStr) then
-                self:set_settings()--副本, 地下城，指示
+                self:RegisterEvent('PLAYER_DIFFICULTY_CHANGED')
             end
         end
+        self:set_settings()--副本, 地下城，指示
+        --[[if canaccessvalue(arg1)
+            and arg1
+            and arg1:find(self.t)
+            or arg1:find(self.t2)
+            or arg1:find(self.t3)
+        then]]
     end)
 
     InsFrame:set_settings()
@@ -671,7 +669,7 @@ end]]
     KeyFrame.Text:SetPoint('LEFT')
     KeyFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
     KeyFrame:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip_SetTitle(GameTooltip, WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
