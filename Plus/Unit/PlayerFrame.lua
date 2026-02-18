@@ -225,10 +225,10 @@ end]]
     LootButton:SetNormalTexture(0)
     WoWTools_ButtonMixin:AddMask(LootButton)
 
-    local lootTipsTexture= LootButton:CreateTexture(nil, 'OVERLAY')
-    lootTipsTexture:SetSize(8,8)
-    lootTipsTexture:SetPoint('BOTTOM')
-    lootTipsTexture:SetAtlas('VignetteLoot')
+    LootButton.texture= LootButton:CreateTexture(nil, 'OVERLAY')
+    LootButton.texture:SetSize(8,8)
+    LootButton.texture:SetPoint('BOTTOM')
+    LootButton.texture:SetAtlas('VignetteLoot')
     function LootButton:tooltip(tooltip)
 
         local text=''
@@ -263,12 +263,9 @@ end]]
     function LootButton:settings()
         local specID = PlayerUtil.GetCurrentSpecID() or 0
         local lootSpecID = GetLootSpecialization()
-
         lootSpecID= lootSpecID==0 and specID or lootSpecID
-
-        print(select(3, PlayerUtil.GetSpecNameBySpecID(lootSpecID)))
         self:SetNormalTexture(select(3, PlayerUtil.GetSpecNameBySpecID(lootSpecID)) or 0)
-
+        self.texture:SetShown(specID~=lootSpecID)
         self:SetShown(Save().showLootButton or specID~=lootSpecID)
     end
 
@@ -309,9 +306,7 @@ end]]
         end
     end)
 
-    C_Timer.After(2, function()
-        LootButton:settings()
-    end)
+
 
 
 
