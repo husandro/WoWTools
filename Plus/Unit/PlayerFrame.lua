@@ -1,16 +1,6 @@
 --玩家 PlayerFrame.lua
-
-
-
-
-
-
-
-
-
-local function Craete_assisterButton()
-
-
+local function Save()
+    return WoWToolsSave['Plus_UnitFrame']
 end
 
 
@@ -19,112 +9,8 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---[[设置, 战争模式 Blizzard_WarmodeButtonTemplate.lua
-local function Create_warModeButton(frame)
-    frame.warModeButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, isType2=true, name='WoWToolsPlayerFrameWarModeButton'})
-    frame.warModeButton:SetPoint('LEFT', frame, 5, 12)
-    frame.warModeButton:SetScript('OnClick',  function(self)
-        --C_PvP.ToggleWarMode()
-        WoWTools_LoadUIMixin:SpellBook(2)
-        --C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltip() end end)
-    end)
-    function frame.warModeButton:GetWarModeDesired()
-        return UnitPopupSharedUtil.IsInWarModeState()
-    end
-    function frame.warModeButton:set_tooltip()
-        if WarmodeButtonMixin then
-            WarmodeButtonMixin.OnEnter(self)
-            return
-        end
-
-        GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())..WoWTools_DataMixin.Icon.left)
-
-        if not C_PvP.ArePvpTalentsUnlocked() then
-			GameTooltip_AddErrorLine(
-                GameTooltip,
-                format(
-                    WoWTools_DataMixin.onlyChinese and '在%d级解锁' or PVP_TALENT_SLOT_LOCKED,
-                    C_PvP.GetPvpTalentsUnlockedLevel()
-                ),
-            true)
-
-        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false) or InCombatLockdown() then
-            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
-		end
-
-        GameTooltip:Show()
-    end
-
-    frame.warModeButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
-    frame.warModeButton:SetScript('OnEnter', function(self)
-        self:set_tooltip()
-    end)
-
-    frame.warModeButton:RegisterEvent('PLAYER_ENTERING_WORLD')
-    frame.warModeButton:RegisterEvent('PLAYER_FLAGS_CHANGED')
-    frame.warModeButton:RegisterEvent('PLAYER_UPDATE_RESTING')
-    
-    frame.warModeButton.bg= frame.warModeButton:CreateTexture(nil, 'ARTWORK')
-    frame.warModeButton.bg:SetAllPoints()
-    frame.warModeButton.bg:SetAtlas('pvptalents-talentborder-glow')
-
-    function frame.warModeButton:set_settings()
-        self:SetNormalAtlas(C_PvP.IsWarModeDesired() and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
-    end
-    frame.warModeButton:SetScript('OnEvent', function(self, event)
-        C_Timer.After(1, function() self:set_settings() end)
-    end)
-
-    frame.warModeButton:set_settings()
-end]]
-
-
-
-
-
-
 local function Init()
-    if WoWToolsSave['Plus_UnitFrame'].hidePlayerFrame then
+    if Save().hidePlayerFrame then
         return
     end
 
@@ -258,20 +144,8 @@ end]]
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
      --全部有权限，助手，提示
-    AssisterButton= CreateFrame('Button', '', contextual, 'WoWToolsButtonTemplate') -- WoWTools_ButtonMixin:Cbtn(contextual,{size=18})--点击，设置全员，权限
+    AssisterButton= CreateFrame('Button', 'WoWToolsPlayerFrameAssisterButton', contextual, 'WoWToolsButtonTemplate') -- WoWTools_ButtonMixin:Cbtn(contextual,{size=18})--点击，设置全员，权限
     AssisterButton:SetFrameStrata('HIGH')
     AssisterButton:SetAllPoints(contextual.LeaderIcon)
     ---AssisterButton:Hide()
@@ -315,9 +189,9 @@ end]]
     WoWTools_DataMixin:Hook('PlayerFrame_UpdatePartyLeader', function()
         local isLeader= UnitIsGroupLeader("player")
         local isAssist= UnitIsGroupAssistant('player')
-        --AssisterButton:SetShown(isLeader and IsInRaid())
-        --AssisterButton.Icon:SetShown(not isLeader and isAssist)
-        --AssisterButton.EveryoneAssistantIcon:SetShown(IsEveryoneAssistant())
+        AssisterButton:SetShown(isLeader and IsInRaid())
+        AssisterButton.Icon:SetShown(not isLeader and isAssist)
+        AssisterButton.EveryoneAssistantIcon:SetShown(IsEveryoneAssistant())
     end)
 
 
@@ -331,9 +205,21 @@ end]]
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --拾取专精
-    local LootButton= CreateFrame('Button', 'WoWToolsPlayerFrameLootButton', contextual, 'WoWToolsButtonTemplate')
-    --LootButton:SetPoint('TOPLEFT', contextual, 'TOPRIGHT', -21, -24)
+    local LootButton= CreateFrame('DropdownButton', 'WoWToolsPlayerFrameLootButton', contextual, 'WoWToolsMenu3Template')
     LootButton:SetPoint('BOTTOMLEFT', contextual.LeaderIcon, 'BOTTOMRIGHT')
     LootButton:SetSize(size, size)
     LootButton:SetNormalTexture(0)
@@ -341,32 +227,36 @@ end]]
 
     local lootTipsTexture= LootButton:CreateTexture(nil, 'OVERLAY')
     lootTipsTexture:SetSize(8,8)
-    --lootTipsTexture:SetAlpha(0.7)
-    lootTipsTexture:SetPoint('TOP', 0, 4)
-    lootTipsTexture:SetAtlas('Banker')
+    lootTipsTexture:SetPoint('BOTTOM')
+    lootTipsTexture:SetAtlas('VignetteLoot')
     function LootButton:tooltip(tooltip)
 
         local text=''
         local lootSpecID = GetLootSpecialization()
         if lootSpecID then
             local name, _, texture= select(2, GetSpecializationInfoByID(lootSpecID))
-            if texture and name then
-                text= ' |T'..texture..':0|t'..name
-            end
+            text= ' |T'..(texture or 0)..':0|t'..(WoWTools_TextMixin:CN(name) or '')
         end
         GameTooltip_SetTitle(tooltip,
-            '|A:Banker:0:0|a'--..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
-            ..format(
-                WoWTools_DataMixin.onlyChinese and '专精拾取已设置为：%s' or ERR_LOOT_SPEC_CHANGED_S,
-                text
-            )
+            '|A:VignetteLoot:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+            ..text
         )
+
+        tooltip:AddLine(' ')
         local name, _, icon= PlayerUtil.GetSpecName()
-        tooltip:AddLine(
-            WoWTools_DataMixin.Icon.left
+        GameTooltip_AddInstructionLine(tooltip,
+            '<'
             ..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
-            ..' |T'..(icon or 0)..':0|t'..(name or '')
-            ..WoWTools_DataMixin.Icon.icon2
+            ..WoWTools_DataMixin.Icon.left
+            ..' |T'..(icon or 0)..':0|t'..(WoWTools_TextMixin:CN(name) or '')
+            ..'>'
+        )
+        GameTooltip_AddInstructionLine(tooltip,
+            '<'
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            ..WoWTools_DataMixin.Icon.right
+            ..'>'
         )
     end
 
@@ -386,13 +276,7 @@ end]]
                 end
             end
         end
-        self:SetShown(find)
-        C_Timer.After(0.5, function()
-            if self:IsMouseOver() then
-                self:tooltip(GameTooltip)
-                GameTooltip:Show()
-            end
-        end)
+        self:SetShown(find or Save().showLootButton)
     end
 
     LootButton:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -404,8 +288,14 @@ end]]
         self:set_shown()
     end)
 
-    LootButton:SetScript('OnClick', function(self, d)
+    LootButton:SetupMenu(function(self, root)
+        if self:IsMouseOver() then
+            WoWTools_MenuMixin:Set_Specialization(root)
+        end
+    end)
+    LootButton:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
+            self:CloseMenu()
             SetLootSpecialization(0)
             local currentSpec = GetSpecialization()
             local specID= currentSpec and C_SpecializationInfo.GetSpecializationInfo(currentSpec)
@@ -416,10 +306,8 @@ end]]
                 texture and '|T'..texture..':0|t' or '',
                 WoWTools_TextMixin:CN(name)
             )
-        else
-            MenuUtil.CreateContextMenu(self, function(_, root)
-                WoWTools_MenuMixin:Set_Specialization(root)
-            end)
+
+            WoWToolsButton_OnEnter(self)
         end
     end)
 
@@ -448,194 +336,260 @@ end]]
 
 
 
---Riad 副本, 地下城，指示, 
-    local InsFrame= CreateFrame("Frame", 'WoWToolsPlayerFrameInstanceFrame', contextual)
-    InsFrame:SetPoint('BOTTOMLEFT', LootButton, 'BOTTOMRIGHT')
-    InsFrame:SetSize(size, size)
-
 --图标
-    InsFrame.raid= CreateFrame('Button', nil, InsFrame, 'WoWToolsButtonTemplate')
-    InsFrame.raid:SetAllPoints(InsFrame)
-    InsFrame.raid:SetNormalAtlas('UI-HUD-Minimap-GuildBanner-Mythic-Large')
+    local RaidButton= CreateFrame('DropdownButton', 'WoWToolsPlayerFrameRaidButton', contextual, 'WoWToolsMenu3Template')
+    RaidButton:SetSize(size, size)
+    RaidButton:SetPoint('BOTTOMLEFT', LootButton, 'BOTTOMRIGHT')
 
 --10人，25人
-    InsFrame.raid.text= InsFrame.raid:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont')-- WoWTools_LabelMixin:Create(InsFrame, {color=true})
-    InsFrame.raid.text:SetPoint('TOP',0,8)
+    RaidButton.text= RaidButton:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')-- WoWTools_LabelMixin:Create(InsFrame, {color=true})
+    RaidButton.text:SetPoint('CENTER')
+    RaidButton.texture= RaidButton:CreateTexture(nil, 'BORDER')
+    RaidButton.texture:SetAllPoints()
+    RaidButton.texture:SetAtlas('UI-HUD-Minimap-GuildBanner-Mythic-Large')
 
-    InsFrame.raid:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        local dungeonID= GetRaidDifficultyID()
-        GameTooltip:AddLine(self.tooltip)
-        GameTooltip:AddLine(' ')
-        local tab={
-            DifficultyUtil.ID.DungeonNormal,
-            DifficultyUtil.ID.DungeonHeroic,
-            DifficultyUtil.ID.DungeonMythic
-        }
-        for _, ID in pairs(tab) do
-            local text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
-            text= ID==dungeonID and '|A:common-icon-rotateright:0:0|a'..text..'|A:common-icon-rotateleft:0:0|a' or text
-            GameTooltip:AddLine(
-                (text==self.name and '|A:common-icon-rotateright:0:0|a' or '')
-                ..text
-                ..(text==self.name and '|A:common-icon-rotateleft:0:0|a' or '')
+    function RaidButton:tooltip(tooltip)
+        if DifficultyUtil.InStoryRaid() then
+            GameTooltip_AddErrorLine(tooltip,
+                WoWTools_DataMixin.onlyChinese and '在剧情模式不可用' or DIFFICULTY_LOCKED_REASON_STORY_RAID
             )
+            tooltip:AddLine(' ')
         end
 
-        GameTooltip:Show()
-        self:SetAlpha(0.3)
-        self.text:SetAlpha(0.3)
-    end)
+        local difficultyID, _, _, _, isDynamicInstance = select(3, GetInstanceInfo())
+        if isDynamicInstance and CanChangePlayerDifficulty() then
+            local toggleDifficultyID = select(7, GetDifficultyInfo(difficultyID))
+            if toggleDifficultyID then
+                tooltip:AddDoubleLine(
+                    WoWTools_DataMixin.onlyChinese and '可修改难度' or 'Difficulty can be changed',
+                    WoWTools_MapMixin:GetDifficultyColor(nil, toggleDifficultyID),
+                    0,1,0
+                )
+            end
+        end
 
-
---5人 副本, 地下城，指示
-    InsFrame.dungeon= CreateFrame('Button', nil, InsFrame, 'WoWToolsButtonTemplate')
-    InsFrame.dungeon:SetPoint('BOTTOMLEFT', InsFrame, 'BOTTOMRIGHT')
-    InsFrame.dungeon:SetSize(size, size)
-    InsFrame.dungeon:SetNormalAtlas('DungeonSkull')
-
-
---外框
-    --[[local portrait= InsFrame:CreateTexture(nil, 'OVERLAY')
-    portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
-    portrait:SetPoint('CENTER', InsFrame.dungeon,1,0)
-    portrait:SetSize(20,20)
-    WoWTools_TextureMixin:SetAlphaColor(portrait, nil, nil, 1)]]
-
---提示
-    InsFrame.dungeon:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(1)
-    end)
-
-    function InsFrame.dungeon:tooltip()
-        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        local dungeonID= GetDungeonDifficultyID()
-        --local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
-        GameTooltip_SetTitle(GameTooltip,
-            '|A:DungeonSkull:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)
-            ..WoWTools_DataMixin.Icon.icon2
+        local dungeonID= GetRaidDifficultyID() or 0
+        tooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '团队副本难度' or RAID_DIFFICULTY),
+            WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID),
+            1,0.82,0, 1,1,1
         )
-        GameTooltip:AddLine(' ')
-        for _, id in pairs({
-            DifficultyUtil.ID.DungeonNormal,
-            DifficultyUtil.ID.DungeonHeroic,
-            DifficultyUtil.ID.DungeonMythic
-        }) do
-            local isCur= id==dungeonID
-            local text= WoWTools_MapMixin:GetDifficultyColor(nil, id)
-            if isCur then
-                text= '|A:common-icon-rotateright:0:0|a'..text..'|A:common-icon-rotateleft:0:0|a'
-            end
 
-            local set
-            if id==DifficultyUtil.ID.DungeonMythic then
-                set= (
-                        (UnitIsGroupLeader("player") or not IsInGroup() and not isCur) and '|cnGREEN_FONT_COLOR:' or '|cnDISABLED_FONT_COLOR:'
-                    )
-                    ..WoWTools_DataMixin.Icon.left
-                    ..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
-                    ..'|r'
-            end
+        local legacyID= GetLegacyRaidDifficultyID() or 0
+        legacyID= NormalizeLegacyDifficultyID(legacyID)
+        tooltip:AddDoubleLine(
+            WoWTools_DataMixin.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY,
+            dungeonID==DifficultyUtil.ID.PrimaryRaidMythic and WoWTools_TextMixin:GetEnabeleDisable(false)
+            or (legacyID==DifficultyUtil.ID.Raid10Normal and (WoWTools_DataMixin.onlyChinese and '10人' or RAID_DIFFICULTY1))
+            or (legacyID==DifficultyUtil.ID.Raid25Normal and (WoWTools_DataMixin.onlyChinese and '25人' or RAID_DIFFICULTY2))
+            or (WoWTools_DataMixin.onlyChinese and '无' or NONE),
+            1,0.82,0, 1,1,1
+        )
 
-            GameTooltip:AddLine(text..(set or '')
-            )
-        end
-        GameTooltip:Show()
+        tooltip:AddLine(' ')
+
+        local isLeader= UnitIsGroupLeader("player") or not IsInGroup()
+        local color= isLeader and GREEN_FONT_COLOR or DISABLED_FONT_COLOR
+
+        tooltip:AddLine(
+            '<'
+            ..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
+            ..WoWTools_DataMixin.Icon.left
+            ..'|A:UI-HUD-Minimap-GuildBanner-Mythic-Large:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '英雄' or PLAYER_DIFFICULTY2)
+            ..'>',
+            color:GetRGB()
+        )
+        tooltip:AddLine(
+            '<'
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            ..WoWTools_DataMixin.Icon.right
+            ..'>',
+            color:GetRGB()
+        )
     end
 
-    InsFrame.dungeon:SetScript('OnClick', function(self, d)
-        if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(_, root)
-                WoWTools_MenuMixin:DungeonDifficulty(self, root)
-            end)
-        elseif (UnitIsGroupLeader("player") or not IsInGroup()) and GetDungeonDifficultyID()~=DifficultyUtil.ID.DungeonMythic then
+    RaidButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    RaidButton:RegisterEvent('GROUP_LEFT')
+    RaidButton:RegisterEvent('GROUP_ROSTER_UPDATE')
+    RaidButton:RegisterEvent('PLAYER_DIFFICULTY_CHANGED')
+    RaidButton:SetScript('OnEvent', function(self)
+        if IsInInstance() and not IsInRaid()--不在团本里
+            --or (IsInGroup() and not isInRaid and not UnitIsGroupLeader("player"))--队伍没有权限
+        then
+            self:SetShown(false)
+            return
+        end
+
+        local dungeonID= GetRaidDifficultyID() or 0
+        local legacyID= GetLegacyRaidDifficultyID() or 0
+        local legacyText
+
+        if dungeonID<DifficultyUtil.ID.PrimaryRaidMythic then
+            legacyID= NormalizeLegacyDifficultyID(legacyID)
+            if legacyID==DifficultyUtil.ID.Raid10Normal then
+                legacyText= '10'
+            elseif legacyID==DifficultyUtil.ID.Raid25Normal then
+                legacyText= '25'
+            end
+        end
+        self.text:SetText(legacyText or '')
+
+        local color= select(2, WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID))
+        self.texture:SetVertexColor(color:GetRGB())
+        self.text:SetTextColor(color:GetRGB())
+
+        self:SetShown(true)
+    end)
+
+    RaidButton:SetupMenu(function(self, root)
+        if self:IsMouseOver() then
+            WoWTools_MenuMixin:DungeonDifficulty(self, root)
+        end
+    end)
+    RaidButton:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' and (UnitIsGroupLeader("player") or not IsInGroup()) then
+            self:CloseMenu()
+            SetRaidDifficulties(true, DifficultyUtil.ID.PrimaryRaidHeroic)
+            SetRaidDifficulties(false, DifficultyUtil.ID.Raid25Normal)
+        end
+    end)
+    RaidButton:SetScript('OnMouseWheel', function(self, d)
+        local isLeader= UnitIsGroupLeader("player") or not IsInGroup()
+        if not isLeader then
+            return
+        end
+
+        local dungeonID= GetRaidDifficultyID() or DifficultyUtil.ID.PrimaryRaidNormal
+        local toggleDifficultyID= d==1 and dungeonID-1 or dungeonID+1
+        toggleDifficultyID= math.max(toggleDifficultyID, DifficultyUtil.ID.PrimaryRaidNormal)
+        toggleDifficultyID= math.min(toggleDifficultyID, DifficultyUtil.ID.PrimaryRaidMythic)
+
+        SetRaidDifficulties(true, toggleDifficultyID)
+
+        if toggleDifficultyID<DifficultyUtil.ID.PrimaryRaidMythic then
+            if NormalizeLegacyDifficultyID(GetLegacyRaidDifficultyID() or 0) ~= DifficultyUtil.ID.Raid25Normal then
+                SetRaidDifficulties(false, DifficultyUtil.ID.Raid25Normal)
+            end
+        end
+
+        C_Timer.After(1, function()
+            if self:IsMouseOver() then
+                WoWToolsButton_OnEnter(self)
+            end
+        end)
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    local DungeonButton= CreateFrame('DropdownButton', 'WoWToolsPlayerFrameDungeonButton', contextual, 'WoWToolsMenu3Template')
+    DungeonButton:SetSize(size, size)
+    DungeonButton:SetPoint('BOTTOMLEFT', RaidButton, 'BOTTOMRIGHT')
+
+    DungeonButton.texture= DungeonButton:CreateTexture(nil, 'BORDER')
+    DungeonButton.texture:SetAllPoints()
+    DungeonButton.texture:SetAtlas('DungeonSkull')
+
+    function DungeonButton:tooltip(tooltip)
+        local dungeonID= GetDungeonDifficultyID() or 0
+        tooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
+            WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID),
+            1,0.82,0, 1,1,1
+        )
+
+        local isLeader= UnitIsGroupLeader("player") or not IsInGroup()
+        local color= isLeader and GREEN_FONT_COLOR or DISABLED_FONT_COLOR
+
+        tooltip:AddLine(' ')
+
+        tooltip:AddLine(
+            '<'
+            ..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
+            ..WoWTools_DataMixin.Icon.left
+            ..'|A:DungeonSkull:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '史诗' or PLAYER_DIFFICULTY6)
+            ..'>',
+            color:GetRGB()
+        )
+
+        GameTooltip_AddInstructionLine(tooltip,
+            '<'
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            ..WoWTools_DataMixin.Icon.right
+            ..'>'
+        )
+    end
+
+    DungeonButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    DungeonButton:RegisterEvent('GROUP_LEFT')
+    DungeonButton:RegisterEvent('GROUP_ROSTER_UPDATE')
+    DungeonButton:RegisterEvent('PLAYER_DIFFICULTY_CHANGED')
+    DungeonButton:SetScript('OnEvent', function(self)
+        if IsInRaid() then
+            self:SetShown(false)
+            return
+        end
+
+        local color= select(2, WoWTools_MapMixin:GetDifficultyColor(nil, GetDungeonDifficultyID() or 0))
+        self.texture:SetVertexColor(color:GetRGB())
+
+        if self:IsMouseOver() then
+            WoWToolsButton_OnEnter(self)
+        end
+
+        self:SetShown(true)
+    end)
+
+
+    DungeonButton:SetupMenu(function(self, root)
+        if self:IsMouseOver() then
+            WoWTools_MenuMixin:DungeonDifficulty(self, root)
+        end
+    end)
+    DungeonButton:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' and (UnitIsGroupLeader("player") or not IsInGroup()) then
+            self:CloseMenu()
             SetDungeonDifficultyID(DifficultyUtil.ID.DungeonMythic)
-            --[[C_Timer.After(0.5, function()
-                if self:IsMouseOver() then
-                    self:tooltip()
-                end
-            end)]]
         end
     end)
 
+    DungeonButton:SetScript('OnMouseWheel', function(_, d)
+        if UnitIsGroupLeader("player") or not IsInGroup() then
+            local dungeonID= GetDungeonDifficultyID() or DifficultyUtil.ID.DungeonNormal
 
-    function InsFrame:set_settings()
-        local ins, findRiad, findDungeon=  IsInInstance(), false, false
-        if not ins and WoWTools_UnitMixin:UnitIsUnit(PlayerFrame.unit, 'player') and not DifficultyUtil.InStoryRaid() then
-            local difficultyID2 = GetDungeonDifficultyID() or 0
-            local difficultyID3= GetRaidDifficultyID() or 0
-            local displayMythic3 = select(6, GetDifficultyInfo(difficultyID3))
 
-            local name2, color2= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID2)
-            local name3, color3= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID3)
-            if not name3 and difficultyID3 then
-                name3= GetDifficultyInfo(difficultyID3) or difficultyID3
+            local toggleDifficultyID= d==1 and dungeonID-1 or dungeonID+1
+            if toggleDifficultyID==DifficultyUtil.ID.DungeonMythic-1 then
+                toggleDifficultyID= DifficultyUtil.ID.DungeonHeroic
+
+            elseif toggleDifficultyID== DifficultyUtil.ID.DungeonHeroic+1 then
+                toggleDifficultyID= DifficultyUtil.ID.DungeonMythic
             end
 
-            local text3= (WoWTools_DataMixin.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..name3..'|r'
+            toggleDifficultyID= math.max(toggleDifficultyID, DifficultyUtil.ID.DungeonNormal)
+            toggleDifficultyID= math.min(toggleDifficultyID, DifficultyUtil.ID.DungeonMythic)
 
-            local otherDifficulty = GetLegacyRaidDifficultyID()
-            local size3= otherDifficulty and DifficultyUtil.GetMaxPlayers(otherDifficulty)--UnitPopup.lua
-            if size3 and not displayMythic3 then
-                text3= text3..'|n'..(WoWTools_DataMixin.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (WoWTools_DataMixin.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (WoWTools_DataMixin.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
-            end
-
-            if name3 and (name3~=name2 or not displayMythic3) then
-                self.raid:GetNormalTexture():SetVertexColor(color3:GetRGB())
-                self.raid.tooltip= text3
-                self.raid.name= name3
-                self.raid.text:SetText((size3 and not displayMythic3) and size3 or '')
-                self.raid.text:SetTextColor(color3:GetRGB())
-                findRiad=true
-            else
-                self.raid.text:SetText('')
-            end
-
-            if name2  then
-                self.dungeon:GetNormalTexture():SetVertexColor(color2:GetRGB())
-                local text2= (WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..name2
-
-                if not findRiad then
-                    text2= text2..(text3 and '|n|n'..text3 or '')
-                end
-                self.dungeon.tooltip=text2
-                self.dungeon.name= name2
-                findDungeon= true
-            end
-            self.raid:SetShown(findRiad)
-            self.dungeon:SetShown(findDungeon)
+            SetDungeonDifficultyID(toggleDifficultyID)
         end
-        self:SetShown(not ins)
-    end
-
-    --InsFrame.t= WoWTools_TextMixin:Magic(ERR_DUNGEON_DIFFICULTY_CHANGED_S)--:gsub('%%s', '(.+)')--"地下城难度已设置为%s。"
-    --InsFrame.t2= WoWTools_TextMixin:Magic(ERR_RAID_DIFFICULTY_CHANGED_S)--:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
-    --InsFrame.t3= WoWTools_TextMixin:Magic(ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S)--:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
-
-    InsFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-    InsFrame:SetScript('OnEvent', function(self, event, arg1)
-        if event=='PLAYER_ENTERING_WORLD' then
-            if IsInInstance() then
-                self:UnregisterEvent('PLAYER_DIFFICULTY_CHANGED')--会出错误，冒险指南，打开世界BOSS
-            else
-                self:RegisterEvent('PLAYER_DIFFICULTY_CHANGED')
-            end
-        end
-        self:set_settings()--副本, 地下城，指示
-        --[[if canaccessvalue(arg1)
-            and arg1
-            and arg1:find(self.t)
-            or arg1:find(self.t2)
-            or arg1:find(self.t3)
-        then]]
     end)
-
-    InsFrame:set_settings()
-
-
 
 
 
@@ -656,13 +610,7 @@ end]]
     local KeyFrame= CreateFrame("Button", 'WoWToolsPlayerFrameKeystoneFrame', contextual, 'WoWToolsButtonTemplate')
     KeyFrame:SetSize(size, size)
 
-    --KeyFrame:SetPoint('LEFT', contextual.LeaderIcon, 'RIGHT',0,-2)
-    KeyFrame:SetPoint('BOTTOMLEFT', InsFrame.dungeon, 'BOTTOMRIGHT')
-    --[[KeyFrame.texture=KeyFrame:CreateTexture()
-    KeyFrame.texture:SetAllPoints()
-    KeyFrame.texture:SetTexture(4352494)
-    WoWTools_ButtonMixin:AddMask(KeyFrame, false, KeyFrame.texture)
-    WoWTools_ButtonMixin:AddMask(KeyFrame)]]
+    KeyFrame:SetPoint('BOTTOMLEFT', DungeonButton, 'BOTTOMRIGHT')
 
     KeyFrame.Text= KeyFrame:CreateFontString(nil, 'BORDER', 'WoWToolsFont') -- WoWTools_LabelMixin:Create(KeyFrame, {color=true})
     WoWTools_ColorMixin:SetLabelColor(KeyFrame.Text)
@@ -689,7 +637,7 @@ end]]
         local show= WoWTools_DataMixin.Player.IsMaxLevel
                     and not PlayerIsTimerunning()
                     and C_MythicPlus.IsMythicPlusActive()
-                       -- or WoWTools_DataMixin.Player.husandro
+                    or WoWTools_DataMixin.Player.husandro
         local score= show and C_ChallengeMode.GetOverallDungeonScore() or 0
         if score>0 then
             local activeText= WoWTools_ChallengeMixin:GetRewardText(1)--得到，周奖励，信息
@@ -701,8 +649,8 @@ end]]
                 text= text..num
             end
         end
-        self.Text:SetText(text or (WoWTools_DataMixin.Player.husandro and '4/8/12') or '|T4352494:0|t')
-        --self:SetShown(show)
+        self.Text:SetText(text or '|T4352494:0|t')
+        self:SetShown(show)
     end
 
     KeyFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -737,3 +685,78 @@ end
 function WoWTools_UnitMixin:Init_PlayerFrame()--玩家
     Init()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[设置, 战争模式 Blizzard_WarmodeButtonTemplate.lua
+local function Create_warModeButton(frame)
+    frame.warModeButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, isType2=true, name='WoWToolsPlayerFrameWarModeButton'})
+    frame.warModeButton:SetPoint('LEFT', frame, 5, 12)
+    frame.warModeButton:SetScript('OnClick',  function(self)
+        --C_PvP.ToggleWarMode()
+        WoWTools_LoadUIMixin:SpellBook(2)
+        --C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltip() end end)
+    end)
+    function frame.warModeButton:GetWarModeDesired()
+        return UnitPopupSharedUtil.IsInWarModeState()
+    end
+    function frame.warModeButton:set_tooltip()
+        if WarmodeButtonMixin then
+            WarmodeButtonMixin.OnEnter(self)
+            return
+        end
+
+        GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())..WoWTools_DataMixin.Icon.left)
+
+        if not C_PvP.ArePvpTalentsUnlocked() then
+			GameTooltip_AddErrorLine(
+                GameTooltip,
+                format(
+                    WoWTools_DataMixin.onlyChinese and '在%d级解锁' or PVP_TALENT_SLOT_LOCKED,
+                    C_PvP.GetPvpTalentsUnlockedLevel()
+                ),
+            true)
+
+        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false) or InCombatLockdown() then
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
+		end
+
+        GameTooltip:Show()
+    end
+
+    frame.warModeButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
+    frame.warModeButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+    end)
+
+    frame.warModeButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    frame.warModeButton:RegisterEvent('PLAYER_FLAGS_CHANGED')
+    frame.warModeButton:RegisterEvent('PLAYER_UPDATE_RESTING')
+    
+    frame.warModeButton.bg= frame.warModeButton:CreateTexture(nil, 'ARTWORK')
+    frame.warModeButton.bg:SetAllPoints()
+    frame.warModeButton.bg:SetAtlas('pvptalents-talentborder-glow')
+
+    function frame.warModeButton:set_settings()
+        self:SetNormalAtlas(C_PvP.IsWarModeDesired() and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
+    end
+    frame.warModeButton:SetScript('OnEvent', function(self, event)
+        C_Timer.After(1, function() self:set_settings() end)
+    end)
+
+    frame.warModeButton:set_settings()
+end]]
+

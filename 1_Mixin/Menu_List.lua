@@ -1,12 +1,12 @@
 
 local function IsLeader()
-    return not UnitIsGroupLeader("player") or not IsInGroup()
+    return UnitIsGroupLeader("player") or not IsInGroup()
 end
 local function EnabledDungeon(id)
-    return DifficultyUtil.IsDungeonDifficultyEnabled(id) and IsLeader() and not IsInInstance()
+    return DifficultyUtil.IsDungeonDifficultyEnabled(id) and IsLeader()-- and not IsInInstance()
 end
 local function EnableRaid()
-    return not DifficultyUtil.InStoryRaid() and (UnitIsGroupLeader("player") or not IsInGroup())
+    return not DifficultyUtil.InStoryRaid() and IsLeader()
 end
 local function EnabledLegacy()
     if IsInInstance()
@@ -38,9 +38,11 @@ end
 local function CheckDungeon(id)
     return GetDungeonDifficultyID()==id
 end
+--GetRaidDifficultyID()==id
 local function CheckRaid(id)
     return DifficultyUtil.DoesCurrentRaidDifficultyMatch(id)
 end
+--return GetLegacyRaidDifficultyID()==id
 local function CheckLegacy(id)
     local instanceDifficultyID, _, _, _, isDynamicInstance = select(3, GetInstanceInfo())
     if isDynamicInstance then
@@ -67,7 +69,7 @@ function WoWTools_MenuMixin:DungeonDifficulty(_, root)
 
     for _, tab in pairs({
             WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY,
-            {id= DifficultyUtil.ID.DungeonNormal, enable=EnabledDungeon, set=SetDungeon, check=CheckDungeon},
+            {id=DifficultyUtil.ID.DungeonNormal, enable=EnabledDungeon, set=SetDungeon, check=CheckDungeon},
             {id=DifficultyUtil.ID.DungeonHeroic, enable=EnabledDungeon, set=SetDungeon, check=CheckDungeon},
             {id=DifficultyUtil.ID.DungeonMythic, enable=EnabledDungeon, set=SetDungeon, check=CheckDungeon},
             '-',
@@ -94,9 +96,7 @@ function WoWTools_MenuMixin:DungeonDifficulty(_, root)
                 return data.check(data.id)
 
             end, function(data)
-                print(data.id)
                 data.set(data.id)
-
                 return MenuResponse.Refresh
             end, {
                     rightText=DISABLED_FONT_COLOR:WrapTextInColorCode(tab.id),
@@ -111,22 +111,37 @@ function WoWTools_MenuMixin:DungeonDifficulty(_, root)
                 btn:SetScript('OnEvent', function(s)
                     WoWTools_DataMixin:Call(menu.ReinitializeAll, menu)
                     local enable= desc.data.enable(desc.data.id)
-                    btn:SetEnabled(enable)
-                    s:SetAlpha(enable and 1 or 0.5)
+                    desc:SetEnabled(enable)
+                    --s:SetAlpha(enable and 1 or 0.5)
                 end)
                 btn:SetScript('OnHide', function(s)
                     s:UnregisterEvent('PLAYER_DIFFICULTY_CHANGED')
                     s:SetScript('OnHide', nil)
                     s:SetScript('OnEvent', nil)
-                    s:SetAlpha(1)
+                    --s:SetAlpha(1)
                 end)
                 local isEnabled= desc.data.enable(tab.id)
-                btn:SetEnabled(isEnabled)
-                btn:SetEnabled(isEnabled and 1 or 0.5)
+                desc:SetEnabled(isEnabled)
+                --btn:SetAlpha(isEnabled and 1 or 0.5)
             end)
         end
     end
 
+    local difficultyID, _, _, _, isDynamicInstance = select(3, GetInstanceInfo())
+	if isDynamicInstance and CanChangePlayerDifficulty() then
+		local toggleDifficultyID = select(7, GetDifficultyInfo(difficultyID))
+		if toggleDifficultyID then
+            root:CreateDivider()
+            local sub= root:CreateTitle(
+                WoWTools_DataMixin.onlyChinese and '动态副本'  or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DYNAMIC, INSTANCE)
+            )
+            sub:SetTooltip(function(tooltip)
+                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '可修改难度' or 'Difficulty can be changed')
+                tooltip:AddLine( WoWTools_MapMixin:GetDifficultyColor(nil, toggleDifficultyID))
+            end)
+        
+		end
+	end
 end
 
 

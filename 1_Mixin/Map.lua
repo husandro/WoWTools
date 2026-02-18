@@ -67,47 +67,17 @@ function WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
         or C_PvP.IsInBrawl()--乱斗
 end
 --PVPMatchUtil.lua
---[[
-        C_PvP.IsSoloRBG() or
-			C_PvP.IsRatedBattleground() or
-			(C_PvP.IsRatedArena() and not IsArenaSkirmish());
-         --or C_PvP.IsSoloRBG()
-        --or C_PvP.IsRatedBattleground()
-        --or C_PvP.IsRatedSoloShuffle()
-        --or C_PvP.IsRatedArena()
-]]
 
 
 
 
-
-
---[[local DIFFICULTY_NAMES = {
-	[DifficultyUtil.ID.DungeonNormal] = PLAYER_DIFFICULTY1,
-	[DifficultyUtil.ID.DungeonHeroic] = PLAYER_DIFFICULTY2,
-	[DifficultyUtil.ID.Raid10Normal] = PLAYER_DIFFICULTY1,
-	[DifficultyUtil.ID.Raid25Normal] = PLAYER_DIFFICULTY1,
-	[DifficultyUtil.ID.Raid10Heroic] = PLAYER_DIFFICULTY2,
-	[DifficultyUtil.ID.Raid25Heroic] = PLAYER_DIFFICULTY2,
-	[DifficultyUtil.ID.RaidLFR] = PLAYER_DIFFICULTY3,
-	[DifficultyUtil.ID.DungeonChallenge] = PLAYER_DIFFICULTY_MYTHIC_PLUS,
-	[DifficultyUtil.ID.Raid40] = LEGACY_RAID_DIFFICULTY,
-	[DifficultyUtil.ID.PrimaryRaidNormal] = PLAYER_DIFFICULTY1,
-	[DifficultyUtil.ID.PrimaryRaidHeroic] = PLAYER_DIFFICULTY2,
-	[DifficultyUtil.ID.PrimaryRaidMythic] = PLAYER_DIFFICULTY6,
-	[DifficultyUtil.ID.PrimaryRaidLFR] = PLAYER_DIFFICULTY3,
-	[DifficultyUtil.ID.DungeonMythic] = PLAYER_DIFFICULTY6,
-	[DifficultyUtil.ID.DungeonTimewalker] = PLAYER_DIFFICULTY_TIMEWALKER,
-	[DifficultyUtil.ID.RaidTimewalker] = PLAYER_DIFFICULTY_TIMEWALKER,
-	[DifficultyUtil.ID.Raid40] = PLAYER_DIFFICULTY1,
-}]]
 local DifficultyType={
     [1]='普通',--DifficultyUtil.ID.DungeonNormal
     [2]='英雄',--DifficultyUtil.ID.DungeonHeroic
-    [3]='普通',--DifficultyUtil.ID.Raid10Normal
-    [4]='普通',--DifficultyUtil.ID.Raid25Normal
-    [5]='英雄',--DifficultyUtil.ID.Raid10Heroic
-    [6]='英雄',--DifficultyUtil.ID.Raid25Heroic
+    [3]='经典',--DifficultyUtil.ID.Raid10Normal
+    [4]='经典',--DifficultyUtil.ID.Raid25Normal
+    [5]='经典',--DifficultyUtil.ID.Raid10Heroic
+    [6]='经典',--DifficultyUtil.ID.Raid25Heroic
     [7]='随机',--DifficultyUtil.ID.RaidLFR
     [8]='挑战',--DifficultyUtil.ID.DungeonChallenge Mythic Keystone
     [9]='经典',--DifficultyUtil.ID.Raid40 40 Player
@@ -172,14 +142,25 @@ end)
 
 --副本，难道，颜色
 function WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID)--DifficultyUtil.lua
-    local colorRe, name
+    local color, name
     if difficultyID and difficultyID>0 then
         name= DifficultyType[difficultyID]
         if name then
             local tab= DifficultyColor[name]
             if tab then
                 difficultyName= tab.name
-                colorRe= CreateColor(tab.r, tab.g, tab.b)
+                if IsLegacyDifficulty(difficultyID) then
+                    local id= NormalizeLegacyDifficultyID(difficultyID)
+                    if id== DifficultyUtil.ID.Raid10Normal then
+                        difficultyName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, difficultyID, '10')
+                    elseif id==DifficultyUtil.ID.Raid25Normal then
+                        difficultyName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, difficultyID, '25')
+                    end
+
+                    color= DISABLED_FONT_COLOR
+                else
+                    color= CreateColor(tab.r, tab.g, tab.b)
+                end
             end
         end
     end
@@ -189,10 +170,10 @@ function WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID)--Dif
         difficultyName= WoWTools_TextMixin:CN(difficultyName)
     end
 
-    colorRe= colorRe or PlayerUtil.GetClassColor()
-    difficultyName= colorRe:WrapTextInColorCode(difficultyName )
+    color= color or PlayerUtil.GetClassColor()
+    difficultyName= color:WrapTextInColorCode(difficultyName )
 
-    return difficultyName, colorRe
+    return difficultyName, color
 end
 
 

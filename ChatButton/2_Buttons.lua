@@ -1,6 +1,6 @@
 local AddList={}--插件表，所有，选项用 {name=name, tooltip=tooltip})
 local Buttons={}--存放所有, 按钮 {btn1, btn2,}
-
+--RaidButton.canOpenOnEnter
 local Name= 'WoWToolsChatMenuButton_'
 
 

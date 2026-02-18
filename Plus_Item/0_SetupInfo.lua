@@ -395,6 +395,7 @@ local function Get_Info(tab)
         return
     end
 
+    
 
     itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
 
@@ -570,6 +571,18 @@ local function Get_Info(tab)
     elseif classID==2 and subclassID==20 then
         topRightText='|A:worldquest-icon-fishing:0:0|a'
 
+
+
+
+
+
+
+
+
+
+
+
+
 --装备
     elseif classID==2 or classID==4 then
         if C_Item.IsCosmeticItem(itemLink) then--装饰品
@@ -688,7 +701,7 @@ local function Get_Info(tab)
                             topLeftText= topLeftText and topLeftText..'|r'..text or text
 
 --属性提示
-                        elseif upItemLevel==0 and itemQuality==Enum.ItemQuality.Epic then
+                        elseif upItemLevel==0 and itemQuality>=Enum.ItemQuality.Epic then
 
                             leftText= bottomLeftText
                             rightText= bottomRightText
@@ -739,6 +752,16 @@ local function Get_Info(tab)
         end
 
         leftText= leftText or ''--不显示，物品数量
+
+
+
+
+
+
+
+
+
+
 
 
 --宠物

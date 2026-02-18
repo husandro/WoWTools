@@ -3042,7 +3042,9 @@
         "DIFFICULTY_LOCKED_REASON_STORY_RAID",
         "UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LEGACY_RAID",
         "SetRaidDifficulties",
-        "NormalizeLegacyDifficultyID"
+        "NormalizeLegacyDifficultyID",
+        "GetDifficultyColor",
+        "CheckToggleDifficulty"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

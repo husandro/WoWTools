@@ -88,6 +88,9 @@
 
     <DropdownButton name="WoWToolsMenu3Template" inherits="WoWToolTemplate" virtual="true">
         <Scripts>
+            <OnLoad>
+                WoWToolsMenu_OnLoad(self)
+            </OnLoad>
             <OnLeave function="WoWToolsButton_OnLeave"/>
             <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>

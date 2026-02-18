@@ -50,10 +50,12 @@ local function Init(btn)
         if leave then
             LeaveChannelByName(name);
         elseif join then
-            JoinPermanentChannel(name);
-            ChatFrame_AddChannel(SELECTED_CHAT_FRAME, name);
+            --ChatFrameUtil.CanAddChannel(
+            JoinPermanentChannel(name)
+            --ChatFrame_AddChannel(SELECTED_CHAT_FRAME, name);--12.01没发现
+
         elseif remove then
-            ChatFrame_RemoveChannel(SELECTED_CHAT_FRAME, name);
+            ChatFrame_RemoveChannel(SELECTED_CHAT_FRAME, name)--ChatFrameMixin.RemoveChannel
         end
         C_Timer.After(1, function() self:Check_Channel(name) end)
     end

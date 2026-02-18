@@ -66,7 +66,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local reason=UnitPhaseReason(unit)
         if reason then
             if reason==0 then
-                textLeft= (WoWTools_DataMixin.onlyChinese and '不同了阶段' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS, '', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..textLeft
+                textLeft= (WoWTools_DataMixin.onlyChinese and '不同阶段' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS, '', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..textLeft
             elseif reason==1 then
                 textLeft= (WoWTools_DataMixin.onlyChinese and '不在同位面' or format(ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS,'', WoWTools_DataMixin.Player.layer))..textLeft
             elseif reason==2 then--战争模

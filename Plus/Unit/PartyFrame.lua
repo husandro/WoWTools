@@ -706,7 +706,7 @@ local function Init()--PartyFrame.lua
         return
     end
 
-    --PartyFrame.Background:SetWidth(124)--144
+    PartyFrame.Background:SetWidth(124)--144
 
     --local showPartyFrames = PartyFrame:ShouldShow();
     for i=1, 4 do
