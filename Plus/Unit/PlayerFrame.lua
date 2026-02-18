@@ -285,6 +285,7 @@ end]]
                 return  Save().showLootButton
             end, function()
                 Save().showLootButton= not Save().showLootButton and true or nil
+                self:settings()
             end)
         end
     end)
