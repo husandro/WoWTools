@@ -15,7 +15,7 @@ local function Init()
     end
 
     local contextual= PlayerFrame_GetPlayerFrameContentContextual()--PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual
-    local size= 18
+    local size=20
 
 
 
@@ -260,37 +260,35 @@ end]]
         )
     end
 
-    function LootButton:set_shown()
-        local find=false
-        if WoWTools_UnitMixin:UnitIsUnit(PlayerFrame.unit, 'player') then
-            local currentSpec = GetSpecialization()
-            local specID= currentSpec and C_SpecializationInfo.GetSpecializationInfo(currentSpec)
-            if specID then
-                local lootSpecID = GetLootSpecialization()
-                if lootSpecID and lootSpecID>0 and lootSpecID~=specID then
-                    local name, _, texture= select(2, GetSpecializationInfoByID(lootSpecID))
-                    if texture and name then
-                        self:SetNormalTexture(texture)
-                        find=true
-                    end
-                end
-            end
-        end
-        self:SetShown(find or Save().showLootButton)
+    function LootButton:settings()
+        local specID = PlayerUtil.GetCurrentSpecID() or 0
+        local lootSpecID = GetLootSpecialization()
+
+        lootSpecID= lootSpecID==0 and specID or lootSpecID
+
+        print(select(3, PlayerUtil.GetSpecNameBySpecID(lootSpecID)))
+        self:SetNormalTexture(select(3, PlayerUtil.GetSpecNameBySpecID(lootSpecID)) or 0)
+
+        self:SetShown(Save().showLootButton or specID~=lootSpecID)
     end
 
     LootButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     LootButton:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
     LootButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
     LootButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
-
-    LootButton:SetScript('OnEvent', function (self)
-        self:set_shown()
-    end)
+    LootButton:SetScript('OnEvent', LootButton.settings)
 
     LootButton:SetupMenu(function(self, root)
         if self:IsMouseOver() then
             WoWTools_MenuMixin:Set_Specialization(root)
+            root:CreateDivider()
+            root:CreateCheckbox(
+                WoWTools_DataMixin.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS,
+            function()
+                return  Save().showLootButton
+            end, function()
+                Save().showLootButton= not Save().showLootButton and true or nil
+            end)
         end
     end)
     LootButton:SetScript('OnMouseDown', function(self, d)
@@ -311,8 +309,9 @@ end]]
         end
     end)
 
-
-    LootButton:set_shown()
+    C_Timer.After(2, function()
+        LootButton:settings()
+    end)
 
 
 
@@ -607,37 +606,32 @@ end]]
 
 
 --挑战，数据
-    local KeyFrame= CreateFrame("Button", 'WoWToolsPlayerFrameKeystoneFrame', contextual, 'WoWToolsButtonTemplate')
-    KeyFrame:SetSize(size, size)
+    local KeyButton= CreateFrame("Button", 'WoWToolsPlayerFrameKeystoneButton', contextual, 'WoWToolsButtonTemplate')
+    KeyButton:SetSize(size, size)
 
-    KeyFrame:SetPoint('BOTTOMLEFT', DungeonButton, 'BOTTOMRIGHT')
+    KeyButton:SetPoint('BOTTOMLEFT', DungeonButton, 'BOTTOMRIGHT')
 
-    KeyFrame.Text= KeyFrame:CreateFontString(nil, 'BORDER', 'WoWToolsFont') -- WoWTools_LabelMixin:Create(KeyFrame, {color=true})
-    WoWTools_ColorMixin:SetLabelColor(KeyFrame.Text)
-    KeyFrame.Text:SetPoint('LEFT')
-    KeyFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
-    KeyFrame:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip_SetTitle(GameTooltip, WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
-        GameTooltip:AddLine(' ')
+    KeyButton.Text= KeyButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont') -- WoWTools_LabelMixin:Create(KeyButton, {color=true})
+    WoWTools_ColorMixin:SetLabelColor(KeyButton.Text)
+    KeyButton.Text:SetPoint('LEFT')
+
+    function KeyButton:tooltip(tooltip)
         if WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link then
-            GameTooltip:AddLine('|T4352494:0|t'..WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link)
-            GameTooltip:AddLine(' ')
+            tooltip:AddLine('|T4352494:0|t'..WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link)
+            tooltip:AddLine(' ')
         end
         WoWTools_ChallengeMixin:ActivitiesTooltip()
-        GameTooltip:AddLine(' ')
+        tooltip:AddLine(' ')
         WoWTools_LabelMixin:ItemCurrencyTips({showTooltip=true, showName=true, showAll=true})
-        GameTooltip:Show()
-        self:SetAlpha(0.5)
-    end)
+    end
 
-    function KeyFrame:set_settings()
+    function KeyButton:set_settings()
         local text
         local show= WoWTools_DataMixin.Player.IsMaxLevel
                     and not PlayerIsTimerunning()
                     and C_MythicPlus.IsMythicPlusActive()
                     or WoWTools_DataMixin.Player.husandro
+
         local score= show and C_ChallengeMode.GetOverallDungeonScore() or 0
         if score>0 then
             local activeText= WoWTools_ChallengeMixin:GetRewardText(1)--得到，周奖励，信息
@@ -649,21 +643,21 @@ end]]
                 text= text..num
             end
         end
-        self.Text:SetText(text or '|T4352494:0|t')
+        self.Text:SetText(text or format('|T4352494:%d|t', size))
         self:SetShown(show)
     end
 
-    KeyFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-    KeyFrame:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
-    KeyFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
-    KeyFrame:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-    KeyFrame:RegisterEvent('PLAYER_LEVEL_UP')
+    KeyButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    KeyButton:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
+    KeyButton:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
+    KeyButton:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+    KeyButton:RegisterEvent('PLAYER_LEVEL_UP')
 
-    KeyFrame:SetScript('OnEvent', function(self)
+    KeyButton:SetScript('OnEvent', function(self)
         C_Timer.After(2, function() self:set_settings() end)
     end)
 
-    KeyFrame:set_settings()
+    --KeyButton:set_settings()
 
 
 
