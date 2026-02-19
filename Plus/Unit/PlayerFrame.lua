@@ -164,7 +164,7 @@ end]]
 
     AssisterButton:SetScript('OnMouseDown', function(self)
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
-        C_Timer.After(1, function()
+        C_Timer.After(0.5, function()
             if self:IsMouseOver() then
                 self:tooltip(GameTooltip)
                 GameTooltip:Show()
@@ -449,6 +449,11 @@ end]]
             self:CloseMenu()
             SetRaidDifficulties(true, DifficultyUtil.ID.PrimaryRaidHeroic)
             SetRaidDifficulties(false, DifficultyUtil.ID.Raid25Normal)
+            C_Timer.After(0.5, function()
+            if self:IsMouseOver() then
+                WoWToolsButton_OnEnter(self)
+            end
+        end)
         end
     end)
     RaidButton:SetScript('OnMouseWheel', function(self, d)
@@ -470,7 +475,7 @@ end]]
             end
         end
 
-        C_Timer.After(1, function()
+        C_Timer.After(0.5, function()
             if self:IsMouseOver() then
                 WoWToolsButton_OnEnter(self)
             end
@@ -566,6 +571,11 @@ end]]
         if d=='LeftButton' and (UnitIsGroupLeader("player") or not IsInGroup()) then
             self:CloseMenu()
             SetDungeonDifficultyID(DifficultyUtil.ID.DungeonMythic)
+            C_Timer.After(0.5, function()
+                if self:IsMouseOver() then
+                    WoWToolsButton_OnEnter(self)
+                end
+            end)
         end
     end)
 
@@ -703,7 +713,7 @@ local function Create_warModeButton(frame)
     frame.warModeButton:SetScript('OnClick',  function(self)
         --C_PvP.ToggleWarMode()
         WoWTools_LoadUIMixin:SpellBook(2)
-        --C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltip() end end)
+        --C_Timer.After(0.5, function() if GameTooltip:IsShown() then self:set_tooltip() end end)
     end)
     function frame.warModeButton:GetWarModeDesired()
         return UnitPopupSharedUtil.IsInWarModeState()
@@ -752,7 +762,7 @@ local function Create_warModeButton(frame)
         self:SetNormalAtlas(C_PvP.IsWarModeDesired() and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
     end
     frame.warModeButton:SetScript('OnEvent', function(self, event)
-        C_Timer.After(1, function() self:set_settings() end)
+        C_Timer.After(0.5, function() self:set_settings() end)
     end)
 
     frame.warModeButton:set_settings()

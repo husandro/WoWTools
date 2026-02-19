@@ -226,8 +226,8 @@ local function Init()
         GameTooltip:ClearLines()
 
         GameTooltip:AddDoubleLine(
-            '|A:ommon-icon-undo:0:0|a'
-            ..WoWTools_DataMixin.onlyChinese and '回购' or BUYBACK,
+            '|A:common-icon-undo:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '回购' or BUYBACK),
             '|cnGREEN_FONT_COLOR: #'..(self:set_text() or '')
         )
         GameTooltip:AddLine(' ')
