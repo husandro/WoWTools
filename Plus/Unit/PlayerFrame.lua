@@ -226,7 +226,7 @@ end]]
     WoWTools_ButtonMixin:AddMask(LootButton)
 
     LootButton.texture= LootButton:CreateTexture(nil, 'OVERLAY')
-    LootButton.texture:SetSize(8,8)
+    LootButton.texture:SetSize(10, 10)
     LootButton.texture:SetPoint('BOTTOM')
     LootButton.texture:SetAtlas('VignetteLoot')
     function LootButton:tooltip(tooltip)
@@ -282,7 +282,7 @@ end]]
             root:CreateCheckbox(
                 WoWTools_DataMixin.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS,
             function()
-                return  Save().showLootButton
+                return Save().showLootButton
             end, function()
                 Save().showLootButton= not Save().showLootButton and true or nil
                 self:settings()
@@ -339,6 +339,7 @@ end]]
 --10人，25人
     RaidButton.text= RaidButton:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')-- WoWTools_LabelMixin:Create(InsFrame, {color=true})
     RaidButton.text:SetPoint('CENTER')
+    RaidButton.text:SetJustifyH('CENTER')
     RaidButton.texture= RaidButton:CreateTexture(nil, 'BORDER')
     RaidButton.texture:SetAllPoints()
     RaidButton.texture:SetAtlas('UI-HUD-Minimap-GuildBanner-Mythic-Large')
@@ -365,7 +366,8 @@ end]]
 
         local dungeonID= GetRaidDifficultyID() or 0
         tooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '团队副本难度' or RAID_DIFFICULTY),
+            (WoWTools_DataMixin.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)
+            ..' '..dungeonID,
             WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID),
             1,0.82,0, 1,1,1
         )
@@ -505,7 +507,8 @@ end]]
     function DungeonButton:tooltip(tooltip)
         local dungeonID= GetDungeonDifficultyID() or 0
         tooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
+            (WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)
+            ..' '..dungeonID,
             WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID),
             1,0.82,0, 1,1,1
         )
@@ -568,7 +571,8 @@ end]]
 
     DungeonButton:SetScript('OnMouseWheel', function(_, d)
         if UnitIsGroupLeader("player") or not IsInGroup() then
-            local dungeonID= GetDungeonDifficultyID() or DifficultyUtil.ID.DungeonNormal
+            local dungeonID= GetDungeonDifficultyID() or DifficultyUtil.ID.DungeonMythic
+
 
 
             local toggleDifficultyID= d==1 and dungeonID-1 or dungeonID+1
@@ -653,6 +657,10 @@ end]]
         C_Timer.After(2, function() self:set_settings() end)
     end)
 
+
+    KeyButton:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:OpenWoWItemListFrame()--战团，物品列表
+    end)
     --KeyButton:set_settings()
 
 

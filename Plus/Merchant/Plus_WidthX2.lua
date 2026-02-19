@@ -98,7 +98,7 @@ end
 
 --隐藏，多余
 local function Hide_OtherButton(PER_PAGE)
-    local index= (PER_PAGE +1) * 2--多加点，可能与其它插件冲突
+    local index= PER_PAGE +1
 
     local btn= _G['MerchantItem'..index]
     while btn do
@@ -228,7 +228,8 @@ local function ResizeButton2_Menu(self, root)
         ..((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)),
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=Save().numWidth or 153})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -261,8 +262,9 @@ local function ResizeButton2_Menu(self, root)
         ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL),
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText=(Save().numLine or 5)..'+'..(MERCHANT_ITEMS_PER_PAGE/(Save().numLine or 5)) })
     sub:SetEnabled(MerchantFrame.selectedTab==1)
+    WoWTools_MenuMixin:SetRightText(sub)
 
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -279,6 +281,7 @@ local function ResizeButton2_Menu(self, root)
         --bit='%.2f',    
     })
     sub:CreateSpacer()
+
 
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -442,11 +445,15 @@ local function Init_WidthX2()
 
 
 
+
+
+
 --出售，卖
     WoWTools_DataMixin:Hook('MerchantFrame_UpdateMerchantInfo', function()
         if not MerchantFrame:IsShown() then
             return
         end
+
         local numMerchantItems= GetMerchantNumItems()
         local index, info, btn
         local curNum= 0
@@ -566,8 +573,7 @@ local function Init_WidthX2()
 
 
 
-
-
+    
 
 --增加，按钮宽度，按钮
     MerchantFrame.ResizeButton2= CreateFrame('Button', 'WoWToolsMerchantPlusToWidthButton', MerchantFrame, 'WoWToolsButtonTemplate')
@@ -643,6 +649,11 @@ local function Init_WidthX2()
 
         Create_ItemButton()
     end)
+
+
+
+
+
 
     if MerchantFrame:IsShown() then
        WoWTools_MerchantMixin:Update_MerchantFrame()

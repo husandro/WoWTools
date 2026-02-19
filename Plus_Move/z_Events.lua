@@ -8,8 +8,7 @@ function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
         ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
     end)
     self:Setup(ClassTrainerFrame, {
-    minW=200,
-    minH=197,
+        minW=200, minH=197,
     sizeRestFunc=function(f)
         f:SetSize(338, 424)
     end})
@@ -135,7 +134,11 @@ end]]
 
 --死亡
 function WoWTools_MoveMixin.Events:Blizzard_DeathRecap()
-    self:Setup(DeathRecapFrame, {save=true})
+    self:Setup(DeathRecapFrame, {
+        minW=254,minH=143,
+    sizeRestFunc=function(f)
+        f:SetSize(410, 326)
+    end})
 end
 
 --点击，施法

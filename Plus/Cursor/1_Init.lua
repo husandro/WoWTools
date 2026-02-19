@@ -48,6 +48,10 @@ local P_Save={
         'ChallengeMode-Runes-Shockwave',
         'CovenantSanctum-Reservoir-Idle-Kyrian-Speck',
         'CovenantSanctum-Reservoir-Idle-Kyrian-Glass',
+
+        'housing-item-toast-leaf03',
+        'housing-item-toast-leaf05',
+
         [[Interface\Addons\WoWTools\Source\Mouse\Aura121]],
 
         [[Interface\Addons\WoWTools\Source\Mouse\Aura73.tga]],

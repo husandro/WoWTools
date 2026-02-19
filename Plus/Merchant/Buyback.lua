@@ -126,8 +126,8 @@ local function Init_Menu(self, root)
 
     sub= root:CreateButton(
         '|A:bag-main:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK)
-        ..' #|cnGREEN_FONT_COLOR:'..allNum,
+        ..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK),
+        --..' #|cnGREEN_FONT_COLOR:'..allNum,
     function()
         allNum= GetNumBuybackItems() or 0
 
@@ -151,7 +151,8 @@ local function Init_Menu(self, root)
             )
         end)
         return MenuResponse.Open
-    end)
+    end, {rightText=allNum})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     sub:SetTooltip(function(tooltip)
         for index=1, GetNumBuybackItems() do

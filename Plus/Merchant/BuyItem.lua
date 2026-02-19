@@ -229,6 +229,18 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 --出售菜单
 local function Init_Menu_Sell(_, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then
@@ -272,62 +284,65 @@ local function Init_Menu_Sell(_, root)
 
 --出售全部
     sub= root:CreateButton(
-        sellText
-        ..' #|cnGREEN_FONT_COLOR:'
-        ..num+regionNum,
+        sellText,
+        --..' #|cnGREEN_FONT_COLOR:'
+        --..num+regionNum,
     function()
         return MenuResponse.Open
-    end)
+    end, {rightText= num})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 
     for quality= 0 , 4 do
         name= '|T236994:0|t'
             ..WoWTools_ItemMixin.QualityText[quality]
-            ..' #|cffffffff'..#tabs[quality]
+            --..' #|cffffffff'..#tabs[quality]
+        local numQuality= #tabs[quality]
 
         sub2= sub:CreateButton(
             name,
         function(data)
             StaticPopup_Show('WoWTools_OK',
-                sellText..data.name..att,
+                sellText..data.name..' |cffffffff#'..data.rightText..'|r'..att,
                 nil,
                 {SetValue=function()
                     Sell_Items(data.tab)
                 end})
             return MenuResponse.Open
-        end, {tab=tabs[quality], name=name})
-
+        end, {tab=tabs[quality], name=name, rightText=numQuality})
         sub2:SetTooltip(Set_SellMenu_Tooltip)
+        WoWTools_MenuMixin:SetRightText(sub2)
     end
 
     sub:CreateDivider()
     name= '|T236994:0|t'
         ..(WoWTools_DataMixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
-        ..' #'..regionNum
+    --local reagentNum= regionNum
     sub2= sub:CreateButton(
         name,
     function(data)
         StaticPopup_Show('WoWTools_OK',
-            sellText..data.name..att,
+            sellText..data.name..' |cffffffff'..data.rightText..'|r'..att,
             nil,
             {SetValue=function()
                 Sell_Items(regents)
             end})
         return MenuResponse.Open
-    end, {name=name, tab=regents})
+    end, {name=name, tab=regents, rightText=regionNum})
+    WoWTools_MenuMixin:SetRightText(sub2)
     sub2:SetTooltip(Set_SellMenu_Tooltip)
 
 
     sub:CreateDivider()
     name= '|T236994:0|t'
         ..(WoWTools_DataMixin.onlyChinese and '全部' or  ALL)
-        ..' #'..num..'+'..regionNum
+        --..' #'..num..'+'..regionNum
 
     sub2= sub:CreateButton(
         name,
     function(data)
         StaticPopup_Show('WoWTools_OK',
-            sellText..data.name..att,
+            sellText..data.name..' |cffffffff'..data.rightText..'|r'..att,
             nil,
             {SetValue=function()
                 do
@@ -338,8 +353,8 @@ local function Init_Menu_Sell(_, root)
                 end
             end})
         return MenuResponse.Open
-    end, {name=name, tab=items, tab2=regents})
-
+    end, {name=name, tab=items, tab2=regents, rightText=num..'+'..regionNum})
+    WoWTools_MenuMixin:SetRightText(sub2)
     sub2:SetTooltip(Set_SellMenu_Tooltip)
 end
 
@@ -430,11 +445,15 @@ local function Init()
 
 
 
-    BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
+    BuyItemButton= CreateFrame('Button', '', MerchantBuyBackItem, 'WoWToolsButtonTemplate')
+    BuyItemButton:SetSize(35,35)
+    BuyItemButton.texture= BuyItemButton:CreateTexture(nil, 'BORDER')
+    BuyItemButton.texture:SetAllPoints()
+    --[[WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
         name='WoWTools_BuyItemButton',
         addTexture=true,
         size=35,
-    })
+    })]]
 
      if Save().notPlus then
         BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
@@ -501,8 +520,15 @@ local function Init()
                 '|cnGREEN_FONT_COLOR: #'..num..'|r'
             )
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS), WoWTools_DataMixin.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine(
+                (WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+                ..WoWTools_DataMixin.Icon.left,
+                WoWTools_DataMixin.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE)
+            )
+            GameTooltip:AddLine(
+                (WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)
+                ..WoWTools_DataMixin.Icon.left
+            )
         end
         GameTooltip:Show()
     end

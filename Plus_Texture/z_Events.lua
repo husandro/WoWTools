@@ -2349,6 +2349,7 @@ end
 --死亡
 function WoWTools_TextureMixin.Events:Blizzard_DeathRecap()
     self:SetButton(DeathRecapFrame.CloseXButton)
+    self:SetScrollBar(DeathRecapFrame)
     self:SetFrame(DeathRecapFrame, {alpha=1})
 end
 

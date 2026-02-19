@@ -3044,7 +3044,9 @@
         "SetRaidDifficulties",
         "NormalizeLegacyDifficultyID",
         "GetDifficultyColor",
-        "CheckToggleDifficulty"
+        "CheckToggleDifficulty",
+        "ChatFrame_OnLoad",
+        "ChatFrame_OnHyperlinkShow"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -32,7 +32,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_UnitFrame']= WoWToolsSave['Plus_UnitFrame'] or {
-                raidFrameScale= WoWTools_DataMixin.Player.husandro and 0.8 or 1
+                raidFrameScale= WoWTools_DataMixin.Player.husandro and 0.8 or 1,
+                showLootButton= WoWTools_DataMixin.Player.husandro,
             }
 
 

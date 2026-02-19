@@ -155,13 +155,13 @@ local function Create_Label(btn)
     btn.IndexLable:SetPoint('TOPRIGHT', btn.Name, 0, 2)
     btn.IndexLable:SetFontHeight(8)
 --数量
-    btn.buyItemNum= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')--WoWTools_LabelMixin:Create(btn, {size=10})
+    btn.buyItemNum= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont')--WoWTools_LabelMixin:Create(btn, {size=10})
     --btn.buyItemNum:SetPoint('BOTTOMRIGHT', btn.IndexLable, 'TOPRIGHT', 0,3)
     btn.buyItemNum:SetPoint('BOTTOMRIGHT', btn.Name)
     btn.buyItemNum:SetFontHeight(10)
 
 --属性
-    btn.stats= btn:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')--WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
+    btn.stats= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont')--WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
     btn.stats:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT',0,6)
     btn.stats:SetFontHeight(10)
     btn.stats:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
@@ -170,8 +170,6 @@ local function Create_Label(btn)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:SetSpellByID(self.spellID)
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
             GameTooltip:Show()
         end
         self:SetAlpha(0.5)
@@ -371,13 +369,13 @@ end
 --物品信息
 local function Init_SetItem_Info()
 --物品，数量
-    MerchantFrameTab1.numLable= MerchantFrameTab1:CreateFontString(nil, nil, 'GameFontNormal')-- WoWTools_LabelMixin:Create(MerchantFrameTab1)
+    MerchantFrameTab1.numLable= MerchantFrameTab1:CreateFontString(nil, nil, 'WoWToolsFont')-- WoWTools_LabelMixin:Create(MerchantFrameTab1)
     MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
     MerchantFrameTab1.numLable:SetFontHeight(12)
 
 
   --回购，数量，提示
-    MerchantFrameTab2.numLable= MerchantFrameTab2:CreateFontString(nil, nil, 'GameFontNormal')--WoWTools_LabelMixin:Create(MerchantFrameTab2)
+    MerchantFrameTab2.numLable= MerchantFrameTab2:CreateFontString(nil, nil, 'WoWToolsFont')--WoWTools_LabelMixin:Create(MerchantFrameTab2)
     MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
     MerchantFrameTab2.numLable:SetFontHeight(12)
 

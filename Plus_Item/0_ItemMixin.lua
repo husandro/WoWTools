@@ -736,6 +736,7 @@ function WoWTools_ItemMixin:IsLocked_EquipmentSet(setID)--装备管理，能否�
 	end
 end]]
 function WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, showZero)
+
     entryInfo= entryInfo or (itemID and C_HousingCatalog.GetCatalogEntryInfoByItem(itemID, true))
 
     if not entryInfo
@@ -757,9 +758,8 @@ function WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, showZero)
 
         numPlace= numPlace or 0
 
-
         return
-            (numPlace>0 and '|cffffffff' or '|cff626262')..numPlace..'|A:house-chest-room-prefab-icon:0:0|a|r'
+            (numPlace>0 and '|cffffffff' or '|cff626262')..numPlace..'|A:house-decor-budget-icon:0:0|a|r'--'|A:decor-ability-snap-mask:0:0|a'
             ..(quality>0 and '|cffffffff' or '|cff626262')..quality..'|A:house-chest-icon:0:0|a|r'
             ..(remainingRedeemable>0 and '|cffffffff' or '|cff626262')..remainingRedeemable..'|A:Levelup-Icon-Bag:0:0|a'
 

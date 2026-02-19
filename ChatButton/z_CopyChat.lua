@@ -1,18 +1,80 @@
---[[
-这个功能，灵感来源：ChatCopyPaste 插件
-NUM_CHAT_WINDOWS
-Constants.ChatFrameConstants.MaxChatWindows
 
-function FCF_GetNextOpenChatWindowIndex()
-	for i = C_ChatInfo.GetNumReservedChatWindows() + 1, Constants.ChatFrameConstants.MaxChatWindows do
-		if ( not FCF_IsChatWindowIndexActive(i) ) then
-			return i;
+
+local function RemoveChatJunk(currentMsg)
+	if canaccessvalue(currentMsg) or not currentMsg or currentMsg:gsub(' ', '')=='' then
+		return currentMsg
+	end
+
+	local chatNumber = string.match(currentMsg, "(%d+) |4year:years;")
+	if (chatNumber) then
+		if (tonumber(chatNumber) == 0) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4year:years;", chatNumber .. " year")
+		elseif (tonumber(chatNumber) > 1) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4year:years;", chatNumber .. " years")
+		else
+			currentMsg = currentMsg --Do nothing.
 		end
 	end
 
-	return nil;
+	chatNumber = string.match(currentMsg, "(%d+) |4day:days;")
+	if (chatNumber) then
+		if (tonumber(chatNumber) == 0) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4day:days;", chatNumber .. " day")
+		elseif (tonumber(chatNumber) > 1) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4day:days;", chatNumber .. " days")
+		end
+	end
+
+	chatNumber = string.match(currentMsg, "(%d+) |4hour:hours;")
+	if (chatNumber) then
+		if (tonumber(chatNumber) == 0) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4hour:hours;", chatNumber .. " hour")
+		elseif (tonumber(chatNumber) > 1) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4hour:hours;", chatNumber .. " hours")
+		end
+	end
+
+	chatNumber = string.match(currentMsg, "(%d+) |4minute:minutes;")
+	if (chatNumber) then
+		if (tonumber(chatNumber) == 0) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4minute:minutes;", chatNumber .. " minute")
+		elseif (tonumber(chatNumber) > 1) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4minute:minutes;", chatNumber .. " minutes")
+		end
+	end
+
+	chatNumber = string.match(currentMsg, "(%d+) |4second:seconds;")
+	if (chatNumber) then
+		if (tonumber(chatNumber) == 0) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4second:seconds;", chatNumber .. " second")
+		elseif (tonumber(chatNumber) > 1) then
+			currentMsg = string.gsub(currentMsg, "(%d+) |4second:seconds;", chatNumber .. " seconds")
+		end
+	end
+	currentMsg = string.gsub(currentMsg, "|T.-|t", "")
+	
+	return currentMsg
 end
-]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Save()
     return WoWToolsSave['Plus_ChatCopy'] or {}
 end
@@ -29,8 +91,6 @@ local function Init_AllButton()
 		end
 	end
 end
-
-
 
 
 
@@ -422,3 +482,18 @@ end)
 
 
 
+--[[
+这个功能，灵感来源：ChatCopyPaste 插件
+NUM_CHAT_WINDOWS
+Constants.ChatFrameConstants.MaxChatWindows
+
+function FCF_GetNextOpenChatWindowIndex()
+	for i = C_ChatInfo.GetNumReservedChatWindows() + 1, Constants.ChatFrameConstants.MaxChatWindows do
+		if ( not FCF_IsChatWindowIndexActive(i) ) then
+			return i
+		end
+	end
+
+	return nil
+end
+]]
