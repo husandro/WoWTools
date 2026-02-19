@@ -565,7 +565,7 @@ local function Create_Button(index)
     btn.onMinimap:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
     btn.onMinimap:SetPoint('TOPLEFT',-1,1)
     btn.onMinimap:SetPoint('BOTTOMRIGHT',1,-1)
-
+    btn.onMinimap:SetAlpha(0.5)
     btn.onMinimap:SetVertexColor(0,1,0)
     btn.text= WoWTools_LabelMixin:Create(btn)
 
