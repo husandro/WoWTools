@@ -639,7 +639,7 @@ end]]
                 text= text..num
             end
         end
-        self.Text:SetText(text or format('|T4352494:%d|t', size))
+        self.Text:SetText(text or format('|T4352494:%d|t', size-4))
         self:SetShown(show)
     end
 

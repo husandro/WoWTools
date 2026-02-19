@@ -808,11 +808,10 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
---分隔线
+--[[分隔线
     hooksecurefunc('CompactRaidFrameManager_UpdateOptionsFlowContainer', function()
-        --CompactRaidFrameManager.container.dividerVerticalPool:ReleaseAll()
         CompactRaidFrameManager.container.dividerHorizontalPool:ReleaseAll()
-    end)
+    end)]]
 
 --展开，替换 原生
     function CompactRaidFrameManager_Expand()
