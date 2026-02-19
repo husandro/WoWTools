@@ -201,10 +201,12 @@ end
 --购回
 local function Init()
 
-    local BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantFrame, {
+    local BuybackButton= CreateFrame('Button', 'WoWTools_BuybackButton', MerchantFrame, 'WoWToolsButtonTemplate')
+    BuybackButton:SetSize(35,35)
+    --[[WoWTools_ButtonMixin:Cbtn(MerchantFrame, {
         name='WoWTools_BuybackButton',
         size=35
-    })
+    })]]
 
     if Save().notPlus then
         BuybackButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,18)
@@ -223,7 +225,11 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
 
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '回购' or BUYBACK, '|cnGREEN_FONT_COLOR: #'..(self:set_text() or ''))
+        GameTooltip:AddDoubleLine(
+            '|A:ommon-icon-undo:0:0|a'
+            ..WoWTools_DataMixin.onlyChinese and '回购' or BUYBACK,
+            '|cnGREEN_FONT_COLOR: #'..(self:set_text() or '')
+        )
         GameTooltip:AddLine(' ')
 
         local infoType, itemID= GetCursorInfo()
