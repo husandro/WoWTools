@@ -78,7 +78,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
         return func
     end
 
-    sub:AddInitializer(function(f, desc, menu)--, description, menu)
+    sub:AddInitializer(function(f, desc)--, description, menu)
         local va= getValue(f, desc) or 1
         f:SetValueStep(step or 1)
         f:SetMinMaxValues(minValue, maxValue)
@@ -328,8 +328,10 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
         for i=0, 1.0, 0.1 do
             sub2:CreateRadio(
                 i,
-            function(index)
-                SetValue(index)
+            function(alpha)
+                return (GetValue() or 1)==alpha
+            end, function(alpha)
+                SetValue(alpha)
                 return MenuResponse.Refresh
             end, i)
         end
