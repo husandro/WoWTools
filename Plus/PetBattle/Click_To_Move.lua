@@ -6,7 +6,7 @@ end
 
 
 
-local ClickToMoveButton--, Frame
+
 local CameraTabs={}
 local CVarNameTabs={}
 
@@ -25,25 +25,29 @@ local function Init_Camera_Tabs()
     }
 end
 
-local function Is_Lock_CVar(name)
+local function Lock_Is_CVar(name)
     if Save().ClickMoveButton['lock_'..name] then
         return '|A:AdventureMapIcon-Lock:0:0|a'
     end
 end
 
 
-local function Lock_CVar(name)
+local function Lock_CVar(self, name)
     local value= Save().ClickMoveButton['lock_'..name]
     if PlayerIsInCombat() then
         if value then
-            ClickToMoveButton:RegisterEvent('PLAYER_REGEN_ENABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
 
     elseif value and C_CVar.GetCVar(name)~=value then
         if C_CVar.SetCVar(name, value) then
-            print(WoWTools_DataMixin.addName, CVarNameTabs[name],
-                '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)..'|r',
-                name=='autoInteract' and '' or CameraTabs[value][1]
+            print(
+                CVarNameTabs[name]..WoWTools_DataMixin.Icon.icon2,
+                '|A:AdventureMapIcon-Lock:0:0|a|cnWARNING_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)..'|r',
+
+                name=='autoInteract' and WoWTools_TextMixin:GetEnabeleDisable(value=='1')
+                    or CameraTabs[value][1]
             )
         end
     end
@@ -60,20 +64,22 @@ end
 
 
 
-local function Lock_ClickToMove_CVar()
+local function Lock_ClickToMove_CVar(self)
     local value=  Get_Lock_ClickToMove_Value()
     if PlayerIsInCombat() then
         if value then
-            ClickToMoveButton:RegisterEvent('PLAYER_REGEN_ENABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
         return
     end
 
     if value and C_CVar.GetCVar('autoInteract')~=value then
         if C_CVar.SetCVar('autoInteract', value) then
-            print(WoWTools_DataMixin.addName,
-            CVarNameTabs['autoInteract'],
-                '|A:AdventureMapIcon-Lock:0:0|a|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
+            print(
+            CVarNameTabs['autoInteract']..WoWTools_DataMixin.Icon.icon2,
+                '|A:AdventureMapIcon-Lock:0:0|a|cnWARNING_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
+                ..'|cnGREEN_FONT_COLOR:'..WoWTools_TextMixin:GetEnabeleDisable(value=='1')
             )
         end
     end
@@ -81,11 +87,6 @@ end
 
 
 
-local function Set_ClickToMove_CVar()
-    if not PlayerIsInCombat() then
-        C_CVar.SetCVar("autoInteract", C_CVar.GetCVarBool("autoInteract") and '0' or '1')
-    end
-end
 
 
 
@@ -102,10 +103,7 @@ end
 
 
 
-
-
-
-local function Init_ClickToMove_Menu(self, root, col)
+local function Init_ClickToMove_Menu(self, root)
     local sub
     for _, tab in pairs({
         {'0', WoWTools_DataMixin.onlyChinese and '锁定禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOCK, DISABLE)},
@@ -118,29 +116,41 @@ local function Init_ClickToMove_Menu(self, root, col)
         end, function(data)
             Save().ClickMoveButton['lock_autoInteract']= Save().ClickMoveButton['lock_autoInteract']~=data.value and data.value or nil
             Save().ClickMoveButton.AutoClickToMove=nil
-            Lock_ClickToMove_CVar()
-            return MenuResponse.CloseAll
+            Lock_ClickToMove_CVar(self)
+            self:set_State()
+            return MenuResponse.Refresh
         end, {value=tab[1]})
         sub:SetTooltip(function(tooltip, desc)
-            tooltip:AddDoubleLine('autoInteract', desc.data.value)
+            tooltip:AddDoubleLine('CVar autoInteract', desc.data.value)
             tooltip:AddLine(' ')
             tooltip:AddLine(CVarNameTabs['autoInteract'])
         end)
     end
 
     sub=root:CreateRadio(
-        '|A:AdventureMapIcon-Lock:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自动锁定' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, LOCK)),
+        '|A:AdventureMapIcon-Lock:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '自动锁定' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, LOCK)),
     function()
         return Save().ClickMoveButton.AutoClickToMove
     end, function()
         Save().ClickMoveButton.AutoClickToMove= not Save().ClickMoveButton.AutoClickToMove and true or nil
         Save().ClickMoveButton['lock_autoInteract']= nil
-        Lock_ClickToMove_CVar()
-        return MenuResponse.CloseAll
+        Lock_ClickToMove_CVar(self)
+        self:set_State()
+        return MenuResponse.Refresh
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion(), WoWTools_TextMixin:GetEnabeleDisable(false))
-        tooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion(), WoWTools_TextMixin:GetEnabeleDisable(true))
+        local maxLevel= GetMaxLevelForLatestExpansion()
+        tooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)
+            ..' < '..maxLevel,
+            WoWTools_TextMixin:GetEnabeleDisable(false)
+        )
+        tooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)
+            ..' = '..maxLevel,
+            WoWTools_TextMixin:GetEnabeleDisable(true)
+        )
     end)
 end
 
@@ -152,19 +162,19 @@ end
 
 
 
-local function Init_CVar_Menu(root, name, col)
+local function Init_CVar_Menu(self, root, name, col)
     local sub
     for _, value in pairs({'1', '4', '2', '0'}) do
         sub= root:CreateRadio(
             (Save().ClickMoveButton['lock_'..name]==value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
-            ..(Is_Lock_CVar(name) and '|cff828282' or col)
+            ..(Lock_Is_CVar(name) and '|cff828282' or col)
             ..CameraTabs[value][1],
 
         function(data)
             return C_CVar.GetCVar(data.name)==data.value
 
         end, function(data)
-            if not PlayerIsInCombat() and not Is_Lock_CVar(name) then
+            if not PlayerIsInCombat() and not Lock_Is_CVar(name) then
                 if C_CVar.GetCVar(data.name)~=data.value then
                     C_CVar.SetCVar(data.name, data.value)
                 end
@@ -173,10 +183,30 @@ local function Init_CVar_Menu(root, name, col)
         end, {value=value, name=name})
 
         sub:SetTooltip(function(tooltip, desc)
+            if Save().ClickMoveButton['lock_'..name] then
+                GameTooltip_AddErrorLine(tooltip,
+                    '|A:AdventureMapIcon-Lock:0:0|a'
+                    ..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
+                )
+            end
             tooltip:AddDoubleLine(desc.data.name, desc.data.value)
             tooltip:AddLine(' ')
             tooltip:AddLine(CameraTabs[desc.data.value][2], nil, nil, nil, true)
         end)
+        sub:AddInitializer(function(btn, desc)
+            btn:RegisterEvent('CVAR_UPDATE')
+            btn:SetScript('OnEvent', function(b, _, cvarName)
+                if cvarName==desc.data.name and b.leftTexture2 then
+                    b.leftTexture2:SetShown(
+                        C_CVar.GetCVar(cvarName)==desc.data.value
+                    )
+                end
+            end)
+            btn:SetScript('OnHide', function(b)
+                b:UnregisterEvent('CVAR_UPDATE')
+            end)
+        end)
+
 
 
         sub:CreateCheckbox(
@@ -189,9 +219,8 @@ local function Init_CVar_Menu(root, name, col)
 
         end, function(data)
             Save().ClickMoveButton['lock_'..data.name]= Save().ClickMoveButton['lock_'..data.name]~=data.value and data.value or nil
-            Lock_CVar(data.name, Save().ClickMoveButton['lock_'..data.name])
-            --return MenuResponse.Refresh
-            return MenuResponse.CloseAll
+            Lock_CVar(self, data.name)
+            return MenuResponse.Refresh
         end, {value=value, name=name})
     end
 end
@@ -229,45 +258,76 @@ local function Init_Menu(self, root)
         return C_CVar.GetCVarBool("autoInteract")
     end, function()
         if Get_Lock_ClickToMove_Value() then--锁定
-            Lock_ClickToMove_CVar()
+            Lock_ClickToMove_CVar(self)
         else
-            Set_ClickToMove_CVar()
+            self:set_clickmove()
         end
     end)
 
     sub:SetTooltip(function(tooltip)
+        if Get_Lock_ClickToMove_Value() then
+            GameTooltip_AddErrorLine(tooltip,
+                '|A:AdventureMapIcon-Lock:0:0|a'
+                ..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
+            )
+        end
+
         if PlayerIsInCombat() then
-            tooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            GameTooltip_AddErrorLine(tooltip,
+                (WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            )
         end
     end)
-    root:CreateSpacer()
 
-    Init_ClickToMove_Menu(self, sub, col)
 
-    sub:CreateDivider()
+
+
+
+
+    
+
+
+    Init_ClickToMove_Menu(self, sub)
+
+
+
+
+
 --点击移动, 镜头跟随模式
-    Init_CVar_Menu(sub, 'cameraSmoothTrackingStyle', col)
-    sub:CreateDivider()
-    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '点击移动' or CLICK_TO_MOVE)
-
-
+    root:CreateTitle(WoWTools_DataMixin.onlyChinese and '鼠标' or MOUSE_LABEL)
+    Init_CVar_Menu(self, root, 'cameraSmoothTrackingStyle', col)
 
 --移动，镜头跟随模式
-    sub=root:CreateButton(
-        (Is_Lock_CVar('cameraSmoothStyle') or '')
+    root:CreateTitle(WoWTools_DataMixin.onlyChinese and '镜头' or CAMERA_LABEL)
+    Init_CVar_Menu(self, root, 'cameraSmoothStyle', col)
+    
+    --[[sub=root:CreateButton(
+        (Lock_Is_CVar('cameraSmoothStyle') or '')
         ..col
         ..(WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE),
     function()
         return MenuResponse.Open
     end)
-    Init_CVar_Menu(sub, 'cameraSmoothStyle', col)
+   
+
 
     sub:CreateDivider()
-    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE)
-
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE,
+    function()
+         if not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
+            Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID, CLICK_TO_MOVE)--ItemRef.lua
+        end
+        return MenuResponse.Open
+    end)
+ ]]
 --打开选项界面
-    root:CreateSpacer()
-    sub= WoWTools_PetBattleMixin:OpenOptions(root, WoWTools_PetBattleMixin.addName3)
+    root:CreateDivider()
+    sub=  WoWTools_MenuMixin:OpenOptions(root, {
+            category=WoWTools_PetBattleMixin.Category,
+            name= WoWTools_PetBattleMixin.addName,
+            name2= WoWTools_PetBattleMixin.addName3
+        })
 
 --缩放
     WoWTools_MenuMixin:Scale(self, sub, function()
@@ -278,13 +338,25 @@ local function Init_Menu(self, root)
     end)
 
 --FrameStrata      
-    sub2=WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
+    WoWTools_MenuMixin:FrameStrata(self, sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         self:SetFrameStrata(data or 'MEDIUM')
         Save().ClickMoveButton.Strata= data
     end)
-    sub2:SetEnabled(Save().ClickMoveButton.PlayerFrame)
+
+
+    sub2= sub:CreateCheckbox(
+        'UIParent',
+    function()
+        return not Save().ClickMoveButton.PlayerFrame
+    end, function()
+        Save().ClickMoveButton.PlayerFrame= not Save().ClickMoveButton.PlayerFrame and true or false
+        self:Settings()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('SetParent(\"UIParent\")')
+    end)
 
     sub:CreateDivider()
 --重置
@@ -328,22 +400,22 @@ local function Init_Button()
 
     Init_Camera_Tabs()
 
-    ClickToMoveButton= WoWTools_ButtonMixin:Menu(PlayerFrame,
-        {
-            atlas= 'transmog-nav-slot-feet',
-            size= 23,
-            isType2= true,
-            name='WoWToolsClickToMoveButton',
-        }
-    )
+    local btn= CreateFrame('DropdownButton', 'WoWToolsClickToMoveButton', PlayerFrame, 'WoWToolsMenu2Template')
+    btn.texture:SetAtlas('transmog-gearSlot-unassigned-feet')
+    btn.border:SetAlpha(0.3)
+    btn.lockedTexture= btn:CreateTexture(nil, 'ARTWORK')
+    btn.lockedTexture:SetSize(10,10)
+    btn.lockedTexture:SetPoint('BOTTOM')
+    btn.lockedTexture:SetAtlas('AdventureMapIcon-Lock')
+    WoWTools_TextureMixin:SetAlphaColor(btn.lockedTexture, true)
 
 
-    function ClickToMoveButton:set_scale()
+    function btn:set_scale()
         self:SetScale(Save().ClickMoveButton.Scale or 1)
     end
 
 
-    function ClickToMoveButton:Settings()
+    function btn:Settings()
         self:UnregisterAllEvents()
 
         if Save().ClickMoveButton.disabled then
@@ -378,34 +450,32 @@ local function Init_Button()
 
 
 
-    function ClickToMoveButton:set_State()
-        --local icon= self:GetNormalTexture()
+    function btn:set_State()
         if C_CVar.GetCVarBool("autoInteract") then
-          --  self:UnlockHighlight()
             self.texture:SetVertexColor(1,1,1)
         else
-            --self:LockHighlight()
             self.texture:SetVertexColor(1,0,0)
         end
+        self.lockedTexture:SetShown(Get_Lock_ClickToMove_Value())
     end
 
-    ClickToMoveButton:SetScript('OnEvent', function(self, event, arg1)
+    btn:SetScript('OnEvent', function(self, event, arg1)
         if event=='CVAR_UPDATE' then
             if arg1=='autoInteract' then
                 self:set_State()
-                Lock_ClickToMove_CVar()
+                Lock_ClickToMove_CVar(self)
             elseif arg1=='cameraSmoothStyle' or arg1=='cameraSmoothTrackingStyle' then
-                Lock_CVar(arg1)
+                Lock_CVar(self, arg1)
             end
         elseif event=='PLAYER_REGEN_ENABLED' then
+            Lock_ClickToMove_CVar(self)
+            Lock_CVar(self, 'cameraSmoothStyle')
+            Lock_CVar(self, 'cameraSmoothTrackingStyle')
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            Lock_ClickToMove_CVar()
-            Lock_CVar('cameraSmoothStyle')
-            Lock_CVar('cameraSmoothTrackingStyle')
         end
     end)
 
-    function ClickToMoveButton:set_tooltip()
+    function btn:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName3)
@@ -436,36 +506,40 @@ local function Init_Button()
         GameTooltip:Show()
         self:SetAlpha(1)
     end
-    ClickToMoveButton:SetScript('OnLeave', function(self) ResetCursor() GameTooltip:Hide() self:set_State() end)
-    ClickToMoveButton:SetScript('OnEnter', ClickToMoveButton.set_tooltip)
+    btn:SetScript('OnLeave', function(self) ResetCursor() GameTooltip:Hide() self:set_State() end)
+    btn:SetScript('OnEnter', btn.set_tooltip)
 
-    ClickToMoveButton:RegisterForDrag("RightButton")
-    ClickToMoveButton:SetMovable(true)
-    ClickToMoveButton:SetClampedToScreen(true)
-    ClickToMoveButton:SetScript("OnDragStart", function(self, d)
+    btn:RegisterForDrag("RightButton")
+    btn:SetMovable(true)
+    btn:SetClampedToScreen(true)
+    btn:SetScript("OnDragStart", function(self, d)
         if d=='RightButton' and IsAltKeyDown() and not Save().ClickMoveButton.PlayerFrame then
+            self:CloseMenu()
             self:StartMoving()
         end
     end)
-    ClickToMoveButton:SetScript("OnDragStop", function(self)
+    btn:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().ClickMoveButton.Point={self:GetPoint(1)}
             Save().ClickMoveButton.Point[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnWARNING_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
 
-    ClickToMoveButton:SetScript("OnMouseUp", ResetCursor)
-    ClickToMoveButton:SetScript("OnMouseDown", function(self, d)
+    function btn:set_clickmove()
+        if not PlayerIsInCombat() then
+            C_CVar.SetCVar("autoInteract",
+                C_CVar.GetCVarBool("autoInteract") and '0' or '1'
+            )
+        end
+
+    end
+
+    btn:SetScript("OnMouseUp", ResetCursor)
+    btn:SetScript("OnMouseDown", function(self, d)
         if d=='LeftButton' then
-            Set_ClickToMove_CVar()
+            self:set_clickmove()
             self:CloseMenu()
         elseif d=='RightButton' and IsAltKeyDown() and not Save().ClickMoveButton.PlayerFrame then
             SetCursor('UI_MOVE_CURSOR')
@@ -473,17 +547,17 @@ local function Init_Button()
         self:set_tooltip()
     end)
 
-    ClickToMoveButton:SetupMenu(Init_Menu)
+    btn:SetupMenu(Init_Menu)
 
-    ClickToMoveButton:Settings()
+    btn:Settings()
 
-    Lock_CVar('cameraSmoothTrackingStyle')
-    Lock_CVar('cameraSmoothStyle')
-    Lock_ClickToMove_CVar()
+    Lock_CVar(btn, 'cameraSmoothTrackingStyle')
+    Lock_CVar(btn, 'cameraSmoothStyle')
+    Lock_ClickToMove_CVar(btn)
 
 
     Init_Button=function()
-        ClickToMoveButton:Settings()
+        _G['WoWToolsClickToMoveButton']:Settings()
     end
 end
 

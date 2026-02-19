@@ -120,7 +120,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     self:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})
 
 --PetBattle.lua 联动
-    WoWTools_PetBattleMixin.Set_TypeButton_Tips(petType)
+    WoWTools_PetBattleMixin:Show_TypeButton_Type(petType)
 
     WoWTools_TooltipMixin:Show(tooltip)
 end

@@ -402,7 +402,6 @@ Plus\AuctionHouse\z_AccountStore.lua
 ##宠物对战
 Plus\PetBattle\0_PetBattleMixin.lua
 Plus\PetBattle\1_Init.lua
-Plus\PetBattle\2_Options.lua
 Plus\PetBattle\Click_To_Move.lua
 Plus\PetBattle\TypeButton.lua
 Plus\PetBattle\PetBattle_AbilityButton.lua

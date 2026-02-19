@@ -23,10 +23,10 @@ end
 --设置，颜色，透明度
 function WoWTools_TextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaORmin)
     if object then
-        if alphaORmin==0 then
+        --[[if alphaORmin==0 then
             object:SetAlpha(0)
             return
-        end
+        end]]
         if not notColor and object.SetVertexColor then
             object:SetVertexColor(self.Color:GetRGB())
         end

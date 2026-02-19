@@ -27,12 +27,8 @@ local function Register()
 local Frame=CreateFrame('Frame')
 Frame.buttons={}
 
-function Frame:set_event(enable)
-    if enable then
-        self:RegisterEvent('PLAYER_REGEN_ENABLED')
-    else
-        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-    end
+function Frame:set_event()
+    self:RegisterEvent('PLAYER_REGEN_ENABLED')
 end
 
 Frame:SetScript("OnEvent", function(self)
@@ -42,7 +38,7 @@ Frame:SetScript("OnEvent", function(self)
         end
     end
     self.buttons={}
-    self:set_event(false)
+    self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 end)
 
 
@@ -114,7 +110,7 @@ function WoWTools_KeyMixin:Setup(btn, isDisabled)
     --if PlayerIsInCombat() then
     if not btn:CanChangeAttribute() then
         Frame.buttons[btn]={isDisabled=isDisabled}
-        Frame:set_event(true)
+        Frame:set_event()
         return
     end
 

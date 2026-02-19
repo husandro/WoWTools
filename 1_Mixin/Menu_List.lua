@@ -139,7 +139,7 @@ function WoWTools_MenuMixin:DungeonDifficulty(_, root)
                 tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '可修改难度' or 'Difficulty can be changed')
                 tooltip:AddLine( WoWTools_MapMixin:GetDifficultyColor(nil, toggleDifficultyID))
             end)
-        
+
 		end
 	end
 end

@@ -732,7 +732,11 @@ local function Init_Button_Menu(self, root)
 
 --打开选项界面
     root:CreateDivider()
-    sub= WoWTools_PetBattleMixin:OpenOptions(root, WoWTools_PetBattleMixin.addName6)
+    sub= WoWTools_MenuMixin:OpenOptions(root, {
+            category=WoWTools_PetBattleMixin.Category,
+            name= WoWTools_PetBattleMixin.addName,
+            name2= WoWTools_PetBattleMixin.addName6
+        })
 
 --重置
     sub:CreateButton(
@@ -829,7 +833,7 @@ local function Set_Move_Button(btn)
         self:set_tooltip()
         self:set_alpha()
         if self.petType then
-            WoWTools_PetBattleMixin.Set_TypeButton_Tips(self.petType)
+            WoWTools_PetBattleMixin:Show_TypeButton_Type(self.petType)
         end
         btn.parent:SetAlpha(0.5)
     end)

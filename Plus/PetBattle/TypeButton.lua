@@ -212,7 +212,11 @@ local function Init_Menu(self, root)
 
 --打开选项界面
     root:CreateDivider()
-    sub= WoWTools_PetBattleMixin:OpenOptions(root, WoWTools_PetBattleMixin.addName4)
+    sub=WoWTools_MenuMixin:OpenOptions(root, {
+            category=WoWTools_PetBattleMixin.Category,
+            name= WoWTools_PetBattleMixin.addName,
+            name2= WoWTools_PetBattleMixin.addName4
+        })
 
 --总是显示
     sub2=sub:CreateCheckbox(
@@ -309,11 +313,11 @@ local function Init(isShow)
 
     Init_Buttons()
 
-    function TypeButton:set_shown(show)
+    function TypeButton:set_shown()
         self:SetShown(
             not Save().TypeButton.disabled
-            and (show
-                or (Save().TypeButton.allShow and not PlayerIsInCombat())
+            and (
+                (Save().TypeButton.allShow and not PlayerIsInCombat())
                 or (PetJournal and PetJournal:IsVisible())
                 or C_PetBattles.IsInBattle()
             )
@@ -460,52 +464,73 @@ local function Init(isShow)
         end
     end)
 
-    function TypeButton:Settings(show)
+    function TypeButton:Settings()
         self:set_scale()
         self:set_point()
         self:set_Frame_shown()
         self:set_event()
         self:set_Background()
-        self:set_shown(show)
+        self:set_shown()
     end
-    TypeButton:Settings(isShow)
-
-    Init=function(show)
-        TypeButton:Settings(show)
-    end
-end
+    TypeButton:Settings()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_PetBattleMixin:Set_TypeButton(show)
-   Init(show)
-end
-
-function WoWTools_PetBattleMixin:TypeButton_SetShown()
-    if TypeButton then
-        TypeButton:set_shown()
+    if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+        PetJournal:HookScript('OnShow', function()
+            TypeButton:set_shown()
+        end)
+        PetJournal:HookScript('OnHide', function()
+            TypeButton:set_shown()
+        end)
     else
-        self:Set_TypeButton()
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_Collections' then
+                PetJournal:HookScript('OnShow', function()
+                    TypeButton:set_shown()
+                end)
+                PetJournal:HookScript('OnHide', function()
+                   TypeButton:set_shown()
+                end)
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+    end
+
+
+
+
+
+    Init=function()
+        TypeButton:Settings()
     end
 end
 
-function WoWTools_PetBattleMixin.Set_TypeButton_Tips(petType)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_PetBattleMixin:Init_TypeButton()
+   Init()
+end
+
+
+
+function WoWTools_PetBattleMixin:Show_TypeButton_Type(petType)
     Set_Button_Highlight(petType)
 end

@@ -324,7 +324,7 @@ local function Init_Menu(self, root)
         end
     end)
 
-    root:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), function()
+    root:CreateCheckbox('|A:transmog-gearSlot-unassigned-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), function()
         return not Save().notHideMoving
     end, function()
         Save().notHideMoving = not Save().notHideMoving and true or nil

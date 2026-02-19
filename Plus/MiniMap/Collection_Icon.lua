@@ -791,7 +791,7 @@ local function Init_Menu(self, root)
 
 --移动时，隐藏
     sub:CreateCheckbox(
-        '|A:transmog-nav-slot-feet:0:0|a'
+        '|A:transmog-gearSlot-unassigned-feet:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE),
     function()
         return Save().Icons.hideInMove

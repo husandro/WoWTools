@@ -9,6 +9,8 @@ end
 
 
 
+
+
 local function Init()
     if Save().hidePlayerFrame then
         return
@@ -289,6 +291,7 @@ end]]
             end)
         end
     end)
+
     LootButton:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             self:CloseMenu()

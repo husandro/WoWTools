@@ -78,7 +78,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
         return func
     end
 
-    sub:AddInitializer(function(f, desc)--, description, menu)
+    sub:AddInitializer(function(f, desc, menu)--, description, menu)
         local va= getValue(f, desc) or 1
         f:SetValueStep(step or 1)
         f:SetMinMaxValues(minValue, maxValue)
@@ -102,6 +102,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             if func then
                 MenuUtil.ShowTooltip(f, func, desc)
             end
+            --menu:ReinitializeAll()
         end)
 
         f:EnableMouseWheel(true)
@@ -134,7 +135,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
 
         local pad = 20;
         local width = pad + f.Text:GetUnboundedStringWidth() + f.Low:GetUnboundedStringWidth()
-        width= math.max(100, width)
+        width= math.max(150, width)
 	    return width, 17
     end)
 
@@ -164,12 +165,12 @@ step=1,
 function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValue)
     local isLocked= WoWTools_FrameMixin:IsLocked(frame)
     root:CreateSpacer()
-    local sub2
+
     local sub= self:CreateSlider(root, {
         getValue=GetValue,
         setValue=SetValue,
         name= WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE,
-        minValue=0.2,
+        minValue=0.4,
         maxValue=4,
         step=0.1,
         bit='%0.1f',
@@ -180,7 +181,7 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
 
     if ResetValue then
         root:CreateSpacer()
-        sub2=root:CreateButton(
+        sub=root:CreateButton(
             '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
         function(data)
             if not WoWTools_FrameMixin:IsLocked(frame) then
@@ -188,13 +189,13 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
             end
             return MenuResponse.Refresh
         end, {resetValue=ResetValue})
-        sub2:SetTooltip(function(tooltip)
+        sub:SetTooltip(function(tooltip)
             tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..': 1')
         end)
-        sub2:SetEnabled(not isLocked)
+        sub:SetEnabled(not isLocked)
     end
 
-    return sub, sub2
+    return sub
 end
 
 
@@ -213,8 +214,22 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
     end, {rightText= tonumber(format('%.1f', GetValue() or 1))})
     self:SetRightText(sub)
 
-    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue or function() SetValue(1) end)
-    sub2:SetEnabled(not isLocked)
+    if not ResetValue then
+        ResetValue= function() SetValue(1) end
+    end
+
+    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
+
+    for i=0.5, 4, 0.5 do
+        sub2:CreateRadio(
+            i,
+        function(scale)
+            return (GetValue() or 1)==scale
+        end, function(scale)
+            SetValue(scale)
+            return MenuResponse.Refresh
+        end, i)
+    end
 
     return sub, sub2
 end
@@ -231,13 +246,23 @@ end)
 --FrameStrata
 function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
     local enable= WoWTools_FrameMixin:IsLocked(frame)~=true
+
+    local value= GetValue() or 'MEDIUM'
+
     local sub=root:CreateButton(
         '|A:Garr_SwapIcon:0:0:|a'
         ..(enable and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '框架层' or 'Strata'),
     function()
         return MenuResponse.Refresh
+    end, {
+        rightText= value=='FULLSCREEN_DIALOG' and 'FD' or WoWTools_TextMixin:sub(value, 1),
+        name= value
+    })
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(GetValue() or 'MEDIUM')
     end)
+    self:SetRightText(sub)
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
         local sub2= sub:CreateCheckbox(
@@ -289,7 +314,7 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
 
     if RestFunc or not onlyRoot then
         sub:CreateSpacer()
-        sub:CreateButton(
+        sub2= sub:CreateButton(
             '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
         function()
             if RestFunc then
@@ -299,6 +324,15 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot
             end
             return MenuResponse.Refresh
         end)
+
+        for i=0, 1.0, 0.1 do
+            sub2:CreateRadio(
+                i,
+            function(index)
+                SetValue(index)
+                return MenuResponse.Refresh
+            end, i)
+        end
     end
     return sub, sub2
 end
@@ -680,8 +714,9 @@ function WoWTools_MenuMixin:TTsMenu(root)
     end
 end
 
+
 --仅支持 0 1
-function WoWTools_MenuMixin:CVar(root, name, showName, tooltip, func)
+function WoWTools_MenuMixin:CVar(root, name, showName, tooltip, eventFunc)
     local value, defaultValue= C_CVar.GetCVarInfo(name)
     if not value then
         if WoWTools_DataMixin.Player.husandro then
@@ -705,12 +740,12 @@ function WoWTools_MenuMixin:CVar(root, name, showName, tooltip, func)
         btn:SetScript('OnEvent', function(b, _, cvarName)
             if cvarName==name then
                 C_Timer.After(0.3, function()
-                    local show= C_CVar.GetCVarBool(cvarName)
+                    local isVale= C_CVar.GetCVarBool(cvarName)
                     if b.leftTexture2 then
-                        b.leftTexture2:SetShown(show)
+                        b.leftTexture2:SetShown(isVale)
                     end
-                    if func then
-                        func(show)
+                    if eventFunc then
+                        eventFunc(isVale)
                     end
                 end)
             end

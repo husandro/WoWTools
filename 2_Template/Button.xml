@@ -28,7 +28,7 @@
                 <Texture parentKey="border" atlas='bag-reagent-border'>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="-3" y="3"/>
-                        <Anchor point="BOTTOMRIGHT" x="3" y="-3"/>
+                        <Anchor point="BOTTOMRIGHT" x="5" y="-5"/>
                     </Anchors>
                 </Texture>
                 <MaskTexture parentKey="IconMask" setAllPoints="true" atlas="CircleMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">

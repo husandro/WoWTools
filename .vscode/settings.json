@@ -3046,7 +3046,11 @@
         "GetDifficultyColor",
         "CheckToggleDifficulty",
         "ChatFrame_OnLoad",
-        "ChatFrame_OnHyperlinkShow"
+        "ChatFrame_OnHyperlinkShow",
+        "CUSTOM_GAMEPLAY_SETTINGS_ORDER",
+        "CONTROLS_LABEL",
+        "CreateKeybindingEntryInitializer",
+        "GetBindingName"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
