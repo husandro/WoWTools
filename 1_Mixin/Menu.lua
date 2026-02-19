@@ -255,14 +255,14 @@ function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
         ..(WoWTools_DataMixin.onlyChinese and '框架层' or 'Strata'),
     function()
         return MenuResponse.Refresh
-    end, {
-        rightText= value=='FULLSCREEN_DIALOG' and 'FD' or WoWTools_TextMixin:sub(value, 1),
+    end--[[, {
+        --rightText= value=='FULLSCREEN_DIALOG' and 'FD' or WoWTools_TextMixin:sub(value, 1),
         name= value
-    })
+    }]])
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(GetValue() or 'MEDIUM')
     end)
-    self:SetRightText(sub)
+    --self:SetRightText(sub)
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
         local sub2= sub:CreateCheckbox(
