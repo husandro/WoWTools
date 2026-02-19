@@ -284,7 +284,7 @@ local function Init_Menu(self, root)
 
 
 
-    
+
 
 
     Init_ClickToMove_Menu(self, sub)
@@ -300,7 +300,7 @@ local function Init_Menu(self, root)
 --移动，镜头跟随模式
     root:CreateTitle(WoWTools_DataMixin.onlyChinese and '镜头' or CAMERA_LABEL)
     Init_CVar_Menu(self, root, 'cameraSmoothStyle', col)
-    
+
     --[[sub=root:CreateButton(
         (Lock_Is_CVar('cameraSmoothStyle') or '')
         ..col
