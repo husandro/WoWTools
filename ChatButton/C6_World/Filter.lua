@@ -58,17 +58,18 @@ local function Init_Filter_Menu(self, root)
 
 --屏蔽刷屏
     sub=root:CreateCheckbox(
-        (WoWTools_DataMixin.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM))
-        .. ' '..(Save().myChatFilterAutoAdd and filterPlayer or filterNum),
+        WoWTools_DataMixin.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM),
 
-        function()
-            return Save().myChatFilter
+    function()
+        return Save().myChatFilter
 
-        end, function()
-            Save().myChatFilter= not Save().myChatFilter and true or false
-            WoWTools_WorldMixin:Set_Filters()
-            return MenuResponse.Close
-        end)
+    end, function()
+        Save().myChatFilter= not Save().myChatFilter and true or false
+        WoWTools_WorldMixin:Set_Filters()
+        return MenuResponse.Close
+    end, {rightText=Save().myChatFilterAutoAdd and filterPlayer or filterNum})
+
+    WoWTools_MenuMixin:SetRightText(sub)
 
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('CHAT_MSG_CHANNEL')
@@ -85,12 +86,14 @@ local function Init_Filter_Menu(self, root)
 
 --设置, 屏蔽刷屏, 数量
     sub2=sub:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
-        ..' |cnGREEN_FONT_COLOR:'
-        ..Save().myChatFilterNum,
+        WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS,
+        --..' |cnGREEN_FONT_COLOR:'
+        --..Save().myChatFilterNum,
     function()
         StaticPopup_Show('WoWToolsChatButtonWorldMyChatFilterNum')
-    end)
+    end, {rightText='|cnGREEN_FONT_COLOR:'..Save().myChatFilterNum})
+
+    WoWTools_MenuMixin:SetRightText(sub2)
 
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(self:Get_myChatFilter_Text())
@@ -104,25 +107,28 @@ local function Init_Filter_Menu(self, root)
 
 --已经 屏蔽玩家 列表
     sub2=sub:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '屏蔽玩家' or IGNORE_PLAYER)..' #'..filterPlayer,
+        WoWTools_DataMixin.onlyChinese and '屏蔽玩家' or IGNORE_PLAYER,--..' #'..filterPlayer,
     function()
         return MenuResponse.Refresh
-    end, filterPlayer)
-
+    end, {rightText=filterPlayer})
+    WoWTools_MenuMixin:SetRightText(sub2)
 
 --全部清除
-        sub2:CreateButton(
-            '|A:bags-button-autosort-up:0:0|a'
-            ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
-            ..' #'..filterPlayer,
-        function()
-            StaticPopup_Show('WoWTools_OK',
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            nil,
-            {SetValue=function()
-                Save().myChatFilterPlayers={}
-            end})
-        end)
+    sub3=sub2:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        --..' #'..filterPlayer,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+            ..'|n|n|cffffffff#'..filterPlayer,
+        nil,
+        {SetValue=function()
+            Save().myChatFilterPlayers={}
+        end})
+    end, {rightText=filterPlayer})
+    WoWTools_MenuMixin:SetRightText(sub3)
+
         sub2:CreateDivider()
 
 --玩家，列表
@@ -132,11 +138,13 @@ local function Init_Filter_Menu(self, root)
             local name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil,{reName=true, reRealm=true})
             name= name=='' and guid or name
 
-            sub3=sub2:CreateButton('|cff626262'..index..')|r '..name..' |cff626262#'.. WoWTools_DataMixin:MK(num, 3)..'|r', function(data)
+            sub3=sub2:CreateButton(
+                '|cff626262'..index..')|r '..name,--..' |cff626262#'.. WoWTools_DataMixin:MK(num, 3)..'|r',
+            function(data)
                 local player= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reName=true, reRealm=true, reLink=true})
                 if Save().myChatFilterPlayers[data.guid] then
                     print(
-                        WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2, 
+                        WoWTools_WorldMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r',
                         player
                     )
@@ -149,7 +157,9 @@ local function Init_Filter_Menu(self, root)
                 end
                 Save().myChatFilterPlayers[data.guid]=nil
                 return MenuResponse.Open
-            end, {guid=guid, num=num})
+            end, {guid=guid, num=num, rightText= '|cff626262'..WoWTools_DataMixin:MK(num, 3)..'|r'})
+
+            WoWTools_MenuMixin:SetRightText(sub3)
 
             sub3:SetTooltip(function(tooltip, description)
                 tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '刷屏' or REPORTING_MINOR_CATEGORY_SPAM)..' #'..description.data.num)
@@ -195,23 +205,25 @@ local function Init_Filter_Menu(self, root)
     sub:CreateDivider()
 
 --全部加入, 临时屏蔽
-    sub:CreateButton(
+    sub2=sub:CreateButton(
         '|A:GreenCross:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, ADD))
-        ..' #'..filterNum,
+        ..(WoWTools_DataMixin.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, ADD)),
+        --..' #'..filterNum,
     function()
         Set_Add_All_Player_Filter()
-    end)
+    end, {rightText=filterNum})
+    WoWTools_MenuMixin:SetRightText(sub2)
 
 
 --全部清除, 临时屏蔽
-    sub:CreateButton(
+    sub2=sub:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
-        ..' #'..filterNum,
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        --..' #'..filterNum,
     function()
         FilterTextTab={}
-    end)
+    end, {rightText=filterNum})
+     WoWTools_MenuMixin:SetRightText(sub2)
 
 
 
@@ -332,14 +344,16 @@ local function Init_User_Filter_Menu(_, root)
     end
 
     sub= root:CreateCheckbox(
-        (WoWTools_DataMixin.onlyChinese and '自定义屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, IGNORE))
-        .. ' '.. useNum,
+        (WoWTools_DataMixin.onlyChinese and '自定义屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, IGNORE)),
+        --.. ' '.. useNum,
     function()
         return Save().userChatFilter
     end, function()
         Save().userChatFilter= not Save().userChatFilter and true or false
         WoWTools_WorldMixin:Set_Filters()
-    end, {all=all})
+    end, {all=all, rightText=useNum})
+
+    WoWTools_MenuMixin:SetRightText(sub)
 
     sub:SetTooltip(function(tooltip, desc)
         tooltip:AddDoubleLine(
@@ -362,10 +376,10 @@ local function Init_User_Filter_Menu(_, root)
     if useNum>0 then
 
     --全部清除, 自定义屏蔽
-        sub:CreateButton(
+        sub2=sub:CreateButton(
             '|A:bags-button-autosort-up:0:0|a'
-            ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
-            ..' #'..useNum,
+            ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+            --..' #'..useNum,
         function()
             StaticPopup_Show('WoWTools_OK',
             WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
@@ -373,9 +387,10 @@ local function Init_User_Filter_Menu(_, root)
             {SetValue=function()
                 Save().userChatFilterTab={}
             end})
-        end)
-        sub:CreateDivider()
+        end, {rightText=useNum})
+        WoWTools_MenuMixin:SetRightText(sub2)
 
+        sub:CreateDivider()
         local player
         for name, tab in pairs(Save().userChatFilterTab) do
             player= WoWTools_UnitMixin:GetPlayerInfo(nil, tab.guid, name, {reName=true, reRealm=true})

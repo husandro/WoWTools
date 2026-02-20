@@ -150,24 +150,28 @@ local function Init_Menu(self, root)
         {text= WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, type=SLASH_WHISPER1, type2='SLASH_WHISPER', isWhisper=true,}
     }
     for _, tab in pairs(chatType) do
+        tab.rightText=tab.type
+
         sub=root:CreateCheckbox(
                 tab.text
-                ..' '
-                ..tab.type
+                --..' '
+                --..tab.type
                 ..(tab.isWhisper and ' '..WoWTools_UnitMixin:GetPlayerInfo('target', nil, nil, {reName=true}) or ''),
-            function(data)
-                    return Save().type==data.type
+        function(data)
+                return Save().type==data.type
 
-            end, function(data)
-                local name2
-                if data.isWhisper then
-                    if UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
-                        name2= GetUnitName("target", true)
-                    end
+        end, function(data)
+            local name2
+            if data.isWhisper then
+                if UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
+                    name2= GetUnitName("target", true)
                 end
-                WoWTools_ChatMixin:Say(data.type, name2, nil)
-                self:settings(data.type, data.text, name2, nil)
-            end, tab)
+            end
+            WoWTools_ChatMixin:Say(data.type, name2, nil)
+            self:settings(data.type, data.text, name2, nil)
+        end, tab)
+
+        WoWTools_MenuMixin:SetRightText(sub)
 
         sub:SetTooltip(function(tooltip, description)
             tooltip:AddLine(description.data.text)
@@ -211,19 +215,22 @@ local function Init_Menu(self, root)
 --全部清除
     num= #Save().WhisperTab
     if num>0 then
-        name= (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num
+
         sub2=sub:CreateButton(
-            name,
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function(data)
             StaticPopup_Show('WoWTools_OK',
-            data.name,
+                (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' |cffffffff #'..data.rightText,
             nil,
             {SetValue=function()
                 Save().WhisperTab={}
                 rest_numWhisper_Tips()--重置密语，数量
             end})
             return MenuResponse.Open
-        end, {name=name})
+        end, {rightText=num})
+
+        WoWTools_MenuMixin:SetRightText(sub2)
+
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '最多保存120条' or 'Save up to 120 recordsf')
         end)
@@ -232,17 +239,23 @@ local function Init_Menu(self, root)
 
 
         for index, tab in pairs(Save().WhisperTab) do
+            tab.rightText= index
+
             local playerName= WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {faction=tab.faction, reName=true, reRealm=true})
             playerName= playerName=='' and tab.name or playerName
-            
+
             local color= WoWTools_UnitMixin:GetColor(tab.unit, tab.guid)
             tab.hex= color:GenerateHexColorMarkup()
 
-            sub2=sub:CreateButton('|cff626262'..index..')|r '..(tab.wow and WoWTools_DataMixin.Icon.wow2 or '')..(playerName or ' '), function(data)
+            sub2=sub:CreateButton(
+                (tab.wow and WoWTools_DataMixin.Icon.wow2 or '')..(playerName or ' '),
+            function(data)
                 WoWTools_ChatMixin:Say(nil, data.name, data.wow)
                 self:settings(SLASH_WHISPER1, WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, data.name, data.wow)
                 return MenuResponse.Open
             end, tab)
+
+            WoWTools_MenuMixin:SetRightText(sub2)
 
             sub2:SetTooltip(function(tooltip, desc)
                 local find
@@ -284,7 +297,7 @@ local function Init_Menu(self, root)
                         ..data.hex
                         ..data.name
                         ..'|r|n|n'
-    
+
                 local playerList={}
                 for _, msg in pairs(data.msg) do
                     text= text and text..'|n' or ''
@@ -357,12 +370,16 @@ local function Init_Menu(self, root)
             table.insert(onlineList, wow)
         end
     end
-    sub=root:CreateButton(WoWTools_DataMixin.Icon.net2..(WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' '..numOline, function()
+    sub=root:CreateButton(
+        WoWTools_DataMixin.Icon.net2..(WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),--..' '..numOline,
+    function()
         ToggleFriendsFrame(1)
-    end)
+    end, {rightText=numOline})
+
+    WoWTools_MenuMixin:SetRightText(sub)
 
     local maxLevel= GetMaxLevelForLatestExpansion()
-    for _, wow in pairs(onlineList) do
+    for index, wow in pairs(onlineList) do
         local color, icon= select(2, FriendsFrame_GetBNetAccountNameAndStatus(wow, true))
         local text=wow.accountName
 
@@ -392,11 +409,15 @@ local function Init_Menu(self, root)
         end
         icon= icon and format('|T%d:0|t', icon) or ''
 
-        sub2=sub:CreateButton(icon..text, function(data)
+        sub2=sub:CreateButton(
+            icon..text,
+        function(data)
             WoWTools_ChatMixin:Say(nil, data.name, true)
             self:settings(nil, WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET, data.name, true)
             return MenuResponse.Open
-        end, {name=wow.accountName, note=wow.note, zone=zone})
+        end, {name=wow.accountName, note=wow.note, zone=zone, rightText=index})
+
+        WoWTools_MenuMixin:SetRightText(sub2)
 
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(description.data.note)

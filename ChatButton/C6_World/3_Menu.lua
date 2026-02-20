@@ -11,48 +11,11 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---local function Channel_Opetion_Menu(self, sub, name)
-
-
-
-
-
-
-
 --添加菜单
 local function Add_Menu(self, root, name, channelNumber)
-    local text, sub, communityName, communityTexture, online
+    local text, sub, sub2, communityName, communityTexture, online
     local clubId=name:match('Community:(%d+)')
+    clubId= clubId and tonumber(clubId)
 
     if clubId then
        WoWTools_DataMixin:Load(clubId, 'club')
@@ -78,7 +41,8 @@ local function Add_Menu(self, root, name, channelNumber)
 
 
     sub=root:CreateCheckbox(
-        ((channelNumber and channelNumber>0) and channelNumber..' ' or '')..(text or name),--频道数字
+        ((channelNumber and channelNumber>0) and channelNumber..' ' or '')
+        ..(text or name),--频道数字
     function(data)
         return self.channelNumber == GetChannelName(data.communityName or data.name)
 
@@ -127,21 +91,21 @@ local function Add_Menu(self, root, name, channelNumber)
                     or (WoWTools_DataMixin.onlyChinese and '社区' or CLUB_FINDER_COMMUNITY_TYPE)
                 )
             )
-            tooltip:AddLine(club.description, nil, nil, nil, true)
+            tooltip:AddLine(club.desc, nil, nil, nil, true)
             tooltip:AddDoubleLine('clubId', club.clubId)
         elseif t then
             tooltip:AddLine(t)
         end
     end)
 
-    sub:AddInitializer(function(button, description)
-        button:SetScript("OnUpdate", function(frame, elapsed)
+    sub:AddInitializer(function(btn, desc)
+        btn:SetScript("OnUpdate", function(frame, elapsed)
             frame.elapsed= (frame.elapsed or 0.3) +elapsed
             if frame.elapsed<=0.3 then
                 return
             end
             frame.elapsed=0
-            local value= self:Check_Channel(description.data.name)
+            local value= self:Check_Channel(desc.data.name)
             if value==0 then--不存在
                 frame.fontString:SetTextColor(0.62, 0.62, 0.62)
             elseif value==2 then----屏蔽
@@ -151,14 +115,14 @@ local function Add_Menu(self, root, name, channelNumber)
             end
         end)
 
-        if button.leftTexture1 then
-            button.leftTexture1:SetShown(false)
+        if btn.leftTexture1 then
+            btn.leftTexture1:SetShown(false)
         end
-        if button.leftTexture2 then
-            button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
+        if btn.leftTexture2 then
+            btn.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
         end
 
-        button:SetScript('OnHide', function(frame)
+        btn:SetScript('OnHide', function(frame)
             frame:SetScript('OnUpdate', nil)
             frame.elapsed=nil
             if frame.fontString then
@@ -167,30 +131,74 @@ local function Add_Menu(self, root, name, channelNumber)
         end)
     end)
 
+
+
+--屏蔽
+    --local value= self:Check_Channel(name)
+    --local col= value==1 and '' or '|cff626262'
+    sub2=sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '屏蔽' or IGNORE,
+    function(data)
+        self:Set_Join(data.name, nil, nil, true)--加入,移除,屏蔽
+        return MenuResponse.Refresh
+    end, {name=name})
+    sub2:AddInitializer(function(btn, desc)
+        btn:SetScript("OnUpdate", function(frame, elapsed)
+            frame.elapsed= (frame.elapsed or 0.3) +elapsed
+            if frame.elapsed>0.3 then
+                frame.elapsed=0
+                if self:Check_Channel(desc.data.name)==1 then
+                    frame.fontString:SetTextColor(1,1,1)
+                else
+                    frame.fontString:SetTextColor(0.62, 0.62, 0.62)
+                end
+            end
+        end)
+        btn:SetScript('OnHide', function(frame)
+            frame:SetScript('OnUpdate', nil)
+            frame.elapsed=nil
+            frame.fontString:SetTextColor(1,1,1)
+        end)
+    end)
+
+
+--加入
+    --col= value==1 and '|cff626262' or ''
+    sub2=sub:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '加入' or CHAT_JOIN),
+    function(data)
+        self:Set_Join(data.name, true)
+        return MenuResponse.Refresh
+    end, {name=name})
+    sub2:AddInitializer(function(btn, desc)
+        btn:SetScript("OnUpdate", function(frame, elapsed)
+            frame.elapsed= (frame.elapsed or 0.3) +elapsed
+            if frame.elapsed>0.3 then
+                frame.elapsed=0
+                if self:Check_Channel(desc.data.name)~=1 then
+                    frame.fontString:SetTextColor(1,1,1)
+                else
+                    frame.fontString:SetTextColor(0.62, 0.62, 0.62)
+                end
+            end
+        end)
+        btn:SetScript('OnHide', function(frame)
+            frame:SetScript('OnUpdate', nil)
+            frame.elapsed=nil
+            frame.fontString:SetTextColor(1,1,1)
+        end)
+    end)
+
+
 --世界，修改
      if name== Save().world then
+        sub:CreateDivider()
         sub:CreateButton(
             WoWTools_DataMixin.onlyChinese and '修改名称' or HUD_EDIT_MODE_RENAME_LAYOUT,
         function()
             StaticPopup_Show('WoWToolsChatButtonWorldChangeNamme')
         end)
-        sub:CreateDivider()
     end
-
---屏蔽
-    local value= self:Check_Channel(name)
-    local col= value==1 and '' or '|cff626262'
-    sub:CreateButton(col..(WoWTools_DataMixin.onlyChinese and '屏蔽' or IGNORE), function(data)
-        self:Set_Join(data, nil, nil, true)--加入,移除,屏蔽
-        return MenuResponse.Close
-    end, name)
-
---加入
-    col= value==1 and '|cff626262' or ''
-    sub:CreateButton(col..(WoWTools_DataMixin.onlyChinese and '加入' or CHAT_JOIN), function(data)
-        self:Set_Join(data, true)
-        return MenuResponse.Close
-    end, name)
 end
 
 

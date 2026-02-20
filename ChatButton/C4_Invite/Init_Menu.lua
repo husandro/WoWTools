@@ -212,7 +212,7 @@ local function Init_Menu(self, root)
 
 --召唤
     sub=root:CreateCheckbox(
-        '|A:Raid-Icon-SummonPending:0:0|a'..(WoWTools_DataMixin.onlyChinese and '召唤' or SUMMON),
+        '|A:RaidFrame-Icon-SummonPending:0:0|a'..(WoWTools_DataMixin.onlyChinese and '召唤' or SUMMON),
     function()
         return Save().Summon
     end, function()
@@ -221,18 +221,29 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         if WoWTools_DataMixin.onlyChinese then
-            tooltip:AddLine('取消: 战斗中, 离开, Alt键')
+            tooltip:AddLine('取消:|n 战斗中, 离开, Alt键')
         else
-            tooltip:AddLine(format('%s: %s, %s, %s', CANCEL, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, AFK, ALT_KEY))
+            tooltip:AddLine(format('%s:|n%s, %s, %s', CANCEL, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, AFK, ALT_KEY))
         end
     end)
 
-    sub:CreateCheckbox(
-        Save().SummonThxText or WoWTools_InviteMixin.SummonThxText,
+    local chatName= Save().SummonThxText or WoWTools_InviteMixin.SummonThxText
+    chatName= chatName:gsub('{rt%d}', function(a)
+         return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..a:match('%d')..':0|t'
+    end)
+    sub2=sub:CreateCheckbox(
+        chatName,
     function()
         return not Save().notSummonChat
     end, function()
         Save().notSummonChat= not Save().notSummonChat and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(
+            '|A:voicechat-icon-textchat-silenced:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '说' or SAY)
+        )
+        tooltip:AddLine(Save().SummonThxText or WoWTools_InviteMixin.SummonThxText, HIGHLIGHT_FONT_COLOR:GetRGB())
     end)
 
 --修改    
@@ -305,6 +316,7 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and'友情提示: 可能会出现错误' or 'Note: Errors may occur')
     end)
 
     for _, key in pairs({'Shift', 'Ctrl', 'Alt'}) do
@@ -349,8 +361,7 @@ local function Init_Menu(self, root)
 
     sub:CreateTitle(format('   |A:bags-greenarrow:0:0|a%s', WoWTools_DataMixin.onlyChinese and '鼠标滚轮向上滚动: 密语' or (KEY_MOUSEWHEELUP..": "..SLASH_TEXTTOSPEECH_WHISPER)))
     sub:CreateTitle(format('   |A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a%s', WoWTools_DataMixin.onlyChinese and'鼠标滚轮向下滚动: 跟随' or (KEY_MOUSEWHEELDOWN..': '..FOLLOW)))
-    sub:CreateDivider()
-    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and'友情提示: 可能会出现错误' or 'Note: Errors may occur')
+
 
 --reload
     sub:CreateDivider()
@@ -365,7 +376,15 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    sub=root:CreateButton(format('%s|A:talents-button-reset:0:0|a%s %d', WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE, WoWTools_DataMixin.onlyChinese and '邀请' or INVITE, Save().InvNoFriendNum or 0))
+    sub=root:CreateButton(
+        format('%s|A:talents-button-reset:0:0|a%s %d',
+            WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE,
+            WoWTools_DataMixin.onlyChinese and '邀请' or INVITE),
+    function()
+        return MenuResponse.Open
+    end, {rightText=Save().InvNoFriendNum or 0})
+    
+    WoWTools_MenuMixin:SetRightText(sub)
 
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,

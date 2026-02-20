@@ -1,16 +1,5 @@
 WoWTools_WorldMixin={}
 
-local P_Save={
-    world= LOCALE_zhCN and '大脚世界频道' or 'World',
-    myChatFilter= true,--过滤，多次，内容
-    myChatFilterNum=70,
-
-    myChatFilterAutoAdd= WoWTools_DataMixin.Player.husandro,
-    myChatFilterPlayers={},--{[guid]=num,}
-
-    userChatFilter=true,
-    userChatFilterTab={},--{[name-realm]={num=0, guid=guid},}
-}
 
 local function Save()
     return WoWToolsSave['ChatButtonWorldChannel']
@@ -205,13 +194,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButtonWorldChannel']= WoWToolsSave['ChatButtonWorldChannel'] or P_Save
+            WoWToolsSave['ChatButtonWorldChannel']= WoWToolsSave['ChatButtonWorldChannel'] or {
+                world= LOCALE_zhCN and '大脚世界频道' or 'World',
+                myChatFilter= true,--过滤，多次，内容
+                myChatFilterNum=70,
+
+                myChatFilterAutoAdd= WoWTools_DataMixin.Player.husandro,
+                myChatFilterPlayers={},--{[guid]=num,}
+
+                userChatFilter=true,
+                userChatFilterTab={},--{[name-realm]={num=0, guid=guid},}
+            }
+
 
             Save().myChatFilterPlayers= Save().myChatFilterPlayers or {}
             Save().userChatFilterTab= Save().userChatFilterTab or {}
-            Save().lastName= Save().lastName or P_Save.world
-
-            P_Save=nil
+            Save().lastName= Save().lastName or (LOCALE_zhCN and '大脚世界频道' or 'World')
 
             WoWTools_WorldMixin.addName= '|A:tokens-WoW-generic-regular:0:0|a'..(WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL)
 

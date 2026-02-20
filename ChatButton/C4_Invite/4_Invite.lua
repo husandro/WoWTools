@@ -2,27 +2,6 @@
 
 WoWTools_InviteMixin={
     InvPlateGuid={},
-    --SummonThxText='谢谢, 拉我'
-}
-local P_Save={
-    InvNoFriend={},
-    --LFGListAceInvite=true,--接受,LFD, 邀请
-    FriendAceInvite=true,--接受, 好友, 邀请
-    InvNoFriendNum=0,--拒绝, 次数
-    restingTips=true,--休息区提示
-    ChannelText=WoWTools_DataMixin.Player.IsCN and '1' or 'inv',--频道, 邀请, 事件,内容
-
-    Summon= true,--接受, 召唤
-    notSummonChat=nil,--不说
-    SummonThxText=nil,--自定义THX内容
-    SummonThxInRaid=nil,--在团里也说谢谢
-
-    setFrameFun= WoWTools_DataMixin.Player.husandro,--跟随，密语
-
-    setFucus= WoWTools_DataMixin.Player.husandro,--焦点
-    overSetFocus= WoWTools_DataMixin.Player.husandro,--移过是，
-    focusKey= 'Shift',
-
 }
 
 
@@ -141,8 +120,25 @@ panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['ChatButton_Invite']= WoWToolsSave['ChatButton_Invite'] or P_Save
-            P_Save=nil
+            WoWToolsSave['ChatButton_Invite']= WoWToolsSave['ChatButton_Invite'] or {
+                InvNoFriend={},
+                --LFGListAceInvite=true,--接受,LFD, 邀请
+                FriendAceInvite=true,--接受, 好友, 邀请
+                InvNoFriendNum=0,--拒绝, 次数
+                restingTips=true,--休息区提示
+                ChannelText=WoWTools_DataMixin.Player.IsCN and '1' or 'inv',--频道, 邀请, 事件,内容
+
+                Summon= true,--接受, 召唤
+                notSummonChat=nil,--不说
+                SummonThxText=nil,--自定义THX内容
+                SummonThxInRaid=nil,--在团里也说谢谢
+
+                setFrameFun= WoWTools_DataMixin.Player.husandro,--跟随，密语
+
+                setFucus= WoWTools_DataMixin.Player.husandro,--焦点
+                overSetFocus= WoWTools_DataMixin.Player.husandro,--移过是，
+                focusKey= 'Shift',
+            }
 
             WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '邀请' or INVITE)
 

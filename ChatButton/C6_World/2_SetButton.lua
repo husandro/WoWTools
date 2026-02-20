@@ -53,7 +53,7 @@ local function Init(btn)
             --ChatFrameUtil.CanAddChannel(
             JoinPermanentChannel(name)
             --ChatFrame_AddChannel(SELECTED_CHAT_FRAME, name);--12.01没发现
-
+            SELECTED_CHAT_FRAME:AddChannel(name)
         elseif remove then
             ChatFrame_RemoveChannel(SELECTED_CHAT_FRAME, name)--ChatFrameMixin.RemoveChannel
         end
