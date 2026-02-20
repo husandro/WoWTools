@@ -346,7 +346,7 @@ local function Init_Menu(_, root)
         return
     end
 
-    local sub, sub2
+    local sub
 
     root:CreateButton(
         '|cnWARNING_FONT_COLOR:'
@@ -434,12 +434,7 @@ local function Init_Menu(_, root)
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(self, root, function(strata)
-        if self then
-            return self:GetFrameStrata()==strata
-        else
-            local s= Save().trckStrata or 'MEDIUM'
-            return s== strata
-        end
+        return self:GetFrameStrata()== strata
     end, function(strata)
         Save().trckStrata= strata
         self:settings()

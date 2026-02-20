@@ -165,7 +165,67 @@ end
 
 
 
+function WoWTools_MenuMixin:LootSpecialization(root)
+    local numSpec= GetNumSpecializations(false, false) or 0
+    if not C_SpecializationInfo.IsInitialized() or numSpec==0 then
+		return
+	end
 
+    local specID, name, role, icon, sub
+    local curSpecIndex= GetSpecialization() or 0--当前，专精
+    --local lootSpecID= GetLootSpecialization() or 0
+
+    for specIndex=0, numSpec do
+        if specIndex==0 then
+            name= (WoWTools_DataMixin.onlyChinese and '当前专精（%s）' or LOOT_SPECIALIZATION_DEFAULT)
+        else
+            specID, name, role, icon= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil,  WoWTools_DataMixin.Player.Sex)
+        end
+
+        if name then
+            sub:CreateButton(
+                '|A:VignetteLoot:0:0|a|T'..(icon or 0)..':0|t'
+                ..(curSpecIndex==specIndex and '|cnGREEN_FONT_COLOR:')
+                ..WoWTools_TextMixin:CN(name),
+            function(data)
+                return GetLootSpecialization()==data.specIndex
+            end,function(data)
+                SetLootSpecialization(data.specID)
+                return MenuResponse.Refresh
+            end, {
+                specID=specID,
+                specIndex=specIndex,
+                rightText=WoWTools_DataMixin.Icon[role]
+            })
+            sub:AddInitializer(function(btn)
+                local rightTexture = btn:AttachTexture()
+                rightTexture:SetSize(18, 18)
+                rightTexture:SetPoint("RIGHT")
+                rightTexture:SetAtlas('VignetteLoot')
+            end)
+        end
+    end
+
+
+
+        sub:CreateButton(
+            '|T'..(icon or 0)..':0|t'
+            ..'|A:VignetteLoot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
+        function(data)
+            SetLootSpecialization(data.specID)
+            return MenuResponse.Open
+        end, {specID= specID})
+
+
+        sub:CreateDivider()
+        sub:CreateButton(
+            --'|T'..(PlayerUtil.GetSpecIconBySpecID(C_SpecializationInfo.GetSpecializationInfo(curSpecIndex), sex) or 0)..':0|t'
+            WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT,
+        function()
+            SetLootSpecialization(0)
+            return MenuResponse.Open
+        end)
+end
 
 
 
@@ -178,17 +238,18 @@ function WoWTools_MenuMixin:Set_Specialization(root)
 		return
 	end
 
-    local sub, specID, name, icon, _
+    local sub--, specID, name, icon, role
     local isInCombat= InCombatLockdown()
     local curSpecIndex= GetSpecialization() or 0--当前，专精
     local sex= WoWTools_DataMixin.Player.Sex
 
     for specIndex=1, numSpec, 1 do
-        specID, name, _, icon= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil, sex)
+        local specID, name, role, icon= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil, sex)
 
         sub=root:CreateRadio(
             '|T'..(icon or 0)..':0|t'
-            ..'|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false)) or '')..':0:0|a'
+            ..(WoWTools_DataMixin.Icon[role] or '')
+            --..'|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false)) or '')..':0:0|a'
             ..(isInCombat and '|cff828282' or (curSpecIndex==specIndex and '|cnGREEN_FONT_COLOR:') or '')
             ..WoWTools_TextMixin:CN(name),
         function(data)
@@ -248,7 +309,6 @@ function WoWTools_MenuMixin:Set_Specialization(root)
                 s:SetScript('OnHide', nil)
                 s:SetScript('OnEvent', nil)
                 s.set_loot= nil
-                s.set_loot=nil
             end)
         end)
         WoWTools_SetTooltipMixin:Set_Menu(sub)

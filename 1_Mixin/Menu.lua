@@ -243,37 +243,56 @@ end)
 ]]
 
 
+
 --FrameStrata
+local StrataTabs= {'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}
 function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
+    local sub, sub2
     local enable= WoWTools_FrameMixin:IsLocked(frame)~=true
 
-    local value= GetValue() or 'MEDIUM'
+    local function CheckStrata()
+        for _, strata in pairs(StrataTabs) do
+            if GetValue(strata) then
+                return strata
+            end
+        end
+    end
+
+    local value= CheckStrata() or 'MEDIUM'
+
     value= value=='MEDIUM' and '|cnGREEN_FONT_COLOR:M|r'
         or (value=='FULLSCREEN_DIALOG' and 'FD')
         or WoWTools_TextMixin:sub(value, 1)
 
-    local sub=root:CreateButton(
+    sub=root:CreateButton(
         '|A:Garr_SwapIcon:0:0:|a'
         ..(enable and '' or '|cff626262')
         ..(WoWTools_DataMixin.onlyChinese and '框架层' or 'Strata'),
     function()
         return MenuResponse.Refresh
-    end, {rightText=value,})
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(GetValue() or 'MEDIUM')
-    end)
-    self:SetRightText(sub)
-    
+    end, {rightText=value})
 
-    for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
-        local sub2= sub:CreateCheckbox(
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(CheckStrata())
+    end)
+
+    self:SetRightText(sub)
+
+    for index, strata in pairs(StrataTabs) do
+        sub2=sub:CreateRadio(
             (strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata,
-            GetValue,
-            SetValue,
-            strata
-        )
+        function(data)
+            return GetValue(data.strata)
+        end, function(data)
+            SetValue(data.strata)
+            return MenuResponse.Refresh
+        end,{strata=strata, rightText=DISABLED_FONT_COLOR:WrapTextInColorCode(index)})
+
+        self:SetRightText(sub2)
         sub2:SetEnabled(enable)
     end
+
+
     return sub
 end
 --[[
@@ -283,6 +302,8 @@ end
     end, function(strata)
         Save().strata= strata
         return MenuResponse.Refresh
+    end, function()
+        return Save().strata
     end)
 ]]
 

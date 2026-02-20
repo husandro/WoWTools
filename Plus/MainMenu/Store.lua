@@ -136,10 +136,12 @@ local function Init()
             if not self:IsMouseOver() then
                 return
             end
-            WoWTools_MenuMixin:FrameStrata(CatalogShopFrame, root, function(data)
-                return CatalogShopFrame:GetFrameStrata()==data
-            end,
+
+            WoWTools_MenuMixin:FrameStrata(CatalogShopFrame, root,
             function(data)
+                return CatalogShopFrame:GetFrameStrata()==data
+
+            end, function(data)
                 if not WoWTools_FrameMixin:IsLocked(CatalogShopFrame) then
                     CatalogShopFrame:SetFrameStrata(data)
                     Save().CatalogShopFrameStrata= data
