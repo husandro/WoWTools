@@ -15,19 +15,34 @@ local ClearFoucsFrame
 
 
 local function Init()
+    if not Save().setFucus then
+        return
+    end
+
     local key= strlower(Save().focusKey)
-
-    ClearFoucsFrame= WoWTools_ButtonMixin:Cbtn(nil, {
-        isSecure=true,
-        name='WoWToolsClearFocusButton'
-    })--清除，焦点
-    --ClearFoucsFrame:SetAttribute('type1','macro')
-    --ClearFoucsFrame:SetAttribute('macrotext','/clearfocus')
-
-    ClearFoucsFrame:SetAttribute('type1','focus')
-    ClearFoucsFrame:SetAttribute('unit', nil)
+--清除，焦点
+    ClearFoucsFrame= CreateFrame('Button', 'WoWToolsClearFocusButton', UIParent, 'SecureActionButtonTemplate')
+    --WoWTools_ButtonMixin:Cbtn(nil, {isSecure=true,name='WoWToolsClearFocusButton'})
+    ClearFoucsFrame:SetAttribute('type1','macro')
+    ClearFoucsFrame:SetAttribute('macrotext1','/clearfocus')
+--ClearFoucsFrame:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    ClearFoucsFrame:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown)
+    --ClearFoucsFrame:SetAttribute('type1', 'focus')
+    --ClearFoucsFrame:SetAttribute('unit1', 'player')
+    --SetOverrideBindingClick(ClearFoucsFrame, true, strupper(key)..'-BUTTON2','WoWToolsClearFocusButton')
 
     WoWTools_KeyMixin:SetButtonKey(ClearFoucsFrame, true, strupper(key)..'-BUTTON2', nil)--设置, 快捷键
+
+
+--设置单位焦点
+    local btn= CreateFrame('Button', 'WoWToolsOverFocusButton', UIParent, 'SecureActionButtonTemplate')
+    --WoWTools_ButtonMixin:Cbtn(nil, {isSecure=true,name='WoWToolsOverFocusButton'})
+    btn:SetAttribute("type1", "focus")
+    btn:SetAttribute('unit1', 'mouseover')
+    btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown)
+    WoWTools_KeyMixin:SetButtonKey(btn, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键
+
+
 
 
 
@@ -47,7 +62,7 @@ local function Init()
         frame:EnableMouseWheel(true)
         frame:HookScript('OnMouseWheel', function(f, d)
             local unit= canaccessvalue(f.unit) and f.unit
-            unit= unit or f:GetAttribute('unit')
+            unit= unit or f:GetAttribute('unit') or f:GetAttribute('unit1')
             if WoWTools_UnitMixin:UnitIsUnit('player', unit)==false
                 and unit
                 and WoWTools_UnitMixin:UnitExists(unit)
@@ -70,10 +85,10 @@ local function Init()
         end
         if frame:CanChangeAttribute() then
             if frame==FocusFrame then
-                --frame:SetAttribute(key..'-type1','macro')
-                --frame:SetAttribute(key..'-macrotext1','/clearfocus')
-                frame:SetAttribute(key..'-type1', 'focus')
-                frame:SetAttribute('unit', nil)
+                frame:SetAttribute(key..'-type1','macro')
+                frame:SetAttribute(key..'-macrotext1','/clearfocus')
+                --[[frame:SetAttribute(key..'-type1', 'focus')
+                frame:SetAttribute('unit1', nil)]]
             else
                 frame:SetAttribute(self.key..'-type1', 'focus')--设置, 属性
             end
@@ -133,52 +148,28 @@ local function Init()
         end
     end
 
-    for _, frame in pairs(tab) do--设置焦点
-        if frame then
-            ClearFoucsFrame:set_key(frame)
-            ClearFoucsFrame:set_say_follow(frame)
+    do
+        for _, frame in pairs(tab) do--设置焦点
+            if frame then
+                ClearFoucsFrame:set_key(frame)
+                ClearFoucsFrame:set_say_follow(frame)
+            end
         end
     end
-
     tab=nil
-
-
-    --设置单位焦点
-    local btn= WoWTools_ButtonMixin:Cbtn(nil, {
-        isSecure=true,
-        name='WoWToolsOverFocusButton'
-    })
-    btn:SetAttribute("type1", "focus")
-    btn:SetAttribute('unit', 'mouseover')
-    WoWTools_KeyMixin:SetButtonKey(btn, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键
-
-
-    --[[WoWTools_DataMixin:Hook("CreateFrame", function(_, name, _, template)--为新的框架，加属性
-        local frame= name and _G[name]
-        if template
-            and (
-                template:find("SecureUnitButtonTemplate")
-            )
-            and frame
-            and not frame:GetAttribute(ClearFoucsFrame.key..'-type1')
-        then
-        
-            ClearFoucsFrame:set_key(frame)
-            ClearFoucsFrame:set_say_follow(frame)
-        end
-    end)]]
-
 
 
     WoWTools_DataMixin:Hook('CompactRaidGroup_InitializeForGroup', function(self)--, groupIndex)
         for i=1, MEMBERS_PER_RAID_GROUP do
             local frame= _G[self:GetName().."Member"..i]
-            ClearFoucsFrame:set_key(frame)
-            ClearFoucsFrame:set_say_follow(frame)
+            if frame then
+                ClearFoucsFrame:set_key(frame)
+                ClearFoucsFrame:set_say_follow(frame)
+            end
         end
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -194,8 +185,6 @@ end
 
 
 function WoWTools_InviteMixin:Init_Focus()
-    if Save().setFucus and Init() then
-        Init=function()end
-    end
+    Init()
 end
 

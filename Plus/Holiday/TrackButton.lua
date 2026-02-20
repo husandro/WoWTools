@@ -540,11 +540,21 @@ local function Set_Text(monthOffset, day)
     if numEvents>0 then
         for i = 1, numEvents do
             local event = C_Calendar.GetDayEvent(monthOffset, day, i);
-            if event and event.title then
+            if canaccesstable(event) and event
+                and canaccessvalue(event.sequenceType)
+                and canaccesstable(event.startTime)
+                and event.startTime
+                and canaccessvalue(event.startTime.hour)
+                and canaccessvalue(event.startTime.monthDay)
+                and event.title
+            then
                 local isValid
-                if canaccessvalue(event.sequenceType) then
+                if event.sequenceType then
                     if (event.sequenceType == "ONGOING") then
-                        event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month, event.startTime.year), FormatShortDate(event.endTime.monthDay, event.endTime.month, event.endTime.year));
+                        event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE,
+                            FormatShortDate(event.startTime.monthDay, event.startTime.month, event.startTime.year),
+                            FormatShortDate(event.endTime.monthDay, event.endTime.month, event.endTime.year)
+                        )
                         isValid=true
                     elseif (event.sequenceType == "END") then
                         event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
@@ -554,7 +564,6 @@ local function Set_Text(monthOffset, day)
                 else
                     event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.startTime.hour, event.startTime.minute, true), event.startTime.hour, event.startTime.minute, true)
                 end
-                
 
                 if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)
                     or not isToDay--今天

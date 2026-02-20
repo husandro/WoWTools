@@ -551,3 +551,14 @@ function WoWTools_LoadUIMixin:OpenCompanion(companionID)
     DelvesCompanionConfigurationFrame.playerCompanionID = companionID
     ShowUIPanel(DelvesCompanionConfigurationFrame)
 end
+
+function WoWTools_LoadUIMixin:Housing()
+    if not HousingDashboardFrame then
+        do
+            HousingFramesUtil.ToggleHousingDashboard()
+        end
+        if HousingDashboardFrame and HousingDashboardFrame:IsShown() then
+            HousingFramesUtil.ToggleHousingDashboard()
+        end
+    end
+end

@@ -107,8 +107,12 @@ end
 
 
 function WoWTools_TextMixin:Magic(text)
+    if type(text)~='string' then
+        return text
+    end
+
     local tab= {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
-    for _,v in pairs(tab) do
+    for _, v in pairs(tab) do
         text= text:gsub(v,'%%'..v)
     end
     tab={
@@ -137,13 +141,15 @@ end
 
 --垂直文字
 function WoWTools_TextMixin:Vstr(text)--垂直文字
-    if text then
-        text= self:CN(text)
-        if (select(2, text:gsub("[^\128-\193]", "")) == #text) then
-            return text:gsub(".", "%1|n")
-        else
-            return text:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1|n")
-        end
+    if type(text)~='string' then
+        return text
+    end
+
+    text= self:CN(text)
+    if (select(2, text:gsub("[^\128-\193]", "")) == #text) then
+        return text:gsub(".", "%1|n")
+    else
+        return text:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1|n")
     end
 end
 
@@ -164,7 +170,12 @@ end
 
 --截取, 字符
 function WoWTools_TextMixin:sub(text, size, letterSize, lower)
-    if not canaccessvalue(text) or not text or text=='' or not size or size==0  then
+    if not canaccessvalue(text)
+        or type(text)~='string'
+        or text==''
+        or not size
+        or size==0
+    then
         return text
     end
 

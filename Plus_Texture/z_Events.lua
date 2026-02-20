@@ -1471,23 +1471,22 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
             self:HideTexture(btn:GetNormalTexture())
         end
     end
---[[
+
     hooksecurefunc('CompactRaidFrameManager_UpdateOptionsFlowContainer', function()
-        local container = CompactRaidFrameManager.displayFrame.optionsFlowContainer
 --分隔线
-        for line in CompactRaidFrameManager.container.dividerVerticalPool:EnumerateActive() do
-            self:SetAlphaColor(line)
+        if CompactRaidFrameManager.dividerVerticalPool then
+            CompactRaidFrameManager.dividerVerticalPool:ReleaseAll()
         end
-        for line in CompactRaidFrameManager.container.dividerHorizontalPool:EnumerateActive() do
-            self:SetAlphaColor(line)
+        if CompactRaidFrameManager.dividerHorizontalPool then
+            CompactRaidFrameManager.dividerHorizontalPool:ReleaseAll()
         end
---更新，高度
-        local container= CompactRaidFrameManager.displayFrame
-        local _, usedY = FlowContainer_GetUsedBounds(container)
+    end)
+--更新，高度,会出错
+        --[[local _, usedY = FlowContainer_GetUsedBounds(container)
         if canaccessvalue(usedY) then
             CompactRaidFrameManager:SetHeight(usedY + 8)
-        end
-    end)]]
+        end]]
+
 
 --限定发送信号, 菜单
     CompactRaidFrameManagerDisplayFrame.RestrictPingsLabel:SetText('')

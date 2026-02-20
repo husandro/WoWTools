@@ -1,7 +1,9 @@
 
 
 local function Is_InEditMode()
-    return EditModeManagerFrame:IsEditModeActive()-- EditModeManagerFrame:ArePartyFramesForcedShown()
+    if EditModeManagerFrame then
+        return EditModeManagerFrame:IsEditModeActive()-- EditModeManagerFrame:ArePartyFramesForcedShown()
+    end
 end
 
 local function Get_Unit_Status(unit)
@@ -168,7 +170,7 @@ local function Create_castFrame(frame)
 
     function castFrame:settings()
         local texture= WoWTools_CooldownMixin:SetFrame(self, {unit=self.unit})
-        texture= texture or (Is_InEditMode(self) and 4622499) or 0
+        texture= texture or (Is_InEditMode() and 4622499) or 0
         self.texture:SetTexture(texture)
         self.texture:SetShown(texture>0)
     end
@@ -234,38 +236,21 @@ end
 
 
 
---队伍, 标记, 成员派系
-local function Create_raidTargetFrame(frame)
-    local raidTargetFrame= CreateFrame("Frame", nil, frame)
-
-    --[[raidTargetFrame.texture= raidTargetFrame:CreateTexture()
-    raidTargetFrame.texture:SetSize(12,12)
-    raidTargetFrame.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-    raidTargetFrame.texture:SetPoint('RIGHT', frame.PartyMemberOverlay.RoleIcon, 'LEFT')
-
---标记 TargetFrame.lua
-    function raidTargetFrame:set_mark()
-        local index
-        if Is_InEditMode(self) then
-            index=1
-        else
-            index = GetRaidTargetIndex(self.unit)
-        end
-        SetRaidTargetIconTexture(self.texture, index)
-    end]]
-
 --成员派系
-    raidTargetFrame.faction=raidTargetFrame:CreateTexture(nil, 'ARTWORK')
-    raidTargetFrame.faction:SetSize(14,14)
-    raidTargetFrame.faction:SetPoint('TOPLEFT', frame.Portrait)
---成员派系
-    function raidTargetFrame:set_faction()
+local function Create_frame(partyFrame)
+    local frame= CreateFrame("Frame", nil, partyFrame)
+
+    frame.faction=frame:CreateTexture('WoWTools'..partyFrame.unit..'FactionTexture', 'ARTWORK')
+    frame.faction:SetSize(14,14)
+    frame.faction:SetPoint('TOPLEFT', partyFrame.Portrait)
+
+    function frame:settings()
         local atlas
-        if Is_InEditMode(self) then
+        if Is_InEditMode() then
             atlas= WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction]
         else
-            local faction= UnitFactionGroup(self.unit)
-            if faction and faction~= WoWTools_DataMixin.Player.Faction then
+            local faction= UnitFactionGroup(self:GetParent().unit)
+            if faction~= WoWTools_DataMixin.Player.Faction then
                 atlas= WoWTools_DataMixin.Icon[faction]
             end
         end
@@ -276,36 +261,23 @@ local function Create_raidTargetFrame(frame)
         end
     end
 
-    function raidTargetFrame:Init()
-        self.unit= self:GetParent():GetUnit()
-        self:RegisterUnitEvent('UNIT_FACTION', self.unit)
-        self:RegisterEvent('RAID_TARGET_UPDATE')
-        self:set_faction()
-        --self:set_mark()
+    function frame:set_event()
+        self:RegisterUnitEvent('UNIT_FACTION', self:GetParent().unit)
+        self:settings()
     end
 
-    raidTargetFrame:SetScript('OnEvent', function(self, event)
-        --if event=='RAID_TARGET_UPDATE' then
-            --self:set_mark()
-        if event=='UNIT_FACTION' then
-            self:set_faction()--成员派系
-        end
-    end)
+    frame:SetScript('OnEvent', frame.settings)
 
-    raidTargetFrame:SetScript('OnHide', function(self)
-        self:UnregisterAllEvents()
+    frame:SetScript('OnHide', function(self)
+        self:UnregisterEvent('UNIT_FACTION')
         self.faction:SetTexture(0)
-        self.unit=nil
     end)
 
-    if frame:IsShown() then
-        raidTargetFrame:Init()
+    frame:SetScript('OnShow', frame.set_event)
+
+    if partyFrame:IsVisible() then
+        frame:set_event()
     end
-
-    raidTargetFrame:SetScript('OnShow', function(self)
-        self:Init()
-    end)
-
 end
 
 
@@ -364,7 +336,7 @@ local function Create_combatFrame(frame)
         if self.elapsed>0.3 then
             self.elapsed=0
             self.texture:SetShown(
-                UnitAffectingCombat(self.unit) or Is_InEditMode(self)
+                UnitAffectingCombat(self.unit) or Is_InEditMode()
             )
         end
     end)
@@ -449,7 +421,7 @@ local function Create_positionFrame(frame)
 
     function Frame:set_shown()
         local isInInstance= IsInInstance()
-        local isInEditMode= Is_InEditMode(self)
+        local isInEditMode= Is_InEditMode()
 
         self.map:SetShown(isInEditMode or not isInInstance)
         self.xy:SetShown(isInEditMode or isInInstance)
@@ -513,7 +485,7 @@ end
 --队友，死亡
 local function Create_deadFrame(frame)
 
-    local deadFrame= CreateFrame('Frame', nil, frame)
+    local deadFrame= CreateFrame('Frame', 'WoWTools'..frame.unit..'Frame', frame)
     deadFrame:SetPoint("CENTER", frame.Portrait)
     deadFrame:SetFrameLevel(frame:GetFrameLevel()+1)
     deadFrame:SetSize(37,37)
@@ -560,8 +532,8 @@ local function Create_deadFrame(frame)
 --死亡，次数
         self.Text:SetText(self.dead)
 --编辑模式
-        if Is_InEditMode(self) then
-            self.texture:SetAtlas('QuestLegendaryTurnin')
+        if Is_InEditMode() then
+            self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
             return
 --没用，连线
         elseif not UnitIsConnected(self.unit) then
@@ -674,7 +646,7 @@ local function Init_CreateButton(frame)
 
 
     Create_castFrame(frame)--队友，施法
-    Create_raidTargetFrame(frame)--队伍, 标记, 成员派系
+    Create_frame(frame)--队伍, 标记, 成员派系
     Create_combatFrame(frame)--战斗指示
     Create_positionFrame(frame)--队友位置
     Create_deadFrame(frame)--队友，死亡

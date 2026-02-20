@@ -248,6 +248,9 @@ function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
     local enable= WoWTools_FrameMixin:IsLocked(frame)~=true
 
     local value= GetValue() or 'MEDIUM'
+    value= value=='MEDIUM' and '|cnGREEN_FONT_COLOR:M|r'
+        or (value=='FULLSCREEN_DIALOG' and 'FD')
+        or WoWTools_TextMixin:sub(value, 1)
 
     local sub=root:CreateButton(
         '|A:Garr_SwapIcon:0:0:|a'
@@ -255,14 +258,12 @@ function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
         ..(WoWTools_DataMixin.onlyChinese and '框架层' or 'Strata'),
     function()
         return MenuResponse.Refresh
-    end--[[, {
-        --rightText= value=='FULLSCREEN_DIALOG' and 'FD' or WoWTools_TextMixin:sub(value, 1),
-        name= value
-    }]])
+    end, {rightText=value,})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(GetValue() or 'MEDIUM')
     end)
-    --self:SetRightText(sub)
+    self:SetRightText(sub)
+    
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
         local sub2= sub:CreateCheckbox(

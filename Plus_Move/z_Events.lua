@@ -617,7 +617,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ActionBar()
 end
 
 function WoWTools_MoveMixin.Events:Blizzard_UnitFrame()
-    self:Setup(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
+    --self:Setup(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
 
 --其它
     self:Setup(OpacityFrame)

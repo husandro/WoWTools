@@ -435,7 +435,6 @@ local function Get_Info(tab)
     elseif C_Item.IsDecorItem(itemLink) then
         local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
         if entryInfo then
-
             if entryInfo.canCustomize then
                 topLeftText= '|A:housing-dyable-palette-icon:0:0|a'
             end

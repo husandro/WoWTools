@@ -68,6 +68,10 @@ end
 
 
 local function Init()
+    if not PlayerIsTimerunning() and C_Housing.IsHousingServiceEnabled() then
+        WoWTools_LoadUIMixin:Housing()
+    end
+
     for name, func in pairs(WoWTools_ItemMixin.Events) do
         if C_AddOns.IsAddOnLoaded(name) then
             if not Save().no[name] then
@@ -89,6 +93,9 @@ local function Init()
         end
     end
     WoWTools_ItemMixin.Frames={}
+
+
+
 
     Init=function()end
 end
@@ -155,6 +162,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 do
                     Init_Panel()
                 end
+
                 Init()
                 --self:RegisterEvent('PLAYER_ENTERING_WORLD')
             end

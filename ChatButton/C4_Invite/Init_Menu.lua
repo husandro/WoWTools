@@ -327,6 +327,15 @@ local function Init_Menu(self, root)
                 WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
             )
     )
+    sub:CreateTitle(
+        format('    %s+%s%s=%s|r',
+                Save().focusKey or '',
+                WoWTools_DataMixin.Icon.left,
+                WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER,
+                WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS
+            )
+    )
+
 
     sub:CreateDivider()
     sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '密语/跟随' or (SLASH_TEXTTOSPEECH_WHISPER..'/'..FOLLOW),function()
