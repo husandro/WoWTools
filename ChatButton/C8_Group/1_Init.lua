@@ -763,7 +763,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsPlayerDate['GroupMouseUpText']= WoWToolsPlayerDate['GroupMouseUpText']
                 or (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
-                or (WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢{rt1}')
+                or (WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢  {rt1}')
                 or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,SUMMON, COMBATLOG_FILTER_STRING_ME)
 
             WoWToolsPlayerDate['GroupMouseDownText']= WoWToolsPlayerDate['GroupMouseDownText']
