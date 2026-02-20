@@ -1472,8 +1472,8 @@ function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
         end
     end
 
-    hooksecurefunc('CompactRaidFrameManager_UpdateOptionsFlowContainer', function()
 --分隔线
+    hooksecurefunc('CompactRaidFrameManager_UpdateOptionsFlowContainer', function()
         if CompactRaidFrameManager.dividerVerticalPool then
             CompactRaidFrameManager.dividerVerticalPool:ReleaseAll()
         end

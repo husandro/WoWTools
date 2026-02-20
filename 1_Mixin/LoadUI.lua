@@ -552,7 +552,7 @@ function WoWTools_LoadUIMixin:OpenCompanion(companionID)
     ShowUIPanel(DelvesCompanionConfigurationFrame)
 end
 
-function WoWTools_LoadUIMixin:Housing()
+--[[function WoWTools_LoadUIMixin:Housing()
     if not HousingDashboardFrame then
         do
             HousingFramesUtil.ToggleHousingDashboard()
@@ -561,4 +561,4 @@ function WoWTools_LoadUIMixin:Housing()
             HousingFramesUtil.ToggleHousingDashboard()
         end
     end
-end
+end]]
