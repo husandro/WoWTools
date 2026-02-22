@@ -5,7 +5,7 @@ WoWTools_TimeMixin={}
 
 
 function WoWTools_TimeMixin:SecondsToClock(seconds, displayZeroHours, notDisplaySeconds)--TimeUtil.lua
-    if seconds and seconds>=0 then
+    if canaccessvalue(seconds) and seconds and seconds>=0 then
         local units = ConvertSecondsToUnits(seconds)
         if units.hours > 0 or displayZeroHours then
             if not notDisplaySeconds then
@@ -26,7 +26,7 @@ end
 
 
 function WoWTools_TimeMixin:Info(value, chat, time, expirationTime)
-    if value and value>0 then
+    if canaccessvalue(value) and value and value>0 then
         time= time or GetTime()
         while time<value do
             time= time+86400
@@ -34,7 +34,7 @@ function WoWTools_TimeMixin:Info(value, chat, time, expirationTime)
         time= time - value
         time= time<0 and 0 or time
         if chat then
-            return WoWTools_TimeMixin:SecondsToClock(time), time
+            return self:SecondsToClock(time), time
         else
             return SecondsToTime(time), time
         end
@@ -47,13 +47,13 @@ function WoWTools_TimeMixin:Info(value, chat, time, expirationTime)
         time= expirationTime-time
         time= time<0 and 0 or time
         if chat then
-            return WoWTools_TimeMixin:SecondsToClock(time), time
+            return self:SecondsToClock(time), time
         else
             return SecondsToTime(time), time
         end
     else
         if chat then
-            return WoWTools_TimeMixin:SecondsToClock(0), 0
+            return self:SecondsToClock(0), 0
         else
             return SecondsToTime(0), 0
         end
@@ -65,7 +65,7 @@ end
 -- (%d+)%-(%d+)%-(%d+) (%d+):(%d+):(%d+)
 function WoWTools_TimeMixin:GetUpdate_Seconds(upData, curData)
     local seconds=0
-    if upData then
+    if canaccessvalue(upData) and canaccessvalue(curData) and upData then
         curData = curData or date('%Y-%m-%d %H:%M:%S')
         local y, m, d, h, min, s = upData:match('(%d+)%-(%d+)%-(%d+) (%d+):(%d+):(%d+)')
         local y2, m2, d2, h2, min2, s2= curData:match('(%d+)%-(%d+)%-(%d+) (%d+):(%d+):(%d+)')
@@ -81,10 +81,10 @@ end
 
 
 function WoWTools_TimeMixin:SecondsToFullTime(seconds, upData, curData)
-    if not seconds then
+    if not canaccessvalue(seconds) or not seconds then
         return ''
     end
-    
+
     seconds= seconds+self:GetUpdate_Seconds(upData, curData)
 
     local years = math.floor(seconds / (365*24*60*60))--31536000

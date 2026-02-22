@@ -155,7 +155,7 @@ end
 --就绪
 function WoWTools_MoveMixin.Frames:ReadyCheckFrame()
     WoWTools_DataMixin:Hook('ShowReadyCheck', function(initiator)
-        if initiator==UnitName('player') then
+        if canaccessvalue(initiator) and initiator==UnitName('player') then
             ReadyCheckFrame:SetShown(false)
         end
     end)

@@ -18,7 +18,7 @@ end
 
 --接受, 召唤
 local function Init()
-    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
+    WoWTools_DataMixin:Hook(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate", function(self)
         if IsModifierKeyDown() or self.isCancelledAuto or not Save().Summon then
             if not self.isCancelledAuto then
                 WoWTools_CooldownMixin:Setup(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
@@ -87,7 +87,9 @@ local function Init()
             WoWTools_DataMixin.onlyChinese and '召唤' or SUMMON,
             name,
             '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:',
-            C_SummonInfo.GetSummonConfirmAreaName()
+            WoWTools_TextMixin:CN(C_SummonInfo.GetSummonConfirmAreaName()),
+            WoWTools_TextMixin:CN(C_SummonInfo.GetSummonReason ()),
+            WoWTools_TimeMixin:SecondsToClock(C_SummonInfo.GetSummonConfirmTimeLeft() or 0)
         )
     end)
 
