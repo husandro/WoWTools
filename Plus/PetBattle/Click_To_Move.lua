@@ -163,6 +163,13 @@ end
 
 
 local function Init_CVar_Menu(self, root, name, col)
+
+    local function get_name(value)
+        return (Save()['lock_'..name]==value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
+            ..(Lock_Is_CVar(name) and '|cff828282' or col)
+            ..CameraTabs[value][1]
+    end
+
     local sub
     for _, value in pairs({'1', '4', '2', '0'}) do
         sub= root:CreateRadio(
@@ -173,10 +180,12 @@ local function Init_CVar_Menu(self, root, name, col)
         function(data)
             return C_CVar.GetCVar(data.name)==data.value
 
-        end, function(data)
-            if not PlayerIsInCombat() and not Lock_Is_CVar(name) then
+        end, function(data, desc, menu)
+            if not PlayerIsInCombat() then--and not Lock_Is_CVar(name) then
                 if C_CVar.GetCVar(data.name)~=data.value then
+                    Save()['lock_'..data.name]= nil
                     C_CVar.SetCVar(data.name, data.value)
+                    --menu:ReinitializeAll()
                 end
             end
             return MenuResponse.Refresh
@@ -193,7 +202,7 @@ local function Init_CVar_Menu(self, root, name, col)
             tooltip:AddLine(' ')
             tooltip:AddLine(CameraTabs[desc.data.value][2], nil, nil, nil, true)
         end)
-        sub:AddInitializer(function(btn, desc)
+        sub:AddInitializer(function(btn, desc, menu)
             btn:RegisterEvent('CVAR_UPDATE')
             btn:SetScript('OnEvent', function(b, _, cvarName)
                 if cvarName==desc.data.name and b.leftTexture2 then
@@ -202,8 +211,10 @@ local function Init_CVar_Menu(self, root, name, col)
                     )
                 end
             end)
-            btn:SetScript('OnHide', function(b)
-                b:UnregisterEvent('CVAR_UPDATE')
+            btn:SetScript('OnHide', function(s)
+                s:UnregisterEvent('CVAR_UPDATE')
+                s:SetScript('OnEvent', nil)
+                s:SetScript('OnHide', nil)
             end)
         end)
 
@@ -222,6 +233,8 @@ local function Init_CVar_Menu(self, root, name, col)
             Lock_CVar(self, data.name)
             return MenuResponse.Refresh
         end, {value=value, name=name})
+
+
     end
 end
 
@@ -248,7 +261,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2
-    local col= PlayerIsInCombat() and '|cff828282' or ''
+    local col= PlayerIsInCombat() and '|cnWARNING_FONT_COLOR:' or ''
 
 --点击移动
     sub=root:CreateCheckbox(
@@ -257,11 +270,11 @@ local function Init_Menu(self, root)
     function()
         return C_CVar.GetCVarBool("autoInteract")
     end, function()
-        if Get_Lock_ClickToMove_Value() then--锁定
+        --[[if Get_Lock_ClickToMove_Value() then--锁定
             Lock_ClickToMove_CVar(self)
-        else
+        else]]
             self:set_clickmove()
-        end
+        --end
     end)
 
     sub:SetTooltip(function(tooltip)
@@ -423,7 +436,7 @@ local function Init_Button()
             else
                 self:SetPoint('CENTER', UIParent, 100, 100)
             end
-            
+
             self:SetMovable(true)
         end
 
@@ -465,6 +478,8 @@ local function Init_Button()
             WoWTools_DataMixin.Icon.left
         )
 
+        tooltip:AddLine(' ')
+
         tooltip:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
 
@@ -472,7 +487,6 @@ local function Init_Button()
         )
 
         if not Save().PlayerFrame then
-            tooltip:AddLine(' ')
             tooltip:AddDoubleLine(
                 WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE,
                 'Alt+'..WoWTools_DataMixin.Icon.right
@@ -508,6 +522,8 @@ local function Init_Button()
 
     function btn:set_clickmove()
         if not PlayerIsInCombat() then
+            Save().lock_autoInteract= nil
+            Save().AutoClickToMove= nil
             C_CVar.SetCVar("autoInteract", C_CVar.GetCVarBool("autoInteract") and '0' or '1')
         end
     end
