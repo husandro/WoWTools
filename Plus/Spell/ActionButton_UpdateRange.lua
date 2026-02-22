@@ -5,18 +5,28 @@ local function Init()
     end
 
     WoWTools_DataMixin:Hook('ActionButton_UpdateRangeIndicator', function(frame, checksRange, inRange)
-        if not canaccessvalue(checksRange) then
+
+        if not canaccessvalue(checksRange)
+            or not canaccessvalue(inRange)
+            or not canaccessvalue(frame.UpdateUsable)
+        then
             return
         end
 
         if not frame.setHooksecurefunc and frame.UpdateUsable then
             WoWTools_DataMixin:Hook(frame, 'UpdateUsable', function(self)
-                if C_ActionBar.IsUsableAction(self.action) and C_ActionBar.HasRangeRequirements(self.action) and C_ActionBar.IsActionInRange(self.action)==false then
+                local isUsable= C_ActionBar.IsUsableAction(self.action)
+                if canaccessvalue(isUsable) and isUsable and C_ActionBar.HasRangeRequirements(self.action) and C_ActionBar.IsActionInRange(self.action)==false then
                     self.icon:SetVertexColor(1,0,0)
                 end
             end)
             frame.setHooksecurefunc= true
         end
+
+    local hotKey= frame.HotKey:GetText()
+       if not canaccessvalue(hotKey) then
+            return
+       end
 
         if ( frame.HotKey:GetText() == RANGE_INDICATOR ) then
             if ( checksRange ) then
