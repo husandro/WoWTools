@@ -11,25 +11,12 @@ local CameraTabs={}
 local CVarNameTabs={}
 
 
-local function Init_Camera_Tabs()
-    CameraTabs={
-        ['1']={WoWTools_DataMixin.onlyChinese and '移动时只调整水平角度' or CAMERA_SMART, WoWTools_DataMixin.onlyChinese and '将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。（只调整水平角度）' or OPTION_TOOLTIP_CAMERA_SMART},
-        ['4']={WoWTools_DataMixin.onlyChinese and '仅在移动时' or CAMERA_SMARTER, WoWTools_DataMixin.onlyChinese and '将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。' or OPTION_TOOLTIP_CAMERA_SMARTER},
-        ['2']={WoWTools_DataMixin.onlyChinese and '总是调整视角' or CAMERA_ALWAYS, WoWTools_DataMixin.onlyChinese and '设定视角，使视角总是处于你的角色后方。' or OPTION_TOOLTIP_CAMERA_ALWAYS},
-        ['0']={WoWTools_DataMixin.onlyChinese and '从不调整镜头' or CAMERA_NEVER, WoWTools_DataMixin.onlyChinese and '设定视角，使其固定在一点，永远不自动调节。' or OPTION_TOOLTIP_CAMERA_NEVER},
-    }
-    CVarNameTabs={
-        ['autoInteract']= WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
-        ['cameraSmoothStyle']= WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE,
-        ['cameraSmoothTrackingStyle']= WoWTools_DataMixin.onlyChinese and '点击移动镜头' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, CAMERA_LABEL)
-    }
-end
 
-local function Lock_Is_CVar(name)
+--[[local function Lock_Is_CVar(name)
     if Save()['lock_'..name] then
         return '|A:AdventureMapIcon-Lock:0:0|a'
     end
-end
+end]]
 
 
 local function Lock_CVar(self, name)
@@ -163,29 +150,22 @@ end
 
 
 local function Init_CVar_Menu(self, root, name, col)
-
-    local function get_name(value)
-        return (Save()['lock_'..name]==value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
-            ..(Lock_Is_CVar(name) and '|cff828282' or col)
-            ..CameraTabs[value][1]
-    end
-
     local sub
     for _, value in pairs({'1', '4', '2', '0'}) do
         sub= root:CreateRadio(
-            (Save()['lock_'..name]==value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
-            ..(Lock_Is_CVar(name) and '|cff828282' or col)
+            --(Save()['lock_'..name]==value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
+            --..(Lock_Is_CVar(name) and '|cff828282' or col)
+            col
             ..CameraTabs[value][1],
 
         function(data)
             return C_CVar.GetCVar(data.name)==data.value
 
-        end, function(data, desc, menu)
+        end, function(data)
             if not PlayerIsInCombat() then--and not Lock_Is_CVar(name) then
                 if C_CVar.GetCVar(data.name)~=data.value then
                     Save()['lock_'..data.name]= nil
                     C_CVar.SetCVar(data.name, data.value)
-                    --menu:ReinitializeAll()
                 end
             end
             return MenuResponse.Refresh
@@ -202,7 +182,7 @@ local function Init_CVar_Menu(self, root, name, col)
             tooltip:AddLine(' ')
             tooltip:AddLine(CameraTabs[desc.data.value][2], nil, nil, nil, true)
         end)
-        sub:AddInitializer(function(btn, desc, menu)
+        sub:AddInitializer(function(btn, desc)
             btn:RegisterEvent('CVAR_UPDATE')
             btn:SetScript('OnEvent', function(b, _, cvarName)
                 if cvarName==desc.data.name and b.leftTexture2 then
@@ -211,9 +191,24 @@ local function Init_CVar_Menu(self, root, name, col)
                     )
                 end
             end)
+            
+            local rightTexture = btn:AttachTexture()
+            rightTexture:SetSize(18, 18)
+            rightTexture:SetPoint("RIGHT", -18, 0)
+            rightTexture:SetAtlas('AdventureMapIcon-Lock')
+            local time=0.3
+            btn:SetScript('OnUpdate', function(_, elapsed)
+                time= time+ elapsed
+                if time>0.3 then
+                    rightTexture:SetShown(Save()['lock_'..desc.data.name]==value)
+                    time= 0
+                end
+            end)
+
             btn:SetScript('OnHide', function(s)
                 s:UnregisterEvent('CVAR_UPDATE')
                 s:SetScript('OnEvent', nil)
+                s:SetScript('OnUpdate', nil)
                 s:SetScript('OnHide', nil)
             end)
         end)
@@ -265,7 +260,7 @@ local function Init_Menu(self, root)
 
 --点击移动
     sub=root:CreateCheckbox(
-        (Get_Lock_ClickToMove_Value() and '|A:AdventureMapIcon-Lock:0:0|a|cff828282' or col)
+        col
         ..CVarNameTabs['autoInteract'],
     function()
         return C_CVar.GetCVarBool("autoInteract")
@@ -276,6 +271,26 @@ local function Init_Menu(self, root)
             self:set_clickmove()
         --end
     end)
+
+    sub:AddInitializer(function(btn)
+        local rightTexture = btn:AttachTexture()
+        rightTexture:SetSize(18, 18)
+        rightTexture:SetPoint("RIGHT", -18, 0)
+        rightTexture:SetAtlas('AdventureMapIcon-Lock')
+        local time=0.3
+        btn:SetScript('OnUpdate', function(_, elapsed)
+            time= time+ elapsed
+            if time>0.3 then
+                rightTexture:SetShown(Get_Lock_ClickToMove_Value())
+                time= 0
+            end
+        end)
+        btn:SetScript('OnHide', function(s)
+            s:SetScript('OnUpdate', nil)
+            s:SetScript('OnHide', nil)
+        end)
+    end)
+
 
     sub:SetTooltip(function(tooltip)
         if Get_Lock_ClickToMove_Value() then
@@ -391,7 +406,17 @@ local function Init_Button()
         return
     end
 
-    Init_Camera_Tabs()
+    CameraTabs={
+        ['1']={WoWTools_DataMixin.onlyChinese and '移动时只调整水平角度' or CAMERA_SMART, WoWTools_DataMixin.onlyChinese and '将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。（只调整水平角度）' or OPTION_TOOLTIP_CAMERA_SMART},
+        ['4']={WoWTools_DataMixin.onlyChinese and '仅在移动时' or CAMERA_SMARTER, WoWTools_DataMixin.onlyChinese and '将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。' or OPTION_TOOLTIP_CAMERA_SMARTER},
+        ['2']={WoWTools_DataMixin.onlyChinese and '总是调整视角' or CAMERA_ALWAYS, WoWTools_DataMixin.onlyChinese and '设定视角，使视角总是处于你的角色后方。' or OPTION_TOOLTIP_CAMERA_ALWAYS},
+        ['0']={WoWTools_DataMixin.onlyChinese and '从不调整镜头' or CAMERA_NEVER, WoWTools_DataMixin.onlyChinese and '设定视角，使其固定在一点，永远不自动调节。' or OPTION_TOOLTIP_CAMERA_NEVER},
+    }
+    CVarNameTabs={
+        ['autoInteract']= WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
+        ['cameraSmoothStyle']= WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE,
+        ['cameraSmoothTrackingStyle']= WoWTools_DataMixin.onlyChinese and '点击移动镜头' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, CAMERA_LABEL)
+    }
 
     local btn= CreateFrame('DropdownButton', 'WoWToolsClickToMoveButton', PlayerFrame, 'WoWToolsMenu2Template')
     btn.border:SetAlpha(0.3)
