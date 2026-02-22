@@ -46,7 +46,7 @@ end
 
 --目标的目标
 local function Create_potFrame(frame)
-    local unit= frame:GetUnit()
+    local unit= frame.unit or frame:GetUnit()
 
     frame.ToTButton= WoWTools_ButtonMixin:Cbtn(frame, {
         isSecure=true,
@@ -54,7 +54,7 @@ local function Create_potFrame(frame)
         isType2=true,
         notBorder=true,
         notTexture=true,
-        name= 'WoWToolsParty'..frame.unit..'ToTButton',
+        name= 'WoWTools'..unit..'ToTButton',
     })
 
     frame.ToTButton.unit= unit
@@ -67,12 +67,12 @@ local function Create_potFrame(frame)
     frame.ToTButton:SetScript('OnLeave', GameTooltip_Hide)
 
     frame.ToTButton:SetScript('OnEnter', function(self)
-        if not WoWTools_UnitMixin:UnitExists(self.unit) then
+        --[[if not WoWTools_UnitMixin:UnitExists(self.target) then
             return
-        end
+        end]]
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:SetUnit(self.unit)
+        GameTooltip:SetUnit(self.target)
         GameTooltip:Show()
     end)
 
@@ -82,31 +82,25 @@ local function Create_potFrame(frame)
     frame.ToTButton.Portrait:SetAllPoints()
 
 
-    --[[btn.frame.healthLable= WoWTools_LabelMixin:Create(btn.frame, {size=14})
-    btn.frame.healthLable:SetPoint('BOTTOMRIGHT')
-    btn.frame.healthLable:SetTextColor(1,1,1)
+    --[[frame.ToTButton.healthLable= WoWTools_LabelMixin:Create(frame.ToTButton, {size=14})
+    frame.ToTButton.healthLable:SetPoint('BOTTOMRIGHT')
+    frame.ToTButton.healthLable:SetTextColor(1,1,1)
 
-    btn.frame.class= btn.frame:CreateTexture(nil, "ARTWORK")
-    btn.frame.class:SetSize(14,14)
-    btn.frame.class:SetPoint('TOPRIGHT')]]
+    frame.ToTButton.class= frame.ToTButton:CreateTexture(nil, "ARTWORK")
+    frame.ToTButton.class:SetSize(14,14)
+    frame.ToTButton.class:SetPoint('TOPRIGHT')
 
  --目标， 生命条
-    --[[btn.frame:SetScript('OnUpdate', function(self, elapsed)
+    frame.ToTButton:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) +elapsed
-        if self.elapsed>0.3 and canaccessvalue(self.tt) then
+        if self.elapsed>0.3 then
             self.elapsed=0
-            local cur= UnitHealth(self.tt)
-            local max= UnitHealthMax(self.tt) or 0
-            if canaccessvalue(max) and canaccessvalue(cur) and cur and max>0 then
-                self.healthLable:SetFormattedText('%i', cur/max*100)
-            else
-                self.healthLable:SetText('')
-            end
+            self.healthLable:SetFormattedText('%i', UnitHealth(self.target)/UnitHealthMax(self.target)*100)
         end
     end)]]
 
     function frame.ToTButton:settings()
-        SetPortraitTexture(self.Portrait, self.target, true)--图像
+        SetPortraitTexture(self.Portrait, self.target)--图像
     end
 
     frame.ToTButton:SetScript('OnEvent', frame.ToTButton.settings)
@@ -115,7 +109,7 @@ local function Create_potFrame(frame)
     frame.ToTButton:RegisterUnitEvent('UNIT_TARGETABLE_CHANGED', unit)
     frame.ToTButton:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit)
     frame.ToTButton:SetScript('OnHide', function(self)
-        SetPortraitTexture(self.Portrait, self.target, true)--图像
+        SetPortraitTexture(self.Portrait, self.target)--图像
     end)
 end
 

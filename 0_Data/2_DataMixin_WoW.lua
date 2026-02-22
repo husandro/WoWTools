@@ -437,6 +437,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     WoWToolsPlayerDate= WoWToolsPlayerDate or {}
 
     WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
+
     WoWTools_DataMixin.Player.GUID= UnitGUID('player')
 
     local day= date('%x')--日期
@@ -568,6 +569,9 @@ end)
 
 
 EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(owner)
+    if not WoWTools_DataMixin.Icon.Player then
+        WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
+    end
 
     if  WoWTools_DataMixin.Player.IsMaxLevel then
         Get_Info_Challenge()--挑战

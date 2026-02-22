@@ -63,7 +63,7 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     end
 
     if source~='player' and tooltip.Portrait then
-        SetPortraitTexture(tooltip.Portrait, source)
+        SetPortraitTexture(tooltip.Portrait, source, true)
     end
 
     local text= source=='player' and (WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)

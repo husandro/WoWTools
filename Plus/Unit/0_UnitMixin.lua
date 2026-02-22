@@ -37,11 +37,12 @@ function WoWTools_UnitMixin:UnitIsUnit(unit, unit2)
 end
 
 function WoWTools_UnitMixin:UnitGUID(unit, name)
-    if unit then
+    if canaccessvalue(unit) and unit then
         local guid= UnitGUID(unit)
         if canaccessvalue(guid) then
             return guid
         end
+
     elseif canaccessvalue(name) and name then
         local info= C_FriendList.GetFriendInfo(name:gsub('%-'..WoWTools_DataMixin.Player.Realm, ''))--好友
         if info and canaccesstable(info) and canaccessvalue(info.guid) then
@@ -247,16 +248,18 @@ elseif unit_type == "Player" then
 end
 NPC ID, 注意是：字符 Creature-0-1465-0-2105-448-000043F59F
 ]]
-function WoWTools_UnitMixin:GetNpcID(unit, guid)
-    unit= unit or 'npc'
-    if not canaccessvalue(guid) then
-        return
-    end
 
-    guid= self:UnitGUID(unit)
+
+function WoWTools_UnitMixin:GetNpcID(unit, guid)
+    guid= canaccessvalue(guid) and guid
+        or self:UnitGUID(unit)
+        or self:UnitGUID('npc')
+
     if guid then
-        local zone, npc = select(5, strsplit("-", guid))
-        return npc, zone
+        local unitType, _, _, _, zoneID, npcID = strsplit("-", guid)
+        if unitType=='Creature' or unitType=='Vehicle' then
+            return zoneID, npcID
+        end
     end
 end
 
@@ -459,7 +462,9 @@ function WoWTools_UnitMixin:GetClassIcon(unit, guid, classFilename, tab)
 end
 
 
---玩家种族图标 
+--玩家种族图标
+
+
 function WoWTools_UnitMixin:GetRaceIcon(unit, guid, race, tab)
     tab= tab or {}
 
@@ -478,19 +483,27 @@ function WoWTools_UnitMixin:GetRaceIcon(unit, guid, race, tab)
     end
 
     if canaccessvalue(race) and race then
-        sex= (not canaccessvalue(sex) or sex~=3) and 'male' or 'female'
+        sex= (not canaccessvalue(sex) or sex==Enum.UnitSex.Female) and 'female' or 'male'
 
         if race=='Scourge' then
             race='Undead'
+
         elseif race=='HighmountainTauren' then
             race='highmountain'
+
         elseif race=='ZandalariTroll' then
             race='zandalari'
+
         elseif race=='LightforgedDraenei' then
             race='lightforged'
+
         elseif race=='Dracthyr' then
             race='dracthyrvisage'
+
+        elseif race=='EarthenDwarf' then
+            race='earthen'
         end
+
         if reAtlas then
             return 'raceicon128-'..race..'-'..sex
         else

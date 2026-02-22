@@ -49,6 +49,7 @@ end]]
 function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
 
     local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
+
     if not canaccessvalue(unit) or not unit then
         return
     end

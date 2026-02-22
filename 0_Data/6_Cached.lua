@@ -192,8 +192,13 @@ end
 
 
 
-
-
+--位面, 设置，清除
+local function Set_New_Layer(self, unit)
+    WoWTools_DataMixin.Player.Layer= WoWTools_UnitMixin:GetNpcID(unit) or WoWTools_UnitMixin:GetNpcID('vehicle')--位面, 清除
+    if not WoWTools_DataMixin.Player.Layer then
+        self:RegisterEvent('NAME_PLATE_UNIT_ADDED')
+    end
+end
 
 
 
@@ -221,16 +226,15 @@ FrameUtil.RegisterFrameForEvents(frame, {
 
 
 
-frame:SetScript('OnEvent', function(_, event, arg1)
+frame:SetScript('OnEvent', function(self, event, arg1)
     if event=='PLAYER_ENTERING_WORLD' then
         GetGroupGuidDate()
         WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
-
-        WoWTools_DataMixin.Player.Layer=nil--位面, 清除
+        Set_New_Layer(self, 'party1')--位面, 设置，清除
         Get_WoW_GUID_Info()--战网，好友GUID
 
     elseif event=='ZONE_CHANGED_NEW_AREA' then
-        WoWTools_DataMixin.Player.Layer=nil--位面, 清除
+        Set_New_Layer(self, 'party1')--位面, 设置，清除
 
     elseif event=='GROUP_LEFT' or event=='GROUP_ROSTER_UPDATE' then
         GetGroupGuidDate()
@@ -268,7 +272,7 @@ frame:SetScript('OnEvent', function(_, event, arg1)
 
     elseif event=='INSPECT_READY' then--取得玩家信息
         local guid= arg1
-        
+
         local unit= canaccessvalue(guid) and guid and UnitTokenFromGUID(guid)
         if unit then
             Cached_ItemLevel(unit, guid)
@@ -280,6 +284,12 @@ frame:SetScript('OnEvent', function(_, event, arg1)
             end
         end
 
-
+    elseif event=='NAME_PLATE_UNIT_ADDED' then--位面, 设置，清除
+        if canaccessvalue(arg1) then
+            Set_New_Layer(self, arg1)
+        end
+        if WoWTools_DataMixin.Player.Layer then
+            self:UnregisterEvent(event)
+        end
     end
 end)

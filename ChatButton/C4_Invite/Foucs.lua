@@ -122,8 +122,8 @@ local function Init()
         if PartyFrame and PartyFrame[member] then
             table.insert(tab, PartyFrame[member])
 --UnitFrame.lua
-            if PartyFrame[member].potFrame then
-                table.insert(tab, PartyFrame[member].potFrame)
+            if PartyFrame[member].ToTButton then
+                table.insert(tab, PartyFrame[member].ToTButton)
             end
         end
         table.insert(tab, _G['CompactPartyFrameMember'..i])

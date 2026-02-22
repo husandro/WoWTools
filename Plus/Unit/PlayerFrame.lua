@@ -343,6 +343,7 @@ end]]
     RaidButton.text= RaidButton:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')-- WoWTools_LabelMixin:Create(InsFrame, {color=true})
     RaidButton.text:SetPoint('CENTER')
     RaidButton.text:SetJustifyH('CENTER')
+    RaidButton.text:SetFontHeight(10)
     RaidButton.texture= RaidButton:CreateTexture(nil, 'BORDER')
     RaidButton.texture:SetAllPoints()
     RaidButton.texture:SetAtlas('UI-HUD-Minimap-GuildBanner-Mythic-Large')

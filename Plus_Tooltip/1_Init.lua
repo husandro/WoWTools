@@ -312,7 +312,7 @@ local function Init_Panel()
     WoWTools_PanelMixin:Header(Layout, 'CVar')
 
     root= WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
+        name= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOCK, SETTINGS)),
         tooltip= function() return WoWTools_TooltipMixin:Set_CVar(nil, true, true) end,
         GetValue= function() return Save().setCVar end,
         category= WoWTools_TooltipMixin.Category,

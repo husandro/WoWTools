@@ -272,7 +272,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 --位面ID, 战争模式
                     lineLeft:SetText(
                         WoWTools_DataMixin.Player.Layer
-                        and WoWTools_DataMixin.Language.layer..WoWTools_DataMixin.Icon.icon2..WoWTools_DataMixin.Player.Layer
+                        and WoWTools_DataMixin.Language.layer..WoWTools_DataMixin.Player.Layer
                         or ' '
                     )
                     local lineRight= _G[tooltipName..'TextRight'..i]

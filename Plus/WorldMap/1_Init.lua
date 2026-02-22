@@ -1,44 +1,6 @@
-local P_Save={
-    ShowMapID= true,--地图ID
-    --MapIDScale=1,
-
-    HideTitle=WoWTools_DataMixin.Player.husandro,--隐藏，标题
-
-    ShowMapXY= true,--地图坐标
-    --MapXYScale=1,
-    --MapXY_W
-    --MapXY_X=72,
-    --MapXY_Y=-2,
-
-    --ShowPlayerXY=false,--实时玩家当前坐标
-    --PlayerXYPoint={},
-    --PlayerXY_Scale=1,
-    --PlayerXY_Strata
-    --PlayerXY_Text_toLeft=true,
-    --PlayerXY_Size=23,
-    --PlayerXY_Elapsed=0.3,--LAG_TOLERANCE = "延迟容限";
-    --PlayerXY_BGAlpha=0.5
-    --PlayerXY_TextY=0
-
-    ShowAreaPOI_Name=true,
-    ShowDungeon_Name=true,
-    ShowWorldQues_Name=true,
-    --ShowFlightMap_Name=true,
-    --[[Abandon={
-        filter={
-            Complete=true,
-            Campaign=true,
-            Important=true,
-            Legendary=true,
-            Calling=true,
-        }
-    },]]
-
-    --notPlus=true--其它增强 z_Plus.lua
-}
-
-
-
+local function Save()
+    return WoWToolsSave['Plus_WorldMap']
+end
 
 
 
@@ -72,8 +34,71 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['Plus_WorldMap']= WoWToolsSave['Plus_WorldMap'] or P_Save
-    P_Save= nil
+    WoWToolsSave['Plus_WorldMap']= WoWToolsSave['Plus_WorldMap'] or {
+        ShowMapID= true,--地图ID
+        --MapIDScale=1,
+
+        HideTitle=WoWTools_DataMixin.Player.husandro,--隐藏，标题
+
+        ShowMapXY= true,--地图坐标
+        --MapXYScale=1,
+        --MapXY_W
+        --MapXY_X=72,
+        --MapXY_Y=-2,
+        PlayerXY={--实时玩家当前坐标
+            disabled= not WoWTools_DataMixin.Player.husandro,
+            textY=-2,
+        },
+
+        --PlayerXYPoint={},
+        --PlayerXY_Scale=1,
+        --PlayerXY_Strata
+        --PlayerXY_Text_toLeft=true,
+        --PlayerXY_Size=23,
+        --PlayerXY_Elapsed=0.3,--LAG_TOLERANCE = "延迟容限";
+        --PlayerXY_BGAlpha=0.5
+        --PlayerXY_TextY=0
+
+        ShowAreaPOI_Name=true,
+        ShowDungeon_Name=true,
+        ShowWorldQues_Name=true,
+        --ShowFlightMap_Name=true,
+        --[[Abandon={
+            filter={
+                Complete=true,
+                Campaign=true,
+                Important=true,
+                Legendary=true,
+                Calling=true,
+            }
+        },]]
+
+        --notPlus=true--其它增强 z_Plus.lua
+    }
+
+    if not Save().PlayerXY then--清除，旧数据
+        Save().PlayerXY= {
+            disabled= not Save().ShowPlayerXY,
+            point= Save().PlayerXYPoint,
+            scale= Save().PlayerXY_Scale,
+            strata= Save().PlayerXY_Strata,
+            toLeft= Save().PlayerXY_Text_toLeft,
+            size= Save().PlayerXY_Size,
+            elapsed= Save().PlayerXY_Elapsed,--LAG_TOLERANCE = "延迟容限";
+            bgAlpha= Save().PlayerXY_BGAlpha,
+            textY= Save().PlayerXY_TextY
+        }
+
+        Save().ShowPlayerXY=nil--false,--实时玩家当前坐标
+        Save().PlayerXYPoint=nil--{},
+        Save().PlayerXY_Scale=nil--1,
+        Save().PlayerXY_Strata=nil--
+        Save().PlayerXY_Text_toLeft=nil--=true,
+        Save().PlayerXY_Size=nil--23,
+        Save().PlayerXY_Elapsed=nil--0.2,--LAG_TOLERANCE = "延迟容限";
+        Save().PlayerXY_BGAlpha=nil--0.5
+        Save().PlayerXY_TextY=nil--
+    end
 
     WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
 
@@ -81,16 +106,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_WorldMapMixin.addName,
         tooltip=  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
-        GetValue= function() return not  WoWToolsSave['Plus_WorldMap'].disabled end,
+        GetValue= function() return not Save().disabled end,
         func= function()
-            WoWToolsSave['Plus_WorldMap'].disabled= not  WoWToolsSave['Plus_WorldMap'].disabled and true or nil
+            Save().disabled= not Save().disabled and true or nil
             Init()
         end
     })
 
-    if not WoWToolsSave['Plus_WorldMap'].disabled then
+    if not Save().disabled then
         Init()
     end
+
     self:SetScript('OnEvent', nil)
     self:UnregisterEvent(event)
 end)

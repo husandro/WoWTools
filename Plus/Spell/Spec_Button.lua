@@ -29,9 +29,9 @@ local function Init_Spec_Menu(self, root)
 
 --专精
     root:CreateDivider()
-    if WoWTools_MenuMixin:Set_Specialization(root) then
-        root:CreateDivider()
-    end
+
+    WoWTools_MenuMixin:Set_Specialization(root)
+    root:CreateDivider()
 
 --打开选项界面
     sub=WoWTools_MenuMixin:OpenOptions(root, {

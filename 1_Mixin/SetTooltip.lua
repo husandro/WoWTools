@@ -164,9 +164,11 @@ local function Set_Specialization(tooltip, specIndex, specID)
 
     local specIDs= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
 
+    name= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(WoWTools_TextMixin:CN(name) or '')
+
     tooltip:AddDoubleLine(
         (specID or '')..'|T'..(icon or 0)..':0|t'
-        ..(WoWTools_TextMixin:CN(name) or ''),
+        ..name,
 
         (stat[primaryStat] or stat[3])
         ..'|A:'..(roleIcon or '')..':0:0|a'..(WoWTools_TextMixin:CN(_G[role] or role) or '')

@@ -177,38 +177,66 @@ function WoWTools_MenuMixin:LootSpecialization(root)
 
     for specIndex=0, numSpec do
         if specIndex==0 then
-            name= (WoWTools_DataMixin.onlyChinese and '当前专精（%s）' or LOOT_SPECIALIZATION_DEFAULT)
+            name= format(
+                WoWTools_DataMixin.onlyChinese and '当前专精（%s）' or LOOT_SPECIALIZATION_DEFAULT,
+                format('|T%d:0|t', select(3, PlayerUtil.GetSpecName()) or 0)
+            )
         else
-            specID, name, role, icon= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil,  WoWTools_DataMixin.Player.Sex)
+            specID, name, _, icon, role= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil,  WoWTools_DataMixin.Player.Sex)
+
         end
 
         if name then
-            sub:CreateButton(
-                '|A:VignetteLoot:0:0|a|T'..(icon or 0)..':0|t'
-                ..(curSpecIndex==specIndex and '|cnGREEN_FONT_COLOR:')
+            --local color= curSpecIndex==specIndex and GREEN_FONT_COLOR or PlayerUtil.GetClassColor()
+            sub=root:CreateRadio(
+                '|A:VignetteLoot:0:0|a'
+                ..(WoWTools_DataMixin.Icon[role] or '')
+                ..(icon and format('|T%d:0|t',icon) or '')
+                ..(curSpecIndex==specIndex and '|cnGREEN_FONT_COLOR:' or '')
                 ..WoWTools_TextMixin:CN(name),
             function(data)
-                return GetLootSpecialization()==data.specIndex
+                return GetLootSpecialization()==data.specID
             end,function(data)
                 SetLootSpecialization(data.specID)
                 return MenuResponse.Refresh
             end, {
-                specID=specID,
-                specIndex=specIndex,
+                specID=specIndex==0 and 0 or specID or 0,
+                --specIndex=specIndex,
                 rightText=WoWTools_DataMixin.Icon[role]
             })
-            sub:AddInitializer(function(btn)
-                local rightTexture = btn:AttachTexture()
-                rightTexture:SetSize(18, 18)
-                rightTexture:SetPoint("RIGHT")
-                rightTexture:SetAtlas('VignetteLoot')
+
+            sub:AddInitializer(function(btn, desc, menu)
+                btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
+                btn:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
+
+                btn:SetScript('OnEvent', function()
+                    WoWTools_DataMixin:Call(menu.ReinitializeAll, menu)
+                end)
+                btn:SetScript('OnHide', function(s)
+                    s:UnregisterAllEvents()
+                    s:SetScript('OnHide', nil)
+                    s:SetScript('OnEvent', nil)
+                end)
             end)
+
+            sub:SetTooltip(function(tooltip, desc)
+                local color= GetLootSpecialization()==desc.data.specID and DISABLED_FONT_COLOR or GREEN_FONT_COLOR-- or PlayerUtil.GetClassColor()
+                GameTooltip_AddColoredLine(tooltip,
+                    (WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                    ..' |cffffffff'..desc.data.specID ,
+                    color
+                )
+            end)
+            
+            if specIndex==0 then
+                root:CreateDivider()
+            end
         end
     end
 
 
 
-        sub:CreateButton(
+        --[[root:CreateButton(
             '|T'..(icon or 0)..':0|t'
             ..'|A:VignetteLoot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
         function(data)
@@ -217,14 +245,14 @@ function WoWTools_MenuMixin:LootSpecialization(root)
         end, {specID= specID})
 
 
-        sub:CreateDivider()
-        sub:CreateButton(
+        root:CreateDivider()
+        root:CreateButton(
             --'|T'..(PlayerUtil.GetSpecIconBySpecID(C_SpecializationInfo.GetSpecializationInfo(curSpecIndex), sex) or 0)..':0|t'
             WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT,
         function()
             SetLootSpecialization(0)
             return MenuResponse.Open
-        end)
+        end)]]
 end
 
 
@@ -244,11 +272,12 @@ function WoWTools_MenuMixin:Set_Specialization(root)
     local sex= WoWTools_DataMixin.Player.Sex
 
     for specIndex=1, numSpec, 1 do
-        local specID, name, role, icon= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil, sex)
+        
+        local specID, name, _, icon, role= C_SpecializationInfo.GetSpecializationInfo(specIndex, false, false, nil, sex)
 
         sub=root:CreateRadio(
-            '|T'..(icon or 0)..':0|t'
-            ..(WoWTools_DataMixin.Icon[role] or '')
+            (WoWTools_DataMixin.Icon[role] or '')
+            ..'|T'..(icon or 0)..':0|t'
             --..'|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false)) or '')..':0:0|a'
             ..(isInCombat and '|cff828282' or (curSpecIndex==specIndex and '|cnGREEN_FONT_COLOR:') or '')
             ..WoWTools_TextMixin:CN(name),
@@ -263,23 +292,31 @@ function WoWTools_MenuMixin:Set_Specialization(root)
             specIndex=specIndex,
             specID= specID,
             tooltip= function(tooltip, data2)
+
                 local canSpecsBeActivated, failureReason = C_SpecializationInfo.CanPlayerUseTalentSpecUI()
                 tooltip:AddLine(' ')
                 if GetSpecialization(nil, false, 1)==data2.specIndex then
-                    GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '已激活' or COVENANT_SANCTUM_UPGRADE_ACTIVE)
+                    GameTooltip_AddColoredLine(tooltip,
+                    --GameTooltip_AddInstructionLine(tooltip, 
+                    WoWTools_DataMixin.onlyChinese and '已激活' or COVENANT_SANCTUM_UPGRADE_ACTIVE,
+                    DISABLED_FONT_COLOR
+                )
 
                 elseif canSpecsBeActivated then
-                    tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE)..WoWTools_DataMixin.Icon.left)
+                    GameTooltip_AddInstructionLine(tooltip,
+                        (WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE)..WoWTools_DataMixin.Icon.left
+                    )
 
                 elseif failureReason and failureReason~='' then
                     GameTooltip_AddErrorLine(tooltip, WoWTools_TextMixin:CN(failureReason), true)
                 end
             end}
         )
+        self:LootSpecialization(sub)
 
         sub:AddInitializer(function(btn, desc, menu)
             local rightTexture= btn:AttachTexture()
-            rightTexture:SetPoint('RIGHT', -12, 0)
+            rightTexture:SetPoint('RIGHT', -18, 0)
             rightTexture:SetSize(20,20)
             rightTexture:SetAtlas('VignetteLoot')
 
@@ -313,7 +350,8 @@ function WoWTools_MenuMixin:Set_Specialization(root)
         end)
         WoWTools_SetTooltipMixin:Set_Menu(sub)
 
-        sub:CreateButton(
+
+        --[[sub:CreateButton(
             '|T'..(icon or 0)..':0|t'
             ..'|A:VignetteLoot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
         function(data)
@@ -329,7 +367,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
         function()
             SetLootSpecialization(0)
             return MenuResponse.Open
-        end)
+        end)]]
     end
 
     sub= root:CreateCheckbox(
@@ -369,5 +407,4 @@ function WoWTools_MenuMixin:Set_Specialization(root)
         end)
     end)
 
-    return true
 end

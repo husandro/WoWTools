@@ -1,4 +1,6 @@
 --npc=210759/布莱恩·铜须
+--117694,布莱恩·铜须,,,,1,9,0,0,26353,0,0,0,1,0,0,0,1910,0,0
+--https://www.wowhead.com/cn/faction=2744/瓦莉拉·萨古纳尔
 local function Set_BrannBronzebeard(tooltip, unit, npcID, size)
     if npcID~='210759' then
         return
@@ -85,7 +87,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
             tooltip.Portrait:SetAtlas('UnitFrame-Target-PortraitOn-Boss-Rare-Star')
             --tooltip.Portrait:SetShown(true)
         else
-            SetPortraitTexture(tooltip.Portrait, unit)
+            SetPortraitTexture(tooltip.Portrait, unit, true)
             --tooltip.Portrait:SetShown(true)
         end
     end
@@ -106,10 +108,14 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         npc, zone= WoWTools_UnitMixin:GetNpcID(unit, guid)
 --布莱恩·铜须
         Set_BrannBronzebeard(tooltip, unit, npc, self.iconSize)
+
         if zone or npc then
             tooltip:AddDoubleLine(
-                zone and zone..WoWTools_DataMixin.Language.layer,
-                npc and 'npcID'..WoWTools_DataMixin.Icon.icon2..npc
+                zone and WoWTools_DataMixin.Language.layer..zone or ' ',
+                npc and
+                (WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER)
+                ..WoWTools_DataMixin.Icon.icon2
+                ..npc
             )
 
             WoWTools_DataMixin.Player.Layer=zone--字符

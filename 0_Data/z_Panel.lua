@@ -288,7 +288,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         WoWTools_DataMixin.Language.layer='位面'
         WoWTools_DataMixin.Language.key='关键词'
     end
-    WoWTools_DataMixin.Language.layer='|A:Ping_Wheel_Icon_OnMyWay_Disabled_Small:0:0|a'..WoWTools_DataMixin.Language.layer
+    WoWTools_DataMixin.Language.layer=WoWTools_DataMixin.Language.layer..'|A:Ping_Wheel_Icon_OnMyWay_Disabled_Small:0:0|a'
 
 
     WoWTools_DataMixin.StausText={

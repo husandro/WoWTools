@@ -33,7 +33,7 @@ local function Init_OnEnter(self)
 
 --位面
     if WoWTools_DataMixin.Player.Layer then
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Language.layer, '|cffffffff'..WoWTools_DataMixin.Player.Layer)
+        GameTooltip:AddLine(WoWTools_DataMixin.Language.layer..'|cffffffff'..WoWTools_DataMixin.Player.Layer)
     end
 
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")--地图信息
@@ -129,140 +129,6 @@ end
 
 
 
-
-
-
-
---实时玩家当前坐标，选项
-local function Init_PlayerXY_Option_Menu(self, root2)
-    local sub
-    local root= root2
-
-    sub= root:CreateButton(
-        '|A:Waypoint-MapPin-ChatIcon:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '分享' or SOCIAL_SHARE_TEXT),
-    function()
-        WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT)
-
-        local mapID= C_Map.GetBestMapForUnit("player")
-        local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
-        if not can then
-            tooltip:AddLine('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
-        end
-    end)
-
-    root:CreateDivider()
-    if self==_G['WoWToolsPlayerXYButton'] then
-        root= root:CreateButton(
-            '|A:mechagon-projects:0:0|a'
-            ..(WoWTools_DataMixin.onlyChinese and '选项' or GAMEMENU_OPTIONS),
-        function()
-            return MenuResponse.Open
-        end)
-    end
-
-    root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-    function()
-        return not Save().PlayerXY_Text_toLeft
-    end, function()
-        Save().PlayerXY_Text_toLeft= not Save().PlayerXY_Text_toLeft and true or nil
-        WoWTools_WorldMapMixin:Init_XY_Player()
-    end)
-
---Text Y
-    root:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(root, {
-        getValue=function()
-            return Save().PlayerXY_TextY or -3
-        end, setValue=function(value)
-            Save().PlayerXY_TextY= value
-            WoWTools_WorldMapMixin:Init_XY_Player()
-        end,
-        name= 'Y',
-        minValue=-23,
-        maxValue=23,
-        step=1,
-        bit=nil,
-    })
-
---FrameStrata
-    root:CreateSpacer()
-    WoWTools_MenuMixin:FrameStrata(self, root, function(data)
-        if _G['WoWToolsPlayerXYButton'] then
-            return _G['WoWToolsPlayerXYButton']:GetFrameStrata()==data
-        end
-    end, function(data)
-        Save().PlayerXY_Strata= data
-        WoWTools_WorldMapMixin:Init_XY_Player()
-    end)
-
---延迟容限
-    root:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(root, {
-        getValue=function()
-            return Save().PlayerXY_Elapsed or 0.3
-        end, setValue=function(value)
-            Save().PlayerXY_Elapsed= value
-            WoWTools_WorldMapMixin:Init_XY_Player()
-        end,
-        name= WoWTools_DataMixin.onlyChinese and '延迟' or LAG_TOLERANCE,
-        minValue=0.1,
-        maxValue=0.5,
-        step=0.01,
-        bit='%.2f',
-    })
-
---图像大小
-    root:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(root, {
-        getValue=function()
-            return Save().PlayerXY_Size or 23
-        end, setValue=function(value)
-            Save().PlayerXY_Size= value
-            WoWTools_WorldMapMixin:Init_XY_Player()
-        end,
-        name= WoWTools_DataMixin.Icon.Player,
-        minValue=6,
-        maxValue=72,
-        step=1,
-        bit=nil,
-    })
-
---Background
-    root:CreateSpacer()
-    WoWTools_MenuMixin:BgAplha(root,
-    function()
-        return Save().PlayerXY_BGAlpha or 0.5
-    end, function(value)
-        Save().PlayerXY_BGAlpha= value
-        WoWTools_WorldMapMixin:Init_XY_Player()
-    end, nil, true)
-
---缩放
-    WoWTools_MenuMixin:ScaleRoot(self, root, function()
-        return Save().PlayerXY_Scale or 1
-    end, function(value)
-        Save().PlayerXY_Scale= value
-        WoWTools_WorldMapMixin:Init_XY_Player()
-    end, function()--重置
-        Save().PlayerXY_Scale= nil
-        Save().PlayerXYPoint= nil
-        Save().PlayerXY_Size= nil
-        Save().PlayerXY_Text_toLeft= nil
-        Save().PlayerXY_Elapsed= nil
-        Save().PlayerXY_BGAlpha= nil
-        Save().PlayerXY_TextY= nil
-        WoWTools_WorldMapMixin:Init_XY_Player()
-    end)
-
-
-
-end
 
 
 
@@ -402,15 +268,19 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.Icon.Player..' XY',
     function()
-        return Save().ShowPlayerXY
+        return not Save().PlayerXY.disabled
     end, function()
-        Save().ShowPlayerXY= not Save().ShowPlayerXY and true or nil
+        Save().PlayerXY.disabled= not Save().PlayerXY.disabled and true or nil
         WoWTools_WorldMapMixin:Init_XY_Player()
     end)
 
-    if _G['WoWToolsPlayerXYButton'] then--实时玩家当前坐标，选项
-        Init_PlayerXY_Option_Menu(self, sub)
-    end
+    WoWTools_MenuMixin:RestPoint(self, sub,
+        Save().PlayerXY.point,
+    function()
+        Save().PlayerXY.point= nil
+        WoWTools_WorldMapMixin:Init_XY_Player()
+    end)
+
     root:CreateDivider()
 
 --AreaPOI名称
@@ -594,10 +464,6 @@ local function Init_Set_Title()
 end
 
 
-
-function WoWTools_WorldMapMixin:Init_PlayerXY_Option_Menu(...)
-    Init_PlayerXY_Option_Menu(...)
-end
 
 
 function WoWTools_WorldMapMixin:Init_Menu()
