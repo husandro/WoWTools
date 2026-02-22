@@ -126,7 +126,7 @@ end]]
 
 
 --移动zzZZ, 睡着
-     contextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
+    contextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
 
 
 
@@ -146,8 +146,8 @@ end]]
 
 
 
-     --全部有权限，助手，提示
-    AssisterButton= CreateFrame('Button', 'WoWToolsPlayerFrameAssisterButton', contextual, 'WoWToolsButtonTemplate') -- WoWTools_ButtonMixin:Cbtn(contextual,{size=18})--点击，设置全员，权限
+    --全部有权限，助手，提示
+    local AssisterButton= CreateFrame('Button', 'WoWToolsPlayerFrameAssisterButton', contextual, 'WoWToolsButtonTemplate') -- WoWTools_ButtonMixin:Cbtn(contextual,{size=18})--点击，设置全员，权限
     AssisterButton:SetFrameStrata('HIGH')
     AssisterButton:SetAllPoints(contextual.LeaderIcon)
     ---AssisterButton:Hide()
