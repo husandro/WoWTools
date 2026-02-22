@@ -493,13 +493,12 @@ local function Init_Button()
     end)
 
     function btn:tooltip(tooltip)
-        local col= PlayerIsInCombat() and '|cff626262' or ''
+        local col= PlayerIsInCombat() and '|cnWARNING_FONT_COLOR:' or ''
         tooltip:AddLine(
-            (Get_Lock_ClickToMove_Value() and '|A:AdventureMapIcon-Lock:0:0|a|cff828282' or col)
+            (Get_Lock_ClickToMove_Value() and '|A:AdventureMapIcon-Lock:0:0|a' or col)
             ..CVarNameTabs['autoInteract']
             ..': |r'
-            ..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")
-            ),
+            ..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")),
             WoWTools_DataMixin.Icon.left
         )
 
