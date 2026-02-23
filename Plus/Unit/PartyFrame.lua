@@ -81,6 +81,7 @@ local function Create_potFrame(frame)
 
 --目标，图像
     frame.ToTButton.Portrait= frame.ToTButton:CreateTexture(nil, 'BORDER')
+    WoWTools_ButtonMixin:AddMask(frame.ToTButton, true, frame.ToTButton.Portrait)
     frame.ToTButton.Portrait:SetAllPoints()
 
 
@@ -675,6 +676,14 @@ end
         self.PortraitMask:SetVertexColor(color:GetRGB())
     end)
 end
+
+
+
+
+
+
+
+
 
 
 --先使用一次，用以Shift+点击，设置焦点功能, Invite.lua

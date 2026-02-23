@@ -189,10 +189,10 @@ local function GameTooltip_URL(tooltip, tab)
         else
             if tab.isPetUI then
                 if tooltip then
-                    BattlePetTooltipTemplate_AddTextLine(tooltip, (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
+                    BattlePetTooltipTemplate_AddTextLine(tooltip, (tab.col or '')..'<|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon..'>')
                 end
             elseif tooltip== GameTooltip then
-                tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
+                tooltip:AddLine((tab.col or '')..'<|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon..'>')
             end
         end
 
@@ -201,10 +201,10 @@ local function GameTooltip_URL(tooltip, tab)
             WoWTools_TooltipMixin:Show_URL(false, nil, tab.realm or WoWTools_DataMixin.Player.Realm, tab.unitName)
         else
             if tooltip then
-                tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
+                tooltip:SetText((tab.col or '')..'<|A:questlegendary:0:0|a'..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift>')
                 --tooltip:Show(true)
             else
-                GameTooltip:AddLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
+                GameTooltip:AddLine((tab.col or '')..'<|A:questlegendary:0:0|a'..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift>')
                 --GameTooltip:Show(true)
             end
         end
@@ -213,7 +213,7 @@ local function GameTooltip_URL(tooltip, tab)
         if IsControlKeyDown() and IsShiftKeyDown() then
             WoWTools_TooltipMixin:Show_URL(nil, nil, nil, tab.name)
         else
-            tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
+            tooltip:AddLine((tab.col or '')..'<|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon..'>')
             --tooltip:Show()
         end
     end

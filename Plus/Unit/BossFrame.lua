@@ -7,13 +7,15 @@
 
 --Boss图标，按钮
 local function Create_BossButton(frame)
-    frame.BossButton= WoWTools_ButtonMixin:Cbtn(frame,{
+    frame.BossButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
+    frame.BossButton:SetSize(35,35)
+    --[[WoWTools_ButtonMixin:Cbtn(frame,{
         size=38,
         isSecure=true,
         isType2=true,
         notBorder=true,
         notTexture=true,
-    })
+    })]]
     frame.BossButton.unit= frame.unit
     frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBarsContainer, 'RIGHT')
 
@@ -31,6 +33,7 @@ local function Create_BossButton(frame)
     end)
 
     frame.BossButton.Portrait= frame.BossButton:CreateTexture(nil, 'BACKGROUND')
+    WoWTools_ButtonMixin:AddMask(frame.BossButton, true, frame.BossButton.Portrait)
     frame.BossButton.Portrait:SetAllPoints()
 
     --[[frame.BossButton.targetTexture= frame.BossButton:CreateTexture(nil, 'OVERLAY')
@@ -50,12 +53,8 @@ local function Create_BossButton(frame)
         self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
 --颜色
         local color= WoWTools_UnitMixin:GetColor(self.unit)
-        local r,g,b= color:GetRGB()
-
-        local p= self:GetParent()
-        p.healthbar:SetStatusBarColor(r, g, b)--颜色
-        p.TargetFrameContent.TargetFrameContentMain.ReputationColor:SetVertexColor(r, g, b)
-
+        self:GetParent().healthbar:SetStatusBarColor(color:GetRGB())--颜色
+        self:GetParent().TargetFrameContent.TargetFrameContentMain.ReputationColor:SetVertexColor(color:GetRGB())
         self:settings()
     end
 
