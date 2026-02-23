@@ -8,7 +8,7 @@
 --Boss图标，按钮
 local function Create_BossButton(frame)
     frame.BossButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
-    frame.BossButton:SetSize(35,35)
+    frame.BossButton:SetSize(38)
     --[[WoWTools_ButtonMixin:Cbtn(frame,{
         size=38,
         isSecure=true,
