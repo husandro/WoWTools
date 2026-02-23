@@ -1,13 +1,6 @@
 WoWTools_FriendsMixin={}
 
 
-local P_Save={
-    Friends={},
-    disabledBNFriendInfo=not WoWTools_DataMixin.Player.husandro and true or nil,--禁用战网，好友信息，提示
-    --allFriendInfo= true,--仅限，WoW，好友
-    --showInCombatFriendInfo=true,--仅限，不在战斗中，好友，提示
-    --showFriendInfoOnlyFavorite=true,--仅限收藏好友
-}
 
 
 local function Save()
@@ -22,8 +15,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_FriendsList']= WoWToolsSave['Plus_FriendsList'] or P_Save
-            P_Save=nil
+            WoWToolsSave['Plus_FriendsList']= WoWToolsSave['Plus_FriendsList'] or {
+                Friends={},
+                disabledBNFriendInfo=not WoWTools_DataMixin.Player.husandro and true or nil,--禁用战网，好友信息，提示
+                --allFriendInfo= true,--仅限，WoW，好友
+                --showInCombatFriendInfo=true,--仅限，不在战斗中，好友，提示
+                --showFriendInfoOnlyFavorite=true,--仅限收藏好友
+            }
 
             WoWTools_FriendsMixin.addName= '|A:socialqueuing-icon-group:0:0|a'..(WoWTools_DataMixin.onlyChinese and '好友列表' or FRIENDS_LIST)
 
@@ -43,7 +41,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 self:UnregisterEvent(event)
-            self:SetScript('OnEvent', nil)
+                self:SetScript('OnEvent', nil)
             else
                 WoWTools_FriendsMixin:Blizzard_QuickJoin()
                 WoWTools_FriendsMixin:Blizzard_RaidFrame()

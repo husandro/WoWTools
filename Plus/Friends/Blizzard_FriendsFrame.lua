@@ -38,12 +38,19 @@ local function Init_Friends_Menu(self, root)
 
     local sub, name
     if not BNConnected() then
-        root:CreateTitle('|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))..'|r')
+        root:CreateTitle(
+            WoWTools_DataMixin.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET),
+            WARNING_FONT_COLOR
+        )
         root:CreateDivider()
     end
 
-    root:CreateTitle(WoWTools_DataMixin.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
-    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_ONLINE, WoWTools_DataMixin.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE), function()
+    root:CreateTitle(
+        WoWTools_DataMixin.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)
+    )
+    root:CreateCheckbox(
+        OptionText:format(FRIENDS_TEXTURE_ONLINE, WoWTools_DataMixin.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE),
+    function()
         return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel'
     end, function()
         if Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel' then
@@ -54,7 +61,9 @@ local function Init_Friends_Menu(self, root)
         self:set_status()
     end)
 
-    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_AFK, WoWTools_DataMixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY), function()
+    root:CreateCheckbox(
+        OptionText:format(FRIENDS_TEXTURE_AFK, WoWTools_DataMixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY),
+    function()
         return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Away'
     end, function()
         if Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Away' then
@@ -65,7 +74,9 @@ local function Init_Friends_Menu(self, root)
         self:set_status()
     end)
 
-    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_DND, WoWTools_DataMixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY), function()
+    root:CreateCheckbox(
+        OptionText:format(FRIENDS_TEXTURE_DND, WoWTools_DataMixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY),
+    function()
         return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'DND'
     end, function()
         if Save().Friends[WoWTools_DataMixin.Player.GUID]== 'DND' then
@@ -119,14 +130,21 @@ local function Init_Friends_Menu(self, root)
     end
 
     root:CreateDivider()
-    sub= root:CreateCheckbox(WoWTools_DataMixin.Icon.net2..(WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(WoWTools_DataMixin.onlyChinese and '好友' or FRIEND)..') '..( WoWTools_DataMixin.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a', function()
+    sub= root:CreateCheckbox(
+        WoWTools_DataMixin.Icon.net2
+        ..(WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
+        ..' ('..(WoWTools_DataMixin.onlyChinese and '好友' or FRIEND)..') '
+        ..( WoWTools_DataMixin.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a',
+    function()
         return not Save().disabledBNFriendInfo
     end, function()
         Save().disabledBNFriendInfo= not Save().disabledBNFriendInfo and true or nil
         self:set_events()
     end)
 
-    sub:CreateCheckbox(format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '好友' or FRIEND)), function()
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '仅限'..WoWTools_DataMixin.Icon.wow2..'WoW好友' or format(LFG_LIST_CROSS_FACTION, 'WoW'..WoWTools_DataMixin.Icon.wow2..FRIEND),
+    function()
         return not Save().allFriendInfo
     end, function()
         Save().allFriendInfo= not Save().allFriendInfo and true or nil
@@ -312,10 +330,11 @@ local function Init()--好友列表, 初始化
     }
     FriendsFrameStatusDropdown:SetSize(58, 25)--原生，有点问题
 
-    FriendsButton= WoWTools_ButtonMixin:Menu(FriendsListFrame, {
+    FriendsButton= CreateFrame('DropdownButton', 'WoWToolsFriendsMenuButton', FriendsListFrame, 'WoWToolsMenu3Template')
+    --[[WoWTools_ButtonMixin:Menu(FriendsListFrame, {
         name= 'WoWToolsFriendsMenuButton',
         icon='hide',
-    })
+    })]]
 
     FriendsButton:SetPoint('RIGHT', FriendsFrameCloseButton, 'LEFT')
     FriendsButton:GetFrameStrata(FriendsFrameCloseButton:GetFrameStrata())
@@ -672,7 +691,7 @@ local function Init()--好友列表, 初始化
         btn.indexLable:SetScript('OnLeave', function(region) GameTooltip:Hide() region:SetAlpha(1) end)
         btn.indexLable:SetScript('OnEnter', function(region)
             GameTooltip:SetOwner(region, 'ANCHOR_RIGHT')
-            GameTooltip_SetTitle(GameTooltip, 
+            GameTooltip_SetTitle(GameTooltip,
                 WoWTools_DataMixin.Icon.icon2
                 ..(WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)
                 ..WoWTools_DataMixin.Icon.left

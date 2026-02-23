@@ -1,77 +1,5 @@
 
 
-local function RemoveChatJunk(currentMsg)
-	if canaccessvalue(currentMsg) or not currentMsg or currentMsg:gsub(' ', '')=='' then
-		return currentMsg
-	end
-
-	local chatNumber = string.match(currentMsg, "(%d+) |4year:years;")
-	if (chatNumber) then
-		if (tonumber(chatNumber) == 0) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4year:years;", chatNumber .. " year")
-		elseif (tonumber(chatNumber) > 1) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4year:years;", chatNumber .. " years")
-		else
-			currentMsg = currentMsg --Do nothing.
-		end
-	end
-
-	chatNumber = string.match(currentMsg, "(%d+) |4day:days;")
-	if (chatNumber) then
-		if (tonumber(chatNumber) == 0) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4day:days;", chatNumber .. " day")
-		elseif (tonumber(chatNumber) > 1) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4day:days;", chatNumber .. " days")
-		end
-	end
-
-	chatNumber = string.match(currentMsg, "(%d+) |4hour:hours;")
-	if (chatNumber) then
-		if (tonumber(chatNumber) == 0) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4hour:hours;", chatNumber .. " hour")
-		elseif (tonumber(chatNumber) > 1) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4hour:hours;", chatNumber .. " hours")
-		end
-	end
-
-	chatNumber = string.match(currentMsg, "(%d+) |4minute:minutes;")
-	if (chatNumber) then
-		if (tonumber(chatNumber) == 0) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4minute:minutes;", chatNumber .. " minute")
-		elseif (tonumber(chatNumber) > 1) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4minute:minutes;", chatNumber .. " minutes")
-		end
-	end
-
-	chatNumber = string.match(currentMsg, "(%d+) |4second:seconds;")
-	if (chatNumber) then
-		if (tonumber(chatNumber) == 0) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4second:seconds;", chatNumber .. " second")
-		elseif (tonumber(chatNumber) > 1) then
-			currentMsg = string.gsub(currentMsg, "(%d+) |4second:seconds;", chatNumber .. " seconds")
-		end
-	end
-	currentMsg = string.gsub(currentMsg, "|T.-|t", "")
-	
-	return currentMsg
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -101,13 +29,20 @@ local function Get_Text(frame)
 	local numMessage= frame:GetNumMessages() or 0
 
 	for i = 1, numMessage do
-		local msg= frame:GetMessageInfo(i)
-		if not canaccessvalue(msg) then
-			table.insert(tab, EVENTTRACE_SECRET_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and "显示机密数值" or EVENTTRACE_SHOW_SECRET_VALUES))
+		local msg= frame:GetMessageInfo(i) or ''
+
+		if not canaccessvalue(msg)
+			and msg
+			or msg:find('(:?|?)|K(.-)|k')
+		then
+			table.insert(tab,
+				'***'..format(
+				WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, '***'
+			))
 		else
 			local t= type(msg)
 			if t~='string' then
-				table.insert(tab, t)
+				table.insert(tab, tostring(t))
 			else
 				table.insert(tab, msg)
 			end
@@ -247,21 +182,30 @@ local function Init_Menu(self, root)
 	WoWTools_MenuMixin:SetRightText(sub2)
 
 	for i = 1, num do
-		local msg= self:GetMessageInfo(i)
+		local msg= self:GetMessageInfo(i) or ''
+
+		local isSecret= not canaccessvalue(msg) or msg:find('(:?|?)|K(.-)|k')
+		local rightText= isSecret and EVENTTRACE_SECRET_COLOR:WrapTextInColorCode('*') or i
+
 		local sub3= sub2:CreateButton(
 			msg,
 		function(data)
+			local showText= data.isSecret and '***'..format(
+				WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, '***'
+			) or data.msg
+
 			WoWTools_TextMixin:ShowText(
-				{data.msg},
+				{showText},
 				name,
 				{notClear=true}
 			)
 			return MenuResponse.Open
-		end, {msg=msg, rightText=i})
+		end, {msg=msg, rightText=rightText, isSecret=isSecret})
+
 		sub3:SetTooltip(function(tooltip, desc)
 			tooltip:AddLine(format(
 				WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT,
-				WoWTools_TextMixin:GetYesNo(not canaccessvalue(desc.data.msg))
+				WoWTools_TextMixin:GetYesNo(desc.data.isSecret)
 			))
 		end)
 		WoWTools_MenuMixin:SetRightText(sub3)
