@@ -202,17 +202,17 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
 
 --超链接
     if isLink then
-        scrollFrame.editBox:SetHyperlinksEnabled(false)
+        scrollFrame.editBox:SetHyperlinksEnabled(true)
         scrollFrame.editBox:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
         scrollFrame.editBox:SetScript('OnHyperlinkEnter', function(s, link)
-            if link then
+            --if link then
                 GameTooltip:SetOwner(s, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:SetHyperlink(link)
                 GameTooltip:Show()
-            end
+            --end
         end)
-        scrollFrame:SetScript('OnHyperlinkClick', function(s, link, text2)--, region)
+        scrollFrame.editBox:SetScript('OnHyperlinkClick', function(s, link, text2)--, region)
             SetItemRef(link, text2, s, nil)
         end)
     end
@@ -225,7 +225,12 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
         end
     end
     scrollFrame.SetText= function(s, ...)
-        s.editBox:SetText(...)
+        local secret= WoWTools_TextMixin:CanText(...)
+        if secret then
+            s.editBox:SetText(secret)
+        else
+            s.editBox:SetText(...)
+        end
     end
     scrollFrame.GetText= function(s)
         return s.editBox:GetText()

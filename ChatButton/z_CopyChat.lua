@@ -29,24 +29,9 @@ local function Get_Text(frame)
 	local numMessage= frame:GetNumMessages() or 0
 
 	for i = 1, numMessage do
-		local msg= frame:GetMessageInfo(i) or ''
-
-		if not canaccessvalue(msg)
-			and msg
-			or msg:find('(:?|?)|K(.-)|k')
-		then
-			table.insert(tab,
-				'***'..format(
-				WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, '***'
-			))
-		else
-			local t= type(msg)
-			if t~='string' then
-				table.insert(tab, tostring(t))
-			else
-				table.insert(tab, msg)
-			end
-		end
+		local msg= frame:GetMessageInfo(i)
+		msg= WoWTools_TextMixin:CanText(msg) or tostring(msg)
+		table.insert(tab, msg)
 	end
 
 	local tabFrame= _G['ChatFrame'..index..'Tab']
@@ -182,10 +167,9 @@ local function Init_Menu(self, root)
 	WoWTools_MenuMixin:SetRightText(sub2)
 
 	for i = 1, num do
-		local msg= self:GetMessageInfo(i) or ''
+		local msg= self:GetMessageInfo(i)
 
-		local isSecret= not canaccessvalue(msg) or msg:find('(:?|?)|K(.-)|k')
-		local rightText= isSecret and EVENTTRACE_SECRET_COLOR:WrapTextInColorCode('*') or i
+		local secretText= WoWTools_TextMixin:CanText(msg)
 
 		local sub3= sub2:CreateButton(
 			msg,
@@ -196,13 +180,14 @@ local function Init_Menu(self, root)
 				{notClear=true}
 			)
 			return MenuResponse.Open
-		end, {msg=msg, rightText=rightText, isSecret=isSecret})
+		end, {
+			msg=msg,
+			rightText=secretText and EVENTTRACE_SECRET_COLOR:WrapTextInColorCode('*') or i,
+			tooltip= secretText
+		})
 
 		sub3:SetTooltip(function(tooltip, desc)
-			tooltip:AddLine(format(
-				WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT,
-				WoWTools_TextMixin:GetYesNo(desc.data.isSecret)
-			))
+			tooltip:AddLine(desc.data.tooltip)
 		end)
 		WoWTools_MenuMixin:SetRightText(sub3)
 	end

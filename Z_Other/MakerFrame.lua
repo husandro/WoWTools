@@ -28,8 +28,86 @@ local MarkerButtons={}
 
 
 
+local function Set_TankHealer(set)--设置队伍标记
+    if not IsInGroup()
+        or UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')
+then
+    return
+end
+    local tank, healer, isSelf
 
+    if IsInRaid() then
+        local tab={}--设置团队标记
+        for index=1, MAX_RAID_MEMBERS do
+            local name, _, _, _, _, _, _, online, _, role, _, combatRole= GetRaidRosterInfo(index)
+            local unit= 'raid'..index
+            if (role=='TANK' or combatRole=='TANK') and online then
+                table.insert(tab, {
+                    unit=unit,
+                    hp=UnitHealthMax(unit)
+                })
+            elseif name then
+                local raidIndex= GetRaidTargetIndex(unit)
+                if raidIndex and raidIndex>0 and raidIndex<=8 then
+                    WoWTools_MarkerMixin:Set_Taget(unit, 0)
+                end
+            end
+        end
+        table.sort(tab, function(a,b) return a.hp>b.hp end)
+        if tab[1] then
+            WoWTools_MarkerMixin:Set_Taget(tab[1].unit, Save().tank)--设置,目标,标记
+            tank=true
+        end
+        if tab[2] then
+            WoWTools_MarkerMixin:Set_Taget(tab[2].unit, Save().tank2)--设置,目标,标记
+            tank=true
+        end
 
+    elseif IsInGroup() then--设置队伍标记
+        for index=1, MAX_PARTY_MEMBERS+1 do
+            local unit= index <= MAX_PARTY_MEMBERS and 'party'..index or 'player'
+            if WoWTools_UnitMixin:UnitExists(unit) and UnitIsConnected(unit) then
+                local role=  UnitGroupRolesAssigned(unit)
+                if role=='TANK' then
+                    if not tank then
+                        WoWTools_MarkerMixin:Set_Taget(unit, Save().tank)--设置,目标,标记
+                        tank=true
+                    end
+                elseif role=='HEALER' then
+                    if not healer then
+                        WoWTools_MarkerMixin:Set_Taget(unit, Save().healer)--设置,目标,标记
+                        healer=true
+                    end
+                else
+                     WoWTools_MarkerMixin:Set_Taget(unit, 0)
+                    --local raidIndex= GetRaidTargetIndex(unit)
+                    --if raidIndex and raidIndex>0 and raidIndex<=8 then
+                       
+                    --end
+                end
+            end
+        end
+
+    else
+        if Save().isSelf then
+            WoWTools_MarkerMixin:Set_Taget('player', Save().isSelf or (set and 0))--设置,目标,标记
+            isSelf= true
+        end
+        if Save().target then
+            local index= GetRaidTargetIndex('target')--12.0没有了
+            if canaccessvalue(index) and (not index or (index>8 and index<0)) then
+                WoWTools_MarkerMixin:Set_Taget('target', Save().target or (set and 0))--设置,目标,标记
+            end
+            isSelf= true
+        end
+    end
+
+    return tank or healer or isSelf
+end
+
+local function Auto_TankHeader(btn)
+
+end
 
 
 
@@ -619,12 +697,15 @@ local function Init()--设置标记, 框架
         if index==0 then
             btn:SetAllPoints(MakerFrame.target)
 
-            btn:SetAttribute('type', 'raidtarget')
-            btn:SetAttribute("action", "clear-all")
+            btn:SetAttribute('type2', 'raidtarget')
+            btn:SetAttribute("action2", "clear-all")
             btn.texture= btn:CreateTexture()
             btn.texture:SetAtlas('jailerstower-animapowerlist-powerborder-purple')
             btn.texture:SetPoint('CENTER')
             btn.texture:SetSize(16,16)
+
+            Auto_TankHeader(btn)
+
             function btn:set_alpha()
                 self.texture:SetAlpha(self:IsMouseOver() and 1 or 0.5)
             end
@@ -1199,7 +1280,11 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
-        WoWToolsSave['Other_MarkerFrame']= WoWToolsSave['Other_MarkerFrame'] or {}
+        WoWToolsSave['Other_MarkerFrame']= WoWToolsSave['Other_MarkerFrame'] or {
+            Auto={}
+        }
+
+        Save().Auto= Save().Auto or {}
 
         addName= '|A:GM-raidMarker7:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
         local isEnabled, sub= WoWTools_OtherMixin:AddOption('MarkerFrame', addName)

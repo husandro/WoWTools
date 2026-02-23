@@ -476,7 +476,7 @@ local function Init()
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
 
 --移除，<右键点击设置框体> 替换原生
-    if not Save().UNIT_POPUP_RIGHT_CLICK then
+    --[[if not Save().UNIT_POPUP_RIGHT_CLICK then
         function UnitFrame_UpdateTooltip (self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);
             if GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip) then
@@ -485,7 +485,7 @@ local function Init()
                 self.UpdateTooltip = nil;
             end
         end
-    end
+    end]]
 
 
     Init=function()end

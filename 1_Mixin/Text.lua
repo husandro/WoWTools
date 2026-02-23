@@ -264,4 +264,12 @@ function WoWTools_TextMixin:GetYesNo(yesno)
     end
 end
 
-
+function WoWTools_TextMixin:CanText(text)
+    if issecretvalue(text)
+        or (text and
+            text:find('(:?|?)|K(.-)|k')
+        )
+    then
+        return 	format(WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, '')
+    end
+end
