@@ -142,7 +142,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
         return ''
     end
 
-    guid= guid or self:UnitGUID(guid, name)
+    guid= guid or self:UnitGUID(unit, name)
 
     if not guid then
         return ''

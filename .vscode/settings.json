@@ -3066,7 +3066,22 @@
         "ChatFrame_AddMessageGroup",
         "CHAT_CONFIG_CHAT_LEFT",
         "FCF_SavePositionAndDimensions",
-        "FCF_Close"
+        "FCF_Close",
+        "KEY_NUMPAD0",
+        "KEY_NUMPAD1",
+        "KEY_NUMPAD2",
+        "KEY_NUMPAD3",
+        "KEY_NUMPAD4",
+        "KEY_NUMPAD5",
+        "KEY_NUMPAD6",
+        "KEY_NUMPAD7",
+        "KEY_NUMPAD8",
+        "KEY_NUMPAD9",
+        "KEY_NUMPADDECIMAL",
+        "KEY_NUMPADDIVIDE",
+        "KEY_NUMPADMINUS",
+        "KEY_NUMPADMULTIPLY",
+        "KEY_NUMPADPLUS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

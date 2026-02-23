@@ -28,81 +28,46 @@ local MarkerButtons={}
 
 
 
-local function Set_TankHealer(set)--设置队伍标记
+local function Set_TankHealer()--设置队伍标记
     if not IsInGroup()
-        or UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')
+        or (IsInRaid() and not (UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')))
     then
-    return
-end
-    local tank, healer, isSelf
+        return
+    end
+
+--    local tank, healer
 
     if IsInRaid() then
         local tab={}--设置团队标记
+
         for index=1, MAX_RAID_MEMBERS do
-            local name, _, _, _, _, _, _, online, _, role, _, combatRole= GetRaidRosterInfo(index)
-            local unit= 'raid'..index
-            if (role=='TANK' or combatRole=='TANK') and online then
+            local online, _, role, _, combatRole= select(8, GetRaidRosterInfo(index))
+
+            if online and (role=='TANK' or combatRole=='TANK') then
+                local unit= 'raid'..index
                 table.insert(tab, {
                     unit=unit,
                     hp=UnitHealthMax(unit)
                 })
-            elseif name then
-                local raidIndex= GetRaidTargetIndex(unit)
-                if raidIndex and raidIndex>0 and raidIndex<=8 then
-                    WoWTools_MarkerMixin:Set_Taget(unit, 0)
-                end
             end
         end
-        table.sort(tab, function(a,b) return a.hp>b.hp end)
-        if tab[1] then
-            WoWTools_MarkerMixin:Set_Taget(tab[1].unit, Save().tank)--设置,目标,标记
-            tank=true
-        end
-        if tab[2] then
-            WoWTools_MarkerMixin:Set_Taget(tab[2].unit, Save().tank2)--设置,目标,标记
-            tank=true
-        end
 
-    elseif IsInGroup() then--设置队伍标记
+        table.sort(tab, function(a,b) return a.hp>b.hp end)
+
+        return tab[1]
+        --tank, healer= tab[1], tab[2]
+
+    else--设置队伍标记      
         for index=1, MAX_PARTY_MEMBERS+1 do
             local unit= index <= MAX_PARTY_MEMBERS and 'party'..index or 'player'
-            if WoWTools_UnitMixin:UnitExists(unit) and UnitIsConnected(unit) then
-                local role=  UnitGroupRolesAssigned(unit)
-                if role=='TANK' then
-                    if not tank then
-                        WoWTools_MarkerMixin:Set_Taget(unit, Save().tank)--设置,目标,标记
-                        tank=true
-                    end
-                elseif role=='HEALER' then
-                    if not healer then
-                        WoWTools_MarkerMixin:Set_Taget(unit, Save().healer)--设置,目标,标记
-                        healer=true
-                    end
-                else
-                     WoWTools_MarkerMixin:Set_Taget(unit, 0)
-                    --local raidIndex= GetRaidTargetIndex(unit)
-                    --if raidIndex and raidIndex>0 and raidIndex<=8 then
-                       
-                    --end
-                end
+            local role= UnitGroupRolesAssigned(unit)
+            if role=='TANK' then
+                return unit
+            --elseif role=='HEALER' then
+                --  healer=unit
             end
-        end
-
-    else
-        if Save().isSelf then
-            WoWTools_MarkerMixin:Set_Taget('player', Save().isSelf or (set and 0))--设置,目标,标记
-            isSelf= true
-        end
-        if Save().target then
-            local index= GetRaidTargetIndex('target')--12.0没有了
-            if canaccessvalue(index) and (not index or (index>8 and index<0)) then
-                WoWTools_MarkerMixin:Set_Taget('target', Save().target or (set and 0))--设置,目标,标记
-            end
-            isSelf= true
         end
     end
-
-    return tank or healer or isSelf
 end
 
 
@@ -120,7 +85,36 @@ end
 
 
 local function Auto_TankHeader(btn)
+    btn.tank= CreateFrame('Button', nil, btn, 'SecureActionButtonTemplate')
+    --btn.tank:RegisterForClicks("AnyUp", "AnyDown")
 
+    btn.tank:SetAttribute('type', 'raidtarget')
+    btn.tank:SetAttribute('action1', 'set')
+
+    btn.tank:SetAttribute('type2', 'raidtarget')
+    btn.tank:SetAttribute('action2', 'set')
+
+    btn.header= CreateFrame('Button', nil, btn, 'SecureActionButtonTemplate')
+    btn.header:SetAttribute('type', 'raidtarget')
+    btn.header:SetAttribute("action1", "set")
+    --btn.header:RegisterForClicks("AnyUp", "AnyDown")
+
+
+    function btn:set_tank()
+        if not self:CanChangeAttribute() then
+            return
+        end
+
+        local tank, header= Set_TankHealer()
+
+        self.tank:SetAttribute("marker1", 2)
+        self.tank:SetAttribute("unit1", tank)
+
+        self.header:SetAttribute("marker1", IsInRaid() and 6 or 1)
+        self.header:SetAttribute("unit1", header)
+    end
+
+    btn:set_tank()
 end
 
 
@@ -444,6 +438,7 @@ local function Init()--设置标记, 框架
                 ..WoWTools_ColorMixin:SetStringColor(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                 ..WoWTools_DataMixin.Icon.right
             )
+
             GameTooltip:Show()
         end)
 
@@ -734,34 +729,70 @@ local function Init()--设置标记, 框架
             btn:SetAllPoints(MakerFrame.target)
 
             btn:SetAttribute('type', 'raidtarget')
-            btn:SetAttribute("action", "clear-all")
-            btn.texture= btn:CreateTexture()
-            btn.texture:SetAtlas('jailerstower-animapowerlist-powerborder-purple')
-            btn.texture:SetPoint('CENTER')
-            btn.texture:SetSize(16,16)
+
+
 
             --Auto_TankHeader(btn)
+            --btn:SetAttribute('type', 'click')
+            --btn:SetAttribute("clickbutton1", btn.tan)
 
-            function btn:set_alpha()
-                self.texture:SetAlpha(self:IsMouseOver() and 1 or 0.5)
+            --btn:SetAttribute('type2', 'raidtarget')
+            btn:SetAttribute('action1', 'set')
+            btn:SetAttribute("marker1", 2)
+
+            btn:SetAttribute("action2", "clear-all")
+
+            function btn:settings()
+                if not self:CanChangeAttribute() then
+                    self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                    return
+                end
+                self:SetAttribute("unit1", Set_TankHealer() or nil)
             end
-            btn:SetScript('OnLeave', function(self)
-                self:set_alpha()
-                GameTooltip:Hide()
+
+            btn:SetScript('OnHide', function(self)
+                self:UnregisterAllEvents()
             end)
+            btn:SetScript('OnShow', function(self)
+                self:RegisterEvent('GROUP_ROSTER_UPDATE')
+                self:settings()
+            end)
+            btn:SetScript('OnEvent', btn.settings)
+
+            btn:settings()
+
+
+            btn:SetNormalAtlas('jailerstower-animapowerlist-powerborder-purple')
+            local icon= btn:GetNormalTexture()
+            icon:ClearAllPoints()
+            icon:SetSize(16,16)
+            icon:SetPoint('CENTER')
+
             btn:SetScript('OnEnter', function(self)
-                self:set_alpha()
                 if not Tooltip_SetOwner() then
                     return
                 end
+                local unit= self:GetAttribute("unit1")
+
                 GameTooltip_SetTitle(GameTooltip,
-                    '|A:bags-button-autosort-up:0:0|a'
-                    ..(WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER),
+                    WoWTools_DataMixin.Icon.left
+                    ..(WoWTools_DataMixin.onlyChinese and '坦克' or TANK)
+                    ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t'
+                    ..'|cffff8000'..(unit or (WoWTools_DataMixin.onlyChinese and '无' or NONE))..'|r'
+                    ..WoWTools_UnitMixin:GetPlayerInfo('player')
+                    --..(self:GetAttribute("unit1" or (WoWTools_DataMixin.onlyChinese and '无' or NONE)))
+                )
+
+                GameTooltip:AddLine(
+                    WoWTools_DataMixin.Icon.right
+                    ..MicroButtonTooltipText(
+                        WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER,
+                        'RAIDTARGETNONE'
+                    )..'|A:bags-button-autosort-up:0:0|a',
                     EPIC_PURPLE_COLOR
                 )
                 GameTooltip:Show()
             end)
-            btn:set_alpha()
         else
             table.insert(Buttons, 'WoWToolsMakersTargetButton'..index)
 
@@ -808,7 +839,10 @@ local function Init()--设置标记, 框架
 
                 GameTooltip_SetTitle(GameTooltip,
                     WoWTools_DataMixin.Icon.left
-                   ..(WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER)
+                    ..MicroButtonTooltipText(
+                        (WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER),
+                        'RAIDTARGET'..self:GetID()
+                   )
                    ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..self:GetID()..':26|t'
                    ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                    ..WoWTools_DataMixin.Icon.right,
@@ -915,21 +949,14 @@ local function Init()--设置标记, 框架
             end
             btn:SetAttribute('type', 'macro')
             btn:SetAttribute('macrotext', text)
-
             btn:SetAllPoints(MakerFrame.marker)
-            btn.texture= btn:CreateTexture()
-            btn.texture:SetAtlas('jailerstower-animapowerlist-powerborder-blue')
-            btn.texture:SetPoint('CENTER')
-            btn.texture:SetSize(16,16)
-            function btn:set_alpha()
-                self.texture:SetAlpha(self:IsMouseOver() and 1 or 0.5)
-            end
-            btn:SetScript('OnLeave', function(self)
-                self:set_alpha()
-                GameTooltip:Hide()
-            end)
-            btn:SetScript('OnEnter', function(self)
-                self:set_alpha()
+            btn:SetNormalAtlas('jailerstower-animapowerlist-powerborder-blue')
+            local icon= btn:GetNormalTexture()
+            icon:ClearAllPoints()
+            icon:SetSize(16,16)
+            icon:SetPoint('CENTER')
+
+            btn:SetScript('OnEnter', function()
                 if not Tooltip_SetOwner() then
                     return
                 end
@@ -940,7 +967,6 @@ local function Init()--设置标记, 框架
                 )
                 GameTooltip:Show()
             end)
-            btn:set_alpha()
         else
             table.insert(Buttons, 'WoWToolsMakersWorldButton'..index)
             function btn:set_point()

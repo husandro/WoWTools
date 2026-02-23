@@ -259,8 +259,24 @@ local KeyTabs={
     [KEY_MOUSEWHEELUP]='|A:poi-door-arrow-up:0:0:-3:0|a',
     [KEY_MOUSEWHEELDOWN]='|A:poi-door-arrow-down:0:0:-3:0|a',
     [KEY_BUTTON10:gsub(10, '')]= "|A:newplayertutorial-icon-mouse-middlebutton:0:0|a",
+}--[[
+    [KEY_NUMPAD0]='',--"数字键盘0"
+    [KEY_NUMPAD1] ='',-- "数字键盘1";
+    [KEY_NUMPAD2] = "newplayertutorial-icon-key";
+    [KEY_NUMPAD3] = "数字键盘3";
+    [KEY_NUMPAD4] = "数字键盘4";
+    [KEY_NUMPAD5] = "数字键盘5";
+    [KEY_NUMPAD6] = "数字键盘6";
+    [KEY_NUMPAD7] = "数字键盘7";
+    [KEY_NUMPAD8] = "数字键盘8";
+    [KEY_NUMPAD9] = "数字键盘9";
+    [KEY_NUMPADDECIMAL] = "数字键盘.";
+    [KEY_NUMPADDIVIDE] = "数字键盘/";
+    [KEY_NUMPADMINUS] = "数字键盘-";
+    [KEY_NUMPADMULTIPLY] = "数字键盘*";
+    [KEY_NUMPADPLUS] = "数字键盘+"
 }
-
+]]
 
 
 function WoWTools_KeyMixin:GetHotKeyText(keyText, action)
