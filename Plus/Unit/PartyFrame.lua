@@ -48,14 +48,16 @@ end
 local function Create_potFrame(frame)
     local unit= frame.unit or frame:GetUnit()
 
-    frame.ToTButton= WoWTools_ButtonMixin:Cbtn(frame, {
+    frame.ToTButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
+    frame.ToTButton:SetSize(35,35)
+    --[[WoWTools_ButtonMixin:Cbtn(frame, {
         isSecure=true,
         size=35,
         isType2=true,
         notBorder=true,
         notTexture=true,
         name= 'WoWTools'..unit..'ToTButton',
-    })
+    })]]
 
     frame.ToTButton.unit= unit
     frame.ToTButton.target= unit..'target'
@@ -129,7 +131,7 @@ end
 
 
 
---队友，施法
+--[[队友，施法
 local function Create_castFrame(frame)
     local unit= frame:GetUnit()
     local castFrame= CreateFrame("Frame", 'WoWTools'..unit..'ToTCastingFrame', frame)
@@ -215,7 +217,7 @@ local function Create_castFrame(frame)
         self:Init()
     end)
 
-end
+end]]
 
 
 
@@ -297,19 +299,21 @@ end
 --战斗指示
 local function Create_combatFrame(frame)
     local combatFrame= CreateFrame('Frame', nil, frame)
-    combatFrame:SetPoint('BOTTOMLEFT', frame.ToTButton, 'RIGHT', 2, 2)
+    combatFrame:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-6, -4)
+    combatFrame:SetFrameStrata('HIGH')
+    --combatFrame:SetPoint('BOTTOMLEFT', frame.ToTButton, 'RIGHT', 2, 2)
     combatFrame:SetSize(16,16)
 
-    combatFrame.unit= frame:GetUnit()
+    combatFrame.unit= frame.unit or frame:GetUnit()
 
     combatFrame.texture= combatFrame:CreateTexture()
     combatFrame.texture:SetAllPoints(combatFrame)
     combatFrame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon')
     combatFrame.texture:SetVertexColor(1, 0, 0)
-    combatFrame.texture:EnableMouse(true)
+    --combatFrame.texture:EnableMouse(true)
     combatFrame.texture:Hide()
 
-    combatFrame.texture:SetScript('OnLeave', function(self)
+    --[[combatFrame.texture:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:SetAlpha(1)
     end)
@@ -323,7 +327,7 @@ local function Create_combatFrame(frame)
         )
         GameTooltip:Show()
         self:SetAlpha(0.5)
-    end)
+    end)]]
 
     combatFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
@@ -340,7 +344,7 @@ local function Create_combatFrame(frame)
     end)
 
     combatFrame:SetScript('OnShow', function(self)
-        self.unit= self:GetParent():GetUnit()
+        self.unit= self:GetParent().unit or self:GetParent():GetUnit()
     end)
 
 end
@@ -626,9 +630,9 @@ end
 
 
 local function Init_CreateButton(frame)
-
+do
     Create_potFrame(frame)--目标的目标
-
+end
 
     frame.ManaBar.RightText:SetAlpha(0)
     frame.ManaBar.LeftText:SetAlpha(0)
@@ -648,7 +652,7 @@ local function Init_CreateButton(frame)
     frame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
 
 
-    Create_castFrame(frame)--队友，施法
+    --Create_castFrame(frame)--队友，施法
     Create_frame(frame)--队伍, 标记, 成员派系
     Create_combatFrame(frame)--战斗指示
     Create_positionFrame(frame)--队友位置
