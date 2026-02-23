@@ -42,8 +42,11 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
 
     local function add_text(value)
         text= text and text..'|n' or ''
-        if not canaccessvalue(value) then
-            text= text..EVENTTRACE_SECRET_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and "显示机密数值" or EVENTTRACE_SHOW_SECRET_VALUES)
+        if not canaccessvalue(value)
+            or value:find('(:?|?)|K(.-)|k')
+        then
+            text= text..'***'..format(WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, '***')
+
         elseif type(value)=='string' then
             text= text..value
         else

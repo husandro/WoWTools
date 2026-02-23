@@ -190,12 +190,8 @@ local function Init_Menu(self, root)
 		local sub3= sub2:CreateButton(
 			msg,
 		function(data)
-			local showText= data.isSecret and '***'..format(
-				WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, '***'
-			) or data.msg
-
 			WoWTools_TextMixin:ShowText(
-				{showText},
+				{data.msg},
 				name,
 				{notClear=true}
 			)
