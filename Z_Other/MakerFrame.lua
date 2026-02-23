@@ -743,7 +743,7 @@ local function Init()--设置标记, 框架
                     ..(WoWTools_DataMixin.onlyChinese and '坦克' or TANK)
                     ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:0|t'
                     ..'|cffff8000'..(unit or (WoWTools_DataMixin.onlyChinese and '无' or NONE))..'|r'
-                    ..WoWTools_UnitMixin:GetPlayerInfo('player')
+                    ..WoWTools_UnitMixin:GetPlayerInfo(unit)
                     --..(self:GetAttribute("unit1" or (WoWTools_DataMixin.onlyChinese and '无' or NONE)))
                 )
 
