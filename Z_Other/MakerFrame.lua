@@ -31,7 +31,7 @@ local MarkerButtons={}
 local function Set_TankHealer(set)--设置队伍标记
     if not IsInGroup()
         or UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')
-then
+    then
     return
 end
     local tank, healer, isSelf
@@ -105,9 +105,45 @@ end
     return tank or healer or isSelf
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Auto_TankHeader(btn)
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -697,14 +733,14 @@ local function Init()--设置标记, 框架
         if index==0 then
             btn:SetAllPoints(MakerFrame.target)
 
-            btn:SetAttribute('type2', 'raidtarget')
-            btn:SetAttribute("action2", "clear-all")
+            btn:SetAttribute('type', 'raidtarget')
+            btn:SetAttribute("action", "clear-all")
             btn.texture= btn:CreateTexture()
             btn.texture:SetAtlas('jailerstower-animapowerlist-powerborder-purple')
             btn.texture:SetPoint('CENTER')
             btn.texture:SetSize(16,16)
 
-            Auto_TankHeader(btn)
+            --Auto_TankHeader(btn)
 
             function btn:set_alpha()
                 self.texture:SetAlpha(self:IsMouseOver() and 1 or 0.5)
