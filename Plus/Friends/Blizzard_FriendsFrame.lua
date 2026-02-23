@@ -48,7 +48,7 @@ local function Init_Friends_Menu(self, root)
     root:CreateTitle(
         WoWTools_DataMixin.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)
     )
-    root:CreateCheckbox(
+    root:CreateRadio(
         OptionText:format(FRIENDS_TEXTURE_ONLINE, WoWTools_DataMixin.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE),
     function()
         return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel'
@@ -59,9 +59,10 @@ local function Init_Friends_Menu(self, root)
             Save().Friends[WoWTools_DataMixin.Player.GUID]= 'Availabel'
         end
         self:set_status()
+        return MenuResponse.Refresh
     end)
 
-    root:CreateCheckbox(
+    root:CreateRadio(
         OptionText:format(FRIENDS_TEXTURE_AFK, WoWTools_DataMixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY),
     function()
         return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Away'
@@ -72,9 +73,10 @@ local function Init_Friends_Menu(self, root)
             Save().Friends[WoWTools_DataMixin.Player.GUID]= 'Away'
         end
         self:set_status()
+        return MenuResponse.Refresh
     end)
 
-    root:CreateCheckbox(
+    root:CreateRadio(
         OptionText:format(FRIENDS_TEXTURE_DND, WoWTools_DataMixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY),
     function()
         return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'DND'
@@ -85,6 +87,7 @@ local function Init_Friends_Menu(self, root)
             Save().Friends[WoWTools_DataMixin.Player.GUID]= 'DND'
         end
         self:set_status()
+        return MenuResponse.Refresh
     end)
 
     root:CreateDivider()
