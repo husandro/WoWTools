@@ -28,34 +28,40 @@ local MarkerButtons={}
 
 
 
-local function Set_TankHealer()--设置队伍标记
+local function Get_Tank()--设置队伍标记
+    local isInRaid= IsInRaid()
     if not IsInGroup()
-        or (IsInRaid() and not (UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')))
+        or (isInRaid and not (UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')))
     then
         return
     end
 
---    local tank, healer
-
-    if IsInRaid() then
+    if isInRaid then
         local tab={}--设置团队标记
-
         for index=1, MAX_RAID_MEMBERS do
             local online, _, role, _, combatRole= select(8, GetRaidRosterInfo(index))
 
             if online and (role=='TANK' or combatRole=='TANK') then
                 local unit= 'raid'..index
-                table.insert(tab, {
-                    unit=unit,
-                    hp=UnitHealthMax(unit)
-                })
+                local hp= UnitHealthMax(unit)
+                if not canaccessvalue(hp) then
+                    return unit
+                else
+                    table.insert(tab, {
+                        unit=unit,
+                        hp= hp or 0,
+                    })
+                end
             end
         end
 
-        table.sort(tab, function(a,b) return a.hp>b.hp end)
+        table.sort(tab, function(a,b)
+            return a.hp>b.hp
+        end)
 
-        return tab[1]
-        --tank, healer= tab[1], tab[2]
+        if tab[1] then
+            return tab[1].unit
+        end
 
     else--设置队伍标记      
         for index=1, MAX_PARTY_MEMBERS+1 do
@@ -63,8 +69,6 @@ local function Set_TankHealer()--设置队伍标记
             local role= UnitGroupRolesAssigned(unit)
             if role=='TANK' then
                 return unit
-            --elseif role=='HEALER' then
-                --  healer=unit
             end
         end
     end
@@ -80,42 +84,6 @@ end
 
 
 
-
-
-
-
-local function Auto_TankHeader(btn)
-    btn.tank= CreateFrame('Button', nil, btn, 'SecureActionButtonTemplate')
-    --btn.tank:RegisterForClicks("AnyUp", "AnyDown")
-
-    btn.tank:SetAttribute('type', 'raidtarget')
-    btn.tank:SetAttribute('action1', 'set')
-
-    btn.tank:SetAttribute('type2', 'raidtarget')
-    btn.tank:SetAttribute('action2', 'set')
-
-    btn.header= CreateFrame('Button', nil, btn, 'SecureActionButtonTemplate')
-    btn.header:SetAttribute('type', 'raidtarget')
-    btn.header:SetAttribute("action1", "set")
-    --btn.header:RegisterForClicks("AnyUp", "AnyDown")
-
-
-    function btn:set_tank()
-        if not self:CanChangeAttribute() then
-            return
-        end
-
-        local tank, header= Set_TankHealer()
-
-        self.tank:SetAttribute("marker1", 2)
-        self.tank:SetAttribute("unit1", tank)
-
-        self.header:SetAttribute("marker1", IsInRaid() and 6 or 1)
-        self.header:SetAttribute("unit1", header)
-    end
-
-    btn:set_tank()
-end
 
 
 
@@ -728,18 +696,9 @@ local function Init()--设置标记, 框架
         if index==0 then
             btn:SetAllPoints(MakerFrame.target)
 
-            btn:SetAttribute('type', 'raidtarget')
-
-
-
-            --Auto_TankHeader(btn)
-            --btn:SetAttribute('type', 'click')
-            --btn:SetAttribute("clickbutton1", btn.tan)
-
-            --btn:SetAttribute('type2', 'raidtarget')
+            btn:SetAttribute('type', 'raidtarget')            
             btn:SetAttribute('action1', 'set')
             btn:SetAttribute("marker1", 2)
-
             btn:SetAttribute("action2", "clear-all")
 
             function btn:settings()
@@ -747,18 +706,23 @@ local function Init()--设置标记, 框架
                     self:RegisterEvent('PLAYER_REGEN_ENABLED')
                     return
                 end
-                self:SetAttribute("unit1", Set_TankHealer() or nil)
+                self:SetAttribute("unit1", Get_Tank() or nil)
             end
 
             btn:SetScript('OnHide', function(self)
                 self:UnregisterAllEvents()
             end)
+            btn:RegisterEvent('GROUP_ROSTER_UPDATE')
             btn:SetScript('OnShow', function(self)
                 self:RegisterEvent('GROUP_ROSTER_UPDATE')
                 self:settings()
             end)
-            btn:SetScript('OnEvent', btn.settings)
-
+            btn:SetScript('OnEvent', function(self, event)
+                if event=='PLAYER_REGEN_ENABLED' then
+                    self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+                end
+                self:settings()
+            end)
             btn:settings()
 
 
@@ -788,7 +752,7 @@ local function Init()--设置标记, 框架
                     ..MicroButtonTooltipText(
                         WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER,
                         'RAIDTARGETNONE'
-                    )..'|A:bags-button-autosort-up:0:0|a',
+                    )..'|A:bags-button-autosort-up:22:22|a',
                     EPIC_PURPLE_COLOR
                 )
                 GameTooltip:Show()
@@ -849,7 +813,7 @@ local function Init()--设置标记, 框架
                    TargetColor[self:GetID()]
                 )
                 GameTooltip:AddLine(
-                    '|A:bags-button-autosort-up:0:0|a'
+                    '|A:bags-button-autosort-up:22:22|a'
                     ..'Alt+',
                    TargetColor[self:GetID()]:GetRGB()
                 )
@@ -961,7 +925,7 @@ local function Init()--设置标记, 框架
                     return
                 end
                 GameTooltip_SetTitle(GameTooltip,
-                    '|A:bags-button-autosort-up:0:0|a'
+                    '|A:bags-button-autosort-up:22:22|a'
                     ..(WoWTools_DataMixin.onlyChinese and '地面' or GROUPMANAGER_GROUND_MARKER),
                     ACCOUNT_WIDE_FONT_COLOR
                 )
@@ -1006,7 +970,7 @@ local function Init()--设置标记, 框架
                     WoWTools_DataMixin.Icon.left
                     ..(WoWTools_DataMixin.onlyChinese and '地面' or GROUPMANAGER_GROUND_MARKER)
                     ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..self:GetID()..':26|t'
-                    ..'|A:bags-button-autosort-up:0:0|a'
+                    ..'|A:bags-button-autosort-up:22:22|a'
                     ..WoWTools_DataMixin.Icon.right,
                     TargetColor[self:GetID()]
                 )

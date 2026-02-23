@@ -20,21 +20,21 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
     GameTooltipStatusBar.textLeft:SetPoint('TOPLEFT', GameTooltipStatusBar, 'BOTTOMLEFT')--生命条
     GameTooltipStatusBar.textRight = WoWTools_LabelMixin:Create(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
     GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
-    GameTooltipStatusBar:HookScript("OnValueChanged", function(frame)
+    GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
         local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
 
-        if WoWTools_FrameMixin:IsLocked(frame)
+        if WoWTools_FrameMixin:IsLocked(self)
             or not canaccessvalue(unit)
             or not unit
         then
-            frame.text:SetText('')
-            frame.textLeft:SetText('')
-            frame.textRight:SetText('')
+            self.text:SetText('')
+            self.textLeft:SetText('')
+            self.textRight:SetText('')
             return
         end
 
         local color= WoWTools_UnitMixin:GetColor(unit)
-        local r, g, b = color:GetRGB()
+
 
         local left, right, text
         local value= UnitHealth(unit)
@@ -51,8 +51,11 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
         elseif canaccessvalue(value) and value then
             if value <= 0 then
                 text = WARNING_FONT_COLOR:WrapTextInColorCode('|A:poi-soulspiritghost:0:0|a'..(WoWTools_DataMixin.onlyChinese and '死亡' or DEAD))
+            else
+                left= WoWTools_DataMixin:MK(value, 2)
+            end
 
-            elseif max and max>0 then
+            if canaccessvalue(max) and max and max>0 then
                 local hp = value / max * 100
                 text = format('%i%% ', hp)
                 if hp<30 then
@@ -64,21 +67,18 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
                 else
                     text= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(text)
                 end
-            end
 
-            left= WoWTools_DataMixin:MK(value, 2)
-            right= WoWTools_DataMixin:MK(max, 2)
-        else
-            left= value
-            right= max
+                right= WoWTools_DataMixin:MK(max, 2)
+            end
         end
 
-        frame.text:SetText(text or '')
-        frame.textLeft:SetText(left)
-        frame.textRight:SetText(right)
+        self.text:SetText(text)
+        self.textLeft:SetText(left or value)
+        self.textRight:SetText(right or max)
 
-        frame.textLeft:SetTextColor(r or 1, g or 1, b or 1)
-        frame.textRight:SetTextColor(r or 1, g or 1, b or 1)
+        self.textLeft:SetTextColor(color:GetRGB())
+        self.textRight:SetTextColor(color:GetRGB())
+        self:SetStatusBarColor(color:GetRGB())
     end)
 
 

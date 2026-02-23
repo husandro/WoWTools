@@ -237,17 +237,16 @@ local function Init_Panel()
         })
 
 
---[[<右键点击设置框体>
+--<右键点击设置框体>
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '<右键点击设置框体>' or UNIT_POPUP_RIGHT_CLICK,
-        tooltip=  WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK),
+        tooltip=  WoWTools_TextMixin:GetShowHide(nil, true),
         GetValue= function() return Save().UNIT_POPUP_RIGHT_CLICK end,
         category= WoWTools_TooltipMixin.Category,
         SetValue= function()
             Save().UNIT_POPUP_RIGHT_CLICK= not Save().UNIT_POPUP_RIGHT_CLICK and true or nil
-            print(WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), reloadText)
         end
-    })]]
+    })
 
     WoWTools_PanelMixin:OnlyCheck({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|A:NPE_Icon:0:0|aCtrl+Shift', WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
@@ -476,6 +475,13 @@ local function Init()
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
 
 --移除，<右键点击设置框体> 替换原生
+    WoWTools_DataMixin:Hook('UnitFrame_UpdateTooltip', function(self)
+        if not Save().UNIT_POPUP_RIGHT_CLICK
+            and GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip)
+        then
+		    GameTooltip:Show()
+        end
+    end)
     --[[if not Save().UNIT_POPUP_RIGHT_CLICK then
         function UnitFrame_UpdateTooltip (self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);

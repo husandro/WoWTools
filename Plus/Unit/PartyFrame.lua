@@ -500,15 +500,19 @@ local function Create_deadFrame(frame)
     deadFrame.Text:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         local p= self:GetParent()
-        GameTooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)..' '..p.unit,
-            p.dead..' '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)
+            ..': |cffffffff'..(p.dead or 0)..'|r '
+           ..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
         )
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '重置' or RESET)
+            ..WoWTools_DataMixin.Icon.left
+        )
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
@@ -524,18 +528,23 @@ local function Create_deadFrame(frame)
 
     function deadFrame:settings()
 --死亡，次数
+        local unit= self:GetParent().unit
         self.Text:SetText(self.dead)
+
+        local color= WoWTools_UnitMixin:GetColor(unit)
+        self.Text:SetTextColor(color:GetRGB())
+
 --编辑模式
         if Is_InEditMode() then
             self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
             return
 --没用，连线
-        elseif not UnitIsConnected(self.unit) then
+        elseif not UnitIsConnected(unit) then
             self.texture:SetTexture(0)
             return
         end
 
-        local atlas, texture= Get_Unit_Status(self.unit)
+        local atlas, texture= Get_Unit_Status(unit)
 
         if atlas then
             self.texture:SetAtlas(atlas)
@@ -546,12 +555,13 @@ local function Create_deadFrame(frame)
 
     function deadFrame:Init()
         self.dead=0
-        self.unit= self:GetParent():GetUnit()
+        local unit= self:GetParent().unit
+
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
         self:RegisterEvent('CHALLENGE_MODE_START')
-        self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
-        self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
-        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.unit)
+        self:RegisterUnitEvent('UNIT_FLAGS', unit)
+        self:RegisterUnitEvent('UNIT_HEALTH', unit)
+        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', unit)
         self:settings()
     end
 
@@ -559,7 +569,7 @@ local function Create_deadFrame(frame)
         if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
             self.dead= 0
         else
-            if UnitIsDeadOrGhost(self.unit) then--死亡，次数
+            if UnitIsDeadOrGhost(self:GetParent().unit) then--死亡，次数
                 if not self.deadBool then
                     self.deadBool=true
                     self.dead= self.dead +1
@@ -575,7 +585,6 @@ local function Create_deadFrame(frame)
         self:UnregisterAllEvents()
         self.Text:SetText('')
         self.dead=nil
-        self.unit=nil
         self.deadBool=nil
         self.texture:SetTexture(0)
     end)
@@ -657,11 +666,9 @@ local function Init_CreateButton(frame)
 
     WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
         local color= WoWTools_UnitMixin:GetColor(frame:GetUnit() or frame.unit)
-        local r,g,b= color:GetRGB()
-
     --外框
-        self.Texture:SetVertexColor(r or 1, g or 1, b or 1)
-        self.PortraitMask:SetVertexColor(r or 1, g or 1, b or 1)
+        self.Texture:SetVertexColor(color:GetRGB())
+        self.PortraitMask:SetVertexColor(color:GetRGB())
     end)
 end
 

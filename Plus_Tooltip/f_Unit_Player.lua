@@ -301,12 +301,15 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                     end
                 end
             elseif i>num then
+
                 if not hideLine then
                     hideLine=lineLeft
                 else
+                   
                     show=false
                 end
             end
+
             if show then
                 lineLeft:SetTextColor(r,g,b)
                 local lineRight= _G[tooltipName..'TextRight'..i]
@@ -314,7 +317,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                     lineRight:SetTextColor(r,g,b)
                 end
             else
-                lineLeft:SetText('""')
+                lineLeft:SetText('')
                 lineLeft:SetShown(false)
                 local lineRight= _G[tooltipName..'TextRight'..i]
                 if lineRight then

@@ -3081,7 +3081,8 @@
         "KEY_NUMPADDIVIDE",
         "KEY_NUMPADMINUS",
         "KEY_NUMPADMULTIPLY",
-        "KEY_NUMPADPLUS"
+        "KEY_NUMPADPLUS",
+        "UnitFrame_UpdateTooltip"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
