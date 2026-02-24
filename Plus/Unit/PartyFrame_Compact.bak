@@ -110,5 +110,5 @@ end
 
 
 function WoWTools_UnitMixin:Init_PartyFrame_Compact()--小队, 使用团框架
-    Init()
+   -- Init()
 end

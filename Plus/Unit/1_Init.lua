@@ -11,7 +11,7 @@ local function Init()
     WoWTools_UnitMixin:Init_TargetFrame()--目标
 
     WoWTools_UnitMixin:Init_PartyFrame()--小队
-    WoWTools_UnitMixin:Init_PartyFrame_Compact()--小队, 使用团框架
+    --WoWTools_UnitMixin:Init_PartyFrame_Compact()--小队, 使用团框架
 
     WoWTools_UnitMixin:Init_BossFrame()--BOSS
     WoWTools_UnitMixin:Init_RaidFrame()--团队
