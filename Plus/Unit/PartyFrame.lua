@@ -681,18 +681,20 @@ local function Init()--PartyFrame.lua
 
 
             WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
-                if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
-                    self.PartyMemberOverlay.RoleIcon:SetShown(false)
-                end
+                self.PartyMemberOverlay.RoleIcon:SetAlpha(UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' and 0 or 1)
             end)
 
             frame.Texture:SetAlpha(0.5)
-            --[[WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
+            WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
                 local color= WoWTools_UnitMixin:GetColor(frame:GetUnit() or frame.unit)
             --外框
                 self.Texture:SetVertexColor(color:GetRGB())
                 self.PortraitMask:SetVertexColor(color:GetRGB())
-            end)]]
+
+                frame.deadFrame:UnregisterAllEvents()
+                frame.deadFrame:Init()
+                frame.combatFrame:Init()
+            end)
         end
 
 
