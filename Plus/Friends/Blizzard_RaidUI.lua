@@ -83,7 +83,7 @@ local function Init_RaidGroupFrame_Update()
 
                     if text then
                         if data.itemLevel then
-                            text= data[guid].itemLevel..text
+                            text= data.itemLevel..text
                             itemLevel= itemLevel+ data.itemLevel
                             itemNum= itemNum+1
                         else
