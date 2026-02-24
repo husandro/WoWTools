@@ -49,7 +49,7 @@ end]]
 
 --目标的目标
 local function Create_potFrame(frame)
-    local unit= frame.unit or frame:GetUnit()
+    local unit= frame.unit
 
     frame.ToTButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
     frame.ToTButton:SetSize(35,35)
@@ -308,9 +308,9 @@ local function Create_combatFrame(frame)
 
     if frame.PartyMemberOverlay then
         --combatFrame:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-6, -4)
-        combatFrame:SetPoint('RIGHT', frame.PartyMemberOverlay.RoleIcon, 'LEFT')
+        combatFrame:SetPoint('LEFT', frame.PartyMemberOverlay.RoleIcon, 'RIGHT')
         combatFrame:SetSize(frame.PartyMemberOverlay.RoleIcon:GetSize())
-        --combatFrame:SetFrameStrata('HIGH')
+        combatFrame:SetFrameStrata('HIGH')
     else
         --.PartyMemberOverlay.RoleIcon
         combatFrame:SetPoint('TOPLEFT', 4, -17)
@@ -418,7 +418,7 @@ local function Create_positionFrame(frame)
     end
 
     function Frame:Init()
-        local unit= self:GetParent():GetUnit()
+        local unit= self:GetParent().unit
         self.unit= unit
         self.map.unit= unit
 
@@ -466,9 +466,28 @@ end
 
 
 --队友，死亡 Save().PartyDeadData={ [GetUnitName(self.unit, true) ] = 死亡次数 0}
+local function Rest_AllDeadData()
+     Save().PartyDeadData={}
+     for i=1, MAX_PARTY_MEMBERS+1 do
+        if _G['CompactPartyFrameMember'..i] then
+            local frame= _G['CompactPartyFrameMember'..i].deadFrame
+            if frame and frame:IsVisible() then
+                frame:UnregisterAllEvents()
+                frame:Init()
+            end
+        end
+        if PartyFrame['MemberFrame'..i] then
+            local frame= PartyFrame['MemberFrame'..i].deadFrame
+            if frame and frame:IsVisible() then
+                frame:UnregisterAllEvents()
+                frame:Init()
+            end
+        end
+    end
+end
+
 
 local function Create_deadFrame(frame)
-
     frame.deadFrame= CreateFrame('Frame', nil, frame)
     local deadFrame= frame.deadFrame
 
@@ -478,7 +497,7 @@ local function Create_deadFrame(frame)
     deadFrame.Text:EnableMouse(true)
 
     if frame.PartyMemberOverlay then
-        deadFrame:SetPoint('TOPRIGHT', frame.Portrait, 2, 2)
+        deadFrame:SetPoint('TOPRIGHT', frame.Portrait, 2, -4)
         deadFrame.Text:SetPoint("RIGHT")
     else
         deadFrame:SetPoint('TOPLEFT', 16, -17)
@@ -510,13 +529,7 @@ local function Create_deadFrame(frame)
     end)
 
     deadFrame.Text:SetScript('OnMouseDown', function(self)
-        Save().PartyDeadData={}
-        for i=1, MAX_PARTY_MEMBERS do
-            local f= _G['WoWToolsparty'..i..'DeadFrame']
-            if f and f.settings then
-                f:settings()
-            end
-        end
+        Rest_AllDeadData()
         self:SetAlpha(0.3)
     end)
     deadFrame.Text:SetScript('OnMouseUp', function(self)
@@ -681,12 +694,12 @@ local function Init()--PartyFrame.lua
 
 
             WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
-                self.PartyMemberOverlay.RoleIcon:SetAlpha(UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' and 0 or 1)
+                self.PartyMemberOverlay.RoleIcon:SetAlpha(UnitGroupRolesAssigned(self.unit)== 'DAMAGER' and 0 or 1)
             end)
 
             frame.Texture:SetAlpha(0.5)
             WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
-                local color= WoWTools_UnitMixin:GetColor(frame:GetUnit() or frame.unit)
+                local color= WoWTools_UnitMixin:GetColor(frame.unit)
             --外框
                 self.Texture:SetVertexColor(color:GetRGB())
                 self.PortraitMask:SetVertexColor(color:GetRGB())

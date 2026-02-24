@@ -21,12 +21,22 @@ local function Init_Menu(self, root)
 
 --战斗信息
     local sub=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO), function()
-        return not Save().disabledText
+        return not Save().button.disabled
     end, function()
         self:set_Click()
     end)
+
+--重置位置
+    sub:CreateButton(
+        (Save().textFramePoint and '' or '|cff626262')
+        ..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
+    function()
+        Save().button.point=nil
+        WoWTools_CombatMixin:Init_TrackButton()
+        return MenuResponse.Refresh
+    end)
 --战斗信息, 选项
-    WoWTools_CombatMixin:Init_TrackMenu(self, sub)
+    --WoWTools_CombatMixin:Init_TrackMenu(self, sub)
 
 --缩放
     root:CreateDivider()
@@ -123,7 +133,7 @@ local function Init()
 
     function btn:set_texture()
         self.texture:SetAtlas(WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or WoWTools_DataMixin.Icon['Neutral'])
-        self.texture:SetDesaturated(Save().disabledText and true or false)--禁用/启用 TrackButton, 提示
+        self.texture:SetDesaturated(Save().button.disabled and true or false)--禁用/启用 TrackButton, 提示
     end
 
 
@@ -134,7 +144,7 @@ local function Init()
     end
 
     function btn:set_Click()
-        Save().disabledText = not Save().disabledText and true or nil
+        Save().button.disabled = not Save().button.disabled and true or nil
         self:set_texture()
         WoWTools_CombatMixin:Init_TrackButton()
     end
@@ -213,16 +223,11 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
     WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or {
         textScale=1,
-        --SayTime=120,--每隔
-        --disabledSayTime= not WoWTools_DataMixin.Player.husandro,
-        --AllOnlineTime=true,--进入游戏时,提示游戏,时间
-
-        --[[旧数据，不在用
-        bat={num= 0, time= 0},--战斗数据
-        pet={num= 0,  win=0, capture=0},
-        ins={num= 0, time= 0, kill=0, dead=0},
-        afk={num= 0, time= 0},]]
         inCombatScale=1,--战斗中缩放
+        button={
+            disabled= not WoWTools_DataMixin.Player.husandro,
+            InstanceDate={num=0, time=0, kill=0, dead=0, map=nil, onInsTime=nil},
+        }
     }
 
 
@@ -232,6 +237,25 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         ins={num= 0, time= 0, kill=0, dead=0},
         afk={num= 0, time= 0},
     }
+
+    if not Save().button then--旧数据
+        Save().button= {
+            disabled= Save().disabledText,
+            isNotClockType= Save().timeTypeText,
+            bgAlpha= Save().textAlpha,
+            scale= Save().textScale,
+            strata= Save().trckStrata,
+            point= Save().textFramePoint,
+            InstanceDate={num=0, time=0, kill=0, dead=0, map=nil, onInsTime=nil},
+        }
+
+        Save().disabledText= nil
+        Save().disabledSayTime= nil
+        Save().SayTime= nil
+        Save().textAlpha= nil
+        Save().textScale= nil
+        Save().textFramePoint= nil
+    end
 
 
     WoWTools_CombatMixin.addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
