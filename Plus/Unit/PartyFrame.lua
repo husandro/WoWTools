@@ -699,10 +699,10 @@ local function Init()--PartyFrame.lua
 
             frame.Texture:SetAlpha(0.5)
             WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
-                local color= WoWTools_UnitMixin:GetColor(frame.unit)
+                --[[local color= WoWTools_UnitMixin:GetColor(frame.unit)
             --外框
                 self.Texture:SetVertexColor(color:GetRGB())
-                self.PortraitMask:SetVertexColor(color:GetRGB())
+                self.PortraitMask:SetVertexColor(color:GetRGB())]]
 
                 frame.deadFrame:UnregisterAllEvents()
                 frame.deadFrame:Init()
