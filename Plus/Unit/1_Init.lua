@@ -34,10 +34,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_UnitFrame']= WoWToolsSave['Plus_UnitFrame'] or {
                 raidFrameScale= WoWTools_DataMixin.Player.husandro and 0.8 or 1,
                 showLootButton= WoWTools_DataMixin.Player.husandro,
+                PartyDeadData={}--队友，死亡，次数
             }
 
-
-            Save().hideCastingFrame= nil
+            Save().PartyDeadData= Save().PartyDeadData or {}
 
             WoWTools_UnitMixin.addName= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(WoWTools_DataMixin.onlyChinese and '单位框体' or UNITFRAME_LABEL)
 

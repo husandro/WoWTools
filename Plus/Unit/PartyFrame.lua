@@ -1,3 +1,6 @@
+local function Save()
+    return WoWToolsSave['Plus_UnitFrame'] or {}
+end
 
 
 local function Is_InEditMode()
@@ -6,7 +9,7 @@ local function Is_InEditMode()
     end
 end
 
-local function Get_Unit_Status(unit)
+--[[local function Get_Unit_Status(unit)
     local atlas,texture
     if UnitHasIncomingResurrection(unit) then--正在复活
         atlas='poi-traveldirections-arrow2'
@@ -24,7 +27,7 @@ local function Get_Unit_Status(unit)
         atlas= 'BattleBar-SwapPetFrame-DeadIcon'
     end
     return atlas, texture
-end
+end]]
 
 
 
@@ -302,33 +305,13 @@ local function Create_combatFrame(frame)
     local combatFrame= CreateFrame('Frame', nil, frame)
     combatFrame:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-6, -4)
     combatFrame:SetFrameStrata('HIGH')
-    --combatFrame:SetPoint('BOTTOMLEFT', frame.ToTButton, 'RIGHT', 2, 2)
     combatFrame:SetSize(16,16)
-
     combatFrame.unit= frame.unit or frame:GetUnit()
-
-    combatFrame.texture= combatFrame:CreateTexture()
-    combatFrame.texture:SetAllPoints(combatFrame)
+    combatFrame.texture= combatFrame:CreateTexture(nil, 'BORDER')
+    combatFrame.texture:SetAllPoints()
     combatFrame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon')
     combatFrame.texture:SetVertexColor(1, 0, 0)
-    --combatFrame.texture:EnableMouse(true)
     combatFrame.texture:Hide()
-
-    --[[combatFrame.texture:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(1)
-    end)
-    combatFrame.texture:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
-        GameTooltip:AddDoubleLine(
-            self:GetParent().unit,
-            WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
-        )
-        GameTooltip:Show()
-        self:SetAlpha(0.5)
-    end)]]
 
     combatFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
@@ -339,15 +322,6 @@ local function Create_combatFrame(frame)
             )
         end
     end)
-
-    combatFrame:SetScript('OnHide', function(self)
-        self.elapsed=nil
-    end)
-
-    combatFrame:SetScript('OnShow', function(self)
-        self.unit= self:GetParent().unit or self:GetParent():GetUnit()
-    end)
-
 end
 
 
@@ -365,10 +339,10 @@ local function Create_positionFrame(frame)
     local Frame= CreateFrame("Frame", nil, frame)
     Frame:SetPoint('LEFT', frame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
     Frame:SetSize(1,1)
-
 --地图，位置
     Frame.map= CreateFrame('Frame', nil, Frame)
-    Frame.map.Text= WoWTools_LabelMixin:Create(Frame.map)
+    Frame.map.Text= Frame.map:CreateFontString(nil, 'BORDER', 'WoWToolsFont')--  WoWTools_LabelMixin:Create(Frame.map)
+    Frame.map.Text:SetFontHeight(10)
     Frame.map.Text:SetPoint('LEFT', Frame)
     Frame.map:Hide()
 --距离
@@ -376,7 +350,8 @@ local function Create_positionFrame(frame)
     Frame.xy:SetSize(1,1)
     Frame.xy:SetPoint('RIGHT', frame.Portrait, 'LEFT')
     Frame.xy:Hide()
-    WoWTools_UnitMixin:SetRangeFrame(Frame.xy)
+    Frame.xy.unit= frame.unit
+    WoWTools_UnitMixin:SetRangeFrame(Frame.xy, 10)
 
 
 
@@ -430,7 +405,6 @@ local function Create_positionFrame(frame)
         local unit= self:GetParent():GetUnit()
         self.unit= unit
         self.map.unit= unit
-        self.xy.unit= unit
 
         local color= WoWTools_UnitMixin:GetColor(unit)
         self.map.Text:SetTextColor(color:GetRGB())
@@ -447,12 +421,6 @@ local function Create_positionFrame(frame)
         self.map.elapsed=nil
         self.map.unit=nil
         self.map.Text:SetText('')
-
-        self.xy.elapsed= nil
-        self.xy.unit=nil
-        self.xy.Text:SetText('')
-        self.xy.Text2:SetText('')
-        self.xy.Text3:SetText('')
 
         self.unit=nil
         self:UnregisterAllEvents()
@@ -481,22 +449,24 @@ end
 
 
 
---队友，死亡
+--队友，死亡 Save().PartyDeadData={ [GetUnitName(self.unit, true) ] = 死亡次数 0}
+
 local function Create_deadFrame(frame)
 
-    local deadFrame= CreateFrame('Frame', 'WoWTools'..frame.unit..'Frame', frame)
-    deadFrame:SetPoint("CENTER", frame.Portrait)
-    deadFrame:SetFrameLevel(frame:GetFrameLevel()+1)
-    deadFrame:SetSize(37,37)
+    local deadFrame= CreateFrame('Frame', 'WoWTools'..frame.unit..'DeadFrame', frame)
+    deadFrame:SetPoint("TOPLEFT", frame.Portrait)
+    deadFrame:SetSize(1,1)
     deadFrame:SetFrameStrata('HIGH')
 
     deadFrame.texture= deadFrame:CreateTexture()
-    deadFrame.texture:SetAllPoints(deadFrame)
+    deadFrame.texture:SetSize(23, 23)
+    deadFrame.texture:SetPoint('TOPLEFT')
 
 
-    deadFrame.Text= WoWTools_LabelMixin:Create(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
+    deadFrame.Text= deadFrame:CreateFontString(nil, 'BORDER', 'WoWToolsFont2') --WoWTools_LabelMixin:Create(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
+    deadFrame.Text:EnableMouse(true)
     --deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
-    deadFrame.Text:SetPoint('TOPRIGHT', deadFrame, -2, 0)
+    deadFrame.Text:SetPoint('TOPRIGHT', frame.Portrait, 2, 2)
 
     deadFrame.Text:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -504,102 +474,103 @@ local function Create_deadFrame(frame)
     end)
     deadFrame.Text:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
-        GameTooltip:AddLine(' ')
-        local p= self:GetParent()
-        GameTooltip:AddLine(
-            (WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)
-            ..': |cffffffff'..(p.dead or 0)..'|r '
+
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)
+            ..': |cffffffff'..self:GetText()..'|r '
            ..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(
-            (WoWTools_DataMixin.onlyChinese and '重置' or RESET)
+            (WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)
             ..WoWTools_DataMixin.Icon.left
         )
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
+
     deadFrame.Text:SetScript('OnMouseDown', function(self)
-        self.dead=0
+        Save().PartyDeadData={}
+        for i=1, MAX_PARTY_MEMBERS do
+            local f= _G['WoWToolsparty'..i..'DeadFrame']
+            if f and f.settings then
+                f:settings()
+            end
+        end
         self:SetAlpha(0.3)
-        self:GetParent():settings()
     end)
     deadFrame.Text:SetScript('OnMouseUp', function(self)
         self:SetAlpha(0.5)
     end)
 
+    function deadFrame:GetName()
+        return GetUnitName(self.unit, true)
+    end
 
     function deadFrame:settings()
 --死亡，次数
-        local unit= self:GetParent().unit
-        self.Text:SetText(self.dead)
-
-        local color= WoWTools_UnitMixin:GetColor(unit)
-        self.Text:SetTextColor(color:GetRGB())
+        self.Text:SetText(Save().PartyDeadData[self:GetName()] or 0)
+    end
 
 --编辑模式
-        if Is_InEditMode() then
+        --[[if Is_InEditMode() then
             self.texture:SetTexture(WoWTools_DataMixin.Icon.icon)
             return
 --没用，连线
         elseif not UnitIsConnected(unit) then
             self.texture:SetTexture(0)
             return
-        end
+        end]]
 
-        local atlas, texture= Get_Unit_Status(unit)
+        --[[local atlas, texture= Get_Unit_Status(unit)
 
         if atlas then
             self.texture:SetAtlas(atlas)
         else
             self.texture:SetTexture(texture or 0)
-        end
-    end
+        end]]
 
-    function deadFrame:Init()
-        self.dead=0
-        local unit= self:GetParent().unit
 
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        self:RegisterEvent('CHALLENGE_MODE_START')
-        self:RegisterUnitEvent('UNIT_FLAGS', unit)
-        self:RegisterUnitEvent('UNIT_HEALTH', unit)
-        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', unit)
-        self:settings()
-    end
+
+
+
 
     deadFrame:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
-            self.dead= 0
+        if event=='CHALLENGE_MODE_START' then
+            self.deadBool=nil
+            Save().PartyDeadData[self:GetName()]= nil
+
         else
-            if UnitIsDeadOrGhost(self:GetParent().unit) then--死亡，次数
+            if UnitIsDeadOrGhost(self.unit) then--死亡，次数
                 if not self.deadBool then
                     self.deadBool=true
-                    self.dead= self.dead +1
+
+                    local name= self:GetName()
+                    Save().PartyDeadData[name]= (Save().PartyDeadData[name] or 0)+1
+
+                    self:settings()
                 end
             else
                 self.deadBool= nil
             end
         end
-        self:settings()
     end)
 
     deadFrame:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()
-        self.Text:SetText('')
-        self.dead=nil
-        self.deadBool=nil
-        self.texture:SetTexture(0)
     end)
 
-    if frame:IsShown() then
-        deadFrame:Init()
-    end
 
     deadFrame:SetScript('OnShow', function(self)
-        self:Init()
+        local unit= self:GetParent().unit
+        self.unit= unit
+        self:RegisterEvent('CHALLENGE_MODE_START')
+        self:RegisterUnitEvent('UNIT_FLAGS', unit)
+        self:RegisterUnitEvent('UNIT_HEALTH', unit)
+        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', unit)
+        local color= WoWTools_UnitMixin:GetColor(unit)
+        self.Text:SetTextColor(color:GetRGB())
+        self:settings()
     end)
 
 end
@@ -627,55 +598,6 @@ end
 
 
 
-
-
-
-local function Init_CreateButton(frame)
-do
-    Create_potFrame(frame)--目标的目标
-end
-
-    frame.ManaBar.RightText:SetAlpha(0)
-    frame.ManaBar.LeftText:SetAlpha(0)
-    frame.HealthBarContainer.RightText:SetAlpha(0)
-
-    frame.HealthBarContainer.LeftText:ClearAllPoints()
-    frame.HealthBarContainer.LeftText:SetPoint('RIGHT', -2,0)
-    frame.HealthBarContainer.LeftText:SetJustifyH('RIGHT')
-
-    --frame.HealthBarContainer.CenterText:SetAlpha(0)
-    frame.HealthBarContainer.CenterText:ClearAllPoints()
-    frame.HealthBarContainer.CenterText:SetPoint('RIGHT')
-    frame.HealthBarContainer.CenterText:SetJustifyH('RIGHT')
-    frame.ManaBar.TextString:SetAlpha(0)
-
-
-    frame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
-
-
-    --Create_castFrame(frame)--队友，施法
-    Create_frame(frame)--队伍, 标记, 成员派系
-    Create_combatFrame(frame)--战斗指示
-    Create_positionFrame(frame)--队友位置
-    Create_deadFrame(frame)--队友，死亡
-
-
-    frame.Name:SetPoint('RIGHT')
-    frame.Name:SetFontObject(GameFontNormalSmall2)
-
-    WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
-        if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
-            self.PartyMemberOverlay.RoleIcon:SetShown(false)
-        end
-    end)
-
-    WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
-        local color= WoWTools_UnitMixin:GetColor(frame:GetUnit() or frame.unit)
-    --外框
-        self.Texture:SetVertexColor(color:GetRGB())
-        self.PortraitMask:SetVertexColor(color:GetRGB())
-    end)
-end
 
 
 
@@ -692,13 +614,66 @@ local function Init()--PartyFrame.lua
         return
     end
 
+    EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", function()
+        Save().PartyDeadData= {}--队友，死亡，次数
+    end)
+
     PartyFrame.Background:SetWidth(124)--144
 
     --local showPartyFrames = PartyFrame:ShouldShow();
-    for i=1, 4 do
+    for i=1, MAX_PARTY_MEMBERS do
         local frame= PartyFrame['MemberFrame'..i]
         if frame then
-           Init_CreateButton(frame)
+            do
+                Create_potFrame(frame)--目标的目标
+            end
+
+            frame.Name:SetPoint('RIGHT')
+            frame.Name:SetFontObject('WoWToolsFont')
+
+            for _, label in pairs({
+                frame.ManaBar.TextString,
+                frame.ManaBar.RightText,
+                frame.ManaBar.LeftText,
+
+                frame.HealthBarContainer.RightText,
+                frame.HealthBarContainer.LeftText,
+                frame.HealthBarContainer.CenterText,
+                frame.Name,
+            }) do
+                if label then
+                    label:SetFontHeight(10)
+                end
+            end
+
+            --frame.PortraitMask:SetAlpha(0)
+            --frame.Texture:SetAlpha(0)
+
+
+            --Create_castFrame(frame)--队友，施法
+            Create_frame(frame)--队伍, 标记, 成员派系
+            Create_combatFrame(frame)--战斗指示
+            Create_positionFrame(frame)--队友位置
+            Create_deadFrame(frame)--队友，死亡
+
+        --[[WoWTools_DataMixin:Hook(frame, 'ToPlayerArt', function(self)--PartyMemberFrame.lua
+            self.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-InCombat')--PartyFrameTemplates.xml
+        end)]]
+
+
+            WoWTools_DataMixin:Hook(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
+                if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
+                    self.PartyMemberOverlay.RoleIcon:SetShown(false)
+                end
+            end)
+
+            frame.Texture:SetAlpha(0.5)
+            --[[WoWTools_DataMixin:Hook(frame, 'UpdateMember', function(self)
+                local color= WoWTools_UnitMixin:GetColor(frame:GetUnit() or frame.unit)
+            --外框
+                self.Texture:SetVertexColor(color:GetRGB())
+                self.PortraitMask:SetVertexColor(color:GetRGB())
+            end)]]
         end
     end
 

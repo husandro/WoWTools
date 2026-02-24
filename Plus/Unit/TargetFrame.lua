@@ -34,17 +34,10 @@ local function Init()
     rangeFrame:SetPoint('RIGHT', TargetFrame, 'LEFT', 22, 6)
     rangeFrame.unit= 'target'
     WoWTools_UnitMixin:SetRangeFrame(rangeFrame)
-    rangeFrame:SetScript('OnHide', function(self)
-        self.elapsed=nil
-        self.Text:SetText('')
-        self.Text2:SetText('')
-        self.Text3:SetText('')
-    end)
 
 
     --WoWTools_TextureMixin:SetFrame(TargetFrame.TargetFrameContent.TargetFrameContentContextual.NumericalThreat, {index=1})
 
-    
 
     Init=function()end
 end

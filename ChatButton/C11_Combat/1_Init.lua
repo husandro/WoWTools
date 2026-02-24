@@ -1,18 +1,5 @@
 
 WoWTools_CombatMixin={}
-local P_Save= {
-    textScale=1,
-    SayTime=120,--每隔
-    disabledSayTime= not WoWTools_DataMixin.Player.husandro,
-    --AllOnlineTime=true,--进入游戏时,提示游戏,时间
-
-    --[[旧数据，不在用
-    bat={num= 0, time= 0},--战斗数据
-    pet={num= 0,  win=0, capture=0},
-    ins={num= 0, time= 0, kill=0, dead=0},
-    afk={num= 0, time= 0},]]
-    inCombatScale=1,--战斗中缩放
-}
 
 local function Save()
     return WoWToolsSave['ChatButton_Combat']
@@ -224,31 +211,28 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         return
     end
 
-    WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or P_Save
-    P_Save=nil
+    WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or {
+        textScale=1,
+        --SayTime=120,--每隔
+        --disabledSayTime= not WoWTools_DataMixin.Player.husandro,
+        --AllOnlineTime=true,--进入游戏时,提示游戏,时间
 
-    if Save().bat then--旧数据，不在用
-        WoWToolsPlayerDate['CombatTimeLog']= {}
-        WoWToolsPlayerDate['CombatTimeLog'].bat= Save().bat
-        WoWToolsPlayerDate['CombatTimeLog'].pet= Save().pet
-        WoWToolsPlayerDate['CombatTimeLog'].ins= Save().ins
-        WoWToolsPlayerDate['CombatTimeLog'].afk= Save().afk
-        Save().bat= nil
-        Save().pet= nil
-        Save().ins= nil
-        Save().afk= nil
-        if Save().SayTime==0 then
-            Save().disabledSayTime= true
-            Save().SayTime=120
-        end
-    else
-        WoWToolsPlayerDate['CombatTimeLog']= WoWToolsPlayerDate['CombatTimeLog'] or {
-            bat={num= 0, time= 0},--战斗数据
-            pet={num= 0, win=0, capture=0},
-            ins={num= 0, time= 0, kill=0, dead=0},
-            afk={num= 0, time= 0},
-        }
-    end
+        --[[旧数据，不在用
+        bat={num= 0, time= 0},--战斗数据
+        pet={num= 0,  win=0, capture=0},
+        ins={num= 0, time= 0, kill=0, dead=0},
+        afk={num= 0, time= 0},]]
+        inCombatScale=1,--战斗中缩放
+    }
+
+
+    WoWToolsPlayerDate['CombatTimeLog']= WoWToolsPlayerDate['CombatTimeLog'] or {
+        bat={num= 0, time= 0},--战斗数据
+        pet={num= 0, win=0, capture=0},
+        ins={num= 0, time= 0, kill=0, dead=0},
+        afk={num= 0, time= 0},
+    }
+
 
     WoWTools_CombatMixin.addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
 

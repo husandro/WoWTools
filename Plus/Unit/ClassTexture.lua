@@ -131,7 +131,7 @@ local function Init()
     end
 
 
-    WoWTools_DataMixin:Hook('UnitFrame_Update', function(frame, isParty)
+    WoWTools_DataMixin:Hook('UnitFrame_Update', function(frame)--, isParty)
         if not canaccessvalue(frame.unit) then
             return
         end
@@ -147,26 +147,27 @@ local function Init()
 
     --名称
         if frame.name then
-            local name
             if WoWTools_UnitMixin:UnitIsUnit(unit, 'pet') then
                 frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
             else
+                local name= frame.name:GetText()
+                if canaccessvalue(name) and name then
+                    if unit=='target' then
+                        local wow= WoWTools_UnitMixin:GetIsFriendIcon(unit)
+                        name= frame.name:GetText()
+                        if wow then
+                            frame.name:SetText(wow..name)
+                        end
 
-                frame.name:SetTextColor(color:GetRGB())
-                if isParty then
-                    name= UnitName(unit)
-                    name= WoWTools_TextMixin:sub(name, 4, 8)
-                    frame.name:SetText(name)
-                elseif unit=='target' then
-                    local wow= WoWTools_UnitMixin:GetIsFriendIcon(unit)
-                    if wow then
-                        name= wow..GetUnitName(unit, false)
+                    else
+                        name= name:match('(.-)·') or name
+                        name= WoWTools_TextMixin:sub(name, 6, 12)
+                        frame.name:SetText(name)
                     end
                 end
             end
-            if name then
-                frame.name:SetText(name)
-            end
+
+            frame.name:SetTextColor(color:GetRGB())
         end
 
 
@@ -174,6 +175,13 @@ local function Init()
         if frame.healthbar then
             frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
             frame.healthbar:SetStatusBarColor(color:GetRGB())--颜色
+        end
+    --外框
+        if frame.Texture then
+            frame.Texture:SetVertexColor(color:GetRGB())
+        end
+        if frame.PortraitMask then
+            frame.PortraitMask:SetVertexColor(color:GetRGB())
         end
     end)
 

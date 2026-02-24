@@ -68,11 +68,14 @@ end]]
 --战斗中，提示
 --<Anchor point="TOPLEFT" x="64" y="-62"/>
     contextual.AttackIcon:ClearAllPoints()
-    contextual.AttackIcon:SetPoint('TOPLEFT', 68, -43)
+    contextual.AttackIcon:SetPoint('RIGHT', PlayerName, 'LEFT')
+    --contextual.AttackIcon:SetPoint('TOPLEFT', 68, -43)
     contextual.AttackIcon:SetVertexColor(1,0,0)
     contextual.AttackIcon.Bg= contextual:CreateTexture(nil, 'BACKGROUND')--加个外框
     contextual.AttackIcon.Bg:SetAtlas('talents-node-choiceflyout-circle-greenglow')
-    contextual.AttackIcon.Bg:SetAllPoints(contextual.AttackIcon)
+    contextual.AttackIcon.Bg:SetPoint('TOPLEFT', contextual.AttackIcon, -4, 4)
+    contextual.AttackIcon.Bg:SetPoint('BOTTOMRIGHT', contextual.AttackIcon, 4, -4)
+    --contextual.AttackIcon.Bg:SetAllPoints(contextual.AttackIcon)
     contextual.AttackIcon:HookScript('OnShow', function(self)
         self.Bg:Show()
     end)

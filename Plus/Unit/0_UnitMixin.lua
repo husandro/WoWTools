@@ -677,17 +677,58 @@ end
 
 
 
-local function Set_Range_OnUpdata(self, elapsed)
-    self.elapsed2= self.elapsed2 + elapsed
 
-    if self.elapsed2<=0.3 then
+
+function WoWTools_UnitMixin:SetRangeFrame(frame, size)
+    if not frame.unit then
+        if WoWTools_DataMixin.Player.husandro then
+            print('WoWTools_UnitMixin:SetRangeFrame|cnWARNING_FONT_COLOR:', '没有发现', 'frame.unit')
+        end
         return
     end
 
-    self.elapsed2=0
-    local speed, mi, ma
-    --if WoWTools_UnitMixin:UnitIsUnit(self.unit, 'player')==false then
-        mi, ma= LibRangeCheck:GetRange(self.unit)
+--位置，最大值
+    size= size or 12
+    frame.RangeMaxLabel= frame:CreateFontString('WoWToolsRangeMaxLabel'..frame.unit, 'BORDER', 'WoWToolsFont2')
+    frame.RangeMaxLabel:EnableMouse(true)
+    frame.RangeMaxLabel:SetFontHeight(size)
+    frame.RangeMaxLabel:SetJustifyH('RIGHT')
+    frame.RangeMaxLabel:SetScript('OnLeave', GameTooltip_Hide)
+    frame.RangeMaxLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    frame.RangeMaxLabel:SetPoint('RIGHT', frame, 'LEFT')
+    frame.RangeMaxLabel.tooltip=  WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '最大距离' or FARCLIP)
+
+--位置，最小值
+    frame.RangeMinLabel= frame:CreateFontString('WoWToolsRangeMinLabel'..frame.unit, 'BORDER', 'WoWToolsFont2')
+    frame.RangeMinLabel:EnableMouse(true)
+    frame.RangeMinLabel:SetFontHeight(size)
+    frame.RangeMinLabel:SetJustifyH('RIGHT')
+    frame.RangeMinLabel:SetScript('OnLeave', GameTooltip_Hide)
+    frame.RangeMinLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    frame.RangeMinLabel:SetPoint('BOTTOMRIGHT', frame.RangeMaxLabel, 'TOPRIGHT')
+    frame.RangeMinLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '最小距离' or FARCLIP)
+
+--移动, 速度
+    frame.SpeedLabel= frame:CreateFontString('WoWToolsSpeedLabel'..frame.unit, 'BORDER', 'WoWToolsFont2')
+    frame.SpeedLabel:EnableMouse(true)
+    frame.SpeedLabel:SetFontHeight(size)
+    frame.SpeedLabel:SetJustifyH('RIGHT')
+    frame.SpeedLabel:SetScript('OnLeave', GameTooltip_Hide)
+    frame.SpeedLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    frame.SpeedLabel:SetPoint('TOPRIGHT', frame.RangeMaxLabel, 'BOTTOMRIGHT')
+    frame.SpeedLabel.tooltip=  WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED)
+
+    frame.elapsed2= 1
+    frame:SetScript('OnUpdate', function(f, elapsed)
+        f.elapsed2= f.elapsed2 + elapsed
+
+        if f.elapsed2<=0.3 then
+            return
+        end
+
+        f.elapsed2=0
+        local speed
+        local mi, ma= LibRangeCheck:GetRange(f.unit)
         if mi and ma then
             local r,g,b
             if ma<=5 then
@@ -708,57 +749,26 @@ local function Set_Range_OnUpdata(self, elapsed)
                 r,g,b= 1, 0, 0--红
             end
 
-            self.Text:SetTextColor(r,g,b)
-            self.Text2:SetTextColor(r,g,b)
+            f.RangeMinLabel:SetTextColor(r,g,b)
+            f.RangeMaxLabel:SetTextColor(r,g,b)
         end
 
-        local value= GetUnitSpeed(self.unit) or 0
-        if value==0 then
-            speed= '|cff8282820'
-        else
-            speed= format('%.0f', (value)*100/BASE_MOVEMENT_SPEED)
+        local value= GetUnitSpeed(f.unit)
+        if canaccessvalue(value) and value then
+            if value==0 then
+                speed= '|cff8282820'
+            else
+                speed= format('%i', value*100/BASE_MOVEMENT_SPEED)
+            end
         end
-    --end
-    self.Text:SetText(mi or '')
-    self.Text2:SetText(ma or '')
-    self.Text3:SetText(speed or '')
-end
-
-
-
-local function Set_Range_Text(frame)
-    local label= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT', mouse=true})
-    label:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(1)
+        f.RangeMinLabel:SetText(mi or '')
+        f.RangeMaxLabel:SetText(ma or '')
+        f.SpeedLabel:SetText(speed or '')
     end)
-    label:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(self.tooltip)
-        GameTooltip:Show()
-        self:SetAlpha(0.5)
-    end)
-
-    return label
-end
-
-function WoWTools_UnitMixin:SetRangeFrame(frame)
---位置，最大值
-    frame.Text2= Set_Range_Text(frame)
-    frame.Text2:SetPoint('RIGHT', frame, 'LEFT')
-    frame.Text2.tooltip= WoWTools_DataMixin.onlyChinese and '最小距离' or FARCLIP
-
---位置，最小值
-    frame.Text= Set_Range_Text(frame)
-    frame.Text:SetPoint('BOTTOMRIGHT', frame.Text2, 'TOPRIGHT')
-    frame.Text.tooltip= WoWTools_DataMixin.onlyChinese and '最大距离' or FARCLIP
-
---移动, 速度
-    frame.Text3= Set_Range_Text(frame)
-    frame.Text3:SetPoint('TOPRIGHT', frame.Text2, 'BOTTOMRIGHT')
-    frame.Text3.tooltip= WoWTools_DataMixin.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED
-
-    frame.elapsed2= 1
-    frame:SetScript('OnUpdate', Set_Range_OnUpdata)
+    function frame:Set_SpeedColor()
+        local color= WoWTools_UnitMixin:GetColor(self.unit)
+        self.SpeedLabel:SetTextColor(color:GetRGB())
+    end
+    frame:HookScript('OnShow', frame.Set_SpeedColor)
+    frame:Set_SpeedColor()
 end

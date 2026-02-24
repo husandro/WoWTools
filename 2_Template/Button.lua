@@ -20,11 +20,11 @@ end
 function WoWToolsButton_OnEnter(self)
     if self.tooltip then
         GameTooltip:SetOwner(self, self.owner or 'ANCHOR_LEFT')
-        GameTooltip:ClearLines()
         if type(self.tooltip)=='function' then
+            GameTooltip:ClearLines()
             self:tooltip(GameTooltip)
         else
-            GameTooltip:AddLine(self.tooltip, nil, nil, nil, true)
+            GameTooltip_SetTitle(GameTooltip, self.tooltip, HIGHLIGHT_FONT_COLOR)
         end
         GameTooltip:Show()
     end

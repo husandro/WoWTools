@@ -110,25 +110,29 @@ end
 
 
 
+--[[
+--喊话
+--local chatStarTime
+local combat, sec = WoWTools_TimeMixin:Info(OnCombatTime, not timeTypeText)
+if not Save().disabledSayTime then
+    sec=math.floor(sec)
+    if sec ~= chatStarTime and sec > 0 and sec%Save().SayTime==0  then--IsInInstance()
+        chatStarTime=sec
+        WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(sec), nil, nil)
+    end
+end]]
 
 
-local chatStarTime
+
 local function Set_Text(self)--设置显示内容
     local text
     local timeTypeText= Save().timeTypeText
- 
+
 --战斗时间
     if OnCombatTime then
-        local combat, sec = WoWTools_TimeMixin:Info(OnCombatTime, not timeTypeText)
---喊话
-        if not Save().disabledSayTime then
-            sec=math.floor(sec)
-            if sec ~= chatStarTime and sec > 0 and sec%Save().SayTime==0  then--IsInInstance()
-                chatStarTime=sec
-                WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(sec), nil, nil)
-            end
-        end
-        text= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnWARNING_FONT_COLOR:'..combat..'|r'
+        text= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnWARNING_FONT_COLOR:'
+            ..WoWTools_TimeMixin:Info(OnCombatTime, not timeTypeText)
+            ..'|r'
     end
 
     if OnAFKTime then
@@ -231,7 +235,7 @@ local function Init_Date(self)--初始, 数据
             log.bat.time= log.bat.time + sec
         end
         OnCombatTime=nil
-        chatStarTime=nil
+        --chatStarTime=nil
     end
 
 --宠物战斗
@@ -375,7 +379,7 @@ local function Init_Menu(_, root)
         tooltip:AddLine(WoWTools_TimeMixin:SecondsToClock(35))
     end)
 
---战斗时间
+--[[战斗时间
     sub=root:CreateCheckbox((WoWTools_DataMixin.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a|cnGREEN_FONT_COLOR:'..Save().SayTime, function()
         return not Save().disabledSayTime
     end, function()
@@ -415,7 +419,7 @@ local function Init_Menu(_, root)
     function()
         Save().SayTime= 120
         return MenuResponse.Refresh
-    end)
+    end)]]
 --BG Alpha
     WoWTools_MenuMixin:BgAplha(root, function()
         return Save().textAlpha or 0.5
