@@ -3083,7 +3083,10 @@
         "KEY_NUMPADMULTIPLY",
         "KEY_NUMPADPLUS",
         "UnitFrame_UpdateTooltip",
-        "PlayerName"
+        "PlayerName",
+        "CompactPartyFrameMember1",
+        "CompactPartyFrameMember1RoleIcon",
+        "CompactPartyFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

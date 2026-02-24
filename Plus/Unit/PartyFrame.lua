@@ -302,24 +302,40 @@ end
 
 --战斗指示
 local function Create_combatFrame(frame)
-    local combatFrame= CreateFrame('Frame', nil, frame)
-    combatFrame:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-6, -4)
-    combatFrame:SetFrameStrata('HIGH')
-    combatFrame:SetSize(16,16)
-    combatFrame.unit= frame.unit or frame:GetUnit()
+    frame.combatFrame= CreateFrame('Frame', nil, frame)
+
+    local combatFrame= frame.combatFrame
+
+    if frame.PartyMemberOverlay then
+        --combatFrame:SetPoint('TOPLEFT', frame, 'TOPRIGHT',-6, -4)
+        combatFrame:SetPoint('RIGHT', frame.PartyMemberOverlay.RoleIcon, 'LEFT')
+        combatFrame:SetSize(frame.PartyMemberOverlay.RoleIcon:GetSize())
+        --combatFrame:SetFrameStrata('HIGH')
+    else
+        --.PartyMemberOverlay.RoleIcon
+        combatFrame:SetPoint('TOPLEFT', 4, -17)
+        combatFrame:SetSize(12, 12)-- frame.roleIcon:GetSize() 17
+    end
+
     combatFrame.texture= combatFrame:CreateTexture(nil, 'BORDER')
     combatFrame.texture:SetAllPoints()
     combatFrame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon')
     combatFrame.texture:SetVertexColor(1, 0, 0)
     combatFrame.texture:Hide()
 
+  
+    function combatFrame:Init()
+        self.unit= self:GetParent().unit
+    end
+
+    combatFrame:SetScript('OnShow', combatFrame.Init)
+    combatFrame:Init()
+
     combatFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed>0.3 then
             self.elapsed=0
-            self.texture:SetShown(
-                UnitAffectingCombat(self.unit) or Is_InEditMode()
-            )
+            self.texture:SetShown(UnitAffectingCombat(self.unit) or Is_InEditMode())
         end
     end)
 end
@@ -453,20 +469,24 @@ end
 
 local function Create_deadFrame(frame)
 
-    local deadFrame= CreateFrame('Frame', 'WoWTools'..frame.unit..'DeadFrame', frame)
-    deadFrame:SetPoint("TOPLEFT", frame.Portrait)
+    frame.deadFrame= CreateFrame('Frame', nil, frame)
+    local deadFrame= frame.deadFrame
+
     deadFrame:SetSize(1,1)
-    deadFrame:SetFrameStrata('HIGH')
-
-    deadFrame.texture= deadFrame:CreateTexture()
-    deadFrame.texture:SetSize(23, 23)
-    deadFrame.texture:SetPoint('TOPLEFT')
-
 
     deadFrame.Text= deadFrame:CreateFontString(nil, 'BORDER', 'WoWToolsFont2') --WoWTools_LabelMixin:Create(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
     deadFrame.Text:EnableMouse(true)
-    --deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
-    deadFrame.Text:SetPoint('TOPRIGHT', frame.Portrait, 2, 2)
+
+    if frame.PartyMemberOverlay then
+        deadFrame:SetPoint('TOPRIGHT', frame.Portrait, 2, 2)
+        deadFrame.Text:SetPoint("RIGHT")
+    else
+        deadFrame:SetPoint('TOPLEFT', 16, -17)
+        deadFrame.Text:SetPoint("TOPLEFT")
+        deadFrame.Text:SetFontHeight(10)
+    end
+
+
 
     deadFrame.Text:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -474,13 +494,13 @@ local function Create_deadFrame(frame)
     end)
     deadFrame.Text:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-
-        GameTooltip:SetText(
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(self:GetParent().unit, 1,1,1)
+        GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)
             ..': |cffffffff'..self:GetText()..'|r '
            ..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
         )
-        GameTooltip:AddLine(' ')
         GameTooltip:AddLine(
             (WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)
             ..WoWTools_DataMixin.Icon.left
@@ -560,8 +580,7 @@ local function Create_deadFrame(frame)
         self:UnregisterAllEvents()
     end)
 
-
-    deadFrame:SetScript('OnShow', function(self)
+    function deadFrame:Init()
         local unit= self:GetParent().unit
         self.unit= unit
         self:RegisterEvent('CHALLENGE_MODE_START')
@@ -571,7 +590,9 @@ local function Create_deadFrame(frame)
         local color= WoWTools_UnitMixin:GetColor(unit)
         self.Text:SetTextColor(color:GetRGB())
         self:settings()
-    end)
+    end
+
+    deadFrame:SetScript('OnShow', deadFrame.Init)
 
 end
 
@@ -621,7 +642,7 @@ local function Init()--PartyFrame.lua
     PartyFrame.Background:SetWidth(124)--144
 
     --local showPartyFrames = PartyFrame:ShouldShow();
-    for i=1, MAX_PARTY_MEMBERS do
+    for i=1, MAX_PARTY_MEMBERS+1 do
         local frame= PartyFrame['MemberFrame'..i]
         if frame then
             do
@@ -645,14 +666,12 @@ local function Init()--PartyFrame.lua
                     label:SetFontHeight(10)
                 end
             end
-
             --frame.PortraitMask:SetAlpha(0)
             --frame.Texture:SetAlpha(0)
-
-
             --Create_castFrame(frame)--队友，施法
             Create_frame(frame)--队伍, 标记, 成员派系
-            Create_combatFrame(frame)--战斗指示
+            Create_combatFrame(frame, false)--战斗指示
+
             Create_positionFrame(frame)--队友位置
             Create_deadFrame(frame)--队友，死亡
 
@@ -675,10 +694,33 @@ local function Init()--PartyFrame.lua
                 self.PortraitMask:SetVertexColor(color:GetRGB())
             end)]]
         end
+
+
+
+
+        frame= _G['CompactPartyFrameMember'..i]
+        if frame then
+            Create_combatFrame(frame)
+            Create_deadFrame(frame)
+        end
     end
 
+    --hooksecurefunc(CompactPartyFrame, 'RefreshMembers', function()
 
+    WoWTools_DataMixin:Hook(CompactPartyFrame,'UpdateVisibility', function(self)
+        if not self:IsShown() then
+            return
+        end
 
+        for i=1, MAX_PARTY_MEMBERS+1 do
+            local frame= _G['CompactPartyFrameMember'..i]
+            if frame and frame.deadFrame then
+                frame.deadFrame:UnregisterAllEvents()
+                frame.deadFrame:Init()
+                frame.combatFrame:Init()
+            end
+        end
+    end)
 
     Init=function()end
 end

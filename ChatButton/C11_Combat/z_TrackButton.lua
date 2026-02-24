@@ -519,7 +519,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         size=22,
         icon='hide'
     })]]
-    btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontNormal')-- WoWTools_LabelMixin:Create(TrackButton, {color=true})
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'WoWToolsFont')-- WoWTools_LabelMixin:Create(TrackButton, {color=true})
     btn.text:SetTextColor(PlayerUtil.GetClassColor():GetRGB())
     btn.text:SetPoint('BOTTOMLEFT')
 
