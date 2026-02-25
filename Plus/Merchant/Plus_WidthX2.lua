@@ -340,6 +340,7 @@ local function ResizeButton2_Menu(self, root)
         Save().notItemInfo= not Save().notItemInfo and true or nil
         WoWTools_MerchantMixin:Update_MerchantFrame()
     end)
+
 --属性，字体，缩放
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -350,7 +351,7 @@ local function ResizeButton2_Menu(self, root)
         Save().statFontSize= value
         WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
     end,
-    minValue=6,
+    minValue=8,
     maxValue=18,
     step=1,
     --bit--='%.1f'
