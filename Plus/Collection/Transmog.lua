@@ -130,7 +130,7 @@ local function Init()
             local totalQuality = 0
             local numTotalSlots = 0
             local waitingOnQuality = false
-            local primaryAppearances = C_TransmogSets.GetSetPrimaryAppearances(self.elementData.set.setID)
+            local primaryAppearances = C_TransmogSets.GetSetPrimaryAppearances(self.elementData.set.setID) or {}
             for _, primaryAppearance in pairs(primaryAppearances) do
                 numTotalSlots = numTotalSlots + 1
                 local sourceInfo = C_TransmogCollection.GetSourceInfo(primaryAppearance.appearanceID)
