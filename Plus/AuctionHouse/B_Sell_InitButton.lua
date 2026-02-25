@@ -186,9 +186,9 @@ local function Init_Sell_Item_Button()
         end
     end
 
-    AuctionHouseButton.Text:SetText(
-        WoWTools_ItemMixin:GetColor(Save().sellItemQualiy, {text=index-1})
-    )
+    local textColor= WoWTools_ItemMixin:GetColor(Save().sellItemQualiy, {text=index-1})
+
+    AuctionHouseButton.Text:SetText(textColor)
 end
 
 

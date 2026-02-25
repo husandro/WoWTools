@@ -17,9 +17,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local isGroupPlayer= (not isSelf and WoWTools_DataMixin.GroupGuid[guid]) and true or nil--队友
 
     local color= WoWTools_UnitMixin:GetColor(unit, guid)
-    local r,g,b= color:GetRGB()
-
-
+    
     local isInCombat= PlayerIsInCombat()
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     local textLeft, text2Left, textRight, text2Right='', '', '', ''
@@ -53,7 +51,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     end
 
 --设置，背景
-    tooltip:Set_BG_Color(r,g,b, 0.2)
+    tooltip:Set_BG_Color(color, 0.2)
 
 
 --设置 textLeft
@@ -79,10 +77,6 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
         text2Left= text2Left..'|T236347:0|t'
     end
-
-        if isSelf then
-
-        end
 
 --设置 textRight text2Right
     if isSelf then
@@ -127,10 +121,10 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     tooltip.textRight:SetText(textRight)
     tooltip.text2Right:SetText(text2Right)
 
-    tooltip.textLeft:SetTextColor(r, g, b)
-    tooltip.text2Left:SetTextColor(r, g, b)
-    tooltip.textRight:SetTextColor(r, g, b)
-    tooltip.text2Right:SetTextColor(r, g, b)
+    tooltip.textLeft:SetTextColor(color:GetRGB())
+    tooltip.text2Left:SetTextColor(color:GetRGB())
+    tooltip.textRight:SetTextColor(color:GetRGB())
+    tooltip.text2Right:SetTextColor(color:GetRGB())
 
 
 
@@ -311,10 +305,10 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             end
 
             if show then
-                lineLeft:SetTextColor(r,g,b)
+                lineLeft:SetTextColor(color:GetRGB())
                 local lineRight= _G[tooltipName..'TextRight'..i]
                 if lineRight and lineRight:IsShown()then
-                    lineRight:SetTextColor(r,g,b)
+                    lineRight:SetTextColor(color:GetRGB())
                 end
             else
                 lineLeft:SetText('')
@@ -337,7 +331,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     end
 
     if tooltip.StatusBar then
-        tooltip.StatusBar:SetStatusBarColor(r,g,b)
+        tooltip.StatusBar:SetStatusBarColor(color:GetRGB())
     end
 
     self:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型

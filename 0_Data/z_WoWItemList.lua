@@ -110,14 +110,15 @@ TypeTabs= {
         if not itemID then
             return
         end
-        local itemName, itemTexture, itemAtlas, count, r, g, b
+        local itemName, itemTexture, itemAtlas
         local itemQuality, _
         itemName, _, itemQuality, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
 
         itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
         itemTexture= itemTexture or select(5, C_Item.GetItemInfoInstant(itemID))
 
-        r,g,b= WoWTools_ItemMixin:GetColor(itemQuality or data.quality)
+        local color WoWTools_ItemMixin:GetColor(itemQuality or data.quality)
+        local r,g,b= color:GetRGB()
 
 
         local bag, bank ,wow
@@ -130,7 +131,7 @@ TypeTabs= {
         wow= WoWTools_ItemMixin:GetWoWCount(itemID, Frame.guid, Frame.regon)
         wow= wow>0 and '|cff00ccff'..WoWTools_DataMixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or ''
 
-        count= wow..bank..bag
+        local count= wow..bank..bag
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},
 
@@ -215,11 +216,12 @@ TypeTabs= {
         if not itemID then
             return
         end
-        local itemName, itemTexture, itemAtlas, count, r, g, b
+        local itemName, itemTexture, itemAtlas, count
         local name, _, _, _, _, _, _, _, _, texture= C_Item.GetItemInfo(itemID)
         itemName= WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}) or itemID
         itemTexture= texture or select(5, C_Item.GetItemInfoInstant(itemID))
-        r,g,b= WoWTools_ItemMixin:GetColor(data.quality)
+        local color= WoWTools_ItemMixin:GetColor(data.quality)
+        local r,g,b= color:GetRGB()
         if data.num>1 then
             count= WoWTools_DataMixin:MK(data.num, 3)..'|A:Banker:0:0|a'
         end
@@ -309,7 +311,8 @@ TypeTabs= {
             count= (wow>0 and '|cff00ccff'..wow..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or '')
                 ..(data.num>0 and WoWTools_DataMixin:MK(data.num, 3)..WoWTools_DataMixin.Icon.Player or '')
 
-            r,g,b= WoWTools_ItemMixin:GetColor(info.quality)
+            local color= WoWTools_ItemMixin:GetColor(info.quality)
+            r,g,b= color:GetRGB()
         end
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},

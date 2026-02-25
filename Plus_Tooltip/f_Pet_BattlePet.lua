@@ -90,11 +90,8 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     end
 
 --设置背影颜色
-    local r,g,b
-    if breedQuality and breedQuality ~= -1 then
-        r,g,b= WoWTools_ItemMixin:GetColor(breedQuality)
-    end
-    tooltip:Set_BG_Color(r or 1, g or 1, b or 1, 0.15)
+    local color= WoWTools_ItemMixin:GetColor(breedQuality)
+    tooltip:Set_BG_Color(color, 0.15)
 
 
 --收集数量

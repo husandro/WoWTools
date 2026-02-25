@@ -35,10 +35,6 @@ end
 
 
 local CurTypeGemTab={}--当前，宝石，类型
-local function Get_Item_Color(itemLink)
-    local r,g,b= WoWTools_ItemMixin:GetColor(nil, {itemLink=itemLink})
-    return r,g,b
-end
 
 
 
@@ -276,7 +272,8 @@ local function Set_Button_Att(btn, info)
     btn.slotID= info.slot
     btn.itemID= itemID
     btn.level:SetText(info.level and info.level>1 and info.level or '')
-    btn.level:SetTextColor(Get_Item_Color(itemLink))
+    local color= WoWTools_ItemMixin:GetColor(nil, {itemLink=itemLink})
+    btn.level:SetTextColor(color:GetRGB())
     btn:set_favorite()
     btn:SetItem(itemLink)
     btn:SetItemButtonCount(info.info.stackCount)
@@ -735,7 +732,8 @@ local function Init_ItemSocketingFrame_Update()
             btn.rightText:SetText(right or '')
             local itemLevel= gemLink and WoWTools_ItemMixin:GetItemLevel(gemLink) or 1
             btn.levelText:SetText(itemLevel>10 and itemLevel or '')
-            btn.levelText:SetTextColor(Get_Item_Color(gemLink))
+            local color= WoWTools_ItemMixin:GetColor(nil, {itemLink=gemLink})
+            btn.levelText:SetTextColor(color:GetRGB())
             if atlas then
                 btn.qualityTexture:SetAtlas(atlas)
             else

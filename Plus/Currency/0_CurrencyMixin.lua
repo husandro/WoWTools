@@ -183,19 +183,15 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
     end
 
     local accountIcon= self:GetAccountIcon(info.currencyID)--战团图标
+    local color= info.isAccountTransferable and ACCOUNT_WIDE_FONT_COLOR
+                or (info.isAccountWide and ORANGE_FONT_COLOR)
+                or WoWTools_ItemMixin:GetColor(info.quality)
 
     return
 --图标
         '|T'..(info.iconFileID or 0)..':0|t'
---颜色
-        ..(
-            info.isAccountTransferable and '|cff00ccff'
-            or info.isAccountWide and '|cffff8000'
-            or select(4, WoWTools_ItemMixin:GetColor(info.quality))
-        )
---名称
-        ..WoWTools_TextMixin:CN(info.name)
-        ..'|r'
+--颜色, 名称
+        ..color:WrapTextInColorCode(WoWTools_TextMixin:CN(info.name))
 --数量，颜色
         ..(
             isMax and '|cnWARNING_FONT_COLOR:'

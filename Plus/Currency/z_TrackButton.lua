@@ -791,6 +791,8 @@ local function Init_Button(self)
 			Set_ItemAttribute(btn)
 		end
 
+		btn:Show()
+
 		local y= (not last.itemID and btn.itemID) and 10 or 0
 		if toTopTrack then
 			btn:SetPoint("BOTTOM", last, 'TOP', 0,  y)
@@ -807,7 +809,6 @@ local function Init_Button(self)
 
 		bgWidth= math.max(btn.text:GetStringWidth() + 27, bgWidth)
 
-		btn:Show()
 		prima= prima or btn
 		last= btn
 	end

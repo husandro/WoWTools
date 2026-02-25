@@ -42,18 +42,19 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
         )
     end
 --无法被摧毁
-    if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
+    --[[if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
         tooltip:AddLine(
             '|cnGREEN_FONT_COLOR:|A:Objective-Fail:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY),
             nil, nil, nil, true
         )
-    else
-        tooltip:AddLine(
-            (WoWTools_DataMixin.onlyChinese and '独特装饰' or HOUSING_DECOR_UNIQUE_TROPHY_TOOLTIP)
-            ..': '..WoWTools_TextMixin:GetYesNo(entryInfo.isUniqueTrophy)
-        )
-    end
+    ]]
+
+    tooltip:AddLine(
+        (WoWTools_DataMixin.onlyChinese and '独特装饰' or HOUSING_DECOR_UNIQUE_TROPHY_TOOLTIP)
+        ..': '..WoWTools_TextMixin:GetYesNo(entryInfo.isUniqueTrophy)
+    )
+
 
 
 --来源

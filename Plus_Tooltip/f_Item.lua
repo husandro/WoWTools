@@ -82,7 +82,7 @@ local function Get_SlotLevel(slot)
 end
 
 
-local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
+local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, color)
     local textLeft, text2Left
 --装等
     itemLevel= itemLink and WoWTools_ItemMixin:GetItemLevel(itemLink) or itemLevel
@@ -115,7 +115,7 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
                 text=itemLevel..'|A:bags-greenarrow:0:0|a'
             end
 
-            text= col..(text or itemLevel)..'|r'
+            text= color:WrapTextInColorCode(text or itemLevel)
 
             textLeft=text
         end
@@ -454,7 +454,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         Set_Value(tooltip)
     end
 
-    local r, g, b, col= WoWTools_ItemMixin:GetColor(itemQuality)
+    local color= WoWTools_ItemMixin:GetColor(itemQuality)
 
     tooltip:AddLine(' ')
 
@@ -510,7 +510,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
             portrait= self:Set_HouseItem(tooltip, entryInfo)
             --textRight= WoWTools_ItemMixin:GetDecorItemCount(nil, entryInfo, true)
             if entryInfo.quality then
-                r, g, b, col= WoWTools_ItemMixin:GetColor(entryInfo.quality)
+                color= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             end
         end
 
@@ -529,7 +529,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         tooltip:AddLine('transmogSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..transmogSetID)
 --装备
     elseif classID==2 or classID==4 then
-        textLeft, text2Left, portrait= Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
+        textLeft, text2Left, portrait= Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, color)
 --次属性 %值
         if not PlayerIsTimerunning() then
             Set_ItemStatus(tooltip, itemLink)
@@ -581,9 +581,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 --嵌入式
     tooltip:Set_TopLabel(textLeft, text2Left, textRight, text2Right)
 
-    tooltip:Set_BG_Color(r, g, b, 0.15)
+    tooltip:Set_BG_Color(color, 0.15)
     --setItemCooldown(tooltip, itemID)--物品冷却
-    self:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
+    self:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=color:GenerateHexColorMarkup(), isPetUI=false})--取得网页，数据链接
 
     WoWTools_TooltipMixin:Show(tooltip)
     --tooltip:Show()

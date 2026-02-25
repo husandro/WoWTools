@@ -138,7 +138,7 @@ local function Create_Button(btn)
     btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
     btn.Outdoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室外' or HOUSING_DECOR_ONLY_PLACEABLE_OUTSIDE
     Set_Texture(btn.Outdoors)
---是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
+--[[是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
     btn.canDelete= btn:CreateTexture()
     btn.canDelete:SetPoint('TOPLEFT', btn.Outdoors, 'BOTTOMLEFT')
     btn.canDelete:SetAtlas('Objective-Fail')
@@ -147,7 +147,7 @@ local function Create_Button(btn)
     btn.canDelete:SetAlpha(1)
     function btn.canDelete:set_alpha()
         self:SetAlpha(self:IsMouseOver() and 0.3 or 1)
-    end
+    end]]
 --可获得首次收集奖励
     btn.firstXP= btn:CreateTexture()
     btn.firstXP:SetPoint('TOP', btn.canDelete,'BOTTOM', -1, 4)
@@ -264,8 +264,8 @@ local function Init_HousingTemplates()
         if tooltip.Portrait then
             --tooltip.textLeft:SetText(textLeft or '')
             tooltip.Portrait:settings(portrait)
-            local r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
-            tooltip:Set_BG_Color(r,g,b, 0.15)
+            local color= WoWTools_ItemMixin:GetColor(entryInfo.quality)
+            tooltip:Set_BG_Color(color, 0.15)
         end
         tooltip:Show()
     end)
@@ -303,12 +303,12 @@ local function Init_HousingTemplates()
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'UpdateVisuals', function(btn)
 
         --local isTrackable= nil
-        local placementCost, r,g,b, show, isXP, isIndoors, isOutdoors, isCanDelete, isNotAsset
+        local placementCost, show, isXP, isIndoors, isOutdoors, isNotAsset
+        local color= HIGHLIGHT_FONT_COLOR
         local entryInfo= btn:HasValidData() and btn.entryInfo
 
         if entryInfo then
-            r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
-            placementCost= entryInfo.placementCost
+ 
 
             if btn.InfoText:IsShown() then
                 local numPlaced, quantity
@@ -334,7 +334,7 @@ local function Init_HousingTemplates()
             end
 
             if entryInfo.entryID then
-                isCanDelete= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
+                --isCanDelete= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
 
                 show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
                     and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--追踪功能对此物品可用
@@ -346,9 +346,12 @@ local function Init_HousingTemplates()
             isIndoors= entryInfo.isAllowedIndoors
             isOutdoors= entryInfo.isAllowedOutdoors
             isNotAsset= not entryInfo.asset
-        end
 
-        btn.Background:SetVertexColor(r or 1, g or 1, b or 1, 1)
+            color= WoWTools_ItemMixin:GetColor(entryInfo.quality)
+            placementCost= entryInfo.placementCost
+        end
+        
+        btn.Background:SetVertexColor(color:GetRGB())
         btn.placementCostLabel:SetText(placementCost and '|A:House-Decor-budget-icon:0:0|a'..placementCost or ' ')
 
         btn.trackableButton:SetShown(show)
@@ -357,7 +360,7 @@ local function Init_HousingTemplates()
         btn.Indoors:SetShown(isIndoors)
         btn.Outdoors:SetShown(isOutdoors)
         btn.notAsset:SetShown(isNotAsset)
-        btn.canDelete:SetShown(isCanDelete==false)
+        --btn.canDelete:SetShown(isCanDelete==false)
 
         btn.indexLabel:SetText(btn.GetElementDataIndex and btn:GetElementDataIndex() or '')
     end)
@@ -419,14 +422,14 @@ local function Set_EntryInfo(frame, entryInfo)
 
         entryInfo= entryInfo or frame.catalogEntryInfo
 
-        local obj, r,g,b
+        local obj, color
 
 --来源
         if entryInfo then
             if (not entryInfo.sourceText or entryInfo.sourceText=='') then
                 obj= WoWTools_HouseMixin:GetObjectiveText(entryInfo)
             end
-            r,g,b= WoWTools_ItemMixin:GetColor(entryInfo.quality)
+            color= WoWTools_ItemMixin:GetColor(entryInfo.quality)
         end
         frame:SetTextOrHide(frame.TextContainer.TrackingObjectiveText, obj)
 
@@ -441,7 +444,7 @@ local function Set_EntryInfo(frame, entryInfo)
         frame.TextContainer.InDoorsText:SetShown(entryInfo.isAllowedIndoors)
         frame.TextContainer.OutDoorsText:SetShown(entryInfo.isAllowedOutdoors)
 --品质
-        frame.NameContainer.Name:SetTextColor(r or 1, g or 1, b or 1)
+        frame.NameContainer.Name:SetTextColor(color:GetRGB())
 
 --设置，内容
         frame.TextContainer:SetFixedWidth(frame.TextContainer:GetWidth())

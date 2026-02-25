@@ -56,10 +56,9 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     local source= data.sourceUnit
 
     local color= WoWTools_UnitMixin:GetColor(source, nil)
-    local r,g,b= color:GetRGB()
 
     if tooltip.Set_BG_Color then
-        tooltip:Set_BG_Color(r,g,b,0.3)
+        tooltip:Set_BG_Color(color, 0.3)
     end
 
     if source~='player' and tooltip.Portrait then
@@ -72,8 +71,8 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
             or UnitName(source) or _G[source] or source
 
     tooltip:AddLine(
-        color:GenerateHexColorMarkup()
-        ..format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)
+        format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text),
+        color:GetRGB()
     )
 
     tooltip:Show()

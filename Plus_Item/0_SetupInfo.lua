@@ -905,8 +905,8 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
 
     if setIDItem then
         if type(setIDItem)=='number' then
-            local r, g, b = WoWTools_ItemMixin:GetColor(setIDItem)
-            frame.setIDItem:SetVertexColor(r, g, b)
+            local color = WoWTools_ItemMixin:GetColor(setIDItem)
+            frame.setIDItem:SetVertexColor(color:GetRGB())
         else
             frame.setIDItem:SetVertexColor(0,1,0)
         end

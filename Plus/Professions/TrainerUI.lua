@@ -155,8 +155,8 @@ local function Init()
     --增加物品，品质，颜色
     WoWTools_DataMixin:Hook('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData)
         local itemLink= GetTrainerServiceItemLink(elementData.skillIndex)
-        local r,g,b= WoWTools_ItemMixin:GetColor(nil, {itemLink=itemLink})
-        skillButton.name:SetTextColor(r,g,b)
+        local color= WoWTools_ItemMixin:GetColor(nil, {itemLink=itemLink})
+        skillButton.name:SetTextColor(color:GetRGB())
     end)
 
     Init=function()end

@@ -146,7 +146,8 @@ local function Init()
     size, x, y, n= 16, x+size, -32, 0
 
     for index = 0, Enum.ItemQualityMeta.NumValues - 1 do
-        local r,g,b= WoWTools_ItemMixin:GetColor(index)
+        local color= WoWTools_ItemMixin:GetColor(index)
+        local r,g,b= color:GetRGB()
         colorTab[r..g..b..1]= true
         local texture= Create_Texture(r,g,b,1)
         texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)

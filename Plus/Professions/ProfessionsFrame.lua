@@ -99,8 +99,8 @@ local function Init()
 
 --颜色
         if recipeInfo.learned or recipeInfo.isRecraf then
-            local r,g,b= WoWTools_ItemMixin:GetColor(nil, {itemLink=recipeInfo.hyperlink})
-            self.Label:SetTextColor(r, g, b)
+            local color= WoWTools_ItemMixin:GetColor(nil, {itemLink=recipeInfo.hyperlink})
+            self.Label:SetTextColor(color:GetRGB())
         else
             self.Label:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
         end

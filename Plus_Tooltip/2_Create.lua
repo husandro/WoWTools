@@ -91,14 +91,14 @@ local function Create(tooltip)
 
 
 
-    function tooltip:Set_BG_Color(r, g, b, a)
-        local show= r and g and b
-        r,g,b,a= r or 1, g or 1, b or 1, a or 0.5
-        self.backgroundColor:SetColorTexture(r,g,b,a)
+    function tooltip:Set_BG_Color(color, alpha)
+        color= color or HIGHLIGHT_FONT_COLOR
+        alpha= alpha or 0.5
+        local r,g,b= color:GetRGB()
+        self.backgroundColor:SetColorTexture(r,g,b, alpha)
         if self.NineSlice then
-            self.NineSlice:SetBorderColor(r,g,b,a)
+            self.NineSlice:SetBorderColor(r,g,b, alpha)
         end
-        self.backgroundColor:SetShown(show)
     end
 
     function tooltip:Set_TopLabel(textLeft, text2Left, textRight, text2Right)--嵌入式

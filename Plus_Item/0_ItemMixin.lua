@@ -466,18 +466,24 @@ function WoWTools_ItemMixin:GetColor(quality, tab)
         or (itemLocation and C_Item.GetItemQuality(itemLocation))
         or 1
     --local color= ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[Enum.ItemQuality.Common]
-    local color= C_ColorOverrides.GetColorForQuality(quality) or C_ColorOverrides.GetColorForQuality(Enum.ItemQuality.Common) or HIGHLIGHT_FONT_COLOR
+    local color= C_ColorOverrides.GetColorForQuality(quality)
+        or C_ColorOverrides.GetColorForQuality(Enum.ItemQuality.Common)
+        or HIGHLIGHT_FONT_COLOR
+
     if text then
         return color:WrapTextInColorCode(tab.text)
+
     elseif texture then
         if texture:GetAtlas() or texture:GetTexture() then
             texture:SetVertexColor(color:GetRGB())
         else
             texture:SetColorTexture(color:GetRGB())
         end
-    else
-        return color.r, color.g, color.b, color:GenerateHexColorMarkup(), color, quality
+
+    --else
+        --return color.r, color.g, color.b, color:GenerateHexColcorMarkup(), color, quality
     end
+    return color
 end
 
 
@@ -589,10 +595,8 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
 
     if name then
         if not name:find('|c') then
-            local col2= select(4, self:GetColor(nil, {itemID=itemID, itemLink=itemLink}))
-            if col2 then
-                name= col2..name..'|r'
-            end
+            local color= self:GetColor(nil, {itemID=itemID, itemLink=itemLink})
+            name= color:WrapTextInColorCode(name)
         end
         name= '|T'..(icon or 0)..':0|t'..name
 
