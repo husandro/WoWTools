@@ -450,7 +450,7 @@ tableBuilder:AddFixedWidthColumn(owner, 0, 50, 0, STANDARD_PADDING, Enum.Auction
 
 --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
     WoWTools_DataMixin:Hook(AuctionHouseSellFrameMixin, 'SetItem', function(frame, itemLocation)
-        WoWTools_ItemMixin:SetupInfo(frame.ItemDisplay.ItemButton, itemLocation and {itemLocation= itemLocation, size=2} or nil)
+        WoWTools_ItemMixin:SetupInfo(frame.ItemDisplay.ItemButton, itemLocation and {itemLocation= itemLocation, size=12} or nil)
     end)
 
 --购买，选定物品 AuctionHouseFrame.ItemBuyFrame.ItemDisplay.ItemButton
@@ -460,7 +460,7 @@ tableBuilder:AddFixedWidthColumn(owner, 0, 50, 0, STANDARD_PADDING, Enum.Auction
 
         local f= itemKeyInfo.isCommodity and frame.CommoditiesBuyFrame.BuyDisplay.ItemDisplay or frame.ItemBuyFrame.ItemDisplay
 
-        WoWTools_ItemMixin:SetupInfo(f.ItemButton, itemKey and {itemKey= itemKey, size=2} or nil)
+        WoWTools_ItemMixin:SetupInfo(f.ItemButton, itemKey and {itemKey= itemKey, size=12} or nil)
 
         if not f.countLable then
             f.countLable= f:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')

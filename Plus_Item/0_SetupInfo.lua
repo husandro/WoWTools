@@ -11,7 +11,7 @@ WoWTools_ItemMixin:SetupInfo(itemButton, {
     
 
     point= region,
-    size=
+    size=12
 })
 ]]
 local function Save()
@@ -224,7 +224,7 @@ end
 
 
 
-local function Set_Label(label, tab)
+--[[local function Set_Label(label, tab)
     local font
     if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
         font= 'Fonts\\ARHei.ttf'
@@ -233,7 +233,7 @@ local function Set_Label(label, tab)
     end
     label:SetFont(font, tab.size, 'OUTLINE')
     label:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
-end
+end]]
 
 
 
@@ -241,43 +241,33 @@ end
 
 
 local function Create_Label(frame, tab)
-    local h= Save().size or 10
-    local parent= frame
-    if tab then
-        h= (tab.size or 0)+h
-        parent= tab.point or frame
-    end
+    --local h= Save().size or 10
+        --h= (tab.size or 0)+h
+    local parent= tab.point or frame
 
 --右边
     frame.topRightText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.topRightText:SetPoint('TOPRIGHT', parent, 2, 1)
     frame.topRightText:SetJustifyH('RIGHT')
-    frame.topRightText:SetFontHeight(h)
 
     frame.rightText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.rightText:SetPoint('RIGHT', parent, 2, 0)
     frame.rightText:SetJustifyH('RIGHT')
-    frame.rightText:SetFontHeight(h)
 
 
 
     frame.bottomRightText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.bottomRightText:SetPoint('BOTTOMRIGHT', parent, 2, -1)
     frame.bottomRightText:SetJustifyH('RIGHT')
-    frame.bottomRightText:SetFontHeight(h)
 
 --左边
     frame.topLeftText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1) --WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.topLeftText:SetPoint('TOPLEFT', parent, -2, 1)
-    frame.topLeftText:SetFontHeight(h)
-
     frame.leftText= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.leftText:SetPoint('LEFT', parent, -2, 0)
-    frame.leftText:SetFontHeight(h)
 
     frame.bottomLeftText=frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', 1)--WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.bottomLeftText:SetPoint('BOTTOMLEFT', parent, -2, -1)
-    frame.bottomLeftText:SetFontHeight(h)
 
     frame.setIDItem=frame:CreateTexture(nil, 'BORDER')
     frame.setIDItem:SetPoint('TOPLEFT', -4, 4)
@@ -395,7 +385,7 @@ local function Get_Info(tab)
         return
     end
 
-    
+
 
     itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
 
@@ -903,6 +893,16 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
     frame.leftText:SetText(leftText or '')
     frame.bottomLeftText:SetText(bottomLeftText or '')
 
+    local h= tab.size or 10
+
+    frame.topRightText:SetFontHeight(h)
+    frame.rightText:SetFontHeight(h)
+    frame.bottomRightText:SetFontHeight(h)
+
+    frame.topLeftText:SetFontHeight(h)
+    frame.leftText:SetFontHeight(h)
+    frame.bottomLeftText:SetFontHeight(h)
+
     if setIDItem then
         if type(setIDItem)=='number' then
             local color = WoWTools_ItemMixin:GetColor(setIDItem)
@@ -913,8 +913,11 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
     end
     frame.setIDItem:SetShown(setIDItem)
 
-    if frame.Count and frame.Count:GetText()=='1000' then
-        frame.Count:SetText('1k')
+    if frame.Count then
+        if frame.Count:GetText()=='1000' then
+            frame.Count:SetText('1k')
+        end
+        frame.Count:SetFontHeight(h)
     end
 
     frame._isSetItemInfo= nil

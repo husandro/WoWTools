@@ -566,7 +566,7 @@ end
 CommunitiesHyperlink.lua CommunitiesHyperlink_OnEvent
 ]]
 local function New_AddMessage(self, s, ...)
-    if not canaccessvalue(s) then
+    if not s or WoWTools_TextMixin:CanText(s) then
         return
     end
 

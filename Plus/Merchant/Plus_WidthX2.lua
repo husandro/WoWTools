@@ -222,7 +222,7 @@ local function ResizeButton2_Menu(self, root)
         return
     end
 
-    local sub
+    local sub, sub2
     sub=root:CreateButton(
         '|A:common-icon-rotateright:0:0|a'
         ..((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)),
@@ -321,15 +321,18 @@ local function ResizeButton2_Menu(self, root)
     end, nil, false)
 
 --缩放
-    WoWTools_MenuMixin:Scale(self, root, function()
+    sub=WoWTools_MenuMixin:Scale(self, root, function()
         return Save().btnNameScale or 1
     end, function(value)
         Save().btnNameScale= value
         Create_ItemButton()
     end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '物品名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, NAME))
+    end)
 
     root:CreateDivider()
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO),
     function()
         return not Save().notItemInfo
@@ -337,6 +340,25 @@ local function ResizeButton2_Menu(self, root)
         Save().notItemInfo= not Save().notItemInfo and true or nil
         WoWTools_MerchantMixin:Update_MerchantFrame()
     end)
+--属性，字体，缩放
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
+    getValue=function()
+        return Save().statFontSize or 10
+    end, setValue=function(value)
+        Save().statFontSize= value
+        WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
+    end,
+    minValue=6,
+    maxValue=18,
+    step=1,
+    --bit--='%.1f'
+    --tooltip--function, string, table
+    })
+    sub:CreateSpacer()
+
+
 
     root:CreateDivider()
 --无法使用

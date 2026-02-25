@@ -1294,7 +1294,7 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
             return
         end
         GameTooltip:SetOwner(btn, 'ANCHOR_BOTTOMRIGHT')
-        GameTooltip_SetTitle(GameTooltip, 
+        GameTooltip_SetTitle(GameTooltip,
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '显示冷却时间' or COUNTDOWN_FOR_COOLDOWNS_TEXT)
             ..WoWTools_DataMixin.Icon.right
@@ -2096,6 +2096,20 @@ function WoWTools_TextureMixin.Events:Blizzard_TutorialManager()
     self:SetFrame(TutorialDoubleKey_Frame)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --12.0 伤害统计
 function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
 
@@ -2117,9 +2131,31 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
 
 
     local function Set_BG(bar)
-        bar:GetBackgroundEdge():SetVertexColor(0,0,0,0.3)
+        if bar.GetBackgroundEdge then
+            bar:GetBackgroundEdge():SetVertexColor(0,0,0,0.3)
+        end
         bar:GetBackground():SetVertexColor(0,0,0,0.3)
     end
+
+--锁定，不可交互
+    local function set_Locked_NonInteractive(menu)
+        local frame= menu:GetParent()
+        local isNonInteractive= frame:IsNonInteractive()
+        local isLocked= frame:IsLocked()
+
+        if isLocked and isNonInteractive then
+            menu.Icon:SetAtlas('talents-button-reset')
+        elseif isLocked then
+            menu.Icon:SetAtlas('friendslist-recentallies-Pin')
+        elseif isNonInteractive then
+            menu.Icon:SetAtlas('friendslist-recentallies-Pin-yellow')
+        else
+            menu.Icon:SetAtlas('GM-icon-settings-hover')
+        end
+
+        menu.Icon:SetAlpha(menu:IsMouseOver() and 1 or 0.3)
+    end
+
 
     local function settins(frame)
         self:SetAlphaColor(frame.Header, true)
@@ -2144,29 +2180,57 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         frame.SessionDropdown:HookScript('OnEnter', function(menu)
             menu.Background:SetAlpha(1)
         end)
-        WoWTools_DataMixin:Hook(frame.SessionDropdown, 'OnButtonStateChanged', function(menu)
+         WoWTools_DataMixin:Hook(frame.SessionDropdown, 'OnButtonStateChanged', function(menu)
             if not menu:IsMouseOver() then
 	            menu.Background:SetAlpha(0)
             end
         end)
+
+--选项 锁定，不可交互 DamageMeterSettingsDropdownButtonTemplate
+        frame.SettingsDropdown:SetHighlightAtlas('Azerite-Trait-RingGlow')
+        frame.SettingsDropdown:SetPushedAtlas('bag-border-highlight')
+        frame.SettingsDropdown:SetScript('OnLeave', GameTooltip_Hide)
+        frame.SettingsDropdown:SetScript('OnEnter', function(menu)
+            GameTooltip:SetOwner(menu, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            if frame:IsLocked() then
+                GameTooltip:AddLine(
+                    WoWTools_DataMixin.Icon.icon2
+                    ..(WoWTools_DataMixin.onlyChinese and '锁定窗口' or DAMAGE_METER_LOCK_WINDOW)
+                    ..'|A:Garr_LevelUpgradeLocked:0:0|a'
+                )
+            end
+            if frame:IsNonInteractive() then
+                GameTooltip:AddLine(
+                    WoWTools_DataMixin.Icon.icon2
+                    ..(WoWTools_DataMixin.onlyChinese and '不可交互' or DAMAGE_METER_MAKE_UNINTERACTABLE)
+                )
+            end
+            GameTooltip:Show()
+        end)
+
+        frame.SettingsDropdown.Icon:ClearAllPoints()
+        frame.SettingsDropdown.Icon:SetPoint('TOPLEFT', 4, -4)
+        frame.SettingsDropdown.Icon:SetPoint('BOTTOMRIGHT', -4, 4)
+        self:SetAlphaColor(frame.SettingsDropdown.Icon, nil, nil, 0.5)
+        set_Locked_NonInteractive(frame.SettingsDropdown)--.Icon:SetAtlas(frame:IsLocked() and 'Garr_LevelUpgradeLocked' or 'GM-icon-settings-hover')        
+        WoWTools_DataMixin:Hook(frame.SettingsDropdown, 'OnButtonStateChanged', set_Locked_NonInteractive)
+
+
+
 --简写
         WoWTools_DataMixin:Hook(frame, 'SetSession', function(f, sessionType, sessionID)
             f:GetSessionName():SetText(GetDamageMeterSessionShortName(sessionType, sessionID))
         end)
         frame:GetSessionName():SetText(GetDamageMeterSessionShortName(frame.sessionType, frame.sessionID))
 
---选项 DamageMeterSettingsDropdownButtonTemplate
-        frame.SettingsDropdown.Icon:SetAtlas(frame:IsLocked() and 'Garr_LevelUpgradeLocked' or 'GM-icon-settings-hover')
-        self:SetAlphaColor(frame.SettingsDropdown.Icon, nil, nil, 0.2)
-        WoWTools_DataMixin:Hook(frame.SettingsDropdown, 'OnButtonStateChanged', function(f)
-            f.Icon:SetAtlas(f:GetParent():IsLocked() and 'Garr_LevelUpgradeLocked' or 'GM-icon-settings-hover')
-        end)
-        frame.SettingsDropdown:HookScript('OnLeave', function(menu)
+
+        --[[frame.SettingsDropdown:HookScript('OnLeave', function(menu)
             menu.Icon:SetAlpha(0.2)
         end)
         frame.SettingsDropdown:HookScript('OnEnter', function(menu)
             menu.Icon:SetAlpha(1)
-        end)
+        end)]]
 
 
 
@@ -2176,10 +2240,8 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
                 Set_BG(bar)
             end
         end
+
     end
-
-
-
 
     WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'SetupSharedStyleBackground', function(bar)
         Set_BG(bar)
@@ -2194,6 +2256,30 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         settins(frame)
     end)
 end
+    --[[ frame.SettingsDropdown, 'OnButtonStateChanged'
+    WoWTools_DataMixin:Hook(DamageMeterSessionWindowMixin, 'SetLocked', function()
+        print('SetLocked')
+    end)
+    WoWTools_DataMixin:Hook(DamageMeterSessionWindowMixin, 'IsNonInteractive', function()
+        print('IsNonInteractive')
+    end)
+
+
+
+    WoWTools_DataMixin:Hook(DamageMeter, 'SetSessionWindowNonInteractive' ,function(frame, sessionWindow, isLocked)
+        print('a', isLocked)
+    end)
+    WoWTools_DataMixin:Hook(DamageMeter, 'SetSessionWindowLocked' ,function(frame, sessionWindow, isLocked)
+        print('b', isLocked)
+    end)    ]]
+
+
+
+
+
+
+
+
 
 
 
