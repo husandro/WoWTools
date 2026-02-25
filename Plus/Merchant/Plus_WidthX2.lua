@@ -222,13 +222,13 @@ local function ResizeButton2_Menu(self, root)
         return
     end
 
-    local sub, sub2
+    local sub
     sub=root:CreateButton(
         '|A:common-icon-rotateright:0:0|a'
         ..((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)),
     function()
         return MenuResponse.Open
-    end, {rightText=Save().numWidth or 153})
+    end, {rightText= math.modf(Save().numWidth or 153)})
     WoWTools_MenuMixin:SetRightText(sub)
 
     sub:CreateSpacer()

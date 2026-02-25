@@ -417,7 +417,9 @@ local function Init_Menu(self, root)
             return not Save().disabledSize[name]
         end, function()
             Save().disabledSize[name]= not Save().disabledSize[name] and true or nil
-        end)
+        end, {rightText=math.modf(target:GetWidth())..'x'..math.modf(target:GetHeight())})
+        WoWTools_MenuMixin:SetRightText(sub)
+
 --x
         sub:CreateSpacer()
         sub2=WoWTools_MenuMixin:CreateSlider(sub, {
