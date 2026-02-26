@@ -723,7 +723,7 @@ local function Init()
             local link= hasItem and GetInventoryItemLink('player', slot) or nil--装等                
             if slot~=4 and slot~=19 then
                 set_Item_Tips(self, slot, link, true)
-                WoWTools_ItemMixin:SetItemStats(self, link, {point=self.icon})
+                WoWTools_ItemMixin:SetItemStats(self, link, {point=self.icon, size=Save().statFontSize})
             end
             set_Slot_Num_Label(self, slot, link and true or nil)--栏位
             self.icon:SetAlpha((hasItem or not show) and 1 or 0.3)--图标透明度

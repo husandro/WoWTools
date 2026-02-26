@@ -277,6 +277,7 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
     local hideLevel= setting.hideLevel
     local itemID= setting.itemID
     local hideStats= setting.hideStats
+    local size= setting.size or 12
 
 
     link= link or (itemID and select(2, C_Item.GetItemInfo(itemID)))
@@ -354,7 +355,12 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
     end
 
     if frame.setIDItem then frame.setIDItem:SetShown(setID) end--套装
-    if frame.itemLevel then frame.itemLevel:SetText(itemLevel or '') end--装等
+
+--装等
+    if frame.itemLevel then
+        frame.itemLevel:SetText(itemLevel or '')
+        frame.itemLevel:SetFontHeight(size)
+    end
 
     local tab= not hideStats and self:GetItemStats(link) or {}--物品，次属性，表
     for index=1 ,4 do
@@ -380,6 +386,7 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                 frame['statText'..index]=lable
             end
             lable:SetText(tab[index])
+            lable:SetFontHeight(size)
 
         elseif lable then
             lable:SetText('')

@@ -50,7 +50,7 @@ local function Init_Menu(self, root)
     end
     local sub
 
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS,
     function()
         return not Save().hide
@@ -58,6 +58,25 @@ local function Init_Menu(self, root)
         Save().hide= not Save().hide and true or nil
         Settings()
     end)
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
+        getValue=function()
+            return Save().statFontSize or 12
+        end, setValue=function(value)
+            Save().statFontSize= value
+            Settings()
+        end,
+        minValue=8,
+        maxValue=18,
+        step=1,
+        --bit--='%.1f'
+        --tooltip--function, string, table
+    })
+    sub:CreateSpacer()
+
+    
 
 
 --装备管理
