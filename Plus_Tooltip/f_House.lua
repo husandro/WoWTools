@@ -46,21 +46,24 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
         ..(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS)..'|A:house-outdoor-budget-icon:0:0|a'
     )
 
+--匠心房间
+    if entryInfo.isPrefab then
+        tooltip:AddLine(
+            (entryInfo.isPrefab and GREEN_FONT_COLOR:GenerateHexColorMarkup() or NORMAL_FONT_COLOR:GenerateHexColorMarkup())
+            ..(WoWTools_DataMixin.onlyChinese and '匠心房间' or HOUSING_LAYOUT_PREFAB_ROOM_TOOLTIP)
+            ..': '..WoWTools_TextMixin:GetYesNo(entryInfo.isPrefab)
 
-    tooltip:AddLine(
-        (entryInfo.isPrefab and GREEN_FONT_COLOR:GenerateHexColorMarkup() or NORMAL_FONT_COLOR:GenerateHexColorMarkup())
-        ..(WoWTools_DataMixin.onlyChinese and '专业制造' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TRADE_SKILLS, ACTION_SPELL_CREATE))
-        ..': '..WoWTools_TextMixin:GetYesNo(entryInfo.isPrefab)
+        )
+    end
 
-    )
---无法被摧毁
-    --[[if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
+--[[无法被摧毁
+    if entryInfo.destroyableInstanceCount and entryInfo.destroyableInstanceCount<=0 then
         tooltip:AddLine(
             '|cnGREEN_FONT_COLOR:|A:Objective-Fail:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY),
             nil, nil, nil, true
         )
-    ]]
+    end]]
 
     tooltip:AddLine(
         (entryInfo.isUniqueTrophy and GREEN_FONT_COLOR:GenerateHexColorMarkup() or NORMAL_FONT_COLOR:GenerateHexColorMarkup())
@@ -96,7 +99,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     --textLeft= WoWTools_ItemMixin:GetDecorItemCount(nil, entryInfo, true)
     --[[if entryInfo.showQuantity then--entryInfo.showQuantity and 
         local numPlaced= entryInfo.numPlaced or 0
-        local quantity= (entryInfo.quantity or 0)+ (entryInfo.remainingRedeemable or 0)
+        local quantity= (entryInfo.quantity or 0)+ (entryInfo.placementCost or 0)
         numPlaced= numPlaced==0 and '|cff6262620|r' or numPlaced
         quantity= quantity==0 and '|cff6262620|r' or quantity
         textLeft=numPlaced..'/'..quantity..'|A:house-chest-icon:0:0|a'

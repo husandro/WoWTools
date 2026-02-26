@@ -11,12 +11,12 @@ local function Init_Panel()
     local tooltip= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 
 
-
+--[[
     WoWTools_PanelMixin:Header(WoWTools_ItemMixin.Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
 
 
---[[字体
+字体
     WoWTools_PanelMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
         GetValue= function() return Save().size or 10 end,

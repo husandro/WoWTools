@@ -8,6 +8,38 @@ local function Save()
 end
 
 
+
+--列表，数量 ScrollingHousingCatalogMixin
+local function Catalog_ListNum(frame)
+    if not frame or frame.numItemLabel then
+        return
+    end
+    --local frame= HousingDashboardFrame.CatalogContent.OptionsContainer
+    frame.numItemLabel= frame:CreateFontString(nil, nil, 'GameFontWhite')
+    frame.numItemLabel:SetPoint('LEFT', frame.CategoryText, 'RIGHT', 5, 0)
+    frame.numItemLabel:EnableMouse(true)
+    frame.numItemLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
+    frame.numItemLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
+    frame.numItemLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '家具数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CATALOG_SHOP_TYPE_DECOR))
+    function frame.numItemLabel:set_alpha()
+        self:SetAlpha(self:IsMouseOver() and 0.5 or 1)
+    end
+
+    WoWTools_DataMixin:Hook(frame, 'SetCatalogElements', function(f)
+        local num= f.ScrollBox:GetDataProviderSize()
+        f.numItemLabel:SetText(WoWTools_DataMixin:MK(num, 3) or '')
+    end)
+    WoWTools_DataMixin:Hook(frame, 'ClearCatalogData', function(f)
+        print('ClearCatalogData')
+        f.numItemLabel:SetText('')
+    end)
+end
+
+
+
+
+
+
 local function Set_Alpha(region)
     region:EnableMouse(true)
     region:SetScript('OnLeave', WoWToolsButton_OnLeave)
@@ -126,46 +158,71 @@ local function Create_Button(btn)
         self:tooltip()
     end)
 
+--预览不可用
+    btn.NotAsset= btn:CreateTexture()
+    btn.NotAsset:SetPoint('LEFT', btn.trackableButton, 'RIGHT')
+    btn.NotAsset:SetSize(16,16)
+    btn.NotAsset:SetAtlas('transmog-icon-hidden')
+
+
+
+
 --可放置，室内，提示
     btn.Indoors= btn:CreateTexture()
     btn.Indoors:SetPoint('TOP', btn.trackableButton, 'BOTTOM')
     btn.Indoors:SetAtlas('house-room-limit-icon')
     btn.Indoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室内' or HOUSING_DECOR_ONLY_PLACEABLE_INSIDE
     Set_Texture(btn.Indoors)
+
+
 --可放置，室外，提示
     btn.Outdoors= btn:CreateTexture()
     btn.Outdoors:SetPoint('TOP', btn.Indoors, 'BOTTOM')
     btn.Outdoors:SetAtlas('house-outdoor-budget-icon')
     btn.Outdoors.tooltip= WoWTools_DataMixin.onlyChinese and '只能放置在室外' or HOUSING_DECOR_ONLY_PLACEABLE_OUTSIDE
     Set_Texture(btn.Outdoors)
+
 --[[是否可摧毁，此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制
-    btn.canDelete= btn:CreateTexture()
-    btn.canDelete:SetPoint('TOPLEFT', btn.Outdoors, 'BOTTOMLEFT')
-    btn.canDelete:SetAtlas('Objective-Fail')
-    btn.canDelete.tooltip= WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY
-    Set_Texture(btn.canDelete)
-    btn.canDelete:SetAlpha(1)
-    function btn.canDelete:set_alpha()
+    btn.NotCanDelete= btn:CreateTexture()
+    btn.NotCanDelete:SetPoint('TOPLEFT', btn.Outdoors, 'BOTTOMLEFT')
+    btn.NotCanDelete:SetAtlas('Objective-Fail')
+    btn.NotCanDelete.tooltip= WoWTools_DataMixin.onlyChinese and '此装饰无法被摧毁，也不会计入住宅收纳箱的容量限制' or HOUSING_DECOR_STORAGE_ITEM_CANNOT_DESTROY
+    Set_Texture(btn.NotCanDelete)
+    btn.NotCanDelete:SetAlpha(1)
+    function btn.NotCanDelete:set_alpha()
         self:SetAlpha(self:IsMouseOver() and 0.3 or 1)
     end]]
+
+    --匠心房间
+    btn.IsPrefab= btn:CreateTexture()
+    btn.IsPrefab:SetPoint('TOPLEFT', btn.Outdoors, 'BOTTOMLEFT')
+    btn.IsPrefab:SetAtlas('house-chest-room-prefab-icon')
+    btn.IsPrefab.tooltip= WoWTools_DataMixin.onlyChinese and '匠心房间' or HOUSING_LAYOUT_PREFAB_ROOM_TOOLTIP
+    Set_Texture(btn.IsPrefab)
+    btn.IsPrefab:SetAlpha(1)
+    function btn.IsPrefab:set_alpha()
+        self:SetAlpha(self:IsMouseOver() and 0.3 or 1)
+    end
+
 --可获得首次收集奖励
     btn.firstXP= btn:CreateTexture()
-    btn.firstXP:SetPoint('TOP', btn.canDelete,'BOTTOM', -1, 4)
+    btn.firstXP:SetPoint('TOP', btn.IsPrefab,'BOTTOM', -1, 4)
     btn.firstXP:SetAtlas('GarrMission_CurrencyIcon-Xp')
     btn.firstXP.tooltip= WoWTools_DataMixin.onlyChinese and '|cnLIGHTBLUE_FONT_COLOR:可获得首次收集奖励|r' or HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE
     Set_Texture(btn.firstXP)
-    btn.firstXP:SetSize(20,20)
+    btn.firstXP:SetSize(20, 20)
 --空间，大小
     btn.placementCostLabel= btn:CreateFontString(nil, nil, 'GameFontWhite')
     btn.placementCostLabel:SetPoint('TOPLEFT', btn.firstXP, 'BOTTOMLEFT', 5, 5)
     btn.placementCostLabel.tooltip= WoWTools_DataMixin.onlyChinese and '装饰放置成本|cnNORMAL_FONT_COLOR:|n放置此装饰所需占用的装饰放置预算|r' or HOUSING_DECOR_PLACEMENT_COST_TOOLTIP
     Set_Texture(btn.placementCostLabel)
 
---预览不可用
-    btn.notAsset= btn:CreateTexture()
-    btn.notAsset:SetPoint('LEFT', btn.trackableButton, 'RIGHT')
-    btn.notAsset:SetSize(16,16)
-    btn.notAsset:SetAtlas('transmog-icon-hidden')
+
+
+
+
+
+
 
 --索引
     btn.indexLabel= btn:CreateFontString(nil, 'BORDER', 'GameFontDisable')
@@ -276,39 +333,20 @@ local function Init_HousingTemplates()
 
 
 
---列表，数量
-    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'OnLoad', function(frame)
-        frame.numItemLabel= frame:CreateFontString(nil, nil, 'GameFontWhite')
-        frame.numItemLabel:SetPoint('LEFT', frame.CategoryText, 'RIGHT', 5, 0)
-        frame.numItemLabel:SetScript('OnLeave', WoWToolsButton_OnLeave)
-        frame.numItemLabel:SetScript('OnEnter', WoWToolsButton_OnEnter)
-        frame.numItemLabel.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '家具数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CATALOG_SHOP_TYPE_DECOR))
-        function frame.numItemLabel:set_alpha()
-            self:SetAlpha(self:IsMouseOver() and 0.5 or 1)
-        end
-    end)
-
-    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'SetCatalogElements', function(frame)
-        local num= frame.ScrollBox:GetDataProviderSize()
-        frame.numItemLabel:SetText(WoWTools_DataMixin:MK(num, 3) or '')
-    end)
-    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'ClearCatalogData', function(frame)
-        frame.numItemLabel:SetText('')
-    end)
-
-
+--列表，数量 ScrollingHousingCatalogMixin
+    WoWTools_DataMixin:Hook(ScrollingHousingCatalogMixin, 'OnLoad', Catalog_ListNum)
 
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'OnLoad', Create_Button)
 
     WoWTools_DataMixin:Hook(HousingCatalogDecorEntryMixin, 'UpdateVisuals', function(btn)
 
         --local isTrackable= nil
-        local placementCost, show, isXP, isIndoors, isOutdoors, isNotAsset
+        local placementCost, show, isXP, isIndoors, isOutdoors, isNotAsset, isPrefab--, notCanDelete
         local color= HIGHLIGHT_FONT_COLOR
         local entryInfo= btn:HasValidData() and btn.entryInfo
 
         if entryInfo then
- 
+
 
             if btn.InfoText:IsShown() then
                 local numPlaced, quantity
@@ -334,33 +372,35 @@ local function Init_HousingTemplates()
             end
 
             if entryInfo.entryID then
-                --isCanDelete= C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)
-
                 show= ContentTrackingUtil.IsContentTrackingEnabled()--追踪当前可用
                     and C_ContentTracking.IsTrackable(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--追踪功能对此物品可用
-
                 --isTrackable= show and C_ContentTracking.IsTracking(Enum.ContentTrackingType.Decor, entryInfo.entryID.recordID)--正在追踪
-
             end
+
+            --[[if entryInfo.destroyableInstanceCount and entryInfo.destroyableInstanceCount<=0 then
+                notCanDelete= true
+            end]]
+
             isXP= entryInfo.firstAcquisitionBonus and entryInfo.firstAcquisitionBonus>0
             isIndoors= entryInfo.isAllowedIndoors
             isOutdoors= entryInfo.isAllowedOutdoors
             isNotAsset= not entryInfo.asset
+            isPrefab= entryInfo.isPrefab
 
             color= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             placementCost= entryInfo.placementCost
         end
-        
+
         btn.Background:SetVertexColor(color:GetRGB())
         btn.placementCostLabel:SetText(placementCost and '|A:House-Decor-budget-icon:0:0|a'..placementCost or ' ')
-
         btn.trackableButton:SetShown(show)
 
         btn.firstXP:SetShown(isXP)
         btn.Indoors:SetShown(isIndoors)
         btn.Outdoors:SetShown(isOutdoors)
-        btn.notAsset:SetShown(isNotAsset)
-        --btn.canDelete:SetShown(isCanDelete==false)
+        btn.NotAsset:SetShown(isNotAsset)
+        --btn.NotCanDelete:SetShown(notCanDelete)
+        btn.IsPrefab:SetShown(isPrefab)
 
         btn.indexLabel:SetText(btn.GetElementDataIndex and btn:GetElementDataIndex() or '')
     end)
@@ -468,7 +508,7 @@ local function Init_HousingModelPreview()
         return
     end
 
-    
+
 
     WoWTools_DataMixin:Hook(HousingModelPreviewMixin, 'OnLoad', function(self)
         local layoutIndex=3
@@ -513,7 +553,7 @@ local function Init_HousingModelPreview()
 
 
 
-    
+
 
     Init_HousingModelPreview=function()end
 end
@@ -568,6 +608,12 @@ local function Init_HousingDashboard()
         '|A:GarrMission_CurrencyIcon-Xp:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '|cnLIGHTBLUE_FONT_COLOR:可获得首次收集奖励|r' or HOUSING_DECOR_FIRST_ACQUISITION_AVAILABLE)
     )
+
+
+
+--列表，数量 ScrollingHousingCatalogMixin
+    Catalog_ListNum(HousingDashboardFrame.CatalogContent.OptionsContainer)
+
 
     Init_HousingDashboard=function()end
 end

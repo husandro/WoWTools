@@ -307,19 +307,21 @@ local function Set_Item_Info()
         if itemID and itemLink and isMerce and notIsUsableAlpha~=1 then
             local info= C_MerchantFrame.GetItemInfo(i)
 
+            local hasItemCollection= select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true))
+
             if info and (not info.isPurchasable or not info.isUsable)--无法使用物品
 
-            or (C_Item.IsCosmeticItem(itemID) and select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true)))--幻化
+                or (C_Item.IsCosmeticItem(itemID) and hasItemCollection)--幻化
 
-            or select(2, WoWTools_CollectionMixin:Toy(itemID))--玩具
+                or select(2, WoWTools_CollectionMixin:Toy(itemID))--玩具
 
-            or select(2,WoWTools_CollectionMixin:Mount(nil, itemID))--坐骑
+                or select(2,WoWTools_CollectionMixin:Mount(nil, itemID))--坐骑
 
-            or select(4, WoWTools_CollectionMixin:SetID(nil, itemLink))--套装
+                or select(4, WoWTools_CollectionMixin:SetID(nil, itemLink))--套装
 
-            or select(4, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
+                or select(4, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
 
-            or  WoWTools_ItemMixin:IsNotEquipType(itemID)
+                or (WoWTools_ItemMixin:IsNotEquipType(itemID) and hasItemCollection)
 
             then
                alpha= notIsUsableAlpha

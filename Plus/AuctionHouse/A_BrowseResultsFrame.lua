@@ -183,8 +183,8 @@ local function Get_Item(btn)
                 stats= (stats or '')..'|A:house-outdoor-budget-icon:0:0|a'
             end
 
---[[无法被摧毁
-            if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
+--[[[无法被摧毁
+            if entryInfo.destroyableInstanceCount and entryInfo.destroyableInstanceCount<=0 then
                 text= '|A:Objective-Fail:0:0|a'
             end]]
 
