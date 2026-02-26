@@ -13,11 +13,11 @@ WoWTools_ItemMixin:SetupInfo(itemButton, {
     point= region,
     size=12
 })
-]]
+
 local function Save()
     return WoWToolsSave['Plus_ItemInfo']
 end
-
+]]
 
 local ITEM_SPELL_CHARGES= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local CHALLENGE_MODE_KEYSTONE_NAME= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
@@ -873,10 +873,11 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
     if not frame then
         return
 
-    elseif not tab then
+    elseif not tab or TableIsEmpty(tab) then
         Clear_Label(frame)
         frame._isSetItemInfo= nil
         return
+
     elseif frame._isSetItemInfo then
         return
     end

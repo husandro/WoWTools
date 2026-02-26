@@ -19,39 +19,24 @@ function WoWTools_ItemMixin.Frames:ContainerFrame1()
 --ContainerFrameCombinedBags
     WoWTools_DataMixin:Hook(ContainerFrameCombinedBags, 'UpdateItems', Set_BagInfo)]]
 
-    Menu.ModifyMenu("MENU_CONTAINER_FRAME_COMBINED", function(_, root)
-        local sub=root:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO),
-        function()
-            return not self:Save().no.ContainerFrame1
-        end, function()
-            self:Save().no.ContainerFrame1= not self:Save().no.ContainerFrame1 and true or nil
-        end)
-
-    --属性，字体，缩放
-        sub:CreateSpacer()
-        WoWTools_MenuMixin:CreateSlider(sub, {
-        name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
-        getValue=function()
-            return self:Save().size.ContainerFrame1 or 10
-        end, setValue=function(value)
-            self:Save().size.ContainerFrame1= value
-            --更新物品
-        end,
-        minValue=6,
-        maxValue=18,
-        step=1,
-        --bit--='%.1f'
-        --tooltip--function, string, table
+    Menu.ModifyMenu("MENU_CONTAINER_FRAME", function(frame, root)
+        self:SetOptions(frame, root, {
+            name='ContainerFrame1',
+            call='ContainerFrame_UpdateAll'
         })
-        sub:CreateSpacer()
+    end)
+    Menu.ModifyMenu("MENU_CONTAINER_FRAME_COMBINED", function(frame, root)
+        self:SetOptions(frame, root, {
+            name='ContainerFrame1',
+            call='ContainerFrame_UpdateAll'
+        })
     end)
 
     WoWTools_DataMixin:Hook(ContainerFrameItemButtonMixin, 'UpdateCooldown', function(btn)
-        WoWTools_ItemMixin:SetupInfo(btn, not self:Save().no.ContainerFrame1 and {bag={bag=btn:GetBagID(), slot=btn:GetID()}, size=self:Save().size.ContainerFrame1} or nil)
+        WoWTools_ItemMixin:SetupInfo(btn, not self:SaveNo().ContainerFrame1 and {bag={bag=btn:GetBagID(), slot=btn:GetID()}, size=self:SaveSize().ContainerFrame1} or nil)
     end)
-
---其它插件
+end
+--[[其它插件
     if C_AddOns.IsAddOnLoaded("Bagnon") then
         local itemButton = Bagnon.ItemSlot or Bagnon.Item
         if itemButton and itemButton.Update then
@@ -74,7 +59,7 @@ function WoWTools_ItemMixin.Frames:ContainerFrame1()
     elseif C_AddOns.IsAddOnLoaded('Inventorian') then
         local lib = LibStub("AceAddon-3.0", true)
         if lib then
-            ADDON= lib:GetAddon("Inventorian")
+            local ADDON= lib:GetAddon("Inventorian")
             local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
             function InvLevel:Update()
                 WoWTools_ItemMixin:SetupInfo(self, {bag={bag=self.bag, slot=self.slot}})
@@ -84,5 +69,5 @@ function WoWTools_ItemMixin.Frames:ContainerFrame1()
             end
             WoWTools_DataMixin:Hook(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
         end
-    end
-end
+    end]]
+

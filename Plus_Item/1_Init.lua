@@ -16,7 +16,7 @@ local function Init_Panel()
 
 
 
---字体
+--[[字体
     WoWTools_PanelMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
         GetValue= function() return Save().size or 10 end,
@@ -28,7 +28,7 @@ local function Init_Panel()
         SetValue= function(_, _, value2)
             Save().size= value2 or 10
         end
-    })
+    })]]
 
     local index=0
     local function Add_Options(name)
@@ -36,10 +36,10 @@ local function Init_Panel()
             name= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(index..') ')..name:gsub('Blizzard_', ''),
             tooltip= tooltip,
             category= WoWTools_ItemMixin.Category,
-            Value= not Save().no[name],
-            GetValue= function() return not Save().no[name] end,
+            Value= not Save().No[name],
+            GetValue= function() return not Save().No[name] end,
             SetValue= function()
-                Save().no[name]= not Save().no[name] and true or nil
+                Save().No[name]= not Save().No[name] and true or nil
             end
         })
     end
@@ -80,7 +80,7 @@ local function Init()
 
     for name, func in pairs(WoWTools_ItemMixin.Events) do
         if C_AddOns.IsAddOnLoaded(name) then
-            if not Save().no[name] then
+            if not Save().No[name] then
                 func(WoWTools_ItemMixin)
             end
             WoWTools_ItemMixin.Events[name]= nil
@@ -90,7 +90,7 @@ local function Init()
     do
         for name, func in pairs(WoWTools_ItemMixin.Frames) do
             if _G[name] then
-                if not Save().no[name] then
+                if not Save().No[name] then
                     func(WoWTools_ItemMixin)
                 end
             elseif WoWTools_DataMixin.Player.husandro then
@@ -117,9 +117,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or {no={}, size={}}
-            Save().no= Save().no or {}
-            Save().size= Save().size or {}
+            WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or {No={}, Size={}}
+
+            if not Save().Size then
+                Save().No= Save().no or {}
+                Save().Size= {}
+                Save().no= nil
+                Save().size= nil
+            end
 
             WoWTools_ItemMixin.addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
             WoWTools_ItemMixin.Category, WoWTools_ItemMixin.Layout= WoWTools_PanelMixin:AddSubCategory({
@@ -175,7 +180,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif WoWToolsSave and WoWTools_ItemMixin.Events[arg1] then
-            if not Save().no[arg1] then
+            if not Save().No[arg1] then
                 WoWTools_ItemMixin.Events[arg1](WoWTools_ItemMixin)
             end
             WoWTools_ItemMixin.Events[arg1]= nil

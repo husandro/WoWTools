@@ -3092,7 +3092,9 @@
         "WHITE_FONT_COLOR",
         "DISABLED_FONT_COLOR",
         "DAMAGE_METER_MAKE_UNINTERACTABLE",
-        "DAMAGE_METER_LOCK_WINDOW"
+        "DAMAGE_METER_LOCK_WINDOW",
+        "WoWTools_ItemMixin",
+        "WoWTools_BagMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

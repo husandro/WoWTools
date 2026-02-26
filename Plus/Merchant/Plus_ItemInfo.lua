@@ -200,7 +200,6 @@ local function Create_Label(btn)
             p:SetAlpha(1)
         end
     end)
-    
 end
 
 
@@ -221,6 +220,7 @@ local function Set_Item_Info()
     local showItemInfo= not Save().notItemInfo--物品信息
     local notIsUsableAlpha= Save().notIsUsableAlpha or 1--无法使用物品，alpha
     local notAutoBuy= Save().notAutoBuy
+    local statFontSize= Save().statFontSize or 10
 
     for i=1, page do
         local index = isMerce and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
@@ -292,12 +292,13 @@ local function Set_Item_Info()
         btn.buyItemNum:SetText(num)
 --属性
         btn.stats:SetText(stats or '')
+        btn.stats:SetFontHeight(statFontSize)
         btn.stats.spellID= spellID
 --提示
         WoWTools_ItemMixin:SetupInfo(
             _G["MerchantItem"..i..'ItemButton'], showItemInfo and {
                 merchant={slot=index, buyBack= not isMerce},
-                size= Save().statFontSize
+                size= statFontSize
             } or nil
         )
 
@@ -318,6 +319,8 @@ local function Set_Item_Info()
 
             or select(4, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
 
+            or  WoWTools_ItemMixin:IsNotEquipType(itemID)
+
             then
                alpha= notIsUsableAlpha
             end
@@ -331,13 +334,13 @@ local function Set_Item_Info()
     if isMerce then
         WoWTools_ItemMixin:SetupInfo(
             MerchantBuyBackItemItemButton,
-            {
+            showItemInfo and {
                 merchant={
                     slot=numBuybackItems,
                     buyBack=true
                 },
-                size=Save().statFontSize
-            }
+                size= statFontSize
+            } or nil
         )
     end
 

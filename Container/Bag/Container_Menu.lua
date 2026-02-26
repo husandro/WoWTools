@@ -286,7 +286,7 @@ local function Init()
 --全部启用
         if ContainerFrame_CanContainerUseFilterMenu(bagID) then
             local sub
-            root:CreateDivider()
+            --root:CreateDivider()
 
             sub=root:CreateCheckbox(
                 WoWTools_DataMixin.onlyChinese and '全部启用' or ENABLE_ALL_ADDONS,
@@ -328,8 +328,8 @@ local function Init()
                 tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(HEADER_COLON, ''))
                 tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
             end)
-        else
-            root:CreateDivider()
+        --else
+            --root:CreateDivider()
         end
 
         Init_Columns_Menu(frame, root)

@@ -2,10 +2,102 @@ WoWTools_ItemMixin={
     Events={},
     Frames={},
     QualityText={},
-     Save=function()
+
+    Save=function()
         return WoWToolsSave['Plus_ItemInfo'] or {}
+    end,
+
+    SaveNo=function()
+        return WoWToolsSave['Plus_ItemInfo'].No or {}
+    end,
+
+    SaveSize=function()
+        return WoWToolsSave['Plus_ItemInfo'].Size or {}
     end
 }
+
+function WoWTools_ItemMixin:SetOptions(frame, root, tab)
+    if not frame:IsMouseOver() then
+        return
+    end
+
+    local name= tab.name
+    local tips= tab.toolip
+    local size= tab.size or 10
+
+    local call
+    if tab.call then
+        call= type(tab.call)=='function' and tab.call or _G[tab.call]
+    end
+    call= call or function()end
+
+
+    local sub=root:CreateCheckbox(
+        self.addName,
+    function()
+        return not self:SaveNo()[name]
+    end, function()
+        self:SaveNo()[name]= not self:SaveNo()[name] and true or nil
+        call()--更新物品
+    end)
+
+    if not tab.call or tips then
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(
+                tips
+                or (WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+            )
+        end)
+    end
+
+--属性，字体，缩放
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
+    getValue=function()
+        return self:SaveSize()[name] or size
+    end, setValue=function(value)
+        self:SaveSize()[name]= value
+        if not self:SaveNo()[name] then
+            call()--更新物品
+        end
+    end,
+    minValue=6,
+    maxValue=18,
+    step=1,
+    })
+    sub:CreateSpacer()
+
+
+    local sub2= sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '重置' or RESET,
+    function()
+        self:SaveSize()[name]= nil
+        if not self:SaveNo()[name] then
+            call()--更新物品
+        end
+        return MenuResponse.Refresh
+    end)
+
+    for i=6, 12 do
+        sub2:CreateCheckbox(
+            i,
+        function(value)
+            return value== size
+        end,function(value)
+            self:SaveSize()[name]= value
+            if not self:SaveNo()[name] then
+                call()--更新物品
+            end
+        end, i)
+    end
+
+--打开选项界面
+    sub2:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(sub2, {name=self.addName, name2=name, category=self.Category})
+end
+
+
 --[[
 WoWTools_ItemMixin.QualityText= {}
     
@@ -868,4 +960,23 @@ function WoWTools_ItemMixin:GetWoWCount(itemID, checkGUID, checkRegion)--WoWTool
     return all, numPlayer
 end
 
+
+
+
+
+function WoWTools_ItemMixin:IsNotEquipType(itemInfo, itemType)
+    if not itemInfo then
+        return nil
+    elseif not C_Item.IsEquippableItem(itemInfo) then
+        print(itemInfo)
+        return false
+    end
+
+
+    itemType= itemType or select(2, C_Item.GetItemInfoInstant(itemInfo))
+    if itemType then
+        print(itemType, C_Item.IsEquippedItemType(itemType))
+        return not C_Item.IsEquippedItemType(itemType)
+    end
+end
 

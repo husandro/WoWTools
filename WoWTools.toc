@@ -97,6 +97,40 @@ Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
 Plus_Texture\z_SharedXML.lua
 
+##鼠标，提示
+Plus_Tooltip\0_TooltipMixin.lua
+Plus_Tooltip\1_Init.lua
+Plus_Tooltip\2_Create.lua
+Plus_Tooltip\f_Achievement.lua
+Plus_Tooltip\f_Aura.lua
+Plus_Tooltip\f_Azerite.lua
+Plus_Tooltip\f_Currency.lua
+Plus_Tooltip\f_Faction.lua
+Plus_Tooltip\f_Flyout.lua
+Plus_Tooltip\f_Item.lua
+Plus_Tooltip\f_House.lua
+Plus_Tooltip\f_Mount.lua
+Plus_Tooltip\f_Pet.lua
+Plus_Tooltip\f_Pet_BattlePet.lua
+Plus_Tooltip\f_Quest.lua
+Plus_Tooltip\f_Spell.lua
+Plus_Tooltip\f_Unit_NPC.lua
+Plus_Tooltip\f_Unit_Player.lua
+Plus_Tooltip\f_URL.lua
+Plus_Tooltip\3_Tooltip.lua
+Plus_Tooltip\z.StatusBar.lua
+Plus_Tooltip\z_CVar_Set.lua
+Plus_Tooltip\z_Events.lua
+Plus_Tooltip\z_Frames.lua
+
+##物品信息，显示包里，和商人，物品信息，现仅支持系统
+Plus_Item\0_ItemMixin.lua
+Plus_Item\0_SetupInfo.lua
+Plus_Item\1_Init.lua
+Plus_Item\ContainerFrame1.lua
+Plus_Item\Events.lua
+Plus_Item\Frames.lua
+
 
 ##坐骑， Tools 主要的，
 Tools\0_ToolsButtonMixin.lua
@@ -141,38 +175,6 @@ Tools\B5_Food\Create_Button.lua
 ##法师传送门
 Tools\LL_MagePortal\LL_MagePortal.lua
 
-##鼠标，提示
-Plus_Tooltip\0_TooltipMixin.lua
-Plus_Tooltip\1_Init.lua
-Plus_Tooltip\2_Create.lua
-Plus_Tooltip\f_Achievement.lua
-Plus_Tooltip\f_Aura.lua
-Plus_Tooltip\f_Azerite.lua
-Plus_Tooltip\f_Currency.lua
-Plus_Tooltip\f_Faction.lua
-Plus_Tooltip\f_Flyout.lua
-Plus_Tooltip\f_Item.lua
-Plus_Tooltip\f_House.lua
-Plus_Tooltip\f_Mount.lua
-Plus_Tooltip\f_Pet.lua
-Plus_Tooltip\f_Pet_BattlePet.lua
-Plus_Tooltip\f_Quest.lua
-Plus_Tooltip\f_Spell.lua
-Plus_Tooltip\f_Unit_NPC.lua
-Plus_Tooltip\f_Unit_Player.lua
-Plus_Tooltip\f_URL.lua
-Plus_Tooltip\3_Tooltip.lua
-Plus_Tooltip\z.StatusBar.lua
-Plus_Tooltip\z_CVar_Set.lua
-Plus_Tooltip\z_Events.lua
-Plus_Tooltip\z_Frames.lua
-
-##物品信息，显示包里，和商人，物品信息，现仅支持系统
-Plus_Item\0_ItemMixin.lua
-Plus_Item\0_SetupInfo.lua
-Plus_Item\1_Init.lua
-Plus_Item\Events.lua
-Plus_Item\Frames.lua
 
 ##颜色选择器
 Plus\Color\0_ColorMixin.lua
@@ -333,7 +335,6 @@ Container\Guild\Item_In_Out.lua
 Container\Bag\0_BagMixin.lua
 Container\Bag\1_Init.lua
 Container\Bag\Container_Menu.lua
-Container\Bag\ItemInfo.lua
 Container\Bag\z_UI.lua
 
 ##自动对话，任务
