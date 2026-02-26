@@ -321,6 +321,7 @@ local function ResizeButton2_Menu(self, root)
     end, nil, false)
 
 --缩放
+    root:CreateDivider()
     sub=WoWTools_MenuMixin:Scale(self, root, function()
         return Save().btnNameScale or 1
     end, function(value)
@@ -331,7 +332,7 @@ local function ResizeButton2_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '物品名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, NAME))
     end)
 
-    root:CreateDivider()
+--物品信息
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO),
     function()

@@ -836,13 +836,19 @@ function WoWTools_ItemMixin:IsLocked_EquipmentSet(setID)--装备管理，能否�
 end]]
 function WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, showZero)
 
-    entryInfo= entryInfo or (itemID and C_HousingCatalog.GetCatalogEntryInfoByItem(itemID, true))
+    entryInfo= entryInfo or (itemID and C_HousingCatalog.GetCatalogEntryInfoByItem(itemID, true)) or {}
 
-    if not entryInfo
-        or not entryInfo.showQuantity
-        --or not entryInfo.numPlace
-        or not entryInfo.quality
-        or not entryInfo.remainingRedeemable
+    if not entryInfo.showQuantity then
+        return
+    end
+
+    local numPlaced = entryInfo.numPlaced
+    local quantity= entryInfo.quantity
+    local remainingRedeemable= entryInfo.remainingRedeemable
+
+    if not numPlaced
+        or not quantity
+        or not remainingRedeemable
     then
         return
     end
@@ -850,21 +856,15 @@ function WoWTools_ItemMixin:GetDecorItemCount(itemID, entryInfo, showZero)
     --local stored = entryInfo.quantity + entryInfo.remainingRedeemable;
 	--local total = entryInfo.numPlaced + stored
 --数量
-    local num= (entryInfo.numPlace or 0)+ entryInfo.quality+ entryInfo.remainingRedeemable
+    local total= numPlaced+ quantity+ remainingRedeemable
 
-    if num>0 then
-        local numPlace, quality, remainingRedeemable= entryInfo.numPlace, entryInfo.quality, entryInfo.remainingRedeemable
-
-        numPlace= numPlace or 0
-
+    if total>0 or showZero then
         return
-            (numPlace>0 and '|cffffffff' or '|cff626262')..numPlace..'|A:house-decor-budget-icon:0:0|a|r'--'|A:decor-ability-snap-mask:0:0|a'
-            ..(quality>0 and '|cffffffff' or '|cff626262')..quality..'|A:house-chest-icon:0:0|a|r'
+            (numPlaced>0 and '|cffffffff' or '|cff626262')..numPlaced..'|A:house-decor-budget-icon:0:0|a|r'
+            ..(quantity>0 and '|cffffffff' or '|cff626262')..quantity..'|A:house-chest-icon:0:0|a|r'
             ..(remainingRedeemable>0 and '|cffffffff' or '|cff626262')..remainingRedeemable..'|A:Levelup-Icon-Bag:0:0|a'
-
-    elseif showZero then
-        return DISABLED_FONT_COLOR:WrapTextInColorCode('0')..'|A:house-chest-icon:0:0|a'
     end
+    --return DISABLED_FONT_COLOR:WrapTextInColorCode('0')..'|A:house-chest-icon:0:0|a'
 end
 
 
@@ -878,6 +878,7 @@ end
 
 function WoWTools_ItemMixin:GetCount(itemID, tab)
     tab= tab or {}
+
     itemID= itemID
         or (tab.itemKey and tab.itemKey.itemID)
 
@@ -887,9 +888,9 @@ function WoWTools_ItemMixin:GetCount(itemID, tab)
     if not itemID then
         return text, 0, 0, 0, 0, 0
 
-    elseif C_Item.IsDecorItem(itemID) then
+    --[[elseif C_Item.IsDecorItem(itemID) then
         text= self:GetDecorItemCount(itemID, nil, showZero)
-        return text, 0, 0, 0, 0, 0
+        return text, 0, 0, 0, 0, 0]]
     end
 
 
@@ -964,19 +965,24 @@ end
 
 
 
-function WoWTools_ItemMixin:IsNotEquipType(itemInfo, itemType)
+function WoWTools_ItemMixin:IsNotEquipType(itemInfo,  itemType, itemSubType)
     if not itemInfo then
         return nil
+
     elseif not C_Item.IsEquippableItem(itemInfo) then
-        print(itemInfo)
+
         return false
     end
 
-
-    itemType= itemType or select(2, C_Item.GetItemInfoInstant(itemInfo))
+    if not itemType then
+        itemType, itemSubType= select(2, C_Item.GetItemInfoInstant(itemInfo))
+    end
     if itemType then
-        print(itemType, C_Item.IsEquippedItemType(itemType))
-        return not C_Item.IsEquippedItemType(itemType)
+        if itemSubType then
+            return not C_Item.IsEquippedItemType(itemSubType)
+        else
+            return not C_Item.IsEquippedItemType(itemType)
+        end
     end
 end
 

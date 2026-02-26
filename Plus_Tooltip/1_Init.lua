@@ -431,6 +431,8 @@ end
 
 --初始
 local function Init()
+    WoWTools_LoadUIMixin:Housing()
+
     WoWTools_DataMixin:Hook("GameTooltip_SetDefaultAnchor", function(frame, parent)
         if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and InCombatLockdown()) then
             frame:ClearAllPoints()

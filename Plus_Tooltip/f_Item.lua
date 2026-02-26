@@ -505,10 +505,11 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     local portrait
 --住宅装饰
     if C_Item.IsDecorItem(itemLink or itemID) then
+
         local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink or itemID, true)
         if entryInfo then
             portrait= self:Set_HouseItem(tooltip, entryInfo)
-            --textRight= WoWTools_ItemMixin:GetDecorItemCount(nil, entryInfo, true)
+            textLeft= WoWTools_ItemMixin:GetDecorItemCount(itemID)
             if entryInfo.quality then
                 color= WoWTools_ItemMixin:GetColor(entryInfo.quality)
             end

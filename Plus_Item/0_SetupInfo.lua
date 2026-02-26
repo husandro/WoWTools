@@ -424,7 +424,10 @@ local function Get_Info(tab)
 --住宅装饰
     elseif C_Item.IsDecorItem(itemLink) then
         local entryInfo = C_HousingCatalog.GetCatalogEntryInfoByItem(itemLink, true)
-        if entryInfo then
+        --[[if entryInfo and entryInfo.entryID then
+            entryInfo= C_HousingCatalog.GetCatalogEntryInfo(entryInfo.entryID)
+        end]]
+        if entryInfo and entryInfo.entryID then
             if entryInfo.canCustomize then
                 topLeftText= '|A:housing-dyable-palette-icon:0:0|a'
             end
@@ -442,7 +445,8 @@ local function Get_Info(tab)
             if entryInfo.firstAcquisitionBonus>0 then
                 rightText= '|A:GarrMission_CurrencyIcon-Xp:18:18:3|a'
             end
-            if entryInfo.showQuantity then
+            
+            if entryInfo.showQuantity and entryInfo.numPlaced and entryInfo.quantity and entryInfo.remainingRedeemable then
                 local numPlaced= entryInfo.numPlaced or 0
                 local quantity= (entryInfo.quantity or 0)+ (entryInfo.remainingRedeemable or 0)
                 numPlaced= numPlaced==0 and '|cff6262620|r' or numPlaced
@@ -730,7 +734,7 @@ local function Get_Info(tab)
                             isRedItem= dateInfo.red
                         end
                     end
-                    isRedItem= isRedItem or not C_Item.IsEquippableItem(itemLink)
+                    isRedItem= isRedItem or WoWTools_ItemMixin:IsNotEquipType(itemID,  itemType, itemSubType)
                     if topRightText and isRedItem then
                         topRightText= '|cnWARNING_FONT_COLOR:'..topRightText..'|r'
                     end

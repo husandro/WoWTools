@@ -3094,7 +3094,8 @@
         "DAMAGE_METER_MAKE_UNINTERACTABLE",
         "DAMAGE_METER_LOCK_WINDOW",
         "WoWTools_ItemMixin",
-        "WoWTools_BagMixin"
+        "WoWTools_BagMixin",
+        "ACTION_SPELL_CREATE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

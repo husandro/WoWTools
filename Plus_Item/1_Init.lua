@@ -69,14 +69,7 @@ end
 
 local function Init()
     --if not PlayerIsTimerunning() and C_Housing.IsHousingServiceEnabled() then
-    if not HousingDashboardFrame then
-        do
-            HousingFramesUtil.ToggleHousingDashboard()
-        end
-        if HousingDashboardFrame and HousingDashboardFrame:IsShown() then
-            HousingFramesUtil.ToggleHousingDashboard()
-        end
-    end
+    WoWTools_LoadUIMixin:Housing()
 
     for name, func in pairs(WoWTools_ItemMixin.Events) do
         if C_AddOns.IsAddOnLoaded(name) then

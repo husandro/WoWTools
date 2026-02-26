@@ -4,7 +4,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     end
 
     local portrait
-    if entryInfo.entryID then
+    --[[if entryInfo.entryID then
         tooltip:AddLine(
             'recordID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.entryID.recordID
         )
@@ -14,7 +14,7 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
             entryInfo.asset and 'asset'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.asset,
             entryInfo.uiModelSceneID and 'sceneID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..entryInfo.uiModelSceneID
         )
-    end
+    end]]
 
     if entryInfo.iconTexture then
         local size= math.min(entryInfo.size, 90)*5
@@ -35,12 +35,24 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     end
 
 --室内, 室外
-    if entryInfo.isAllowedIndoors or entryInfo.isAllowedOutdoors then
-        tooltip:AddDoubleLine(
-            entryInfo.isAllowedIndoors and  '|A:house-room-limit-icon:0:0|a'..NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '室内' or HOUSING_CATALOG_FILTERS_INDOORS) or ' ',
-            entryInfo.isAllowedOutdoors and  NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS)..'|A:house-outdoor-budget-icon:0:0|a'
-        )
-    end
+
+    tooltip:AddDoubleLine(
+        (entryInfo.isAllowedIndoors and GREEN_FONT_COLOR:GenerateHexColorMarkup() or NORMAL_FONT_COLOR:GenerateHexColorMarkup())
+        ..('|A:house-room-limit-icon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '室内' or HOUSING_CATALOG_FILTERS_INDOORS))
+        ..': '..WoWTools_TextMixin:GetYesNo(entryInfo.isAllowedIndoors),
+
+        (entryInfo.isAllowedOutdoors and GREEN_FONT_COLOR:GenerateHexColorMarkup() or NORMAL_FONT_COLOR:GenerateHexColorMarkup())
+        ..WoWTools_TextMixin:GetYesNo(entryInfo.isAllowedOutdoors)..' :'
+        ..(WoWTools_DataMixin.onlyChinese and '室外' or HOUSING_CATALOG_FILTERS_OUTDOORS)..'|A:house-outdoor-budget-icon:0:0|a'
+    )
+
+
+    tooltip:AddLine(
+        (entryInfo.isPrefab and GREEN_FONT_COLOR:GenerateHexColorMarkup() or NORMAL_FONT_COLOR:GenerateHexColorMarkup())
+        ..(WoWTools_DataMixin.onlyChinese and '专业制造' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TRADE_SKILLS, ACTION_SPELL_CREATE))
+        ..': '..WoWTools_TextMixin:GetYesNo(entryInfo.isPrefab)
+
+    )
 --无法被摧毁
     --[[if C_HousingCatalog.CanDestroyEntry(entryInfo.entryID)==false then
         tooltip:AddLine(
@@ -51,7 +63,8 @@ function WoWTools_TooltipMixin:Set_HouseItem(tooltip, entryInfo)
     ]]
 
     tooltip:AddLine(
-        (WoWTools_DataMixin.onlyChinese and '独特装饰' or HOUSING_DECOR_UNIQUE_TROPHY_TOOLTIP)
+        (entryInfo.isUniqueTrophy and GREEN_FONT_COLOR:GenerateHexColorMarkup() or NORMAL_FONT_COLOR:GenerateHexColorMarkup())
+        ..(WoWTools_DataMixin.onlyChinese and '独特装饰' or HOUSING_DECOR_UNIQUE_TROPHY_TOOLTIP)
         ..': '..WoWTools_TextMixin:GetYesNo(entryInfo.isUniqueTrophy)
     )
 
