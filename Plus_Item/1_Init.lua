@@ -117,8 +117,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or {no={}}
+            WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or {no={}, size={}}
             Save().no= Save().no or {}
+            Save().size= Save().size or {}
 
             WoWTools_ItemMixin.addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
             WoWTools_ItemMixin.Category, WoWTools_ItemMixin.Layout= WoWTools_PanelMixin:AddSubCategory({

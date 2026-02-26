@@ -2,6 +2,9 @@ WoWTools_ItemMixin={
     Events={},
     Frames={},
     QualityText={},
+     Save=function()
+        return WoWToolsSave['Plus_ItemInfo'] or {}
+    end
 }
 --[[
 WoWTools_ItemMixin.QualityText= {}

@@ -721,12 +721,16 @@ local function Get_Info(tab)
                         if itemMinLevel<=WoWTools_DataMixin.Player.Level then
                             isRedItem=true
                         else
+--物品提示，信息
                             local dateInfo= WoWTools_ItemMixin:GetTooltip({
                                 bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
-                                onlyRed=true, red=true})--物品提示，信息
+                                onlyRed=true,
+                                red=true
+                            })
                             isRedItem= dateInfo.red
                         end
                     end
+                    isRedItem= isRedItem or not C_Item.IsEquippableItem(itemLink)
                     if topRightText and isRedItem then
                         topRightText= '|cnWARNING_FONT_COLOR:'..topRightText..'|r'
                     end

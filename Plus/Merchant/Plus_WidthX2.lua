@@ -351,7 +351,7 @@ local function ResizeButton2_Menu(self, root)
         Save().statFontSize= value
         WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
     end,
-    minValue=8,
+    minValue=6,
     maxValue=18,
     step=1,
     --bit--='%.1f'
