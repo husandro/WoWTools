@@ -24,7 +24,7 @@ local function Create_BossButtonList(btn)
     btn.indexLabel:SetAlpha(0.5)
     btn.indexLabel:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip_SetTitle(GameTooltip, 
+        GameTooltip_SetTitle(GameTooltip,
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '索引' or 'index')
             ..' |cffffffff'..(self:GetText() or '')
@@ -151,7 +151,7 @@ local function Create_BossButtonList(btn)
     btn.creatureNumLabel:EnableMouse(true)
     btn.creatureNumLabel:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip_SetTitle(GameTooltip, 
+        GameTooltip_SetTitle(GameTooltip,
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_QUANTITY_LABEL, CREATURE))
             ..' |cffffffff'..self:GetText()
@@ -273,7 +273,7 @@ local function Init()
         return
     end
 
-    
+
     EncounterJournalEncounterFrameInfo.allNumLabel= EncounterJournalEncounterFrameInfoInstanceButton:CreateFontString(nil, 'ARTWORK', 'GameNormalNumberFont')
     EncounterJournalEncounterFrameInfo.allNumLabel:SetPoint('BOTTOM', EncounterJournalEncounterFrameInfoInstanceButtonIcon, 0, 2)
     EncounterJournalEncounterFrameInfo.allNumLabel:SetTextColor(1, 0.88, 0.68)
@@ -424,6 +424,17 @@ local function Init()
             local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=btn.link, text={ITEM_CLASSES_ALLOWED, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
             classText= dateInfo.text[ITEM_CLASSES_ALLOWED]
             upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
+
+            if upText and WoWTools_ChineseMixin then
+                local en= upText:match('(.+) %d+/%d+')
+                if en then
+                    local cn= WoWTools_TextMixin:CN(en)
+                    if cn then
+                        upText= upText:gsub(en, cn)
+                    end
+                end
+            end
+
             if classText then
                 if WoWTools_ChineseMixin then--汉化
                     classText= (classText..PLAYER_LIST_DELIMITER):gsub('.-'..PLAYER_LIST_DELIMITER, function(a)
@@ -748,7 +759,7 @@ local function Init()
             end
 		end
         local powerInfo = btn:GetPowerInfo()
-        local spellID= powerInfo and powerInfo.descriptionSpellID 
+        local spellID= powerInfo and powerInfo.descriptionSpellID
         if spellID then
             WoWTools_DataMixin:Load(spellID, 'spell')
             icon= C_Spell.GetSpellTexture(spellID)
