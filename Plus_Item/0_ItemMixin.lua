@@ -39,7 +39,7 @@ function WoWTools_ItemMixin:SetOptions(frame, root, tab)
     end, function()
         self:SaveNo()[name]= not self:SaveNo()[name] and true or nil
         call()--更新物品
-    end, {rightText=size})
+    end, {rightText= self:SaveSize()[name] or size})
     WoWTools_MenuMixin:SetRightText(sub)
 
     if not tab.call or tips then

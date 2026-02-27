@@ -790,26 +790,28 @@ function WoWTools_MenuMixin:CVar(root, name, showName, tooltip, eventFunc)
     return sub
 end
 
-function WoWTools_MenuMixin:SetRightText(root)
+function WoWTools_MenuMixin:SetRightText(root)--rightText，rightColor
     root:AddInitializer(function(btn, desc)
         local rightText= desc.data and desc.data.rightText
         if not rightText then
             return
         end
 
-        local color= desc.data.rightColor
-
         local font = btn:AttachFontString()
         local offset = desc:HasElements() and -20 or 0
         font:SetPoint("RIGHT", offset, 0)
         font:SetJustifyH("RIGHT")
         font:SetTextToFit(rightText)
-        if color and color.GetRGB then
-            font:SetTextColor(color:GetRGB())
-        elseif rightText==0 then
-            font:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
-        else
-            font:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+
+        if not tostring(rightText):find('|c')  then
+            local color= desc.data.rightColor
+            if color and color.GetRGB then
+                font:SetTextColor(color:GetRGB())
+            elseif rightText==0 or rightText=='0' then
+                font:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
+            else
+                font:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+            end
         end
     end)
 end

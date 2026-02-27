@@ -417,7 +417,7 @@ local function Init_Menu(self, root)
             return not Save().disabledSize[name]
         end, function()
             Save().disabledSize[name]= not Save().disabledSize[name] and true or nil
-        end, {rightText=math.modf(target:GetWidth())..'x'..math.modf(target:GetHeight())})
+        end, {rightText=format('%i|cff626262x|r%i', target:GetWidth(),target:GetHeight())})
         WoWTools_MenuMixin:SetRightText(sub)
 
 --x

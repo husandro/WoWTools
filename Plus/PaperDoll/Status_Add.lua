@@ -127,7 +127,7 @@ end
 local function Get_Role_Text(roleIndex)--职责
     return
         roleIndex== Enum.LFGRole.Tank and format('%s%s', WoWTools_DataMixin.Icon.TANK, WoWTools_DataMixin.onlyChinese and '坦克' or TANK)
-        or (roleIndex==Enum.LFGRole.Healer and format('%s%s', WoWTools_DataMixin.Icon.TANK, WoWTools_DataMixin.onlyChinese and '治疗' or HEALER))
+        or (roleIndex==Enum.LFGRole.Healer and format('%s%s', WoWTools_DataMixin.Icon.HEALER, WoWTools_DataMixin.onlyChinese and '治疗' or HEALER))
         or (roleIndex==Enum.LFGRole.Damage and format('%s%s', WoWTools_DataMixin.Icon.DAMAGER, WoWTools_DataMixin.onlyChinese and '伤害' or DAMAGER))
         or (WoWTools_DataMixin.onlyChinese and '无' or NONE)
 
@@ -163,11 +163,9 @@ local function Init_Sub_Menu(_, root, stat, index, name)
 
 --自动隐藏 -1 0
     root:CreateDivider()
-    for va=-1, 0, 1 do
+    for va=-1, 0 do
         sub=root:CreateCheckbox(
-            format('%s |cnGREEN_FONT_COLOR:'..va..'|r',
-                WoWTools_DataMixin.onlyChinese and '自动隐藏'
-                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
+            (WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
             ..(p_stats.hideAt==va and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
         function(data)
             local tab= Find_Stats(data.stat, data.index, false)
@@ -182,7 +180,8 @@ local function Init_Sub_Menu(_, root, stat, index, name)
                 end
                 Data_Save()
             end
-        end, {stat=stat, index=index, value=va, hideAt=stats.hideAt, p_hideAt=p_stats.hideAt})
+        end, {stat=stat, index=index, value=va, hideAt=stats.hideAt, p_hideAt=p_stats.hideAt, rightText=va, rightColor=GREEN_FONT_COLOR})
+        WoWTools_MenuMixin:SetRightText(sub)
 
         sub:SetTooltip(function(tooltip, description)
             tooltip:AddLine(
@@ -258,7 +257,7 @@ local function Init_Sub_Menu(_, root, stat, index, name)
 --主属性，条件
     root:CreateDivider()
     for _, primary in pairs({LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_AGILITY , LE_UNIT_STAT_INTELLECT}) do
-        sub=root:CreateCheckbox(
+        sub=root:CreateRadio(
             format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, Get_Primary_Text(primary))
             ..(p_stats.primary==primary and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
         function(data)
@@ -274,7 +273,9 @@ local function Init_Sub_Menu(_, root, stat, index, name)
                 end
                 Data_Save()
             end
+            return MenuResponse.Refresh
         end, {stat=stat, index=index, value=primary})
+
         sub:SetTooltip(function(tooltip, description)
             local tab= Find_Stats(description.data.stat, description.data.index, true)
             tooltip:AddLine(
@@ -331,19 +332,22 @@ local function Init_Menu(self, root)
             local stat= tab.stat
             local name= tab.name or WoWTools_TextMixin:CN(_G[stat] or _G['STAT_'..stat]) or stat
 
-            local stats= Find_Stats(stat, index, false)
-            local role, autoHide ='', ''
-            if stats then
-                local tank, n, dps= Find_Roles(stats.roles)--职责
-                role= format('%s%s%s', tank and WoWTools_DataMixin.Icon.TANK or '', n and WoWTools_DataMixin.Icon.TANK or '', dps and WoWTools_DataMixin.Icon.DAMAGER or '')
-                autoHide= format('|cnGREEN_FONT_COLOR:%s|r', stats.hideAt or '')--隐藏 0， -1
-            end
+            local stats= Find_Stats(stat, index, false) or {}
+            local tank, n, dps= Find_Roles(stats.roles)--职责
+            local role= format(
+                '%s%s%s',
+                tank and WoWTools_DataMixin.Icon.TANK or '',
+                n and WoWTools_DataMixin.Icon.HEALER or '',
+                dps and WoWTools_DataMixin.Icon.DAMAGER or ''
+            )
+            --autoHide= format('|cnGREEN_FONT_COLOR:%s|r', stats.hideAt or '')--隐藏 0， -1
+            
             local primary
-            if stats and stats.primary and tab.primary and stats.primary~=tab.primary then
+            if stats.primary and tab.primary and stats.primary~=tab.primary then
                 primary=Get_Primary_Text(stats and stats.primary)--主属性
             end
             sub=root:CreateCheckbox(
-                name..autoHide..role..(primary or ''),
+                name..(role or '')..(primary or ''),
             function(data)
                 return Find_Stats(data.stat, data.index, false)
             end, function(data)
@@ -353,7 +357,9 @@ local function Init_Menu(self, root)
                     Remove_Stat(data.tab)
                 end
                 Data_Save()
-            end, {stat=stat, index=index, tab=tab})
+            end, {stat=stat, index=index, tab=tab, rightText=stats.hideAt, rightColor=GREEN_FONT_COLOR})
+
+            WoWTools_MenuMixin:SetRightText(sub)
 
             Init_Sub_Menu(self, sub, stat, index, name)
         end

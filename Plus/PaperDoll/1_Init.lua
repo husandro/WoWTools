@@ -57,7 +57,8 @@ local function Init_Menu(self, root)
     end, function()
         Save().hide= not Save().hide and true or nil
         Settings()
-    end)
+    end, {rightText= Save().statFontSize or 12})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -186,12 +187,13 @@ local function Init_Menu(self, root)
     end, function()
         Save().notFlyout= not Save().notFlyout and true or false
         WoWTools_PaperDollMixin:Init_EquipmentFlyout()
-    end)
+    end, {rightText=Save().flyoutScale or 1})
+    WoWTools_MenuMixin:SetRightText(sub)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('EquipmentFlyoutFrame')
     end)
 
---缩放, 单行
+--缩放
     WoWTools_MenuMixin:ScaleRoot(self, sub, function()
         return Save().flyoutScale or 1
     end, function(value)

@@ -79,6 +79,7 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
         [WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP]='equip'
     }) do
         num= #Save()[type]
+
         sub=root:CreateButton(
             text,
         function(data)
@@ -138,7 +139,7 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
                     )
                 end
                 return MenuResponse.Open
-            end, {index=index, type=type, isToy=isToy, spellID=spellID, itemID=itemID, name=name, rightText=index})
+            end, {index=index, type=type, isToy=isToy, spellID=spellID, itemID=itemID, name=name, rightText=index, rightColor=DISABLED_FONT_COLOR})
 --tooltip
             WoWTools_SetTooltipMixin:Set_Menu(sub2)
             WoWTools_MenuMixin:SetRightText(sub2)
@@ -155,8 +156,9 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_UseItemsMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
         end
-        sub:CreateButton(
-            (WoWTools_DataMixin.onlyChinese and '重置' or RESET)..' |cnGREEN_FONT_COLOR:#'..#P_Tabs[type],
+        
+        sub2=sub:CreateButton(
+            (WoWTools_DataMixin.onlyChinese and '重置' or RESET),
         function(data)
             StaticPopup_Show('WoWTools_OK',
                 (WoWTools_DataMixin.onlyChinese and '重置' or RESET)..'|n|n'..data.text..'|n',
@@ -166,8 +168,9 @@ function WoWTools_UseItemsMixin:Init_Menu(root)
                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_UseItemsMixin.addName, data.text, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end}
             )
-        end, {type=type, text=text})
+        end, {type=type, text=text, rightText=#P_Tabs[type], rightColor=HIGHLIGHT_FONT_COLOR})
 
+        WoWTools_MenuMixin:SetRightText(sub2)
         WoWTools_MenuMixin:SetScrollMode(sub)
     end
 

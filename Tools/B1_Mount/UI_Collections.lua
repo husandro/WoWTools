@@ -46,13 +46,11 @@ local function Init_Menu(self, root)
         ) and '|cff626262' or ''
 
 
-        local tab= {type=mountType, spellID=spellID, mountID=mountID, name=name, icon='|T'..(icon or 0)..':0|t'}
+
 
         local text=-- col..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
-               -- ..' '
                 col
                 ..(WoWTools_MountMixin.TypeName[mountType] or mountType)
-                ..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(mountType)
 
         local function getValue(data)
             return SaveLog()[data.type][data.spellID]
@@ -87,11 +85,21 @@ local function Init_Menu(self, root)
             root:CreateDivider()
         end
 
+        local tab= {
+            type=mountType,
+            spellID=spellID,
+            mountID=mountID,
+            name=name,
+            icon='|T'..(icon or 0)..':0|t',
+            rightText= WoWTools_MountMixin:Get_Table_Num(mountType),
+        }
+
         if mountType~='Floor' then
             sub= root:CreateRadio(text, getValue, setValue, tab)
         else
             sub= root:CreateCheckbox(text, getValue, setValue, tab)
         end
+        WoWTools_MenuMixin:SetRightText(sub)
 
 --二级，菜单
         WoWTools_MountMixin:Set_Mount_Sub_Options(sub, tab)
@@ -195,24 +203,25 @@ local function Init_UI_List_Menu(self, root)
 
     root:CreateDivider()
     for _, mountType in pairs(WoWTools_MountMixin.MountType) do
-        root:CreateCheckbox(
-            (WoWTools_MountMixin.TypeName[mountType] or mountType)
-                ..' #'
-                ..WoWTools_MountMixin:Get_Table_Num(mountType),
-        function(data)
-            return self.Type[data]
-        end, function(data)
+        local sub= root:CreateCheckbox(
+            WoWTools_MountMixin.TypeName[mountType] or mountType,
 
-            self.Type[data]= not self.Type[data] and true or nil
-            if self.Type[data] then
+        function(data)
+            return self.Type[data.mountType]
+
+        end, function(data)
+            self.Type[data.mountType]= not self.Type[data.mountType] and true or nil
+            if self.Type[data.mountType] then
                 C_MountJournal.SetAllSourceFilters(true)
                 C_MountJournal.SetAllTypeFilters(true)
             end
             Updata_MountJournal_FullUpdate(self)
-        end, mountType)
+
+        end, {mountType=mountType, rightText=WoWTools_MountMixin:Get_Table_Num(mountType)})
+        WoWTools_MenuMixin:SetRightText(sub)
     end
 
-    
+
     root:CreateDivider()
     WoWTools_ToolsMixin:OpenMenu(root, WoWTools_MountMixin.addName)
 end

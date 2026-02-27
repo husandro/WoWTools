@@ -262,7 +262,7 @@ local function Init_Menu_Toy(_, root)
                     ToyButton:Set_SelectValue_Random(toy)
                 end
             end
-        end, {itemID=itemID, name=toyName, has=has, rightText=index})
+        end, {itemID=itemID, name=toyName, has=has, rightText=index, rightColor=DISABLED_FONT_COLOR})
         sub:SetTooltip(Set_Menu_Tooltip)
         WoWTools_MenuMixin:SetRightText(sub)
 

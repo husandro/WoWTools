@@ -73,14 +73,14 @@ local function Init_Menu(self, root)
 
 	sub=root:CreateCheckbox(
 		(Save().btn and '' or '|cff626262')
-		..(WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-		..(num==0 and '|cff626262 ' or ' ')..num,
+		..(WoWTools_DataMixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION),
 	function()
 		return Save().indicato
 	end, function()
 		Save().indicato= not Save().indicato and true or nil
 		WoWTools_FactionMixin:UpdatList()
-	end)
+	end, {rightText=num})
+	WoWTools_MenuMixin:SetRightText(sub)
 
 --指定，列表
 	for _, factionID in pairs(new) do
@@ -94,16 +94,15 @@ local function Init_Menu(self, root)
 		end, {factionID=factionID})
 		WoWTools_SetTooltipMixin:FactionMenu(sub2)
 	end
+	WoWTools_MenuMixin:SetScrollMode(sub)
 
-	if num>1 then
-		WoWTools_MenuMixin:SetScrollMode(sub)
 --全部清除
-		sub:CreateDivider()
-		WoWTools_MenuMixin:ClearAll(sub, function()
-			Save().factions={}
-			WoWTools_FactionMixin:UpdatList()
-		end)
-	end
+	sub:CreateDivider()
+	WoWTools_MenuMixin:ClearAll(sub, function()
+		Save().factions={}
+		WoWTools_FactionMixin:UpdatList()
+	end)
+
 
 --声望变化
 	root:CreateDivider()

@@ -240,6 +240,7 @@ local function Init_Menu(self, root)
 
         for index, tab in pairs(Save().WhisperTab) do
             tab.rightText= index
+            tab.rightColor=DISABLED_FONT_COLOR
 
             local playerName= WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {faction=tab.faction, reName=true, reRealm=true})
             playerName= playerName=='' and tab.name or playerName
@@ -415,7 +416,7 @@ local function Init_Menu(self, root)
             WoWTools_ChatMixin:Say(nil, data.name, true)
             self:settings(nil, WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET, data.name, true)
             return MenuResponse.Open
-        end, {name=wow.accountName, note=wow.note, zone=zone, rightText=index})
+        end, {name=wow.accountName, note=wow.note, zone=zone, rightText=index, rightColor=DISABLED_FONT_COLOR})
 
         WoWTools_MenuMixin:SetRightText(sub2)
 

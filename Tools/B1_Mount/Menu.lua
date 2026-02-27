@@ -17,22 +17,29 @@ end
 local function Set_Menu_Index(root)
     root:AddInitializer(function(btn, desc)
         local index= desc.data.index
-        if index then
-            local font = btn:AttachFontString()
-            local offset = desc:HasElements() and -20 or 0
-            font:SetPoint("RIGHT", offset, 0)
-            font:SetJustifyH("RIGHT")
-            font:SetTextToFit(index)
+        local num= desc.data.num
+        if not num and not index then
+            return
+        end
 
-            local disabled= index==0
-                or (desc.data.spellID and not C_Spell.DoesSpellExist(desc.data.spellID))
+        local font = btn:AttachFontString()
+        local offset = desc:HasElements() and -20 or 0
+        font:SetPoint("RIGHT", offset, 0)
+        font:SetJustifyH("RIGHT")
+        font:SetTextToFit(num or index)
+
+        if num then
+            if (desc.data.spellID and not C_Spell.DoesSpellExist(desc.data.spellID))
                 or (desc.data.itemID and C_Item.GetItemCount(desc.data.itemID, false, false, false, false)==0)
-        
-            if disabled then
+            then
+                font:SetTextColor(WARNING_FONT_COLOR:GetRGB())
+            elseif num==0 then
                 font:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
             else
-                font:SetTextColor(WHITE_FONT_COLOR:GetRGB())
+                font:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
             end
+        else
+            font:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
         end
     end)
 end
@@ -81,7 +88,7 @@ local function ClearAll_Menu(root, mountType)
 
     root:CreateButton(
         name,
-    function(data)
+    function()
         StaticPopup_Show('WoWTools_OK',
         name..'\n\n'..(WoWTools_MountMixin.TypeName[mountType] or mountType),
         nil,
@@ -206,7 +213,7 @@ local function Set_Mount_Menu(root, mountType, spellID, num, index)
             C_MountJournal.SummonByID(d.mountID or 0)
             return MenuResponse.Refresh
         end,
-        {spellID=spellID, mountID=mountID, type=mountType, index=num or index}
+        {spellID=spellID, mountID=mountID, type=mountType, num=num, index=index}
     )
 
     sub:SetTooltip(Set_Menu_Tooltip)
@@ -433,9 +440,6 @@ end
 
 
 
---#####
---主菜单
---#####
 local function Init_Menu(self, root)
     local sub, sub2, sub3, num
 
@@ -496,7 +500,7 @@ local function Init_Menu(self, root)
                 ..name,
             function()
                 return MenuResponse.Open
-            end, {itemID=itemID, spellID=spellID, type=mountType, index=num})
+            end, {itemID=itemID, spellID=spellID, type=mountType, num=num})
 
             sub:SetTooltip(Set_Menu_Tooltip)
             Set_Menu_Index(sub)
@@ -682,11 +686,11 @@ function WoWTools_MountMixin:Init_Menu(frame)
 end
 
 function WoWTools_MountMixin:Init_Menu_Spell(frame)
-    MenuUtil.CreateContextMenu(frame, function(...) Init_Menu_Spell(...) end)
+    MenuUtil.CreateContextMenu(frame, Init_Menu_Spell)
 end
 
 function WoWTools_MountMixin:Init_Menu_Item(frame)
-    MenuUtil.CreateContextMenu(frame, function(...) Init_Menu_Item(...) end)
+    MenuUtil.CreateContextMenu(frame, Init_Menu_Item)
 end
 
 function WoWTools_MountMixin:Set_Mount_Sub_Options(...)

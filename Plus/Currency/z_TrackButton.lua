@@ -27,15 +27,6 @@ local qualityToIconBorderAtlas = AUCTION_HOUSE_ITEM_QUALITY_ICON_BORDER_ATLASES 
 --物品，菜单
 local function MenuList_Item(self, root)
 	local sub, sub2
-	sub=root:CreateCheckbox(
-		(Save().Hide and '|cff626262' or'')..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS),
-	function ()
-		return not Save().disabledItemTrack
-	end, function()
-		Save().disabledItemTrack = not Save().disabledItemTrack and true or nil
-		self:settings()
-	end)
-
 
 	local itemTab={}
 	for itemID in pairs(Save().item  or {}) do
@@ -52,6 +43,17 @@ local function MenuList_Item(self, root)
 		end
 	end)
 
+	sub=root:CreateCheckbox(
+		(Save().Hide and '|cff626262' or'')
+		..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS),
+	function ()
+		return not Save().disabledItemTrack
+	end, function()
+		Save().disabledItemTrack = not Save().disabledItemTrack and true or nil
+		self:settings()
+	end, {rightText=#itemTab})
+	WoWTools_MenuMixin:SetRightText(sub)
+
 	for index, info in pairs(itemTab) do
 		sub2=sub:CreateCheckbox(
 			WoWTools_ItemMixin:GetName(info.itemID),
@@ -60,14 +62,12 @@ local function MenuList_Item(self, root)
 		end, function(data)
 			Save().item[data.itemID]= not Save().item[data.itemID] and true or nil
 			self:settings()
-		end, {itemID=info.itemID, rightText=index})
+		end, {itemID=info.itemID, rightText=index, rightColor=DISABLED_FONT_COLOR})
 
 		WoWTools_SetTooltipMixin:Set_Menu(sub2)
 		WoWTools_MenuMixin:SetRightText(sub2)
 	end
 
-	sub:SetData({rightText=#itemTab})
-	WoWTools_MenuMixin:SetRightText(sub)
 
 --全部清除
 	sub:CreateDivider()
@@ -122,6 +122,12 @@ end
 local function Init_CurrencyMenu(self, root)
 	local  sub, sub2
 
+	local tab={}
+	for currencyID in pairs(Save().tokens) do
+		table.insert(tab, currencyID)
+	end
+	table.sort(tab, function(a, b) return a> b end)
+
 	sub=root:CreateCheckbox(
 		(WoWTools_DataMixin.onlyChinese and '指定货币' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TOKENS)),
 	function()
@@ -130,15 +136,7 @@ local function Init_CurrencyMenu(self, root)
 		Save().indicato= not Save().indicato and true or nil
 		self:settings()
 		WoWTools_CurrencyMixin:UpdateTokenFrame()
-	end)
-
-	local tab={}
-	for currencyID in pairs(Save().tokens) do
-		table.insert(tab, currencyID)
-	end
-	table.sort(tab, function(a, b) return a> b end)
-
-	sub:SetData({rightText=#tab})
+	end, {rightText=#tab})
 	WoWTools_MenuMixin:SetRightText(sub)
 
 	local numTokens = C_CurrencyInfo.GetCurrencyListSize()
@@ -174,7 +172,8 @@ local function Init_CurrencyMenu(self, root)
 				Save().tokens[data.currencyID]= not Save().tokens[data.currencyID] and true or nil
 				self:settings()
 				WoWTools_CurrencyMixin:UpdateTokenFrame()
-			end, {currencyID=currencyID, rightText=index})
+
+			end, {currencyID=currencyID, rightText=index, rightColor=DISABLED_FONT_COLOR})
 
 			sub2:SetTooltip(function(tooltip, description)
 				tooltip:SetCurrencyByID(description.data.currencyID)
@@ -249,7 +248,8 @@ local function Init_Menu(self, root)
 		Save().str= not Save().str and true or false
 		self:set_frameshown()
     end)
-	--自动隐藏
+
+--自动隐藏
 	sub=root:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
 	function()
@@ -891,7 +891,7 @@ local function Init()
 		self.itemPool:ReleaseAll()
 		self.itemPool2:ReleaseAll()
 	end
-	TrackButton.frame:SetScript('OnHide', TrackButton.frame.ReleaseAll)
+	--TrackButton.frame:SetScript('OnHide', TrackButton.frame.ReleaseAll)
 	TrackButton.frame:SetScript('OnShow', function(self)
 		Init_Button(self:GetParent())
 	end)

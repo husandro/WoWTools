@@ -377,13 +377,13 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateButton(
-        format('%s|A:talents-button-reset:0:0|a%s %d',
+        format('%s|A:talents-button-reset:0:0|a%s',
             WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE,
             WoWTools_DataMixin.onlyChinese and '邀请' or INVITE),
     function()
         return MenuResponse.Open
     end, {rightText=Save().InvNoFriendNum or 0})
-    
+
     WoWTools_MenuMixin:SetRightText(sub)
 
     sub:CreateButton(

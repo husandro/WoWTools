@@ -14,12 +14,6 @@ local function Create_Frame(btn)
 	--btn.Content.ReputationBar.BarText:ClearAllPoints()
 
 	btn.Content.AccountWideIcon:SetScale(0.6)
---完成次数
-	--[[btn.completed= btn.Content.ReputationBar:CreateFontString(nil, 'BORDER', 'GameFontNormal')-- WoWTools_LabelMixin:Create(btn.Content.ParagonIcon, {size=10})
-	--btn.completed:SetFontHeight(10)
-	--btn.completed:SetPoint('RIGHT', btn.Content.ParagonIcon, 'LEFT')
-	btn.completed:SetPoint('BOTTOMRIGHT')]]
-	--btn.Content.ReputationBar.BarText:SetAlpha(0)
 	btn.barText2= btn.Content.ReputationBar:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
 	btn.barText2:SetPoint('CENTER')
 	btn.barText2:SetJustifyH('CENTER')
@@ -283,12 +277,9 @@ local function Init()
 
 
 
-	local down= WoWTools_ButtonMixin:Cbtn(_G['WoWToolsFactionMenuButton'], {
-		size=22,
-		atlas='NPE_ArrowDown',
-		name='WoWToolsFactionListExpandButton'
-	})
-
+	local down= CreateFrame('Button', 'WoWToolsFactionListExpandButton', _G['WoWToolsFactionMenuButton'], 'WoWToolsButtonTemplate')
+	down:SetNormalAtlas('NPE_ArrowDown')
+	down.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
 	down:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-2,0)
 	down:SetScript("OnClick", function()
 		for index=C_Reputation.GetNumFactions(), 1, -1 do
@@ -304,14 +295,6 @@ local function Init()
 			end
 		end
 	end)
-	down:SetScript("OnLeave", function() GameTooltip_Hide() end)
-	down:SetScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(' ', WoWTools_DataMixin.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_FactionMixin.addName)
-		GameTooltip:Show()
-	end)
 
 
 
@@ -327,11 +310,9 @@ local function Init()
 
 
 
-	local up= WoWTools_ButtonMixin:Cbtn(down, {
-		size=22,
-		atlas='NPE_ArrowUp',
-		name='WoWToolsFactionListCollapsedButton',
-	})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	local up=CreateFrame('Button', 'WoWToolsFactionListCollapsedButton', down, 'WoWToolsButtonTemplate')
+	up:SetNormalAtlas('NPE_ArrowUp')
+	up.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
 	up:SetPoint("RIGHT", down, 'LEFT', -2, 0)
 	up:SetScript("OnClick", function()
 		for index=C_Reputation.GetNumFactions(), 1, -1 do
@@ -340,14 +321,6 @@ local function Init()
 				C_Reputation.CollapseFactionHeader(index)
 			end
 		end
-	end)
-	up:SetScript("OnLeave", function() GameTooltip_Hide() end)
-	up:SetScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(' ', WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_FactionMixin.addName)
-		GameTooltip:Show()
 	end)
 
 

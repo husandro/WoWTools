@@ -16,7 +16,7 @@ end
 
 
 local function Create(frame)
-	
+
 	frame.check= CreateFrame('CheckButton', nil, frame, "MinimalCheckboxArtTemplate")
 	--frame.check:SetCheckedTexture('AlliedRace-UnlockingFrame-Checkmark')
 	frame.check:SetSize(23,23)
@@ -80,7 +80,7 @@ local function Create(frame)
 	frame.Content.AccountWideIcon:HookScript('OnEnter', function(self)
 		self:SetAlpha(1)
 	end)
-	
+
 	function frame:RefreshAccountCurrencyIcon()
 		local atlas
 		if self.elementData.isAccountWide then
@@ -372,30 +372,17 @@ local function Init_PlusButton()
 	end
 
 --展开,合起	
-	local down= CreateFrame('Button', 'WoWToolsCurrencyExpandeListButton', TokenFrame.filterDropdown, 'WoWToolsButtonTemplate') 
+	local down= CreateFrame('Button', 'WoWToolsCurrencyExpandeListButton', TokenFrame.filterDropdown, 'WoWToolsButtonTemplate')
 	down:SetNormalAtlas('NPE_ArrowDown')
-	--[[WoWTools_ButtonMixin:Cbtn(_G['WoWToolsPlusCurrencyMenuButton'], {
-		size=22,
-		atlas='NPE_ArrowDown',
-		name='WoWToolsCurrencyExpandeListButton',
-	})]]
 	down:SetPoint('RIGHT', TokenFrame.filterDropdown, 'LEFT', -2, 0)
-
 	down:SetScript("OnClick", function()
 		Expand_All()
 	end)
-	down:SetScript("OnLeave", GameTooltip_Hide)
-	down:SetScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(' ', WoWTools_DataMixin.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CurrencyMixin.addName)
-		GameTooltip:Show()
-	end)
+	down.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
 
 
 --展开所有
-	local up=  CreateFrame('Button', nil, down, 'WoWToolsButtonTemplate') -- WoWTools_ButtonMixin:Cbtn(down, {size=22, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	local up=  CreateFrame('Button', nil, down, 'WoWToolsButtonTemplate')
 	up:SetNormalAtlas('NPE_ArrowUp')
 	up:SetPoint('RIGHT', down, 'LEFT', -2, 0)
 	up:SetScript("OnClick", function()
@@ -409,16 +396,8 @@ local function Init_PlusButton()
 		end
 		WoWTools_CurrencyMixin:UpdateTokenFrame()
 	end)
-	up:SetScript("OnLeave", function()
-		GameTooltip:Hide()
-	end)
-	up:SetScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(' ',WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CurrencyMixin.addName)
-		GameTooltip:Show()
-	end)
+	up.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+
 
 
 	local edit= WoWTools_EditBoxMixin:Create(up, {
@@ -467,7 +446,7 @@ end
         end
     end]]
 
-	
+
 
 function WoWTools_CurrencyMixin:Init_Plus()
   	Init()
