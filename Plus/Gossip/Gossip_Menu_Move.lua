@@ -1,6 +1,5 @@
---https://wago.tools/db2/Movie
-
 --[[
+--https://wago.tools/db2/Movie
 BlizzardInterfaceCode/Interface/AddOns/Blizzard_GlueXMLBase/Mists/Constants.lua
 CinematicsMenu.lua
 Constants.lua
@@ -24,6 +23,8 @@ local MovieList={}
 
 local function Init()
 List={
+1066,
+1062,
 1061,
 1057,
 1052,
@@ -282,24 +283,26 @@ List={
 
 MovieList= {
 {
+    expansion= LE_EXPANSION_MIDNIGHT,
+    movieIDs= {1062},
+    upAtlas= 'StreamCinematic-Midnight-Large-Up',
+    text= WoWTools_DataMixin.onlyChinese and '至暗之夜' or EXPANSION_NAME11,
+},
+{
     expansion = LE_EXPANSION_WAR_WITHIN,
     movieIDs = { 1023 },
     upAtlas = "StreamCinematic-WarWithin2-Large-Up",
-    downAtlas = "StreamCinematic-WarWithin2-Large-Down",
     text= WoWTools_DataMixin.onlyChinese and '地心之战' or EXPANSION_NAME10,
-    disableAutoPlay = true,
 },
 {
     expansion = LE_EXPANSION_WAR_WITHIN,
     movieIDs = { 1014 },
     upAtlas = "StreamCinematic-WarWithin-Large-Up",
-    downAtlas = "StreamCinematic-WarWithin-Large-Down",
     text= WoWTools_DataMixin.onlyChinese and '地心之战' or EXPANSION_NAME10,
 },
 { expansion=LE_EXPANSION_DRAGONFLIGHT,
     movieIDs = { 973 },
     upAtlas="StreamCinematic-Dragonflight2-Up",
-    disableAutoPlay=true,
     text= WoWTools_DataMixin.onlyChinese and '巨龙时代' or EXPANSION_NAME9,
 },
 { expansion=LE_EXPANSION_DRAGONFLIGHT,
@@ -534,9 +537,10 @@ local function Init_Menu(_, root)
 
     local _tab={}
 --WoW
-    sub=root:CreateButton('WoW |cff626262#'..#MovieList, function()
+    sub=root:CreateButton('WoW', function()
         return MenuResponse.Open
-    end)
+    end, {rightText=#MovieList})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     for _, movieEntry in pairs(MovieList) do--MOVIE_LIST or 
         for _, movieID in pairs(movieEntry.movieIDs) do
@@ -546,12 +550,13 @@ local function Init_Menu(_, root)
                 ..(WoWTools_TextMixin:CN(movieEntry.text
                     or _G["EXPANSION_NAME"..movieEntry.expansion])
                     or ''
-                )
-                ..' |cff626262'..movieID,
+                ),
             function(data)
                 MovieFrame_PlayMovie(MovieFrame, data.movieID)
                 return MenuResponse.Open
-            end, {movieID=movieID, atlas=movieEntry.upAtlas})
+            end, {movieID=movieID, atlas=movieEntry.upAtlas, rightText=movieID, rightColor=DISABLED_FONT_COLOR})
+            WoWTools_MenuMixin:SetRightText(sub2)
+
 
 
             sub2:SetTooltip(function(tooltip, desc)
@@ -566,9 +571,11 @@ local function Init_Menu(_, root)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 --WoW2
-    sub=root:CreateButton('WoW2 |cff626262#'..#List, function()
+    sub=root:CreateButton('WoW2', function()
         return MenuResponse.Open
-    end)
+    end, {rightText=#List})
+    WoWTools_MenuMixin:SetRightText(sub)
+    
     for _, movieID in pairs(List) do
         local text, atlas
         if _tab[movieID] then
@@ -612,9 +619,9 @@ local function Init_Menu(_, root)
     end
 
 --全部清除
-    root:CreateButton(
+    sub=root:CreateButton(
         (_num==0 and '|cff626262' or '')
-        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'.._num,
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
     function()
         StaticPopup_Show('WoWTools_OK',
         (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
@@ -622,7 +629,8 @@ local function Init_Menu(_, root)
         {SetValue=function()
             Save().movie={}
         end})
-    end)
+    end, {rightText=_num})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     WoWTools_MenuMixin:SetScrollMode(root)
     _tab= nil

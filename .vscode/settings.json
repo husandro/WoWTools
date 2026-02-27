@@ -3096,7 +3096,9 @@
         "WoWTools_ItemMixin",
         "WoWTools_BagMixin",
         "ACTION_SPELL_CREATE",
-        "HOUSING_LAYOUT_PREFAB_ROOM_TOOLTIP"
+        "HOUSING_LAYOUT_PREFAB_ROOM_TOOLTIP",
+        "LE_EXPANSION_MIDNIGHT",
+        "EXPANSION_NAME11"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
