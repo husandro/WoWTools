@@ -102,7 +102,11 @@ end
 --职业颜色
 function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
     if canaccessvalue(unit) and canaccessvalue(guid) and canaccessvalue(classFilename) then
-        classFilename= classFilename or (unit and UnitClassBase(unit))
+
+        classFilename= classFilename
+            or (unit and UnitClassBase(unit))
+            or (guid and select(2, GetPlayerInfoByGUID(guid)))
+
         if classFilename then
             local r, g, b= GetClassColor(classFilename)
             if r and g and b then

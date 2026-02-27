@@ -117,7 +117,7 @@ TypeTabs= {
         itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
         itemTexture= itemTexture or select(5, C_Item.GetItemInfoInstant(itemID))
 
-        local color WoWTools_ItemMixin:GetColor(itemQuality or data.quality)
+        local color= WoWTools_ItemMixin:GetColor(itemQuality or data.quality)
         local r,g,b= color:GetRGB()
 
 
@@ -1099,10 +1099,8 @@ end
 
 
 local function Settings_Right_Button(btn, data)
-    --local r,g,b,hex= select(2, WoWTools_UnitMixin:GetColor(nil, data.guid))
     local color= WoWTools_UnitMixin:GetColor(nil, data.guid)
-    local r,g,b= color:GetRGB()
-    local hex= color:GenerateHexColorMarkup()
+
 
     local isNotBattle= data.battleTag~=WoWTools_DataMixin.Player.BattleTag
 --玩家，图标
@@ -1110,6 +1108,7 @@ local function Settings_Right_Button(btn, data)
 
 --玩家等级
     btn.PlayerLevelText:SetText(data.playerLevel~=GetMaxLevelForPlayerExpansion() and data.playerLevel or '')
+    btn.PlayerLevelText:SetTextColor(color:GetRGB())
 
 --玩家，名称
     if data.guid== WoWTools_DataMixin.Player.GUID then
@@ -1127,13 +1126,13 @@ local function Settings_Right_Button(btn, data)
             ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
         )
     end
-    btn.Name:SetTextColor(r, g, b)
+    btn.Name:SetTextColor(color:GetRGB())
 
 
 --提示，不同战网
     btn.BattleTag:SetText(isNotBattle and data.battleTag or '')
     btn.Battle:SetAlpha(isNotBattle and 1 or 0.3)
-    btn.BattleTag:SetTextColor(r,g,b)
+    btn.BattleTag:SetTextColor(color:GetRGB())
 
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
@@ -1151,13 +1150,13 @@ local function Settings_Right_Button(btn, data)
     if data.itemLevel and data.itemLevel>0 then
         local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
         btn.ItemLevelText:SetText(
-            (item>6 and '|cnGREEN_FONT_COLOR:' or hex)
-            ..data.itemLevel
+            (item>5 and '|cnGREEN_FONT_COLOR:' or color:GenerateHexColorMarkup())
+            ..format('%i', data.itemLevel)
         )
     else
-
         btn.ItemLevelText:SetText('')
     end
+    btn.ItemLevelText.tooltip=data.itemLevel
 
 --公会信息
     local guild= data.guild
@@ -1167,7 +1166,7 @@ local function Settings_Right_Button(btn, data)
     end
     btn.Guild:SetShown(guidName)
     btn.GuildText:SetText(guidName or '')
-    btn.GuildText:SetTextColor(r,g,b)
+    btn.GuildText:SetTextColor(color:GetRGB())
 
 --钥石，名称
     local itemName= WoWTools_HyperLink:CN_Link(data.itemLink, {isName=true})
@@ -1176,7 +1175,7 @@ local function Settings_Right_Button(btn, data)
         itemName= itemName:match(CHALLENGE_MODE_KEYSTONE_NAME) or itemName:match('钥石：(.+)') or itemName:match('钥石: (.+)') or itemName
     end
     btn.ItemName:SetText(itemName or '')
-    btn.ItemName:SetTextColor(r,g,b)
+    btn.ItemName:SetTextColor(color:GetRGB())
     btn.Item:SetAlpha(itemName and 1 or 0.3)
 
 --背景
@@ -1192,10 +1191,10 @@ local function Settings_Right_Button(btn, data)
     btn.WorldText:SetText(data.world or '')--(WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
     btn.PvPText:SetText(data.pvp or '')--(WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
 
-    btn.RaidText:SetTextColor(r,g,b)
-    btn.DungeonText:SetTextColor(r,g,b)
-    btn.WorldText:SetTextColor(r,g,b)
-    btn.PvPText:SetTextColor(r,g,b)
+    btn.RaidText:SetTextColor(color:GetRGB())
+    btn.DungeonText:SetTextColor(color:GetRGB())
+    btn.WorldText:SetTextColor(color:GetRGB())
+    btn.PvPText:SetTextColor(color:GetRGB())
 
     btn.Raid:SetAlpha(data.pve and 1 or 0.3)
     btn.Dungeon:SetAlpha(data.mythic and 1 or 0.3)
@@ -1208,19 +1207,21 @@ local function Settings_Right_Button(btn, data)
         WoWTools_ChallengeMixin:KeystoneScorsoColor(data.score)
         or ''
     )
+    btn.ScoreText:SetTextColor(color:GetRGB())
+
 --本周次数
     btn.WeekNum:SetAlpha(data.weekNum>0 and 1 or 0.3)
     btn.WeekNumText:SetText(
         data.weekNum==0 and '' or data.weekNum
     )
-    btn.WeekNumText:SetTextColor(r,g,b)
+    btn.WeekNumText:SetTextColor(color:GetRGB())
 
 --本周最高
     btn.WeekLevel:SetAlpha(data.weekLevel>0 and 1 or 0.3)
     btn.WeekLevelText:SetText(
         data.weekLevel==0 and '' or data.weekLevel
     )
-    btn.WeekLevelText:SetTextColor(r,g,b)
+    btn.WeekLevelText:SetTextColor(color:GetRGB())
 
 --背景
     btn.Background:SetAlpha(isNotBattle and 0.5 or 1)
@@ -1435,6 +1436,24 @@ end
 
 
 
+local function set_right_tooltip(tooltip, desc)
+    tooltip:AddLine('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
+    tooltip:AddDoubleLine(
+    format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT,  'Region'),
+        WoWTools_DataMixin.Player.Region
+    )
+    tooltip:AddDoubleLine(
+        WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG,
+        WoWTools_DataMixin.Player.BattleTag
+    )
+    for index, info in pairs(desc.data.data) do
+        if index==1 then
+            tooltip:AddLine(' ')
+        end
+        tooltip:AddDoubleLine((info.name or '')..' |cff00ccff'..(info.region or ''), '|cff00ccff'..(info.tag or '').. ' |r('..index)
+    end
+end
+
 
 
 local function Init_Right_Menu(self, root)
@@ -1460,34 +1479,14 @@ local function Init_Right_Menu(self, root)
         end
     end
 
-    local function set_tooltip(tooltip, desc)
-        tooltip:AddLine('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
-        tooltip:AddDoubleLine(
-        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT,  'Region'),
-           WoWTools_DataMixin.Player.Region
-        )
-        tooltip:AddDoubleLine(
-           WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG,
-           WoWTools_DataMixin.Player.BattleTag
-        )
-        for index, info in pairs(desc.data) do
-            if index==1 then
-                tooltip:AddLine(' ')
-            end
-            tooltip:AddDoubleLine((info.name or '')..' |cff00ccff'..(info.region or ''), '|cff00ccff'..(info.tag or '').. ' |r('..index)
-        end
-    end
-
-
 --清除不同地区
     local regionText= '|A:bags-button-autosort-up:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '不同地区' or ERR_TRAVEL_PASS_DIFFERENT_REGION)
-            ..' #'..#region
     sub= root:CreateButton(
         regionText,
     function()
         StaticPopup_Show('WoWTools_OK',
-            regionText,
+            regionText..' #'..#region,
             nil,
             {SetValue=function()
                 for guid, info in pairs(WoWTools_WoWDate) do
@@ -1498,18 +1497,18 @@ local function Init_Right_Menu(self, root)
             end
         })
         return MenuResponse.Open
-    end, region)
-    sub:SetTooltip(set_tooltip)
+    end, {rightText=#region, data=region})
+    WoWTools_MenuMixin:SetRightText(sub)
+    sub:SetTooltip(set_right_tooltip)
 
 --清除不同战网
     local tagTtext= '|A:bags-button-autosort-up:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '其它战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
-            ..' #'..#tag
     sub= root:CreateButton(
         tagTtext,
     function()
         StaticPopup_Show('WoWTools_OK',
-            tagTtext,
+            tagTtext..' #'..#tag,
             nil,
             {SetValue=function()
                 for guid, info in pairs(WoWTools_WoWDate) do
@@ -1520,28 +1519,29 @@ local function Init_Right_Menu(self, root)
             end
         })
         return MenuResponse.Open
-    end, tag)
-    sub:SetTooltip(set_tooltip)
+    end, {rightText=#tag, data=tag})
+    WoWTools_MenuMixin:SetRightText(sub)
+    sub:SetTooltip(set_right_tooltip)
 
 
 --清除WoW数据
     root:CreateSpacer()
     local allTtext= '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
-        ..' #'..#all
     sub= root:CreateButton(
         allTtext,
     function()
         StaticPopup_Show('WoWTools_RestData',
-            allTtext,
+            allTtext..' #'..#all,
             nil,
             function()
                 WoWTools_WoWDate={}
             end
         )
         return MenuResponse.Open
-    end, all)
-    sub:SetTooltip(set_tooltip)
+    end, {rightText=#all, data=all})
+    WoWTools_MenuMixin:SetRightText(sub)
+    sub:SetTooltip(set_right_tooltip)
 
 
 --重新加载UI
@@ -1625,58 +1625,59 @@ local function Init_IsMe_Menu(self, root)
 
 
     for realm, num in pairs(s) do
-        root:CreateButton(
+        sub=root:CreateButton(
             '|A:tokens-guildRealmTransfer-small:0:0|a'
             ..(WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:' or '')
-            ..realm..' #'..num,
+            ..realm,
         function(data)
             Frame.SearchBox:SetText(data.realm)
             return MenuResponse.Open
-        end, {realm=realm})
+        end, {realm=realm, rightText=num})
+        WoWTools_MenuMixin:SetRightText(sub)
     end
     for battleTag, num in pairs(b) do
-        root:CreateButton(
+        sub=root:CreateButton(
             '|A:tokens-WoW-generic-small:0:0|a'
             ..(WoWTools_DataMixin.Player.BattleTag== battleTag and '|cnGREEN_FONT_COLOR:' or '')
-            ..battleTag..' #'..num,
+            ..battleTag,
         function(data)
             Frame.SearchBox:SetText(data.battleTag)
             return MenuResponse.Open
-        end, {battleTag=battleTag})
+        end, {battleTag=battleTag, rightText=num})
+        WoWTools_MenuMixin:SetRightText(sub)
     end
 
     root:CreateDivider()
     for class, tab in pairs(c) do
-        root:CreateButton(
+        sub=root:CreateButton(
             tab.icon
             ..tab.hex
-            ..WoWTools_TextMixin:CN(class)
-            ..' #'
-            ..tab.num,
+            ..WoWTools_TextMixin:CN(class),
         function(data)
             Frame.SearchBox:SetText(data.class)
             return MenuResponse.Open
-        end, {class=class})
+        end, {class=class, rightText=tab.num})
+        WoWTools_MenuMixin:SetRightText(sub)
     end
 
     root:CreateDivider()
-    root:CreateButton(
+    sub=root:CreateButton(
         '|A:communities-create-button-wow-horde:0:0|a|cffff2834'
-        ..(WoWTools_DataMixin.onlyChinese and '部落' or FACTION_HORDE)
-        ..' #'..bl,
+        ..(WoWTools_DataMixin.onlyChinese and '部落' or FACTION_HORDE),
     function()
         Frame.SearchBox:SetText('Horde')
         return MenuResponse.Open
-    end)
+    end, {rightText=bl})
+    WoWTools_MenuMixin:SetRightText(sub)
 
-    root:CreateButton(
+    sub=root:CreateButton(
         '|A:communities-create-button-wow-alliance:0:0|a|cff00adf0'
-        ..(WoWTools_DataMixin.onlyChinese and '联盟' or FACTION_ALLIANCE)
-        ..' #'..lm,
+        ..(WoWTools_DataMixin.onlyChinese and '联盟' or FACTION_ALLIANCE),
     function()
         Frame.SearchBox:SetText('Alliance')
         return MenuResponse.Open
-    end)
+    end, {rightText=lm})
+    WoWTools_MenuMixin:SetRightText(sub)
 
 --Region
     local regions={}
@@ -1689,11 +1690,13 @@ local function Init_IsMe_Menu(self, root)
         sub=root:CreateButton(
             (isCurRegion and '|cnGREEN_FONT_COLOR:' or '|cffedd100')
             ..(WoWTools_DataMixin.onlyChinese and '地区' or ZONE)
-            ..' '..r..' #'..num,
+            ..' '..r,
         function(data)
             Frame.SearchBox:SetText('Region'..data.region)
             return MenuResponse.Open
-        end, {region=r, isCurRegion=isCurRegion})
+        end, {region=r, isCurRegion=isCurRegion, rightText=num})
+
+        WoWTools_MenuMixin:SetRightText(sub)
 
         sub:SetTooltip(function(tootip, desc)
             tootip:AddDoubleLine('Region', WoWTools_DataMixin.Player.Region)
@@ -2148,7 +2151,7 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
 
     btn:SetScript('OnEnter', function(s)
         GameTooltip:SetOwner(s, "ANCHOR_LEFT")
-        GameTooltip_SetTitle(GameTooltip, 
+        GameTooltip_SetTitle(GameTooltip,
             WoWTools_DataMixin.Icon.wow2
             ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
         )

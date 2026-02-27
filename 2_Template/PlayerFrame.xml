@@ -245,6 +245,7 @@
                     <OnEnter>
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
+                        GameTooltip:AddLine(self.tooltip)
                         GameTooltip:Show()
                         --self:SetAlpha(0.3)
                     </OnEnter>
