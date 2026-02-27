@@ -107,7 +107,7 @@ function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
             or (unit and UnitClassBase(unit))
             or (guid and select(2, GetPlayerInfoByGUID(guid)))
 
-        if classFilename then
+        if canaccessvalue(classFilename) and classFilename then
             local r, g, b= GetClassColor(classFilename)
             if r and g and b then
                 return CreateColor(r, g, b)
