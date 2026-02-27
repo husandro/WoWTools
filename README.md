@@ -9,7 +9,7 @@
 > ### ChatButton: 聊天按钮和常用功能
 ## 下载
 > ### <https://www.curseforge.com/wow/addons/wowtools>
-> ### <https://addons.wago.io/addons/wowtools> 可能无效
+> ### <https://addons.wago.io/addons/wowtools>
 > ### <https://github.com/husandro/WoWTools>
 ## Wiki
 > ### <https://github.com/husandro/WoWTools/wiki>
