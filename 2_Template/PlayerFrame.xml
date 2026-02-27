@@ -91,15 +91,10 @@
                     <Anchor point="TOPRIGHT"/>
                 </Anchors>
             </Texture>
-            <FontString parentKey="PlayerLevelText" inherits="ChatFontNormal" justifyH="RIGHT">
+            <FontString parentKey="PlayerLevelText" inherits="WoWToolsFonts" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-                <Color r="0" g="1" b="0"/>
             </FontString>
 
 
@@ -132,14 +127,10 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="ScoreText" inherits="ChatFontNormal" justifyH="RIGHT">
+            <FontString parentKey="ScoreText" inherits="WoWToolsFonts" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.Score" relativePoint="LEFT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
             </FontString>
 
             <Texture parentKey="WeekNum" atlas="TaskPOI-IconSelect">
@@ -160,14 +151,10 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="WeekNumText" inherits="ChatFontNormal" justifyH="RIGHT">
+            <FontString parentKey="WeekNumText" inherits="WoWToolsFonts" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.WeekNum" relativePoint="LEFT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
             </FontString>
 
 
@@ -189,14 +176,10 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="WeekLevelText" inherits="ChatFontNormal" justifyH="RIGHT">
+            <FontString parentKey="WeekLevelText" inherits="WoWToolsFonts" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.WeekLevel" relativePoint="LEFT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
             </FontString>
 
 
@@ -233,7 +216,7 @@
                 </Scripts>
             </Texture>
 
-            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal">
+            <FontString parentKey="ItemLevelText" inherits="WoWToolsFonts">
                 <Anchors>
                    <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
                 </Anchors>
@@ -276,7 +259,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="GuildText" inherits="ChatFontNormal" enableMouse="true">
+            <FontString parentKey="GuildText" inherits="WoWToolsFonts" enableMouse="true">
                 <Anchors>
                    <Anchor point="RIGHT" relativeKey="$parent.Guild" relativePoint="LEFT"/>
                 </Anchors>
@@ -291,14 +274,10 @@
 
 
 
-            <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
+            <FontString parentKey="Name" inherits="WoWToolsFonts" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Spec"  relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
@@ -335,15 +314,10 @@
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
             </Texture>
-            <FontString parentKey="BattleTag" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
+            <FontString parentKey="BattleTag" inherits="WoWToolsFonts" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.Battle" relativePoint="LEFT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-                <Color r="0" g="0.8" b="1"/>
                 <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
@@ -394,14 +368,10 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="RaidText" inherits="ChatFontNormal">
+            <FontString parentKey="RaidText" inherits="WoWToolsFonts">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Raid" relativePoint="RIGHT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
             </FontString>
 
             <Texture parentKey="Dungeon" atlas="questlog-questtypeicon-group" enableMouse="true">
@@ -422,14 +392,10 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="DungeonText" inherits="ChatFontNormal">
+            <FontString parentKey="DungeonText" inherits="WoWToolsFonts">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Dungeon" relativePoint="RIGHT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
             </FontString>
 
             <Texture parentKey="World" atlas="delves-bountiful" enableMouse="true">
@@ -450,14 +416,10 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="WorldText" inherits="ChatFontNormal">
+            <FontString parentKey="WorldText" inherits="WoWToolsFonts">
                   <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.World" relativePoint="RIGHT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
             </FontString>
 
             <Texture parentKey="PvP" atlas="CrossedFlags" enableMouse="true">
@@ -478,14 +440,10 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="PvPText" inherits="ChatFontNormal">
+            <FontString parentKey="PvPText" inherits="WoWToolsFonts">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.PvP" relativePoint="RIGHT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
             </FontString>
 
             <Texture parentKey="Item" atlas="poi-islands-table" enableMouse="true">
@@ -507,15 +465,11 @@
                 </Scripts>
             </Texture>            
 
-            <FontString parentKey="ItemName" inherits="ChatFontNormal" justifyH="LEFT" enableMouse="true" wordwrap="false" >
+            <FontString parentKey="ItemName" inherits="WoWToolsFonts" enableMouse="true" wordwrap="false" >
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Item" relativePoint="RIGHT"/>
                     <Anchor point="RIGHT" relativeKey="$parent.BattleTag" relativePoint="LEFT"/>
                 </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
@@ -542,7 +496,7 @@
 
 
 
-            <FontString parentKey="AffixText" inherits="ChatFontNormal" justifyH="CENTER">
+            <FontString parentKey="AffixText" inherits="WoWToolsFonts" justifyH="CENTER">
                 <Size x="0" y="18"/>
                 <Anchors>
                    <Anchor point="TOP" relativeKey="$parent" x="0" y="-4"/>

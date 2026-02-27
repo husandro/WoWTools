@@ -1108,7 +1108,7 @@ local function Settings_Right_Button(btn, data)
 
 --玩家等级
     btn.PlayerLevelText:SetText(data.playerLevel~=GetMaxLevelForPlayerExpansion() and data.playerLevel or '')
-    btn.PlayerLevelText:SetTextColor(color:GetRGB())
+    --btn.PlayerLevelText:SetTextColor(color:GetRGB())
 
 --玩家，名称
     if data.guid== WoWTools_DataMixin.Player.GUID then
