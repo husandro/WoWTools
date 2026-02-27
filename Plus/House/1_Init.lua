@@ -162,6 +162,7 @@ local function Create_Button(btn)
     btn.NotAsset:SetPoint('LEFT', btn.trackableButton, 'RIGHT')
     btn.NotAsset:SetSize(16,16)
     btn.NotAsset:SetAtlas('transmog-icon-hidden')
+    btn.NotAsset:SetAlpha(0.7)
 
 
 

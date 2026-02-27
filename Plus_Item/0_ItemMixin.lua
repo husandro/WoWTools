@@ -39,7 +39,8 @@ function WoWTools_ItemMixin:SetOptions(frame, root, tab)
     end, function()
         self:SaveNo()[name]= not self:SaveNo()[name] and true or nil
         call()--更新物品
-    end)
+    end, {rightText=size})
+    WoWTools_MenuMixin:SetRightText(sub)
 
     if not tab.call or tips then
         sub:SetTooltip(function(tooltip)
@@ -58,9 +59,7 @@ function WoWTools_ItemMixin:SetOptions(frame, root, tab)
         return self:SaveSize()[name] or size
     end, setValue=function(value)
         self:SaveSize()[name]= value
-        if not self:SaveNo()[name] then
-            call()--更新物品
-        end
+        call()--更新物品
     end,
     minValue=6,
     maxValue=18,
@@ -73,22 +72,19 @@ function WoWTools_ItemMixin:SetOptions(frame, root, tab)
         WoWTools_DataMixin.onlyChinese and '重置' or RESET,
     function()
         self:SaveSize()[name]= nil
-        if not self:SaveNo()[name] then
-            call()--更新物品
-        end
+        call()--更新物品
         return MenuResponse.Refresh
     end)
 
-    for i=6, 12 do
+    for i=8, 14, 2 do
         sub2:CreateCheckbox(
-            i,
+            (i==size and '|cnGREEN_FONT_COLOR:' or '')
+            ..i,
         function(value)
-            return value== size
+            return value== (self:SaveSize()[name] or size)
         end,function(value)
             self:SaveSize()[name]= value
-            if not self:SaveNo()[name] then
-                call()--更新物品
-            end
+            call()--更新物品
         end, i)
     end
 

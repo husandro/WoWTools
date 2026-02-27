@@ -11,7 +11,7 @@ end
 
 
 local function Create_ModelName(frame)
-    frame.Name= frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormal')
+    frame.Name= frame:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont')
     frame.Name:SetPoint('BOTTOMLEFT')
     frame.Name:SetPoint('BOTTOMRIGHT')
     frame.Name:SetJustifyH('CENTER')

@@ -14,7 +14,7 @@ local TipsLabel
 
 
 
- --幻化，套装，索引 WardrobeCollectionFrame.SetsTransmogFrame
+ --[[幻化，套装，索引 WardrobeCollectionFrame.SetsTransmogFrame
  local function set_Sets_Tooltips(self)--UpdateSets
     if not self:IsVisible() then
         return
@@ -38,7 +38,7 @@ local TipsLabel
             end
         end
     end
-end
+end]]
 
 
 
@@ -158,7 +158,8 @@ local function Set_List_Button(btn, displayData)
     end
     SetsDataProvider:ClearSets()
 
-    local text, isLimited, patch, version--版本
+    local text, isLimited, patch, version, expansionID--版本
+
     for _, info in pairs(variantSets) do
         if info and info.setID then
             local meno, collect, numAll = WoWTools_CollectionMixin:SetID(info.setID)
@@ -184,14 +185,15 @@ local function Set_List_Button(btn, displayData)
                 tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
             end
             patch= patch or (info.patchID and info.patchID>0 and 'v'..(info.patchID/10000))
-            version= WoWTools_TextureMixin:GetWoWLog(info.expansionID, nil) or (info.expansionID and WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..info.expansionID]))
+            version= WoWTools_TextureMixin:GetWoWLog(info.expansionID, nil) or info.expansionID
+            expansionID= expansionID or info.expansionID
         end
     end
 
     btn.tooltip= tipsText
         ..((patch or version) and '|n' or '')
 
-        ..(version and '|n'..version or '')..(patch and ' '..patch or '')
+        ..(version and '|n'..version..(expansionID and WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..expansionID])) or '')..(patch and ' '..patch or '')
 
     local r, g, b= btn.Name:GetTextColor()
     r,g,b= r or 1, g or 1, b or 1
@@ -333,15 +335,21 @@ end
 
 
 local function Init()
+    if Save().hideSets then
+        return
+    end
+
     SetsDataProvider= CreateFromMixins(WardrobeSetsDataProviderMixin)
 
+    local detailsFrame= WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame
 --点击，按钮信息
-    TipsLabel= WoWTools_LabelMixin:Create(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})
-    TipsLabel:SetPoint('BOTTOMLEFT', WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'BOTTOMRIGHT', 8, 8)
-    if not WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.Background then
-        local texture= WoWTools_TextureMixin:CreateBG(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
-        texture:SetPoint('TOPLEFT', TipsLabel, -4, 4)
-        texture:SetPoint('BOTTOMRIGHT', TipsLabel, 4, -4)
+    TipsLabel= detailsFrame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont')-- WoWTools_LabelMixin:Create(detailsFrame, {size=14})
+    TipsLabel:SetPoint('BOTTOMLEFT', detailsFrame, 'BOTTOMRIGHT', 8, 8)
+    if not detailsFrame.Background then
+        local texture= detailsFrame:CreateTexture(nil, 'BACKGROUND') --WoWTools_TextureMixin:CreateBG(detailsFrame)
+        texture:SetColorTexture(0,0,0,0.5)
+        texture:SetPoint('TOPLEFT', TipsLabel)
+        texture:SetPoint('BOTTOMRIGHT', TipsLabel)
     end
 
 --点击，显示套装情况Blizzard_Wardrobe.lua
@@ -355,14 +363,14 @@ local function Init()
             TipsLabel:SetText("")
         end
     end)
-    WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame:HookScript('OnShow', function()
+    detailsFrame:HookScript('OnShow', function()
         if Save().hideSets then
             TipsLabel:SetText('')
         end
     end)
 
 --套装，列表
-    WoWTools_DataMixin:Hook(WardrobeSetsScrollFrameButtonMixin, 'Init', function(...) Set_List_Button(...) end)
+    WoWTools_DataMixin:Hook(WardrobeSetsScrollFrameButtonMixin, 'Init', Set_List_Button)
 
 
 
@@ -372,7 +380,7 @@ local function Init()
      --WoWTools_DataMixin:Hook(WardrobeCollectionFrame.SetsCollectionFrame, 'DisplaySet', function(...)
 
 
-    return true
+    Init=function()end
 end
 
 
@@ -393,7 +401,5 @@ end
 
 
 function WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
-    if not Save().hideSets and Init() then
-        Init=function()end
-    end
+    Init()
 end
