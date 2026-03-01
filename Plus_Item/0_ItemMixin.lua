@@ -623,9 +623,13 @@ end
 
   --ItemEventListener:AddCancelableCallback(ID, function()
 function WoWTools_ItemMixin:LoadItem(label, itemID, notCount)
+    if not label or not itemID then
+        return
+    end
+
     ItemEventListener:AddCancelableCallback(itemID, function()
-        local name= self:GetName(itemID, nil, nil, {notCount=notCount})
-        if name and label:IsVisible() then
+        local name= label:IsVisible() and self:GetName(itemID, nil, nil, {notCount=notCount})
+        if name then
             label:SetText(name)
         end
     end)
@@ -666,7 +670,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
     if C_ToyBox.GetToyInfo(itemID) then
         if not PlayerHasToy(itemID) then
             col='|cnWARNING_FONT_COLOR:'
-            desc= '|A:Islands-QuestBangDisable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
+            desc= '|A:Islands-QuestBangDisable:0:0|a'--..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
         else
             cool= WoWTools_CooldownMixin:GetText(nil, itemID)
         end

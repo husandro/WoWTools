@@ -3099,7 +3099,10 @@
         "HOUSING_LAYOUT_PREFAB_ROOM_TOOLTIP",
         "LE_EXPANSION_MIDNIGHT",
         "EXPANSION_NAME11",
-        "WorldFrame"
+        "WorldFrame",
+        "HOUSING_DECOR_STORAGE_ITEM_DESTROY",
+        "HOUSING_DECOR_STORAGE_ITEM_DESTROY_ALL",
+        "QuestEventListener"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

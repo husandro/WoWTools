@@ -460,7 +460,7 @@ local function Init()
         end
     end)
 
-    btn:SetScript('OnMouseWheel',function(self, d)
+    btn:SetScript('OnMouseWheel',function(_, d)
         if d==1 then--坐骑秀
             _G['WoWToolsToolsMountFrame']:initMountShow()
         elseif d==-1 then--坐骑特效

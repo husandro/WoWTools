@@ -2173,6 +2173,11 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
         end
     end)
     WoWTools_TextureMixin:SetButton(btn, {alpha= alpha})
+
+    if tab.point then
+        tab.point(btn)
+    end
+    
     return btn
 end
 

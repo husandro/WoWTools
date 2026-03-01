@@ -817,6 +817,41 @@ function WoWTools_MenuMixin:SetRightText(root)--rightText，rightColor
 end
 
 
+function WoWTools_MenuMixin:LoadName(root)
+    root:AddInitializer(function(btn, desc, menu)
+        local itemID= desc.data.itemID
+        local spellID= desc.data.spellID
+        local questID= desc.data.questID
+        local callback= desc.data.callback
+
+        if itemID then
+            ItemEventListener:AddCancelableCallback(itemID, function()
+                btn.fontString:SetTextToFit(
+                    WoWTools_ItemMixin:GetName(itemID)
+                    ..(callback and callback(btn, desc, menu) or '')
+                )
+            end)
+
+        elseif spellID then
+            SpellEventListener:AddCancelableCallback(spellID, function ()
+                btn.fontString:SetTextToFit(
+                    WoWTools_SpellMixin:GetName(spellID, desc.data.itemLink, desc.data.itemLocation, {notCount=desc.data.notCount})
+                    ..(callback and callback(btn, desc, menu) or '')
+                )
+            end)
+
+        elseif questID then
+            QuestEventListener:AddCancelableCallback(questID, function()
+                btn.fontString:SetTextToFit(
+                    WoWTools_QuestMixin:GetName(questID)
+                    ..(callback and callback(btn, desc, menu) or '')
+                )
+            end)
+        end
+    end)
+end
+
+
 function WoWTools_MenuMixin:SetGridMode(sub, num)
     if num and num>maxMenuButton then
         sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/maxMenuButton))

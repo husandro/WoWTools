@@ -335,6 +335,7 @@ Container\Guild\Item_In_Out.lua
 Container\Bag\0_BagMixin.lua
 Container\Bag\1_Init.lua
 Container\Bag\Container_Menu.lua
+Container\Bag\DeleteItem.lua
 Container\Bag\z_UI.lua
 
 ##自动对话，任务

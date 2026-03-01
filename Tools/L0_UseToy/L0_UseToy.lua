@@ -609,7 +609,7 @@ local function Init()
     function ToyButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_KeyMixin:IsKeyValid(self) or '').. WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_KeyMixin:IsKeyValid(self) or '').. WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
@@ -630,7 +630,7 @@ local function Init()
 
 
 --发现就绪
-        local duration= select(2, C_Item.GetItemCooldown(self.itemID))
+        local duration=self.itemID and select(2, C_Item.GetItemCooldown(self.itemID))
         if duration and duration>4 then
             ToyButton:Get_Random_Value()
         end

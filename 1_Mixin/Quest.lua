@@ -25,8 +25,10 @@ function WoWTools_QuestMixin:GetID()
 end
 
 function WoWTools_QuestMixin:GetName(questID)
-    if not self:IsValidQuestID(questID) then
-        return
+    if not questID then
+        return ''
+    elseif not self:IsValidQuestID(questID) then
+        return '|cff626262'..questID..'|r'
     end
 
     return WoWTools_TextMixin:CN(nil, {questID=questID, isName=true})

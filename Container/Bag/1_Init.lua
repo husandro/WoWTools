@@ -9,13 +9,16 @@ end
 
 
 local function Init()
-    local btn= WoWTools_DataMixin:CreateWoWItemListButton(ContainerFrameCombinedBags.CloseButton, {
+    WoWTools_DataMixin:CreateWoWItemListButton(ContainerFrameCombinedBags.CloseButton, {
         name='WoWToolsCombinedBagsWoWButton',
         type='Item',
+        point=function(btn)
+            btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT')
+        end
     })
-    btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT')
 
     WoWTools_BagMixin:Init_Container_Menu()--背包，菜单，增强
+    WoWTools_BagMixin:Init_DeleteItem()
 
     Init=function()end
 end
@@ -40,7 +43,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Container']= WoWToolsSave['Plus_Container'] or {
                 enabledCombinedColumns= WoWTools_DataMixin.Player.husandro,--背包，设置行数
+                delete={item={}}
             }
+
+            Save().delete= Save().delete or {item={}}
 
             WoWTools_BagMixin.addName= '|A:bag-main:0:0|a'..(WoWTools_DataMixin.onlyChinese and '容器' or ITEM_CONTAINER)
 
