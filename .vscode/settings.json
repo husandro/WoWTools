@@ -3098,7 +3098,8 @@
         "ACTION_SPELL_CREATE",
         "HOUSING_LAYOUT_PREFAB_ROOM_TOOLTIP",
         "LE_EXPANSION_MIDNIGHT",
-        "EXPANSION_NAME11"
+        "EXPANSION_NAME11",
+        "WorldFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
