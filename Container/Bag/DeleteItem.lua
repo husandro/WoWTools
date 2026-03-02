@@ -1,7 +1,7 @@
 local function Save()
     return WoWToolsSave['Plus_Container'].delete
 end
-local btn
+
 
 
 local function Check_ItemQuality(itemID, quality)
@@ -315,8 +315,26 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
-    btn= CreateFrame('DropdownButton', 'WoWToolsBagDeleteItemButton', ContainerFrameCombinedBags.CloseButton, 'WoWToolsMenu3Template')
+    local btn= CreateFrame('DropdownButton', 'WoWToolsBagDeleteItemButton', ContainerFrameCombinedBags.CloseButton, 'WoWToolsMenu3Template')
     btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT', -46, 0)
     btn:SetNormalAtlas('common-icon-delete')
 
