@@ -207,12 +207,14 @@ local function Init()
 
 
 --弹出框，增加，货币信息
-	TokenFramePopup.Name= WoWTools_LabelMixin:Create(TokenFramePopup, {size=14, mouse=true, name='WoWToolsTokenFramePopupName'})
-	TokenFramePopup.Name:SetPoint('TOPLEFT', TokenFramePopup, 'BOTTOMLEFT', 6, 6)
+	TokenFramePopup.Name= TokenFramePopup:CreateFontString('', 'BORDER', 'WoWToolsFont2') -- WoWTools_LabelMixin:Create(TokenFramePopup, {size=14, mouse=true, name='WoWToolsTokenFramePopupName'})
+	TokenFramePopup.Name:EnableMouse(true)
+	TokenFramePopup.Name:SetPoint('BOTTOMLEFT', TokenFramePopup, 'TOPLEFT', 6, -2)
 	TokenFramePopup.Name:SetScript('OnLeave', function(self)
 		GameTooltip_Hide()
 		self:SetAlpha(1)
 	end)
+	TokenFramePopup.Name.anchor= 'ANCHOR_RIGHT'
 	TokenFramePopup.Name:SetScript('OnEnter', function(self)
 		WoWTools_SetTooltipMixin:Frame(self)
 		self:SetAlpha(0.5)

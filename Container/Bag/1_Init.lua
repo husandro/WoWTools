@@ -18,7 +18,7 @@ local function Init()
     })
 
     WoWTools_BagMixin:Init_Container_Menu()--背包，菜单，增强
-    --WoWTools_BagMixin:Init_DeleteItem()
+    WoWTools_BagMixin:Init_DeleteItem()
 
     Init=function()end
 end

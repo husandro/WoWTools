@@ -104,6 +104,10 @@ for realmIndex, realmName in pairs(GetAutoCompleteRealms() or {}) do
     WoWTools_DataMixin.Player.Realms[realmName]=realmIndex
 end
 
+if WoWTools_DataMixin.Player.husandro then
+    SetConsoleKey("F9")
+end
+
 --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
 --ver= select(4,GetBuildInfo())>=100100,--版本 100100
 --disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true

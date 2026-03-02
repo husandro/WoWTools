@@ -246,20 +246,21 @@ local function Init()
         if not self:IsMouseOver() then
             return
         end
-        --GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        --GameTooltip:ClearLines()
-        GameTooltip:AddLine(
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.Icon.icon2
             ..format(
                 '%s: %s (%s)',
                 WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY,
                 WoWTools_ItemMixin.QualityText[2],--优秀  
                 WoWTools_DataMixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH
+            ),
+            (Save().auto and '|cnGREEN_FONT_COLOR:' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO)
         )
-        --(Save().auto and '|cnGREEN_FONT_COLOR:' or '|cff626262')
-        --..(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO)
-    )
 
+        GameTooltip:AddLine(' ')
 
         local infoType, itemID= GetCursorInfo()
         if not infoType then
@@ -304,57 +305,59 @@ local function Init()
             end
             self:set_count()
         end
-        --GameTooltip:Show()
-        
+        GameTooltip:Show()
+
     end
 
     function btn:set_count()
         self.Count:SetText(#Get_ItemList())
     end
 
-    --[[function btn:set_texture()
+    function btn:set_texture()
         local isDisabled= Save().disabled
-        --self:SetNormalAtlas(isDisabled and 'common-icon-delete-disable' or 'common-icon-delete')
+        self:SetNormalAtlas(isDisabled and 'common-icon-delete-disable' or 'common-icon-delete')
         --self:SetAlpha(isDisabled and 0.5 or 1)
-        if isDisabled then
+        --[[if isDisabled then
             self:GetNormalTexture():SetSize(16,16)
         else
             self:GetNormalTexture():SetSize(23,23)
-        end
-    end]]
+        end]]
+    end
 
-    --[[function btn:set_event()
+    function btn:set_event()
         self:UnregisterAllEvents()
         if Save().auto then
             self:RegisterEvent('GLOBAL_MOUSE_DOWN')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            --self:RegisterEvent('BAG_UPDATE_DELAYED')
+            if InCombatLockdown() then
+                self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            else
+                self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            end
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
         end
-    end]]
+    end
 
-    --[[btn:SetScript('OnLeave', function()
+    btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
-        --self:set_texture()
+        self:set_texture()
     end)
     btn:SetScript('OnEnter', function(self)
         self:SetAlpha(1)
         self:tooltip()
-    end)]]
+    end)
 
-    --[[btn:SetScript('OnEvent', function(self, event)
-      
+    btn:SetScript('OnEvent', function(self, event)
+
         if event=='GLOBAL_MOUSE_DOWN' then
-              print(event)
             Delete_AllItem()
+
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:RegisterEvent('GLOBAL_MOUSE_DOWN')
-            Delete_AllItem()
 
         elseif event=='PLAYER_REGEN_DISABLED' then
             self:UnregisterEvent('GLOBAL_MOUSE_DOWN')
         end
-    end)]]
+    end)
 
 
 
@@ -390,20 +393,20 @@ local function Init()
         if infoType == "item" and itemID then
             local quality= C_Item.GetItemQualityByID(itemID)
             if quality and quality<= Enum.ItemQuality.Uncommon then--优秀
-                --if Save().auto then
+                if Save().auto then
                     Save().item[itemID]= not Save().item[itemID] and true or nil
 
                     if Save().item[itemID] then
                         Delete_Item()
                     end
-                --[[else
+                else
                     Delete_Item()
-                end]]
+                end
 
-                --self:set_texture()
-                
+                self:set_count()
+
                 self:tooltip()
-                
+
             end
         end
     end)
