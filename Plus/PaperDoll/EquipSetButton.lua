@@ -640,6 +640,7 @@ local function Init()--添加装备管理框
 
         --elseif event=='EQUIPMENT_SETS_CHANGED' then
             --Init_buttons()
+            --self:main_shown()
 
         elseif event=='CLIENT_SCENE_OPENED' then
             self:main_shown(arg1)

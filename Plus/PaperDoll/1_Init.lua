@@ -77,18 +77,22 @@ local function Init_Menu(self, root)
     })
     sub:CreateSpacer()
 
-    
+
 
 
 --装备管理
+    local equipNum= #C_EquipmentSet.GetEquipmentSetIDs()
     sub=root:CreateCheckbox(
-        WoWTools_PaperDollMixin.addName2,
+        (equipNum>0 and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup())
+        ..WoWTools_PaperDollMixin.addName2,
     function()
         return not Save().EquipSet.disabled
     end, function()
         Save().EquipSet.disabled= not Save().EquipSet.disabled and true or nil
         WoWTools_PaperDollMixin:Init_EquipSetButton()
-    end)
+    end, {rightText=equipNum})
+    WoWTools_MenuMixin:SetRightText(sub)
+
 --重置位置
     WoWTools_MenuMixin:RestPoint(self, sub, Save().EquipSet.point, function()
         Save().EquipSet.point=nil
