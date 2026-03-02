@@ -532,6 +532,8 @@ local function Init()--添加装备管理框
             not C_PetBattles.IsInBattle()
             and not UnitHasVehicleUI('player')
             and sceneType~= Enum.ClientSceneType.MinigameSceneType
+            --and C_EquipmentSet.CanUseEquipmentSets()
+            and #C_EquipmentSet.GetEquipmentSetIDs()>0
         )
     end
 
@@ -670,7 +672,7 @@ local function Init()--添加装备管理框
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
             self:RegisterEvent('READY_CHECK')
             --self:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
-            --self:RegisterEvent('EQUIPMENT_SETS_CHANGED')
+            self:RegisterEvent('EQUIPMENT_SETS_CHANGED')
             --self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
             --self:RegisterEvent('BAG_UPDATE_DELAYED')
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
