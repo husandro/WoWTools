@@ -176,7 +176,12 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
     root:CreateDivider()
-    for quality= Enum.ItemQuality.Poor, Enum.ItemQuality.Uncommon do
+    for _, quality in pairs({
+        Enum.ItemQuality.Poor,
+        Enum.ItemQuality.Common,
+        Enum.ItemQuality.Uncommon,
+        Enum.ItemQuality.Heirloom,
+    }) do
 
         local qualityTab= Get_ItemList(quality)
 
@@ -359,16 +364,6 @@ local function Init()
         end
     end)
 
-
-
-    --[[btn:SetScript('OnHide', function(self)
-        self:set_event()
-        if Save().auto then
-            Delete_AllItem()
-        end
-    end)
-    ]]
-
     btn:SetScript('OnShow', function(self)
         self:set_count()
     end)
@@ -414,8 +409,8 @@ local function Init()
 
 
     btn:SetupMenu(Init_Menu)
-    --btn:set_texture()
-    --btn:set_event()
+    btn:set_texture()
+    btn:set_event()
     Init=function()end
 end
 
