@@ -1,12 +1,12 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\..\..\..\WoW\Data\Interface\AddOns\Blizzard_SharedXML\UI.xsd">
-    <Button name="WoWToolTemplate" virtual="true">
+    <Button name="WoWToolsTemplate" virtual="true">
         <Size x="23" y="23"/>
         <PushedTexture atlas="Forge-ColorSwatchHighlight"/>
         <HighlightTexture atlas="Forge-ColorSwatchSelection"/>        
     </Button>
 
-    <Button name="WoWTool2Template" virtual="true">
+    <Button name="WoWTools2Template" virtual="true">
         <Size x="23" y="23"/>        
         <HighlightTexture atlas="Azerite-Trait-RingGlow">
             <Anchors>
@@ -43,7 +43,7 @@
 
 
 
-    <Button name="WoWToolsButtonTemplate" inherits="WoWToolTemplate" virtual="true">     
+    <Button name="WoWToolsButtonTemplate" inherits="WoWToolsTemplate" virtual="true">     
         <Scripts>
             <OnLoad function="WoWToolsButton_OnLoad"/>
             <OnLeave function="WoWToolsButton_OnLeave"/>
@@ -51,7 +51,7 @@
         </Scripts>
     </Button>
 
-    <Button name="WoWToolsButton2Template" inherits="WoWTool2Template"  virtual="true">
+    <Button name="WoWToolsButton2Template" inherits="WoWTools2Template"  virtual="true">
         <Scripts>
             <OnLoad>
                 WoWTools_TextureMixin:SetAlphaColor(self.border, nil, nil, 0)
@@ -63,7 +63,7 @@
     </Button>
 
 
-    <DropdownButton name="WoWToolsMenuTemplate" inherits="WoWToolTemplate" virtual="true">
+    <DropdownButton name="WoWToolsMenuTemplate" inherits="WoWToolsTemplate" virtual="true">
         <NormalTexture atlas="ui-questtrackerbutton-filter"/>
         <Scripts>
             <OnLoad>
@@ -75,7 +75,7 @@
         </Scripts>
     </DropdownButton>
 
-    <DropdownButton name="WoWToolsMenu2Template" inherits="WoWTool2Template" virtual="true">
+    <DropdownButton name="WoWToolsMenu2Template" inherits="WoWTools2Template" virtual="true">
         <Scripts>
             <OnLoad>
                 WoWToolsMenu_OnLoad(self)
@@ -86,7 +86,7 @@
         </Scripts>
     </DropdownButton>
 
-    <DropdownButton name="WoWToolsMenu3Template" inherits="WoWToolTemplate" virtual="true">
+    <DropdownButton name="WoWToolsMenu3Template" inherits="WoWToolsTemplate" virtual="true">
         <Scripts>
             <OnLoad>
                 WoWToolsMenu_OnLoad(self)

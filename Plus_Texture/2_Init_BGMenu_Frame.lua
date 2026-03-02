@@ -1025,25 +1025,27 @@ local function Set_Frame_Menu(frame, tab)
     frame.addMenu= tab.addMenu
 
     if tab.menuTag then
-        Menu.ModifyMenu(tab.menuTag, function(_, root)
-            Init_Menu(frame, root, true)
+        Menu.ModifyMenu(tab.menuTag, function(self, root)
+            if self:IsMouseOver() then
+                Init_Menu(frame, root, true)
+            end
         end)
         return
     end
 
 
-    local self= frame.bgMenuButton or frame.PortraitButton or frame.PortraitContainer or tab.PortraitContainer
-    if not self then
+    local btn= frame.bgMenuButton or frame.PortraitButton or frame.PortraitContainer or tab.PortraitContainer
+    if not btn then
         return
     end
 
 
-    if self==frame.PortraitButton then
-        self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-        self.isRightShowButton=true
+    if btn==frame.PortraitButton then
+        btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+        btn.isRightShowButton=true
 
-    elseif self== frame.PortraitContainer then
-        self:SetSize(48,48)
+    elseif btn== frame.PortraitContainer then
+        btn:SetSize(48,48)
     end
 
 
@@ -1052,7 +1054,7 @@ local function Set_Frame_Menu(frame, tab)
         frame.PortraitContainer.CircleMask:SetPoint('BOTTOMRIGHT', frame.PortraitContainer.portrait, 'BOTTOMRIGHT', -3, 3.5)
     end
 
-    function self:set_texture_alpha()
+    function btn:set_alpha()
         local t= self.portrait or self.Icon
         if t then
             t:SetAlpha(
@@ -1063,37 +1065,47 @@ local function Set_Frame_Menu(frame, tab)
         end
     end
 
-    self:HookScript('OnLeave', function(s)
-        GameTooltip:Hide()
-        self:set_texture_alpha()
-    end)
-    self:HookScript('OnEnter', function(s)
-        if not GameTooltip:IsShown() then
-            GameTooltip:SetOwner(s, 'ANCHOR_LEFT')
-            GameTooltip:ClearLines()
-        else
-            GameTooltip:AddLine(' ')
-        end
-        GameTooltip:AddLine(
-            WoWTools_TextureMixin.addName..WoWTools_DataMixin.Icon.icon2
-            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
-            ..(
-                s.isRightShowButton
-                and WoWTools_DataMixin.Icon.right
-                or WoWTools_DataMixin.Icon.left
+    if tab.isNewButton then
+        btn.tooltip= WoWTools_TextureMixin.addName..WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        btn:SetupMenu(function(self, root)
+            if self:IsMouseOver() then
+                Init_Menu(self:GetParent(), root, false)
+            end
+        end)
+    else
+        btn:HookScript('OnLeave', function(s)
+            GameTooltip:Hide()
+            s:set_alpha()
+        end)
+        btn:HookScript('OnEnter', function(s)
+            if not GameTooltip:IsShown() then
+                GameTooltip:SetOwner(s, 'ANCHOR_LEFT')
+                GameTooltip:ClearLines()
+            else
+                GameTooltip:AddLine(' ')
+            end
+            GameTooltip:AddLine(
+                WoWTools_TextureMixin.addName..WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+                ..(
+                    s.isRightShowButton
+                    and WoWTools_DataMixin.Icon.right
+                    or WoWTools_DataMixin.Icon.left
+                )
             )
-        )
-        GameTooltip:Show()
-        self:set_texture_alpha()
-    end)
+            GameTooltip:Show()
+            s:set_alpha()
+        end)
 
-    self:HookScript('OnMouseDown', function(s, d)
-        if d=='RightButton' and s.isRightShowButton or not s.isRightShowButton then
-            MenuUtil.CreateContextMenu(s, function(_, root)
-                Init_Menu(frame, root, false)
-            end)
-        end
-    end)
+        btn:HookScript('OnMouseDown', function(s, d)
+            if d=='RightButton' and s.isRightShowButton or not s.isRightShowButton then
+                MenuUtil.CreateContextMenu(s, function(_, root)
+                    Init_Menu(frame, root, false)
+                end)
+            end
+        end)
+    end
 end
 
 
@@ -1116,7 +1128,15 @@ local function Create_Button(self, tab)
 
     local p= tab.isNewButton==true and self or tab.isNewButton
 
-    self.bgMenuButton= WoWTools_ButtonMixin:Cbtn(p, {
+    self.bgMenuButton= CreateFrame('DropdownButton', tab.name..'BGMenuButton', p, 'WoWToolsMenu3Template')
+    --self.bgMenuButton.isMenuButton=true
+    self.bgMenuButton:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+    local icon= self.bgMenuButton:GetNormalTexture()
+    icon:ClearAllPoints()
+    icon:SetPoint('CENTER')
+    icon:SetSize(12,12)
+    icon:SetAlpha(tab.newButtonAlpha or 0.5)
+    --[[WoWTools_ButtonMixin:Cbtn(p, {
         size=23,
         name=tab.name..'BGMenuButton',
         texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
@@ -1128,7 +1148,7 @@ local function Create_Button(self, tab)
     icon:SetPoint('CENTER')
     icon:SetSize(12,12)
     icon:SetAlpha(tab.newButtonAlpha or 0.5)
-
+]]
     if tab.newButtonPoint then
         tab.newButtonPoint(self.bgMenuButton, self[BGName])
 
