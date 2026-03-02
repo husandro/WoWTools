@@ -366,8 +366,6 @@ local function Init()
             ..(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO)
         )
 
-
-
         local infoType, itemID, itmeLink= GetCursorInfo()
 
         local icon
@@ -402,7 +400,6 @@ local function Init()
         GameTooltip:Show()
     end
 
-
     function btn:set_count()
         local num= select(2, Get_BagAllItem())
         num= WoWTools_DataMixin:MK(num)
@@ -421,7 +418,6 @@ local function Init()
     function btn:settings()
         self.Auto:SetShown(Save().auto)
     end
-
 
     btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
@@ -442,7 +438,6 @@ local function Init()
         self:set_count()
     end)
 
-
     btn:SetScript('OnMouseDown', function(self, d)
         local infoType, itemID= GetCursorInfo()
         if infoType == "item" and itemID and Check_ItemQuality(itemID) then
@@ -462,8 +457,6 @@ local function Init()
             end
         end)
     end)
-
-
 
     btn:SetupMenu(Init_Menu)
 
