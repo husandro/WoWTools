@@ -49,7 +49,7 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1== 'WoWTools' then
-        if WoWTools_DataMixin.Player.husandro and WoWTools_OtherMixin:AddOption(
+        if WoWTools_OtherMixin:AddOption(
             'MoneyFrame',
             '|A:auctionhouse-icon-coin-gold:0:0|a'..(WoWTools_DataMixin.onlyChinese and '钱' or MONEY)..' mk',
             nil
