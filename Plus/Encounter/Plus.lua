@@ -819,11 +819,20 @@ local function Init()
     down:SetNormalAtlas('NPE_ArrowDown')
     down.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
     down:SetScript('OnClick', function()
-        for _, header in pairs(EncounterJournal.encounter.usedHeaders or {}) do
-            if not header.expanded then
+        if not EncounterJournal.encounter.usedHeaders then
+            return
+        end
+        for i= #EncounterJournal.encounter.usedHeaders, 1, -1 do
+            local header= EncounterJournal.encounter.usedHeaders[i]
+            if header and not header.expanded then
                 EncounterJournal_ToggleHeaders(header)
             end
         end
+        --[[for _, header in pairs(EncounterJournal.encounter.usedHeaders or {}) do
+            if not header.expanded then
+                EncounterJournal_ToggleHeaders(header)
+            end
+        end]]
     end)
 
     local up= CreateFrame('Button', 'WoWToolsEncounterUpBossSpellButton',  down, 'WoWToolsButtonTemplate')

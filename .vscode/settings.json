@@ -3102,7 +3102,8 @@
         "WorldFrame",
         "HOUSING_DECOR_STORAGE_ITEM_DESTROY",
         "HOUSING_DECOR_STORAGE_ITEM_DESTROY_ALL",
-        "QuestEventListener"
+        "QuestEventListener",
+        "EncounterJournal_Refresh"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
