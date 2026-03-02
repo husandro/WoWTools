@@ -183,12 +183,12 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
         root:CreateSpacer()
         sub=root:CreateButton(
             '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
-        function(data)
+        function()
             if not WoWTools_FrameMixin:IsLocked(frame) then
-                data.resetValue()
+                ResetValue()
             end
             return MenuResponse.Refresh
-        end, {resetValue=ResetValue})
+        end)
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..': 1')
         end)

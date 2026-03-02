@@ -407,13 +407,17 @@ local function Get_Info(tab)
 
     local lowerVer= not PlayerIsTimerunning() and expacID< WoWTools_DataMixin.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
 
-    local sellItem
+    local sellItem, deleteItem
     if tab.bag and containerInfo and not containerInfo.isLocked then
+        deleteItem= WoWTools_BagMixin:Check_DeleteItem(itemID)
         sellItem= WoWTools_MerchantMixin:CheckSellItem(itemID, itemLink, itemQuality, isBound)--检测是否是出售物品
     end
 
+    if deleteItem then
+        topRightText= '|A:common-icon-delete:0:0|a'
+
 --检测是否是出售物品
-    if sellItem then
+    elseif sellItem then
         if itemQuality==0 then
             topRightText='|A:Coin-Silver:0:0|a'
         else

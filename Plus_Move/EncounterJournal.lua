@@ -242,7 +242,9 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         minH=248,--496,
     sizeStopFunc= function(frame)
         Set_InstanceSelect_Stride()
-         WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+        if EncounterJournal.encounter.info:IsVisible() then
+            WoWTools_DataMixin:Call('EncounterJournal_Refresh')
+        end
         self:Save().size[frame:GetName()]= {frame:GetSize()}
     end,
     sizeRestFunc=function(f)
