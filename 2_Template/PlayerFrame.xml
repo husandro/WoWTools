@@ -313,6 +313,7 @@
                 </Anchors>
                 <Scripts>
                     <OnLoad>
+                        self.anchor= 'ANCHOR_RIGHT'
                         self.itemID= 122284--魔兽世界时光徽章
                     </OnLoad>
                     <OnLeave>

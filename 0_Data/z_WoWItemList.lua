@@ -1137,7 +1137,9 @@ local function Settings_Right_Button(btn, data)
 
 --提示，不同战网
     btn.BattleTag:SetText(isNotBattle and data.battleTag or '')
-    btn.Battle:SetAlpha(isNotBattle and 1 or 0.3)
+    btn.Battle.alpha= isNotBattle and 1 or 0.3
+    btn.Battle:SetAlpha(btn.Battle.alpha)
+
     btn.BattleTag:SetTextColor(color:GetRGB())
 
 --魔兽世界时光徽章
@@ -1297,7 +1299,7 @@ local function OnEnter_BattleTexture(self)
         )
     end
     GameTooltip:Show()
-    self:SetAlpha(0.3)
+    self:SetAlpha(self.alpha==0.3 and 1 or 0.3)
 end
 
 local function OnEntre_GuildText(self)
@@ -1744,6 +1746,87 @@ end
 
 
 
+local function Init_LeftButton_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
+    local guid= Frame.guid
+    local wowData= WoWTools_WoWDate[guid]
+
+    local tab= TypeTabs[self.name]
+    local clear_wow= tab.clear_wow
+    local clear_all= tab.clear_all
+
+    if not wowData then
+        root:CreateTitle(WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '无数据' or 'No data'))
+        return
+    end
+
+    local atlas= tab.atlas
+
+    local sub= root:CreateButton(
+        '|A:'..atlas..':0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            '|A:bags-button-autosort-up:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|A:'..atlas..':0:0|a'
+            ..self.tip
+            ..'|n|n'
+            ..(wowData.battleTag or '')
+            ..'|n'
+            ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}),
+            nil,
+            {SetValue=function()
+                clear_wow(guid)
+                Init_Right_List()
+            end}
+        )
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(self.tip)
+        tooltip:AddLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}))
+    end)
+    sub:SetEnabled(clear_wow and true or false)
+
+    root:CreateDivider()
+
+    sub=root:CreateButton(
+        WoWTools_DataMixin.Icon.wow2
+        ..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER)),
+    function()
+            StaticPopup_Show('WoWTools_OK',
+            '|A:'..atlas..':0:0|a'
+            ..self.tip
+            ..'|n|n|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+            ..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER)),
+            nil,
+            {SetValue=function()
+                clear_all()
+                Init_Right_List()
+            end}
+        )
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(self.tip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+    end)
+    sub:SetEnabled(clear_all and true or false)
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1838,22 +1921,14 @@ local function Init_List(showListType, isShow)
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsPlayerFrameTemplate', function(self, data)
          if not self.ItemTextures then
-            self:SetScript('OnMouseDown', function(...)
-                OnMouseDown_RightButton(...)
-            end)
+            self:SetScript('OnMouseDown', OnMouseDown_RightButton)
             self.Battle:SetScript('OnLeave', function(frame)
                 GameTooltip:Hide()
-                frame:SetAlpha(1)
+                frame:SetAlpha(frame.alpha or 1)
             end)
-            self.Battle:SetScript('OnEnter', function(...)
-                OnEnter_BattleTexture(...)
-            end)
-            self.GuildText:SetScript('OnEnter', function(...)
-                OnEntre_GuildText(...)
-            end)
-            self.GuildText:SetScript('OnMouseDown', function(...)
-                OnMouseDown_GuildText(...)
-            end)
+            self.Battle:SetScript('OnEnter', OnEnter_BattleTexture)
+            self.GuildText:SetScript('OnEnter', OnEntre_GuildText)
+            self.GuildText:SetScript('OnMouseDown', OnMouseDown_GuildText)
 
             OnEntre_GuildText(self)
 
@@ -1957,33 +2032,37 @@ local function Init_List(showListType, isShow)
 
     local last
     for name, data in pairs(TypeTabs) do
-        List2Buttons[name]= CreateFrame('Button', 'WoWToolsWoWList2'..name..'Button', Frame, 'WoWToolsButtonTemplate')
+        --List2Buttons[name]= CreateFrame('Button', 'WoWToolsWoWList2'..name..'Button', Frame, 'WoWToolsButtonTemplate')
 
-        List2Buttons[name].texture=List2Buttons[name]:CreateTexture(nil, 'BORDER')
-        List2Buttons[name].texture:SetPoint('CENTER')
-        List2Buttons[name].texture:SetSize(23,23)
-        List2Buttons[name].texture:SetAtlas(data.atlas)
+        List2Buttons[name]= CreateFrame('DropdownButton', 'WoWToolsWoWList2Button_'..name, Frame, 'WoWToolsMenu3Template')
 
-        List2Buttons[name].SelectTexture= List2Buttons[name]:CreateTexture(nil, 'OVERLAY', nil, -1)
-        List2Buttons[name].SelectTexture:SetPoint('CENTER')
-        List2Buttons[name].SelectTexture:SetSize(30,30)
-        List2Buttons[name].SelectTexture:SetAtlas('AlliedRace-UnlockingFrame-GenderSelectionGlow')--'glues-gameMode-glw-bottom')
-        List2Buttons[name].SelectTexture:Hide()
-        List2Buttons[name].SelectTexture:SetVertexColor(0,1,0)
 
-        List2Buttons[name].name= name
-        List2Buttons[name].tip= data.tooltip
+        local btn= List2Buttons[name]
+        btn.texture=btn:CreateTexture(nil, 'BORDER')
+        btn.texture:SetPoint('CENTER')
+        btn.texture:SetSize(23,23)
+        btn.texture:SetAtlas(data.atlas)
 
-        List2Buttons[name].Text= WoWTools_LabelMixin:Create(List2Buttons[name], {color={r=1,g=1,b=1}})
-        List2Buttons[name].Text:SetPoint('BOTTOMRIGHT')
+        btn.SelectTexture= btn:CreateTexture(nil, 'OVERLAY', nil, -1)
+        btn.SelectTexture:SetPoint('CENTER')
+        btn.SelectTexture:SetSize(30,30)
+        btn.SelectTexture:SetAtlas('AlliedRace-UnlockingFrame-GenderSelectionGlow')--'glues-gameMode-glw-bottom')
+        btn.SelectTexture:Hide()
+        btn.SelectTexture:SetVertexColor(0,1,0)
+
+        btn.name= name
+        btn.tip= data.tooltip
+
+        btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+        btn.Text:SetPoint('BOTTOMRIGHT')
 
         if last then
-            List2Buttons[name]:SetPoint('RIGHT', last, 'LEFT', -2, 0)
+            btn:SetPoint('RIGHT', last, 'LEFT', -2, 0)
         else
-            List2Buttons[name]:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT')
+            btn:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT')
         end
 
-        List2Buttons[name]:SetScript('OnEnter', function(self)
+        btn:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(Frame, "ANCHOR_TOPLEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(
@@ -1992,85 +2071,29 @@ local function Init_List(showListType, isShow)
             )
             GameTooltip:Show()
         end)
-        List2Buttons[name]:SetScript('OnClick', function(self, d)
-            List2Type= self.name
-            if d=='LeftButton' then
+
+
+        btn:SetupMenu(Init_LeftButton_Menu)
+
+        btn:SetScript('OnMouseDown', function(self, d)
+            local isLeftButton= d=='LeftButton'
+            if isLeftButton then
+                self:CloseMenu()
+            end
+
+            if List2Type ~= self.name or isLeftButton then
+                List2Type= self.name
                 Init_Left_List()
 
-                for _, btn in pairs(List2Buttons) do
-                    local isSelect= List2Type==btn.name
-                    btn.texture:SetScale(isSelect and 0.5 or 1)
-                    btn.SelectTexture:SetShown(isSelect)
+                for _, b in pairs(List2Buttons) do
+                    local isSelect= List2Type==b.name
+                    b.texture:SetScale(isSelect and 0.5 or 1)
+                    b.SelectTexture:SetShown(isSelect)
                 end
-            else
-                MenuUtil.CreateContextMenu(self, function(_, root)
-                    local guid= Frame.guid
-                    local wowData= WoWTools_WoWDate[guid]
-
-                    local tab= TypeTabs[self.name]
-                    local clear_wow= tab.clear_wow
-                    local clear_all= tab.clear_all
-
-                    if not wowData then
-                        root:CreateTitle(WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '无数据' or 'No data'))
-                        return
-                    end
-
-                    local atlas= tab.atlas
-
-                    local sub= root:CreateButton(
-                        '|A:'..atlas..':0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-                    function()
-                        StaticPopup_Show('WoWTools_OK',
-                            '|A:bags-button-autosort-up:0:0|a'
-                            ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|A:'..atlas..':0:0|a'
-                            ..self.tip
-                            ..'|n|n'
-                            ..(wowData.battleTag or '')
-                            ..'|n'
-                            ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}),
-                            nil,
-                            {SetValue=function()
-                                clear_wow(guid)
-                                Init_Right_List()
-                            end}
-                        )
-                        return MenuResponse.Open
-                    end)
-                    sub:SetTooltip(function(tooltip)
-                        tooltip:AddLine(self.tip)
-                        tooltip:AddLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}))
-                    end)
-                    sub:SetEnabled(clear_wow and true or false)
-
-                    root:CreateDivider()
-
-                    sub=root:CreateButton(
-                        WoWTools_DataMixin.Icon.wow2
-                        ..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER)),
-                    function()
-                         StaticPopup_Show('WoWTools_OK',
-                            '|A:'..atlas..':0:0|a'
-                            ..self.tip
-                            ..'|n|n|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-                            ..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER)),
-                            nil,
-                            {SetValue=function()
-                                clear_all()
-                                Init_Right_List()
-                            end}
-                        )
-                        return MenuResponse.Open
-                    end)
-                    sub:SetTooltip(function(tooltip)
-                        tooltip:AddLine(self.tip)
-                        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-                    end)
-                    sub:SetEnabled(clear_all and true or false)
-                end)
             end
         end)
-        last=List2Buttons[name]
+
+        last=btn
     end
 
 
