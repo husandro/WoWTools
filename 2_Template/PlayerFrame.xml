@@ -313,7 +313,7 @@
                 </Anchors>
                 <Scripts>
                     <OnLoad>
-                        self.WoWToken.itemID= 122284--魔兽世界时光徽章
+                        self.itemID= 122284--魔兽世界时光徽章
                     </OnLoad>
                     <OnLeave>
                         GameTooltip:Hide()
