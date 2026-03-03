@@ -2134,7 +2134,9 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         if bar.GetBackgroundEdge then
             bar:GetBackgroundEdge():SetVertexColor(0,0,0,0.3)
         end
-        bar:GetBackground():SetVertexColor(0,0,0,0.3)
+        if bar.GetBackground then
+            bar:GetBackground():SetVertexColor(0,0,0,0.3)
+        end
     end
 
 --锁定，不可交互

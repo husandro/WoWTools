@@ -310,6 +310,11 @@ local function Init_Menu(self, root)
 
         WoWTools_MenuMixin:SetScrollMode(sub)
     end
+
+
+--打开选项界面
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BagMixin.addName})
 end
 
 
@@ -325,26 +330,25 @@ end
 
 
 
+local function Create_Button(frame)
+    if not frame then
+        return
+    end
 
-
-
-
-
-
-
-
-local function Init()
-    local btn= CreateFrame('DropdownButton', 'WoWToolsBagDeleteItemButton', ContainerFrameCombinedBags.CloseButton, 'WoWToolsMenu3Template')
-    btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT', -46, 0)
+    local isCombinedBag= frame==ContainerFrameCombinedBags
+    local btn= CreateFrame('DropdownButton', 'WoWToolsBagDeleteItemButton'..(isCombinedBag and 1 or 2), frame.CloseButton, 'WoWToolsMenu3Template')
+    btn:SetPoint('RIGHT', frame.CloseButton, 'LEFT', isCombinedBag and -46 or -23, 0)
     btn:SetNormalAtlas('common-icon-delete')
 
     btn.Text= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
     btn.Text:SetPoint('BOTTOMRIGHT', -1, 1)
+    btn.Text:SetFontHeight(10)
 
     btn.Auto= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
     btn.Auto:SetPoint('TOPLEFT', 1, -1)
     btn.Auto:SetText('A')
     btn.Auto:SetTextColor(GREEN_FONT_COLOR:GetRGB())
+    btn.Auto:SetFontHeight(10)
 
     function btn:tooltip()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
@@ -459,6 +463,47 @@ local function Init()
     end)
 
     btn:SetupMenu(Init_Menu)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    if (not ContainerFrameCombinedBags and not ContainerFrame1)
+        or not Save().disabled
+    then
+        return
+    end
+
+    do
+        Create_Button(ContainerFrameCombinedBags)
+        Create_Button(ContainerFrame1)
+    end
+    Create_Button=function()end
 
     Set_Auto()
 

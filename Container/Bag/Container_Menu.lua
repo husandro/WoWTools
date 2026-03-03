@@ -112,10 +112,10 @@ end
 
 
 
-local function Init_Columns_Menu(self, root)
+local function Init_Columns_Menu(self, root2)
     local sub, sub2
 
-    root= root:CreateCheckbox(
+    local root= root2:CreateCheckbox(
         '|cnWARNING_FONT_COLOR:'
         ..(WoWTools_DataMixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS),
     function()
@@ -130,9 +130,8 @@ local function Init_Columns_Menu(self, root)
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '可能会出现错误' or 'Errors may occur')
     end)
 
-    if not Save().enabledCombinedColumns then
-        return
-    end
+if Save().enabledCombinedColumns then
+       
     WoWTools_MenuMixin:SetRightText(root)
 
 
@@ -256,6 +255,22 @@ local function Init_Columns_Menu(self, root)
     WoWTools_MenuMixin:RestData(sub, WoWTools_BagMixin.addName, function()
         WoWToolsSave['Plus_Container']= nil
         WoWTools_DataMixin:Reload()
+    end)
+
+
+end
+    sub= root2:CreateCheckbox(
+        '|A:common-icon-delete:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '摧毁' or HOUSING_DECOR_STORAGE_ITEM_DESTROY),
+    function()
+        return not Save().delete.disabled
+    end, function()
+        Save().delete.disabled= not Save().delete.disabled and true or nil
+        WoWTools_BagMixin:Init_DeleteItem()
+    end)
+
+    sub:SetTooltip(function(tooltip)
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 
