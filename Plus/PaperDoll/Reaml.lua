@@ -27,7 +27,11 @@ local function Init()
     wow.text:SetPoint("BOTTOMRIGHT", -1, 1)
     WoWTools_ColorMixin:SetLabelColor(wow.text)
     function wow:settings()
-        wow.text:SetText(WoWTools_ItemMixin:GetWoWCount(122284, nil, true) or '')
+        local count= WoWTools_ItemMixin:GetWoWCount(122284, nil, true)
+        wow.text:SetText(
+            (count>0 and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup())
+            ..count
+        )
     end
     wow:SetScript('OnShow', wow.settings)
     wow:settings()
