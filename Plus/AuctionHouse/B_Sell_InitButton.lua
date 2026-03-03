@@ -293,10 +293,17 @@ local function Init()
 
 
 
+
 --提示，已放入物品
     function AuctionHouseButton:set_select_tips()
-        local itemLocation= AuctionHouseFrame.CommoditiesSellFrame:GetItem() or AuctionHouseFrame.ItemSellFrame:GetItem()
-        local itemID= itemLocation and C_Item.GetItemID(itemLocation)
+        local isCommoditiesSellFrame, isItemSellFrame= WoWTools_AuctionHouseMixin:GetDisplayMode()
+        local itemLocation
+        if isCommoditiesSellFrame then
+            itemLocation= AuctionHouseFrame.CommoditiesSellFrame:GetItem()
+        elseif isItemSellFrame then
+            itemLocation= AuctionHouseFrame.ItemSellFrame:GetItem()
+        end
+        local itemID= canaccessvalue(itemLocation) and itemLocation and C_Item.GetItemID(itemLocation)
         for _, btn in pairs(self.buttons) do
             if not itemID then
                 btn.selectTexture:SetShown(false)

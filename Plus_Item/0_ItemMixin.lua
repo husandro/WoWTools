@@ -971,7 +971,20 @@ end
 
 
 
+--[[
+local function GetBindWarning(itemLocation)
+	local item = Item:CreateFromItemLocation(itemLocation);
+	if not item then
+		return;
+	end
 
+	local _itemID, _itemType, _itemSubType, _itemEquipLoc, _icon, itemClassID, itemSubclassID = C_Item.GetItemInfoInstant(item:GetItemID());
+	local isArmor = (itemClassID == Enum.ItemClass.Armor) and (itemSubclassID ~= Enum.ItemArmorSubclass.Shield);
+	if isArmor and not IsItemPreferredArmorType(item:GetItemLocation()) then--IsItemPreferredArmorType 物品是否为首选护甲类型
+		return '|cnRED_FONT_COLOR:这不是你偏好的护甲类型。|r';
+	end
+end
+]]
 function WoWTools_ItemMixin:IsNotEquipType(itemInfo,  itemType, itemSubType)
     if not itemInfo then
         return nil
@@ -984,12 +997,10 @@ function WoWTools_ItemMixin:IsNotEquipType(itemInfo,  itemType, itemSubType)
     if not itemType then
         itemType, itemSubType= select(2, C_Item.GetItemInfoInstant(itemInfo))
     end
-    if itemType then
-        if itemSubType then
-            return not C_Item.IsEquippedItemType(itemSubType)
-        else
-            return not C_Item.IsEquippedItemType(itemType)
-        end
+    if itemSubType then
+        return not C_Item.IsEquippedItemType(itemSubType)
+    elseif itemType then
+        return not C_Item.IsEquippedItemType(itemType)
     end
 end
 

@@ -537,12 +537,20 @@ local function Create_deadFrame(frame)
     end)
 
     function deadFrame:GetName()
-        return GetUnitName(self.unit, true)
+        local name= GetUnitName(self.unit, true)
+        if not issecretvalue(name) and name then
+            return name
+        end
     end
 
     function deadFrame:settings()
 --死亡，次数
-        self.Text:SetText(Save().PartyDeadData[self:GetName()] or 0)
+        local name= self:GetName()
+        local text
+        if name then
+            text= Save().PartyDeadData[name] or 0
+        end
+        self.Text:SetText(text or '')
     end
 
 --编辑模式
@@ -571,7 +579,10 @@ local function Create_deadFrame(frame)
     deadFrame:SetScript('OnEvent', function(self, event)
         if event=='CHALLENGE_MODE_START' then
             self.deadBool=nil
-            Save().PartyDeadData[self:GetName()]= nil
+            local name= self:GetName()
+            if name then
+                Save().PartyDeadData[name]= nil
+            end
 
         else
             if UnitIsDeadOrGhost(self.unit) then--死亡，次数
@@ -579,8 +590,9 @@ local function Create_deadFrame(frame)
                     self.deadBool=true
 
                     local name= self:GetName()
-                    Save().PartyDeadData[name]= (Save().PartyDeadData[name] or 0)+1
-
+                    if name then
+                        Save().PartyDeadData[name]= (Save().PartyDeadData[name] or 0)+1
+                    end
                     self:settings()
                 end
             else
