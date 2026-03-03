@@ -14,7 +14,7 @@ local function Init()
 
 
     local wow= CreateFrame("Button", 'WoWToolsPaperDollWoWButton', PaperDollItemsFrame, 'WoWToolsButtonTemplate')
-    wow:SetPoint('LEFT', CharacterFrame.TitleContainer, -5, 0)
+    wow:SetPoint('LEFT', CharacterFrame.TitleContainer, -5, -3)
     wow:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
     wow:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
     wow:SetSize(20, 20)
@@ -45,8 +45,9 @@ local function Init()
 
 
     local btn= CreateFrame("Button", 'WoWToolsPaperDollRealmButton', wow, 'WoWToolsButtonTemplate')
-    btn:SetSize(32,16)
+    btn:SetSize(32,18)
     WoWTools_TextureMixin:GetWoWLog(GetClampedCurrentExpansionLevel(), btn)
+
     btn:SetPoint('LEFT', wow, 'RIGHT')
 
     function btn:tooltip()

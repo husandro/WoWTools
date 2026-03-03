@@ -5,7 +5,7 @@ local function Save()
     return WoWToolsSave['Plus_PaperDoll']
 end
 
-
+local btn
 
 
 
@@ -15,22 +15,18 @@ local function Init()
         return
     end
 
-    CharacterLevelText:SetFontObject('GameFontNormal')
-    CharacterLevelText:SetShadowOffset(1,-1)
-    CharacterTrialLevelErrorText:SetFontObject('GameFontNormalSmall2')
-    WoWTools_ColorMixin:SetLabelColor(CharacterLevelText)
+    btn= CreateFrame('Button', 'WoWToolsPaperDollLevelButton', PaperDollFrame, 'WowToolsButtonTemplate')
+    btn:SetFrameStrata('HIGH')
+    btn:SetPoint('TOPLEFT', CharacterLevelText)
+    btn:SetPoint('BOTTOMLEFT', CharacterLevelText)
+    btn:SetWidth(23)
 
-    CharacterLevelText:SetJustifyH('LEFT')
-    CharacterLevelText:EnableMouse(true)
-    CharacterLevelText:HookScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-    CharacterLevelText:HookScript('OnEnter', function(self)
+    function btn:tooltip()
         local info = C_PlayerInfo.GetPlayerCharacterData()
-        if Save().notLevel or not info then
+        if not info then
             return
         end
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip_SetTitle(GameTooltip, WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
-        GameTooltip:AddLine(' ')
+
         GameTooltip:AddDoubleLine(
             'name |cffffffff'..info.name,
             'fileName |cffffffff'..info.fileName
@@ -75,7 +71,6 @@ local function Init()
             )
         )
 
-       -- GameTooltip:AddLine(' ')
         for _, data in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
             local col= data.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
             local icon=data.previewAtlas and '|A:'..data.previewAtlas..':0:0|a' or ''
@@ -94,11 +89,12 @@ local function Init()
                 ..icon
             )
         end
+    end
 
-        GameTooltip:Show()
-        self:SetAlpha(0.3)
-    end)
-
+    CharacterLevelText:SetFontObject('WoWToolsFont')
+    CharacterTrialLevelErrorText:SetFontObject('GameFontNormalSmall2')
+    WoWTools_ColorMixin:SetLabelColor(CharacterLevelText)
+    CharacterLevelText:SetJustifyH('LEFT')
 
     WoWTools_DataMixin:Hook('PaperDollFrame_SetLevel', function()
          if Save().notLevel then
@@ -107,7 +103,7 @@ local function Init()
         local size= 18
         local levelText
 
-        local maxLevel= GetMaxLevelForLatestExpansion() or 0        
+        local maxLevel= GetMaxLevelForLatestExpansion() or 0
         local level= UnitLevel("player") or 1
         local effectiveLevel = UnitEffectiveLevel("player") or 1
 
@@ -167,13 +163,12 @@ local function Init()
 
 
 
-    local Frame= CreateFrame('Frame', 'WoWToolsPaperDollAllDurationFrame', PaperDollItemsFrame)
-    Frame:SetSize(1, 1)
-    Frame:SetPoint('RIGHT', CharacterLevelText, 'LEFT')
+    local Frame= CreateFrame('Frame', 'WoWToolsPaperDollAllDurationFrame', btn)
+
 
 --战争模式
-    Frame.warMode= Frame:CreateTexture(nil, 'BORDER')
-    Frame.warMode:SetPoint('RIGHT', Frame, 'LEFT')
+    Frame.warMode= btn:CreateTexture(nil, 'BORDER')
+    Frame.warMode:SetPoint('RIGHT', btn, 'LEFT')
     Frame.warMode:SetSize(18, 18)
     Frame.warMode:SetAtlas('pvptalents-warmode-swords')
     Frame.warMode:EnableMouse(true)
@@ -273,7 +268,7 @@ local function Init()
     Init=function()
         WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
         WoWTools_DataMixin:Call(CharacterFrame.UpdatePortrait, CharacterFrame)
-        _G['WoWToolsPaperDollAllDurationFrame']:SetShown(not Save().notLevel)
+        _G['WoWToolsPaperDollLevelButton']:SetShown(not Save().notLevel)
     end
 end
 

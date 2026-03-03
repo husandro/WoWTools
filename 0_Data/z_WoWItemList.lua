@@ -1147,9 +1147,9 @@ local function Settings_Right_Button(btn, data)
     btn.WoWTokenCount:SetText((tokenCount==0 and '|cff626262' or '')..tokenCount)
     btn.WoWToken:SetDesaturated(tokenCount==0)
     if tokenCount==0 then
-        btn.WoWTokenCount:SetColorTexture(DISABLED_FONT_COLOR:GetRGB())
+        btn.WoWTokenCount:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
     else
-        btn.WoWTokenCount:SetColorTexture(color:GetRGB())
+        btn.WoWTokenCount:SetTextColor(color:GetRGB())
     end
 
 --职业
