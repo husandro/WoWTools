@@ -1139,7 +1139,6 @@ local function Settings_Right_Button(btn, data)
     btn.BattleTag:SetText(isNotBattle and data.battleTag or '')
     btn.Battle.alpha= isNotBattle and 1 or 0.3
     btn.Battle:SetAlpha(btn.Battle.alpha)
-
     btn.BattleTag:SetTextColor(color:GetRGB())
 
 --魔兽世界时光徽章
@@ -1147,6 +1146,11 @@ local function Settings_Right_Button(btn, data)
     local tokenCount= (itemTab.bag or 0)+ (itemTab.bank or 0)
     btn.WoWTokenCount:SetText((tokenCount==0 and '|cff626262' or '')..tokenCount)
     btn.WoWToken:SetDesaturated(tokenCount==0)
+    if tokenCount==0 then
+        btn.WoWTokenCount:SetColorTexture(DISABLED_FONT_COLOR:GetRGB())
+    else
+        btn.WoWTokenCount:SetColorTexture(color:GetRGB())
+    end
 
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
