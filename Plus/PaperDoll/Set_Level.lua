@@ -208,14 +208,14 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    Frame.warModeBg= Frame:CreateTexture(nil, 'BACKGROUND')
+    Frame.warModeBg= btn:CreateTexture(nil, 'BACKGROUND')
     Frame.warModeBg:SetSize(26, 26)
     Frame.warModeBg:SetPoint('CENTER', Frame.warMode)
     Frame.warModeBg:SetAtlas('talents-node-choiceflyout-circle-greenglow')
 
 
 --装备,总耐久度
-    Frame.durabiliy= Frame:CreateFontString(nil, 'BORDER', 'GameFontNormal')
+    Frame.durabiliy= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')
     Frame.durabiliy:SetShadowOffset(1,-1)
     Frame.durabiliy:SetPoint('RIGHT', Frame.warMode, 'LEFT',0,1)
     Frame.durabiliy:EnableMouse(true)
