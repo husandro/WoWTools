@@ -12,26 +12,36 @@ local function Init()
         return
     end
 
-    local frame= CreateFrame("Frame", 'WoWToolsPaperDollRealmFrame', PaperDollItemsFrame)
-    frame:SetSize(1,1)
-    frame:SetPoint('LEFT', CharacterFrame.TitleContainer, 2, 0)
-    frame:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
-    frame:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
-
-    frame.text= frame:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'GameFontNormal')
-    frame.text:SetPoint('LEFT')
-    frame.text:EnableMouse(true)
-    WoWTools_ColorMixin:SetLabelColor(frame.text)
-
-    frame.text:SetScript("OnLeave",function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(1)
+    local wow= CreateFrame("Button", 'WoWToolsPaperDollWoWButton', PaperDollItemsFrame, 'WoWToolsButtonTemplate')
+    wow:SetPoint('LEFT', CharacterFrame.TitleContainer, -5, 0)
+    wow:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
+    wow:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
+    wow:SetSize(20, 20)
+    wow:SetNormalTexture(1120721)
+    WoWTools_ButtonMixin:AddMask(wow, true, wow:GetNormalTexture())
+    wow.itemID= 122284
+    wow:SetScript('OnEnter', function(self)
+        WoWTools_SetTooltipMixin:Frame(self)
     end)
+    wow.text= wow:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'WoWToolsFont2')
+    wow.text:SetPoint("BOTTOMRIGHT", -1, 1)
+    WoWTools_ColorMixin:SetLabelColor(wow.text)
+    function wow:settings()
+        wow.text:SetText(WoWTools_ItemMixin:GetWoWCount(122284, nil, true) or '')
+    end
+    wow:SetScript('OnShow', wow.settings)
+    wow:settings()
 
-    frame.text:SetScript("OnEnter",function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
 
+
+
+
+    local btn= CreateFrame("Button", 'WoWToolsPaperDollRealmButton', wow, 'WoWToolsButtonTemplate')
+    btn:SetSize(32,16)
+    WoWTools_TextureMixin:GetWoWLog(GetClampedCurrentExpansionLevel(), btn)
+    btn:SetPoint('LEFT', wow, 'RIGHT')
+
+    function btn:tooltip()
         local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.Icon.icon2
@@ -59,17 +69,21 @@ local function Init()
         GameTooltip:AddDoubleLine('regionID |cffffffff',  WoWTools_DataMixin.Player.Region..' '..GetCurrentRegionName(), nil,nil,nil, 1,1,1)
 
         local curExp= GetExpansionLevel()
+        local client= GetClientDisplayExpansionLevel()
         GameTooltip:AddDoubleLine(
-            WoWTools_DataMixin.onlyChinese and '扩展' or 'Expansion',
-            curExp..' '..(WoWTools_TextureMixin:GetWoWLog(curExp) or '')..WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..curExp]),
+            WoWTools_DataMixin.onlyChinese and '版本' or GAME_VERSION_LABEL,
+            client..' '..(WoWTools_TextureMixin:GetWoWLog(client) or '')..WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..client]),
             nil,nil,nil, 1,1,1
         )
-
-
-        --BAG_FILTER_CURRENT_EXPANSION = "仅限当前内容";
+        if curExp~=client then
+            GameTooltip:AddDoubleLine(
+                WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT ,
+                curExp..' '..(WoWTools_TextureMixin:GetWoWLog(curExp) or '')..WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..curExp]),
+                1,0,0, 1,0,0
+            )
+        end
 
         if GameLimitedMode_IsActive() then
-            GameTooltip:AddLine(' ')
             local rLevel, rMoney, profCap = GetRestrictedAccountData()
             GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED)
 
@@ -91,18 +105,26 @@ local function Init()
                 profCap,
                 1,0,0, 1,1,1
             )
-
         end
-
-        GameTooltip:Show()
-        self:SetAlpha(0.3)
-    end)
+    end
 
 
+
+
+
+
+
+
+
+
+
+    btn.text= btn:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'WoWToolsFont')
+    btn.text:SetPoint('LEFT', btn, 'RIGHT')
+    WoWTools_ColorMixin:SetLabelColor(btn.text)
     local ser= GetAutoCompleteRealms() or {}
     local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm, nil, nil)
     local num= #ser
-    frame.text:SetText(
+    btn.text:SetText(
         (GameLimitedMode_IsActive() and '|cnWARNING_FONT_COLOR:' or '')
         ..(num>1 and num..' ' or '')
         ..WoWTools_DataMixin.Player.Realm
@@ -110,38 +132,22 @@ local function Init()
     )
 
 
-    frame.texture= frame:CreateTexture(nil, 'ARTWORK')
-    frame.texture:SetPoint('LEFT', frame.text, 'RIGHT', 2, 0)
-    frame.texture:SetSize(16,16)
-    frame.texture:EnableMouse(true)
-    frame.texture:SetTexture(1120721)
-    frame.texture.itemID= 122284
-    frame.texture:SetScript("OnLeave",function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(1)
-    end)
-
-    frame.texture:SetScript("OnEnter",function(self)
-        WoWTools_SetTooltipMixin:Frame(self)
-        self:SetAlpha(0.3)
-    end)
-
-    frame.text2= frame:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'GameFontNormal')
-    frame.text2:SetPoint('LEFT', frame.texture, 'RIGHT', 2, 0)
-    WoWTools_ColorMixin:SetLabelColor(frame.text2)
 
 
-    function frame:settings()
-        local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)
-        frame.text2:SetText(all..(numPlayer>1 and '('..numPlayer..')' or ''))
-    end
 
-    frame:SetScript('OnShow', frame.settings)
 
-    frame:settings()
+
+
+
+
+
+
+
+
+
 
     Init=function()
-        _G['WoWToolsPaperDollRealmFrame']:SetShown(not Save().notRealm)
+        _G['WoWToolsPaperDollWoWButton']:SetShown(not Save().notRealm)
     end
 end
 

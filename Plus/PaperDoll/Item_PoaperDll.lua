@@ -384,6 +384,7 @@ local function Set_Item_Durability(btn, link, slot, isPaperDollItemSlot, isLeftS
     end
     if not btn.du and du and isPaperDollItemSlot then
         btn.du= CreateFrame('StatusBar', nil, btn)
+        btn.du:SetFrameStrata('HIGH')
         local wq= slot==16 or slot==17 or slot==18--武器
         if wq then
             btn.du:SetPoint('TOP', btn, 'BOTTOM')

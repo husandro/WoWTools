@@ -139,6 +139,7 @@ local function Init_Button()
 
         btn.factionID= major.factionID
         btn.isCurVer= major.expansionID== WoWTools_DataMixin.ExpansionLevel
+
         Set_Text(btn)
         btn:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
         btn:SetShown(true)

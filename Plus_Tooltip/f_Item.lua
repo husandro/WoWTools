@@ -547,7 +547,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         C_WowTokenPublic.UpdateMarketPrice()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
-            textLeft='|A:token-choice-wow:0:0|a|cffffffff'..C_CurrencyInfo.GetCoinTextureString(price)
+            textLeft='|T1120721:0|t'
+                ..(WoWTools_DataMixin:MK(price/10000, 4))
+                ..'|A:auctionhouse-icon-coin-gold:0:0|a' --C_CurrencyInfo.GetCoinTextureString(price)
         end
 
 

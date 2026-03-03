@@ -3103,7 +3103,8 @@
         "HOUSING_DECOR_STORAGE_ITEM_DESTROY",
         "HOUSING_DECOR_STORAGE_ITEM_DESTROY_ALL",
         "QuestEventListener",
-        "EncounterJournal_Refresh"
+        "EncounterJournal_Refresh",
+        "BAG_FILTER_CURRENT_EXPANSION"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

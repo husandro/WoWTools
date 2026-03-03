@@ -394,15 +394,20 @@ local ExpansionIcon = {
 
 
 
-function WoWTools_TextureMixin:GetWoWLog(expacID, texture, size)
+function WoWTools_TextureMixin:GetWoWLog(expacID, textureOrButton, size)
     local info= ExpansionIcon[expacID]
     if not info then
         return
     end
 
-    if texture then
-        texture:SetTexture(info.textureFile)
-        texture:SetTexCoord(info.leftTexel, info.rightTexel, info.topTexel, info.bottomTexel)
+    if textureOrButton then
+        if textureOrButton.SetNormalTexture then
+            textureOrButton:SetNormalTexture(info.textureFile)
+            textureOrButton:GetNormalTexture():SetTexCoord(info.leftTexel, info.rightTexel, info.topTexel, info.bottomTexel)
+        elseif textureOrButton.SetTexture then
+            textureOrButton:SetTexture(info.textureFile)
+            textureOrButton:SetTexCoord(info.leftTexel, info.rightTexel, info.topTexel, info.bottomTexel)
+        end
         return info
     end
 
