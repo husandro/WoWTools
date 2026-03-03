@@ -7,37 +7,7 @@
         <Anchor point="LEFT"/>
         <Anchor point="RIGHT"/>
     </Anchors>
-    <Scripts>
-        <OnLeave>
-            self.Select:Hide()
-        </OnLeave>
-        <OnEnter>
-            self.Select:Show()
-        </OnEnter>
-
-        <OnHide>
-            self.data= nil
-
-            self.Name:SetText('')
-            self.BattleTag:SetText('')
-            self.AffixText:SetText('')
-            self.ItemLevelText:SetText('')
-            self.ItemName:SetText('')
-            self.RaidText:SetText('')
-            self.DungeonText:SetText('')
-            self.WorldText:SetText('')
-            self.PvPText:SetText('')
-
-            self.ScoreText:SetText('')
-            self.WeekNumText:SetText('')
-            self.WeekLevelText:SetText('')
-
-            self.Icon:SetTexture(0)
-            self.Class:SetTexture(0)
-            self.Spec:SetTexture(0)
-            self.Background:SetTexture(0)
-        </OnHide>
-    </Scripts>
+    
 
     <Layers>
         
@@ -86,12 +56,12 @@
 
         <Layer level="BORDER">
             <Texture parentKey="Icon">
-                <Size x="36" y="36"/>
+                <Size x="28" y="28"/>
                 <Anchors>
                     <Anchor point="TOPRIGHT"/>
                 </Anchors>
             </Texture>
-            <FontString parentKey="PlayerLevelText" inherits="WoWToolsFonts" justifyH="RIGHT">
+            <FontString parentKey="PlayerLevelText" inherits="WoWToolsFont" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon"/>
                 </Anchors>
@@ -127,7 +97,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="ScoreText" inherits="WoWToolsFonts" justifyH="RIGHT">
+            <FontString parentKey="ScoreText" inherits="WoWToolsFont" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.Score" relativePoint="LEFT"/>
                 </Anchors>
@@ -151,7 +121,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="WeekNumText" inherits="WoWToolsFonts" justifyH="RIGHT">
+            <FontString parentKey="WeekNumText" inherits="WoWToolsFont" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.WeekNum" relativePoint="LEFT"/>
                 </Anchors>
@@ -176,7 +146,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="WeekLevelText" inherits="WoWToolsFonts" justifyH="RIGHT">
+            <FontString parentKey="WeekLevelText" inherits="WoWToolsFont" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.WeekLevel" relativePoint="LEFT"/>
                 </Anchors>
@@ -216,7 +186,7 @@
                 </Scripts>
             </Texture>
 
-            <FontString parentKey="ItemLevelText" inherits="WoWToolsFonts">
+            <FontString parentKey="ItemLevelText" inherits="WoWToolsFont">
                 <Anchors>
                    <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
                 </Anchors>
@@ -259,7 +229,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="GuildText" inherits="WoWToolsFonts" enableMouse="true">
+            <FontString parentKey="GuildText" inherits="WoWToolsFont" enableMouse="true">
                 <Anchors>
                    <Anchor point="RIGHT" relativeKey="$parent.Guild" relativePoint="LEFT"/>
                 </Anchors>
@@ -274,7 +244,7 @@
 
 
 
-            <FontString parentKey="Name" inherits="WoWToolsFonts" justifyH="RIGHT" enableMouse="true">
+            <FontString parentKey="Name" inherits="WoWToolsFont" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Spec"  relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
@@ -314,7 +284,7 @@
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
             </Texture>
-            <FontString parentKey="BattleTag" inherits="WoWToolsFonts" justifyH="RIGHT" enableMouse="true">
+            <FontString parentKey="BattleTag" inherits="WoWToolsFont" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.Battle" relativePoint="LEFT"/>
                 </Anchors>
@@ -336,7 +306,30 @@
             </FontString>
 
 
-
+            <Texture parentKey="WoWToken" atlas="tokens-WoW-generic-small" enableMouse="true">
+                <Size x="14" y="14"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Battle" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        self.WoWToken.itemID= 122284--魔兽世界时光徽章
+                    </OnLoad>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        WoWTools_SetTooltipMixin:Frame(self)
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+            <FontString parentKey="WoWTokenCount" inherits="WoWToolsFont" justifyH="RIGHT">
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.WoWToken" relativePoint="LEFT"/>
+                </Anchors>
+            </FontString>
 
 
 
@@ -368,7 +361,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="RaidText" inherits="WoWToolsFonts">
+            <FontString parentKey="RaidText" inherits="WoWToolsFont">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Raid" relativePoint="RIGHT"/>
                 </Anchors>
@@ -392,7 +385,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="DungeonText" inherits="WoWToolsFonts">
+            <FontString parentKey="DungeonText" inherits="WoWToolsFont">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Dungeon" relativePoint="RIGHT"/>
                 </Anchors>
@@ -416,7 +409,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="WorldText" inherits="WoWToolsFonts">
+            <FontString parentKey="WorldText" inherits="WoWToolsFont">
                   <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.World" relativePoint="RIGHT"/>
                 </Anchors>
@@ -440,7 +433,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="PvPText" inherits="WoWToolsFonts">
+            <FontString parentKey="PvPText" inherits="WoWToolsFont">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.PvP" relativePoint="RIGHT"/>
                 </Anchors>
@@ -465,7 +458,7 @@
                 </Scripts>
             </Texture>            
 
-            <FontString parentKey="ItemName" inherits="WoWToolsFonts" enableMouse="true" wordwrap="false" >
+            <FontString parentKey="ItemName" inherits="WoWToolsFont" enableMouse="true" wordwrap="false" >
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Item" relativePoint="RIGHT"/>
                     <Anchor point="RIGHT" relativeKey="$parent.BattleTag" relativePoint="LEFT"/>
@@ -496,7 +489,7 @@
 
 
 
-            <FontString parentKey="AffixText" inherits="WoWToolsFonts" justifyH="CENTER">
+            <FontString parentKey="AffixText" inherits="WoWToolsFont" justifyH="CENTER">
                 <Size x="0" y="18"/>
                 <Anchors>
                    <Anchor point="TOP" relativeKey="$parent" x="0" y="-4"/>
@@ -504,6 +497,38 @@
             </FontString>
         </Layer>
     </Layers>
+
+    <Scripts>
+        <OnLeave>
+            self.Select:Hide()
+        </OnLeave>
+        <OnEnter>
+            self.Select:Show()
+        </OnEnter>
+
+        <OnHide>
+            self.data= nil
+
+            self.Name:SetText('')
+            self.BattleTag:SetText('')
+            self.AffixText:SetText('')
+            self.ItemLevelText:SetText('')
+            self.ItemName:SetText('')
+            self.RaidText:SetText('')
+            self.DungeonText:SetText('')
+            self.WorldText:SetText('')
+            self.PvPText:SetText('')
+
+            self.ScoreText:SetText('')
+            self.WeekNumText:SetText('')
+            self.WeekLevelText:SetText('')
+
+            self.Icon:SetTexture(0)
+            self.Class:SetTexture(0)
+            self.Spec:SetTexture(0)
+            self.Background:SetTexture(0)
+        </OnHide>
+    </Scripts>
 </Button>
 
 

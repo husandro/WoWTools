@@ -84,8 +84,11 @@ TypeTabs= {
                 name=  name and name:upper()
             end
 
-            if isFind and (itemID==findID or (name and name:find(findText)) or cnName and cnName:find(findText))
-                or not isFind
+            if not isFind or (
+                itemID==findID
+                or (name and name:find(findText))
+                or (cnName and cnName:find(findText))
+            )
             then
                 data:Insert({
                     itemID= itemID,
@@ -191,8 +194,11 @@ TypeTabs= {
                 name=  name and name:upper()
             end
 
-            if isFind and (itemID==findID or (name and name:find(findText)) or cnName and cnName:find(findText))
-                or not isFind
+            if not isFind or (
+                    itemID==findID
+                    or (name and name:find(findText))
+                    or (cnName and cnName:find(findText))
+                )
             then
                 data:Insert({
                     itemID= itemID,
@@ -276,9 +282,11 @@ TypeTabs= {
                 end
             end
 
-            if isFind and (currencyID==findID or (name and name:find(findText)) or cnName and cnName:find(findText))
-                or not isFind
-            then
+            if not isFind or (
+                currencyID==findID
+                or (name and name:find(findText))
+                or (cnName and cnName:find(findText))
+            ) then
                 data:Insert({
                     currencyID= currencyID,
                     num= all or 0,
@@ -357,7 +365,6 @@ TypeTabs= {
             if tab.Money and tab.Money>0 then
                 data:Insert({
                     money= tab.Money,
-
                     guid= guid,
                     region= tab.region,
                     faction= tab.faction,
@@ -536,9 +543,10 @@ TypeTabs= {
                 text= (text and text..' ' or '')..WoWTools_MapMixin:GetDifficultyColor(difficuly)..killNum
             end
             if text then
-                if isFind and (text:upper():find(findText) or insName:upper():find(findText))
-                    or not isFind
-                then
+                if not isFind or (
+                    text:upper():find(findText)
+                    or insName:upper():find(findText)
+                ) then
                     data:Insert({
                         insName= WoWTools_TextMixin:CN(insName),
                         killText= text,
@@ -606,11 +614,10 @@ TypeTabs= {
                 end
             end
             if rare then
-                if isFind and (
+                if not isFind or (
                         rare and rare:upper():find(findText)
                         or (rare2 and rare:upper():find(findText))
-                    ) or not isFind
-                then
+                ) then
                     data:Insert({
                         rare= rare,
                         rare2= rare2,
@@ -692,11 +699,10 @@ TypeTabs= {
                 end
             end
             if boos then
-                if isFind and (
+                if not isFind or (
                         boos and boos:upper():find(findText)
                         or (boos2 and boos:upper():find(findText))
-                    ) or not isFind
-                then
+                ) then
                     data:Insert({
                         boos= boos,
                         boos2= boos2,
@@ -1133,6 +1139,12 @@ local function Settings_Right_Button(btn, data)
     btn.BattleTag:SetText(isNotBattle and data.battleTag or '')
     btn.Battle:SetAlpha(isNotBattle and 1 or 0.3)
     btn.BattleTag:SetTextColor(color:GetRGB())
+
+--魔兽世界时光徽章
+    local itemTab= WoWTools_WoWDate[data.guid] and WoWTools_WoWDate[data.guid].Item and WoWTools_WoWDate[data.guid].Item[btn.WoWToken.itemID] or {}
+    local tokenCount= (itemTab.bag or 0)+ (itemTab.bank or 0)
+    btn.WoWTokenCount:SetText((tokenCount==0 and '|cff626262' or '')..tokenCount)
+    btn.WoWToken:SetDesaturated(tokenCount==0)
 
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
@@ -1749,7 +1761,8 @@ local function Init_List(showListType, isShow)
     Frame= WoWTools_FrameMixin:Create(nil, {
         name='WoWToolsWoWItemListFrame',
         header= WoWTools_DataMixin.Icon.wow2
-            ..(WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
+            ..(WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)),
+        size={800, 600}
     })
 
     Frame.guid=WoWTools_DataMixin.Player.GUID
@@ -1897,7 +1910,6 @@ local function Init_List(showListType, isShow)
         --text= WoWTools_DataMixin.onlyChinese and '角色名称，副本'or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
     })
     Frame.SearchBox2:SetPoint('BOTTOMLEFT', Frame.ScrollBox2, 'TOPLEFT', 29, 2)
-    --Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -23*4, 2)
     Frame.SearchBox2:HookScript('OnTextChanged', function()
         Init_Left_List()
     end)
@@ -2177,7 +2189,6 @@ function WoWTools_DataMixin:CreateWoWItemListButton(frame, tab)
     if tab.point then
         tab.point(btn)
     end
-    
     return btn
 end
 

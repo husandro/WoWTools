@@ -85,7 +85,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
 --取得WOW物品数量
-            local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)
+            local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284, nil, true)
             text2Right= all
                 ..(numPlayer>1 and '('..numPlayer..')' or '')
                 ..'|A:token-choice-wow:0:0|a '
@@ -138,25 +138,6 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         )
         local lineRight1= _G[tooltipName..'TextRight1']
         if lineRight1 then
-
-
-            --[[local text= ' '
---魔兽世界时光徽章
-            if isSelf then
-                C_WowTokenPublic.UpdateMarketPrice()
-                local price= C_WowTokenPublic.GetCurrentMarketPrice()
-                if price and price>0 then
---取得WOW物品数量
-                    local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)
-                    text= all
-                        ..(numPlayer>1 and '('..numPlayer..')' or '')
-                        ..'|A:token-choice-wow:0:0|a '
-                        ..WoWTools_DataMixin:MK(price/10000,1)
-                        ..'|A:Front-Gold-Icon:0:0|a'
-                end
-            else
-
-            end]]
             local region= WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US
             lineRight1:SetText(realm
                 ..(isSelf

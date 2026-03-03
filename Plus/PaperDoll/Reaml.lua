@@ -12,6 +12,7 @@ local function Init()
         return
     end
 
+
     local wow= CreateFrame("Button", 'WoWToolsPaperDollWoWButton', PaperDollItemsFrame, 'WoWToolsButtonTemplate')
     wow:SetPoint('LEFT', CharacterFrame.TitleContainer, -5, 0)
     wow:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
@@ -22,6 +23,9 @@ local function Init()
     wow.itemID= 122284
     wow:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Frame(self)
+    end)
+    wow:SetScript('OnMouseDown', function()
+        WoWTools_DataMixin:OpenWoWItemListFrame('Item')--战团，物品列表
     end)
     wow.text= wow:CreateFontString('WoWToolsPaperDollRealmLabel', 'ARTWORK', 'WoWToolsFont2')
     wow.text:SetPoint("BOTTOMRIGHT", -1, 1)

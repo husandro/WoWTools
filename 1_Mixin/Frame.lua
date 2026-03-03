@@ -59,7 +59,7 @@ local function Get_Size(value)
     local w, h
     local t= type(value)
     if t=='table' then
-        w, h=value[1], value[2]
+        w, h= value[1], value[2]
     elseif t=='number' then
         w, h= value, value
     end
@@ -209,7 +209,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
         isNewButton=true,
         nineSliceAlpha=0,
         portraitAlpha=0.5,
-        alpha=0.5,
+        alpha=0.75,
         settings=function(_, texture, alpha)
             frame.Border.Bg:SetAlpha(texture and 0 or alpha or 0.5)
         end
