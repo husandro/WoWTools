@@ -538,7 +538,7 @@ local function Create_deadFrame(frame)
 
     function deadFrame:GetName()
         local name= GetUnitName(self.unit, true)
-        if not issecretvalue(name) and name then
+        if not issecretvalue(name) then
             return name
         end
     end
