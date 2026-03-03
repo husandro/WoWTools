@@ -400,7 +400,7 @@ local function Set_Item_Durability(btn, link, slot, isPaperDollItemSlot, isLeftS
             btn.du:SetOrientation("VERTICAL")
             btn.du:SetSize(4, btn:GetHeight())--h37
         end
-        btn.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        btn.du:SetStatusBarTexture('UI-HUD-UnitFrame-Target-Boss-Small-PortraitOff-Bar-Health-Status')--UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         btn.du:EnableMouse(true)
         btn.du:SetMinMaxValues(0, 100)
         btn.du:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(self2. du and 1 or 0) end)
