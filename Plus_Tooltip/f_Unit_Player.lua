@@ -131,8 +131,10 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local lineLeft1=_G[tooltipName..'TextLeft1']--名称
     if lineLeft1 then
         lineLeft1:SetText(
-            (isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil) or '')
-            ..'|A:common-icon-rotateright:0:0|a'..name..'|A:common-icon-rotateleft:0:0|a'
+            '|A:common-icon-rotateright:0:0|a'
+            ..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil) or '')
+            ..name
+            ..'|A:common-icon-rotateleft:0:0|a'
         )
         local lineRight1= _G[tooltipName..'TextRight1']
         if lineRight1 then

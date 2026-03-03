@@ -25,12 +25,13 @@ local function get_durabiliy_color(cur, max)
     elseif value<60 then
         text= '|cnYELLOW_FONT_COLOR:'..text..'|r'
         icon= '|A:Warfronts-BaseMapIcons-Horde-ConstructionHeroes-Minimap:0:0|a'
-    elseif value<90 then
-        text= '|cnGREEN_FONT_COLOR:'..text..'|r'
-        icon= '|A:Warfronts-BaseMapIcons-Alliance-ConstructionHeroes-Minimap:0:0|a'
     else
-        text= '|cffff7f00'..text..'|r'
-        icon= '|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'
+        if value<90 then
+            icon= '|A:Warfronts-BaseMapIcons-Alliance-ConstructionHeroes-Minimap:0:0|a'
+        else
+            icon= '|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'
+        end
+        text= '|cnGREEN_FONT_COLOR:'..text..'|r'
     end
     return text, value, icon
 end
@@ -93,24 +94,27 @@ function WoWTools_DurabiliyMixin:OnEnter(tootip)
     local isRepair, cur, max, text, _, icon, a, b
 
 
+    local lines= {}
     for index, tab in pairs(tabSlot) do
 
         a = GetInventoryItemTexture('player', tab[1])
-        a = a and '|T'..a..':0|t'
+        a = a and '|T'..a..':0:0|t'
         b = GetInventoryItemTexture('player', tab[2])
-        b = b and '|T'..b..':0|t'
+        b = b and '|T'..b..':0:0|t'
 
         if not a or tab[1]==4 or tab[1]==19 then
-            a=  WoWTools_ItemMixin:GetEquipSlotIcon(tab[1])
+            a= a or WoWTools_ItemMixin:GetEquipSlotIcon(tab[1])
+
         elseif a then
             cur, max = GetInventoryItemDurability(tab[1])
             if cur and max and max>0 then
                 isRepair= cur<max
                 text, _, icon= get_durabiliy_color(cur, max)
-                a= a..icon..text..' '..max..'/'..(isRepair and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r'
+                --a= a..icon..text--..' '..max..'/'..(isRepair and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r'
+                a= a..' '..text
                 if isRepair then
                     num= num+1
-                    a=a..'|A:SpellIcon-256x256-Repair:0:0|a'
+                    --a=a..'|A:SpellIcon-256x256-Repair:0:0|a'
                 end
                 cur2= cur2+cur
                 max2= max2+max
@@ -121,10 +125,12 @@ function WoWTools_DurabiliyMixin:OnEnter(tootip)
             if cur and max and max>0 then
                 isRepair= cur<max
                 text, _, icon= get_durabiliy_color(cur, max)
-                b= (isRepair and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r/'..max..' '..text..icon..b
+                --b= (isRepair and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r/'..max..' '..text..icon..b
+                --b= text..icon..b
+                b= text..' '..b
                 if isRepair then
                     num= num+1
-                    b='|A:SpellIcon-256x256-Repair:0:0|a'..b
+                    --b='|A:SpellIcon-256x256-Repair:0:0|a'..b
                 end
                 cur2= cur2+cur
                 max2= max2+max
@@ -132,7 +138,9 @@ function WoWTools_DurabiliyMixin:OnEnter(tootip)
         end
         b= b or  WoWTools_ItemMixin:GetEquipSlotIcon(tab[2])
         local s= index==9 and '    ' or ''
-        tootip:AddDoubleLine(s..(a or ' '), b..s)
+
+        table.insert(lines, {s..(a or ' '), b..s})
+        --tootip:AddDoubleLine(s..(a or ' '), b..s)
     end
 
     local euip=''--装备管理
@@ -150,11 +158,19 @@ function WoWTools_DurabiliyMixin:OnEnter(tootip)
         coText= ' |cnWARNING_FONT_COLOR:'..GetMoneyString(co)..'|r'
     end
 
-    tootip:AddLine(' ')
     tootip:AddDoubleLine(
-        (WoWTools_DataMixin.onlyChinese and '耐久度' or DURABILITY)..' ('..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
-         '('..(num>0 and '|cnWARNING_FONT_COLOR:' or '|cff626262')..num..'|r) '..(WoWTools_DataMixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
+        (WoWTools_DataMixin.onlyChinese and '耐久度' or DURABILITY)
+        ..' ('..(select(3, get_durabiliy_color(cur2, max2)))..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
+
+        '('..(num>0 and '|cnWARNING_FONT_COLOR:' or '|cff626262')..num..'|r) '
+        ..(WoWTools_DataMixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip,
+        1,0.82,0, 1,0.82,0
     )
+
+
+    for _, line in pairs(lines) do
+        tootip:AddDoubleLine(line[1], line[2], 1,0.82,0, 1,0.82,0)
+    end
 
     local item, cur3, pvp= GetAverageItemLevel()
     cur3= cur3 or 0
@@ -164,7 +180,10 @@ function WoWTools_DurabiliyMixin:OnEnter(tootip)
         (WoWTools_DataMixin.onlyChinese and '物品' or ITEMS)
         ..(WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
         ..(cur3==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur3) or format(' |cnWARNING_FONT_COLOR:%.2f|r/%.2f', cur3, item)),
-        format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
+
+        format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a',
+        1,0.82,0, 1,0.82,0
+    )
 end
 
 

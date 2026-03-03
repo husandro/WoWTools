@@ -105,20 +105,27 @@ local function Init()
             return
         end
         local size= 18
-        local level
-        level= UnitLevel("player") or 1
+        local levelText
+
+        local maxLevel= GetMaxLevelForLatestExpansion() or 0        
+        local level= UnitLevel("player") or 1
         local effectiveLevel = UnitEffectiveLevel("player") or 1
-        if effectiveLevel ~= level then
-            level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
+
+        if maxLevel> level then
+            levelText= format('%d/%d', level, maxLevel)
         else
-            level= format('%d', level)
+            levelText= format('%d', level)
+        end
+
+        if effectiveLevel ~= level then
+            levelText = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', levelText)--%s（%s）
         end
 
         CharacterLevelText:SetTextToFit(
             (WoWTools_UnitMixin:GetFaction('player', nil, true, {size=size}) or '')
             ..(WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {size=size}) or '')
             ..(WoWTools_UnitMixin:GetClassIcon('player', nil, nil, {size=size}) or '')
-            ..format(WoWTools_DataMixin.onlyChinese and '等级 %s' or TOOLTIP_UNIT_LEVEL, level)
+            ..format(WoWTools_DataMixin.onlyChinese and '等级 %s' or TOOLTIP_UNIT_LEVEL, levelText)
         )
     end)
 
@@ -184,10 +191,12 @@ local function Init()
             return
         end
 
-        GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
-        GameTooltip_SetTitle(GameTooltip, WoWTools_UnitMixin.addName..WoWTools_DataMixin.Icon.icon2)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())..WoWTools_DataMixin.Icon.left)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")--PlayerFrame
+        GameTooltip_SetTitle(GameTooltip,
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE)
+            ..": "..WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())
+        )
 
         if not C_PvP.ArePvpTalentsUnlocked() then
 			GameTooltip_AddErrorLine(
@@ -222,15 +231,16 @@ local function Init()
     end)
     Frame.durabiliy:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip_SetTitle(GameTooltip, WoWTools_PaperDollMixin.addName..WoWTools_DataMixin.Icon.icon2)
-        GameTooltip:AddLine(' ')
+        GameTooltip:ClearLines()
         WoWTools_DurabiliyMixin:OnEnter()
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
 
     function Frame:settings()
-        self.durabiliy:SetText(WoWTools_DurabiliyMixin:Get(true))
+        local durabiliy= WoWTools_DurabiliyMixin:Get(true)
+        durabiliy= durabiliy:gsub(':0:0|a', ':24:24|a')
+        self.durabiliy:SetText(durabiliy)
         self.warMode:SetDesaturated(not C_PvP.IsWarModeDesired())
         local show= C_PvP.ArePvpTalentsUnlocked()
         self.warMode:SetShown(show)
