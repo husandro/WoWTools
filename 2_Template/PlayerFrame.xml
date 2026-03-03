@@ -61,7 +61,7 @@
                     <Anchor point="TOPRIGHT"/>
                 </Anchors>
             </Texture>
-            <FontString parentKey="PlayerLevelText" inherits="WoWToolsFont" justifyH="RIGHT">
+            <FontString parentKey="PlayerLevelText" inherits="WoWToolsFont2" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon"/>
                 </Anchors>
@@ -97,7 +97,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="ScoreText" inherits="WoWToolsFont" justifyH="RIGHT">
+            <FontString parentKey="ScoreText" inherits="WoWToolsFont2" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.Score" relativePoint="LEFT"/>
                 </Anchors>
@@ -121,7 +121,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="WeekNumText" inherits="WoWToolsFont" justifyH="RIGHT">
+            <FontString parentKey="WeekNumText" inherits="WoWToolsFont2" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.WeekNum" relativePoint="LEFT"/>
                 </Anchors>
@@ -146,7 +146,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="WeekLevelText" inherits="WoWToolsFont" justifyH="RIGHT">
+            <FontString parentKey="WeekLevelText" inherits="WoWToolsFont2" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.WeekLevel" relativePoint="LEFT"/>
                 </Anchors>
@@ -186,7 +186,7 @@
                 </Scripts>
             </Texture>
 
-            <FontString parentKey="ItemLevelText" inherits="WoWToolsFont">
+            <FontString parentKey="ItemLevelText" inherits="WoWToolsFont2">
                 <Anchors>
                    <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
                 </Anchors>
@@ -229,7 +229,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>            
-            <FontString parentKey="GuildText" inherits="WoWToolsFont" enableMouse="true">
+            <FontString parentKey="GuildText" inherits="WoWToolsFont2" enableMouse="true">
                 <Anchors>
                    <Anchor point="RIGHT" relativeKey="$parent.Guild" relativePoint="LEFT"/>
                 </Anchors>
@@ -244,7 +244,7 @@
 
 
 
-            <FontString parentKey="Name" inherits="WoWToolsFont" justifyH="RIGHT" enableMouse="true">
+            <FontString parentKey="Name" inherits="WoWToolsFont2" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Spec"  relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
@@ -284,7 +284,7 @@
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
             </Texture>
-            <FontString parentKey="BattleTag" inherits="WoWToolsFont" justifyH="RIGHT" enableMouse="true">
+            <FontString parentKey="BattleTag" inherits="WoWToolsFont2" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.Battle" relativePoint="LEFT"/>
                 </Anchors>
@@ -325,7 +325,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="WoWTokenCount" inherits="WoWToolsFont" justifyH="RIGHT">
+            <FontString parentKey="WoWTokenCount" inherits="WoWToolsFont2" justifyH="RIGHT">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.WoWToken" relativePoint="LEFT"/>
                 </Anchors>
@@ -361,7 +361,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="RaidText" inherits="WoWToolsFont">
+            <FontString parentKey="RaidText" inherits="WoWToolsFont2">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Raid" relativePoint="RIGHT"/>
                 </Anchors>
@@ -385,7 +385,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="DungeonText" inherits="WoWToolsFont">
+            <FontString parentKey="DungeonText" inherits="WoWToolsFont2">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Dungeon" relativePoint="RIGHT"/>
                 </Anchors>
@@ -409,7 +409,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="WorldText" inherits="WoWToolsFont">
+            <FontString parentKey="WorldText" inherits="WoWToolsFont2">
                   <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.World" relativePoint="RIGHT"/>
                 </Anchors>
@@ -433,7 +433,7 @@
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="PvPText" inherits="WoWToolsFont">
+            <FontString parentKey="PvPText" inherits="WoWToolsFont2">
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.PvP" relativePoint="RIGHT"/>
                 </Anchors>
@@ -458,7 +458,7 @@
                 </Scripts>
             </Texture>            
 
-            <FontString parentKey="ItemName" inherits="WoWToolsFont" enableMouse="true" wordwrap="false" >
+            <FontString parentKey="ItemName" inherits="WoWToolsFont2" enableMouse="true" wordwrap="false" >
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Item" relativePoint="RIGHT"/>
                     <Anchor point="RIGHT" relativeKey="$parent.BattleTag" relativePoint="LEFT"/>
@@ -489,7 +489,7 @@
 
 
 
-            <FontString parentKey="AffixText" inherits="WoWToolsFont" justifyH="CENTER">
+            <FontString parentKey="AffixText" inherits="WoWToolsFont2" justifyH="CENTER">
                 <Size x="0" y="18"/>
                 <Anchors>
                    <Anchor point="TOP" relativeKey="$parent" x="0" y="-4"/>
