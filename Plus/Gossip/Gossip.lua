@@ -315,30 +315,29 @@ local function Init()
     GossipButton:SetScript('OnEvent', function(self, event, arg1, ...)
         if event=='PET_BATTLE_OPENING_DONE' or event=='PET_BATTLE_CLOSE' then
             self:set_shown()
-        elseif event=='PLAY_MOVIE' then
-            if arg1 then
-                if Save().movie[arg1] then
-                    if Save().stopMovie then
-                        MovieFrame:StopMovie()
-                        print(
-                            WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                            WoWTools_DataMixin.onlyChinese and '对话' or ENABLE_DIALOG,
-                            '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
-                            'movieID|cnGREEN_FONT_COLOR:',
-                            arg1
-                        )
-                        return
-                    end
-                else
-                    Save().movie[arg1]= date("%d/%m/%y %H:%M:%S")
+        elseif event=='PLAY_MOVIE' and arg1 then
+            if WoWToolsPlayerDate.GossipMovie[arg1] then
+                if Save().stopMovie then
+                    MovieFrame:StopMovie()
+                    print(
+                        WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_DataMixin.onlyChinese and '对话' or ENABLE_DIALOG,
+                        '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
+                        'movieID|cnGREEN_FONT_COLOR:',
+                        arg1
+                    )
+                    return
                 end
-                print(
-                    WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                    '|cnGREEN_FONT_COLOR:movieID',
-                    arg1,
-                    ...
-                )
+            else
+                WoWToolsPlayerDate.GossipMovie[arg1]= date("%d/%m/%y %H:%M:%S")
             end
+
+            print(
+                WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                '|cnGREEN_FONT_COLOR:movieID',
+                arg1,
+                ...
+            )
         end
     end)
 

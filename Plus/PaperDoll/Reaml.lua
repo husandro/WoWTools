@@ -46,7 +46,7 @@ local function Init()
 
     local btn= CreateFrame("Button", 'WoWToolsPaperDollRealmButton', wow, 'WoWToolsButtonTemplate')
     btn:SetSize(32,18)
-    WoWTools_TextureMixin:GetWoWLog(GetClampedCurrentExpansionLevel(), btn)
+    WoWTools_TextureMixin:GetWoWLog(WoWTools_DataMixin.ExpansionLevel, btn)-- GetClampedCurrentExpansionLevel()
 
     btn:SetPoint('LEFT', wow, 'RIGHT')
 

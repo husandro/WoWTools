@@ -22,7 +22,7 @@ local P_Save={
 
     },
     choice={},--PlayerChoiceFrame
-    movie={},--电影
+    --movie={},--电影
     stopMovie=true,--如果已播放，停止播放
     stopCinematics= WoWTools_DataMixin.Player.husandro,--跳过过场动画
     stopCinematicsInInstance=not WoWTools_DataMixin.Player.husandro,--仅限在副本里
@@ -116,6 +116,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Gossip']= WoWToolsSave['Plus_Gossip'] or P_Save
             P_Save=nil
+
+            if Save().movie then
+                WoWToolsPlayerDate.GossipMovie= Save().movie or {}
+                Save().movie= nil
+            end
+
+            WoWToolsPlayerDate.GossipMovie= WoWToolsPlayerDate.GossipMovie or {}
 
 --玩家，自定义，对话，文本
             WoWToolsPlayerDate['GossipTextIcon']= WoWToolsPlayerDate['GossipTextIcon'] or {

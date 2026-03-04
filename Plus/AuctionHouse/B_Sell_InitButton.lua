@@ -103,6 +103,7 @@ local function Create_Button()
             end
         end
     end)
+
     table.insert(AuctionHouseButton.buttons, btn)
     return btn
 end
@@ -161,6 +162,8 @@ local function Init_Sell_Item_Button()
 
         btn.isPet= tab.isPet
         btn:SetItemLocation(tab.itemLocation)
+        print(tab.itemLocation)
+
         btn:SetItemButtonCount(tab.count)
 
         btn.isCommoditiesTexture:SetShown(
@@ -245,7 +248,7 @@ local function Init()
     end
 
     function AuctionHouseButton:Init_Sell_Item_Button()
-        Init_Sell_Item_Button()
+        C_Timer.After(0.3, Init_Sell_Item_Button)
     end
 
 
@@ -279,7 +282,7 @@ local function Init()
             return
         end
         if displayMode[1]== "ItemSellFrame" or displayMode[1]=='CommoditiesSellFrame' then
-            Init_Sell_Item_Button()
+            C_Timer.After(0.3, Init_Sell_Item_Button)
 		end
         AuctionHouseButton:set_shown()
         AuctionHouseButton:set_event()
@@ -349,5 +352,5 @@ function WoWTools_AuctionHouseMixin:Init_Sell()
 end
 
 function WoWTools_AuctionHouseMixin:Init_Sell_Item_Button()
-    Init_Sell_Item_Button()
+    C_Timer.After(0.3, Init_Sell_Item_Button)
 end
