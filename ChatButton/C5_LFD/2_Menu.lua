@@ -732,7 +732,6 @@ local function set_Raid_Menu_List(root2)
 
             local bossNum= GetLFGDungeonNumEncounters(dungeonID) or 0
             local killNum=0
-            local indexText
 
             if bossNum>0 then
                 for encounterIndex= 1, bossNum, 1 do
@@ -754,11 +753,12 @@ local function set_Raid_Menu_List(root2)
             end
 
             reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
+
             sub=root:CreateButton(
-                ((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName)) and '|A:auctionhouse-icon-favorite:0:0|a' or '|T0:0|t')--在当前副本
-                ..(modifiedIcon or '|T0:0|t')
-                ..(isKillAll and '|cff626262' or '')
+                (isKillAll and '|cff626262' or '')
                 ..WoWTools_TextMixin:CN(dungeonName)--名称
+                ..(modifiedIcon or '')-- '|T0:0|t')
+                ..((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName)) and '|A:auctionhouse-icon-favorite:0:0|a' or '')-- '|T0:0|t')--在当前副本
                 ..reward
                 ..killText,
             function(data)
