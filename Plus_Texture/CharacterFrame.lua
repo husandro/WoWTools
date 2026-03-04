@@ -104,9 +104,13 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetAlphaColor(ReputationFrame.ReputationDetailFrame.Divider)
     self:SetScrollBar(ReputationFrame.ReputationDetailFrame.ScrollingDescriptionScrollBar)
     self:SetUIButton(ReputationFrame.ReputationDetailFrame.ViewRenownButton)
-    self:SetCheckBox(ReputationFrame.ReputationDetailFrame.AtWarCheckbox)
-    self:SetCheckBox(ReputationFrame.ReputationDetailFrame.MakeInactiveCheckbox)
-    self:SetCheckBox(ReputationFrame.ReputationDetailFrame.WatchFactionCheckbox)
+
+    self:SetFrame(ReputationFrame.ReputationDetailFrame.AtWarCheckbox, {alpha=1})
+    self:SetFrame(ReputationFrame.ReputationDetailFrame.MakeInactiveCheckbox, {alpha=1})
+    self:SetFrame(ReputationFrame.ReputationDetailFrame.WatchFactionCheckbox, {alpha=1})
+    --self:SetCheckBox(ReputationFrame.ReputationDetailFrame.AtWarCheckbox)--不知怎的，不能正常显示列表
+    --self:SetCheckBox(ReputationFrame.ReputationDetailFrame.MakeInactiveCheckbox)
+    --self:SetCheckBox(ReputationFrame.ReputationDetailFrame.WatchFactionCheckbox)
     WoWTools_DataMixin:Hook(ReputationBarMixin, 'UpdateBarProgressText', function(f)
         if not f.isSetTuexrue then
             self:SetStatusBar(f)
