@@ -122,7 +122,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
     end
 
     local clubs= C_Club.GetSubscribedClubs()
-    if not clubs then
+    if not canaccesstable(clubs) or not clubs or TableIsEmpty(clubs) then
         return
     end
     GameTooltip:AddLine(' ')

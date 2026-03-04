@@ -499,6 +499,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_PanelMixin:OnlyButton({
                 buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                 category= WoWTools_ChatMixin.Category,
+                layout= WoWTools_ChatMixin.Layout,
                 SetValue= function()
                     Save().Point=nil
                     if _G['WoWToolsChatButtonMainButton'] then

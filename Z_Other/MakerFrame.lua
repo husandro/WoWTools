@@ -1305,17 +1305,18 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if arg1== 'WoWTools' then
-        WoWToolsSave['Other_MarkerFrame']= WoWToolsSave['Other_MarkerFrame'] or {
-            Auto={}
-        }
+    if arg1~= 'WoWTools' then
+        return
+    end
 
-        Save().Auto= Save().Auto or {}
+    WoWToolsSave['Other_MarkerFrame']= WoWToolsSave['Other_MarkerFrame'] or {Auto={}}
 
-        addName= '|A:GM-raidMarker7:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
-        local isEnabled, sub= WoWTools_OtherMixin:AddOption('MarkerFrame', addName)
+    Save().Auto= Save().Auto or {}
 
-        WoWTools_PanelMixin:OnlyButton({
+    addName= '|A:GM-raidMarker7:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
+    local isEnabled, sub= WoWTools_OtherMixin:AddOption('MarkerFrame', addName)
+
+    WoWTools_PanelMixin:OnlyButton({
         buttonText=WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         SetValue=function()
             StaticPopup_Show('WoWTools_RestData',
@@ -1325,14 +1326,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWToolsSave['Other_MarkerFrame']= nil
             end)
         end,
-        tooltip= (WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)
+        tooltip= addName..'|n|n'..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)
             ..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
-        }, sub)
+        layout= WoWTools_OtherMixin.Layout,
+        category= WoWTools_OtherMixin.Category,
+    }, sub)
 
-        if isEnabled then
-            Init()
-        end
-        self:SetScript('OnEvent', nil)
-        self:UnregisterEvent(event)
+    if isEnabled then
+        Init()
     end
+    self:SetScript('OnEvent', nil)
+    self:UnregisterEvent(event)
 end)
