@@ -272,6 +272,9 @@ end
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
+--重载
+    WoWTools_MenuMixin:Reload(sub)
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_BagMixin.addName})
 end
 
 

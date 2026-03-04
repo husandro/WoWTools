@@ -494,7 +494,7 @@ end
 
 local function Init()
     if (not ContainerFrameCombinedBags and not ContainerFrame1)
-        or not Save().disabled
+        or Save().disabled
     then
         return
     end
