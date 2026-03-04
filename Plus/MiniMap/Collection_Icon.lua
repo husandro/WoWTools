@@ -1333,7 +1333,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Minimap()
        self:SetFrame(MinimapCluster.BorderTop)
     end
 
-    C_Timer.After(0.3, function()
+    C_Timer.After(0.3, function()--加载时间不一样，可能会出错
         Init_AllButton_Texture()
     end)
 

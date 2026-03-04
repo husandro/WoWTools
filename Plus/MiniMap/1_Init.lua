@@ -143,10 +143,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Minimap_Plus']= WoWToolsSave['Minimap_Plus'] or P_Save
 
-            Save().Icons= Save().Icons or P_Save.Icons
-
-            if Save().ZoomOut==true then
-                Save().ZoomOut='min'
+            if not Save().Icons then
+                Save().Icons= P_Save.Icons
+                if Save().ZoomOut==true then
+                    Save().ZoomOut='min'
+                end
             end
 
             P_Save= nil
