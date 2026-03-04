@@ -6,34 +6,6 @@ end
 
 
 
-local function Settings()
-    WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
-    WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
-
-    for _, slot in pairs(WoWTools_PaperDollMixin.ItemButtons) do
-        local btn2= _G[slot]
-        if btn2 then
-            WoWTools_DataMixin:Call('PaperDollItemSlotButton_Update', btn2)
-        end
-    end
-
-    if InspectFrame and InspectLevelText.set_font_size then
-        InspectLevelText:set_font_size()
-        InspectFrame:set_status_label()--目标，属性
-        InspectFrame.ShowHideButton:settings()
-        if InspectFrame:IsShown() then
-            WoWTools_DataMixin:Call('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
-            WoWTools_DataMixin:Call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
-        end
-    end
-end
-
-
-
-
-
-
-
 
 
 
@@ -56,7 +28,7 @@ local function Init_Menu(self, root)
         return not Save().hide
     end, function()
         Save().hide= not Save().hide and true or nil
-        Settings()
+        WoWTools_PaperDollMixin:Init_Item_PoaperDll()
     end, {rightText= Save().statFontSize or 12})
     WoWTools_MenuMixin:SetRightText(sub)
 
@@ -67,7 +39,7 @@ local function Init_Menu(self, root)
             return Save().statFontSize or 12
         end, setValue=function(value)
             Save().statFontSize= value
-            Settings()
+            WoWTools_PaperDollMixin:Init_Item_PoaperDll()
         end,
         minValue=8,
         maxValue=18,

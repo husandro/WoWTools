@@ -529,7 +529,14 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
     end
     set_Engineering(btn, slot, link, use, isPaperDollItemSlot)--地精滑翔,氮气推进器
 
-    if pvpItem and not btn.pvpItem then--提示PvP装备
+
+
+
+
+
+
+--提示PvP装备
+    if pvpItem and not btn.pvpItem then
         local h=btn:GetHeight()/3
         btn.pvpItem=btn:CreateTexture(nil,'OVERLAY',nil,7)
         btn.pvpItem:SetSize(h,h)
@@ -655,6 +662,12 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
     Set_Item_Gem(btn, link, isLeftSlot)
 --耐久度
     Set_Item_Durability(btn, link, slot, isPaperDollItemSlot, isLeftSlot)
+
+--物品是否为首选护甲类型
+    local iconTexture= GetItemButtonIconTexture(btn)
+    if iconTexture then
+        iconTexture:SetDesaturated(WoWTools_ItemMixin:IsEquipType(nil, nil, slot)==false)
+    end
 end
 
 
@@ -713,6 +726,10 @@ end
 
 
 local function Init()
+    if Save().hide then
+        return
+    end
+
 --装备属性
     WoWTools_DataMixin:Hook('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
         local slot= self:GetID()
@@ -758,7 +775,39 @@ local function Init()
         end
     end)
 
-    Init=function()end
+
+
+
+
+
+
+
+
+
+
+
+    
+    Init=function()
+        WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
+        WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+
+        for _, slot in pairs(WoWTools_PaperDollMixin.ItemButtons) do
+            local btn2= _G[slot]
+            if btn2 then
+                WoWTools_DataMixin:Call('PaperDollItemSlotButton_Update', btn2)
+            end
+        end
+
+        if InspectFrame and InspectLevelText.set_font_size then
+            InspectLevelText:set_font_size()
+            InspectFrame:set_status_label()--目标，属性
+            InspectFrame.ShowHideButton:settings()
+            if InspectFrame:IsShown() then
+                WoWTools_DataMixin:Call('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
+                WoWTools_DataMixin:Call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
+            end
+        end
+    end
 end
 
 

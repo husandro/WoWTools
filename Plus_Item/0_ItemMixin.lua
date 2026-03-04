@@ -971,20 +971,46 @@ end
 
 
 
---[[
-local function GetBindWarning(itemLocation)
-	local item = Item:CreateFromItemLocation(itemLocation);
-	if not item then
-		return;
-	end
 
-	local _itemID, _itemType, _itemSubType, _itemEquipLoc, _icon, itemClassID, itemSubclassID = C_Item.GetItemInfoInstant(item:GetItemID());
-	local isArmor = (itemClassID == Enum.ItemClass.Armor) and (itemSubclassID ~= Enum.ItemArmorSubclass.Shield);
-	if isArmor and not IsItemPreferredArmorType(item:GetItemLocation()) then--IsItemPreferredArmorType 物品是否为首选护甲类型
-		return '|cnRED_FONT_COLOR:这不是你偏好的护甲类型。|r';
-	end
+
+
+
+
+
+
+--物品是否为首选护甲类型 GetBindWarning(itemLocation)
+function WoWTools_ItemMixin:IsEquipType(itemLocation, bag, equipmentSlotIndex)--物品是否为首选护甲类型
+    if not itemLocation then
+        if bag then
+            itemLocation= ItemLocation:CreateFromBagAndSlot(bag.bagID or -1, bag.slotID or -1)
+
+        elseif equipmentSlotIndex then
+            itemLocation= ItemLocation:CreateFromEquipmentSlot(equipmentSlotIndex)
+        end
+    end
+
+    local item = itemLocation and itemLocation:IsValid() and Item:CreateFromItemLocation(itemLocation)
+
+    if not item then
+        return
+    end
+
+    local itemID, itemType, itemSubType, _, _, itemClassID, itemSubclassID = select(6, C_Item.GetItemInfoInstant(item:GetItemID()))
+    if itemID then
+        local isArmor = (itemClassID == Enum.ItemClass.Armor) and (itemSubclassID ~= Enum.ItemArmorSubclass.Shield);
+        if isArmor then
+            return IsItemPreferredArmorType(item:GetItemLocation()) and true or false --IsItemPreferredArmorType  '|cnRED_FONT_COLOR:这不是你偏好的护甲类型。|r';
+
+        else
+            local isNotEquipType= WoWTools_ItemMixin:IsNotEquipType(itemID,  itemType, itemSubType)
+            if isNotEquipType~=nil then
+                return not isNotEquipType
+            end
+        end
+    end
 end
-]]
+
+
 function WoWTools_ItemMixin:IsNotEquipType(itemInfo,  itemType, itemSubType)
     if not itemInfo then
         return nil
