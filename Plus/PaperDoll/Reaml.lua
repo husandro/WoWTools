@@ -14,7 +14,7 @@ local function Init()
 
 
     local wow= CreateFrame("Button", 'WoWToolsPaperDollWoWButton', PaperDollItemsFrame, 'WoWToolsButtonTemplate')
-    wow:SetPoint('LEFT', CharacterFrame.TitleContainer, -5, -3)
+    wow:SetPoint('LEFT', CharacterFrame.TitleContainer, -5, -2)
     wow:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
     wow:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
     wow:SetSize(20, 20)
@@ -93,6 +93,7 @@ local function Init()
         end
 
         if GameLimitedMode_IsActive() then
+            GameTooltip:AddLine(' ')
             local rLevel, rMoney, profCap = GetRestrictedAccountData()
             GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED)
 

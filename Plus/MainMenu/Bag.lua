@@ -143,17 +143,22 @@ local function Init()
             local a= tab[i]
             local b= tab[i+1]
             GameTooltip:AddDoubleLine(
-                a.index..') '..a.num..a.icon..a.freeSlots..' '..a.percent,
-                b and (a.percent..' '..b.freeSlots..b.icon..b.num..' ('..b.index)
+                a.icon..a.index..') '..a.freeSlots..'/'..a.num..' '..a.percent,
+                b and (a.percent..' '..b.freeSlots..'/'..b.num..' ('..b.index..b.icon)
             )
         end
 
-        if GameTooltip.textRight then
-            GameTooltip.textRight:SetText(
-                '|A:bags-button-autosort-up:18:18|a'
-                ..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')
+        local totale= (use>0 and '|cnGREEN_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')
                 ..use..'|r/'..num
                 ..' '..format('%i%%', use/num*100)
+
+        if GameTooltip.textLeft then
+            GameTooltip.textLeft:SetText(totale)
+        else
+            GameTooltip:AddLine(
+                (WoWTools_DataMixin.onlyChinese and '总计：' or FROM_TOTAL)
+                ..totale,
+                1,1,1
             )
         end
         GameTooltip:Show()

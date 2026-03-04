@@ -22,7 +22,12 @@
         </PushedTexture>
         <Layers>
             <Layer level="BORDER">
-                <Texture parentKey="texture" setAllPoints="true"/>
+                <Texture parentKey="texture">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="0" y="0"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="-0"/>
+                    </Anchors>
+                </Texture>
             </Layer>
             <Layer level="ARTWORK">
                 <Texture parentKey="border" atlas='bag-reagent-border'>

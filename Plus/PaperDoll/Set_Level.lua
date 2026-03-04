@@ -17,6 +17,7 @@ local function Init()
 
     btn= CreateFrame('Button', 'WoWToolsPaperDollLevelButton', PaperDollFrame, 'WowToolsButtonTemplate')
     btn:SetFrameStrata('HIGH')
+    btn:SetSize(18,18)
     btn:SetPoint('TOPLEFT', CharacterLevelText)
     btn:SetPoint('BOTTOMLEFT', CharacterLevelText)
     btn:SetWidth(23)
@@ -127,9 +128,9 @@ local function Init()
 
 
 --专精，职责
-    CharacterFrame.specRole= CharacterFrame.PortraitContainer:CreateTexture('WoWToolsPaperDollSpecRoleTexture', 'OVERLAY', nil, 7)
+    CharacterFrame.specRole= btn:CreateTexture('WoWToolsPaperDollSpecRoleTexture', 'OVERLAY', nil, 7)
     CharacterFrame.specRole:SetSize(22,22)
-    CharacterFrame.specRole:SetPoint('BOTTOMRIGHT',2,0)
+    CharacterFrame.specRole:SetPoint('BOTTOMRIGHT', CharacterFrame.PortraitContainer, 2,0)
 
 
 
@@ -167,9 +168,15 @@ local function Init()
 
 
 --战争模式
-    local war= CreateFrame("Button", 'WoWToolsPaperDollWarModeButton', btn, 'WoWToolsButtonTemplate')
+    local war= CreateFrame("Button", 'WoWToolsPaperDollWarModeButton', btn, 'WoWToolsButton2Template')
     war:SetPoint('RIGHT', btn, 'LEFT')
-    war:SetNormalAtlas('pvptalents-warmode-swords')
+    war:SetSize(18, 18)
+    war.texture:SetAtlas('pvptalents-warmode-swords')
+
+    war.border:SetAtlas('talents-node-choiceflyout-circle-greenglow')
+    war.border:SetPoint('TOPLEFT', -5, 5)
+    war.border:SetAlpha(1)
+    war.border:SetDrawLayer('BACKGROUND')
 
     function war:GetWarModeDesired()
         return UnitPopupSharedUtil.IsInWarModeState()
@@ -178,41 +185,46 @@ local function Init()
     war:SetScript('OnEnter', function(self)
         if WarmodeButtonMixin then
             WarmodeButtonMixin.OnEnter(self)
-            return
+            GameTooltip:AddLine(' ')
+        else
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
         end
 
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")--PlayerFrame
-        GameTooltip_SetTitle(GameTooltip,
+        GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE)
-            ..": "..WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())
+            ..": |cnHIGHLIGHT_FONT_COLOR:"..WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())
         )
 
         if not C_PvP.ArePvpTalentsUnlocked() then
-			GameTooltip_AddErrorLine(
-                GameTooltip,
-                format(
+            if not WarmodeButtonMixin then
+                GameTooltip_AddErrorLine(GameTooltip, format(
                     WoWTools_DataMixin.onlyChinese and '在%d级解锁' or PVP_TALENT_SLOT_LOCKED,
-                    C_PvP.GetPvpTalentsUnlockedLevel()
-                ),
-            true)
+                    C_PvP.GetPvpTalentsUnlockedLevel() or 10
+                ))
+            end
 
         elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false) or InCombatLockdown() then
-            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
-		end
+            GameTooltip_AddErrorLine(GameTooltip,
+                WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE
+            )
+        end
+
         GameTooltip:Show()
     end)
 
-    war.Bg= btn:CreateTexture(nil, 'BACKGROUND')
-    war.Bg:SetSize(26, 26)
-    war.Bg:SetPoint('CENTER', war)
-    war.Bg:SetAtlas('talents-node-choiceflyout-circle-greenglow')
+    war:SetScript('OnClick', function()
+        WoWTools_LoadUIMixin:SpellBook(2)
+    end)
+
+
 
     function war:settings()
-        self:SetDesaturated(not C_PvP.IsWarModeDesired())
-        local show= C_PvP.ArePvpTalentsUnlocked()
-        self:SetShown(show)
-        self.Bg:SetShown(show and (C_PvP.CanToggleWarMode(true) or C_PvP.CanToggleWarMode(false)))
+        self.texture:SetDesaturated(not C_PvP.IsWarModeDesired())
+        local enabled= C_PvP.ArePvpTalentsUnlocked()
+        self.border:SetShown(enabled and (C_PvP.CanToggleWarMode(true) or C_PvP.CanToggleWarMode(false)))
+        self:SetAlpha(enabled and 1 or 0.3)
     end
 
     war:SetScript('OnHide', war.UnregisterAllEvents)
@@ -221,9 +233,7 @@ local function Init()
         self:RegisterEvent('PLAYER_UPDATE_RESTING')
         self:settings()
     end)
-
-    
-
+    war:SetScript('OnEvent', war.settings)
 
 
 
@@ -233,53 +243,39 @@ local function Init()
 
 
 
-    local Frame= CreateFrame('Frame', 'WoWToolsPaperDollAllDurationFrame', btn)
 
 --装备,总耐久度
-    Frame.durabiliy= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')
-    Frame.durabiliy:SetShadowOffset(1,-1)
-    Frame.durabiliy:SetPoint('RIGHT', war, 'LEFT',0,1)
-    Frame.durabiliy:EnableMouse(true)
-    WoWTools_ColorMixin:SetLabelColor(Frame.durabiliy)
-    Frame.durabiliy:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(1)
-    end)
-    Frame.durabiliy:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+    local du= CreateFrame('Button', 'WoWToolsPaperDollDurabiliyButton', btn, 'WoWToolsButton2Template')
+    du:SetPoint('RIGHT', war, 'LEFT')
+    du:SetSize(18, 18)
+    du.texture:SetPoint('TOPLEFT', -3, 3)
+    du.texture:SetPoint('BOTTOMRIGHT', 3, -3)
+    du.texture:RemoveMaskTexture(du.IconMask)
+
+    du.Text= du:CreateFontString(nil, "BORDER", 'WoWToolsFont')
+    du.Text:SetPoint('RIGHT', du, 'LEFT', 4, 0)
+    du.Text:SetJustifyH('RIGHT')
+    function du:tooltip()
         WoWTools_DurabiliyMixin:OnEnter()
-        GameTooltip:Show()
-        self:SetAlpha(0.3)
+    end
+
+    function du:settings()
+        local durabiliy, _, icon= WoWTools_DurabiliyMixin:Get(false)
+        self.Text:SetText(durabiliy)
+        self.texture:SetAtlas(icon:match('|A:(.-):'))
+    end
+
+    du:SetScript('OnShow', function(self)
+        self:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
+        self:settings()
     end)
-
-    function Frame:settings()
-        local durabiliy= WoWTools_DurabiliyMixin:Get(true)
-        durabiliy= durabiliy:gsub(':0:0|a', ':24:24|a')
-        self.durabiliy:SetText(durabiliy)
-    end
-
-    function Frame:set_event()
-        if self:IsVisible() and not Save().notLevel then
-            self:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
-            self:settings()
-        else
-            self:UnregisterAllEvents()
-            self.durabiliy:SetText('')
-        end
-    end
-
-    Frame:SetScript('OnShow', Frame.set_event)
-    Frame:SetScript('OnHide', Frame.set_event)
-    Frame:SetScript('OnEvent', Frame.settings)
-    Frame:set_event()
-
+    du:SetScript('OnHide', du.UnregisterAllEvents)
+    du:SetScript('OnEvent', du.settings)
 
 
 
     Init=function()
         WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
-        WoWTools_DataMixin:Call(CharacterFrame.UpdatePortrait, CharacterFrame)
         _G['WoWToolsPaperDollLevelButton']:SetShown(not Save().notLevel)
     end
 end

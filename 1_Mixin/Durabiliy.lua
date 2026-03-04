@@ -60,7 +60,7 @@ function WoWTools_DurabiliyMixin:Get(reTexture)--耐久度
     if reTexture then
         text= icon..text
     end
-    return text, value
+    return text, value, icon
 end
 
 
@@ -109,7 +109,7 @@ function WoWTools_DurabiliyMixin:OnEnter(tootip)
             cur, max = GetInventoryItemDurability(tab[1])
             if cur and max and max>0 then
                 isRepair= cur<max
-                text, _, icon= get_durabiliy_color(cur, max)
+                text= get_durabiliy_color(cur, max)
                 --a= a..icon..text--..' '..max..'/'..(isRepair and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r'
                 a= a..' '..text
                 if isRepair then
@@ -124,7 +124,7 @@ function WoWTools_DurabiliyMixin:OnEnter(tootip)
             cur, max = GetInventoryItemDurability(tab[2])
             if cur and max and max>0 then
                 isRepair= cur<max
-                text, _, icon= get_durabiliy_color(cur, max)
+                text= get_durabiliy_color(cur, max)
                 --b= (isRepair and '|cnWARNING_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r/'..max..' '..text..icon..b
                 --b= text..icon..b
                 b= text..' '..b
@@ -147,20 +147,23 @@ function WoWTools_DurabiliyMixin:OnEnter(tootip)
     for _, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
         local name, texture, _, isEquipped= C_EquipmentSet.GetEquipmentSetInfo(setID)
         if isEquipped and name then
-            euip= ' |cffff00ff'..name..'|r'..(texture and '|T'..texture..':0|t' or '')
+            --euip= ' |cffff00ff'..name..'|r'..(texture and '|T'..texture..':0|t' or '')
+            euip= (texture and '|T'..texture..':0|t' or '')
             break
         end
     end
 
-    local co = GetRepairAllCost()--显示，修理所有，金钱
+    --[[local co = GetRepairAllCost()--显示，修理所有，金钱 只有在修理时，才会显示
     local coText=''
     if co and co>0 then
         coText= ' |cnWARNING_FONT_COLOR:'..GetMoneyString(co)..'|r'
-    end
+    end]]
 
+    local durabiliyText, _, durabiliyIcon= get_durabiliy_color(cur2, max2)
     tootip:AddDoubleLine(
         (WoWTools_DataMixin.onlyChinese and '耐久度' or DURABILITY)
-        ..' ('..(select(3, get_durabiliy_color(cur2, max2)))..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
+        ..durabiliyIcon..durabiliyText,
+        --..(select(3, get_durabiliy_color(cur2, max2)))..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
 
         '('..(num>0 and '|cnWARNING_FONT_COLOR:' or '|cff626262')..num..'|r) '
         ..(WoWTools_DataMixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip,
