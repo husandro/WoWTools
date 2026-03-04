@@ -28,10 +28,14 @@ local function Init()
 
             local bit= gold<1e4 and 3 or gold<1e8 and 4 or 5
             local goldText= WoWTools_DataMixin:MK(gold, bit)
+
             if CVarCallbackRegistry:GetCVarValueBool("colorblindMode") then
-                goldButton:SetTextToFit(goldText..(WoWTools_DataMixin.onlyChinese and '金' or GOLD_AMOUNT_SYMBOL))
-            else
+                goldText= goldText..(WoWTools_DataMixin.onlyChinese and '金' or GOLD_AMOUNT_SYMBOL)
+            end
+            if goldButton.SetTextToFit then
                 goldButton:SetTextToFit(goldText)
+            else
+                goldButton:SetText(goldText)--SetTextToFit then
             end
         end
     end)

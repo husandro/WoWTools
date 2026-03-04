@@ -106,7 +106,8 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
         )
 
 --今天信息
-        local day= GetGuildRosterMOTD()
+
+        local day= not InCombatLockdown() and GetGuildRosterMOTD()
         if day and day~='' then
             GameTooltip:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
         end
