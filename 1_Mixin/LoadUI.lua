@@ -529,6 +529,10 @@ ShowUIPanel(DelvesCompanionAbilityListFrame)
 function WoWTools_LoadUIMixin:OpenCompanion(companionID)
     if InCombatLockdown() or self:IsDisabledOpenFrame() or not DelvesCompanionConfigurationFrame then
         return
+
+    elseif DelvesCompanionConfigurationFrame:IsShown() then
+        DelvesCompanionConfigurationFrame:Hide()
+        return
     end
 
     if not companionID then

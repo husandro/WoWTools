@@ -53,14 +53,6 @@ local function Create_potFrame(frame)
 
     frame.ToTButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
     frame.ToTButton:SetSize(35,35)
-    --[[WoWTools_ButtonMixin:Cbtn(frame, {
-        isSecure=true,
-        size=35,
-        isType2=true,
-        notBorder=true,
-        notTexture=true,
-        name= 'WoWTools'..unit..'ToTButton',
-    })]]
 
     frame.ToTButton.unit= unit
     frame.ToTButton.target= unit..'target'
@@ -72,9 +64,6 @@ local function Create_potFrame(frame)
     frame.ToTButton:SetScript('OnLeave', GameTooltip_Hide)
 
     frame.ToTButton:SetScript('OnEnter', function(self)
-        --[[if not WoWTools_UnitMixin:UnitExists(self.target) then
-            return
-        end]]
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:SetUnit(self.target)
@@ -88,22 +77,24 @@ local function Create_potFrame(frame)
     frame.ToTButton.Portrait:SetAllPoints()
 
 
-    --[[frame.ToTButton.healthLable= WoWTools_LabelMixin:Create(frame.ToTButton, {size=14})
-    frame.ToTButton.healthLable:SetPoint('BOTTOMRIGHT')
+    frame.ToTButton.healthLable= WoWTools_LabelMixin:Create(frame.ToTButton, {size=14})
+    frame.ToTButton.healthLable:SetPoint('BOTTOM')
+    frame.ToTButton.healthLable:SetJustifyH('CENTER')
+    frame.ToTButton.healthLable:SetFontHeight(10)
     frame.ToTButton.healthLable:SetTextColor(1,1,1)
 
-    frame.ToTButton.class= frame.ToTButton:CreateTexture(nil, "ARTWORK")
+    --[[frame.ToTButton.class= frame.ToTButton:CreateTexture(nil, "ARTWORK")
     frame.ToTButton.class:SetSize(14,14)
-    frame.ToTButton.class:SetPoint('TOPRIGHT')
+    frame.ToTButton.class:SetPoint('TOPRIGHT')]]
 
  --目标， 生命条
     frame.ToTButton:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) +elapsed
         if self.elapsed>0.3 then
             self.elapsed=0
-            self.healthLable:SetFormattedText('%i', UnitHealth(self.target)/UnitHealthMax(self.target)*100)
+            self.healthLable:SetText(UnitHealth(self.target))
         end
-    end)]]
+    end)
 
     function frame.ToTButton:settings()
         SetPortraitTexture(self.Portrait, self.target)--图像
