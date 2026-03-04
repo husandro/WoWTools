@@ -162,7 +162,6 @@ local function Init_Sell_Item_Button()
 
         btn.isPet= tab.isPet
         btn:SetItemLocation(tab.itemLocation)
-        print(tab.itemLocation)
 
         btn:SetItemButtonCount(tab.count)
 
