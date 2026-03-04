@@ -163,24 +163,19 @@ local function Init()
 
 
 
-    local Frame= CreateFrame('Frame', 'WoWToolsPaperDollAllDurationFrame', btn)
+
 
 
 --战争模式
-    Frame.warMode= btn:CreateTexture(nil, 'BORDER')
-    Frame.warMode:SetPoint('RIGHT', btn, 'LEFT')
-    Frame.warMode:SetSize(18, 18)
-    Frame.warMode:SetAtlas('pvptalents-warmode-swords')
-    Frame.warMode:EnableMouse(true)
-    function Frame.warMode:GetWarModeDesired()
+    local war= CreateFrame("Button", 'WoWToolsPaperDollWarModeButton', btn, 'WoWToolsButtonTemplate')
+    war:SetPoint('RIGHT', btn, 'LEFT')
+    war:SetNormalAtlas('pvptalents-warmode-swords')
+
+    function war:GetWarModeDesired()
         return UnitPopupSharedUtil.IsInWarModeState()
     end
-    Frame.warMode:SetScript('OnLeave', function(self)
-        self:SetAlpha(1)
-        GameTooltip_Hide()
-    end)
-    Frame.warMode:SetScript('OnEnter', function(self)
-        self:SetAlpha(0.3)
+
+    war:SetScript('OnEnter', function(self)
         if WarmodeButtonMixin then
             WarmodeButtonMixin.OnEnter(self)
             return
@@ -208,16 +203,42 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    Frame.warModeBg= btn:CreateTexture(nil, 'BACKGROUND')
-    Frame.warModeBg:SetSize(26, 26)
-    Frame.warModeBg:SetPoint('CENTER', Frame.warMode)
-    Frame.warModeBg:SetAtlas('talents-node-choiceflyout-circle-greenglow')
+    war.Bg= btn:CreateTexture(nil, 'BACKGROUND')
+    war.Bg:SetSize(26, 26)
+    war.Bg:SetPoint('CENTER', war)
+    war.Bg:SetAtlas('talents-node-choiceflyout-circle-greenglow')
 
+    function war:settings()
+        self:SetDesaturated(not C_PvP.IsWarModeDesired())
+        local show= C_PvP.ArePvpTalentsUnlocked()
+        self:SetShown(show)
+        self.Bg:SetShown(show and (C_PvP.CanToggleWarMode(true) or C_PvP.CanToggleWarMode(false)))
+    end
+
+    war:SetScript('OnHide', war.UnregisterAllEvents)
+    war:SetScript('OnShow', function(self)
+        self:RegisterEvent('PLAYER_FLAGS_CHANGED')
+        self:RegisterEvent('PLAYER_UPDATE_RESTING')
+        self:settings()
+    end)
+
+    
+
+
+
+
+
+
+
+
+
+
+    local Frame= CreateFrame('Frame', 'WoWToolsPaperDollAllDurationFrame', btn)
 
 --装备,总耐久度
     Frame.durabiliy= btn:CreateFontString(nil, 'BORDER', 'GameFontNormal')
     Frame.durabiliy:SetShadowOffset(1,-1)
-    Frame.durabiliy:SetPoint('RIGHT', Frame.warMode, 'LEFT',0,1)
+    Frame.durabiliy:SetPoint('RIGHT', war, 'LEFT',0,1)
     Frame.durabiliy:EnableMouse(true)
     WoWTools_ColorMixin:SetLabelColor(Frame.durabiliy)
     Frame.durabiliy:SetScript('OnLeave', function(self)
@@ -236,20 +257,11 @@ local function Init()
         local durabiliy= WoWTools_DurabiliyMixin:Get(true)
         durabiliy= durabiliy:gsub(':0:0|a', ':24:24|a')
         self.durabiliy:SetText(durabiliy)
-        self.warMode:SetDesaturated(not C_PvP.IsWarModeDesired())
-        local show= C_PvP.ArePvpTalentsUnlocked()
-        self.warMode:SetShown(show)
-        self.warModeBg:SetShown(show and (C_PvP.CanToggleWarMode(true) or C_PvP.CanToggleWarMode(false)))
     end
 
     function Frame:set_event()
         if self:IsVisible() and not Save().notLevel then
             self:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
-
-            --self:RegisterEvent('PLAYER_ENTERING_WORLD')
-            self:RegisterEvent('PLAYER_FLAGS_CHANGED')
-            self:RegisterEvent('PLAYER_UPDATE_RESTING')
-
             self:settings()
         else
             self:UnregisterAllEvents()

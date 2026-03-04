@@ -298,6 +298,7 @@ local function Set_Button_Texture(btn, name)
     local bgAlpha, borderAlpha
     local icon= btn.icon
 
+
     if not Save().Icons.disabled then
         if libDBIcon.objects[name] then
             borderAlpha= Save().Icons.borderAlpha2--Minimap上
@@ -1332,7 +1333,9 @@ function WoWTools_TextureMixin.Events:Blizzard_Minimap()
        self:SetFrame(MinimapCluster.BorderTop)
     end
 
-    Init_AllButton_Texture()
+    C_Timer.After(0.3, function()
+        Init_AllButton_Texture()
+    end)
 
 --插件，菜单
     self:HideFrame(AddonCompartmentFrame, {alpha= 0.3})
