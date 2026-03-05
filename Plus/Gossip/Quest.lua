@@ -181,7 +181,7 @@ end
 --###########
 local function Init()
 
-    QuestButton= CreateFrame('Button', 'WoWToolsGossipQuestButton', _G['WoWToolsGossipButton'], 'WoWToolsButtonTemplate')
+    QuestButton= CreateFrame('Button', 'WoWToolsGossipQuestMainButton', _G['WoWToolsGossipButton'], 'WoWToolsButtonTemplate')
 
 
 

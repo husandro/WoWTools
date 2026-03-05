@@ -384,8 +384,8 @@ local function Init()
     end)
 
     GossipFrame:HookScript('OnShow', function ()
-        if _G['WoWToolsGossipQuestButton'] then
-            _G['WoWToolsGossipQuestButton'].questSelect={}--已选任务, 提示用
+        if _G['WoWToolsGossipQuestMainButton'] then
+            _G['WoWToolsGossipQuestMainButton'].questSelect={}--已选任务, 提示用
         end
         SelectGissipIDTab= {}--GossipFrame，显示时用
         _G['WoWToolsGossipNPCCheckBox']:settings()
@@ -889,8 +889,8 @@ local function Init_Hook()
            C_GossipInfo.SelectAvailableQuest(questID)--or self:GetID()
 
         elseif
-            _G['WoWToolsGossipQuestButton']
-            and _G['WoWToolsGossipQuestButton']:not_Ace_QuestTrivial(questID)
+            _G['WoWToolsGossipQuestMainButton']
+            and _G['WoWToolsGossipQuestMainButton']:not_Ace_QuestTrivial(questID)
 
             or Save().NPC[npc]
             or DisableQuestTab[questID]
@@ -959,8 +959,7 @@ local function Init_Hook()
 
     local GreetingFrame= CreateFrame('Frame')
     GreetingFrame.tabs={}
-
-    GreetingFrame:SetScript('OnEven', function(self, event)
+    GreetingFrame:SetScript('OnEvent', function(self, event)
         self.tabs={}
         self:UnregisterEvent(event)
     end)
@@ -973,13 +972,15 @@ local function Init_Hook()
             and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
         then
             C_GossipInfo.CloseGossip()
-            if not GreetingFrame.tabs[text] then
-                print(WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:CN(text), '|A:SpecDial_LastPip_BorderGlow:0:0|a')
-                GreetingFrame:RegisterEvent('PLAYER_STARTED_MOVING')
-            else
-                GreetingFrame.tabs[text]= 1
-            end
+            if text then
 
+                if not GreetingFrame.tabs[text] then
+                    print(WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:CN(text), '|A:SpecDial_LastPip_BorderGlow:0:0|a')
+                    GreetingFrame:RegisterEvent('PLAYER_STARTED_MOVING')
+                else
+                    GreetingFrame.tabs[text]= 1
+                end
+            end
         end
     end)
 
