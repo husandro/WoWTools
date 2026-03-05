@@ -7,7 +7,7 @@ end
 
 
 local function Init_Label(self)
-    self.Text= self:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
+    self.Text= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
     self.Text:SetJustifyH('CENTER')
     self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
 end

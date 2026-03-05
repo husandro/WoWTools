@@ -345,7 +345,7 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
 
     local achievementID= data.achievementID
 
-    local questID= data.questID
+    --local questID= frame and frame.questID --data.questID
 
     local rewardQuestID= data.rewardQuestID
 
@@ -402,11 +402,15 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
     elseif achievementID then
         tooltip:SetAchievementByID(achievementID)
 
-    elseif questID then
-        --[[if frame and frame.questID then
+    elseif data.frame and data.frame.questID then
+        GameTooltip_AddQuest(data.frame)
+    elseif frame and frame.questID then
+        GameTooltip_AddQuest(frame)
+    --elseif questID then
+        --if frame and frame.questID then
             GameTooltip_AddQuest(frame)
-        else]]
-            GameTooltip_AddQuest({questID=questID})
+        --else
+            --GameTooltip_AddQuest({questID=questID})
         --end
     elseif rewardQuestID then
         GameTooltip_AddQuestRewardsToTooltip(tooltip, rewardQuestID)

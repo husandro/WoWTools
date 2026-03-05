@@ -39,4 +39,15 @@
         </Shadow>        
     </Font>
 
+    <Font name="WoWToolsWorldFont" inherits="WoWToolsFontFamily" justifyH="LEFT" virtual="true">
+        <Color r="1.0" g="0.9294" b="0.7607"/>
+        <Shadow>
+            <Offset>
+                <AbsDimension x="1" y="-1"/>
+            </Offset>
+            <Color r="1" g="1" b="1"/>
+        </Shadow>        
+    </Font>
+    
+
 </Ui>

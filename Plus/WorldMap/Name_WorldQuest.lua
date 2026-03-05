@@ -17,7 +17,7 @@ local function Create_Pin(self)
     self.Display.typeTexure:SetPoint('TOPRIGHT', self)
     self.Display.typeTexure:SetSize(10, 10)
 
-    self.Display.rewardText=self.Display:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')-- WoWTools_WorldMapMixin:Create_Wolor_Font(self, 12)
+    self.Display.rewardText=self.Display:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
     self.Display.rewardText:SetJustifyH('CENTER')
     self.Display.rewardText:SetPoint('TOP', self, 'BOTTOM', 0, 2)
 
@@ -72,14 +72,15 @@ local function Init()
                 end
 
                 local setLevelUp
-                local invSlot = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
-                if invSlot and data.name and data.itemLevel and data.itemLevel>1 then--装等
-                    local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-                    if itemLinkPlayer then
-                        local lv= WoWTools_ItemMixin:GetItemLevel(itemLinkPlayer)
-                        if lv and data.itemLevel-lv>0 then
-                            text= (text or '')..'|A:bags-greenarrow:0:0|a'
-                            setLevelUp=true
+                for _, invSlot in pairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do
+                    if invSlot and data.name and data.itemLevel and data.itemLevel>1 then--装等
+                        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+                        if itemLinkPlayer then
+                            local lv= WoWTools_ItemMixin:GetItemLevel(itemLinkPlayer)
+                            if lv and data.itemLevel-lv>0 then
+                                text= (text or '')..'|A:bags-greenarrow:0:0|a'
+                                setLevelUp=true
+                            end
                         end
                     end
                 end

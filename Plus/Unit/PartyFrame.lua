@@ -137,7 +137,7 @@ local function Create_potFrame(frame)
         --[[if event=='UNIT_TARGET'
             or event=='UNIT_TARGETABLE_CHANGED'
             or event=='UNIT_PORTRAIT_UPDATE']]
-        if event~='UNIT_HEAL_PREDICTION' and event~='UNIT_HEALTH' then
+        if event~='UNIT_HEALTH' then
             SetPortraitTexture(self.Portrait, self.target)--图像
         end
         self:set_health()

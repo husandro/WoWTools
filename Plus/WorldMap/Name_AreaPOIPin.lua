@@ -47,7 +47,7 @@ local function Init()
         if not self.WoWToolsFrame then
             self.WoWToolsFrame= CreateFrame('Frame', nil, self)
             self.WoWToolsFrame:SetAllPoints()
-            self.WoWToolsFrame.Text= self.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WorldMapTextFont')
+            self.WoWToolsFrame.Text= self.WoWToolsFrame:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
             self.WoWToolsFrame.Text:SetPoint('TOP', self.Texture or self, 'BOTTOM')
         else
             self:SetScript('OnUpdate', nil)

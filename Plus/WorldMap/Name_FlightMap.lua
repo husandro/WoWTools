@@ -12,7 +12,8 @@ local function Set_Text(self)
     local text
     if self.taxiNodeData and  WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name then
         if not self.Text and self.taxiNodeData.name then
-            self.Text= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 10)
+            self.Text= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
+            self.Text:SetFontObject(10)
             self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
         end
         text= self.taxiNodeData.name

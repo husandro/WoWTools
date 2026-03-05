@@ -136,7 +136,7 @@ end
 
 local function Init_BountyDropdown(frame)
 --声望，字体
-    frame.factionText= frame:CreateFontString(nil, 'OVERLAY', 'WorldMapTextFont')
+    frame.factionText= frame:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
     frame.factionText:SetPoint('TOPLEFT', frame.Icon, 'BOTTOMLEFT', 0, 10)
     frame.factionText:EnableMouse(true)
     frame.factionText:SetScript('OnLeave', function(self)
@@ -210,19 +210,20 @@ local function Init_BountyDropdown(frame)
     Bounty_Setting(frame)
 
 
---保存上次，操作 WorldMapActivityTrackerMixin
+--保存上次，操作 WorldMapActivityTrackerMixin 
+--12.01可能无效
     local _bountyInfo= Save().bountyInfo
-    if _bountyInfo then
+    if _bountyInfo and WorldMapFrame.ScrollContainer:HasZoomLevels() and not TableIsEmpty(_bountyInfo) then
+        WorldMapFrame.ScrollContainer:HasZoomLevels()
         frame:SetSelectedBounty(_bountyInfo)
         Set_FactionText(frame, _bountyInfo)
+        _bountyInfo= nil
     end
 
     WoWTools_DataMixin:Hook(frame, 'SetSelectedBounty', function(self, bountyInfo)
         Save().bountyInfo= bountyInfo
         Set_FactionText(self, bountyInfo)
     end)
-
-    _bountyInfo= nil
 
     Init_BountyDropdown=function()end
 end

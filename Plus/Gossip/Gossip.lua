@@ -600,10 +600,12 @@ local function Create_GossipOptionCheckBox(btn, info)
     end)
 
     btn:HookScript('OnEnter', function(self)
+        print(self.gossipCheckBox.questID)
         WoWTools_SetTooltipMixin:Frame(self, nil, {
             anchor='ANCHOR_RIGHT',
             spellID= self.gossipCheckBox.spellID,
-            questID= WoWTools_DataMixin.Player.husandro and self.gossipCheckBox.questID or nil
+            frame=self.gossipCheckBox
+            --questID= self.gossipCheckBox.questID or nil
         })
         self.gossipCheckBox:set_alpha(true)
     end)

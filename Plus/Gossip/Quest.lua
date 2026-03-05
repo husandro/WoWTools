@@ -80,27 +80,35 @@ local function select_Reward(questID)--自动:选择奖励
             frame.check.questID= questID
             frame.check.numQuests= numQuests
             frame.check:SetShown(true)
-            
         end
     end
 
     if Save().questRewardCheck[questID] and Save().questRewardCheck[questID]<=numQuests then
         bestItem= Save().questRewardCheck[questID]
         selectItemLink= GetQuestItemLink('choice', Save().questRewardCheck[questID])
-       WoWTools_DataMixin:Load(selectItemLink, 'item')
-    else
+        WoWTools_DataMixin:Load(selectItemLink, 'item')
+
+    elseif not IsModifierKeyDown() then
         for i = 1, numQuests do
-            local  itemLink = GetQuestItemLink('choice', i)
-           WoWTools_DataMixin:Load(itemLink, 'item')
+            local itemLink = GetQuestItemLink('choice', i)
             if itemLink then
+                WoWTools_DataMixin:Load(itemLink, 'item')
+
                 local amount = select(3, GetQuestItemInfo('choice', i))--钱
-                local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = C_Item.GetItemInfo(itemLink)
+                local itemID, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID, _, _, setID, isCraftingReagent  = C_Item.GetItemInfo(itemLink)
+
                 if Save().autoSelectReward
+                    and itemID
                     and not (classID==19 or (classID==4 and subclassID==5) or itemLevel==1)
                     and itemQuality and itemQuality<4--最高 稀有的 3
                     and not C_Item.IsCosmeticItem(itemLink)--装饰品
+                    and not setID
+                    and not isCraftingReagent--附魔, 19专业装备 ,7商业技能
+                    and not C_Item.IsDecorItem(itemLink)--住宅装饰
+                    and not C_ToyBox.GetToyInfo(itemID)--玩具
+                    and not C_MountJournal.GetMountFromItem(itemID)--坐骑
                 then
-                    if itemLevel and itemLevel>1 then
+                    if itemLevel and itemLevel>1 and not WoWTools_ItemMixin:IsNotEquipType(itemLink) then
                         for _, invSlot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do
                             local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
                             if itemLinkPlayer then

@@ -38,8 +38,8 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
         local left, right, text
         local value= UnitHealth(unit)
         local max= UnitHealthMax(unit)
-
         local isDeath= UnitIsFeignDeath(unit)
+
         if canaccessvalue(isDeath) and isDeath then
             if WoWTools_DataMixin.onlyChinese then
                 text= '假死'
@@ -47,34 +47,15 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
                 WoWTools_DataMixin:Load(5384, 'spell')
                 text= C_Spell.GetSpellName(5384) or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NO, DEAD)
             end
-        elseif canaccessvalue(value) and value then
-            if value <= 0 then
-                text = WARNING_FONT_COLOR:WrapTextInColorCode('|A:poi-soulspiritghost:0:0|a'..(WoWTools_DataMixin.onlyChinese and '死亡' or DEAD))
-            else
-                left= WoWTools_DataMixin:MK(value, 2)
-            end
-
-            if canaccessvalue(max) and max and max>0 then
-                local hp = value / max * 100
-                text = format('%i%% ', hp)
-                if hp<30 then
-                    text=  WARNING_FONT_COLOR:WrapTextInColorCode('|A:GarrisonTroops-Health-Consume:0:0|a'..text)
-                elseif hp<60 then
-                    text= GREEN_FONT_COLOR:WrapTextInColorCode(text)
-                elseif hp<90 then
-                    text=YELLOW_FONT_COLOR:WrapTextInColorCode(text)
-                else
-                    text= HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(text)
-                end
-
-                right= WoWTools_DataMixin:MK(max, 2)
-            end
+        else
+            text= format('%i%%', UnitHealthPercent(unit, true, CurveConstants.ScaleTo100))
         end
 
         self.text:SetText(text)
         self.textLeft:SetText(left or value)
         self.textRight:SetText(right or max)
 
+        self.text:SetTextColor(color:GetRGB())
         self.textLeft:SetTextColor(color:GetRGB())
         self.textRight:SetTextColor(color:GetRGB())
         self:SetStatusBarColor(color:GetRGB())

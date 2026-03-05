@@ -62,15 +62,16 @@ end
 function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
     if self:IsInCombatDisabled(tooltip)
         or not canaccessvalue(spellID)
+        or not spellID
     then
         return
     end
 
-    spellID = spellID or select(2, tooltip:GetSpell())-- or (actionID and C_ActionBar.GetSpell(actionID))
+    --spellID = spellID or select(2, tooltip:GetSpell())-- or (actionID and C_ActionBar.GetSpell(actionID))
 
-    if not canaccessvalue(spellID) or not spellID then
+    --[[if not canaccessvalue(spellID) or not spellID then
         return
-    end
+    end]]
 
     local name, icon, originalIcon
     local spellInfo= C_Spell.GetSpellInfo(spellID)
@@ -81,7 +82,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
         originalIcon= spellInfo.originalIconID
     end
 
-    if not canaccesstable(name) or not name then
+    if not canaccessvalue(name) or not name then
         return
     end
 

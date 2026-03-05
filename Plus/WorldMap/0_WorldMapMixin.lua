@@ -17,8 +17,10 @@ function WoWTools_WorldMapMixin:GetMapID()
 end
 
 
---AreaLabelDataProvider.xml
-function WoWTools_WorldMapMixin:Create_Wolor_Font(frame, size)
+--[[AreaLabelDataProvider.xml
+function WoWTools_WorldMapMixin:Create_Wolor_Font(frame)
+    return frame:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
+
   return WoWTools_LabelMixin:Create(frame, {
         size=size,
         justifyH='CENTER',
@@ -26,7 +28,8 @@ function WoWTools_WorldMapMixin:Create_Wolor_Font(frame, size)
         notShadow=true,
         fontName='WorldMapTextFont'}
     )--WorldMapTextFont SubZoneTextFont
-end
+   
+end ]]
 
 
 
