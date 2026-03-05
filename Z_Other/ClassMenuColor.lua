@@ -125,7 +125,7 @@ end
 
 --Blizzard_Menu/MenuUtil.lua
     WoWTools_DataMixin:Hook(MenuUtil, 'SetElementText', function(desc, text)
-        if text then
+        if not issecretvalue(text) and text then
             local colorText
             if type(desc.data)=='table' and (desc.data.specID==251 or desc.data.specID==64) then
                 colorText= classTabs[text..desc.data.specID]
@@ -134,7 +134,9 @@ end
             end
             if colorText then
                 desc:AddInitializer(function(btn)
-                    btn.fontString:SetText(colorText)
+                    if not btn:HasAnySecretAspect() then
+                        btn.fontString:SetText(colorText)
+                    end
                 end)
             end
         end

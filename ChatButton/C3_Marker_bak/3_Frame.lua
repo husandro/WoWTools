@@ -199,7 +199,7 @@ local function Init()--设置标记, 框架
         return
     end
 
-    MakerFrame= CreateFrame('Frame', 'WoWToolsMarkerFrame', UIParent)
+    MakerFrame= CreateFrame('Frame', 'WoWToolsMarkerMoveButton', UIParent)
 
     local size= 23
 

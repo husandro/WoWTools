@@ -287,7 +287,7 @@ end
 
 --设置标记, 框架
 local function Init()--设置标记, 框架
-    MakerFrame= CreateFrame('Button', 'WoWToolsMarkerFrame', UIParent, 'WoWToolsButtonTemplate')
+    MakerFrame= CreateFrame('Button', 'WoWToolsMarkerMoveButton', UIParent, 'WoWToolsButtonTemplate')
     MakerFrame:SetClampedToScreen(true)
     MakerFrame:SetSize(23,23)--大小
 
@@ -1038,6 +1038,8 @@ local function Init()--设置标记, 框架
             self:ClearAllPoints()
             if Save().point then
                 self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
+            elseif WoWTools_DataMixin.Player.husandro then
+                self:SetPoint('BOTTOMRIGHT',  MultiBarBottomLeftButton12, 'TOPRIGHT', 28, 50)
             else
                 self:SetPoint('CENTER', -150, 50)
             end

@@ -68,7 +68,7 @@ end]]
 --战斗中，提示
 --<Anchor point="TOPLEFT" x="64" y="-62"/>
     contextual.AttackIcon:ClearAllPoints()
-    contextual.AttackIcon:SetPoint('RIGHT', PlayerName, 'LEFT')
+    contextual.AttackIcon:SetPoint('RIGHT', PlayerName, 'LEFT', -2, 0)
     --contextual.AttackIcon:SetPoint('TOPLEFT', 68, -43)
     contextual.AttackIcon:SetVertexColor(1,0,0)
     contextual.AttackIcon.Bg= contextual:CreateTexture(nil, 'BACKGROUND')--加个外框

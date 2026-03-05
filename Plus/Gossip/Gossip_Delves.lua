@@ -8,13 +8,20 @@ end
 
 
 local function Init_OnShow(self)
-    if not Save().gossip or IsModifierKeyDown() or not self.gossipOptions then
+    if not Save().gossip
+        or IsModifierKeyDown()
+        or not canaccesstable(self.gossipOptions)
+        or not self.gossipOptions
+        or self.EnterDelveButton:HasAnySecretAspect()
+    then
         return
     end
+
     local num= #self.gossipOptions
     if num==0 then
         return
     end
+
     local Option
     do
         if Save().delvesDifficultyMaxLevel then
@@ -48,6 +55,7 @@ local function Init_OnShow(self)
     if self.EnterDelveButton and self.EnterDelveButton:IsEnabled() then
         local option= Option or self:GetSelectedOption()
         if option and option.name then
+            WoWTools_DataMixin:Load(option.spellID, 'spell')
 
             print(
                 WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
@@ -61,16 +69,27 @@ local function Init_OnShow(self)
             )
 
             for _, reward in ipairs(option.rewards or {}) do
-                if reward.rewardType == Enum.GossipOptionRewardType.Item and reward.id then
-                    WoWTools_DataMixin:Load(reward.id, 'item')
-                    print(
-                        WoWTools_HyperLink:CN_Link(
-                            WoWTools_ItemMixin:GetLink(reward.id) or C_Item.GetItemNameByID(reward.id),
-                            {isName=true}
+                if reward.id then
+                    if reward.rewardType == Enum.GossipOptionRewardType.Item then
+                        WoWTools_DataMixin:Load(reward.id, 'item')
+
+                        print(
+                            WoWTools_HyperLink:CN_Link(
+                                reward.context and C_Item.GetDelvePreviewItemLink(reward.id, reward.context)
+                                or WoWTools_ItemMixin:GetLink(reward.id)
+                                or C_Item.GetItemNameByID(reward.id),
+
+                                {isName=true}
+                            )
+                            or ('|T'..(select(5, C_Item.GetItemInfoInstant(reward.id)) or 0)..':0|t'),
+                            ' x'..(reward.quantity or 1)
                         )
-                        or ('|T'..(select(5, C_Item.GetItemInfoInstant(reward.id)) or 0)..':0|t'),
-                        ' x'..(reward.quantity or 1)
-                    )
+                    elseif reward.rewardType== Enum.GossipOptionRewardType.Currency then
+                        print(
+                            WoWTools_CurrencyMixin:GetLink(reward.id, nil, nil, true),
+                             ' x'..(reward.quantity or 1)
+                        )
+                    end
                 end
             end
         end

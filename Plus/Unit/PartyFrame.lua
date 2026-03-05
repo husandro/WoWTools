@@ -52,18 +52,20 @@ local function Create_potFrame(frame)
     local unit= frame.unit
 
     frame.ToTButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
-    frame.ToTButton:SetSize(35,35)
+    local btn= frame.ToTButton
 
-    frame.ToTButton.unit= unit
-    frame.ToTButton.target= unit..'target'
+    btn:SetSize(35,35)
+
+    btn.unit= unit
+    btn.target= unit..'target'
 
 
-    frame.ToTButton:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
-    frame.ToTButton:SetAttribute('type', 'target')
-    frame.ToTButton:SetAttribute('unit', frame.ToTButton.target)
-    frame.ToTButton:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
+    btn:SetAttribute('type', 'target')
+    btn:SetAttribute('unit', btn.target)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
 
-    frame.ToTButton:SetScript('OnEnter', function(self)
+    btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:SetUnit(self.target)
@@ -72,42 +74,87 @@ local function Create_potFrame(frame)
 
 
 --目标，图像
-    frame.ToTButton.Portrait= frame.ToTButton:CreateTexture(nil, 'BORDER')
-    WoWTools_ButtonMixin:AddMask(frame.ToTButton, true, frame.ToTButton.Portrait)
-    frame.ToTButton.Portrait:SetAllPoints()
+    btn.Portrait= btn:CreateTexture(nil, 'BORDER')
+    WoWTools_ButtonMixin:AddMask(btn, true, btn.Portrait)
+    btn.Portrait:SetAllPoints()
 
 
-    frame.ToTButton.healthLable= WoWTools_LabelMixin:Create(frame.ToTButton, {size=14})
-    frame.ToTButton.healthLable:SetPoint('BOTTOM')
-    frame.ToTButton.healthLable:SetJustifyH('CENTER')
-    frame.ToTButton.healthLable:SetFontHeight(10)
-    frame.ToTButton.healthLable:SetTextColor(1,1,1)
+    btn.healthLable= WoWTools_LabelMixin:Create(btn, {size=14})
+    btn.healthLable:SetPoint('BOTTOM')
+    btn.healthLable:SetJustifyH('CENTER')
+    btn.healthLable:SetFontHeight(10)
+    btn.healthLable:SetTextColor(1,1,1)
 
-    --[[frame.ToTButton.class= frame.ToTButton:CreateTexture(nil, "ARTWORK")
-    frame.ToTButton.class:SetSize(14,14)
-    frame.ToTButton.class:SetPoint('TOPRIGHT')]]
+    --[[btn.class= btn:CreateTexture(nil, "ARTWORK")
+    btn.class:SetSize(14,14)
+    btn.class:SetPoint('TOPRIGHT')]]
 
- --目标， 生命条
-    frame.ToTButton:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= (self.elapsed or 0.3) +elapsed
+ --[[目标， 生命条
+    btn.elapsed= 0.3
+    btn.curve = C_CurveUtil.CreateCurve();
+    btn.curve:SetType(Enum.LuaCurveType.Linear);
+    btn.curve:AddPoint(0.0, 100);
+    btn.curve:AddPoint(1.0, 0);
+
+    btn:SetScript('OnUpdate', function(self, elapsed)
+        self.elapsed= self.elapsed +elapsed
         if self.elapsed>0.3 then
             self.elapsed=0
-            self.healthLable:SetText(UnitHealth(self.target))
+            --self.healthLable:SetText(UnitHealth(self.target))
+            --self.healthLable:SetText(--'%i', UnitHealthPercent(self.target, true, CurveConstants.ReverseTo100))
+            --print(unit)
         end
-    end)
+    end)]]
 
-    function frame.ToTButton:settings()
+    function btn:set_portrait()
         SetPortraitTexture(self.Portrait, self.target)--图像
     end
 
-    frame.ToTButton:SetScript('OnEvent', frame.ToTButton.settings)
+    function btn:set_health()
+        --self.healthLable:SetFormattedText('%i', UnitHealthPercent(self.target))
+        self.healthLable:SetFormattedText('%i', UnitHealthPercent(self.target, true, CurveConstants.ScaleTo100))
+        --self.healthLable:SetText(UnitHealth(self.target))
+    end
 
-    frame.ToTButton:RegisterUnitEvent('UNIT_TARGET', unit)
-    frame.ToTButton:RegisterUnitEvent('UNIT_TARGETABLE_CHANGED', unit)
-    frame.ToTButton:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit)
-    frame.ToTButton:SetScript('OnHide', function(self)
-        SetPortraitTexture(self.Portrait, self.target)--图像
+    function btn:set_event()
+        self:RegisterUnitEvent('UNIT_TARGET', self.target)
+        self:RegisterUnitEvent('UNIT_TARGETABLE_CHANGED', self.target)
+        self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.target)
+
+        self:RegisterUnitEvent('UNIT_HEALTH', self.target)
+        --self:RegisterUnitEvent('UNIT_HEAL_PREDICTION', self.target)
+        --self:RegisterUnitEvent('UNIT_HEAL_PREDICTION', self.target)
+        --[[self:RegisterUnitEvent('UNIT_MAXHEALTH', self.target)
+        self:RegisterUnitEvent('UNIT_ABSORB_AMOUNT_CHANGED', self.target)
+        self:RegisterUnitEvent('UNIT_HEAL_ABSORB_AMOUNT_CHANGED', self.target)
+        self:RegisterUnitEvent('UNIT_HEALTH', self.target)]]
+
+        self:set_portrait()
+        self:set_health()
+    end
+
+    btn:SetScript('OnEvent', function(self, event)
+        --[[if event=='UNIT_TARGET'
+            or event=='UNIT_TARGETABLE_CHANGED'
+            or event=='UNIT_PORTRAIT_UPDATE']]
+        if event~='UNIT_HEAL_PREDICTION' and event~='UNIT_HEALTH' then
+            SetPortraitTexture(self.Portrait, self.target)--图像
+        end
+        self:set_health()
     end)
+
+    btn:SetScript('OnHide', function(self)
+        self.Portrait:SetTexture(0)
+        self:UnregisterAllEvents()
+        self.elapsed= 0.3
+    end)
+    btn:SetScript('OnShow', function(self)
+        self:set_event()
+    end)
+
+    if frame:IsVisible() then
+        btn:set_event()
+    end
 end
 
 
@@ -314,7 +361,7 @@ local function Create_combatFrame(frame)
     combatFrame.texture:SetVertexColor(1, 0, 0)
     combatFrame.texture:Hide()
 
-  
+
     function combatFrame:Init()
         self.unit= self:GetParent().unit
     end
@@ -576,7 +623,7 @@ local function Create_deadFrame(frame)
             end
 
         else
-            if UnitIsDeadOrGhost(self.unit) then--死亡，次数
+            if UnitIsDeadOrGhost(self.unit) then--死亡，次数 UnitInPartyIsAI
                 if not self.deadBool then
                     self.deadBool=true
 

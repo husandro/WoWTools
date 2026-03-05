@@ -116,8 +116,17 @@ local function Init()
     function btn:set_new_application(isInit)
         local isInviete, isMessage= false, false
         local clubs= C_ClubFinder.IsEnabled() and C_Club.GetSubscribedClubs()
-        if canaccesstable(clubs) and clubs then
+        local isInCombat= InCombatLockdown()
+        if isInCombat then
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        end
+        if not isInCombat and canaccesstable(clubs) and clubs then
             for _, data in pairs(clubs) do
+                if not canaccessvalue(data.clubId) then
+                    self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                    break
+                end
+
                 if not isInviete and WoWTools_GuildMixin:GetApplicantList(data.clubId) then
                     isInviete=true
 
@@ -131,8 +140,11 @@ local function Init()
                     end
                 end
 
-                if not isMessage and CommunitiesUtil.DoesCommunityHaveUnreadMessages(data.clubId) then
-                    isMessage= true
+                if not isMessage then
+                    local hasMsg= CommunitiesUtil.DoesCommunityHaveUnreadMessages(data.clubId)
+                    if canaccessvalue(hasMsg) and hasMsg then
+                        isMessage= true
+                    end
                 end
 
                 if isMessage and isInviete then
@@ -188,8 +200,10 @@ local function Init()
                 WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text= arg1
                 self:UnregisterEvent(event)
             end
-
         else
+            if event=='PLAYER_REGEN_ENABLED' then
+                self:UnregisterEvent(event)
+            end
             self:set_new_application()
         end
     end)
@@ -199,7 +213,15 @@ local function Init()
     Set_Text(btn)
 
     btn:set_guildinfo_event()
-    btn:set_new_application(WoWTools_GuildMixin:IsLeaderOrOfficer())--申请者
+
+    if not InCombatLockdown() then
+        btn:set_new_application(WoWTools_GuildMixin:IsLeaderOrOfficer())--申请者
+    else
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+            btn:set_new_application(WoWTools_GuildMixin:IsLeaderOrOfficer())--申请者
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end)
+    end
 
     Init=function()end
 end

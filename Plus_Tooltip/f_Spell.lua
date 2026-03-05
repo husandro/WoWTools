@@ -68,7 +68,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
 
     spellID = spellID or select(2, tooltip:GetSpell())-- or (actionID and C_ActionBar.GetSpell(actionID))
 
-    if issecretvalue(spellID) or not spellID then
+    if not canaccessvalue(spellID) or not spellID then
         return
     end
 
@@ -81,7 +81,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
         originalIcon= spellInfo.originalIconID
     end
 
-    if issecretvalue(name) or not name then
+    if not canaccesstable(name) or not name then
         return
     end
 
@@ -95,7 +95,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
         --'spellID|cffffffff'
         (WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)
         ..WoWTools_DataMixin.Icon.icon2
-        ..spellID
+        ..'|cnHIGHLIGHT_FONT_COLOR:'..spellID
     )
 
     Set_HunterPet(tooltip, spellID, self.iconSize)--猎人兽栏，宠物

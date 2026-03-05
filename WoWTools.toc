@@ -515,7 +515,7 @@ Z_Other\Talking.lua
 Z_Other\ClassMenuColor.lua
 Z_Other\Achievements.lua
 ##MoneyFrame 金 增加 mk
-Z_Other\MoneyFrame.lua
+##Z_Other\MoneyFrame.lua
 ##自动输入，删除
 Z_Other\DELETE.lua
 ##隐藏教程

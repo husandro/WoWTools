@@ -3105,7 +3105,9 @@
         "QuestEventListener",
         "EncounterJournal_Refresh",
         "BAG_FILTER_CURRENT_EXPANSION",
-        "FROM_TOTAL"
+        "FROM_TOTAL",
+        "CurveConstants",
+        "MultiBarBottomLeftButton12"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
