@@ -589,6 +589,7 @@ local function Create_GossipOptionCheckBox(btn, info)
         self.Text:SetText(data.gossipOptionID or '')
         self:set_alpha()
         self:SetShown(gossipOptionID and true or false)
+        print('questID', data.questID, data.spellID)
     end
 
     btn:HookScript('OnHide', function(self)
@@ -600,7 +601,7 @@ local function Create_GossipOptionCheckBox(btn, info)
     end)
 
     btn:HookScript('OnEnter', function(self)
-        print(self.gossipCheckBox.questID)
+        print(self.gossipCheckBox.questID, info.questID)
         WoWTools_SetTooltipMixin:Frame(self, nil, {
             anchor='ANCHOR_RIGHT',
             spellID= self.gossipCheckBox.spellID,
