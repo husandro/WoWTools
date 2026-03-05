@@ -26,7 +26,8 @@ local function Init_Menu(self, root, data)
     end--data.playerLocation
 
 
-    local sub=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM),
+    local sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM),
     function(name)
         return Save().userChatFilterTab[name]
     end, function(name)

@@ -66,7 +66,7 @@ local function Init_Filter_Menu(self, root)
     end, function()
         Save().myChatFilter= not Save().myChatFilter and true or false
         WoWTools_WorldMixin:Set_Filters()
-        return MenuResponse.Close
+        --return MenuResponse.Close
     end, {rightText=Save().myChatFilterAutoAdd and filterPlayer or filterNum})
 
     WoWTools_MenuMixin:SetRightText(sub)

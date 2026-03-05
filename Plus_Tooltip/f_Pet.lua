@@ -24,9 +24,8 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     tooltip:AddDoubleLine(
         speciesIcon and '|T'..speciesIcon..':'..self.iconSize..'|t|cffffffff'..speciesIcon,
 
-        --'speciesID|cffffffff'
         (WoWTools_DataMixin.onlyChinese and '宠物' or PET)
-        ..WoWTools_DataMixin.Icon.icon2
+        ..'|cffffffff'..WoWTools_DataMixin.Icon.icon2
         ..speciesID
     )
 

@@ -182,7 +182,7 @@ local function Init()
     GossipButton.Background= GossipButton:CreateTexture(nil, "BACKGROUND")
     GossipButton.Background:SetPoint('TOPRIGHT', 1, 1)
     GossipButton.Background:SetPoint('BOTTOMRIGHT', 1, -1)
-    
+
     --[[WoWTools_TextureMixin:CreateBG(GossipButton, {isColor=true,
         point=function(bg)
             bg:SetPoint('BOTTOMRIGHT', 2, -2)
@@ -232,7 +232,7 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_DataMixin.onlyChinese and '对话' or ENABLE_DIALOG)
         GameTooltip:AddLine(' ')
         --GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE)..' '..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
-        
+
         GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..WoWTools_TextMixin:GetEnabeleDisable(Save().gossip), WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
@@ -589,7 +589,6 @@ local function Create_GossipOptionCheckBox(btn, info)
         self.Text:SetText(data.gossipOptionID or '')
         self:set_alpha()
         self:SetShown(gossipOptionID and true or false)
-        print('questID', data.questID, data.spellID)
     end
 
     btn:HookScript('OnHide', function(self)
@@ -601,7 +600,6 @@ local function Create_GossipOptionCheckBox(btn, info)
     end)
 
     btn:HookScript('OnEnter', function(self)
-        print(self.gossipCheckBox.questID, info.questID)
         WoWTools_SetTooltipMixin:Frame(self, nil, {
             anchor='ANCHOR_RIGHT',
             spellID= self.gossipCheckBox.spellID,
@@ -951,6 +949,19 @@ local function Init_Hook()
     end)
 
 
+
+    --C_GossipInfo.ForceGossip()
+--当没有选项时，闭关
+    WoWTools_DataMixin:Hook(GossipGreetingTextMixin , 'Setup', function(_, text)
+        if Save().gossip
+            and not IsModifierKeyDown()
+            and #C_GossipInfo.GetOptions()==0
+            and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
+        then
+            C_GossipInfo.CloseGossip()
+            print(WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:CN(text), '|A:SpecDial_LastPip_BorderGlow:0:0|a')
+        end
+    end)
 
     Init_Hook= function()end
 end

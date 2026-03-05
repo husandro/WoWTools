@@ -3107,7 +3107,8 @@
         "BAG_FILTER_CURRENT_EXPANSION",
         "FROM_TOTAL",
         "CurveConstants",
-        "MultiBarBottomLeftButton12"
+        "MultiBarBottomLeftButton12",
+        "GossipFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

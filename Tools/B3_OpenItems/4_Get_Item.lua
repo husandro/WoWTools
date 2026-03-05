@@ -72,7 +72,7 @@ end
 
 
 
-    
+
 --[[
 local ITEM_COSMETIC_LEARN= WoWTools_TextMixin:Magic(ITEM_COSMETIC_LEARN)--使用：将此外观添加到你的战团收藏中。
 local isCosmeticLearn
@@ -156,7 +156,7 @@ local function Get_ValeItem(bag, slot)
         end
 
     else
-        
+
 --是否可使用 then--不出售, 可以使用
         local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, text={LOCKED}})
 
