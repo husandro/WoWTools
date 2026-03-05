@@ -5,7 +5,7 @@ local function Save()
 end
 
 local IsQuestTrivialTracking
-
+local QuestButton
 
 
 
@@ -181,9 +181,9 @@ end
 --###########
 local function Init()
 
-    local QuestButton= CreateFrame('Button', 'WoWToolsGossipQuestButton', _G['WoWToolsGossipButton'], 'WoWToolsButtonTemplate')
+    QuestButton= CreateFrame('Button', 'WoWToolsGossipQuestButton', _G['WoWToolsGossipButton'], 'WoWToolsButtonTemplate')
 
-    WoWTools_GossipMixin.QuestButton= QuestButton
+
 
     QuestButton.texture= QuestButton:CreateTexture(nil, 'BORDER')
     QuestButton.texture:SetAllPoints()

@@ -384,7 +384,9 @@ local function Init()
     end)
 
     GossipFrame:HookScript('OnShow', function ()
-        WoWTools_GossipMixin.QuestButton.questSelect={}--已选任务, 提示用
+        if _G['WoWToolsGossipQuestButton'] then
+            _G['WoWToolsGossipQuestButton'].questSelect={}--已选任务, 提示用
+        end
         SelectGissipIDTab= {}--GossipFrame，显示时用
         _G['WoWToolsGossipNPCCheckBox']:settings()
     end)
@@ -887,7 +889,9 @@ local function Init_Hook()
            C_GossipInfo.SelectAvailableQuest(questID)--or self:GetID()
 
         elseif
-            WoWTools_GossipMixin.QuestButton:not_Ace_QuestTrivial(questID)
+            _G['WoWToolsGossipQuestButton']
+            and _G['WoWToolsGossipQuestButton']:not_Ace_QuestTrivial(questID)
+
             or Save().NPC[npc]
             or DisableQuestTab[questID]
         then
@@ -952,6 +956,16 @@ local function Init_Hook()
 
     --C_GossipInfo.ForceGossip()
 --当没有选项时，闭关
+
+    local GreetingFrame= CreateFrame('Frame')
+    GreetingFrame.tabs={}
+
+    GreetingFrame:SetScript('OnEven', function(self, event)
+        self.tabs={}
+        self:UnregisterEvent(event)
+    end)
+
+
     WoWTools_DataMixin:Hook(GossipGreetingTextMixin , 'Setup', function(_, text)
         if Save().gossip
             and not IsModifierKeyDown()
@@ -959,7 +973,13 @@ local function Init_Hook()
             and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
         then
             C_GossipInfo.CloseGossip()
-            print(WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:CN(text), '|A:SpecDial_LastPip_BorderGlow:0:0|a')
+            if not GreetingFrame.tabs[text] then
+                print(WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:CN(text), '|A:SpecDial_LastPip_BorderGlow:0:0|a')
+                GreetingFrame:RegisterEvent('PLAYER_STARTED_MOVING')
+            else
+                GreetingFrame.tabs[text]= 1
+            end
+
         end
     end)
 

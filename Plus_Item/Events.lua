@@ -64,55 +64,6 @@ end
 
 
 
---商站
-function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
-
---右边，列表
-    WoWTools_DataMixin:Hook(PerksProgramScrollItemDetailsMixin, 'InitItem', function(frame, data)
-         WoWTools_ItemMixin:SetupInfo(frame, {itemID=data.itemID, point=frame.Icon})
-    end)
-
-
-    local function set_uptate(frame)
-        if not frame:HasView() then
-            return
-        end
-        for _, btn in pairs(frame:GetFrames()) do
-            if btn.itemID then
-                local itemLink= WoWTools_ItemMixin:GetLink(btn.itemID)
-                WoWTools_ItemMixin:SetupInfo(btn.ContentsContainer, itemLink and {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12} or nil)
-            elseif btn.GetItemInfo then--10.2
-                local itemInfo=btn:GetItemInfo()
-                if itemInfo then
-                    local itemLink= WoWTools_ItemMixin:GetLink(itemInfo.itemID)
-                    WoWTools_ItemMixin:SetupInfo(btn.ContentsContainer, itemLink and {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12} or nil)
-                end
-            end
---双击， 移队/加入购物车
-            if btn:IsObjectType('Button') and not btn:GetScript('OnDoubleClick') then
-                btn:SetScript('OnDoubleClick', function(b)
-                    b.ContentsContainer.CartToggleButton:Click()
-                end)
-            end
-        end
-
-        if PerksProgramFrame.GetFrozenItemFrame then
-            local f= PerksProgramFrame:GetFrozenItemFrame()
-            if f then
-                WoWTools_ItemMixin:SetupInfo(f.FrozenButton, f.FrozenButton.itemID and {itemLink=WoWTools_ItemMixin:GetLink(f.FrozenButton.itemID), size=12} or nil)
-            end
-        end
-    end
-
-    WoWTools_DataMixin:Hook(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'Update', function(frame)
-        set_uptate(frame)
-    end)
-
-    --C_Timer.After(0.3, function()
-       -- set_uptate(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox)
-    --end)
-end
-
 
 
 

@@ -3108,7 +3108,9 @@
         "FROM_TOTAL",
         "CurveConstants",
         "MultiBarBottomLeftButton12",
-        "GossipFrameMixin"
+        "GossipFrameMixin",
+        "HeaderSortButtonMixin",
+        "PERKS_PROGRAM_CART_COLLECTION_HEADER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
