@@ -256,7 +256,7 @@ local function Create_Spec_Button(index)
             not Save().isUIParent
             or self.isActive
             or not InCombatLockdown()
-            or isInCombat
+            or not isInCombat
         )
     end
     function btn:settings()
