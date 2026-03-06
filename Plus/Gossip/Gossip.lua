@@ -966,7 +966,7 @@ local function Init_Hook()
         if Save().gossip
             and not IsModifierKeyDown()
             and #C_GossipInfo.GetOptions()==0
-            and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
+            --and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
         then
             C_GossipInfo.CloseGossip()
             if text and not GreetingTextEmpty[text] then
