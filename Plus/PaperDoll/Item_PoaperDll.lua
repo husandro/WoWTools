@@ -221,7 +221,7 @@ local function set_no_Enchant(btn, slot, find, isPaperDollItemSlot)--附魔，�
 
     if btn.noEnchant then
         btn.noEnchant.tab=tab
-        if not InCombatLockdown() then
+        if not PlayerIsInCombat() then
             btn.noEnchant:SetAttribute("item", tab and tab.bag..' '..tab.slot or nil)
             btn.noEnchant:SetShown(tab and true or false)
         end

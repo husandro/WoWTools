@@ -1264,12 +1264,12 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
 
 
     BuffFrame.CollapseAndExpandButton:HookScript('OnMouseDown', function(btn, d)
-        if d~='RightButton' or InCombatLockdown() then
+        if d~='RightButton' or PlayerIsInCombat() then
             return
         end
 
         MenuUtil.CreateContextMenu(btn, function(_, root)
-            local col= InCombatLockdown() and '|cff626262' or ''
+            local col= PlayerIsInCombat() and '|cff626262' or ''
             local sub= root:CreateCheckbox(
                 WoWTools_DataMixin.Icon.icon2
                 ..col
@@ -1277,7 +1277,7 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
             function()
                 return C_CVar.GetCVarBool('buffDurations')
             end, function()
-                if not InCombatLockdown() then
+                if not PlayerIsInCombat() then
                     C_CVar.SetCVar('buffDurations', C_CVar.GetCVarBool('buffDurations') and 0 or 1)
                 end
             end)
@@ -1292,7 +1292,7 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
     end)
 
     BuffFrame.CollapseAndExpandButton:SetScript('OnEnter', function(btn)
-        if InCombatLockdown() then
+        if PlayerIsInCombat() then
             return
         end
         GameTooltip:SetOwner(btn, 'ANCHOR_BOTTOMRIGHT')

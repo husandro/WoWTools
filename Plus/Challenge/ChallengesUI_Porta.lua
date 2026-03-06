@@ -67,14 +67,14 @@ local function Create_Button(frame)
 
 
     frame:HookScript('OnShow', function(self)
-        if not InCombatLockdown() then
+        if not PlayerIsInCombat() then
             self.spellPort:SetShown(true)
         end
         self.spellPort:RegisterEvent('PLAYER_REGEN_DISABLED')
         self.spellPort:RegisterEvent('PLAYER_REGEN_ENABLED')
     end)
     frame:HookScript('OnHide', function(self)
-        if not InCombatLockdown() then
+        if not PlayerIsInCombat() then
             self.spellPort:SetShown(false)
         end
         self.spellPort:UnregisterAllEvents()
@@ -146,7 +146,7 @@ local function Is_Check()
     if not ChallengesFrame or not ChallengesFrame:IsVisible() then
         return
     end
-    if InCombatLockdown() then
+    if PlayerIsInCombat() then
         if not IsInCombat then
             IsInCombat= true
             EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)

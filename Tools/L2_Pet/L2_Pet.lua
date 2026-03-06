@@ -237,7 +237,7 @@ local function Init()
                 or WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中                
                 or UnitCastingInfo('player')
                 or UnitChannelInfo('player')
-                or InCombatLockdown()
+                or PlayerIsInCombat()
                 or UnitInVehicle('player') or OverrideActionBar:IsShown()
     )
     end
@@ -250,7 +250,7 @@ local function Init()
 
         local petID = C_PetJournal.GetSummonedPetGUID()
         local find= (petID and petID==info.petID) and true or false
-        if not find and info.auraName and not InCombatLockdown() and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') then
+        if not find and info.auraName and not PlayerIsInCombat() and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') then
             find=true
         end
         if Save().autoSummon and not find and self:can_summon() then
@@ -288,7 +288,7 @@ local function Init()
             end
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            if self.NumPet>0 and not InCombatLockdown() then
+            if self.NumPet>0 and not PlayerIsInCombat() then
                 self:RegisterEvent('PLAYER_STOPPED_MOVING')
                 self:RegisterEvent('COMPANION_UPDATE')
                 self:summoned_pet()
@@ -345,7 +345,7 @@ local function Init()
             if info.emote and UnitIsBattlePetCompanion('target') and C_PetJournal.GetSummonedPetGUID()==info.petID then
                 --DoEmote(info.emote)
                 C_ChatInfo.PerformEmote(info.emote, UnitName('target'), nil)
-                if info.auraName and not InCombatLockdown() and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') and self:can_summon() then
+                if info.auraName and not PlayerIsInCombat() and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') and self:can_summon() then
                     C_PetJournal.SummonRandomPet(true)
                 end
             end

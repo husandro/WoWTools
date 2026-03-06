@@ -1129,7 +1129,7 @@ local function Init()
                 self:set_frame()
             end
         else
-            if not InCombatLockdown() then
+            if not PlayerIsInCombat() then
                 if d==1 then
                     WoWTools_PanelMixin:Open(nil, WoWTools_DataMixin.onlyChinese and 'WoWTools 数据' or 'WoWTools Data')
                 else
@@ -1189,7 +1189,7 @@ local function Init()
         GameTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)..WoWTools_DataMixin.Icon.left,
 
-            (InCombatLockdown() and '|cff626262' or '')
+            (PlayerIsInCombat() and '|cff626262' or '')
             ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             ..WoWTools_DataMixin.Icon.right,
 
@@ -1209,7 +1209,7 @@ local function Init()
             1,1,1,1,1,1
         )
         GameTooltip:AddDoubleLine(
-            (InCombatLockdown() and '|cff626262' or '')
+            (PlayerIsInCombat() and '|cff626262' or '')
             ..(WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')),
             WoWTools_DataMixin.Icon.mid,
             1,1,1,1,1,1

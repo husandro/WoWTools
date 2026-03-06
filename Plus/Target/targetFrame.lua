@@ -94,7 +94,7 @@ local function Set_Texture()
     end
 
     targetFrame:SetScale(1)--缩放
-    targetFrame:set_color(Save().targetInCombat and InCombatLockdown() or false)
+    targetFrame:set_color(Save().targetInCombat and PlayerIsInCombat() or false)
 
     local scale= Save().scale or 1
     local elapse= Save().elapsed or 1

@@ -240,7 +240,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         return
     end
 
-    if not Save().ctrl or InCombatLockdown() then
+    if not Save().ctrl or PlayerIsInCombat() then
         return
     end
 

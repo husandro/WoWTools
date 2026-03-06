@@ -110,7 +110,7 @@ local function Init()
 
     function btn:set_Shown()
         local info
-        if not InCombatLockdown() or canaccesssecrets() then
+        if not PlayerIsInCombat() or canaccesssecrets() then
             info= C_UnitAuras.GetPlayerAuraBySpellID(42992)
                 or C_UnitAuras.GetPlayerAuraBySpellID(42993)
                 or C_UnitAuras.GetPlayerAuraBySpellID(42994)
@@ -180,7 +180,7 @@ local function Init()
 
     btn:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
-        if self.elapsed > 0.3 and (not InCombatLockdown() or canaccesssecrets()) then
+        if self.elapsed > 0.3 and (not PlayerIsInCombat() or canaccesssecrets()) then
             local info= C_UnitAuras.GetPlayerAuraBySpellID(43880) or C_UnitAuras.GetPlayerAuraBySpellID(43883)
             if info and info.expirationTime and info.expirationTime>0 then
                 self.timeText:SetText('|T'..info.icon..':0|t'..WoWTools_TimeMixin:Info(nil, true, nil, info.expirationTime))

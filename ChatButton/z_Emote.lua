@@ -363,7 +363,7 @@ function Init_Button()
         return
     end
 
-    local isInCombat= InCombatLockdown()
+    local isInCombat= PlayerIsInCombat()
 
 
     local isUIParent= Save().isUIParent

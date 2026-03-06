@@ -17,7 +17,7 @@ local function Use_Container_Item(free, data)
     free= free or Get_Bank_Free()
 
     for _, itemInfo in pairs(data) do
-        if free==0 or IsModifierKeyDown() or not BankFrame:IsShown() or InCombatLockdown() then
+        if free==0 or IsModifierKeyDown() or not BankFrame:IsShown() or PlayerIsInCombat() then
             free=0
             break
 

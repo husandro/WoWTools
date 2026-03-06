@@ -104,7 +104,7 @@ local function Init()--预创建队伍增强
             self.useMoreButton:SetPoint('LEFT', self.GroupDropdown, 'RIGHT')
             LFGListEntryCreationActivityDropdown:SetPoint('LEFT', self.useMoreButton, 'RIGHT')
             self.useMoreButton:SetScript('OnClick', function()
-                if not InCombatLockdown() then
+                if not PlayerIsInCombat() then
                     LFGListEntryCreationActivityFinder_Show(self.ActivityFinder, self.selectedCategory, nil, bit.bor(self.baseFilters, self.selectedFilters))
                 end
             end)
@@ -118,7 +118,7 @@ local function Init()--预创建队伍增强
                 enabled= false
             end
         end
-        self.useMoreButton:SetShown(enabled and not InCombatLockdown())
+        self.useMoreButton:SetShown(enabled and not PlayerIsInCombat())
     end)
 
 
@@ -143,17 +143,17 @@ local function Init()--预创建队伍增强
 
     WoWTools_DataMixin:Hook('LFGListCategorySelection_AddButton', function(self, btnIndex)--, categoryID, filter)
         local b= self.CategoryButtons[btnIndex]
-        if InCombatLockdown() or not b then
+        if PlayerIsInCombat() or not b then
             return
         end
 
         b:SetScript('OnDoubleClick', function()
-            if not InCombatLockdown() and LFGListFrame.CategorySelection.StartGroupButton:IsEnabled() then
+            if not PlayerIsInCombat() and LFGListFrame.CategorySelection.StartGroupButton:IsEnabled() then
                 LFGListFrame.CategorySelection.StartGroupButton:Click()
             end
         end)
         b:SetScript('OnMouseDown', function(f, d)
-            if not InCombatLockdown() and d=='RightButton' then
+            if not PlayerIsInCombat() and d=='RightButton' then
                 do
                     LFGListCategorySelectionButton_OnClick(f)
                 end
@@ -164,7 +164,7 @@ local function Init()--预创建队伍增强
         end)
         b:SetScript('OnLeave', function() GameTooltip:Hide() end)
         b:SetScript('OnEnter', function(f)
-            if InCombatLockdown() then
+            if PlayerIsInCombat() then
                 return
             end
             GameTooltip:SetOwner(f,  'ANCHOR_LEFT')
@@ -208,7 +208,7 @@ local function Init()--预创建队伍增强
 
     WoWTools_DataMixin:Hook('LFGListSearchEntry_Update', function(self)
         local resultID = self.resultID
-        if not resultID or not C_LFGList.HasSearchResultInfo(resultID) or InCombatLockdown() then
+        if not resultID or not C_LFGList.HasSearchResultInfo(resultID) or PlayerIsInCombat() then
             return
         end
 
@@ -304,7 +304,7 @@ local function Init()--预创建队伍增强
 
         if not self.OnDoubleClick then
             self:SetScript('OnDoubleClick', function(f)--LFGListApplicationDialogSignUpButton_OnClick(LFDButton) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
-                if InCombatLockdown() then
+                if PlayerIsInCombat() then
                     return
                 end
                 if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
@@ -401,7 +401,7 @@ local function Init()--预创建队伍增强
 
 --预创建队伍增强, 提示
     WoWTools_DataMixin:Hook('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID)--, autoAcceptOption)
-        if InCombatLockdown() then
+        if PlayerIsInCombat() then
             return
         end
         local info = C_LFGList.GetSearchResultInfo(resultID)

@@ -20,7 +20,7 @@ local function Set_Texture(self)
 end
 
 local function Set_Assisted(self)
-    if not InCombatLockdown() then
+    if not PlayerIsInCombat() then
         self:SetFrameStrata('BACKGROUND')
     else
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)

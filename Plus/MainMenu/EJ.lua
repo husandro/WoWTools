@@ -98,7 +98,7 @@ local function Init()
             GameTooltip:AddLine(' ')
         end
 
-        local isCombat= InCombatLockdown() or DISALLOW_FRAME_TOGGLING
+        local isCombat= PlayerIsInCombat() or DISALLOW_FRAME_TOGGLING
 
         GameTooltip:AddLine(
             (isCombat and '|cff626262' or '|cffffffff')

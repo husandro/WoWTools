@@ -16,7 +16,7 @@ function WoWTools_FrameMixin:IsLocked(frame)
         --return true
     --end
 
-    local disabled= frame:IsProtected() and InCombatLockdown()-- or issecure()
+    local disabled= frame:IsProtected() and PlayerIsInCombat()-- or issecure()
 
     if WoWTools_DataMixin.Player.husandro and disabled then
         local name= frame.GetName and frame:GetName()

@@ -501,7 +501,7 @@ local function Init_Menu(_, root)
     function()
         return C_CVar.GetCVarBool("movieSubtitle")
     end, function()
-        if not InCombatLockdown() then
+        if not PlayerIsInCombat() then
             C_CVar.SetCVar('movieSubtitle', C_CVar.GetCVarBool("movieSubtitle") and '0' or '1')
         end
         if SubtitlesFrame and SubtitlesFrame:IsShown() then
@@ -511,7 +511,7 @@ local function Init_Menu(_, root)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine("CVar: movieSubtitle")
     end)
-    sub2:SetEnabled(not InCombatLockdown())
+    sub2:SetEnabled(not PlayerIsInCombat())
 
 --跳过，过场动画
     sub=root:CreateCheckbox(

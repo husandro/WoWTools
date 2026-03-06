@@ -254,7 +254,7 @@ local function Create_Button(btn)
 
     function btn:set_alpha()
         self:SetAlpha(
-            (self.isEquipped or not InCombatLockdown())-- C_EquipmentSet.CanUseEquipmentSets())
+            (self.isEquipped or not PlayerIsInCombat())-- C_EquipmentSet.CanUseEquipmentSets())
             and 1 or 0.3
         )
     end
@@ -263,7 +263,7 @@ if not useSecureAction then
     btn:SetScript("OnClick",function(self)
         if self.setID
             and not C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID)
-            and not InCombatLockdown()
+            and not PlayerIsInCombat()
         then--装备管理，能否装备
             C_EquipmentSet.UseEquipmentSet(self.setID)
             if TrackButton.HelpTips then

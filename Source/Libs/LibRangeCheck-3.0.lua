@@ -57,7 +57,7 @@ local isTBC = WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 local isMidnight = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and interfaceVersion >= 120000
 
-local InCombatLockdownRestriction = function(unit) return InCombatLockdown() and not UnitCanAttack("player", unit) end
+local InCombatLockdownRestriction = function(unit) return PlayerIsInCombat() and not UnitCanAttack("player", unit) end
 
 local _G = _G
 local next = next

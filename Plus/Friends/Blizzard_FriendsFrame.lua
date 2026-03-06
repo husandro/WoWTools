@@ -174,7 +174,7 @@ local function Init_Friends_Menu(self, root)
 
     root:CreateDivider()
     root:CreateButton(
-        (InCombatLockdown() and '|cff626262' or '')
+        (PlayerIsInCombat() and '|cff626262' or '')
         ..WoWTools_FriendsMixin.addName,
     function()
         WoWTools_PanelMixin:Open(nil, WoWTools_FriendsMixin.addName)
@@ -193,7 +193,7 @@ end
 --处理，好友，在线信息
 local function Set_Friend_Event(self, _, friendIndex)
 --战斗中，不显示，好友，提示
-    if (not Save().showInCombatFriendInfo and InCombatLockdown() and IsInInstance()) then
+    if (not Save().showInCombatFriendInfo and PlayerIsInCombat() and IsInInstance()) then
         self.tips=nil
         return
     end

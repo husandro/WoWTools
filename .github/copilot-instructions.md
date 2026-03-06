@@ -115,7 +115,7 @@ Use `WoWTools_DataMixin:Load(id, loadType)` for:
 Check before modifying protected frames:
 ```lua
 local isProtected, isExplicit = frame:IsProtected()
-local disabled = isProtected and InCombatLockdown()
+local disabled = isProtected and PlayerIsInCombat()
 if disabled then return end  -- Can't modify in combat
 ```
 

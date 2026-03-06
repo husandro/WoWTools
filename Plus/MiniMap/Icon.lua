@@ -11,11 +11,11 @@ local function On_Enter(tootip)
     if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
         expButton:OnEnter()
         --GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        if InCombatLockdown() then
+        if PlayerIsInCombat() then
             return
         end
     else
-        if InCombatLockdown() then
+        if PlayerIsInCombat() then
             return
         end
         --GameTooltip:SetOwner(self, "ANCHOR_LEFT")

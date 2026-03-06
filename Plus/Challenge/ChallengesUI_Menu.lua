@@ -10,7 +10,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2, name
-    local isInCombat= InCombatLockdown()
+    local isInCombat= PlayerIsInCombat()
 
 
 

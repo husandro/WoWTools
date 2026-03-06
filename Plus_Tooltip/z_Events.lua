@@ -175,7 +175,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
     b:SetScript('OnEnter', function(f)
         GameTooltip:SetOwner(f, 'ANCHOR_BOTTOM')
         GameTooltip_SetTitle(GameTooltip, 
-            (InCombatLockdown() and '|cff606060' or '')
+            (PlayerIsInCombat() and '|cff606060' or '')
             ..(WoWTools_DataMixin.onlyChinese and '学习' or LEARN)
             ..WoWTools_DataMixin.Icon.left
             ..WoWTools_DataMixin.Icon.icon2
@@ -186,7 +186,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
     end)
 
     b:SetScript('OnClick', function(_, d)
-        if InCombatLockdown() then
+        if PlayerIsInCombat() then
             return
         end
 
@@ -223,7 +223,7 @@ C_Timer.After(0.5, function()
                         and f:IsVisible()
                         and not IsModifierKeyDown()
                         and f:GetParent():GetNodeInfo().canPurchaseRank
-                        and not InCombatLockdown()
+                        and not PlayerIsInCombat()
                         and C_Traits.PurchaseRank(RemixArtifactFrame:GetConfigID(), f:GetParent():GetNodeID())
                     then
                         f.isIn= true

@@ -69,7 +69,7 @@ function WoWTools_TooltipMixin:IsInCombatDisabled(tooltip)
     return --(tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect())--12.0才有
         not tooltip
         or WoWTools_FrameMixin:IsLocked(tooltip)
-        or (self:Save().isInCombatDisabled and InCombatLockdown())
+        or (self:Save().isInCombatDisabled and PlayerIsInCombat())
 end
 
 function WoWTools_TooltipMixin:OpenOption(root, name2)

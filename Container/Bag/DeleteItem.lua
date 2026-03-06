@@ -13,7 +13,7 @@ local function Check_ItemQuality(itemID, quality)
 end
 
 local function Delete_Item()
-    if not Save().inCombat and InCombatLockdown()  then
+    if not Save().inCombat and PlayerIsInCombat()  then
         return
     end
 
@@ -103,7 +103,7 @@ end
 
 
 local function Delete_AllItem(quality)
-    if not Save().inCombat and InCombatLockdown() then
+    if not Save().inCombat and PlayerIsInCombat() then
         return
     end
 
@@ -354,7 +354,7 @@ local function Create_Button(frame)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
 
-        if not Save().inCombat and InCombatLockdown() then
+        if not Save().inCombat and PlayerIsInCombat() then
             GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '战斗中', HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
 

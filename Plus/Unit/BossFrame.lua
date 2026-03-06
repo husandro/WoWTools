@@ -383,7 +383,7 @@ local function Init()
         for i=1, MAX_BOSS_FRAMES do
             local frame= _G['Boss'..i..'TargetFrame']
             if frame and frame.TotButton then
-                if InCombatLockdown() then
+                if PlayerIsInCombat() then
                     frame.TotButton:UnregisterEvent('PLAYER_REGEN_ENABLED')
                 else
                     frame.TotButton:ClearAllPoints()

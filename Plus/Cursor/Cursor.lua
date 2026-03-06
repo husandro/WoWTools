@@ -194,7 +194,7 @@ local function Cursor_Settings()
     elseif randomTexture then
         CursorFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
         CursorFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
-        if InCombatLockdown() then
+        if PlayerIsInCombat() then
             CursorFrame:RegisterEvent('PLAYER_STARTED_MOVING')
             CursorFrame:UnregisterEvent('GLOBAL_MOUSE_DOWN')
         else

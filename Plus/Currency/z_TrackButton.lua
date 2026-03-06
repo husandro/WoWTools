@@ -708,7 +708,7 @@ local function Init_Button(self)
 	self.frame:ReleaseAll()
 
 	local tab={}
-	local bat= InCombatLockdown()
+	local bat= PlayerIsInCombat()
 
 	if Save().indicato then
 		for currencyID in pairs(Save().tokens) do
@@ -938,7 +938,7 @@ local function Init()
 				IsInInstance()
 				or C_PetBattles.IsInBattle()
 				or UnitInVehicle('player') or OverrideActionBar:IsShown()
-				or InCombatLockdown()
+				or PlayerIsInCombat()
 			)
 		end
 		self:SetShown(show)

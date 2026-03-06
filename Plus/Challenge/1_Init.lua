@@ -65,7 +65,7 @@ end
         instanceID, name = EJ_GetInstanceByIndex(dataIndex, false)
     end
 
-    if not InCombatLockdown() then
+    if not PlayerIsInCombat() then
         EJ_SelectTier(cur or max)
     end
 end]]

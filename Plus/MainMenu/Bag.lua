@@ -187,13 +187,13 @@ local function Init()
     end)
 
 --收起，背包小按钮
-    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") and not InCombatLockdown() then--MainMenuBarBagButtons.lua
+    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") and not PlayerIsInCombat() then--MainMenuBarBagButtons.lua
         C_CVar.SetCVar("expandBagBar", '0')
     end
 
     --if not MainMenuBarBackpackButton.OnClick then
     MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not InCombatLockdown() then--and not C_CVar.GetCVarBool("combinedBags") then
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not PlayerIsInCombat() then--and not C_CVar.GetCVarBool("combinedBags") then
             ToggleAllBags()
         end
     end)

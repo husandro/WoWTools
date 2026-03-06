@@ -205,7 +205,7 @@ local function Init()
                 ))
             end
 
-        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false) or InCombatLockdown() then
+        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false) or PlayerIsInCombat() then
             GameTooltip_AddErrorLine(GameTooltip,
                 WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE
             )

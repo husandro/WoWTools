@@ -204,7 +204,7 @@ local function Init()
     QuestButton:SetPoint('RIGHT', _G['WoWToolsGossipButton'], 'LEFT')
 
     function QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
-        if not Save().autoSortQuest or IsInInstance() or InCombatLockdown() then
+        if not Save().autoSortQuest or IsInInstance() or PlayerIsInCombat() then
             return
         end
         if self.setQuestWatchTime then

@@ -158,7 +158,7 @@ local PointTab={
                 ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
             )
             for i = GetNumMacros(), 1, -1 do
-                if IsModifierKeyDown() or InCombatLockdown() then
+                if IsModifierKeyDown() or PlayerIsInCombat() then
                     return
                 end
                 local name, icon = GetMacroInfo(i)
@@ -199,7 +199,7 @@ local PointTab={
                 ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
             )
             for i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), MAX_ACCOUNT_MACROS+1, -1 do
-                if IsModifierKeyDown() or InCombatLockdown() then
+                if IsModifierKeyDown() or PlayerIsInCombat() then
                     return
                 end
                 local name, icon = GetMacroInfo(i)
@@ -244,7 +244,7 @@ local function Create_Button(name)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
 
-        if InCombatLockdown() then
+        if PlayerIsInCombat() then
             GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         else
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MacroMixin.addName)
@@ -260,7 +260,7 @@ local function Create_Button(name)
         GameTooltip:Show()
     end
     btn:SetScript('OnClick', function(self, d)
-        if InCombatLockdown() then return end
+        if PlayerIsInCombat() then return end
         if d=='LeftButton' then
             if self.textCursor then
                 MacroFrameText:SetCursorPosition(self.textCursor)
@@ -389,7 +389,7 @@ local function Init()
     Button:SetScript('OnShow', function(self)
         self:RegisterEvent('PLAYER_REGEN_DISABLED')
         self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        self.Text:SetShown(InCombatLockdown())
+        self.Text:SetShown(PlayerIsInCombat())
     end)
     Button:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()

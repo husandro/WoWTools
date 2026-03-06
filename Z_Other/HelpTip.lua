@@ -1,7 +1,7 @@
 
 
 local function Init()
-    if C_CVar.GetCVarBool("showNPETutorials") and not InCombatLockdown() then
+    if C_CVar.GetCVarBool("showNPETutorials") and not PlayerIsInCombat() then
         C_CVar.SetCVar("showNPETutorials",'0')
     end
 

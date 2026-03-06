@@ -49,7 +49,7 @@ end
 
 
 local function Set_Aura()--光环取消
-    if InCombatLockdown() then
+    if PlayerIsInCombat() then
         return
     end
     for i = 1, 255 do

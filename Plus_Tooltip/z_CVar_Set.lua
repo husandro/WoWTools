@@ -100,7 +100,7 @@ end
 
 
 function WoWTools_TooltipMixin:Init_CVar()
-    if WoWToolsSave['Plus_Tootips'].setCVar and not InCombatLockdown() then
+    if WoWToolsSave['Plus_Tootips'].setCVar and not PlayerIsInCombat() then
         WoWTools_TooltipMixin:Set_CVar(nil, nil, true)--设置CVar
     end
 
@@ -109,7 +109,7 @@ function WoWTools_TooltipMixin:Init_CVar()
         EventRegistry:RegisterFrameEventAndCallback("SETTINGS_LOADED", function(owner)
             local set= Settings.GetSetting("PROXY_SHOW_ACTIONBAR_4")
 
-            if not InCombatLockdown() and(not set or not set:GetValue())  then
+            if not PlayerIsInCombat() and(not set or not set:GetValue())  then
                 Settings.SetValue("PROXY_SHOW_ACTIONBAR_2", true)
                 Settings.SetValue("PROXY_SHOW_ACTIONBAR_3", true)
                 Settings.SetValue("PROXY_SHOW_ACTIONBAR_4", true)

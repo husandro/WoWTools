@@ -96,13 +96,13 @@ local function Init()
         root:CreateDivider()
 
         local sub=root:CreateCheckbox(
-            (InCombatLockdown() and '|cff606060' or '')
+            (PlayerIsInCombat() and '|cff606060' or '')
             ..(WoWTools_DataMixin.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT)
             ..WoWTools_DataMixin.Icon.icon2,
         function()
             return C_CVar.GetCVarBool("minimapTrackingShowAll") and true or false
         end, function()
-            if not InCombatLockdown() then
+            if not PlayerIsInCombat() then
                 if C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' ) then
                     return MenuResponse.CloseAll
                 end

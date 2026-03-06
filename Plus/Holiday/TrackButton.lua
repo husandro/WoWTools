@@ -926,7 +926,7 @@ local function Init()
         local hide= IsInInstance()
             or C_PetBattles.IsInBattle()
             or UnitInVehicle('player') or OverrideActionBar:IsShown()
-            or InCombatLockdown()
+            or PlayerIsInCombat()
 
         local showFrame= not hide and not Save().hide
 

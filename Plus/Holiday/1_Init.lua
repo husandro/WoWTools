@@ -41,7 +41,7 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 
 local function Init_Open()
-    if InCombatLockdown() then
+    if PlayerIsInCombat() then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
     else
         EventRegistry:RegisterFrameEventAndCallback("CALENDAR_UPDATE_EVENT_LIST", function(owner)

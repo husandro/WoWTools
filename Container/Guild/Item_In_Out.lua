@@ -261,7 +261,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
            not self:IsVisible()
             or StopRun
             or GetCurrentGuildBankTab()~= tabID
-            or InCombatLockdown()
+            or PlayerIsInCombat()
         then
             print(
                 WoWTools_DataMixin.Icon.icon2..itemIndex,

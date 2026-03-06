@@ -75,7 +75,7 @@ local function Init()
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(
                 (C_AccountStore.GetStoreFrontState(Constants.AccountStoreConsts.PlunderstormStoreFrontID) ~= Enum.AccountStoreState.Available and '|cff828282'
-                    or (InCombatLockdown() and '|cff626262')
+                    or (PlayerIsInCombat() and '|cff626262')
                     or '|cffffffff'
                 )
                 ..(WoWTools_DataMixin.onlyChinese and '霸业商店' or PLUNDERSTORM_PLUNDER_STORE_TITLE)..'|r'
