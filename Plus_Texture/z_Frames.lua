@@ -519,7 +519,6 @@ function WoWTools_TextureMixin.Frames:MerchantFrame()
     self:SetButton(MerchantPrevPageButton, 1)
 
     self:SetScrollBar(MerchantFrame)
-    --self:SetNineSlice(MerchantFrame)
     self:HideFrame(MerchantFrame)
 
     self:SetTabButton(MerchantFrameTab1)

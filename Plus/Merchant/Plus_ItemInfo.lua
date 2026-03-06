@@ -43,10 +43,12 @@ local function Init_UI()
     MerchantBuyBackItem:SetPoint('BOTTOMRIGHT', MerchantFrame, -16, 33)--115
 
 --回购, 物品名称
+    WoWTools_ButtonMixin:AddMask(MerchantBuyBackItemItemButton, false, MerchantBuyBackItemItemButtonIconTexture)
+    MerchantBuyBackItemName:SetAlpha(0)
     MerchantBuyBackItemName:ClearAllPoints()
-    MerchantBuyBackItemName:SetPoint('BOTTOMLEFT', MerchantBuyBackItemItemButtonIconTexture, 'TOPLEFT', 0, 5)
-    MerchantBuyBackItemName:SetPoint('RIGHT', MerchantFrame)
-    MerchantBuyBackItemName:SetHeight(6)
+    --MerchantBuyBackItemName:SetPoint('BOTTOMLEFT', MerchantBuyBackItemItemButtonIconTexture, 'TOPLEFT', 0, 5)
+    --MerchantBuyBackItemName:SetPoint('RIGHT', MerchantFrame)
+    --MerchantBuyBackItemName:SetHeight(6)
 
     WoWTools_TextureMixin:SetAlphaColor(MerchantBuyBackItemItemButtonNormalTexture, nil, nil, 0.5)
 

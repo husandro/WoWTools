@@ -930,13 +930,14 @@ local function Init()
 		self:set_texture()
 	end
 
+
 	function TrackButton:set_shown()
 		local show= not Save().Hide
 		if show and not Save().notAutoHideTrack then
 			show= not (
 				IsInInstance()
 				or C_PetBattles.IsInBattle()
-				or UnitHasVehicleUI('player')
+				or UnitInVehicle('player')--UnitHasVehicleUI('player')
 				or PlayerIsInCombat()
 			)
 		end
