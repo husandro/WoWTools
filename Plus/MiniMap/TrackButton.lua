@@ -1152,12 +1152,12 @@ local function Init_Button()
 
     function TrackButton:set_shown(isInCombat)
         local hide= not Save().vigentteButton
-        or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
-        or C_PetBattles.IsInBattle()
-        or UnitInVehicle('player') or OverrideActionBar:IsShown()
-        or (InCombatLockdown() or isInCombat)
-        or WorldMapFrame:IsShown()
-        
+            or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
+            or C_PetBattles.IsInBattle()
+            or UnitInVehicle('player') or OverrideActionBar:IsShown()
+            or (InCombatLockdown() or isInCombat)
+            or WorldMapFrame:IsShown()
+
         self:SetShown(not hide)
         self.Frame:SetShown(Save().vigentteButtonShowText and not hide)
         self.elapsed=nil
