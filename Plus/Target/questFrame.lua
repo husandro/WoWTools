@@ -30,13 +30,11 @@ local function Find_Text(text)
             if min and max and max> min then
                 return max- min
             end
-            --return true
         elseif text:find('[%d%.]+%%') then
             local value= text:match('([%d%.]+%%)')
             if value and value~='100%' then
                 return value
             end
-            --return true
         end
     end
 end
@@ -44,18 +42,23 @@ end
 
 
 ---取得，内容 GameTooltip.lua --local questID= line and line.id
-local function Get_Unit_Text( unit)
-    if UnitInPartyIsAI(unit) then
+local function Get_Unit_Text(unit)
+    local isAI= UnitInPartyIsAI(unit)
+
+    if not canaccessvalue(isAI) then
+        return
+
+    elseif isAI then
         local role = UnitGroupRolesAssigned(unit)
         if role and role~='NONE' then
             return WoWTools_DataMixin.Icon[role]
         end--if role=='TANK' or role=='HEALER' then
 
     elseif not UnitIsPlayer(unit) then
-        local tooltipData = C_TooltipInfo.GetUnit(unit)
-        if tooltipData and tooltipData.lines then
-            for i = 4, #tooltipData.lines do
-                local line = tooltipData.lines[i]
+        local data = C_TooltipInfo.GetUnit(unit)
+        if canaccesstable(data) and data and data.lines then
+            for i = 4, #data.lines do
+                local line = data.lines[i]
                 local text= Find_Text(line.leftText)
                 if text then
                     return text
@@ -109,11 +112,8 @@ local function Set_Quest_Text(plate)
     end
 
 
-    local text
-    local exists= UnitExists(frame.unit)
-    if canaccessvalue(exists) and exists then
-        text= Get_Unit_Text(frame.unit)
-    end
+    local text= Get_Unit_Text(frame.unit)
+
 
     if text and not frame.questProgress then
         frame.questProgress= frame:CreateFontString(nil, 'ARTWORK', 'ChatFontNormal') -- WoWTools_LabelMixin:Create(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
@@ -194,7 +194,7 @@ local function Init()
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
         if IsInRaid()
-            or IsInInstance()
+            or (IsInInstance() and IsInGroup(LE_PARTY_CATEGORY_HOME) and not WoWTools_MapMixin:IsInDelve())
             or WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
             or C_ChallengeMode.IsChallengeModeActive()
         then
