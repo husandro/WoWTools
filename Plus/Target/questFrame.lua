@@ -209,12 +209,13 @@ local function Init()
             'SCENARIO_COMPLETED',
             'QUEST_POI_UPDATE',
             'NAME_PLATE_UNIT_ADDED',
+            'GROUP_ROSTER_UPDATE',
             --'NAME_PLATE_UNIT_REMOVED',
         })
 
-        if UnitInPartyIsAI('party1') then
+        --[[if UnitInPartyIsAI('party1') then
             self:RegisterEvent('GROUP_ROSTER_UPDATE')
-        end
+        end]]
 
         Check_AllPlate()
     end
