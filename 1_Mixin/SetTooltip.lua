@@ -414,7 +414,7 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
         --end
     elseif rewardQuestID then
         GameTooltip_AddQuestRewardsToTooltip(tooltip, rewardQuestID)
-        GameTooltip_AddQuestTimeToTooltip(tooltip, questID)
+        GameTooltip_AddQuestTimeToTooltip(tooltip, rewardQuestID)
 
     elseif vignetteGUID then
         set_vignetteGUID(tooltip, vignetteGUID)

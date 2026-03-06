@@ -1,46 +1,3 @@
-local P_Save={
-    --noSell={},
-    --Sell={},
-    --buyItems={},
-
-    --notAutoLootPlus= WoWTools_DataMixin.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
-    --notPlus=true,--商人 Plus,加宽
-
-    --notSellBoss=true,--出售，BOSS，掉落
-    bossItems={},
-    saveBossLootList= WoWTools_DataMixin.Player.husandro,--保存，BOSS，列表
-
-    --notAutoRepairAll=true,--自动修理
-
-    MERCHANT_ITEMS_PER_PAGE= 24,--页，物品数量
-    numLine=6,--行数
-
-
-    --repairItems={date=date('%x'), player=0, guild=0, num=0},旧数据，已不用
-
-    --notItemInfo=true,--禁用物品信息
-    --notIsUsableAlpha=1,--无法使用物品，alpha
-    --ShowBackground=false,--显示背景
-}
-
-
-local P_WoWSave={
-    buy={},--[guid]={[itemID]=numbre,}
-    sell={
-        [34498]=true,--[纸飞艇工具包]
-    },
-    noSell={
-        [144341]=true,--[可充电的里弗斯电池]
-        [49040]=true,--[基维斯]
-        [114943]=true,--[终极版侏儒军刀]
-        [103678]=true,--迷时神器
-        [142469]=true,--魔导大师的紫罗兰印戒
-        [139590]=true,--[传送卷轴：拉文霍德]
-        [144391]=true,--拳手的重击指环
-        [144392]=true,--拳手的重击指环
-        [37863]=true,--[烈酒的遥控器]
-    },
-}
 
 
 local function Save()
@@ -87,8 +44,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_SellBuy']= WoWToolsSave['Plus_SellBuy'] or P_Save
-            P_Save= nil
+            WoWToolsSave['Plus_SellBuy']= WoWToolsSave['Plus_SellBuy'] or {
+                --noSell={},
+                --Sell={},
+                --buyItems={},
+                --notAutoLootPlus= WoWTools_DataMixin.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
+                --notPlus=true,--商人 Plus,加宽
+
+                --notSellBoss=true,--出售，BOSS，掉落
+                bossItems={},
+                saveBossLootList= WoWTools_DataMixin.Player.husandro,--保存，BOSS，列表
+
+                --notAutoRepairAll=true,--自动修理
+
+                MERCHANT_ITEMS_PER_PAGE= 24,--页，物品数量
+                numLine=6,--行数
+                --repairItems={date=date('%x'), player=0, guild=0, num=0},旧数据，已不用
+
+                --notItemInfo=true,--禁用物品信息
+                --notIsUsableAlpha=1,--无法使用物品，alpha
+                --ShowBackground=false,--显示背景
+            }
 
             Save().notDELETE= nil--旧数据， 你确定要摧毁%s吗？|n|n此操作无法撤销。|n|n请输入“%s”进行确认
 
@@ -99,7 +75,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWToolsPlayerDate['RepairMoney']= WoWToolsPlayerDate['RepairMoney'] or {date=date('%x'), player=0, guild=0, num=0}
             end
 
-            WoWToolsPlayerDate['SellBuyItems']= WoWToolsPlayerDate['SellBuyItems'] or P_WoWSave
+            WoWToolsPlayerDate['SellBuyItems']= WoWToolsPlayerDate['SellBuyItems'] or {
+                buy={},--[guid]={[itemID]=numbre,}
+                sell={
+                    [34498]=true,--[纸飞艇工具包]
+                },
+                noSell={
+                    [144341]=true,--[可充电的里弗斯电池]
+                    [49040]=true,--[基维斯]
+                    [114943]=true,--[终极版侏儒军刀]
+                    [103678]=true,--迷时神器
+                    [142469]=true,--魔导大师的紫罗兰印戒
+                    [139590]=true,--[传送卷轴：拉文霍德]
+                    [144391]=true,--拳手的重击指环
+                    [144392]=true,--拳手的重击指环
+                    [37863]=true,--[烈酒的遥控器]
+                },
+            }
 
             if not WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID] then
                 WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID]= {}

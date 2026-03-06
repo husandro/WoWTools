@@ -91,8 +91,7 @@ function WoWTools_UnitMixin:Get_NPC_Name()
     local name= GetUnitName('npc')
     if canaccessvalue(name) and name then
         local color= self:GetColor('npc', nil)
-        return
-            color:WrapTextInColorCode(WoWTools_TextMixin:CN(name, {unit='npc', isName=true}))
+        return color:WrapTextInColorCode(WoWTools_TextMixin:CN(name, {unit='npc', isName=true}))
     else
         return ''
     end

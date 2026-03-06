@@ -276,6 +276,7 @@ Plus\WorldMap\Name_AreaPOIPin.lua
 Plus\WorldMap\Name_Dungeon.lua
 Plus\WorldMap\Name_FlightMap.lua
 Plus\WorldMap\Name_WorldQuest.lua
+Plus\WorldMap\Player_Pin.lua
 Plus\WorldMap\z_Plus_Menu.lua
 Plus\WorldMap\z_Plus.lua
 Plus\WorldMap\z_UI.lua

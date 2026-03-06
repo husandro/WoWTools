@@ -1,39 +1,3 @@
-
-
-local P_Save={
-    --disabled=true,
-
-    disabledADD={},
-    BottomPoint={
-        Mount=true,
-        Hearthstone=true,
-        OpenItems=true,
-        MapToy=true,
-    },
-    scale=1,
-    strata='MEDIUM',
-
-    height=10,
-    lineNum=10,
-
-    isEnterShow=true,
-    isCombatHide=true,
-    isMovingHide=true,
-    isMainMenuHide=true,
-    showIcon=true,
-    --loadCollectionUI=nil,
-    --show=false,
-    --point
-    isShowBackground=WoWTools_DataMixin.Player.husandro,
-
-    bgAlpha= 0.5,
-    borderAlpha=0,
-}
-
-
-
-
-
 local function Save()
     return WoWToolsSave['WoWTools_ToolsButton']
 end
@@ -502,8 +466,35 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['WoWTools_ToolsButton']= WoWToolsSave['WoWTools_ToolsButton'] or P_Save
-            P_Save= nil
+            WoWToolsSave['WoWTools_ToolsButton']= WoWToolsSave['WoWTools_ToolsButton'] or {
+                --disabled=true,
+
+                disabledADD={},
+                BottomPoint={
+                    Mount=true,
+                    Hearthstone=true,
+                    OpenItems=true,
+                    MapToy=true,
+                },
+                scale=1,
+                strata='MEDIUM',
+
+                height=10,
+                lineNum=10,
+
+                isEnterShow=true,
+                isCombatHide=true,
+                isMovingHide=true,
+                isMainMenuHide=true,
+                showIcon=true,
+                --loadCollectionUI=nil,
+                --show=false,
+                --point
+                isShowBackground=WoWTools_DataMixin.Player.husandro,
+
+                bgAlpha= 0.5,
+                borderAlpha=0,
+            }
 
             Save().borderAlpha= Save().borderAlpha or 0.3
 

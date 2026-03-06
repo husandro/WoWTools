@@ -85,13 +85,15 @@ local function Init()
         return
     end
 
-    Frame= CreateFrame('Frame', 'WoWToolsWorldMapMapIDFrame', _G['WoWTools_PlusWorldMap_MenuButton'])
-    Frame:SetPoint('LEFT')
+    Frame= CreateFrame('Frame', 'WoWToolsWorldMapMapIDFrame', WorldMapFrameCloseButton)
+    Frame:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*3, 0)
+
     Frame:SetSize(1,1)
     Frame:Hide()
 
-    Frame.Text=WoWTools_LabelMixin:Create(Frame, {copyFont= WorldMapFrameTitleText})
+    Frame.Text= Frame:CreateFontString(nil, 'BORDER', 'WoWToolsFont')-- WoWTools_LabelMixin:Create(Frame, {copyFont= WorldMapFrameTitleText})
     Frame.Text:SetPoint('RIGHT', Frame, 'LEFT', -2, 0)
+    Frame.Text:SetJustifyH('RIGHT')
 
     Frame.storyText=WoWTools_LabelMixin:Create(Frame)
     Frame.storyText:SetPoint('RIGHT', Frame.Text, 'LEFT', -2, 0)

@@ -21,6 +21,10 @@ local function Init()
 
     WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
 
+    if WoWTools_DataMixin.Player.husandro then
+        WoWTools_WorldMapMixin:Init_PlayerPin()
+    end
+
     Init=function()end
 end
 
@@ -74,6 +78,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         },]]
 
         --notPlus=true--其它增强 z_Plus.lua
+        PlayerPin={}
     }
 
     if not Save().PlayerXY then--清除，旧数据
@@ -99,6 +104,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save().PlayerXY_BGAlpha=nil--0.5
         Save().PlayerXY_TextY=nil--
     end
+
+    Save().PlayerPin= Save().PlayerPin or {}
+    WoWToolsPlayerDate.WorldMapPin= WoWToolsPlayerDate.WorldMapPin or {}
 
     WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
 

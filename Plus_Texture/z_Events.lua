@@ -1207,6 +1207,8 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_PerksProgram()
+    self:SetCheckBox(PerksProgramFrame.FooterFrame.TogglePlayerPreview)
+    self:SetCheckBox(PerksProgramFrame.FooterFrame.ToggleMountSpecial)
     self:SetCheckBox(PerksProgramFrame.FooterFrame.ToggleHideArmor)
     self:SetCheckBox(PerksProgramFrame.FooterFrame.ToggleAttackAnimation)
 

@@ -1,11 +1,9 @@
-
-local GossipButton, NumGossipCNLabel
-local SelectGissipIDTab= {}--GossipFrame，显示时用
 local function Save()
     return WoWToolsSave['Plus_Gossip']
 end
-
-
+local GossipButton, NumGossipCNLabel
+local GreetingTextEmpty={}--没有选项时，自动关闭
+local SelectGissipIDTab= {}--GossipFrame，显示时用
 
 
 
@@ -834,11 +832,11 @@ local function Init_Hook()
             SelectGissipIDTab[index]=true
             print(
                 '|A:SpecDial_LastPip_BorderGlow:0:0|a'
-                ..WoWTools_UnitMixin:Get_NPC_Name()
-                ..WoWTools_DataMixin.Icon.icon2,
+                ..WoWTools_UnitMixin:Get_NPC_Name(),
 
                '|T'..(info.overrideIconID or info.icon or 0)..':0|t|cnGREEN_FONT_COLOR:'
                 ..(name or '')
+                ..WoWTools_DataMixin.Icon.icon2
             )
         end
     end)
@@ -958,9 +956,8 @@ local function Init_Hook()
 --当没有选项时，闭关
 
     local GreetingFrame= CreateFrame('Frame')
-    GreetingFrame.tabs={}
     GreetingFrame:SetScript('OnEvent', function(self, event)
-        self.tabs={}
+        GreetingTextEmpty={}
         self:UnregisterEvent(event)
     end)
 
@@ -972,14 +969,10 @@ local function Init_Hook()
             and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
         then
             C_GossipInfo.CloseGossip()
-            if text then
-
-                if not GreetingFrame.tabs[text] then
-                    print(WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:CN(text), '|A:SpecDial_LastPip_BorderGlow:0:0|a')
-                    GreetingFrame:RegisterEvent('PLAYER_STARTED_MOVING')
-                else
-                    GreetingFrame.tabs[text]= 1
-                end
+            if text and not GreetingTextEmpty[text] then
+                print('|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_TextMixin:CN(text)..WoWTools_DataMixin.Icon.icon2)
+                GreetingFrame:RegisterEvent('PLAYER_STARTED_MOVING')
+                GreetingTextEmpty[text]= 1
             end
         end
     end)

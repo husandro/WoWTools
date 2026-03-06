@@ -3110,7 +3110,13 @@
         "MultiBarBottomLeftButton12",
         "GossipFrameMixin",
         "HeaderSortButtonMixin",
-        "PERKS_PROGRAM_CART_COLLECTION_HEADER"
+        "PERKS_PROGRAM_CART_COLLECTION_HEADER",
+        "ITEM_COSMETIC",
+        "AUCTION_HOUSE_HEADER_ITEM",
+        "ICON_FILTER_ITEM",
+        "PerksProductPriceMixin",
+        "PerksProgramProductButtonMixin",
+        "PerksProgramFrozenProductButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
