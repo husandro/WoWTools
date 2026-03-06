@@ -519,7 +519,7 @@ local function Init()
 
 
 
-	function TrackButton:set_Shown()
+	function TrackButton:set_Shown(isInComabt)
 		local hide= not Save().btn
 		or (
 		   not Save().notAutoHideTrack and (
@@ -527,7 +527,8 @@ local function Init()
 				or C_PetBattles.IsInBattle()
 				or UnitInVehicle('player')
 				or OverrideActionBar:IsShown()
-				or PlayerIsInCombat()
+				or InCombatLockdown()
+				or isInComabt
 			)
 	   )
 	   	self:SetShown(not hide)
@@ -543,7 +544,7 @@ local function Init()
 		if event=='UPDATE_FACTION' then
 			TrackButton_Settings()
 		else
-			self:set_Shown()
+			self:set_Shown(event=='PLAYER_REGEN_DISABLED')
 		end
 	end)
 

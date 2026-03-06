@@ -155,7 +155,7 @@ local function Sell_Items(tab)
     for _, info in pairs(tab) do
         if IsModifierKeyDown()
             or not MerchantFrame:IsShown()
-            or PlayerIsInCombat()
+            or InCombatLockdown()
             --or MerchantFrame.selectedTab~=1
         then
             break

@@ -163,7 +163,7 @@ local function setTextrue(self)--设置图标
         icon=136116
     elseif icon then
         local spellID= self.spellID or (self.itemID and select(2, C_Item.GetItemSpell(self.itemID)))
-        if canaccessvalue(spellID) and spellID and (not PlayerIsInCombat() or canaccesssecrets()) then
+        if canaccessvalue(spellID) and spellID and (not InCombatLockdown() or canaccesssecrets()) then
             local aura = C_UnitAuras.GetPlayerAuraBySpellID(spellID)
             if aura and aura.spellId==spellID then
                 icon=136116
@@ -190,7 +190,7 @@ local function setClickAtt(self)--设置 Click属性
 
     local isFlyableArea= IsFlyableArea()
     local isMoving= IsPlayerMoving()
-    local isBat= PlayerIsInCombat()
+    local isBat= InCombatLockdown()
     local spellID
     local isAdvancedFlyableArea = IsAdvancedFlyableArea()
 
@@ -443,7 +443,7 @@ local function Init()
                 C_MountJournal.Dismiss()
 
             --战斗中，可用，驭空术
-            elseif PlayerIsInCombat() and not IsPlayerMoving() and C_Spell.IsSpellUsable(368896) then
+            elseif InCombatLockdown() and not IsPlayerMoving() and C_Spell.IsSpellUsable(368896) then
                 local spellID2= getRandomRoll('Dragonriding')
                 local mountID= spellID2 and C_MountJournal.GetMountFromSpell(spellID2) or 368896
                 if mountID then

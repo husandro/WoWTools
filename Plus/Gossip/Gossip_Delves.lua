@@ -39,7 +39,7 @@ local function Init_OnShow(self)
                     DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:SetRewards();
                     DelvesDifficultyPickerFrame:UpdatePortalButtonState();
 
-                    if not PlayerIsInCombat() then
+                    if not InCombatLockdown() then
                         SetCVar('lastSelectedDelvesTier', option.orderIndex + 1)
                     end
 

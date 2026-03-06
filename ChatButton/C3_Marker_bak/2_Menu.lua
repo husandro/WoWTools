@@ -245,12 +245,12 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateCheckbox(
         (WoWTools_MapMixin:IsInPvPArea()
-        or (PlayerIsInCombat()) and '|cff626262' or '')
+        or (InCombatLockdown()) and '|cff626262' or '')
         ..(WoWTools_DataMixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
         return  _G['WoWToolsMarkerMoveButton'] and  _G['WoWToolsMarkerMoveButton']:IsShown()
     end, function()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             Save().markersFrame= not Save().markersFrame and true or nil
             WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
         end
@@ -258,7 +258,7 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, WoWTools_DataMixin.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''))
         GameTooltip_AddNormalLine(tooltip, WoWTools_DataMixin.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR)))
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
         end
     end)

@@ -100,7 +100,7 @@ end
 --打开，选项
 --Settings.OpenToCategory(categoryID, scrollToElementName)
 function WoWTools_PanelMixin:Open(category, name)
-    if PlayerIsInCombat() then
+    if InCombatLockdown() then
         return
     end
 

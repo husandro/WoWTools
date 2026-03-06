@@ -144,7 +144,7 @@ local function Set_OnEnter(self)
     if self.journalInstanceID then
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(
-            ((PlayerIsInCombat() and (not EncounterJournal or not EncounterJournal:IsShown())
+            ((InCombatLockdown() and (not EncounterJournal or not EncounterJournal:IsShown())
                 or not AdventureGuideUtil.IsAvailable())
                 and '|cff828282' or '|cnGREEN_FONT_COLOR:'
             )

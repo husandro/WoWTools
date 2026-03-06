@@ -197,7 +197,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
     KeyFrame.InsetKeyButton:SetSize(70,24)
     KeyFrame.InsetKeyButton:SetText(WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     KeyFrame.InsetKeyButton:SetScript("OnMouseDown",function()
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             print(
                 WoWTools_ChallengeMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|cnWARNING_FONT_COLOR:',

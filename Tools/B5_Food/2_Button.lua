@@ -86,6 +86,7 @@ local function Init()
     if not btn then
         return
     end
+    WoWTools_FoodMixin:Set_Button_Function(btn)
 
     btn.CheckFrame= CreateFrame('Frame')
     function btn.CheckFrame:set_event()
@@ -300,7 +301,7 @@ local function Init()
     btn:set_scale()
     --btn:set_background()
 
-    WoWTools_FoodMixin:Set_Button_Function(btn)
+
     Set_AltSpell()
     btn:settings()
     btn:set_attribute()

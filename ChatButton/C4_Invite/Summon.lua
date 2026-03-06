@@ -31,7 +31,7 @@ local function Init()
             return
         end
 
-        if not PlayerIsInCombat() and PlayerCanTeleport() then--启用，召唤
+        if not InCombatLockdown() and PlayerCanTeleport() then--启用，召唤
             if not self.enabledAutoSummon then
                 self.enabledAutoSummon= true
                 if self.SummonTimer then
@@ -41,7 +41,7 @@ local function Init()
                 WoWTools_CooldownMixin:Setup(self, nil, 3, nil, true, true, nil)--冷却条
 
                 self.SummonTimer= C_Timer.NewTimer(3, function()
-                    if not PlayerIsInCombat() and PlayerCanTeleport() then
+                    if not InCombatLockdown() and PlayerCanTeleport() then
                         C_SummonInfo.ConfirmSummon()
                         StaticPopup_Hide("CONFIRM_SUMMON")
                         if not IsInGroup() or Save().notSummonChat then

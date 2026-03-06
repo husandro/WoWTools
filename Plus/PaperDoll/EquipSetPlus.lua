@@ -29,7 +29,7 @@ local function Create_Button(btn)
 
     btn.useButton:SetPoint('BOTTOMRIGHT', btn.EditButton, 'BOTTOMLEFT')
     btn.useButton:SetScript('OnClick', function(self)
-        if not C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID) and not PlayerIsInCombat() then
+        if not C_EquipmentSet.EquipmentSetContainsLockedItems(self.setID) and not InCombatLockdown() then
             EquipmentManager_EquipSet(self.setID)
         end
     end)

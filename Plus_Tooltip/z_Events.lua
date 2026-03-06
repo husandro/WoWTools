@@ -174,8 +174,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
     b:SetScript('OnLeave', function() GameTooltip:Hide() end)
     b:SetScript('OnEnter', function(f)
         GameTooltip:SetOwner(f, 'ANCHOR_BOTTOM')
-        GameTooltip_SetTitle(GameTooltip, 
-            (PlayerIsInCombat() and '|cff606060' or '')
+        GameTooltip_SetTitle(GameTooltip,
+            (InCombatLockdown() and '|cff606060' or '')
             ..(WoWTools_DataMixin.onlyChinese and '学习' or LEARN)
             ..WoWTools_DataMixin.Icon.left
             ..WoWTools_DataMixin.Icon.icon2
@@ -186,7 +186,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_RemixArtifactUI()
     end)
 
     b:SetScript('OnClick', function(_, d)
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             return
         end
 
@@ -223,7 +223,7 @@ C_Timer.After(0.5, function()
                         and f:IsVisible()
                         and not IsModifierKeyDown()
                         and f:GetParent():GetNodeInfo().canPurchaseRank
-                        and not PlayerIsInCombat()
+                        and not InCombatLockdown()
                         and C_Traits.PurchaseRank(RemixArtifactFrame:GetConfigID(), f:GetParent():GetNodeID())
                     then
                         f.isIn= true
@@ -237,7 +237,7 @@ C_Timer.After(0.5, function()
             end)
             b:SetScript('OnEnter', function(f)
                 GameTooltip:SetOwner(f, 'ANCHOR_RIGHT')
-                GameTooltip_SetTitle(GameTooltip, 
+                GameTooltip_SetTitle(GameTooltip,
                     WoWTools_DataMixin.Icon.icon2
                     ..(WoWTools_DataMixin.onlyChinese and '升到最高级' or format(LEARN_SKILL_TEMPLATE, HONOR_HIGHEST_RANK))
                 )

@@ -129,7 +129,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '信号系统' or PING_SYSTEM_LABEL,
     function()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             Settings.OpenToCategory(Settings.PINGSYSTEM_CATEGORY_ID)--Blizzard_SettingsDefinitions_Frame/PingSystem.lua
         end
         return MenuResponse.Open
@@ -142,7 +142,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET,
     function()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             Settings.OpenToCategory(Settings.KEYBINDINGS_CATEGORY_ID, BINDING_HEADER_RAID_TARGET)--Blizzard_SettingsDefinitions_Frame/PingSystem.lua
         end
         return MenuResponse.Open
@@ -1183,7 +1183,7 @@ local function Init()--设置标记, 框架
         )
         GameTooltip:AddLine(' ')
         local r,g,b
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             r,g,b= DISABLED_FONT_COLOR:GetRGB()
         else
              r,g,b= HIGHLIGHT_FONT_COLOR:GetRGB()

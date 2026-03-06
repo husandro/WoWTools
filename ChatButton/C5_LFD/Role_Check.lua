@@ -218,7 +218,7 @@ local function Init()
 --职责确认 RolePoll.lua
     WoWTools_DataMixin:Hook('RolePollPopup_Show', function(self)
         WoWTools_DataMixin:PlaySound()--播放, 声音
-        if IsModifierKeyDown() or PlayerIsInCombat() then
+        if IsModifierKeyDown() or InCombatLockdown() then
             return
         end
 
@@ -247,7 +247,7 @@ local function Init()
                 if self.acceptButton:IsEnabled()
                     and self:IsShown()
                     and not IsMetaKeyDown()
-                    and not PlayerIsInCombat()
+                    and not InCombatLockdown()
                 then
                     self.acceptButton:Click()
                     print(
@@ -264,7 +264,7 @@ local function Init()
 
 
     RolePollPopup:HookScript('OnUpdate', function(self)
-        if IsModifierKeyDown() or not self.acceptButton:IsEnabled() or PlayerIsInCombat() then
+        if IsModifierKeyDown() or not self.acceptButton:IsEnabled() or InCombatLockdown() then
             if self.aceTime then
                 self.aceTime:Cancel()
                 self.aceTime= nil

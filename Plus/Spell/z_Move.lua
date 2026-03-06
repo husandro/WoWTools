@@ -5,7 +5,7 @@ function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
     HeroTalentsSelectionDialog.p_point={PlayerSpellsFrame:GetPoint(1)}
     HeroTalentsSelectionDialog.p_point[2]= nil
     HeroTalentsSelectionDialog:HookScript('OnShow', function(frame)
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             PlayerSpellsFrame:ClearAllPoints()
             PlayerSpellsFrame:SetPoint(frame.p_point[1], UIParent, frame.p_point[3], frame.p_point[4], frame.p_point[5])
         end

@@ -39,7 +39,7 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
             C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
 
         --[[
-        if isInInstance and not UnitIsDeadOrGhost('player') and not PlayerIsInCombat() then-- and C_CVar.GetCVarBool("chatBubbles") then
+        if isInInstance and not UnitIsDeadOrGhost('player') and not InCombatLockdown() then-- and C_CVar.GetCVarBool("chatBubbles") then
             C_ChatInfo.SendChatMessage(text, 'YELL')
 
         elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
@@ -50,7 +50,7 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
 
         elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
             C_ChatInfo.SendChatMessage(text, 'PARTY')
-            --elseif isNotDead and IsOutdoors() and not PlayerIsInCombat() then
+            --elseif isNotDead and IsOutdoors() and not InCombatLockdown() then
                 --C_ChatInfo.SendChatMessage(text, 'YELL')
             -- elseif setPrint then]]
         else

@@ -267,7 +267,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
 	end
 
     local sub--, specID, name, icon, role
-    local isInCombat= PlayerIsInCombat()
+    local isInCombat= InCombatLockdown()
     local curSpecIndex= GetSpecialization() or 0--当前，专精
     local sex= WoWTools_DataMixin.Player.Sex
 

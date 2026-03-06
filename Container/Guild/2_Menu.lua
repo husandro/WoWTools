@@ -56,7 +56,7 @@ local function Init_Menu(self, root)
             do
                 WoWTools_BagMixin:OpenBag(nil, false)
             end
-            if not PlayerIsInCombat() then
+            if not InCombatLockdown() then
                 GuildBankFrame:Raise()
             end
         end

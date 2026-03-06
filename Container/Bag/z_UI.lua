@@ -17,7 +17,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:SetButton(BagItemAutoSortButton, {alpha=1})
 
     local function Refresh_Bag(frame)
-        if PlayerIsInCombat() or not frame.AddItemsForRefresh then
+        if InCombatLockdown() or not frame.AddItemsForRefresh then
             return
         end
         if ContainerFrameCombinedBags and ContainerFrameCombinedBags:IsVisible() and ContainerFrameCombinedBags.AddItemsForRefresh then
@@ -140,7 +140,7 @@ function WoWTools_MoveMixin.Frames:ContainerFrame1()
             if i==1 then
                 self:Setup(frame, {
                     restPointFunc=function()
-                        if not PlayerIsInCombat() then
+                        if not InCombatLockdown() then
                             WoWTools_DataMixin:Call('UpdateContainerFrameAnchors')
                         end
                     end,

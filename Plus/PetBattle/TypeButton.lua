@@ -53,7 +53,7 @@ local function Set_Button_Script(btn, petTypeID, name)
 
     btn:SetScript('OnMouseDown', function(self)
         if self.petTypeID then
-            if CollectionsJournal and not CollectionsJournal:IsShown() and not PlayerIsInCombat() then
+            if CollectionsJournal and not CollectionsJournal:IsShown() and not InCombatLockdown() then
                 SetCollectionsJournalShown(true, 2)
             end
             for index=1,C_PetJournal.GetNumPetTypes() do
@@ -317,7 +317,7 @@ local function Init(isShow)
         self:SetShown(
             not Save().TypeButton.disabled
             and (
-                (Save().TypeButton.allShow and not PlayerIsInCombat())
+                (Save().TypeButton.allShow and not InCombatLockdown())
                 or (PetJournal and PetJournal:IsVisible())
                 or C_PetBattles.IsInBattle()
             )
@@ -433,7 +433,7 @@ local function Init(isShow)
 
     TypeButton:SetScript('OnEvent', function(self, event)
         if event=='PET_BATTLE_CLOSE' then
-            if not PlayerIsInCombat() then--UIParent.lua
+            if not InCombatLockdown() then--UIParent.lua
                 local data= C_Spell.GetSpellCooldown(125439) or {}
                 if data.duration and data.duration<=2  or not data.duration then
                     if (CollectionsJournal and not PetJournal:IsVisible()) or not CollectionsJournal then

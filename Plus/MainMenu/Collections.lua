@@ -20,7 +20,7 @@ local function Init()
 
         GameTooltip:AddLine(' ')
 
-        local col= PlayerIsInCombat() and '|cff626262' or '|cffffffff'
+        local col= InCombatLockdown() and '|cff626262' or '|cffffffff'
 
         GameTooltip:AddLine(
             col

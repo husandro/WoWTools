@@ -116,7 +116,7 @@ local function Init()
     function btn:set_new_application(isInit)
         local isInviete, isMessage= false, false
         local clubs= C_ClubFinder.IsEnabled() and C_Club.GetSubscribedClubs()
-        local isInCombat= PlayerIsInCombat()
+        local isInCombat= InCombatLockdown()
         if isInCombat then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -214,7 +214,7 @@ local function Init()
 
     btn:set_guildinfo_event()
 
-    if not PlayerIsInCombat() then
+    if not InCombatLockdown() then
         btn:set_new_application(WoWTools_GuildMixin:IsLeaderOrOfficer())--申请者
     else
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)

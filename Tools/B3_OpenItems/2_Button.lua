@@ -174,7 +174,7 @@ local function Init()
 
         if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
             C_Timer.After(1, function()
-                if not PlayerIsInCombat() then
+                if not InCombatLockdown() then
                     self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
                 end
                 self:settings()
@@ -240,7 +240,7 @@ local function Init()
             self:UnregisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
         end
 
-        if self:CanChangeAttribute() and not PlayerIsInCombat() then
+        if self:CanChangeAttribute() and not InCombatLockdown() then
             self:set_key()
             self:SetShown(not self.isDisabled)
         else

@@ -1150,14 +1150,14 @@ local function Init_Button()
 
 
 
-    function TrackButton:set_shown()
+    function TrackButton:set_shown(isInCombat)
         local hide= not Save().vigentteButton
-            or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
-            or C_PetBattles.IsInBattle()
-            or UnitInVehicle('player') or OverrideActionBar:IsShown()
-            or PlayerIsInCombat()
-            or WorldMapFrame:IsShown()
-
+        or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
+        or C_PetBattles.IsInBattle()
+        or UnitInVehicle('player') or OverrideActionBar:IsShown()
+        or (InCombatLockdown() or isInCombat)
+        or WorldMapFrame:IsShown()
+        
         self:SetShown(not hide)
         self.Frame:SetShown(Save().vigentteButtonShowText and not hide)
         self.elapsed=nil
@@ -1197,6 +1197,10 @@ local function Init_Button()
             end)
         elseif event=='VIGNETTES_UPDATED' then
             self:set_VIGNETTES_UPDATED()
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            self:set_shown(false)
+        elseif event=='PLAYER_REGEN_DISABLED' then
+            self:set_shown(true)
         else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
             self:set_shown()
         end

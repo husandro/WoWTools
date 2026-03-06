@@ -942,7 +942,7 @@ end
 
 
 local function Set_Init_Frame(btn, target, size, initFunc)
-    if WoWTools_FrameMixin:IsLocked(target) then--not PlayerIsInCombat() or not sel:IsProtected() 
+    if WoWTools_FrameMixin:IsLocked(target) then--not InCombatLockdown() or not sel:IsProtected() 
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)--btn2, target2, size2, initFunc2)
             if tab.size then
                 Set_Frame_Size(tab.target, tab.size[1], tab.size[2])--设置大小

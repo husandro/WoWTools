@@ -40,7 +40,7 @@ local function Init()
             return
         end
         local show= true
-        if PlayerIsInCombat() or IsIndoors() then
+        if InCombatLockdown() or IsIndoors() then
             show=false
 
         elseif self.specialEffects and not IsMounted() then
@@ -89,7 +89,7 @@ local function Init()
     Frame:SetScript('OnUpdate', function(self, elapsed)--启用
         self.elapsed= self.elapsed  + elapsed
 
-        if IsIndoors() or PlayerIsInCombat() or IsPlayerMoving() or UnitIsDeadOrGhost('player') then
+        if IsIndoors() or InCombatLockdown() or IsPlayerMoving() or UnitIsDeadOrGhost('player') then
             self:Hide()
             self.specialEffects=nil
             return

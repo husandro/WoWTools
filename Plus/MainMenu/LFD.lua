@@ -44,7 +44,7 @@ local function Init()
             GameTooltip:AddLine(' ')
         end
 
-        local bat= PlayerIsInCombat()
+        local bat= InCombatLockdown()
         local col= bat and '|cff626262' or '|cffffffff'
         GameTooltip:AddLine(
             col

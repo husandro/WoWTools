@@ -14,7 +14,7 @@ function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
         )
         return
 
-    elseif PlayerIsInCombat() and (not p or not all) then
+    elseif InCombatLockdown() and (not p or not all) then
         print(
             WoWTools_InviteMixin.addName..WoWTools_DataMixin.Icon.icon2,
             '|cnWARNING_FONT_COLOR:',
@@ -98,7 +98,7 @@ function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
             end
         end
 
-        if not p and not PlayerIsInCombat() then
+        if not p and not InCombatLockdown() then
             C_CVar.SetCVar('nameplateShowFriendlyPlayers', '0')
         end
         if n==1 then

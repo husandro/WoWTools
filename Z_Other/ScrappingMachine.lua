@@ -126,7 +126,7 @@ local ButtonList={
         tooltip=WoWTools_DataMixin.onlyChinese and '添加宝石' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_CATEGORY_GEMS),
         click=function()
             local free= MaxNumeri- get_num_items()
-            if free==0 or PlayerIsInCombat() then
+            if free==0 or InCombatLockdown() then
                 return
             end
             for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
@@ -147,7 +147,7 @@ local ButtonList={
         tooltip=WoWTools_DataMixin.onlyChinese and '添加装备' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, BAG_FILTER_EQUIPMENT),
         click=function()
             local free= MaxNumeri-get_num_items()
-            if free==0 or PlayerIsInCombat() then
+            if free==0 or InCombatLockdown() then
                 return
             end
             for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
@@ -174,7 +174,7 @@ local ButtonList={
         tooltip=WoWTools_DataMixin.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, ALL),
         click=function()
             local free= MaxNumeri-get_num_items()
-            if free==0 or PlayerIsInCombat() then
+            if free==0 or InCombatLockdown() then
                 return
             end
             for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do

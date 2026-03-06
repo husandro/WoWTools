@@ -44,7 +44,7 @@ local function Init()
 
 --自动，打开背包 
     GuildBankFrame:HookScript('OnShow', function(self)
-        if WoWToolsSave['Plus_GuildBank'].autoOpenBags and not PlayerIsInCombat() then
+        if WoWToolsSave['Plus_GuildBank'].autoOpenBags and not InCombatLockdown() then
             do
                 WoWTools_BagMixin:OpenBag(nil, false)
             end

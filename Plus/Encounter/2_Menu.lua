@@ -299,7 +299,7 @@ local function Init()
         local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
         local configID= traitTreeID and C_Traits.GetConfigIDByTreeID(traitTreeID)
         SetPortraitTextureFromCreatureDisplayID(self.texture, C_DelvesUI.GetCreatureDisplayInfoForCompanion(companionID))
-        self.texture:SetDesaturated(PlayerIsInCombat() or not configID)
+        self.texture:SetDesaturated(InCombatLockdown() or not configID)
     end
 
     com:SetScript('OnClick', function(self, d)
@@ -309,7 +309,7 @@ local function Init()
             return
         end
         MenuUtil.CreateContextMenu(self, function(_, root)
-            local enabled= not PlayerIsInCombat()
+            local enabled= not InCombatLockdown()
             for companionID=1, 20 do
                 local traitTreeID = C_DelvesUI.GetTraitTreeForCompanion(companionID)
                 if traitTreeID and traitTreeID>0 then

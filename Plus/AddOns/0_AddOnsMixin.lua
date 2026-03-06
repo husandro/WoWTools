@@ -31,7 +31,7 @@ end
 --更新，使用情况
 local lastMemoryUpdate
 function WoWTools_AddOnsMixin:Update_Usage()
-    if PlayerIsInCombat() then
+    if InCombatLockdown() then
         return
     end
     local now = GetTime()

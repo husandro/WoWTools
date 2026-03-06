@@ -50,7 +50,7 @@ local function Init()
     function AutoSellJunkCheck:set_sell_junk()--出售物品
         if IsModifierKeyDown()
             or not C_MerchantFrame.IsSellAllJunkEnabled()
-            or PlayerIsInCombat()
+            or InCombatLockdown()
             or MerchantFrame.selectedTab~=1
         then
             return
@@ -64,7 +64,7 @@ local function Init()
                 local info = C_Container.GetContainerItemInfo(bag,slot)
 
                 if IsModifierKeyDown()
-                    or PlayerIsInCombat()
+                    or InCombatLockdown()
                     or MerchantFrame.selectedTab~=1
                 then
                     print(

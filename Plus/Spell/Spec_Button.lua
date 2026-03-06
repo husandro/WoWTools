@@ -226,7 +226,7 @@ local function Create_Spec_Button(index)
                 tooltip:AddLine(' ')
                 tooltip:AddDoubleLine(
                     (self.isActive and '|cnGREEN_FONT_COLOR:'
-                        or (PlayerIsInCombat() and '|cff828282')
+                        or (InCombatLockdown() and '|cff828282')
                         or '|cffffffff'
                     )
                     ..(self.isActive and (WoWTools_DataMixin.onlyChinese and '已激活' or COVENANT_SANCTUM_UPGRADE_ACTIVE)
@@ -251,11 +251,12 @@ local function Create_Spec_Button(index)
         )
     end
 
-    function btn:set_shown()
+    function btn:set_shown(isInCombat)
         self:SetShown(
             not Save().isUIParent
             or self.isActive
-            or not PlayerIsInCombat()
+            or not InCombatLockdown()
+            or isInCombat
         )
     end
     function btn:settings()
@@ -290,9 +291,10 @@ local function Create_Spec_Button(index)
     btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
 
     btn:SetScript('OnEvent',  function(self, event)
-        print(event)
-        if event=='PLAYER_REGEN_ENABLED' or event=='PLAYER_REGEN_DISABLED' then
-            self:set_shown()
+        if event=='PLAYER_REGEN_ENABLED'
+            or event=='PLAYER_REGEN_DISABLED'
+        then
+            self:set_shown(event=='PLAYER_REGEN_DISABLED')
         else
             self:settings()
         end

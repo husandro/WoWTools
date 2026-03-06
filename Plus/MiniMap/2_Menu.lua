@@ -95,7 +95,7 @@ local function Init_Plus_Menu(self, root)
     function()
         return C_CVar.GetCVarBool("minimapTrackingShowAll")
     end, function()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
         end
     end)

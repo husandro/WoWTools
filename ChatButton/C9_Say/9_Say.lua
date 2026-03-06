@@ -95,7 +95,7 @@ end
 
 
 local function set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
-    if Save().inInstanceBubblesDisabled and not PlayerIsInCombat() then
+    if Save().inInstanceBubblesDisabled and not InCombatLockdown() then
         if IsInInstance() then
             C_CVar.SetCVar("chatBubbles", '0')
         else
@@ -142,7 +142,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2, sub3, name, num
-    --local isInCombat= PlayerIsInCombat()
+    --local isInCombat= InCombatLockdown()
 
     local chatType={
         {text= WoWTools_DataMixin.onlyChinese and '说' or SAY, type= SLASH_SAY1, type2='SLASH_SAY'},--/s
@@ -435,7 +435,7 @@ local function Init_Menu(self, root)
     sub2=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT, function()
         return C_CVar.GetCVarBool("chatBubbles")
     end, function()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             C_CVar.SetCVar("chatBubbles", not C_CVar.GetCVarBool("chatBubbles") and '1' or '0')
         else
             print(

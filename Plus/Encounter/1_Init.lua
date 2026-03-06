@@ -23,7 +23,7 @@ local function Init_Encounter()--冒险指南界面
 
 --记录上次选择版本
     C_Timer.After(0.3, function()
-        if Save().EncounterJournalTier and not PlayerIsInCombat() then--记录上次选择TAB
+        if Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
             local max= EJ_GetNumTiers()
             if max then
                 local tier= math.min(Save().EncounterJournalTier, max)

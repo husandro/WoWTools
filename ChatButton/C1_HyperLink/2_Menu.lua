@@ -16,7 +16,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2, col
-    local isInBat= PlayerIsInCombat()
+    local isInBat= InCombatLockdown()
 
 --超链接图标
     sub= root:CreateCheckbox(
@@ -74,7 +74,7 @@ local function Init_Menu(self, root)
 
 --设置关键词
     sub2:CreateButton(
-        (PlayerIsInCombat() and '|cff626262' or '')
+        (InCombatLockdown() and '|cff626262' or '')
         ..'|A:mechagon-projects:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, WoWTools_DataMixin.Language.key)),
     function()
@@ -143,7 +143,7 @@ local function Init_Menu(self, root)
     sub2:CreateButton(
         WoWTools_DataMixin.onlyChinese and '测试' or 'Test',
     function()
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             return
         end
         local value= C_CVar.GetCVar('guildMemberNotify')
@@ -190,7 +190,7 @@ local function Init_Menu(self, root)
             or C_CVar.GetCVar('Sound_MasterVolume')=='0'
             or C_CVar.GetCVar('Sound_DialogVolume')=='0'
             or not C_CVar.GetCVarBool('Sound_EnableDialog')
-            or PlayerIsInCombat()
+            or InCombatLockdown()
         ) and '|cff626262' or ''
 
     sub=root:CreateCheckbox(

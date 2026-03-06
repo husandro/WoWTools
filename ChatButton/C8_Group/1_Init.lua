@@ -185,7 +185,7 @@ local function Init_Menu(self, root)
     local isInInstance= IsInInstance()
     local num= GetNumGroupMembers() or 0
     local le= UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
-    local isInBat= PlayerIsInCombat()
+    local isInBat= InCombatLockdown()
 
     for _, tab in pairs({
         {'p', (not isInGroup)},--/p
@@ -339,7 +339,7 @@ end
     function()
         return C_CVar.GetCVarBool("chatBubblesParty")
     end, function()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             C_CVar.SetCVar("chatBubblesParty", C_CVar.GetCVarBool("chatBubblesParty") and '0' or '1')
             print(
                 WoWTools_GroupMixin.addName..WoWTools_DataMixin.Icon.icon2,

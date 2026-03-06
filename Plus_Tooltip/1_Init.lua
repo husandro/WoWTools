@@ -341,7 +341,7 @@ local function Init_Panel()
 
     WoWTools_PanelMixin:OnlyMenu({
         SetValue= function(value)
-            if not PlayerIsInCombat() then
+            if not InCombatLockdown() then
                 if value==1 then
                     C_CVar.SetCVar("ActionButtonUseKeyDown", '1')
                 else
@@ -434,7 +434,7 @@ local function Init()
     WoWTools_LoadUIMixin:Housing()
 
     WoWTools_DataMixin:Hook("GameTooltip_SetDefaultAnchor", function(frame, parent)
-        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and PlayerIsInCombat()) then
+        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and InCombatLockdown()) then
             frame:ClearAllPoints()
             frame:SetOwner(
                 parent,
@@ -600,14 +600,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-        if Save().setCVar and Save().graphicsViewDistance and not PlayerIsInCombat() then
+        if Save().setCVar and Save().graphicsViewDistance and not InCombatLockdown() then
             C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)--https://wago.io/ZtSxpza28
             Save().graphicsViewDistance=nil
         end
 
     elseif event=='PLAYER_LEAVING_WORLD' then
         if Save() and Save().setCVar then
-            if not PlayerIsInCombat() then
+            if not InCombatLockdown() then
                 Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
                 SetCVar("graphicsViewDistance", 0)
             else

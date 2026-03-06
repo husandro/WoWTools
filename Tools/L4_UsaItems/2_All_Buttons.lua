@@ -38,7 +38,7 @@ end
 --物品
 --####
 local function Set_Equip_Slot(btn)--装备
-    --if btn and btn.CanChangeTalents and not btn:CanChangeTalents() or PlayerIsInCombat() then
+    --if btn and btn.CanChangeTalents and not btn:CanChangeTalents() or InCombatLockdown() then
     if not btn:CanChangeAttribute() then
         btn:RegisterEvent('PLAYER_REGEN_ENABLED')
         return

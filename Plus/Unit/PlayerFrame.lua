@@ -749,7 +749,7 @@ local function Create_warModeButton(frame)
                 ),
             true)
 
-        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false) or PlayerIsInCombat() then
+        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false) or InCombatLockdown() then
             GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
 		end
 

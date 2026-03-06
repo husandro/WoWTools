@@ -11,7 +11,11 @@ local Buttons={}
 
 
 local function Set_Script(btn)
-    if PlayerIsInCombat() then
+    if not btn then
+        return
+    end
+
+    if not btn:CanChangeAttribute() then
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
             WoWTools_FoodMixin:Set_Button_Function(btn)
             EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
@@ -258,7 +262,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
 
     if IsChecking or not btn then--正在查询
         return
-    elseif PlayerIsInCombat() then
+    elseif InCombatLockdown() then
         if btn.CheckFrame then
             btn.CheckFrame.isCheckInCombat=true
             btn.CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')

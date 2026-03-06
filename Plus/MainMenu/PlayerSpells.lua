@@ -96,7 +96,7 @@ local function Init()
             ..b
         )
 
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             GameTooltip:Show()
             return
         end
@@ -136,7 +136,7 @@ local function Init()
 
     PlayerSpellsMicroButton:EnableMouseWheel(true)
     PlayerSpellsMicroButton:HookScript('OnMouseWheel', function(_, d)
-        if KeybindFrames_InQuickKeybindMode() or PlayerIsInCombat() or Kiosk.IsEnabled() then
+        if KeybindFrames_InQuickKeybindMode() or InCombatLockdown() or Kiosk.IsEnabled() then
             return
         end
         if d==1 then--上

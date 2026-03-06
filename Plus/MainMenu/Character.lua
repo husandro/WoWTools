@@ -53,7 +53,7 @@ local function Init()
         WoWTools_DurabiliyMixin:OnEnter()
 
         GameTooltip:AddLine(' ')
-        local bat= PlayerIsInCombat()
+        local bat= InCombatLockdown()
         GameTooltip:AddLine(
             (bat and '|cff626262' or '|cffffffff')
             ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..'|r'

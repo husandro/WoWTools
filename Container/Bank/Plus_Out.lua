@@ -69,7 +69,7 @@ local function Use_Container_Item(free, containerID, data)
     free= free or WoWTools_BagMixin:GetFree(true) or 0
 
     for _, itemInfo in pairs(data) do
-        if free==0 or IsModifierKeyDown() or not BankFrame:IsShown() or PlayerIsInCombat() then
+        if free==0 or IsModifierKeyDown() or not BankFrame:IsShown() or InCombatLockdown() then
             free=0
             break
 

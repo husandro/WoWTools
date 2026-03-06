@@ -56,7 +56,7 @@ local function Init()
             function()
                 return C_CVar.GetCVarBool("bankConfirmTabCleanUp") and true or false
             end, function()
-                if not PlayerIsInCombat() then
+                if not InCombatLockdown() then
                     C_CVar.SetCVar('bankConfirmTabCleanUp', C_CVar.GetCVarBool("bankConfirmTabCleanUp") and 0 or 1)
                 end
             end)
@@ -72,7 +72,7 @@ local function Init()
                     '|cff00ccff'
                     ..(WoWTools_DataMixin.onlyChinese and '你确定要自动整理你的物品吗？|n该操作会影响所有的战团标签。' or ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT))
             end)
-            sub:SetEnabled(not PlayerIsInCombat())
+            sub:SetEnabled(not InCombatLockdown())
         end)
     end)
 

@@ -904,10 +904,13 @@ local function Init()
     end
 
     TrackButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD'
+        if event=='PLAYER_REGEN_DISABLED' then
+            self:set_shown(true)
+        
+        elseif event=='PLAYER_REGEN_ENABLED'
+            or event=='PLAYER_ENTERING_WORLD'
             or event=='ZONE_CHANGED_NEW_AREA'
-            or event=='PLAYER_REGEN_DISABLED'
-            or event=='PLAYER_REGEN_ENABLED'
+            
             or event=='PET_BATTLE_OPENING_DONE'
             or event=='PET_BATTLE_CLOSE'
 
@@ -922,11 +925,11 @@ local function Init()
         end
     end)
 
-    function TrackButton:set_shown()
+    function TrackButton:set_shown(isInCombat)
         local hide= IsInInstance()
             or C_PetBattles.IsInBattle()
             or UnitInVehicle('player') or OverrideActionBar:IsShown()
-            or PlayerIsInCombat()
+            or (InCombatLockdown() or isInCombat)
 
         local showFrame= not hide and not Save().hide
 

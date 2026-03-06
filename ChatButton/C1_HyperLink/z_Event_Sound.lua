@@ -135,7 +135,7 @@ local function Init(btn)
     end
 
     if enabled then
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
                 Set_PlayerSound()
                 EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)

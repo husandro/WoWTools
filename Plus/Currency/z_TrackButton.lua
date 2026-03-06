@@ -708,7 +708,7 @@ local function Init_Button(self)
 	self.frame:ReleaseAll()
 
 	local tab={}
-	local bat= PlayerIsInCombat()
+	local bat= InCombatLockdown()
 
 	if Save().indicato then
 		for currencyID in pairs(Save().tokens) do
@@ -931,14 +931,15 @@ local function Init()
 	end
 
 
-	function TrackButton:set_shown()
+	function TrackButton:set_shown(isInCombat)
 		local show= not Save().Hide
 		if show and not Save().notAutoHideTrack then
 			show= not (
 				IsInInstance()
 				or C_PetBattles.IsInBattle()
 				or UnitInVehicle('player') or OverrideActionBar:IsShown()
-				or PlayerIsInCombat()
+				or InCombatLockdown()
+				or isInCombat
 			)
 		end
 		self:SetShown(show)
@@ -992,7 +993,7 @@ local function Init()
 
 
 	TrackButton:SetScript('OnEvent', function(self, event)
-		self:set_shown()
+		self:set_shown(event=='PLAYER_REGEN_DISABLED')
 	end)
 
 	TrackButton:RegisterForDrag("RightButton")

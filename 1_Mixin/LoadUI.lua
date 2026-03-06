@@ -37,7 +37,7 @@ end
 function WoWTools_LoadUIMixin:Journal(index, tab)--加载，收藏，UI
     if
         self:IsDisabledOpenFrame()
-        or PlayerIsInCombat()
+        or InCombatLockdown()
     then
         return
     end
@@ -222,7 +222,7 @@ end
 --宏伟宝库
 function WoWTools_LoadUIMixin:WeeklyRewards()
     if
-        PlayerIsInCombat()
+        InCombatLockdown()
         or self:IsDisabledOpenFrame()
     then
         return
@@ -435,7 +435,7 @@ PlayerSpellsUtil={
 }
 ]]
 function WoWTools_LoadUIMixin:SpellBook(index, spellID)
-    if PlayerIsInCombat()
+    if InCombatLockdown()
         or self:IsDisabledOpenFrame()
     then
         return
@@ -511,7 +511,7 @@ WoWTools_DataMixin:Call(ToggleEncounterJournal)
 function WoWTools_LoadUIMixin:JournalInstance(journalType, journalInstanceID, difficultyID)
     if not AdventureGuideUtil.IsAvailable()
         or not journalInstanceID
-        or (PlayerIsInCombat() and (not EncounterJournal or not EncounterJournal:IsShown()))
+        or (InCombatLockdown() and (not EncounterJournal or not EncounterJournal:IsShown()))
         or self:IsDisabledOpenFrame()
     then
         return
@@ -527,7 +527,7 @@ ShowUIPanel(DelvesCompanionConfigurationFrame)
 ShowUIPanel(DelvesCompanionAbilityListFrame)
 ]]
 function WoWTools_LoadUIMixin:OpenCompanion(companionID)
-    if PlayerIsInCombat() or self:IsDisabledOpenFrame() or not DelvesCompanionConfigurationFrame then
+    if InCombatLockdown() or self:IsDisabledOpenFrame() or not DelvesCompanionConfigurationFrame then
         return
 
     elseif DelvesCompanionConfigurationFrame:IsShown() then

@@ -418,7 +418,7 @@ end
 function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
     local sub=root:CreateButton(
         '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'
-        ..(PlayerIsInCombat() and IsInInstance() and '|cff626262' or '')--e.IsEncouter_Start
+        ..(InCombatLockdown() and IsInInstance() and '|cff626262' or '')--e.IsEncouter_Start
         ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
     function(data)
         if data and IsControlKeyDown() or not data then
@@ -487,7 +487,7 @@ WoWTools_MenuMixin:ToTop(frame, root, {
 
 
 function WoWTools_MenuMixin:CheckInCombat(root)
-    if PlayerIsInCombat() then
+    if InCombatLockdown() then
         if not root then
             return true
         else
@@ -600,7 +600,7 @@ function WoWTools_MenuMixin:OpenDragonriding(root)
 
     local sub= root:CreateButton(
             '|A:dragonriding-barbershop-icon-protodrake:0:0|a'
-            ..((PlayerIsInCombat() or not DragonridingUtil.IsDragonridingUnlocked()) and '|cff626262' or '')
+            ..((InCombatLockdown() or not DragonridingUtil.IsDragonridingUnlocked()) and '|cff626262' or '')
             ..(WoWTools_DataMixin.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
             ..(self:GetDragonriding() or ''),
         function()
@@ -640,11 +640,11 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     local tooltip= tab.tooltip
 
     local sub=root:CreateButton(
-        (PlayerIsInCombat() and '|cff828282' or '')
+        (InCombatLockdown() and '|cff828282' or '')
         ..(name2 or name or (WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS))
         ..'|A:OptionsIcon-Brown:0:0|a',
     function()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             if SettingsPanel:IsVisible() then--ToggleGameMenu()
                 SettingsPanel:Close()
             end
@@ -750,12 +750,12 @@ function WoWTools_MenuMixin:CVar(root, name, showName, tooltip, eventFunc)
     end
 
     local sub= root:CreateCheckbox(
-        (PlayerIsInCombat() and '|cff626262' or '')
+        (InCombatLockdown() and '|cff626262' or '')
         ..(showName or name),
     function()
         return C_CVar.GetCVarBool(name)
     end, function()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             C_CVar.SetCVar(name, C_CVar.GetCVarBool(name) and '0' or '1')
         end
     end)
