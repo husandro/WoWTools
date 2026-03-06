@@ -963,18 +963,20 @@ local function Init_Hook()
 
 
     WoWTools_DataMixin:Hook(GossipGreetingTextMixin , 'Setup', function(_, text)
-        if Save().gossip
-            and not IsModifierKeyDown()
-            and #C_GossipInfo.GetOptions()==0
-            --and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
-        then
-            C_GossipInfo.CloseGossip()
-            if text and not GreetingTextEmpty[text] then
-                print('|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_TextMixin:CN(text)..WoWTools_DataMixin.Icon.icon2)
-                GreetingFrame:RegisterEvent('PLAYER_STARTED_MOVING')
-                GreetingTextEmpty[text]= 1
+        C_Timer.After(0.1, function()
+            if Save().gossip
+                and not IsModifierKeyDown()
+                and #C_GossipInfo.GetOptions()==0
+                and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
+            then
+                C_GossipInfo.CloseGossip()
+                if text and not GreetingTextEmpty[text] then
+                    print('|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_TextMixin:CN(text)..WoWTools_DataMixin.Icon.icon2)
+                    GreetingFrame:RegisterEvent('PLAYER_STARTED_MOVING')
+                    GreetingTextEmpty[text]= 1
+                end
             end
-        end
+        end)
     end)
 
     Init_Hook= function()end

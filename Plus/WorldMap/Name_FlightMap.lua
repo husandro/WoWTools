@@ -1,30 +1,7 @@
 
 --飞行点名称
-local btn
-
-
-
-
-
-
-
-local function Set_Text(self)
-    local text
-    if self.taxiNodeData and  WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name then
-        if not self.Text and self.taxiNodeData.name then
-            self.Text= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
-            self.Text:SetFontObject(10)
-            self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
-        end
-        text= self.taxiNodeData.name
-        if text then
-            text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
-            text= WoWTools_TextMixin:CN(text)
-        end
-    end
-    if self.Text then
-        self.Text:SetText(text or '')
-    end
+local function Save()
+   return WoWToolsSave['Plus_WorldMap']
 end
 
 
@@ -34,6 +11,32 @@ end
 
 
 
+
+
+local function Init_Hook()
+    if not Save().ShowFlightMap_Name then
+        return
+    end
+
+    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'OnLoad', function(self)
+        self.NameLabel= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
+        self.NameLabel:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+        self.NameLabel:SetJustifyH('CENTER')
+    end)
+
+    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'UpdatePinSize', function(self)--, taxiNodeType
+        local text
+        if self.taxiNodeData and Save().ShowFlightMap_Name then
+            text= self.taxiNodeData.name
+            if text then
+                text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
+                text= WoWTools_TextMixin:CN(text)
+                self.NameLabel:SetScale(Save().FlightMapScale or 1)
+            end
+        end
+        self.NameLabel:SetText(text or '')
+    end)
+end
 
 
 
@@ -49,57 +52,72 @@ local function Init()
         return
     end
 
-    btn= WoWTools_ButtonMixin:Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size=20})
+
+
+
+
+
+
+    local btn= CreateFrame('DropdownButton', 'WoWToolsFlightMapButton', FlightMapFrame.BorderFrame.TitleContainer, 'WoWToolsButtonTemplate')
     btn:SetPoint('LEFT')
 
     btn:SetAlpha(0.5)
     btn:SetScript('OnClick', function(self)
-         WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name= not  WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name and true or nil
-        CloseTaxiMap()
-        self:Settings()
+        Save().ShowFlightMap_Name= not  Save().ShowFlightMap_Name and true or nil
+        --CloseTaxiMap()
+        WoWTools_DataMixin:Call(FlightMapFrame.RefreshAll, FlightMapFrame)
+        self:settings()
     end)
-    btn:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.5) end)
-    btn:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(
+
+    function btn:tooltip(tooltip)
+        tooltip:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
+        tooltip:AddLine(' ')
+        tooltip:AddDoubleLine(
             '|A:FlightMaster:0:0|a'..(WoWTools_DataMixin.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
             format(
                 CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
-                WoWTools_TextMixin:GetShowHide( WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name),
-                WoWTools_DataMixin.onlyChinese and '名称' or  COMMUNITIES_SETTINGS_NAME_LABEL
+                WoWTools_TextMixin:GetShowHide( Save().ShowFlightMap_Name),
+                WoWTools_DataMixin.onlyChinese and '名称' or  LFG_LIST_TITLE
             )
             ..WoWTools_DataMixin.Icon.left
         )
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
-        GameTooltip:Show()
-        self:SetAlpha(1)
-    end)
+        tooltip:AddLine(WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
+    end
 
-    function btn:Settings()
-        if WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name then
-            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+    function btn:settings()
+        if Save().ShowFlightMap_Name then
+            self:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
         else
             self:SetNormalAtlas('talents-button-reset')
         end
+        Init_Hook()
     end
-    btn:Settings()
 
-    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(...)
-        Set_Text(...)
+    btn:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+
+--缩放
+        WoWTools_MenuMixin:Scale(self, root,
+        function()--GetValue
+            return Save().FlightMapScale or 1
+        end, function(alpha)--SetValue
+            Save().FlightMapScale= alpha
+        end, function()--SetValue
+            Save().FlightMapScale=nil
+        end)
+
+--打开选项
+        root:CreateDivider()
+        WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_WorldMapMixin.addName})
     end)
 
+    btn:settings()
 
 
 
-
-
-
-
-
-    --飞行点，加名称
+--飞行点，加名称
     WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(self)
         local info= self.taxiNodeData
         if not info or not info.nodeID then
@@ -113,6 +131,11 @@ local function Init()
         --WoWTools_TooltipMixin:Show()
         GameTooltip:Show()
     end)
+
+
+
+
+
 
     Init=function()end
 end

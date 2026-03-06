@@ -42,10 +42,8 @@
     <Font name="WoWToolsWorldFont" inherits="WoWToolsFontFamily" justifyH="LEFT" virtual="true">
         <Color r="1.0" g="0.9294" b="0.7607"/>
         <Shadow>
-            <Offset>
-                <AbsDimension x="1" y="-1"/>
-            </Offset>
-            <Color r="1" g="1" b="1"/>
+            <Offset x="1" y="-1"/>
+            <Color r="0.32" g="0.32" b="0.32"/>
         </Shadow>        
     </Font>
     
