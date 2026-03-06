@@ -955,27 +955,31 @@ local function Init_Hook()
     --C_GossipInfo.ForceGossip()
 --当没有选项时，闭关
 
-    local GreetingFrame= CreateFrame('Frame')
+    local GreetingFrame= CreateFrame('Frame', 'WoWToolsGreetingTextFrame')
     GreetingFrame:SetScript('OnEvent', function(self, event)
         GreetingTextEmpty={}
         self:UnregisterEvent(event)
     end)
 
+    function GreetingFrame:settings(text)
+        if Save().gossip
+            and not IsModifierKeyDown()
+            and #C_GossipInfo.GetOptions()==0
+            and GossipFrame.GreetingPanel.GoodbyeButton:IsVisible()
+        then
+            C_GossipInfo.CloseGossip()
+            if text and not GreetingTextEmpty[text] then
+                print('|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_TextMixin:CN(text)..WoWTools_DataMixin.Icon.icon2)
+                self:RegisterEvent('PLAYER_STARTED_MOVING')
+                GreetingTextEmpty[text]= 1
+            end
+        end
+    end
+
 
     WoWTools_DataMixin:Hook(GossipGreetingTextMixin , 'Setup', function(_, text)
         C_Timer.After(0.1, function()
-            if Save().gossip
-                and not IsModifierKeyDown()
-                and #C_GossipInfo.GetOptions()==0
-                and GossipFrame.GreetingPanel.GoodbyeButton:IsShown()
-            then
-                C_GossipInfo.CloseGossip()
-                if text and not GreetingTextEmpty[text] then
-                    print('|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_TextMixin:CN(text)..WoWTools_DataMixin.Icon.icon2)
-                    GreetingFrame:RegisterEvent('PLAYER_STARTED_MOVING')
-                    GreetingTextEmpty[text]= 1
-                end
-            end
+            _G['WoWToolsGreetingTextFrame']:settings(text)
         end)
     end)
 
