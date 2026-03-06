@@ -370,10 +370,9 @@ function WoWTools_TextureMixin:SetCheckBox(check)
         return
     end
 
-    local icon= check.GetNormalTexture and check:GetNormalTexture()
-                or (check.GetRegions and check:GetRegions())
+    local icon= check.GetNormalTexture and check:GetNormalTexture() or (check.GetRegions and check:GetRegions())
 
-    if icon:IsObjectType("Texture") then
+    if icon and icon:IsObjectType("Texture") then
         icon:ClearAllPoints()
         icon:SetPoint('TOPLEFT', 4, -4)
         icon:SetPoint('BOTTOMRIGHT', -4, 4)
