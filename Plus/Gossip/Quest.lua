@@ -94,8 +94,9 @@ local function select_Reward(questID)--自动:选择奖励
             if itemLink then
                 WoWTools_DataMixin:Load(itemLink, 'item')
 
-                local amount = select(3, GetQuestItemInfo('choice', i))--钱
-                local itemID, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID, _, _, setID, isCraftingReagent  = C_Item.GetItemInfo(itemLink)
+                
+                local _, _, count, _, isUsable, itemID= GetQuestItemInfo('choice', i)
+                local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID, _, _, setID, isCraftingReagent  = C_Item.GetItemInfo(itemLink)
 
                 if Save().autoSelectReward
                     and itemID
@@ -107,6 +108,7 @@ local function select_Reward(questID)--自动:选择奖励
                     and not C_Item.IsDecorItem(itemLink)--住宅装饰
                     --and not C_ToyBox.GetToyInfo(itemID)--玩具
                     and not C_MountJournal.GetMountFromItem(itemID)--坐骑
+                    and isUsable
                 then
                     if itemLevel and itemLevel>1 and not WoWTools_ItemMixin:IsNotEquipType(itemLink) then
                         for _, invSlot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do
@@ -133,8 +135,8 @@ local function select_Reward(questID)--自动:选择奖励
                         end
                     end
 
-                    if not (notColleced and upItem) and amount and sellPrice then
-                        local totalValue = (sellPrice and sellPrice * amount) or 0
+                    if not (notColleced and upItem) and count and sellPrice then
+                        local totalValue = (sellPrice and sellPrice * count) or 0
                         if totalValue > bestValue then
                             bestValue = totalValue
                             bestItem = i
