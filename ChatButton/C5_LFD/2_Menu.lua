@@ -508,11 +508,17 @@ local function set_Party_Menu_List(root2)
     end
 
 
-    local root= root2:CreateButton(
-        header,
-    function()
-        return MenuResponse.Open
-    end)
+    local root
+    if isMaxLevel then
+--二级root
+        root= root2:CreateButton(
+            header,
+        function()
+            return MenuResponse.Open
+        end)
+    else
+        root= root2
+    end
 
 
     local find= 0
@@ -589,9 +595,12 @@ local function set_Party_Menu_List(root2)
         end
     end
 
-    root:SetData({rightText=find})
-    WoWTools_MenuMixin:SetRightText(root)
-    WoWTools_MenuMixin:SetScrollMode(root)
+    if isMaxLevel then
+--二级root
+        root:SetData({rightText=find})
+        WoWTools_MenuMixin:SetRightText(root)
+        WoWTools_MenuMixin:SetScrollMode(root)
+    end
 
 end
 
@@ -628,7 +637,7 @@ end
 
 --团队本
 local function set_Raid_Menu_List(root2)
-    --local isMaxLevel= WoWTools_DataMixin.Player.IsMaxLevel
+    local isMaxLevel= WoWTools_DataMixin.Player.IsMaxLevel
     local hide= Save().hideDontEnterMenu --and isMaxLevel
     local sortedDungeons= {}
 
@@ -673,9 +682,9 @@ local function set_Raid_Menu_List(root2)
     local num= #sortedDungeons
 
 
-    local root=root2
-    if num==0 then
-        root= root:CreateButton(
+    local root
+    if num==0 or not isMaxLevel then
+        root= root2:CreateButton(
             NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '随机团队' or PLAYER_DIFFICULTY3),
         function()
             if C_LFGInfo.IsLFREnabled() and (not RaidFinderFrame or not RaidFinderFrame:IsShown()) then
@@ -687,7 +696,13 @@ local function set_Raid_Menu_List(root2)
             tooltip:AddLine(WoWTools_DataMixin.Icon.left..MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, "TOGGLEGROUPFINDER"))
         end)
         WoWTools_MenuMixin:SetRightText(root)
-        return
+
+        if num==0 then
+            return
+        end
+
+    else
+        root=root2
     end
 
 
