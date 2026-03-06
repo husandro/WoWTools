@@ -220,7 +220,7 @@ local function Init()
         self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
                         or not self:IsVisible()
                         or C_PetBattles.IsInBattle()
-                        or UnitHasVehicleUI('player')
+                        or UnitInVehicle('player') or OverrideActionBar:IsShown()
 
         if self.isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, Events_All)
@@ -254,7 +254,7 @@ local function Init()
                 self.isDisabled
                 or not self:IsValid()
                 or IsMounted()
-                or UnitInVehicle('player')
+                or UnitInVehicle('player') or OverrideActionBar:IsShown()
                 or C_PetBattles.IsInBattle()
                 or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
                 or isDisabled

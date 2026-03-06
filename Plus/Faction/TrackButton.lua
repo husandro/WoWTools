@@ -525,7 +525,7 @@ local function Init()
 		   not Save().notAutoHideTrack and (
 				IsInInstance()
 				or C_PetBattles.IsInBattle()
-				or UnitInVehicle('player')
+				or UnitInVehicle('player') or OverrideActionBar:IsShown()
 				or PlayerIsInCombat()
 			)
 	   )

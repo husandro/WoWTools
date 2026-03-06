@@ -937,7 +937,7 @@ local function Init()
 			show= not (
 				IsInInstance()
 				or C_PetBattles.IsInBattle()
-				or UnitInVehicle('player')--UnitHasVehicleUI('player')
+				or UnitInVehicle('player') or OverrideActionBar:IsShown()
 				or PlayerIsInCombat()
 			)
 		end

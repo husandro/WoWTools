@@ -199,7 +199,7 @@ local function Init()
         if Save().hideInPetBattle then
             self:SetShown(
                 not C_PetBattles.IsInBattle()
-                and not UnitHasVehicleUI('player')
+                and not (UnitInVehicle('player') or OverrideActionBar:IsShown())-- or UnitHasVehicleUI('player'))
                 and sceneType~= Enum.ClientSceneType.MinigameSceneType
             )
         else

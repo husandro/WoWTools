@@ -238,7 +238,7 @@ local function Init()
                 or UnitCastingInfo('player')
                 or UnitChannelInfo('player')
                 or PlayerIsInCombat()
-                or UnitInVehicle('player')
+                or UnitInVehicle('player') or OverrideActionBar:IsShown()
     )
     end
 

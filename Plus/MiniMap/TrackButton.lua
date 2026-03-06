@@ -1154,7 +1154,7 @@ local function Init_Button()
         local hide= not Save().vigentteButton
             or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
             or C_PetBattles.IsInBattle()
-            or UnitInVehicle('player')
+            or UnitInVehicle('player') or OverrideActionBar:IsShown()
             or PlayerIsInCombat()
             or WorldMapFrame:IsShown()
 

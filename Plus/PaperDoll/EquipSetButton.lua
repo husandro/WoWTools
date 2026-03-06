@@ -530,9 +530,9 @@ local function Init()--添加装备管理框
 
         self:SetShown(
             not C_PetBattles.IsInBattle()
-            and not UnitHasVehicleUI('player')
+            and not (UnitInVehicle('player') or OverrideActionBar:IsShown()) --UnitHasVehicleUI('player')
             and sceneType~= Enum.ClientSceneType.MinigameSceneType
-            --and C_EquipmentSet.CanUseEquipmentSets()
+            and C_EquipmentSet.CanUseEquipmentSets()
             and #C_EquipmentSet.GetEquipmentSetIDs()>0
         )
     end
