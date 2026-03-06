@@ -245,7 +245,7 @@ local function Init_Date()--初始, 数据
     end
 
 --战斗时间
-    if PlayerIsInCombat() then
+    if InCombatLockdown() then
         OnCombatTime= OnCombatTime or time
         LastText=nil
     elseif OnCombatTime then

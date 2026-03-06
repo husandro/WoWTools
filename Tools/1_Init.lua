@@ -139,7 +139,7 @@ local function Init_Menu(self, root)
         self:set_shown()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine((PlayerIsInCombat() and '|cnWARNING_FONT_COLOR:' or '')..(WoWTools_DataMixin.onlyChinese and '脱离战斗' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
+        tooltip:AddLine((InCombatLockdown() and '|cnWARNING_FONT_COLOR:' or '')..(WoWTools_DataMixin.onlyChinese and '脱离战斗' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
     end)
 
 --显示

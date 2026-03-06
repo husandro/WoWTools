@@ -16,7 +16,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2, col
-    local isInBat= PlayerIsInCombat()
+    local isInBat= InCombatLockdown()
 
 --超链接图标
     sub= root:CreateCheckbox(

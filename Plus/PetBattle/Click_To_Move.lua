@@ -21,7 +21,7 @@ end]]
 
 local function Lock_CVar(self, name)
     local value= Save()['lock_'..name]
-    if PlayerIsInCombat() then
+    if InCombatLockdown() then
         if value then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -53,7 +53,7 @@ end
 
 local function Lock_ClickToMove_CVar(self)
     local value=  Get_Lock_ClickToMove_Value()
-    if PlayerIsInCombat() then
+    if InCombatLockdown() then
         if value then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -162,7 +162,7 @@ local function Init_CVar_Menu(self, root, name, col)
             return C_CVar.GetCVar(data.name)==data.value
 
         end, function(data)
-            if not PlayerIsInCombat() then--and not Lock_Is_CVar(name) then
+            if not InCombatLockdown() then--and not Lock_Is_CVar(name) then
                 if C_CVar.GetCVar(data.name)~=data.value then
                     Save()['lock_'..data.name]= nil
                     C_CVar.SetCVar(data.name, data.value)
@@ -256,7 +256,7 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2
-    local col= PlayerIsInCombat() and '|cnWARNING_FONT_COLOR:' or ''
+    local col= InCombatLockdown() and '|cnWARNING_FONT_COLOR:' or ''
 
 --点击移动
     sub=root:CreateCheckbox(
@@ -300,7 +300,7 @@ local function Init_Menu(self, root)
             )
         end
 
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             GameTooltip_AddErrorLine(tooltip,
                 (WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
             )
@@ -493,7 +493,7 @@ local function Init_Button()
     end)
 
     function btn:tooltip(tooltip)
-        local col= PlayerIsInCombat() and '|cnWARNING_FONT_COLOR:' or ''
+        local col= InCombatLockdown() and '|cnWARNING_FONT_COLOR:' or ''
         tooltip:AddLine(
             (Get_Lock_ClickToMove_Value() and '|A:AdventureMapIcon-Lock:0:0|a' or col)
             ..CVarNameTabs['autoInteract']
@@ -545,7 +545,7 @@ local function Init_Button()
     end)
 
     function btn:set_clickmove()
-        if not PlayerIsInCombat() then
+        if not InCombatLockdown() then
             Save().lock_autoInteract= nil
             Save().AutoClickToMove= nil
             C_CVar.SetCVar("autoInteract", C_CVar.GetCVarBool("autoInteract") and '0' or '1')

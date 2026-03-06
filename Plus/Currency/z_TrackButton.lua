@@ -938,7 +938,7 @@ local function Init()
 				IsInInstance()
 				or C_PetBattles.IsInBattle()
 				or UnitInVehicle('player') or OverrideActionBar:IsShown()
-				or PlayerIsInCombat()
+				or InCombatLockdown()
 			)
 		end
 		self:SetShown(show)
@@ -1071,8 +1071,12 @@ local function Init()
 			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
 			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
 			self:RegisterEvent('PET_BATTLE_CLOSE')
-			self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-			self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+
+			self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+			self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+			self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+			self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+
 			self:RegisterEvent('PLAYER_REGEN_DISABLED')
 			self:RegisterEvent('PLAYER_REGEN_ENABLED')
 		end

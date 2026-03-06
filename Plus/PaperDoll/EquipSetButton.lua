@@ -254,7 +254,7 @@ local function Create_Button(btn)
 
     function btn:set_alpha()
         self:SetAlpha(
-            (self.isEquipped or not PlayerIsInCombat())-- C_EquipmentSet.CanUseEquipmentSets())
+            (self.isEquipped or not InCombatLockdown())-- C_EquipmentSet.CanUseEquipmentSets())
             and 1 or 0.3
         )
     end
@@ -678,8 +678,12 @@ local function Init()--添加装备管理框
             --self:RegisterEvent('BAG_UPDATE_DELAYED')
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
-            self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-            self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+
+            self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+            self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+
             self:RegisterEvent('CLIENT_SCENE_OPENED')
             self:RegisterEvent('CLIENT_SCENE_CLOSED')
         end

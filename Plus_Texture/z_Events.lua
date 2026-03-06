@@ -1666,8 +1666,11 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
 
     self:SetAlphaColor(PlayerFrame.PlayerFrameContainer.AlternatePowerFrameTexture, true)
 
+    --OverrideActionBar:SetWidth(600)--1000*100
     self:SetAlphaColor(OverrideActionBarEndCapL, nil, nil, 0)
+    --OverrideActionBarEndCapL:SetSize(1,1)
     self:SetAlphaColor(OverrideActionBarEndCapR, nil, nil, 0)
+    --OverrideActionBarEndCapR:SetSize(1,1)
     self:SetAlphaColor(OverrideActionBarBorder, nil, nil, 0)
     self:SetAlphaColor(OverrideActionBarBG, nil, nil, 0.3)
     self:SetAlphaColor(OverrideActionBarButtonBGMid, nil, nil, 0)
@@ -1685,6 +1688,17 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
     self:SetAlphaColor(OverrideActionBarExpBarXpMid, nil, nil, 0)
     self:SetAlphaColor(OverrideActionBarExpBarXpR, nil, nil, 0)
     self:SetAlphaColor(OverrideActionBarExpBarXpL, nil, nil, 0)
+
+    OverrideActionBarBG:ClearAllPoints()
+    OverrideActionBarBG:SetPoint('TOPLEFT', OverrideActionBarEndCapL, 'TOPRIGHT', -10, -80)
+    OverrideActionBarBG:SetPoint('BOTTOMRIGHT', OverrideActionBarEndCapR, 'BOTTOMLEFT', 10, 10)
+
+     OverrideActionBarExpBar:ClearAllPoints()
+    OverrideActionBarExpBar:SetPoint('BOTTOM', OverrideActionBarBG, 'TOP', 0, 4)
+    --OverrideActionBarBG:SetSize(100, 84)--<Size x="256" y="94"/>
+    --OverrideActionBarBG:SetPoint('RIGHT', -4, 0)
+
+
 
     for i=1, 19 do
         self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0)

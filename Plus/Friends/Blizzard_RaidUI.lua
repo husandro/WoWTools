@@ -140,7 +140,7 @@ local function Init()
         self.elapsed= (self.elapsed or 1) + elapsed
         if self.elapsed>1 then
             self.elapsed=0
-            if not PlayerIsInCombat() then
+            if not InCombatLockdown() then
                 WoWTools_DataMixin:Call('RaidGroupFrame_Update')
             end
         end

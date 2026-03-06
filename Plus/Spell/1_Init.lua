@@ -52,7 +52,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 --isToTOP=true
                 --point={}
                 --strata='MEDIUM'
-                --hideInCombat=true
+                hideInCombat=true,--自动隐藏
                 enabled=true,
                 },
 

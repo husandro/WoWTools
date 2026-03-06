@@ -107,7 +107,7 @@ end
 
 
 function WoWTools_KeyMixin:Setup(btn, isDisabled)
-    --if PlayerIsInCombat() then
+    --if InCombatLockdown() then
     if not btn:CanChangeAttribute() then
         Frame.buttons[btn]={isDisabled=isDisabled}
         Frame:set_event()
@@ -186,7 +186,7 @@ function WoWTools_KeyMixin:SetMenu(frame, root, tab)
         tooltip:AddLine(frame:get_key_text())
     end)
 
-    --sub:SetEnabled(not PlayerIsInCombat())
+    --sub:SetEnabled(not InCombatLockdown())
     return sub
 end
 

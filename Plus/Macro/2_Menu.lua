@@ -199,7 +199,7 @@ local PointTab={
                 ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
             )
             for i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), MAX_ACCOUNT_MACROS+1, -1 do
-                if IsModifierKeyDown() or PlayerIsInCombat() then
+                if IsModifierKeyDown() or InCombatLockdown() then
                     return
                 end
                 local name, icon = GetMacroInfo(i)

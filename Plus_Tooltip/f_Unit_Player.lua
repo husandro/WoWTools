@@ -18,7 +18,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
     local color= WoWTools_UnitMixin:GetColor(unit, guid)
     
-    local isInCombat= PlayerIsInCombat()
+    local isInCombat= InCombatLockdown()
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     local textLeft, text2Left, textRight, text2Right='', '', '', ''
     local tooltipName=tooltip:GetName() or 'GameTooltip'

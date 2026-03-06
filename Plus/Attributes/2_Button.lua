@@ -212,8 +212,11 @@ local function Init()
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
-            self:RegisterEvent('UNIT_ENTERED_VEHICLE')
-            self:RegisterEvent('UNIT_EXITED_VEHICLE')
+
+            self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+            self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
 
             self:RegisterEvent('CLIENT_SCENE_OPENED')
             self:RegisterEvent('CLIENT_SCENE_CLOSED')

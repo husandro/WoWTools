@@ -276,8 +276,12 @@ end]]
 
     LootButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     LootButton:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
-    LootButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
-    LootButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
+
+    --[[LootButton:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+    LootButton:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+    LootButton:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+    LootButton:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")]]
+
     LootButton:SetScript('OnEvent', LootButton.settings)
 
     LootButton:SetupMenu(function(self, root)

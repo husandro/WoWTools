@@ -891,8 +891,10 @@ local function Init()
         self:RegisterEvent('PET_BATTLE_OPENING_DONE')
         self:RegisterEvent('PET_BATTLE_CLOSE')
 
-        self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-        self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+        self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+        self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+        self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+        self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
 
         self:RegisterEvent('CALENDAR_UPDATE_EVENT_LIST')
         self:RegisterEvent('CALENDAR_UPDATE_EVENT')
@@ -908,7 +910,10 @@ local function Init()
             or event=='PLAYER_REGEN_ENABLED'
             or event=='PET_BATTLE_OPENING_DONE'
             or event=='PET_BATTLE_CLOSE'
+
+            or event=='VEHICLE_ANGLE_UPDATE'
             or event=='UNIT_ENTERED_VEHICLE'
+            or event=='UNIT_ENTERING_VEHICLE'
             or event=='UNIT_EXITED_VEHICLE'
         then
             self:set_shown()
@@ -921,7 +926,7 @@ local function Init()
         local hide= IsInInstance()
             or C_PetBattles.IsInBattle()
             or UnitInVehicle('player') or OverrideActionBar:IsShown()
-            or PlayerIsInCombat()
+            or InCombatLockdown()
 
         local showFrame= not hide and not Save().hide
 

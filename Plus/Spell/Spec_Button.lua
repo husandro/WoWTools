@@ -75,14 +75,13 @@ local function Init_Spec_Menu(self, root)
 
 
 
---战斗中隐藏
+--自动隐藏
         sub2:CreateCheckbox(
-            WoWTools_DataMixin.onlyChinese and '战斗中隐藏'
-            or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, HIDE),
+            WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, HIDE),
         function()
             return Save().hideInCombat
         end, function()
-            Save().hideInCombat= not Save().hideInCombat and true or nil
+            Save().hideInCombat= not Save().hideInCombat and true or false
             SpecFrame:Settings()
         end)
 
@@ -179,8 +178,6 @@ local function Create_Spec_Button(index)
     function btn:Set_Active()
         if self.isActive then
             WoWTools_LoadUIMixin:SpellBook(2)
-            --if PlayerSpellsFrame then
-                --PlayerSpellsUtil.OpenToClassSpecializationsTab()
         else
             C_SpecializationInfo.SetSpecialization(self.specIndex)
             return true
@@ -254,6 +251,9 @@ local function Create_Spec_Button(index)
         )
     end
 
+    function btn:set_shown()
+        self:SetShown(self.isActive and not InCombatLockdown())
+    end
     function btn:settings()
         local spec= GetSpecialization(nil, false, 1)
         local lootID= GetLootSpecialization()
@@ -266,7 +266,6 @@ local function Create_Spec_Button(index)
 
         self.SelectIcon:SetShown(isActive)
 
-
         if isLoot then
             if lootID==0 then
                 self.LootIcon:SetVertexColor(0,1,0)
@@ -276,11 +275,24 @@ local function Create_Spec_Button(index)
         end
         self.LootIcon:SetShown(isLoot)
         self:set_alpha()
+        self:set_shown()
     end
 
+    if Save().isUIParent then
+        btn:RegisterEvent('PLAYER_REGEN_ENABLED')
+        btn:RegisterEvent('PLAYER_REGEN_DISABLED')
+    end
     btn:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
     btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
-    btn:SetScript('OnEvent',  btn.settings)
+
+    btn:SetScript('OnEvent',  function(self, event)
+        if event=='PLAYER_REGEN_ENABLED' or event=='PLAYER_REGEN_DISABLED' then
+            self:set_shown()
+        else
+            self:settings()
+        end
+    end)
+
     btn:settings()
 end
 
@@ -323,8 +335,31 @@ local function Init()
         Create_Spec_Button(index)
     end
 
+    function SpecFrame:set_shown()
+        self:SetShown(
+            not C_PetBattles.IsInBattle()
+			and not UnitInVehicle('player')
+            and not OverrideActionBar:IsShown()
+        )
+    end
 
+    function SpecFrame:set_event()
+        self:UnregisterAllEvents()
+        if Save().hideInCombat and Save().isUIParent then
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
 
+            self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+            self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:set_shown()
+        else
+            self:SetShown(true)
+        end
+    end
     function SpecFrame:Settings()
         local isToTOP= Save().isToTOP
         local isUIParent= Save().isUIParent
@@ -337,20 +372,12 @@ local function Init()
             end
             btn:SetClampedToScreen(isUIParent and true or false)
         end
-
-
-
         self:SetMovable(isUIParent and true or false)
         self:SetScale(Save().scale or 1)
-
-        if isUIParent then
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        else
-            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        end
+        self:set_event()
     end
+
+
 
     function SpecFrame:set_strata()
         self:SetFrameStrata(Save().strata or 'MEDIUM')
@@ -384,18 +411,7 @@ local function Init()
         end
     end
 
-    SpecFrame:SetScript('OnEvent', function(self, event)
-        local hide= Save().hideInCombat
-        local show= event=='PLAYER_REGEN_ENABLED'
-        if hide then
-            self:SetShown(show)
-        else
-            for _, btn in pairs(self.Buttons) do
-                btn:SetShown(show or btn.isActive)
-            end
-            self:SetShown(true)
-        end
-    end)
+    SpecFrame:SetScript('OnEvent', SpecFrame.set_shown)
 
     SpecFrame:Settings()
     SpecFrame:set_point()

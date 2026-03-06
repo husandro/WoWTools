@@ -224,7 +224,7 @@ local function Init()
 
     Button.btn={}
     function Button:set_button(show)
-        if PlayerIsInCombat() then
+        if InCombatLockdown() then
             return
         end
         local index=1
