@@ -5,8 +5,9 @@ local function Save()
 end
 
 
-
-
+local function RefreshAll()
+    WoWTools_DataMixin:Call(FlightMapFrame.RefreshAll, FlightMapFrame)
+end
 
 
 
@@ -58,32 +59,25 @@ local function Init()
 
 
 
-    local btn= CreateFrame('DropdownButton', 'WoWToolsFlightMapButton', FlightMapFrame.BorderFrame.TitleContainer, 'WoWToolsButtonTemplate')
+    local btn= CreateFrame('DropdownButton', 'WoWToolsFlightMapButton', FlightMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenu3Template')
     btn:SetPoint('LEFT')
-
-    btn:SetAlpha(0.5)
-    btn:SetScript('OnClick', function(self)
-        Save().ShowFlightMap_Name= not  Save().ShowFlightMap_Name and true or nil
-        --CloseTaxiMap()
-        WoWTools_DataMixin:Call(FlightMapFrame.RefreshAll, FlightMapFrame)
-        self:settings()
-    end)
 
     function btn:tooltip(tooltip)
         tooltip:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
         tooltip:AddLine(' ')
         tooltip:AddDoubleLine(
-            '|A:FlightMaster:0:0|a'..(WoWTools_DataMixin.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
+            '|A:FlightMaster:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
             format(
                 CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
-                WoWTools_TextMixin:GetShowHide( Save().ShowFlightMap_Name),
+                WoWTools_TextMixin:GetShowHide(Save().ShowFlightMap_Name),
                 WoWTools_DataMixin.onlyChinese and '名称' or  LFG_LIST_TITLE
             )
-            ..WoWTools_DataMixin.Icon.left
         )
         tooltip:AddLine(WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
     end
-
+    btn.alpha= 0.5
+    btn:SetAlpha(0.5)
     function btn:settings()
         if Save().ShowFlightMap_Name then
             self:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
@@ -98,18 +92,31 @@ local function Init()
             return
         end
 
+        root:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
+        function()
+            return Save().ShowFlightMap_Name
+        end, function()
+            Save().ShowFlightMap_Name= not Save().ShowFlightMap_Name and true or nil
+            self:settings()
+            RefreshAll()
+        end)
+
+
 --缩放
+        root:CreateDivider()
         WoWTools_MenuMixin:Scale(self, root,
         function()--GetValue
             return Save().FlightMapScale or 1
         end, function(alpha)--SetValue
             Save().FlightMapScale= alpha
+            RefreshAll()
         end, function()--SetValue
             Save().FlightMapScale=nil
+            RefreshAll()
         end)
 
 --打开选项
-        root:CreateDivider()
         WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_WorldMapMixin.addName})
     end)
 

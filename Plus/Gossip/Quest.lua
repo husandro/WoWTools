@@ -105,7 +105,7 @@ local function select_Reward(questID)--自动:选择奖励
                     and not setID
                     and not isCraftingReagent--附魔, 19专业装备 ,7商业技能
                     and not C_Item.IsDecorItem(itemLink)--住宅装饰
-                    and not C_ToyBox.GetToyInfo(itemID)--玩具
+                    --and not C_ToyBox.GetToyInfo(itemID)--玩具
                     and not C_MountJournal.GetMountFromItem(itemID)--坐骑
                 then
                     if itemLevel and itemLevel>1 and not WoWTools_ItemMixin:IsNotEquipType(itemLink) then
