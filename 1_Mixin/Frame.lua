@@ -130,6 +130,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     local minH= tab.minH
     local sizeRestFunc= tab.sizeRestFunc
     local restPointFunc= tab.restPointFunc
+    local strata= tab.strata or 'MEDIUM'
 
     local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..getIndex()), parent, template, setID)
 
@@ -144,7 +145,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     frame.height= h
 --Strata
 
-    frame:SetFrameStrata('MEDIUM')
+    frame:SetFrameStrata(strata)
 
 --设置，位置
     if restPointFunc then

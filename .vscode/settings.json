@@ -3117,7 +3117,10 @@
         "PerksProductPriceMixin",
         "PerksProgramProductButtonMixin",
         "PerksProgramFrozenProductButtonMixin",
-        "OverrideActionBarButton1"
+        "OverrideActionBarButton1",
+        "Pool_HideAndClearAnchors",
+        "MAP_PIN_HYPERLINK",
+        "SHOW_IN_GAME_NAVIGATION"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

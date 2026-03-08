@@ -277,6 +277,7 @@ Plus\WorldMap\Name_Dungeon.lua
 Plus\WorldMap\Name_FlightMap.lua
 Plus\WorldMap\Name_WorldQuest.lua
 Plus\WorldMap\Player_Pin.lua
+Plus\WorldMap\Player_Pin_EditUI.lua
 Plus\WorldMap\z_Plus_Menu.lua
 Plus\WorldMap\z_Plus.lua
 Plus\WorldMap\z_UI.lua
@@ -344,7 +345,7 @@ Container\Bag\z_UI.lua
 Plus\Gossip\1_Init.lua
 Plus\Gossip\Gossip.lua
 Plus\Gossip\Gossip_Delves.lua
-Plus\Gossip\Gossip_Frame.lua
+Plus\Gossip\Gossip_EditUI.lua
 Plus\Gossip\Gossip_Menu.lua
 Plus\Gossip\Gossip_PlayerChoice.lua
 Plus\Gossip\Gossip_TextData.lua

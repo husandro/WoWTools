@@ -27,7 +27,9 @@ function WoWTools_WorldMapMixin:Create_Wolor_Font(frame)
         color=false,
         notShadow=true,
         fontName='WorldMapTextFont'}
-    )--WorldMapTextFont SubZoneTextFont
+    )
+    --WorldMapTextFont 32
+    SubZoneTextFont 26
    
 end ]]
 
@@ -45,7 +47,7 @@ function WoWTools_WorldMapMixin:GetPlayerXY()
             if x and y then
                 x= format('%.2f', x*100)
                 y= format('%.2f', y*100)
-                return x, y
+                return x, y, uiMapID
             end
         end
     end
@@ -57,7 +59,7 @@ end
 function WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
     local mapID = C_Map.GetBestMapForUnit("player")
     if mapID then
-        if  C_Map.CanSetUserWaypointOnMap(mapID) then
+        if C_Map.CanSetUserWaypointOnMap(mapID) then
             local point= C_Map.GetUserWaypoint()
             local pos= C_Map.GetPlayerMapPosition(mapID, "player")
             local mapPoint = UiMapPoint.CreateFromVector2D(mapID, pos)
@@ -70,6 +72,7 @@ function WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
                 C_Map.ClearUserWaypoint()
             end
             return
+
         else
             local x, y= self:GetPlayerXY()--玩家当前位置
             if x and y then
@@ -84,6 +87,7 @@ function WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
             end
         end
     end
+
     local name= GetMinimapZoneText()
     local name2
     if mapID then

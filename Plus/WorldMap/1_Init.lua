@@ -4,6 +4,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 local function Init()
     do
         WoWTools_WorldMapMixin:Init_Menu()--设置菜单
@@ -105,8 +115,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save().PlayerXY_TextY=nil--
     end
 
-    Save().PlayerPin= Save().PlayerPin or {}
-    WoWToolsPlayerDate.WorldMapPin= WoWToolsPlayerDate.WorldMapPin or {}
+    Save().PlayerPin= Save().PlayerPin or {size=WoWTools_DataMixin.Player.husandro and 42 or 32}
+
 
     WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
 

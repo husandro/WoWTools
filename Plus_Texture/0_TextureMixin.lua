@@ -106,7 +106,7 @@ end
 
 function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
     local isAtlas, textureID, icon
-    if not texture  or texture=='' then
+    if not texture or texture=='' then
         return
     end
 
