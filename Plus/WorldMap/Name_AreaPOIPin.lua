@@ -1,6 +1,6 @@
 --地图POI提示 AreaPOIDataProvider.lua
 local function Save()
-    return  WoWToolsSave['Plus_WorldMap']
+    return WoWToolsSave['Plus_WorldMap']
 end
 
 
@@ -55,6 +55,7 @@ local function Init()
             self.WoWToolsFrame.areaPoiID= poiInfo.areaPoiID
             self.WoWToolsFrame.widgetID= nil
         end
+
         if not Save().ShowAreaPOI_Name then
             poiInfo= {}
         else

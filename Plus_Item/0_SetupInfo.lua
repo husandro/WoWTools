@@ -126,12 +126,13 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     local itemLinkPlayer, equipedLevel
     for _, slot in pairs(invSlots) do
         local link = GetInventoryItemLink('player', slot)
-        if link then--and C_Item.IsEquippableItem(link) then
+        if link then
             local level= WoWTools_ItemMixin:GetItemLevel(link)
-
-            if not itemLinkPlayer or level<equipedLevel then
-                itemLinkPlayer= link
-                equipedLevel= level
+            if level then
+                if not itemLinkPlayer or level<equipedLevel then
+                    itemLinkPlayer= link
+                    equipedLevel= level
+                end
             end
         end
     end
@@ -155,7 +156,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
         else
             --local equipedLevel= WoWTools_ItemMixin:GetItemLevel(itemLinkPlayer)
             if equipedLevel then
-                local equipedInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLinkPlayer, text={ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}, onlyText=true})--物品提示，信息
+                local equipedInfo= WoWTools_ItemMixin:GetTooltip({itemLink=itemLinkPlayer, text={ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}, onlyText=true})--物品提示，信息
                 if equipedInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT] then--"升级：%s/%s"
                     local min, max= equipedInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]:match('(%d+)/(%d+)')
                     if min and max and min<max then
@@ -487,7 +488,7 @@ local function Get_Info(tab)
 
 --宝箱
     elseif containerInfo and containerInfo.hasLoot then
-        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, itemLink=itemLink, red=true, onlyRed=true})--物品提示，信息
         topRightText= dateInfo.red and '|A:Monuments-Lock:0:0|a' or '|A:talents-button-undo:0:0|a'
 --挑战
     elseif itemID and C_Item.IsItemKeystoneByID(itemID) then
@@ -520,7 +521,7 @@ local function Get_Info(tab)
             topRightText='|A:Professions_Specialization_Lock_Glow:0:0|a'
         end
         --多少格
-        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, index=3})
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, itemLink=itemLink, index=3})
         local indexText= dateInfo.indexText
         if indexText and indexText:find('%d+') then
             leftText= indexText:match('%d+')
@@ -540,7 +541,7 @@ local function Get_Info(tab)
 
 --附魔, 19专业装备 ,7商业技能
     elseif isCraftingReagent or classID==8 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then
-        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, ITEM_SPELL_TRIGGER_ONUSE,}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会"
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, itemLink=itemLink, text={ITEM_SPELL_KNOWN, ITEM_SPELL_TRIGGER_ONUSE,}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会"
         if not (classID==15 and (subclassID== 0 or subclassID==4)) then
             if classID==0 and subclassID==5 then
                 topRightText= WoWTools_TextMixin:sub(POWER_TYPE_FOOD, 2,3, true)--食物
@@ -607,7 +608,7 @@ local function Get_Info(tab)
             if itemQuality and itemQuality>1  then
                 local upItemLevel= 0
                 local dateInfo= WoWTools_ItemMixin:GetTooltip({
-                    bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
+                    bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, itemLink=itemLink, itemID=itemID,
                     text={PVP_ITEM_LEVEL_TOOLTIP, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT, ITEM_CLASSES_ALLOWED, itemLevelStr}, wow=true, red=true})--物品提示，信息 , 'Set di equipaggiamenti(.-)' equipStr
                 isRedItem= dateInfo.red
 
@@ -738,7 +739,7 @@ local function Get_Info(tab)
                         else
 --物品提示，信息
                             local dateInfo= WoWTools_ItemMixin:GetTooltip({
-                                bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
+                                bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, itemLink=itemLink, itemID=itemID,
                                 onlyRed=true,
                                 red=true
                             })
@@ -806,7 +807,7 @@ local function Get_Info(tab)
         topRightText=WoWTools_DataMixin.Icon.wow2
 
         if classID==0 and subclassID==8 and C_Item.GetItemSpell(itemLink) then--传家宝，升级，物品
-            local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_TRIGGER_ONUSE}, wow=true, red=true})--物品提示，信息
+            local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, itemLink=itemLink, text={ITEM_SPELL_TRIGGER_ONUSE}, wow=true, red=true})--物品提示，信息
             if dateInfo.text[ITEM_SPELL_TRIGGER_ONUSE] and dateInfo.text[ITEM_SPELL_TRIGGER_ONUSE]:find(UPGRADE) then--UPGRADE = "升级"
                 local tipText= string.lower(dateInfo.text[ITEM_SPELL_TRIGGER_ONUSE])
                 local weapon= tipText:find(string.lower(WEAPON))--WEAPON = "武器"
@@ -842,7 +843,7 @@ local function Get_Info(tab)
 
 --仅一个
     elseif itemStackCount==1 then
-        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_CHARGES}, wow=true, red=true})--物品提示，信息
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, itemLink=itemLink, text={ITEM_SPELL_CHARGES}, wow=true, red=true})--物品提示，信息
         bottomLeftText=dateInfo.text[ITEM_SPELL_CHARGES]
         if dateInfo.wow then
             topRightText= WoWTools_DataMixin.Icon.wow2

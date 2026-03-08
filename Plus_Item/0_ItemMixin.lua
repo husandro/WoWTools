@@ -129,9 +129,9 @@ function WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
     if itemLink then
         local dateInfo
         if PlayerIsTimerunning() then
-            dateInfo= self:GetTooltip({hyperLink=itemLink, index=3})--物品提示，信息
+            dateInfo= self:GetTooltip({itemLink=itemLink, index=3})--物品提示，信息
         else
-            dateInfo= self:GetTooltip({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
+            dateInfo= self:GetTooltip({itemLink=itemLink, text={'(%+.+)', }})--物品提示，信息
         end
         local text= dateInfo.text['(%+.+)'] or dateInfo.indexText
 
@@ -438,7 +438,7 @@ function WoWTools_ItemMixin:GetTooltip(tab)
     local guidBank= tab.guidBank--tab, slot
     local merchant= tab.merchant--slot
     local inventory= tab.inventory
-    local hyperLink= tab.hyperLink
+    local itemLink= tab.hyperLink or tab.itemLink
     local itemKey= tab.itemKey
 
     local itemID= tab.itemID
@@ -475,8 +475,8 @@ function WoWTools_ItemMixin:GetTooltip(tab)
     elseif inventory then
         tooltipData= C_TooltipInfo.GetInventoryItem('player', inventory)
 
-    elseif hyperLink then
-        tooltipData=  C_TooltipInfo.GetHyperlink(hyperLink)
+    elseif itemLink then
+        tooltipData=  C_TooltipInfo.GetHyperlink(itemLink)
     elseif itemID then
         if C_Heirloom.IsItemHeirloom(itemID) then
             tooltipData= C_TooltipInfo.GetHeirloomByItemID(itemID)
@@ -531,9 +531,7 @@ function WoWTools_ItemMixin:GetTooltip(tab)
                     end
                 end
             end
-
             if wow and not data.wow and AccountTab[line.leftText] then
-
                 data.wow= WoWTools_DataMixin.Icon.wow2 --'|A:questlog-questtypeicon-account:0:0|a'
                 if onlyWoW then
                     break
@@ -722,7 +720,7 @@ end
 
 function WoWTools_ItemMixin:GetItemLevel(itemLink)
     if itemLink then
-        local dataInfo= self:GetTooltip({hyperLink=itemLink, text={itemLevelStr}, onlyText=true})--物品提示，信息
+        local dataInfo= self:GetTooltip({itemLink=itemLink, text={itemLevelStr}, onlyText=true})--物品提示，信息
         local itemLevel= dataInfo.text[itemLevelStr]
         return itemLevel and tonumber(itemLevel) or C_Item.GetDetailedItemLevelInfo(itemLink)
     end

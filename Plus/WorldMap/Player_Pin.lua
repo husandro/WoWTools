@@ -21,15 +21,15 @@ local function CreateMarkerFrame(parent, marker)
     frame:SetFrameStrata("MEDIUM")
     frame:SetFrameLevel(2200)
 
-    frame.fontString = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    local size = self:GetDB().settings.markerSize or 15
-    local fontPath = GameFontNormal:GetFont()
-    frame.fontString:SetFont(fontPath, size, "OUTLINE")
+    frame.fontString = frame:CreateFontString(nil, "OVERLAY", "WoWToolsWorldFont")
+    --local size = self:GetDB().settings.markerSize or 15
+    --local fontPath = GameFontNormal:GetFont()
+    --frame.fontString:SetFont(fontPath, size, "OUTLINE")
     frame.fontString:SetShadowOffset(0, 0)
-    frame.fontString:SetText(marker.title or L.CUSTOM_POINT)
+    frame.fontString:SetText(marker.title)
 
-    local c = cloneColor(marker.customColor)
-    frame.fontString:SetTextColor(c.r, c.g, c.b, 1)
+    --local c = cloneColor(marker.customColor)
+    --frame.fontString:SetTextColor(c.r, c.g, c.b, 1)
 
     local w = frame.fontString:GetStringWidth()
     local h = frame.fontString:GetStringHeight()
@@ -55,8 +55,8 @@ local function CreateMarkerFrame(parent, marker)
         local mapID = WorldMapFrame and WorldMapFrame:GetMapID()
         if not mapID then return end
 
-        local x, y = decodeCoord(marker.coord)
-        local waypoint = UiMapPoint.CreateFromCoordinates(mapID, x, y)
+        --local x, y = decodeCoord(marker.coord)
+        local waypoint = UiMapPoint.CreateFromCoordinates(mapID, button.x, button.y)
         if not waypoint then return end
 
         C_Map.SetUserWaypoint(waypoint)

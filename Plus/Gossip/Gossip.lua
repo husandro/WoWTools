@@ -600,12 +600,14 @@ local function Create_GossipOptionCheckBox(btn, info)
     end)
 
     btn:HookScript('OnEnter', function(self)
+    
         WoWTools_SetTooltipMixin:Frame(self, nil, {
             anchor='ANCHOR_RIGHT',
             spellID= self.gossipCheckBox.spellID,
-            frame=self.gossipCheckBox
+            frame= WoWTools_DataMixin.onlyChinese and self.gossipCheckBox or nil
             --questID= self.gossipCheckBox.questID or nil
         })
+
         self.gossipCheckBox:set_alpha(true)
     end)
     btn:HookScript('OnLeave', function(self)
