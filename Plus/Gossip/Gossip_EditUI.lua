@@ -503,12 +503,27 @@ local function Init(isShow)
     end)
 
 
-    List.FindIcon:SetScript('OnClick', function(f)
-       f.frame:SetShown(not f.frame:IsShown())
+    List.FindIcon:SetScript('OnClick', function()
+        WoWTools_TextureMixin:GetNewIcon(Frame, {
+            --text=,
+            texture= List.Icon:GetText(),
+            SetValue=function(newIcon, newText)
+                List.Icon:SetText(newIcon or '')
+                local gossip= List:get_gossipID()
+                if gossip==0 then
+                    List.ID:SetFocus()
+                else
+                    List.Name:SetFocus()
+                    List:add_gossip()
+                end
+            end
+        })
     end)
+       --f.frame:SetShown(not f.frame:IsShown())
+    --end)
 
 
-    List.FindIcon.frame= CreateFrame('Frame', Name..'FindIcon', Frame, 'IconSelectorPopupFrameTemplate')
+    --[[List.FindIcon.frame= CreateFrame('Frame', Name..'FindIcon', Frame, 'IconSelectorPopupFrameTemplate')
     List.FindIcon.frame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
 
     WoWTools_MoveMixin:Setup(List.FindIcon.frame, {
@@ -579,7 +594,7 @@ local function Init(isShow)
             List.Name:SetFocus()
             List:add_gossip()
         end
-    end
+    end]]
 
 
 

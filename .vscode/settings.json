@@ -3120,7 +3120,9 @@
         "OverrideActionBarButton1",
         "Pool_HideAndClearAnchors",
         "MAP_PIN_HYPERLINK",
-        "SHOW_IN_GAME_NAVIGATION"
+        "SHOW_IN_GAME_NAVIGATION",
+        "NOTE",
+        "CONTACTS_MENU_NAME"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

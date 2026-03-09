@@ -52,7 +52,7 @@ local function Init()
     end)
 
     NewButton:SetScript('OnClick',function(self)
-        WoWTools_TextureMixin:Edit_Text_Icon(self, {
+        WoWTools_TextureMixin:GetNewIcon(self, {
             text= WoWTools_DataMixin.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET,
             texture= 0,
             SetValue=function(newIcon, newText)

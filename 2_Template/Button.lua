@@ -2,6 +2,7 @@ function WoWToolsButton_OnLoad(self)
     self:EnableMouseWheel(true)
     self:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
 end
+
 function WoWToolsMenu_OnLoad(self)
     self:EnableMouseWheel(true)
     self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
@@ -10,11 +11,7 @@ end
 function WoWToolsButton_OnLeave(self)
     ResetCursor()
     GameTooltip_Hide()
-    if self.set_alpha then
-        self:set_alpha()
-    elseif self.alpha then
-        self:SetAlpha(self:IsMouseOver() and 1 or self.alpha)
-    end
+    WoWToolsButton_SetAlpha(self)
 end
 
 function WoWToolsButton_OnEnter(self)
@@ -28,6 +25,10 @@ function WoWToolsButton_OnEnter(self)
         end
         GameTooltip:Show()
     end
+    WoWToolsButton_SetAlpha(self)
+end
+
+function WoWToolsButton_SetAlpha(self)
     if self.set_alpha then
         self:set_alpha()
     elseif self.alpha then

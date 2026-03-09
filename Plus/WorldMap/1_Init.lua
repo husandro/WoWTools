@@ -117,6 +117,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     Save().PlayerPin= Save().PlayerPin or {size=WoWTools_DataMixin.Player.husandro and 42 or 32}
 
+    WoWToolsPlayerDate.WorldMapPin= WoWToolsPlayerDate.WorldMapPin or {
+        [2393]={--12.0银月城
+            [WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行']={
+                icon= 'wow-token-gold',
+                x= 50.02,
+                y= 74.76,
+                color={r=0.87, g=0.8, b=0.61},
+                note='note卖行a',
+            }
+        }
+    }
 
     WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
 

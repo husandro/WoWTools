@@ -3,7 +3,7 @@
     <Button name="WoWToolsTemplate" virtual="true">
         <Size x="23" y="23"/>
         <PushedTexture atlas="Forge-ColorSwatchHighlight"/>
-        <HighlightTexture atlas="Forge-ColorSwatchSelection"/>        
+        <HighlightTexture atlas="Forge-ColorSwatchSelection"/>
     </Button>
 
     <Button name="WoWTools2Template" virtual="true">
@@ -45,9 +45,6 @@
         </Layers>
     </Button>
 
-
-
-
     <Button name="WoWToolsButtonTemplate" inherits="WoWToolsTemplate" virtual="true">     
         <Scripts>
             <OnLoad function="WoWToolsButton_OnLoad"/>
@@ -66,7 +63,6 @@
             <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>
     </Button>
-
 
     <DropdownButton name="WoWToolsMenuTemplate" inherits="WoWToolsTemplate" virtual="true">
         <NormalTexture atlas="ui-questtrackerbutton-filter"/>

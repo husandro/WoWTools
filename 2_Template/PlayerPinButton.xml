@@ -1,0 +1,66 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\..\..\..\WoW\Data\Interface\AddOns\Blizzard_SharedXML\UI.xsd">
+	<Button name="WoWToolsPlayerPinButtonTemplate" virtual="true">
+		<Size x="0" y="52"/>
+        <Anchors>
+			<Anchor point="LEFT"/>
+			<Anchor point="RIGHT"/>
+		</Anchors>
+        <PushedTexture atlas="heartofazeroth-list-item-highlight"/>
+        <HighlightTexture atlas="heartofazeroth-list-item-selected"/>
+		<Layers>
+            <Layer level="BACKGROUND" textureSubLevel="1">
+                <Texture parentKey="Background" atlas="QuestItemBorder">
+                    <TexCoords left="1" right="0" top="0" bottom="1" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT" x="0" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND" textureSubLevel="2">
+                <Texture parentKey="Select" atlas="glues-characterSelect-card-glow-swap" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-6" y="6"/>
+                        <Anchor point="BOTTOMRIGHT" x="6" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="BORDER">
+                <Texture parentKey="Icon">
+                    <Size x="42" y="42"/>
+                    <Anchors>
+                        <Anchor point="LEFT" x="4"/>
+                    </Anchors>
+                </Texture>
+                <FontString parentKey="Index" inherits="WoWToolsFont2">
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-4"/>
+                    </Anchors>
+                    <Color r="0.5" g="0.5" b="0.5"/>
+                </FontString>
+
+                <FontString parentKey="Sub" inherits="WoWToolsFont2">
+                    <Anchors>
+                        <Anchor point="LEFT" relativeKey="$parent.Icon" relativePoint="RIGHT"/>
+                        <Anchor point="RIGHT" relativeKey="$parent.Index" relativePoint="LEFT" x="-4"/>
+                    </Anchors>
+                </FontString>
+
+                <FontString parentKey="Name" inherits="WoWToolsFont">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativeKey="$parent.Sub" relativePoint="TOPLEFT" y="1"/>
+                        <Anchor point="RIGHT" x="-4"/>
+                    </Anchors>
+                </FontString>
+
+                <FontString parentKey="Sub2" inherits="WoWToolsFont" justifyH="RIGHT">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeKey="$parent.Sub" relativePoint="BOTTOMLEFT" y="-1"/>
+                        <Anchor point="RIGHT" x="-4"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+    </Button>
+</Ui>

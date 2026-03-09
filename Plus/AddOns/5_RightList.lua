@@ -104,7 +104,7 @@ local function Init_Button_Menu(self, root)
         if texture then
             texture= tonumber(texture)
         end
-        WoWTools_TextureMixin:Edit_Text_Icon(self, {
+        WoWTools_TextureMixin:GetNewIcon(self, {
             text= name,
             texture= texture,
             SetValue=function(newIcon, newText)

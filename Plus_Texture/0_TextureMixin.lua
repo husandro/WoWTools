@@ -102,8 +102,7 @@ end
 
 
 
-
-
+--isAtlas, textureID, icon=WoWTools_TextureMixin:IsAtlas(texture, size)
 function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
     local isAtlas, textureID, icon
     if not texture or texture=='' then
@@ -121,14 +120,12 @@ function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
     s2= s2 or s
 
     t= type(texture)
-    if t=='number' then
-        if texture>0 then
-            isAtlas, textureID, icon= false, texture, format('|T%d:%d:%d|t', texture, s, s2)
-        end
 
-    elseif t=='string' then
-        local atlasInfo= C_Texture.GetAtlasInfo(texture)
-        isAtlas= atlasInfo and true or false
+    if t=='number' then
+        isAtlas, textureID, icon= false, texture, format('|T%d:%d:%d|t', texture, s, s2)
+
+    elseif t=='string' and C_Texture.GetAtlasID(texture)>0 then
+        isAtlas= true
         textureID= texture
         icon= isAtlas and format('|A:%s:%d:%d|a', texture, s, s2) or format('|T%s:%d:%d|t', texture, s, s2)
     end
@@ -162,9 +159,9 @@ end
 
 
 
-local IconFrame
+
 local function Create_IconSelectorPopupFrame()
-    IconFrame= CreateFrame('Frame', 'WoWTools_IconSelectorPopupFrame', UIParent, 'IconSelectorPopupFrameTemplate')
+    local IconFrame= CreateFrame('Frame', 'WoWTools_IconSelectorPopupFrame', UIParent, 'IconSelectorPopupFrameTemplate')
     IconFrame:SetFrameStrata('DIALOG')
     IconFrame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
 
@@ -235,6 +232,12 @@ local function Create_IconSelectorPopupFrame()
         IconSelectorPopupFrameTemplateMixin.OkayButton_OnClick(self)
         self.setValue(iconTexture, text2)
     end
+
+    Create_IconSelectorPopupFrame=function()
+        _G['WoWTools_IconSelectorPopupFrame']:SetShown(false)
+        return _G['WoWTools_IconSelectorPopupFrame']
+    end
+    return IconFrame
 end
 
 
@@ -243,19 +246,43 @@ end
 
 
 
-
-
-function WoWTools_TextureMixin:Edit_Text_Icon(frame, tab)
-    if not IconFrame then
-        Create_IconSelectorPopupFrame()
-    else
-        IconFrame:SetShown(false)
+--[[
+ WoWTools_TextureMixin:GetNewIcon(frame, {
+    text= nil,
+    texture= nil,
+    SetValue=function(newIcon, newText)
     end
-    IconFrame:ClearAllPoints()
-    IconFrame:SetPoint('TOPLEFT', frame, 'RIGHT', 2, 20)
+ })
+]]
+function WoWTools_TextureMixin:GetNewIcon(frame, tab)
+    local IconFrame= Create_IconSelectorPopupFrame()
 
-    IconFrame.text= tab.text
-    IconFrame.texture= tab.texture
+    IconFrame:ClearAllPoints()
+    IconFrame:SetPoint('LEFT', frame, 'RIGHT', 2, 0)
+    IconFrame:SetParent(frame)
+
+    if tab.text and tab.text~='' then
+        IconFrame.text= tab.text
+    else
+        IconFrame.text= WoWTools_DataMixin.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS
+    end
+
+    local texture= tab.texture
+    if texture then
+        local num= tonumber(texture)
+        if num and tostring(num)== texture then
+            texture= num
+        elseif C_Texture.GetAtlasInfo(texture) then
+            local isAtlas, textureID=WoWTools_TextureMixin:IsAtlas(texture)
+            if isAtlas then
+                texture= C_Texture.GetAtlasElementID(textureID)
+            else
+                texture= textureID
+            end
+        end
+    end
+
+    IconFrame.texture= texture or 0
     IconFrame.setValue= tab.SetValue
 
     IconFrame:SetShown(true)

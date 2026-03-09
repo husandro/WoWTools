@@ -358,6 +358,15 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示图标' or SELF_HIGHLIGHT_ICON)
     end)
+ 
+    sub= root:CreateCheckbox(
+        '|A:Gear:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地图标记' or MAP_PIN),
+    function()
+        return not Save().disabled
+    end, function()
+        Save().disabled= not Save().disabled and true or nil
+        WoWTools_WorldMapMixin:Init_PlayerPin()
+    end)
 
 --Plus
     root:CreateDivider()
@@ -381,7 +390,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub= WoWTools_MenuMixin:Reload(root)
 --打开选项
-    WoWTools_MenuMixin:OpenOptions(sub, {name= WoWTools_WorldMapMixin.addName})
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_WorldMapMixin.addName})
 end
 
 

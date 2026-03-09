@@ -147,6 +147,7 @@ local function Set_Move_Frame(frame, target, click, notSave, isAltKeyDown)
 
 --设置，可移动
     frame:SetMovable(true)
+
     if target and not target.moveFrameData then
         target:SetMovable(true)
     end
@@ -249,13 +250,13 @@ function WoWTools_MoveMixin:Setup(frame, tab)
             frame.CloseButton:SetFrameLevel(frame.TitleContainer:GetFrameLevel()+1)
         end
     end
+
+    if not target then
+        Set_Frame_Point(frame, name)--设置, 移动, 位置
+    end
 end
 
 
-
-    --[[if not target or not target.moveFrameData then
-        return Set_Frame_Point(frame, name)--设置, 移动, 位置
-    end]]
 
 
 

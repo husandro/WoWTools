@@ -10,7 +10,6 @@
     
 
     <Layers>
-        
         <Layer level="BACKGROUND" textureSubLevel="1">
             <Texture parentKey="Background" atlas="QuestItemBorder">
                 <TexCoords left="1" right="0" top="0" bottom="1" />

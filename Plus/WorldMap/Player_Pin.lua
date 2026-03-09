@@ -6,28 +6,14 @@ local function SaveWoW()
     return WoWToolsPlayerDate.WorldMapPin
 end
 
-local WorldMapPin={
-    [2393]={--12.0银月城
-        [WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行']={
-            --icon= 'Warfronts-FieldMapIcons-Horde-Banner-Minimap',
-            x= 50.02,
-            y= 74.76,
-            color={r=0.87, g=0.8, b=0.61},
-            --note='b拍卖行a',
-        }
-    }
-}
 
-local Pool
-local addName
+local Button, addName
 
 
 local function Is_CurPoint(waypoint)
     local point= C_Map.GetUserWaypoint()
     return point and point.uiMapID==waypoint.uiMapID and point.x==waypoint.x and point.y==waypoint.y
 end
-
-
 
 
 
@@ -118,11 +104,11 @@ end
 
 
 local function RefreshMapMarkers()
-    if not Pool then
+    if not Button then
         return
     end
 
-    Pool:ReleaseAll()
+    Button.pool:ReleaseAll()
 
     local mapID= WoWTools_WorldMapMixin:GetMapID()
     local pins = SaveWoW()[mapID]
@@ -140,7 +126,7 @@ local function RefreshMapMarkers()
 
     for name, data in pairs(pins) do
 
-        local pin = Pool:Acquire()
+        local pin = Button.pool:Acquire()
         pin.data= {
             name= name,
             mapID= mapID,
@@ -169,14 +155,49 @@ local function Init_Menu(self, root)
     local sub
     local x, y, mapID= WoWTools_WorldMapMixin:GetPlayerXY()
 
-    sub= root:CreateCheckbox(
-        addName,
+
+    local num= 0
+    for _, data in pairs(SaveWoW()) do
+        num= num+ CountTable(data)
+    end
+
+--自定义
+    sub=root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
     function()
-        return not Save().disabled
-    end, function()
-        Save().disabled= not Save().disabled and true or nil
-        WoWTools_WorldMapMixin:Init_PlayerPin()
+        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+        return MenuResponse.Open
+    end, {rightText=num})
+    WoWTools_MenuMixin:SetRightText(sub)
+
+
+--新建
+    root:CreateDivider()
+    sub= root:CreateButton(
+        WoWTools_DataMixin.Icon.Player
+        ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW),
+    function()
+        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI({
+            isNew=true,
+        })
+        return MenuResponse.Open
     end)
+    sub:SetTooltip(function (tooltip)
+        if x and y then
+            tooltip:AddDoubleLine('mpaID ', mapID, nil,nil,nil, 1,1,1)
+            tooltip:AddDoubleLine('XY', x..'  '..y, nil,nil,nil, 1,1,1)
+        end
+    end)
+
+
+
+
+
+
+
+--打开选项
+    root:CreateDivider()
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_WorldMapMixin.addName})
 
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -192,41 +213,26 @@ local function Init_Menu(self, root)
         step=2,
     })
     sub:CreateSpacer()
---新建
-    root:CreateDivider()
-    sub= root:CreateButton(
-        WoWTools_DataMixin.Icon.Player
-        ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW),
+
+--parent
+    sub:CreateCheckbox(
+        'WorldFrame',
     function()
-        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI({
-            isNew=true,
-        })
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function (tooltip)
-        if x and y then
-            tooltip:AddDoubleLine('mpaID ', mapID)
-            tooltip:AddDoubleLine('XY', x..'  '..y)
+        return Save().parentWorldFrame
+    end, function()
+        Save().parentWorldFrame= not Save().parentWorldFrame and true or nil
+        if Button then
+            Button:set_point()
         end
     end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('SetParent: |cnHIGHLIGHT_FONT_COLOR:WorldFrame / Minimap')
+    end)
 
 
-
---自定义
-    local num= 0
-    for _, data in pairs(SaveWoW()) do
-        num= num+ CountTable(data)
-    end
-    sub=root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM),
-    function()
-        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI({})
-        return MenuResponse.Open
-    end, {rightText=num})
-    WoWTools_MenuMixin:SetRightText(sub)
-
-
-
+--重新加载UI
+    sub:CreateDivider()
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 
@@ -234,27 +240,78 @@ end
 
 
 
+
+
+
+
+
+
+
+
 local function Init()
-    if not _G['WoWToolsWorldFramePlayerPinButton'] then
-
-        WoWToolsPlayerDate.WorldMapPin= WoWToolsPlayerDate.WorldMapPin or WorldMapPin
-
-        local btn= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', WorldMapFrameCloseButton, 'WoWToolsMenu3Template')
-        btn:SetNormalAtlas('Ping_Wheel_Icon_Assist')
-        btn:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*2, 0)
-        btn:SetupMenu(Init_Menu)
-        addName= '|A:Ping_Wheel_Icon_Assist:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地图标记' or MAP_PIN)
-        btn.tooltip= addName
-    end
+    addName= '|A:Gear:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地图标记' or MAP_PIN)
 
 
     if Save().disabled then
         return
     end
 
-    Pool= CreateFramePool('DropdownButton', WorldMapFrame:GetCanvas(), 'WoWToolsMenu2Template', nil, nil, Init_Button)
+
+
+
+
+
+
+    Button= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', MinimapCluster.Tracking.Button, 'WoWToolsMenu3Template')
+    Button:SetNormalAtlas('Gear')
+    Button:SetupMenu(Init_Menu)
+    Button.tooltip= NORMAL_FONT_COLOR:WrapTextInColorCode(addName)
+        ..'|n'..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
+        ..'|n'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or CONTACTS_MENU_NAME)
+        ..'|n'..WoWTools_DataMixin.Icon.mid..WoWTools_TextMixin:GetShowHide(nil, true)
+    function Button:set_alpha()
+        self:GetNormalTexture():SetAlpha(self:IsMouseOver() and 1 or 0.5)
+    end
+    Button:set_alpha()
+
+    function Button:set_point()
+        self:ClearAllPoints()
+        if Save().parentWorldFrame then
+            self:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*2, 0)
+            self:SetParent(WorldMapFrameCloseButton)
+            self:SetFrameStrata(WorldMapFrameCloseButton:GetFrameStrata())
+        else
+            self:SetPoint('RIGHT', MinimapCluster.Tracking.Button, 'LEFT')
+            self:SetParent(MinimapCluster.Tracking.Button)
+            self:SetFrameStrata(MinimapCluster.Tracking.Button:GetFrameStrata())
+        end
+    end
+
+
+
+    Button:RegisterEvent('PLAYER_ENTERING_WORLD')
+    Button:SetScript('OnEvent', function(self)
+        self:GetNormalTexture():SetDesaturated(not WoWTools_WorldMapMixin:GetMapID())
+    end)
+
+    Button:SetScript('OnMouseWheel', function(_, d)
+        local frame= _G['WoWToolsPlayerPinEditUIFrame']
+        if d==-1 then
+            if frame and frame:IsShown() then
+                WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+            end
+        else
+            if not frame or not frame:IsShown() then
+                WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+            end
+        end
+    end)
+    Button:set_point()
+
+
+    Button.pool= CreateFramePool('DropdownButton', WorldMapFrame:GetCanvas(), 'WoWToolsMenu2Template', nil, nil, Init_Button)
     --[[WorldMapFrame:HookScript("OnHide", function()
-        Pool:ReleaseAll()
+        Button.pool:ReleaseAll()
     end)]]
     --WorldMapFrame:HookScript("OnShow", RefreshMapMarkers)
     hooksecurefunc(WorldMapFrame, "OnMapChanged", RefreshMapMarkers)
@@ -267,7 +324,7 @@ local function Init()
             WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
         end)
     end
-    
+
     Init=function()
         RefreshMapMarkers()
     end
@@ -279,5 +336,9 @@ end
 
 function WoWTools_WorldMapMixin:Init_PlayerPin()
     Init()
-    
+
+end
+
+function WoWTools_WorldMapMixin:Init_PlayerPin_Menu()
+    Init()
 end
