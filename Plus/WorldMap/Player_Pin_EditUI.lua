@@ -410,16 +410,6 @@ local function Init(tab)
                 self,
                 "ANCHOR_RIGHT"
             )
-        else
-            GameTooltip_ShowSimpleTooltip(GameTooltip,
-                WARNING_FONT_COLOR:GenerateHexColorMarkup()
-                ..(WoWTools_DataMixin.onlyChinese and '坐标' or 'XY')
-                ..' 50.00 60.00',
-                SimpleTooltipConstants.NoOverrideColor,
-                SimpleTooltipConstants.DoNotWrapText,
-                self,
-                "ANCHOR_RIGHT"
-            )
         end
     end)
 
