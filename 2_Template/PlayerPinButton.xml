@@ -21,8 +21,8 @@
             <Layer level="BACKGROUND" textureSubLevel="2">
                 <Texture parentKey="Select" atlas="glues-characterSelect-card-glow-swap" hidden="true">
                     <Anchors>
-                        <Anchor point="TOPLEFT" x="-6" y="6"/>
-                        <Anchor point="BOTTOMRIGHT" x="6" y="0"/>
+                        <Anchor point="TOPLEFT" x="-2" y="2"/>
+                        <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
                     </Anchors>
                 </Texture>
             </Layer>

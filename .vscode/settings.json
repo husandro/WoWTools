@@ -3122,7 +3122,8 @@
         "MAP_PIN_HYPERLINK",
         "SHOW_IN_GAME_NAVIGATION",
         "NOTE",
-        "CONTACTS_MENU_NAME"
+        "CONTACTS_MENU_NAME",
+        "WORLD_QUEST_ICONS_BY_PROFESSION"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

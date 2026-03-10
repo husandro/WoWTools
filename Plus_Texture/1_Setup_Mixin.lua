@@ -260,11 +260,11 @@ end
 
 --Slider
 function WoWTools_TextureMixin:SetSlider(frame)
-    if not frame or not frame.Slider then
+    if not frame or not (frame.Slider or frame.Thumb) then
         return
     end
 
-    local slider= frame.Slider.Slider or frame.Slider
+    local slider= frame.Slider and frame.Slider.Slider or frame.Slider or frame
 
     self:SetAlphaColor(slider.Thumb, true)
 
@@ -281,7 +281,7 @@ function WoWTools_TextureMixin:SetSlider(frame)
         self:SetAlphaColor(frame.Middle, true)
         self:SetAlphaColor(frame.Right, true)
 
-        if frame.Slider.Slider then
+        if frame.Slider and frame.Slider.Slider then
             self:SetFrame(frame.Slider.Back, {alpha=1})
             self:SetFrame(frame.Slider.Forward, {alpha=1})
         end

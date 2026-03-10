@@ -26,22 +26,22 @@ WoWTools_DataMixin.ClassName_CN= {
 
 
 local function Init()
-local _tab
+    local _tab
 
-for classID = 1, GetNumClasses() do
-    if (classID == 10) and (GetClassicExpansionLevel() <= LE_EXPANSION_CATACLYSM) then-- We have an annoying gap between warlock and druid
-        classID = 11
-    end
-    local className, classFile = GetClassInfo(classID)
-    if className and className~='' then
-        local hex= select(4, GetClassColor(classFile))
+    for classID= 1, GetNumClasses() do
+        if (classID == 10) and (GetClassicExpansionLevel() <= LE_EXPANSION_CATACLYSM) then-- We have an annoying gap between warlock and druid
+            classID = 11
+        end
+        local className, classFile = GetClassInfo(classID)
+        if className and className~='' then
+            local hex= select(4, GetClassColor(classFile))
 
-        classTabs[className]= WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile)
-            ..'|c'..hex
-            ..(WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.ClassName_CN[classID] or className)
-            ..'|r'
+            classTabs[className]= WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile)
+                ..'|c'..hex
+                ..(WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.ClassName_CN[classID] or className)
+                ..'|r'
+        end
     end
-end
 
 --[ID]= ClassID,
 --https://wago.tools/db2/ChrSpecialization?locale=zhCN

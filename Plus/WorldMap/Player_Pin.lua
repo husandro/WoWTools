@@ -3,18 +3,17 @@ local function Save()
 end
 
 local function SaveWoW()
-    return WoWToolsPlayerDate.WorldMapPin
+    return WoWToolsPlayerDate.PlayerMapPin
 end
 
 
-local Button, addName
+local Button
 
 
 local function Is_CurPoint(waypoint)
     local point= C_Map.GetUserWaypoint()
     return point and point.uiMapID==waypoint.uiMapID and point.x==waypoint.x and point.y==waypoint.y
 end
-
 
 
 
@@ -122,21 +121,33 @@ local function RefreshMapMarkers()
         return
     end
 
+    --[[local profession= {}
+    for _, i in pairs({GetProfessions()}) do
+        local skillLineID= select(7, GetProfessionInfo(i))
+        if skillLineID and skillLineID>0 then
+            profession[skillLineID]= 1
+        end
+    end]]
+
     local width, height = canvas:GetSize()
 
-    for name, data in pairs(pins) do
+    for xy, data in pairs(pins) do
+        local x, y= WoWTools_WorldMapMixin:GetXYForText(xy)
 
-        local pin = Button.pool:Acquire()
-        pin.data= {
-            name= name,
-            mapID= mapID,
-            icon= data.icon,
-            x= data.x,
-            y= data.y,
-            note= data.note,
-        }
-
-        pin:Init(canvas, width, height)
+        if x and y--坐标
+            and (not data.skillLineID or C_SpellBook.GetSkillLineIndexByID(data.skillLineID))--(not data.professionID or GetProfessionInfo(data.professionID))--专业
+        then
+            local pin = Button.pool:Acquire()
+            pin.data= {
+                name= data.name,
+                mapID= mapID,
+                icon= data.icon,
+                x= x,
+                y= y,
+                note= data.note,
+            }
+            pin:Init(canvas, width, height)
+        end
     end
 end
 
@@ -197,7 +208,7 @@ local function Init_Menu(self, root)
 
 --打开选项
     root:CreateDivider()
-    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_WorldMapMixin.addName})
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_WorldMapMixin.addName, name2=WoWTools_WorldMapMixin.addName2})
 
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -249,7 +260,6 @@ end
 
 
 local function Init()
-    addName= '|A:Gear:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地图标记' or MAP_PIN)
 
 
     if Save().disabled then
@@ -265,7 +275,7 @@ local function Init()
     Button= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', MinimapCluster.Tracking.Button, 'WoWToolsMenu3Template')
     Button:SetNormalAtlas('Gear')
     Button:SetupMenu(Init_Menu)
-    Button.tooltip= NORMAL_FONT_COLOR:WrapTextInColorCode(addName)
+    Button.tooltip= NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_WorldMapMixin.addName2)
         ..'|n'..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
         ..'|n'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or CONTACTS_MENU_NAME)
         ..'|n'..WoWTools_DataMixin.Icon.mid..WoWTools_TextMixin:GetShowHide(nil, true)

@@ -104,3 +104,33 @@ function WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
         print(WoWTools_DataMixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map")
     end
 end
+
+
+
+
+
+
+
+
+
+
+--['50.02 74.76']
+function WoWTools_WorldMapMixin:GetXYForText(text)
+    if text then
+        text= text:gsub('  ', ' ')
+        local x, y= text:match('(.-) (.+)')
+        if x and y then
+            x, y= tonumber(x), tonumber(y)
+            if x and y and x>=0 and x<=100 and y>=0 and y<=100 then
+                return x, y
+            end
+        end
+    end
+end
+
+ function WoWTools_WorldMapMixin:GetTextForXY(x, y)
+    if x and y then
+        return x..' '..y
+    end
+ end
+

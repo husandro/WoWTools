@@ -17,7 +17,9 @@ function WoWTools_SliderMixin:CSlider(frame, tab)
     local slider= CreateFrame("Slider", nil, frame, 'OptionsSliderTemplate')
     slider:SetSize(tab.w or 200, tab.h or 18)
     slider:SetMinMaxValues(tab.min, tab.max)
-    slider:SetValue(tab.value)
+    if tab.value then
+        slider:SetValue(tab.value)
+    end
     slider.Low:SetText(tab.text or tab.min)
     slider.High:SetText('')
     slider.Text:SetText(tab.value)
