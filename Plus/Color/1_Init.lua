@@ -110,7 +110,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			})
 
 			if Save().disabled then
-				WoWTools_ColorMixin:Init_CODE()
+				--WoWTools_ColorMixin:Init_CODE()
 				self:SetScript('OnEvent', nil)
 				self:UnregisterAllEvents()
 

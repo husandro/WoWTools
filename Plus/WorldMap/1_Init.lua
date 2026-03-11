@@ -119,7 +119,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     WoWToolsPlayerDate.WorldMapPin= nil
 
-    WoWToolsPlayerDate.PlayerMapPin={-- WoWToolsPlayerDate.PlayerMapPin or {
+    WoWToolsPlayerDate.PlayerMapPin= WoWToolsPlayerDate.PlayerMapPin or {
         [2393]={--12.0银月城
             ['50.02 74.76']={
                 --name= WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
@@ -134,7 +134,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
     WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
-    WoWTools_WorldMapMixin.addName2= '|A:Ping_Wheel_Icon_Assist:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地图标记' or MAP_PIN)
+    WoWTools_WorldMapMixin.addName2= '|A:Gear:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地图标记' or MAP_PIN)
     --添加控制面板
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_WorldMapMixin.addName,

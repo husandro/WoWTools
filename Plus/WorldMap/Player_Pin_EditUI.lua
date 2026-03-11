@@ -21,16 +21,18 @@ local function GetClassName(classID)
         local color= RAID_CLASS_COLORS[classInfo.classFile] or HIGHLIGHT_FONT_COLOR
         return (WoWTools_UnitMixin:GetClassIcon(nil, nil, classInfo.classFile) or '')--职业图标
             ..color:WrapTextInColorCode(WoWTools_TextMixin:CN(classInfo.className))
+            ..(classID== PlayerUtil.GetClassID() and '|A:recipetoast-icon-star:0:0|a' or '')
     end
 end
 local function GetProfessionName(skillLineID)
     local info= skillLineID and C_TradeSkillUI.GetProfessionInfoBySkillLineID(skillLineID)
     if info and info.professionName and info.professionName~='' then
         local textureID, icon= select(2, WoWTools_TextureMixin:IsAtlas(WORLD_QUEST_ICONS_BY_PROFESSION[skillLineID]))
+
         return (C_SpellBook.GetSkillLineIndexByID(skillLineID) and '|cnGREEN_FONT_COLOR:' or '')
                     ..(icon or '')
                     .. WoWTools_TextMixin:CN(info.professionName),
-                info.parentProfessionName,
+                info.professionName,
                 textureID
     end
 end
@@ -52,6 +54,10 @@ local function Find_Pool(name)
     end
 end
 
+
+
+
+
 local function Set_UpdataAddButton_Stat()
     local isUpdate, isAdd= false, false
 
@@ -63,10 +69,10 @@ local function Set_UpdataAddButton_Stat()
     local xy2= Frame.data.xy
 
     if mapID and (name or icon) and xy then
-        local data=SaveWoW()[mapID] or {}
+        local data= SaveWoW()[mapID] or {}
 
-        isUpdate= data[xy2]
-        isAdd= not isUpdate
+        isUpdate= data[xy2] and true or false
+        isAdd= not data[xy] and true or false
     end
 
     Frame.addButton:SetEnabled(isAdd)
@@ -147,21 +153,15 @@ local function Add_ListButton(btn)
     btn.Delete:SetSize(20,20)
     btn.Delete:Hide()
     btn.Delete:SetScript('OnClick', function(self)
-        local mapID= Frame.mapID
         local data= self:GetParent().data
-        local name= data.pin.name
-        if name then
-
-            SaveWoW()[mapID][data.xy]= nil
-            print(
-                WoWTools_DataMixin.Icon..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
-                data.pin.name,
-                data.pin.icon,
-                data.xy,
-                data.pin.note
-            )
-        end
-
+        SaveWoW()[Frame.mapID][data.xy]= nil
+        print(
+            WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
+            data.pin.name,
+            data.pin.icon,
+            data.xy,
+            data.pin.note
+        )
         Refresh_All()
     end)
 
@@ -214,7 +214,6 @@ local function Add_ListButton(btn)
         Frame.colorButton.color= CreateColor(color.r or 1, color.g or 0.9294, color.b or 0.7607)
         Frame.colorButton:set_color()
 
-
         Frame.nameEdit:SetFocus()
         EventRegistry:TriggerEvent("WoWToolsPlayrPin.UpateSelect")
     end)
@@ -248,7 +247,7 @@ local function Initializer(self, data)
     self.Sub:SetText(data.xy)
     self.Sub2:SetText(data.pin.note or '')
 
-    local color= data.color or CreateColor(1.0, 0.9294, 0.7607)
+    local color= data.color or Frame.colorButton.valueColor
     self.Name:SetTextColor(color:GetRGB())
 
     self.Index:SetText(data.index)
@@ -281,52 +280,54 @@ end
 
 local function Add_Updata_Data(isUpdate)
     local mapID= Frame.mapID
-
+--名称
     local name= Frame.nameEdit:GetText()
     name= name:gsub(' ', '')~='' and name or nil
-
+--图标
     local icon= Frame.iconEdit:GetText()
     icon= icon:gsub(' ', '')~='' and icon or nil
-
+--xy 50.00 50.00 这个是字符
     local x, y= WoWTools_WorldMapMixin:GetXYForText(Frame.xyEdit:GetText())
     local xy= WoWTools_WorldMapMixin:GetTextForXY(x, y)
 
     if not mapID or not xy or not (name or icon) then
         return
     end
-
+--备注
     local note= Frame.noteEdit:GetText()
     note= note:gsub(' ', '')~='' and note or nil
-
+--仅限专业
     local skillLineID= Frame.skillLineID
+--仅限职业
     local classID= Frame.classID
-
+--颜色 {r=r, g=g, b=b}
     local color
-    if Frame.colorButton.color and Frame.colorButton.valueColor~=Frame.colorButton.color then
-        local r,g,b= color:GetRGB()
-        color= {r=r, g=g, b=b}
-    end
-
-    if isUpdate and SaveWoW()[mapID] and SaveWoW[mapID][Frame.data.xy] then
-        SaveWoW[mapID][Frame.data.xy]= nil
+    if name and Frame.colorButton.color and not tCompare(Frame.colorButton.color, Frame.colorButton.valueColor) then
+        local r,g,b= Frame.colorButton.color:GetRGB()
+        if r and g and b then
+            color= {r=r, g=g, b=b}
+        end
     end
 
     SaveWoW()[mapID]= SaveWoW()[mapID] or {}
+
+--如果是更新，先删除原来
+    if isUpdate and SaveWoW()[mapID][Frame.data.xy] then
+        SaveWoW()[mapID][Frame.data.xy]= nil
+    end
+
     SaveWoW()[mapID][xy]= {
         name= name,
         icon= icon,
         note= note,
+        color= color,
         classID= classID,
         skillLineID= skillLineID,
-        color= color,
     }
 
     Refresh_All()
+    WoWTools_WorldMapMixin:Init_PlayerPin_RefreshMapMarkers()
 end
-
-
-
-
 
 
 
@@ -354,6 +355,7 @@ local function Init(tab)
         size={580, 370},
         strata='HIGH',
         header= WoWTools_WorldMapMixin.addName2,
+        notEsc=true,
     })
     Frame.data= {}
 
@@ -361,7 +363,7 @@ local function Init(tab)
 
     Frame.list = CreateFrame("Frame", nil, Frame, "WowScrollBoxList")
     Frame.list:SetPoint("TOPLEFT", 12, -55)
-    Frame.list:SetPoint("BOTTOMRIGHT", Frame, 'BOTTOM', -80, 6)
+    Frame.list:SetPoint("BOTTOMRIGHT", Frame, 'BOTTOM', -100, 6)
 
 
     Frame.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
@@ -407,6 +409,21 @@ local function Init(tab)
     Frame.newButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     Frame.newButton:SetPoint('BOTTOMLEFT', Frame.list, 'TOPRIGHT', 23, 0)
     Frame.newButton:SetNormalAtlas('common-icon-plus')
+    Frame.newButton:GetNormalTexture():ClearAllPoints()
+    Frame.newButton:GetNormalTexture():SetPoint('TOPLEFT', 4, -4)
+    Frame.newButton:GetNormalTexture():SetPoint('BOTTOMRIGHT', -4, 4)
+    Frame.newButton.tooltip= WoWTools_DataMixin.onlyChinese and '新建' or NEW
+    function Frame.newButton:clear()
+        Frame.nameEdit:SetText('')
+        Frame.colorButton.color= Frame.colorButton.valueColor
+        Frame.iconEdit:SetText('')
+        Frame.xyEdit:SetText('')
+        Frame.noteEdit:SeText('')
+        Frame.professionMenu.skillLineID= nil
+        Frame.classMenu.classID= nil
+    end
+    Frame.newButton:SetScript('OnClick', Frame.newButton.clear)
+
 
     Frame.mapMenu = CreateFrame("DropdownButton", nil, Frame, "WowStyle1DropdownTemplate")--下拉，菜单
     Frame.mapMenu:SetPoint('LEFT',Frame.newButton, 'RIGHT', 6, 0)
@@ -431,9 +448,72 @@ local function Init(tab)
     end)
 
 
+ --Cursor_cast_32
+
+    local worldName= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    worldName:SetPoint('TOPLEFT', Frame.list, 'TOPRIGHT', 40, -20)
+    worldName.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
+    worldName:SetNormalAtlas('Cursor_unablecast_32')
+    function worldName:set_event()
+        if self.isSatrt then
+            self:RegisterEvent('GLOBAL_MOUSE_DOWN')
+        else
+            self:UnregisterEvent('GLOBAL_MOUSE_DOWN')
+        end
+    end
+    function worldName:clear()
+        self:SetScript('OnUpdate', nil)
+        self.isSatrt= nil
+        self.esp= nil
+        self:set_event()
+        ResetCursor()
+    end
+    function worldName:get()
+        local text
+        local data= C_TooltipInfo.GetWorldCursor() or {}
+        if data.lines and data.lines[1] and data.lines[1].leftText then
+            text= data.lines[1].leftText
+        elseif _G['GameTooltipTextLeft1'] and _G['GameTooltipTextLeft1']:IsVisible() then
+            text=_G['GameTooltipTextLeft1']:GetText()
+        end
+        if text~='' then
+            return text
+        end
+    end
+    worldName:SetScript("OnHide", worldName.clear)
+    worldName:SetScript('OnEvent', function(self, _, d)
+        if d=='RightButton' then
+            self:clear()
+        elseif d=='LeftButton' then
+            local text= self:get()
+            if text then
+                Frame.nameEdit:SetText(text)
+                self:clear()
+            end
+        end
+    end)
+    worldName:SetScript('OnClick', function(self)
+        if self.isSatrt then
+            self:clear()
+            return
+        end
+        self.isSatrt= true
+        self:set_event()
+        self.esp= 3
+        self:SetScript('OnUpdate', function(_, esp)
+            self.esp= self.esp+ esp
+            if self.esp>0.3 then
+                self.esp= 0
+                SetCursor('Interface\\CURSOR\\Crosshairs.blp')
+                self:SetNormalAtlas(self:get() and 'Cursor_cast_32' or 'Cursor_unablecast_32')
+                return
+            end
+        end)
+    end)
 
     Frame.nameEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 1)
-    Frame.nameEdit:SetPoint('TOPLEFT', Frame.list, 'TOPRIGHT', 40, -20)
+    Frame.nameEdit:SetPoint('LEFT', worldName, 'RIGHT',4, 0)
+    --Frame.nameEdit:SetPoint('TOPLEFT', Frame.list, 'TOPRIGHT', 40, -20)
     Frame.nameEdit:SetPoint('RIGHT', Frame.mapMenu, 'BOTTOM')
     Frame.nameEdit:SetHeight(23)
     Frame.nameEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '名称' or NAME)
@@ -448,16 +528,76 @@ local function Init(tab)
         self.searchIcon:SetShown(self.name)
         Set_UpdataAddButton_Stat()
     end)
-    Frame.nameEdit:SetScript('OnHide', function(self)
-        self.name= nil
+
+ --颜色
+    Frame.colorButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template ColorSwatchTemplate')--ColorSwatchMixin
+    Frame.colorButton:SetPoint('LEFT', Frame.nameEdit, 'RIGHT', 2, 0)
+    Frame.colorButton.valueColor= CreateColor(1.0, 0.9294, 0.7607)
+    --Frame.colorButton:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    Frame.colorButton:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        root:CreateRadio(
+            WoWTools_DataMixin.onlyChinese and '无' or NONE,
+        function()
+            return tCompare(self.valueColor, self.color)
+        end, function()
+            self.color= self.valueColor
+            self:set_color()
+            return MenuResponse.Refresh
+        end)
+        root:CreateDivider()
+        local code = WoWTools_ColorMixin:GetCODE()
+        table.sort(code)
+        local index=0
+        for _, name in pairs(code) do
+            local color= _G[name]
+            if color and color.GetRGB then
+                index= index+1
+                local sub=root:CreateRadio(
+                    color:WrapTextInColorCode(name),
+                function(data)
+                    return tCompare(_G[data.name], self.color)
+                end, function(data)
+                    self.color= _G[data.name]
+                    self:set_color()
+                    return MenuResponse.Refresh
+                end, {name=name, rightText=index})
+                WoWTools_MenuMixin:SetRightText(sub)
+            end
+        end
+        WoWTools_MenuMixin:SetScrollMode(root)
     end)
+    Frame.colorButton:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            self:CloseMenu()
+            local color= self.color or self.valueColor
+            local r,g,b= color:GetRGB()
+
+            WoWTools_ColorMixin:ShowColorFrame(r,g,b, nil, function()--swatchFunc
+                r,g,b = WoWTools_ColorMixin:Get_ColorFrameRGBA()
+                self.color= CreateColor(r,g,b)
+                self:set_color()
+            end, function()--cancelFunc
+                self.color= color
+                self:set_color()
+            end)
+        end
+    end)
+    function Frame.colorButton:set_color()
+        self.color= self.color or self.valueColor
+        Frame.nameEdit:SetTextColor(self.color:GetRGB())
+        self:SetColorRGB(self.color:GetRGB())
+    end
+    Frame.colorButton:set_color()
 
 
 
 
 
     Frame.iconEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 3)
-    Frame.iconEdit:SetPoint('LEFT', Frame.nameEdit, 'RIGHT', 6, 0)
+    Frame.iconEdit:SetPoint('LEFT', Frame.colorButton, 'RIGHT', 12, 0)
     Frame.iconEdit:SetPoint('RIGHT', -2*23-6, 0)
     Frame.iconEdit:SetHeight(23)
     Frame.iconEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_MODE_ICON)
@@ -480,10 +620,13 @@ local function Init(tab)
     end)
 
 
+
     Frame.iconEdit.iconButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     Frame.iconEdit.iconButton:SetPoint('LEFT', Frame.iconEdit, 'RIGHT', 2, 0)
     Frame.iconEdit.iconButton.icon= Frame.iconEdit.iconButton:CreateTexture(nil, 'BACKGROUND')
     Frame.iconEdit.iconButton.icon:SetAllPoints()
+    --WoWTools_ButtonMixin:AddMask(Frame.iconEdit.iconButton, false, Frame.iconEdit.iconButton.icon)
+    Frame.iconEdit.iconButton.owner= 'ANCHOR_RIGHT'
     function Frame.iconEdit.iconButton:tooltip()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS)
         if not _G['TAV_CoreFrame'] then
@@ -494,18 +637,59 @@ local function Init(tab)
     Frame.iconEdit.iconButton:SetScript('OnClick', function()
         WoWTools_TextureMixin:GetNewIcon(Frame, {
             texture= Frame.iconEdit:GetText(),
-            SetValue=function(newIcon, newText)
+            SetValue=function(newIcon)
                 Frame.iconEdit:SetText(newIcon)
-                Frame.nameEdit:SetText(newText)
+                --Frame.nameEdit:SetText(newText)
             end
         })
     end)
 
 
+    if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
+        local tav= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')-- WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
+        tav:SetNormalAtlas("communities-icon-searchmagnifyingglass")
+        tav:SetPoint('LEFT', Frame.iconEdit.iconButton, 'RIGHT')
+        tav:SetScript('OnClick', function()
+            local frame= _G['TAV_CoreFrame']
+            frame:SetShown(not frame:IsShown())
+            if frame:IsShown() and frame.LeftInset and frame.LeftInset.SearchBox and frame.LeftInset.SearchBox:GetText()=='' then
+                frame.LeftInset.SearchBox:SetText('objectionsatlas')
+            end
+        end)
+        tav.owner= 'ANCHOR_RIGHT'
+        tav.tooltip= 'Texture Atlas Viewer'
+    end
+
+
+
+
+    local playerPoint= CreateFrame('Button', nil, Frame, 'WoWToolsButton2Template')
+    playerPoint:SetPoint('TOPLEFT', worldName, 'BOTTOMLEFT', 0, -4)
+    --playerPoint:SetPoint('LEFT',  Frame.xyEdit, 'RIGHT',2, 0)
+    playerPoint:SetNormalTexture(0)
+    SetPortraitTexture(playerPoint:GetNormalTexture(), 'player')
+    function playerPoint:tooltip(tooltip)
+        local x,y= WoWTools_WorldMapMixin:GetPlayerXY()
+        if x and y then
+            tooltip:AddLine(x..' '..y)
+        else
+            GameTooltip_AddErrorLine(tooltip,
+                WoWTools_DataMixin.onlyChinese and '无效的地图' or ERR_HOUSING_RESULT_INVALID_MAP
+            )
+        end
+    end
+    playerPoint:SetScript('OnClick', function()
+        local x,y= WoWTools_WorldMapMixin:GetPlayerXY()
+        local xy= WoWTools_WorldMapMixin:GetTextForXY(x, y)
+        if xy then
+            Frame.xyEdit:SetText(xy)
+        end
+    end)
 
 
     Frame.xyEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 2)
-    Frame.xyEdit:SetPoint('TOPLEFT',  Frame.nameEdit, 'BOTTOMLEFT', 0, -4)
+    Frame.xyEdit:SetPoint('LEFT', playerPoint, 'RIGHT', 4, 0)
+    --Frame.xyEdit:SetPoint('TOPLEFT',  Frame.nameEdit, 'BOTTOMLEFT', 0, -4)
     Frame.xyEdit:SetPoint('RIGHT', -54, 0)
     Frame.xyEdit:SetHeight(23)
     Frame.xyEdit.Instructions:SetText('xy 12.34 12.34')
@@ -534,37 +718,72 @@ local function Init(tab)
 
 
 
- --颜色
-    Frame.colorButton= CreateFrame('Button', nil, Frame, 'ColorSwatchTemplate')--ColorSwatchMixin
-    Frame.colorButton:SetPoint('LEFT', Frame.xyEdit, 'RIGHT', 2, 0)
-    Frame.colorButton.valueColor= CreateColor(1.0, 0.9294, 0.7607)
-    --Frame.colorButton:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-    Frame.colorButton:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' then
-            local color= self.color or self.valueColor
-            local r,g,b= color:GetRGB()
 
-            WoWTools_ColorMixin:ShowColorFrame(r,g,b, nil, function()--swatchFunc
-                r,g,b = WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                self.color= CreateColor(r,g,b)
-                self:set_color()
-            end, function()--cancelFunc
-                self.color= color
-                self:set_color()
-            end)
+
+    local worldPoint= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    worldPoint:SetPoint('LEFT', Frame.xyEdit, 'RIGHT', 2, 0)
+    worldPoint.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
+    worldPoint.owner= 'ANCHOR_RIGHT'
+    worldPoint:SetNormalAtlas('Cursor_unablecast_32')
+    function worldPoint:settings()
+        self:SetNormalAtlas(self.isSatrt and 'cursor_crosshairs_32' or 'Cursor_unablecast_32')
+        if self.isSatrt then
+            self:RegisterEvent('GLOBAL_MOUSE_DOWN')
         else
-            self.color= self.valueColor
-            self:set_color()
+            self:UnregisterEvent('GLOBAL_MOUSE_DOWN')
+        end
+    end
+    function worldPoint:clear()
+        self:SetScript('OnUpdate', nil)
+        self.isSatrt= nil
+        self.esp= nil
+        self:settings()
+        ResetCursor()
+    end
+    function worldPoint:get()
+        local x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置
+        if x and y then
+            return x, y
+        end
+    end
+    worldPoint:SetScript("OnHide", worldPoint.clear)
+    worldPoint:SetScript('OnEvent', function(self, _, d)
+        if d=='RightButton' then
+            self:clear()
+        elseif d=='LeftButton' then
+            if not _G['WoWToolsWorldMapMenuButton']:IsVisible() then
+                self:clear()
+            else
+                local x, y = self:get()
+                if x and y then
+                    Frame.xyEdit:SetText(format('%.2f %.2f', x*100, y*100))
+                    self:clear()
+                end
+            end
         end
     end)
-    function Frame.colorButton:set_color()
-        local color= self.color or self.valueColor
-        Frame.nameEdit:SetTextColor(color:GetRGB())
-        self:SetColorRGB(color:GetRGB())
-    end
-    Frame.colorButton:set_color()
-
-
+    
+    worldPoint:SetScript('OnClick', function(self)
+        if self.isSatrt then
+            self:clear()
+            return
+        end
+        if not _G['WoWToolsWorldMapMenuButton']:IsVisible() then
+            ToggleWorldMap()
+        end
+        self.isSatrt= true
+        self:settings()
+        self.esp= 3
+        self:SetScript('OnUpdate', function(_, esp)
+            self.esp= self.esp+ esp
+            if self.esp>0.3 then
+                self.esp= 0
+                SetCursor('Interface\\CURSOR\\Crosshairs.blp')
+                self:SetNormalAtlas(self:get() and 'Cursor_cast_32' or 'Cursor_unablecast_32')
+                return
+            end
+        end)
+    end)
 
 
 
@@ -595,7 +814,7 @@ local function Init(tab)
 
 
     Frame.noteEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 4)
-    Frame.noteEdit:SetPoint('TOPLEFT',  Frame.xyEdit, 'BOTTOMLEFT', 0, -44)
+    Frame.noteEdit:SetPoint('TOPLEFT',  Frame.xyEdit, 'BOTTOMLEFT', 0, -55)
     Frame.noteEdit:SetPoint('RIGHT', -13, 0)
     Frame.noteEdit:SetHeight(23)
     Frame.noteEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE)
@@ -677,7 +896,7 @@ local function Init(tab)
     Frame.addButton:SetPoint('LEFT', Frame.updateButton, 'RIGHT', 6, 0)
     Frame.addButton:SetPoint('RIGHT', -19, 0)
     Frame.addButton:SetHeight(32)
-    Frame.updateButton:SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+    Frame.addButton:SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
     Frame.addButton:SetScript('OnClick', function()
         Add_Updata_Data(false)
     end)
@@ -703,9 +922,9 @@ local function Init(tab)
 
 
 
-    Frame:SetScript('OnHide', function(self)
+    --[[Frame:SetScript('OnHide', function(self)
         self.view:SetDataProvider(CreateDataProvider(), ScrollBoxConstants.RetainScrollPosition)
-    end)
+    end)]]
 
 
 

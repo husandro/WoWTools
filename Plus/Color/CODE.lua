@@ -409,12 +409,12 @@ end
 
 local function Init(edit)
     if not edit then
-        Tab={}
+        --Tab={}
         Init=function()end
         return
     end
 
-    table.sort(Tab)
+    
 
     table.insert(Tab, 1, "ORANGE_FONT_COLOR")
     table.insert(Tab, 1, "DISABLED_FONT_COLOR")
@@ -435,4 +435,8 @@ end
 
 function WoWTools_ColorMixin:Init_CODE(edit)
     Init(edit)
+end
+
+function WoWTools_ColorMixin:GetCODE()
+    return Tab
 end

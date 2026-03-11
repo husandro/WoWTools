@@ -29,7 +29,7 @@ end
 
 
 local function Init_Button(pin)
-    pin:SetFrameStrata('HIGH')
+    --pin:SetFrameStrata('HIGH')
     pin.text = pin:CreateFontString(nil, "BORDER", "WorldMapTextFont")
     pin.text:SetPoint('CENTER')
 
@@ -68,22 +68,23 @@ local function Init_Button(pin)
 
     function pin:Init(canvas, width, height)
         local data= self.data
-
-        self.text:SetText(
-            (select(3, WoWTools_TextureMixin:IsAtlas(data.icon)) or '')
-            ..data.name
-        )
-
-        local color
-        if data.color then
-            color= CreateColor(data.color.r or 1, data.color.g or 1, data.color.b or 1)
-        else
-            color= CreateColor(1.0, 0.9294, 0.7607)
-        end
-        self.text:SetTextColor(color:GetRGB())
-
         local h= Save().size or 32
-        self.text:SetFontHeight(h)
+--名称
+        self.text:SetText(
+            (select(3, WoWTools_TextureMixin:IsAtlas(data.icon), h) or '')
+            ..(data.name or '')
+        )
+        if data.name then
+            local color
+            if data.color then
+                color= CreateColor(data.color.r or 1, data.color.g or 1, data.color.b or 1)
+            else
+                color= CreateColor(1.0, 0.9294, 0.7607)
+            end
+            self.text:SetTextColor(color:GetRGB())
+            self.text:SetFontHeight(h)
+        end
+
         self:SetSize(h-2, h-2)
 
         local x= data.x * width / 100
@@ -130,21 +131,25 @@ local function RefreshMapMarkers()
     end]]
 
     local width, height = canvas:GetSize()
+    local classID= PlayerUtil.GetClassID()
 
     for xy, data in pairs(pins) do
         local x, y= WoWTools_WorldMapMixin:GetXYForText(xy)
 
         if x and y--坐标
-            and (not data.skillLineID or C_SpellBook.GetSkillLineIndexByID(data.skillLineID))--(not data.professionID or GetProfessionInfo(data.professionID))--专业
+            and (not data.skillLineID or C_SpellBook.GetSkillLineIndexByID(data.skillLineID))--仅限专业
+            and (not data.classID or data.classID==classID)--仅限职业
         then
             local pin = Button.pool:Acquire()
             pin.data= {
-                name= data.name,
                 mapID= mapID,
-                icon= data.icon,
-                x= x,
-                y= y,
-                note= data.note,
+                name= data.name,--名称
+                icon= data.icon,--图标
+                color=data.color,--颜色
+                x= x,--数字
+                y= y,--数字
+                xy= xy,--50.00 50.00 这个是字符
+                note= data.note,--备注
             }
             pin:Init(canvas, width, height)
         end
@@ -164,7 +169,7 @@ local function Init_Menu(self, root)
         return
     end
     local sub
-    local x, y, mapID= WoWTools_WorldMapMixin:GetPlayerXY()
+    --local x, y, mapID= WoWTools_WorldMapMixin:GetPlayerXY()
 
 
     local num= 0
@@ -174,15 +179,28 @@ local function Init_Menu(self, root)
 
 --自定义
     sub=root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
+        (WoWTools_DataMixin.onlyChinese and '编辑' or EDIT),
     function()
         WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
         return MenuResponse.Open
     end, {rightText=num})
     WoWTools_MenuMixin:SetRightText(sub)
 
+--重置位置
+    local frameName= 'WoWToolsPlayerPinEditUIFrame'
+    sub:CreateButton(
+        (WoWTools_MoveMixin:GetPoint(nil, frameName) and '' or '|cff626262')
+        ..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
+    function()
+        WoWTools_MoveMixin:ClearPoint(nil, frameName)--重置位置
+        if _G[frameName] then
+            _G[frameName]:ClearAllPoints()
+            _G[frameName]:SetPoint('CENTER')
+        end
+        return MenuResponse.Refresh
+    end)
 
---新建
+--[[新建
     root:CreateDivider()
     sub= root:CreateButton(
         WoWTools_DataMixin.Icon.Player
@@ -198,7 +216,7 @@ local function Init_Menu(self, root)
             tooltip:AddDoubleLine('mpaID ', mapID, nil,nil,nil, 1,1,1)
             tooltip:AddDoubleLine('XY', x..'  '..y, nil,nil,nil, 1,1,1)
         end
-    end)
+    end)]]
 
 
 
@@ -226,7 +244,7 @@ local function Init_Menu(self, root)
     sub:CreateSpacer()
 
 --parent
-    sub:CreateCheckbox(
+    sub=sub:CreateCheckbox(
         'WorldFrame',
     function()
         return Save().parentWorldFrame
@@ -241,8 +259,10 @@ local function Init_Menu(self, root)
     end)
 
 
---重新加载UI
+
+
     sub:CreateDivider()
+--重新加载UI
     WoWTools_MenuMixin:Reload(sub)
 end
 
@@ -262,7 +282,7 @@ end
 local function Init()
 
 
-    if Save().disabled then
+    if Save().disabled or not WorldMapFrame:GetCanvas() then
         return
     end
 
@@ -337,6 +357,7 @@ local function Init()
 
     Init=function()
         RefreshMapMarkers()
+        Button:SetShown(not Save().disabled)
     end
 end
 
@@ -349,6 +370,9 @@ function WoWTools_WorldMapMixin:Init_PlayerPin()
 
 end
 
-function WoWTools_WorldMapMixin:Init_PlayerPin_Menu()
-    Init()
+
+function WoWTools_WorldMapMixin:Init_PlayerPin_RefreshMapMarkers()
+    if WorldFrame:IsShown() then
+        RefreshMapMarkers()
+    end
 end

@@ -601,7 +601,14 @@ local function Init(isShow)
     if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
         List.tav= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
         List.tav:SetPoint('TOP', List.FindIcon, 'BOTTOM', 0, -2)
-        List.tav:SetScript('OnClick', function() _G['TAV_CoreFrame']:SetShown(not _G['TAV_CoreFrame']:IsShown()) end)
+        List.tav:SetScript('OnClick', function()
+            local frame= _G['TAV_CoreFrame']
+            frame:SetShown(not frame:IsShown())
+            if frame:IsShown() and frame.LeftInset and frame.LeftInset.SearchBox and frame.LeftInset.SearchBox:GetText()=='' then
+                frame.LeftInset.SearchBox:SetText('objectionsatlas')
+            end
+
+        end)
         List.tav:SetScript('OnLeave', GameTooltip_Hide)
         List.tav:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

@@ -107,14 +107,16 @@ end
 if WoWTools_DataMixin.Player.husandro then
     SetConsoleKey("F9")
 end
-
---zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
---ver= select(4,GetBuildInfo())>=100100,--版本 100100
---disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
-
+--[[
+zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
+ver= select(4,GetBuildInfo())>=100100,--版本 100100
+disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
+SetPortraitTexture(playerPoint:GetNormalTexture(), 'player')
+WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {reAtlas=true})  玩家图标icon 
+]]
 
 WoWTools_DataMixin.Icon={
-    Player= '',-- WoWTools_UnitMixin:GetRaceIcon('player') 玩家图标icon
+    Player= '',--玩家图标icon  WoWTools_UnitMixin:GetRaceIcon('player') 
     icon= 'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
     icon2='|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools:0|t',
 

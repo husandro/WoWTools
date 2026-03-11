@@ -132,10 +132,14 @@ function WoWTools_FrameMixin:Create(parent, tab)
     local restPointFunc= tab.restPointFunc
     local strata= tab.strata or 'MEDIUM'
 
+    local isEsc= not tab.notEsc
+
     local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..getIndex()), parent, template, setID)
 
 --Esc 键
-    tinsert(UISpecialFrames, name)
+    if isEsc then
+        tinsert(UISpecialFrames, name)
+    end
 
     frame:SetToplevel(true)
 --设置大小

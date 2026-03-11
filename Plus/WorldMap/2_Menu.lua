@@ -358,15 +358,25 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示图标' or SELF_HIGHLIGHT_ICON)
     end)
- 
-    sub= root:CreateCheckbox(
-        '|A:Gear:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地图标记' or MAP_PIN),
+
+--地图标记
+if WorldMapFrame:GetCanvas() then
+    sub=root:CreateCheckbox(
+        WoWTools_WorldMapMixin.addName2,
     function()
-        return not Save().disabled
+        return not Save().PlayerPin.disabled
     end, function()
-        Save().disabled= not Save().disabled and true or nil
+        Save().PlayerPin.disabled= not Save().PlayerPin.disabled and true or nil
         WoWTools_WorldMapMixin:Init_PlayerPin()
     end)
+
+    --[[sub:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '编辑' or EDIT),
+    function()
+        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+        return MenuResponse.Open
+    end)]]
+end
 
 --Plus
     root:CreateDivider()
@@ -412,10 +422,7 @@ end
 
 
 local function Init()--显示地图ID
-    local MenuButton= CreateFrame('DropdownButton', 'WoWTools_PlusWorldMap_MenuButton', WorldMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenuTemplate')
-    --[[WoWTools_ButtonMixin:Menu(WorldMapFrame.BorderFrame.TitleContainer, {
-        name='WoWTools_PlusWorldMap_MenuButton'
-    })]]
+    local MenuButton= CreateFrame('DropdownButton', 'WoWToolsWorldMapMenuButton', WorldMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenuTemplate')
 
     if C_AddOns.IsAddOnLoaded('Mapster') then
         C_Timer.After(2, function()

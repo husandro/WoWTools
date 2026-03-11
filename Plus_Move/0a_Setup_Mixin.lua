@@ -279,3 +279,19 @@ function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
         return Set_Frame_Point(frame, name)
     end
 end
+
+function WoWTools_MoveMixin:GetPoint(frame, name)--得到,位置数据
+    name= name or (frame and frame:GetName())
+    if not name then
+        return
+    end
+    return Save().point[name]
+end
+
+function WoWTools_MoveMixin:ClearPoint(frame, name)--重置位置
+    name= name or (frame and frame:GetName())
+    if not name then
+        return
+    end
+    Save().point[name]= nil
+end
