@@ -130,8 +130,8 @@ local function Refresh_All(pinData)
     findText= findText:gsub(' ', '')~='' and findText or nil
 
     for xy, pin in pairs(SaveWoW()[mapID] or {}) do
-        if not findText  or (
-            pin:find(findText)
+        if not findText or (
+            xy:find(findText)
             or (pin.name and pin.name:find(findText))
             or (pin.note and pin.note:find(findText))
         )
