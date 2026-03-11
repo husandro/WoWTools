@@ -414,7 +414,7 @@ local function Init(edit)
         return
     end
 
-    
+    table.sort(Tab)
 
     table.insert(Tab, 1, "ORANGE_FONT_COLOR")
     table.insert(Tab, 1, "DISABLED_FONT_COLOR")

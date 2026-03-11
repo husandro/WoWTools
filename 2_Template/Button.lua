@@ -14,7 +14,7 @@ function WoWToolsButton_OnLeave(self)
     WoWToolsButton_SetAlpha(self)
 end
 
---self.owner= 'ANCHOR_RIGHT'
+--.owner= 'ANCHOR_RIGHT'
 function WoWToolsButton_OnEnter(self)
     if self.tooltip then
         GameTooltip:SetOwner(self, self.owner or 'ANCHOR_LEFT')

@@ -605,7 +605,7 @@ local function Init(isShow)
             local frame= _G['TAV_CoreFrame']
             frame:SetShown(not frame:IsShown())
             if frame:IsShown() and frame.LeftInset and frame.LeftInset.SearchBox and frame.LeftInset.SearchBox:GetText()=='' then
-                frame.LeftInset.SearchBox:SetText('objectionsatlas')
+                frame.LeftInset.SearchBox:SetText('objec')
             end
 
         end)

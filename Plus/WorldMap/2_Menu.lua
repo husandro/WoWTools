@@ -360,7 +360,6 @@ local function Init_Menu(self, root)
     end)
 
 --地图标记
-if WorldMapFrame:GetCanvas() then
     sub=root:CreateCheckbox(
         WoWTools_WorldMapMixin.addName2,
     function()
@@ -376,7 +375,6 @@ if WorldMapFrame:GetCanvas() then
         WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
         return MenuResponse.Open
     end)]]
-end
 
 --Plus
     root:CreateDivider()

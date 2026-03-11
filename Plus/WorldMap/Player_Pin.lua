@@ -20,30 +20,40 @@ end
 
 
 
+local function Init_PinMenu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+    root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '编辑' or EDIT),
+    function()
+        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI({mapID=WoWTools_WorldMapMixin:GetMapID(), xy=self.data.xy})
+        return MenuResponse.Open
+    end)
+    
+end
 
 
 
-
-
-
-
-
-local function Init_Button(pin)
+local function Init_Pool(pin)
     --pin:SetFrameStrata('HIGH')
     pin.text = pin:CreateFontString(nil, "BORDER", "WorldMapTextFont")
     pin.text:SetPoint('CENTER')
+    pin:SetupMenu(Init_PinMenu)
 
     function pin:tooltip(tooltip)
         if self.data.note then
             tooltip:AddLine(self.data.note, nil, nil, nil, true)
         end
-        GameTooltip_AddColoredLine(tooltip,
-            '<'
-            ..(WoWTools_DataMixin.onlyChinese and '|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a 地图标记位置' or MAP_PIN_HYPERLINK)
-            ..'>',
-            C_Map.CanSetUserWaypointOnMap(self.data.mapID) and GREEN_FONT_COLOR or DISABLED_FONT_COLOR
-        )
     end
+
+    pin:SetScript('OnEnter', function(self)
+        if self.data.note then
+            GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+            GameTooltip_SetTitle(GameTooltip, self.data.note)
+        end
+        WoWTools_WorldMapMixin:PlayerPin_ScrollToXY(self.data.xy)
+    end)
 
     pin:SetScript("OnMouseDown", function(self, d)
         if d ~= "LeftButton"
@@ -64,35 +74,6 @@ local function Init_Button(pin)
             end
         end
     end)
-
-
-    function pin:Init(canvas, width, height)
-        local data= self.data
-        local h= Save().size or 32
---名称
-        self.text:SetText(
-            (select(3, WoWTools_TextureMixin:IsAtlas(data.icon), h) or '')
-            ..(data.name or '')
-        )
-        if data.name then
-            local color
-            if data.color then
-                color= CreateColor(data.color.r or 1, data.color.g or 1, data.color.b or 1)
-            else
-                color= CreateColor(1.0, 0.9294, 0.7607)
-            end
-            self.text:SetTextColor(color:GetRGB())
-            self.text:SetFontHeight(h)
-        end
-
-        self:SetSize(h-2, h-2)
-
-        local x= data.x * width / 100
-        local y= data.y * height / 100
-        self:SetPoint("CENTER", canvas, 'TOPLEFT', x, -y)
-
-        pin:Show()
-    end
 end
 
 
@@ -132,26 +113,55 @@ local function RefreshMapMarkers()
 
     local width, height = canvas:GetSize()
     local classID= PlayerUtil.GetClassID()
+    local h= Save().size or 32
 
-    for xy, data in pairs(pins) do
+    for xy, pin in pairs(pins) do
         local x, y= WoWTools_WorldMapMixin:GetXYForText(xy)
 
         if x and y--坐标
-            and (not data.skillLineID or C_SpellBook.GetSkillLineIndexByID(data.skillLineID))--仅限专业
-            and (not data.classID or data.classID==classID)--仅限职业
+            and (not pin.skillLineID or C_SpellBook.GetSkillLineIndexByID(pin.skillLineID))--仅限专业
+            and (not pin.classID or pin.classID==classID)--仅限职业
         then
-            local pin = Button.pool:Acquire()
-            pin.data= {
+
+            local btn = Button.pool:Acquire()
+            btn.data= {
                 mapID= mapID,
-                name= data.name,--名称
-                icon= data.icon,--图标
-                color=data.color,--颜色
                 x= x,--数字
                 y= y,--数字
                 xy= xy,--50.00 50.00 这个是字符
-                note= data.note,--备注
+                --pin=pin
+                note=pin.note,
             }
-            pin:Init(canvas, width, height)
+
+            local icon=''
+            if pin.icon then
+                if C_Texture.GetAtlasID(icon)>0 then
+                    icon= '|A:'..pin.icon..':0:0|a'
+                else
+                    icon= '|T'..pin.icon..':0|t'
+                end
+            end
+
+            btn.text:SetText(icon..(pin.name or ''))
+
+            if pin.name then
+                local color
+                if pin.color then
+                    color= CreateColor(pin.color.r or 1, pin.color.g or 1, pin.color.b or 1)
+                else
+                    color= CreateColor(1.0, 0.9294, 0.7607)
+                end
+                btn.text:SetTextColor(color:GetRGB())
+            end
+
+            btn.text:SetFontHeight(h)
+            
+
+            btn:SetSize(h-2, h-2)
+
+            btn:SetPoint("CENTER", canvas, 'TOPLEFT', x *width/100, -(y* height/100))
+
+            btn:Show()
         end
     end
 end
@@ -173,8 +183,8 @@ local function Init_Menu(self, root)
 
 
     local num= 0
-    for _, data in pairs(SaveWoW()) do
-        num= num+ CountTable(data)
+    for _, pin in pairs(SaveWoW()) do
+        num= num+ CountTable(pin)
     end
 
 --自定义
@@ -280,9 +290,7 @@ end
 
 
 local function Init()
-
-
-    if Save().disabled or not WorldMapFrame:GetCanvas() then
+    if Save().disabled then--or not WorldMapFrame:GetCanvas() then
         return
     end
 
@@ -339,7 +347,7 @@ local function Init()
     Button:set_point()
 
 
-    Button.pool= CreateFramePool('DropdownButton', WorldMapFrame:GetCanvas(), 'WoWToolsMenu2Template', nil, nil, Init_Button)
+    Button.pool= CreateFramePool('DropdownButton', WorldMapFrame:GetCanvas(), 'WoWToolsMenu2Template', nil, nil, Init_Pool)
     --[[WorldMapFrame:HookScript("OnHide", function()
         Button.pool:ReleaseAll()
     end)]]
@@ -372,7 +380,16 @@ end
 
 
 function WoWTools_WorldMapMixin:Init_PlayerPin_RefreshMapMarkers()
-    if WorldFrame:IsShown() then
+    if _G['WoWToolsWorldMapMenuButton'] and _G['WoWToolsWorldMapMenuButton']:IsVisible() then
         RefreshMapMarkers()
+    end
+end
+
+function WoWTools_WorldMapMixin:PlayerPin_ScrollToPin(mapID, xy)
+    if not Button or WorldMapFrame.mapID~=mapID then
+        return
+    end
+    for b in Button.pool:EnumerateActive() do
+        b:SetButtonState(xy and b.data and b.data.xy==xy and 'PUSHED' or 'NORMAL')
     end
 end

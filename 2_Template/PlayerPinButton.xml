@@ -41,6 +41,7 @@
                 </FontString>
 
                 <FontString parentKey="Sub" inherits="WoWToolsFont2">
+                    <Size x="0" y="12"/>
                     <Anchors>
                         <Anchor point="LEFT" relativeKey="$parent.Icon" relativePoint="RIGHT"/>
                         <Anchor point="RIGHT" relativeKey="$parent.Index" relativePoint="LEFT" x="-4"/>
@@ -48,6 +49,7 @@
                 </FontString>
 
                 <FontString parentKey="Name" inherits="WoWToolsFont">
+                    <Size x="0" y="12"/>
                     <Anchors>
                         <Anchor point="BOTTOMLEFT" relativeKey="$parent.Sub" relativePoint="TOPLEFT" y="1"/>
                         <Anchor point="RIGHT" x="-4"/>
@@ -55,6 +57,7 @@
                 </FontString>
 
                 <FontString parentKey="Sub2" inherits="WoWToolsFont" justifyH="RIGHT">
+                    <Size x="0" y="12"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" relativeKey="$parent.Sub" relativePoint="BOTTOMLEFT" y="-1"/>
                         <Anchor point="RIGHT" x="-4"/>
