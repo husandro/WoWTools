@@ -64,8 +64,9 @@ local function RefreshMapMarkers()
                 note=pin.note,
             }
 
-            local icon= select(3, WoWTools_TextureMixin:IsAtlas(pin.icon)) or ''
-            btn.text:SetText(icon..(pin.name or ''))
+            --local icon= select(3, WoWTools_TextureMixin:IsAtlas(pin.icon)) or ''
+            local textureID= WoWTools_TextureMixin:SetTexture(btn, pin.icon)
+            btn.text:SetText(pin.name or '')
             if pin.name then
                 local color
                 if pin.color then
@@ -77,7 +78,8 @@ local function RefreshMapMarkers()
             end
 
             btn.text:SetFontHeight(h)
-            btn:SetSize(h-2, h-2)
+            btn.text:SetPoint('LEFT', btn, 'RIGHT', textureID and -2 or -h, 0)
+            btn:SetSize(h, h)
             btn:SetPoint("CENTER", canvas, 'TOPLEFT', x *width/100, -(y* height/100))
 
             btn:Show()
@@ -109,8 +111,9 @@ local function Init_PinMenu(self, root)
     root:CreateButton(
         WoWTools_DataMixin.onlyChinese and '删除' or DELETE,
     function()
-        SaveWoW()[self.data.xy]= nil
+        SaveWoW()[self.data.mapID][self.data.xy]= nil
         RefreshMapMarkers()
+        WoWTools_WorldMapMixin:PlayerPin_RefreshUI()
     end)
     root:CreateDivider()
     root:CreateTitle(
@@ -139,7 +142,8 @@ end
 local function Init_Pool(pin)
     --pin:SetFrameStrata('HIGH')
     pin.text = pin:CreateFontString(nil, "BORDER", "WorldMapTextFont")
-    pin.text:SetPoint('LEFT')
+    
+    --pin.text:SetPoint('LEFT')
     pin:SetMovable(true)
     pin:RegisterForDrag("RightButton")
 
@@ -188,12 +192,13 @@ local function Init_Pool(pin)
         end
     end)
 --停止移动
-    pin:SetScript("OnDragStop", function(self, d)
+    pin:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         local newXY= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, true, false)
         local mapID= self.data.mapID
         local oldXY= self.data.xy
-        if newXY and oldXY~=newXY then
+        
+        if newXY and oldXY~=newXY and SaveWoW()[mapID] and SaveWoW()[mapID][oldXY] then
             local delTab= SaveWoW()[mapID][newXY]--如果已存在
             if delTab then
                 print(
@@ -206,7 +211,7 @@ local function Init_Pool(pin)
                 )
             end
             SaveWoW()[mapID][newXY]= CopyTable(SaveWoW()[mapID][oldXY])
-            print(newXY)
+            print(newXY, oldXY)
             SaveWoW()[mapID][oldXY]= nil--清除原来的
 
             RefreshMapMarkers()

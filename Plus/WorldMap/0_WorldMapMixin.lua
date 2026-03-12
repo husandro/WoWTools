@@ -148,7 +148,7 @@ end
 
  function WoWTools_WorldMapMixin:GetTextForXY(x, y, isMap, isPlayer)
     if isMap then
-        x,y= self:GetMapID()
+        x,y= self:GetMapXY()
     elseif isPlayer then
         x,y= self:GetPlayerXY()
     end
