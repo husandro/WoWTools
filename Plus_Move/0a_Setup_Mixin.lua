@@ -162,17 +162,11 @@ local function Set_Move_Frame(frame, target, click, notSave, isAltKeyDown)
     end
 
 --开始移动
-    frame:SetScript("OnDragStart", function(...)
-        Set_OnDragStart(...)
-    end)
+    frame:SetScript("OnDragStart", Set_OnDragStart)
 --停止移动
-    frame:SetScript("OnDragStop", function(...)
-        Set_OnDragStop(...)
-    end)
+    frame:SetScript("OnDragStop", Set_OnDragStop)
 --设置光标
-    frame:HookScript("OnMouseDown", function(...)
-       Set_OnMouseDown(...)
-    end)
+    frame:HookScript("OnMouseDown", Set_OnMouseDown)
 --还原光标
    frame:HookScript("OnMouseUp", ResetCursor)
  --[[还原光标

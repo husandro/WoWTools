@@ -175,21 +175,10 @@ local function Init()
         self.elapsed = (self.elapsed or 1) + elapsed
         if self.elapsed > 0.15 then
             self.elapsed = 0
-            local text=''
-            local x, y= WoWTools_WorldMapMixin:GetPlayerXY()--玩家当前位置
-            if x and y then
-                text=x..' '..y
-            end
             if not self.edit:HasFocus() then
-                self.edit:SetText(text)
+                self.edit:SetText(WoWTools_WorldMapMixin:GetTextForXY(nil, nil, nil, true) or '')
             end
-            x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置
-            if x and y then
-                text = ('%.2f'):format(x*100)..' '..('%.2f'):format(y*100)
-            else
-                text=''
-            end
-            btn.Text:SetText(text)
+            btn.Text:SetText(WoWTools_WorldMapMixin:GetTextForXY(nil, nil, true, nil) or '')--当前世界地图位置
         end
     end)
 

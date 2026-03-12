@@ -9,7 +9,7 @@
         <PushedTexture atlas="heartofazeroth-list-item-highlight"/>
         <HighlightTexture atlas="heartofazeroth-list-item-selected"/>
 		<Layers>
-            <Layer level="BACKGROUND" textureSubLevel="1">
+            <Layer level="BACKGROUND">
                 <Texture parentKey="Background" atlas="QuestItemBorder">
                     <TexCoords left="1" right="0" top="0" bottom="1" />
                     <Anchors>
@@ -18,14 +18,7 @@
                     </Anchors>
                 </Texture>
             </Layer>
-            <Layer level="BACKGROUND" textureSubLevel="2">
-                <Texture parentKey="Select" atlas="glues-characterSelect-card-glow-swap" hidden="true">
-                    <Anchors>
-                        <Anchor point="TOPLEFT" x="-2" y="2"/>
-                        <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
-                    </Anchors>
-                </Texture>
-            </Layer>
+
             <Layer level="BORDER">
                 <Texture parentKey="Icon">
                     <Size x="42" y="42"/>
@@ -63,7 +56,15 @@
                         <Anchor point="RIGHT" x="-4"/>
                     </Anchors>
                 </FontString>
+                
+                <Texture parentKey="Select" atlas="glues-characterSelect-card-glow-swap" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-2" y="2"/>
+                        <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
+                    </Anchors>
+                </Texture>
             </Layer>
+           
         </Layers>
     </Button>
 </Ui>

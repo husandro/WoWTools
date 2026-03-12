@@ -293,12 +293,7 @@ local function Init()
         self.elapsed = self.elapsed + elapsed
         if self.elapsed > self.time then
             self.elapsed = 0
-            local x, y= WoWTools_WorldMapMixin:GetPlayerXY()--玩家当前位置
-            if x and y then
-                self.Text:SetText(x.. ' '..y)
-            else
-                self.Text:SetText('')
-            end
+            self.Text:SetText(WoWTools_WorldMapMixin:GetTextForXY(nil, nil, false, true) or '')
         end
     end)
 

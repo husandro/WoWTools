@@ -31,7 +31,7 @@ local function Init()
     wow.text:SetPoint("BOTTOMRIGHT", -1, 1)
     WoWTools_ColorMixin:SetLabelColor(wow.text)
     function wow:settings()
-        local count= WoWTools_ItemMixin:GetWoWCount(122284, nil, true)
+        local count= WoWTools_ItemMixin:GetWoWCount(self.itemID, nil, true) + C_Item.GetItemCount(self.itemID, true, true, true, true)
         wow.text:SetText(
             (count>0 and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup())
             ..count

@@ -20,75 +20,6 @@ end
 
 
 
-local function Init_PinMenu(self, root)
-    if not self:IsMouseOver() then
-        return
-    end
-    root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '编辑' or EDIT),
-    function()
-        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI({mapID=WoWTools_WorldMapMixin:GetMapID(), xy=self.data.xy})
-        return MenuResponse.Open
-    end)
-    
-end
-
-
-
-
-
-
-
-
-
-
-local function Init_Pool(pin)
-    --pin:SetFrameStrata('HIGH')
-    pin.text = pin:CreateFontString(nil, "BORDER", "WorldMapTextFont")
-    pin.text:SetPoint('CENTER')
-    pin:SetupMenu(Init_PinMenu)
-
-    pin:SetScript('OnLeave', function(self)
-        WoWTools_WorldMapMixin:PlayerPin_ScrollToXY(self.data.xy)
-        GameTooltip:Hide()
-    end)
-
-    pin:SetScript('OnEnter', function(self)
-        if self.data.note then
-            GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-            GameTooltip_SetTitle(GameTooltip, self.data.note)
-            GameTooltip:Show()
-        end
-        WoWTools_WorldMapMixin:PlayerPin_ScrollToXY(self.data.xy)
-    end)
-
-    pin:SetScript("OnMouseDown", function(self, d)
-        if d ~= "LeftButton"
-            or not C_Map.CanSetUserWaypointOnMap(self.data.mapID)
-        then
-            return
-        end
-
-        local x,y= self.data.x/100, self.data.y/100
-
-        local waypoint = UiMapPoint.CreateFromCoordinates(self.data.mapID, x, y)
-        if waypoint then
-            if Is_CurPoint(waypoint) then
-                C_Map.ClearUserWaypoint()
-            else
-                C_Map.SetUserWaypoint(waypoint)
-                C_SuperTrack.SetSuperTrackedUserWaypoint(true)
-            end
-        end
-    end)
-end
-
-
-
-
-
-
-
 
 
 local function RefreshMapMarkers()
@@ -162,13 +93,148 @@ end
 
 
 
+
+local function Init_PinMenu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+    root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '编辑' or EDIT)
+        ..' '..self.data.xy,
+    function()
+        WoWTools_WorldMapMixin:PlayerPin_ShowUI({mapID=WoWTools_WorldMapMixin:GetMapID(), xy=self.data.xy})
+        return MenuResponse.Open
+    end)
+    root:CreateDivider()
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '删除' or DELETE,
+    function()
+        SaveWoW()[self.data.xy]= nil
+        RefreshMapMarkers()
+    end)
+    root:CreateDivider()
+    root:CreateTitle(
+        WoWTools_DataMixin.Icon.left
+        ..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
+        ..'|A:Waypoint-MapPin-Untracked:0:0|a')
+    root:CreateTitle(
+        'Alt+'..WoWTools_DataMixin.Icon.right
+        ..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
+    )
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Pool(pin)
+    --pin:SetFrameStrata('HIGH')
+    pin.text = pin:CreateFontString(nil, "BORDER", "WorldMapTextFont")
+    pin.text:SetPoint('LEFT')
+    pin:SetMovable(true)
+    pin:RegisterForDrag("RightButton")
+
+    pin:SetupMenu(Init_PinMenu)
+
+    pin:SetScript('OnLeave', function()
+        WoWTools_WorldMapMixin:PlayerPin_SetUIButtonState()
+        GameTooltip:Hide()
+    end)
+
+    pin:SetScript('OnEnter', function(self)
+        if self.data.note then
+            GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+            GameTooltip_SetTitle(GameTooltip, self.data.note)
+            GameTooltip:Show()
+        end
+        WoWTools_WorldMapMixin:PlayerPin_SetUIButtonState(self.data.xy)
+    end)
+
+    pin:HookScript("OnMouseUp", ResetCursor)--还原光标
+    pin:SetScript("OnMouseDown", function(self, d)
+        if d=="LeftButton" then
+            self:CloseMenu()
+            if C_Map.CanSetUserWaypointOnMap(self.data.mapID) then
+                local x,y= self.data.x/100, self.data.y/100
+                local waypoint = UiMapPoint.CreateFromCoordinates(self.data.mapID, x, y)
+                if waypoint then
+                    if Is_CurPoint(waypoint) then
+                        C_Map.ClearUserWaypoint()
+                    else
+                        C_Map.SetUserWaypoint(waypoint)
+                        C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+                    end
+                end
+            end
+        elseif d=='RightButton' and IsAltKeyDown() then
+            self:CloseMenu()
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+
+--开始移动
+    pin:SetScript("OnDragStart", function(self, d)
+        if d=='RightButton' and IsAltKeyDown() then
+            self:StartMoving()
+            print('OnDragStart')
+        end
+    end)
+--停止移动
+    pin:SetScript("OnDragStop", function(self, d)
+        self:StopMovingOrSizing()
+        local newXY= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, true, false)
+        local mapID= self.data.mapID
+        local oldXY= self.data.xy
+        if newXY and oldXY~=newXY then
+            local delTab= SaveWoW()[mapID][newXY]--如果已存在
+            if delTab then
+                print(
+                    WoWTools_DataMixin.Icon.icon2
+                    ..WARNING_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '替换' or REPLACE),
+                    newXY,
+                    select(3, WoWTools_TextureMixin:IsAtlas(delTab.icon)) or '',
+                    delTab.name or '',
+                    delTab.note
+                )
+            end
+            SaveWoW()[mapID][newXY]= CopyTable(SaveWoW()[mapID][oldXY])
+            SaveWoW()[mapID][oldXY]= nil--清除原来的
+
+            RefreshMapMarkers()
+            --WoWTools_WorldMapMixin:PlayerPin_RefreshUI({mapID=data.mapID, xy=newXY})
+
+            WoWTools_WorldMapMixin:PlayerPin_ShowUI({mapID=mapID, xy=newXY})
+        end
+        ResetCursor()
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
     local sub
-    --local x, y, mapID= WoWTools_WorldMapMixin:GetPlayerXY()
-
 
     local num= 0
     for _, pin in pairs(SaveWoW()) do
@@ -179,7 +245,7 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(
         (WoWTools_DataMixin.onlyChinese and '编辑' or EDIT),
     function()
-        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+        WoWTools_WorldMapMixin:PlayerPin_ShowUI()
         return MenuResponse.Open
     end, {rightText=num})
     WoWTools_MenuMixin:SetRightText(sub)
@@ -204,7 +270,7 @@ local function Init_Menu(self, root)
         WoWTools_DataMixin.Icon.Player
         ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW),
     function()
-        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI({
+        WoWTools_WorldMapMixin:PlayerPin_ShowUI({
             isNew=true,
         })
         return MenuResponse.Open
@@ -324,11 +390,11 @@ local function Init()
         local frame= _G['WoWToolsPlayerPinEditUIFrame']
         if d==-1 then
             if frame and frame:IsShown() then
-                WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+                WoWTools_WorldMapMixin:PlayerPin_ShowUI()
             end
         else
             if not frame or not frame:IsShown() then
-                WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+                WoWTools_WorldMapMixin:PlayerPin_ShowUI()
             end
         end
     end)
@@ -347,7 +413,7 @@ local function Init()
 
     if WoWTools_DataMixin.Player.husandro then
         C_Timer.After(2, function()
-            WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+            WoWTools_WorldMapMixin:PlayerPin_ShowUI()
         end)
     end
 
@@ -361,19 +427,18 @@ end
 
 
 
-function WoWTools_WorldMapMixin:Init_PlayerPin()
+function WoWTools_WorldMapMixin:PlayerPin_InitPins()
     Init()
-
 end
 
 
-function WoWTools_WorldMapMixin:Init_PlayerPin_RefreshMapMarkers()
-    if _G['WoWToolsWorldMapMenuButton'] and _G['WoWToolsWorldMapMenuButton']:IsVisible() then
+function WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
+    if _G['WoWToolsWorldMapMenuButton'] and WorldMapFrame:IsShown() then
         RefreshMapMarkers()
     end
 end
 
-function WoWTools_WorldMapMixin:PlayerPin_ScrollToPin(mapID, xy)
+function WoWTools_WorldMapMixin:PlayerPin_SetPinState(mapID, xy)
     if not Button or WorldMapFrame.mapID~=mapID then
         return
     end

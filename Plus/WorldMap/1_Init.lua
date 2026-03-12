@@ -32,7 +32,7 @@ local function Init()
     WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
 
     if WoWTools_DataMixin.Player.husandro then
-        WoWTools_WorldMapMixin:Init_PlayerPin()
+        WoWTools_WorldMapMixin:PlayerPin_InitPins()
     end
 
     Init=function()end

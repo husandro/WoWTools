@@ -1,5 +1,15 @@
 WoWTools_WorldMapMixin={}
 
+
+function WoWTools_WorldMapMixin:ShowWorldFrame(mapID)
+    if mapID then
+        --if not WorldMapFrame.mapID  then
+        OpenWorldMap(mapID)
+    elseif not WorldMapFrame or not WorldMapFrame:IsShown() then
+        ToggleWorldMap()
+    end
+end
+
 function WoWTools_WorldMapMixin:Refresh(isQuest)
     if not WoWTools_FrameMixin:IsLocked(WorldMapFrame) and WorldMapFrame:IsShown() then
         if isQuest then
@@ -15,6 +25,7 @@ end
 function WoWTools_WorldMapMixin:GetMapID()
     return WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player") or MapUtil.GetDisplayableMapForPlayer()
 end
+
 
 
 --[[AreaLabelDataProvider.xml
@@ -36,7 +47,7 @@ end ]]
 
 
 
---玩家当前位置
+--玩家当前位置  x, y 是字符
 function WoWTools_WorldMapMixin:GetPlayerXY()
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图        
     if uiMapID then
@@ -53,7 +64,12 @@ function WoWTools_WorldMapMixin:GetPlayerXY()
     end
 end
 
-
+function WoWTools_WorldMapMixin:GetMapXY()--当前世界地图位置 x, y 是字符
+    local x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()
+    if x and y then
+        return format('%.2f', x*100), format('%.2f', y*100)
+    end
+end
 
 
 function WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
@@ -74,14 +90,16 @@ function WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
             return
 
         else
-            local x, y= self:GetPlayerXY()--玩家当前位置
-            if x and y then
-                local pointText=x..' '..y
+            local xy= self:GetTextForXY(nil, nil, false, true)
+            if xy then
                 local info=C_Map.GetMapInfo(mapID)
-                if info and info.name then
-                    pointText=pointText..' '..info.name
-                end
-                WoWTools_ChatMixin:Chat(pointText, nil, true)
+                WoWTools_ChatMixin:Chat(
+                    xy
+                    ..(info and info.name and ' '..info.name or ''),
+
+                    nil,
+                    true
+                )
                 --ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..pointText)
                 return
             end
@@ -128,7 +146,12 @@ function WoWTools_WorldMapMixin:GetXYForText(text)
     end
 end
 
- function WoWTools_WorldMapMixin:GetTextForXY(x, y)
+ function WoWTools_WorldMapMixin:GetTextForXY(x, y, isMap, isPlayer)
+    if isMap then
+        x,y= self:GetMapID()
+    elseif isPlayer then
+        x,y= self:GetPlayerXY()
+    end
     if x and y then
         return x..' '..y
     end

@@ -3128,7 +3128,9 @@
         "ToggleWorldMap",
         "UNIT_CAPTURABLE",
         "PROFESSIONS_FIRST_AID",
-        "xx"
+        "xx",
+        "OpenQuestLog",
+        "OpenWorldMap"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

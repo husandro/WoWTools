@@ -92,8 +92,8 @@ local function Init_OnEnter(self)
             end
         end
 
-        local x,y = WoWTools_WorldMapMixin:GetPlayerXY()--玩家当前位置
-        if x and y then
+        local xy= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, nil, true)
+        if xy then
             local playerCursorMapName
             local uiMapIDPlayer= C_Map.GetBestMapForUnit("player")
             if uiMapIDPlayer and uiMapIDPlayer~=uiMapID then
@@ -102,9 +102,9 @@ local function Init_OnEnter(self)
             end
             GameTooltip:AddLine(' ')
             if playerCursorMapName then
-                GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.Player..playerCursorMapName, 'XY: |cffffffff'..x..' '..y)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.Player..playerCursorMapName, 'XY: |cffffffff'..xy)
             else
-                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, WoWTools_DataMixin.Icon.Player)), 'XY: |cffffffff'..x..' '..y)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, WoWTools_DataMixin.Icon.Player)), 'XY: |cffffffff'..xy)
             end
         end
     end
@@ -366,13 +366,13 @@ local function Init_Menu(self, root)
         return not Save().PlayerPin.disabled
     end, function()
         Save().PlayerPin.disabled= not Save().PlayerPin.disabled and true or nil
-        WoWTools_WorldMapMixin:Init_PlayerPin()
+        WoWTools_WorldMapMixin:PlayerPin_InitPins()
     end)
 
     --[[sub:CreateButton(
         (WoWTools_DataMixin.onlyChinese and '编辑' or EDIT),
     function()
-        WoWTools_WorldMapMixin:Init_PlayerPin_EditUI()
+        WoWTools_WorldMapMixin:PlayerPin_ShowUI()
         return MenuResponse.Open
     end)]]
 
