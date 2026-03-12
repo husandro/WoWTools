@@ -1,4 +1,4 @@
-WoWTools_ProfessionMixin={}
+
 
 local function Save()
     return WoWToolsSave['Plus_Professions']

@@ -103,31 +103,32 @@ end
 
 
 --isAtlas, textureID, icon=WoWTools_TextureMixin:IsAtlas(texture, size)
-function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
-    local isAtlas, textureID, icon
-    if not texture or texture=='' then
+function WoWTools_TextureMixin:IsAtlas(textureID, size)--Atlas or Texture
+    if not textureID or textureID=='' then
         return
     end
-
-    local s, s2
-    local t= type(size)
-    if t=='table' then
-        s2, s= size[1], size[2]
-    elseif t=='number' then
-        s2, s= size,size
+    local isAtlas= false
+    local w, h, icon
+    if size then
+        local t= type(size)
+        if t=='table' then
+            h, w= size[1], size[2]
+        elseif t=='number' then
+            h, w= size,size
+        end
     end
-    s= s or 0
-    s2= s2 or s
-
-    t= type(texture)
-
-    if t=='number' then
-        isAtlas, textureID, icon= false, texture, format('|T%d:%d:%d|t', texture, s, s2)
-
-    elseif t=='string' and C_Texture.GetAtlasID(texture)>0 then
-        isAtlas= true
-        textureID= texture
-        icon= isAtlas and format('|A:%s:%d:%d|a', texture, s, s2) or format('|T%s:%d:%d|t', texture, s, s2)
+    if C_Texture.GetAtlasInfo(textureID) then
+        isAtlas=true
+        icon='|A:'..textureID..':'..(w or 0)..':'..(h or 0)..'|a'
+    else
+        if type(textureID)=='string' and not textureID:find('Interface') then
+            textureID= textureID:gsub(' ', '')
+            local num= tonumber(textureID)
+            if num and format('%d', num)==textureID then
+                textureID= num
+            end
+        end
+        icon='|T'..textureID..':'..(w or 0)..':'..(h or 0)..'|t'
     end
     return isAtlas, textureID, icon
 end
@@ -135,7 +136,27 @@ end
 
 
 
+function WoWTools_TextureMixin:SetTexture(region, textureID)
+    local isAtlas, texture, icon
+    if region then
+        isAtlas, texture, icon= self:IsAtlas(textureID)
+        if region.SetTexture then--图片
+            if isAtlas then
+                region:SetAtlas(texture)
+            else
+                region:SetTexture(texture or 0)
+            end
 
+        elseif region.SetNormalTexture then--按钮
+            if isAtlas then
+                region:SetNormalAtlas(texture)
+            else
+                region:SetNormalTexture(texture or 0)
+            end
+        end
+    end
+    return isAtlas, texture, icon
+end
 
 
 

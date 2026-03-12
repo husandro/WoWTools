@@ -35,22 +35,29 @@ end
 
 
 
+
+
+
+
+
+
+
 local function Init_Pool(pin)
     --pin:SetFrameStrata('HIGH')
     pin.text = pin:CreateFontString(nil, "BORDER", "WorldMapTextFont")
     pin.text:SetPoint('CENTER')
     pin:SetupMenu(Init_PinMenu)
 
-    function pin:tooltip(tooltip)
-        if self.data.note then
-            tooltip:AddLine(self.data.note, nil, nil, nil, true)
-        end
-    end
+    pin:SetScript('OnLeave', function(self)
+        WoWTools_WorldMapMixin:PlayerPin_ScrollToXY(self.data.xy)
+        GameTooltip:Hide()
+    end)
 
     pin:SetScript('OnEnter', function(self)
         if self.data.note then
             GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
             GameTooltip_SetTitle(GameTooltip, self.data.note)
+            GameTooltip:Show()
         end
         WoWTools_WorldMapMixin:PlayerPin_ScrollToXY(self.data.xy)
     end)
@@ -92,8 +99,8 @@ local function RefreshMapMarkers()
     Button.pool:ReleaseAll()
 
     local mapID= WoWTools_WorldMapMixin:GetMapID()
-    local pins = SaveWoW()[mapID]
-    local canvas = WorldMapFrame:GetCanvas()
+    local pins= SaveWoW()[mapID]
+    local canvas= WorldMapFrame:GetCanvas()
 
     if not pins
         or TableIsEmpty(pins)
@@ -103,24 +110,17 @@ local function RefreshMapMarkers()
         return
     end
 
-    --[[local profession= {}
-    for _, i in pairs({GetProfessions()}) do
-        local skillLineID= select(7, GetProfessionInfo(i))
-        if skillLineID and skillLineID>0 then
-            profession[skillLineID]= 1
-        end
-    end]]
-
     local width, height = canvas:GetSize()
     local classID= PlayerUtil.GetClassID()
     local h= Save().size or 32
 
     for xy, pin in pairs(pins) do
         local x, y= WoWTools_WorldMapMixin:GetXYForText(xy)
+        local professionIsKnown= WoWTools_ProfessionMixin:IsKnown(pin.profession)
 
         if x and y--坐标
-            and (not pin.skillLineID or C_SpellBook.GetSkillLineIndexByID(pin.skillLineID))--仅限专业
-            and (not pin.classID or pin.classID==classID)--仅限职业
+            and professionIsKnown~=false
+            and (not pin.class or pin.class[classID])--仅限职业
         then
 
             local btn = Button.pool:Acquire()
@@ -133,17 +133,8 @@ local function RefreshMapMarkers()
                 note=pin.note,
             }
 
-            local icon=''
-            if pin.icon then
-                if C_Texture.GetAtlasID(icon)>0 then
-                    icon= '|A:'..pin.icon..':0:0|a'
-                else
-                    icon= '|T'..pin.icon..':0|t'
-                end
-            end
-
+            local icon= select(3, WoWTools_TextureMixin:IsAtlas(pin.icon)) or ''
             btn.text:SetText(icon..(pin.name or ''))
-
             if pin.name then
                 local color
                 if pin.color then
@@ -155,10 +146,7 @@ local function RefreshMapMarkers()
             end
 
             btn.text:SetFontHeight(h)
-            
-
             btn:SetSize(h-2, h-2)
-
             btn:SetPoint("CENTER", canvas, 'TOPLEFT', x *width/100, -(y* height/100))
 
             btn:Show()

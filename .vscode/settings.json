@@ -3126,7 +3126,9 @@
         "WORLD_QUEST_ICONS_BY_PROFESSION",
         "ERR_HOUSING_RESULT_INVALID_MAP",
         "ToggleWorldMap",
-        "UNIT_CAPTURABLE"
+        "UNIT_CAPTURABLE",
+        "PROFESSIONS_FIRST_AID",
+        "xx"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

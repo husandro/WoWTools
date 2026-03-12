@@ -488,6 +488,7 @@ Plus\Macro\NewEmptyButton.lua
 Plus\Macro\Select_Button.lua
 Plus\Macro\z_MacroFrame_UI.lua
 ##专业按钮
+Plus\Professions\0_ProfessionMixin.lua
 Plus\Professions\1_Init.lua
 Plus\Professions\Archaeology.lua
 Plus\Professions\ProfessionsFrame_Button.lua

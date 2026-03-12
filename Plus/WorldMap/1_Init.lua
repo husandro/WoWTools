@@ -91,30 +91,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         PlayerPin={}
     }
 
-    if not Save().PlayerXY then--清除，旧数据
-        Save().PlayerXY= {
-            disabled= not Save().ShowPlayerXY,
-            point= Save().PlayerXYPoint,
-            scale= Save().PlayerXY_Scale,
-            strata= Save().PlayerXY_Strata,
-            toLeft= Save().PlayerXY_Text_toLeft,
-            size= Save().PlayerXY_Size,
-            elapsed= Save().PlayerXY_Elapsed,--LAG_TOLERANCE = "延迟容限";
-            bgAlpha= Save().PlayerXY_BGAlpha,
-            textY= Save().PlayerXY_TextY
-        }
-
-        Save().ShowPlayerXY=nil--false,--实时玩家当前坐标
-        Save().PlayerXYPoint=nil--{},
-        Save().PlayerXY_Scale=nil--1,
-        Save().PlayerXY_Strata=nil--
-        Save().PlayerXY_Text_toLeft=nil--=true,
-        Save().PlayerXY_Size=nil--23,
-        Save().PlayerXY_Elapsed=nil--0.2,--LAG_TOLERANCE = "延迟容限";
-        Save().PlayerXY_BGAlpha=nil--0.5
-        Save().PlayerXY_TextY=nil--
-    end
-
+    Save().PlayerXY= Save().PlayerXY or {}
     Save().PlayerPin= Save().PlayerPin or {size=WoWTools_DataMixin.Player.husandro and 42 or 32}
 
     WoWToolsPlayerDate.WorldMapPin= nil
