@@ -185,7 +185,6 @@ local function Init_Pool(pin)
     pin:SetScript("OnDragStart", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             self:StartMoving()
-            print('OnDragStart')
         end
     end)
 --停止移动
@@ -207,6 +206,7 @@ local function Init_Pool(pin)
                 )
             end
             SaveWoW()[mapID][newXY]= CopyTable(SaveWoW()[mapID][oldXY])
+            print(newXY)
             SaveWoW()[mapID][oldXY]= nil--清除原来的
 
             RefreshMapMarkers()

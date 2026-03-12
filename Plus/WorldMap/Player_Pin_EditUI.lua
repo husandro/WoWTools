@@ -569,10 +569,9 @@ local function Init()
             local name, num= GetMapName(mapID)
             all= all+ num
             index= index+1
-
+            name= name or (DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '无效的地图' or ERR_HOUSING_RESULT_INVALID_MAP)..' '..mapID)
             sub=root:CreateRadio(
-                name
-                or (DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '无效的地图' or ERR_HOUSING_RESULT_INVALID_MAP)..' '..mapID),
+                name,
             function(data)
                 return data.mapID==Frame.mapID
             end, function(data)
@@ -585,19 +584,19 @@ local function Init()
 
             sub:CreateButton(
                 WoWTools_DataMixin.onlyChinese and '删除' or DELETE,
-            function()
-            StaticPopup_Show('WoWTools_OK',
-                name..' #'..index..'|n|n'
-                ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' |cffffffff'..all
-                ..'|n',
-            nil,
-            {SetValue=function()
-                WoWToolsPlayerDate.PlayerMapPin= {}
-                WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
-                Refresh_All()
-            end})
-            return MenuResponse.Open
-            end)
+            function(data)
+                StaticPopup_Show('WoWTools_OK',
+                    data.name..'|n|n'
+                    ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..' #'..data.num
+                    ..'|n',
+                nil,
+                {SetValue=function()
+                    SaveWoW()[data.mapID]= nil
+                    WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
+                    Refresh_All()
+                end})
+                return MenuResponse.Open
+            end, {num=num, name=name, mapID=mapID})
         end
         root:CreateDivider()
 
