@@ -457,13 +457,6 @@ local function Init()
     --hooksecurefunc(WorldMapFrame.ScrollContainer, "ZoomIn", RefreshMapMarkers)
     --hooksecurefunc(WorldMapFrame.ScrollContainer, "ZoomOut", RefreshMapMarkers)
 
-
-    if WoWTools_DataMixin.Player.husandro then
-        C_Timer.After(2, function()
-            WoWTools_WorldMapMixin:PlayerPin_ShowUI()
-        end)
-    end
-
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, function(tooltip, data)
         if InCombatLockdown()
             or not data or not data.lines[1]
@@ -506,6 +499,12 @@ local function Init()
             end
         end
     end)
+
+    if WoWTools_DataMixin.Player.husandro then
+        C_Timer.After(2, function()
+            WoWTools_WorldMapMixin:PlayerPin_ShowUI()
+        end)
+    end
 
     Init=function()
         RefreshMapMarkers()
