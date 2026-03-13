@@ -8,6 +8,8 @@ end
 
 
 local Button
+local PinHeight= 42--默认大小
+
 
 
 local function Is_CurPoint(waypoint)
@@ -43,8 +45,9 @@ local function RefreshMapMarkers()
 
     local width, height = canvas:GetSize()
     local classID= PlayerUtil.GetClassID()
-    local h= Save().size or 32
-    local strata= Save().pinStrata or 'MEDIUM'
+    local fontH= Save().fontHeight or PinHeight
+    local iconSize= Save().iconSize or PinHeight
+    --local strata= Save().pinStrata or 'MEDIUM'
 
     for xy, pin in pairs(pins) do
         local x, y= WoWTools_WorldMapMixin:GetXYForText(xy)
@@ -67,6 +70,7 @@ local function RefreshMapMarkers()
 
             --local icon= select(3, WoWTools_TextureMixin:IsAtlas(pin.icon)) or ''
             local textureID= select(2, WoWTools_TextureMixin:SetTexture(btn.texture, pin.icon))
+
             btn.text:SetText(pin.name or '')
             if pin.name then
                 local color
@@ -76,14 +80,13 @@ local function RefreshMapMarkers()
                     color= CreateColor(1.0, 0.9294, 0.7607)
                 end
                 btn.text:SetTextColor(color:GetRGB())
+                btn.text:SetFontHeight(fontH)
+                btn.text:SetPoint('LEFT', btn, 'RIGHT', textureID and -4 or -iconSize, 0)
             end
 
-            btn.text:SetFontHeight(h)
-            btn.text:SetPoint('LEFT', btn, 'RIGHT', textureID and -4 or -h, 0)
-            btn:SetSize(h, h)
-            btn:SetFrameStrata(strata)
+            btn:SetSize(iconSize, iconSize)
+            --btn:SetFrameStrata(strata)
             btn:SetPoint("CENTER", canvas, 'TOPLEFT', x *width/100, -(y* height/100))
-
             btn:Show()
         end
     end
@@ -112,7 +115,7 @@ end
 
 local function Init_Pool(btn)
     btn.text = btn:CreateFontString(nil, "BORDER", "WorldMapTextFont")
-
+    btn:SetFrameStrata('HIGH')
 
     btn:SetMovable(true)
     btn:RegisterForDrag("RightButton")
@@ -266,28 +269,41 @@ local function Init_Menu(self, root)
 
     root:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(root, {
-        name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
+        name= WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE,
         getValue=function()
-            return Save().size or 46
+            return Save().fontHeight or PinHeight
         end, setValue=function(value)
-            Save().size= value
+            Save().fontHeight= value
             RefreshMapMarkers()
         end,
-        minValue=4,
+        minValue=2,
         maxValue=200,
-        step=2,
+        step=1,
     })
     root:CreateSpacer()
 
+    WoWTools_MenuMixin:CreateSlider(root, {
+        name= WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_ICON,
+        getValue=function()
+            return Save().iconSize or PinHeight
+        end, setValue=function(value)
+            Save().iconSize= value
+            RefreshMapMarkers()
+        end,
+        minValue=2,
+        maxValue=200,
+        step=1,
+    })
+    root:CreateSpacer()
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(self, root,
+    --[[WoWTools_MenuMixin:FrameStrata(self, root,
     function(strata)
         return (Save().pinStrata or 'MEDIUM') == strata
     end, function(strata)
         Save().pinStrata= strata
         RefreshMapMarkers()
         return MenuResponse.Refresh
-    end)
+    end, {no={BACKGROUND=1, LOW=1}})]]
 
 
     root:CreateDivider()
@@ -332,7 +348,7 @@ local function Init_Menu(self, root)
     end)
 
 --打开选项
-    root:CreateDivider()
+    --root:CreateDivider()
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_WorldMapMixin.addName, name2=WoWTools_WorldMapMixin.addName2})
 
 --parent

@@ -99,12 +99,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     WoWToolsPlayerDate.PlayerMapPin= WoWToolsPlayerDate.PlayerMapPin or {
         [2393]={--12.0银月城
             ['50.02 74.76']={
-                --name= WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
+                name= WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
                 icon= 'wow-token-gold',
                 color= {r=0.87, g=0.8, b=0.61},
                 --class={},
                 --profession={},
-                --note='',
+                --note=WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
                 --skillLineID= 122,
                 --classID= 8
             }

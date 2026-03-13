@@ -246,9 +246,13 @@ end)
 
 --FrameStrata
 local StrataTabs= {'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}
-function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
+function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue, tab)
     local sub, sub2
     local enable= WoWTools_FrameMixin:IsLocked(frame)~=true
+    tab= tab or {}
+
+    local no= tab.no or {}--禁用
+    
 
     local function CheckStrata()
         for _, strata in pairs(StrataTabs) do
@@ -279,17 +283,19 @@ function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
     self:SetRightText(sub)
 
     for index, strata in pairs(StrataTabs) do
-        sub2=sub:CreateRadio(
-            (strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata,
-        function(data)
-            return GetValue(data.strata)
-        end, function(data)
-            SetValue(data.strata)
-            return MenuResponse.Refresh
-        end,{strata=strata, rightText=DISABLED_FONT_COLOR:WrapTextInColorCode(index)})
+        if not no[strata] then
+            sub2=sub:CreateRadio(
+                (strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata,
+            function(data)
+                return GetValue(data.strata)
+            end, function(data)
+                SetValue(data.strata)
+                return MenuResponse.Refresh
+            end,{strata=strata, rightText=DISABLED_FONT_COLOR:WrapTextInColorCode(index)})
 
-        self:SetRightText(sub2)
-        sub2:SetEnabled(enable)
+            self:SetRightText(sub2)
+            sub2:SetEnabled(enable)
+        end
     end
 
 
