@@ -64,7 +64,8 @@ function WoWTools_WorldMapMixin:GetPlayerXY()
     end
 end
 
-function WoWTools_WorldMapMixin:GetMapXY()--当前世界地图位置 x, y 是字符
+--当前世界地图位置 x, y 是字符
+function WoWTools_WorldMapMixin:GetMapXY()
     local x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()
     if x and y then
         return format('%.2f', x*100), format('%.2f', y*100)
@@ -147,13 +148,14 @@ function WoWTools_WorldMapMixin:GetXYForText(text)
 end
 
  function WoWTools_WorldMapMixin:GetTextForXY(x, y, isMap, isPlayer)
+    local mapID
     if isMap then
-        x,y= self:GetMapXY()
+        x, y= self:GetMapXY()
     elseif isPlayer then
-        x,y= self:GetPlayerXY()
+        x, y, mapID= self:GetPlayerXY()
     end
     if x and y then
-        return x..' '..y
+        return x..' '..y, mapID
     end
  end
 

@@ -84,7 +84,12 @@ local function RefreshMapMarkers()
                 btn.text:SetPoint('LEFT', btn, 'RIGHT', textureID and -4 or -iconSize, 0)
             end
 
-            btn:SetSize(iconSize, iconSize)
+            if textureID then
+                btn:SetSize(iconSize, iconSize)
+            else
+                btn:SetSize(fontH, fontH)
+            end
+
             --btn:SetFrameStrata(strata)
             btn:SetPoint("CENTER", canvas, 'TOPLEFT', x *width/100, -(y* height/100))
             btn:Show()
@@ -333,6 +338,7 @@ local function Init_Menu(self, root)
         return MenuResponse.Refresh
     end)
 
+    sub:CreateDivider()
 --重置位置
     sub:CreateButton(
         (WoWTools_MoveMixin:GetPoint(nil, uiName) and '' or '|cff626262')
@@ -457,6 +463,49 @@ local function Init()
             WoWTools_WorldMapMixin:PlayerPin_ShowUI()
         end)
     end
+
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, function(tooltip, data)
+        if InCombatLockdown()
+            or not data or not data.lines[1]
+        then
+            return
+        end
+
+        local frame = WoWTools_WorldMapMixin:PlayerPin_GetUIFrame()
+        if frame and frame:IsShown() and not WoWTools_DataMixin.Player.husandro then
+            return
+        end
+
+        local text= WoWTools_TextMixin:CN(data.lines[1].leftText)
+        if text then
+            local xy, mapID= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, nil, true)
+            if xy and mapID then
+                if IsControlKeyDown() and IsAltKeyDown() then
+                    WoWTools_WorldMapMixin:PlayerPin_ShowUI({
+                        isNew= true,
+                        mapID= mapID,
+                        xy= xy,
+                        name= text,
+                    })
+                elseif SaveWoW()[mapID] and SaveWoW()[mapID][xy] then
+                    GameTooltip_AddColoredLine(tooltip,
+                        WoWTools_DataMixin.Icon.icon2..'Ctr+Alt '
+                        ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
+                        ..'|A:Gear:0:0|a',
+                        HIGHLIGHT_FONT_COLOR
+                    )
+                    tooltip:Show()
+                else
+                    GameTooltip_AddInstructionLine(tooltip,
+                        WoWTools_DataMixin.Icon.icon2..'Ctr+Alt '
+                        ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
+                        ..'|A:Gear:0:0|a'..xy
+                    )
+                    tooltip:Show()
+                end
+            end
+        end
+    end)
 
     Init=function()
         RefreshMapMarkers()

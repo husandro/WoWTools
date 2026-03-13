@@ -180,9 +180,13 @@ end
 
 
 
-
+--IconSelectorPopupFrameTemplateMixin
 local function Create_IconSelectorPopupFrame()
-    local IconFrame= CreateFrame('Frame', 'WoWTools_IconSelectorPopupFrame', UIParent, 'IconSelectorPopupFrameTemplate')
+    local IconFrame= CreateFrame('Frame', 'WoWToolsIconSelectorPopupFrame', UIParent, 'IconSelectorPopupFrameTemplate')
+
+    IconFrame.BorderBox.CancelButton:ClearAllPoints()
+    IconFrame.BorderBox.CancelButton:SetPoint('BOTTOMLEFT', 77+15, 12)
+
     IconFrame:SetFrameStrata('DIALOG')
     IconFrame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
 
@@ -225,6 +229,7 @@ local function Create_IconSelectorPopupFrame()
         self.text=nil
         self.texture=nil
         self.SetValue=nil
+        self:SetParent(UIParent)
     end)
 
     function IconFrame:Update()
@@ -255,8 +260,8 @@ local function Create_IconSelectorPopupFrame()
     end
 
     Create_IconSelectorPopupFrame=function()
-        _G['WoWTools_IconSelectorPopupFrame']:SetShown(false)
-        return _G['WoWTools_IconSelectorPopupFrame']
+        _G['WoWToolsIconSelectorPopupFrame']:SetShown(false)
+        return _G['WoWToolsIconSelectorPopupFrame']
     end
     return IconFrame
 end

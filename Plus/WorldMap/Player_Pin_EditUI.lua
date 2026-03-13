@@ -87,17 +87,48 @@ local function Set_UpdataAddButton_Stat()
     local icon= Frame.iconEdit.icon
 
     local xy= Frame.xyEdit.xy
-    local xy2= Frame.selectXY
 
     if mapID and (name or icon) and xy then
         local data= SaveWoW()[mapID] or {}
 
-        isUpdate= xy2 and data[xy2] and true or false
+        isUpdate= data[Frame.selectXY] and true or false
         isAdd= not data[xy] and true or false
     end
 
     Frame.addButton:SetEnabled(isAdd)
     Frame.updateButton:SetEnabled(isUpdate)
+end
+
+
+
+
+
+
+
+
+local function Set_FrameSelect(data)
+    Frame.selectXY= data.xy
+    Frame.xyEdit:SetText(data.xy or '')
+    Frame.iconEdit:SetText(data.pin.icon or '')
+    Frame.nameEdit:SetText(data.pin.name or '')
+
+    Frame.noteEdit:SetText(data.pin.note or '')
+
+    Frame.professionMenu.profession= data.pin.profession or {}
+    Frame.professionMenu:SetText(GetProfessionIcon(data.pin.profession) or Frame.professionMenu:GetDefaultText())
+
+    Frame.classMenu.class= data.pin.class or {}
+    Frame.classMenu:SetText(GetClassIcon(data.pin.class) or Frame.classMenu:GetDefaultText())
+
+    local color
+    if data.pin.color then
+        color= CreateColor(data.pin.color.r or 1, data.pin.color.g or 1, data.pin.color.b or 1)
+    end
+    Frame.colorButton.color= color
+    Frame.colorButton:set_color()
+
+    Frame.nameEdit:SetFocus()
+    EventRegistry:TriggerEvent("WoWToolsPlayrPin.UpateSelect")
 end
 
 
@@ -165,6 +196,24 @@ local function Refresh_All(pinData)
     local mapID= pinData.mapID or Frame.mapID or WoWTools_WorldMapMixin:GetMapID()
     Frame.mapID= mapID
 
+--新建
+    if pinData.isNew then
+        if SaveWoW()[pinData.mapID] and SaveWoW()[pinData.mapID][pinData.xy] then
+            Set_FrameSelect({
+                xy=pinData.xy,
+                pin= SaveWoW()[pinData.mapID][pinData.xy]
+            })
+        else
+            Frame.newButton:Click()
+            if pinData.xy then
+                Frame.xyEdit:SetText(pinData.xy)
+            end
+        end
+        if pinData.name then
+            Frame.nameEdit:SetText(pinData.name)
+        end
+    end
+
     local findText
     if pinData.xy then
         Frame.search:SetText(pinData.xy)
@@ -205,7 +254,6 @@ local function Refresh_All(pinData)
 
     Set_UpdataAddButton_Stat()
 end
-
 
 
 
@@ -290,30 +338,7 @@ local function Add_ListButton(btn)
         self:SetButtonState('NORMAL')
     end)
     btn:SetScript('OnClick', function(self)
-        local data= self.data
-
-        Frame.selectXY= data.xy
-
-        Frame.nameEdit:SetText(data.pin.name or '')
-        Frame.xyEdit:SetText(data.xy)
-        Frame.iconEdit:SetText(data.pin.icon or '')
-        Frame.noteEdit:SetText(data.pin.note or '')
-
-        Frame.professionMenu.profession= data.pin.profession or {}
-        Frame.professionMenu:SetText(GetProfessionIcon(data.pin.profession) or Frame.professionMenu:GetDefaultText())
-
-        Frame.classMenu.class= data.pin.class or {}
-        Frame.classMenu:SetText(GetClassIcon(data.pin.class) or Frame.classMenu:GetDefaultText())
-
-        local color
-        if data.pin.color then
-            color= CreateColor(data.pin.color.r or 1, data.pin.color.g or 1, data.pin.color.b or 1)
-        end
-        Frame.colorButton.color= color
-        Frame.colorButton:set_color()
-
-        Frame.nameEdit:SetFocus()
-        EventRegistry:TriggerEvent("WoWToolsPlayrPin.UpateSelect")
+        Set_FrameSelect(self.data)
     end)
 
 end
@@ -391,9 +416,9 @@ local function Add_Updata_Data(isUpdate)
 --图标
     local icon= Frame.iconEdit:GetText()
     icon= icon:gsub(' ', '')~='' and icon or nil
+
 --xy 50.00 50.00 这个是字符
-    local x, y= WoWTools_WorldMapMixin:GetXYForText(Frame.xyEdit:GetText())
-    local xy= WoWTools_WorldMapMixin:GetTextForXY(x, y, false, false)
+    local xy= Frame.xyEdit.xy
 
     if not mapID or not xy or not (name or icon) then
         return
@@ -521,7 +546,7 @@ local function Init()
 
 
     Frame.mapMenu = CreateFrame("DropdownButton", nil, Frame, "WowStyle1DropdownTemplate")--下拉，菜单
-    --Frame.mapMenu:SetPoint('LEFT',newButton, 'RIGHT', 6, 0)
+    --Frame.mapMenu:SetPoint('LEFT',Frame.newButton, 'RIGHT', 6, 0)
     Frame.mapMenu:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPRIGHT', 52, -2)
     Frame.mapMenu:SetPoint('RIGHT', -50, 0)
     Frame.mapMenu.Text:SetJustifyH('CENTER')
@@ -615,15 +640,15 @@ local function Init()
 
 
 
-    local newButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
-    newButton:SetPoint('LEFT', Frame.mapMenu, 'RIGHT', 8, 0)
-    newButton:SetNormalAtlas('common-icon-plus')
-    --newButton:GetNormalTexture():ClearAllPoints()
-    --newButton:GetNormalTexture():SetPoint('TOPLEFT', 3, -3)
-    --newButton:GetNormalTexture():SetPoint('BOTTOMRIGHT', -3, 3)
-    newButton.owner= 'ANCHOR_RIGHT'
-    newButton.tooltip= WoWTools_DataMixin.onlyChinese and '新建' or NEW
-    newButton:SetScript('OnClick', function()
+    Frame.newButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    Frame.newButton:SetPoint('LEFT', Frame.mapMenu, 'RIGHT', 8, 0)
+    Frame.newButton:SetNormalAtlas('common-icon-plus')
+    --Frame.newButton:GetNormalTexture():ClearAllPoints()
+    --Frame.newButton:GetNormalTexture():SetPoint('TOPLEFT', 3, -3)
+    --Frame.newButton:GetNormalTexture():SetPoint('BOTTOMRIGHT', -3, 3)
+    Frame.newButton.owner= 'ANCHOR_RIGHT'
+    Frame.newButton.tooltip= WoWTools_DataMixin.onlyChinese and '新建' or NEW
+    Frame.newButton:SetScript('OnClick', function()
         Frame.nameEdit:SetText('')
         Frame.colorButton.color= nil
         Frame.colorButton:set_color()
@@ -920,22 +945,36 @@ local function Init()
     Frame.xyEdit.searchIcon:SetAtlas('UI-WorldMapArrow')
 
     Frame.xyEdit:HookScript('OnTextChanged', function(self)
-        local x, y= WoWTools_WorldMapMixin:GetXYForText(self:GetText())
-        if not x then
+        local text= self:GetText() or ''
+        text= text:gsub('  ', '')
+        text= text:gsub(' $', '')
+        text= text:gsub('^ ', '')
+        local x, y
+        if text~='' and text~=' ' then
+            x, y= text:match('(%d%d%.%d%d) (%d%d%.%d%d)')
+            if x and y then
+                self.xy= WoWTools_WorldMapMixin:GetTextForXY(x, y)
+            else
+                x, y= WoWTools_WorldMapMixin:GetXYForText(self:GetText())
+                self.xy= WoWTools_WorldMapMixin:GetTextForXY(x, y)
+            end
+            x, y= tonumber(x), tonumber(y)
+        end
+        if not x or not y then
             self:SetTextColor(WARNING_FONT_COLOR:GetRGB())
         else
             self:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
         end
         Frame.sliderX:SetValue(x or 0)
         Frame.sliderY:SetValue(y or 0)
-        self.xy= WoWTools_WorldMapMixin:GetTextForXY(x, y, false, false)
         Set_UpdataAddButton_Stat()
     end)
 
-    function Frame.xyEdit:get_siliderXY()
-        local x=  tonumber(format('%.2f', Frame.sliderX:GetValue()))
-        local y= tonumber(format('%.2f', Frame.sliderY:GetValue()))
-        self:SetText(WoWTools_WorldMapMixin:GetTextForXY(x, y, false, false))
+    function Frame.xyEdit:Get_TextForSiliderXY()
+        return WoWTools_WorldMapMixin:GetTextForXY(
+            format('%.2f', Frame.sliderX:GetValue()),
+            format('%.2f', Frame.sliderY:GetValue())
+        )
     end
 
 
@@ -974,7 +1013,7 @@ local function Init()
     Frame.sliderX:SetMinMaxValues(0, 100)
     Frame.sliderX:EnableMouseWheel(true)
     Frame.sliderX:SetValueStep(0.05)
-
+    Frame.sliderX:SetValue(0)
     Frame.sliderX.tooltip= function(self)
         if not WorldMapFrame:IsShown() or not Frame.updateButton:IsEnabled() then
             return
@@ -990,7 +1029,7 @@ local function Init()
     end
     Frame.sliderX.set_valuechanged= function(self)
         if self:IsMouseOver() then
-            Frame.xyEdit:get_siliderXY()
+            Frame.xyEdit:SetText(Frame.xyEdit:Get_TextForSiliderXY())
             if WorldMapFrame:IsShown() and Frame.updateButton:IsEnabled() then
                 Frame.updateButton:Click()
             end
@@ -1001,7 +1040,7 @@ local function Init()
         local value= self:GetValue()
         value= d==1 and value-0.05 or (value+0.05)
         self:SetValue(value)
-        Frame.xyEdit:get_siliderXY()
+        Frame.xyEdit:SetText(Frame.xyEdit:Get_TextForSiliderXY())
     end
 
     Frame.sliderX:SetScript('OnMouseWheel', Frame.sliderX.set_wheel)
@@ -1021,6 +1060,7 @@ local function Init()
     Frame.sliderY:SetScript('OnValueChanged', Frame.sliderX.set_valuechanged)
     Frame.sliderY:SetScript('OnLeave', GameTooltip_Hide)
     Frame.sliderY:SetScript('OnEnter', Frame.sliderX.tooltip)
+    Frame.sliderY:SetValue(0)
     Frame.sliderY.anchor= "ANCHOR_RIGHT"
     WoWTools_TextureMixin:SetSlider(Frame.sliderY)
 
