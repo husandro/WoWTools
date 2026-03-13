@@ -546,7 +546,7 @@ local function Init()
                 WoWTools_WorldMapMixin:ShowWorldFrame(Frame.mapID)
                 Refresh_All()
                 return MenuResponse.Refresh
-            end, {mapID= mapID, data=info, rightText=index})
+            end, {mapID= mapID, data=info, rightText=DISABLED_FONT_COLOR:WrapTextInColorCode(index)})
             WoWTools_MenuMixin:SetRightText(sub)
 
             sub:CreateButton(

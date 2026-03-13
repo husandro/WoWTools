@@ -114,7 +114,7 @@ end
 
 
 local function Init_Pool(btn)
-    btn.text = btn:CreateFontString(nil, "BORDER", "WorldMapTextFont")
+    btn.text = btn:CreateFontString(nil, "BORDER", 'WoWToolsFont2') --"WorldMapTextFont")
     btn:SetFrameStrata('HIGH')
 
     btn:SetMovable(true)
