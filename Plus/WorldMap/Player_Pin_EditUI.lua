@@ -1,3 +1,6 @@
+local function Save()
+    return WoWToolsSave['Plus_WorldMap'].PlayerPin
+end
 local function SaveWoW()
     return WoWToolsPlayerDate.PlayerMapPin
 end
@@ -13,7 +16,7 @@ local function GetMapName(mapID)
         end
         name= mapID
             ..' '..WoWTools_TextMixin:CN(mapInfo.name)
-            ..' ('..(count==0 and DISABLED_FONT_COLOR:WrapTextInColorCode(count) or count)..')'  
+            ..' ('..(count==0 and DISABLED_FONT_COLOR:WrapTextInColorCode(count) or count)..')'
     end
     return name, count
 end
@@ -472,6 +475,7 @@ local function Init()
         notEsc=true,
     })
 
+
     --Frame:Hide()
 
     Frame.ScrollBox = CreateFrame("Frame", nil, Frame, "WowScrollBoxList")
@@ -834,62 +838,8 @@ local function Init()
 
 
 
-
-    local playerXY= CreateFrame('Button', nil, Frame, 'WoWToolsButton2Template')
-    playerXY:SetPoint('TOPLEFT', worldName, 'BOTTOMLEFT', 0, -4)
-    playerXY:SetNormalTexture(0)
-    SetPortraitTexture(playerXY:GetNormalTexture(), 'player')
-    function playerXY:tooltip(tooltip)
-        local xy= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, false, true)
-        if xy then
-            tooltip:AddLine(xy)
-        else
-            GameTooltip_AddErrorLine(tooltip,
-                (WoWTools_DataMixin.onlyChinese and '无效的地图' or ERR_HOUSING_RESULT_INVALID_MAP)..' xy'
-            )
-        end
-    end
-    playerXY:SetScript('OnClick', function()
-        Frame.xyEdit:SetText(WoWTools_WorldMapMixin:GetTextForXY(nil, nil, false, true) or '')
-        WoWTools_WorldMapMixin:ShowWorldFrame(C_Map.GetBestMapForUnit("player"))
-    end)
-
-
-    Frame.xyEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 2)
-    Frame.xyEdit:SetPoint('LEFT', playerXY, 'RIGHT', 6, 0)
-    --Frame.xyEdit:SetPoint('TOPLEFT',  Frame.nameEdit, 'BOTTOMLEFT', 0, -4)
-    Frame.xyEdit:SetPoint('RIGHT', -54, 0)
-    Frame.xyEdit:SetHeight(23)
-    Frame.xyEdit.Instructions:SetText('xy 12.34 12.34')
-    Frame.xyEdit.searchIcon:SetAtlas('UI-WorldMapArrow')
-
-    Frame.xyEdit:HookScript('OnTextChanged', function(self)
-        local x, y= WoWTools_WorldMapMixin:GetXYForText(self:GetText())
-        if not x then
-            self:SetTextColor(WARNING_FONT_COLOR:GetRGB())
-        else
-            self:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
-        end
-        Frame.sliderX:SetValue(x or 0)
-        Frame.sliderY:SetValue(y or 0)
-        self.xy= WoWTools_WorldMapMixin:GetTextForXY(x, y, false, false)
-        Set_UpdataAddButton_Stat()
-    end)
-
-    function Frame.xyEdit:get_xyForslider()
-        local x=  tonumber(format('%.2f', Frame.sliderX:GetValue()))
-        local y= tonumber(format('%.2f', Frame.sliderY:GetValue()))
-        self:SetText(WoWTools_WorldMapMixin:GetTextForXY(x, y, false, false))
-    end
-
-
-
-
-
-
-
     local worldXY= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
-    worldXY:SetPoint('LEFT', Frame.xyEdit, 'RIGHT', 2, 0)
+    worldXY:SetPoint('TOPLEFT', worldName, 'BOTTOMLEFT', 0, -4)    
     worldXY.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
     worldXY.owner= 'ANCHOR_RIGHT'
     worldXY:SetNormalAtlas('Cursor_unablecast_32')
@@ -909,7 +859,6 @@ local function Init()
         self:settings()
         ResetCursor()
     end
-
     worldXY:SetScript("OnHide", worldXY.clear)
     worldXY:SetScript('OnEvent', function(self, _, d)
         if d=='RightButton' then
@@ -926,7 +875,6 @@ local function Init()
             end
         end
     end)
-
     worldXY:SetScript('OnClick', function(self)
         if self.isSatrt then
             self:clear()
@@ -946,6 +894,60 @@ local function Init()
             end
         end)
     end)
+    
+
+
+    Frame.xyEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 2)
+    Frame.xyEdit:SetPoint('LEFT', worldXY, 'RIGHT', 6, 0)
+    --Frame.xyEdit:SetPoint('TOPLEFT',  Frame.nameEdit, 'BOTTOMLEFT', 0, -4)
+    Frame.xyEdit:SetPoint('RIGHT', -54, 0)
+    Frame.xyEdit:SetHeight(23)
+    Frame.xyEdit.Instructions:SetText('xy 12.34 12.34')
+    Frame.xyEdit.searchIcon:SetAtlas('UI-WorldMapArrow')
+
+    Frame.xyEdit:HookScript('OnTextChanged', function(self)
+        local x, y= WoWTools_WorldMapMixin:GetXYForText(self:GetText())
+        if not x then
+            self:SetTextColor(WARNING_FONT_COLOR:GetRGB())
+        else
+            self:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+        end
+        Frame.sliderX:SetValue(x or 0)
+        Frame.sliderY:SetValue(y or 0)
+        self.xy= WoWTools_WorldMapMixin:GetTextForXY(x, y, false, false)
+        Set_UpdataAddButton_Stat()
+    end)
+
+    function Frame.xyEdit:get_siliderXY()
+        local x=  tonumber(format('%.2f', Frame.sliderX:GetValue()))
+        local y= tonumber(format('%.2f', Frame.sliderY:GetValue()))
+        self:SetText(WoWTools_WorldMapMixin:GetTextForXY(x, y, false, false))
+    end
+
+
+
+    local playerXY= CreateFrame('Button', nil, Frame, 'WoWToolsButton2Template')
+    playerXY:SetPoint('LEFT', Frame.xyEdit, 'RIGHT', 2, 0)
+    playerXY:SetNormalTexture(0)
+    SetPortraitTexture(playerXY:GetNormalTexture(), 'player')
+    function playerXY:tooltip(tooltip)
+        local xy= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, false, true)
+        if xy then
+            tooltip:AddLine(xy)
+        else
+            GameTooltip_AddErrorLine(tooltip,
+                (WoWTools_DataMixin.onlyChinese and '无效的地图' or ERR_HOUSING_RESULT_INVALID_MAP)..' xy'
+            )
+        end
+    end
+    playerXY:SetScript('OnClick', function()
+        Frame.xyEdit:SetText(WoWTools_WorldMapMixin:GetTextForXY(nil, nil, false, true) or '')
+        WoWTools_WorldMapMixin:ShowWorldFrame(C_Map.GetBestMapForUnit("player"))
+    end)
+
+
+
+    
 
 
 
@@ -956,32 +958,31 @@ local function Init()
     Frame.sliderX:SetPoint('TOPRIGHT', Frame.xyEdit, 'BOTTOM', -6, -3)
     Frame.sliderX:SetMinMaxValues(0, 100)
     Frame.sliderX:EnableMouseWheel(true)
-    Frame.sliderX:SetValueStep(0.5)
+    Frame.sliderX:SetValueStep(0.05)
     Frame.sliderX.tooltip= function(self)
-        if not WorldMapFrame:IsShown() then
+        if not WorldMapFrame:IsShown() or not Frame.updateButton:IsEnabled() then
             return
         end
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetOwner(self, self.anchor or "ANCHOR_LEFT")
         GameTooltip_SetTitle(GameTooltip,
             (Frame.updateButton:IsEnabled() and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup())
             ..WoWTools_DataMixin.Icon.mid
-            ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
+            ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE),
+            GREEN_FONT_COLOR
         )
         GameTooltip:Show()
     end
     Frame.sliderX.set_valuechanged= function(self)
         if self:IsMouseOver() then
-            Frame.xyEdit:get_xyForslider()
+            Frame.xyEdit:get_siliderXY()
         end
     end
-    Frame.sliderX.set_wheel= function(self)
-        if not WorldMapFrame:IsShown() then
-            return
-        end
+    Frame.sliderX.set_wheel= function(self, d)
         local value= self:GetValue()
-        self:SetValue(self==1 and (value-0.5) or (value+0.5))
-        Frame.xyEdit:get_xyForslider()
-        if Frame.updateButton:IsEnabled() then
+        value= d==1 and value-0.05 or (value+0.05)
+        self:SetValue(value)
+        Frame.xyEdit:get_siliderXY()
+        if not WorldMapFrame:IsShown() or not Frame.updateButton:IsEnabled() then
             Frame.updateButton:Click()
         end
     end
@@ -1002,6 +1003,7 @@ local function Init()
     Frame.sliderY:SetScript('OnValueChanged', Frame.sliderX.set_valuechanged)
     Frame.sliderY:SetScript('OnLeave', GameTooltip_Hide)
     Frame.sliderY:SetScript('OnEnter', Frame.sliderX.tooltip)
+    Frame.sliderY.anchor= "ANCHOR_RIGHT"
     WoWTools_TextureMixin:SetSlider(Frame.sliderY)
 
 
@@ -1152,7 +1154,10 @@ local function Init()
     end)]]
 
 
-
+    function Frame:settings()
+        self:SetFrameStrata(Save().UIStrata or 'HIGH')
+    end
+    Frame:settings()
 
     Init=function()end
 end
@@ -1175,6 +1180,7 @@ function WoWTools_WorldMapMixin:PlayerPin_ShowUI(data)
     if Frame:IsShown() then
         Refresh_All(data)
     end
+
 end
 
 function WoWTools_WorldMapMixin:PlayerPin_SetUIButtonState(xy)
@@ -1191,7 +1197,13 @@ function WoWTools_WorldMapMixin:PlayerPin_SetUIButtonState(xy)
 end
 
 function WoWTools_WorldMapMixin:PlayerPin_RefreshUI(data)
-    if Frame and Frame:IsShown() then
-        Refresh_All(data)
+    if Frame then
+        if Frame:IsShown() then
+            Refresh_All(data)
+        end
     end
+end
+
+function WoWTools_WorldMapMixin:PlayerPin_GetUIFrame()
+    return Frame, 'WoWToolsPlayerPinEditUIFrame'
 end

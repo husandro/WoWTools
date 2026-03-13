@@ -5,7 +5,7 @@ Scale(
 
 BgAplha
 
-FrameStrata(root, GetValue, SetValue)
+FrameStrata(frame, root, GetValue, SetValue)
 RestPoint(root, point, SetValue)
 RestData(root, name, SetValue)
 Reload(root, isControlKeyDown)
@@ -297,13 +297,12 @@ function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
 end
 --[[
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(self, root, function(strata)
+    WoWTools_MenuMixin:FrameStrata(self, root,
+    function(strata)
         return self:GetFrameStrata()==strata
     end, function(strata)
         Save().strata= strata
         return MenuResponse.Refresh
-    end, function()
-        return Save().strata
     end)
 ]]
 
