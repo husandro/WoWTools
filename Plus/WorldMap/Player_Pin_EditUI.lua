@@ -1061,6 +1061,23 @@ local function Init()
         end)
         tav.owner= 'ANCHOR_RIGHT'
         tav.tooltip= 'Texture Atlas Viewer'
+
+        --插件
+        local tavFrame= _G['TAV_InfoPanel']
+        if tavFrame and tavFrame.Name and tavFrame.Name.GetText then
+            local btn= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')--  WoWTools_ButtonMixin:Cbtn(Frame, {atlas='Gear'})
+            btn:SetNormalAtlas('Gear')
+            btn:SetFrameStrata('HIGH')
+            btn:SetPoint('RIGHT', tavFrame.Name, 'LEFT', -14, 0)
+            btn:SetScript('OnClick', function()
+                local text= _G['TAV_InfoPanel'].Name:GetText()
+                if text and text~='' then
+                    Frame.iconEdit:SetText(text)
+                    _G['TAV_InfoPanel']:Hide()
+                end
+            end)
+            btn.tooltip= WoWTools_WorldMapMixin.addName2..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+        end
     end
 
 

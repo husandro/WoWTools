@@ -117,7 +117,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetRightText(sub)
 
 --对话替换, 打开自定义, Frame
-    sub:CreateButton(
+    sub2= sub:CreateButton(
         '|A:mechagon-projects:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM),
     function ()
@@ -125,6 +125,21 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end, {rightText=num})
     WoWTools_MenuMixin:SetRightText(sub)
+
+    --重置位置
+    sub:CreateButton(
+        (WoWTools_MoveMixin:GetPoint(nil, 'WoWToolsGossipTextIconOptionsFrame') and '' or '|cff626262')
+        ..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
+    function()
+        WoWTools_MoveMixin:ClearPoint(nil, 'WoWToolsGossipTextIconOptionsFrame')--重置位置
+        local frame= _G['WoWToolsGossipTextIconOptionsFrame']
+        if frame then
+            frame:ClearAllPoints()
+            frame:SetPoint('CENTER')
+        end
+        return MenuResponse.Refresh
+    end)
+
 
 --默认
     num= CountTable(WoWTools_GossipMixin:Get_GossipData() or {})

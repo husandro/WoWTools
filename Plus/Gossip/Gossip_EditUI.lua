@@ -634,6 +634,23 @@ local function Init(isShow)
             GameTooltip:AddLine('Texture Atlas Viewer')
             GameTooltip:Show()
         end)
+
+        --插件
+        local tavFrame= _G['TAV_InfoPanel']
+        if tavFrame and tavFrame.Name and tavFrame.Name.GetText then
+            local btn= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')--  WoWTools_ButtonMixin:Cbtn(Frame, {atlas='Gear'})
+            btn:SetNormalAtlas('Gear')
+            btn:SetFrameStrata('HIGH')
+            btn:SetPoint('RIGHT', tavFrame.Name, 'LEFT', -14, 0)
+            btn:SetScript('OnClick', function()
+                local text= _G['TAV_InfoPanel'].Name:GetText()
+                if text and text~='' then
+                    List.Icon:SetText(text)
+                    _G['TAV_InfoPanel']:Hide()
+                end
+            end)
+            btn.tooltip= WoWTools_GossipMixin.addName..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+        end
     end
 
     --颜色
@@ -754,7 +771,7 @@ local function Init(isShow)
 
     --图标大小, 设置
     List.Size= WoWTools_SliderMixin:CSlider(Frame, {min=8, max=72, value=Save().Gossip_Text_Icon_Size, setp=1, color=false, w=255,
-        text= WoWTools_DataMixin.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
+        text= WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_ICON,
         func=function(frame, value)
             value= math.modf(value)
             value= value==0 and 0 or value
@@ -1044,7 +1061,7 @@ local function Init(isShow)
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         GameTooltip:Show()
     end)
-    List.DataEnter:SetScript('OnClick', function(self)
+    List.DataEnter:SetScript('OnClick', function()
         local frame= List.DataFrame
         frame:SetShown(true)
         frame.enter:SetShown(true)
@@ -1065,19 +1082,6 @@ local function Init(isShow)
 
 
 
---插件
-    local tavFrame= _G['TAV_InfoPanel']
-    if tavFrame and tavFrame.Name then
-        local btn= WoWTools_ButtonMixin:Cbtn(tavFrame, {atlas='SpecDial_LastPip_BorderGlow'})
-        btn:SetPoint('RIGHT', tavFrame.Name, 'LEFT', -14, 0)
-        btn.edit= tavFrame.Name
-        btn:SetScript('OnClick', function(self)
-            local text= self.edit:GetText()
-            if text and text~='' then
-                List.Icon:SetText(text)
-            end
-        end)
-    end
 
 
 
@@ -1108,8 +1112,8 @@ local function Init(isShow)
     end)
 
 
-    Frame:SetSize(580, 370)
-    Frame:SetFrameStrata('HIGH')
+    --Frame:SetSize(580, 370)
+    --Frame:SetFrameStrata('HIGH')
 
 
 
@@ -1155,7 +1159,7 @@ local function Init(isShow)
 
 
     Frame:set_shown(isShow)
-    Frame:set_point()
+    --Frame:set_point()
 
     Init=function(show)
         Frame:set_shown(show)
