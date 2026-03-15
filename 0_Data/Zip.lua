@@ -1,6 +1,7 @@
 local function base64Encode(data)
     local b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     data = tostring(data or "")
+    
     return ((data:gsub('.', function(x)
         local r, byte = '', x:byte()
         for i = 8, 1, -1 do

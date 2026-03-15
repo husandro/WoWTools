@@ -3130,7 +3130,8 @@
         "PROFESSIONS_FIRST_AID",
         "xx",
         "OpenQuestLog",
-        "OpenWorldMap"
+        "OpenWorldMap",
+        "HOUSEFINDER_BACK_BUTTON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

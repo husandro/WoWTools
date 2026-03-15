@@ -640,6 +640,9 @@ local function Init()
             name= name or (DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '无效的地图' or ERR_HOUSING_RESULT_INVALID_MAP)..' '..mapID)
             allCount= num+ allCount
 
+            local size= info.options or {}
+
+
             sub=root:CreateRadio(
                 name,
             function(data)
@@ -649,7 +652,8 @@ local function Init()
                 WoWTools_WorldMapMixin:ShowWorldFrame(Frame.mapID)
                 Refresh_All()
                 return MenuResponse.Refresh
-            end, {mapID= mapID, data=info, rightText=DISABLED_FONT_COLOR:WrapTextInColorCode(index)})
+            end, {mapID= mapID, data=info,
+                rightText=((size.iconS or PinHeight)..' '..(size.fontH or PinHeight))..' '.. DISABLED_FONT_COLOR:WrapTextInColorCode(index)})
             WoWTools_MenuMixin:SetRightText(sub)
 
             sub:CreateButton(
@@ -725,13 +729,13 @@ local function Init()
 
     local goMapButton=  CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     goMapButton:SetPoint('LEFT', Frame.mapMenu, 'RIGHT', 2, 0)
-    goMapButton:SetNormalAtlas('wowlabs-spectatecycling-arrowright_hover')
+    goMapButton:SetNormalAtlas('wowlabs-spectatecycling-arrowleft_hover')
     goMapButton.owner= 'ANCHOR_RIGHT'
     function goMapButton:tooltip(tooltip)
         tooltip:AddDoubleLine(
             GetMapName(Frame.mapID),
             (WorldMapFrame:IsShown() and WorldMapFrame.mapID==Frame.mapID and '|cff626262' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
+            ..(WoWTools_DataMixin.onlyChinese and '返回' or HOUSEFINDER_BACK_BUTTON)
         )
     end
     goMapButton:SetScript('OnClick', function()
@@ -813,7 +817,7 @@ local function Init()
 
 --同时设置，图标和名称 大小
     local fontIconMenu= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template')
-    fontIconMenu:SetPoint('LEFT', Frame.fontH, 'RIGHT', 8, 0)
+    fontIconMenu:SetPoint('LEFT', Frame.fontH, 'RIGHT', 3, 0)
     fontIconMenu:SetNormalAtlas('Professions-Crafting-Orders-Icon')
     fontIconMenu:SetupMenu(function(self, root)
         if not self:IsMouseOver() then
@@ -1438,16 +1442,118 @@ local function Init()
     Frame.tabGroup= CreateTabGroup(Frame.nameEdit, Frame.xyEdit)--, Frame.iconEdit, Frame.noteEdit)
     Frame.nameEdit:SetScript('OnTabPressed', function() Frame.tabGroup:OnTabPressed() end)
     Frame.xyEdit:SetScript('OnTabPressed', function() Frame.tabGroup:OnTabPressed() end)
-    --Frame.iconEdit:SetScript('OnTabPressed', function() Frame.tabGroup:OnTabPressed() end)
-    --Frame.noteEdit:SetScript('OnTabPressed', function() Frame.tabGroup:OnTabPressed() end)
+  
+    
 
 
 
 
 
-    --[[Frame:SetScript('OnHide', function(self)
-        self.view:SetDataProvider(CreateDataProvider(), ScrollBoxConstants.RetainScrollPosition)
-    end)]]
+
+
+
+
+
+
+
+
+
+
+
+    --[[导入数据
+    Frame.dataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
+        name='WoWToolsPlayerPinEditUIOutInScrollFrame'
+    })
+    --Frame.dataFrame:Hide()
+    Frame.dataFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 0, -10)
+    Frame.dataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
+
+
+
+    Frame.dataFrame.CloseButton= CreateFrame('Button', 'WoWToolsPlayerPinEditUIOutInScrollFrameCloseButton', Frame.dataFrame, 'UIPanelCloseButtonNoScripts')
+    Frame.dataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
+    Frame.dataFrame.CloseButton:SetScript('OnClick', function(self)
+        local frame=self:GetParent()
+        frame:Hide()
+        frame:SetText("")
+    end)
+    WoWTools_TextureMixin:SetButton(Frame.dataFrame.CloseButton)
+
+    Frame.dataFrame.enter= WoWTools_ButtonMixin:Cbtn(Frame.dataFrame, {
+        name= 'WoWToolsPlayerPinEditUIOutInScrollFrameEnterButton',
+        size={100, 23},
+        isUI=true
+    })
+    Frame.dataFrame.enter:SetPoint('BOTTOM', Frame.dataFrame, 'TOP', 0, 5)
+    Frame.dataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
+    Frame.dataFrame.enter:Hide()
+
+
+   
+
+    function Frame.dataFrame.enter:set_date(isTip)--导入数据，和提示
+        
+    end
+
+    
+    Frame.dataFrame.enter:SetScript('OnClick', function(self)--导入
+       self:set_date()
+
+    end)
+
+    Frame.dataUscita= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-greenarrow'})
+    Frame.dataUscita:SetPoint('TOPLEFT', 6, -6)
+    Frame.dataUscita:SetScript('OnLeave', GameTooltip_Hide)
+    Frame.dataUscita:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
+        GameTooltip:Show()
+    end)
+    Frame.dataUscita:SetScript('OnClick', function(self)
+        local frame= Frame.dataFrame
+        
+        frame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
+    end)
+
+    Frame.dataEnter= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='Professions_Specialization_arrowhead'})
+    Frame.dataEnter:SetPoint('LEFT', Frame.dataUscita, 'RIGHT')
+    Frame.dataEnter:SetScript('OnLeave', GameTooltip_Hide)
+    Frame.dataEnter:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
+        GameTooltip:Show()
+    end)
+    Frame.dataEnter:SetScript('OnClick', function()
+        local frame= Frame.dataFrame
+        frame:SetShown(true)
+        frame.enter:SetShown(true)
+        frame:SetText('')
+    end)
+
+]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     function Frame:settings()

@@ -222,14 +222,14 @@ local function Create_IconSelectorPopupFrame()
     IconFrame:SetScript('OnHide', function(self)
         self.BorderBox.IconSelectorEditBox:SetText("")
         self.BorderBox.IconSelectorEditBox:ClearFocus()
-        IconSelectorPopupFrameTemplateMixin.OnHide(self)
+        self:SetParent(UIParent)
         self.iconDataProvider:Release()
         self.iconDataProvider = nil
-
         self.text=nil
         self.texture=nil
         self.SetValue=nil
-        self:SetParent(UIParent)
+        IconSelectorPopupFrameTemplateMixin.OnHide(self)
+        self:SetShown(false)
     end)
 
     function IconFrame:Update()
@@ -312,6 +312,8 @@ function WoWTools_TextureMixin:GetNewIcon(frame, tab)
     IconFrame.setValue= tab.SetValue
 
     IconFrame:SetShown(true)
+
+    return IconFrame
 end
 
 
