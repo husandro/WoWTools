@@ -25,28 +25,28 @@ end
 
 
 local function RefreshMapMarkers()
-    if not Button then
-        return
-    end
-
     Button.pool:ReleaseAll()
+
+    Button:set_text()
 
     local mapID= WoWTools_WorldMapMixin:GetMapID()
 
     local pins= SaveWoW()[mapID]
 
-
     local canvas= WorldMapFrame:GetCanvas()
-    if not pins or not canvas then
+    if not pins
+        or not canvas or Save().disabled    
+    then
         return
     else
         pins.options= pins.options or {}
     end
 
     local count= CountTable(pins)-1
-    Button.text:SetText(count>0 and count or DISABLED_FONT_COLOR:WrapTextInColorCode('0'))
-    Button:SetWidth(Button.text:GetFontHeight())
-    if count==0 then
+
+    Button:set_text()
+print(WorldMapFrame:IsShown())
+    if count==0 or not WorldMapFrame:IsShown() then
         return
     end
 
@@ -273,6 +273,7 @@ local function Init_Menu(self, root)
         end
     end)]]
 
+    local data= 
     root:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(root, {
         name= WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE,
@@ -398,17 +399,16 @@ local function Init()
 
 
 
-    Button= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', MinimapCluster.Tracking.Button, 'WoWToolsMenu2Template')
+    Button= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', MinimapCluster.Tracking.Button, 'WoWToolsMenu3Template')
 
     Button.text= Button:CreateFontString(nil, 'ARTWORK', 'WoWToolsFonts')
     Button.text:SetPoint('CENTER')
+    Button.text:SetJustifyH('CENTER')
     WoWTools_ColorMixin:SetLabelColor(Button.text)
-    --Button.text:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
     Button.text:SetFontHeight(10)
-    
 
-    --Button:SetNormalAtlas('Gear')
     Button:SetupMenu(Init_Menu)
+
     function Button:tooltip(tooltip)
         tooltip:AddLine(WoWTools_WorldMapMixin.addName2)
         local canvas= WorldMapFrame:GetCanvas()
@@ -417,14 +417,13 @@ local function Init()
             tooltip:AddDoubleLine('Canvas: |cffffffff'..math.modf(w)..'|r x |cffffffff'..math.modf(h))
         end
         tooltip:AddLine(' ')
-        tooltip:AddLine(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '新建' or NEW))
-        tooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or CONTACTS_MENU_NAME))
-        tooltip:AddLine(WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and 'UI编辑' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'UI', EDIT)))
+        tooltip:AddLine(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '新建' or NEW), 1,1,1)
+        tooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or CONTACTS_MENU_NAME), 1,1,1)
+        tooltip:AddLine(WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and 'UI编辑' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'UI', EDIT)), 1,1,1)
     end
-    --[[function Button:set_alpha()
-        self:GetNormalTexture():SetAlpha(self:IsMouseOver() and 1 or 0.5)
-    end]]
-    Button:set_alpha()
+
+
+
 
     function Button:set_point()
         self:ClearAllPoints()
@@ -436,14 +435,41 @@ local function Init()
             self:SetPoint('RIGHT', MinimapCluster.Tracking.Button, 'LEFT')
             self:SetParent(MinimapCluster.Tracking.Button)
             self:SetFrameStrata(MinimapCluster.Tracking.Button:GetFrameStrata())
+
         end
     end
 
-
-
-    Button:RegisterEvent('PLAYER_ENTERING_WORLD')
-    Button:SetScript('OnEvent', function(self)
-        self:GetNormalTexture():SetDesaturated(not WoWTools_WorldMapMixin:GetMapID())
+    Button:SetScript('OnMouseUp', function(self, d)
+        if d~='LeftButton' then
+            return
+        end
+        self:CloseMenu()
+        local isMapXY= Save().parentWorldFrame
+        if isMapXY then
+            WoWTools_WorldMapMixin:PlayerPin_ShowUI({
+                isNew=true,
+                mapID=WoWTools_WorldMapMixin:GetMapID(),
+            })
+        else
+            local xy, mapID= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, nil, true)
+            WoWTools_WorldMapMixin:PlayerPin_ShowUI({
+                isNew=true,
+                mapID=mapID,
+                xy= xy
+            })
+        end
+        local frame= WoWTools_WorldMapMixin:PlayerPin_GetUIFrame()
+        if frame then
+            if isMapXY then
+                if not frame.getMapXYButton.isSatrt then
+                    frame.getMapXYButton:Click()
+                end
+            else
+                if not frame.getNameButton.isSatrt then
+                    frame.getNameButton:Click()
+                end
+            end
+        end
     end)
 
     Button:SetScript('OnMouseWheel', function(_, d)
@@ -458,13 +484,51 @@ local function Init()
             end
         end
     end)
+
+
+
+    function Button:set_text()
+        local mapID
+        if Save().parentWorldFrame then
+            mapID= WoWTools_WorldMapMixin:GetMapID()
+        else
+            mapID= C_Map.GetBestMapForUnit("player")
+        end
+        local count= 0
+        if mapID and SaveWoW()[mapID] then
+            if not SaveWoW()[mapID].options then
+                SaveWoW()[mapID].options= {}
+            end
+            count= CountTable(SaveWoW()[mapID])-1
+        end
+        Button.text:SetText(count>0 and count or DISABLED_FONT_COLOR:WrapTextInColorCode('0'))
+        Button:SetWidth(math.max(Button.text:GetStringWidth()+4, 23))
+    end
+
+    Button:RegisterEvent('ZONE_CHANGED')
+    Button:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+    Button:RegisterEvent('PLAYER_ENTERING_WORLD')
+    Button:SetScript('OnEvent', function(self)
+        self:set_text()
+    end)
+
+    --Button:set_text()
     Button:set_point()
 
 
+
+
+
+
+
+
+
+
+
     Button.pool= CreateFramePool('DropdownButton', WorldMapFrame:GetCanvas(), 'WoWToolsMenu2Template', nil, nil, Init_Pool)
-    --[[WorldMapFrame:HookScript("OnHide", function()
-        Button.pool:ReleaseAll()
-    end)]]
+    WorldMapFrame:HookScript("OnHide", function()
+        Button:set_text()
+    end)
     --WorldMapFrame:HookScript("OnShow", RefreshMapMarkers)
     hooksecurefunc(WorldMapFrame, "OnMapChanged", RefreshMapMarkers)
     --hooksecurefunc(WorldMapFrame.ScrollContainer, "ZoomIn", RefreshMapMarkers)
@@ -472,13 +536,8 @@ local function Init()
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, function(tooltip, data)
         if InCombatLockdown()
-            or not data or not data.lines[1]
+            or not data or not data.lines or not data.lines[1]
         then
-            return
-        end
-
-        local frame = WoWTools_WorldMapMixin:PlayerPin_GetUIFrame()
-        if frame and frame:IsShown() and not WoWTools_DataMixin.Player.husandro then
             return
         end
 
@@ -493,31 +552,34 @@ local function Init()
                         xy= xy,
                         name= text,
                     })
-                elseif SaveWoW()[mapID] and SaveWoW()[mapID][xy] then
-                    GameTooltip_AddColoredLine(tooltip,
+                    tooltip:Show()
+                    return
+                end
+
+                tooltip:AddLine(HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('|A:Gear:0:0|a'..xy))
+                if SaveWoW()[mapID] and SaveWoW()[mapID][xy] then
+                    tooltip:AddLine(NORMAL_FONT_COLOR:WrapTextInColorCode(
                         WoWTools_DataMixin.Icon.icon2..'Ctr+Alt '
                         ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
-                        ..'|A:Gear:0:0|a',
-                        HIGHLIGHT_FONT_COLOR
-                    )
-                    tooltip:Show()
+                    ))
                 else
-                    GameTooltip_AddInstructionLine(tooltip,
+                    tooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(
                         WoWTools_DataMixin.Icon.icon2..'Ctr+Alt '
                         ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
-                        ..'|A:Gear:0:0|a'..xy
-                    )
-                    tooltip:Show()
+                    ))
                 end
+                tooltip:Show()
             end
         end
     end)
+
 
     if WoWTools_DataMixin.Player.husandro then
         C_Timer.After(2, function()
             WoWTools_WorldMapMixin:PlayerPin_ShowUI()
         end)
     end
+
 
     Init=function()
         RefreshMapMarkers()
@@ -535,7 +597,7 @@ end
 
 
 function WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
-    if _G['WoWToolsWorldMapMenuButton'] and WorldMapFrame:IsShown() then
+    if Button and WorldMapFrame:IsShown() then
         RefreshMapMarkers()
     end
 end

@@ -79,18 +79,6 @@ end
 
 
 
---[[local function Find_Pool(xy)
-    local btn= _G['WoWToolsWorldFramePlayerPinButton']
-    if not btn or not WorldMapFrame:IsVisible() or WorldMapFrame.mapID~=Frame.mapID then
-        return
-    end
-    for b in btn.pool:EnumerateActive() do
-        b:SetButtonState(xy and b.data and b.data.xy==xy and 'PUSHED' or 'NORMAL')
-    end
-end]]
-
-
-
 
 
 local function Set_UpdataAddButton_Stat()
@@ -320,6 +308,7 @@ local function Add_ListButton(btn)
             data.pin.note
         )
         Refresh_All()
+        WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
     end)
 
     btn.Delete:SetScript('OnLeave', function(self)
@@ -560,8 +549,8 @@ local function Init()
 
     Frame.search= WoWTools_EditBoxMixin:Create(Frame, {isSearch=true})
     --Frame.search:SetPoint('LEFT', Frame.worldButton, 'RIGHT', 8, 0)
-    Frame.search:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 4, 2)
-    Frame.search:SetPoint('BOTTOMRIGHT', Frame.ScrollBox, 'TOPRIGHT', -22, 2)
+    Frame.search:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 23, 2)
+    Frame.search:SetPoint('BOTTOMRIGHT', Frame.ScrollBox, 'TOPRIGHT', -23, 2)
     Frame.search:SetScript('OnTextChanged', function(self, userInput)
         if userInput then
             Refresh_All()
@@ -578,9 +567,10 @@ local function Init()
 
 
 --数量
-    Frame.numLabel= Frame:CreateFontString(nil, "BORDER", 'WoWToolsFont2')
-    Frame.numLabel:SetPoint('LEFT', Frame.search, 'RIGHT', 2, 0)
+    Frame.numLabel= Frame:CreateFontString(nil, "BORDER", 'WoWToolsFonts')
+    Frame.numLabel:SetPoint('RIGHT', Frame.search, 'LEFT', -4, 0)
     Frame.numLabel:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
+    Frame.numLabel:SetJustifyH('RIGHT')
 
 
 
@@ -588,7 +578,24 @@ local function Init()
 
 
 
-
+    Frame.newButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    Frame.newButton:SetPoint('LEFT', Frame.search, 'RIGHT', 2, 0)
+    Frame.newButton:SetNormalAtlas('communities-chat-icon-plus')
+    Frame.newButton.owner= 'ANCHOR_RIGHT'
+    Frame.newButton.tooltip= WoWTools_DataMixin.onlyChinese and '新建' or NEW
+    Frame.newButton:SetScript('OnClick', function()
+        Frame.nameEdit:SetText('')
+        Frame.colorButton.color= nil
+        Frame.colorButton:set_color()
+        Frame.iconEdit:SetText('')
+        Frame.xyEdit:SetText('')
+        Frame.noteEdit:SetText('')
+        Frame.professionMenu.profession= {}
+        Frame.professionMenu:SetText(Frame.professionMenu:GetDefaultText())
+        Frame.classMenu.class= {}
+        Frame.classMenu:SetText(Frame.classMenu:GetDefaultText())
+        --WoWTools_WorldMapMixin:ShowWorldFrame(Frame.mapID)
+    end)
 
 
 
@@ -718,27 +725,7 @@ local function Init()
         WoWToolsButton_OnEnter(self)
     end)
 
-    Frame.newButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
-    Frame.newButton:SetPoint('LEFT', Frame.mapMenu, 'RIGHT', 8, 0)
-    Frame.newButton:SetNormalAtlas('common-icon-plus')
-    --Frame.newButton:GetNormalTexture():ClearAllPoints()
-    --Frame.newButton:GetNormalTexture():SetPoint('TOPLEFT', 3, -3)
-    --Frame.newButton:GetNormalTexture():SetPoint('BOTTOMRIGHT', -3, 3)
-    Frame.newButton.owner= 'ANCHOR_RIGHT'
-    Frame.newButton.tooltip= WoWTools_DataMixin.onlyChinese and '新建' or NEW
-    Frame.newButton:SetScript('OnClick', function()
-        Frame.nameEdit:SetText('')
-        Frame.colorButton.color= nil
-        Frame.colorButton:set_color()
-        Frame.iconEdit:SetText('')
-        Frame.xyEdit:SetText('')
-        Frame.noteEdit:SetText('')
-        Frame.professionMenu.profession= {}
-        Frame.professionMenu:SetText(Frame.professionMenu:GetDefaultText())
-        Frame.classMenu.class= {}
-        Frame.classMenu:SetText(Frame.classMenu:GetDefaultText())
-        WoWTools_WorldMapMixin:ShowWorldFrame(Frame.mapID)
-    end)
+
 
 
 
@@ -818,7 +805,7 @@ local function Init()
 
 --同时设置，图标和名称 大小
     local fontIconMenu= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template')
-    fontIconMenu:SetPoint('LEFT', Frame.fontH, 'RIGHT', 5, 0)
+    fontIconMenu:SetPoint('LEFT', Frame.fontH, 'RIGHT', 8, 0)
     fontIconMenu:SetNormalAtlas('Professions-Crafting-Orders-Icon')
     fontIconMenu:SetupMenu(function(self, root)
         if not self:IsMouseOver() then
@@ -853,18 +840,18 @@ local function Init()
 
 
 --捕捉，名称
-    local worldName= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
-    worldName:SetPoint('TOPLEFT', worldButton, 'BOTTOMLEFT', 0, -52)
-    worldName.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
-    worldName:SetNormalAtlas('Cursor_unablecast_32')
-    function worldName:set_event()
+    Frame.getNameButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    Frame.getNameButton:SetPoint('TOPLEFT', worldButton, 'BOTTOMLEFT', 0, -52)
+    Frame.getNameButton.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
+    Frame.getNameButton:SetNormalAtlas('Cursor_unablecast_32')
+    function Frame.getNameButton:set_event()
         if self.isSatrt then
             self:RegisterEvent('GLOBAL_MOUSE_DOWN')
         else
             self:UnregisterEvent('GLOBAL_MOUSE_DOWN')
         end
     end
-    function worldName:clear()
+    function Frame.getNameButton:clear()
         self:SetScript('OnUpdate', nil)
         self.isSatrt= nil
         self.esp= nil
@@ -873,7 +860,7 @@ local function Init()
         Frame.Header:Setup(WoWTools_WorldMapMixin.addName2)
         ResetCursor()
     end
-    function worldName:get_name()
+    function Frame.getNameButton:get_name()
         local text
         local data= C_TooltipInfo.GetWorldCursor() or {}
         if data.lines and data.lines[1] and data.lines[1].leftText then
@@ -885,8 +872,8 @@ local function Init()
             return text
         end
     end
-    worldName:SetScript("OnHide", worldName.clear)
-    worldName:SetScript('OnEvent', function(self, _, d)
+    Frame.getNameButton:SetScript("OnHide", Frame.getNameButton.clear)
+    Frame.getNameButton:SetScript('OnEvent', function(self, _, d)
         if d=='RightButton' then
             self:clear()
         elseif d=='LeftButton' then
@@ -897,13 +884,16 @@ local function Init()
             end
         end
     end)
-    worldName:SetScript('OnClick', function(self)
+    Frame.getNameButton:SetScript('OnClick', function(self)
         if self.isSatrt then
             self:clear()
             return
         end
         self.isSatrt= true
         self:set_event()
+        if WorldMapFrame:IsShown() then
+            ToggleWorldMap()
+        end
         self.esp= 3
         self:SetScript('OnUpdate', function(_, esp)
             self.esp= self.esp+ esp
@@ -912,7 +902,7 @@ local function Init()
                 SetCursor('Interface\\CURSOR\\Crosshairs.blp')
                 local text= self:get_name()
                 self:SetNormalAtlas(text and 'Cursor_cast_32' or 'Cursor_unablecast_32')
-                Frame.Header:Setup(text or self.tooltip)
+                Frame.Header:Setup(text and GREEN_FONT_COLOR:WrapTextInColorCode(text) or self.tooltip)
                 return
             end
         end)
@@ -922,7 +912,7 @@ local function Init()
 
 
     Frame.nameEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 1)
-    Frame.nameEdit:SetPoint('LEFT', worldName, 'RIGHT', 6, 0)
+    Frame.nameEdit:SetPoint('LEFT', Frame.getNameButton, 'RIGHT', 6, 0)
     --Frame.nameEdit:SetPoint('TOPLEFT', Frame.ScrollBox, 'TOPRIGHT', 40, -20)
     Frame.nameEdit:SetPoint('RIGHT', Frame.mapMenu, 'BOTTOM')
     Frame.nameEdit:SetHeight(23)
@@ -1080,11 +1070,11 @@ local function Init()
 
 
 
-    local worldXY= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
-    worldXY:SetPoint('TOPLEFT', worldName, 'BOTTOMLEFT', 0, -4)
-    worldXY.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
-    worldXY:SetNormalAtlas('Cursor_unablecast_32')
-    function worldXY:set_event()
+    Frame.getMapXYButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    Frame.getMapXYButton:SetPoint('TOPLEFT', Frame.getNameButton, 'BOTTOMLEFT', 0, -4)
+    Frame.getMapXYButton.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
+    Frame.getMapXYButton:SetNormalAtlas('Cursor_unablecast_32')
+    function Frame.getMapXYButton:set_event()
         self:SetNormalAtlas(self.isSatrt and 'cursor_crosshairs_32' or 'Cursor_unablecast_32')
         if self.isSatrt then
             self:RegisterEvent('GLOBAL_MOUSE_DOWN')
@@ -1092,7 +1082,7 @@ local function Init()
             self:UnregisterEvent('GLOBAL_MOUSE_DOWN')
         end
     end
-    function worldXY:clear()
+    function Frame.getMapXYButton:clear()
         self:SetScript('OnUpdate', nil)
         self.isSatrt= nil
         self.esp= nil
@@ -1101,8 +1091,8 @@ local function Init()
         Frame.Header:Setup(WoWTools_WorldMapMixin.addName2)
         ResetCursor()
     end
-    worldXY:SetScript("OnHide", worldXY.clear)
-    worldXY:SetScript('OnEvent', function(self, _, d)
+    Frame.getMapXYButton:SetScript("OnHide", Frame.getMapXYButton.clear)
+    Frame.getMapXYButton:SetScript('OnEvent', function(self, _, d)
         if d=='RightButton' then
             self:clear()
         elseif d=='LeftButton' then
@@ -1117,7 +1107,7 @@ local function Init()
             end
         end
     end)
-    worldXY:SetScript('OnClick', function(self)
+    Frame.getMapXYButton:SetScript('OnClick', function(self)
         if self.isSatrt then
             self:clear()
             return
@@ -1133,7 +1123,7 @@ local function Init()
                 SetCursor('Interface\\CURSOR\\Crosshairs.blp')
                 self:SetNormalAtlas(WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition() and 'Cursor_cast_32' or 'Cursor_unablecast_32')
                 local xy= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, true, false)
-                Frame.Header:Setup(xy or 'XY')
+                Frame.Header:Setup(xy and GREEN_FONT_COLOR:WrapTextInColorCode(xy) or 'XY')
                 return
             end
         end)
@@ -1142,7 +1132,7 @@ local function Init()
 
 
     Frame.xyEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 2)
-    Frame.xyEdit:SetPoint('LEFT', worldXY, 'RIGHT', 6, 0)
+    Frame.xyEdit:SetPoint('LEFT', Frame.getMapXYButton, 'RIGHT', 6, 0)
     --Frame.xyEdit:SetPoint('TOPLEFT',  Frame.nameEdit, 'BOTTOMLEFT', 0, -4)
     Frame.xyEdit:SetPoint('RIGHT', -54, 0)
     Frame.xyEdit:SetHeight(23)
