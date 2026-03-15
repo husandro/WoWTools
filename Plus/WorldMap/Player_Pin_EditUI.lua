@@ -1460,7 +1460,7 @@ local function Init()
 
 
 
-    --[[导入数据
+    --导入数据
     Frame.dataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
         name='WoWToolsPlayerPinEditUIOutInScrollFrame'
     })
@@ -1490,34 +1490,31 @@ local function Init()
 
 
    
+--[[
+ name= WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
+icon= 'wow-token-gold',
+color= {r=0.87, g=0.8, b=0.61},
+--class={},
+--profession={},
+--note=WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
+--skillLineID= 122,
+--classID= 8
 
     function Frame.dataFrame.enter:set_date(isTip)--导入数据，和提示
-        self:EnsureDB()
+        local lines = { 'WoWToolsWorldMapPlayerPin'}
 
-        local lines = { 'WoWToolsWorldMapPlayerPin' }
-        local mapIDs = {}
+        for mapID, data in pairs(SaveWoW()) do
+            local line= 'mapID='..mapID..'|n'
 
-        for mapID, data in pairs(SaveWoW) do
-            if tonumber(mapID) then
-                table.insert(mapIDs, tonumber(mapID))
-            end
-        end
-        table.sort(mapIDs)
+            for optionOrXY, info in pairs(data) do
+                line= optionOrXY..'|n'
+                for name, set in pairs(info) do
 
-        for _, mapID in ipairs(mapIDs) do
-            local list = db.markersByMap[mapID]
-            if type(list) == "table" then
-                for _, marker in ipairs(list) do
-                    if marker and marker.coord and marker.title and marker.title ~= "" then
-                        table.insert(lines,
-                            string.format("%d|%d|%s|%s|%s", mapID, marker.coord, toHex(marker.customColor),
-                                escapeField(marker.title), escapeField(marker.note or "")))
-                    end
                 end
             end
         end
 
-        return base64Encode(table.concat(lines, "\n"))
+        return WoWTools_ZipMixin:base64Encode(table.concat(lines, "\n"))
     end
 
     
@@ -1560,8 +1557,8 @@ print(type(info), info)
 
         
     end)
-
 ]]
+
 
 
 
