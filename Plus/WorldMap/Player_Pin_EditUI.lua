@@ -6,16 +6,30 @@ local function SaveWoW()
 end
 
 local Frame
+local PinHeight= 42--默认大小
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function GetMapName(mapID)
     local mapInfo= mapID and C_Map.GetMapInfo(mapID)
     local count= 0
     local name
     if mapInfo then
         if SaveWoW()[mapID] then
-            count= CountTable(SaveWoW()[mapID])
+            count= CountTable(SaveWoW()[mapID])-1
         end
         name= mapID
-            ..' '..WoWTools_TextMixin:CN(mapInfo.name)
+            ..' '..(WoWTools_TextMixin:CN(mapInfo.name) or '')
             ..' ('..(count==0 and DISABLED_FONT_COLOR:WrapTextInColorCode(count) or count)..')'
     end
     return name, count
@@ -108,6 +122,7 @@ end
 
 local function Set_FrameSelect(data)
     Frame.selectXY= data.xy
+
     Frame.xyEdit:SetText(data.xy or '')
     Frame.iconEdit:SetText(data.pin.icon or '')
     Frame.nameEdit:SetText(data.pin.name or '')
@@ -200,8 +215,8 @@ local function Refresh_All(pinData)
     if pinData.isNew then
         if SaveWoW()[pinData.mapID] and SaveWoW()[pinData.mapID][pinData.xy] then
             Set_FrameSelect({
-                xy=pinData.xy,
-                pin= SaveWoW()[pinData.mapID][pinData.xy]
+                xy= pinData.xy,
+                pin= SaveWoW()[pinData.mapID][pinData.xy],
             })
         else
             Frame.newButton:Click()
@@ -221,31 +236,39 @@ local function Refresh_All(pinData)
     findText= Frame.search:GetText()
     findText= findText:gsub(' ', '')~='' and findText or nil
 
-    for xy, pin in pairs(SaveWoW()[mapID] or {}) do
-
-        if Search_Text(findText, xy, pin) then
-
-            local x, y= WoWTools_WorldMapMixin:GetXYForText(xy)
-            dataProvider:Insert({
-                x= x,
-                y= y,
-                xy= xy,
-                pin= pin
-            })
+    if SaveWoW()[mapID] then
+        SaveWoW()[mapID].options= SaveWoW()[mapID].options or {}
+        if SaveWoW()[mapID].options.iconS then
+            Frame.iconS:SetValue(SaveWoW()[mapID].options.iconS)
         end
-    end
-    dataProvider:SetSortComparator(function(a, b)
-        if a and b then
-            if a.x==b.x then
-                return a.y< b.y
-            else
-                return a.x< b.x
+        if SaveWoW()[mapID].options.fontH then
+            Frame.fontH:SetValue(SaveWoW()[mapID].options.fontH)
+        end
+
+        for xy, pin in pairs(SaveWoW()[mapID] or {}) do
+            if xy~='options' and Search_Text(findText, xy, pin) then
+
+                local x, y= WoWTools_WorldMapMixin:GetXYForText(xy)
+                dataProvider:Insert({
+                    x= x,
+                    y= y,
+                    xy= xy,
+                    pin= pin
+                })
             end
-        else
-            return false
         end
-    end)
-
+        dataProvider:SetSortComparator(function(a, b)
+            if a and a.x and b and b.x then
+                if a.x==b.x then
+                    return a.y< b.y
+                else
+                    return a.x< b.x
+                end
+            else
+                return false
+            end
+        end)
+    end
     Frame.view:SetDataProvider(dataProvider, ScrollBoxConstants.RetainScrollPosition)
 
     Frame.mapMenu:SetText(GetMapName(Frame.mapID) or Frame.mapMenu:GetDefaultText())
@@ -358,6 +381,8 @@ local function Initializer(self, data)
         Add_ListButton(self)
     end
 
+    WoWTools_ButtonMixin:AddMask(self, true, self.Icon)
+
     self.data= data
 
 --图标
@@ -447,6 +472,11 @@ local function Add_Updata_Data(isUpdate)
 
     SaveWoW()[mapID]= SaveWoW()[mapID] or {}
 
+    SaveWoW()[mapID].options= {
+        iconS= Frame.iconS.value or PinHeight,
+        fontH= Frame.fontH.value or PinHeight
+    }
+
 --如果是更新，先删除原来
     if isUpdate and SaveWoW()[mapID][Frame.selectXY] then
         SaveWoW()[mapID][Frame.selectXY]= nil
@@ -491,18 +521,29 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 local function Init()
-    Frame= WoWTools_FrameMixin:Create(UIParent, {
+    Frame= WoWTools_FrameMixin:Create(nil, {
         name= 'WoWToolsPlayerPinEditUIFrame',
         size={580, 370},
         strata='HIGH',
         header= WoWTools_WorldMapMixin.addName2,
         notEsc=true,
+        minW=330,
+        minH=330
     })
 
 
-    --Frame:Hide()
-
+--列表
     Frame.ScrollBox = CreateFrame("Frame", nil, Frame, "WowScrollBoxList")
     Frame.ScrollBox:SetPoint("TOPLEFT", 12, -55)
     Frame.ScrollBox:SetPoint("BOTTOMRIGHT", Frame, 'BOTTOM', -100, 6)
@@ -517,15 +558,10 @@ local function Init()
 
 
 
-    Frame.numLabel= Frame:CreateFontString(nil, "BORDER", 'WoWToolsFont2')
-    Frame.numLabel:SetPoint('BOTTOM', Frame.ScrollBar, 'TOP', 0, 2)
-    Frame.numLabel:SetJustifyH('CENTER')
-    Frame.numLabel:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
-
     Frame.search= WoWTools_EditBoxMixin:Create(Frame, {isSearch=true})
     --Frame.search:SetPoint('LEFT', Frame.worldButton, 'RIGHT', 8, 0)
     Frame.search:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 4, 2)
-    Frame.search:SetPoint('BOTTOMRIGHT', Frame.ScrollBox, 'TOPRIGHT', -4, 2)
+    Frame.search:SetPoint('BOTTOMRIGHT', Frame.ScrollBox, 'TOPRIGHT', -22, 2)
     Frame.search:SetScript('OnTextChanged', function(self, userInput)
         if userInput then
             Refresh_All()
@@ -539,6 +575,19 @@ local function Init()
         self:Hide()
         Refresh_All()
     end)
+
+
+--数量
+    Frame.numLabel= Frame:CreateFontString(nil, "BORDER", 'WoWToolsFont2')
+    Frame.numLabel:SetPoint('LEFT', Frame.search, 'RIGHT', 2, 0)
+    Frame.numLabel:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
+
+
+
+
+
+
+
 
 
 
@@ -555,13 +604,35 @@ local function Init()
         if not self:IsMouseOver() then
             return
         end
+
         local sub
-        local index, all= 0, 0
+        local allCount= 0
+
+
+        local mapTab= {}
         for mapID, info in pairs(SaveWoW()) do
+            table.insert(mapTab, {
+                info= info,
+                mapID= mapID,
+            })
+        end
+        table.sort(mapTab, function(a,b)
+            if a and b then
+                return a.mapID> b.mapID
+            else
+               return false
+            end
+        end)
+
+        --for mapID, info in pairs(SaveWoW()) do
+        for index, newTab in pairs(mapTab) do
+            local mapID= newTab.mapID
+            local info= newTab.info
+
             local name, num= GetMapName(mapID)
-            all= all+ num
-            index= index+1
             name= name or (DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '无效的地图' or ERR_HOUSING_RESULT_INVALID_MAP)..' '..mapID)
+            allCount= num+ allCount
+
             sub=root:CreateRadio(
                 name,
             function(data)
@@ -592,14 +663,13 @@ local function Init()
         end
         root:CreateDivider()
 
-        local name= WoWTools_DataMixin.onlyChinese and '全部删除' or CLEAR_ALL
+
+        local name='#'..#mapTab..' '..(WoWTools_DataMixin.onlyChinese and '全部删除' or CLEAR_ALL)..' ('..allCount..')'
         sub= root:CreateButton(
             name,
         function()
             StaticPopup_Show('WoWTools_OK',
-                name..' #'..index..'|n|n'
-                ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' |cffffffff'..all
-                ..'|n',
+                name,
             nil,
             {SetValue=function()
                 WoWToolsPlayerDate.PlayerMapPin= {}
@@ -607,38 +677,46 @@ local function Init()
                 Refresh_All()
             end})
             return MenuResponse.Open
-        end, {rightText=all})
-        WoWTools_MenuMixin:SetRightText(sub)
+        end)
 
         WoWTools_MenuMixin:SetScrollMode(root)
     end)
 
 
+
+
+
     local worldButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     worldButton:SetPoint('RIGHT', Frame.mapMenu, 'LEFT', -2, 0)
-    --worldButton:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPRIGHT', 23, -5)
-    --worldButton:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 0, 2)
     worldButton:SetNormalAtlas('poi-islands-table')
     function worldButton:tooltip(tooltip)
         local mapID= WoWTools_WorldMapMixin:GetMapID()
+        if not mapID then
+            return
+        end
         local color= not mapID and WARNING_FONT_COLOR
                 or (mapID==Frame.mapID and GREEN_FONT_COLOR)
                 or HIGHLIGHT_FONT_COLOR
 
         tooltip:AddDoubleLine(
             color:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS),
-            GetMapName(mapID), nil
+            (GetMapName(mapID) or mapID)
         )
+        local canvas= WorldMapFrame:GetCanvas()
+        if canvas then
+            local w, h= canvas:GetSize()
+            tooltip:AddDoubleLine('Canvas', '|cffffffff'..math.modf(w)..'|r x |cffffffff'..math.modf(h))
+        end
     end
-    worldButton:SetScript('OnClick', function()
+    worldButton:SetScript('OnClick', function(self)
         local mapID= WoWTools_WorldMapMixin:GetMapID()
         if mapID then
             Frame.mapID= mapID
             Refresh_All()
+            WoWTools_WorldMapMixin:ShowWorldFrame(Frame.mapID)
         end
+        WoWToolsButton_OnEnter(self)
     end)
-
-
 
     Frame.newButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     Frame.newButton:SetPoint('LEFT', Frame.mapMenu, 'RIGHT', 8, 0)
@@ -667,8 +745,116 @@ local function Init()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+--图标 大小
+    Frame.iconS= CreateFrame("Slider", nil, Frame, 'MinimalSliderTemplate')
+    Frame.iconS:SetPoint('TOPLEFT', Frame.mapMenu, 'BOTTOMLEFT', 0, -2)
+    Frame.iconS:SetPoint('TOPRIGHT', Frame.mapMenu, 'BOTTOM', -6, -2)
+    Frame.iconS:SetMinMaxValues(2, 200)
+    Frame.iconS:EnableMouseWheel(true)
+    Frame.iconS:SetValueStep(1)
+    Frame.iconS.leftLabel= Frame.iconS:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
+    Frame.iconS.leftLabel:SetPoint('LEFT')
+    Frame.iconS.rightLabel= Frame.iconS:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
+    Frame.iconS.rightLabel:SetPoint('RIGHT')
+    Frame.iconS.rightLabel:SetText(WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_ICON)
+    Frame.iconS.Save_Value= function(self)
+        if Frame.mapID and self.value then
+            SaveWoW()[Frame.mapID]= SaveWoW()[Frame.mapID] or {}
+            SaveWoW()[Frame.mapID].options= SaveWoW()[Frame.mapID].options or {}
+            SaveWoW()[Frame.mapID].options[self.type]= self.value
+            WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
+        end
+    end
+    Frame.iconS.On_MouseWheel= function(self, d)
+        local value= self:GetValue()
+        value= d==1 and value-1 or (value+1)
+        self:SetValue(value)
+    end
+    Frame.iconS.On_ValueChanged= function(self)
+        local value= self:GetValue() or PinHeight
+        value= math.modf(value)
+        self.value= value
+        self.leftLabel:SetText(self.value)
+        self.value= value
+        if self:IsMouseOver() then
+           Frame.iconS.Save_Value(self)
+        end
+    end
+    Frame.iconS.type='iconS'
+    Frame.iconS:SetScript('OnMouseWheel', Frame.iconS.On_MouseWheel)
+    Frame.iconS:SetScript('OnValueChanged', Frame.iconS.On_ValueChanged)
+    Frame.iconS:SetValue(PinHeight)
+    WoWTools_TextureMixin:SetSlider(Frame.iconS)
+
+--名称 大小
+    Frame.fontH= CreateFrame("Slider", nil, Frame, 'MinimalSliderTemplate')
+    Frame.fontH:SetPoint('LEFT', Frame.iconS, 'RIGHT', 6, 0)
+    Frame.fontH:SetPoint('TOPRIGHT', Frame.mapMenu, 'BOTTOMRIGHT', 0, -2)
+    Frame.fontH:SetMinMaxValues(Frame.iconS:GetMinMaxValues())
+    Frame.fontH:EnableMouseWheel(true)
+    Frame.fontH:SetValueStep(Frame.iconS:GetValueStep())
+    Frame.fontH.leftLabel= Frame.fontH:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
+    Frame.fontH.leftLabel:SetPoint('LEFT')
+    Frame.fontH.rightLabel= Frame.fontH:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
+    Frame.fontH.rightLabel:SetPoint('RIGHT')
+    Frame.fontH.rightLabel:SetText(WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE)
+    Frame.fontH.type='fontH'
+    Frame.fontH:SetScript('OnMouseWheel', Frame.iconS.On_MouseWheel)
+    Frame.fontH:SetScript('OnValueChanged', Frame.iconS.On_ValueChanged)
+    Frame.fontH:SetValue(PinHeight)
+    WoWTools_TextureMixin:SetSlider(Frame.fontH)
+
+
+--同时设置，图标和名称 大小
+    local fontIconMenu= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template')
+    fontIconMenu:SetPoint('LEFT', Frame.fontH, 'RIGHT', 5, 0)
+    fontIconMenu:SetNormalAtlas('Professions-Crafting-Orders-Icon')
+    fontIconMenu:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        for i= 18, 72, 2 do
+            root:CreateButton(
+                i,
+            function(data)
+                local value= data
+                Frame.iconS:SetValue(value)
+                Frame.iconS.Save_Value(Frame.iconS)
+                Frame.fontH:SetValue(value)
+                Frame.iconS.Save_Value(Frame.fontH)
+                return MenuResponse.Open
+            end, i)
+        end
+        WoWTools_MenuMixin:SetScrollMode(root)
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--捕捉，名称
     local worldName= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
-    worldName:SetPoint('TOPLEFT', worldButton, 'BOTTOMLEFT', 0, -20)
+    worldName:SetPoint('TOPLEFT', worldButton, 'BOTTOMLEFT', 0, -52)
     worldName.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
     worldName:SetNormalAtlas('Cursor_unablecast_32')
     function worldName:set_event()
@@ -731,6 +917,9 @@ local function Init()
             end
         end)
     end)
+
+
+
 
     Frame.nameEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 1)
     Frame.nameEdit:SetPoint('LEFT', worldName, 'RIGHT', 6, 0)
@@ -878,11 +1067,24 @@ local function Init()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     local worldXY= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     worldXY:SetPoint('TOPLEFT', worldName, 'BOTTOMLEFT', 0, -4)
     worldXY.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
     worldXY:SetNormalAtlas('Cursor_unablecast_32')
-    function worldXY:settings()
+    function worldXY:set_event()
         self:SetNormalAtlas(self.isSatrt and 'cursor_crosshairs_32' or 'Cursor_unablecast_32')
         if self.isSatrt then
             self:RegisterEvent('GLOBAL_MOUSE_DOWN')
@@ -895,7 +1097,8 @@ local function Init()
         self.isSatrt= nil
         self.esp= nil
         self:SetNormalAtlas('Cursor_unablecast_32')
-        self:settings()
+        self:set_event()
+        Frame.Header:Setup(WoWTools_WorldMapMixin.addName2)
         ResetCursor()
     end
     worldXY:SetScript("OnHide", worldXY.clear)
@@ -921,7 +1124,7 @@ local function Init()
         end
         WoWTools_WorldMapMixin:ShowWorldFrame(Frame.mapID)
         self.isSatrt= true
-        self:settings()
+        self:set_event()
         self.esp= 3
         self:SetScript('OnUpdate', function(_, esp)
             self.esp= self.esp+ esp
@@ -929,6 +1132,8 @@ local function Init()
                 self.esp= 0
                 SetCursor('Interface\\CURSOR\\Crosshairs.blp')
                 self:SetNormalAtlas(WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition() and 'Cursor_cast_32' or 'Cursor_unablecast_32')
+                local xy= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, true, false)
+                Frame.Header:Setup(xy or 'XY')
                 return
             end
         end)
@@ -1006,6 +1211,14 @@ local function Init()
 
 
 
+
+
+
+
+
+
+
+
 --划条，X，如果OnMouseWheel 会自动更新
     Frame.sliderX= CreateFrame("Slider", nil, Frame, 'MinimalSliderTemplate')
     Frame.sliderX:SetPoint('TOPLEFT', Frame.xyEdit, 'BOTTOMLEFT',6, -3)
@@ -1063,6 +1276,16 @@ local function Init()
     Frame.sliderY:SetValue(0)
     Frame.sliderY.anchor= "ANCHOR_RIGHT"
     WoWTools_TextureMixin:SetSlider(Frame.sliderY)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1168,8 +1391,8 @@ local function Init()
     end)
 
     Frame.updateButton= CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate')
-    Frame.updateButton:SetPoint('TOPLEFT', Frame.professionMenu, 'BOTTOMLEFT', 3, -40)
-    Frame.updateButton:SetPoint('TOPRIGHT', Frame.professionMenu, 'TOPRIGHT', -3, -40)
+    Frame.updateButton:SetPoint('TOPLEFT', Frame.professionMenu, 'BOTTOMLEFT', 3, -12)
+    Frame.updateButton:SetPoint('TOPRIGHT', Frame.professionMenu, 'TOPRIGHT', -3, -12)
     Frame.updateButton:SetHeight(32)
     Frame.updateButton:SetText(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
     Frame.updateButton:SetScript('OnClick', function()
@@ -1217,7 +1440,9 @@ local function Init()
     end
     Frame:settings()
 
-    Init=function()end
+    Init=function()
+
+    end
 end
 
 

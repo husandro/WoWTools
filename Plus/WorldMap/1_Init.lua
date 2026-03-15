@@ -105,7 +105,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 --note=WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
                 --skillLineID= 122,
                 --classID= 8
-            }
+            },
+            options={}
         }
     }
 

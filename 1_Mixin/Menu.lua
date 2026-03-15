@@ -279,13 +279,13 @@ function WoWTools_MenuMixin:FrameStrata(frame, root, GetValue, SetValue)
     self:SetRightText(sub)
 
     for index, strata in pairs(StrataTabs) do
-        sub2=sub:CreateRadio(
+        sub2=sub:CreateCheckbox(
             (strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata,
         function(data)
             return GetValue(data.strata)
         end, function(data)
             SetValue(data.strata)
-            return MenuResponse.Refresh
+           -- return MenuResponse.Refresh
         end,{strata=strata, rightText=DISABLED_FONT_COLOR:WrapTextInColorCode(index)})
 
         self:SetRightText(sub2)

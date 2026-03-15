@@ -14,7 +14,7 @@
 WoWTools_SliderMixin={}
 
 function WoWTools_SliderMixin:CSlider(frame, tab)
-    local slider= CreateFrame("Slider", nil, frame, 'OptionsSliderTemplate')
+    local slider= CreateFrame("Slider", nil, frame, 'OptionsSliderTemplate')--UISliderTemplateWithLabels
     slider:SetSize(tab.w or 200, tab.h or 18)
     slider:SetMinMaxValues(tab.min, tab.max)
     if tab.value then

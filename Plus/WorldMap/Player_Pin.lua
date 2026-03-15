@@ -32,29 +32,36 @@ local function RefreshMapMarkers()
     Button.pool:ReleaseAll()
 
     local mapID= WoWTools_WorldMapMixin:GetMapID()
-    local pins= SaveWoW()[mapID]
-    local canvas= WorldMapFrame:GetCanvas()
 
-    if not pins
-        or TableIsEmpty(pins)
-        or not canvas
-        or Save().disabled
-    then
+    local pins= SaveWoW()[mapID]
+
+
+    local canvas= WorldMapFrame:GetCanvas()
+    if not pins or not canvas then
+        return
+    else
+        pins.options= pins.options or {}
+    end
+
+    local count= CountTable(pins)-1
+    Button.text:SetText(count>0 and count or DISABLED_FONT_COLOR:WrapTextInColorCode('0'))
+    Button:SetWidth(Button.text:GetFontHeight())
+    if count==0 then
         return
     end
 
     local width, height = canvas:GetSize()
     local classID= PlayerUtil.GetClassID()
-    local fontH= Save().fontHeight or PinHeight
-    local iconSize= Save().iconSize or PinHeight
+
+    local options= pins.options or {}
+    local fontH= options.fontH or PinHeight
+    local iconS= options.iconS or PinHeight
     --local strata= Save().pinStrata or 'MEDIUM'
 
     for xy, pin in pairs(pins) do
         local x, y= WoWTools_WorldMapMixin:GetXYForText(xy)
-        local professionIsKnown= WoWTools_ProfessionMixin:IsKnown(pin.profession)
-
         if x and y--坐标
-            and professionIsKnown~=false
+            and WoWTools_ProfessionMixin:IsKnown(pin.profession)~=false
             and (not pin.class or pin.class[classID])--仅限职业
         then
 
@@ -72,6 +79,8 @@ local function RefreshMapMarkers()
             local textureID= select(2, WoWTools_TextureMixin:SetTexture(btn.texture, pin.icon))
 
             btn.text:SetText(pin.name or '')
+
+            local icons2= textureID and iconS or fontH
             if pin.name then
                 local color
                 if pin.color then
@@ -81,14 +90,10 @@ local function RefreshMapMarkers()
                 end
                 btn.text:SetTextColor(color:GetRGB())
                 btn.text:SetFontHeight(fontH)
-                btn.text:SetPoint('LEFT', btn, 'RIGHT', textureID and -4 or -iconSize, 0)
+                btn.text:SetPoint('LEFT', btn, 'RIGHT', textureID and -4 or -icons2, 0)
             end
 
-            if textureID then
-                btn:SetSize(iconSize, iconSize)
-            else
-                btn:SetSize(fontH, fontH)
-            end
+            btn:SetSize(icons2, icons2)
 
             --btn:SetFrameStrata(strata)
             btn:SetPoint("CENTER", canvas, 'TOPLEFT', x *width/100, -(y* height/100))
@@ -247,10 +252,7 @@ local function Init_Menu(self, root)
     local sub, sub2
     local uiFrame, uiName= WoWTools_WorldMapMixin:PlayerPin_GetUIFrame()
 
-    local num= 0
-    for _, pin in pairs(SaveWoW()) do
-        num= num+ CountTable(pin)
-    end
+
 
 
 --[[新建
@@ -270,7 +272,6 @@ local function Init_Menu(self, root)
             tooltip:AddDoubleLine('XY', x..'  '..y, nil,nil,nil, 1,1,1)
         end
     end)]]
-
 
     root:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(root, {
@@ -313,23 +314,19 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
 --自定义
+
     sub=root:CreateButton(
         (WoWTools_DataMixin.onlyChinese and 'UI编辑' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'UI', EDIT))..WoWTools_DataMixin.Icon.mid,
     function()
         WoWTools_WorldMapMixin:PlayerPin_ShowUI()
         return MenuResponse.Open
-    end, {rightText=num})
+    end)
     WoWTools_MenuMixin:SetRightText(sub)
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(self, sub,
     function(strata)
-        local frame= WoWTools_WorldMapMixin:PlayerPin_GetUIFrame()
-        if frame then
-            return frame:GetFrameStrata()==strata
-        else
-            return (Save().UIStrata or 'HIGH') == strata
-        end
+        return (Save().UIStrata or 'HIGH') == strata
     end, function(strata)
         Save().UIStrata= strata
         if uiFrame  then
@@ -402,15 +399,31 @@ local function Init()
 
 
     Button= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', MinimapCluster.Tracking.Button, 'WoWToolsMenu2Template')
-    Button:SetNormalAtlas('Gear')
+
+    Button.text= Button:CreateFontString(nil, 'ARTWORK', 'WoWToolsFonts')
+    Button.text:SetPoint('CENTER')
+    WoWTools_ColorMixin:SetLabelColor(Button.text)
+    --Button.text:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
+    Button.text:SetFontHeight(10)
+    
+
+    --Button:SetNormalAtlas('Gear')
     Button:SetupMenu(Init_Menu)
-    Button.tooltip= NORMAL_FONT_COLOR:WrapTextInColorCode(WoWTools_WorldMapMixin.addName2)
-        ..'|n'..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
-        ..'|n'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or CONTACTS_MENU_NAME)
-        ..'|n'..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and 'UI编辑' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'UI', EDIT))
-    function Button:set_alpha()
-        self:GetNormalTexture():SetAlpha(self:IsMouseOver() and 1 or 0.5)
+    function Button:tooltip(tooltip)
+        tooltip:AddLine(WoWTools_WorldMapMixin.addName2)
+        local canvas= WorldMapFrame:GetCanvas()
+        if canvas and WorldMapFrame.mapID then
+            local w, h= canvas:GetSize()
+            tooltip:AddDoubleLine('Canvas: |cffffffff'..math.modf(w)..'|r x |cffffffff'..math.modf(h))
+        end
+        tooltip:AddLine(' ')
+        tooltip:AddLine(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '新建' or NEW))
+        tooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or CONTACTS_MENU_NAME))
+        tooltip:AddLine(WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and 'UI编辑' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'UI', EDIT)))
     end
+    --[[function Button:set_alpha()
+        self:GetNormalTexture():SetAlpha(self:IsMouseOver() and 1 or 0.5)
+    end]]
     Button:set_alpha()
 
     function Button:set_point()
