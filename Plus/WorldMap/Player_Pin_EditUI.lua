@@ -1457,10 +1457,10 @@ local function Init()
 
 
 
---[[
 
 
-    --导入数据
+
+    --[[导入数据
     Frame.dataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
         name='WoWToolsPlayerPinEditUIOutInScrollFrame'
     })
@@ -1491,25 +1491,17 @@ local function Init()
 
    
 
- name= WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
-icon= 'wow-token-gold',
-color= {r=0.87, g=0.8, b=0.61},
---class={},
---profession={},
---note=WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
---skillLineID= 122,
---classID= 8
-
     function Frame.dataFrame.enter:set_date(isTip)--导入数据，和提示
         local lines = { 'WoWToolsWorldMapPlayerPin'}
 
         for mapID, data in pairs(SaveWoW()) do
-            local line= 'mapID='..mapID..'|n'
+            local line= '[%d]={icon="%s", name="%s"},'
+            
 
             for optionOrXY, info in pairs(data) do
                 line= optionOrXY..'|n'
                 for name, set in pairs(info) do
-
+                    
                 end
             end
         end
