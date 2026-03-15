@@ -35,7 +35,7 @@ local function RefreshMapMarkers()
 
     local canvas= WorldMapFrame:GetCanvas()
     if not pins
-        or not canvas or Save().disabled    
+        or not canvas or Save().disabled
     then
         return
     else
@@ -45,7 +45,7 @@ local function RefreshMapMarkers()
     local count= CountTable(pins)-1
 
     Button:set_text()
-print(WorldMapFrame:IsShown())
+
     if count==0 or not WorldMapFrame:IsShown() then
         return
     end
@@ -272,36 +272,42 @@ local function Init_Menu(self, root)
             tooltip:AddDoubleLine('XY', x..'  '..y, nil,nil,nil, 1,1,1)
         end
     end)]]
+    if WorldMapFrame:IsShown() then
+        local data= SaveWoW()[WorldMapFrame.mapID]
+        if data then
+            SaveWoW()[WorldMapFrame.mapID].options= SaveWoW()[WorldMapFrame.mapID].options or {}
 
-    local data= 
-    root:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(root, {
-        name= WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE,
-        getValue=function()
-            return Save().fontHeight or PinHeight
-        end, setValue=function(value)
-            Save().fontHeight= value
-            RefreshMapMarkers()
-        end,
-        minValue=2,
-        maxValue=200,
-        step=1,
-    })
-    root:CreateSpacer()
+            root:CreateSpacer()
+            WoWTools_MenuMixin:CreateSlider(root, {
+                name= WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE,
+                getValue=function()
+                    return SaveWoW()[WorldMapFrame.mapID].options.fontH or PinHeight
+                end, setValue=function(value)
+                    SaveWoW()[WorldMapFrame.mapID].options.fontH = value
+                    RefreshMapMarkers()
+                end,
+                minValue=2,
+                maxValue=200,
+                step=1,
+            })
+            root:CreateSpacer()
 
-    WoWTools_MenuMixin:CreateSlider(root, {
-        name= WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_ICON,
-        getValue=function()
-            return Save().iconSize or PinHeight
-        end, setValue=function(value)
-            Save().iconSize= value
-            RefreshMapMarkers()
-        end,
-        minValue=2,
-        maxValue=200,
-        step=1,
-    })
-    root:CreateSpacer()
+            WoWTools_MenuMixin:CreateSlider(root, {
+                name= WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_ICON,
+                getValue=function()
+                    return SaveWoW()[WorldMapFrame.mapID].options.iconS or PinHeight
+                end, setValue=function(value)
+                    SaveWoW()[WorldMapFrame.mapID].options.iconS = value
+                    RefreshMapMarkers()
+                end,
+                minValue=2,
+                maxValue=200,
+                step=1,
+            })
+            root:CreateSpacer()
+            root:CreateDivider()
+        end
+    end
 --FrameStrata
     --[[WoWTools_MenuMixin:FrameStrata(self, root,
     function(strata)
@@ -313,7 +319,7 @@ local function Init_Menu(self, root)
     end, {no={BACKGROUND=1, LOW=1}})]]
 
 
-    root:CreateDivider()
+
 --自定义
 
     sub=root:CreateButton(
@@ -444,7 +450,7 @@ local function Init()
             return
         end
         self:CloseMenu()
-        local isMapXY= Save().parentWorldFrame
+        local isMapXY= WorldMapFrame:IsShown()
         if isMapXY then
             WoWTools_WorldMapMixin:PlayerPin_ShowUI({
                 isNew=true,
@@ -488,12 +494,7 @@ local function Init()
 
 
     function Button:set_text()
-        local mapID
-        if Save().parentWorldFrame then
-            mapID= WoWTools_WorldMapMixin:GetMapID()
-        else
-            mapID= C_Map.GetBestMapForUnit("player")
-        end
+        local mapID= WorldMapFrame:IsShown() and WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
         local count= 0
         if mapID and SaveWoW()[mapID] then
             if not SaveWoW()[mapID].options then
@@ -508,6 +509,7 @@ local function Init()
     Button:RegisterEvent('ZONE_CHANGED')
     Button:RegisterEvent('ZONE_CHANGED_NEW_AREA')
     Button:RegisterEvent('PLAYER_ENTERING_WORLD')
+
     Button:SetScript('OnEvent', function(self)
         self:set_text()
     end)

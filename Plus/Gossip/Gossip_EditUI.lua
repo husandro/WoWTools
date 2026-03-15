@@ -107,11 +107,27 @@ local function Init(isShow)
     end
 
     local Name= 'WoWToolsGossipTextIconOptionsFrame'
-    Frame= CreateFrame('Frame', Name, UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
-    tinsert (UISpecialFrames, Name)
+    Frame= WoWTools_FrameMixin:Create(nil, {
+        name= Name,
+        size={580, 370},
+        strata='HIGH',
+        header= WoWTools_WorldMapMixin.addName2,
+        notEsc=true,
+        minW=370,
+        minH=240
+    })
+    Frame.Header:Setup('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE)))
+    --[[Frame= CreateFrame('Frame', Name, UIParent, 'DialogBorderTemplate')--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
+    tinsert(UISpecialFrames, Name)
+    WoWTools_TextureMixin:SetFrame(Frame)
     Frame:Hide()
+--移动
+    WoWTools_MoveMixin:Setup(Frame, {
+        minW=370, minH=240,
+    sizeRestFunc=function(f)
+        f:SetSize(580, 370)
+    end})
 
-    List = CreateFrame("Frame", 'WoWToolsGossipTextIconOptionsList', Frame, "WowScrollBoxList")
 
 
 
@@ -127,7 +143,7 @@ local function Init(isShow)
 
 
     WoWTools_TextureMixin:SetFrame(border, {alpha=0.5})
-    WoWTools_TextureMixin:SetFrame(Header, {alpha=0.7})
+    WoWTools_TextureMixin:SetFrame(Header, {alpha=0.7})]]
 
 
 
@@ -137,7 +153,7 @@ local function Init(isShow)
 
 
 
-
+    List = CreateFrame("Frame", 'WoWToolsGossipTextIconOptionsList', Frame, "WowScrollBoxList")
     List:SetPoint("TOPLEFT", 12, -30)
     List:SetPoint("BOTTOMRIGHT", -310, 6)
 
@@ -1095,12 +1111,7 @@ local function Init(isShow)
     Frame:SetSize(580, 370)
     Frame:SetFrameStrata('HIGH')
 
---移动
-    WoWTools_MoveMixin:Setup(Frame, {
-        minW=370, minH=240,
-    sizeRestFunc=function(f)
-        f:SetSize(580, 370)
-    end})
+
 
 
 

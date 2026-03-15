@@ -698,21 +698,18 @@ local function Init()
     worldButton:SetNormalAtlas('poi-islands-table')
     function worldButton:tooltip(tooltip)
         local mapID= WoWTools_WorldMapMixin:GetMapID()
-        if not mapID then
-            return
-        end
-        local color= not mapID and WARNING_FONT_COLOR
-                or (mapID==Frame.mapID and GREEN_FONT_COLOR)
-                or HIGHLIGHT_FONT_COLOR
-
         tooltip:AddDoubleLine(
-            color:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS),
-            (GetMapName(mapID) or mapID)
+            (WorldMapFrame:IsShown() and WorldMapFrame.mapID==Frame.mapID and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS),
+            (GetMapName(mapID))
         )
         local canvas= WorldMapFrame:GetCanvas()
-        if canvas then
+        if WorldMapFrame.mapID and canvas then
             local w, h= canvas:GetSize()
-            tooltip:AddDoubleLine('Canvas', '|cffffffff'..math.modf(w)..'|r x |cffffffff'..math.modf(h))
+            tooltip:AddDoubleLine(
+                'Canvas '..(mapID~=Frame.mapID and mapID or ''),
+                '|cffffffff'..math.modf(w)..'|r x |cffffffff'..math.modf(h)
+            )
         end
     end
     worldButton:SetScript('OnClick', function(self)
@@ -726,9 +723,20 @@ local function Init()
     end)
 
 
-
-
-
+    local goMapButton=  CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    goMapButton:SetPoint('LEFT', Frame.mapMenu, 'RIGHT', 2, 0)
+    goMapButton:SetNormalAtlas('wowlabs-spectatecycling-arrowright_hover')
+    goMapButton.owner= 'ANCHOR_RIGHT'
+    function goMapButton:tooltip(tooltip)
+        tooltip:AddDoubleLine(
+            GetMapName(Frame.mapID),
+            (WorldMapFrame:IsShown() and WorldMapFrame.mapID==Frame.mapID and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
+        )
+    end
+    goMapButton:SetScript('OnClick', function()
+        WoWTools_WorldMapMixin:ShowWorldFrame(Frame.mapID)
+    end)
 
 
 
@@ -842,7 +850,7 @@ local function Init()
 --捕捉，名称
     Frame.getNameButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     Frame.getNameButton:SetPoint('TOPLEFT', worldButton, 'BOTTOMLEFT', 0, -52)
-    Frame.getNameButton.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
+    Frame.getNameButton.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNIT_CAPTURABLE, NAME)
     Frame.getNameButton:SetNormalAtlas('Cursor_unablecast_32')
     function Frame.getNameButton:set_event()
         if self.isSatrt then
@@ -1072,7 +1080,7 @@ local function Init()
 
     Frame.getMapXYButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     Frame.getMapXYButton:SetPoint('TOPLEFT', Frame.getNameButton, 'BOTTOMLEFT', 0, -4)
-    Frame.getMapXYButton.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉' or UNIT_CAPTURABLE
+    Frame.getMapXYButton.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉XY' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNIT_CAPTURABLE, 'XY')
     Frame.getMapXYButton:SetNormalAtlas('Cursor_unablecast_32')
     function Frame.getMapXYButton:set_event()
         self:SetNormalAtlas(self.isSatrt and 'cursor_crosshairs_32' or 'Cursor_unablecast_32')
@@ -1123,7 +1131,7 @@ local function Init()
                 SetCursor('Interface\\CURSOR\\Crosshairs.blp')
                 self:SetNormalAtlas(WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition() and 'Cursor_cast_32' or 'Cursor_unablecast_32')
                 local xy= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, true, false)
-                Frame.Header:Setup(xy and GREEN_FONT_COLOR:WrapTextInColorCode(xy) or 'XY')
+                Frame.Header:Setup(xy and GREEN_FONT_COLOR:WrapTextInColorCode(xy) or self.tooltip)
                 return
             end
         end)
