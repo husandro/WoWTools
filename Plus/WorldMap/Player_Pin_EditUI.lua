@@ -1486,19 +1486,44 @@ local function Init()
     })
     Frame.dataFrame.enter:SetPoint('BOTTOM', Frame.dataFrame, 'TOP', 0, 5)
     Frame.dataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
-    Frame.dataFrame.enter:Hide()
+   -- Frame.dataFrame.enter:Hide()
 
 
    
 
     function Frame.dataFrame.enter:set_date(isTip)--导入数据，和提示
-        
+        self:EnsureDB()
+
+        local lines = { 'WoWToolsWorldMapPlayerPin' }
+        local mapIDs = {}
+
+        for mapID, data in pairs(SaveWoW) do
+            if tonumber(mapID) then
+                table.insert(mapIDs, tonumber(mapID))
+            end
+        end
+        table.sort(mapIDs)
+
+        for _, mapID in ipairs(mapIDs) do
+            local list = db.markersByMap[mapID]
+            if type(list) == "table" then
+                for _, marker in ipairs(list) do
+                    if marker and marker.coord and marker.title and marker.title ~= "" then
+                        table.insert(lines,
+                            string.format("%d|%d|%s|%s|%s", mapID, marker.coord, toHex(marker.customColor),
+                                escapeField(marker.title), escapeField(marker.note or "")))
+                    end
+                end
+            end
+        end
+
+        return base64Encode(table.concat(lines, "\n"))
     end
 
     
     Frame.dataFrame.enter:SetScript('OnClick', function(self)--导入
-       self:set_date()
 
+        
     end)
 
     Frame.dataUscita= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-greenarrow'})
@@ -1513,9 +1538,9 @@ local function Init()
         GameTooltip:Show()
     end)
     Frame.dataUscita:SetScript('OnClick', function(self)
-        local frame= Frame.dataFrame
-        
-        frame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
+        local text= WoWTools_ZipMixin:base64Encode(SaveWoW())
+        Frame.dataFrame:SetText(text or '')
+        Frame.dataFrame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
     end)
 
     Frame.dataEnter= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='Professions_Specialization_arrowhead'})
@@ -1530,10 +1555,10 @@ local function Init()
         GameTooltip:Show()
     end)
     Frame.dataEnter:SetScript('OnClick', function()
-        local frame= Frame.dataFrame
-        frame:SetShown(true)
-        frame.enter:SetShown(true)
-        frame:SetText('')
+        info= WoWTools_ZipMixin:base64Decode(Frame.dataFrame:GetText())
+print(type(info), info)
+
+        
     end)
 
 ]]

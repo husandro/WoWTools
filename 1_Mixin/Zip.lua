@@ -1,7 +1,7 @@
-local function base64Encode(data)
+WoWTools_ZipMixin= {}
+function WoWTools_ZipMixin:base64Encode(data)
     local b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     data = tostring(data or "")
-    
     return ((data:gsub('.', function(x)
         local r, byte = '', x:byte()
         for i = 8, 1, -1 do
@@ -18,7 +18,7 @@ local function base64Encode(data)
     end) .. ({ '', '==', '=' })[#data % 3 + 1])
 end
 
-local function base64Decode(data)
+function WoWTools_ZipMixin:base64Decode(data)
     local b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     data = tostring(data or ""):gsub('%s', '')
     if data == "" then return "" end

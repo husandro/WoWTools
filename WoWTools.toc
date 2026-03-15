@@ -53,6 +53,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 1_Mixin\SetTooltip.lua
 1_Mixin\SetTooltip_Faction.lua
 1_Mixin\Aura.lua
+1_Mixin\Zip.lua
 1_Mixin\PanelMixin.lua
 ##美服，欧服，服器语言，提示
 1_Mixin\Realm.lua
