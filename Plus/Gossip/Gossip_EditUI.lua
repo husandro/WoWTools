@@ -930,10 +930,26 @@ local function Init(isShow)
         if not frame then
             return
         end
+        frame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
+
+        local zipText= frame:GetText()
+        if not zipText:find('%[%d+]={.-}') then
+            zipText= WoWTools_ZipMixin:base64Decode(zipText)
+            if not zipText or zipText:find('WoWToolsGossipText') then
+                local err= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '数据库错误' or ERR_HOUSING_RESULT_DB_ERROR)
+                if tooltips then
+                    GameTooltip_AddErrorLine(GameTooltip, err)
+                else
+                    print(WoWTools_DataMixin.Icon.icon2..err)
+                end
+                return
+            end
+
+        end
+
 
         local add, del, exist= {}, 0, 0
-        local text= string.gsub(frame:GetText() or '', '(%[%d+]={.-})', function(t)
-
+        local text= string.gsub(zipText, '(%[%d+]={.-})', function(t)
             local num, icon, name, hex= t:match('(%d+).-icon="(.-)", name="(.-)", hex="(.-)"}')
             if not num and not icon and not name and not hex then
                   num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
@@ -985,7 +1001,7 @@ local function Init(isShow)
             )
 
             frame:SetText(text)
-            self:GetParent():SetInstructions(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
+            
         else
             GameTooltip:AddLine(addText)
             GameTooltip:AddLine(delText)
@@ -996,9 +1012,6 @@ local function Init(isShow)
     List.DataFrame.enter:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '格式' or FORMATTING, '|cffff00ff[gossipOptionID]={icon=, name=, hex=}')
-        GameTooltip:AddLine(' ')
         self:set_date(true)
         GameTooltip:Show()
     end)
@@ -1018,7 +1031,7 @@ local function Init(isShow)
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
         GameTooltip:Show()
     end)
-    List.DataUscita:SetScript('OnClick', function(self)
+    List.DataUscita:SetScript('OnClick', function()
         local frame= List.DataFrame
         frame:SetShown(true)
         frame.enter:SetShown(false)
@@ -1046,7 +1059,8 @@ local function Init(isShow)
         end
 
         text= text:gsub('=""', '=nil')
-        frame:SetText(text)
+        text= 'WoWToolsGossipText\n'..text
+        frame:SetText(WoWTools_ZipMixin:base64Encode(text))
         frame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
     end)
 
