@@ -3133,7 +3133,8 @@
         "OpenWorldMap",
         "HOUSEFINDER_BACK_BUTTON",
         "COOLDOWN_VIEWER_SETTINGS_IMPORT_LAYOUT",
-        "ERR_HOUSING_RESULT_DB_ERROR"
+        "ERR_HOUSING_RESULT_DB_ERROR",
+        "CovenantMissionFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

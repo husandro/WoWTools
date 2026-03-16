@@ -6,7 +6,7 @@ local function SaveWoW()
 end
 
 local Frame
-local PinHeight= 42--默认大小
+local PinHeight= 22--默认大小
 
 
 
