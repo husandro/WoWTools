@@ -516,7 +516,7 @@ local function Zip_Data(zipData)
         return
     end
     local lines = { 'WoWToolsWorldMapPlayerPin'}
-    local numMapID, all
+    local numMapID, all= 0, 0
     for mapID, data in pairs(zipData) do
         local line= format(
             '[%d]={options={iconS=%d,fontH=%d},',
