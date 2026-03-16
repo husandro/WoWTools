@@ -558,15 +558,15 @@ local function Init()
                     return
                 end
 
-                tooltip:AddLine(HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('|A:Gear:0:0|a'..xy))
+                tooltip:AddLine(HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.Icon.Player..xy))
                 if SaveWoW()[mapID] and SaveWoW()[mapID][xy] then
                     tooltip:AddLine(NORMAL_FONT_COLOR:WrapTextInColorCode(
-                        WoWTools_DataMixin.Icon.icon2..'Ctr+Alt '
+                        '|A:Gear:0:0|a'..'Ctr+Alt '
                         ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
                     ))
                 else
                     tooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(
-                        WoWTools_DataMixin.Icon.icon2..'Ctr+Alt '
+                        '|A:Gear:0:0|a'..'Ctr+Alt '
                         ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
                     ))
                 end
@@ -576,11 +576,11 @@ local function Init()
     end)
 
 
-    if WoWTools_DataMixin.Player.husandro then
+    --[[if WoWTools_DataMixin.Player.husandro then
         C_Timer.After(2, function()
             WoWTools_WorldMapMixin:PlayerPin_ShowUI()
         end)
-    end
+    end]]
 
 
     Init=function()
