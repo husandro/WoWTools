@@ -557,7 +557,7 @@ local function Zip_Data(zipData)
     Frame.dataFrame:SetShown(true)
 
     print(
-        WoWTools_DataMixin.Icon..(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT),
+        WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT),
         (WoWTools_DataMixin.onlyChinese and '地图' or WORLD_MAP)..' #'..numMapID,
         (WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..' #'..all
     )
@@ -833,6 +833,14 @@ local function Init()
             WoWTools_MenuMixin:SetRightText(sub)
 
             sub:CreateButton(
+                WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT,
+            function(data)
+                Zip_Data({[data.mapID]= SaveWoW()[data.mapID]})
+                return MenuResponse.Open
+            end, {mapID= mapID})
+
+            sub:CreateDivider()
+            sub:CreateButton(
                 WoWTools_DataMixin.onlyChinese and '删除' or DELETE,
             function(data)
                 StaticPopup_Show('WoWTools_OK',
@@ -848,11 +856,6 @@ local function Init()
                 return MenuResponse.Open
             end, {num=num, name=name, mapID=mapID})
 
-            sub:CreateButton(
-                WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT,
-            function(data)
-                 Zip_Data({[data.mapID]= SaveWoW()[data.mapID]})
-            end, {mapID= mapID})
         end
         root:CreateDivider()
 
