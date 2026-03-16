@@ -121,11 +121,12 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 
         if zone or npc then
             tooltip:AddDoubleLine(
-                zone and WoWTools_DataMixin.Language.layer..zone or ' ',
                 npc and
                 (WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER)
                 ..WoWTools_DataMixin.Icon.icon2
-                ..npc
+                ..npc or ' ',
+
+                zone and WoWTools_DataMixin.Language.layer..zone
             )
 
             WoWTools_DataMixin.Player.Layer=zone--字符
