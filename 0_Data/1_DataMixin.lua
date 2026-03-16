@@ -16,7 +16,7 @@ WoWTools_DataMixin= {
 
     LeftButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp',
     RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp',
-    ExpansionLevel= GetClientDisplayExpansionLevel(), --math.max(GetAccountExpansionLevel(), GetExpansionLevel()),-- GetClampedCurrentExpansionLevel() math.max(GetAccountExpansionLevel(), GetExpansionLevel()),-- GetExpansionLevel() or 1,--版本数据
+    ExpansionLevel= math.max(GetAccountExpansionLevel(), GetExpansionLevel()),--GetClientDisplayExpansionLevel(), --math.max(GetAccountExpansionLevel(), GetExpansionLevel()),-- GetClampedCurrentExpansionLevel() math.max(GetAccountExpansionLevel(), GetExpansionLevel()),-- GetExpansionLevel() or 1,--版本数据
 
     StausText={},--属性，截取表 API_Panel.lua
     UnitItemLevel={},
@@ -92,7 +92,7 @@ WoWTools_DataMixin.Player={
     --Lo= GetLocale(),
     Week= GetWeek(),--周数 date('%W')
     GUID= UnitGUID('player'),
-    IsMaxLevel= UnitLevel('player')==GetMaxLevelForLatestExpansion(), --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
+    IsMaxLevel= UnitLevel('player')==j, --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
     Level= UnitLevel('player') or 1,--UnitEffectiveLevel('player')
     husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
     BattleTag= battleTag,
