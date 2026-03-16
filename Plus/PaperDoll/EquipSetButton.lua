@@ -679,10 +679,11 @@ local function Init()--添加装备管理框
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
 
-            self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
-            self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-            self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
-            self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+        self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+        self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+        self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+        self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+        self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
 
             self:RegisterEvent('CLIENT_SCENE_OPENED')
             self:RegisterEvent('CLIENT_SCENE_CLOSED')

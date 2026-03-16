@@ -892,6 +892,7 @@ local function Init()
         self:RegisterEvent('PET_BATTLE_CLOSE')
 
         self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+        self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
         self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
         self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
         self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
@@ -918,6 +919,7 @@ local function Init()
             or event=='UNIT_ENTERED_VEHICLE'
             or event=='UNIT_ENTERING_VEHICLE'
             or event=='UNIT_EXITED_VEHICLE'
+            or event=='UPDATE_OVERRIDE_ACTIONBAR'
         then
             self:set_shown()
         else

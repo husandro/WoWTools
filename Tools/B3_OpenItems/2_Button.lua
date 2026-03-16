@@ -13,6 +13,7 @@ local Events_All={
     'PET_BATTLE_OPENING_DONE',
     'ZONE_CHANGED_NEW_AREA',
     'VEHICLE_ANGLE_UPDATE',
+    'UPDATE_OVERRIDE_ACTIONBAR'
 }
 
 local Event_Unit={
@@ -20,8 +21,6 @@ local Event_Unit={
     'UNIT_ENTERING_VEHICLE',
     'UNIT_EXITED_VEHICLE'
 }
-
-
 
 
 
@@ -186,6 +185,7 @@ local function Init()
             or event=='UNIT_ENTERED_VEHICLE'
             or event=='UNIT_ENTERING_VEHICLE'
             or event=='UNIT_EXITED_VEHICLE'
+            or event=='UPDATE_OVERRIDE_ACTIONBAR'
 
             or event=='PET_BATTLE_CLOSE'
             or event=='PET_BATTLE_OPENING_DONE'

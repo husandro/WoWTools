@@ -266,8 +266,12 @@ local function Init_KeyButton(index, type)
             self:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
-            self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-            self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+
+            self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+            self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+            self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
         else
             WoWTools_KeyMixin:Setup(self, true)
             self:UnregisterAllEvents()
@@ -293,7 +297,8 @@ local function Init_KeyButton(index, type)
             WoWTools_KeyMixin:SetTexture(self)
 
         elseif event=='PET_BATTLE_OPENING_DONE'
-            or event=='UNIT_ENTERED_VEHICLE'
+            or UnitInVehicle('player')
+            or OverrideActionBar:IsShown()
             or IsMounted()
         then
             WoWTools_KeyMixin:Setup(self, true)

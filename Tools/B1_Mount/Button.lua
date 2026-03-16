@@ -583,7 +583,13 @@ local function Init()
     btn:RegisterEvent('SPELL_UPDATE_COOLDOWN')
     btn:RegisterEvent('SPELL_UPDATE_USABLE')
     btn:RegisterEvent('PET_BATTLE_CLOSE')
-    btn:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
+
+    btn:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+    btn:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+    btn:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+    btn:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+    btn:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+
     btn:RegisterEvent('PLAYER_STOPPED_MOVING')
     btn:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
     btn:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')
@@ -618,12 +624,20 @@ local function Init()
             if not XD then
                 checkMount()--检测坐骑
             end
+
+
         elseif event=='MOUNT_JOURNAL_USABILITY_CHANGED'
             or event=='PLAYER_MOUNT_DISPLAY_CHANGED'
-            or event=='PET_BATTLE_CLOSE'
-            or event=='UNIT_EXITED_VEHICLE'
+            or event=='PET_BATTLE_CLOSE'            
             or event=='PLAYER_STOPPED_MOVING'
             or event=='PLAYER_STARTED_MOVING'
+
+            or event=='VEHICLE_ANGLE_UPDATE'
+            or event=='UPDATE_OVERRIDE_ACTIONBAR'
+            or event=='UNIT_ENTERED_VEHICLE'
+            or event=='UNIT_ENTERING_VEHICLE'
+            or event=='UNIT_EXITED_VEHICLE'
+
         then-- or event=='AREA_POIS_UPDATED' then
             setClickAtt(self)--设置属性
 

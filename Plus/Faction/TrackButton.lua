@@ -575,6 +575,7 @@ local function Init()
 			self:RegisterEvent('PLAYER_REGEN_ENABLED')
 
 			self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+			self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
 			self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
 			self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
 			self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
