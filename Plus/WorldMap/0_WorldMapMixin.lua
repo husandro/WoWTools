@@ -135,6 +135,7 @@ end
 
 --['50.02 74.76']
 function WoWTools_WorldMapMixin:GetXYForText(text)
+    text= text and tostring(text)
     if text then
         text= text:gsub('  ', ' ')
         local x, y= text:match('(.-) (.+)')

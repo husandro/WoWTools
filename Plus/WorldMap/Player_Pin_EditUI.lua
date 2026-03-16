@@ -421,7 +421,7 @@ end
 
 
 
-
+--更新数据
 local function Add_Updata_Data(isUpdate)
     local mapID= Frame.mapID
 --名称
@@ -476,10 +476,10 @@ local function Add_Updata_Data(isUpdate)
     SaveWoW()[mapID][xy]= {
         name= name,
         icon= icon,
-        note= note,
         color= color,
         class= class,
         profession= profession,
+        note= note,
     }
 
     Refresh_All()
@@ -496,6 +496,183 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+--导出，导入
+
+local function Zip_Data(zipData)
+    if not zipData then
+        print(WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '无数据' or ERR_HOUSING_RESULT_DB_ERROR))
+        return
+    end
+    local lines = { 'WoWToolsWorldMapPlayerPin'}
+    local numMapID, all
+    for mapID, data in pairs(zipData) do
+        local line= format(
+            '[%d]={options={iconS=%d,fontH=%d},',
+            mapID,
+            data.options and data.options.iconS or 0,
+            data.options and data.options.fontH or 0
+        )
+        numMapID= numMapID+1
+
+        for xy, info in pairs(data) do
+            if xy~='options' then
+                all= all+1
+                local class, profession= '', ''
+                for classID in pairs(info.class or {}) do
+                    class= class..classID..','
+                end
+                for skillLineID in pairs(info.profession or {}) do
+                    profession= profession..skillLineID..','
+                end
+                line= line..format(
+                    '[%s]={name=%s,icon=%s,color=%s,class=%s,profession=%s,note=%s},',
+                    xy,
+                    info.name or '',
+                    (info.icon or '')..'',
+                    info.color and WoWTools_ColorMixin:RGBtoHEX(info.color.r, info.color.g, info.color.b) or '',
+                    class,
+                    profession,
+                    info.note or ''
+                )
+            end
+        end
+        line= line..'},'
+        table.insert(lines, line)
+    end
+    Frame.dataFrame:SetText(WoWTools_ZipMixin:base64Encode(table.concat(lines, "\n")))
+    Frame.dataFrame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
+    Frame.dataFrame.enter:SetShown(false)
+    Frame.dataFrame:SetShown(true)
+
+    print(
+        WoWTools_DataMixin.Icon..(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT),
+        (WoWTools_DataMixin.onlyChinese and '地图' or WORLD_MAP)..' #'..numMapID,
+        (WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..' #'..all
+    )
+end
+
+
+
+
+local function Enter_Data(tooltip)
+    local text= WoWTools_ZipMixin:base64Decode(Frame.dataFrame:GetText())
+    if not text or not text:find('WoWToolsWorldMapPlayerPin') then
+        local err= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '数据库错误' or ERR_HOUSING_RESULT_DB_ERROR)
+        if tooltip then
+            if tooltip~=true then
+                GameTooltip_AddErrorLine(tooltip, err)
+            end
+        else
+            print(err)
+        end
+        Frame.dataFrame.enter:SetText(Frame.dataFrame.enter.tooltip)
+        return
+    end
+
+    text= not text:find('$\n') and text..'\n' or text
+
+
+    local data={}
+--. ( ) + - * ? [ ^
+    text= text:gsub('.-\n', function(s)
+        local mapID, iconS, fontH= s:match('%[(%d+)]={options={iconS=(%d+),fontH=(%d+)},')
+        mapID, iconS, fontH= mapID and tonumber(mapID), iconS and tonumber(iconS), fontH and tonumber(fontH)
+        if not mapID or mapID<=0 then
+            return ''
+        end
+
+        data[mapID]= data[mapID] or {}
+        data[mapID].options= data[mapID].options or {
+            iconS and iconS>0 and iconS or nil,
+            fontH and fontH>0 and fontH or nil
+        }
+
+        s:gsub('%[.-},', function(t)
+            local xy, name, icon, hex, classIds, professionIds, note= t:match('%[(.-)]={name=(.-),icon=(.-),color=(.-),class=(.-),profession=(.-),note=(.-)},')
+            name= name and name:gsub(' ', '')~='' and name or nil
+            icon = select(2, WoWTools_TextureMixin:IsAtlas(icon))
+            if xy and (name or icon) then
+                local r,g,b= WoWTools_ColorMixin:HEXtoRGB(hex)
+                local color= r and g and b and {r=r,g=g,b=b} or nil
+                local class= nil
+                local profession= nil
+                if classIds and classIds:find('%d+') then
+                    class={}
+                    classIds:gsub('%d+', function(c)
+                        class[tonumber(c)]=true
+                    end)
+                end
+                if professionIds and professionIds:find('%d+') then
+                    profession={}
+                    professionIds:gsub('%d+', function(c)
+                        profession[tonumber(c)]=true
+                    end)
+                end
+                data[mapID][xy]={
+                    name= name,
+                    icon= icon,
+                    color= color,
+                    class= class,
+                    profession= profession,
+                    note= note and note:gsub(' ', '')~='' and note or nil
+                }
+            end
+        end)
+        return ''
+    end)
+
+
+    local find, numMapID, all= 0, 0, 0
+    for mapID, info in pairs(data) do
+        numMapID= numMapID+1
+        if not tooltip then
+            SaveWoW()[mapID]= SaveWoW()[mapID] or {}
+            SaveWoW()[mapID].options= info.options or SaveWoW()[mapID].options or {}
+        end
+        for xy, pin in pairs(info) do
+            if xy~='options' then
+                if SaveWoW()[mapID] and SaveWoW()[mapID][xy] then
+                    find= find+1
+                end
+                if not tooltip then
+                    SaveWoW()[mapID][xy]=pin
+                end
+                all= all+1
+            end
+        end
+    end
+
+    local n= (WoWTools_DataMixin.onlyChinese and '地图' or WORLD_MAP)..' #'..numMapID
+    local f= (WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)..' #'..find
+    local a= (WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..' #'..all
+    if tooltip then
+        if tooltip~=true then
+            tooltip:AddLine(n)
+            tooltip:AddLine(f)
+            tooltip:AddLine(a)
+        end
+    else
+        print(WoWTools_DataMixin.Icon.icon2, n, f, a)
+    end
+
+    Frame.dataFrame.enter:SetText(Frame.dataFrame.enter.tooltip.. ' '..all)
+
+    if not tooltip then
+        Refresh_All()
+    end
+end
 
 
 
@@ -642,7 +819,6 @@ local function Init()
 
             local size= info.options or {}
 
-
             sub=root:CreateRadio(
                 name,
             function(data)
@@ -671,6 +847,12 @@ local function Init()
                 end})
                 return MenuResponse.Open
             end, {num=num, name=name, mapID=mapID})
+
+            sub:CreateButton(
+                WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT,
+            function(data)
+                 Zip_Data({[data.mapID]= SaveWoW()[data.mapID]})
+            end, {mapID= mapID})
         end
         root:CreateDivider()
 
@@ -767,6 +949,7 @@ local function Init()
     Frame.iconS.rightLabel= Frame.iconS:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
     Frame.iconS.rightLabel:SetPoint('RIGHT')
     Frame.iconS.rightLabel:SetText(WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_ICON)
+    Frame.iconS.rightLabel:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
     Frame.iconS.Save_Value= function(self)
         if Frame.mapID and self.value then
             SaveWoW()[Frame.mapID]= SaveWoW()[Frame.mapID] or {}
@@ -808,6 +991,7 @@ local function Init()
     Frame.fontH.rightLabel= Frame.fontH:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
     Frame.fontH.rightLabel:SetPoint('RIGHT')
     Frame.fontH.rightLabel:SetText(WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE)
+    Frame.fontH.rightLabel:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
     Frame.fontH.type='fontH'
     Frame.fontH:SetScript('OnMouseWheel', Frame.iconS.On_MouseWheel)
     Frame.fontH:SetScript('OnValueChanged', Frame.iconS.On_ValueChanged)
@@ -1442,8 +1626,8 @@ local function Init()
     Frame.tabGroup= CreateTabGroup(Frame.nameEdit, Frame.xyEdit)--, Frame.iconEdit, Frame.noteEdit)
     Frame.nameEdit:SetScript('OnTabPressed', function() Frame.tabGroup:OnTabPressed() end)
     Frame.xyEdit:SetScript('OnTabPressed', function() Frame.tabGroup:OnTabPressed() end)
-  
-    
+
+
 
 
 
@@ -1464,95 +1648,66 @@ local function Init()
     Frame.dataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
         name='WoWToolsPlayerPinEditUIOutInScrollFrame'
     })
-    --Frame.dataFrame:Hide()
+    Frame.dataFrame:Hide()
     Frame.dataFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 0, -10)
     Frame.dataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
-
-
-
+    Frame.dataFrame:SetScript('OnHide', function(self)
+        self:SetText('')
+    end)
     Frame.dataFrame.CloseButton= CreateFrame('Button', 'WoWToolsPlayerPinEditUIOutInScrollFrameCloseButton', Frame.dataFrame, 'UIPanelCloseButtonNoScripts')
     Frame.dataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
     Frame.dataFrame.CloseButton:SetScript('OnClick', function(self)
-        local frame=self:GetParent()
-        frame:Hide()
-        frame:SetText("")
+        self:GetParent():Hide()
     end)
     WoWTools_TextureMixin:SetButton(Frame.dataFrame.CloseButton)
 
-    Frame.dataFrame.enter= WoWTools_ButtonMixin:Cbtn(Frame.dataFrame, {
-        name= 'WoWToolsPlayerPinEditUIOutInScrollFrameEnterButton',
-        size={100, 23},
-        isUI=true
-    })
+
+
+
+    Frame.dataFrame.enter= CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate')
+    Frame.dataFrame.enter:SetSize(100, 23)
     Frame.dataFrame.enter:SetPoint('BOTTOM', Frame.dataFrame, 'TOP', 0, 5)
-    Frame.dataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
-   -- Frame.dataFrame.enter:Hide()
-
-
-   
-
-    function Frame.dataFrame.enter:set_date(isTip)--导入数据，和提示
-        local lines = { 'WoWToolsWorldMapPlayerPin'}
-
-        for mapID, data in pairs(SaveWoW()) do
-            local line= format(
-                '[%d]={options={iconS=%d,fontH=%d}',
-                mapID,
-                data.options.iconS or 0,
-                data.options.fontH or 0
-            )
-
-            for optionOrXY, info in pairs(data) do
-                line= optionOrXY..'|n'
-                for name, set in pairs(info) do
-                    
-                end
-            end
-            line= line..'}|n'
+    Frame.dataFrame.enter.tooltip= WoWTools_DataMixin.onlyChinese and '导入' or COOLDOWN_VIEWER_SETTINGS_IMPORT_LAYOUT
+    Frame.dataFrame.enter:SetText(Frame.dataFrame.enter.tooltip)
+    Frame.dataFrame.enter:Hide()
+    Frame.dataFrame.enter:SetScript('OnHide', GameTooltip_Hide)
+    Frame.dataFrame.enter:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:ClearLines()
+        Enter_Data(GameTooltip)
+        GameTooltip:Show()
+    end)
+    Frame.dataFrame.editBox:HookScript('OnTextChanged', function()
+        if Frame.dataFrame.enter:IsShown() then
+            Enter_Data(true)
         end
-
-        return WoWTools_ZipMixin:base64Encode(table.concat(lines, "\n"))
-    end
-
-    
-    Frame.dataFrame.enter:SetScript('OnClick', function(self)--导入
-        Frame.dataFrame.enter:set_date()
-        
     end)
 
-    Frame.dataUscita= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-greenarrow'})
+
+    Frame.dataFrame.enter:SetScript('OnClick', function()--导入
+        StaticPopup_Show('WoWTools_OK',
+        WoWTools_DataMixin.onlyChinese and '导入' or COOLDOWN_VIEWER_SETTINGS_IMPORT_LAYOUT,
+        nil,
+        {SetValue=function()
+            Enter_Data()
+        end})
+    end)
+
+    Frame.dataUscita= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    Frame.dataUscita:SetNormalAtlas('bags-greenarrow')
     Frame.dataUscita:SetPoint('TOPLEFT', 6, -6)
-    Frame.dataUscita:SetScript('OnLeave', GameTooltip_Hide)
-    Frame.dataUscita:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
-        GameTooltip:Show()
-    end)
-    Frame.dataUscita:SetScript('OnClick', function(self)
-        local text= WoWTools_ZipMixin:base64Encode(SaveWoW())
-        Frame.dataFrame:SetText(text or '')
-        Frame.dataFrame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
+    Frame.dataUscita.tooltip=WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT
+    Frame.dataUscita:SetScript('OnClick', function()
+        Zip_Data(SaveWoW())
     end)
 
-    Frame.dataEnter= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='Professions_Specialization_arrowhead'})
+    Frame.dataEnter= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    Frame.dataEnter:SetNormalAtlas('Professions_Specialization_arrowhead')
     Frame.dataEnter:SetPoint('LEFT', Frame.dataUscita, 'RIGHT')
-    Frame.dataEnter:SetScript('OnLeave', GameTooltip_Hide)
-    Frame.dataEnter:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
-        GameTooltip:Show()
-    end)
+    Frame.dataEnter.tooltip= WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON
     Frame.dataEnter:SetScript('OnClick', function()
-        info= WoWTools_ZipMixin:base64Decode(Frame.dataFrame:GetText())
-print(type(info), info)
-
-        
+        Frame.dataFrame.enter:SetShown(true)
+        Frame.dataFrame:SetShown(true)
     end)
 
 
@@ -1574,7 +1729,9 @@ print(type(info), info)
 
 
 
-
+    Frame:SetScript('OnHide', function(self)
+        self.dataFrame:SetShown(false)
+    end)
     function Frame:settings()
         self:SetFrameStrata(Save().UIStrata or 'HIGH')
     end
