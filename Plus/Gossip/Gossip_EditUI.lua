@@ -180,16 +180,18 @@ local function Init(isShow)
             btn:SetScript('OnLeave', function(self) self.delete:SetAlpha(0) end)
             btn:SetScript('OnEnter', function(self) self.delete:SetAlpha(1) end)
 
-            btn.delete= WoWTools_ButtonMixin:Cbtn(btn, {size=18, atlas='common-icon-redx'})
+            --btn.delete= WoWTools_ButtonMixin:Cbtn(btn, {size=18, atlas='common-icon-redx'})
+            btn.delete= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
+            btn.delete:SetNormalAtlas('common-icon-redx')
+            btn.delete:SetSize(18,18)
             btn.delete:SetPoint('RIGHT')
-            btn.delete:SetScript('OnLeave', function(self) self:SetAlpha(0) end)
+            btn.delete:SetScript('OnLeave', function(self) self:SetAlpha(0) self:SetButtonState('NORMAL') end)
             btn.delete:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
             btn.delete:SetScript('OnClick', function(self)
                 List:delete_gossip(self:GetParent().gossipID)
             end)
             btn.delete:SetAlpha(0)
             btn:GetFontString():SetPoint('RIGHT')
-
         end
 
         local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(info.icon)
@@ -906,11 +908,13 @@ local function Init(isShow)
     end)
     WoWTools_TextureMixin:SetButton(List.DataFrame.CloseButton)
 
-    List.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(List.DataFrame, {
+    List.DataFrame.enter= CreateFrame("Button", Name..'OutInScrollFrameEnterButton', Frame, 'UIPanelButtonTemplate')
+    List.DataFrame.enter:SetSize(100,23)
+    --[[ WoWTools_ButtonMixin:Cbtn(List.DataFrame, {
         name= Name..'OutInScrollFrameEnterButton',
         size={100, 23},
         isUI=true
-    })
+    })]]
     List.DataFrame.enter:SetPoint('BOTTOM', List.DataFrame, 'TOP', 0, 5)
     List.DataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
     List.DataFrame.enter:Hide()
@@ -926,44 +930,34 @@ local function Init(isShow)
     end
 
     function List.DataFrame.enter:set_date(tooltips)--导入数据，和提示
-        local frame= self:GetParent()
+        local frame= List.DataFrame
         if not frame then
             return
         end
-        frame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
-
-        local zipText= frame:GetText()
+        local zipText= frame:GetText() or ''
         if not zipText:find('%[%d+]={.-}') then
             zipText= WoWTools_ZipMixin:base64Decode(zipText)
-            if not zipText or zipText:find('WoWToolsGossipText') then
+            if not zipText or not zipText:find('WoWToolsGossipText') then
                 local err= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '数据库错误' or ERR_HOUSING_RESULT_DB_ERROR)
                 if tooltips then
                     GameTooltip_AddErrorLine(GameTooltip, err)
                 else
-                    print(WoWTools_DataMixin.Icon.icon2..err)
+                    print(err)
                 end
                 return
             end
-
         end
-
-
         local add, del, exist= {}, 0, 0
-        local text= string.gsub(zipText, '(%[%d+]={.-})', function(t)
+        zipText= zipText:gsub('(%[%d+]={.-})', function(t)
             local num, icon, name, hex= t:match('(%d+).-icon="(.-)", name="(.-)", hex="(.-)"}')
             if not num and not icon and not name and not hex then
                   num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
             end
-
             local gossipID= num and tonumber(num)
             if gossipID then
-
                 icon= get_text_value(icon)
                 name= get_text_value(name)
                 hex= get_text_value(hex)
-
-
-
                 if not PlayerDataSave()[gossipID] then
                     if icon or name or hex then
                         table.insert(add, {gossipID=gossipID, tab={icon=icon, name=name, hex=hex}})
@@ -975,6 +969,7 @@ local function Init(isShow)
                     exist= exist+1
                 end
             end
+            return ''
         end)
 
         local addText= format('|cnGREEN_FONT_COLOR:%s %d|r', WoWTools_DataMixin.onlyChinese and '添加' or ADD, #add)
@@ -991,17 +986,12 @@ local function Init(isShow)
                     icon..hex..name
                 )
             end
-
             List:set_list()
-
             print(
                 WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
                 '|n',
                 format('%s|n%s|n%s', addText, delText, existText)
             )
-
-            frame:SetText(text)
-            
         else
             GameTooltip:AddLine(addText)
             GameTooltip:AddLine(delText)
@@ -1017,22 +1007,15 @@ local function Init(isShow)
     end)
     List.DataFrame.enter:SetScript('OnClick', function(self)--导入
        self:set_date()
-
     end)
 
-    List.DataUscita= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-greenarrow'})
+    List.DataUscita= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')-- WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-greenarrow'})
+    List.DataUscita:SetNormalAtlas('bags-greenarrow')
     List.DataUscita:SetPoint('LEFT', List.DeleteAllPlayerData, 'RIGHT', 22, 0)
-    List.DataUscita:SetScript('OnLeave', GameTooltip_Hide)
-    List.DataUscita:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
-        GameTooltip:Show()
-    end)
-    List.DataUscita:SetScript('OnClick', function()
+    List.DataUscita.tooltip= WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT
+    List.DataUscita:SetScript('OnClick', function(self)
         local frame= List.DataFrame
+        frame:SetInstructions(self.tooltip)
         frame:SetShown(true)
         frame.enter:SetShown(false)
         local text=''
@@ -1061,25 +1044,17 @@ local function Init(isShow)
         text= text:gsub('=""', '=nil')
         text= 'WoWToolsGossipText\n'..text
         frame:SetText(WoWTools_ZipMixin:base64Encode(text))
-        frame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
     end)
 
-    List.DataEnter= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='Professions_Specialization_arrowhead'})
+    List.DataEnter= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')--WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='Professions_Specialization_arrowhead'})
+    List.DataEnter:SetNormalAtlas('Professions_Specialization_arrowhead')
     List.DataEnter:SetPoint('LEFT', List.DataUscita, 'RIGHT')
-    List.DataEnter:SetScript('OnLeave', GameTooltip_Hide)
-    List.DataEnter:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
-        GameTooltip:Show()
-    end)
-    List.DataEnter:SetScript('OnClick', function()
+    List.DataEnter.tooltip= WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON
+    List.DataEnter:SetScript('OnClick', function(self)
         local frame= List.DataFrame
+        frame:SetInstructions(self.tooltip)
         frame:SetShown(true)
         frame.enter:SetShown(true)
-        frame:SetText('')
     end)
 
 
