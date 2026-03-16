@@ -406,7 +406,7 @@ local function Set_StopMove()
     if Save().stopCinematics then
         if not Cinematics_ID then
             Cinematics_ID= EventRegistry:RegisterFrameEventAndCallback("CINEMATIC_START", function()--_, canBeCancelled, forcedAspectRatio) 
-                if IsInInstance() and Save().stopCinematicsInInstance then
+                if IsInInstance() and Save().stopCinematicsInInstance or InCombatLockdown() then
                     return
                 end
                 CinematicFrame_CancelCinematic()
