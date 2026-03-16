@@ -1460,7 +1460,7 @@ local function Init()
 
 
 
-    --[[导入数据
+    --导入数据
     Frame.dataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
         name='WoWToolsPlayerPinEditUIOutInScrollFrame'
     })
@@ -1495,8 +1495,12 @@ local function Init()
         local lines = { 'WoWToolsWorldMapPlayerPin'}
 
         for mapID, data in pairs(SaveWoW()) do
-            local line= '[%d]={icon="%s", name="%s"},'
-            
+            local line= format(
+                '[%d]={options={iconS=%d,fontH=%d}',
+                mapID,
+                data.options.iconS or 0,
+                data.options.fontH or 0
+            )
 
             for optionOrXY, info in pairs(data) do
                 line= optionOrXY..'|n'
@@ -1504,6 +1508,7 @@ local function Init()
                     
                 end
             end
+            line= line..'}|n'
         end
 
         return WoWTools_ZipMixin:base64Encode(table.concat(lines, "\n"))
@@ -1511,7 +1516,7 @@ local function Init()
 
     
     Frame.dataFrame.enter:SetScript('OnClick', function(self)--导入
-
+        Frame.dataFrame.enter:set_date()
         
     end)
 
@@ -1549,7 +1554,7 @@ print(type(info), info)
 
         
     end)
-]]
+
 
 
 
