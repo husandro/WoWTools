@@ -71,11 +71,11 @@ local function Init_Button_Menu(self, root)
 
 --替换
     root:CreateDivider()
-    local some, sel= select(2, WoWTools_AddOnsMixin:Get_AddListInfo())
+    local player, allTab= select(2, WoWTools_AddOnsMixin:Get_AddListInfo())
     sub=root:CreateButton(
         '|A:ShipMission_ShipFollower-Lock-Rare:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)
-        ..' '..(some+sel),
+        ..' '..player,
     function(data)
 
         StaticPopup_Show('WoWTools_OK',
@@ -83,7 +83,7 @@ local function Init_Button_Menu(self, root)
             ..'|n'..data.name,
             nil,
             {SetValue=function()
-                Save().buttons[data.name]= select(4, WoWTools_AddOnsMixin:Get_AddListInfo())
+                Save().buttons[data.name]= allTab
                 WoWTools_DataMixin:Call('AddonList_Update')
             end}
         )
@@ -138,14 +138,14 @@ local function Init_Button_Menu(self, root)
         )
     end, {name=self.name})
 
---缩放
+--[[缩放
     root:CreateDivider()
     WoWTools_MenuMixin:Scale(self, root, function()
         return Save().rightListScale or 1
     end, function(value)
         Save().rightListScale= value
         RightFrame:settings()
-    end)
+    end)]]
 
 
     root:CreateTitle(self.name)
@@ -264,22 +264,24 @@ local function Set_Right_Buttons()
         return
     end
 
-    local load, need, sel, some= 0, 0, 0, 0
+    local load, need, player= 0, 0, 0
     for i=1, C_AddOns.GetNumAddOns() do
-        if select(2, C_AddOns.IsAddOnLoadable(i))=='DEMAND_LOADED' then--需要时加载
+
+        if select(2, C_AddOns.IsAddOnLoadable(i, WoWTools_DataMixin.Player.GUID))=='DEMAND_LOADED' then--需要时加载
             need= need+1
         elseif C_AddOns.IsAddOnLoaded(i) then--已加载
             load= load+1
         end
-        local stat= C_AddOns.GetAddOnEnableState(i)
-        if stat and stat>0 then
-            if stat==1 then--角色专用
-                some= some +1
-            elseif stat==2 then--开启
-                sel= sel+1
-            end
+
+        local stat= C_AddOns.GetAddOnEnableState(i, WoWTools_DataMixin.Player.GUID)
+        if stat>Enum.AddOnEnableState.None then--角色专用
+            player= player +1
         end
     end
+
+    _G['WoWToolsAddonsNewButton'].Text:SetText(WoWTools_DataMixin.Icon.Player..player)
+    _G['WoWToolsAddonsNewButton'].Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r + |cffff00ff%d|r', load,  need)--总已加载，数量
+
     local index=1
     local w=0
     for name in pairs(Save().buttons) do
@@ -296,12 +298,6 @@ local function Set_Right_Buttons()
     end
 
     RightFrame.Background:SetWidth(w)
-
-    _G['WoWToolsAddonsNewButton'].Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', WoWTools_DataMixin.Icon.Player, some) or '')
-    _G['WoWToolsAddonsNewButton'].Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
-
-
-
 
     for i= index, #Buttons do
         local btn= _G[Name..i]

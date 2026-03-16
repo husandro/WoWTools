@@ -44,39 +44,35 @@ end
 
 --列表，信息
 function WoWTools_AddOnsMixin:Get_AddListInfo()
-    local load, some, sel= 0, 0, 0
+    local load, player= 0, 0
     local tab= {}
     for i=1, C_AddOns.GetNumAddOns() do
         if C_AddOns.IsAddOnLoaded(i) then
             load= load+1
         end
-        local stat= C_AddOns.GetAddOnEnableState(i) or 0
+        local stat= C_AddOns.GetAddOnEnableState(i, WoWTools_DataMixin.Player.GUID) or 0
         if stat>0 then
-            if stat==1 then
-                some= some +1
-            elseif stat==2 then
-                sel= sel+1
-            end
-            local name=C_AddOns.GetAddOnName(i)
-            tab[name]= stat==1 and WoWTools_DataMixin.Player.GUID or i
+            player= player+1
+            tab[C_AddOns.GetAddOnName(i)]= true--stat==1 and WoWTools_DataMixin.Player.GUID or i
         end
     end
-    return load, some, sel, tab
+    return load, player, tab
 end
 
 --提示，当前，选中
 function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
     tooltip= tooltip or GameTooltip
-    tab= tab or select(4, WoWTools_AddOnsMixin:Get_AddListInfo())
+    tab= tab or select(3, self:Get_AddListInfo())
 
     local index, newTab, allMemo= 0, {}, 0
-    for name, value in pairs(tab) do
+    for name in pairs(tab) do
         local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
         local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
         local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
-        local isLoaded, reason= C_AddOns.IsAddOnLoaded(name)
-        local text= type(value)=='string' and WoWTools_UnitMixin:GetPlayerInfo(nil, value, nil)
-        if not text and not isLoaded and reason then
+        local isLoaded, reason= C_AddOns.IsAddOnLoadable(name, WoWTools_DataMixin.Player.GUID)
+        --local text= type(value)=='string' and WoWTools_UnitMixin:GetPlayerInfo(nil, value, nil)
+        local text
+        if reason then
             text= '|cff626262'..WoWTools_TextMixin:CN(_G['ADDON_'..reason] or reason)..' ('..index
         end
         local title= select(2, C_AddOns.GetAddOnInfo(name)) or name

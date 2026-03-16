@@ -23,27 +23,26 @@ end
 
 
 
-
-
+--关键词,频道名称替换
 local function SetChannels(link)
     local name=link:match('%[(.-)]')
-    if not name then
+    if not name or Save().disabledKeyColor then
         return
-    elseif name:find(WORLD) then
-        return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(WORLD), 2, 6)..']')
     end
 
---关键词, 内容颜色，和频道名称替换
-    if not Save().disabledKeyColor then
-        for k, v in pairs(Save().channels or {}) do--自定义
-            if name:find(k) then
-                return link:gsub('%[.-]', v)
-            end
+
+    
+    for k, v in pairs(Save().channels or {}) do--自定义
+        if name:find(k) then
+            return link:gsub('%[.-]', v)
         end
     end
 
+
     if name:find(GENERAL_LABEL) then--综合
         return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GENERAL_LABEL), 2, 6)..']')
+    elseif name:find('大脚世界频道') then--综合
+        return link:gsub('%[.-]', '|A:tokens-WoW-generic-small:0:0|a')
     end
 
     name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字

@@ -22,20 +22,11 @@ local function Init()
 
 
 
-    local NewButton= CreateFrame('Button', 'WoWToolsAddonsNewButton', AddonList, 'WoWToolsButtonTemplate')
-    NewButton:SetFrameStrata('HIGH')
-    NewButton:SetFrameLevel(999)
-    NewButton:SetSize(26,26)
+    local NewButton= CreateFrame('Button', 'WoWToolsAddonsNewButton', AddonListCloseButton, 'WoWToolsButtonTemplate')
     NewButton:SetNormalAtlas('communities-chat-icon-plus')
-    --[[WoWTools_ButtonMixin:Cbtn(AddonList, {
-        size=26,
-        atlas='communities-chat-icon-plus',
-        name='WoWToolsAddonsNewButton'
-    })]]
 
 
-    NewButton:SetPoint('TOPRIGHT', -2, -28)
-    NewButton:SetScript('OnLeave', GameTooltip_Hide)
+    NewButton:SetPoint('TOPRIGHT', AddonList, -6, -32)
     NewButton:SetScript('OnEnter', function(self)
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -64,7 +55,7 @@ local function Init()
                         WoWTools_DataMixin.onlyChinese and '替换' or REPLACE
                     )
                 end
-                Save().buttons[name]= select(4 ,WoWTools_AddOnsMixin:Get_AddListInfo())
+                Save().buttons[name]= select(3 , WoWTools_AddOnsMixin:Get_AddListInfo())
                 WoWTools_DataMixin:Call('AddonList_Update')
             end
         })
@@ -80,31 +71,16 @@ local function Init()
 
 
 
-    NewButton.Text= NewButton:CreateFontString(nil, nil, 'GameFontNormal')--WoWTools_LabelMixin:Create(NewButton)--已选中，数量
-    NewButton.Text:SetPoint('TOPRIGHT', 0, 8)
-    --NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
-    NewButton.Text:SetScript('OnLeave', function(self)
-        self:SetAlpha(1)
-        GameTooltip:Hide()
-    end)
-    NewButton.Text:SetScript('OnEnter', function (self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AddOnsMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', WoWTools_DataMixin.onlyChinese and '已选中', 'Selected')
-        GameTooltip:Show()
-        self:SetAlpha(0.3)
-    end)
 
 
 
 
 
 
-
-    NewButton.Text2=WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总内存
-    NewButton.Text2:SetPoint('BOTTOMRIGHT', -5, -22)
+    NewButton.Text2= NewButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont2')--WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总内存
+    --NewButton.Text2:SetPoint('BOTTOMRIGHT', -5, -22)
+    NewButton.Text2:EnableMouse(true)
+    NewButton.Text2:SetPoint('LEFT', AddonList.Performance.Header, 'RIGHT', 6, 0)
     --NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
     NewButton.Text2:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -114,8 +90,6 @@ local function Init()
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AddOnsMixin.addName)
-        GameTooltip:AddLine(' ')
 
         local newTab={}
         local need, load, allMomo= 0, 0, 0
@@ -145,7 +119,7 @@ local function Init()
             end
         end
 
-        table.sort(newTab, function(a, b) return a.memo<b.memo end)
+        table.sort(newTab, function(a, b) return a.memo> b.memo end)
         for _, tab in pairs(newTab) do
             local left= tab.left
             if tab.memo>0 and allMomo>0 then
@@ -182,18 +156,20 @@ local function Init()
 
 
 
-    NewButton.Text3=WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总已加载，数量
-    NewButton.Text3:SetPoint('RIGHT', NewButton.Text2, 'LEFT', -8, 0)
+    NewButton.Text3= NewButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont2')--WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总已加载，数量
+    NewButton.Text3:EnableMouse(true)
+    --NewButton.Text3:SetPoint('RIGHT', NewButton.Text2, 'LEFT', -8, 0)
+    NewButton.Text3:SetPoint('LEFT', NewButton.Text2, 'RIGHT', 6, 0)
     NewButton.Text3:SetScript('OnLeave', function(self)
         self:SetAlpha(1)
         GameTooltip:Hide()
     end)
     NewButton.Text3:SetScript('OnEnter', function (self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AddOnsMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', WoWTools_DataMixin.onlyChinese and '已加载', LOAD_ADDON), format('|cffff00ff+%s', WoWTools_DataMixin.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED))
+        GameTooltip_SetTitle(GameTooltip, format('|cnGREEN_FONT_COLOR:%s|r + |cffff00ff%s|r',
+            WoWTools_DataMixin.onlyChinese and '已加载', LOAD_ADDON,
+            WoWTools_DataMixin.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED
+        ), nil)
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -225,6 +201,21 @@ local function Init()
         end
     end)
 
+
+    AddonList.Dropdown.Text:SetJustifyH('CENTER')
+    NewButton.Text= NewButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont2')--WoWTools_LabelMixin:Create(NewButton)--已选中，数量
+    NewButton.Text:SetPoint('LEFT', NewButton.Text3, 'RIGHT', 6, 0)
+    NewButton.Text:EnableMouse(true)
+    NewButton.Text:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    NewButton.Text:SetScript('OnEnter', function (self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '已选中' or 'Selected')
+        GameTooltip:Show()
+        self:SetAlpha(0.3)
+    end)
 
 
 

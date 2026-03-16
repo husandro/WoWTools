@@ -141,9 +141,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
     if not Save().disabled then
-        AddonList:HookScript('OnShow', function()
+        Init()
+        if WoWTools_DataMixin.Player.husandro then
+            --PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
+            --HideUIPanel(GameMenuFrame);
+            ShowUIPanel(AddonList)
+        end
+        --[[AddonList:HookScript('OnShow', function()
             Init()
-        end)
+        end)]]
     end
 
     self:SetScript('OnEvent', nil)
