@@ -233,7 +233,11 @@ local function Init()
         self:UnregisterEvent('PORTRAITS_UPDATED')
     end)
     function btn:set_shown()
-        self:SetShown(WoWTools_WorldMapMixin:GetPlayerXY() and not Save().disabled)
+        self:SetShown(
+            not Save().disabled
+            and WoWTools_WorldMapMixin:GetPlayerXY()
+            and not (UnitInVehicle('player') or OverrideActionBar:IsShown() or C_PetBattles.IsInBattle())
+        )
     end
 
     btn:SetScript('OnEvent', function(self, event)
@@ -280,6 +284,14 @@ local function Init()
         self:UnregisterAllEvents()
         if not Save().disabled then
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+            self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+            self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+            self:RegisterEvent('PET_BATTLE_CLOSE')
         end
         self:set_shown()
     end

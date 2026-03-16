@@ -172,15 +172,14 @@ local function Init()
     btn:SetScript('OnEvent', function(self, event)
 
         if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
-            C_Timer.After(1, function()
+            self:settings()
+            C_Timer.After(2, function()
                 if not InCombatLockdown() then
-                    self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
+                    self:settings()
                 end
-                self:settings()
             end)
 
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
-
             or event=='VEHICLE_ANGLE_UPDATE'--车辆
             or event=='UNIT_ENTERED_VEHICLE'
             or event=='UNIT_ENTERING_VEHICLE'
@@ -221,10 +220,13 @@ local function Init()
     btn:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     function btn:settings()
+
         self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
-                        or not self:IsVisible()
+                        --or not self:IsVisible()
                         or C_PetBattles.IsInBattle()
-                        or UnitInVehicle('player') or OverrideActionBar:IsShown()
+                        or UnitInVehicle('player')
+                        or OverrideActionBar:IsShown()
+                        or InCombatLockdown()
 
         if self.isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, Events_All)
@@ -240,7 +242,7 @@ local function Init()
             self:UnregisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
         end
 
-        if self:CanChangeAttribute() and not InCombatLockdown() then
+        if self:CanChangeAttribute() then
             self:set_key()
             self:SetShown(not self.isDisabled)
         else
