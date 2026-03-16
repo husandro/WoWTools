@@ -1,12 +1,12 @@
 
 
 
-local function set_RollOnLoot(rollID, rollType, link, notPrint)
+local function set_RollOnLoot(rollID, rollType, itemLink, notPrint)
     RollOnLoot(rollID, rollType)
 
-    link= link or GetLootRollItemLink(rollID)
+    itemLink= itemLink or GetLootRollItemLink(rollID)
 
-    if not link or not notPrint then
+    if not itemLink or not notPrint then
         return
     end
 
@@ -14,7 +14,7 @@ local function set_RollOnLoot(rollID, rollType, link, notPrint)
         WoWTools_DataMixin.Icon.icon2
         ..'|A:groupfinder-eye-frame:0:0|a|cnGREEN_FONT_COLOR:'
         ..(rollType==1 and '|A:lootroll-toast-icon-need-up:0:0|a' or '|A:lootroll-toast-icon-transmog-up:0:0|a')
-        ..link
+        ..itemLink
     )
 end
 
@@ -47,45 +47,47 @@ local function set_ROLL_Check(frame, notPrint)
 
     local _, _, _, quality, _, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired, canTransmog = GetLootRollItemInfo(rollID)
 
-    local link = GetLootRollItemLink(rollID)
+    local itemLink = GetLootRollItemLink(rollID)
 
-    if not canNeed or (IsInLFGDungeon() and quality and quality>=3) or not link then
-        set_RollOnLoot(rollID, canNeed and 1 or 2, link, notPrint)
+    if not canNeed or (IsInLFGDungeon() and quality and quality>=3) or not itemLink then
+        set_RollOnLoot(rollID, canNeed and 1 or 2, itemLink, notPrint)
         return
     end
 
-    if canTransmog and not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
-        local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
+    if canTransmog and not C_TransmogCollection.PlayerHasTransmogByItemInfo(itemLink) then--幻化
+        local sourceID=select(2,C_TransmogCollection.GetItemInfo(itemLink))
         if sourceID then
             local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
             if hasItemData and canCollect then
                 local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
                 if sourceInfo and not sourceInfo.isCollected then
-                    set_RollOnLoot(rollID, 1, link, notPrint)
+                    set_RollOnLoot(rollID, 1, itemLink, notPrint)
                     return
                 end
             end
         end
     end
 
-    local itemID, _, _, itemEquipLoc, _, classID, subclassID = C_Item.GetItemInfoInstant(link)
-    for _, slot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do--比较装等
-        local slotLink= GetInventoryItemLink('player', slot)
-        if slotLink then
-            local slotItemLevel= WoWTools_ItemMixin:GetItemLevel(slotLink) or 0
-            local itemLevel= WoWTools_ItemMixin:GetItemLevel(link)
-            if itemLevel then
-                local num=itemLevel-slotItemLevel
-                if num>0 then
-                    set_RollOnLoot(rollID, 1, link, notPrint)
-                    return
+    local itemID, itemType, itemSubType, itemEquipLoc, _, classID, subclassID = C_Item.GetItemInfoInstant(itemLink)
+    if not WoWTools_ItemMixin:IsNotEquipType(itemLink,  itemType, itemSubType) then
+        for _, slot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do--比较装等
+            local slotLink= GetInventoryItemLink('player', slot)
+            if slotLink then
+                local slotItemLevel= WoWTools_ItemMixin:GetItemLevel(slotLink) or 0
+                local itemLevel= WoWTools_ItemMixin:GetItemLevel(itemLink)
+                if itemLevel then
+                    local num=itemLevel-slotItemLevel
+                    if num>0 then
+                        set_RollOnLoot(rollID, 1, itemLink, notPrint)
+                        return
+                    end
                 end
             end
         end
     end
 
     if classID==15 and subclassID==2 then--宠物物品
-        set_RollOnLoot(rollID, 1, link, notPrint)
+        set_RollOnLoot(rollID, 1, itemLink, notPrint)
         return
 
     elseif classID==15 and  subclassID==5 then--坐骑
@@ -93,17 +95,21 @@ local function set_ROLL_Check(frame, notPrint)
         if mountID then
             local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
             if not isCollected then
-                set_RollOnLoot(rollID, 1, link, notPrint)
+                set_RollOnLoot(rollID, 1, itemLink, notPrint)
                 return
             end
         end
 
     elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
-        set_RollOnLoot(rollID, 1, link, notPrint)
+        set_RollOnLoot(rollID, 1, itemLink, notPrint)
         return
 
+--住宅装饰
+    elseif C_Item.IsDecorItem(itemLink) then
+        set_RollOnLoot(rollID, 1, itemLink, notPrint)
+        return
     elseif classID==0 or subclassID==0 then
-        set_RollOnLoot(rollID, 1, link, notPrint)
+        set_RollOnLoot(rollID, 1, itemLink, notPrint)
         return
     end
 
