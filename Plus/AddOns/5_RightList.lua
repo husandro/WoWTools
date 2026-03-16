@@ -172,10 +172,6 @@ end
 
 
 local function Create_Button(index)
-    if _G[Name..index] then
-        return _G[Name..index]
-    end
-
     local btn= WoWTools_ButtonMixin:Menu(RightFrame, {
         name=Name..index,
         icon='hide'
@@ -285,7 +281,7 @@ local function Set_Right_Buttons()
     local index=1
     local w=0
     for name in pairs(Save().buttons) do
-        local btn= Create_Button(index)
+        local btn= _G[Name..index] or Create_Button(index)
         btn.name= name
         btn.numAllLoad= load+ need
         btn:set_settings()

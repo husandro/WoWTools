@@ -286,6 +286,7 @@ function WoWTools_TextureMixin:GetNewIcon(frame, tab)
     IconFrame:ClearAllPoints()
     IconFrame:SetPoint('LEFT', frame, 'RIGHT', 2, 0)
     IconFrame:SetParent(frame)
+    IconFrame:SetFrameStrata('DIALOG')
 
     if tab.text and tab.text~='' then
         IconFrame.text= tab.text
