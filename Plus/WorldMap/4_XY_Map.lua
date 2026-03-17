@@ -144,7 +144,7 @@ local function Init()
         return
     end
 
-    local btn= CreateFrame('DropdownButton', 'WoWToolsMapXYButton', WorldMapFrameCloseButton, 'WoWToolsMenuTemplate')
+    local btn= CreateFrame('DropdownButton', 'WoWToolsMapXYButton', _G['WoWToolsWorldMapMenuButton'], 'WoWToolsMenuTemplate')
 
     btn:SetNormalAtlas(WoWTools_DataMixin.Icon.Player:match('|A:(.-):') or '')
     btn:GetNormalTexture():SetVertexColor(1,1,1,1)
@@ -164,6 +164,7 @@ local function Init()
     end
 
     btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
+
 
     btn:SetupMenu(Init_Menu)
 
@@ -237,6 +238,10 @@ local function Init()
 
     btn.Text= btn:CreateFontString(nil, nil, 'GameFontNormal')-- WoWTools_LabelMixin:Create(btn, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
     btn.Text:SetPoint('LEFT',btn.edit, 'RIGHT', 2, 0)
+
+    btn.Bg= btn:CreateTexture(nil, 'BACKGROUND')
+    btn.Bg:SetAllPoints(btn.Text)
+    btn.Bg:SetColorTexture(0,0,0,0.5)
 
     btn:Settings()
 

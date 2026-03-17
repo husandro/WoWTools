@@ -465,7 +465,8 @@ end
 
 local function Init()--显示地图ID
     local MenuButton= CreateFrame('DropdownButton', 'WoWToolsWorldMapMenuButton', WorldMapFrameCloseButton, 'WoWToolsMenuTemplate')
-
+    MenuButton:SetFrameStrata('HIGH')
+    MenuButton:SetFrameLevel(999)
     if C_AddOns.IsAddOnLoaded('Mapster') then
         C_Timer.After(2, function()
             if _G['MapsterOptionsButton'] then

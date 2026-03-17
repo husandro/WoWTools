@@ -6,6 +6,7 @@ local function SaveWoW()
 end
 
 local PinHeight= 12--默认大小
+local Button
 
 local function SetUserWaypoint(self)
     local mapID= self.mapID
@@ -66,6 +67,7 @@ function WoWToolsWorldMapDataProvider:RemoveAllData()
 end
 
 function WoWToolsWorldMapDataProvider:RefreshAllData()
+    local count= 0
     if self:GetMap() then
 
         self:GetMap():RemoveAllPinsByTemplate("WoWToolsWorldMapPinTemplate")
@@ -77,13 +79,17 @@ function WoWToolsWorldMapDataProvider:RefreshAllData()
                 if xy~='options' then
                     local x,y= WoWTools_WorldMapMixin:GetXYForText(xy)
                     if x and y then
+                        count= count +1
                         self:GetMap():AcquirePin("WoWToolsWorldMapPinTemplate", xy, x,y, pin, mapID)
                     end
                 end
             end
-            
+
         end
     end
+
+    Button.text:SetText(count>0 and count or DISABLED_FONT_COLOR:WrapTextInColorCode('0'))
+    Button:SetWidth(math.max(Button.text:GetStringWidth()+4, 23))
 end
 
 
@@ -151,7 +157,7 @@ function WoWToolsWorldMapPinMixin:OnLoad()
         else
             btn.isMoving= nil
         end
-        
+
         local mapID= btn.mapID
         local x, y= WoWTools_WorldMapMixin:GetMapXY()
         local newXY= WoWTools_WorldMapMixin:GetTextForXY(x, y)
@@ -426,7 +432,7 @@ local function Init()
     end
 
 
-    local Button= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', MinimapCluster.Tracking.Button, 'WoWToolsMenu3Template')
+    Button= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', MinimapCluster.Tracking.Button, 'WoWToolsMenu3Template')
 
     Button.text= Button:CreateFontString(nil, 'ARTWORK', 'WoWToolsFonts')
     Button.text:SetPoint('CENTER')
@@ -452,9 +458,9 @@ local function Init()
     function Button:set_point()
         self:ClearAllPoints()
         if Save().parentWorldFrame then
-            self:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*2, 0)
-            self:SetParent(WorldMapFrameCloseButton)
-            self:SetFrameStrata(WorldMapFrameCloseButton:GetFrameStrata())
+            self:SetPoint('RIGHT', _G['WoWToolsWorldMapMenuButton'], 'LEFT', 0, 0)
+            self:SetParent(_G['WoWToolsWorldMapMenuButton'])
+            self:SetFrameStrata(_G['WoWToolsWorldMapMenuButton']:GetFrameStrata())
         else
             self:SetPoint('RIGHT', MinimapCluster.Tracking.Button, 'LEFT')
             self:SetParent(MinimapCluster.Tracking.Button)
@@ -510,6 +516,9 @@ local function Init()
     end)
 
     function Button:set_text()
+        if not self:IsVisible() then
+            return
+        end
         local mapID= WorldMapFrame:IsShown() and WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
         local count= 0
         if mapID and SaveWoW()[mapID] then
@@ -518,17 +527,15 @@ local function Init()
             end
             count= CountTable(SaveWoW()[mapID])-1
         end
-        Button.text:SetText(count>0 and count or DISABLED_FONT_COLOR:WrapTextInColorCode('0'))
-        Button:SetWidth(math.max(Button.text:GetStringWidth()+4, 23))
+        self.text:SetText(count>0 and count or DISABLED_FONT_COLOR:WrapTextInColorCode('0'))
+        self:SetWidth(math.max(self.text:GetStringWidth()+4, 23))
     end
 
     Button:RegisterEvent('ZONE_CHANGED')
     Button:RegisterEvent('ZONE_CHANGED_NEW_AREA')
     Button:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-    Button:SetScript('OnEvent', function(self)
-        self:set_text()
-    end)
+    Button:SetScript('OnEvent', Button.set_text)
     Button:set_point()
 
 
@@ -570,7 +577,7 @@ local function Init()
                     ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
                 ))
             else
-                tooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(
+                tooltip:AddLine(COMPACT_UNIT_FRAME_FRIENDLY_HEALTH_COLOR:WrapTextInColorCode(
                     '|A:Gear:0:0|a'..'Ctr+Alt '
                     ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
                 ))

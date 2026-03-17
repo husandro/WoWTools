@@ -87,17 +87,17 @@ local function Init()
         return
     end
 
-    Frame= CreateFrame('Frame', 'WoWToolsWorldMapMapIDFrame', WorldMapFrameCloseButton)
+    Frame= CreateFrame('Frame', 'WoWToolsWorldMapMapIDFrame', _G['WoWToolsWorldMapMenuButton'])
     --Frame:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*3, 0)
 
     Frame:SetSize(1,1)
     Frame:Hide()
 
-    Frame.Text= Frame:CreateFontString(nil, 'BORDER', 'WoWToolsFont')-- WoWTools_LabelMixin:Create(Frame, {copyFont= WorldMapFrameTitleText})
+    Frame.Text= Frame:CreateFontString(nil, 'BORDER', 'GameFontNormal')-- WoWTools_LabelMixin:Create(Frame, {copyFont= WorldMapFrameTitleText})
     Frame.Text:SetPoint('RIGHT', Frame, 'LEFT', -2, 0)
     Frame.Text:SetJustifyH('RIGHT')
 
-    Frame.storyText=WoWTools_LabelMixin:Create(Frame)
+    Frame.storyText= Frame:CreateFontString(nil, 'BORDER', 'GameFontNormal')--WoWTools_LabelMixin:Create(Frame)
     Frame.storyText:SetPoint('RIGHT', Frame.Text, 'LEFT', -2, 0)
     Frame.storyText:EnableMouse(true)
     Frame.storyText:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
@@ -150,7 +150,7 @@ local function Init()
         self:SetShown(Save().ShowMapID)
         self:SetScale(Save().MapIDScale or 1)
         local x, y= Save().MapIDX or 0, Save().MapIDY or 0
-        self:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*3-2+ x, 0+ y)
+        self:SetPoint('RIGHT', _G['WoWToolsWorldMapMenuButton'], 'LEFT', -25+ x, 0+ y)
         self.Bg:SetAlpha(Save().MapIDBgAlpha or 0.5)
     end
 
