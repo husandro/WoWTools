@@ -3163,7 +3163,9 @@
         "CloseDropDownMenus",
         "AddWaypoint",
         "WorldMapMixin",
-        "TomTom"
+        "TomTom",
+        "UIDropDownMenu_EnableDropDown",
+        "MouseIsOver"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

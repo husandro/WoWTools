@@ -115,7 +115,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     local zone, npc
     if guid then
 --位面,NPCID
-        npc, zone= WoWTools_UnitMixin:GetNpcID(unit, guid)
+        zone, npc= WoWTools_UnitMixin:GetNpcID(unit, guid)
 --布莱恩·铜须
         textLeft= Set_BrannBronzebeard(tooltip, unit, self.iconSize) or textLeft
 
