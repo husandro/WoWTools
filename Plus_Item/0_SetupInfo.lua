@@ -116,10 +116,11 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
         invSlots={WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}
     end
 
-
     if TableIsEmpty(invSlots) then
         return itemLevel
     end
+
+
 
 --取得最小，武器, sp, 戒指
     local upLevel, downLevel
@@ -600,8 +601,11 @@ local function Get_Info(tab)
             bottomRightText= stat[2]
             topLeftText= stat[3]
             topRightText= stat[4]
-
-            leftText= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, nil)--装等，提示
+            if WoWTools_ItemMixin:IsNotEquipType(itemLink, itemType, itemSubType) then
+                leftText= DISABLED_FONT_COLOR:GenerateHexColorMarkup()..itemLevel..'|r'
+            else
+                leftText= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, nil)--装等，提示
+            end
 
         else
             local isRedItem
@@ -701,21 +705,24 @@ local function Get_Info(tab)
 
                 if not topLeftText or topLeftText=='' then
                     if not dateInfo.red then--装等，提示
-                        local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
-                        if text then
-                            topLeftText= topLeftText and topLeftText..'|r'..text or text
+                        if WoWTools_ItemMixin:IsNotEquipType(itemLink, itemType, itemSubType) then
+                            topLeftText= DISABLED_FONT_COLOR:GenerateHexColorMarkup()..itemLevel..'|r'
+                        else
+                            local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
+                            if text then
+                                topLeftText= text
+    --属性提示
+                            elseif upItemLevel==0 and itemQuality>=Enum.ItemQuality.Epic then
 
---属性提示
-                        elseif upItemLevel==0 and itemQuality>=Enum.ItemQuality.Epic then
+                                leftText= bottomLeftText
+                                rightText= bottomRightText
 
-                            leftText= bottomLeftText
-                            rightText= bottomRightText
-
-                            local stat= WoWTools_ItemMixin:GetItemStats(itemLink)
-                            bottomLeftText= stat[1]
-                            bottomRightText= stat[2]
-                            topLeftText= stat[3]
-                            topRightText= stat[4]
+                                local stat= WoWTools_ItemMixin:GetItemStats(itemLink)
+                                bottomLeftText= stat[1]
+                                bottomRightText= stat[2]
+                                topLeftText= stat[3]
+                                topRightText= stat[4]
+                            end
                         end
 
                     elseif itemMinLevel<=WoWTools_DataMixin.Player.Level and itemQuality~=7 then--不可使用
