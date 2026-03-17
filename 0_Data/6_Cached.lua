@@ -192,9 +192,9 @@ end
 
 
 
---位面, 设置，清除
+--位面, 设置，清除 npcID, zoneID
 local function Set_New_Layer(self, unit)
-    WoWTools_DataMixin.Player.Layer= WoWTools_UnitMixin:GetNpcID(unit) or WoWTools_UnitMixin:GetNpcID('vehicle')--位面, 清除
+    WoWTools_DataMixin.Player.Layer= select(2, WoWTools_UnitMixin:GetNpcID(unit)) or select(2, WoWTools_UnitMixin:GetNpcID('vehicle'))--位面, 清除
     if not WoWTools_DataMixin.Player.Layer then
         self:RegisterEvent('NAME_PLATE_UNIT_ADDED')
     end

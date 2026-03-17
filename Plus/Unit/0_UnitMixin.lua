@@ -251,8 +251,6 @@ elseif unit_type == "Player" then
 end
 NPC ID, 注意是：字符 Creature-0-1465-0-2105-448-000043F59F
 ]]
-
-
 function WoWTools_UnitMixin:GetNpcID(unit, guid)
     guid= canaccessvalue(guid) and guid
         or self:UnitGUID(unit)
@@ -261,7 +259,7 @@ function WoWTools_UnitMixin:GetNpcID(unit, guid)
     if guid then
         local unitType, _, _, _, zoneID, npcID = strsplit("-", guid)
         if unitType=='Creature' or unitType=='Vehicle' then
-            return zoneID, npcID
+            return npcID, zoneID
         end
     end
 end
