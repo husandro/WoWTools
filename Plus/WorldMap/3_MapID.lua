@@ -152,7 +152,6 @@ local function Init()
         local x, y= Save().MapIDX or 0, Save().MapIDY or 0
         self:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*3-2+ x, 0+ y)
         self.Bg:SetAlpha(Save().MapIDBgAlpha or 0.5)
-        print(Save().MapIDBgAlpha )
     end
 
     Frame:Settings()
