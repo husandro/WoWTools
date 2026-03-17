@@ -71,6 +71,8 @@ local function Set_Text()
     end
     Frame.storyText:SetText(story or '')
     Frame.storyText.achievementID= achievementID or nil
+
+    Frame.Bg:SetPoint('TOPLEFT', story and Frame.storyText or Frame.Text, -1, 1)
 end
 
 
@@ -86,7 +88,7 @@ local function Init()
     end
 
     Frame= CreateFrame('Frame', 'WoWToolsWorldMapMapIDFrame', WorldMapFrameCloseButton)
-    Frame:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*3, 0)
+    --Frame:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*3, 0)
 
     Frame:SetSize(1,1)
     Frame:Hide()
@@ -128,6 +130,10 @@ local function Init()
         self:SetAlpha(0.3)
     end)
 
+    Frame.Bg= Frame:CreateTexture(nil, 'BACKGROUND')
+    Frame.Bg:SetColorTexture(0,0,0)
+    Frame.Bg:SetPoint('BOTTOMRIGHT', Frame.Text, 1, -1)
+
 
     --WoWTools_DataMixin:Hook(WorldMapFrame.ScrollContainer, 'SetMapID', function(self, mapID)--MapCanvasScrollControllerMixin
     WoWTools_DataMixin:Hook(WorldMapFrame, 'OnMapChanged', Set_Text)--Blizzard_WorldMap.lua    
@@ -141,8 +147,12 @@ local function Init()
     end)
 
     function Frame:Settings()
-        Frame:SetShown(Save().ShowMapID)
-        Frame:SetScale(Save().MapIDScale or 1)
+        self:SetShown(Save().ShowMapID)
+        self:SetScale(Save().MapIDScale or 1)
+        local x, y= Save().MapIDX or 0, Save().MapIDY or 0
+        self:SetPoint('RIGHT', WorldMapFrameCloseButton, 'LEFT', -23*3-2+ x, 0+ y)
+        self.Bg:SetAlpha(Save().MapIDBgAlpha or 0.5)
+        print(Save().MapIDBgAlpha )
     end
 
     Frame:Settings()

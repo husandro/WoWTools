@@ -144,7 +144,7 @@ local function Init()
         return
     end
 
-    local btn= CreateFrame('DropdownButton', 'WoWToolsMapXYButton', WorldMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenuTemplate')
+    local btn= CreateFrame('DropdownButton', 'WoWToolsMapXYButton', WorldMapFrameCloseButton, 'WoWToolsMenuTemplate')
 
     btn:SetNormalAtlas(WoWTools_DataMixin.Icon.Player:match('|A:(.-):') or '')
     btn:GetNormalTexture():SetVertexColor(1,1,1,1)

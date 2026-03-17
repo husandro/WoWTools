@@ -179,6 +179,46 @@ local function Init_Menu(self, root)
         WoWTools_WorldMapMixin:Init_MpaID()
     end)
 
+--背景, 透明度
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()
+        return Save().MapIDBgAlpha or 0.5
+    end, function(value)
+        Save().MapIDBgAlpha= value
+        WoWTools_WorldMapMixin:Init_MpaID()
+    end, function()
+        Save().MapIDBgAlpha= nil
+        WoWTools_WorldMapMixin:Init_MpaID()
+    end)
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    name= 'X',
+    getValue=function()
+        return Save().MapIDX or 0
+    end, setValue=function(value)
+        Save().MapIDX= value
+        WoWTools_WorldMapMixin:Init_MpaID()
+    end,
+    minValue=-400,
+    maxValue=400,
+    step=1,
+    })
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    name= 'Y',
+    getValue=function()
+        return Save().MapIDY or 0
+    end, setValue=function(value)
+        Save().MapIDY= value
+        WoWTools_WorldMapMixin:Init_MpaID()
+    end,
+    minValue=-400,
+    maxValue=400,
+    step=1,
+    })
+
     WoWTools_MenuMixin:ScaleRoot(self, sub, function()
         return Save().MapIDScale or 1
     end, function(value)
@@ -186,8 +226,12 @@ local function Init_Menu(self, root)
         WoWTools_WorldMapMixin:Init_MpaID()
     end, function()
         Save().MapIDScale=nil
+        Save().MapIDX= nil
+        Save().MapIDY= nil
         WoWTools_WorldMapMixin:Init_MpaID()
     end)
+
+
 
 
 
@@ -420,7 +464,7 @@ end
 
 
 local function Init()--显示地图ID
-    local MenuButton= CreateFrame('DropdownButton', 'WoWToolsWorldMapMenuButton', WorldMapFrame.BorderFrame.TitleContainer, 'WoWToolsMenuTemplate')
+    local MenuButton= CreateFrame('DropdownButton', 'WoWToolsWorldMapMenuButton', WorldMapFrameCloseButton, 'WoWToolsMenuTemplate')
 
     if C_AddOns.IsAddOnLoaded('Mapster') then
         C_Timer.After(2, function()
@@ -430,6 +474,7 @@ local function Init()--显示地图ID
                 _G['MapsterOptionsButton']:ClearAllPoints()
                 _G['MapsterOptionsButton']:SetPoint('RIGHT', WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton, 'LEFT')
                 MenuButton:SetPoint('RIGHT', _G['MapsterOptionsButton'], 'LEFT')
+                WoWTools_TextureMixin:SetUIButton(_G['MapsterOptionsButton'])
             else
                 MenuButton:SetPoint('RIGHT', WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton, 'LEFT')
             end
