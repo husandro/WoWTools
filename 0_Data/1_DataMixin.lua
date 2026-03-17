@@ -92,7 +92,7 @@ WoWTools_DataMixin.Player={
     --Lo= GetLocale(),
     Week= GetWeek(),--周数 date('%W')
     GUID= UnitGUID('player'),
-    IsMaxLevel= UnitLevel('player')==j, --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
+    IsMaxLevel= UnitLevel('player')==GetMaxLevelForLatestExpansion(), --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
     Level= UnitLevel('player') or 1,--UnitEffectiveLevel('player')
     husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
     BattleTag= battleTag,

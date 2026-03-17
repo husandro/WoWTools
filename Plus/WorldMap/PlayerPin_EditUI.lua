@@ -15,9 +15,22 @@ local PinHeight= 22--默认大小
 
 
 
+local function RefreshWorldMapPins()
+    if WorldMapFrame:IsShown() then
+        WoWToolsWorldMapDataProvider:RefreshAllData()
+    end
+end
 
-
-
+local function RefreshWorldMapPinState(mapID, xy)
+    local map= WoWToolsWorldMapDataProvider:GetMap()
+    local worldMapID= map and map:GetMapID()
+    if not worldMapID or mapID~=worldMapID then
+        return
+    end
+	for pin in map:EnumeratePinsByTemplate("HandyNotesWorldMapPinTemplate") do
+        pin:SetButtonState(pin.xy==xy and 'PUSHED' or 'NORMAL')
+	end
+end
 
 
 local function GetMapName(mapID)
@@ -308,7 +321,7 @@ local function Add_ListButton(btn)
             data.pin.note
         )
         Refresh_All()
-        WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
+        RefreshWorldMapPins()
     end)
 
     btn.Delete:SetScript('OnLeave', function(self)
@@ -331,12 +344,12 @@ local function Add_ListButton(btn)
     btn:SetScript('OnLeave', function(self)
         self.Delete:Hide()
         self:SetButtonState('NORMAL')
-        WoWTools_WorldMapMixin:PlayerPin_SetPinState(Frame.mapID)
+        RefreshWorldMapPinState(Frame.mapID)
     end)
 
     btn:SetScript('OnEnter', function(self)
         self.Delete:Show()
-        WoWTools_WorldMapMixin:PlayerPin_SetPinState(Frame.mapID, self.data.xy)
+        RefreshWorldMapPinState(Frame.mapID, self.data.xy)
     end)
 
     function btn:set_event()
@@ -482,12 +495,11 @@ local function Add_Updata_Data(isUpdate)
         note= note,
     }
 
-    Refresh_All()
-
     Frame.ScrollBox:ScrollToElementDataByPredicate(function(data)
         return data.xy==xy
     end)
-    WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
+    Refresh_All()
+    RefreshWorldMapPins()
 end
 
 
@@ -850,7 +862,7 @@ local function Init()
                 nil,
                 {SetValue=function()
                     SaveWoW()[data.mapID]= nil
-                    WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
+                    RefreshWorldMapPins()
                     Refresh_All()
                 end})
                 return MenuResponse.Open
@@ -869,7 +881,7 @@ local function Init()
             nil,
             {SetValue=function()
                 WoWToolsPlayerDate.PlayerMapPin= {}
-                WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
+                RefreshWorldMapPins()
                 Refresh_All()
             end})
             return MenuResponse.Open
@@ -958,7 +970,7 @@ local function Init()
             SaveWoW()[Frame.mapID]= SaveWoW()[Frame.mapID] or {}
             SaveWoW()[Frame.mapID].options= SaveWoW()[Frame.mapID].options or {}
             SaveWoW()[Frame.mapID].options[self.type]= self.value
-            WoWTools_WorldMapMixin:PlayerPin_RefreshPins()
+            RefreshWorldMapPins()
         end
     end
     Frame.iconS.On_MouseWheel= function(self, d)

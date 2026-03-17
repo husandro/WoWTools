@@ -67,4 +67,42 @@
            
         </Layers>
     </Button>
+
+
+
+
+
+
+
+
+
+
+
+    
+	<DropdownButton name="WoWToolsWorldMapPinTemplate" mixin="WoWToolsWorldMapPinMixin" virtual="true">
+        <Size x="23" y="23"/>        
+        <HighlightTexture atlas="Azerite-Trait-RingGlow">
+            <Anchors>
+                <Anchor point="TOPLEFT" x="-5" y="5"/>
+                <Anchor point="BOTTOMRIGHT" x="5" y="-5"/>
+            </Anchors>
+        </HighlightTexture>
+        <PushedTexture atlas="bag-border-highlight">
+            <Anchors>
+                <Anchor point="TOPLEFT" x="-2" y="2"/>
+                <Anchor point="BOTTOMRIGHT" x="4" y="-4"/>
+            </Anchors>
+        </PushedTexture>
+        <Layers>
+            <Layer level="BORDER">
+                <Texture parentKey="texture">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="-5" y="5"/>
+                        <Anchor point="BOTTOMRIGHT" x="3" y="-3"/>
+                    </Anchors>
+                </Texture>
+                <FontString parentKey="text" inherits="WoWToolsFont2" justifyH="LEFT"/>
+            </Layer>
+        </Layers>
+	</DropdownButton>
 </Ui>

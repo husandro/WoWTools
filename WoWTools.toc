@@ -61,7 +61,6 @@ Source\Libs\LibRangeCheck-3.0.lua
 ##模板
 2_Template\Button.lua
 2_Template\Button.xml
-2_Template\PlayerPinButton.xml
 2_Template\CheckBox.xml
 2_Template\PlayerFrame.xml
 2_Template\ChallengeAffix.xml
@@ -278,8 +277,9 @@ Plus\WorldMap\Name_AreaPOIPin.lua
 Plus\WorldMap\Name_Dungeon.lua
 Plus\WorldMap\Name_FlightMap.lua
 Plus\WorldMap\Name_WorldQuest.lua
-Plus\WorldMap\Player_Pin.lua
-Plus\WorldMap\Player_Pin_EditUI.lua
+Plus\WorldMap\PlayerPin.xml
+Plus\WorldMap\PlayerPin_EditUI.lua
+Plus\WorldMap\PlayerPin.lua
 Plus\WorldMap\z_Plus_Menu.lua
 Plus\WorldMap\z_Plus.lua
 Plus\WorldMap\z_UI.lua
