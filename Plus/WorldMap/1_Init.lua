@@ -31,7 +31,7 @@ local function Init()
 
     WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
 
-    WoWTools_WorldMapMixin:PlayerPin_InitPins()
+    WoWTools_WorldMapMixin:Init_PlayerPin()
 
     Init=function()end
 end

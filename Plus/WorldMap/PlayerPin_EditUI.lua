@@ -6,7 +6,7 @@ local function SaveWoW()
 end
 
 local Frame
-local PinHeight= 22--默认大小
+local PinHeight= 12--默认大小
 
 
 
@@ -1022,7 +1022,7 @@ local function Init()
         if not self:IsMouseOver() then
             return
         end
-        for i= 18, 72, 2 do
+        for i= 6, 32, 2 do
             root:CreateButton(
                 i,
             function(data)
@@ -1542,14 +1542,17 @@ local function Init()
             local icon, name, textureID, info= WoWTools_ProfessionMixin:GetName(skillLineID)
             if name then
                 local color
-                if C_SpellBook.GetSkillLineIndexByID(skillLineID) then
+                local isKnown= C_SpellBook.GetSkillLineIndexByID(skillLineID)
+                if isKnown then
                     color= info.isPrimaryProfession and GREEN_FONT_COLOR or EPIC_PURPLE_COLOR
                 else
                     color= info.isPrimaryProfession and HIGHLIGHT_FONT_COLOR or NORMAL_FONT_COLOR
                 end
+
                 local sub=root:CreateCheckbox(
                     (icon or '')
-                    ..color:WrapTextInColorCode(name),
+                    ..color:WrapTextInColorCode(name)
+                    ..(isKnown and info.isPrimaryProfession and '|A:recipetoast-icon-star:0:0|a' or ''),
                 function(data)
                     return self.profession[data.rightText] and true or false
                 end, function(data)
@@ -1792,10 +1795,8 @@ function WoWTools_WorldMapMixin:PlayerPin_SetUIButtonState(xy)
 end
 
 function WoWTools_WorldMapMixin:PlayerPin_RefreshUI(data)
-    if Frame then
-        if Frame:IsShown() then
-            Refresh_All(data)
-        end
+    if Frame and Frame:IsShown() then
+        Refresh_All(data)
     end
 end
 

@@ -366,7 +366,7 @@ local function Init_Menu(self, root)
         return not Save().PlayerPin.disabled
     end, function()
         Save().PlayerPin.disabled= not Save().PlayerPin.disabled and true or nil
-        WoWTools_WorldMapMixin:PlayerPin_InitPins()
+        WoWTools_WorldMapMixin:Init_PlayerPin()
     end)
 
     --[[sub:CreateButton(

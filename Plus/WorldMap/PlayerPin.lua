@@ -4,46 +4,58 @@ end
 local function SaveWoW()
     return WoWToolsPlayerDate.PlayerMapPin
 end
-local PinHeight= 22--默认大小
 
+local PinHeight= 12--默认大小
 
+local function SetUserWaypoint(self)
+    local mapID= self.mapID
+    local x, y= self.x, self.y--x=0.0555
+    if _G['TomTom'] then
+        local name= (select(3,  self.texture:GetAtlas() or self.texture:GetTexture()) or '')..(self.text:GetText() or '')
+        local tab= {
+            title = name,
+            persistent = nil,
+            minimap = true,
+            world = true
+        }
+        if TomTom:WaypointExists(mapID, x, y, name) then
+            TomTom:RemoveWaypoint({mapID, x, y, name = name, from=tab})
+        else
+            TomTom:AddWaypoint(mapID, x, y, {
+            title = name,
+            persistent = nil,
+            minimap = true,
+            world = true
+        })
+        end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function TomTomWayPoint(mapID, xy, x, y)--x=0.0555
-    local data= _G['TomTom'] and SaveWoW()[mapID] and SaveWoW()[mapID][xy] and SaveWoW()[mapID][xy]
-    if not data then
-        return
+    elseif C_Map.CanSetUserWaypointOnMap(mapID) then
+        local waypoint = UiMapPoint.CreateFromCoordinates(mapID, x, y)
+        if waypoint then
+            local point= C_Map.GetUserWaypoint()
+            if point and point.uiMapID==waypoint.uiMapID and point.x==waypoint.x and point.y==waypoint.y then
+                C_Map.ClearUserWaypoint()
+            else
+                C_Map.SetUserWaypoint(waypoint)
+                C_SuperTrack.SetSuperTrackedUserWaypoint(true)
+            end
+        end
     end
-    local title
-    if data.name or data.icon then
-        title= (select(3, WoWTools_TextureMixin:IsAtlas(data.icon)) or '')..(data.name or '')
-    else
-        title= xy
-    end
-    _G['TomTom']:AddWaypoint(mapID, x, y, {
-        title = title,
-        persistent = nil,
-        minimap = true,
-        world = true
-    })
-    return true
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 WoWToolsWorldMapDataProvider = CreateFromMixins(MapCanvasDataProviderMixin)
 
@@ -54,20 +66,22 @@ function WoWToolsWorldMapDataProvider:RemoveAllData()
 end
 
 function WoWToolsWorldMapDataProvider:RefreshAllData()
-    local map= self:GetMap()
-    if map then
-        map:RemoveAllPinsByTemplate("WoWToolsWorldMapPinTemplate")
-        local mapID= map:GetMapID()
-        if not mapID or Save().disabled then
-            return
-        end
-        for xy, pin in pairs(SaveWoW()[mapID] or {}) do
-            if xy~='options' then
-                local x,y= WoWTools_WorldMapMixin:GetXYForText(xy)
-                if x and y then
-                    self:GetMap():AcquirePin("WoWToolsWorldMapPinTemplate", xy, x,y, pin, mapID)
+    if self:GetMap() then
+
+        self:GetMap():RemoveAllPinsByTemplate("WoWToolsWorldMapPinTemplate")
+
+        local mapID= self:GetMap():GetMapID()
+        if mapID and not Save().disabled then
+
+            for xy, pin in pairs(SaveWoW()[mapID] or {}) do
+                if xy~='options' then
+                    local x,y= WoWTools_WorldMapMixin:GetXYForText(xy)
+                    if x and y then
+                        self:GetMap():AcquirePin("WoWToolsWorldMapPinTemplate", xy, x,y, pin, mapID)
+                    end
                 end
             end
+            
         end
     end
 end
@@ -113,7 +127,7 @@ function WoWToolsWorldMapPinMixin:OnLoad()
         root:CreateDivider()
         root:CreateTitle(
             WoWTools_DataMixin.Icon.left
-            ..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
+            ..(_G['TomTom'] and 'TomTom' or (WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING))
             ..'|A:Waypoint-MapPin-Untracked:0:0|a')
         root:CreateTitle(
             'Alt+'..WoWTools_DataMixin.Icon.right
@@ -126,14 +140,23 @@ function WoWToolsWorldMapPinMixin:OnLoad()
     self:SetScript("OnDragStart", function(btn, d)
         if d=='RightButton' and IsAltKeyDown() then
             btn:StartMoving()
+            btn.isMoving = true
         end
     end)
 --停止移动
-    self:SetScript("OnDragStop", function(btn)
+    self:SetScript("OnDragStop", function(btn, d, ...)
         btn:StopMovingOrSizing()
-        local newXY= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, true, false)
+        if not btn.isMoving then
+            return
+        else
+            btn.isMoving= nil
+        end
+        
         local mapID= btn.mapID
+        local x, y= WoWTools_WorldMapMixin:GetMapXY()
+        local newXY= WoWTools_WorldMapMixin:GetTextForXY(x, y)
         local oldXY= btn.xy
+
         if newXY and oldXY~=newXY and SaveWoW()[mapID] and SaveWoW()[mapID][oldXY] then
             local delTab= SaveWoW()[mapID][newXY]--如果已存在
             if delTab then
@@ -149,20 +172,29 @@ function WoWToolsWorldMapPinMixin:OnLoad()
             SaveWoW()[mapID][newXY]= CopyTable(SaveWoW()[mapID][oldXY])
             SaveWoW()[mapID][oldXY]= nil--清除原来的
 
+            WoWToolsWorldMapDataProvider:RefreshAllData()
             WoWTools_WorldMapMixin:PlayerPin_RefreshUI({mapID=mapID, xy=newXY})
         end
         ResetCursor()
     end)
 end
 
-function WoWToolsWorldMapPinMixin:OnAcquired(xy, x,y, pin, mapID)
-    local options= SaveWoW()[mapID] or {}
+
+
+
+
+function WoWToolsWorldMapPinMixin:OnAcquired(xy, x, y, pin, mapID)
+    local options= SaveWoW()[mapID].options or {}
     local iconS, fontH= options.iconS or PinHeight, options.fontH or PinHeight
+
     x,y= x/100, y/100
+
+    self.mapID= mapID
     self.xy= xy
     self.x= x
     self.y= y
-    self.mapID= mapID
+    self.note= pin.note
+
     if self.SetPassThroughButtons then
 		self:SetPassThroughButtons("")
 	end
@@ -183,7 +215,16 @@ function WoWToolsWorldMapPinMixin:OnAcquired(xy, x,y, pin, mapID)
     self:SetSize(icons2, icons2)
     self:SetPosition(x, y)
 end
-
+function WoWToolsWorldMapPinMixin:OnReleased()
+	self.xy= nil
+    self.x= nil
+    self.y= nil
+    self.mapID= nil
+    self.note= nil
+	if self.widgetContainer then
+		self.widgetContainer:UnregisterForWidgetSet();
+	end
+end
 function WoWToolsWorldMapPinMixin:OnMouseEnter()
 	if self.note then
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
@@ -201,21 +242,7 @@ end
 function WoWToolsWorldMapPinMixin:OnMouseDown(d)
 	if d=="LeftButton" then
         self:CloseMenu()
-        if not TomTomWayPoint(self.mapID, self.xy, self.x, self.y)
-            and C_Map.CanSetUserWaypointOnMap(self.mapID)
-        then
-            local x,y= self.x, self.y
-            local waypoint = UiMapPoint.CreateFromCoordinates(self.mapID, x, y)
-            if waypoint then
-                local point= C_Map.GetUserWaypoint()
-                if point and point.uiMapID==waypoint.uiMapID and point.x==waypoint.x and point.y==waypoint.y then
-                    C_Map.ClearUserWaypoint()
-                else
-                    C_Map.SetUserWaypoint(waypoint)
-                    C_SuperTrack.SetSuperTrackedUserWaypoint(true)
-                end
-            end
-        end
+        SetUserWaypoint(self)
     elseif d=='RightButton' and IsAltKeyDown() then
         self:CloseMenu()
         SetCursor('UI_MOVE_CURSOR')
@@ -266,7 +293,7 @@ local function Init_Menu(self, root)
                 return SaveWoW()[WorldMapFrame.mapID].options.fontH or PinHeight
             end, setValue=function(value)
                 SaveWoW()[WorldMapFrame.mapID].options.fontH = value
-                RefreshMapMarkers()
+                WoWToolsWorldMapDataProvider:RefreshAllData()
             end,
             minValue=2,
             maxValue=200,
@@ -280,7 +307,7 @@ local function Init_Menu(self, root)
                 return SaveWoW()[WorldMapFrame.mapID].options.iconS or PinHeight
             end, setValue=function(value)
                 SaveWoW()[WorldMapFrame.mapID].options.iconS = value
-                RefreshMapMarkers()
+                WoWToolsWorldMapDataProvider:RefreshAllData()
             end,
             minValue=2,
             maxValue=200,
@@ -394,6 +421,9 @@ local function Init()
     end
 
     WorldMapFrame:AddDataProvider(WoWToolsWorldMapDataProvider)
+    if WorldMapFrame:IsShown() then
+        WoWToolsWorldMapDataProvider:RemoveAllData()
+    end
 
 
     local Button= CreateFrame('DropdownButton', 'WoWToolsWorldFramePlayerPinButton', MinimapCluster.Tracking.Button, 'WoWToolsMenu3Template')
@@ -418,9 +448,6 @@ local function Init()
         tooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or CONTACTS_MENU_NAME), 1,1,1)
         tooltip:AddLine(WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and 'UI编辑' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'UI', EDIT)), 1,1,1)
     end
-
-
-
 
     function Button:set_point()
         self:ClearAllPoints()
@@ -482,8 +509,6 @@ local function Init()
         end
     end)
 
-
-
     function Button:set_text()
         local mapID= WorldMapFrame:IsShown() and WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
         local count= 0
@@ -504,8 +529,6 @@ local function Init()
     Button:SetScript('OnEvent', function(self)
         self:set_text()
     end)
-
-    --Button:set_text()
     Button:set_point()
 
 
@@ -518,41 +541,41 @@ local function Init()
     --hooksecurefunc(WorldMapFrame.ScrollContainer, "ZoomOut", RefreshMapMarkers)
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, function(tooltip, data)
-        if InCombatLockdown()
-            or not data or not data.lines or not data.lines[1]
+        if Save().disabled
+            or InCombatLockdown()
+            or not data
+            or not data.lines
+            or not data.lines[1]
+            or not data.lines[1].leftText
         then
             return
         end
-
         local text= WoWTools_TextMixin:CN(data.lines[1].leftText)
-        if text then
-            local xy, mapID= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, nil, true)
-            if xy and mapID then
-                if IsControlKeyDown() and IsAltKeyDown() then
-                    WoWTools_WorldMapMixin:PlayerPin_ShowUI({
-                        isNew= true,
-                        mapID= mapID,
-                        xy= xy,
-                        name= text,
-                    })
-                    tooltip:Show()
-                    return
-                end
-
-                tooltip:AddLine(HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.Icon.Player..xy))
-                if SaveWoW()[mapID] and SaveWoW()[mapID][xy] then
-                    tooltip:AddLine(NORMAL_FONT_COLOR:WrapTextInColorCode(
-                        '|A:Gear:0:0|a'..'Ctr+Alt '
-                        ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
-                    ))
-                else
-                    tooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(
-                        '|A:Gear:0:0|a'..'Ctr+Alt '
-                        ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
-                    ))
-                end
+        local xy, mapID= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, nil, true)
+        if xy and mapID then
+            if IsControlKeyDown() and IsAltKeyDown() then
+                WoWTools_WorldMapMixin:PlayerPin_ShowUI({
+                    isNew= true,
+                    mapID= mapID,
+                    xy= xy,
+                    name= text,
+                })
                 tooltip:Show()
+                return
             end
+            tooltip:AddLine(HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.Icon.Player..xy))
+            if SaveWoW()[mapID] and SaveWoW()[mapID][xy] then
+                tooltip:AddLine(NORMAL_FONT_COLOR:WrapTextInColorCode(
+                    '|A:Gear:0:0|a'..'Ctr+Alt '
+                    ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
+                ))
+            else
+                tooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(
+                    '|A:Gear:0:0|a'..'Ctr+Alt '
+                    ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
+                ))
+            end
+            tooltip:Show()
         end
     end)
 
@@ -564,8 +587,10 @@ local function Init()
     end]]
 
 
+
     Init=function()
         WoWToolsWorldMapDataProvider:RemoveAllData()
+        Button:SetShown(not Save().disabled)
     end
 end
 
@@ -587,6 +612,6 @@ end
 
 
 
-function WoWTools_WorldMapMixin:PlayerPin_InitPins()
+function WoWTools_WorldMapMixin:Init_PlayerPin()
     Init()
 end
