@@ -114,7 +114,10 @@ local function Init_Menu(self, root)
         ..(WoWTools_DataMixin.onlyChinese and '返回当前地图' or
         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PREVIOUS, REFORGE_CURRENT), WORLD_MAP)
     ), function()
-        WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
+        local mapID2= MapUtil.GetDisplayableMapForPlayer()
+        if mapID2 then
+            WorldMapFrame:SetMapID(mapID2)
+        end
         return MenuResponse.Open
     end)
 end
@@ -163,7 +166,21 @@ local function Init()
         end
     end
 
-    btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
+    function btn:tooltip(tooltip)
+        local mapID= C_Map.GetBestMapForUnit("player")
+        local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
+        tooltip:AddLine(
+            '|A:Waypoint-MapPin-ChatIcon:0:0|a'
+            ..(can and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '分享' or SOCIAL_SHARE_TEXT)
+        )
+        tooltip:AddLine(
+            WoWTools_DataMixin.Icon.Player
+            ..(WorldMapFrame.mapID==MapUtil.GetDisplayableMapForPlayer() and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '返回' or HOUSEFINDER_BACK_BUTTON)
+            ..WoWTools_DataMixin.Icon.mid
+        )
+    end
 
 
     btn:SetupMenu(Init_Menu)
@@ -183,7 +200,20 @@ local function Init()
         end
     end)
 
+    btn:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            self:CloseMenu()
+            WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
+        end
+    end)
 
+    btn:SetScript('OnMouseWheel', function(self)
+        local mapID= MapUtil.GetDisplayableMapForPlayer()
+        if mapID then
+            WorldMapFrame:SetMapID(mapID)
+            WoWToolsButton_OnEnter(self)
+        end
+    end)
 
     btn.edit= CreateFrame("EditBox", nil, btn, 'InputBoxTemplate')--'InputBoxVisualTemplate')--InputBoxTemplate')
     WoWTools_TextureMixin:SetEditBox(btn.edit)--外框，颜色
