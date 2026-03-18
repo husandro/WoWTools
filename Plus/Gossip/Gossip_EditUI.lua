@@ -640,7 +640,7 @@ local function Init(isShow)
         --插件
         local tavFrame= _G['TAV_InfoPanel']
         if tavFrame and tavFrame.Name and tavFrame.Name.GetText then
-            local btn= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')--  WoWTools_ButtonMixin:Cbtn(Frame, {atlas='Gear'})
+            local btn= CreateFrame('Button', 'WoWToolsGossipEditUITavCopyButton', tavFrame, 'WoWToolsButtonTemplate')--  WoWTools_ButtonMixin:Cbtn(Frame, {atlas='Gear'})
             btn:SetNormalAtlas('Gear')
             btn:SetFrameStrata('HIGH')
             btn:SetPoint('RIGHT', tavFrame.Name, 'LEFT', -14, 0)
@@ -1117,11 +1117,17 @@ local function Init(isShow)
                 b:UnlockHighlight()
             end
         end
+        if _G['WoWToolsGossipEditUITavCopyButton'] then
+            _G['WoWToolsGossipEditUITavCopyButton']:Hide()
+        end
     end)
 
     Frame:SetScript('OnShow', function()
         WoWTools_GossipMixin:UpdateGossip()--更新GossipFrame
         List:set_list()
+        if _G['WoWToolsGossipEditUITavCopyButton'] then
+            _G['WoWToolsGossipEditUITavCopyButton']:Show()
+        end
     end)
 
 

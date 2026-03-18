@@ -121,7 +121,7 @@ local function Init_Menu(self, root)
         '|A:mechagon-projects:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM),
     function ()
-        WoWTools_GossipMixin:Init_Options_Frame()
+        WoWTools_GossipMixin:Init_Options_Frame(true)
         return MenuResponse.Open
     end, {rightText=num})
     WoWTools_MenuMixin:SetRightText(sub)

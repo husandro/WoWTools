@@ -422,7 +422,7 @@ local function Init()
     GButton2:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -3, -4)
     GButton2:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
-            WoWTools_GossipMixin:Init_Options_Frame()
+            WoWTools_GossipMixin:Init_Options_Frame(true)
         else
             WoWTools_GossipMixin:Init_Menu_Gossip(self)
         end
@@ -743,10 +743,12 @@ local function Init_Hook()
         end
 
         Set_Gossip_Text(self, info)--自定义，对话，文本
+
         if not info
             or not info.gossipOptionID
             or not Save().gossip
             or StaticPopup1:IsVisible()
+            or GossipButton:Is_ShowOptionsFrame()
         then
             return
         end
@@ -879,6 +881,7 @@ local function Init_Hook()
             or not Save().quest
             or IsModifierKeyDown()
             or StaticPopup1:IsVisible()
+            or GossipButton:Is_ShowOptionsFrame()
         then
             return
         end
@@ -934,6 +937,7 @@ local function Init_Hook()
         if not questID
             or IsModifierKeyDown()
             or StaticPopup1:IsVisible()
+            or GossipButton:Is_ShowOptionsFrame()
         then
             return
 
@@ -968,6 +972,7 @@ local function Init_Hook()
             and not IsModifierKeyDown()
             and #C_GossipInfo.GetOptions()==0
             and GossipFrame.GreetingPanel.GoodbyeButton:IsVisible()
+            and not GossipButton:Is_ShowOptionsFrame()
         then
             C_GossipInfo.CloseGossip()
             if text and not GreetingTextEmpty[text] then

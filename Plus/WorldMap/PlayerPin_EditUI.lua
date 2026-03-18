@@ -1252,7 +1252,7 @@ local function Init()
 
 
     if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
-        local tav= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')-- WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
+        local tav= CreateFrame('Button', nil, _G['TAV_CoreFrame'], 'WoWToolsButtonTemplate')-- WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
         tav:SetNormalAtlas("communities-icon-searchmagnifyingglass")
         tav:SetPoint('LEFT', Frame.iconEdit.iconButton, 'RIGHT')
         tav:SetScript('OnClick', function()
@@ -1268,7 +1268,7 @@ local function Init()
         --插件
         local tavFrame= _G['TAV_InfoPanel']
         if tavFrame and tavFrame.Name and tavFrame.Name.GetText then
-            local btn= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')--  WoWTools_ButtonMixin:Cbtn(Frame, {atlas='Gear'})
+            local btn= CreateFrame('Button', 'WoWToolsPlayerPinEditUITavCopyButton', tavFrame, 'WoWToolsButtonTemplate')--  WoWTools_ButtonMixin:Cbtn(Frame, {atlas='Gear'})
             btn:SetNormalAtlas('Gear')
             btn:SetFrameStrata('HIGH')
             btn:SetPoint('RIGHT', tavFrame.Name, 'LEFT', -14, 0)
@@ -1663,7 +1663,7 @@ local function Init()
 
 
     --导入数据
-    Frame.dataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
+    Frame.dataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame, {
         name='WoWToolsPlayerPinEditUIOutInScrollFrame'
     })
     Frame.dataFrame:Hide()
@@ -1749,6 +1749,14 @@ local function Init()
 
     Frame:SetScript('OnHide', function(self)
         self.dataFrame:SetShown(false)
+        if _G['WoWToolsPlayerPinEditUITavCopyButton'] then
+            _G['WoWToolsPlayerPinEditUITavCopyButton']:Hide()
+        end
+    end)
+    Frame:SetScript('OnShow', function()
+        if _G['WoWToolsPlayerPinEditUITavCopyButton'] then
+            _G['WoWToolsPlayerPinEditUITavCopyButton']:Show()
+        end
     end)
     function Frame:settings()
         self:SetFrameStrata(Save().UIStrata or 'HIGH')

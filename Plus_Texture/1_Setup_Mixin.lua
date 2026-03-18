@@ -358,8 +358,13 @@ end
 --WoWTools_DataMixin:Hook(TabSystemButtonMixin, 'Init', function(self)
 
 local function Set_CheckBox(self)
+    local isChecked= self:GetChecked()
     local icon= self.GetNormalTexture and self:GetNormalTexture() or self:GetRegions()
-    icon:SetAlpha((self:IsMouseOver() or not self:GetChecked()) and 1 or 0)
+    if isChecked then
+        icon:SetAlpha(0)
+    else
+        icon:SetAlpha(1)
+    end
 end
 
 function WoWTools_TextureMixin:SetCheckBox(check)
@@ -376,9 +381,11 @@ function WoWTools_TextureMixin:SetCheckBox(check)
         icon:ClearAllPoints()
         icon:SetPoint('TOPLEFT', 4, -4)
         icon:SetPoint('BOTTOMRIGHT', -4, 4)
-        self:SetAlphaColor(icon, true)
+        self:SetAlphaColor(icon, nil, nil, 0.5)
+
         Set_CheckBox(check)
         WoWTools_DataMixin:Hook(check, 'SetChecked', Set_CheckBox)
+
         check:HookScript('OnLeave', Set_CheckBox)
         check:HookScript('OnEnter', Set_CheckBox)
         check.wowTextureIsHooked=true

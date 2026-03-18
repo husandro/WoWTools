@@ -216,7 +216,7 @@ function WoWToolsWorldMapPinMixin:OnAcquired(xy, x, y, pin, mapID)
         end
         self.text:SetTextColor(color:GetRGB())
         self.text:SetFontHeight(fontH)
-        self.text:SetPoint('LEFT', self, 'RIGHT', textureID and -4 or -icons2, 0)
+        self.text:SetPoint('LEFT', self, 'RIGHT', textureID and -1 or -icons2, 0)
     end
     self:SetSize(icons2, icons2)
     self:SetPosition(x, y)
