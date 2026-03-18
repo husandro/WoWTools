@@ -577,7 +577,7 @@ local function Init()
                     ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
                 ))
             else
-                tooltip:AddLine(COMPACT_UNIT_FRAME_FRIENDLY_HEALTH_COLOR:WrapTextInColorCode(
+                tooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(
                     '|A:Gear:0:0|a'..'Ctr+Alt '
                     ..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)
                 ))

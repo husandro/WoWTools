@@ -3165,7 +3165,8 @@
         "WorldMapMixin",
         "TomTom",
         "UIDropDownMenu_EnableDropDown",
-        "MouseIsOver"
+        "MouseIsOver",
+        "FlightMap_FlightPathDataProviderMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
