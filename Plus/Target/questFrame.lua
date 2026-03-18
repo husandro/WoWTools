@@ -117,12 +117,12 @@ local function Set_Quest_Text(plate)
 
     if text and not frame.questProgress then
         frame.questProgress= frame:CreateFontString(nil, 'ARTWORK', 'ChatFontNormal') -- WoWTools_LabelMixin:Create(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
-        frame.questProgress:SetFontHeight(14)
         frame.questProgress:SetTextColor(GREEN_FONT_COLOR:GetRGB())
         frame.questProgress:SetPoint('LEFT', frame.healthBar or frame, 'RIGHT', 2,0)
     end
     if frame.questProgress then
         frame.questProgress:SetText(text or '')
+        frame.questProgress:SetFontHeight(frame.isSimplified and 44 or 22)
     end
 end
 
@@ -251,6 +251,9 @@ local function Init()
     WoWTools_DataMixin:Hook(NamePlateBaseMixin, 'ClearUnit', function(plate)--移除所有
         RestPlate(plate)
     end)
+
+
+    --hooksecurefunc(NamePlateUnitFrameMixin, 'ShouldBeSimplified', function()
 
 
     Init=function()

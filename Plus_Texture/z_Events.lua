@@ -2146,27 +2146,18 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
 
 
 
+
     --[[local function Set_BG(bar)
-        --print(bar.GetBackgroundEdge, bar:GetStatusBar().BackgroundEdge)
-        --if bar.GetBackgroundEdge then
-            self:HideTexture(bar:GetBackgroundEdge())
-            
-        --end
-        --if bar.GetBackground then
-            bar:GetBackground():SetVertexColor(0,0,0,0.3)
-            bar.StatusBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-            print('bar')
-        --end
-    end]]
-    local function Set_BG(bar)
+        if bar.isset_texture then
+            return
+        end
         self:HideTexture(bar.StatusBar.BackgroundEdge)
         bar.StatusBar.Background:SetVertexColor(0,0,0,0.3)
-        --bar.StatusBar:StatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         bar:GetStatusBarTexture():SetAtlas('widgetstatusbar-fill-white')
         bar.StatusBar.Name:SetFontObject('ChatFontNormal')
         bar.StatusBar.Value:SetFontObject('ChatFontNormal')
-        print('bar')
-    end
+        bar.isset_texture= true
+    end]]
 --锁定，不可交互
     local function set_Locked_NonInteractive(menu)
         local frame= menu:GetParent()
@@ -2269,17 +2260,30 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
 
 
         self:SetScrollBar(frame)
-        if frame.ScrollBox:HasView() then
+        --[[if frame.ScrollBox:HasView() then
             for _, bar in pairs(TokenFrame.ScrollBox:GetFrames()) do
                 Set_BG(bar)
             end
-        end
+        end]]
 
         self:SetAlphaColor(frame.Header, nil, nil, 0)
     end
 
     --WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'SetupSharedStyleBackground', Set_BG)
-    WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'Init', Set_BG)
+    WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'Init', function(btn)
+        btn.StatusBar.Background:SetVertexColor(0,0,0,0.3)
+        if btn.isset_texture then
+            return
+        end
+        self:HideTexture(btn.StatusBar.BackgroundEdge)
+        btn:GetStatusBarTexture():SetAtlas('widgetstatusbtn-fill-white')
+        btn.StatusBar.Name:SetFontObject('ChatFontNormal')
+        btn.StatusBar.Value:SetFontObject('ChatFontNormal')
+        btn.isset_texture= true
+    end)
+
+
+
     for _, windowData in pairs(DamageMeter:GetWindowDataList()) do
         if windowData.sessionWindow then
             settins(windowData.sessionWindow)
