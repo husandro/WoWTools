@@ -11,7 +11,7 @@ THIRD_NUMBER = "亿"
 
 --TooltipComparisonManager:SetItemTooltip(
 
-]]
+
 
 local function Set_Value_Text(line)
     local text= line and line:GetText()
@@ -59,9 +59,8 @@ local function Set_Value(tooltip)
     local name= tooltip:GetName() or 'GameTooltip'
     for i=5, tooltip:NumLines() or 0, 1 do
         Set_Value_Text(_G[name..'TextLeft'..i])
-        --Set_Value_Text(_G[name..'TextRight'..i])
     end
-end
+end]]
 
 
 
@@ -450,9 +449,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         return
     end
 
-    if self:Save().showItemMK then
+    --[[if self:Save().showItemMK and not InCombatLockdown() then
         Set_Value(tooltip)
-    end
+    end]]
 
     local color= WoWTools_ItemMixin:GetColor(itemQuality)
 

@@ -20,7 +20,22 @@ local function Get_CompletedIcon(isCompleted)
 end
 
 
+local ChannelIcon= {
+['大脚世界频道']= '|A:tokens-WoW-generic-small:0:0|a',
+[TRADE]='|A:Banker:0:0|a',-- "交易";
 
+[CHAT_MSG_GUILD]='|A:UI-Achievement-Shield-NoPoints:0:0|a',--公会
+[CHAT_MSG_MONSTER_YELL]='|A:BuildanAbomination-32x32:0:0|a',--"怪物大喊";
+[CHAT_MSG_PARTY] = '|A:questlog-questtypeicon-group:0:0|a',-- ,--"小队";
+[CHAT_MSG_PARTY_LEADER] = '|A:Ping_Marker_Icon_Assist:0:0|a',--"小队队长";
+[CHAT_MSG_RAID] = '|A:groupfinder-waitdot:0:0|a',--"团队";
+[CHAT_MSG_RAID_LEADER] = '|A:Ping_Map_Whole_Assist_Deprecated:0:0|a',--"团队领袖";
+[CHAT_MSG_RAID_WARNING] = '|A:Ping_Marker_Icon_Threat:0:0|a',-- "团队通知";
+
+[INSTANCE_CHAT]='|A:Raid:0:0|a',--副本
+[INSTANCE_CHAT_LEADER] = '|A:Ping_Marker_Icon_Assist:0:0|a',--"副本向导"
+
+}
 
 
 --关键词,频道名称替换
@@ -30,23 +45,25 @@ local function SetChannels(link)
         return
     end
 
-
-    
-    for k, v in pairs(Save().channels or {}) do--自定义
-        if name:find(k) then
-            return link:gsub('%[.-]', v)
+    if Save().channels then
+        for k, v in pairs(Save().channels) do--自定义
+            if name:find(k) then
+                return link:gsub('%[.-]', v)
+            end
         end
-    end
-
-
-    if name:find(GENERAL_LABEL) then--综合
-        return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GENERAL_LABEL), 2, 6)..']')
-    elseif name:find('大脚世界频道') then--综合
-        return link:gsub('%[.-]', '|A:tokens-WoW-generic-small:0:0|a')
     end
 
     name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
     name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
+
+    local icon= ChannelIcon[name]
+    if not icon and WoWTools_DataMixin.Player.husandro then
+        print('ChannelIcon', name)
+    end
+    if icon then
+        return icon
+    end
+
     name=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(name), 2, 6)
     return link:gsub('%[.-]', '['..name..']')
 end

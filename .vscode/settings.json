@@ -3166,7 +3166,17 @@
         "TomTom",
         "UIDropDownMenu_EnableDropDown",
         "MouseIsOver",
-        "FlightMap_FlightPathDataProviderMixin"
+        "FlightMap_FlightPathDataProviderMixin",
+        "TRADE",
+        "CHAT_MSG_INSTANCE_CHAT",
+        "CHAT_MSG_GUILD",
+        "CHAT_MSG_MONSTER_YELL",
+        "CHAT_MSG_PARTY_LEADER",
+        "CHAT_MSG_RAID_LEADER",
+        "CHAT_MSG_RAID_WARNING",
+        "INSTANCE_CHAT",
+        "INSTANCE_CHAT_LEADER",
+        "ItemTextPageScrollChild"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

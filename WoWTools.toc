@@ -520,8 +520,6 @@ Z_Other\Talking.lua
 ##为职业菜单，添加颜色，图标
 Z_Other\ClassMenuColor.lua
 Z_Other\Achievements.lua
-##MoneyFrame 金 增加 mk
-##Z_Other\MoneyFrame.lua
 ##自动输入，删除
 Z_Other\DELETE.lua
 ##隐藏教程

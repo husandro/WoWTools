@@ -279,7 +279,7 @@ local function Init_Panel()
         end
     })
 
-    WoWTools_PanelMixin:OnlyCheck({
+    --[[WoWTools_PanelMixin:OnlyCheck({
         name= (WoWTools_DataMixin.onlyChinese and '物品数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, STATUS_TEXT_VALUE))..' mk',
         tooltip= '1k008, 2w008, 3m008',
         GetValue= function() return Save().showItemMK end,
@@ -288,7 +288,7 @@ local function Init_Panel()
             Save().showItemMK= not Save().showItemMK and true or nil
             set_Cursor_Tips()
         end
-    })
+    })]]
 
     WoWTools_PanelMixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '缩放' or HOUSING_EXPERT_DECOR_SUBMODE_SCALE,

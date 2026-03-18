@@ -49,7 +49,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Collections()
 
 
 
---外观，物品 WardrobeFrame 没有了
+--外观，物品 WardrobeFrame 12.0 没有了
     WardrobeCollectionFrame:HookScript('OnSizeChanged', function(frame)
         local itemFrame= frame.ItemsCollectionFrame
 
