@@ -29,45 +29,48 @@ WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物
 
 
 
---挑战数据 Challenges.lua C_MythicPlus.GetRewardLevelForDifficultyLevel(
-local endOfRunRewardLevel={--15
-    [2]=134,
-    [3]=134,
-    [4]=137,
-    [5]=141,
-    [6]=144,
-    [7]=144,
-    [8]=144,
-    [9]=144,
-    [10]=147,
-    [11]=147,
-    [12]=147,
+--挑战数据 Challenges.lua C_MythicPlus.GetRewardLevelForDifficultyLevel()
+--https://www.wowhead.com/guide/midnight/season-1-overview-dungeons-raids-dates#dungeon-pool
+
+local endOfRunRewardLevel={--Midnight: Season 1 Mythic+ Item Level Table
+    [2]=259,
+    [3]=259,
+    [4]=263,
+    [5]=263,
+    [6]=266,
+    [7]=269,
+    [8]=269,
+    [9]=269,
+    [10]=272,
+    [11]=272,
+    [12]=272,
 }
 
 local WeekItemLevel, Init_WeekItemLevel
 function Init_WeekItemLevel()
     local tab={
-        ['Veteran']= format('|cff1eff00%s|r', WoWTools_DataMixin.onlyChinese and '老兵' or 'Veteran'),
+        --['Veteran']= format('|cff1eff00%s|r', WoWTools_DataMixin.onlyChinese and '老兵' or 'Veteran'),
         ['Champion']= format('|cff0070dd%s|r', WoWTools_DataMixin.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS),
         ['Hero']= format('|cffa334ee%s|r', WoWTools_DataMixin.onlyChinese and '英雄' or ITEM_HEROIC),
         ['Myth']= format('|cffff8000%s|r', WoWTools_DataMixin.onlyChinese and '神话' or ITEM_QUALITY4_DESC),
     }
     WeekItemLevel={
-        [2]='%d'..tab['Champion']..'2/8  %d'..tab['Hero']..'1/6|T5872051:0|t10',--需要修改
-        [3]='%d'..tab['Champion']..'2/8  %d'..tab['Hero']..'1/6|T5872051:0|t12',
-        [4]='%d'..tab['Champion']..'3/8  %d'..tab['Hero']..'2/6|T5872051:0|t14',
-        [5]='%d'..tab['Champion']..'4/8  %d'..tab['Hero']..'2/6|T5872051:0|t16',
-        [6]='%d'..tab['Hero']..'1/6  %d'..tab['Hero']..'3/6|T5872051:0|t18',
+        [2]='%d'..tab['Champion']..'2/6  %d'..tab['Hero']..'1/6|T7639521:0|t10',--需要修改
+        [3]='%d'..tab['Champion']..'2/6  %d'..tab['Hero']..'1/6|T7639521:0|t12',
+        [4]='%d'..tab['Champion']..'3/6  %d'..tab['Hero']..'2/6|T7639521:0|t14',
+        [5]='%d'..tab['Champion']..'4/6  %d'..tab['Hero']..'2/6|T7639521:0|t16',
 
-        [7]='%d'..tab['Hero']..'1/6  %d'..tab['Hero']..'4/6|T5872049:0|t10',
-        [8]='%d'..tab['Hero']..'2/6  %d'..tab['Hero']..'4/6|T5872049:0|t12',
-        [9]='%d'..tab['Hero']..'2/6  %d'..tab['Hero']..'4/6|T5872049:0|t14',
-        [10]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T5872049:0|t16',
-        [11]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T5872049:0|t18',
-        [12]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T5872049:0|t20',
+        [6]='%d'..tab['Hero']..'1/6  %d'..tab['Hero']..'3/6|T7639521:0|t18',
+        [7]='%d'..tab['Hero']..'1/6  %d'..tab['Hero']..'4/6|T7639523:0|t10',
+        [8]='%d'..tab['Hero']..'2/6  %d'..tab['Hero']..'4/6|T7639523:0|t12',
+        [9]='%d'..tab['Hero']..'2/6  %d'..tab['Hero']..'4/6|T7639523:0|t14',
+        [10]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T7639523:0|t16',
+
+        [11]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T7639523:0|t16',
+        [12]='%d'..tab['Hero']..'3/6  %d'..tab['Myth']..'1/6|T7639523:0|t16',
 
         min=2,
-        max=12,
+        max=10,
     }
 end
 

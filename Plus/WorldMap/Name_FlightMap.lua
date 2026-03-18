@@ -25,7 +25,7 @@ local function Init_Hook()
         self.NameLabel:SetJustifyH('CENTER')
     end)
 
-    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'UpdatePinSize', function(self)--, taxiNodeType
+    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'UpdatePinSize', function(self, data)--, taxiNodeType
         local text
         if self.taxiNodeData and Save().ShowFlightMap_Name then
             text= self.taxiNodeData.name
