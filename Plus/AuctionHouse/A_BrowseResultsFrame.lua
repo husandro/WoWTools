@@ -132,7 +132,7 @@ local function Get_Item(btn)
     --if itemKeyInfo then
 
     local classID= select(6, C_Item.GetItemInfoInstant(itemID))
-
+    local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
 
 --专业装备
     if classID==19 then
@@ -198,9 +198,9 @@ local function Get_Item(btn)
         end
 
 --宠物
-    elseif itemKeyInfo.isPet then
+    elseif itemKeyInfo.isPet or speciesID then
         local isCollectedAll, CollectedNum
-        CollectedNum, text, isCollectedAll= select(2, WoWTools_PetBattleMixin:Collected(itemKeyInfo.battlePetSpeciesID, itemID))
+        CollectedNum, text, isCollectedAll= select(2, WoWTools_PetBattleMixin:Collected(speciesID or itemKeyInfo.battlePetSpeciesID, itemID))
         if isCollectedAll then
             stats= (CollectedNum or '')..' '..text
             text= '|A:CovenantSanctum-Renown-Checkmark-Large:0:0|a'
