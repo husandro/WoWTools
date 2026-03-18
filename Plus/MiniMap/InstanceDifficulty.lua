@@ -55,14 +55,17 @@ local function Init()
         return
     end
 
-    btn.labelType= WoWTools_LabelMixin:Create(btn, {color=true, level=22, alpha=0.5})
+    btn.labelType= btn:CreateFontString('WoWToolsMiniMapInstanceDifficultyName', 'ARTWORK', 'WoWToolsFont') --WoWTools_LabelMixin:Create(btn, {color=true, level=22, alpha=0.5})
+    btn.labelType:SetAlpha(0.5)
+    btn.labelType:SetJustifyH('CENTER')
     btn.labelType:SetPoint('TOP', btn, 'BOTTOM', 0, 4)
+    WoWTools_ColorMixin:SetLabelColor(btn.labelType)
 
     WoWTools_TextureMixin:SetAlphaColor(btn.Default.Border, true)
     WoWTools_TextureMixin:SetAlphaColor(btn.Guild.Border, true)
     WoWTools_TextureMixin:SetAlphaColor(btn.ChallengeMode.Border, true)
 
-    WoWTools_LabelMixin:Create(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
+    WoWTools_LabelMixin:Create(nil,{size=12, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
     btn.Default.Text:SetShadowOffset(1,-1)
 
 --InstanceDifficulty.lua
