@@ -75,6 +75,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     end
 
     local textLeft, text2Left, textRight, text2Right=' ', '', '', ''
+    local tooltipName=tooltip:GetName() or 'GameTooltip'
 
     --怪物, 图标
     if UnitIsQuestBoss(unit) then--任务
@@ -104,7 +105,9 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 
     local creatureName=UnitCreatureType(unit)--生物类型
     if creatureName and not creatureName:find(COMBAT_ALLY_START_MISSION) then
-        textRight=WoWTools_TextMixin:CN(creatureName)--WoWTools_TextMixin:CN(type)翻译出错
+        --textRight=WoWTools_TextMixin:CN(creatureName)--WoWTools_TextMixin:CN(type)翻译出错
+        _G[tooltipName.."TextRight1"]:SetText(WoWTools_TextMixin:CN(creatureName))
+        _G[tooltipName.."TextRight1"]:SetShown(true)
     end
 
     local uiWidgetSet= UnitWidgetSet(unit)
@@ -118,20 +121,18 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         npc, zone= WoWTools_UnitMixin:GetNpcID(unit, guid)
 --布莱恩·铜须
         textLeft= Set_BrannBronzebeard(tooltip, unit, self.iconSize) or textLeft
-
-        if zone or npc then
-            tooltip:AddDoubleLine(
-                npc and
-                (WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER)
-                ..WoWTools_DataMixin.Icon.icon2
-                ..npc or ' ',
-
-                zone and WoWTools_DataMixin.Language.layer..zone
-            )
-
+        if zone then
+            tooltip:AddLine(WoWTools_DataMixin.Language.layer..zone)
             WoWTools_DataMixin.Player.Layer=zone--字符
         end
-        self:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
+        if npc then
+            tooltip:AddLine(    
+                (WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER)
+                ..WoWTools_DataMixin.Icon.icon2
+                ..npc
+            )
+            self:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
+        end
     end
 
     --NPC 中文名称
@@ -149,7 +150,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         local r,g,b= color:GetRGB()
 
         local lineLeft, lineRight
-        local tooltipName=tooltip:GetName() or 'GameTooltip'
+        
         for i=1, tooltip:NumLines() do
             lineLeft= _G[tooltipName.."TextLeft"..i]
             if lineLeft then

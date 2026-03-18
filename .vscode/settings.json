@@ -3176,7 +3176,10 @@
         "CHAT_MSG_RAID_WARNING",
         "INSTANCE_CHAT",
         "INSTANCE_CHAT_LEADER",
-        "ItemTextPageScrollChild"
+        "ItemTextPageScrollChild",
+        "DelveEntranceDataProviderMixin",
+        "AreaPOIDataProviderMixin",
+        "DelveEntrancePinMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

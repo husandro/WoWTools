@@ -9,7 +9,7 @@ end
 local function Init_Label(self)
     self.Text= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
     self.Text:SetJustifyH('CENTER')
-    self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+    self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 8)
 end
 
 local function Init()
@@ -85,6 +85,23 @@ local function Init()
         tooltip:Show()
     end)
 
+
+
+
+
+
+    --showDelveEntrancesOnMap local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(mapID, areaPoiID);
+    WoWTools_DataMixin:Hook(DelveEntrancePinMixin, 'OnAcquired', function(self)--, poiInfo)
+        if not self.Text then
+            Init_Label(self)
+        end
+        self.Text:SetText(
+            Save().ShowDungeon_Name
+            and WoWTools_TextMixin:CN(self.name)
+            or ''
+        )
+        self.Text:SetFontHeight(Save().dungeonFontSize or 10)
+    end)
 
     Init= function()end
 end

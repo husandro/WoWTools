@@ -2145,19 +2145,6 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
     end)
 
 
-
-
-    --[[local function Set_BG(bar)
-        if bar.isset_texture then
-            return
-        end
-        self:HideTexture(bar.StatusBar.BackgroundEdge)
-        bar.StatusBar.Background:SetVertexColor(0,0,0,0.3)
-        bar:GetStatusBarTexture():SetAtlas('widgetstatusbar-fill-white')
-        bar.StatusBar.Name:SetFontObject('ChatFontNormal')
-        bar.StatusBar.Value:SetFontObject('ChatFontNormal')
-        bar.isset_texture= true
-    end]]
 --锁定，不可交互
     local function set_Locked_NonInteractive(menu)
         local frame= menu:GetParent()
@@ -2249,37 +2236,30 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         end)
         frame:GetSessionName():SetText(GetDamageMeterSessionShortName(frame.sessionType, frame.sessionID))
 
-
-        --[[frame.SettingsDropdown:HookScript('OnLeave', function(menu)
-            menu.Icon:SetAlpha(0.2)
-        end)
-        frame.SettingsDropdown:HookScript('OnEnter', function(menu)
-            menu.Icon:SetAlpha(1)
-        end)]]
-
-
-
         self:SetScrollBar(frame)
-        --[[if frame.ScrollBox:HasView() then
-            for _, bar in pairs(TokenFrame.ScrollBox:GetFrames()) do
-                Set_BG(bar)
-            end
-        end]]
 
         self:SetAlphaColor(frame.Header, nil, nil, 0)
+
+        frame.SessionTimer:SetTextColor(0,1,0)
+
+        self:SetScrollBar(frame.SourceWindow)
+        self:SetAlphaColor(frame.SourceWindow.Background, nil, nil, true)
+        self:SetFrame(frame.SourceWindow.ResizeButton, nil, nil, true)
     end
 
     --WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'SetupSharedStyleBackground', Set_BG)
     WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'Init', function(btn)
         btn.StatusBar.Background:SetVertexColor(0,0,0,0.3)
+        btn.StatusBar.Name:SetTextColor(btn:GetStatusBarTexture():GetVertexColor())
         if btn.isset_texture then
             return
         end
+        btn.isset_texture= true
         self:HideTexture(btn.StatusBar.BackgroundEdge)
-        btn:GetStatusBarTexture():SetAtlas('widgetstatusbtn-fill-white')
+        btn:GetStatusBarTexture():SetAtlas('widgetstatusbar-fill-white')
         btn.StatusBar.Name:SetFontObject('ChatFontNormal')
         btn.StatusBar.Value:SetFontObject('ChatFontNormal')
-        btn.isset_texture= true
+        WoWTools_ButtonMixin:AddMask(btn.Icon, true, btn.Icon.Icon)
     end)
 
 
