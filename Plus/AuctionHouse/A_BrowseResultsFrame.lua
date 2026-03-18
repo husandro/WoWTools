@@ -121,15 +121,11 @@ local function Get_Item(btn)
 
     local itemKey= rowData.itemKey
     local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)
-
+--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
 
     if not itemLink or not itemID or not itemKeyInfo then
         return
     end
-
---itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
-    --local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)
-    --if itemKeyInfo then
 
     local classID= select(6, C_Item.GetItemInfoInstant(itemID))
     local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
@@ -198,7 +194,7 @@ local function Get_Item(btn)
         end
 
 --宠物
-    elseif itemKeyInfo.isPet or speciesID then
+    elseif itemKeyInfo.isPet or (speciesID and speciesID>0) then
         local isCollectedAll, CollectedNum
         CollectedNum, text, isCollectedAll= select(2, WoWTools_PetBattleMixin:Collected(speciesID or itemKeyInfo.battlePetSpeciesID, itemID))
         if isCollectedAll then

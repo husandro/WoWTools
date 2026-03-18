@@ -2146,15 +2146,27 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
 
 
 
-    local function Set_BG(bar)
-        if bar.GetBackgroundEdge then
-            bar:GetBackgroundEdge():SetVertexColor(0,0,0,0.3)
-        end
-        if bar.GetBackground then
+    --[[local function Set_BG(bar)
+        --print(bar.GetBackgroundEdge, bar:GetStatusBar().BackgroundEdge)
+        --if bar.GetBackgroundEdge then
+            self:HideTexture(bar:GetBackgroundEdge())
+            
+        --end
+        --if bar.GetBackground then
             bar:GetBackground():SetVertexColor(0,0,0,0.3)
-        end
+            bar.StatusBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            print('bar')
+        --end
+    end]]
+    local function Set_BG(bar)
+        self:HideTexture(bar.StatusBar.BackgroundEdge)
+        bar.StatusBar.Background:SetVertexColor(0,0,0,0.3)
+        --bar.StatusBar:StatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        bar:GetStatusBarTexture():SetAtlas('widgetstatusbar-fill-white')
+        bar.StatusBar.Name:SetFontObject('ChatFontNormal')
+        bar.StatusBar.Value:SetFontObject('ChatFontNormal')
+        print('bar')
     end
-
 --锁定，不可交互
     local function set_Locked_NonInteractive(menu)
         local frame= menu:GetParent()
@@ -2183,6 +2195,8 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         self:SetAlphaColor(frame.DamageMeterTypeDropdown.Arrow, nil, nil, 0)
         frame.DamageMeterTypeDropdown.TypeName:ClearAllPoints()
         frame.DamageMeterTypeDropdown.TypeName:SetPoint('LEFT')
+        frame.DamageMeterTypeDropdown.TypeName:SetFontObject('ChatFontSmall')
+        WoWTools_ColorMixin:SetLabelColor(frame.DamageMeterTypeDropdown.TypeName)
         frame.DamageMeterTypeDropdown:HookScript('OnLeave', function(menu)
             menu.Arrow:SetAlpha(0)
         end)
@@ -2192,6 +2206,8 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
 
 --当前，总体 WowStyle2DropdownTemplate
         self:SetAlphaColor(frame.SessionDropdown.Background, nil, nil, 0)
+        frame.SessionDropdown.SessionName:SetFontObject('ChatFontSmall')
+        WoWTools_ColorMixin:SetLabelColor(frame.SessionDropdown.SessionName)
         frame.SessionDropdown:HookScript('OnLeave', function(menu)
             menu.Background:SetAlpha(0)
         end)
@@ -2259,12 +2275,11 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
             end
         end
 
+        self:SetAlphaColor(frame.Header, nil, nil, 0)
     end
 
-    WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'SetupSharedStyleBackground', function(bar)
-        Set_BG(bar)
-    end)
-
+    --WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'SetupSharedStyleBackground', Set_BG)
+    WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'Init', Set_BG)
     for _, windowData in pairs(DamageMeter:GetWindowDataList()) do
         if windowData.sessionWindow then
             settins(windowData.sessionWindow)

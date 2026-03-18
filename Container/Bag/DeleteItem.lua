@@ -339,6 +339,7 @@ local function Create_Button(frame)
     local btn= CreateFrame('DropdownButton', 'WoWToolsBagDeleteItemButton'..(isCombinedBag and 1 or 2), frame.CloseButton, 'WoWToolsMenu3Template')
     btn:SetPoint('RIGHT', frame.CloseButton, 'LEFT', isCombinedBag and -46 or -23, 0)
     btn:SetNormalAtlas('common-icon-delete')
+    WoWTools_TextureMixin:SetButton(btn)
 
     btn.Text= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
     btn.Text:SetPoint('BOTTOMRIGHT', -1, 1)
