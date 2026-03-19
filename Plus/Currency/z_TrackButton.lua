@@ -928,23 +928,27 @@ local function Init()
 	end
 
 	function TrackButton:set_frameshown()
-		self.frame:SetShown(Save().str and self:IsShown())
+		if self.frame:CanChangeAttribute() then
+			self.frame:SetShown(Save().str and self:IsShown())
+		end
 		self:set_texture()
 	end
 
 
 	function TrackButton:set_shown(isInCombat)
-		local show= not Save().Hide
-		if show and not Save().notAutoHideTrack then
-			show= not (
-				IsInInstance()
-				or C_PetBattles.IsInBattle()
-				or UnitInVehicle('player') or OverrideActionBar:IsShown()
-				or InCombatLockdown()
-				or isInCombat
-			)
+		if self:CanChangeAttribute() then
+			local show= not Save().Hide
+			if show and not Save().notAutoHideTrack then
+				show= not (
+					IsInInstance()
+					or C_PetBattles.IsInBattle()
+					or UnitInVehicle('player') or OverrideActionBar:IsShown()
+					or InCombatLockdown()
+					or isInCombat
+				)
+			end
+			self:SetShown(show)
 		end
-		self:SetShown(show)
 	end
 
 
@@ -1060,7 +1064,7 @@ local function Init()
 
 
 	TrackButton:SetScript('OnMouseWheel', function(self, d)
-		if not WoWTools_FrameMixin:IsLocked(self) then
+		if self:CanChangeAttribute() then
 			Save().str= d==-1
 			self:set_frameshown()
 			self:set_tooltip()
@@ -1085,7 +1089,7 @@ local function Init()
 			self:RegisterEvent('PLAYER_REGEN_ENABLED')
 		end
 
-		if WoWTools_FrameMixin:IsLocked(self) then
+		if not self:CanChangeAttribute() then
 			self:RegisterEvent('PLAYER_REGEN_ENABLED')
 			return
 		end

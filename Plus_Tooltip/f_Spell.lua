@@ -21,8 +21,17 @@ local function Set_HunterPet(tooltip, spellID, size)
     end
 
     local atlas= WoWTools_DataMixin.Icon[info.specialization]
+    local specialization= WoWTools_TextMixin:CN(info.specialization)
+    if specialization then
+        specialization= GREEN_FONT_COLOR:WrapTextInColorCode(specialization)
+    end
+    if atlas then
+        local s= size>0 and size+4 or 22
+        atlas= '|A:'..atlas..':'..s..':'..s..'|a'
+    end
+
     tooltip:AddDoubleLine(
-        (atlas and '|A:'..atlas..':'..size..':'..size..'|a' or ' ')..(WoWTools_TextMixin:CN(info.specialization) or ' '),
+        (atlas or ' ')..(specialization or ' '),
 
         (WoWTools_TextMixin:CN(info.familyName) or '')
         ..(info.name and info.name~=info.familyName and '<'..info.name..'>' or '')
@@ -85,7 +94,6 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
     if not canaccessvalue(name) or not name then
         return
     end
-
 
 
     local spellTexture=  originalIcon or icon
