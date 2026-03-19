@@ -280,15 +280,18 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
     local itemLocation= setting.itemLocation
 
     link= link or (itemID and select(2, C_Item.GetItemInfo(itemID)))
+    local itemLevelColor= HIGHLIGHT_FONT_COLOR
 
     if link then
         local itemID2, _, _, _, _, classID= C_Item.GetItemInfoInstant(link)
-        if classID==2 or classID==4 then
+        if (classID==2 or classID==4) and not C_Item.IsCosmeticItem(itemID2) then
             itemID= itemID or itemID2
         else
             link=nil
+            itemID= nil
         end
     end
+
     if link then
         if not hideSet then
             setID= select(16 , C_Item.GetItemInfo(link))--套装
@@ -328,32 +331,32 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                 --local quality = C_Item.GetItemQualityByID(link)--颜色
                 --if quality==7 then
 
-                itemLevel= self:GetItemLevel(link)
-                if itemLevel and itemLevel>13 then
-                    if WoWTools_ItemMixin:IsEquipType(itemLocation, bag, equipSlot)==false then--物品是否为首选护甲类型
-                        itemLevel= DISABLED_FONT_COLOR:WrapTextInColorCode(itemLevel)
-                    else
-                        local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等
-                        if avgItemLevel then
-                            local lv = itemLevel- avgItemLevel
-                            if lv <= -6  then
-                                itemLevel= WARNING_FONT_COLOR_CODE..itemLevel..'|r'
-                            elseif lv>=7 then
-                                itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
-                            else
-                                itemLevel='|cffffffff'..itemLevel..'|r'
-                            end
+            itemLevel= self:GetItemLevel(link)
+            if itemLevel and itemLevel>13 then
+                if WoWTools_ItemMixin:IsEquipType(itemLocation, bag, equipSlot)==false --物品是否为首选护甲类型
+                    or WoWTools_ItemMixin:IsNotEquipType(link)==true
+                then
+                    itemLevelColor= DISABLED_FONT_COLOR
+                else
+                    local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等
+                    if avgItemLevel then
+                        local lv = itemLevel- avgItemLevel
+                        if lv <= -6  then
+                            itemLevelColor= WARNING_FONT_COLOR
+                        elseif lv>=7 then
+                            itemLevelColor= GREEN_FONT_COLOR
                         end
                     end
-                else
-                    itemLevel=nil
                 end
+            else
+                itemLevel=nil
             end
-            if not frame.itemLevel and itemLevel then
-                frame.itemLevel= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont', nil, 1)
-                frame.itemLevel:SetJustifyH('CENTER')
-                frame.itemLevel:SetPoint('CENTER', point)
-            end
+        end
+        if not frame.itemLevel and itemLevel then
+            frame.itemLevel= frame:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2', nil, 1)
+            frame.itemLevel:SetJustifyH('CENTER')
+            frame.itemLevel:SetPoint('CENTER', point)
+        end
     end
 
     if frame.setIDItem then frame.setIDItem:SetShown(setID) end--套装
@@ -362,6 +365,7 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
     if frame.itemLevel then
         frame.itemLevel:SetText(itemLevel or '')
         frame.itemLevel:SetFontHeight(size)
+        frame.itemLevel:SetTextColor(itemLevelColor:GetRGB())
     end
 
     local tab= not hideStats and self:GetItemStats(link) or {}--物品，次属性，表

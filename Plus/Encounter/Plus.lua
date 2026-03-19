@@ -379,12 +379,14 @@ local function Init()
         local tips--itemText提示用
         local classText--物品专精
         local upText--升级：
+        local itemInfo = C_EncounterJournal.GetLootInfoByIndex(btn.index) or  {}
+        local itemLink= btn.link or itemInfo.link
+        local itemID= btn.itemID or itemInfo.itemID
 
-        if btn.link then
-
+        if itemLink and itemID then
             local slotText= btn.slot and btn.slot:GetText() or ''--是装备物品
             if slotText~='' then
-                local specTable = C_Item.GetItemSpecInfo(btn.link) or {}--专精图标
+                local specTable = C_Item.GetItemSpecInfo(itemLink) or {}--专精图标
                 local specTableNum=#specTable
                 if specTableNum>0 then
                     local specA=''
@@ -404,7 +406,7 @@ local function Init()
                     end
                 end
 --物品是否收集, 返回图标, 幻化
-                local item, collected, isSelf = WoWTools_CollectionMixin:Item(btn.link, nil, true)
+                local item, collected, isSelf = WoWTools_CollectionMixin:Item(itemLink, nil, true)
                 if item and not collected then
                     itemText= (itemText or '')..item
                     tips= tips and tips..'|n|n' or ''
@@ -414,14 +416,11 @@ local function Init()
                         ..(not isSelf and ' |cffffffff'..(WoWTools_DataMixin.onlyChinese and '其他职业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, CLASS))..'|r' or '')
                 end
             else
-                local itemID= btn.itemID or C_Item.GetItemInfoInstant(btn.link)
-                if itemID then
-                    itemText= WoWTools_CollectionMixin:Mount(nil, itemID)--坐骑物品
-                    itemText= itemText or select(3, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
-                    itemText= itemText or WoWTools_CollectionMixin:Toy(itemID)--玩具,是否收集
-                end
+                itemText= WoWTools_CollectionMixin:Mount(nil, itemID)--坐骑物品
+                itemText= itemText or select(3, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
+                itemText= itemText or WoWTools_CollectionMixin:Toy(itemID)--玩具,是否收集
             end
-            local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=btn.link, text={ITEM_CLASSES_ALLOWED, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
+            local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, text={ITEM_CLASSES_ALLOWED, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
             classText= dateInfo.text[ITEM_CLASSES_ALLOWED]
             upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
 
@@ -447,9 +446,13 @@ local function Init()
                 end
             end
         end
+
+
         if not btn.itemText then
             Create_LootItems(btn)
         end
+
+
         btn.itemText:SetText(itemText or '')
         btn.itemText.tips= tips
 --拾取, 职业
@@ -464,18 +467,20 @@ local function Init()
         btn.classLabel:SetText(classText or '')
         btn.upText:SetText(upText or '')
     --显示, 物品, 属性
-        WoWTools_ItemMixin:SetItemStats(btn, btn.link, {point= btn.IconBorder})
+        WoWTools_ItemMixin:SetItemStats(btn, itemLink, {point= btn.IconBorder})
     --物品法术，提示
-        local spellID
-        if btn.link or btn.itemID then
-            spellID= select(2, C_Item.GetItemSpell(btn.link or btn.itemID))
-        end
+        local spellID= select(2, C_Item.GetItemSpell(itemLink or itemID))
+        
         btn.spellTexture.spellID= spellID
         btn.spellTexture:SetShown(spellID and true or false)
         if spellID then
             WoWTools_DataMixin:Load(spellID, 'spell')
             --SetPortraitToTexture(btn.spellTexture, C_Spell.GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
             btn.spellTexture:SetTexture(C_Spell.GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
+        end
+
+        if btn.itemLevel and itemInfo.weaponTypeError or itemInfo.handError then
+            btn.itemLevel:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
         end
     end)
 
