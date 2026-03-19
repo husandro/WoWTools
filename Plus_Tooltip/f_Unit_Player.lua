@@ -17,7 +17,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local isGroupPlayer= (not isSelf and WoWTools_DataMixin.GroupGuid[guid]) and true or nil--队友
 
     local color= WoWTools_UnitMixin:GetColor(unit, guid)
-    
+
     local isInCombat= InCombatLockdown()
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     local textLeft, text2Left, textRight, text2Right='', '', '', ''
@@ -161,13 +161,14 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
         --local lineRight2= _G[tooltipName..'TextRight2']
         if guildName then
-            guildName= WoWTools_TextMixin:sub(guildName, 24, 12)
+            
+            guildName= WoWTools_TextMixin:sub(guildName, 12, 24)
             local rank=''
             if guildRankIndex then
-                guildRankName= WoWTools_TextMixin:sub(guildRankName, 8, 4)
+                guildRankName= WoWTools_TextMixin:sub(guildRankName, 4, 8)
                 rank= guildRankIndex==0 and '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
                     or (guildRankIndex==1 and '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t')
-                    or (' '..(guildRankName or guildRankIndex))
+                    or ('|A:MonkUI-LightOrb-small:0:0|a'..(guildRankName or guildRankIndex))
             end
 
             lineLeft2:SetText(
@@ -175,6 +176,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                 ..guildName
                 ..rank
             )
+
         else
             local text=lineLeft2:GetText()
             if text and text~='' and not text:find('|A:') then
@@ -284,7 +286,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                 if not hideLine then
                     hideLine=lineLeft
                 else
-                   
+
                     show=false
                 end
             end

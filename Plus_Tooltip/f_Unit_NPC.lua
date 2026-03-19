@@ -46,10 +46,9 @@ local function Set_BrannBronzebeard(tooltip, unit, size)
         tooltip:AddLine(left)
     end]]
 
-    tooltip:AddDoubleLine(
-        right or ' ',
+    tooltip:AddLine(
         (WoWTools_DataMixin.onlyChinese and '声望' or REPUTATION)
-        ..WoWTools_DataMixin.Icon.icon2..companionFactionID
+        ..WoWTools_DataMixin.Icon.icon2..companionFactionID..(right or '')
     )
 
     return left
@@ -126,7 +125,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
             WoWTools_DataMixin.Player.Layer=zone--字符
         end
         if npc then
-            tooltip:AddLine(    
+            tooltip:AddLine(
                 (WoWTools_DataMixin.onlyChinese and '单位' or GROUPMANAGER_UNIT_MARKER)
                 ..WoWTools_DataMixin.Icon.icon2
                 ..npc
@@ -150,7 +149,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         local r,g,b= color:GetRGB()
 
         local lineLeft, lineRight
-        
+
         for i=1, tooltip:NumLines() do
             lineLeft= _G[tooltipName.."TextLeft"..i]
             if lineLeft then

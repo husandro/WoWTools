@@ -195,9 +195,10 @@ local function Create_Button(btn)
     btn.spec:SetPoint('BOTTOMLEFT', 1,1)
 
 
-    btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlightOutline', 3)
+    btn.text= btn:CreateFontString(nil, 'BORDER', 'WoWToolsFonts', 3)
     btn.text:SetFontHeight(8)
-    btn.text:SetShadowOffset(1,-1)
+    btn.text:SetJustifyH('RIGHT')
+    --btn.text:SetShadowOffset(1,-1)
     btn.text:SetPoint('BOTTOMRIGHT', -1, 1)
 
     btn.select= btn:CreateTexture(nil, 'ARTWORK', nil, 1)
@@ -470,11 +471,12 @@ local function Init()--添加装备管理框
 --装等
     TrackButton.frame= CreateFrame('Frame', nil, TrackButton)
     TrackButton.frame:SetAllPoints()
-    TrackButton.frame.text= TrackButton.frame:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall2') -- WoWTools_LabelMixin:Create(TrackButton, {size=Save().trackButtonFontSize or 10, color=true, justifyH='CENTER'})
-    TrackButton.frame.text:SetShadowOffset(1,-1)
+    TrackButton.frame.text= TrackButton.frame:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont') -- WoWTools_LabelMixin:Create(TrackButton, {size=Save().trackButtonFontSize or 10, color=true, justifyH='CENTER'})
+    TrackButton.frame.text:SetJustifyH('CENTER')
+    TrackButton.frame.text:SetFontHeight(10)
+    --TrackButton.frame.text:SetShadowOffset(1,-1)
 
     WoWTools_ColorMixin:SetLabelColor(TrackButton.frame.text)
-    TrackButton.frame.text:SetPoint('CENTER')
 
     function TrackButton.frame:set_itemleve()
         self.text:SetFormattedText('%i', select(2, GetAverageItemLevel()) or 0)

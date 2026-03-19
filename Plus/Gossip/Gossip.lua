@@ -262,38 +262,26 @@ local function Init()
         end
     end)
     GossipButton:SetScript('OnMouseUp', ResetCursor)
-    GossipButton:SetScript('OnMouseWheel', function(self, d)
-        --[[if IsAltKeyDown() then
-            local n= Save().scale or 1
-            if d==-1 then
-                n= n+ 0.05
-            elseif d==1 then
-                n= n- 0.05
-            end
-            n= n>3 and 3 or n
-            n= n< 0.4 and 0.4 or n
-            Save().scale=n
-            self:settings()
-            self:set_tooltip()
-        elseif not IsModifierKeyDown() then]]
-            WoWTools_GossipMixin:Init_Options_Frame(d==1)
-            --WoWTools_PanelMixin:Open('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
-        --end
+    GossipButton:SetScript('OnMouseWheel', function(_, d)
+        WoWTools_GossipMixin:Init_Options_Frame(d==1)
     end)
 
-
+    
+    function GossipButton:set_enable()
+        Save().gossip= not Save().gossip and true or false
+        WoWTools_GossipMixin:Init_Gossip_Data()
+        self:set_texture()--设置，图片
+        self:set_tooltip()
+        WoWTools_GossipMixin:Init_Gossip()
+        WoWTools_GossipMixin:Init_Delves()
+    end
     GossipButton:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then--移动
             SetCursor('UI_MOVE_CURSOR')
         else
             local key=IsModifierKeyDown()
             if d=='LeftButton' and not key then--禁用，启用
-                Save().gossip= not Save().gossip and true or false
-                WoWTools_GossipMixin:Init_Gossip_Data()
-                self:set_texture()--设置，图片
-                self:set_tooltip()
-                WoWTools_GossipMixin:Init_Gossip()
-
+                self:set_enable()
             elseif d=='RightButton' and not key then--菜单
                 WoWTools_GossipMixin:Init_Menu_Gossip(self)
             end

@@ -8,51 +8,6 @@ end
 
 
 
-local P_Save={
-    NPC={--禁用NPC
-        ['223594']=true,
-        ['150122']=true,--荣耀堡法师 50005 我必须向黑暗之门报到。
-    },
-    gossip= true,
-
-    unique= true,--唯一对话
-    gossipOption={--gossipID= text
-        --[123201]=2,--跳过，任务
-        [123176]=2,--跳过，去11.0地图任务
-
-    },
-    choice={},--PlayerChoiceFrame
-    --movie={},--电影
-    stopMovie=true,--如果已播放，停止播放
-    stopCinematics= WoWTools_DataMixin.Player.husandro,--跳过过场动画
-    stopCinematicsInInstance=not WoWTools_DataMixin.Player.husandro,--仅限在副本里
-
-    quest= true,
-    questOption={},
-    questRewardCheck={},--{任务ID= index}    
-    --autoSortQuest=  WoWTools_DataMixin.Player.husandro,--仅显示当前地图任务
-    autoSelectReward= WoWTools_DataMixin.Player.husandro,--自动选择奖励
-    showAllQuestNum= WoWTools_DataMixin.Player.husandro,--显示所有任务数量
-
-    questPlayText= WoWTools_DataMixin.Player.husandro,
-    --questPlayTextStopMove=true,
-
-    scale=1,
-    --strata='MEDIUM',
-    --bgAlpha=0.5,
-    --point=nil,
-
-    --not_Gossip_Text_Icon=true,--自定义，对话，文本
-
-    Gossip_Text_Icon_Size=14,
-
-    --Gossip_Text_Icon_cnFont=nil,--仅限，外文, 修该字体
-
-    --delvesDifficultyMaxLevel=nil,--地下堡指定难度
-    Dialogs={}
-}
-
-
 local function Save()
     return WoWToolsSave['Plus_Gossip']
 end
@@ -90,14 +45,16 @@ local function Init()
     WoWTools_GossipMixin:Init_QuestInfo_Display()--任务目标，类型提示
 
     WoWTools_GossipMixin:Init_StaticPopupDialogs()
+    WoWTools_GossipMixin:Init_Delves()
+    WoWTools_GossipMixin:Init_PlayerChoice()
 
     if Save().gossip then
-        C_Timer.After(2, function()
-            if SubscriptionInterstitialFrame and SubscriptionInterstitialFrame:IsShown() then
-                SubscriptionInterstitialFrame.ClosePanelButton:Click()
-            end
-        end)
+        if SubscriptionInterstitialFrame and SubscriptionInterstitialFrame:IsShown() then
+            SubscriptionInterstitialFrame.ClosePanelButton:Click()
+        end
     end
+
+    Init=function()end
 end
 
 
@@ -108,24 +65,60 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGIN")
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Gossip']= WoWToolsSave['Plus_Gossip'] or P_Save
-            P_Save=nil
+            WoWToolsSave['Plus_Gossip']= WoWToolsSave['Plus_Gossip'] or {
+                NPC={--禁用NPC
+                    ['223594']=true,
+                    ['150122']=true,--荣耀堡法师 50005 我必须向黑暗之门报到。
+                },
+                gossip= true,
 
-            if Save().movie then
-                WoWToolsPlayerDate.GossipMovie= Save().movie or {}
-                Save().movie= nil
-            end
+                unique= true,--唯一对话
+                gossipOption={--gossipID= text
+                    --[123201]=2,--跳过，任务
+                    [123176]=2,--跳过，去11.0地图任务
+
+                },
+                choice={},--PlayerChoiceFrame
+                --movie={},--电影
+                stopMovie=true,--如果已播放，停止播放
+                stopCinematics= WoWTools_DataMixin.Player.husandro,--跳过过场动画
+                stopCinematicsInInstance=not WoWTools_DataMixin.Player.husandro,--仅限在副本里
+
+                quest= true,
+                questOption={},
+                questRewardCheck={},--{任务ID= index}    
+                --autoSortQuest=  WoWTools_DataMixin.Player.husandro,--仅显示当前地图任务
+                autoSelectReward= WoWTools_DataMixin.Player.husandro,--自动选择奖励
+                showAllQuestNum= WoWTools_DataMixin.Player.husandro,--显示所有任务数量
+
+                questPlayText= WoWTools_DataMixin.Player.husandro,
+                --questPlayTextStopMove=true,
+
+                scale=1,
+                --strata='MEDIUM',
+                --bgAlpha=0.5,
+                --point=nil,
+
+                --not_Gossip_Text_Icon=true,--自定义，对话，文本
+
+                Gossip_Text_Icon_Size=14,
+
+                --Gossip_Text_Icon_cnFont=nil,--仅限，外文, 修该字体
+
+                delvesDifficultyMaxLevel= WoWTools_DataMixin.Player.husandro,--地下堡指定难度
+                Dialogs={}
+            }
 
             WoWToolsPlayerDate.GossipMovie= WoWToolsPlayerDate.GossipMovie or {}
 
 --玩家，自定义，对话，文本
-            WoWToolsPlayerDate['GossipTextIcon']= WoWToolsPlayerDate['GossipTextIcon'] or {
+            WoWToolsPlayerDate.GossipTextIcon= WoWToolsPlayerDate.GossipTextIcon or {
                 [55193]={
                     icon='communities-icon-invitemail',
                     name=(WoWTools_DataMixin.onlyChinese and '打开邮件' or OPENMAIL),
@@ -143,12 +136,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  checkName= WoWTools_GossipMixin.addName,
                  GetValue= function() return not Save().disabled end,
                  SetValue= function()
-                     Save().disabled = not Save().disabled and true or nil
-                     print(
-                        WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                        WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
-                    )
+                    Save().disabled = not Save().disabled and true or nil
+                    Init()
                  end,
                  buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
@@ -161,38 +150,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
                     )
                  end,
-                 tooltip= WoWTools_GossipMixin.addName,
+                 tooltip= WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
                  layout= nil,
                  category= nil,
              })
 
             if Save().disabled then
                 self:SetScript('OnEvent', nil)
-                self:UnregisterAllEvents()
             else
-                if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
-                    WoWTools_GossipMixin:Init_PlayerChoice()
-                end
-                if C_AddOns.IsAddOnLoaded('Blizzard_DelvesDifficultyPicker') then
-                    WoWTools_GossipMixin:Init_Delves()
-                end
+                self:RegisterEvent("PLAYER_ENTERING_WORLD")
             end
-
-        elseif arg1=='Blizzard_PlayerChoice' and WoWToolsSave then
-            WoWTools_GossipMixin:Init_PlayerChoice()
-            if C_AddOns.IsAddOnLoaded('Blizzard_DelvesDifficultyPicker') then
-                self:UnregisterEvent(event)
-            end
-
-        elseif arg1=='Blizzard_DelvesDifficultyPicker' and WoWToolsSave then--地下堡
-            WoWTools_GossipMixin:Init_Delves()
-            if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
-                self:UnregisterEvent(event)
-            end
+            self:UnregisterEvent(event)
         end
 
-    elseif event == "PLAYER_LOGIN" then
+    elseif event == "PLAYER_ENTERING_WORLD" then
         Init()
         self:UnregisterEvent(event)
+        self:SetScript('OnEvent', nil)
     end
 end)

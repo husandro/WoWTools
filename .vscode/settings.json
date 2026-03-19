@@ -3179,7 +3179,9 @@
         "ItemTextPageScrollChild",
         "DelveEntranceDataProviderMixin",
         "AreaPOIDataProviderMixin",
-        "DelveEntrancePinMixin"
+        "DelveEntrancePinMixin",
+        "Lerp",
+        "ACCOUNT_COMPLETED_QUEST_NOTICE_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

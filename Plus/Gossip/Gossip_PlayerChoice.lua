@@ -318,5 +318,14 @@ end
 
 
 function WoWTools_GossipMixin:Init_PlayerChoice()
-    Init()
+     if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
+        Init()
+    else
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+            if arg1=='Blizzard_PlayerChoice' then
+                Init()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            end
+        end)
+    end
 end

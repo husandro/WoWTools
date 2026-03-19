@@ -388,14 +388,18 @@ local function Init()
     end)
 
 
+    function QuestButton:set_enable()
+        Save().quest= not Save().quest and true or false
+        self:set_Texture()--设置，图片
+        self:set_tooltip()
+        if not Save().quest then
+            C_VoiceChat.StopSpeakingText()
+        end
+    end
+
     QuestButton:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
-            Save().quest= not Save().quest and true or false
-            self:set_Texture()--设置，图片
-            self:set_tooltip()
-            if not Save().quest then
-                C_VoiceChat.StopSpeakingText()
-            end
+            self:set_enable()
         elseif d=='RightButton' then
             MenuUtil.CreateContextMenu(self, function(...)
                 WoWTools_GossipMixin:Init_Menu_Quest(...)

@@ -36,12 +36,8 @@ local function Init_Menu(self, root)
     function()
         return Save().gossip
     end, function()
-        Save().gossip= not Save().gossip and true or false
-        WoWTools_GossipMixin:Init_Gossip_Data()
-        self:set_Texture()--设置，图片
-        self:tooltip_Show()
-        WoWTools_GossipMixin:Init_StaticPopupDialogs()
-        return MenuResponse.Close
+        self:set_enable()
+        --return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('Alt+'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))

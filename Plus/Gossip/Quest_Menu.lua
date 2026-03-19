@@ -21,9 +21,7 @@ local function Init_Menu(self, root)
     function()
         return Save().quest
     end, function()
-        Save().quest= not Save().quest and true or false
-        self:set_Texture()--设置，图片
-        self:tooltip_Show()
+       self:set_enable()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('Alt+'..(WoWTools_DataMixin.onlyChinese and '暂时禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BOOSTED_CHAR_SPELL_TEMPLOCK, DISABLE)))
@@ -215,6 +213,6 @@ end
 
 
 
-function  WoWTools_GossipMixin:Init_Menu_Quest(...)
+function WoWTools_GossipMixin:Init_Menu_Quest(...)
     Init_Menu(...)
 end
