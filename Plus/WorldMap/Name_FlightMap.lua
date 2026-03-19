@@ -14,31 +14,6 @@ end
 
 
 
-local function Init_Hook()
-    if not Save().ShowFlightMap_Name then
-        return
-    end
-
-    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'OnLoad', function(self)
-        self.NameLabel= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
-        self.NameLabel:SetPoint('TOP', self, 'BOTTOM', 0, 3)
-        self.NameLabel:SetJustifyH('CENTER')
-    end)
-
-    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'UpdatePinSize', function(self, data)--, taxiNodeType
-        local text
-        if self.taxiNodeData and Save().ShowFlightMap_Name then
-            text= self.taxiNodeData.name
-            if text then
-                text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
-                text= WoWTools_TextMixin:CN(text)
-                self.NameLabel:SetScale(Save().FlightMapScale or 1)
-            end
-        end
-        self.NameLabel:SetText(text or '')
-    end)
-end
-
 
 
 
@@ -84,7 +59,6 @@ local function Init()
         else
             self:SetNormalAtlas('talents-button-reset')
         end
-        Init_Hook()
     end
 
     btn:SetupMenu(function(self, root)
@@ -140,9 +114,24 @@ local function Init()
     end)
 
 
+    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'OnLoad', function(self)
+        self.NameLabel= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
+        self.NameLabel:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+        self.NameLabel:SetJustifyH('CENTER')
+    end)
 
-
-
+    WoWTools_DataMixin:Hook(FlightMap_FlightPointPinMixin, 'UpdatePinSize', function(self, data)--, taxiNodeType
+        local text
+        if self.taxiNodeData and Save().ShowFlightMap_Name then
+            text= self.taxiNodeData.name
+            if text then
+                text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
+                text= WoWTools_TextMixin:CN(text)
+                self.NameLabel:SetScale(Save().FlightMapScale or 1)
+            end
+        end
+        self.NameLabel:SetText(text or '')
+    end)
 
     Init=function()end
 end
