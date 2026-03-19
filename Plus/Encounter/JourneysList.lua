@@ -133,16 +133,14 @@ local function Init_Button()
         end
 
         local btn= Button.pool:Acquire()
-        if not btn.text then
-            Create_Button(btn)
-        end
+
 
         btn.factionID= major.factionID
         btn.isCurVer= major.expansionID== WoWTools_DataMixin.ExpansionLevel
 
         Set_Text(btn)
         btn:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
-        btn:SetShown(true)
+        btn:Show()
 
         w= math.max(w, btn.text:GetWidth()+27)
 
@@ -253,7 +251,7 @@ local function Init()
     Button.Bg:SetColorTexture(0,0,0)
     Button.Bg:SetPoint('TOPLEFT', -3, 0)
 
-    Button.pool= CreateFramePool('Button', Button.frame, 'WoWToolsButtonTemplate')
+    Button.pool= CreateFramePool('Button', Button.frame, 'WoWToolsButtonTemplate', nil, nil, Create_Button)
 
     Button:SetScript('OnShow', function(self)
         self.text:SetFormattedText('%d', #C_MajorFactions.GetMajorFactionIDs())

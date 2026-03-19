@@ -524,10 +524,7 @@ end
 
 
 local function Set_ItemButton(btn)
-	--btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlight')
-	btn.text:SetFontHeight(12)
-	btn.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-	btn.text:SetShadowOffset(1,-1)
+	btn.text= btn:CreateFontString(nil, 'BORDER', 'WoWToolsFont2')
 	btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         if self.itemID then
@@ -622,6 +619,10 @@ local function Set_ItemButton(btn)
 		btn.border= btn:CreateTexture(nil, 'ARTWORK')
 		btn.border:SetAllPoints()
 	end
+
+	if Save().itemButtonUse then
+		btn:SetAttribute('type', 'item')
+	end
 end
 
 
@@ -639,12 +640,9 @@ end
 
 
 local function Set_CurrencyButton(btn)
-    --btn.text= btn:CreateFontString(nil, 'BORDER', 'GameFontHighlight') -- WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-	btn.text= btn:CreateFontString(nil, 'BORDER', 'ChatFontSmall')
-	btn.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-	btn.text:SetShadowOffset(1,-1)
+	btn.text= btn:CreateFontString(nil, 'BORDER', 'WoWToolsFont2')
 
-	btn:SetScript('OnLeave', function(self)
+	btn:SetScript('OnLeave', function()
         GameTooltip:Hide()
 		WoWTools_CurrencyMixin:Find(nil, nil)--选中提示
     end)
@@ -678,6 +676,9 @@ local function Set_CurrencyButton(btn)
 	btn:SetScript('OnEvent', function(self)
 		Set_CurrencyName(self)
 	end)
+
+	btn:SetNormalTexture(0)
+	WoWTools_ButtonMixin:AddMask(btn)
 end
 
 
@@ -776,7 +777,7 @@ local function Init_Button(self)
 		btn.itemID= itemID
 		btn.currencyID= tables.currencyID
 
-		if not btn.text then
+		--[[if not btn.text then
 			if btn.itemID then
 				if itemButtonUse then
 					btn:SetAttribute('type', 'item')
@@ -785,7 +786,7 @@ local function Init_Button(self)
 			else
 				Set_CurrencyButton(btn)
 			end
-		end
+		end]]
 
 		if itemButtonUse then
 			Set_ItemAttribute(btn)
@@ -813,8 +814,9 @@ local function Init_Button(self)
 		last= btn
 	end
 
+
+	self.Bg:ClearAllPoints()
 	if last~=self then
-		self.Bg:ClearAllPoints()
 		if toTopTrack then
 			if toRightTrackText then
 				self.Bg:SetPoint("TOPLEFT", last, -2, 2)
@@ -898,9 +900,9 @@ local function Init()
 
 	TrackButton.Bg= TrackButton.frame:CreateTexture(nil, "BACKGROUND")
 
-	TrackButton.frame.pool= CreateFramePool('Button', TrackButton.frame, 'WoWToolsButtonTemplate')
-	TrackButton.frame.itemPool= CreateFramePool('Button', TrackButton.frame, 'WoWToolsButtonTemplate')
-    TrackButton.frame.itemPool2= CreateFramePool('Button', TrackButton.frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
+	TrackButton.frame.pool= CreateFramePool('Button', TrackButton.frame, 'WoWToolsButtonTemplate', nil, nil, Set_CurrencyButton)
+	TrackButton.frame.itemPool= CreateFramePool('Button', TrackButton.frame, 'WoWToolsButtonTemplate', nil, nil, Set_ItemButton)
+    TrackButton.frame.itemPool2= CreateFramePool('Button', TrackButton.frame, 'WoWToolsButton2Template SecureActionButtonTemplate', nil, nil, Set_ItemButton)
 
 
 

@@ -343,6 +343,11 @@ end
         self:set_event()
         self:settings()
     end)
+
+    if useSecureAction then
+        btn:SetAttribute('type', 'equipmentset')
+        btn:SetAttribute('unit', 'player')
+    end
 end
 
 
@@ -389,16 +394,6 @@ local function Init_buttons()
 
         local btn= TrackButton.pool:Acquire()
         btn.setID=setID
-
-        if not btn.settings then
-            Create_Button(btn)
-
-            if useSecureAction then
-                btn:SetAttribute('type', 'equipmentset')
-                btn:SetAttribute('unit', 'player')
-            end
-        end
-
         if toRight then
             btn:SetPoint('LEFT', last, 'RIGHT')
         else
@@ -409,7 +404,7 @@ local function Init_buttons()
             TrackButton.Bg:SetPoint('TOPLEFT', btn, -1, 1)
         end
 
-        btn:SetShown(true)
+        btn:Show()
 
         last= btn
     end
@@ -453,9 +448,9 @@ local function Init()--添加装备管理框
 
     TrackButton= CreateFrame('Button', 'WoWToolsEquipSetMainButton', UIParent, 'WoWToolsButtonTemplate') --WoWTools_ButtonMixin:Cbtn(UIParent, {size={23, 16}})--添加移动按钮
     if useSecureAction then
-        TrackButton.pool= CreateFramePool('Button', TrackButton, 'WoWToolsButtonTemplate SecureActionButtonTemplate')
+        TrackButton.pool= CreateFramePool('Button', TrackButton, 'WoWToolsButtonTemplate SecureActionButtonTemplate', nil, nil, Create_Button)
     else
-        TrackButton.pool= CreateFramePool('Button', TrackButton, 'WoWToolsButtonTemplate')
+        TrackButton.pool= CreateFramePool('Button', TrackButton, 'WoWToolsButtonTemplate', nil, nil, Create_Button)
     end
 
     TrackButton.Bg= TrackButton:CreateTexture(nil, 'BACKGROUND')

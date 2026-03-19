@@ -123,6 +123,10 @@ local function Set_Quest_Text(plate)
     if frame.questProgress then
         frame.questProgress:SetText(text or '')
         frame.questProgress:SetFontHeight(frame.isSimplified and 44 or 22)
+        
+        if text then
+            frame.HealthBarsContainer.healthBar.selectedBorder:SetVertexColor(1,0,0)
+        end
     end
 end
 
@@ -252,7 +256,16 @@ local function Init()
         RestPlate(plate)
     end)
 
-
+    WoWTools_DataMixin:Hook(NamePlateHealthBarMixin, 'UpdateSelectionBorder', function(self)
+        local questProgress= self:GetParent():GetParent().questProgress
+        if questProgress then
+            local text= questProgress:GetText()
+            if text and text~='' then
+                self.selectedBorder:SetVertexColor(1,0,0)
+                self.selectedBorder:SetShown(true)
+            end
+        end
+    end)
     --hooksecurefunc(NamePlateUnitFrameMixin, 'ShouldBeSimplified', function()
 
 

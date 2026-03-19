@@ -2240,7 +2240,8 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
 
         self:SetAlphaColor(frame.Header, nil, nil, 0)
 
-        frame.SessionTimer:SetTextColor(1,0,0)
+        --frame.SessionTimer:SetTextColor(1,0,0)
+        WoWTools_ColorMixin:SetLabelColor(frame.SessionTimer)
 
         self:SetScrollBar(frame.SourceWindow)
         self:SetAlphaColor(frame.SourceWindow.Background, nil, nil, true)

@@ -3181,7 +3181,8 @@
         "AreaPOIDataProviderMixin",
         "DelveEntrancePinMixin",
         "Lerp",
-        "ACCOUNT_COMPLETED_QUEST_NOTICE_LABEL"
+        "ACCOUNT_COMPLETED_QUEST_NOTICE_LABEL",
+        "NamePlateHealthBarMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
