@@ -62,7 +62,7 @@ local function Get_Unit_Text(self)
     local unit= self.unit
     local isAI= UnitInPartyIsAI(unit)
 
-    if not canaccessvalue(isAI) or not Save().quest then
+    if not canaccessvalue(isAI) or IsInRaid() or not Save().quest then
         return
 
     elseif isAI then
@@ -280,7 +280,7 @@ local function Init()
     WoWTools_DataMixin:Hook(NamePlateHealthBarMixin, 'UpdateSelectionBorder', function(self)
         local questProgress= self:GetParent():GetParent().questProgress
         if questProgress and questProgress.isQuest then
-            self.selectedBorder:SetVertexColor(1,0,0)
+            self.selectedBorder:SetVertexColor(1,0,1)
             self.selectedBorder:SetShown(true)
         end
     end)
@@ -290,7 +290,7 @@ local function Init()
     WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'UpdateIsSimplified', function(self)
         local questProgress= self:GetParent():GetParent().questProgress
         if questProgress and questProgress.isQuest then
-            self.isSimplified= nil
+            --self.isSimplified= nil
         end
     end)
     WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnLoad', function(self)
@@ -308,7 +308,7 @@ local function Init()
         self.questProgress.isQuest= isQuest
         
         if isQuest then
-            self.questProgress:SetFontHeight(self.isSimplified and 44 or 22)
+            self.questProgress:SetFontHeight(canaccessvalue(self.isSimplified) and self.isSimplified and 44 or 22)
             self.HealthBarsContainer.healthBar.selectedBorder:SetVertexColor(1,0,0)
             self.HealthBarsContainer.healthBar.selectedBorder:SetShown(true)
             --self.HealthBarsContainer.healthBar.isTarget=true
