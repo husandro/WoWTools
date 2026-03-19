@@ -461,6 +461,8 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
         link= nil
     end
 
+    local isEquipType= WoWTools_ItemMixin:IsEquipType(nil, nil, slot)==true
+
     local enchant, use, pvpItem, upgradeItem, createItem
     local unit = (not isPaperDollItemSlot and InspectFrame) and InspectFrame.unit or 'player'
     local isLeftSlot= WoWTools_PaperDollMixin:Is_Left_Slot(slot)
@@ -666,7 +668,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
 --物品是否为首选护甲类型
     local iconTexture= GetItemButtonIconTexture(btn)
     if iconTexture then
-        iconTexture:SetDesaturated(WoWTools_ItemMixin:IsEquipType(nil, nil, slot)==false)
+        iconTexture:SetDesaturated(not isEquipType)
     end
 end
 
@@ -741,7 +743,7 @@ local function Init()
             local link= hasItem and GetInventoryItemLink('player', slot) or nil--装等                
             if slot~=4 and slot~=19 then
                 set_Item_Tips(self, slot, link, true)
-                WoWTools_ItemMixin:SetItemStats(self, link, {point=self.icon, size=Save().statFontSize})
+                WoWTools_ItemMixin:SetItemStats(self, link, {point=self.icon, size=Save().statFontSize, equipSlot=slot})
             end
             set_Slot_Num_Label(self, slot, link and true or nil)--栏位
             self.icon:SetAlpha((hasItem or not show) and 1 or 0.3)--图标透明度

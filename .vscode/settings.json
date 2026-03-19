@@ -3182,7 +3182,8 @@
         "DelveEntrancePinMixin",
         "Lerp",
         "ACCOUNT_COMPLETED_QUEST_NOTICE_LABEL",
-        "NamePlateHealthBarMixin"
+        "NamePlateHealthBarMixin",
+        "DEBUFF_TYPE_CURSE_COLOR"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

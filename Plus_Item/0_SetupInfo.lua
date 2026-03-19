@@ -705,7 +705,13 @@ local function Get_Info(tab)
 
                 if not topLeftText or topLeftText=='' then
                     if not dateInfo.red then--装等，提示
-                        if WoWTools_ItemMixin:IsNotEquipType(itemLink, itemType, itemSubType) then
+                        local IsNotEquipType
+                        if tab.itemLocation or tab.bag then
+                           IsNotEquipType= WoWTools_ItemMixin:IsEquipType(tab.itemLocation, tab.bag)==false
+                        else
+                            IsNotEquipType= WoWTools_ItemMixin:IsNotEquipType(itemLink, itemType, itemSubType)==true
+                        end
+                        if IsNotEquipType then
                             topLeftText= DISABLED_FONT_COLOR:GenerateHexColorMarkup()..itemLevel..'|r'
                         else
                             local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)

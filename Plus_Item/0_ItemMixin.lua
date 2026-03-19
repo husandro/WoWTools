@@ -275,6 +275,9 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
     local hideStats= setting.hideStats
     local size= setting.size or 12
 
+    local bag= setting.bag--{bag=0, slot=0}
+    local equipSlot= setting.equipSlot
+    local itemLocation= setting.itemLocation
 
     link= link or (itemID and select(2, C_Item.GetItemInfo(itemID)))
 
@@ -297,8 +300,8 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
         end
 
         if not hideLevel then--物品, 装等
-            if itemID==210333 and frame==CharacterBackSlot then--InspectBackSlot
-                local currencies={--https://wago.io/thread_count
+            --[[if itemID==210333 and frame==CharacterBackSlot then--InspectBackSlot
+                local currencies={--https://wago.io/thread_count 我的斗篷有多少根线？
                     [2853] = 1, -- "power" aka str/agi/int
                     [2854] = 0.5, -- stamina (1 thread gives 2 of this stat)
                     [2855] = 1, -- crit
@@ -321,21 +324,25 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                 if count>0 then
                     itemLevel= WoWTools_DataMixin:MK(count, 1)
                 end
-            else
+            else]]
                 --local quality = C_Item.GetItemQualityByID(link)--颜色
                 --if quality==7 then
 
                 itemLevel= self:GetItemLevel(link)
-                if itemLevel and itemLevel>3 then
-                    local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等
-                    if avgItemLevel then
-                        local lv = itemLevel- avgItemLevel
-                        if lv <= -6  then
-                            itemLevel= WARNING_FONT_COLOR_CODE..itemLevel..'|r'
-                        elseif lv>=7 then
-                            itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
-                        else
-                            itemLevel='|cffffffff'..itemLevel..'|r'
+                if itemLevel and itemLevel>13 then
+                    if WoWTools_ItemMixin:IsEquipType(itemLocation, bag, equipSlot)==false then--物品是否为首选护甲类型
+                        itemLevel= DISABLED_FONT_COLOR:WrapTextInColorCode(itemLevel)
+                    else
+                        local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等
+                        if avgItemLevel then
+                            local lv = itemLevel- avgItemLevel
+                            if lv <= -6  then
+                                itemLevel= WARNING_FONT_COLOR_CODE..itemLevel..'|r'
+                            elseif lv>=7 then
+                                itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
+                            else
+                                itemLevel='|cffffffff'..itemLevel..'|r'
+                            end
                         end
                     end
                 else
@@ -347,7 +354,6 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
                 frame.itemLevel:SetJustifyH('CENTER')
                 frame.itemLevel:SetPoint('CENTER', point)
             end
-        end
     end
 
     if frame.setIDItem then frame.setIDItem:SetShown(setID) end--套装
@@ -980,7 +986,7 @@ end
 function WoWTools_ItemMixin:IsEquipType(itemLocation, bag, equipmentSlotIndex)--物品是否为首选护甲类型
     if not itemLocation then
         if bag then
-            itemLocation= ItemLocation:CreateFromBagAndSlot(bag.bagID or -1, bag.slotID or -1)
+            itemLocation= ItemLocation:CreateFromBagAndSlot(bag.bag or -1, bag.slot or -1)
 
         elseif equipmentSlotIndex then
             itemLocation= ItemLocation:CreateFromEquipmentSlot(equipmentSlotIndex)
@@ -993,7 +999,7 @@ function WoWTools_ItemMixin:IsEquipType(itemLocation, bag, equipmentSlotIndex)--
         return
     end
 
-    local itemID, itemType, itemSubType, _, _, itemClassID, itemSubclassID = select(6, C_Item.GetItemInfoInstant(item:GetItemID()))
+    local itemID, itemType, itemSubType, _, _, itemClassID, itemSubclassID =  C_Item.GetItemInfoInstant(item:GetItemID())
     if itemID then
         local isArmor = (itemClassID == Enum.ItemClass.Armor) and (itemSubclassID ~= Enum.ItemArmorSubclass.Shield);
         if isArmor then
@@ -1014,13 +1020,13 @@ function WoWTools_ItemMixin:IsNotEquipType(itemInfo,  itemType, itemSubType)
         return nil
 
     elseif not C_Item.IsEquippableItem(itemInfo) then
-
         return false
     end
 
     if not itemType then
         itemType, itemSubType= select(2, C_Item.GetItemInfoInstant(itemInfo))
     end
+
     if itemSubType then
         return not C_Item.IsEquippedItemType(itemSubType)
     elseif itemType then
