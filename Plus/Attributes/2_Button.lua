@@ -10,11 +10,13 @@ end
 
 
 local function Init()
-    local button= WoWTools_ButtonMixin:Cbtn(nil, {
+    local button= CreateFrame('Button', 'WoWToolsAttributesButton', UIParent, 'WoWToolsButtonTemplate')
+
+    --[[WoWTools_ButtonMixin:Cbtn(nil, {
         size=22,
         isType2=true,
         name='WoWToolsAttributesButton'
-    })
+    })]]
 
 
     button.frame= CreateFrame("Frame",nil,button)
@@ -299,7 +301,7 @@ local function Init()
     end)
 
 
-    return true
+   Init=function()end
 end
 
 
@@ -314,7 +316,5 @@ end
 
 
 function WoWTools_AttributesMixin:Create_Button()
-    if Init() then
-        Init=function()end
-    end
+    Init()
 end

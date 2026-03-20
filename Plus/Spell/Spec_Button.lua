@@ -76,14 +76,14 @@ local function Init_Spec_Menu(self, root)
 
 
 --自动隐藏
-        sub2:CreateCheckbox(
+        --[[sub2:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, HIDE),
         function()
             return Save().hideInCombat
         end, function()
             Save().hideInCombat= not Save().hideInCombat and true or false
             SpecFrame:Settings()
-        end)
+        end)]]
 
 
 --FrameStrata
@@ -352,15 +352,15 @@ local function Init()
 
     function SpecFrame:set_event()
         self:UnregisterAllEvents()
-        if Save().hideInCombat and Save().isUIParent then
+        if Save().isUIParent then--Save().hideInCombat and
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
 			self:RegisterEvent('PET_BATTLE_CLOSE')
 
-        self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
-        self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
-        self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-        self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
-        self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+            self:RegisterEvent("VEHICLE_ANGLE_UPDATE")
+            self:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
+            self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+            self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
 
 			self:RegisterEvent('PLAYER_ENTERING_WORLD')
             self:set_shown()

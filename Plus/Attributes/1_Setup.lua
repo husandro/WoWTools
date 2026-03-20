@@ -27,7 +27,9 @@ local function get_PrimaryStat()--取得主属
     local icon, _
     icon, _, PrimaryStat= select(4, C_SpecializationInfo.GetSpecializationInfo(spec, nil, nil, nil, WoWTools_DataMixin.Player.Sex))
     --SetPortraitToTexture(_G['WoWToolsAttributesButton'].texture, icon or 0)
-    _G['WoWToolsAttributesButton'].texture:SetTexture(icon or 0)
+    if _G['WoWToolsAttributesButton'] then
+        _G['WoWToolsAttributesButton'].texture:SetTexture(icon or 0)
+    end
 end
 
 
