@@ -903,10 +903,6 @@ local function Get_Info(tab)
             red=true
         })
         bottomLeftText=dateInfo.text[ITEM_SPELL_CHARGES]
-        --https://www.wowhead.com/cn/item=87216/热流铁砧
-        if itemID==87216 then
-            print(dateInfo.text[ITEM_SPELL_CHARGES], itemLink)
-        end
         if dateInfo.wow then
             topRightText= WoWTools_DataMixin.Icon.wow2
         elseif dateInfo.red then
