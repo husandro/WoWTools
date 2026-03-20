@@ -28,11 +28,9 @@ local function UpdateMountDisplay()
         justifyH='LEFT'
     })
     Button.text:SetPoint('TOPLEFT', MountJournalLore, 'BOTTOMLEFT',  0, -12)
-
-    WoWTools_TextureMixin:CreateBG(Button, {
-        point=Button.text,
-        isColor=true,
-    })
+    Button.Bg= Button:CreateTexture(nil, 'BACKGROUND')
+    Button.Bg:SetColorTexture(0,0,0, 0.5)
+    Button.Bg:SetAllPoints(Button.text)
 
     function Button:set_Alpha()
         self:GetNormalTexture():SetAlpha(Save().ShowMountDisplayInfo and 0.2 or 0.5)
@@ -46,27 +44,30 @@ local function UpdateMountDisplay()
         GameTooltip:Show()
     end
     function Button:set_Text()
+
         local text
         if Save().ShowMountDisplayInfo then
-            local creatureDisplayInfoID, _, _, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(MountJournal.selectedMountID)
-            text= 'mountID |cffffffff'..MountJournal.selectedMountID
-                ..'|r|nanimID |cffffffff'..(animID or '')
-                ..'|r|nisSelfMount |cffffffff'.. (isSelfMount and 'true' or 'false')
-                ..'|r|nmountTypeID |cffffffff'..(mountTypeID or '')
-                ..'|r|nspellVisualKitID |cffffffff'..(spellVisualKitID or '')
-                ..'|r|nuiModelSceneID |cffffffff'..(uiModelSceneID or '')
-                ..'|r|ncreatureDisplayInfoID |cffffffff'..(creatureDisplayInfoID or '')
+            if MountJournal.selectedMountID then
+                local creatureDisplayInfoID, _, _, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(MountJournal.selectedMountID)
+                text= 'mountID |cffffffff'..MountJournal.selectedMountID
+                    ..'|r|nanimID |cffffffff'..(animID or '')
+                    ..'|r|nisSelfMount |cffffffff'.. (isSelfMount and 'true' or 'false')
+                    ..'|r|nmountTypeID |cffffffff'..(mountTypeID or '')
+                    ..'|r|nspellVisualKitID |cffffffff'..(spellVisualKitID or '')
+                    ..'|r|nuiModelSceneID |cffffffff'..(uiModelSceneID or '')
+                    ..'|r|ncreatureDisplayInfoID |cffffffff'..(creatureDisplayInfoID or '')
 
-                local _, spellID, icon, _, _, sourceType= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)
-                text= text..'|n|rspellID |cffffffff'..(spellID or '')
-                            ..'|n|rtextureID |cffffffff'..(icon and '|T'..icon..':0:0|t'..icon or '')
-                            ..'|n|rsourceType |cffffffff'..(WoWTools_TextMixin:CN(sourceType) or '')
-                            ..(sourceType and WoWTools_TextMixin:CN(_G['BATTLE_PET_SOURCE_'..sourceType]) and ' ('..WoWTools_TextMixin:CN(_G['BATTLE_PET_SOURCE_'..sourceType])..')' or '')
+                    local _, spellID, icon, _, _, sourceType= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)
+                    text= text..'|n|rspellID |cffffffff'..(spellID or '')
+                                ..'|n|rtextureID |cffffffff'..(icon and '|T'..icon..':0:0|t'..icon or '')
+                                ..'|n|rsourceType |cffffffff'..(WoWTools_TextMixin:CN(sourceType) or '')
+                                ..(sourceType and WoWTools_TextMixin:CN(_G['BATTLE_PET_SOURCE_'..sourceType]) and ' ('..WoWTools_TextMixin:CN(_G['BATTLE_PET_SOURCE_'..sourceType])..')' or '')
+            else
+                text="?"
+            end
         end
         self.text:SetText(text or '')
-        if self.Background then
-            self.Background:SetShown(text)
-        end
+        self.Bg:SetShown(text)
     end
     Button:SetScript('OnClick', function(self)
         Save().ShowMountDisplayInfo= not Save().ShowMountDisplayInfo and true or nil
@@ -101,15 +102,9 @@ end
 
 
 
---#########
 --坐骑, 界面
---#########
 local function Init()
-    WoWTools_DataMixin:Hook('MountJournal_UpdateMountDisplay',  function()--坐骑
-        UpdateMountDisplay()
-    end)
-
-    --总数
+--总数
     MountJournal.MountCount.Count:SetPoint('RIGHT', -4,0)
     MountJournal.MountCount.Label:ClearAllPoints()
     MountJournal.MountCount.Label:SetPoint('RIGHT', MountJournal.MountCount.Count, 'LEFT', -4, 0)
@@ -124,6 +119,10 @@ local function Init()
             local mountIDs = C_MountJournal.GetMountIDs() or {}
             MountJournal.MountCount.Count:SetText(MountJournal.numOwned..'/'..#mountIDs)
         end
+    end)
+
+    WoWTools_DataMixin:Hook('MountJournal_UpdateMountDisplay',  function()--坐骑
+        UpdateMountDisplay()
     end)
 end
 

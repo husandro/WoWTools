@@ -191,12 +191,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(
+                    --[[print(
                         WoWTools_CollectionMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
                         WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                    )
-                end
+                    )]]
+                end,
+                tooltip=WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
             })
 
             if Save().disabled then
@@ -206,7 +207,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表
                 WoWTools_CollectionMixin:Init_Transmog()
 
-                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
                     Init()
                     self:SetScript('OnEvent', nil)
                     self:UnregisterEvent(event)

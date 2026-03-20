@@ -417,8 +417,11 @@ local function Init_Menu(self, root)
             return not Save().disabledSize[name]
         end, function()
             Save().disabledSize[name]= not Save().disabledSize[name] and true or nil
+            return MenuResponse.Close
         end, {rightText=format('%i|cff626262x|r%i', target:GetWidth(),target:GetHeight())})
         WoWTools_MenuMixin:SetRightText(sub)
+        
+
 
 --x
         sub:CreateSpacer()
@@ -426,7 +429,7 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(target:GetWidth())
             end, setValue=function(value)
-                if not WoWTools_FrameMixin:IsLocked(target) then
+                if not WoWTools_FrameMixin:IsLocked(target) and not Save().disabledSize[name] then
                     target:SetWidth(value)
                     if self.sizeUpdateFunc then
                         self.sizeUpdateFunc(target, self)
@@ -450,7 +453,7 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(target:GetHeight())
             end, setValue=function()
-                if not WoWTools_FrameMixin:IsLocked(target) then
+                if not WoWTools_FrameMixin:IsLocked(target) and not Save().disabledSize[name] then
                     if self.sizeUpdateFunc then
                         self.sizeUpdateFunc(target, self)
                     end
@@ -471,13 +474,17 @@ local function Init_Menu(self, root)
         sub:CreateButton(
             '+0.1%',
         function()
-            Set_ScalePercent(self, true)
+            if not WoWTools_FrameMixin:IsLocked(target) and not Save().disabledSize[name] then
+                Set_ScalePercent(self, true)
+            end
             return MenuResponse.Refresh
         end)
         sub:CreateButton(
             '-0.1%',
         function()
-            Set_ScalePercent(self, false)
+            if not WoWTools_FrameMixin:IsLocked(target) and not Save().disabledSize[name] then
+                Set_ScalePercent(self, false)
+            end
             return MenuResponse.Refresh
         end)
 --重置, 尺寸
@@ -487,13 +494,12 @@ local function Init_Menu(self, root)
             return Save().size[name]
         end, function()
             Save().size[name]=nil
-            local t=self:GetParent()
-            if not WoWTools_FrameMixin:IsLocked(t) then
+            if not WoWTools_FrameMixin:IsLocked(target) then
                 if self.sizeRestFunc then--还原
                     self.sizeRestFunc(target, self)
                 end
                 if not self.notUpdatePositon then
-                    WoWTools_DataMixin:Call('UpdateUIPanelPositions', t)
+                    WoWTools_DataMixin:Call('UpdateUIPanelPositions', target)
                 end
             end
             return MenuResponse.Refresh
