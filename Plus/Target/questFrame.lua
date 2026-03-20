@@ -149,7 +149,7 @@ local function Init()
     end)
 
     WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnLoad', function(self)
-         self.questProgress= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsFonts')
+        self.questProgress= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsFonts')
         self.questProgress:SetTextColor(GREEN_FONT_COLOR:GetRGB())
         self.questProgress:SetJustifyH('LEFT')
         self.questProgress:SetPoint('LEFT', self.healthBar or self, 'RIGHT', 2, 0)
@@ -163,7 +163,6 @@ local function Init()
         if self.questProgress.SetText then
             self.questProgress:SetText(text)
         end
-        
         self.questProgress.isQuest= isQuest
         if isQuest then
             self.questProgress:SetFontHeight(canaccessvalue(self.isSimplified) and self.isSimplified and 44 or 22)
@@ -173,9 +172,6 @@ local function Init()
     end)
 
     --[[WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnUnitCleared', function(self)
-        if self:HasSecretValues() then
-            print(self.unit, 'UpdateSelectionBorder')
-        end
         self.questProgress:SetText('')
         self.questProgress.isQuest= nil
     end)]]
