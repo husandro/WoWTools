@@ -2479,3 +2479,7 @@ function WoWTools_TextureMixin.Events:Blizzard_NamePlates()
         self:HideTexture(frame.HealthBarsContainer.healthBar.bgTexture)
     end)
 end
+
+function WoWTools_TextureMixin.Events:Blizzard_EncounterTimeline()
+    self:SetFrame(EncounterTimeline.TrackView, {alpha=1})
+end

@@ -3184,7 +3184,8 @@
         "ACCOUNT_COMPLETED_QUEST_NOTICE_LABEL",
         "NamePlateHealthBarMixin",
         "DEBUFF_TYPE_CURSE_COLOR",
-        "CompactUnitFrame_UpdateName"
+        "CompactUnitFrame_UpdateName",
+        "EncounterTimeline"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
