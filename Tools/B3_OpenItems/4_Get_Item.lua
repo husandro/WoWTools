@@ -159,7 +159,6 @@ local function Get_ValeItem(bag, slot)
 
 --是否可使用 then--不出售, 可以使用
         local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, text={LOCKED}})
-
         if dateInfo.red then-- or not C_PlayerInfo.CanUseItem(info.itemID) then
             return
         end

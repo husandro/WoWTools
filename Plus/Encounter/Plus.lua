@@ -420,7 +420,12 @@ local function Init()
                 itemText= itemText or select(3, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
                 itemText= itemText or WoWTools_CollectionMixin:Toy(itemID)--玩具,是否收集
             end
-            local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, text={ITEM_CLASSES_ALLOWED, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
+
+            local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, text={--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
+                    ITEM_CLASSES_ALLOWED,
+                    ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT
+                }})
+
             classText= dateInfo.text[ITEM_CLASSES_ALLOWED]
             upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
 

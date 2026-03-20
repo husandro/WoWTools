@@ -3183,7 +3183,8 @@
         "Lerp",
         "ACCOUNT_COMPLETED_QUEST_NOTICE_LABEL",
         "NamePlateHealthBarMixin",
-        "DEBUFF_TYPE_CURSE_COLOR"
+        "DEBUFF_TYPE_CURSE_COLOR",
+        "CompactUnitFrame_UpdateName"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -444,7 +444,6 @@ function WoWTools_ItemMixin:GetTooltip(tab)
     local tooltipData
 
     local bag= tab.bag--bag, slot
-    local slot= tab.slot
     local guidBank= tab.guidBank--tab, slot
     local merchant= tab.merchant--slot
     local inventory= tab.inventory
@@ -465,21 +464,17 @@ function WoWTools_ItemMixin:GetTooltip(tab)
     local red= tab.red--是否有红色字体，一般指 不可用
     local onlyRed= tab.onlyRed--仅查红色
 
-    if bag and slot then
-        tooltipData= C_TooltipInfo.GetBagItem(bag, slot)
+    if bag then
+        tooltipData= C_TooltipInfo.GetBagItem(bag.bag or -1, bag.slot or -1)
 
     elseif guidBank then-- guidBank then
-        if guidBank.tab and guidBank.slot then
-            tooltipData= C_TooltipInfo.GetGuildBankItem(guidBank.tab, guidBank.slot)
-        end
+        tooltipData= C_TooltipInfo.GetGuildBankItem(guidBank.tab or -1, guidBank.slot or -1)
 
     elseif merchant then
-        if merchant.slot then
-            if merchant.buyBack then
-                tooltipData= C_TooltipInfo.GetBuybackItem(merchant.slot)
-            else
-                tooltipData= C_TooltipInfo.GetMerchantItem(merchant.slot)--slot
-            end
+        if merchant.buyBack then
+            tooltipData= C_TooltipInfo.GetBuybackItem(merchant.slot or -1)
+        else
+            tooltipData= C_TooltipInfo.GetMerchantItem(merchant.slot or -1)--slot
         end
 
     elseif inventory then
@@ -487,15 +482,18 @@ function WoWTools_ItemMixin:GetTooltip(tab)
 
     elseif itemLink then
         tooltipData=  C_TooltipInfo.GetHyperlink(itemLink)
+
     elseif itemID then
         if C_Heirloom.IsItemHeirloom(itemID) then
             tooltipData= C_TooltipInfo.GetHeirloomByItemID(itemID)
         else
             tooltipData= C_TooltipInfo.GetItemByID(itemID, quality)
         end
+
     elseif itemKey then
         tooltipData= C_TooltipInfo.GetItemKey(itemKey.itemID, itemKey.itemLevel, itemKey.itemSuffix, itemKey.requiredLevel)
     end
+
     local data={
         red=false,
         wow=false,

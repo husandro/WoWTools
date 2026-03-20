@@ -1,6 +1,6 @@
 
 local THREAT_TOOLTIP= WoWTools_TextMixin:Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
-local questFrame
+
 local function Save()
     return WoWToolsSave['Plus_Target']
 end
@@ -93,7 +93,7 @@ local function Get_Unit_Text(self)
 
         local type = UnitClassification(unit)
         if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
-            return '|A:VignetteEvent:18:18|a'
+            return '|A:VignetteEvent:0:0|a'
         end
 
     else--if not UnitInParty(unit) and not UnitInRaid(unit) then
@@ -102,7 +102,7 @@ local function Get_Unit_Text(self)
         local faction= WoWTools_UnitMixin:GetFaction(unit, nil, Save().questShowAllFaction)--检查, 是否同一阵营
         local text
         if Save().questShowPlayerClass then
-            text= WoWTools_UnitMixin:GetClassIcon(unit)
+            text= WoWTools_UnitMixin:GetClassIcon(unit, nil, nil)
         end
         if wow or faction then
             text= (text or '')..(wow or '')..(faction or '')
@@ -285,28 +285,30 @@ local function Init()
         end
     end)
 
-    --hooksecurefunc(NamePlateUnitFrameMixin, 'ShouldBeSimplified', function()
+    --[[hooksecurefunc(NamePlateUnitFrameMixin, 'ShouldBeSimplified', function()
 
     WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'UpdateIsSimplified', function(self)
         local questProgress= self:GetParent():GetParent().questProgress
-        if questProgress and questProgress.isQuest then
-            --self.isSimplified= nil
+        if questProgress and canaccessvalue(self.isSimplified) then--and questProgress.isQuest then
+            self.questProgress:SetFontHeight(self.isSimplified and 44 or 22)
+           -- if self.isSimplified then
+                self.isSimplified= false
+                C_NamePlateManager.SetNamePlateSimplified(self.unit, false);
+            --end
         end
-    end)
+    end)]]
     WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnLoad', function(self)
         self.questProgress= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsFonts')
         self.questProgress:SetTextColor(GREEN_FONT_COLOR:GetRGB())
         self.questProgress:SetJustifyH('LEFT')
-        --frame.questProgress:SetFontHeight(22)
         self.questProgress:SetPoint('LEFT', self.healthBar or self, 'RIGHT', 2, 0)
+        --self.questProgress:SetPoint('LEFT', self.AurasFrame or self, 'RIGHT', 2, 0)
     end)
 
     WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnUnitSet', function(self)
         local text, isQuest= Get_Unit_Text(self)
-        
         self.questProgress:SetText(text or '')
         self.questProgress.isQuest= isQuest
-        
         if isQuest then
             self.questProgress:SetFontHeight(canaccessvalue(self.isSimplified) and self.isSimplified and 44 or 22)
             self.HealthBarsContainer.healthBar.selectedBorder:SetVertexColor(1,0,0)
@@ -321,8 +323,19 @@ local function Init()
         self.questProgress:SetText('')
         self.questProgress.isQuest= nil
     end)
-    
+--[[ self:GetScaleData()
+vertical 0.8
+aura 0.75
+horizontal 0.75
+aggroHighlight 1
+classification 0.8
 
+    WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'UpdateScale', function(self)
+	    local scaleData = self:GetScaleData();
+        info=scaleData
+        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR|r') for k2,v2 in pairs(v) do print('|cffffff00',k2,v2, '|r') end print('|cffff0000---',k, '---END|r') else print(k,v) end end print('|cffff00ff——————————|r')
+    end)
+]]
     Init=function()
         --questFrame:settings()
     end

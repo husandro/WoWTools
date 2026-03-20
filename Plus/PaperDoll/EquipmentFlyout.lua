@@ -138,7 +138,7 @@ local function setFlyout(self)--, itemLink, slot)
             Create_ButtonLabel(self)
         end
 
-        local dateInfo= WoWTools_ItemMixin:GetTooltip({itemLInk=itemLink, text={ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT, PVP_ITEM_LEVEL_TOOLTIP, ITEM_LEVEL}, onlyText=true})--物品提示，信息
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({itemLink=itemLink, text={ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT, PVP_ITEM_LEVEL_TOOLTIP, ITEM_LEVEL}, onlyText=true})--物品提示，信息
 
         level= dateInfo.text[ITEM_LEVEL]
         level= level and tonumber(level) or WoWTools_ItemMixin:GetItemLevel(itemLink)
