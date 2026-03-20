@@ -40,24 +40,6 @@ local function Find_Text(text)
 end
 
 
---[[
-	self.isPlayer = nil;
-	self.isFriend = nil;
-	self.isDead = nil;
-	self.isSimplified = nil;
-	self.isFocus = nil;
-	self.isTarget = nil;
-	self.widgetsOnlyMode = nil;
-	self.showOnlyName = nil;
-
-	self.aggroHighlightShown = nil;
-	self.isBehindCamera = nil;
-
-	self.AurasFrame:SetUnit(nil);
-	self.ClassificationFrame:SetUnit(nil);
-	self.HealthBarsContainer.healthBar:SetUnit(nil);
-]]
----取得，内容 GameTooltip.lua --local questID= line and line.id
 
 
 local function Get_Unit_Text(self)
@@ -118,14 +100,6 @@ end
 
 
 
-local function Create_Label(self)
-    self.questProgress= self:CreateFontString(nil, 'ARTWORK', 'WoWToolsFonts')
-    self.questProgress:SetTextColor(GREEN_FONT_COLOR:GetRGB())
-    self.questProgress:SetJustifyH('LEFT')
-    self.questProgress:SetPoint('LEFT', self.healthBar or self, 'RIGHT', 2, 0)
-    --self.questProgress:SetPoint('LEFT', self.AurasFrame or self, 'RIGHT', 2, 0)
-end
-
 
 
 
@@ -135,7 +109,7 @@ local function Init()
     if not Save().quest then
         return
     end
- 
+
     WoWTools_DataMixin:Hook(NamePlateHealthBarMixin, 'UpdateSelectionBorder', function(self)
         if IsInInstance() then
             return
@@ -171,17 +145,12 @@ local function Init()
         end
     end)
 
-    --[[WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnUnitCleared', function(self)
-        self.questProgress:SetText('')
-        self.questProgress.isQuest= nil
-    end)]]
 
-    Init=function()
-    end
+    Init=function()end
 end
 
 
-        --self.questProgress:SetPoint('LEFT', self.AurasFrame or self, 'RIGHT', 2, 0)
+
 
 
 
@@ -198,6 +167,37 @@ function WoWTools_TargetMixin:Init_questFrame()
     Init()
 end
 --[[
+ --self.questProgress:SetPoint('LEFT', self.AurasFrame or self, 'RIGHT', 2, 0)
+   WoWTools_DataMixin:Hook(NamePlateUnitFrameMixin, 'OnUnitCleared', function(self)
+        self.questProgress:SetText('')
+        self.questProgress.isQuest= nil
+    end)
+
+
+
+	self.isPlayer = nil;
+	self.isFriend = nil;
+	self.isDead = nil;
+	self.isSimplified = nil;
+	self.isFocus = nil;
+	self.isTarget = nil;
+	self.widgetsOnlyMode = nil;
+	self.showOnlyName = nil;
+
+	self.aggroHighlightShown = nil;
+	self.isBehindCamera = nil;
+
+	self.AurasFrame:SetUnit(nil);
+	self.ClassificationFrame:SetUnit(nil);
+	self.HealthBarsContainer.healthBar:SetUnit(nil);
+
+---取得，内容 GameTooltip.lua --local questID= line and line.id
+
+
+
+
+
+
 self:GetScaleData()
 vertical 0.8
 aura 0.75
