@@ -68,8 +68,11 @@ local function Init_Options()--设置 Frame
         check:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            local value= _G['WoWToolsAttributesButton'][self.name] and _G['WoWToolsAttributesButton'][self.name].value
-            GameTooltip:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
+            local btn= _G['WoWToolsAttributesMainButton']
+            if btn then
+                local value= btn[self.name] and btn[self.name].value
+                GameTooltip:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
+            end
             if not info.zeroShow then
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().tab[self.name].hide), (WoWTools_DataMixin.onlyChinese and '值' or 'value: ')..' < 1 ='..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE))
@@ -94,12 +97,13 @@ local function Init_Options()--设置 Frame
                     Save().tab[self.name].b= setB
                     Save().tab[self.name].a= setA
                     self:SetTextColor(setR, setG, setB, setA)
-                    if _G['WoWToolsAttributesButton'] and _G['WoWToolsAttributesButton'][self.name] then
-                        if _G['WoWToolsAttributesButton'][self.name].label then
-                            _G['WoWToolsAttributesButton'][self.name].label:SetTextColor(setR, setG, setB, setA)
+                    local btn= _G['WoWToolsAttributesMainButton']
+                    if btn and btn[self.name] then
+                        if btn[self.name].label then
+                            btn[self.name].label:SetTextColor(setR, setG, setB, setA)
                         end
-                        if _G['WoWToolsAttributesButton'][self.name].bar then
-                            _G['WoWToolsAttributesButton'][self.name].bar:SetStatusBarColor(setR,setG,setB,setA)
+                        if btn[self.name].bar then
+                            btn[self.name].bar:SetStatusBarColor(setR,setG,setB,setA)
                         end
                     end
                 end
@@ -406,9 +410,12 @@ local function Init_Options()--设置 Frame
         if Save().setMaxMinValue then
             C_Timer.After(0.3, function()
                 for _, info in pairs(WoWTools_AttributesMixin:Get_Tabs()) do
-                    local frame= _G['WoWToolsAttributesButton'][info.name]
-                    if frame and frame.textValue then
-                        frame.textValue:SetText('+12')
+                    local btn= _G['WoWToolsAttributesMainButton']
+                    if btn then
+                        local frame= btn[info.name]
+                        if frame and frame.textValue then
+                            frame.textValue:SetText('+12')
+                        end
                     end
                 end
             end)
@@ -628,7 +635,10 @@ local function Init_Options()--设置 Frame
             self:SetValue(value)
             self.Text:SetText(value)
             Save().scale=value
-            _G['WoWToolsAttributesButton'].frame:SetScale(value)
+            local btn= _G['WoWToolsAttributesMainButton']
+            if btn then
+                btn.frame:SetScale(value)
+            end
         end,
         tips=nil
     })
@@ -644,7 +654,10 @@ local function Init_Options()--设置 Frame
         self:SetValue(value)
         self.Text:SetText(value)
         Save().buttonAlpha= value
-        _G['WoWToolsAttributesButton']:set_Show_Hide()--显示， 隐藏
+        local btn= _G['WoWToolsAttributesMainButton']
+        if btn then
+            btn:set_Show_Hide()--显示， 隐藏
+        end
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
@@ -657,7 +670,10 @@ local function Init_Options()--设置 Frame
         self:SetValue(value)
         self.Text:SetText(value)
         Save().buttonScale= value
-        _G['WoWToolsAttributesButton']:set_Show_Hide()--显示， 隐藏
+        local btn= _G['WoWToolsAttributesMainButton']
+        if btn then
+            btn:set_Show_Hide()--显示， 隐藏
+        end
     end})
     sliderButtonScale:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0,-24)
 
@@ -666,7 +682,10 @@ local function Init_Options()--设置 Frame
     restPosti:SetPoint('BOTTOMRIGHT')
     restPosti:SetScript('OnClick', function()
         Save().point=nil
-        _G['WoWToolsAttributesButton']:set_Point()--设置, 位置
+        local btn= _G['WoWToolsAttributesMainButton']
+        if btn then
+            btn:set_Point()--设置, 位置
+        end
     end)
     restPosti:SetScript('OnLeave', GameTooltip_Hide)
     restPosti:SetScript('OnEnter', function(self)
@@ -683,8 +702,11 @@ local function Init_Options()--设置 Frame
     checkHidePet:SetChecked(Save().hideInPetBattle)
     checkHidePet:SetScript('OnMouseDown', function()
         Save().hideInPetBattle= not Save().hideInPetBattle and true or false
-        _G['WoWToolsAttributesButton']:set_event()
-        _G['WoWToolsAttributesButton']:settings()
+        local btn= _G['WoWToolsAttributesMainButton']
+        if btn then
+           btn:set_event()
+            btn:settings()
+        end
     end)
 
     Init_Options=function()end

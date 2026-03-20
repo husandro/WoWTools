@@ -93,8 +93,8 @@ local function Init()
         local p= Save().targetMovePoint
         if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-        elseif _G['WoWToolsAttributesButton'] then
-            self:SetPoint('BOTTOM', _G['WoWToolsAttributesButton'], 'TOP', 0, 2)
+        elseif _G['WoWToolsAttributesMainButton'] then
+            self:SetPoint('BOTTOM', _G['WoWToolsAttributesMainButton'], 'TOP', 0, 2)
         else
             self:SetPoint('CENTER',100, -100)
         end

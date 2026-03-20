@@ -10,12 +10,12 @@ end
 
 
 local function Init()
-    local button= CreateFrame('Button', 'WoWToolsAttributesButton', UIParent, 'WoWToolsButtonTemplate')
+    local button= CreateFrame('Button', 'WoWToolsAttributesMainButton', UIParent, 'WoWToolsButton2Template')
 
     --[[WoWTools_ButtonMixin:Cbtn(nil, {
         size=22,
         isType2=true,
-        name='WoWToolsAttributesButton'
+        name='WoWToolsAttributesMainButton'
     })]]
 
 

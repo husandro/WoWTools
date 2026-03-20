@@ -26,9 +26,9 @@ local function get_PrimaryStat()--取得主属
     Role= GetSpecializationRole(spec)--DAMAGER, TANK, HEALER
     local icon, _
     icon, _, PrimaryStat= select(4, C_SpecializationInfo.GetSpecializationInfo(spec, nil, nil, nil, WoWTools_DataMixin.Player.Sex))
-    --SetPortraitToTexture(_G['WoWToolsAttributesButton'].texture, icon or 0)
-    if _G['WoWToolsAttributesButton'] then
-        _G['WoWToolsAttributesButton'].texture:SetTexture(icon or 0)
+    --SetPortraitToTexture(_G['WoWToolsAttributesMainButton'].texture, icon or 0)
+    if _G['WoWToolsAttributesMainButton'] then
+        _G['WoWToolsAttributesMainButton'].texture:SetTexture(icon or 0)
     end
 end
 
@@ -810,8 +810,8 @@ EventsTable.MASTERY= function(frame)
 end
 
 --吸血6
-EventsTable.LIFESTEAL= function(frame)
-    _G['WoWToolsAttributesButton'].frame:RegisterEvent('LIFESTEAL_UPDATE')
+EventsTable.LIFESTEAL= function()
+    _G['WoWToolsAttributesMainButton'].frame:RegisterEvent('LIFESTEAL_UPDATE')
 end
 
 --护甲
@@ -821,8 +821,8 @@ EventsTable.ARMOR= function(frame)
 end
 
 --闪避7
-EventsTable.AVOIDANCE= function(frame)
-    _G['WoWToolsAttributesButton'].frame:RegisterEvent('AVOIDANCE_UPDATE')
+EventsTable.AVOIDANCE= function()
+    _G['WoWToolsAttributesMainButton'].frame:RegisterEvent('AVOIDANCE_UPDATE')
 end
 
 --[[
@@ -879,13 +879,13 @@ local function Frame_Init(rest)
         set_Tabs()
     end
 
-    local last= _G['WoWToolsAttributesButton'].frame
+    local last= _G['WoWToolsAttributesMainButton'].frame
     for _, info in pairs(Tabs) do
-        local frame, find= _G['WoWToolsAttributesButton'][info.name], nil
+        local frame, find= _G['WoWToolsAttributesMainButton'][info.name], nil
         if not info.hide then
             if not frame then
-                _G['WoWToolsAttributesButton'][info.name]= CreateFrame('Frame', nil, _G['WoWToolsAttributesButton'].frame)
-                frame= _G['WoWToolsAttributesButton'][info.name]
+                _G['WoWToolsAttributesMainButton'][info.name]= CreateFrame('Frame', nil, _G['WoWToolsAttributesMainButton'].frame)
+                frame= _G['WoWToolsAttributesMainButton'][info.name]
 
                 frame.label= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
 
