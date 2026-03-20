@@ -16,7 +16,7 @@ WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物
     --{type='currency', id=3291},--鎏金虚灵纹章
 
     {type='currency', id=3378},--黎明之光法力熔剂
-    
+
 
     --{type='currency', id=WoWTools_DataMixin.CurrencyUpdateItemLevelID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
@@ -42,6 +42,7 @@ local endOfRunRewardLevel={--Midnight: Season 1 Mythic+ Item Level Table
     [8]=269,
     [9]=269,
     [10]=272,
+    
     [11]=272,
     [12]=272,
 }
@@ -55,8 +56,8 @@ function Init_WeekItemLevel()
         ['Myth']= format('|cffff8000%s|r', WoWTools_DataMixin.onlyChinese and '神话' or ITEM_QUALITY4_DESC),
     }
     WeekItemLevel={
-        [2]='%d'..tab['Champion']..'2/6  %d'..tab['Hero']..'1/6|T7639521:0|t10',--需要修改
-        [3]='%d'..tab['Champion']..'2/6  %d'..tab['Hero']..'1/6|T7639521:0|t12',
+        [2]='%d'..tab['Champion']..'2/6  %d'..tab['Hero']..'1/6|T7639519:0|t10',--需要修改
+        [3]='%d'..tab['Champion']..'2/6  %d'..tab['Hero']..'1/6|T7639519:0|t12',
         [4]='%d'..tab['Champion']..'3/6  %d'..tab['Hero']..'2/6|T7639521:0|t14',
         [5]='%d'..tab['Champion']..'4/6  %d'..tab['Hero']..'2/6|T7639521:0|t16',
 
@@ -214,7 +215,7 @@ WoWTools_ChallengesSpellData={
     [507]= {spell=445424, ins=71, name='格瑞姆巴托', spellName='格瑞姆巴托之路', spellDes='传送至|cff00ccff格瑞姆巴托|r入口处。'},
     [525]= {spell=1216786, ins=1298, name='水闸行动', spellName='水闸行动之路', spellDes='传送至|cff00ccff水闸行动|r入口处。'},
 
-    --[541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.5
+    [541]= {spell=nil, ins=67, name='巨石之核', spellName=nil, spellDes='传送至|cff00ccff巨石之核|r入口处。'},--12.05
     [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'},
 
     [556]= {spell=1254555, ins=658, name='萨隆矿坑', spellName='不屈凋零之路', spellDes='传送到|cff00ccff萨隆矿坑|r的入口。'},
@@ -225,6 +226,8 @@ WoWTools_ChallengesSpellData={
     [560]= {spell=1254559, ins=2874, name='迈萨拉洞窟', spellName=nil, spellDes='传送到|cff00ccff迈萨拉洞窟|r入口。'},
 
     [239]= {spell=1254551, ins=1753, name='执政团之座', spellName='黑暗废弃之路', spellDes='传送到|cff00ccff执政团之座|r的入口。'},
+    [583]= {spell=nil, ins=1753, name='执政团之座', spellName=nil, spellDes='传送到|cff00ccff执政团之座|r的入口。'},
+
 }
 --[161]={spell=159898, ins=476, name='通天峰', spellName='通天之路', spellDes='传送至|cff00ccff通天峰|r入口处。'},
 --https://www.wowhead.com/cn/spell=1254557/加冕巅峰之路 传送到通天峰的入口

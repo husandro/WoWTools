@@ -4,7 +4,6 @@ local function Save()
 end
 
 
---local Buttons={}
 local Button
 
 local function Set_Text(self)
@@ -27,7 +26,7 @@ local function Set_Text(self)
         text= data.barColor:WrapTextInColorCode(text)
     end
 
-    if Save().name and data.name and (not Save().onlyCurVerName or self.isCurVer) then
+    if Save().showName[data.expansionID] and data.name then
         local name= WoWTools_TextMixin:CN(data.name)
         if not data.isUnlocked then
             name= DISABLED_FONT_COLOR:WrapTextInColorCode(name)
@@ -100,10 +99,12 @@ end
 local function Init_Button()
     Button.pool:ReleaseAll()
     local tab= {}
+
+
     for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs() or {}) do
         --if not C_MajorFactions.IsMajorFactionHiddenFromExpansionPage(factionID) then
             local major= C_MajorFactions.GetMajorFactionData(factionID)
-            if major and major.factionID and major.name then
+            if major and major.factionID and major.name and not Save().noExpansion[major.expansionID] then
                 table.insert(tab, major)
             end
         --end
@@ -167,25 +168,82 @@ local function Init_Menu(self, root)
     end
     local sub
 --显示名称
-    sub=root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME,
-    function ()
-        return Save().name
-    end, function ()
-        Save().name= not Save().name and true or nil
-        self:settings()
-    end)
-    sub=sub:CreateCheckbox(
-        WoWTools_DataMixin:GetExpansionText(WoWTools_DataMixin.ExpansionLevel),
+    sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '名称' or NAME,
     function()
-        return Save().onlyCurVerName
-    end, function()
-        Save().onlyCurVerName= not Save().onlyCurVerName and true or nil
+        return MenuResponse.Open
+    end, {rightText=CountTable(Save().showName)})
+    WoWTools_MenuMixin:SetRightText(sub)
+
+    for expansionID=WoWTools_DataMixin.ExpansionLevel, 9, -1 do
+        sub:CreateCheckbox(
+            WoWTools_DataMixin:GetExpansionText(expansionID) or expansionID,
+        function(data)
+            return Save().showName[data]
+        end, function(data)
+            Save().showName[data]= not Save().showName[data] and true or nil
+            self:settings()
+        end, expansionID)
+    end
+    sub:CreateDivider()
+--勾选所有
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '勾选所有' or EVENTTRACE_BUTTON_ENABLE_FILTERS,
+    function()
+        for expansionID=WoWTools_DataMixin.ExpansionLevel, 9, -1 do
+            Save().showName[expansionID]= true
+        end
         self:settings()
+        return MenuResponse.Refresh
     end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅显示' or format(LFG_LIST_CROSS_FACTION, SHOW))
+--撤选所有
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS,
+     function()
+        Save().showName={}
+        self:settings()
+        return MenuResponse.Refresh
     end)
+    WoWTools_MenuMixin:SetGridMode(sub)
+
+--版本
+    sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE,
+    function ()
+        return MenuResponse.Open
+    end, {rightText=CountTable(Save().noExpansion)})
+    WoWTools_MenuMixin:SetRightText(sub)
+
+    for expansionID=WoWTools_DataMixin.ExpansionLevel, 9, -1 do
+        sub:CreateCheckbox(
+            WoWTools_DataMixin:GetExpansionText(expansionID) or expansionID,
+        function(data)
+            return Save().noExpansion[data]
+        end, function(data)
+            Save().noExpansion[data]= not Save().noExpansion[data] and true or nil
+            self:settings()
+        end, expansionID)
+    end
+    sub:CreateDivider()
+--勾选所有
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '勾选所有' or EVENTTRACE_BUTTON_ENABLE_FILTERS,
+    function()
+        for expansionID=WoWTools_DataMixin.ExpansionLevel, 9, -1 do
+            Save().noExpansion[expansionID]= true
+        end
+        self:settings()
+        return MenuResponse.Refresh
+    end)
+--撤选所有
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS,
+     function()
+        Save().noExpansion={}
+        self:settings()
+        return MenuResponse.Refresh
+    end)
+    WoWTools_MenuMixin:SetGridMode(sub)
 
     root:CreateDivider()
     --背景, 透明度
@@ -245,7 +303,7 @@ local function Init()
     Button.text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
 
     Button.frame= CreateFrame('Frame', nil, Button)
-    Button.frame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT', 0, 1)
+    Button.frame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT', 0, -2)
     Button.frame:SetSize(1,1)
     Button.Bg= Button.frame:CreateTexture(nil, "BACKGROUND")
     Button.Bg:SetColorTexture(0,0,0)

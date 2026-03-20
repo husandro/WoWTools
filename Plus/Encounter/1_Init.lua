@@ -95,6 +95,13 @@ end
 
 
 
+
+
+
+
+
+
+
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -106,19 +113,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 LootSpec= {},--拾取专精
                 isSaveTier=WoWTools_DataMixin.Player.husandro,--保存改变
                 JourneysList= {
-                    list=true
+                    disabled= Save().hideJourneysList,
+                    noExpansion={},
+                    showName={},
                 },
             }
 
             WoWToolsPlayerDate['BossKilled']= WoWToolsPlayerDate['BossKilled'] or {}
 
             Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
-            if not Save().JourneysList then
-                Save().JourneysList={
-                    disabled= Save().hideJourneysList,
-                    name=true,
-                    onlyCurVerName=true
-                }
+
+            Save().JourneysList= Save().JourneysList or {noExpansion={}, showName={}}
+
+            if not Save().JourneysList.showName then
+                Save().JourneysList.noExpansion= {}
+                Save().JourneysList.showName= {}
+                Save().JourneysList.name= nil
+                Save().JourneysList.onlyCurVerName= nil
             end
 
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
