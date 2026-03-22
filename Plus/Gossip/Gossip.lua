@@ -369,17 +369,18 @@ local function Init()
         self:set_tooltip()
     end)
 
+    check:RegisterEvent('PLAYER_STARTED_MOVING')
+    check:SetScript('OnEvent', function()
+        SelectGissipIDTab={}
+    end)
+
     GossipFrame:HookScript('OnShow', function ()
         if _G['WoWToolsGossipQuestMainButton'] then
             _G['WoWToolsGossipQuestMainButton'].questSelect={}--已选任务, 提示用
         end
-        SelectGissipIDTab= {}--GossipFrame，显示时用
+        --SelectGissipIDTab= {}--GossipFrame，显示时用
         _G['WoWToolsGossipNPCCheckBox']:settings()
     end)
-
-
-
-
 
 
 
