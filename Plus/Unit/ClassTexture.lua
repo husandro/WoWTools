@@ -150,7 +150,7 @@ local function Init()
                 frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
             else
                 local name= frame.name:GetText()
-                if name then
+                if canaccessvalue(name) and name then
                     if unit=='target' then
                         local wow= WoWTools_UnitMixin:GetIsFriendIcon(unit)
                         name= frame.name:GetText()
