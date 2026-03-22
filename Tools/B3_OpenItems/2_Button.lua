@@ -173,11 +173,6 @@ local function Init()
 
         if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
             self:settings()
-            C_Timer.After(2, function()
-                if not InCombatLockdown() then
-                    self:settings()
-                end
-            end)
 
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
             or event=='VEHICLE_ANGLE_UPDATE'--车辆

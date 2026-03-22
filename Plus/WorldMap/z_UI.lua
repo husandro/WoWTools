@@ -126,7 +126,7 @@ end
 
 
 
---[[因为修改，内置参数，可能会出现，错误
+--因为修改，内置参数，可能会出现，错误
 function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     local name= WorldMapFrame:GetName()
 
@@ -245,4 +245,4 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
 --战役
     QuestMapFrame.QuestsFrame.CampaignOverview.Header:SetFrameLevel(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame:GetFrameLevel()+1)
     self:Setup(QuestMapFrame.QuestsFrame.CampaignOverview.BorderFrame, {frame=WorldMapFrame})
-end]]
+end
