@@ -140,7 +140,7 @@ local function Init_Button(btn)
     WoWTools_TextureMixin:SetFrame(btn, {index=5, alpha=1})
 
     btn:HookScript('OnEnter', function(self)
-        if Save().hideEncounterJournal or not self.instanceID then
+        if not Save().plus or not self.instanceID then
             return
         end
 
@@ -343,7 +343,7 @@ local function Init()
             return
         end
 
-        local hide= Save().hideEncounterJournal
+        local hide= not Save().plus
         for _, btn in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
             if btn and btn.instanceID then
                 if hide then

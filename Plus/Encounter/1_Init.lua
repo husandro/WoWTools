@@ -1,7 +1,5 @@
-
-
 local function Save()
-    return WoWToolsSave['Adventure_Journal']
+    return WoWToolsSave['Adventure_Journal'] or {}
 end
 
 
@@ -122,15 +120,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsPlayerDate['BossKilled']= WoWToolsPlayerDate['BossKilled'] or {}
 
             Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
-
+            
             Save().JourneysList= Save().JourneysList or {noExpansion={}, showName={}}
+            Save().JourneysList.noExpansion= Save().JourneysList.noExpansion or {}
+            Save().JourneysList.showName= Save().JourneysList.showName or {}
 
-            if not Save().JourneysList.showName then
-                Save().JourneysList.noExpansion= {}
-                Save().JourneysList.showName= {}
-                Save().JourneysList.name= nil
-                Save().JourneysList.onlyCurVerName= nil
-            end
+            Save().plus= not Save().hideEncounterJournal
+
 
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
@@ -155,7 +151,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 local num= (WoWToolsPlayerDate['BossKilled'][ncounterID] or 0)+ 1
                 WoWToolsPlayerDate['BossKilled'][ncounterID]= num--Boss击杀数量
-                if not Save().hideEncounterJournal then
+                if Save().plus then
                     print(
                         WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
                         '|cnWARNING_FONT_COLOR:'..(WoWTools_TextMixin:CN(encounterName) or ncounterID)..'|r',

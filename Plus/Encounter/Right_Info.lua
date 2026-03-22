@@ -1,4 +1,7 @@
 --冒险指南,右边,显示所数据
+local function Save()
+    return WoWToolsSave['Adventure_Journal'] or {}
+end
 
 
 local function Get_Text()
@@ -54,7 +57,7 @@ end
 
 
 local function Init()
-    if WoWToolsSave['Adventure_Journal'].hideEncounterJournal_All_Info_Text then
+    if Save().hideEncounterJournal_All_Info_Text then
         return
     end
 

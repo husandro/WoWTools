@@ -42,9 +42,9 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(
         'Plus',
     function()
-        return not Save().hideEncounterJournal
+        return Save().plus
     end, function()
-        Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
+        Save().plus= not Save().plus and true or nil
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -531,7 +531,7 @@ end]]
 
     function Button:set_Shown()
         for _, btn in pairs(self.btn) do
-            btn:SetShown(not Save().hideEncounterJournal)
+            btn:SetShown(Save().plus)
         end
     end
 
