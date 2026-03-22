@@ -159,8 +159,21 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     local function Set_Size(frame)
         if frame:IsShown() then
             local s= self:Save().size[name]
-            if s and s[1] and s[2] then
-                frame:SetSize(s[1], s[2])
+            local w= s and s[1]
+            local h= s and s[2]
+            if w and h then
+                local isSidePanelShown= WorldMapFrame:IsSidePanelShown()
+                local WorldFrameIsSidePanelShown= self:Save().WorldFrameIsSidePanelShown
+
+                if WorldFrameIsSidePanelShown and not isSidePanelShown then
+                    frame:SetSize(w - questLogWidth, h)
+
+                elseif not WorldFrameIsSidePanelShown or isSidePanelShown then
+                    frame:SetSize(w + questLogWidth, h)
+
+                else
+                    frame:SetSize(w, h)
+                end
                 Settings(s)
             end
         end
