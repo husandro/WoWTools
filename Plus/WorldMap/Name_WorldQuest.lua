@@ -150,5 +150,5 @@ end
 
 
 function WoWTools_WorldMapMixin:Init_WorldQuest_Name()
-    --Init()
+    Init()
 end

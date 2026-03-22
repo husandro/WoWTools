@@ -107,5 +107,5 @@ local function Init()
 end
 
 function WoWTools_WorldMapMixin:Init_Dungeon_Name()
-    --Init()
+    Init()
 end

@@ -154,5 +154,5 @@ end
 
 --BaseMapPoiPinMixin
 function WoWTools_WorldMapMixin:Init_AreaPOI_Name()
-    --Init()
+    Init()
 end
