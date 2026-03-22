@@ -14,7 +14,7 @@ local function Init_Encounter()--冒险指南界面
     WoWTools_EncounterMixin:Init_Menu()
     WoWTools_EncounterMixin:Init_Plus()
     WoWTools_EncounterMixin:Init_ListInstances()--界面, 副本击杀
-    WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
+   -- WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     WoWTools_EncounterMixin:Init_JourneysList()--12.0才有
     WoWTools_EncounterMixin:Init_JourneysPlus()
 
@@ -120,12 +120,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsPlayerDate['BossKilled']= WoWToolsPlayerDate['BossKilled'] or {}
 
             Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
-            
+
             Save().JourneysList= Save().JourneysList or {noExpansion={}, showName={}}
             Save().JourneysList.noExpansion= Save().JourneysList.noExpansion or {}
             Save().JourneysList.showName= Save().JourneysList.showName or {}
 
             Save().plus= not Save().hideEncounterJournal
+            Save().hideEncounterJournal= nil
 
 
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)

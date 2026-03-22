@@ -61,8 +61,8 @@ local function Init()
         return
     end
 
-    local frame=CreateFrame("Frame", 'WoWToolsEJRightFrame', EncounterJournal)
-    frame:Hide()
+    local frame=CreateFrame("Frame", 'WoWToolsEJRightFrame', EncounterJournalInstanceSelect.ScrollBox)
+
     frame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
     frame:SetSize(1,1)
 
@@ -100,12 +100,12 @@ local function Init()
 
 
     Init=function()
-        _G['WoWToolsEJRightFrame']:SetShown(not WoWToolsSave['Adventure_Journal'].hideEncounterJournal_All_Info_Text)
+        _G['WoWToolsEJRightFrame']:SetShown(not Save().hideEncounterJournal_All_Info_Text)
     end
 end
 
 
 
 function WoWTools_EncounterMixin:Set_RightAllInfo()
-    Init()
+   -- Init()
 end
