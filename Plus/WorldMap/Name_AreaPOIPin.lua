@@ -101,6 +101,7 @@ local function Init()
             text= text:match('%((.+)%)') or text:match('（(.+)）')  or text
         end
 
+        
         self.WoWToolsFrame.Text:SetText(text or '')
         self.WoWToolsFrame.Text:SetFontHeight(Save().areaPoinFontSize or 10)
     end)
@@ -153,5 +154,5 @@ end
 
 --BaseMapPoiPinMixin
 function WoWTools_WorldMapMixin:Init_AreaPOI_Name()
-    Init()
+    --Init()
 end

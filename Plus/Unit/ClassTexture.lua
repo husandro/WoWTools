@@ -132,11 +132,10 @@ local function Init()
 
 
     WoWTools_DataMixin:Hook('UnitFrame_Update', function(frame)--, isParty)
-        if not canaccessvalue(frame.unit) then
+        if UnitExists(frame.unit)~=true then
             return
         end
-
-
+        
         local unit= frame.unit
 
         if frame.classFrame then
@@ -151,7 +150,7 @@ local function Init()
                 frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
             else
                 local name= frame.name:GetText()
-                if canaccessvalue(name) and name then
+                if name then
                     if unit=='target' then
                         local wow= WoWTools_UnitMixin:GetIsFriendIcon(unit)
                         name= frame.name:GetText()
