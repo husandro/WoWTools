@@ -395,6 +395,7 @@ local function Init()
         if not Save().quest then
             C_VoiceChat.StopSpeakingText()
         end
+        WoWTools_TargetMixin:Init_questFrame()
     end
 
     QuestButton:SetScript('OnMouseDown', function(self, d)

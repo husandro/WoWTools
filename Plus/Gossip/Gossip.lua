@@ -266,7 +266,7 @@ local function Init()
         WoWTools_GossipMixin:Init_Options_Frame(d==1)
     end)
 
-    
+
     function GossipButton:set_enable()
         Save().gossip= not Save().gossip and true or false
         WoWTools_GossipMixin:Init_Gossip_Data()
@@ -294,16 +294,16 @@ local function Init()
 
 
 
-    GossipButton:RegisterEvent('PLAY_MOVIE')--movieID
+    --GossipButton:RegisterEvent('PLAY_MOVIE')--movieID
     GossipButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
     GossipButton:RegisterEvent('PET_BATTLE_CLOSE')
+    GossipButton:SetScript('OnEvent', GossipButton.set_shown)
 
-    GossipButton:SetScript('OnEvent', function(self, event, arg1, ...)
-        if event=='PET_BATTLE_OPENING_DONE' or event=='PET_BATTLE_CLOSE' then
+        --[[if event=='PET_BATTLE_OPENING_DONE' or event=='PET_BATTLE_CLOSE' then
             self:set_shown()
         elseif event=='PLAY_MOVIE' and arg1 then
             if WoWToolsPlayerDate.GossipMovie[arg1] then
-                if Save().stopMovie then
+                if Save().stopMovie and not IsModifierKeyDown() then
                     MovieFrame:StopMovie()
                     print(
                         WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2,
@@ -324,8 +324,8 @@ local function Init()
                 arg1,
                 ...
             )
-        end
-    end)
+        end]]
+
 
 
 
@@ -589,7 +589,7 @@ local function Create_GossipOptionCheckBox(btn, info)
     end)
 
     btn:HookScript('OnEnter', function(self)
-    
+
         WoWTools_SetTooltipMixin:Frame(self, nil, {
             anchor='ANCHOR_RIGHT',
             spellID= self.gossipCheckBox.spellID,

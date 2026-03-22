@@ -103,6 +103,7 @@ end]]
     if PetHitIndicator then
         PetHitIndicator:ClearAllPoints()
         PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
+        PetHitIndicator:SetScale(0.5)
     end
 
 

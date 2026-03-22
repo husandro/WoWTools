@@ -372,13 +372,15 @@ end
 local Movie_ID
 local Cinematics_ID
 local function Set_StopMove()
+    
     if Save().stopMovie then
         if not Movie_ID then
             Movie_ID= EventRegistry:RegisterFrameEventAndCallback("PLAY_MOVIE", function(_, movieID)
-                if not movieID then
+                if not movieID
+                    or IsModifierKeyDown()
+                then
                     return
                 end
-
                 if WoWToolsPlayerDate.GossipMovie[movieID] then
                     MovieFrame:StopMovie()
                     print(
@@ -406,7 +408,10 @@ local function Set_StopMove()
     if Save().stopCinematics then
         if not Cinematics_ID then
             Cinematics_ID= EventRegistry:RegisterFrameEventAndCallback("CINEMATIC_START", function()--_, canBeCancelled, forcedAspectRatio) 
-                if IsInInstance() and Save().stopCinematicsInInstance or InCombatLockdown() then
+                if IsInInstance() and Save().stopCinematicsInInstance
+                    or InCombatLockdown()
+                    or IsModifierKeyDown()
+                then
                     return
                 end
                 CinematicFrame_CancelCinematic()
