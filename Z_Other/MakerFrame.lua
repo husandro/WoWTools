@@ -35,6 +35,7 @@ local function Get_Tank()--设置队伍标记
     then
         return
     end
+    local tank, health
 
     if isInRaid then
         local tab={}--设置团队标记
@@ -59,19 +60,22 @@ local function Get_Tank()--设置队伍标记
             return a.hp>b.hp
         end)
 
-        if tab[1] then
-            return tab[1].unit
-        end
+        tank= tab[1] and tab[1].unit or nil
+        health= tab[2] and tab[2].unit or nil
+            
 
-    else--设置队伍标记      
+    else--设置队伍标记
         for index=1, MAX_PARTY_MEMBERS+1 do
             local unit= index <= MAX_PARTY_MEMBERS and 'party'..index or 'player'
             local role= UnitGroupRolesAssigned(unit)
             if role=='TANK' then
-                return unit
+                tank= unit
+            elseif role=='HEALER' then
+                health= unit
             end
         end
     end
+    return tank, health
 end
 
 
@@ -696,9 +700,14 @@ local function Init()--设置标记, 框架
         if index==0 then
             btn:SetAllPoints(MakerFrame.target)
 
-            btn:SetAttribute('type', 'raidtarget')            
+            btn:SetAttribute('type1', 'raidtarget')
             btn:SetAttribute('action1', 'set')
             btn:SetAttribute("marker1", 2)
+
+            btn:SetAttribute('alt-type1', 'raidtarget')
+            btn:SetAttribute('alt-action1', 'set')
+            btn:SetAttribute("alt-marker1", 1)
+
             btn:SetAttribute("action2", "clear-all")
 
             function btn:settings()
@@ -706,7 +715,17 @@ local function Init()--设置标记, 框架
                     self:RegisterEvent('PLAYER_REGEN_ENABLED')
                     return
                 end
-                self:SetAttribute("unit1", Get_Tank() or nil)
+                local tank, health= Get_Tank()
+                
+                self:SetAttribute("unit1", tank)
+                self:SetAttribute("alt-unit1", health)
+                self:SetAttribute("alt-marker1",  IsInRaid() and 6 or 1)
+
+                if IsInRaid() then
+                    
+                else
+                end
+                
             end
 
             btn:SetScript('OnHide', function(self)
@@ -737,6 +756,7 @@ local function Init()--设置标记, 框架
                     return
                 end
                 local unit= self:GetAttribute("unit1")
+                local unit2= self:GetAttribute("alt-unit1")
 
                 GameTooltip_SetTitle(GameTooltip,
                     WoWTools_DataMixin.Icon.left
@@ -746,6 +766,16 @@ local function Init()--设置标记, 框架
                     ..WoWTools_UnitMixin:GetPlayerInfo(unit)
                     --..(self:GetAttribute("unit1" or (WoWTools_DataMixin.onlyChinese and '无' or NONE)))
                 )
+
+                GameTooltip_SetTitle(GameTooltip,
+                    'Alt'..WoWTools_DataMixin.Icon.left
+                    --..(WoWTools_DataMixin.onlyChinese and '坦克' or TANK)
+                    ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..(IsInRaid() and 6 or 1)..':0|t'
+                    ..'|cffff8000'..(unit or (WoWTools_DataMixin.onlyChinese and '无' or NONE))..'|r'
+                    ..WoWTools_UnitMixin:GetPlayerInfo(unit)
+                    --..(self:GetAttribute("unit1" or (WoWTools_DataMixin.onlyChinese and '无' or NONE)))
+                )
+
 
                 GameTooltip:AddLine(
                     WoWTools_DataMixin.Icon.right
