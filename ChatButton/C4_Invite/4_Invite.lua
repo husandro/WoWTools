@@ -133,10 +133,8 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 SummonThxText=nil,--自定义THX内容
                 SummonThxInRaid=nil,--在团里也说谢谢
 
-                setFrameFun= WoWTools_DataMixin.Player.husandro,--跟随，密语
-
+                setFrameFun= true,--跟随，密语
                 setFucus= WoWTools_DataMixin.Player.husandro,--焦点
-                overSetFocus= WoWTools_DataMixin.Player.husandro,--移过是，
                 focusKey= 'Shift',
             }
 

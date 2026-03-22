@@ -3185,7 +3185,9 @@
         "NamePlateHealthBarMixin",
         "DEBUFF_TYPE_CURSE_COLOR",
         "CompactUnitFrame_UpdateName",
-        "EncounterTimeline"
+        "EncounterTimeline",
+        "Boss2TargetFrame",
+        "BossSpellBarMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

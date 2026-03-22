@@ -47,28 +47,28 @@ end]]
 
 
 
---目标的目标
+--[[目标的目标
 local function Create_potFrame(frame)
-    local unit= frame.unit
+    frame.ToTButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureUnitButtonTemplate')
 
-    frame.ToTButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
     local btn= frame.ToTButton
-
     btn:SetSize(35,35)
 
-    btn.unit= unit
-    btn.target= unit..'target'
+    btn.unit= frame.unit
+    btn.target= frame.unit..'target'
+    function btn:GetUnit()
+        return Is_InEditMode() and 'player' or self.target
+    end
 
 
     btn:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
     btn:SetAttribute('type', 'target')
     btn:SetAttribute('unit', btn.target)
     btn:SetScript('OnLeave', GameTooltip_Hide)
-
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:SetUnit(self.target)
+        GameTooltip:SetUnit(self:GetUnit())
         GameTooltip:Show()
     end)
 
@@ -85,60 +85,27 @@ local function Create_potFrame(frame)
     btn.healthLable:SetFontHeight(10)
     btn.healthLable:SetTextColor(1,1,1)
 
-    --[[btn.class= btn:CreateTexture(nil, "ARTWORK")
-    btn.class:SetSize(14,14)
-    btn.class:SetPoint('TOPRIGHT')]]
-
- --[[目标， 生命条
-    btn.elapsed= 0.3
-    btn.curve = C_CurveUtil.CreateCurve();
-    btn.curve:SetType(Enum.LuaCurveType.Linear);
-    btn.curve:AddPoint(0.0, 100);
-    btn.curve:AddPoint(1.0, 0);
-
-    btn:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= self.elapsed +elapsed
-        if self.elapsed>0.3 then
-            self.elapsed=0
-            --self.healthLable:SetText(UnitHealth(self.target))
-            --self.healthLable:SetText(--'%i', UnitHealthPercent(self.target, true, CurveConstants.ReverseTo100))
-            --print(unit)
-        end
-    end)]]
 
     function btn:set_portrait()
-        SetPortraitTexture(self.Portrait, self.target)--图像
+        SetPortraitTexture(self.Portrait, self:GetUnit())--图像
     end
 
     function btn:set_health()
-        --self.healthLable:SetFormattedText('%i', UnitHealthPercent(self.target))
-        self.healthLable:SetFormattedText('%i', UnitHealthPercent(self.target, true, CurveConstants.ScaleTo100))
-        --self.healthLable:SetText(UnitHealth(self.target))
+        self.healthLable:SetFormattedText('%i', UnitHealthPercent(self:GetUnit(), true, CurveConstants.ScaleTo100))
     end
 
     function btn:set_event()
         self:RegisterUnitEvent('UNIT_TARGET', self.target)
         self:RegisterUnitEvent('UNIT_TARGETABLE_CHANGED', self.target)
         self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.target)
-
         self:RegisterUnitEvent('UNIT_HEALTH', self.target)
-        --self:RegisterUnitEvent('UNIT_HEAL_PREDICTION', self.target)
-        --self:RegisterUnitEvent('UNIT_HEAL_PREDICTION', self.target)
-        --[[self:RegisterUnitEvent('UNIT_MAXHEALTH', self.target)
-        self:RegisterUnitEvent('UNIT_ABSORB_AMOUNT_CHANGED', self.target)
-        self:RegisterUnitEvent('UNIT_HEAL_ABSORB_AMOUNT_CHANGED', self.target)
-        self:RegisterUnitEvent('UNIT_HEALTH', self.target)]]
-
         self:set_portrait()
         self:set_health()
     end
 
     btn:SetScript('OnEvent', function(self, event)
-        --[[if event=='UNIT_TARGET'
-            or event=='UNIT_TARGETABLE_CHANGED'
-            or event=='UNIT_PORTRAIT_UPDATE']]
         if event~='UNIT_HEALTH' then
-            SetPortraitTexture(self.Portrait, self.target)--图像
+            SetPortraitTexture(self.Portrait, self:GetUnit())--图像
         end
         self:set_health()
     end)
@@ -156,7 +123,7 @@ local function Create_potFrame(frame)
         btn:set_event()
     end
 end
-
+]]
 
 
 
@@ -706,11 +673,19 @@ local function Init()--PartyFrame.lua
 
     --local showPartyFrames = PartyFrame:ShouldShow();
     for i=1, MAX_PARTY_MEMBERS+1 do
-        local frame= PartyFrame['MemberFrame'..i]
+        local name= 'MemberFrame'..i
+        local frame= PartyFrame[name]
         if frame then
-            do
+            --[[do
                 Create_potFrame(frame)--目标的目标
-            end
+            end]]
+            WoWTools_UnitMixin:CreateUnitButton(frame, {
+                name= name,
+                point=function(btn, f)
+                    btn:SetPoint('LEFT', f, 'RIGHT', -3, 4)
+                end,
+                isTarget=true,
+            })
 
             frame.Name:SetPoint('RIGHT')
             frame.Name:SetFontObject('WoWToolsFont')

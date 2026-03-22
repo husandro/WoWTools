@@ -30,4 +30,5 @@ FrameScriptObject:HasSecretValues
 FrameScriptObject:IsPreventingSecretValues
 FrameScriptObject:SetPreventSecretValues
 ScriptRegion:IsAnchoringSecret
+
 ]]

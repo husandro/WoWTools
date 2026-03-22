@@ -1,0 +1,389 @@
+local SECURE_ACTIONS = {};
+
+SECURE_ACTIONS.menu = function(self, unit, button, isKeyPress, down)
+	if not down then
+		self:ExecuteAttribute("menu-function", self, unit, button, isKeyPress);
+	end
+end
+
+-- Unused by Blizzard code but retained because the "type" attribute can be set from addons.
+SECURE_ACTIONS.togglemenu = function(self, unit, button, isKeyPress, down)
+	if not unit then 
+		return;
+	end
+
+	unit = string.lower(unit);
+
+	local unitType = string.match(unit, "^([a-z]+)[0-9]+$") or unit;
+
+	-- Mimic the default UI and prefer the relevant units menu when possible
+	local which;
+	if unitType == "party" then
+		which = "PARTY";
+	elseif unitType == "boss" then
+		which = "BOSS";
+	elseif unitType == "focus" then
+		which = "FOCUS";
+	elseif unitType == "arenapet" or unitType == "arena" then
+		which = "ARENAENEMY";
+	-- Then try and detect the unit type and show the most relevant menu we can find
+	elseif UnitIsUnit(unit, "player") then
+		which = "SELF";
+	elseif UnitIsUnit(unit, "vehicle") then
+		which = "VEHICLE";
+	elseif UnitIsUnit(unit, "pet") then
+		which = "PET";
+	elseif UnitIsOtherPlayersBattlePet(unit) then
+		which = "OTHERBATTLEPET";
+	elseif UnitIsOtherPlayersPet(unit) then
+		which = "OTHERPET";
+	-- Last ditch checks
+	elseif UnitIsPlayer(unit) then
+		if UnitInRaid(unit) then
+			which = "RAID_PLAYER";
+		elseif UnitInParty(unit) then
+			which = "PARTY";
+		else
+			which = "PLAYER";
+		end
+	elseif UnitIsUnit(unit, "target") then
+		which = "TARGET";
+	end
+
+	if( which ) then
+		local contextData = 
+		{
+			unit = unit,
+		}
+		UnitPopup_OpenMenu(which, contextData);
+	end
+end
+
+SECURE_ACTIONS.actionbar =
+    function (self, unit, button)
+        local action = SecureButton_GetModifiedAttribute(self, "action", button);
+        if ( action == "increment" ) then
+            ActionBar_PageUp();
+        elseif ( action == "decrement" ) then
+            ActionBar_PageDown();
+        elseif ( tonumber(action) ) then
+            C_ActionBar.SetActionBarPage(action);
+        else
+            local a, b = strmatch(action, "^(%d+),%s*(%d+)$");
+            if ( C_ActionBar.GetActionBarPage() == tonumber(a) ) then
+                C_ActionBar.SetActionBarPage(b);
+            else
+                C_ActionBar.SetActionBarPage(a);
+            end
+        end
+    end;
+
+SECURE_ACTIONS.action =
+    function (self, unit, button, isKeyPress)
+        local action = self:CalculateAction(button);
+        if ( action ) then
+            -- Save macros in case the one for this action is being edited
+            securecall("MacroFrame_SaveMacro");
+
+            local actionType, flyoutId = GetActionInfo(action);
+            local cursorType = GetCursorInfo();
+
+            if ( actionType == "flyout" and not cursorType ) then
+                local isActionBar, specID, showFullTooltip, reason = true, 0, false, nil;
+                SpellFlyout:Toggle(self, flyoutId, isActionBar, specID, showFullTooltip, reason);
+            else
+                SpellFlyout:Hide();
+                UseAction(action, unit, button, isKeyPress);
+            end
+        end
+    end;
+
+SECURE_ACTIONS.actionrelease = 
+	function (self, unit, button)
+        local action = self:CalculateAction(button);
+        if ( action ) then
+            ReleaseAction(action, unit, button);
+        end
+    end;
+
+SECURE_ACTIONS.pet =
+    function (self, unit, button)
+        local action =
+            SecureButton_GetModifiedAttribute(self, "action", button);
+        if ( action ) then
+            CastPetAction(action, unit);
+        end
+    end;
+
+SECURE_ACTIONS.flyout =
+        function (self, unit, button)
+            local flyoutId = SecureButton_GetModifiedAttribute(self, "spell", button);
+            local isActionBar, specID, showFullTooltip, reason = true, 0, false, nil;
+            SpellFlyout:Toggle(self, flyoutId, isActionBar, specID, showFullTooltip, reason);
+        end;
+
+SECURE_ACTIONS.multispell =
+    function (self, unit, button)
+        local action = self:CalculateAction(button);
+        local spell = SecureButton_GetModifiedAttribute(self, "spell", button);
+        if ( action and spell ) then
+            SetMultiCastSpell(action, tonumber(spell) or spell);
+        end
+    end;
+
+SECURE_ACTIONS.spell =
+    function (self, unit, button)
+        local spell = SecureButton_GetModifiedAttribute(self, "spell", button);
+        local spellID = tonumber(spell);
+        if ( spellID ) then
+            CastSpellByID(spellID, unit);
+        elseif ( spell ) then
+            CastSpellByName(spell, unit);
+        end
+    end;
+
+SECURE_ACTIONS.toy =
+	function (self, unit, button)
+		local toy = SecureButton_GetModifiedAttribute(self, "toy", button);
+		local toyID = tonumber(toy);
+		if ( toyID ) then
+			UseToy(toyID);
+		elseif ( toy ) then
+			UseToyByName(toy);
+		end
+	end;
+
+SECURE_ACTIONS.item =
+    function (self, unit, button)
+        local item = SecureButton_GetModifiedAttribute(self, "item", button);
+        if ( not item ) then
+            -- Backwards compatibility code, deprecated but still handled for now.
+            local bag = SecureButton_GetModifiedAttribute(self, "bag", button);
+            local slot = SecureButton_GetModifiedAttribute(self, "slot", button);
+            if ( bag and slot ) then
+                item = bag.." "..slot;
+            else
+                item = slot;
+            end
+        end
+        if ( item ) then
+            local name, bag, slot = SecureCmdItemParse(item);
+            if ( C_Item.IsEquippableItem(name) and not C_Item.IsEquippedItem(name) ) then
+                C_Item.EquipItemByName(name);
+            else
+                SecureCmdUseItem(name, bag, slot, unit);
+            end
+        end
+    end;
+	
+SECURE_ACTIONS.equipmentset =
+	function (self, unit, button)
+		local setName = SecureButton_GetModifiedAttribute(self, "equipmentset", button);
+		local setID = setName and C_EquipmentSet.GetEquipmentSetID(setName);
+		if ( setID ) then
+			C_EquipmentSet.UseEquipmentSet(setID);
+		end
+	end;
+	
+SECURE_ACTIONS.macro =
+    function (self, unit, button)
+        local macro = SecureButton_GetModifiedAttribute(self, "macro", button);
+        if ( macro ) then
+            -- Save macros in case the one for this action is being edited
+            securecall("MacroFrame_SaveMacro");
+
+            RunMacro(macro, button);
+        else
+            local text = SecureButton_GetModifiedAttribute(self, "macrotext", button);
+            if ( text ) then
+                C_Macro.RunMacroText(text, button);
+            end
+        end
+    end;
+
+local CANCELABLE_ITEMS = {
+    [GetInventorySlotInfo("MainHandSlot")] = 1, -- main hand slot
+    [GetInventorySlotInfo("SecondaryHandSlot")] = 2, -- off-hand slot
+};
+
+do
+	if (C_PaperDollInfo.IsRangedSlotShown()) then
+		CANCELABLE_ITEMS[GetInventorySlotInfo("RangedSlot")] = 3 -- ranged slot
+	end
+end
+
+SECURE_ACTIONS.cancelaura =
+    function (self, unit, button)
+        local spell = SecureButton_GetModifiedAttribute(self, "spell", button);
+        if ( spell ) then
+            CancelSpellByName(spell);
+        else
+            local slot = tonumber(SecureButton_GetModifiedAttribute(self, "target-slot", button));
+            if ( slot and CANCELABLE_ITEMS[slot] ) then
+                CancelItemTempEnchantment(CANCELABLE_ITEMS[slot]);
+            else
+                local index = SecureButton_GetModifiedAttribute(self, "index", button) or self:GetID();
+                if ( index ) then
+                    CancelUnitBuff("player", index, SecureButton_GetModifiedAttribute(self, "filter", button));
+                end
+            end
+        end
+    end;
+
+SECURE_ACTIONS.leavevehicle =
+	function (self, unit, button)
+		VehicleExit();
+	end;
+
+SECURE_ACTIONS.destroytotem =
+	function(self, unit, button)
+		DestroyTotem(SecureButton_GetModifiedAttribute(self, "totem-slot", button));
+	end;
+
+SECURE_ACTIONS.stop =
+    function (self, unit, button)
+        if ( SpellIsTargeting() ) then
+            SpellStopTargeting();
+        end
+    end;
+
+SECURE_ACTIONS.target =
+    function (self, unit, button)
+        if ( unit ) then
+            if ( unit == "none" ) then
+                ClearTarget();
+            elseif ( SpellIsTargeting() ) then
+                SpellTargetUnit(unit);
+            elseif ( CursorHasItem() ) then
+                C_Item.DropItemOnUnit(unit);
+            else
+                TargetUnit(unit);
+            end
+        end
+    end;
+
+SECURE_ACTIONS.focus =
+    function (self, unit, button)
+        return FocusUnit(unit);
+    end;
+
+SECURE_ACTIONS.assist =
+    function (self, unit, button)
+        return AssistUnit(unit);
+    end;
+
+local function SecureAction_ManageAssignment(assignment, action, unit)
+    if ( not action or action == "set" ) then
+        SetPartyAssignment(assignment, unit);
+    elseif ( action == "clear" ) then
+        ClearPartyAssignment(assignment, unit);
+    elseif ( action == "toggle" ) then
+        if ( GetPartyAssignment(assignment, unit) ) then
+            ClearPartyAssignment(assignment, unit);
+        else
+            SetPartyAssignment(assignment, unit);
+        end
+    end
+end
+
+SECURE_ACTIONS.maintank =
+    function (self, unit, button)
+        local action = SecureButton_GetModifiedAttribute(self, "action", button);
+        SecureAction_ManageAssignment("maintank", action, unit);
+    end;
+
+SECURE_ACTIONS.mainassist =
+    function (self, unit, button)
+        local action = SecureButton_GetModifiedAttribute(self, "action", button);
+        SecureAction_ManageAssignment("mainassist", action, unit);
+    end;
+
+SECURE_ACTIONS.click =
+    function (self, unit, button)
+        local delegate =
+            SecureButton_GetModifiedAttribute(self, "clickbutton", button);
+        if ( delegate and not delegate:IsForbidden() ) then
+            delegate:Click(button);
+        end
+    end;
+
+SECURE_ACTIONS.attribute =
+    function (self, unit, button)
+        local frame =
+            SecureButton_GetModifiedAttribute(self, "attribute-frame", button);
+        if ( not frame ) then
+            frame = self;
+        end
+        local name =
+            SecureButton_GetModifiedAttribute(self, "attribute-name", button);
+        local value =
+            SecureButton_GetModifiedAttribute(self, "attribute-value", button);
+        if ( name ) then
+            frame:SetAttribute(name, value);
+        end
+    end;
+
+SECURE_ACTIONS.raidtarget =
+	function(self, unit, button)
+		local marker = tonumber(SecureButton_GetModifiedAttribute(self, "marker", button));
+		local action = SecureButton_GetModifiedAttribute(self, "action", button) or "toggle";
+		unit = unit or "target";
+		marker = marker or 1;
+		if ( action == "set" and GetRaidTargetIndex(unit) ~= marker ) then
+			SetRaidTarget(unit, marker);
+		elseif ( action == "clear" ) then
+			SetRaidTarget(unit, 0);
+		elseif ( action == "clear-all" ) then
+			RemoveRaidTargets();
+		elseif ( action == "toggle" ) then
+			if ( GetRaidTargetIndex(unit) == marker ) then
+				SetRaidTarget(unit, 0);
+			else
+				SetRaidTarget(unit, marker);
+			end
+		end
+	end;
+
+SECURE_ACTIONS.worldmarker =
+	function(self, unit, button)
+		local marker = tonumber(SecureButton_GetModifiedAttribute(self, "marker", button));
+		local action = SecureButton_GetModifiedAttribute(self, "action", button) or "toggle";
+		if ( action == "set" ) then
+			PlaceRaidMarker(marker or 1);
+		elseif ( action == "clear" ) then
+			ClearRaidMarker(marker);
+		elseif ( action == "toggle" ) then
+			marker = marker or 1;
+			if ( IsRaidMarkerActive(marker) ) then
+				ClearRaidMarker(marker);
+			else
+				PlaceRaidMarker(marker);
+			end
+		end
+	end;
+
+SECURE_ACTIONS.teleporthome =
+    function (self, _unit, button)
+		local neighborhoodGUID = SecureButton_GetModifiedAttribute(self, "house-neighborhood-guid", button);
+		local houseGUID = SecureButton_GetModifiedAttribute(self, "house-guid", button);
+		local plotID = tonumber(SecureButton_GetModifiedAttribute(self, "house-plot-id", button));
+
+		if neighborhoodGUID and houseGUID and plotID then
+			C_Housing.TeleportHome(neighborhoodGUID, houseGUID, plotID);
+		end
+    end;
+
+SECURE_ACTIONS.returnhome =
+    function (self, _unit, _button)
+		C_Housing.ReturnAfterVisitingHouse();
+    end;
+
+SECURE_ACTIONS.visithouse =
+    function (self, _unit, button)
+		local neighborhoodGUID = SecureButton_GetModifiedAttribute(self, "house-neighborhood-guid", button);
+		local houseGUID = SecureButton_GetModifiedAttribute(self, "house-guid", button);
+		local plotID = tonumber(SecureButton_GetModifiedAttribute(self, "house-plot-id", button));
+
+		if neighborhoodGUID and houseGUID and plotID then
+			C_Housing.VisitHouse(neighborhoodGUID, houseGUID, plotID);
+		end

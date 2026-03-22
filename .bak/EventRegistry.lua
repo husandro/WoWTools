@@ -11,4 +11,7 @@ QuestEventListener = CreateListener(AsyncCallbackAPIType.ASYNC_QUEST);
 SpellEventListener:AddCancelableCallback(self:GetSpellID(), callbackFunction)
 QuestEventListener:AddCancelableCallback(questID, cb)
 ItemEventListener:AddCancelableCallback(self:GetItemID(), callbackFunction)
+
+
+CVarCallbackRegistry:GetCVarValueBool("threatShowNumeric")
 ]]

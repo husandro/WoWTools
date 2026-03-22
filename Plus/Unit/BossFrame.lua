@@ -2,355 +2,6 @@
 --EditModeManagerFrame:IsEditModeActive()
 
 
-
-
-
---Boss图标，按钮
-local function Create_BossButton(frame)
-    frame.BossButton= CreateFrame('Button', nil, frame, 'WoWToolsButton2Template SecureActionButtonTemplate')
-    frame.BossButton:SetSize(38, 38)
-    --[[WoWTools_ButtonMixin:Cbtn(frame,{
-        size=38,
-        isSecure=true,
-        isType2=true,
-        notBorder=true,
-        notTexture=true,
-    })]]
-    frame.BossButton.unit= frame.unit
-    frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBarsContainer, 'RIGHT')
-
-    frame.BossButton:SetAttribute('type', 'target')
-    frame.BossButton:SetAttribute('unit', frame.unit)
-
-    frame.BossButton:SetScript('OnLeave', function()
-        GameTooltip:Hide()
-    end)
-    frame.BossButton:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:SetUnit(self.unit)
-        GameTooltip:Show()
-    end)
-
-    frame.BossButton.Portrait= frame.BossButton:CreateTexture(nil, 'BACKGROUND')
-    WoWTools_ButtonMixin:AddMask(frame.BossButton, true, frame.BossButton.Portrait)
-    frame.BossButton.Portrait:SetAllPoints()
-
-    --[[frame.BossButton.targetTexture= frame.BossButton:CreateTexture(nil, 'OVERLAY')
-    frame.BossButton.targetTexture:SetSize(52,52)
-    frame.BossButton.targetTexture:SetPoint('CENTER')
-    frame.BossButton.targetTexture:SetAtlas('DK-Blood-Rune-CDFill')]]
-
-
-    function frame.BossButton:settings()
-        SetPortraitTexture(self.Portrait, BossTargetFrameContainer.isInEditMode and 'player' or self.unit)
-        --self.targetTexture:SetShown(WoWTools_UnitMixin:UnitIsUnit('target', unit)==true)
-    end
-
-    function frame.BossButton:Init()
-        self:RegisterEvent('PLAYER_TARGET_CHANGED')
-        self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit)
-        self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
---颜色
-        local color= WoWTools_UnitMixin:GetColor(self.unit)
-        self:GetParent().healthbar:SetStatusBarColor(color:GetRGB())--颜色
-        self:GetParent().TargetFrameContent.TargetFrameContentMain.ReputationColor:SetVertexColor(color:GetRGB())
-        self:settings()
-    end
-
-
-    frame.BossButton:SetScript('OnEvent', function(self)
-        self:settings()
-    end)
-
-    frame.BossButton:SetScript('OnHide', function(self)
-        self:UnregisterAllEvents()
-        self.Portrait:SetTexture(0)
-    end)
-
-    if frame:IsShown() then
-        frame.BossButton:Init()
-    end
-    frame.BossButton:SetScript('OnShow', function(self)
-        self:Init()
-    end)
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---队友，选中BOSS，数量
-local function Create_numSelectFrame(frame)
-
-    local Frame= CreateFrame('Frame', frame)
-    Frame:SetPoint('BOTTOMRIGHT', frame.BossButton, 2, -2)
-    Frame:SetSize(1,1)
-    Frame:SetFrameStrata('HIGH')
-
-    Frame.unit= frame.unit
-
-    Frame.Text= WoWTools_LabelMixin:Create(Frame, {
-        color={r=1,g=1,b=1},
-        size=12
-    })
-    Frame.Text:SetPoint('BOTTOM')
-
-    Frame.Text:EnableMouse(true)
-    Frame.Text:SetScript('OnLeave', function(self)
-        self:SetAlpha(1)
-        GameTooltip:Hide()
-    end)
-    Frame.Text:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName)
-        GameTooltip:AddLine(
-            WoWTools_DataMixin.onlyChinese and '队友选中目标数量'
-            or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)
-        )
-        GameTooltip:Show()
-        self:SetAlpha(0.3)
-    end)
-
-    Frame:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= (self.elapsed or 0.3) +elapsed
-        if self.elapsed<=0.3 then
-            return
-        end
-        self.elapsed= 0
-
-        local n=0
-        local unit
-        if IsInRaid() then
-            for index=1, MAX_RAID_MEMBERS do
-                unit= 'raid'..index
-                if WoWTools_UnitMixin:UnitIsUnit(unit..'target', self.unit) then
-                    n= n+1
-                end
-            end
-        elseif IsInGroup() then
-            for index=1, GetNumGroupMembers()-1, 1 do
-                if WoWTools_UnitMixin:UnitIsUnit('party'..index..'target', self.unit) then
-                    n= n+1
-                end
-            end
-            if WoWTools_UnitMixin:UnitIsUnit('target', self.unit) then
-                n=n+1
-            end
-        end
-        self.Text:SetText(n)
-    end)
-
-    Frame:SetScript('OnHide', function(self)
-        self.elapsed=nil
-        self.Text:SetText("")
-    end)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---目标的目标，点击
-local function Create_TotButton(frame)
-
-    frame.TotButton=WoWTools_ButtonMixin:Cbtn(frame, {
-        size=38,
-        isSecure=true,
-        isType2=true,
-        notBorder=true,
-        notTexture=true,
-    })
-
-    function frame.TotButton:set_point()
-        if Boss1TargetFrameSpellBar.castBarOnSide then
-            self:SetPoint('TOPLEFT', frame.TargetFrameContent.TargetFrameContentMain.ManaBar, 'BOTTOMLEFT')
-        else
-            self:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-2,0)
-        end
-    end
-    frame.TotButton:SetScript('OnEvent', function(self, event)
-        self:set_point()
-        self:UnregisterEvent(event)
-    end)
-    frame.TotButton:set_point()
-
-    frame.TotButton:SetAttribute('type', 'target')
-    frame.TotButton:SetAttribute('unit', frame.unit..'target')
-    frame.TotButton:SetScript('OnLeave', GameTooltip_Hide)
-    frame.TotButton:SetScript('OnEnter', function(self)
-        GameTooltip_SetDefaultAnchor(GameTooltip, self);
-        GameTooltip:ClearLines()
-        if WoWTools_UnitMixin:UnitExists(self.targetUnit) then
-            GameTooltip:SetUnit(self.targetUnit)
-        else
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, self.targetUnit)
-        end
-        GameTooltip:Show()
-    end)
-    frame.TotButton.unit= frame.unit
-    frame.TotButton.targetUnit= frame.unit..'target'
-
-
-
-
-
-
-
-
-
---目标的目标，信息
-    frame.TotButton.frame= CreateFrame('Frame', nil, frame.TotButton)
-    frame.TotButton.frame:SetFrameLevel(frame.TotButton:GetFrameLevel()-1)
-    frame.TotButton.frame:SetAllPoints()
-    frame.TotButton.frame:Hide()
-    frame.TotButton.frame.unit= frame.unit
-    frame.TotButton.frame.targetUnit= frame.unit..'target'
-
-    --目标的目标，图像
-    frame.TotButton.frame.Portrait= frame.TotButton.frame:CreateTexture(nil, 'BACKGROUND')
-    frame.TotButton.frame.Portrait:SetAllPoints()
-
-    --目标的目标，外框
-    frame.TotButton.frame.Border= frame.TotButton.frame:CreateTexture(nil, 'ARTWORK')
-    frame.TotButton.frame.Border:SetSize(44,44)
-    frame.TotButton.frame.Border:SetPoint('CENTER',2,-2)
-    frame.TotButton.frame.Border:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
-
-    --目标的目标，百份比
-    frame.TotButton.frame.healthLable= WoWTools_LabelMixin:Create(frame.TotButton.frame,{color={r=1,g=1,b=1}, size=14})
-    frame.TotButton.frame.healthLable:SetPoint('BOTTOM')--, frame.TotButton.frame, 'RIGHT')
-
-    frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= (self.elapsed or 0.3) +elapsed
-        if self.elapsed<0.3 then
-            return
-        end
-        self.elapsed= 0
-
-        local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
-        local text=''
-
-        local value, max= UnitHealth(unit), UnitHealthMax(unit)
-        if canaccessvalue(value) and canaccessvalue(max) and value and max and max>0 then
-            value= (not value or value<=0) and 0 or value
-            local per= value/max*100
-            text= format('%0.f', per)
-        end
-        self.healthLable:SetText(text)
-    end)
-
-    function frame.TotButton.frame:set_settings()
-        local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
-
-        SetPortraitTexture(self.Portrait, unit)
-    end
-        --[[local exists= not IsInInstance() and WoWTools_UnitMixin:UnitExists(unit)
-        if exists then
-            --图像
-            local isSelf= WoWTools_UnitMixin:UnitIsUnit(unit, 'player')
-            if BossTargetFrameContainer.isInEditMode then
-                SetPortraitTexture(self.Portrait, unit)
-            elseif isSelf then--自已
-                self.Portrait:SetAtlas('auctionhouse-icon-favorite')
-            elseif WoWTools_UnitMixin:UnitIsUnit(unit, 'target') then
-                self.Portrait:SetAtlas('common-icon-checkmark')
-            else
-                local index = GetRaidTargetIndex(unit)
-                if index and index>0 and index< 9 then
-                    self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-                else
-                    SetPortraitTexture(self.Portrait, unit)--别人
-                end
-            end
-
-            --颜色
-            local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-            self.Border:SetVertexColor(r or 1, g or 1, b or 1)
-            self.healthLable:SetTextColor(r or 1, g or 1, b or 1)
-            WoWTools_FrameMixin:HelpFrame({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-2})
-        else
-            self.Portrait:SetTexture(0)
-            self.elapsed=nil
-        end
-        self:SetShown(exists)]]
-
-    function frame.TotButton.frame:Init()
-        self:RegisterUnitEvent('UNIT_TARGET', self.unit)
-        self:RegisterEvent('RAID_TARGET_UPDATE')
-        self:RegisterEvent('PLAYER_TARGET_CHANGED')
-        self:set_settings()
-    end
-
-    frame.TotButton.frame:SetScript('OnEvent', function(self)
-        self:set_settings()
-    end)
-
-    if frame:IsShown() then
-        frame.TotButton.frame:Init()
-    end
-    frame.TotButton.frame:HookScript('OnShow', function(self)
-        self:Init()
-    end)
-    frame.TotButton.frame:HookScript('OnHide', function(self)
-       self:UnregisterAllEvents()
-    end)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function Init()
     if WoWToolsSave['Plus_UnitFrame'].hideBossFrame then
         return
@@ -358,44 +9,54 @@ local function Init()
 
 
     for i=1, MAX_BOSS_FRAMES do
-        local frame= _G['Boss'..i..'TargetFrame']
+        local name= 'Boss'..i..'TargetFrame'
+        local frame= _G[name]
         if frame then
 
             frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，颜色，材质
 
-            Create_BossButton(frame)--Boss图标，按钮
+            --Create_BossButton(frame)--Boss图标，按钮
+            WoWTools_UnitMixin:CreateUnitButton(frame, {
+                name= name,
+                point=function(btn, f)
+                    btn:SetPoint('LEFT', f.TargetFrameContent.TargetFrameContentMain.HealthBarsContainer, 'RIGHT')
+                end,
+            })
 
-            --Create_numSelectFrame(frame)--队友，选中BOSS，数量
-            Create_TotButton(frame)--目标的目标，点击
-        end
-    end
-
-
-
-
-
-
-
-
-
---设置位置
-    local function set_TotButton_point()
-        for i=1, MAX_BOSS_FRAMES do
-            local frame= _G['Boss'..i..'TargetFrame']
-            if frame and frame.TotButton then
-                if InCombatLockdown() then
-                    frame.TotButton:UnregisterEvent('PLAYER_REGEN_ENABLED')
-                else
-                    frame.TotButton:ClearAllPoints()
-                    frame.TotButton:set_point()
+            local btn= WoWTools_UnitMixin:CreateUnitButton(frame, {
+                name= name,
+                size=23,
+                isTarget= true,
+            })
+            local bar= _G[name..'SpellBar']
+            if bar and btn then
+                bar.TotButton= btn
+                function bar:Set_TotPoint()
+                    self.TotButton:ClearAllPoints()
+                    if self.castBarOnSide then
+                        self.TotButton:SetPoint('RIGHT', self, 'LEFT')
+                        self.TotButton.texture:SetTexCoord(0,1,0,1)
+                    else
+                        self.TotButton:SetPoint('LEFT', self, 'RIGHT')
+                        self.TotButton.texture:SetTexCoord(1,0,0,1)
+                    end
                 end
+
+                WoWTools_DataMixin:Hook(bar, 'AdjustPosition', function(self)
+                    if self.TotButton:CanChangeAttribute() then
+                        self:Set_TotPoint()
+
+                    elseif not self.batOwnerID then
+                        self.batOwnerID= EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+                            self:Set_TotPoint()
+                            self.batOwnerID= nil
+                            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+                        end)
+                    end
+                end)
             end
         end
     end
-    WoWTools_DataMixin:Hook(Boss1TargetFrameSpellBar,'AdjustPosition', set_TotButton_point)
-    WoWTools_DataMixin:Hook(BossTargetFrameContainer, 'SetSmallSize', set_TotButton_point)
-
-
 
 
     Init=function()end

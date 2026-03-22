@@ -1,5 +1,134 @@
 WoWTools_UnitMixin={}
 
+
+
+
+
+
+
+--[[
+frame.unit 必需有
+
+WoWTools_UnitMixin:CreateUnitButton(frame,
+{
+tab.name='', 必需有
+point= function(TotButton, frame)
+end
+},
+size=35,
+anchor='ANCHOR_LEFT'
+unit=frame.unit,--如果有这个，只显示前当UNIT
+]]
+function WoWTools_UnitMixin:CreateUnitButton(frame, tab)
+    local name= tab.name.. (tab.isTarget and 'ToT' or 'UnitButton')
+    if _G[name] then
+        return _G[name]
+    end
+
+    local btn= CreateFrame('Button', name, frame, 'WoWToolsButton2Template SecureUnitButtonTemplate')
+--位置
+    if tab.point then
+        tab.point(btn, frame)
+    end
+--大小
+    local size= tab.size or 35
+    btn:SetSize(size, size)
+    btn.anchor= tab.anchor
+--unit
+    local unit= tab.unit or frame.unit
+    if tab.isTarget then
+        btn.unit= unit..'target'
+    else
+        btn.unit= unit
+    end
+
+    btn.isTarget= tab.isTarget--目标的目标
+
+    btn.texture:SetTexCoord(1,0,0,1)
+    WoWTools_InviteMixin:SetFocusButton(btn)
+
+    function btn:GetUnit()
+        if EditModeManagerFrame and EditModeManagerFrame:IsEditModeActive() then
+            return 'player'
+        else
+            return self.unit
+        end
+    end
+
+
+    btn:SetAttribute('unit1', btn.unit)
+    btn:SetAttribute('type1', 'target')
+    btn:SetAttribute('unit2', btn.unit)
+    btn:SetAttribute('type2', 'togglemenu')
+
+
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(f)
+        GameTooltip:SetOwner(f, self.anchor or "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetUnit(f:GetUnit())
+        GameTooltip:Show()
+    end)
+
+
+--目标，图像
+    --[[btn.Portrait= btn:CreateTexture(nil, 'BORDER')
+    WoWTools_ButtonMixin:AddMask(btn, true, btn.Portrait)
+    btn.Portrait:SetAllPoints()]]
+
+    btn.hp= btn:CreateFontString(nil, 'BORDER', 'WoWToolsFont2')--WoWTools_LabelMixin:Create(btn, {size=14})
+    btn.hp:SetPoint('BOTTOM')
+    btn.hp:SetJustifyH('CENTER')
+    btn.hp:SetFontHeight(10)
+
+
+    function btn:set_portrait()
+        SetPortraitTexture(self.texture, self:GetUnit())--图像
+    end
+
+    function btn:set_health()
+        self.hp:SetFormattedText('%i', UnitHealthPercent(self:GetUnit(), true, CurveConstants.ScaleTo100))
+    end
+
+    function btn:set_event()
+        if self.isTarget then
+            local u= self:GetParent().unit
+            self:RegisterUnitEvent('UNIT_TARGET', u)
+            self:RegisterUnitEvent('UNIT_TARGETABLE_CHANGED', u)
+        end
+        self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit)
+        self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
+        self:set_portrait()
+        self:set_health()
+    end
+
+    btn:SetScript('OnEvent', function(f, event)
+        if event~='UNIT_HEALTH' then
+            SetPortraitTexture(f.texture, f:GetUnit())--图像
+        end
+        f:set_health()
+    end)
+
+    btn:SetScript('OnHide', function(f)
+        f.texture:SetTexture(0)
+        f:UnregisterAllEvents()
+        f.elapsed= 0.3
+    end)
+    btn:SetScript('OnShow', btn.set_event)
+
+    if frame:IsVisible() then
+        btn:set_event()
+    end
+
+    return btn
+end
+
+
+
+
+
+
+
 function WoWTools_UnitMixin:UnitExists(unit)
     local exits= UnitExists(unit)
     if issecretvalue(exits) or exits then
