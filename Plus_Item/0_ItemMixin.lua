@@ -333,9 +333,7 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
 
             itemLevel= self:GetItemLevel(link)
             if itemLevel and itemLevel>13 then
-                if WoWTools_ItemMixin:IsEquipType(itemLocation, bag, equipSlot)==false --物品是否为首选护甲类型
-                    or WoWTools_ItemMixin:IsNotEquipType(link)==true
-                then
+                if not C_Item.IsEquippableItem(link) or self:IsEquipType(itemLocation, bag, equipSlot)==false then --物品是否为首选护甲类型
                     itemLevelColor= DISABLED_FONT_COLOR
                 else
                     local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等
@@ -1006,23 +1004,17 @@ function WoWTools_ItemMixin:IsEquipType(itemLocation, bag, equipmentSlotIndex)--
         local isArmor = (itemClassID == Enum.ItemClass.Armor) and (itemSubclassID ~= Enum.ItemArmorSubclass.Shield);
         if isArmor then
             return IsItemPreferredArmorType(item:GetItemLocation()) and true or false --IsItemPreferredArmorType  '|cnRED_FONT_COLOR:这不是你偏好的护甲类型。|r';
-
-        else
-            local isNotEquipType= WoWTools_ItemMixin:IsNotEquipType(itemID,  itemType, itemSubType)
-            if isNotEquipType~=nil then
-                return not isNotEquipType
-            end
         end
     end
 end
 
 
-function WoWTools_ItemMixin:IsNotEquipType(itemInfo,  itemType, itemSubType)
+--[[function WoWTools_ItemMixin:IsNotEquipType(itemInfo,  itemType, itemSubType)
     if not itemInfo then
         return nil
 
     elseif not C_Item.IsEquippableItem(itemInfo) then
-        return false
+        return true
     end
 
     if not itemType then
@@ -1034,5 +1026,5 @@ function WoWTools_ItemMixin:IsNotEquipType(itemInfo,  itemType, itemSubType)
     elseif itemType then
         return not C_Item.IsEquippedItemType(itemType)
     end
-end
+end]]
 

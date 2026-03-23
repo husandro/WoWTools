@@ -69,7 +69,7 @@ local function set_ROLL_Check(frame, notPrint)
     end
 
     local itemID, itemType, itemSubType, itemEquipLoc, _, classID, subclassID = C_Item.GetItemInfoInstant(itemLink)
-    if not WoWTools_ItemMixin:IsNotEquipType(itemLink,  itemType, itemSubType) then
+    if C_Item.IsEquippableItem(itemLink) then
         for _, slot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do--比较装等
             local slotLink= GetInventoryItemLink('player', slot)
             if slotLink then

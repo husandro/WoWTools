@@ -114,41 +114,38 @@ local function Init()
 
 --申请者
     function btn:set_new_application(isInit)
-         if InCombatLockdown() then
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            return
-        end
-
         local isInviete, isMessage= false, false
         local clubs= C_ClubFinder.IsEnabled() and C_Club.GetSubscribedClubs()
-        for _, data in pairs(clubs or {}) do
-            if not isInviete and WoWTools_GuildMixin:GetApplicantList(data.clubId) then
-                isInviete=true
+        if canaccesstable(clubs) and clubs then
+            for _, data in pairs(clubs or {}) do
+                if canaccessvalue(data.clubId) and data.clubId then
+                    if not isInviete and WoWTools_GuildMixin:GetApplicantList(data.clubId) then
+                        isInviete=true
 
-                if isInit then
-                    print(
-                        WoWTools_GuildMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                        '|cffff00ff'
-                        ..(WoWTools_DataMixin.onlyChinese and '新' or NEW)..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
-                        ..(WoWTools_DataMixin.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
-                    )
+                        if isInit then
+                            print(
+                                WoWTools_GuildMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                                '|cffff00ff'
+                                ..(WoWTools_DataMixin.onlyChinese and '新' or NEW)..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
+                                ..(WoWTools_DataMixin.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
+                            )
+                        end
+                    end
+
+                    if not isMessage then
+                        local hasMsg= CommunitiesUtil.DoesCommunityHaveUnreadMessages(data.clubId)
+                        if canaccessvalue(hasMsg) and hasMsg then
+                            isMessage= true
+                        end
+                    end
+
+                    if isMessage and isInviete then
+                        break
+                    end
                 end
-            end
-
-            if not isMessage then
-                local hasMsg= CommunitiesUtil.DoesCommunityHaveUnreadMessages(data.clubId)
-                if canaccessvalue(hasMsg) and hasMsg then
-                    isMessage= true
-                end
-            end
-
-            if isMessage and isInviete then
-                break
             end
         end
-        
         self.inviteTexture:SetShown(isInviete)
-        --GuildMicroButton.inviteTexture:SetShown(isInviete)
         self.msgTexture:SetShown(isMessage)
     end
 

@@ -119,7 +119,7 @@ local function Init_Menu(self, root)
         WoWTools_DataMixin:Call('EncounterJournal_Refresh')
     end)
 
---信息
+--[[信息
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '信息' or INFO,
     function()
@@ -127,7 +127,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
         WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-    end)
+    end)]]
 
 --记录上次选择版本
     root:CreateDivider()

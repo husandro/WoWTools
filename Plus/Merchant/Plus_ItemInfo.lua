@@ -323,7 +323,7 @@ local function Set_Item_Info()
 
                 or select(4, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
 
-                or (WoWTools_ItemMixin:IsNotEquipType(itemID) and hasItemCollection)
+                or (not C_Item.IsEquippableItem(itemID) and hasItemCollection)
 
             then
                alpha= notIsUsableAlpha

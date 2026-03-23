@@ -124,7 +124,7 @@ local function Init()
                 and (poiInfo.areaPoiID or poiInfo.widgetSetID)
                 and GetAppropriateTooltip()
 
-        if not tooltip or not tooltip:IsShown() or WoWTools_FrameMixin:IsLocked(tooltip) or not poiInfo then
+        if tooltip:HasSecretValues() or not tooltip:IsShown() or not poiInfo then
             return
         end
 

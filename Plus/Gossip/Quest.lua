@@ -110,7 +110,7 @@ local function select_Reward(questID)--自动:选择奖励
                     and not C_MountJournal.GetMountFromItem(itemID)--坐骑
                     and isUsable
                 then
-                    if itemLevel and itemLevel>1 and not WoWTools_ItemMixin:IsNotEquipType(itemLink) then
+                    if itemLevel and itemLevel>1 and C_Item.IsEquippableItem(itemLink) then
                         for _, invSlot in ipairs({WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)}) do
                             local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
                             if itemLinkPlayer then

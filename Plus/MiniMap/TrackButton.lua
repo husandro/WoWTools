@@ -1403,7 +1403,8 @@ local function Init_WorldFrame_Event()
     end)
 
     WoWTools_DataMixin:Hook(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
-        if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
+        if GameTooltip:HasSecretValues() and canaccessvalue(self.areaPoiID) and self.areaPoiID and self:GetMap() and self:GetMap():GetMapID() then
+            
             GameTooltip:AddDoubleLine(
                 WoWTools_MinimapMixin.addName2..WoWTools_DataMixin.Icon.icon2
                 ..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),

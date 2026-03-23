@@ -45,7 +45,7 @@ local function Set_ItemType(btn, itemInfo)
                     text= WoWTools_TextMixin:CN(itemType)
                 end
                 --不可装备
-                if  WoWTools_ItemMixin:IsNotEquipType(itemID,  itemType, itemSubType) then
+                if not C_Item.IsEquippableItem(itemID) then
                     hex= '|cff808080'
                 end
             end

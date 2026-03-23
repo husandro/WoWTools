@@ -73,22 +73,22 @@ local function Init()
             end
         end
 
-        if numPlayer>0 then
-            table.sort(tab, function(a,b) return a.num>b.num end)
+        table.sort(tab, function(a,b) return a.num>b.num end)
 
-            local notIsShiftkeyDown= not IsShiftKeyDown()
-            for index, info in pairs(tab) do
-                local money= info.num or 0
-                money= math.modf(money/10000)
-                GameTooltip:AddDoubleLine(
-                    WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
-                    WoWTools_DataMixin:MK(money, 3)..'|A:Coin-Gold:0:0|a'--C_CurrencyInfo.GetCoinTextureString(info.num)
-                )
-                if index>=3 and notIsShiftkeyDown then
-                    break
-                end
+        local notIsShiftkeyDown= not IsShiftKeyDown()
+        for index, info in pairs(tab) do
+            local money= info.num or 0
+            money= math.modf(money/10000)
+            GameTooltip:AddDoubleLine(
+                WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
+                WoWTools_DataMixin:MK(money, 3)..'|A:Coin-Gold:0:0|a'--C_CurrencyInfo.GetCoinTextureString(info.num)
+            )
+            if index>=3 and notIsShiftkeyDown then
+                break
             end
-
+        end
+--合计
+        if numPlayer>1 then
             local left= format(CHARACTER_CUSTOMIZATION_CHOICE_NAME_AND_ID, numPlayer, WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)--%d %s
             GameTooltip:AddDoubleLine(
                 numPlayer>3 and notIsShiftkeyDown and '|cnGREEN_FONT_COLOR:<'..left..'|A:NPE_Icon:0:0|aShift+>' or
@@ -96,17 +96,25 @@ local function Init()
                 '|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_DataMixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
             )
         end
-
+--银行
         local account= C_Bank.FetchDepositedMoney(Enum.BankType.Account)
-        if account and account>0 and GameTooltip.textLeft then
-            GameTooltip.textLeft:SetText(
-                '|A:questlog-questtypeicon-account:0:0|a|cff00ccff'
-                ..(
-                    account >=10000 and WoWTools_DataMixin:MK(account/10000, 3)..'|A:Coin-Gold:8:8|a'
-                    or C_CurrencyInfo.GetCoinTextureString(account)
+        if account then
+            local text= '|A:questlog-questtypeicon-account:0:0|a|cff00ccff'
+                    ..(
+                        account >=10000 and WoWTools_DataMixin:MK(account/10000, 3)..'|A:Coin-Gold:8:8|a'
+                        or C_CurrencyInfo.GetCoinTextureString(account)
+                    )
+            if GameTooltip.textRight then
+                GameTooltip.textRight:SetText(text)
+            else
+                GameTooltip:AddDoubleLine(
+                    ' ',
+                    text
                 )
-            )
+            end
         end
+
+
 
 --背包，数量
         local num, use= 0, 0
@@ -132,7 +140,7 @@ local function Init()
                     icon=icon,
                     num=numSlots,
                     freeSlots= (freeSlots==0 and '|cff828282' or '|cnGREEN_FONT_COLOR:')..freeSlots..'|r',
-                    percent= format('%i%%', freeSlots/numSlots*100)
+                    --percent= format('%i%%', freeSlots/numSlots*100)
                 })
                     --num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnWARNING_FONT_COLOR:'..num..'|r'})
             end
@@ -143,9 +151,12 @@ local function Init()
             local a= tab[i]
             local b= tab[i+1]
             GameTooltip:AddDoubleLine(
-                a.icon..a.index..') '..a.freeSlots..'/'..a.num..' '..a.percent,
-                b and (a.percent..' '..b.freeSlots..'/'..b.num..' ('..b.index..b.icon)
+                a.icon..a.index..') '..a.freeSlots..'/'..a.num,
+                b and (b.freeSlots..'/'..b.num..' ('..b.index..b.icon)
             )
+                --a.icon..a.index..') '..a.freeSlots..'/'..a.num..' '..a.percent,
+                --b and (a.percent..' '..b.freeSlots..'/'..b.num..' ('..b.index..b.icon)
+            --)
         end
 
         local totale= (use>0 and '|cnGREEN_FONT_COLOR:' or '|cnWARNING_FONT_COLOR:')

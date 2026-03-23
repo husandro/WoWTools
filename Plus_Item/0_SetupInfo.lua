@@ -369,7 +369,7 @@ local function Get_Info(tab)
 
     elseif tab.guidBank then
         itemLink= GetGuildBankItemLink(tab.guidBank.tab, tab.guidBank.slot)
-        
+
         --[[local data= C_TooltipInfo.GetGuildBankItem(tab.guidBank.tab, tab.guidBank.slot)
         if data then
             itemID= data.id
@@ -377,7 +377,7 @@ local function Get_Info(tab)
             local guid= data.guid
             
         end]]
-        
+
     elseif tab.itemLocation and tab.itemLocation:IsValid() then
         itemLink= C_Item.GetItemLink(tab.itemLocation)
         itemID= C_Item.GetItemID(tab.itemLocation)
@@ -401,7 +401,7 @@ local function Get_Info(tab)
 
 
 
-    
+
     if not itemLink then
         return
     end
@@ -479,7 +479,7 @@ local function Get_Info(tab)
             if entryInfo.firstAcquisitionBonus>0 then
                 rightText= '|A:GarrMission_CurrencyIcon-Xp:18:18:3|a'
             end
-            
+
             if entryInfo.showQuantity and entryInfo.numPlaced and entryInfo.quantity and entryInfo.remainingRedeemable then
                 local numPlaced= entryInfo.numPlaced or 0
                 local quantity= (entryInfo.quantity or 0)+ (entryInfo.remainingRedeemable or 0)
@@ -612,6 +612,9 @@ local function Get_Info(tab)
 
 --装备
     elseif classID==2 or classID==4 then
+        local isNotEquipType= not C_Item.IsEquippableItem(itemLink) or WoWTools_ItemMixin:IsEquipType(tab.itemLocation, tab.bag, nil)==false
+        --WoWTools_ItemMixin:IsNotEquipType(itemLink, itemType, itemSubType)==true
+ 
         if C_Item.IsCosmeticItem(itemLink) then--装饰品
             bottomLeftText= get_has_text(select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true)))
 
@@ -622,7 +625,7 @@ local function Get_Info(tab)
             bottomRightText= stat[2]
             topLeftText= stat[3]
             topRightText= stat[4]
-            if WoWTools_ItemMixin:IsNotEquipType(itemLink, itemType, itemSubType) then
+            if isNotEquipType then
                 leftText= DISABLED_FONT_COLOR:GenerateHexColorMarkup()..itemLevel..'|r'
             else
                 leftText= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, nil)--装等，提示
@@ -726,13 +729,7 @@ local function Get_Info(tab)
 
                 if not topLeftText or topLeftText=='' then
                     if not dateInfo.red then--装等，提示
-                        local IsNotEquipType
-                        if tab.itemLocation or tab.bag then
-                           IsNotEquipType= WoWTools_ItemMixin:IsEquipType(tab.itemLocation, tab.bag)==false
-                        else
-                            IsNotEquipType= WoWTools_ItemMixin:IsNotEquipType(itemLink, itemType, itemSubType)==true
-                        end
-                        if IsNotEquipType then
+                        if isNotEquipType then
                             topLeftText= DISABLED_FONT_COLOR:GenerateHexColorMarkup()..itemLevel..'|r'
                         else
                             local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
@@ -784,7 +781,9 @@ local function Get_Info(tab)
                             isRedItem= dateInfo.red
                         end
                     end
-                    isRedItem= isRedItem or WoWTools_ItemMixin:IsNotEquipType(itemID,  itemType, itemSubType)
+
+                    isRedItem= isRedItem or isNotEquipType
+
                     if topRightText and isRedItem then
                         topRightText= '|cnWARNING_FONT_COLOR:'..topRightText..'|r'
                     end
@@ -811,10 +810,11 @@ local function Get_Info(tab)
 
 
 
+
 --宠物
     elseif battlePetSpeciesID or itemID==82800 or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then
 
-   
+
 
         local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物
         --[[if not speciesID and itemID==82800 and tab.guidBank then

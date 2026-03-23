@@ -767,12 +767,16 @@ local function Init()--设置标记, 框架
                     --..(self:GetAttribute("unit1" or (WoWTools_DataMixin.onlyChinese and '无' or NONE)))
                 )
 
-                GameTooltip_SetTitle(GameTooltip,
-                    'Alt'..WoWTools_DataMixin.Icon.left
-                    --..(WoWTools_DataMixin.onlyChinese and '坦克' or TANK)
-                    ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..(IsInRaid() and 6 or 1)..':0|t'
-                    ..'|cffff8000'..(unit or (WoWTools_DataMixin.onlyChinese and '无' or NONE))..'|r'
-                    ..WoWTools_UnitMixin:GetPlayerInfo(unit)
+                local isInRaid= IsInRaid()
+                local role= isInRaid and (WoWTools_DataMixin.onlyChinese and '坦克' or TANK)
+                                        or (WoWTools_DataMixin.onlyChinese and '治疗' or HEALER)
+
+                GameTooltip:AddLine(
+                    'Alt+'..WoWTools_DataMixin.Icon.left
+                    ..role
+                    ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..(isInRaid and 6 or 1)..':0|t'
+                    ..'|cffff8000'..(unit2 or (WoWTools_DataMixin.onlyChinese and '无' or NONE))..'|r'
+                    ..WoWTools_UnitMixin:GetPlayerInfo(unit2)
                     --..(self:GetAttribute("unit1" or (WoWTools_DataMixin.onlyChinese and '无' or NONE)))
                 )
 
