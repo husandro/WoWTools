@@ -3187,7 +3187,8 @@
         "CompactUnitFrame_UpdateName",
         "EncounterTimeline",
         "Boss2TargetFrame",
-        "BossSpellBarMixin"
+        "BossSpellBarMixin",
+        "UIWidgetCenterDisplayFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

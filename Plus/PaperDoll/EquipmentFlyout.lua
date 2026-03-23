@@ -61,7 +61,8 @@ end
 
 
 local function Create_ButtonLabel(btn)
-    local w, h= btn:GetSize()
+    --local w, h= btn:GetSize()
+    local h= btn:GetHeight()
 
     btn.level= WoWTools_LabelMixin:Create(btn)
     btn.level:SetPoint('BOTTOM')
@@ -78,12 +79,12 @@ local function Create_ButtonLabel(btn)
     btn.pvpItem:SetSize(h/3, h/3)
     btn.pvpItem:SetPoint('RIGHT')
     btn.pvpItem:SetAtlas('Warfronts-BaseMapIcons-Horde-Barracks-Minimap')
---提示，已装备
+--[[提示，已装备
     btn.isEquippedTexture= btn:CreateTexture(nil, 'OVERLAY')
     btn.isEquippedTexture:SetPoint('CENTER')
     btn.isEquippedTexture:SetSize(w+12, h+12)
     btn.isEquippedTexture:SetAtlas('Forge-ColorSwatchHighlight')--'Forge-ColorSwatchSelection')
-    btn.isEquippedTexture:SetVertexColor(1,0,0)
+    btn.isEquippedTexture:SetVertexColor(1,0,0)]]
 
     btn.setTexture=btn:CreateTexture()
     btn.setTexture:SetAllPoints(btn)
@@ -102,7 +103,7 @@ local function Create_ButtonLabel(btn)
         self.itemType:SetText('')
         self.updown:SetText('')
         self.pvpItem:SetShown(false)
-        self.isEquippedTexture:SetShown(false)
+        --self.isEquippedTexture:SetShown(false)
         self.setTexture:SetShown(false)
     end)
 end
@@ -117,24 +118,37 @@ end
 
 
 local function setFlyout(self)--, itemLink, slot)
-	local locationData, itemLink
-    if not Save().notFlyout and self.location then
-        locationData= EquipmentManager_GetLocationData(self.location)
-    end
+local itemLink
+    if not Save().notFlyout and canaccessvalue(self.location) and  self.location then
+        local t= type(self.location)
+--玩家
+        if t=='number' then
+            local locationData= EquipmentManager_GetLocationData(self.location)
+            --if canaccesstable(locationData) and locationData and locationData.slot and locationData.bag then
+                --local bag, slot = locationData.bag, locationData.slot
+                --if locationData.isPlayer then--isBank, isBags, isPlayer
+                    --itemLink= GetInventoryItemLink('player', slot)
 
-    if locationData then
-        local bag, slot = locationData.bag, locationData.slot
-        if not locationData.isBags then
-            itemLink= GetInventoryItemLink('player', slot)
-        else
-            itemLink= C_Container.GetContainerItemLink(bag, slot)
+            if canaccesstable(locationData) and locationData and locationData.slot and locationData.bag then
+                itemLink= C_Container.GetContainerItemLink(locationData.bag, locationData.slot)
+            end
+--升级
+        elseif t=='table' and canaccesstable(self.location) and self.location.IsValid and self.location:IsValid() then
+
+            if self.location:IsEquipmentSlot() then
+                itemLink= GetInventoryItemLink('player', self.location:GetEquipmentSlot())
+            --elseif self.location:IsBagAndSlot() then
+              --  itemLink= C_Container.GetContainerItemLink(self.location:GetBagAndSlot())
+            end
         end
     end
+
+
 
     local upgrade, upLevel, upText, updown, text, level
     local isSet, isEquipped, isPvP= false, false, false
     if itemLink then
-        if not self.isEquippedTexture then
+        if not self.setTexture then
             Create_ButtonLabel(self)
         end
 
@@ -180,20 +194,17 @@ local function setFlyout(self)--, itemLink, slot)
             end
         end
 
-        isEquipped= C_Item.IsEquippedItem(itemLink)
+        --isEquipped= C_Item.IsEquippedItem(itemLink)
         isSet= select(16 , C_Item.GetItemInfo(itemLink)) and true or false
-
     end
-
-    if self.isEquippedTexture then
+    if self.setTexture then
         set_item_Set(self, itemLink)--套装
-
         self.level:SetText(text or '')
         self.upgrade:SetText(upLevel or '')
         self.itemType:SetText(upText or '')
         self.updown:SetText(updown or '')
         self.pvpItem:SetShown(isPvP)
-        self.isEquippedTexture:SetShown(isEquipped)
+        --self.isEquippedTexture:SetShown(isEquipped)
         self.setTexture:SetShown(isSet)
     end
 end
@@ -255,7 +266,7 @@ local function Init()
     EquipmentFlyoutFrameButtons:SetScale(not Save().notFlyout and Save().flyoutScale or 1)
 
     Init=function()
-        if EquipmentFlyoutFrame:IsVisible() then
+        if EquipmentFlyoutFrame:IsVisible() and not EquipmentFlyoutFrame:HasAnySecretAspect() then
             WoWTools_DataMixin:Call('EquipmentFlyout_UpdateItems')
         end
 --缩放

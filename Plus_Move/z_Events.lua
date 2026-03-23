@@ -883,3 +883,9 @@ function WoWTools_MoveMixin.Events:Blizzard_CompactRaidFrames()
         WoWTools_DataMixin:Call('CompactRaidFrameManager_Collapse')
     end
 end
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_SharedWidgetFrames()
+    self:Setup(UIWidgetCenterDisplayFrame)
+end

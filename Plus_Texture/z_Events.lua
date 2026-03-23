@@ -2483,3 +2483,8 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_EncounterTimeline()
     self:SetFrame(EncounterTimeline.TrackView, {alpha=1})
 end
+
+function WoWTools_TextureMixin.Events:Blizzard_SharedWidgetFrames()
+    self:SetNineSlice(UIWidgetCenterDisplayFrame)
+    self:SetUIButton(UIWidgetCenterDisplayFrame.CloseButton)
+end

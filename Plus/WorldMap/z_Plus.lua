@@ -252,7 +252,7 @@ local function Init()
 
 
 
- --缩放, 声望追踪，圆形图标
+--缩放, 声望追踪，圆形图标
     for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
         if frame.BountyDropdown then--frame BountyFrameMixin
             Init_BountyDropdown(frame)

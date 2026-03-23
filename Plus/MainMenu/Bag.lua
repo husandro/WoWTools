@@ -151,8 +151,8 @@ local function Init()
             local a= tab[i]
             local b= tab[i+1]
             GameTooltip:AddDoubleLine(
-                a.icon..a.index..') '..a.freeSlots..'/'..a.num,
-                b and (b.freeSlots..'/'..b.num..' ('..b.index..b.icon)
+                a.icon..a.index..') '..a.freeSlots..'/|cff626262'..a.num,
+                b and (b.freeSlots..'/|cff626262'..b.num..'|r ('..b.index..b.icon)
             )
                 --a.icon..a.index..') '..a.freeSlots..'/'..a.num..' '..a.percent,
                 --b and (a.percent..' '..b.freeSlots..'/'..b.num..' ('..b.index..b.icon)

@@ -208,9 +208,11 @@ function WoWTools_TooltipMixin.Events:Blizzard_GameTooltip()
 
 --GameTooltip_AddQuest    
     WoWTools_DataMixin:Hook('GameTooltip_AddQuest', function(frame, questIDArg)
-        local questID = frame.questID or questIDArg
-        if questID and HaveQuestData(questID) then
-            WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID)
+        if not frame:HasSecretValues() and canaccessvalue(frame.questID) then
+            local questID = frame.questID or questIDArg
+            if questID and HaveQuestData(questID) then
+                WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID)
+            end
         end
     end)
 
