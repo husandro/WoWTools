@@ -307,13 +307,13 @@ local function Set_Item_Info()
 
         local alpha=1
         if itemID and itemLink and isMerce and notIsUsableAlpha~=1 then
-            local info= C_MerchantFrame.GetItemInfo(i)
-
+            local info= C_MerchantFrame.GetItemInfo(i) or {}
+            local isCosmeticItem= C_Item.IsCosmeticItem(itemID)
             local hasItemCollection= select(2, WoWTools_CollectionMixin:Item(itemLink, nil, nil, true))
 
-            if info and (not info.isPurchasable or not info.isUsable)--无法使用物品
+            if info and (not info.isPurchasable or not info.isUsable)--无法使用物品 
 
-                or (C_Item.IsCosmeticItem(itemID) and hasItemCollection)--幻化
+                or (isCosmeticItem and hasItemCollection)--幻化
 
                 or select(2, WoWTools_CollectionMixin:Toy(itemID))--玩具
 
