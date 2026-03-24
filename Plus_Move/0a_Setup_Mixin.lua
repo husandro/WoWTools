@@ -5,9 +5,14 @@ end
 WoWTools_MoveMixin={
     Events={},
     Frames={},
-    Save=Save
+    Save=Save,
 }
 
+function WoWTools_MoveMixin:GetSize(name)
+    if name and not Save().disabledSize[name] then
+        return Save().size[name]
+    end
+end
 
 
 

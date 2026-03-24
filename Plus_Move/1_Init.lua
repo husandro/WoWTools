@@ -22,6 +22,9 @@ local P_Save={
     UIPanelWindows={},
     Esc={['CooldownViewerSettings']=false},--1=移除, 2=添加
     no={},--禁用
+
+
+    --disablesWorldMapFrameSize= not WoWTools_DataMixin.Player.husandro
 }
 
 local Layout
