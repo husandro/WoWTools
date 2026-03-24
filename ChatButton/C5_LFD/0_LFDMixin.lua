@@ -230,14 +230,13 @@ function WoWTools_LFDMixin:GetRewardInfo(dungeonID)--, scenarioID)--FB奖励
         end
     end
 
-    
+
 
     if not IsInGroup(LE_PARTY_CATEGORY_HOME) then
         local T,H,D--额外奖励
         local canTank, canHealer, canDamage = C_LFGList.GetAvailableRoles()
         local eligible, forTank, forHealer, forDamage, itemCount
         for shortageIndex= 1, LFG_ROLE_NUM_SHORTAGE_TYPES do
-            
             eligible, forTank, forHealer, forDamage, itemCount= GetLFGRoleShortageRewards(dungeonID, shortageIndex )
             forTank= forTank and canTank
             forHealer= forHealer and canHealer
