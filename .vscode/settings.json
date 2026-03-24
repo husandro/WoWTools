@@ -3189,7 +3189,9 @@
         "Boss2TargetFrame",
         "BossSpellBarMixin",
         "UIWidgetCenterDisplayFrame",
-        "LFDQueueFrameCooldownFrame"
+        "LFDQueueFrameCooldownFrame",
+        "ITEM_BIND_ON_PICKUP",
+        "LOOT_NO_DROP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

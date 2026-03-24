@@ -165,10 +165,7 @@ local function Init_Frame()
             end
 
         elseif event=='CONFIRM_LOOT_ROLL' then
-            if WoWTools_DataMixin.Player.husandro then
-                print('CONFIRM_LOOT_ROLL', arg1, arg2)
-            end
-            if Save().autoROLL and arg1 and arg2 then
+            if not Save().disabled_CONFIRM_LOOT_ROLL and arg1 and arg2 then
                 ConfirmLootRoll(arg1, arg2)
                 StaticPopup_Hide("CONFIRM_LOOT_ROLL", arg1)
             end

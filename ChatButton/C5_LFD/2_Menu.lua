@@ -1334,6 +1334,18 @@ local function Init_Menu(self, root)
         Save().autoROLL= not Save().autoROLL and true or nil
     end)
 
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '拾取绑定' or ITEM_BIND_ON_PICKUP,
+    function()
+        return not Save().disabled_CONFIRM_LOOT_ROLL
+    end, function()
+        Save().disabled_CONFIRM_LOOT_ROLL= not Save().disabled_CONFIRM_LOOT_ROLL and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '拾取%s后，该物品将与你绑定。' or LOOT_NO_DROP)
+    end)
+
+
     sub:CreateCheckbox('|A:communities-icon-notification:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus')), function()
         return not Save().disabledLootPlus
     end, function()
