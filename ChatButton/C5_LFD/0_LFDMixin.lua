@@ -209,7 +209,7 @@ end
 
 
 
-function WoWTools_LFDMixin:GetRewardInfo(dungeonID, scenarioID)--FB奖励
+function WoWTools_LFDMixin:GetRewardInfo(dungeonID)--, scenarioID)--FB奖励
     local t=''
     if not dungeonID then
         return t
@@ -270,7 +270,8 @@ function WoWTools_LFDMixin:GetRewardInfo(dungeonID, scenarioID)--FB奖励
     if moneyAmount and moneyAmount>0 then--钱
         t=t..'|A:Coin-Gold:0:0|a'
     end
-    if experienceVar then
+
+    if experienceVar and experienceVar>0 then
         t=t..'|A:GarrMission_CurrencyIcon-Xp:0:0|a'--'|cffff00ffXP|r'
     end
 

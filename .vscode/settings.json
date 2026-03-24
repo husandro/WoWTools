@@ -3191,7 +3191,8 @@
         "UIWidgetCenterDisplayFrame",
         "LFDQueueFrameCooldownFrame",
         "ITEM_BIND_ON_PICKUP",
-        "LOOT_NO_DROP"
+        "LOOT_NO_DROP",
+        "PLUNDERSTORM_INTERACT_PICK_UP_REMINDER_TEXT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

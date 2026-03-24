@@ -1328,7 +1328,8 @@ local function Init_Menu(self, root)
         tooltip:AddLine('/loot ')
     end)
 
-    sub:CreateCheckbox((WoWTools_DataMixin.onlyChinese and '自动掷骰' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ROLL))..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t', function()
+    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO)
+    sub:CreateCheckbox((WoWTools_DataMixin.onlyChinese and '掷骰' or ROLL)..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t', function()
         return Save().autoROLL
     end, function()
         Save().autoROLL= not Save().autoROLL and true or nil
@@ -1345,7 +1346,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '拾取%s后，该物品将与你绑定。' or LOOT_NO_DROP)
     end)
 
-
+    sub:CreateDivider()
     sub:CreateCheckbox('|A:communities-icon-notification:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus')), function()
         return not Save().disabledLootPlus
     end, function()
