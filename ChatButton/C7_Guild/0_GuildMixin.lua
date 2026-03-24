@@ -138,36 +138,37 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
     local numApplicant= 0
 
     for _, tab in pairs(clubs) do
+        if canaccessvalue(tab.clubId) then
+            online, all= self:GetNumOnline(tab.clubId)--在线成员
 
-        online, all= self:GetNumOnline(tab.clubId)--在线成员
+            icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a'
 
-        icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a'
-
-            or (tab.avatarId==1--C_Club.SetAvatarTexture(self.IconPreview, avatarId, self.clubType)
-                and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
-                or (tab.clubType==Enum.ClubType.BattleNet and '|A:gmchat-icon-blizz:0:0|a')
-                or ('|T'..(tab.avatarId or 0)..':0|t')
-            )
+                or (tab.avatarId==1--C_Club.SetAvatarTexture(self.IconPreview, avatarId, self.clubType)
+                    and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
+                    or (tab.clubType==Enum.ClubType.BattleNet and '|A:gmchat-icon-blizz:0:0|a')
+                    or ('|T'..(tab.avatarId or 0)..':0|t')
+                )
 
 
-        col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff626262'
+            col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff626262'
 
-        name= col..tab.name..'|r'
+            name= col..tab.name..'|r'
 
---未读信息
-        if CommunitiesUtil.DoesCommunityHaveUnreadMessages(tab.clubId) then
-            name= name..'|A:communities-icon-notification:0:0|a'
+    --未读信息
+            if CommunitiesUtil.DoesCommunityHaveUnreadMessages(tab.clubId) then
+                name= name..'|A:communities-icon-notification:0:0|a'
+            end
+
+    --申请者
+            applicantList= self:GetApplicantList(tab.clubId)
+            num = applicantList and #applicantList
+            if num then
+                name= name..'|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'..num..'|r'
+                numApplicant= numApplicant + num
+            end
+
+            GameTooltip:AddDoubleLine(icon..name, col..online..'/'..all..icon)
         end
-
---申请者
-        applicantList= self:GetApplicantList(tab.clubId)
-        num = applicantList and #applicantList
-        if num then
-            name= name..'|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'..num..'|r'
-            numApplicant= numApplicant + num
-        end
-
-        GameTooltip:AddDoubleLine(icon..name, col..online..'/'..all..icon)
     end
 
 

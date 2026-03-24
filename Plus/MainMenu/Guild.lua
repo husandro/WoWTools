@@ -33,7 +33,7 @@ local function Init()
         if canaccesstable(clubs) and clubs then
             local guildClubId= C_Club.GetGuildClubId()
             for _, tab in pairs(clubs) do
-                if tab.clubId~=guildClubId then
+                if canaccessvalue(tab.clubId) and tab.clubId~=guildClubId then
                     local isOnline= WoWTools_GuildMixin:GetNumOnline(tab.clubId)
                     club= club+ isOnline
                 end

@@ -28,6 +28,10 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
     LFDQueueFrameRoleButtonTank:SetPoint('TOPLEFT', 35, -35)
     LFDParentFrameRoleBackground:ClearAllPoints()
     LFDParentFrameRoleBackground:SetPoint('TOPLEFT', LFDQueueFrameRoleButtonTank, -30, 10)
+
+    LFDQueueFrameCooldownFrame:SetPoint('TOP', LFDQueueFrameTypeDropdown, 'BOTTOM', 0, -4)
+    LFDQueueFrameCooldownFrame:SetPoint('LEFT')
+
     PVEFrameBlueBg:SetPoint('BOTTOM')
     PVEFrame.shadows:SetPoint('BOTTOM')
     for _, icon in pairs({PVEFrame.shadows:GetRegions()}) do

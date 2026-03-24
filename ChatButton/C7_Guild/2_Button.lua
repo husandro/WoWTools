@@ -62,7 +62,16 @@ end
 
 
 
-
+local function DoesCommunityHaveUnreadMessages(clubId)
+	local streamToNotificationSetting = CommunitiesUtil.GetStreamNotificationSettingsLookup(clubId);
+	for _, stream in ipairs(C_Club.GetStreams(clubId)) do
+		if canaccessvalue(stream.streamId) and stream.streamId ~= nil and streamToNotificationSetting[stream.streamId] == Enum.ClubStreamNotificationFilter.All then
+			if CommunitiesUtil.DoesCommunityStreamHaveUnreadMessages(clubId, stream.streamId) then
+				return true;
+			end
+		end
+	end
+end
 
 
 
@@ -90,8 +99,8 @@ local function Init()
     GuildMicroButton.inviteTexture:SetPoint('TOPLEFT',1,-1)
     GuildMicroButton.inviteTexture:SetAtlas('communities-icon-invitemail')
     GuildMicroButton.inviteTexture:SetSize(12,12)]]
-    
-    
+
+
     btn.msgTexture= btn:CreateTexture(nil, 'BORDER', nil, 2)
     btn.msgTexture:SetPoint('LEFT',-3,0)
     btn.msgTexture:SetSize(12,12)
@@ -116,7 +125,7 @@ local function Init()
     function btn:set_new_application(isInit)
         local isInviete, isMessage= false, false
         local clubs= C_ClubFinder.IsEnabled() and C_Club.GetSubscribedClubs()
-        if canaccesstable(clubs) and clubs then
+        if clubs then
             for _, data in pairs(clubs or {}) do
                 if canaccessvalue(data.clubId) and data.clubId then
                     if not isInviete and WoWTools_GuildMixin:GetApplicantList(data.clubId) then
@@ -132,12 +141,7 @@ local function Init()
                         end
                     end
 
-                    if not isMessage then
-                        local hasMsg= CommunitiesUtil.DoesCommunityHaveUnreadMessages(data.clubId)
-                        if canaccessvalue(hasMsg) and hasMsg then
-                            isMessage= true
-                        end
-                    end
+                    isMessage= isMessage or DoesCommunityHaveUnreadMessages(data.clubId)
 
                     if isMessage and isInviete then
                         break

@@ -20,13 +20,6 @@ local function Create_Pin(self)
     self.Display.rewardText=self.Display:CreateFontString(nil, 'ARTWORK', 'WoWToolsWorldFont')
     self.Display.rewardText:SetJustifyH('CENTER')
     self.Display.rewardText:SetPoint('TOP', self, 'BOTTOM', 0, 2)
-
-    function self:wowtools_Clear()
-        self.Display.Icon2:SetTexture(0)
-        self.Display.Icon:SetAlpha(1)
-        self.Display.typeTexure:SetTexture(0)
-        self.Display.rewardText:SetText('')
-    end
 end
 
 
@@ -46,19 +39,16 @@ local function Init()
         return
     end
 
-    WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'OnLoad', Create_Pin)
+    WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'OnLoad', function(self)
+        Create_Pin(self)
+    end)
 
     WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'RefreshVisuals', function(self)
-        if not self.wowtools_Clear then
+        if not self.Display.typeTexure then
             Create_Pin(self)
         end
-
-        local data= Save().ShowWorldQues_Name and WoWTools_QuestMixin:GetRewardInfo(self.questID)
-        if not data then
-            self:wowtools_Clear()
-            return
-        end
-
+        local isEnable= Save().ShowWorldQues_Name
+        local data= isEnable and WoWTools_QuestMixin:GetRewardInfo(self.questID) or {}
         local text, texture
 
         if data.itemID then
@@ -113,7 +103,7 @@ local function Init()
         end
 
         local atlas
-        if self.worldQuestType and self.worldQuestType ~= Enum.QuestTagType.Normal  then
+        if isEnable and self.worldQuestType and self.worldQuestType ~= Enum.QuestTagType.Normal  then
             local tagInfo= self.tagInfo or C_QuestLog.GetQuestTagInfo(self.questID)
             if tagInfo then
                 local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID)
@@ -131,10 +121,18 @@ local function Init()
         end
 
         self.Display.rewardText:SetText(text or '')
-        self.Display.rewardText:SetFontHeight(12)
+        --self.Display.rewardText:SetFontHeight(12)
     end)
 
 
+    WoWTools_DataMixin:Hook(WorldQuestPinMixin, 'OnReleased', function(self)
+        if self.Display.typeTexure then
+            self.Display.Icon2:SetTexture(0)
+            self.Display.Icon:SetAlpha(1)
+            self.Display.typeTexure:SetTexture(0)
+            self.Display.rewardText:SetText('')
+        end
+    end)
 
     Init=function()end
 end

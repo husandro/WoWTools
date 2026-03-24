@@ -136,7 +136,7 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
 
 
     local function Settings(size)
-        if not WorldMapFrame:CanChangeAttribute() then
+        if not WorldMapFrame:CanChangeAttribute() or not WorldMapFrame:IsShown() then
             return
         end
         local isMax= WorldMapFrame:IsMaximized()
@@ -157,25 +157,26 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     end
 
     local function Set_Size(frame)
-        if frame:IsShown() then
-            local s= self:Save().size[name]
-            local w= s and s[1]
-            local h= s and s[2]
-            if w and h then
-                local isSidePanelShown= WorldMapFrame:IsSidePanelShown()
-                local WorldFrameIsSidePanelShown= self:Save().WorldFrameIsSidePanelShown
+         if not WorldMapFrame:CanChangeAttribute() or not WorldMapFrame:IsShown() then
+            return
+        end
+        local s= self:Save().size[name]
+        local w= s and s[1]
+        local h= s and s[2]
+        if w and h then
+            local isSidePanelShown= WorldMapFrame:IsSidePanelShown()
+            local WorldFrameIsSidePanelShown= self:Save().WorldFrameIsSidePanelShown
 
-                if WorldFrameIsSidePanelShown and not isSidePanelShown then
-                    frame:SetSize(w - questLogWidth, h)
+            if WorldFrameIsSidePanelShown and not isSidePanelShown then
+                frame:SetSize(w - questLogWidth, h)
 
-                elseif not WorldFrameIsSidePanelShown or isSidePanelShown then
-                    frame:SetSize(w + questLogWidth, h)
+            elseif not WorldFrameIsSidePanelShown or isSidePanelShown then
+                frame:SetSize(w + questLogWidth, h)
 
-                else
-                    frame:SetSize(w, h)
-                end
-                Settings(s)
+            else
+                frame:SetSize(w, h)
             end
+            Settings(s)
         end
     end
 
@@ -185,7 +186,9 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
 
     local OwnerID
     WoWTools_DataMixin:Hook(WorldMapFrame, 'Minimize', function(frame)
-        if frame:CanChangeAttribute() then
+        if not frame:IsShown() then
+            return
+        elseif frame:CanChangeAttribute() then
             Set_Size(frame)
         elseif not OwnerID then
             OwnerID=EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
@@ -203,6 +206,9 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
     end)
 
     WoWTools_DataMixin:Hook(WorldMapFrame, 'Maximize', function(frame)
+        if not WorldMapFrame:IsShown() then
+            return
+        end
         Settings()
         if self:Save().scale[name] then
             frame:SetScale(1)
@@ -228,10 +234,11 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
         frame.minimizedHeight= minimizedHeight
         frame:SetSize(minimizedWidth+ questLogWidth, minimizedHeight)
         frame.BorderFrame.MaximizeMinimizeFrame:Minimize()
-    end,})
+    end})
 
 
-    QuestMapDetailsScrollFrame:SetPoint('BOTTOM', 0, 72)
+
+    --[[QuestMapDetailsScrollFrame:SetPoint('BOTTOM', 0, 72)
 
     QuestMapFrame.DetailsFrame:SetPoint('BOTTOM')
     QuestMapDetailsScrollFrame.Contents:SetPoint('BOTTOMLEFT')
@@ -247,7 +254,9 @@ function WoWTools_MoveMixin.Events:Blizzard_WorldMap()
 
 
     QuestScrollFrame.Background:SetPoint('BOTTOM', 0, 123)
-    QuestScrollFrame.Background:SetAllPoints()
+    QuestScrollFrame.Background:SetAllPoints()]]
+
+    --self:Setup(WorldMapFrame)
 
     self:Setup(QuestScrollFrame, {frame=WorldMapFrame})
     self:Setup(MapQuestInfoRewardsFrame, {frame=WorldMapFrame})

@@ -335,7 +335,7 @@ local function Init_Menu(_, root)
     local clubs= C_Club.GetSubscribedClubs()
     if canaccesstable(clubs) and clubs then
         for _, tab in pairs(clubs) do
-            if tab.clubId and tab.clubType ~= Enum.ClubType.Guild then
+            if canaccessvalue(tab.clubId) and tab.clubId and tab.clubType ~= Enum.ClubType.Guild then
                 sub=root:CreateButton(
                     (tab.avatarId==1
                         and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'

@@ -3188,7 +3188,8 @@
         "EncounterTimeline",
         "Boss2TargetFrame",
         "BossSpellBarMixin",
-        "UIWidgetCenterDisplayFrame"
+        "UIWidgetCenterDisplayFrame",
+        "LFDQueueFrameCooldownFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

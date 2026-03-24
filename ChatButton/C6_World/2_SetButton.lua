@@ -35,7 +35,7 @@ local function Init(btn)
         if name == Save().world then
             self.texture:SetAtlas('WildBattlePet')
         elseif texture then
-            if clubInfo and clubInfo.clubId then
+            if clubInfo and canaccessvalue(clubInfo.clubId) and clubInfo.clubId then
                 C_Club.SetAvatarTexture(self.texture, clubInfo.avatarId, clubInfo.clubType)
             else
                 self.texture:SetTexture(texture)
@@ -152,7 +152,7 @@ local function Init(btn)
 
                     clubInfo= C_Club.GetClubInfo(clubID)
 
-                    if clubInfo and clubInfo.name then
+                    if clubInfo and clubInfo.name and canaccessvalue(clubInfo.avatarId) then
                         name= (clubInfo.avatarId==1
                                 and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
                                 or ('|T'..(clubInfo.avatarId or 0)..':0|t')

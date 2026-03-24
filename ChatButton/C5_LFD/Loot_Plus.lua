@@ -207,6 +207,8 @@ local function Init()
         GameTooltip:Show()
         self2:SetAlpha(1)
     end)
+
+
 end
 
 

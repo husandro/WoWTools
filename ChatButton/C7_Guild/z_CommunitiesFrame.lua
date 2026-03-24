@@ -74,7 +74,7 @@ local function Init()
 
         local hasInvite, hasMessage, faction, text
 
-        if clubID and elementData and elementData.clubInfo then
+        if canaccessvalue(clubID) and clubID and elementData and elementData.clubInfo then
             Create_Texture(btn)
 
             local online, all= WoWTools_GuildMixin:GetNumOnline(clubID)

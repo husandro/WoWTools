@@ -61,7 +61,30 @@ end
 
 
 
+--[[
 
+    btn:RegisterEvent('CONFIRM_LOOT_ROLL')
+    btn:SetScript('OnEvent', function(_,  rollID, rollType)
+        if WoWTools_DataMixin.Player.husandro then
+             print('CONFIRM_LOOT_ROLL', rollID,rollType)
+        end
+        if Save().autoROLL and rollID and rollType then
+            ConfirmLootRoll(rollID, rollType)
+            StaticPopup_Hide("CONFIRM_LOOT_ROLL", rollID)
+        end
+    end)
+    if WoWTools_DataMixin.Player .husandro then
+        StaticPopupDialogs["CONFIRM_LOOT_ROLL"].OnShow= function(dialog, id, rollType)
+            print('aaaa', dialog, id, rollType)
+            C_Timer.After(0.01, function()
+                if id and rollType then
+                    print('bbbbbb',dialog, id, rollType)
+                        ConfirmLootRoll(id, rollType)
+                end
+            end)
+        end
+    end
+]]
 
 local function Init_Frame()
     local frame= CreateFrame('Frame')
@@ -69,8 +92,9 @@ local function Init_Frame()
     frame:RegisterEvent('PLAYER_ENTERING_WORLD')
     frame:RegisterEvent('ISLAND_COMPLETED')
     frame:RegisterEvent('PVP_MATCH_COMPLETE')
+    frame:RegisterEvent('CONFIRM_LOOT_ROLL')
 
-    frame:SetScript('OnEvent', function(self, event)
+    frame:SetScript('OnEvent', function(self, event, arg1, arg2)
         if event=='' then
             Save_Instance_Num()
         end
@@ -138,6 +162,15 @@ local function Init_Frame()
                         end
                     end
                 end)
+            end
+
+        elseif event=='CONFIRM_LOOT_ROLL' then
+            if WoWTools_DataMixin.Player.husandro then
+                print('CONFIRM_LOOT_ROLL', arg1, arg2)
+            end
+            if Save().autoROLL and arg1 and arg2 then
+                ConfirmLootRoll(arg1, arg2)
+                StaticPopup_Hide("CONFIRM_LOOT_ROLL", arg1)
             end
         end
     end)

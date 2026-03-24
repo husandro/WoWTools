@@ -157,15 +157,9 @@ local function Init(btn)
         end
     end]]
 
-     EventRegistry:RegisterFrameEventAndCallback("LFG_UPDATE_RANDOM_INFO", Set_Holiday)
-    C_Timer.After(2, Set_Holiday)
 
 
     WoWTools_LFDMixin:Init_Menu(btn)
-
-
-
-
     WoWTools_LFDMixin:Init_Queue_Status()--建立，小眼睛, 更新信息
     WoWTools_LFDMixin:Init_Loot_Plus()--历史, 拾取框
     WoWTools_LFDMixin:Init_Roll_Plus()--自动 ROLL
@@ -175,6 +169,8 @@ local function Init(btn)
     WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息
     WoWTools_LFDMixin:Init_RepopMe()--释放, 复活
 
+     EventRegistry:RegisterFrameEventAndCallback("LFG_UPDATE_RANDOM_INFO", Set_Holiday)
+    C_Timer.After(2, Set_Holiday)
     Init=function()end
 end
 

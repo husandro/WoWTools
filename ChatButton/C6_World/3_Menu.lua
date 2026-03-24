@@ -13,8 +13,11 @@ end
 
 --添加菜单
 local function Add_Menu(self, root, name, channelNumber)
+    if not canaccessvalue(name) or not name then
+        return
+    end
     local text, sub, sub2, communityName, communityTexture, online
-    local clubId=name:match('Community:(%d+)')
+    local clubId= name:match('Community:(%d+)')
     clubId= clubId and tonumber(clubId)
 
     if clubId then
@@ -22,8 +25,11 @@ local function Add_Menu(self, root, name, channelNumber)
     end
 
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
+    if clubInfo and not canaccessvalue(clubInfo.clubId) then
+        return
+    end
 
-    if clubInfo and (clubInfo.shortName or clubInfo.name) then
+    if clubInfo and canaccessvalue(clubInfo.clubId) and (clubInfo.shortName or clubInfo.name) then
         online= WoWTools_GuildMixin:GetNumOnline(clubInfo.clubId)--在线成员
         text= (clubInfo.avatarId==1
                 and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
@@ -78,7 +84,7 @@ local function Add_Menu(self, root, name, channelNumber)
 
         local club= desc.data.clubInfo
 
-        if club and club.clubId then
+        if club and canaccessvalue(club.clubId) and club.clubId then
             local isNet=  club.clubType == Enum.ClubType.BattleNet
             tooltip:AddLine(club.name, club.shortName)
             local col= isNet and '|cff00ccff' or '|cffff8000'
