@@ -9,9 +9,7 @@ end
 
 
 local function set_LootFrame_btn(btn)
-    if not btn then
-        return
-    elseif not btn.dropInfo or Save().disabledLootPlus then
+    if not btn.dropInfo or Save().disabledLootPlus then
         if btn.chatTexure then
             btn.chatTexure:SetShown(false)
         end

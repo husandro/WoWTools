@@ -13,7 +13,9 @@ local P_Save={
         ['BankFrame']=0.85,
     },
     size={},
-    disabledSize={},--['CharacterFrame']= true
+    disabledSize={
+        ['WorldMapFrame']= not WoWTools_DataMixin.Player.husandro
+    },
 
     --notMoveAlpha=true,--是否设置，移动时，设置透明度
     alpha=0.5,
