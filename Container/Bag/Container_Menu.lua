@@ -454,7 +454,7 @@ local function Init()
         end)
     end
 
-
+--读取，数据
     for name, bool in pairs(Save().cvar) do
         if C_Container['Set'..name] and C_Container['Get'..name] then
             if C_Container['Get'..name]()~=bool then
