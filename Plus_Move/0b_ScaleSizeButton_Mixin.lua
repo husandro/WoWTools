@@ -420,6 +420,15 @@ local function Init_Menu(self, root)
         end, {rightText=format('%i|cff626262x|r%i', target:GetWidth(),target:GetHeight())})
         WoWTools_MenuMixin:SetRightText(sub)
 
+        if self.sizeTooltip then
+            sub:SetTooltip(function(tooltip)
+            if type(self.sizeTooltip)=='function' then
+                self.sizeTooltip(tooltip, target, self)
+            else
+                tooltip:AddLine(self.sizeTooltip)
+            end
+            end)
+        end
 
 --x
         sub:CreateSpacer()

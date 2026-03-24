@@ -363,7 +363,6 @@ local function Init()
 
 
 
-
     Menu.ModifyMenu("MENU_CONTAINER_FRAME_COMBINED", function(self, root)
         if not self:IsMouseOver() then
             return
@@ -377,7 +376,9 @@ local function Init()
         function()
             return not C_Container.GetSortBagsRightToLeft()
         end, function()
-            C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft())
+            local SortBagsRightToLeft= not C_Container.GetSortBagsRightToLeft() and true or false
+            C_Container.SetSortBagsRightToLeft(SortBagsRightToLeft)
+            Save().cvar.SortBagsRightToLeft= SortBagsRightToLeft
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
@@ -389,7 +390,9 @@ local function Init()
         function()
             return C_Container.GetInsertItemsLeftToRight()
         end, function()
-            C_Container.SetInsertItemsLeftToRight(not C_Container.GetInsertItemsLeftToRight())
+            local InsertItemsLeftToRight= not C_Container.GetInsertItemsLeftToRight() and true or false
+            C_Container.SetInsertItemsLeftToRight(InsertItemsLeftToRight)
+            Save().cvar.InsertItemsLeftToRight= InsertItemsLeftToRight
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
@@ -401,7 +404,8 @@ local function Init()
         function()
             return C_Container.GetBackpackAutosortDisabled()
         end, function()
-            C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
+            local BackpackAutosortDisabled= not C_Container.GetBackpackAutosortDisabled() and true or false
+            C_Container.SetBackpackAutosortDisabled(BackpackAutosortDisabled)
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
@@ -413,7 +417,9 @@ local function Init()
         function()
             return C_Container.GetBackpackSellJunkDisabled()
         end, function()
-            C_Container.SetBackpackSellJunkDisabled(not C_Container.GetBackpackSellJunkDisabled() and true or false)
+            local BackpackSellJunkDisabled= not C_Container.GetBackpackSellJunkDisabled() and true or false
+            C_Container.SetBackpackSellJunkDisabled(BackpackSellJunkDisabled)
+            Save().cvar.BackpackSellJunkDisabled= BackpackSellJunkDisabled
             return MenuResponse.Close
         end)
         sub:SetTooltip(function(tooltip)
@@ -448,6 +454,14 @@ local function Init()
         end)
     end
 
+
+    for name, bool in pairs(Save().cvar) do
+        if C_Container['Set'..name] and C_Container['Get'..name] then
+            if C_Container['Get'..name]()~=bool then
+                C_Container['Set'..name](bool)
+            end
+        end
+    end
     Init=function()end
 end
 
