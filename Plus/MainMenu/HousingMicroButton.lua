@@ -28,26 +28,29 @@ local function Init()
     local frame= CreateFrame('Frame', nil, HousingMicroButton)
 
     frame.label= frame:CreateFontString('WoWToolsHousingMicroButtonInitiativesLastPointLabel', 'BORDER', 'WoWToolsFont')
-    frame.label:SetPoint('BOTTOM', 0, 3)
+    frame.label:SetPoint('BOTTOM', HousingMicroButton, 0, 3)
     WoWTools_ColorMixin:SetLabelColor(frame.label)
     table.insert(WoWTools_MainMenuMixin.Labels, HousingMicroButton.InitiativesLastPoints)
 
     frame:RegisterEvent('CVAR_UPDATE')
     frame:SetScript('OnEvent', function(self, _, cvar, value)
         if cvar == "endeavorInitiativesLastPoints" then
+            value= value and tonumber(value)
             if value and value>=0 then
-                self.label:SetFormattedText('%i', value)
+                self.label:SetFormattedText('%i', value/10)
             else
                 self.label:SetText('')
             end
         end
     end)
-    
-    local value= C_CVar.GetCVar('endeavorInitiativesLastPoints')
-    if value and value>=0 then
-        frame.label:SetFormattedText('%i', value)
-    end
 
+    C_Timer.After(2, function()
+        local value
+        value= GetCVarNumberOrDefault("endeavorInitiativesLastPoints")
+        if value and value>=0 then
+            frame.label:SetFormattedText('%i', value/10)
+        end
+    end)
     Init=function() end
 end
 function WoWTools_MainMenuMixin:HousingMicroButton()--住宅信息板

@@ -3198,7 +3198,8 @@
         "HOUSING_DASHBOARD_INITIATIVES",
         "InitiativeTasksObjectiveTracker",
         "EventToastManagerFrame",
-        "EventToastManagerFrameMixin"
+        "EventToastManagerFrameMixin",
+        "GetCVarNumberOrDefault"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
