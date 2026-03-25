@@ -24,8 +24,8 @@ local function Set_Script(btn)
     end
 
     btn:SetAttribute("type1", "item")
-    btn.count= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
-    btn.count:SetFontHeight(12)
+    btn.count= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
+    btn.count:SetJustifyH('RIGHT')
     btn.count:SetPoint('BOTTOMRIGHT', -4,4)
     btn.numCount=0
     btn.enableCooldown=true

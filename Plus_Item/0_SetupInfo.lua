@@ -430,9 +430,10 @@ local function Get_Info(tab)
 
 
 --套装，传说5，神器6，传家宝，提示
-    if itemQuality and itemQuality>=Enum.ItemQuality.Legendary or setID then
+    setIDItem= setID and setID>0 and true or false
+    --[[if itemQuality and itemQuality>=Enum.ItemQuality.Legendary or setID then
         setIDItem= itemQuality or true
-    end
+    end]]
     --setIDItem= setID and true or ((itemQuality==Enum.ItemQuality.Legendary or itemQuality==Enum.ItemQuality.Artifact) and itemQuality) or nil
 
     local lowerVer= not PlayerIsTimerunning() and expacID< WoWTools_DataMixin.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
@@ -982,14 +983,14 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
     frame.leftText:SetFontHeight(h)
     frame.bottomLeftText:SetFontHeight(h)
 
-    if setIDItem then
+    --[[if setIDItem then
         if type(setIDItem)=='number' then
             local color = WoWTools_ItemMixin:GetColor(setIDItem)
             frame.setIDItem:SetVertexColor(color:GetRGB())
         else
             frame.setIDItem:SetVertexColor(0,1,0)
         end
-    end
+    end]]
     frame.setIDItem:SetShown(setIDItem)
 
     if frame.Count then

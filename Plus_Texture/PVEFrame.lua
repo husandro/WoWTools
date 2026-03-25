@@ -23,6 +23,11 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetUIButton(LFGListFrame.CategorySelection.FindGroupButton)
     self:SetUIButton(LFGListFrame.CategorySelection.StartGroupButton)
 
+    self:SetFrame(LFGListApplicationDialog.Border, {alpha=1})
+    self:SetFrame(LFGListApplicationDialogDescription, {alpha=1})
+    self:SetUIButton(LFGListApplicationDialog.SignUpButton)
+    self:SetUIButton(LFGListApplicationDialog.CancelButton)
+
     self:SetFrame(LFGDungeonReadyDialog.Border, {alpha= 0.3})
     self:SetButton(LFGDungeonReadyDialogCloseButton)
 

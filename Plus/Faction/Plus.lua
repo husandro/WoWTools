@@ -14,7 +14,7 @@ local function Create_Frame(btn)
 	--btn.Content.ReputationBar.BarText:ClearAllPoints()
 
 	btn.Content.AccountWideIcon:SetScale(0.6)
-	btn.barText2= btn.Content.ReputationBar:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
+	btn.barText2= btn.Content.ReputationBar:CreateFontString(nil, 'OVERLAY', 'WoWToolsFont2')
 	btn.barText2:SetPoint('CENTER')
 	btn.barText2:SetJustifyH('CENTER')
 

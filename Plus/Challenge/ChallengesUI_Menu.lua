@@ -360,7 +360,7 @@ local function Init_Menu(self, root)
 
 --词缀, 右下角
     name= '|T463829:0|t'
-        ..(C_MythicPlus.GetCurrentSeason()==WoWTools_DataMixin.affixScheduleSeason and '' or '|cff828282')
+        ..(C_MythicPlus.GetCurrentSeason()==WoWTools_DataMixin.SeasonAffixSchedule and '' or '|cff828282')
         ..(WoWTools_DataMixin.onlyChinese and '词缀列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Affix', INFO))
     sub= root:CreateCheckbox(
         name,
@@ -375,7 +375,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(
             format(WoWTools_DataMixin.onlyChinese and '全新赛季词缀：%s' or MYTHIC_PLUS_SEASON_DESC3, season..'')
         )
-        if season~=WoWTools_DataMixin.affixScheduleSeason then
+        if season~=WoWTools_DataMixin.SeasonAffixSchedule then
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(
                 '|cnWARNING_FONT_COLOR:'

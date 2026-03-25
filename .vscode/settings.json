@@ -3193,7 +3193,8 @@
         "ITEM_BIND_ON_PICKUP",
         "LOOT_NO_DROP",
         "PLUNDERSTORM_INTERACT_PICK_UP_REMINDER_TEXT",
-        "MoveHouseConfirmationDialog"
+        "MoveHouseConfirmationDialog",
+        "LFGListApplicationDialogDescription"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

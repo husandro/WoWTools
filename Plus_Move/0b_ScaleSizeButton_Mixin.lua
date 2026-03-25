@@ -1023,7 +1023,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     local btn= frame.ResizeButton
 
     btn:SetFrameStrata('DIALOG')
-    btn:SetFrameLevel(frame:GetFrameLevel()+7)
+    btn:SetFrameLevel(999)
     btn:SetSize(18, 18)
 
     local setResizeButtonPoint= tab.setResizeButtonPoint--设置，按钮，位置

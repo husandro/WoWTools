@@ -61,12 +61,12 @@ local function Create(frame)
 	WoWTools_TextureMixin:SetCheckBox(frame.check)
 
 --已获取，百分比
-	frame.percentText= frame:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')-- WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
+	frame.percentText= frame:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')-- WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
 	frame.percentText:SetTextColor(ACCOUNT_WIDE_FONT_COLOR:GetRGB())
 	frame.percentText:SetPoint('RIGHT', frame.Content.Count, 'LEFT')
 
 --战团总数量
-	frame.accountWideText= frame:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')-- WoWTools_LabelMixin:Create(frame, {color={r=0, g=0.8, b=1}})
+	frame.accountWideText= frame:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')-- WoWTools_LabelMixin:Create(frame, {color={r=0, g=0.8, b=1}})
 	frame.accountWideText:SetPoint('RIGHT', frame.percentText, 'LEFT', -2, 0)
 
 

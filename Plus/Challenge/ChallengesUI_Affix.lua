@@ -114,7 +114,7 @@ local function Set_List()
 
     local season= C_MythicPlus.GetCurrentSeason()
     Frame.Text:SetText(
-        (season==WoWTools_DataMixin.affixScheduleSeason and '' or '|cff828282')
+        (season==WoWTools_DataMixin.SeasonAffixSchedule and '' or '|cff828282')
         ..season
     )
 end
@@ -194,7 +194,7 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         local sea=  C_MythicPlus.GetCurrentSeason() or 0
-        local isCurrentWeek= sea==WoWTools_DataMixin.affixScheduleSeason
+        local isCurrentWeek= sea==WoWTools_DataMixin.SeasonAffixSchedule
 
         GameTooltip:AddLine(
             format(
@@ -233,7 +233,7 @@ local function Init()
 
     if WoWTools_DataMixin.Player.husandro then
         local season= C_MythicPlus.GetCurrentSeason()
-        if season and season>0 and season~=WoWTools_DataMixin.affixScheduleSeason and WoWTools_DataMixin.Player.husandro then
+        if season and season>0 and season~=WoWTools_DataMixin.SeasonAffixSchedule and WoWTools_DataMixin.Player.husandro then
             print(
                 WoWTools_DataMixin.Icon.icon2
                 ..'|cnWARNING_FONT_COLOR:需要更新赛季数据',

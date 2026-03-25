@@ -29,7 +29,7 @@ end
 
 
 
-local function GetActivities()
+local function GetActivities()--Enum.WeeklyRewardChestThresholdType
     local R = {}
     for  _, info in pairs(C_WeeklyRewards.GetActivities() or {}) do
         if info.type and info.type>0 and info.level then--and info.type>= 1 and info.type<= 3

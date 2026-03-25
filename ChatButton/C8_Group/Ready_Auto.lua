@@ -166,7 +166,7 @@ local function Init()
 
         check:SetSize(24,24)
         WoWTools_TextureMixin:SetCheckBox(check)
-        --check.text= check:CreateFontString(nil, "BORDER", 'GameFontHighlight')
+        --check.text= check:CreateFontString(nil, "BORDER", 'WoWToolsFont2')
         check.text:ClearAllPoints()
         check.text:SetPoint('RIGHT', check, 'LEFT')
         check.text:SetText(WoWTools_GroupMixin:Get_ReadyText(i))

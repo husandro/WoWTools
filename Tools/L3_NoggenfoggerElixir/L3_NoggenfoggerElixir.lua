@@ -198,7 +198,7 @@ local function Init()
 
 
     button.texture:SetTexture(select(5, C_Item.GetItemInfoInstant(ItemID)) or 134863)
-    button.count= button:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
+    button.count= button:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
     button.count:SetFontHeight(12)
     button.count:SetPoint('BOTTOMRIGHT')
 

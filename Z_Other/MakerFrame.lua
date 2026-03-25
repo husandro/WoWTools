@@ -415,7 +415,7 @@ local function Init()--设置标记, 框架
         end)
 
 --快捷键
-        btn.HotKey= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
+        btn.HotKey= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
         btn.HotKey:SetPoint('TOPRIGHT', 1, 2)
         function btn:set_hotkey()
             if self.action then
@@ -545,7 +545,7 @@ local function Init()--设置标记, 框架
         end)
     end)
 
-    MakerFrame.countdown.HotKey= MakerFrame.countdown:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
+    MakerFrame.countdown.HotKey= MakerFrame.countdown:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
     MakerFrame.countdown.HotKey:SetPoint('TOPRIGHT', 1, 2)
     function MakerFrame.countdown:set_hotkey()
         local value
@@ -876,7 +876,7 @@ local function Init()--设置标记, 框架
             end
 
 --快捷键
-            btn.HotKey= btn:CreateFontString(nil, 'ARTWORK', 'GameFontHighlight')
+            btn.HotKey= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
             btn.HotKey:SetPoint('TOPRIGHT', 1, 2)
             function btn:set_hotkey()
                 self.HotKey:SetText(

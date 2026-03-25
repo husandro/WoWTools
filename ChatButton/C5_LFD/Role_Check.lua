@@ -505,7 +505,7 @@ local function Init()
 
 
 
-    EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function(owner, arg1)
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function(_, arg1)
         if arg1=='player' and Save().autoSetRole then
             Set_PvERoles()
             Set_PvPRoles()
@@ -519,10 +519,10 @@ local function Init()
         Set_PvPRoles()
 
 --确定，进入副本
-            if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
-                StaticPopupSpecial_Show(LFGDungeonReadyPopup)
-                WoWTools_DataMixin:Call('LFGDungeonReadyPopup_Update')
-            end
+        if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
+            StaticPopupSpecial_Show(LFGDungeonReadyPopup)
+            WoWTools_DataMixin:Call('LFGDungeonReadyPopup_Update')
+        end
         EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
     end)
 

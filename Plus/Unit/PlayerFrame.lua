@@ -654,19 +654,24 @@ end]]
                     and C_MythicPlus.IsMythicPlusActive()
                     or WoWTools_DataMixin.Player.husandro
 
-        local score= show and C_ChallengeMode.GetOverallDungeonScore() or 0
-        if score>0 then
+        if show then
+            local score= C_ChallengeMode.GetOverallDungeonScore() or 0
             local activeText= WoWTools_ChallengeMixin:GetRewardText(1)--得到，周奖励，信息
-            activeText= activeText and ' ('..activeText..') '
-            text= WoWTools_ChallengeMixin:KeystoneScorsoColor(score)..(activeText or '')--分数
+
+            text= WoWTools_ChallengeMixin:KeystoneScorsoColor(score)
+                    ..(activeText and ' ('..activeText..') ' or '')--分数
+
             local info = C_MythicPlus.GetRunHistory(false, true) or {}--次数
+
             local num= #info
             if num>0 then
                 text= text..num
             end
         end
-        self.Text:SetText(text or format('|T4352494:%d|t', size-4))
+
+        self.Text:SetText(text~='' and text or format('|T4352494:%d|t', size-4))
         self:SetShown(show)
+
     end
 
     KeyButton:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -678,7 +683,6 @@ end]]
     KeyButton:SetScript('OnEvent', function(self)
         C_Timer.After(2, function() self:set_settings() end)
     end)
-
 
     KeyButton:SetScript('OnMouseDown', function()
         WoWTools_DataMixin:OpenWoWItemListFrame()--战团，物品列表
