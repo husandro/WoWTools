@@ -10,7 +10,7 @@ end
 
 
 
-local function Set_Att(self, bag, slot, icon, itemID, spellID, isUseMacro)--设置属性
+local function Set_Att(self, bag, slot, icon, itemID)--, spellID, isUseMacro)--设置属性
     if self.isDisabled then
         return
     elseif not self:CanChangeAttribute()  then
@@ -21,21 +21,21 @@ local function Set_Att(self, bag, slot, icon, itemID, spellID, isUseMacro)--设�
 
     local num
     if bag and slot then
-        if spellID then
+        --[[if spellID then
             self:SetAttribute('type1', 'spell')
             self:SetAttribute('spell1', C_Spell.GetSpellName(spellID) or spellID)
             self:SetAttribute('target-item', bag..' '..slot)
 
-        elseif isUseMacro then
+        elseif isUseMacro then]]
             self:SetAttribute('type1', 'macro')
             self:SetAttribute("macrotext1", '/use '..bag..' '..slot)
             self:SetAttribute('target-item', nil)
 
-        else
+        --[[else
             self:SetAttribute('type1', 'item')
             self:SetAttribute('item1', (bag..' '..slot))
             self:SetAttribute('target-item', nil)
-        end
+        end]]
 
         num = C_Item.GetItemCount(itemID)
         num= num~=1 and num or ''
