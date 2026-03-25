@@ -10,16 +10,18 @@ end
 WoWTools_ObjectiveTabs={
     ['ScenarioObjectiveTracker']=false,
 
-    ['QuestObjectiveTracker']=true,
-    ['BonusObjectiveTracker']=true,
-    ['CampaignQuestObjectiveTracker']=true,
-    ['WorldQuestObjectiveTracker']=true,
+    ['QuestObjectiveTracker']=1,
+    ['BonusObjectiveTracker']=1,
+    ['CampaignQuestObjectiveTracker']=1,
+    ['WorldQuestObjectiveTracker']=1,
 
-    ['AchievementObjectiveTracker']=true,
-    ['ProfessionsRecipeTracker']=true,
-    ['MonthlyActivitiesObjectiveTracker']=true,
-    ['UIWidgetObjectiveTracker']=true,
-    ['AdventureObjectiveTracker']=true,
+    ['AchievementObjectiveTracker']=1,
+    ['ProfessionsRecipeTracker']=1,
+    ['MonthlyActivitiesObjectiveTracker']=1,
+    ['UIWidgetObjectiveTracker']=1,
+    ['AdventureObjectiveTracker']=1,
+
+    ['InitiativeTasksObjectiveTracker']=1,
 }
 
 local function Is_Locked(frame)
@@ -120,6 +122,7 @@ local function Init_Menu(self, root)
             WoWTools_ObjectiveMixin:Clear_Quest()
             WoWTools_ObjectiveMixin:Clear_WorldQuest()
             WoWTools_ObjectiveMixin:Clear_ContentTracking()
+            WoWTools_ObjectiveMixin:Clear_NeighborhoodInitiative()
         end}
 )
     end)

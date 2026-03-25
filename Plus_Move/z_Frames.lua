@@ -259,3 +259,14 @@ function WoWTools_MoveMixin.Frames:CatalogShopFrame()--Blizzard_CatalogShop
     self:Setup(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame, {frame= CatalogShopFrame})
     self:Setup(CatalogShopFrame.ProductDetailsContainerFrame.DetailsProductContainerFrame.ProductsHeader, {frame= CatalogShopFrame})
 end
+
+
+function WoWTools_MoveMixin.Frames:EventToastManagerFrame()
+    self:Setup(EventToastManagerFrame, {click='RightButton'})
+
+    WoWTools_DataMixin:Hook(EventToastManagerFrame, 'DisplayToast', function(frame)
+        if frame.currentDisplayingToast and not frame.currentDisplayingToast.moveFrameData then
+            self:Setup(frame.currentDisplayingToast, {frame=frame, click='RightButton'})
+        end
+    end)
+end

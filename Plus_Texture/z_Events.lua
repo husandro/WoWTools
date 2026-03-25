@@ -678,6 +678,8 @@ function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
     self:SetTabButton(GarrisonLandingPageTab2)
     self:SetTabButton(GarrisonLandingPageTab3)
 
+    self:SetButton(CovenantMissionFrame.CloseButton)
+
     self:Init_BGMenu_Frame(GarrisonLandingPage, {isNewButton=true})
 end
 

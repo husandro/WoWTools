@@ -263,16 +263,21 @@ local function Init()
     end)
 
 --收藏
- WoWTools_ObjectiveMixin:Add_ClearAll_Button(
+    WoWTools_ObjectiveMixin:Add_ClearAll_Button(
         AdventureObjectiveTracker,
         WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES,
     function()
         WoWTools_ObjectiveMixin:Clear_ContentTracking(true)
     end)
-    
 
 
-
+--文化节
+    WoWTools_ObjectiveMixin:Add_ClearAll_Button(
+        InitiativeTasksObjectiveTracker,
+        WoWTools_DataMixin.onlyChinese and '文化节' or HOUSING_DASHBOARD_INITIATIVES,
+    function()
+        WoWTools_ObjectiveMixin:Clear_NeighborhoodInitiative(true)
+    end)
 
 
     WoWTools_ObjectiveMixin:Init_Menu()

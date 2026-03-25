@@ -169,6 +169,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MainMenuMixin:Init_Professions()--专业
             WoWTools_MainMenuMixin:Init_Talent()--天赋
             WoWTools_MainMenuMixin:Init_Achievement()--成就
+            WoWTools_MainMenuMixin:HousingMicroButton()--住宅信息板
             WoWTools_MainMenuMixin:Init_Quest()--任务
             WoWTools_MainMenuMixin:Init_Guild()--公会
             WoWTools_MainMenuMixin:Init_LFD()--地下城查找器
@@ -177,7 +178,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MainMenuMixin:Init_Store()--商店
             WoWTools_MainMenuMixin:Init_Help()--帮助
             WoWTools_MainMenuMixin:Init_Bag()--背包
-            --WoWTools_MainMenuMixin:HousingMicro()--住宅信息板
         end
 
         WoWTools_MainMenuMixin:Init_Framerate_Plus()--系统，fts

@@ -3194,7 +3194,11 @@
         "LOOT_NO_DROP",
         "PLUNDERSTORM_INTERACT_PICK_UP_REMINDER_TEXT",
         "MoveHouseConfirmationDialog",
-        "LFGListApplicationDialogDescription"
+        "LFGListApplicationDialogDescription",
+        "HOUSING_DASHBOARD_INITIATIVES",
+        "InitiativeTasksObjectiveTracker",
+        "EventToastManagerFrame",
+        "EventToastManagerFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

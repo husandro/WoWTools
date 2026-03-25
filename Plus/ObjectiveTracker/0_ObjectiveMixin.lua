@@ -280,3 +280,23 @@ function WoWTools_ObjectiveMixin:Clear_ContentTracking(isPring)
         end
     end
 end
+
+--[[
+HousingFramesUtil.OpenFrameToTaskID(block.id)
+]]
+function WoWTools_ObjectiveMixin:Clear_NeighborhoodInitiative(isPrint)
+    for _, list in pairs(C_NeighborhoodInitiative.GetTrackedInitiativeTasks() or {}) do
+        for index, taskID in pairs(list) do
+            local info = C_NeighborhoodInitiative.GetInitiativeTaskInfo(taskID)
+
+            C_NeighborhoodInitiative.RemoveTrackedInitiativeTask(taskID)
+
+            if isPrint and info then
+                print(index..')',
+                    WoWTools_TextMixin:CN(info.taskName),
+                    taskID
+                )
+            end
+        end
+    end
+end

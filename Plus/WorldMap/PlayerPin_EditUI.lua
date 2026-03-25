@@ -1079,7 +1079,9 @@ local function Init()
         elseif _G['GameTooltipTextLeft1'] and _G['GameTooltipTextLeft1']:IsVisible() then
             text=_G['GameTooltipTextLeft1']:GetText()
         end
-        if text~='' then
+        if text and text~='' then
+            text= text:gsub('\n', ' ')
+            text= text:gsub('|n', ' ')
             return text
         end
     end

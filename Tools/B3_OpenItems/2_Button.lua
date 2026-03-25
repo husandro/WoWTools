@@ -34,6 +34,8 @@ local function Init()
         return
     end
 
+    btn:SetAttribute('type1', 'macro')
+
     btn.count= btn:CreateFontString(nil, 'ARTWORK', 'WoWToolsFont2')
     btn.count:SetJustifyH('RIGHT')
     btn.count:SetPoint('BOTTOMRIGHT')
@@ -65,7 +67,7 @@ local function Init()
                 end
 
                 if (BattlePetTooltip) then
-                    BattlePetTooltip:Hide()
+                    BattlePetTooltip:SetShown(false)
                 end
             end
             WoWTools_BagMixin:Find(true, {itemLink= itemLink})--查询，背包里物品
@@ -173,6 +175,11 @@ local function Init()
 
         if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
             self:settings()
+            if event=='PLAYER_MAP_CHANGED' then
+                C_Timer.After(2, function()
+                    self:settings()
+                end)
+            end
 
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
             or event=='VEHICLE_ANGLE_UPDATE'--车辆
