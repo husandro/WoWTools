@@ -1,12 +1,9 @@
---########################
---打开周奖励时，提示拾取专精
---########################
-local Frame
-
-
-
-
-
+--[[
+打开周奖励时，提示拾取专精
+    [449976]=1,
+    [392391]=1,
+    [1271478]=1,--12.01
+]]
 
 local function Init()
     if not C_WeeklyRewards.HasAvailableRewards() then
@@ -20,25 +17,25 @@ local function Init()
         )
     end
 
-    Frame= CreateFrame('Frame')
+    local frame= CreateFrame('Frame')
 
-    Frame.texture= Frame:CreateTexture(nil, 'BACKGROUND')
-    Frame.texture:SetAllPoints()
+    frame.texture= frame:CreateTexture(nil, 'BACKGROUND')
+    frame.texture:SetAllPoints()
 
-    local border= Frame:CreateTexture(nil,'BORDER')
+    local border= frame:CreateTexture(nil,'BORDER')
     border:SetSize(60,60)
     border:SetPoint('CENTER',3,-3)
-    border:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
+    border:SetAtlas('UI-HUD-Unitframe-Totemframe-2x')
 
-    Frame:SetSize(40,40)
-    Frame:SetPoint("CENTER", -100, 60)
-    Frame:SetShown(false)
+    frame:SetSize(40,40)
+    frame:SetPoint("CENTER", -100, 60)
+    frame:SetShown(false)
 
-    Frame:RegisterEvent('PLAYER_UPDATE_RESTING')
-    Frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    frame:RegisterEvent('PLAYER_UPDATE_RESTING')
+    frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-    Frame:SetScript('OnEnter', function(frame)
-        frame:set_Show(false)
+    frame:SetScript('OnEnter', function(self)
+        self:set_show(false)
         print(
             WoWTools_ChallengeMixin.addName..WoWTools_DataMixin.Icon.icon2,
             '|cffff00ff',
@@ -46,7 +43,7 @@ local function Init()
         )
     end)
 
-    Frame:SetScript('OnHide', function(self)
+    frame:SetScript('OnHide', function(self)
         if self.time then
             self.time:Cancel()
             self.time=nil
@@ -55,26 +52,26 @@ local function Init()
     end)
 
 
-    function Frame:set_Event()
+    function frame:set_event()
         if not C_WeeklyRewards.HasAvailableRewards() then
             self:UnregisterAllEvents()
             self:SetShown(false)
             return
         end
         if IsResting() then
-            self:RegisterEvent('UNIT_SPELLCAST_SENT')
+            self:RegisterUnitEvent('UNIT_SPELLCAST_SENT')
         else
             self:UnregisterEvent('UNIT_SPELLCAST_SENT')
         end
     end
 
-    function Frame:set_Show(show)
+    function frame:set_show(show)
         self:SetShown(show)
         WoWTools_CooldownMixin:Setup(self, nil, show and 4 or 0, nil, true, true, true)
     end
 
-    function Frame:set_Texture()
-        self:set_Show(true)
+    function frame:set_Texture()
+        self:set_show(true)
 
         self.time= C_Timer.NewTimer(4, function()
             self:SetShown(false)
@@ -92,17 +89,22 @@ local function Init()
         self.texture:SetTexture(texture or 0)
     end
 
-    Frame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
+    frame:SetScript('OnEvent', function(self, event, _, target)
         if event=='PLAYER_UPDATE_RESTING' or event=='PLAYER_ENTERING_WORLD' then
-            self:set_Event()
+            self:set_event()
 
-        elseif (spellID==392391 or spellID==449976) and unit=='player' and target and target:find(RATED_PVP_WEEKLY_VAULT) then
+        elseif not canaccessvalue(target) then
+            return
+
+        elseif target==RATED_PVP_WEEKLY_VAULT then
             self:set_Texture()
-            self:UnregisterAllEvents()
+            C_Timer.After(5, function()
+                self:set_event()
+            end)
         end
     end)
 
-    Frame:set_Event()
+    frame:set_event()
 
     Init=function()end
 end
