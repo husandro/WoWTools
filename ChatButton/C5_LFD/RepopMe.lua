@@ -29,7 +29,7 @@ local function Init()
             if WoWTools_MapMixin:IsInPvPArea() then
                 self:RegisterEvent('PLAYER_DEAD')
                 self:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
-print('aaaaaaaaaaaaaaaaaa')
+
             elseif Save().ReMe_AllZone and (not IsInInstance() or not IsInGroup()) then
                 self:RegisterEvent('PLAYER_DEAD')
                 self:RegisterEvent('CORPSE_IN_RANGE')
