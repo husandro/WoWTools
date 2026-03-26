@@ -141,14 +141,15 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
         if canaccessvalue(tab.clubId) then
             online, all= self:GetNumOnline(tab.clubId)--在线成员
 
-            icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a'
-
-                or (tab.avatarId==1--C_Club.SetAvatarTexture(self.IconPreview, avatarId, self.clubType)
-                    and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
-                    or (tab.clubType==Enum.ClubType.BattleNet and '|A:gmchat-icon-blizz:0:0|a')
-                    or ('|T'..(tab.avatarId or 0)..':0|t')
-                )
-
+            if tab.clubId==guildClubId then
+                icon= '|A:auctionhouse-icon-favorite:0:0|a'
+            elseif canaccessvalue(tab.avatarId) and tab.avatarId==1 then--C_Club.SetAvatarTexture(self.IconPreview, avatarId, self.clubType)
+                icon= '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
+            elseif canaccessvalue(tab.clubType) and tab.clubType==Enum.ClubType.ChaBattleNetracter then
+                icon= '|A:gmchat-icon-blizz:0:0|a'
+            else
+                icon= ('|T'..(canaccessvalue(tab.avatarId) and tab.avatarId or 0)..':0|t')
+            end
 
             col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff626262'
 

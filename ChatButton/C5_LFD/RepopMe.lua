@@ -29,7 +29,7 @@ local function Init()
             if WoWTools_MapMixin:IsInPvPArea() then
                 self:RegisterEvent('PLAYER_DEAD')
                 self:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
-
+print('aaaaaaaaaaaaaaaaaa')
             elseif Save().ReMe_AllZone and (not IsInInstance() or not IsInGroup()) then
                 self:RegisterEvent('PLAYER_DEAD')
                 self:RegisterEvent('CORPSE_IN_RANGE')
@@ -42,7 +42,9 @@ local function Init()
 
     frame:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' then
-            self:settings()
+            C_Timer.After(2, function()
+                self:settings()
+            end)
 
         elseif event=='PLAYER_DEAD' then
             if HasNoReleaseAura() then

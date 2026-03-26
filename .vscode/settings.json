@@ -3200,7 +3200,9 @@
         "EventToastManagerFrame",
         "EventToastManagerFrameMixin",
         "GetCVarNumberOrDefault",
-        "WeeklyRewardsActivityMixin"
+        "WeeklyRewardsActivityMixin",
+        "ENDEAVOR_FAVOR",
+        "HOUSING_DASHBOARD_TIME_REMAINING"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
