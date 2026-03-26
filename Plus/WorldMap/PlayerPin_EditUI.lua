@@ -27,7 +27,7 @@ local function RefreshWorldMapPinState(mapID, xy)
     if not worldMapID or mapID~=worldMapID then
         return
     end
-	for pin in map:EnumeratePinsByTemplate("HandyNotesWorldMapPinTemplate") do
+	for pin in map:EnumeratePinsByTemplate("WoWToolsPlayerPinButtonTemplate") do
         pin:SetButtonState(pin.xy==xy and 'PUSHED' or 'NORMAL')
 	end
 end
@@ -959,8 +959,8 @@ local function Init()
     Frame.iconS:SetMinMaxValues(2, 200)
     Frame.iconS:EnableMouseWheel(true)
     Frame.iconS:SetValueStep(1)
-    Frame.iconS.leftLabel= Frame.iconS:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
-    Frame.iconS.leftLabel:SetPoint('LEFT')
+    Frame.iconS.leftLabel= Frame.iconS:CreateFontString(nil, "OVERLAY", 'WoWToolsFont2')
+    Frame.iconS.leftLabel:SetPoint('CENTER', Frame.iconS.Thumb)
     Frame.iconS.rightLabel= Frame.iconS:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
     Frame.iconS.rightLabel:SetPoint('RIGHT')
     Frame.iconS.rightLabel:SetText(WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_ICON)
@@ -1001,8 +1001,8 @@ local function Init()
     Frame.fontH:SetMinMaxValues(Frame.iconS:GetMinMaxValues())
     Frame.fontH:EnableMouseWheel(true)
     Frame.fontH:SetValueStep(Frame.iconS:GetValueStep())
-    Frame.fontH.leftLabel= Frame.fontH:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
-    Frame.fontH.leftLabel:SetPoint('LEFT')
+    Frame.fontH.leftLabel= Frame.fontH:CreateFontString(nil, "OVERLAY", 'WoWToolsFont2')
+    Frame.fontH.leftLabel:SetPoint('CENTER', Frame.fontH.Thumb)
     Frame.fontH.rightLabel= Frame.fontH:CreateFontString(nil, "ARTWORK", 'WoWToolsFont2')
     Frame.fontH.rightLabel:SetPoint('RIGHT')
     Frame.fontH.rightLabel:SetText(WoWTools_DataMixin.onlyChinese and '字体' or FONT_SIZE)

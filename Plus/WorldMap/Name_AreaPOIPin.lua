@@ -101,7 +101,7 @@ local function Init()
             text= text:match('%((.+)%)') or text:match('（(.+)）')  or text
         end
 
-        
+
         self.WoWToolsFrame.Text:SetText(text or '')
         self.WoWToolsFrame.Text:SetFontHeight(Save().areaPoinFontSize or 10)
     end)
@@ -124,7 +124,7 @@ local function Init()
                 and (poiInfo.areaPoiID or poiInfo.widgetSetID)
                 and GetAppropriateTooltip()
 
-        if tooltip:HasSecretValues() or not tooltip:IsVisible() or not poiInfo then
+        if not tooltip or not tooltip:IsVisible() or not poiInfo then
             return
         end
 
