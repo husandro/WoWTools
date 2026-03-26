@@ -262,7 +262,8 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
 
     if IsChecking or not btn then--正在查询
         return
-    elseif InCombatLockdown() then
+
+    elseif not btn:CanChangeAttribute() then
         if btn.CheckFrame then
             btn.CheckFrame.isCheckInCombat=true
             btn.CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -271,9 +272,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     end
     IsChecking=true
 
-    local new={}
     local items={}
-
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local itemID= C_Container.GetContainerItemID(bag, slot)
@@ -282,23 +281,20 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
             end
         end
     end
+
+    for itemID in pairs(Save().addItems or {}) do
+        if btn.itemID~=itemID
+            and (Save().addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0) then
+            items[itemID]=true
+        end
+    end
+
+
+    local new={}
     for itemID in pairs(items) do
         table.insert(new, itemID)
     end
     table.sort(new)
-
-    items={}
-
-    for itemID in pairs(Save().addItems) do
-        if btn.itemID~=itemID and (Save().addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0) then
-            table.insert(items, itemID)
-        end
-    end
-    table.sort(items)
-    for _, itemID in pairs(items) do
-        table.insert(new, 1, itemID)
-    end
-
 
 
     for index, itemID in pairs(new) do

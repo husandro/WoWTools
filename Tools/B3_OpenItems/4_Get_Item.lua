@@ -64,8 +64,6 @@ local function Set_Att(self, bag, slot, icon, itemID)--, spellID, isUseMacro)--�
     self.texture:SetAlpha(icon and 1 or 0.3)
 
     self:set_key(not bag or not slot)
-
-    self.IsInCheck=nil
 end
 
 
@@ -251,15 +249,12 @@ end
 
 
 local function Get_Items(self)--取得背包物品信息
-    if self.IsInCheck then
-        return
-    elseif not self:CanChangeAttribute() then
+    if not self:CanChangeAttribute() then
         self.isInCombat=true
         return
     end
 
     self.IsEquipItem=nil--是装备时, 打开角色界面
-    self.IsInCheck=nil
     self:Clear()
 
     local bagMax= Save().reagent and (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES ) or NUM_BAG_FRAMES

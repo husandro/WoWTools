@@ -60,7 +60,7 @@ local function Get_Tank()--设置队伍标记
         end)
 
         tank= tab[1] and tab[1].unit or nil
-        health= tab[2] and tab[2].unit or nil     
+        health= tab[2] and tab[2].unit or nil
 
     else--设置队伍标记
         for index=1, MAX_PARTY_MEMBERS+1 do
@@ -714,16 +714,16 @@ local function Init()--设置标记, 框架
                     return
                 end
                 local tank, health= Get_Tank()
-                
+
                 self:SetAttribute("unit1", tank)
                 self:SetAttribute("alt-unit1", health)
                 self:SetAttribute("alt-marker1",  IsInRaid() and 6 or 1)
 
                 if IsInRaid() then
-                    
+
                 else
                 end
-                
+
             end
 
             btn:SetScript('OnHide', function(self)

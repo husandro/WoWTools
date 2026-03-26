@@ -30,10 +30,21 @@ local function Init()
                 self:RegisterEvent('PLAYER_DEAD')
                 self:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
 
+                if WoWTools_DataMixin.Player.husandro then
+                    print(WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,'开启了PvP区域自动释放和复活')
+                end
+
             elseif Save().ReMe_AllZone and (not IsInInstance() or not IsInGroup()) then
                 self:RegisterEvent('PLAYER_DEAD')
                 self:RegisterEvent('CORPSE_IN_RANGE')
                 self:RegisterEvent('CORPSE_OUT_OF_RANGE')
+
+                if WoWTools_DataMixin.Player.husandro then
+                    print(WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        WoWTools_DataMixin.onlyChinese and '开启了所有区域自动释放和复活'
+                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, FLOOR)..': '..PVP_WAR_MODE_ENABLED..'('..BATTLE_PET_RELEASE..'/'.. RESURRECT..')'
+                    )
+                end
             end
         end
     end

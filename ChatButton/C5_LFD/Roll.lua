@@ -55,7 +55,7 @@ local function set_ROLL_Check(frame, notPrint)
     local itemLink = GetLootRollItemLink(rollID)
 
     if not canNeed or (IsInLFGDungeon() and quality and quality>=3) or not itemLink then
-        set_RollOnLoot(rollID, canNeed and 1 or 2, itemLink, notPrint)
+        set_RollOnLoot(rollID, 2, itemLink, notPrint)
         return
     end
 
@@ -137,11 +137,11 @@ local function Init()
         set_ROLL_Check(self)
     end)
 
+
     WoWTools_DataMixin:Hook('GroupLootContainer_Update', function(self)
-        for i=1, self.maxIndex or 0 do
-            local frame = self.rollFrames[i]
-            if frame and frame:IsShown()  then
-                set_ROLL_Check(frame, true)
+        if self.rollFrames then
+            for i=1, self.maxIndex or 0 do
+                set_ROLL_Check(self.rollFrames[i], true)
             end
         end
     end)

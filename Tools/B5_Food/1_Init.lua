@@ -189,6 +189,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if WoWTools_ToolsMixin:Get_ButtonForName('Food') then
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                WoWTools_FoodMixin:Init_Button()
 
                 if Save().autoLogin or Save().autoWho  then
                     self:RegisterEvent('BAG_UPDATE_DELAYED')

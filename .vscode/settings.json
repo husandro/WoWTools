@@ -3202,7 +3202,8 @@
         "GetCVarNumberOrDefault",
         "WeeklyRewardsActivityMixin",
         "ENDEAVOR_FAVOR",
-        "HOUSING_DASHBOARD_TIME_REMAINING"
+        "HOUSING_DASHBOARD_TIME_REMAINING",
+        "PVP_WAR_MODE_ENABLED"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
