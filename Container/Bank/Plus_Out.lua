@@ -32,9 +32,8 @@ local function Get_Container_Tab(containerID)
             else
                 table.insert(itemTab[classID].item, info)
 
-                if not itemTab[classID].sub[subClassID] then
-                    itemTab[classID].sub[subClassID]= {info}
-                else
+                if subClassID then
+                    itemTab[classID].sub[subClassID]= itemTab[classID].sub[subClassID] or {}
                     table.insert(itemTab[classID].sub[subClassID], info)
                 end
 
@@ -98,7 +97,8 @@ local function Set_Tooltip_ItemList(tooltip, containerID, data)
                 index..')'
             )
             if index>20 and num>i and not IsModifierKeyDown() then
-                tooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:<Shift>',  '|cnGREEN_FONT_COLOR:#'..num-i)
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:<Shift> ... '..num)
+                break
             end
         end
     end
@@ -151,28 +151,30 @@ local function Init_RightTab_Menu(root, tabData)
 
     for classID, info in pairs(itemTab) do
         sub=root:CreateButton(
-            '|cnGREEN_FONT_COLOR:#'..info.num..'|r '
-            ..(WoWTools_TextMixin:CN(C_Item.GetItemClassInfo(classID)) or classID)
-            ..' '..classID,
+            --'|cnGREEN_FONT_COLOR:#'..info.num..'|r '
+            (WoWTools_TextMixin:CN(C_Item.GetItemClassInfo(classID)) or classID)
+            ..' |cff626262'..classID,
         function(data)
             Use_Container_Item(nil, containerID, itemTab[data.classID].item)
             return MenuResponse.Refresh
-        end, {classID=classID})
+        end, {classID=classID, rightText=info.num})
+        WoWTools_MenuMixin:SetRightText(sub)
 
         sub:SetTooltip(function(tooltip, desc)
             Set_Tooltip_ItemList(tooltip, containerID, itemTab[desc.data.classID].item)
         end)
 
 --subClasses
-        for subClassID, subData in pairs(info.sub) do
+        for subClassID, subData in pairs(info.sub or {}) do
             sub2= sub:CreateButton(
-               '|cnGREEN_FONT_COLOR:#'..#subData..'|r '
-               ..WoWTools_TextMixin:CN(C_Item.GetItemSubClassInfo(classID, subClassID))
-               ..' '..subClassID,
+               --'|cnGREEN_FONT_COLOR:#'..#subData..'|r '
+               WoWTools_TextMixin:CN(C_Item.GetItemSubClassInfo(classID, subClassID))
+               ..' |cff626262'..subClassID,
             function(data)
                 Use_Container_Item(nil, containerID, itemTab[data.classID].sub[data.subClassID])
                 return MenuResponse.Refresh
-            end, {classID=classID, subClassID=subClassID})
+            end, {classID=classID, subClassID=subClassID, rightText=#subData})
+            WoWTools_MenuMixin:SetRightText(sub2)
 
             sub2:SetTooltip(function(tooltip, desc)
                 Set_Tooltip_ItemList(tooltip, containerID, itemTab[desc.data.classID].sub[desc.data.subClassID])
@@ -182,9 +184,9 @@ local function Init_RightTab_Menu(root, tabData)
     end
 
     root:CreateDivider()
-    root:CreateButton(
-        '|cnGREEN_FONT_COLOR:#'..itemNum..'|r '
-        ..(WoWTools_DataMixin.onlyChinese and '全部' or ALL),
+    sub=root:CreateButton(
+        --'|cnGREEN_FONT_COLOR:#'..itemNum..'|r '
+        WoWTools_DataMixin.onlyChinese and '全部' or ALL,
     function()
         local free= WoWTools_BagMixin:GetFree(true) or 0
         for _, item in pairs(itemTab) do
@@ -194,7 +196,8 @@ local function Init_RightTab_Menu(root, tabData)
             end
         end
         return MenuResponse.Refresh
-    end)
+    end, {rightText=itemNum})
+    WoWTools_MenuMixin:SetRightText(sub)
 end
 
 
