@@ -65,6 +65,7 @@ function WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
         or C_PvP.IsBattleground()--战场
         or C_PvP.IsSoloShuffle()--闪电战
         or C_PvP.IsInBrawl()--乱斗
+        or C_PvP.IsPVPMap() --世界PVP区域
 end
 --PVPMatchUtil.lua
 
