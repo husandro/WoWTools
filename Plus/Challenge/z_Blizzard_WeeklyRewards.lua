@@ -6,8 +6,10 @@ end]]
 
 local function Init()
 --添加一个按钮，打开挑战界面
-    local btn= CreateFrame('Button', 'WoWToolsWeeklyRewardsOpenChallengesButton', WeeklyRewardsFrame.CloseButton,'WoWToolsButtonTemplate')
-    btn:SetNormalTexture('Interface\\Icons\\achievement_bg_wineos_underxminutes')
+    local btn= CreateFrame('Button', 'WoWToolsWeeklyRewardsOpenChallengesButton', WeeklyRewardsFrame.CloseButton, 'WoWToolsButtonTemplate')
+    btn.textrue= btn:CreateTexture(nil, 'BORDER')
+    btn.textrue:SetAllPoints()
+    btn.textrue:SetTexture('Interface\\Icons\\achievement_bg_wineos_underxminutes')
     btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
     btn:SetPoint('RIGHT', WeeklyRewardsFrame.CloseButton, 'LEFT')
     btn:SetScript('OnClick', function()
@@ -18,8 +20,10 @@ local function Init()
     end)
 
 --旅程
-    btn= CreateFrame('Button', 'WoWToolsWeeklyRewardsOpenJournalButton', btn,'WoWToolsButtonTemplate')
-    btn:SetNormalTexture('Interface\\EncounterJournal\\UI-EJ-PortraitIcon')
+    btn= CreateFrame('Button', 'WoWToolsWeeklyRewardsOpenJournalButton', btn, 'WoWToolsButtonTemplate')
+    btn.textrue= btn:CreateTexture(nil, 'BORDER')
+    btn.textrue:SetAllPoints()
+    btn.textrue:SetTexture('Interface\\EncounterJournal\\UI-EJ-PortraitIcon')
     btn.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '旅程' or JOURNEYS_LABEL)
     btn:SetPoint('RIGHT', WeeklyRewardsFrame.CloseButton, 'LEFT', -23, 0)
     btn:SetScript('OnClick', function()

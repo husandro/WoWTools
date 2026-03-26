@@ -73,24 +73,26 @@ end
 
 --周奖励, 物品提示，信息
 function WoWTools_ItemMixin.Events:Blizzard_WeeklyRewards()
-    WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'Refresh', function(f)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
+    local function set_Item(f)
         for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
             local frame = f:GetActivityFrame(activityInfo.type, activityInfo.index)
             local itemFrame= frame and frame.ItemFrame
             if itemFrame then
-                WoWTools_ItemMixin:SetItemStats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
+                local itemLink= itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID)
+                WoWTools_ItemMixin:SetItemStats(itemFrame, itemLink, {point=itemFrame.Icon})
+                if itemLink and frame.Progress then
+                    local find= ITEM_UPGRADE_NEXT_UPGRADE..'(.+)'
+                    local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, text={find}, onlyText=true})--物品提示，信息
+                    local text= dateInfo.text[find]
+                    if text then
+                        frame.Progress:SetText(WoWTools_TextMixin:CN(text))
+                    end
+                end
             end
         end
-    end)
-    WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'UpdateSelection', function(f)
-        for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
-            local frame = f:GetActivityFrame(activityInfo.type, activityInfo.index)
-            local itemFrame= frame and frame.ItemFrame
-            if itemFrame then
-                WoWTools_ItemMixin:SetItemStats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
-            end
-        end
-    end)
+    end
+    WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'Refresh', set_Item)
+    WoWTools_DataMixin:Hook(WeeklyRewardsFrame, 'UpdateSelection', set_Item)
 end
 
 
