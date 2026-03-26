@@ -38,6 +38,9 @@ local function Init()
 
     --WoWTools_TextureMixin:SetFrame(TargetFrame.TargetFrameContent.TargetFrameContentContextual.NumericalThreat, {index=1})
 
+    TargetFrame.TargetFrameContent.TargetFrameContentContextual.PvpIcon:SetScale(0.6)
+        TargetFrame.TargetFrameContent.TargetFrameContentContextual.PrestigePortrait:SetScale(0.6)
+    TargetFrame.TargetFrameContent.TargetFrameContentContextual.PrestigeBadge:SetScale(0.6)
 
     Init=function()end
 end

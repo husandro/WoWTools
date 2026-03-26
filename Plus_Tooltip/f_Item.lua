@@ -226,7 +226,7 @@ local function Set_ItemStatus(tooltip, itemLink)
     for i=5, tooltip:NumLines() or 0, 1 do
         local line= _G[name..'TextLeft'..i]
         local text= line and line:GetText()
-        if text then
+        if canaccessvalue(text) and text then
             for stat, value in pairs(stats) do
                 local t= WoWTools_TextMixin:CN(_G[stat])
                 if text:find('^%+.+ '..t) then

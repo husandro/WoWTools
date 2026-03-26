@@ -36,32 +36,7 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
     headerText= (headerText=='' or headerText=='nil') and WoWTools_DataMixin.addName or headerText
 
     local onHide= tab.onHide
-    local notClear= tab.notClear
-
-    local text
-
-    local function add_text(value)
-        text= text and text..'|n' or ''
-        if not canaccessvalue(value)
-            or value:find('(:?|?)|K(.-)|k')
-        then
-            text= text..'***'..format(WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, '***')
-
-        elseif type(value)=='string' then
-            text= text..value
-        else
-            text= text..tostring(value)
-        end
-    end
-
-    if type(data)~='table' then
-        text= add_text(data)
-    else
-        for _, value in pairs(data) do
-            add_text(value)
-        end
-    end
-
+    local clear= tab.notClear
 
     local frame= _G['WoWToolsShowTextEditBoxFrame']
     if not frame then
@@ -78,28 +53,46 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
                 f.onHide=nil
             end
             f.ScrollBox:SetText('')
-            f.Header:Setup('' )
+            f.Header:Setup('')
         end)
         frame:SetFrameStrata('HIGH')
-
-    elseif notClear then
-        local p= frame.ScrollBox:GetText()
-        if canaccessvalue(p) and p~='' and text~=p then
-            text= p..'|n|n'..text
-        end
     end
 
     frame:Show()
     frame:Raise()
 
-    frame.ScrollBox.editBox:SetText(text or '')
-    --frame.ScrollBox.editBox:SetText(text or '')
     frame.Header:Setup(headerText or '' )
     frame.onHide= onHide
-    --frame.ScrollBox.ScrollBar:ScrollToEnd()
+
+    local edit=  frame.ScrollBox.editBox
+
+    if clear then
+        edit:SetText('')
+    end
+
+    local function add_text(value)
+        if issecretvalue(value)
+            or (type(value)=='string' and value:find('(:?|?)|K(.-)|k'))
+        then
+            edit:Insert('***'..format(WoWTools_DataMixin.onlyChinese and '|cnEVENTTRACE_SECRET_COLOR:<机密>|r%s' or EVENTTRACE_SECRET_FMT, '***'))
+        elseif type(value)=='string' then
+            edit:Insert(value)
+        else
+            edit:Insert(tostring(value))
+        end
+        edit:Insert('\n')
+    end
+
+    if type(data)~='table' then
+        add_text(data)
+    else
+        for _, value in pairs(data) do
+            add_text(value)
+        end
+    end
 end
 --frame.ScrollBox.editBox:SetCursorPosition(1)
-
+--frame.ScrollBox.ScrollBar:ScrollToEnd()
 
 
 

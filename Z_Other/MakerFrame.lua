@@ -41,8 +41,7 @@ local function Get_Tank()--设置队伍标记
         local tab={}--设置团队标记
         for index=1, MAX_RAID_MEMBERS do
             local online, _, role, _, combatRole= select(8, GetRaidRosterInfo(index))
-
-            if online and (role=='TANK' or combatRole=='TANK') then
+            if canaccessvalue(online) and online and (role=='TANK' or combatRole=='TANK') then
                 local unit= 'raid'..index
                 local hp= UnitHealthMax(unit)
                 if not canaccessvalue(hp) then
@@ -61,8 +60,7 @@ local function Get_Tank()--设置队伍标记
         end)
 
         tank= tab[1] and tab[1].unit or nil
-        health= tab[2] and tab[2].unit or nil
-            
+        health= tab[2] and tab[2].unit or nil     
 
     else--设置队伍标记
         for index=1, MAX_PARTY_MEMBERS+1 do
@@ -1104,7 +1102,7 @@ local function Init()--设置标记, 框架
 
         local isGroup= IsInGroup()
         local isParty= isGroup and not IsInRaid()
-        local isNotPvP= not WoWTools_MapMixin:IsInPvPArea()--and not InCinematic() and not IsInCinematicScene() and not MovieFrame:IsShown()
+        --local isNotPvP= not WoWTools_MapMixin:IsInPvPArea()--and not InCinematic() and not IsInCinematicScene() and not MovieFrame:IsShown()
 
         local roleValue= C_PartyInfo.GetRestrictPings() or 0
         local ping= C_CVar.GetCVarBool("enablePings")
@@ -1120,10 +1118,10 @@ local function Init()--设置标记, 框架
         end
         self.ping:SetShown(ping)
 
-        local target= (not isGroup or isLeaderORAssistant or isParty) and isNotPvP
+        local target= (not isGroup or isLeaderORAssistant or isParty)-- and isNotPvP
         self.target:SetShown(target)--目标标记
 
-        local marker= (isGroup and isNotPvP) and (isParty or isLeaderORAssistant)
+        local marker= isGroup and (isParty or isLeaderORAssistant)
         self.marker:SetShown(marker)--世界标记
 
         local check= isGroup and isLeader

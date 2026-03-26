@@ -25,10 +25,16 @@ HousingMicroButton:HookScript('OnClick', function(_, d)
     end)
 ]]
 local function Init()
-    local frame= CreateFrame('Frame', nil, HousingMicroButton)
+    if not C_NeighborhoodInitiative.IsInitiativeEnabled() then
+        return
+    end
 
+    C_NeighborhoodInitiative.RequestNeighborhoodInitiativeInfo()
+
+    local frame= CreateFrame('Frame', nil, HousingMicroButton)
     frame.label= frame:CreateFontString('WoWToolsHousingMicroButtonInitiativesLastPointLabel', 'BORDER', 'WoWToolsFont')
     frame.label:SetPoint('BOTTOM', HousingMicroButton, 0, 3)
+    frame.label:SetFontHeight(WoWToolsSave['Plus_MainMenu'].size or 12)
     WoWTools_ColorMixin:SetLabelColor(frame.label)
     table.insert(WoWTools_MainMenuMixin.Labels, HousingMicroButton.InitiativesLastPoints)
 
@@ -51,6 +57,12 @@ local function Init()
             frame.label:SetFormattedText('%i', value/10)
         end
     end)
+
+    --[[HousingMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() or Kiosk.IsEnabled() then
+            return
+        end]]
+
     Init=function() end
 end
 function WoWTools_MainMenuMixin:HousingMicroButton()--住宅信息板
