@@ -151,7 +151,7 @@ end]]
 
 
     --全部有权限，助手，提示
-    local AssisterButton= CreateFrame('Button', 'WoWToolsPlayerFrameAssisterButton', contextual, 'WoWToolsButtonTemplate') -- WoWTools_ButtonMixin:Cbtn(contextual,{size=18})--点击，设置全员，权限
+    local AssisterButton= CreateFrame('Button', 'WoWToolsPlayerFrameAssisterButton', contextual, 'WoWToolsButtonTemplate')
     AssisterButton:SetFrameStrata('HIGH')
     AssisterButton:SetAllPoints(contextual.LeaderIcon)
     ---AssisterButton:Hide()
@@ -690,6 +690,27 @@ end]]
     --KeyButton:set_settings()
 
 
+
+
+
+
+--[[
+荣耀等级
+local honorLevel = UnitHonorLevel("player");
+local honorRewardInfo = C_PvP.GetHonorRewardInfo(honorLevel);
+prestigePortrait:SetAtlas("honorsystem-portrait-neutral", TextureKitConstants.IgnoreAtlasSize);
+prestigeBadge:SetTexture(honorRewardInfo.badgeFileDataID);
+]]
+    contextual.PrestigePortrait:SetScale(0.6)
+    contextual.PrestigeBadge:SetScale(0.6)
+
+
+
+
+
+
+    contextual.PlayerPortraitCornerIcon:ClearAllPoints()
+    contextual.PlayerPortraitCornerIcon:SetPoint('BOTTOMRIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 2, -2)
 
     Init=function()end
 end

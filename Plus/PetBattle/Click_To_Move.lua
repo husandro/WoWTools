@@ -447,12 +447,15 @@ local function Init_Button()
         end
 
         self:ClearAllPoints()
-
         if Save().PlayerFrame then
+            local contextual= PlayerFrame_GetPlayerFrameContentContextual()
+            if contextual.PrestigePortrait:GetScale()~=0.6 then--PlayerFranme.lua中有设置过了，这里就不重复设置了
+                contextual.PrestigePortrait:SetScale(0.6)
+                contextual.PrestigeBadge:SetScale(0.6)
+            end
             self:SetMovable(false)
-            self:SetParent(PlayerFrame)
-            self:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 2, -8)
-
+            self:SetParent(contextual)
+            self:SetPoint('TOPRIGHT', contextual.PrestigePortrait, 'BOTTOMRIGHT', -4, 0)--PlayerFrame.PlayerFrameContainer.PlayerPortrait
         else
             self:SetParent(UIParent)
             local p= Save().Point
@@ -461,7 +464,6 @@ local function Init_Button()
             else
                 self:SetPoint('CENTER', UIParent, 100, 100)
             end
-
             self:SetMovable(true)
         end
 

@@ -1,9 +1,3 @@
-local P_Save={
-    
-}
-
-
-
 local function Save()
     return WoWToolsSave['Plus_PetBattle2']
 end
@@ -124,6 +118,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 lock_autoInteract=WoWTools_DataMixin.Player.husandro and '1' or nil,
                 lock_cameraSmoothStyle= WoWTools_DataMixin.Player.husandro and '0' or nil,
                 lock_cameraSmoothTrackingStyle= WoWTools_DataMixin.Player.husandro and '0' or nil,
+                Scale= 0.8,
             },
             TypeButton={
                 showBackground=true,
