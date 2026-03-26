@@ -251,7 +251,8 @@ local function Init_Menu(self, root)
 
 --自动出售垃圾
     sub=root:CreateCheckbox(
-        '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER)),
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER)),
     function()
         return not Save().notSellJunk
     end, function()

@@ -37,12 +37,7 @@ end
 
 local addName
 
-local P_Save={
-    no={
-        --[guid]=true
-    },
-    --maxLevelIsDisabled= WoWTools_DataMixin.Player.husandro,
-}
+
 
 local function Save()
     return WoWToolsSave['Tools_MapToy']
@@ -389,8 +384,14 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['Tools_MapToy']= WoWToolsSave['Tools_MapToy'] or P_Save
-            P_Save= nil
+            WoWToolsSave['Tools_MapToy']= WoWToolsSave['Tools_MapToy'] or {
+                no={
+                    --[guid]=true
+                },
+                maxLevelIsDisabled=true,
+                --maxLevelIsDisabled= WoWTools_DataMixin.Player.husandro,
+            }
+
 --旧数据
             Save().autoAddDisabled= nil
 
