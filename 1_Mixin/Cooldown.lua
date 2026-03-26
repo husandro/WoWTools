@@ -58,12 +58,10 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
         return
     end
 
-    local item= tab.itemID
-    local spellID= tab.spellID
-    local type= tab.type
-    local unit= tab.unit
-
-
+    local item= canaccessvalue(tab.itemID) and tab.itemID
+    local spellID= canaccessvalue(tab.spellID) and tab.spellID
+    local type= canaccessvalue(tab.type) and tab.type
+    local unit= canaccessvalue(tab.unit) and tab.unit
 
     if spellID then
         local data= C_Spell.GetSpellCooldown(spellID)
@@ -99,7 +97,6 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
     elseif frame.Cooldown then
         self:Setup(frame)
     end
-
 end
 
 
@@ -113,7 +110,7 @@ end
 function WoWTools_CooldownMixin:Setup(frame, start, duration, modRate, HideCountdownNumbers, Reverse, setSwipeTexture, hideDrawBling)--冷却条
     if not frame then
         return
-    elseif not duration then
+    elseif not canaccessvalue(start) or not canaccessvalue(duration) or not duration then
         if frame.Cooldown then
             frame.Cooldown:Clear()
         end
