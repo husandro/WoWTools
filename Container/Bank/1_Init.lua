@@ -1,21 +1,6 @@
 
 WoWTools_BankMixin={}
 
-local P_Save={
-    line=2,
-    num=20,
-
-    plusTab=true,
-    plusIndex=true,
-    plusItem=true,
-
-    autoSaveMoney= WoWTools_DataMixin.Player.husandro and 500,--大于当前值，自动存放多余的金到银行去
-    autoOutMoney= WoWTools_DataMixin.Player.husandro and 500,
-    filterSaveMoney={},--[guid]=true
-    allBank=WoWTools_DataMixin.Player.husandro,--整合银行
-
-    saveWoWData=WoWTools_DataMixin.Player.husandro,
-}
 
 
 local function Save()
@@ -86,8 +71,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Bank2']= WoWToolsSave['Plus_Bank2'] or P_Save
-            P_Save=nil
+            WoWToolsSave['Plus_Bank2']= WoWToolsSave['Plus_Bank2'] or {
+                line=2,
+                num=20,
+                accountNum=10,--WoWTools_DataMixin.Player.husandro and 10 or 15,
+
+                plusTab=true,
+                plusIndex=true,
+                plusItem=true,
+
+                autoSaveMoney= WoWTools_DataMixin.Player.husandro and 500,--大于当前值，自动存放多余的金到银行去
+                autoOutMoney= WoWTools_DataMixin.Player.husandro and 500,
+                filterSaveMoney={},--[guid]=true
+                allBank=WoWTools_DataMixin.Player.husandro,--整合银行
+
+                saveWoWData=WoWTools_DataMixin.Player.husandro,
+            }
 
             Save().filterSaveMoney=  Save().filterSaveMoney or {}
             WoWToolsSave['Plus_Bank']= nil
