@@ -49,7 +49,7 @@ UnitItemLevel[guid]={--玩家装等
 --WoWTools_DataMixin.ClearAllSave= true 全部重置，插件设置
 
 local battleTag= select(2, BNGetInfo())
-local baseClass= UnitClassBase('player')
+--local baseClass= UnitClassBase('player')
 local playerRealm= GetRealmName():gsub(' ', '')
 local currentRegion= GetCurrentRegion()
 --local r, g, b, hex= GetClassColor(baseClass)
@@ -80,7 +80,7 @@ WoWTools_DataMixin.Player={
     Name_Realm= UnitName('player')..'-'..playerRealm,
     --Name= UnitName('player'),
     Sex= UnitSex("player"),--Enum.UnitSex.Female 0Male 1Female 2None 3Both 4Neutral
-    Class= baseClass,--1WARRIOR 2PALADIN 3HUNTER 4ROGUE 5PRIEST 6DEATHKNIGHT 7SHAMAN 8MAGE 9WARLOCK 10MONK 11DRUID 12DEMONHUNTER 13EVOKER
+    Class= UnitClassBase('player'),--1WARRIOR 2PALADIN 3HUNTER 4ROGUE 5PRIEST 6DEATHKNIGHT 7SHAMAN 8MAGE 9WARLOCK 10MONK 11DRUID 12DEMONHUNTER 13EVOKER
 
     Region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     IsCN= currentRegion==5 or currentRegion==4,

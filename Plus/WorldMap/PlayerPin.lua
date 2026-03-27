@@ -53,7 +53,16 @@ end
 
 
 
-
+local function Check_Profession(profession)
+    if type(profession)~= "table" then
+        return true
+    end
+    for skillLineID in pairs(profession) do
+        if C_SpellBook.GetSkillLineIndexByID(skillLineID) then
+            return true
+        end
+    end
+end
 
 
 
@@ -74,14 +83,16 @@ function WoWToolsWorldMapDataProvider:RefreshAllData()
 
         local mapID= self:GetMap():GetMapID()
         if mapID and not Save().disabled then
+            local classID= select(3, UnitClassBase('player'))
 
-            for xy, pin in pairs(SaveWoW()[mapID] or {}) do
-                if xy~='options' then
-                    local x,y= WoWTools_WorldMapMixin:GetXYForText(xy)
-                    if x and y then
-                        count= count +1
-                        self:GetMap():AcquirePin("WoWToolsWorldMapPinTemplate", xy, x,y, pin, mapID)
-                    end
+            for xy, pin in pairs(SaveWoW()[mapID] or {}) do--xy~='options'
+                local x,y= WoWTools_WorldMapMixin:GetXYForText(xy)
+                if x and y
+                    and (not pin.class or pin.class[classID])
+                    and Check_Profession(pin.profession)
+                then
+                    count= count +1
+                    self:GetMap():AcquirePin("WoWToolsWorldMapPinTemplate", xy, x, y, pin, mapID)
                 end
             end
 
@@ -189,6 +200,13 @@ end
 
 
 
+
+
+
+
+
+
+
 function WoWToolsWorldMapPinMixin:OnAcquired(xy, x, y, pin, mapID)
     local options= SaveWoW()[mapID].options or {}
     local iconS, fontH= options.iconS or PinHeight, options.fontH or PinHeight
@@ -260,6 +278,10 @@ function WoWToolsWorldMapPinMixin:OnMouseUp()
 end
 -- hack to avoid error in combat in 10.1.5
 WoWToolsWorldMapPinMixin.SetPassThroughButtons = function()end
+
+
+
+
 
 
 
