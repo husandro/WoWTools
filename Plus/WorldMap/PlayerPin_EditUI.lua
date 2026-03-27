@@ -7,10 +7,23 @@ end
 
 local Frame
 local PinHeight= 12--默认大小
-
-
-
-
+local IconTabs={
+    ['MonsterEnemy']=1,
+    ['MonsterFriend']=1,
+    ['MonsterNeutral']=1,
+    ['Gear']=1,
+    ['PartyMember']=1,
+    ['Vehicle-TempleofKotmogu-CyanBall']=1,
+    ['Vehicle-TempleofKotmogu-GreenBall']=1,
+    ['Vehicle-TempleofKotmogu-OrangeBall']=1,
+    ['Vehicle-TempleofKotmogu-PurpleBall']=1,
+    ['communities-icon-notification']=1,
+    ['Professions_Tracking_Herb_Special']=1,
+}
+local NameTabs= {
+    [BANK]= 1,--银行";
+    [MINIMAP_TRACKING_AUCTIONEER]= 1,--拍卖师";
+}
 
 
 
@@ -268,8 +281,8 @@ local function Refresh_All(pinData)
             end
         end)
     end
-    Frame.iconS:SetValue(iconS or 12)
-    Frame.fontH:SetValue(fontH or 12)
+    Frame.iconS:SetValue(iconS or PinHeight)
+    Frame.fontH:SetValue(fontH or PinHeight)
     Frame.view:SetDataProvider(dataProvider, ScrollBoxConstants.RetainScrollPosition)
 
     Frame.mapMenu:SetText(GetMapName(Frame.mapID) or Frame.mapMenu:GetDefaultText())
@@ -298,12 +311,14 @@ end
 
 
 local function Add_ListButton(btn)
+    --WoWTools_ButtonMixin:AddMask(btn, true, btn.Icon)
+
     btn.Delete= CreateFrame('Button', nil, btn, 'WoWToolsButtonTemplate')
-    btn.Delete:SetNormalAtlas('common-icon-redx')
-    local icon= btn.Delete:GetNormalTexture()
-    icon:ClearAllPoints()
-    icon:SetPoint('TOPLEFT', 3, -3)
-    icon:SetPoint('BOTTOMRIGHT', -3, 3)
+    btn.Delete.texture= btn.Delete:CreateTexture(nil, 'BORDER')
+    btn.Delete.texture:SetAtlas('common-icon-redx')
+    btn.Delete.texture:SetPoint('TOPLEFT', 3, -3)
+    btn.Delete.texture:SetPoint('BOTTOMRIGHT', -3, 3)
+
     btn.Delete:SetPoint('TOPRIGHT', -2, -2)
     btn.Delete:SetSize(20,20)
     btn.Delete:Hide()
@@ -385,8 +400,6 @@ local function Initializer(self, data)
         Add_ListButton(self)
     end
 
-    WoWTools_ButtonMixin:AddMask(self, true, self.Icon)
-
     self.data= data
 
 --图标
@@ -458,12 +471,14 @@ local function Add_Updata_Data(isUpdate)
     local note= Frame.noteEdit:GetText()
     note= note:gsub(' ', '')~='' and note or nil
 --仅限专业
-    local profession= Frame.professionMenu.profession
+    local profession
+    profession= Frame.professionMenu.profession
     if profession and CountTable(profession)==0 then
         profession = nil
     end
 --仅限职业
-    local class= Frame.classMenu.class
+    local class
+    class= Frame.classMenu.class
     if class and CountTable(class)==0 then
         class = nil
     end
@@ -834,11 +849,11 @@ local function Init()
 
             local name, num= GetMapName(mapID)
             if name then
-                
+
             else
                 name= (DISABLED_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '无效的地图' or ERR_HOUSING_RESULT_INVALID_MAP)..' '..mapID)
             end
-            
+
             allCount= num+ allCount
 
             local size= info.options or {}
@@ -1063,9 +1078,11 @@ local function Init()
 
 
 --捕捉，名称
-    Frame.getNameButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    Frame.getNameButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template')
     Frame.getNameButton:SetPoint('TOPLEFT', worldButton, 'BOTTOMLEFT', 0, -52)
-    Frame.getNameButton.tooltip= WoWTools_DataMixin.onlyChinese and '捕捉名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNIT_CAPTURABLE, NAME)
+    Frame.getNameButton.tooltip= (WoWTools_DataMixin.onlyChinese and '捕捉名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNIT_CAPTURABLE, NAME))
+        ..WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right
+        ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
     Frame.getNameButton:SetNormalAtlas('Cursor_unablecast_32')
     function Frame.getNameButton:set_event()
         if self.isSatrt then
@@ -1109,11 +1126,19 @@ local function Init()
             end
         end
     end)
-    Frame.getNameButton:SetScript('OnClick', function(self)
+    Frame.getNameButton:SetScript('OnMouseDown', function(self, d)
+        local isLeft= d=='LeftButton'
+        if isLeft then
+            self:CloseMenu()
+        end
+
         if self.isSatrt then
             self:clear()
             return
+        elseif not isLeft then
+            return
         end
+
         self.isSatrt= true
         self:set_event()
         if WorldMapFrame:IsShown() then
@@ -1132,8 +1157,55 @@ local function Init()
             end
         end)
     end)
+--中文
+    if WoWTools_ChineseMixin and WoWTools_DataMixin.onlyChinese then
+        for name in pairs(NameTabs) do
+            local text= WoWTools_TextMixin:CN(name)
+            if text and text~= name then
+                NameTabs[text]= 1
+                NameTabs[name]= nil
+            end
+        end
+    end
+    Frame.getNameButton:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        for _, data in pairs(SaveWoW()) do
+            for _, pin in pairs(data) do
+                if pin.name and pin.name~='' then
+                    NameTabs[pin.name]= pin.color or 1
+                end
+            end
+        end
+        local _new= {}
+        for name in pairs(NameTabs) do
+            table.insert(_new, name)
+        end
+        table.sort(_new)
+        for index, text in pairs(_new) do
+            local color
+            local t= NameTabs[text]
+            local name= text
+            if type(t)=='table' and t.r and t.g and t.b then
+                color= CreateColor(t.r, t.g, t.b)
+                name= color:WrapTextInColorCode(name)
+            end
 
-
+            root:CreateCheckbox(
+                name,
+            function(data)
+                return data.text==Frame.nameEdit:GetText()
+            end, function(data)
+                Frame.nameEdit:SetText(data.text)
+                if data.color then
+                    Frame.colorButton.color= data.color
+                    Frame.colorButton:set_color()
+                end
+            end, {text=text, rightText='|cff626262'..index, color=color})
+        end
+        WoWTools_MenuMixin:SetScrollMode(root)
+    end)
 
 
     Frame.nameEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 1)
@@ -1241,32 +1313,68 @@ local function Init()
 
 
 
-    Frame.iconEdit.iconButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    Frame.iconEdit.iconButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template')
     Frame.iconEdit.iconButton:SetPoint('LEFT', Frame.iconEdit, 'RIGHT', 2, 0)
     Frame.iconEdit.iconButton.icon= Frame.iconEdit.iconButton:CreateTexture(nil, 'BACKGROUND')
     Frame.iconEdit.iconButton.icon:SetAllPoints()
     --WoWTools_ButtonMixin:AddMask(Frame.iconEdit.iconButton, false, Frame.iconEdit.iconButton.icon)
     Frame.iconEdit.iconButton.owner= 'ANCHOR_RIGHT'
-    function Frame.iconEdit.iconButton:tooltip()
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS)
+    function Frame.iconEdit.iconButton:tooltip(tooltip)
+        tooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS)
+            ..WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        )
         if not _G['TAV_CoreFrame'] then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('|cnWARNING_FONT_COLOR:Texture Atlas Viewer', WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
+           tooltip:AddLine('|cnWARNING_FONT_COLOR:Texture Atlas Viewer')
         end
     end
-    Frame.iconEdit.iconButton:SetScript('OnClick', function()
-        WoWTools_TextureMixin:GetNewIcon(Frame, {
-            texture= Frame.iconEdit:GetText(),
-            SetValue=function(newIcon)
-                Frame.iconEdit:SetText(newIcon)
-                --Frame.nameEdit:SetText(newText)
+    Frame.iconEdit.iconButton:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            self:CloseMenu()
+            WoWTools_TextureMixin:GetNewIcon(Frame, {
+                texture= Frame.iconEdit:GetText(),
+                SetValue=function(newIcon)
+                    Frame.iconEdit:SetText(newIcon)
+                    --Frame.nameEdit:SetText(newText)
+                end
+            })
+        end
+    end)
+    Frame.iconEdit.iconButton:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        for _, data in pairs(SaveWoW()) do
+            for _, pin in pairs(data) do
+                if pin.icon then
+                    IconTabs[pin.icon]= 1
+                end
             end
-        })
+        end
+        local _new= {}
+        for name in pairs(IconTabs) do
+            table.insert(_new, name)
+        end
+        table.sort(_new)
+        for index, name in pairs(_new) do
+            local textrue, icon= select(2, WoWTools_TextureMixin:IsAtlas(name, 18))
+            local sub=root:CreateCheckbox(
+                icon,
+            function(data)
+                return data.texture==Frame.iconEdit:GetText()
+            end, function(data)
+                Frame.iconEdit:SetText(data.texture)
+            end, {icon=icon, rightText='|cff626262'..index, texture=textrue})
+            WoWTools_MenuMixin:SetRightText(sub)
+        end
+        WoWTools_MenuMixin:SetScrollMode(root)
+        _new=nil
     end)
 
 
     if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
-        local tav= CreateFrame('Button', nil, _G['TAV_CoreFrame'], 'WoWToolsButtonTemplate')-- WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
+        local tav= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')-- WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
         tav:SetNormalAtlas("communities-icon-searchmagnifyingglass")
         tav:SetPoint('LEFT', Frame.iconEdit.iconButton, 'RIGHT')
         tav:SetScript('OnClick', function()
@@ -1515,7 +1623,28 @@ local function Init()
 
 
 
+    Frame.updateButton= CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate')
+    --Frame.updateButton:SetPoint('TOPLEFT', Frame.professionMenu, 'BOTTOMLEFT', 3, -12)
+    --Frame.updateButton:SetPoint('TOPRIGHT', Frame.professionMenu, 'TOPRIGHT', -3, -12)
+    Frame.updateButton:SetPoint('TOPLEFT', Frame.sliderX, 'BOTTOMLEFT', -12, -12)
+    Frame.updateButton:SetPoint('TOPRIGHT', Frame.sliderX, 'BOTTOMRIGHT', -6, -12)
+    Frame.updateButton:SetHeight(28)
+    Frame.updateButton:SetText(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
+    Frame.updateButton:SetScript('OnClick', function()
+        Add_Updata_Data(true)
+    end)
 
+
+    Frame.addButton= CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate')
+    --Frame.addButton:SetPoint('LEFT', Frame.updateButton, 'RIGHT', 6, 0)
+    --Frame.addButton:SetPoint('RIGHT', -19, 0)
+    Frame.addButton:SetPoint('TOPLEFT', Frame.sliderY, 'BOTTOMLEFT', 12, -12)
+    Frame.addButton:SetPoint('TOPRIGHT', Frame.sliderY, 'BOTTOMRIGHT', 6, -12)
+    Frame.addButton:SetHeight(28)
+    Frame.addButton:SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+    Frame.addButton:SetScript('OnClick', function()
+        Add_Updata_Data(false)
+    end)
 
 
 
@@ -1523,7 +1652,7 @@ local function Init()
 
 
     Frame.noteEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate', 4)
-    Frame.noteEdit:SetPoint('TOPLEFT',  Frame.xyEdit, 'BOTTOMLEFT', -25, -55)
+    Frame.noteEdit:SetPoint('TOPLEFT',  Frame.xyEdit, 'BOTTOMLEFT', -25, -85)
     Frame.noteEdit:SetPoint('RIGHT', -13, 0)
     Frame.noteEdit:SetHeight(23)
     Frame.noteEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE)
@@ -1625,24 +1754,7 @@ local function Init()
         end
     end)
 
-    Frame.updateButton= CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate')
-    Frame.updateButton:SetPoint('TOPLEFT', Frame.professionMenu, 'BOTTOMLEFT', 3, -12)
-    Frame.updateButton:SetPoint('TOPRIGHT', Frame.professionMenu, 'TOPRIGHT', -3, -12)
-    Frame.updateButton:SetHeight(32)
-    Frame.updateButton:SetText(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
-    Frame.updateButton:SetScript('OnClick', function()
-        Add_Updata_Data(true)
-    end)
 
-
-    Frame.addButton= CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate')
-    Frame.addButton:SetPoint('LEFT', Frame.updateButton, 'RIGHT', 6, 0)
-    Frame.addButton:SetPoint('RIGHT', -19, 0)
-    Frame.addButton:SetHeight(32)
-    Frame.addButton:SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
-    Frame.addButton:SetScript('OnClick', function()
-        Add_Updata_Data(false)
-    end)
 
 
 
