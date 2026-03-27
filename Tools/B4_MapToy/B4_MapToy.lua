@@ -411,7 +411,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         nil,
                         {SetValue=function()
                             Save().no={}
-                            Save().maxLevelIsDisabled=nil
+                            Save().maxLevelIsDisabled=true
                         end})
                      end,
                      layout= layout,
