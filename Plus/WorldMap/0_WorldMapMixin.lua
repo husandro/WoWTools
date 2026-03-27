@@ -22,6 +22,7 @@ end
 
 
 
+
 function WoWTools_WorldMapMixin:GetMapID()
     return WorldMapFrame.mapID or MapUtil.GetDisplayableMapForPlayer()--C_Map.GetBestMapForUnit("player")
 end

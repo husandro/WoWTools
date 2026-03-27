@@ -8,6 +8,24 @@ end
 local PinHeight= 12--默认大小
 local Button
 
+
+function WoWTools_WorldMapMixin:Check_PinData(pin)
+    if not pin then
+        return true
+    elseif type(pin.class)~= "table" or pin.class[WoWTools_DataMixin.Player.ClassID] or TableIsEmpty(pin.class) then
+        if type(pin.profession)~= "table" or TableIsEmpty(pin.profession) then
+            return true
+        else
+            for skillLineID in pairs(pin.profession) do
+                if C_SpellBook.GetSkillLineIndexByID(skillLineID) then
+                    return true
+                end
+            end
+        end
+    end
+end
+
+
 local function SetUserWaypoint(self)
     local mapID= self.mapID
     local x, y= self.x, self.y--x=0.0555
@@ -53,17 +71,6 @@ end
 
 
 
-local function Check_Profession(profession)
-    if type(profession)~= "table" then
-        return true
-    end
-    for skillLineID in pairs(profession) do
-        if C_SpellBook.GetSkillLineIndexByID(skillLineID) then
-            return true
-        end
-    end
-end
-
 
 
 
@@ -83,14 +90,9 @@ function WoWToolsWorldMapDataProvider:RefreshAllData()
 
         local mapID= self:GetMap():GetMapID()
         if mapID and not Save().disabled then
-            local classID= select(3, UnitClassBase('player'))
-
             for xy, pin in pairs(SaveWoW()[mapID] or {}) do--xy~='options'
                 local x,y= WoWTools_WorldMapMixin:GetXYForText(xy)
-                if x and y
-                    and (not pin.class or pin.class[classID])
-                    and Check_Profession(pin.profession)
-                then
+                if x and y and WoWTools_WorldMapMixin:Check_PinData(pin) then
                     count= count +1
                     self:GetMap():AcquirePin("WoWToolsWorldMapPinTemplate", xy, x, y, pin, mapID)
                 end
@@ -609,11 +611,7 @@ local function Init()
     end)
 
 
-    --[[if WoWTools_DataMixin.Player.husandro then
-        C_Timer.After(2, function()
-            WoWTools_WorldMapMixin:PlayerPin_ShowUI()
-        end)
-    end]]
+    if WoWTools_DataMixin.Player.husandro then C_Timer.After(2, function() WoWTools_WorldMapMixin:PlayerPin_ShowUI() end) end
 
 
 

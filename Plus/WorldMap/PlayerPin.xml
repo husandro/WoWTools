@@ -26,6 +26,7 @@
                         <Anchor point="LEFT" x="4"/>
                     </Anchors>
                 </Texture>
+
                 <FontString parentKey="Index" inherits="WoWToolsFont2">
                     <Anchors>
                         <Anchor point="RIGHT" x="-4"/>
@@ -64,7 +65,14 @@
                     </Anchors>
                 </Texture>
             </Layer>
-           
+            <Layer level="ARTWORK">
+                <Texture parentKey="Check" atlas="transmog-icon-hidden" hidden="true">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="4" y="-2"/>
+                    </Anchors>
+                </Texture>
+			</Layer>
         </Layers>
     </Button>
 

@@ -133,10 +133,10 @@ local function Set_FrameSelect(data)
 
     Frame.noteEdit:SetText(data.pin.note or '')
 
-    Frame.professionMenu.profession= data.pin.profession or {}
+    Frame.professionMenu.profession= data.pin.profession and CopyTable(data.pin.profession) or {}
     Frame.professionMenu:SetText(GetProfessionIcon(data.pin.profession) or Frame.professionMenu:GetDefaultText())
 
-    Frame.classMenu.class= data.pin.class or {}
+    Frame.classMenu.class= data.pin.class and CopyTable(data.pin.class) or {}
     Frame.classMenu:SetText(GetClassIcon(data.pin.class) or Frame.classMenu:GetDefaultText())
 
     local color
@@ -380,8 +380,6 @@ end
 
 
 
-
-
 local function Initializer(self, data)
     if not self.Delete then
         Add_ListButton(self)
@@ -413,6 +411,8 @@ local function Initializer(self, data)
     self.Sub2:SetText(note..(data.pin.note or ''))
 --索引
     self.Index:SetText(self:GetElementDataIndex())
+--专业，职业，检查
+    self.Check:SetShown(not WoWTools_WorldMapMixin:Check_PinData(data.pin))
 
     self:set_event()
 end
