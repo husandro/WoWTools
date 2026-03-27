@@ -1082,7 +1082,7 @@ local function Init()
     Frame.getNameButton:SetPoint('TOPLEFT', worldButton, 'BOTTOMLEFT', 0, -52)
     Frame.getNameButton.tooltip= (WoWTools_DataMixin.onlyChinese and '捕捉名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNIT_CAPTURABLE, NAME))
         ..WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right
-        ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        ..(WoWTools_DataMixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)
     Frame.getNameButton:SetNormalAtlas('Cursor_unablecast_32')
     function Frame.getNameButton:set_event()
         if self.isSatrt then
@@ -1323,7 +1323,7 @@ local function Init()
         tooltip:AddLine(
             (WoWTools_DataMixin.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS)
             ..WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right
-            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            ..(WoWTools_DataMixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)
         )
         if not _G['TAV_CoreFrame'] then
            tooltip:AddLine('|cnWARNING_FONT_COLOR:Texture Atlas Viewer')
