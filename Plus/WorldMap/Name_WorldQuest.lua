@@ -100,6 +100,7 @@ local function Init()
             end
         else
             texture= data.texture
+            text= data.name
         end
 
         local atlas

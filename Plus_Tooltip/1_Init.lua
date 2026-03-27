@@ -237,16 +237,6 @@ local function Init_Panel()
         })
 
 
---<右键点击设置框体>
-    WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '<右键点击设置框体>' or UNIT_POPUP_RIGHT_CLICK,
-        tooltip=  WoWTools_TextMixin:GetShowHide(nil, true),
-        GetValue= function() return Save().UNIT_POPUP_RIGHT_CLICK end,
-        category= WoWTools_TooltipMixin.Category,
-        SetValue= function()
-            Save().UNIT_POPUP_RIGHT_CLICK= not Save().UNIT_POPUP_RIGHT_CLICK and true or nil
-        end
-    })
 
     WoWTools_PanelMixin:OnlyCheck({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|A:NPE_Icon:0:0|aCtrl+Shift', WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
@@ -307,9 +297,34 @@ local function Init_Panel()
         end
     })
 
+    
+    WoWTools_PanelMixin:Header(Layout, WARNING_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '替换原生' or REPLACE))
+    WoWTools_PanelMixin:OnlyCheck({
+        name= 'SetTooltipMoney',
+        tooltip= (WoWTools_DataMixin.onlyChinese and '修复' or 'Fix')..' MoneyFrame_Update '..(WoWTools_DataMixin.onlyChinese and '错误' or ERRORS)
+                ..'|n'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+        GetValue= function() return not Save().disabledFix.MoneyFrame_Update end,
+        category= WoWTools_TooltipMixin.Category,
+        SetValue= function()
+            Save().disabledFix.MoneyFrame_Update= not Save().disabledFix.MoneyFrame_Update and true or nil
+        end
+    })
+
+    WoWTools_PanelMixin:OnlyCheck({
+        name= 'UnitFrame_UpdateTooltip',
+        tooltip= (WoWTools_DataMixin.onlyChinese and '<右键点击设置框体>' or UNIT_POPUP_RIGHT_CLICK)..': '..WoWTools_TextMixin:GetShowHide(false)
+                ..'|n'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD),
+        GetValue= function() return not Save().disabledFix.UnitFrame_UpdateTooltip end,
+        category= WoWTools_TooltipMixin.Category,
+        SetValue= function()
+            Save().disabledFix.UnitFrame_UpdateTooltip= not Save().disabledFix.UnitFrame_UpdateTooltip and true or nil
+        end
+    })
+
+
+
 
     WoWTools_PanelMixin:Header(Layout, 'CVar')
-
     root= WoWTools_PanelMixin:OnlyCheck({
         name= '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOCK, SETTINGS)),
         tooltip= function() return WoWTools_TooltipMixin:Set_CVar(nil, true, true) end,
@@ -476,7 +491,7 @@ local function Init()
 
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
 
---移除，<右键点击设置框体> 替换原生
+--[[移除，<右键点击设置框体> 替换原生
     WoWTools_DataMixin:Hook('UnitFrame_UpdateTooltip', function(self)
         if not Save().UNIT_POPUP_RIGHT_CLICK
             and GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip)
@@ -484,7 +499,7 @@ local function Init()
 		    GameTooltip:Show()
         end
     end)
-    --[[if not Save().UNIT_POPUP_RIGHT_CLICK then
+    if not Save().UNIT_POPUP_RIGHT_CLICK then
         function UnitFrame_UpdateTooltip (self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);
             if GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip) then
@@ -495,6 +510,29 @@ local function Init()
         end
     end]]
 
+
+    if not Save().disabledFix.MoneyFrame_Update then
+        function SetTooltipMoney(frame, money, _, prefixText, suffixText)
+            frame:AddLine(
+                (WoWTools_TextMixin:CN(prefixText) or "")
+                .. " "
+                .. C_CurrencyInfo.GetCoinTextureString(money)
+                .. " "
+                ..(WoWTools_TextMixin:CN(suffixText) or ""),
+                0,1,1
+            )
+        end
+    end
+    if not Save().disabledFix.UnitFrame_UpdateTooltip then
+        function UnitFrame_UpdateTooltip (self)
+            GameTooltip_SetDefaultAnchor(GameTooltip, self);
+            if GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip) then
+                self.UpdateTooltip = UnitFrame_UpdateTooltip;
+            else
+                self.UpdateTooltip = nil;
+            end
+        end
+    end
 
     Init=function()end
 end
@@ -533,13 +571,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 --WidgetSetID=848,--自定义，监视 WidgetSetID
                 --disabledNPCcolor=true,--禁用NPC颜色
                 --hideHealth=true,----生命条提示
-                --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体> 12.0移除
                 showItemMK=WoWTools_DataMixin.Player.husandro,
-                no={}--禁用
+                no={},--禁用
+                disabledFix={},
             }
 
 
             Save().no= Save().no or {}
+            Save().disabledFix= Save().disabledFix or {}
+            Save().UNIT_POPUP_RIGHT_CLICK= nil
             WoWTools_TooltipMixin.iconSize= Save().iconSize or 0
 
 

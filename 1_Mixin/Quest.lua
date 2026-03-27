@@ -185,11 +185,14 @@ questRewardContextFlags	Enum.QuestRewardContextFlags?
             --name=COMBAT_XP_GAIN,--经验
         }
 --钱
-    elseif GetQuestLogRewardMoney(questID)>0 then
-
-        return {
-            texture='Interface\\Icons\\inv_misc_coin_01',--'interface\\moneyframe\\ui-goldicon'
-        }
+    else
+        local money= GetQuestLogRewardMoney(questID)
+        if money>0 then
+            return {
+                texture='Interface\\Icons\\inv_misc_coin_01',--'interface\\moneyframe\\ui-goldicon'
+                name= WoWTools_DataMixin:MK(money/1e4, 0),
+            }
+        end
     end
     return {}
 end
