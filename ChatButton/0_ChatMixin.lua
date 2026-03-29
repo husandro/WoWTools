@@ -36,11 +36,7 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
             C_ChatInfo.SendChatMessage(text, 'PARTY')
 -- /dump C_ChatInfo.SendChatMessage('a', 'PARTY')
         else]]
-         C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
-         
-         C_ChatInfo.SendChatMessage(text..'a', 'RAID')
-         C_ChatInfo.SendChatMessage(text..'b', 'PARTY')
-
+ 
         if select(2, IsInInstance())~='none' and GetNumGroupMembers()>0 then
             C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
         elseif IsInRaid() then

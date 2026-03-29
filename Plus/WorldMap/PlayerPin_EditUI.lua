@@ -458,8 +458,7 @@ local function Add_Updata_Data(isUpdate)
     local name= Frame.nameEdit:GetText()
     name= name:gsub(' ', '')~='' and name or nil
 --图标
-    local icon= Frame.iconEdit:GetText()
-    icon= icon:gsub(' ', '')~='' and icon or nil
+    local icon= Frame.iconEdit.icon
 
 --xy 50.00 50.00 这个是字符
     local xy= Frame.xyEdit.xy
@@ -1195,7 +1194,7 @@ local function Init()
             root:CreateCheckbox(
                 name,
             function(data)
-                return data.text==Frame.nameEdit:GetText()
+                return data.text==Frame.nameEdit.name
             end, function(data)
                 Frame.nameEdit:SetText(data.text)
                 if data.color then
@@ -1756,6 +1755,55 @@ local function Init()
 
 
 
+    Frame.questEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate')
+    Frame.questEdit:SetPoint('TOPLEFT',  Frame.professionMenu, 'BOTTOMLEFT', 0, -12)
+    Frame.questEdit:SetPoint('TOPRIGHT', Frame.professionMenu, 'BOTTOMRIGHT',-6, -12)
+    Frame.questEdit:SetHeight(23)
+    Frame.questEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)
+    Frame.questEdit.searchIcon:SetTexture(0)
+    Frame.questEdit:SetNumeric(true)
+    Frame.questEdit.name= Frame.questEdit:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
+    Frame.questEdit.name:SetPoint('TOPLEFT', Frame.questEdit, 'BOTTOMLEFT', 0, -2)
+    Frame.questEdit.name:SetPoint('TOPRIGHT', Frame.questEdit, 'BOTTOMRIGHT', 0, -2)
+    Frame.questEdit.name:SetJustifyH('CENTER')
+
+    function Frame.questEdit:GetID()
+        local questID= self:GetNumber()
+        if questID and questID>0 and questID<2e9 then
+            return questID
+        end
+    end
+    Frame.questEdit:HookScript('OnTextChanged', function(self)
+        local questID= self:GetID()
+        self.name:SetText('')
+        self.questID= questID
+        if questID then
+            self:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+            if self:IsMouseOver() then
+                WoWTools_SetTooltipMixin:Frame(self)
+            end
+            SpellEventListener:AddCancelableCallback(questID, function()
+                local title= WoWTools_TextMixin:CN(nil, {questID=questID, isName=true}) or C_TaskQuest.GetQuestInfoByQuestID(questID) or C_QuestLog.GetTitleForQuestID(questID)
+                if title then
+                    self:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+                    if not Frame.nameEdit.name then
+                        Frame.nameEdit:SetText(WoWTools_TextMixin:CN(title))
+                    end
+                else
+                    self:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+                end
+                self.name:SetText(title or '')
+            end)
+        else
+            self:SetTextColor(WARNING_FONT_COLOR:GetRGB())
+        end
+    end)
+    Frame.questEdit:SetScript('OnLeave', GameTooltip_Hide)
+    Frame.questEdit:SetScript('OnEnter', function(self)
+        WoWTools_SetTooltipMixin:Frame(self)
+    end)
+    --Frame.questEdit:SetText('93595')
+Frame.questEdit:Hide()  
 
 
 
@@ -1763,7 +1811,127 @@ local function Init()
 
 
 
+    Frame.achievementEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate')
+    Frame.achievementEdit:SetPoint('TOPLEFT',  Frame.classMenu, 'BOTTOMLEFT', 6, -12)
+    Frame.achievementEdit:SetPoint('TOPRIGHT', Frame.classMenu, 'BOTTOMRIGHT',0, -12)
+    Frame.achievementEdit:SetHeight(23)
+    Frame.achievementEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENT_BUTTON)
+    Frame.achievementEdit.searchIcon:SetTexture(0)
+    Frame.achievementEdit.searchIcon:SetSize(23, 23)
+    Frame.achievementEdit.searchIcon:ClearAllPoints()
+    Frame.achievementEdit.searchIcon:SetPoint('LEFT', -7, -1)
+    Frame.achievementEdit.searchIcon:EnableMouse(true)
+    Frame.achievementEdit.searchIcon:SetScript('OnMouseUp', function(self)
+        self:SetAlpha(0.5)
+    end)
+    Frame.achievementEdit.searchIcon:SetScript('OnMouseDown', function(self, d)
+        self:SetAlpha(0.2)
+        if d=='LeftButton' then
+            if self.icon then
+                Frame.iconEdit:SetText(self.icon)
+            end
+        else
+            local name= self:GetParent().name:GetText()
+            if name and name~='' then
+                Frame.nameEdit:SetText(name)
+            end
+        end
+    end)
+    Frame.achievementEdit.searchIcon:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip_Hide()
+    end)
+    Frame.achievementEdit.searchIcon:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
+            ..WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right
+            ..(WoWTools_DataMixin.onlyChinese and '名称' or NAME ))
 
+            if self.icon then
+                GameTooltip:AddTexture(self.icon, {
+                width = 18,
+                height = 18,
+                --verticalOffset = 0,
+                --margin = { right = 2, top = 2, bottom = 2 },
+            })
+
+
+            GameTooltip:Show()
+           self:SetAlpha(0.5)
+        end
+    end)
+    WoWTools_ButtonMixin:AddMask(Frame.achievementEdit, nil, Frame.achievementEdit.searchIcon)
+    Frame.achievementEdit.searchIcon:SetDrawLayer('OVERLAY', 7)
+    Frame.achievementEdit.searchIcon:SetAlpha(1)
+    Frame.achievementEdit:SetNumeric(true)
+    Frame.achievementEdit.name= Frame.achievementEdit:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
+    Frame.achievementEdit.name:SetPoint('TOPLEFT', Frame.achievementEdit, 'BOTTOMLEFT', 0, -2)
+    Frame.achievementEdit.name:SetPoint('TOPRIGHT', Frame.achievementEdit, 'BOTTOMRIGHT', 0, -2)
+    Frame.achievementEdit.name:SetJustifyH('CENTER')
+    function Frame.achievementEdit:GetID()
+        local achievementID= self:GetNumber()
+        if achievementID and achievementID>0 and achievementID<2e9 and C_AchievementInfo.IsValidAchievement(achievementID)  then
+            return achievementID
+        end
+    end
+    function Frame.achievementEdit:clear()
+        if self.timer then
+            self.timer:Cancel()
+        end
+    end
+    function Frame.achievementEdit:set_text()
+        local name, icon, _
+        if self.achievementID then
+             _, name, _, _, _, _, _, _, _, icon= GetAchievementInfo(self.achievementID)
+        end
+        if name then
+            self:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
+        else
+            self:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+        end
+        self.searchIcon:SetTexture(icon or 0)
+        self.searchIcon.icon= icon
+        self.searchIcon:SetShown(icon or name)
+        print(icon or name )
+        self.name:SetText(name or '')
+        if icon and not Frame.iconEdit.icon then
+            Frame.iconEdit:SetText(icon)
+        end
+        if name and not Frame.nameEdit.name then
+            Frame.nameEdit:SetText(name)
+        end
+        return name
+    end
+    Frame.achievementEdit:HookScript('OnTextChanged', function(self)
+        local achievementID= self:GetID()
+        self.achievementID= achievementID
+        if self.timer then
+            self.timer:Cancel()
+        end
+        if achievementID then
+            if self:IsMouseOver() then
+                WoWTools_SetTooltipMixin:Frame(self)
+            end
+            if not self:set_text() then
+                self.timer= C_Timer.NewTicker(2, function()
+                    self:set_text()
+                end)
+            end
+        else
+            self:SetTextColor(WARNING_FONT_COLOR:GetRGB())
+        end
+        self.searchIcon:SetAlpha(1)
+    end)
+    Frame.achievementEdit:SetScript('OnHide', Frame.achievementEdit.clear)
+    Frame.achievementEdit:SetScript('OnLeave', GameTooltip_Hide)
+    Frame.achievementEdit:SetScript('OnEnter', function(self)
+        WoWTools_SetTooltipMixin:Frame(self)
+    end)
+
+    --Frame.achievementEdit:SetText('61581')
+    Frame.achievementEdit:Hide()
 
 
 --设置，TAB键

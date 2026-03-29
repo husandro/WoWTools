@@ -1,4 +1,5 @@
 --[[
+SpellEventListener:AddCancelableCallback(questID, 
 QuestUtil.
 GetRewardInfo(questID)
 GetName(questID)
@@ -11,25 +12,26 @@ GetQuestAll()--所有，任务，提示
 WoWTools_QuestMixin={}
 
 function WoWTools_QuestMixin:IsValidQuestID(questID)
-    questID = type(questID)=='string' and tonumber(questID) or questID
-    if questID and questID>0 and questID<2e9 then
-        return true
+    if questID then
+        questID = type(questID)~='number' and tonumber(questID) or questID or 0
+        if questID>0 and questID<2e9 then
+            return questID
+        end
     end
 end
 
 function WoWTools_QuestMixin:GetID()
    local questID = QuestInfoFrame.questLog and C_QuestLog.GetSelectedQuest() or GetQuestID()
-   if questID and WoWTools_QuestMixin:IsValidQuestID(questID) then
-        return questID
-   end
+   return self:IsValidQuestID(questID)
 end
 
 function WoWTools_QuestMixin:GetName(questID)
+    questID= self:IsValidQuestID(questID)
     if not questID then
         return ''
-    elseif not self:IsValidQuestID(questID) then
-        return '|cff626262'..questID..'|r'
     end
+
+    WoWTools_DataMixin:Load(questID, 'quest')
 
     return WoWTools_TextMixin:CN(nil, {questID=questID, isName=true})
         or C_TaskQuest.GetQuestInfoByQuestID(questID)
@@ -38,13 +40,15 @@ function WoWTools_QuestMixin:GetName(questID)
 end
 
 function WoWTools_QuestMixin:GetLink(questID)
-    if not self:IsValidQuestID(questID) then
+    questID= self:IsValidQuestID(questID)
+    if not questID then
         return
     end
 
+    WoWTools_DataMixin:Load(questID, 'quest')
+
     local link= GetQuestLink(questID)
     if not link then
-       WoWTools_DataMixin:Load(questID, 'quest')
         local index= C_QuestLog.GetLogIndexForQuestID(questID)
         local info= index and C_QuestLog.GetInfo(index) or {}
         local name= info.title or self:GetName(questID) or questID
@@ -72,7 +76,8 @@ end
 
 --QuestUtils_AddQuestRewardsToTooltip(tooltip, questID, style)
 function WoWTools_QuestMixin:GetRewardInfo(questID)
-    if not self:IsValidQuestID(questID) then
+    questID= self:IsValidQuestID(questID)
+    if not questID then
         return
     end
 
