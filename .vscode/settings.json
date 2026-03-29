@@ -3217,7 +3217,8 @@
         "MINIMAP_TRACKING_TRANSMOGRIFIER",
         "MINIMAP_TRACKING_WILD_BATTLE_PET",
         "SetCVarTableValue",
-        "DELVES_PARTY_MEMBER_INELIGIBLE_FOR_TIER_TOOLTIP"
+        "DELVES_PARTY_MEMBER_INELIGIBLE_FOR_TIER_TOOLTIP",
+        "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

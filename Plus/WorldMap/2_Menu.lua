@@ -151,7 +151,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub
+    local sub, sub2
 
 --地图和任务日志
     sub= root:CreateCheckbox(
@@ -327,36 +327,9 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
 
---AreaPOI名称
-    sub=root:CreateCheckbox(
-        '|A:minimap-genericevent-hornicon:0:0|aAreaPOI',
-    function()
-        return Save().ShowAreaPOI_Name
-    end, function()
-        Save().ShowAreaPOI_Name= not Save().ShowAreaPOI_Name and true or false
-        WoWTools_WorldMapMixin:Init_AreaPOI_Name()
-        WoWTools_WorldMapMixin:Refresh()
-    end,sub)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
-        --tooltip:AddLine('|cnWARNING_FONT_COLOR:BUG')
-    end)
+    WoWTools_WorldMapMixin:AreaPOINameMenu(self, root)
 
---字体大小
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
-        getValue=function()
-            return Save().areaPoinFontSize or 10
-        end, setValue=function(value)
-            Save().areaPoinFontSize=value
-            WoWTools_WorldMapMixin:Refresh()
-        end,
-        minValue=4,
-        maxValue=24,
-        step=1,
-        --tooltip=WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)
-    })
+    
 
 --地下城，加名称
     sub=root:CreateCheckbox(

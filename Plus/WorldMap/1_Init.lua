@@ -64,6 +64,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     Save().PlayerXY= Save().PlayerXY or {}
     Save().PlayerPin= Save().PlayerPin or {size=12}
 
+    WoWToolsPlayerDate.WorldMapUserAreaPoiName= WoWToolsPlayerDate.WorldMapUserAreaPoiName or {
+        noShow={},
+        pinName={},
+    }
+
     WoWToolsPlayerDate.WorldMapPin= nil
 
     WoWToolsPlayerDate.PlayerMapPin= WoWToolsPlayerDate.PlayerMapPin or {
