@@ -27,48 +27,23 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
         else
             WoWTools_DataMixin:Call(ChatFrame_OpenChat, text)
         end]]
+    elseif select(2, IsInInstance())~='none' and GetNumGroupMembers()>0 then
+        C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
+    elseif IsInRaid() then
+        C_ChatInfo.SendChatMessage(text, 'RAID')
+    elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
+        C_ChatInfo.SendChatMessage(text, 'PARTY')
+    
     else
-        --local isNotDead= not UnitIsDeadOrGhost('player')
-        --[[local isInInstance= select(2, IsInInstance())~='none'
-        if IsInRaid() then
-            C_ChatInfo.SendChatMessage(text, 'RAID')
-        elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
-            C_ChatInfo.SendChatMessage(text, 'PARTY')
--- /dump C_ChatInfo.SendChatMessage('a', 'PARTY')
-        else]]
- 
-        if select(2, IsInInstance())~='none' and GetNumGroupMembers()>0 then
-            C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
-        elseif IsInRaid() then
-            C_ChatInfo.SendChatMessage(text, 'RAID')
-        elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
-            C_ChatInfo.SendChatMessage(text, 'PARTY')
-        --[[
-        if isInInstance and not UnitIsDeadOrGhost('player') and not InCombatLockdown() then-- and C_CVar.GetCVarBool("chatBubbles") then
-            C_ChatInfo.SendChatMessage(text, 'YELL')
-
-        elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-            C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
-
-        elseif IsInRaid() then
-            C_ChatInfo.SendChatMessage(text, 'RAID')
-
-        elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
-            C_ChatInfo.SendChatMessage(text, 'PARTY')
-            --elseif isNotDead and IsOutdoors() and not InCombatLockdown() then
-                --C_ChatInfo.SendChatMessage(text, 'YELL')
-            -- elseif setPrint then]]
-        else
-            if canaccessvalue(text) and text:find('{rt%d}') then
-                text= text:gsub('{rt%d}', function(s)
-                    local icon= s:match('%d')
-                    if icon then
-                        return format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%s:0|t', icon)
-                    end
-                end)
-            end
-            print(text)
+        if canaccessvalue(text) and text:find('{rt%d}') then
+            text= text:gsub('{rt%d}', function(s)
+                local icon= s:match('%d')
+                if icon then
+                    return format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%s:0|t', icon)
+                end
+            end)
         end
+        print(text)
     end
 end
 
