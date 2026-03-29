@@ -1035,7 +1035,7 @@ local function Init_Menu(self, root)
         text= text..'|A:common-icon-rotateleft:0:0|a'
     end
 --释放, 复活
-    if Save().ReMe and (Save().ReMe_AllZone and (not IsInInstance() or not IsInGroup())) then
+    if Save().ReMe and (Save().ReMe_AllZone and (select(2, IsInInstance())=='none' or not IsInGroup())) then
         text= text..'|A:poi-soulspiritghost:0:0|a'
     end
 

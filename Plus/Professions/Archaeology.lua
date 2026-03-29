@@ -363,7 +363,7 @@ local function Init_ProgressBar()
 
         if Save().showArcheologyBar and select(3, GetProfessions()) then
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
-            if not IsInInstance() then
+            if select(2, IsInInstance())=='none' then
                 self:RegisterEvent('PLAYER_STOPPED_MOVING')
             end
         end

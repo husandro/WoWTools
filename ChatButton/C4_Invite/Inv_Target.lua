@@ -18,11 +18,11 @@ local frame
 
 
 local function Init()
-     frame= CreateFrame('Frame')
+    frame= CreateFrame('Frame')
 
     function frame:set_event()--设置, 邀请目标事件
         self:UnregisterAllEvents()
-        if Save().InvTar and not IsInInstance() then
+        if Save().InvTar and select(2, IsInInstance())=='none' then
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
         end
     end

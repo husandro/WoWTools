@@ -26,7 +26,7 @@ local function Init()
             self:RegisterEvent('GROUP_ROSTER_UPDATE')
 
             if WoWTools_InviteMixin:Get_Leader()
-                and not IsInInstance()
+                and select(2, IsInInstance())=='none'
             then
                 self:RegisterEvent('CHAT_MSG_SAY')
                 self:RegisterEvent('CHAT_MSG_WHISPER')

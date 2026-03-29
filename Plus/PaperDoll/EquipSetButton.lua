@@ -536,7 +536,7 @@ local function Init()--添加装备管理框
 
 --提示，没有装上
     function TrackButton:tips_not_equipment()
-        if not IsInInstance() or not self:IsShown() then-- or not IsInGroup() then
+        if IsInInstance() or not self:IsShown() then-- or not IsInGroup() then
             return
         end
         local equipped

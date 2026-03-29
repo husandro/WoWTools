@@ -523,7 +523,7 @@ local function Init()
 		local hide= not Save().btn
 		or (
 		   not Save().notAutoHideTrack and (
-				IsInInstance()
+				select(2, IsInInstance())~='none'
 				or C_PetBattles.IsInBattle()
 				or UnitInVehicle('player')
 				or OverrideActionBar:IsShown()

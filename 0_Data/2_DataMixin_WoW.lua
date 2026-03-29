@@ -367,7 +367,7 @@ end)
 
 
 EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function()
-    if IsInInstance() then
+    if select(2, IsInInstance())~='none' then
         return
     end
     local classification = UnitClassification('target')

@@ -98,7 +98,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetScrollMode(sub)
 
 
-    sub=root:CreateCheckbox((IsInInstance() and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))..'|A:poi-traveldirections-arrow2:0:0|a', function()
+    sub=root:CreateCheckbox((select(2, IsInInstance())~='none' and '|cff626262' or '')..(WoWTools_DataMixin.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))..'|A:poi-traveldirections-arrow2:0:0|a', function()
         return Save().InvTar
     end, function()
         Save().InvTar= not Save().InvTar and true or nil

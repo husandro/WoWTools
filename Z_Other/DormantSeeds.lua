@@ -191,7 +191,7 @@ local function Init()
     function Button:set_Shown(show)
         if self:CanChangeAttribute() then
             self:SetShown(
-                show or (self.uiMapID and not C_PetBattles.IsInBattle() and not IsInInstance())
+                show or (self.uiMapID and not C_PetBattles.IsInBattle() and select(2, IsInInstance())=='none')
             )
         end
     end

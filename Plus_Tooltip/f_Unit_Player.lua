@@ -74,7 +74,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             end
         end
     end
-    if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
+    if select(2, IsInInstance())=='none' and UnitHasLFGRandomCooldown(unit) then
         text2Left= text2Left..'|T236347:0|t'
     end
 

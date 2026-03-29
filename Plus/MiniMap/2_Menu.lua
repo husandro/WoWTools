@@ -39,7 +39,7 @@ local function Init_Plus_Menu(self, root)
 
 --追踪 AreaPoiID 菜单
     --WoWTools_MinimapMixin:Init_TrackButton_Menu(self, sub)
-    sub:SetEnabled(not IsInInstance() and not WoWTools_MapMixin:IsInDelve())
+    sub:SetEnabled(select(2, IsInInstance())=='none' and not WoWTools_MapMixin:IsInDelve())
 
 --镜头视野范围
     sub=root:CreateCheckbox(

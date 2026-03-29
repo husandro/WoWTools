@@ -135,7 +135,7 @@ end
 local combat, sec = WoWTools_TimeMixin:Info(OnCombatTime, not isNotClockType)
 if not Save().disabledSayTime then
     sec=math.floor(sec)
-    if sec ~= chatStarTime and sec > 0 and sec%Save().SayTime==0  then--IsInInstance()
+    if sec ~= chatStarTime and sec > 0 and sec%Save().SayTime==0  then--select(2, IsInInstance())~='none'
         chatStarTime=sec
         WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(sec), nil, nil)
     end
@@ -292,7 +292,7 @@ local function Init_Date()--初始, 数据
         )
     end
 
-    if IsInInstance() then--副本
+    if select(2, IsInInstance())~='none' then--副本
         SaveInstancData().onInsTime= SaveInstancData().onInsTime or time
         SaveInstancData().map= SaveInstancData().map or WoWTools_MapMixin:GetUnit('player')
 
@@ -348,7 +348,7 @@ local function Rest_Data()
     PetRound={}--宠物战斗, 本次,数据
     WoWToolsSave['ChatButton_Combat'].button.InstanceDate={num=0, time=0, kill=0, dead=0, map=nil}--副本数据{dead死亡,kill杀怪, map地图}
 
-    if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then--挑战时，死亡，数据
+    if select(2, IsInInstance())=='party' and C_ChallengeMode.IsChallengeModeActive() then--挑战时，死亡，数据
         SaveInstancData().dead= C_ChallengeMode.GetDeathCount() or 0
     end
 
@@ -554,7 +554,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         if self:IsShown() then
             FrameUtil.RegisterFrameForEvents(self, EventTab)
 
-            if IsInInstance() then
+            if select(2, IsInInstance())~='none' then
                 FrameUtil.RegisterFrameForEvents(self, InstanceEventTab)
             end
         end
@@ -668,7 +668,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         self.text:SetScale(Save().scale or 1)
         self.Bg:SetAlpha(Save().bgAlpha or 0.5)
         self:SetFrameStrata(Save().strata or 'MEDIUM')
-        if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then--挑战时，死亡，数据
+        if select(2, IsInInstance())=='party' and C_ChallengeMode.IsChallengeModeActive() then--挑战时，死亡，数据
             SaveInstancData().dead= C_ChallengeMode.GetDeathCount() or 0
         end
 

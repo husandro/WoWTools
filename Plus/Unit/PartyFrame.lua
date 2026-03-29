@@ -415,7 +415,7 @@ local function Create_positionFrame(frame)
 
 
     function Frame:set_shown()
-        local isInInstance= IsInInstance()
+        local isInInstance= select(2, IsInInstance())~='none'
         local isInEditMode= Is_InEditMode()
 
         self.map:SetShown(isInEditMode or not isInInstance)

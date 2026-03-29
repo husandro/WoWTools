@@ -18,12 +18,13 @@ end
 
 
 local function exit_Instance()
-    local ins = IsInInstance()
+    local ins = select(2, IsInInstance())~='none'
     if not ExitIns or not ins or IsModifierKeyDown() or LFGDungeonReadyStatus:IsVisible() or LFGDungeonReadyDialog:IsVisible() then
         ExitIns= nil
         StaticPopup_Hide('WoWTools_LFD_ExitIns')
         return
     end
+
     local name= GetInstanceInfo()
 
     --Save_Instance_Num(name)
@@ -121,7 +122,7 @@ local function Init_Frame()
             end
 
         elseif event=='PLAYER_ENTERING_WORLD' then
-            if IsInInstance() then--自动离开
+            if select(2, IsInInstance())~='none' then--自动离开
                 self:RegisterEvent('LOOT_CLOSED')
             else
                 self:UnregisterEvent('LOOT_CLOSED')

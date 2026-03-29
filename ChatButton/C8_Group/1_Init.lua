@@ -59,7 +59,7 @@ end]]
 
 local function Settings(self)--队伍信息提示
     local isInRaid= IsInRaid()
-    local isInInstance= IsInInstance()
+    local isInInstance= select(2, IsInInstance())~='none'
 
     ClickType= ClickType or (isInRaid and 'r') or 'p'
 
@@ -182,7 +182,7 @@ local function Init_Menu(self, root)
     local sub, sub2
     local isInGroup= IsInGroup()
     local isInRaid= IsInRaid()
-    local isInInstance= IsInInstance()
+    local isInInstance= select(2, IsInInstance())~='none'
     local num= GetNumGroupMembers() or 0
     local le= UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
     local isInBat= InCombatLockdown()

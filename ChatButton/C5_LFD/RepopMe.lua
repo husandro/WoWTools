@@ -34,7 +34,7 @@ local function Init()
                     print(WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,'开启了PvP区域自动释放和复活')
                 end
 
-            elseif Save().ReMe_AllZone and (not IsInInstance() or not IsInGroup()) then
+            elseif Save().ReMe_AllZone and (select(2, IsInInstance())=='none' or not IsInGroup()) then
                 self:RegisterEvent('PLAYER_DEAD')
                 self:RegisterEvent('CORPSE_IN_RANGE')
                 self:RegisterEvent('CORPSE_OUT_OF_RANGE')

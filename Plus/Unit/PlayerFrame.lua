@@ -423,7 +423,7 @@ end]]
     RaidButton:RegisterEvent('GROUP_ROSTER_UPDATE')
     RaidButton:RegisterEvent('PLAYER_DIFFICULTY_CHANGED')
     RaidButton:SetScript('OnEvent', function(self)
-        if IsInInstance() and not IsInRaid()--不在团本里
+        if select(2, IsInInstance())~='none' and not IsInRaid()--不在团本里
             --or (IsInGroup() and not isInRaid and not UnitIsGroupLeader("player"))--队伍没有权限
         then
             self:SetShown(false)

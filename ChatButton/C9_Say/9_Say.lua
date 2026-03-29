@@ -96,7 +96,7 @@ end
 
 local function set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
     if Save().inInstanceBubblesDisabled and not InCombatLockdown() then
-        if IsInInstance() then
+        if select(2, IsInInstance())~='none' then
             C_CVar.SetCVar("chatBubbles", '0')
         else
             C_CVar.SetCVar("chatBubbles", '1')

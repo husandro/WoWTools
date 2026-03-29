@@ -12,7 +12,7 @@ ChatEdit_LinkItem(itemID, itemLink)
 ChatFrameUtil.OpenChat 11.2.7才有
 --]]
 function WoWTools_ChatMixin:Chat(text, name, printText)
-    if not canaccessvalue(text) or not canaccessvalue(name) or not text then
+    if not text then
         return
     end
 
@@ -29,15 +29,24 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
         end]]
     else
         --local isNotDead= not UnitIsDeadOrGhost('player')
-        --local isInInstance= IsInInstance()
+        --[[local isInInstance= select(2, IsInInstance())~='none'
         if IsInRaid() then
             C_ChatInfo.SendChatMessage(text, 'RAID')
         elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
             C_ChatInfo.SendChatMessage(text, 'PARTY')
+-- /dump C_ChatInfo.SendChatMessage('a', 'PARTY')
+        else]]
+         C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
+         
+         C_ChatInfo.SendChatMessage(text..'a', 'RAID')
+         C_ChatInfo.SendChatMessage(text..'b', 'PARTY')
 
-        elseif IsInInstance() and GetNumGroupMembers()>0 then
+        if select(2, IsInInstance())~='none' and GetNumGroupMembers()>0 then
             C_ChatInfo.SendChatMessage(text, 'INSTANCE_CHAT')
-
+        elseif IsInRaid() then
+            C_ChatInfo.SendChatMessage(text, 'RAID')
+        elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
+            C_ChatInfo.SendChatMessage(text, 'PARTY')
         --[[
         if isInInstance and not UnitIsDeadOrGhost('player') and not InCombatLockdown() then-- and C_CVar.GetCVarBool("chatBubbles") then
             C_ChatInfo.SendChatMessage(text, 'YELL')
@@ -54,7 +63,7 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
                 --C_ChatInfo.SendChatMessage(text, 'YELL')
             -- elseif setPrint then]]
         else
-            if text:find('{rt%d}') then
+            if canaccessvalue(text) and text:find('{rt%d}') then
                 text= text:gsub('{rt%d}', function(s)
                     local icon= s:match('%d')
                     if icon then

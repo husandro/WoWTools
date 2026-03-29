@@ -61,9 +61,9 @@ local function Init_OnEnter(self)
                 end
             end
         end
-        if IsInInstance() then--副本数据
+        if select(2, IsInInstance())~='none' then--副本数据
             local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
-            if instanceID then
+            if instanceID and instanceID>0 then
                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, '|cffffffff'..instanceID)
                 if LfgDungeonID then
                     GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, '|cffffffff'..LfgDungeonID)

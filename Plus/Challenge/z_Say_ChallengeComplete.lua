@@ -428,7 +428,7 @@ local function Init()
 
     SayButton:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' then
-            if not IsInInstance() then
+            if select(2, IsInInstance())=='none' then
                 self:Hide()
             end
         elseif event=='BAG_UPDATE_DELAYED' then

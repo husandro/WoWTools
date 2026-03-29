@@ -3,7 +3,7 @@ local function IsLeader()
     return UnitIsGroupLeader("player") or not IsInGroup()
 end
 local function EnabledDungeon(id)
-    return DifficultyUtil.IsDungeonDifficultyEnabled(id) and IsLeader()-- and not IsInInstance()
+    return DifficultyUtil.IsDungeonDifficultyEnabled(id) and IsLeader()-- and select(2, IsInInstance())=='none'
 end
 local function EnableRaid()
     return not DifficultyUtil.InStoryRaid() and IsLeader()

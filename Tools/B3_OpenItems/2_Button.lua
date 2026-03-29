@@ -222,7 +222,7 @@ local function Init()
     btn:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     function btn:settings()
-        self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
+        self.isDisabled= (select(2, IsInInstance())~='none' and not WoWTools_MapMixin:IsInDelve())
                         --or not self:IsVisible()
                         or C_PetBattles.IsInBattle()
                         or UnitInVehicle('player')
@@ -263,7 +263,7 @@ local function Init()
                 or IsMounted()
                 or UnitInVehicle('player') or OverrideActionBar:IsShown()
                 or C_PetBattles.IsInBattle()
-                or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
+                or (select(2, IsInInstance())~='none' and not WoWTools_MapMixin:IsInDelve())
                 or isDisabled
             )
         end

@@ -940,7 +940,7 @@ local function Init()
 			local show= not Save().Hide
 			if show and not Save().notAutoHideTrack then
 				show= not (
-					IsInInstance()
+					select(2, IsInInstance())~='none'
 					or C_PetBattles.IsInBattle()
 					or UnitInVehicle('player') or OverrideActionBar:IsShown()
 					or InCombatLockdown()

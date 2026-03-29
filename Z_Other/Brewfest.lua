@@ -146,7 +146,7 @@ local function Init()
     end
 
     function btn:set_Event()
-        if IsInInstance() then
+        if select(2, IsInInstance())~='none' then
             self:UnregisterEvent('UNIT_AURA')
             self:UnregisterEvent('BAG_UPDATE_DELAYED')
         else

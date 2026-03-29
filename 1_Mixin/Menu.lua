@@ -417,7 +417,7 @@ end
 function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
     local sub=root:CreateButton(
         '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'
-        ..(InCombatLockdown() and IsInInstance() and '|cff626262' or '')--e.IsEncouter_Start
+        ..(InCombatLockdown() and '|cff626262' or '')--e.IsEncouter_Start
         ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
     function(data)
         if data and IsControlKeyDown() or not data then

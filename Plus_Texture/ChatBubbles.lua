@@ -58,7 +58,7 @@ local function Init()
             return
         end
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        if not IsInInstance() then
+        if select(2, IsInInstance())=='none' then
             local chatBubblesEvents={
                 'CHAT_MSG_SAY',
                 'CHAT_MSG_YELL',

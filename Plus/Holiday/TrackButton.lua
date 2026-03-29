@@ -928,7 +928,7 @@ local function Init()
     end)
 
     function TrackButton:set_shown(isInCombat)
-        local hide= IsInInstance()
+        local hide= select(2, IsInInstance())~='none'
             or C_PetBattles.IsInBattle()
             or UnitInVehicle('player') or OverrideActionBar:IsShown()
             or (InCombatLockdown() or isInCombat)
