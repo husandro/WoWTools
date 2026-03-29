@@ -353,7 +353,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '密语/跟随' or (SLASH_TEXTTOSPEECH_WHISPER..'/'..FOLLOW),function()
         return Save().setFrameFun
     end, function()
-        Save().setFrameFun= not Save().setFrameFun and true or nil
+        Save().setFrameFun= not Save().setFrameFun and true or false
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
