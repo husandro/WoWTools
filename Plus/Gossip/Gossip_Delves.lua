@@ -65,7 +65,7 @@ end
 local function Get_Options(self)
     local gossipOptions= self.gossipOptions or C_GossipInfo.GetOptions() or {}
 
-    local num= #gossipOptions or {}
+    local num= #gossipOptions
     local isSetMaxLevel= Save().delvesDifficultyMaxLevel
     local isSetComplete= Save().delvesDifficultyCompleteLevel
 
@@ -73,7 +73,7 @@ local function Get_Options(self)
 
     local Option, availableLevel, completeLevel
     for level=num, 1, -1 do
-        local option= gossipOptions[level] or C_GossipInfo.GetOptions() or {}
+        local option= gossipOptions[level] or {}
         if IsInGroup() then
             C_DelvesUI.RequestPartyEligibilityForDelveTiers(gossipOptions[num].gossipOptionID)
         end
@@ -100,23 +100,30 @@ local function Get_Options(self)
 end
 
 
-local function Set_DelvesDifficultyPickerFrame(Option)
-    if Option then
+local function Set_DelvesDifficultyPickerFrame(option)
+    if option then
         DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:Hide();
-        DelvesDifficultyPickerFrame:SetSelectedLevel(Option.orderIndex);
-        DelvesDifficultyPickerFrame:UpdateWidgets(Option.gossipOptionID);
-        DelvesDifficultyPickerFrame:SetSelectedOption(Option);
+        DelvesDifficultyPickerFrame:SetSelectedLevel(option.orderIndex);
+        DelvesDifficultyPickerFrame:UpdateWidgets(option.gossipOptionID);
+        DelvesDifficultyPickerFrame:SetSelectedOption(option);
         DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:SetRewards();
         DelvesDifficultyPickerFrame:UpdatePortalButtonState();
+        local pdeID = C_DelvesUI.GetTieredEntrancePDEID();
+        local level= option.orderIndex + 1
         if not InCombatLockdown() then
-            SetCVar('lastSelectedDelvesTier', Option.orderIndex + 1)
+            SetCVarTableValue('lastSelectedTieredEntranceTier', pdeID, level);
         end
+        DelvesDifficultyPickerFrame.Dropdown:SetText(
+            WoWTools_DataMixin.Icon.icon2
+            ..'|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_TextMixin:CN(option.name) or level)
+        )
     end
 end
 
 
 
-local function Run(self)
+local function Run()
     maxCheck:clear()
     if not DelvesDifficultyPickerFrame:IsVisible() or not DelvesDifficultyPickerFrame.EnterDelveButton:IsEnabled() then
         return
@@ -157,14 +164,27 @@ end
 
 
 
-
-
+--Menu.ModifyMenu("MENU_DELVES_DIFFICULTY", Init_Menu)
 local function Init()
-    --Menu.ModifyMenu("MENU_DELVES_DIFFICULTY", Init_Menu)
-
+--最高等级
     maxCheck= CreateFrame('CheckButton', 'WoWToolsDelveDifficultyMaxCheck', DelvesDifficultyPickerFrame.CloseButton, 'UICheckButtonTemplate')
+    function maxCheck:clear()
+        self:UnregisterEvent('MODIFIER_STATE_CHANGED')
+        if self.time then
+            self.time:Cancel()
+            self.time= nil
+        end
+        WoWTools_CooldownMixin:Setup(DelvesDifficultyPickerFrame)
+    end
+    function maxCheck:settings()
+        if Save().gossip then
+            self.Text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+        else
+            self.Text:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
+        end
+    end
     WoWTools_TextureMixin:SetCheckBox(maxCheck)
-    maxCheck:SetPoint('TOPLEFT', DelvesDifficultyPickerFrame.Dropdown, "BOTTOMLEFT", 0, -22)
+    maxCheck:SetPoint('TOPLEFT', DelvesDifficultyPickerFrame.Dropdown, "BOTTOMLEFT", 0, -42)
     maxCheck.name=WoWTools_DataMixin.onlyChinese and '最高' or BEST
     maxCheck.Text:SetText(maxCheck.name)
     maxCheck:SetScript('OnLeave', GameTooltip_Hide)
@@ -174,25 +194,30 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_GossipMixin.addName..WoWTools_DataMixin.Icon.icon2, WoWTools_TextMixin:GetEnabeleDisable(Save().gossip))
         GameTooltip:Show()
     end)
-    maxCheck:SetChecked(Save().delvesDifficultyMaxLevel)
-
-    function maxCheck:settings()
-        if Save().gossip then
-            self.Text:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
-        else
-            self.Text:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
-        end
-    end
-    maxCheck:settings()
-    maxCheck:SetScript('OnMouseDown', function()
+    maxCheck:SetScript('OnMouseDown', function(self)
         Save().delvesDifficultyMaxLevel= not Save().delvesDifficultyMaxLevel and true or nil
         Save().delvesDifficultyCompleteLevel= nil
         completeCheck:SetChecked(false)
+        self:clear()
+    end)
+    maxCheck:SetScript('OnHide',  maxCheck.clear)
+    maxCheck:SetScript('OnEvent', maxCheck.clear)
+    maxCheck:settings()
+    maxCheck:SetChecked(Save().delvesDifficultyMaxLevel)
+    DelvesDifficultyPickerFrame.Dropdown:HookScript('OnMouseDown', function()
+        maxCheck:clear()
     end)
 
 
 
 
+
+
+
+
+
+
+--已完成，这个可能没用
     completeCheck= CreateFrame('CheckButton', 'WoWToolsDelveDifficultyMaxCheck', DelvesDifficultyPickerFrame.CloseButton, 'UICheckButtonTemplate')
     WoWTools_TextureMixin:SetCheckBox(completeCheck)
     completeCheck:SetPoint('TOPLEFT', maxCheck, 'BOTTOMLEFT')
@@ -212,6 +237,7 @@ local function Init()
         else
             self.Text:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
         end
+        maxCheck:clear()
     end
     completeCheck:settings()
     completeCheck:SetScript('OnMouseDown', function()
@@ -227,32 +253,15 @@ local function Init()
 
 
 
-    function maxCheck:clear()
-        self:UnregisterEvent('MODIFIER_STATE_CHANGED')
-        if self.time then
-            self.time:Cancel()
-            self.time= nil
-        end
-        WoWTools_CooldownMixin:Setup(DelvesDifficultyPickerFrame)
-    end
-
-    maxCheck:SetScript('OnHide',  maxCheck.clear)
-    maxCheck:SetScript('OnEvent', maxCheck.clear)
 
 
 
-
-
-
-
-
-
-
-
+--自动选择
     DelvesDifficultyPickerFrame:HookScript('OnShow', function(self)
         if
             not canaccesstable(self.gossipOptions)
             or self.EnterDelveButton:HasAnySecretAspect()
+            or (IsInGroup() and not UnitIsGroupLeader('player'))
         then
             return
         end
@@ -269,9 +278,7 @@ local function Init()
             if maxCheck.time then
                 maxCheck.time:Cancel()
             end
-            maxCheck.time= C_Timer.NewTimer(3, function()
-                Run(self)
-            end)
+            maxCheck.time= C_Timer.NewTimer(3, Run)
 
             local option= Option or self:GetSelectedOption() or {}
             WoWTools_DataMixin:Load(option.spellID, 'spell')
@@ -285,23 +292,35 @@ local function Init()
                     {spellID=option.spellID, isName=true}
                 )
                 or WoWTools_TextMixin:CN(option.name),
-                DRAGONFLIGHT_GREEN_COLOR:WrapTextInColorCode(completeLevel or '?')..'/'..(availableLevel or '?')..'/'..num
+                DRAGONFLIGHT_GREEN_COLOR:WrapTextInColorCode((availableLevel or '?')..'/'..(num or '?'))
             )
-
         end
 
         maxCheck.Text:SetText(
             (availableLevel and maxCheck.name or DISABLED_FONT_COLOR:WrapTextInColorCode(maxCheck.name))
-            ..' '..(availableLevel or '?')..'/'..num
+            ..' '..(availableLevel or '?')..'/'..(num or '?')
         )
+
         completeCheck.Text:SetText(
             (completeLevel and completeCheck.name or DISABLED_FONT_COLOR:WrapTextInColorCode(completeCheck.name))
-            ..' '..(completeLevel or '?')..'/'..num
+            ..' '..(completeLevel or '?')..'/'..(num or '?')
         )
     end)
 
 
-
+--等级说明
+    DelvesDifficultyPickerFrame.Text2= maxCheck:CreateFontString(nil, 'BORDER', 'ChatFontNormal')
+    DelvesDifficultyPickerFrame.Text2:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
+    DelvesDifficultyPickerFrame.Text2:SetPoint('TOP', DelvesDifficultyPickerFrame.Dropdown, 'BOTTOM', 0, -12)
+    WoWTools_DataMixin:Hook(DelvesDifficultyPickerFrame, 'SetSelectedOption', function(self, Option)
+        self.Text2:SetText('')
+        if Option and Option.spellID then
+            local spell = Spell:CreateFromSpellID(Option.spellID)
+            spell:ContinueWithCancelOnSpellLoad(function()
+                self.Text2:SetText(WoWTools_TextMixin:CN(spell:GetSpellDescription()))
+            end)
+        end
+    end)
 
     Init=function()
         maxCheck:settings()

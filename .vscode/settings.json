@@ -3215,7 +3215,9 @@
         "MINIMAP_TRACKING_POI",
         "MINIMAP_TRACKING_QUEST_POIS",
         "MINIMAP_TRACKING_TRANSMOGRIFIER",
-        "MINIMAP_TRACKING_WILD_BATTLE_PET"
+        "MINIMAP_TRACKING_WILD_BATTLE_PET",
+        "SetCVarTableValue",
+        "DELVES_PARTY_MEMBER_INELIGIBLE_FOR_TIER_TOOLTIP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
