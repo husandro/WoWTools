@@ -75,10 +75,22 @@
                 </Texture>
             </Layer>
             <Layer level="ARTWORK">
-                <Texture parentKey="Check" atlas="transmog-icon-hidden" hidden="true">
+                <Texture parentKey="CheckIcon" atlas="transmog-icon-hidden" hidden="true">
                     <Size x="14" y="14"/>
                     <Anchors>
                         <Anchor point="TOPLEFT" x="4" y="-2"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="AchievementIcon" atlas="UI-HUD-MicroMenu-Achievements-Mouseover" hidden="true">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeKey="$parent.Index" relativePoint="LEFT" x="-2"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="QuestIcon" atlas="ClassHall-QuestIcon-Desaturated" hidden="true">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeKey="$parent.AchievementIcon" relativePoint="LEFT" x="-2"/>
                     </Anchors>
                 </Texture>
 			</Layer>

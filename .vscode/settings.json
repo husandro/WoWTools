@@ -3219,7 +3219,8 @@
         "SetCVarTableValue",
         "DELVES_PARTY_MEMBER_INELIGIBLE_FOR_TIER_TOOLTIP",
         "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP",
-        "ACHIEVEMENT"
+        "ACHIEVEMENT",
+        "QuestUtils_GetQuestName"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

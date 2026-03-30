@@ -24,7 +24,7 @@ function WoWTools_QuestMixin:GetID()
    local questID = QuestInfoFrame.questLog and C_QuestLog.GetSelectedQuest() or GetQuestID()
    return self:IsValidQuestID(questID)
 end
-
+--QuestUtils_GetQuestName(questID) return C_TaskQuest.GetQuestInfoByQuestID(questID) or C_QuestLog.GetTitleForQuestID(questID) or "";
 function WoWTools_QuestMixin:GetName(questID)
     questID= self:IsValidQuestID(questID)
     if not questID then
@@ -33,10 +33,9 @@ function WoWTools_QuestMixin:GetName(questID)
 
     WoWTools_DataMixin:Load(questID, 'quest')
 
-    return WoWTools_TextMixin:CN(nil, {questID=questID, isName=true})
-        or C_TaskQuest.GetQuestInfoByQuestID(questID)
-        or C_QuestLog.GetTitleForQuestID(questID)
-        or questID
+    local name =WoWTools_TextMixin:CN(nil, {questID=questID, isName=true}) or QuestUtils_GetQuestName(questID)
+    name= name~='' and name or questID
+    return name
 end
 
 function WoWTools_QuestMixin:GetLink(questID)

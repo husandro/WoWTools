@@ -9,18 +9,45 @@ local PinHeight= 12--默认大小
 local Button
 
 
+
+
+local function Check_Profession(profession)
+    if type(profession)~= "table" then
+        return true
+    else
+        for skillLineID in pairs(profession) do
+            if C_SpellBook.GetSkillLineIndexByID(skillLineID) then
+                return true
+            end
+        end
+    end
+end
+local function Check_Quest(questID)
+    if type(questID)~= "number" then
+        return true
+    else
+        WoWTools_DataMixin:Load(questID, 'quest')
+        return not C_QuestLog.IsComplete(questID)
+    end
+end
+local function Check_Achievement(achievementID)
+    if type(achievementID)~= "number" then
+        return true
+    else
+        return not select(4, GetAchievementInfo(achievementID))
+    end
+end
+
 function WoWTools_WorldMapMixin:Check_PinData(pin)
     if not pin then
         return true
-    elseif type(pin.class)~= "table" or pin.class[WoWTools_DataMixin.Player.ClassID] or TableIsEmpty(pin.class) then
-        if type(pin.profession)~= "table" or TableIsEmpty(pin.profession) then
+    else
+        if (type(pin.class)~= "table" or pin.class[WoWTools_DataMixin.Player.ClassID])
+            and Check_Profession(pin.profession)
+            and Check_Quest(pin.questID)
+            and Check_Achievement(pin.achievementID)
+        then
             return true
-        else
-            for skillLineID in pairs(pin.profession) do
-                if C_SpellBook.GetSkillLineIndexByID(skillLineID) then
-                    return true
-                end
-            end
         end
     end
 end
@@ -75,7 +102,6 @@ end
 
 
 WoWToolsWorldMapDataProvider = CreateFromMixins(MapCanvasDataProviderMixin)
-
 function WoWToolsWorldMapDataProvider:RemoveAllData()
 	if self:GetMap() then
 		self:GetMap():RemoveAllPinsByTemplate("WoWToolsWorldMapPinTemplate")
@@ -118,7 +144,6 @@ end
 
 
 WoWToolsWorldMapPinMixin= CreateFromMixins(MapCanvasPinMixin)
-
 function WoWToolsWorldMapPinMixin:OnLoad()
 	self:UseFrameLevelType("PIN_FRAME_LEVEL_AREA_POI")
 	self:SetMovable(true)

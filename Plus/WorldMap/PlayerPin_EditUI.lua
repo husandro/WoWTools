@@ -102,7 +102,11 @@ local function GetClassIcon(class)
         return text
     end
 end
-
+local function GetQuestName(questID)
+    if questID then
+        return WoWTools_TextMixin:CN(nil, {questID=questID, isName=true}) or C_TaskQuest.GetQuestInfoByQuestID(questID) or C_QuestLog.GetTitleForQuestID(questID)
+    end
+end
 
 
 
@@ -138,31 +142,35 @@ end
 
 
 local function Set_FrameSelect(data)
+    data= data or {}
+    local pin= data.pin or {}
+
     Frame.selectXY= data.xy
 
-    Frame.nameEdit:SetText(data.pin.name or '')
+    Frame.nameEdit:SetText(pin.name or '')
 
     local color
-    if data.pin.color then
-        color= CreateColor(data.pin.color.r or 1, data.pin.color.g or 1, data.pin.color.b or 1)
+    if pin.color then
+        color= CreateColor(pin.color.r or 1, pin.color.g or 1, pin.color.b or 1)
     end
     Frame.colorButton.color= color
     Frame.colorButton:set_color()
 
-    Frame.iconEdit:SetText(data.pin.icon or '')
+    Frame.iconEdit:SetText(pin.icon or '')
     Frame.xyEdit:SetText(data.xy or '')
-    Frame.noteEdit:SetText(data.pin.note or '')
+    Frame.noteEdit:SetText(pin.note or '')
 
-    Frame.professionMenu.profession= data.pin.profession and CopyTable(data.pin.profession) or {}
-    Frame.professionMenu:SetText(GetProfessionIcon(data.pin.profession) or Frame.professionMenu:GetDefaultText())
+    Frame.professionMenu.profession= pin.profession and CopyTable(pin.profession) or {}
+    Frame.professionMenu:SetText(GetProfessionIcon(pin.profession) or Frame.professionMenu:GetDefaultText())
 
-    Frame.classMenu.class= data.pin.class and CopyTable(data.pin.class) or {}
-    Frame.classMenu:SetText(GetClassIcon(data.pin.class) or Frame.classMenu:GetDefaultText())
+    Frame.classMenu.class= pin.class and CopyTable(pin.class) or {}
+    Frame.classMenu:SetText(GetClassIcon(pin.class) or Frame.classMenu:GetDefaultText())
 
-    Frame.questEdit:SetText(data.pin.questID or '')
-    Frame.achievementEdit:SetText(data.pin.achievementID or '')
+    Frame.questEdit:SetText(pin.questID or '')
+    Frame.achievementEdit:SetText(pin.achievementID or '')
 
     Frame.nameEdit:SetFocus()
+    Frame.updateButton.New:SetShown(false)
     EventRegistry:TriggerEvent("WoWToolsPlayrPin.UpateSelect")
 end
 
@@ -211,6 +219,26 @@ local function Search_Text(findText, xy, pin)
                 if name:find(findText) then
                     return true
                 end
+            end
+        end
+    end
+    if pin.questID then
+        if format('%d', pin.questID)==findText then
+            return true
+        else
+            local questName= GetQuestName(pin.questID)
+            if questName and questName:find(findText) then
+                return true
+            end
+        end
+    end
+    if pin.achievementID then
+        if format('%d', pin.achievementID)==findText then
+            return true
+        else
+            local achievementName= select(2, GetAchievementInfo(pin.achievementID))
+            if achievementName and achievementName:find(findText) then
+                return true
             end
         end
     end
@@ -330,14 +358,14 @@ local function Add_ListButton(btn)
 
     btn.Delete:SetScript('OnClick', function(self)
         local data= self:GetParent().data
-        SaveWoW()[Frame.mapID][data.xy]= nil
-        print(
+          print(
             WoWTools_DataMixin.Icon.icon2..self.tooltip,
             data.pin.name,
             data.pin.icon,
             data.xy,
             data.pin.note
         )
+        SaveWoW()[Frame.mapID][data.xy]= nil
         Refresh_All()
         RefreshWorldMapPins()
     end)
@@ -427,9 +455,19 @@ local function Initializer(self, data)
     self.Sub2:SetText(note..(data.pin.note or ''))
 --索引
     self.Index:SetText(self:GetElementDataIndex())
---专业，职业，检查
-    self.Check:SetShown(not WoWTools_WorldMapMixin:Check_PinData(data.pin))
-
+--任务
+    self.QuestIcon:SetShown(data.pin.questID)
+--成就
+    local achievementID= data.pin.achievementID
+    self.AchievementIcon:SetShown(achievementID)
+    local achievementTexture= achievementID and select(10, GetAchievementInfo(achievementID))
+    if achievementTexture then
+        self.AchievementIcon:SetTexture(achievementTexture)
+    else
+        self.AchievementIcon:SetAtlas('AutoQuest-Badge-Campaign')
+    end
+--专业，职业，任务，成就，检查
+    self.CheckIcon:SetShown(not WoWTools_WorldMapMixin:Check_PinData(data.pin))
     self:set_event()
 end
 
@@ -532,6 +570,8 @@ local function Add_Updata_Data(isUpdate)
     Frame.ScrollBox:ScrollToElementDataByPredicate(function(data)
         return data.xy==xy
     end)
+
+    Frame.updateButton.New:SetShown(false)
     Refresh_All()
     RefreshWorldMapPins()
 end
@@ -784,9 +824,9 @@ local function Init()
         --self.clearButton:SetShown(show)
         --self.Instructions:SetShown(not show)
     end)
-    Frame.search.clearButton:HookScript('OnMouseUp', function()
-        --self:GetParent():SetText('')
-        --self:Hide()
+    Frame.search.clearButton:SetScript('OnMouseUp', function(self)
+        self:GetParent():SetText('')
+        self:Hide()
         Refresh_All()
     end)
 
@@ -809,23 +849,8 @@ local function Init()
     Frame.newButton.owner= 'ANCHOR_RIGHT'
     Frame.newButton.tooltip= WoWTools_DataMixin.onlyChinese and '新建' or NEW
     Frame.newButton:SetScript('OnClick', function()
-        Set_FrameSelect({pin={}})
+        Set_FrameSelect()
     end)
-        --[[Frame.nameEdit:SetText('')
-        Frame.colorButton.color= nil
-        Frame.colorButton:set_color()
-        Frame.iconEdit:SetText('')
-        Frame.xyEdit:SetText('')
-        Frame.noteEdit:SetText('')
-        Frame.professionMenu.profession= {}
-        Frame.professionMenu:SetText(Frame.professionMenu:GetDefaultText())
-        Frame.classMenu.class= {}
-        Frame.classMenu:SetText(Frame.classMenu:GetDefaultText())
-        Frame.selectXY= nil]]
-        --WoWTools_WorldMapMixin:ShowWorldFrame(Frame.mapID)
-    --end)
-
-
 
 
 
@@ -1139,6 +1164,7 @@ local function Init()
             local text= self:get_name()
             if text then
                 Frame.nameEdit:SetText(text)
+                Frame.updateButton:show_new()
                 self:clear()
             end
         end
@@ -1221,6 +1247,7 @@ local function Init()
                 --if data.color then
                     Frame.colorButton.color= data.color
                     Frame.colorButton:set_color()
+                    Frame.updateButton:show_new()
                 --end
                 return MenuResponse.Refresh
             end, {text=text, rightText='|cff626262'..index, color=color})
@@ -1243,7 +1270,10 @@ local function Init()
         local name= self:GetText()
         self.name= name:gsub(' ', '')~='' and name or nil
     end
-    Frame.nameEdit:HookScript('OnTextChanged', function(self)
+    Frame.nameEdit:HookScript('OnTextChanged', function(self, userInput)
+        if userInput then
+            Frame.updateButton:show_new()
+        end
         self:get_name()
         self.Instructions:SetShown(not self.name)
         self.searchIcon:SetShown(self.name)
@@ -1273,6 +1303,7 @@ local function Init()
             return tCompare(self.valueColor, self.color)
         end, function()
             self.color= self.valueColor
+            Frame.updateButton:show_new()
             self:set_color()
             return MenuResponse.Refresh
         end)
@@ -1291,6 +1322,7 @@ local function Init()
                 end, function(data)
                     self.color= _G[data.name]
                     self:set_color()
+                    Frame.updateButton:show_new()
                     return MenuResponse.Refresh
                 end, {name=name, rightText=index})
                 WoWTools_MenuMixin:SetRightText(sub)
@@ -1308,6 +1340,7 @@ local function Init()
                 r,g,b = WoWTools_ColorMixin:Get_ColorFrameRGBA()
                 self.color= CreateColor(r or 1, g or 1, b or 1)
                 self:set_color()
+                Frame.updateButton:show_new()
             end, function()--cancelFunc
                 self.color= color
                 self:set_color()
@@ -1335,7 +1368,7 @@ local function Init()
     Frame.iconEdit:SetHeight(23)
     Frame.iconEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_MODE_ICON)
     Frame.iconEdit.searchIcon:SetTexture(0)
-    Frame.iconEdit:HookScript('OnTextChanged', function(self)
+    Frame.iconEdit:HookScript('OnTextChanged', function(self, userInput)
         local icon= self:GetText()
         icon= icon:gsub(' ', '')
         icon= select(2, WoWTools_TextureMixin:SetTexture(self.iconButton.texture, icon))
@@ -1344,6 +1377,9 @@ local function Init()
         end
         self.iconButton.texture:SetAlpha(icon and 1 or 0.5)
         self.icon= icon
+        if userInput then
+            Frame.updateButton:show_new()
+        end
         Set_UpdataAddButton_Stat()
     end)
 
@@ -1372,6 +1408,7 @@ local function Init()
                 texture= Frame.iconEdit:GetText(),
                 SetValue=function(newIcon)
                     Frame.iconEdit:SetText(newIcon)
+                    Frame.updateButton:show_new()
                     --Frame.nameEdit:SetText(newText)
                 end
             })
@@ -1398,6 +1435,7 @@ local function Init()
                 return data.texture==select(2, WoWTools_TextureMixin:IsAtlas(Frame.iconEdit:GetText()))
             end, function(data)
                 Frame.iconEdit:SetText(data.texture)
+                Frame.updateButton:show_new()
                 return MenuResponse.Refresh
             end, {icon=icon, rightText='|cff626262'..index, texture=textrue})
             WoWTools_MenuMixin:SetRightText(sub)
@@ -1431,6 +1469,7 @@ local function Init()
                 local text= _G['TAV_InfoPanel'].Name:GetText()
                 if text and text~='' then
                     Frame.iconEdit:SetText(text)
+                    Frame.updateButton:show_new()
                     _G['TAV_InfoPanel']:Hide()
                 end
             end)
@@ -1485,6 +1524,7 @@ local function Init()
                 local xy= WoWTools_WorldMapMixin:GetTextForXY(nil, nil, true, false)
                 if xy then
                     Frame.xyEdit:SetText(xy)
+                    Frame.updateButton:show_new()
                     self:clear()
                 end
             end
@@ -1522,7 +1562,7 @@ local function Init()
     Frame.xyEdit.Instructions:SetText('xy 12.34 12.34')
     Frame.xyEdit.searchIcon:SetAtlas('UI-WorldMapArrow')
 
-    Frame.xyEdit:HookScript('OnTextChanged', function(self)
+    Frame.xyEdit:HookScript('OnTextChanged', function(self, userInput)
         local text= self:GetText() or ''
         text= text:gsub('  ', '')
         text= text:gsub(' $', '')
@@ -1545,6 +1585,9 @@ local function Init()
         end
         Frame.sliderX:SetValue(x or 0)
         Frame.sliderY:SetValue(y or 0)
+        if userInput then
+            Frame.updateButton:show_new()
+        end
         Set_UpdataAddButton_Stat()
     end)
 
@@ -1575,6 +1618,7 @@ local function Init()
     playerXY:SetScript('OnClick', function()
         Frame.xyEdit:SetText(WoWTools_WorldMapMixin:GetTextForXY(nil, nil, false, true) or '')
         WoWTools_WorldMapMixin:ShowWorldFrame(C_Map.GetBestMapForUnit("player"))
+        Frame.updateButton:show_new()
     end)
 
 
@@ -1606,9 +1650,7 @@ local function Init()
         end
         GameTooltip:SetOwner(self, self.anchor or "ANCHOR_LEFT")
         GameTooltip_SetTitle(GameTooltip,
-            (Frame.updateButton:IsEnabled() and '' or DISABLED_FONT_COLOR:GenerateHexColorMarkup())
-            ..WoWTools_DataMixin.Icon.mid
-            ..(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE),
+            WoWTools_DataMixin.onlyChinese and '更新' or UPDATE,
             GREEN_FONT_COLOR
         )
         GameTooltip:Show()
@@ -1618,8 +1660,9 @@ local function Init()
             Frame.xyEdit:SetText(Frame.xyEdit:Get_TextForSiliderXY())
             if WorldMapFrame:IsShown() and Frame.updateButton:IsEnabled() then
                 Frame.updateButton:Click()
+            else
+                Frame.updateButton:show_new()
             end
-
         end
     end
     Frame.sliderX.set_wheel= function(self, d)
@@ -1666,6 +1709,16 @@ local function Init()
     Frame.updateButton:SetScript('OnClick', function()
         Add_Updata_Data(true)
     end)
+    Frame.updateButton.New= Frame.updateButton:CreateTexture(nil, 'OVERLAY')
+    Frame.updateButton.New:SetAtlas('Soulbinds_Collection_Charge_Pending')
+    Frame.updateButton.New:SetPoint('LEFT', 4, 0)
+    Frame.updateButton.New:SetSize(16, 16)
+    Frame.updateButton.New:Hide()
+    function Frame.updateButton:show_new()
+       if self:IsEnabled() then
+           self.New:SetShown(true)
+       end
+    end
 
 
     Frame.addButton= CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate')
@@ -1690,6 +1743,11 @@ local function Init()
     Frame.noteEdit:SetHeight(23)
     Frame.noteEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE)
     Frame.noteEdit.searchIcon:SetTexture(0)
+    Frame.noteEdit:HookScript('OnTextChanged', function(_, userInput)
+        if userInput then
+            Frame.updateButton:show_new()
+        end
+    end)
 
 
     Frame.professionMenu= CreateFrame("DropdownButton", nil, Frame, "WowStyle1DropdownTemplate")--下拉，菜单
@@ -1710,6 +1768,7 @@ local function Init()
             WoWTools_DataMixin.onlyChinese and '无' or NONE,
         function()
             self.profession={}
+            Frame.updateButton:show_new()
             return MenuResponse.Refresh
         end)
         root:CreateDivider()
@@ -1741,6 +1800,7 @@ local function Init()
                             Frame.nameEdit:SetText(data.name)
                         end
                     end
+                    Frame.updateButton:show_new()
                 end, {info=info, rightText=skillLineID, name=name, textureID=textureID})
                 WoWTools_MenuMixin:SetRightText(sub)
                 sub:SetTooltip(function(tooltip, desc)
@@ -1769,6 +1829,7 @@ local function Init()
             WoWTools_DataMixin.onlyChinese and '无' or NONE,
         function()
             self.class={}
+            Frame.updateButton:show_new()
             return MenuResponse.Refresh
         end)
         root:CreateDivider()
@@ -1781,6 +1842,7 @@ local function Init()
                     return self.class[data.rightText] and true or false
                 end, function(data)
                     self.class[data.rightText]= not self.class[data.rightText] and true or nil
+                    Frame.updateButton:show_new()
                 end, {rightText=classID})
                 WoWTools_MenuMixin:SetRightText(sub)
             end
@@ -1799,7 +1861,7 @@ local function Init()
     Frame.questEdit:SetPoint('TOPLEFT',  Frame.professionMenu, 'BOTTOMLEFT', 0, -12)
     Frame.questEdit:SetPoint('TOPRIGHT', Frame.professionMenu, 'BOTTOMRIGHT',-6, -12)
     Frame.questEdit:SetHeight(23)
-    Frame.questEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)
+    Frame.questEdit.Instructions:SetText((WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)..' 12345')
     Frame.questEdit.searchIcon:ClearAllPoints()
     Frame.questEdit.searchIcon:SetAtlas('Cursor_unablecast_32')
     Frame.questEdit.searchIcon:SetSize(18, 18)
@@ -1825,6 +1887,7 @@ local function Init()
         self:SetAlpha(0.2)
         if self.name then
             Frame.nameEdit:SetText(self.name)
+            Frame.updateButton:show_new()
         end
     end)
     Frame.questEdit.searchIcon:SetScript('OnLeave', function(self)
@@ -1847,7 +1910,7 @@ local function Init()
             return questID
         end
     end
-    Frame.questEdit:HookScript('OnTextChanged', function(self)
+    Frame.questEdit:HookScript('OnTextChanged', function(self, userInput)
         local questID= self:GetID()
         self.name:SetText('')
         self.questID= questID
@@ -1859,7 +1922,7 @@ local function Init()
                 WoWTools_SetTooltipMixin:Frame(self)
             end
             SpellEventListener:AddCancelableCallback(questID, function()
-                local title= WoWTools_TextMixin:CN(nil, {questID=questID, isName=true}) or C_TaskQuest.GetQuestInfoByQuestID(questID) or C_QuestLog.GetTitleForQuestID(questID)
+                local title= GetQuestName(questID)
                 if title then
                     self:SetTextColor(HIGHLIGHT_FONT_COLOR:GetRGB())
                     if not Frame.nameEdit.name then
@@ -1877,12 +1940,16 @@ local function Init()
         else
             self:SetTextColor(WARNING_FONT_COLOR:GetRGB())
         end
+        if userInput then
+            Frame.updateButton:show_new()
+        end
     end)
     Frame.questEdit:SetScript('OnLeave', GameTooltip_Hide)
     Frame.questEdit:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Frame(self)
     end)
-    Frame.questEdit:SetText('93595')
+
+    if WoWTools_DataMixin.Player.husandro then Frame.questEdit:SetText('93595') end
 
 
 
@@ -1895,7 +1962,7 @@ local function Init()
     Frame.achievementEdit:SetPoint('TOPLEFT',  Frame.classMenu, 'BOTTOMLEFT', 6, -12)
     Frame.achievementEdit:SetPoint('TOPRIGHT', Frame.classMenu, 'BOTTOMRIGHT',0, -12)
     Frame.achievementEdit:SetHeight(23)
-    Frame.achievementEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENT_BUTTON)
+    Frame.achievementEdit.Instructions:SetText((WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENT_BUTTON)..' 123')
     Frame.achievementEdit.searchIcon:ClearAllPoints()
     Frame.achievementEdit.searchIcon:SetTexture(0)
     Frame.achievementEdit.searchIcon:SetSize(18, 18)
@@ -1908,11 +1975,13 @@ local function Init()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
         GameTooltip:AddLine(
-            ((not self.icon or self.icon==Frame.iconEdit.icon) and '|cff626262' or '')
+            ((not self.name or self.name==Frame.nameEdit.name) and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '名称' or NAME )
+            ..WoWTools_DataMixin.Icon.left
+            ..WoWTools_DataMixin.Icon.right
+            ..((not self.icon or self.icon==Frame.iconEdit.icon) and '|cff626262' or '')
             ..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)..'|r'
-            ..WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right
-            ..((not self.name or self.name==Frame.nameEdit.name) and '|cff626262' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '名称' or NAME ))
+        )
             if self.icon then
                 GameTooltip:AddTexture(self.icon, {
                 width = 18,
@@ -1931,13 +2000,14 @@ local function Init()
     Frame.achievementEdit.searchIcon:SetScript('OnMouseDown', function(self, d)
         self:SetAlpha(0.2)
         if d=='LeftButton' then
-            if self.icon then
-                Frame.iconEdit:SetText(self.icon)
+            if self.name then
+                Frame.nameEdit:SetText(self.name)
+                Frame.updateButton:show_new()
             end
         else
-            local name= self:GetParent().name:GetText()
-            if name and name~='' then
-                Frame.nameEdit:SetText(name)
+            if self.icon then
+                Frame.iconEdit:SetText(self.icon)
+                Frame.updateButton:show_new()
             end
         end
     end)
@@ -1984,7 +2054,7 @@ local function Init()
         self.searchIcon.icon= icon
         self.searchIcon.name= name
         --self.searchIcon:SetShown(icon or name)
-        
+
         if icon and not Frame.iconEdit.icon then
             Frame.iconEdit:SetText(icon)
         end
@@ -1993,7 +2063,7 @@ local function Init()
         end
         return name
     end
-    Frame.achievementEdit:HookScript('OnTextChanged', function(self)
+    Frame.achievementEdit:HookScript('OnTextChanged', function(self, userInput)
         local achievementID= self:GetID()
         self.achievementID= achievementID
         self.name:SetText('')
@@ -2014,6 +2084,9 @@ local function Init()
             self:SetTextColor(WARNING_FONT_COLOR:GetRGB())
         end
         self.searchIcon:SetAlpha(1)
+        if userInput then
+            Frame.updateButton:show_new()
+        end
     end)
     Frame.achievementEdit:SetScript('OnHide', Frame.achievementEdit.clear)
     Frame.achievementEdit:SetScript('OnLeave', GameTooltip_Hide)

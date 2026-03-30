@@ -39,8 +39,8 @@ local function get_Quest_Text(questID)
         if not HaveQuestRewardData(questID) then
             C_TaskQuest.RequestPreloadRewardData(questID)
         else
-            local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
-            if questName then
+            local questName= QuestUtils_GetQuestName(questID)
+            if questName~='' then
                 itemTexture= WoWTools_QuestMixin:GetRewardInfo(questID).texture
                 if not itemTexture then
                     atlas= 'worldquest-tracker-questmarker'
@@ -521,7 +521,7 @@ local function set_OnClick_btn(self)
 
     elseif self.questID then
         C_SuperTrack.SetSuperTrackedQuestID(self.questID)
-        text= GetQuestLink(self.questID) or C_TaskQuest.GetQuestInfoByQuestID(self.questID)
+        text= GetQuestLink(self.questID) or C_TaskQuest.GetQuestInfoByQuestID(self.questID) or C_QuestLog.GetTitleForQuestID(self.questID)
 
     elseif self.vignetteGUID then
         C_SuperTrack.SetSuperTrackedVignette(self.vignetteGUID)
