@@ -483,8 +483,9 @@ function WoWTools_LoadUIMixin:Achievement(achievementID)
     if not AchievementFrame:IsShown() then
         WoWTools_DataMixin:Call('AchievementFrame_ToggleAchievementFrame')
     end
-
-    WoWTools_DataMixin:Call('AchievementFrame_SelectAchievement', achievementID, true)
+    if achievementID then
+        WoWTools_DataMixin:Call('AchievementFrame_SelectAchievement', achievementID, true)
+    end
 end
 
 

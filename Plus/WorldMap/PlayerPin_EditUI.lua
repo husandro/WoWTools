@@ -171,6 +171,13 @@ local function Set_FrameSelect(data)
 
     Frame.nameEdit:SetFocus()
     Frame.updateButton.New:SetShown(false)
+
+    Frame.questEdit:SetText(pin.questID or '')
+
+    Frame.achievementEdit:SetText(pin.achievementID or '')
+    Frame.achievementButton.index= pin.achievementIndex
+    Frame.achievementButton:set_text()
+
     EventRegistry:TriggerEvent("WoWToolsPlayrPin.UpateSelect")
 end
 
@@ -239,6 +246,12 @@ local function Search_Text(findText, xy, pin)
             local achievementName= select(2, GetAchievementInfo(pin.achievementID))
             if achievementName and achievementName:find(findText) then
                 return true
+            end
+            if pin.achievementIndex then
+                local criteriaString= GetAchievementCriteriaInfo(pin.achievementID, pin.achievementIndex)
+                if criteriaString and criteriaString:find(findText) then
+                    return true
+                end
             end
         end
     end
@@ -539,6 +552,7 @@ local function Add_Updata_Data(isUpdate)
     local questID= Frame.questEdit.questID
 --成就
     local achievementID= Frame.achievementEdit.achievementID
+    local achievementIndex= Frame.achievementButton.index
 
     SaveWoW()[mapID]= SaveWoW()[mapID] or {}
 
@@ -565,6 +579,7 @@ local function Add_Updata_Data(isUpdate)
         note= note,
         questID= questID,
         achievementID= achievementID,
+        achievementIndex= achievementIndex,
     }
 
     Frame.ScrollBox:ScrollToElementDataByPredicate(function(data)
@@ -1093,7 +1108,7 @@ local function Init()
         end
         for i= 6, 32, 2 do
             root:CreateButton(
-                i,
+                (i==PinHeight and '|cnGREEN_FONT_COLOR:' or '')..i,
             function(data)
                 local value= data
                 Frame.iconS:SetValue(value)
@@ -1103,7 +1118,6 @@ local function Init()
                 return MenuResponse.Open
             end, i)
         end
-        WoWTools_MenuMixin:SetScrollMode(root)
     end)
 
 
@@ -1279,6 +1293,16 @@ local function Init()
         self.searchIcon:SetShown(self.name)
         Set_UpdataAddButton_Stat()
     end)
+    Frame.nameEdit.clearButton:HookScript('OnMouseUp', function()
+        Frame.updateButton:show_new()
+        Frame.colorButton.color= nil
+        Frame.colorButton:set_color()
+    end)
+    Frame.nameEdit:SetScript('OnEnterPressed', function(self)
+        self:ClearFocus()
+        Frame.updateButton:run()
+    end)
+    
 
 
 
@@ -1381,6 +1405,13 @@ local function Init()
             Frame.updateButton:show_new()
         end
         Set_UpdataAddButton_Stat()
+    end)
+    Frame.iconEdit.clearButton:HookScript('OnMouseUp', function()
+        Frame.updateButton:show_new()
+    end)
+    Frame.iconEdit:SetScript('OnEnterPressed', function(self)
+        self:ClearFocus()
+        Frame.updateButton:run()
     end)
 
 
@@ -1597,6 +1628,16 @@ local function Init()
             format('%.2f', Frame.sliderY:GetValue())
         )
     end
+    Frame.xyEdit.clearButton:HookScript('OnMouseUp', function()
+        Frame.updateButton:show_new()
+    end)
+    Frame.xyEdit:SetScript('OnEnterPressed', function(self)
+        self:ClearFocus()
+        Frame.updateButton:run()
+    end)
+
+
+
 
 
 
@@ -1706,6 +1747,11 @@ local function Init()
     Frame.updateButton:SetPoint('TOPRIGHT', Frame.sliderX, 'BOTTOMRIGHT', -6, -12)
     Frame.updateButton:SetHeight(28)
     Frame.updateButton:SetText(WoWTools_DataMixin.onlyChinese and '更新' or UPDATE)
+    function Frame.updateButton:run()
+        if self:IsEnabled() then
+            Add_Updata_Data(true)
+        end
+    end
     Frame.updateButton:SetScript('OnClick', function()
         Add_Updata_Data(true)
     end)
@@ -1748,6 +1794,18 @@ local function Init()
             Frame.updateButton:show_new()
         end
     end)
+    Frame.noteEdit.clearButton:HookScript('OnMouseUp', function()
+        Frame.updateButton:show_new()
+    end)
+    Frame.noteEdit:SetScript('OnEnterPressed', function(self)
+        self:ClearFocus()
+        Frame.updateButton:run()
+    end)
+
+
+
+
+
 
 
     Frame.professionMenu= CreateFrame("DropdownButton", nil, Frame, "WowStyle1DropdownTemplate")--下拉，菜单
@@ -1948,6 +2006,13 @@ local function Init()
     Frame.questEdit:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Frame(self)
     end)
+    Frame.questEdit.clearButton:HookScript('OnMouseUp', function()
+        Frame.updateButton:show_new()
+    end)
+    Frame.questEdit:SetScript('OnEnterPressed', function(self)
+        self:ClearFocus()
+        Frame.updateButton:run()
+    end)
 
     if WoWTools_DataMixin.Player.husandro then Frame.questEdit:SetText('93595') end
 
@@ -1960,7 +2025,7 @@ local function Init()
 
     Frame.achievementEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate')
     Frame.achievementEdit:SetPoint('TOPLEFT',  Frame.classMenu, 'BOTTOMLEFT', 6, -12)
-    Frame.achievementEdit:SetPoint('TOPRIGHT', Frame.classMenu, 'BOTTOMRIGHT',0, -12)
+    Frame.achievementEdit:SetPoint('TOPRIGHT', Frame.classMenu, 'BOTTOMRIGHT',-23, -12)
     Frame.achievementEdit:SetHeight(23)
     Frame.achievementEdit.Instructions:SetText((WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENT_BUTTON)..' 123')
     Frame.achievementEdit.searchIcon:ClearAllPoints()
@@ -2022,11 +2087,11 @@ local function Init()
     Frame.achievementEdit:SetNumeric(true)
     Frame.achievementEdit.name= Frame.achievementEdit:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
     Frame.achievementEdit.name:SetPoint('TOPLEFT', Frame.achievementEdit, 'BOTTOMLEFT', 0, -2)
-    Frame.achievementEdit.name:SetPoint('TOPRIGHT', Frame.achievementEdit, 'BOTTOMRIGHT', 0, -2)
+    Frame.achievementEdit.name:SetPoint('TOPRIGHT', Frame.achievementEdit, 'BOTTOMRIGHT', -0, -2)
     Frame.achievementEdit.name:SetJustifyH('CENTER')
     function Frame.achievementEdit:GetID()
-        local achievementID= self:GetNumber()
-        if achievementID and achievementID>0 and achievementID<2e9 and C_AchievementInfo.IsValidAchievement(achievementID)  then
+        local achievementID= self:GetNumber() or 0
+        if achievementID>0 and achievementID<2e9 and C_AchievementInfo.IsValidAchievement(achievementID)  then
             return achievementID
         end
     end
@@ -2085,6 +2150,8 @@ local function Init()
         end
         self.searchIcon:SetAlpha(1)
         if userInput then
+            Frame.achievementButton.index=nil
+            Frame.achievementButton:set_text()
             Frame.updateButton:show_new()
         end
     end)
@@ -2093,8 +2160,111 @@ local function Init()
     Frame.achievementEdit:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Frame(self)
     end)
+    Frame.achievementEdit.clearButton:HookScript('OnMouseUp', function()
+        Frame.updateButton:show_new()
+    end)
+    Frame.achievementEdit:SetScript('OnEnterPressed', function(self)
+        self:ClearFocus()
+        Frame.updateButton:run()
+    end)
 
-    Frame.achievementEdit:SetText('61581')
+
+
+
+
+
+    Frame.achievementButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template')
+    Frame.achievementButton:SetPoint('LEFT', Frame.achievementEdit, 'RIGHT')
+    Frame.achievementButton.text= Frame.achievementButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
+    Frame.achievementButton.text:SetPoint('CENTER')
+    Frame.achievementButton.text:SetJustifyH("LEFT")
+    function Frame.achievementButton:set_text()
+        self.text:SetText(self.index or '|cff6262620|r')
+    end
+    Frame.achievementButton:set_text()
+    Frame.achievementButton:SetupMenu(function(self, root)
+        --if not self:IsMouseOver() then return end--下面有判断了，再次打开，不需要了
+        local sub
+        local achievementID= Frame.achievementEdit.achievementID
+        if achievementID then
+            sub=root:CreateButton(
+                '|T'..(select(10, GetAchievementInfo(achievementID)) or 0)..':16|t'
+                ..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
+            function(data)
+                WoWTools_LoadUIMixin:Achievement(data.achievementID)
+                return MenuResponse.Refresh
+            end, {achievementID=achievementID})
+            WoWTools_SetTooltipMixin:Set_Menu(sub)
+
+            root:CreateDivider()
+            local num= GetAchievementNumCriteria(achievementID) or 0
+            if num>1 then
+                for i=1, num do
+                    local criteriaString, _, completed= GetAchievementCriteriaInfo(achievementID, i)
+                    if criteriaString then
+                        local color= completed and GREEN_FONT_COLOR or HIGHLIGHT_FONT_COLOR
+                        sub=root:CreateRadio(
+                            color:WrapTextInColorCode(criteriaString),
+                        function(data)
+                            return self.index== data.index
+                        end, function(data)
+                            if self.index== data.index then
+                                self.index= nil
+                            else
+                                self.index= data.index
+                            end
+                            self:set_text()
+                            Frame.updateButton:show_new()
+                            return MenuResponse.Refresh
+                        end, {rightText='|cff626262'..i, index=i})
+                        WoWTools_MenuMixin:SetRightText(sub)
+                    end
+                end
+                root:CreateDivider()
+            end
+        end
+
+        local index=0
+        for _, info in pairs(SaveWoW()) do
+            for _, pin in pairs(info) do
+                achievementID=  pin.achievementID
+                if achievementID then
+                    index= index+1
+                    local achievementIndex= pin.achievementIndex
+                    local _, name, _, completed, _, _, _, _, _, icon= GetAchievementInfo(achievementID)
+                    if name then
+                        local color= completed and GREEN_FONT_COLOR or HIGHLIGHT_FONT_COLOR
+                        sub=root:CreateRadio(
+                            '|T'..(icon or 0)..':16|t '
+                            ..color:WrapTextInColorCode(WoWTools_TextMixin:CN(name))
+                            ..' '..(GetAchievementNumCriteria(achievementID) or ''),
+                        function(data)
+                            return data.achievementID== Frame.achievementEdit:GetNumber()
+                        end, function(data)
+                            Frame.achievementEdit:SetNumber(data.achievementID)
+                            self.index= data.rightText
+                            self:set_text()
+                            Frame.updateButton:show_new()
+                            C_Timer.After(0.01, function() self:OpenMenu() end)
+                           return MenuResponse.Close
+                        end, {rightText=achievementIndex, achievementID=achievementID,})
+                        sub:CreateButton(
+                            WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+                        function(data)
+                            WoWTools_LoadUIMixin:Achievement(data.achievementID)
+                            return MenuResponse.Open
+                        end, {achievementID=achievementID})
+
+                        WoWTools_MenuMixin:SetRightText(sub)
+                        WoWTools_SetTooltipMixin:Set_Menu(sub)
+                    end
+                end
+            end
+        end
+        WoWTools_MenuMixin:SetScrollMode(root)
+    end)
+
+    if WoWTools_DataMixin.Player.husandro then Frame.achievementEdit:SetText('61581') end
 
 
 

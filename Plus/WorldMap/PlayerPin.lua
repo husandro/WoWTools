@@ -30,11 +30,15 @@ local function Check_Quest(questID)
         return not C_QuestLog.IsComplete(questID)
     end
 end
-local function Check_Achievement(achievementID)
+local function Check_Achievement(achievementID, achievementIndex)
     if type(achievementID)~= "number" then
         return true
     else
-        return not select(4, GetAchievementInfo(achievementID))
+        if achievementIndex then
+            return not select(3, GetAchievementCriteriaInfoByID(achievementID, achievementIndex))
+        else
+            return not select(4, GetAchievementInfo(achievementID))
+        end
     end
 end
 
@@ -45,7 +49,7 @@ function WoWTools_WorldMapMixin:Check_PinData(pin)
         if (type(pin.class)~= "table" or pin.class[WoWTools_DataMixin.Player.ClassID])
             and Check_Profession(pin.profession)
             and Check_Quest(pin.questID)
-            and Check_Achievement(pin.achievementID)
+            and Check_Achievement(pin.achievementID, pin.achievementIndex)
         then
             return true
         end
@@ -188,7 +192,7 @@ function WoWToolsWorldMapPinMixin:OnLoad()
         end
     end)
 --停止移动
-    self:SetScript("OnDragStop", function(btn, d, ...)
+    self:SetScript("OnDragStop", function(btn)
         btn:StopMovingOrSizing()
         if not btn.isMoving then
             return
@@ -245,6 +249,8 @@ function WoWToolsWorldMapPinMixin:OnAcquired(xy, x, y, pin, mapID)
     self.x= x
     self.y= y
     self.note= pin.note
+    self.questID= pin.questID
+    self.achievementID= pin.achievementID
 
     if self.SetPassThroughButtons then
 		self:SetPassThroughButtons("")
@@ -272,6 +278,8 @@ function WoWToolsWorldMapPinMixin:OnReleased()
     self.y= nil
     self.mapID= nil
     self.note= nil
+    self.questID= nil
+    self.achievementID= nil
 	if self.widgetContainer then
 		self.widgetContainer:UnregisterForWidgetSet();
 	end
@@ -280,6 +288,18 @@ function WoWToolsWorldMapPinMixin:OnMouseEnter()
 	if self.note then
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip_SetTitle(GameTooltip, self.note)
+        if self.questID then
+            GameTooltip:AddLine(
+                (WoWTools_DataMixin.onlyChinese and '任务：' or QUESTS_COLON)
+                ..WoWTools_QuestMixin:GetName(self.questID)
+            )
+        end
+        if self.achievementID then
+            GameTooltip:AddLine(
+                (WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENT_BUTTON)
+                ..': '..(select(2, GetAchievementInfo(self.achievementID)) or self.achievementID)
+            )
+        end
         GameTooltip:Show()
     end
     WoWTools_WorldMapMixin:PlayerPin_SetUIButtonState(self.xy)
