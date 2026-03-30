@@ -2074,7 +2074,7 @@ local function Init()
         Frame.updateButton:run()
     end)
 
-    if WoWTools_DataMixin.Player.husandro then Frame.questEdit:SetText('93595') end
+    --if WoWTools_DataMixin.Player.husandro then Frame.questEdit:SetText('93595') end
 
 
 
@@ -2329,7 +2329,7 @@ local function Init()
         WoWTools_MenuMixin:SetScrollMode(root)
     end)
 
-    if WoWTools_DataMixin.Player.husandro then Frame.achievementEdit:SetText('61581') end
+    --if WoWTools_DataMixin.Player.husandro then Frame.achievementEdit:SetText('61581') end
 
 
 
