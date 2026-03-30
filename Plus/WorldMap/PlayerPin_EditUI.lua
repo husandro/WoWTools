@@ -493,6 +493,7 @@ local function Initializer(self, data)
     else
         self.AchievementIcon:SetAtlas('AutoQuest-Badge-Campaign')
     end
+    self.AchievementIndex:SetText(data.pin.achievementIndex or '')
 --专业，职业，任务，成就，检查
     self.CheckIcon:SetShown(not WoWTools_WorldMapMixin:Check_PinData(data.pin))
     self:set_event()
@@ -582,8 +583,6 @@ local function Add_Updata_Data(isUpdate)
 
     Frame.selectXY= xy
 
-
-
     SaveWoW()[mapID][xy]= {
         name= name,
         icon= icon,
@@ -652,14 +651,17 @@ local function Zip_Data(zipData)
                     profession= profession..skillLineID..','
                 end
                 line= line..format(
-                    '[%s]={name=%s,icon=%s,color=%s,class=%s,profession=%s,note=%s},',
+                    '[%s]={name=%s,icon=%s,color=%s,class=%s,profession=%s,note=%s,questID=%s,achievementID=%s,achievementIndex=%s},',
                     xy,
                     info.name or '',
                     (info.icon or '')..'',
                     info.color and WoWTools_ColorMixin:RGBtoHEX(info.color.r, info.color.g, info.color.b) or '',
                     class,
                     profession,
-                    info.note or ''
+                    info.note or '',
+                    info.questID and tostring(info.questID) or '',
+                    info.achievementID and tostring(info.achievementID) or '',
+                    info.achievementIndex and tostring(info.achievementIndex) or ''
                 )
             end
         end
@@ -715,7 +717,7 @@ local function Enter_Data(tooltip)
         }
 
         s:gsub('%[.-},', function(t)
-            local xy, name, icon, hex, classIds, professionIds, note= t:match('%[(.-)]={name=(.-),icon=(.-),color=(.-),class=(.-),profession=(.-),note=(.-)},')
+            local xy, name, icon, hex, classIds, professionIds, note, questID, achievementID, achievementIndex= t:match('%[(.-)]={name=(.-),icon=(.-),color=(.-),class=(.-),profession=(.-),note=(.-),questID=(.-),achievementID=(.-),achievementIndex=(.-)},')
             name= name and name:gsub(' ', '')~='' and name or nil
             icon = select(2, WoWTools_TextureMixin:IsAtlas(icon))
             if xy and (name or icon) then
@@ -741,7 +743,10 @@ local function Enter_Data(tooltip)
                     color= color,
                     class= class,
                     profession= profession,
-                    note= note and note:gsub(' ', '')~='' and note or nil
+                    note= note and note:gsub(' ', '')~='' and note or nil,
+                    questID= questID and tonumber(questID) or nil,
+                    achievementID= achievementID and tonumber(achievementID) or nil,
+                    achievementIndex= achievementIndex and tonumber(achievementIndex) or nil,
                 }
             end
         end)
@@ -859,7 +864,7 @@ local function Init()
         Refresh_All()
     end)
 
-    local searchButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsButtonTemplate')
+    local searchButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu4Template')
     searchButton:SetPoint('RIGHT', Frame.search, 'LEFT', 2, 0)
     searchButton.list={
         [1]=WoWTools_DataMixin.onlyChinese and '专业' or PROFESSIONS_BUTTON,
@@ -2228,7 +2233,7 @@ local function Init()
 
 
 
-    Frame.achievementButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template')
+    Frame.achievementButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu4Template')
     Frame.achievementButton:SetPoint('LEFT', Frame.achievementEdit, 'RIGHT')
     Frame.achievementButton.text= Frame.achievementButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
     Frame.achievementButton.text:SetPoint('CENTER')
@@ -2237,6 +2242,7 @@ local function Init()
         self.text:SetText(self.index or '|cff6262620|r')
     end
     Frame.achievementButton:set_text()
+    Frame.achievementButton.index= nil--achievementIndex
     Frame.achievementButton:SetupMenu(function(self, root)
         --if not self:IsMouseOver() then return end--下面有判断了，再次打开，不需要了
         local sub
