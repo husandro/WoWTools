@@ -1807,7 +1807,6 @@ local function Init()
     Frame.questEdit.searchIcon:EnableMouse(true)
     Frame.questEdit.searchIcon:SetDrawLayer('OVERLAY', 7)
     Frame.questEdit.searchIcon:Hide()
-    WoWTools_ButtonMixin:AddMask(Frame.questEdit, nil, Frame.questEdit.searchIcon)
     function Frame.questEdit.searchIcon:tooltip()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
@@ -1843,8 +1842,8 @@ local function Init()
     Frame.questEdit.name:SetJustifyH('CENTER')
 
     function Frame.questEdit:GetID()
-        local questID= self:GetNumber()
-        if questID and questID>0 and questID<2e9 then
+        local questID= self:GetNumber() or 0
+        if questID>0 and questID<2e9 then
             return questID
         end
     end
@@ -1852,6 +1851,8 @@ local function Init()
         local questID= self:GetID()
         self.name:SetText('')
         self.questID= questID
+        self.searchIcon:SetShown(false)
+        self.searchIcon.name= nil
         if questID then
             self:SetTextColor(NORMAL_FONT_COLOR:GetRGB())
             if self:IsMouseOver() then
