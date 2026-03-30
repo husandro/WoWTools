@@ -341,6 +341,12 @@ end
 --Shared
 --Blizzard_AuctionHouseTableBuilder.lua
 function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
+--批量出售条
+    AuctionHouseMultisellProgressFrame:HookScript('OnShow', function(frame)
+        frame:ClearAllPoints()
+        frame:SetPoint('TOPRIGHT', AuctionHouseFrame, 'BOTTOMRIGHT', 0, -2)
+    end)
+
     AuctionHouseFrame.CategoriesList:SetPoint('BOTTOM', AuctionHouseFrame.MoneyFrameBorder.MoneyFrame, 'TOP',0,2)
     AuctionHouseFrame.BrowseResultsFrame.ItemList.HeaderContainer:SetPoint('RIGHT')
     AuctionHouseFrame.BrowseResultsFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
