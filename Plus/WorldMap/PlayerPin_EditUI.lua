@@ -201,7 +201,11 @@ local function Search_Text(findText, xy, pin)
     elseif pin.note and pin.note:find(findText) then
         return true
     end
+
     if pin.profession then
+        if findText:find(WoWTools_DataMixin.onlyChinese and '专业' or PROFESSIONS_BUTTON) then
+            return true
+        end
         for skillLineID in pairs(pin.profession) do
             if format('%d', skillLineID)==findText then
                 return true
@@ -215,7 +219,11 @@ local function Search_Text(findText, xy, pin)
             end
         end
     end
+
     if pin.class then
+        if findText:find(WoWTools_DataMixin.onlyChinese and '职业' or CLASS) then
+            return true
+        end
         for classID in pairs(pin.class) do
             if format('%d', classID)==findText then
                 return true
@@ -229,8 +237,11 @@ local function Search_Text(findText, xy, pin)
             end
         end
     end
+
     if pin.questID then
-        if format('%d', pin.questID)==findText then
+        if findText:find(WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL) then
+            return true
+        elseif format('%d', pin.questID)==findText then
             return true
         else
             local questName= GetQuestName(pin.questID)
@@ -239,8 +250,11 @@ local function Search_Text(findText, xy, pin)
             end
         end
     end
+
     if pin.achievementID then
-        if format('%d', pin.achievementID)==findText then
+        if findText:find(WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENT_BUTTON) then
+            return true
+        elseif format('%d', pin.achievementID)==findText then
             return true
         else
             local achievementName= select(2, GetAchievementInfo(pin.achievementID))
@@ -845,6 +859,47 @@ local function Init()
         Refresh_All()
     end)
 
+    local searchButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsButtonTemplate')
+    searchButton:SetPoint('RIGHT', Frame.search, 'LEFT', 2, 0)
+    searchButton.list={
+        [1]=WoWTools_DataMixin.onlyChinese and '专业' or PROFESSIONS_BUTTON,
+        [2]=WoWTools_DataMixin.onlyChinese and '职业' or CLASS,
+        [3]=WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL,
+        [4]=WoWTools_DataMixin.onlyChinese and '成就' or ACHIEVEMENT_BUTTON,
+    }
+    searchButton:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        local count= {}
+        for _, info in pairs(SaveWoW()) do
+            for _, pin in pairs(info) do
+                if pin.profession then
+                    count[self.list[1]]= (count[self.list[1]] or 0)+1
+                end
+                if pin.class then
+                    count[self.list[2]]= (count[self.list[2]] or 0)+1
+                end
+                if pin.questID then
+                    count[self.list[3]]= (count[self.list[3]] or 0)+1
+                end
+                if pin.achievementID then
+                    count[self.list[4]]= (count[self.list[4]] or 0)+1
+                end
+            end
+        end
+
+        for _, name in pairs(self.list) do
+            local sub=root:CreateButton(
+                name,
+            function(data)
+                Frame.search:SetText(data.name)
+                Refresh_All()
+            end, {name=name, rightText=count[name]})
+            WoWTools_MenuMixin:SetRightText(sub)
+        end
+        count= nil
+    end)
 
 --数量
     Frame.numLabel= Frame:CreateFontString(nil, "BORDER", 'WoWToolsFonts')
@@ -2225,10 +2280,12 @@ local function Init()
         end
 
         local index=0
+        local _temp= {}
         for _, info in pairs(SaveWoW()) do
             for _, pin in pairs(info) do
                 achievementID=  pin.achievementID
-                if achievementID then
+                if achievementID and not _temp[achievementID] then
+                    _temp[achievementID]= 1
                     index= index+1
                     local achievementIndex= pin.achievementIndex
                     local _, name, _, completed, _, _, _, _, _, icon= GetAchievementInfo(achievementID)
@@ -2242,12 +2299,13 @@ local function Init()
                             return data.achievementID== Frame.achievementEdit:GetNumber()
                         end, function(data)
                             Frame.achievementEdit:SetNumber(data.achievementID)
-                            self.index= data.rightText
+                            self.index= nil
                             self:set_text()
                             Frame.updateButton:show_new()
-                            C_Timer.After(0.01, function() self:OpenMenu() end)
+                            C_Timer.After(0.09, function() self:OpenMenu() end)
                            return MenuResponse.Close
                         end, {rightText=achievementIndex, achievementID=achievementID,})
+--显示,成就UI
                         sub:CreateButton(
                             WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
                         function(data)
@@ -2261,6 +2319,7 @@ local function Init()
                 end
             end
         end
+        _temp= nil
         WoWTools_MenuMixin:SetScrollMode(root)
     end)
 

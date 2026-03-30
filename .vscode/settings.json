@@ -3221,7 +3221,8 @@
         "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP",
         "ACHIEVEMENT",
         "QuestUtils_GetQuestName",
-        "QUESTS_COLON"
+        "QUESTS_COLON",
+        "HUD_EDIT_MODE_IMPORT_LAYOUT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
