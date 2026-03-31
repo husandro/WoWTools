@@ -210,11 +210,11 @@ local function Init()
     end)
 
     WoWTools_DataMixin:Hook(QuestObjectiveTracker, 'AddBlock', function(_, block)
-        local questID= block.id and tonumber(block.id)
+        local questID= block.HeaderText and block.id and tonumber(block.id)
         if questID then
             local color = select(2, WoWTools_QuestMixin:GetAtlasColor(questID))
-            if color and block.HeaderText then
-                block.HeaderText:SetTextColor(color.r, color.g, color.b)
+            if color then
+                block.HeaderText:SetTextColor(color:GetRGB())
             end
         end
     end)

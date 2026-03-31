@@ -818,6 +818,10 @@ end
 
 function WoWTools_MenuMixin:LoadName(root)
     root:AddInitializer(function(btn, desc, menu)
+        if type(desc.data)~='table' then
+            return
+        end
+
         local itemID= desc.data.itemID
         local spellID= desc.data.spellID
         local questID= desc.data.questID
@@ -834,7 +838,7 @@ function WoWTools_MenuMixin:LoadName(root)
         elseif spellID then
             SpellEventListener:AddCancelableCallback(spellID, function ()
                 btn.fontString:SetTextToFit(
-                    WoWTools_SpellMixin:GetName(spellID, desc.data.itemLink, desc.data.itemLocation, {notCount=desc.data.notCount})
+                    WoWTools_SpellMixin:GetName(spellID, desc.data.spellLink, desc.data.itemLocation, {notCount=desc.data.notCount})
                     ..(callback and callback(btn, desc, menu) or '')
                 )
             end)

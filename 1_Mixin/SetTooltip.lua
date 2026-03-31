@@ -300,6 +300,139 @@ end
 
 
 
+local function AddFloorLocationLine(tooltip, floorLocation, aboveString, belowString)
+	if floorLocation == Enum.QuestLineFloorLocation.Below then
+		tooltip:AddLine(belowString, 0.5, 0.5, 0.5, true)
+	elseif floorLocation == Enum.QuestLineFloorLocation.Above then
+		tooltip:AddLine(aboveString, 0.5, 0.5, 0.5, true)
+	end
+end
+
+local function Set_Quest(tooltip, questID)
+   if ( not HaveQuestData(questID) ) then
+		GameTooltip_SetTitle(tooltip, WoWTools_DataMixin.onlyChinese and '获取数据' or RETRIEVING_DATA, RED_FONT_COLOR)
+		GameTooltip_SetTooltipWaitingForData(tooltip, true)
+		GameTooltip:Show()
+		return
+	end
+
+    local shouldShowObjectivesAsStatusBar= C_QuestLog.IsOnMap(questID)-- data.shouldShowObjectivesAsStatusBar--显示进度条,需要手动指定
+
+	local widgetSetAdded = false
+	local widgetSetID = C_TaskQuest.GetQuestUIWidgetSetByType(questID, Enum.MapIconUIWidgetSetType.Tooltip)
+	local isThreat = C_QuestLog.IsThreatQuest(questID)
+
+	local factionID, capped = select(2, C_TaskQuest.GetQuestInfoByQuestID(questID))
+	local title= WoWTools_QuestMixin:GetName(questID)
+    local isWorldQuest= C_QuestLog.IsWorldQuest(questID)
+    local isCombatAllyQuest= C_QuestLog.GetQuestType(questID) == Enum.QuestTag.CombatAlly
+
+    local questLineInfo = C_QuestLine.GetQuestLineInfo(questID) or {}
+    local isQuestStart= questLineInfo.isQuestStart
+    local floorLocation= questLineInfo.floorLocation
+
+	if isWorldQuest then
+		--local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
+		--local quality = tagInfo and tagInfo.quality or Enum.WorldQuestQuality.Common
+		--local colorData = ColorManager.GetColorDataForWorldQuestQuality(quality)
+		--if colorData then
+			--GameTooltip_SetTitle(tooltip, title, colorData.color)
+		GameTooltip_SetTitle(tooltip, title)
+
+		if C_QuestLog.IsAccountQuest(questID) then
+			GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '战团' or  ACCOUNT_QUEST_LABEL, ACCOUNT_WIDE_FONT_COLOR)
+		end
+
+		QuestUtils_AddQuestTypeToTooltip(tooltip, questID, NORMAL_FONT_COLOR)
+
+		local factionData = factionID and C_Reputation.GetFactionDataByID(factionID)
+		if factionData then
+			local questAwardsReputationWithFaction = C_QuestLog.DoesQuestAwardReputationWithFaction(questID, factionID)
+			local reputationYieldsRewards = (not capped) or C_Reputation.IsFactionParagonForCurrentPlayer(factionID)
+			if questAwardsReputationWithFaction and reputationYieldsRewards then
+				GameTooltip:AddLine(factionData.name)
+			else
+				GameTooltip:AddLine(factionData.name, GRAY_FONT_COLOR:GetRGB())
+			end
+		end
+
+		GameTooltip_AddQuestTimeToTooltip(tooltip, questID)
+	elseif isThreat then
+		GameTooltip_SetTitle(tooltip, title)
+		GameTooltip_AddQuestTimeToTooltip(tooltip, questID)
+	else
+		GameTooltip_SetTitle(tooltip, title, NORMAL_FONT_COLOR)
+	end
+
+	if isCombatAllyQuest then
+		GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '有可接的盟友任务' or AVAILABLE_FOLLOWER_QUEST, HIGHLIGHT_FONT_COLOR, true)
+		GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '可为盟友提供战斗经验值' or GRANTS_FOLLOWER_XP, GREEN_FONT_COLOR, true)
+
+	elseif isQuestStart then
+		GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '可接任务' or AVAILABLE_QUEST, HIGHLIGHT_FONT_COLOR, true)
+		AddFloorLocationLine(tooltip, floorLocation, WoWTools_DataMixin.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE, WoWTools_DataMixin.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW)
+	else
+		local questDescription = ""
+		local questCompleted = C_QuestLog.IsComplete(questID)
+
+		if questCompleted and shouldShowObjectivesAsStatusBar then
+			questDescription = WoWTools_DataMixin.onlyChinese and '可完成' or QUEST_WATCH_QUEST_READY
+			GameTooltip_AddColoredLine(tooltip, QUEST_DASH .. questDescription, HIGHLIGHT_FONT_COLOR)
+		elseif not questCompleted and shouldShowObjectivesAsStatusBar then
+			local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID)
+			if questLogIndex then
+				questDescription = select(2, GetQuestLogQuestText(questLogIndex))
+				GameTooltip_AddColoredLine(tooltip, QUEST_DASH .. questDescription, HIGHLIGHT_FONT_COLOR)
+			end
+		end
+		local numObjectives =  C_QuestLog.GetNumQuestObjectives(questID)
+		for objectiveIndex = 1, numObjectives do
+			local objectiveText, objectiveType, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(questID, objectiveIndex, false)
+			local showObjective = not (finished and isThreat)
+			if showObjective then
+				if shouldShowObjectivesAsStatusBar then
+					local percent = math.floor((numFulfilled/numRequired) * 100)
+					GameTooltip_ShowProgressBar(tooltip, 0, numRequired, numFulfilled, format('%d%%', percent))
+				elseif objectiveText and (#objectiveText > 0) then
+					local color = finished and GRAY_FONT_COLOR or HIGHLIGHT_FONT_COLOR
+					GameTooltip:AddLine(QUEST_DASH .. objectiveText, color.r, color.g, color.b, true)
+				end
+			end
+		end
+		local objectiveText, objectiveType, finished, numFulfilled, numRequired = GetQuestObjectiveInfo(questID, 1, false)
+		if objectiveType == "progressbar" then
+			local percent = C_TaskQuest.GetQuestProgressBarInfo(questID)
+			local showObjective = not (finished and isThreat)
+			if percent  and showObjective then
+				GameTooltip_ShowProgressBar(tooltip, 0, 100, percent, format('%d%%', percent))
+			end
+		end
+
+		if widgetSetID then
+			widgetSetAdded = true
+			GameTooltip_AddWidgetSet(tooltip, widgetSetID)
+		end
+
+		GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT)
+
+		if isWorldQuest and C_TooltipInfo.GM then
+			local tooltipData = C_TooltipInfo.GM.GetDebugWorldQuestInfo(questID)
+			if tooltipData then
+				local tooltipInfo = { tooltipData = tooltipData, append = true }
+				GameTooltip:ProcessInfo(tooltipInfo)
+				GameTooltip:Show()
+			end
+		end
+	end
+
+
+	if not widgetSetAdded and widgetSetID then
+		GameTooltip_AddWidgetSet(tooltip, widgetSetID)
+	end
+end
+
+
+
 
 
 
@@ -345,8 +478,6 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
 
     local achievementID= data.achievementID
 
-    --local questID= frame and frame.questID --data.questID
-
     local rewardQuestID= data.rewardQuestID
 
     local widgetSetID= data.widgetSetID
@@ -360,6 +491,8 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
 
     local specIndex= data.specIndex--天赋，专精
     local specID= data.specID
+
+    local questID= data.questID
 
     local dungeonScore= data.dungeonScore
 
@@ -403,10 +536,15 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
         tooltip:SetAchievementByID(achievementID)
 
     elseif data.frame and data.frame.questID then
+        GameTooltip_SetTitle(tooltip, WoWTools_QuestMixin:GetName(questID))
         GameTooltip_AddQuest(data.frame)
 
     elseif frame and frame.questID then
+        GameTooltip_SetTitle(tooltip, WoWTools_QuestMixin:GetName(questID))
         GameTooltip_AddQuest(frame)
+
+    elseif questID then
+        Set_Quest(tooltip, questID)
 
     elseif rewardQuestID then
         GameTooltip_AddQuestRewardsToTooltip(tooltip, rewardQuestID)

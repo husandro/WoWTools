@@ -2096,31 +2096,27 @@ local function Init()
         local num= 0
         for questLogIndex= 1, numQuests do
             local info = C_QuestLog.GetInfo(questLogIndex)
-            --local name= WoWTools_QuestMixin:GetName(info.questID)
-            if info and not info.isHidden then
-                if info.isHeader then
-                    root:CreateTitle(info.title)
-                elseif info.questID then
-                
-                    num= num+1
-                    sub= root:CreateCheckbox(
-                        WoWTools_QuestMixin:GetName(info.questID),--info.title,
-                    function(data)
-                        return Frame.questEdit:GetNumber()==data.questID
-                    end, function(data)
-                        Frame.questEdit:SetText(data.questID)
-                    end, {questID=info.questID, rightText='|cff626262'..num})
+            if info and not info.isHidden and not info.isHeader and info.questID then
+                num= num+1
+                sub= root:CreateRadio(
+                    WoWTools_QuestMixin:GetName(info.questID),
+                function(data)
+                    return Frame.questEdit:GetNumber()==data.questID
+                end, function(data)
+                    Frame.questEdit:SetText(data.questID)
+                    return MenuResponse.Refresh
+                end, {questID=info.questID, rightText='|cff626262'..num})
 
-                    WoWTools_SetTooltipMixin:Set_Menu(sub)
-                    WoWTools_MenuMixin:SetRightText(sub)
+                WoWTools_SetTooltipMixin:Set_Menu(sub)
+                WoWTools_MenuMixin:SetRightText(sub)
+                --WoWTools_MenuMixin:LoadName(sub)
 
-                    sub:CreateButton(
-                        WoWTools_DataMixin.onlyChinese and '任务细节' or QUEST_DETAILS,
-                    function(data)
-                        QuestUtil.OpenQuestDetails(data)
-                        return MenuResponse.Open
-                    end, info.questID)
-                end
+                sub:CreateButton(
+                    WoWTools_DataMixin.onlyChinese and '任务细节' or QUEST_DETAILS,
+                function(data)
+                    QuestUtil.OpenQuestDetails(data)
+                    return MenuResponse.Open
+                end, info.questID)
             end
         end
         WoWTools_MenuMixin:SetScrollMode(root)

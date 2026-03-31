@@ -50,9 +50,9 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     local name
     if tagInfo and tagInfo.tagID and tagInfo.tagID>0 then
         local atlas, color = WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, nil)
-        local col= color and color.hex or ''
+        color = color or HIGHLIGHT_FONT_COLOR
         tooltip:AddLine(
-            col..(atlas or '')..'tagID'..WoWTools_DataMixin.Icon.icon2..tagInfo.tagID
+            (atlas or '')..color:WrapTextInColorCode('tagID')..WoWTools_DataMixin.Icon.icon2..tagInfo.tagID
         )
         name= tagInfo.name
     else

@@ -3231,7 +3231,16 @@
         "QuestLogPopupDetailFrameAbandonButton",
         "QuestLogPopupDetailFrameShareButton",
         "QuestLogPopupDetailFrameTrackButton",
-        "QUEST_DETAILS"
+        "QUEST_DETAILS",
+        "QuestUtils_GetQuestTypeIconMarkupString",
+        "GameTooltip_SetTooltipWaitingForData",
+        "QuestUtils_AddQuestTypeToTooltip",
+        "AVAILABLE_FOLLOWER_QUEST",
+        "GRANTS_FOLLOWER_XP",
+        "AVAILABLE_QUEST",
+        "QUEST_WATCH_QUEST_READY",
+        "TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT",
+        "QUEST_DASH"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

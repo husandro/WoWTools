@@ -357,10 +357,10 @@ local function Init()
                 local need= campaignNum+ legendaryNum+ storyNum +bountyNum
                 self.Text:SetText(
                     (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..'|A:common-icon-rotateleft:0:0|a'..'|r ' or '')
-                    ..(dayNum>0 and WoWTools_QuestMixin:GetColor('Daily').hex..dayNum..'|r ' or '')
-                    ..(weekNum>0 and WoWTools_QuestMixin:GetColor('Weekly').hex..weekNum..'|r ' or '')
+                    ..(dayNum>0 and WoWTools_QuestMixin:GetColor('Daily'):GenerateHexColorMarkup()..dayNum..'|r ' or '')
+                    ..(weekNum>0 and WoWTools_QuestMixin:GetColor('Weekly'):GenerateHexColorMarkup()..weekNum..'|r ' or '')
                     ..(numQuest>0 and '|cffffffff'..numQuest..'|r ' or '')
-                    ..(need>0 and WoWTools_QuestMixin:GetColor('Legendary').hex..need..'|r ' or '')
+                    ..(need>0 and WoWTools_QuestMixin:GetColor('Legendary'):GenerateHexColorMarkup()..need..'|r ' or '')
                 )
             else
                 local num= select(2, C_QuestLog.GetNumQuestLogEntries())

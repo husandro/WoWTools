@@ -32,6 +32,7 @@ function WoWTools_QuestMixin:GetID()
    return self:IsValidQuestID(questID)
 end
 
+--注意，返回都是字符
 function WoWTools_QuestMixin:GetName(questID)
     questID= self:IsValidQuestID(questID)
     if not questID then
@@ -40,18 +41,18 @@ function WoWTools_QuestMixin:GetName(questID)
 
     WoWTools_DataMixin:Load(questID, 'quest')
 
-    local name =WoWTools_TextMixin:CN(nil, {questID=questID, isName=true}) or QuestUtils_GetQuestName(questID)
-    name= name~='' and name or questID
+    local name =WoWTools_TextMixin:CN(nil, {questID=questID, isName=true})
+                or C_TaskQuest.GetQuestInfoByQuestID(questID)
+                or C_QuestLog.GetTitleForQuestID(questID)
+                or tostring(questID)
 
-    local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID)
-    if questLogIndex then
-    	local _, frequency, isRepeatable, isLegendary, _, isImportant, isMeta = GetAvailableQuestInfo(questLogIndex)
-        local isCampaign= C_CampaignInfo.IsCampaignQuest(questID)
-        local isCovenantCalling= C_QuestLog.IsQuestCalling(questID)
-        local icon= QuestUtil.GetQuestIconOffer(isLegendary, frequency, isRepeatable, isCampaign, isCovenantCalling, isImportant, isMeta)
-        name= (select(3, WoWTools_TextureMixin:IsAtlas(icon)) or '')..name
+    local atlas, color= WoWTools_QuestMixin:GetAtlasColor(questID)
+    if atlas then
+        name= atlas..name
     end
-
+    if color then
+        name= color:WrapTextInColorCode(name)
+    end
 
     return name
 end
@@ -260,20 +261,33 @@ function WoWTools_QuestMixin:GetQuestAll()
     end
     local num= select(2, C_QuestLog.GetNumQuestLogEntries())
     local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
+    local dayColor= self:GetColor('Daily')
+    local legendaryColor= self:GetColor('Legendary')
+    local weekColor= self:GetColor('Weekly')
+
     GameTooltip:AddDoubleLine(
-        (WoWTools_DataMixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_DataMixin:MK(#all, 3), self:GetColor('Daily').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', 'common-icon-checkmark'))
-    GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
+        (WoWTools_DataMixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)
+        ..' '..WoWTools_DataMixin:MK(#all, 3),
+        self:GetColor('Daily'):GenerateHexColorMarkup()..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)
+        ..': '..GetDailyQuestsCompleted()
+        ..format('|A:%s:0:0|a', 'common-icon-checkmark'),
+        nil, nil, nil, dayColor:GetRGB()
+    )
+    GameTooltip:AddLine(
+        (WoWTools_DataMixin.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38)
+    )
     GameTooltip:AddLine(' ')
-    GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
+    GameTooltip:AddLine(
+        '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
     GameTooltip:AddLine(' ')
-    GameTooltip:AddLine(self:GetColor('Daily').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..dayNum)
-    GameTooltip:AddLine(self:GetColor('Weekly').hex..(WoWTools_DataMixin.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
+    GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..dayNum, dayColor:GetRGB())
+    GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '周长' or WEEKLY)..': '..weekNum, weekColor:GetRGB())
     GameTooltip:AddLine((num>=MAX_QUESTS and '|cnWARNING_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/'..MAX_QUESTS)
     GameTooltip:AddLine(' ')
-    GameTooltip:AddLine(self:GetColor('Legendary').hex..(WoWTools_DataMixin.onlyChinese and '传说' or GARRISON_FOLLOWER_QUALITY6_DESC)..': '..legendaryNum)
-    GameTooltip:AddLine(self:GetColor('Legendary').hex..(WoWTools_DataMixin.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..campaignNum)
-    GameTooltip:AddLine(self:GetColor('Legendary').hex..(WoWTools_DataMixin.onlyChinese and '悬赏' or PVP_BOUNTY_REWARD_TITLE)..': '..bountyNum)
-    GameTooltip:AddLine(self:GetColor('Legendary').hex..(WoWTools_DataMixin.onlyChinese and '故事' or 'Story')..': '..storyNum)
+    GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '传说' or GARRISON_FOLLOWER_QUALITY6_DESC)..': '..legendaryNum, legendaryColor:GetRGB())
+    GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..campaignNum, legendaryColor:GetRGB())
+    GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '悬赏' or PVP_BOUNTY_REWARD_TITLE)..': '..bountyNum, legendaryColor:GetRGB())
+    GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '故事' or 'Story')..': '..storyNum, legendaryColor:GetRGB())
     GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
 end
 
@@ -302,65 +316,61 @@ end
 [Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
 ]]
 local QustColorTab={
-    Important={r=1, g=0, b=1, hex='|cffff00ff'},--重要 C_QuestLog.IsImportantQuest(questID)
-    Legendary={r=1, g=0.49, b=0, hex='|cffff7d00'},--传说,
-    Campaign={r=1, g=0.82, b=0, hex='|cffffd100'},--战役 C_CampaignInfo.IsCampaignQuest(questID)
-	Calling={r=0.53, g=0.53, b=0.93, hex='|cff8788ee'},--使命 C_QuestLog.IsQuestCalling(questID)
-	Meta={r=1,g=1,b=1, hex='|cffffffff'},--综合 C_QuestLog.IsMetaQuest(questID) 
+    Important=     CreateColor(1, 0, 1),-- {r=1, g=0, b=1, hex='|cffff00ff'},--重要 C_QuestLog.IsImportantQuest(questID)
+    Legendary=     CreateColor(1, 0.49, 0),--{r=1, g=0.49, b=0, hex='|cffff7d00'},--传说,
+    Campaign=      CreateColor(1, 0.82, 0),--{r=1, g=0.82, b=0, hex='|cffffd100'},--战役 C_CampaignInfo.IsCampaignQuest(questID)
+	Calling=       CreateColor(0.53, 0.53, 0.93),--{r=0.53, g=0.53, b=0.93, hex='|cff8788ee'},--使命 C_QuestLog.IsQuestCalling(questID)
+	--Meta=          CreateColor(1, 1, 1),--{r=1,g=1,b=1, hex='|cffffffff'},--综合 C_QuestLog.IsMetaQuest(questID) 
 
-	Recurring={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--可重复 C_QuestLog.IsRepeatableQuest(questID)
-	Questline={r=0.67, g=0.83, b=0.45, hex='|cffaad372'},--故事线 IsStoryQuest(questID)
-	Normal={r=1,g=1,b=1, hex='|cffffffff'},--普通
-	BonusObjective={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},--C_QuestLog.IsQuestBounty(questID) 
-	Threat={r=1.00, g=0.28, b=0.00, a=1.00, hex='|cffff4800'},--威胁 C_QuestLog.IsThreatQuest(questID)
-	WorldQuest={r=0.9, g=0.8, b=0.5, hex='|cffe6cc80'},--世界任务 C_QuestLog.IsWorldQuest(questID)
+	Recurring=     CreateColor(0.06, 0.38, 0.81),--{r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--可重复 C_QuestLog.IsRepeatableQuest(questID)
+	Questline=     CreateColor(0.67, 0.83, 0.45),--{r=0.67, g=0.83, b=0.45, hex='|cffaad372'},--故事线 IsStoryQuest(questID)
+	--Normal=        CreateColor(1, 1, 1),--{r=1,g=1,b=1, hex='|cffffffff'},--普通
+	BonusObjective=CreateColor(0.09, 0.78, 0.39),--{r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},--C_QuestLog.IsQuestBounty(questID) 
+	Threat=        CreateColor(1, 0.28, 0),--{r=1.00, g=0.28, b=0.00, a=1.00, hex='|cffff4800'},--威胁 C_QuestLog.IsThreatQuest(questID)
+	WorldQuest=    CreateColor(0.9, 0.8, 0.5),--{r=0.9, g=0.8, b=0.5, hex='|cffe6cc80'},--世界任务 C_QuestLog.IsWorldQuest(questID)
 
+    Trivial=       CreateColor(0.53, 0.53, 0.53),--{r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty C_QuestLog.IsQuestTrivial(questID)
+    Easy=          CreateColor(0.63, 1, 0.61),--{r=0.63, g=1, b=0.61, hex='|cffa1ff9c'},--1
+    Difficult=     CreateColor(1, 0.43, 0.42),--{r=1, g=0.43, b=0.42, hex='|cffff6e6b'},--3
+    Impossible=    CreateColor(1, 0, 1),--{r=1, g=0, b=1, hex='|cffff00ff'},--4
 
-    Trivial={r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty C_QuestLog.IsQuestTrivial(questID)
-    Easy={r=0.63, g=1, b=0.61, hex='|cffa1ff9c'},--1
-    Difficult={r=1, g=0.43, b=0.42, hex='|cffff6e6b'},--3
-    Impossible={r=1, g=0, b=1, hex='|cffff00ff'},--4
+    Story=         CreateColor(0.09, 0.78, 0.39),--{r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},
+    Complete=      CreateColor(0.1, 1, 0.1),--{r=0.10, g=1.00, b=0.10, a=1.00, hex='|cff19ff19'},
+    Failed=        CreateColor(1, 0, 0),--{r=1.00, g=0.00, b=0.00, a=1.00, hex='|cffff0000'},
+    Horde=         CreateColor(1, 0.38, 0.38),--{r=1.00, g=0.38, b=0.38, a=1.00, hex='|cffff6161'},
+    Alliance=      CreateColor(0, 0.68, 0.94),--{r=0.00, g=0.68, b=0.94, a=1.00, hex='|cff00adf0'},
+    WoW=           CreateColor(0, 0.8, 1),--{r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},
+    PvP=           CreateColor(0.8, 0.3, 0.22),--{r=0.80, g=0.30, b=0.22, a=1.00, hex='|cffcc4d38'},
 
-
-    Story={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},
-    Complete={r=0.10, g=1.00, b=0.10, a=1.00, hex='|cff19ff19'},
-    Failed={r=1.00, g=0.00, b=0.00, a=1.00, hex='|cffff0000'},
-    Horde={r=1.00, g=0.38, b=0.38, a=1.00, hex='|cffff6161'},
-    Alliance={r=0.00, g=0.68, b=0.94, a=1.00, hex='|cff00adf0'},
-    WoW={r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},
-    PvP={r=0.80, g=0.30, b=0.22, a=1.00, hex='|cffcc4d38'},
-
-    Default={r=1,g=1,b=1, hex='|cffffffff'},
-    Daily={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--日常
-    Weekly={r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
-    ResetByScheduler= {r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},--游戏活动
+    --Default=       CreateColor(1, 1, 1),--{r=1,g=1,b=1, hex='|cffffffff'},
+    Daily=         CreateColor(0.06, 0.38, 0.81),--{r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--日常
+    Weekly=        CreateColor(0.02, 1, 0.66),--{r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
+    ResetByScheduler= CreateColor(0, 0.8, 1),--{r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},--游戏活动
 }
 
 
 
 
 function WoWTools_QuestMixin:GetColor(text, questID)
-
+    local color
     if text then
-        return QustColorTab[text]
+        color= QustColorTab[text]
 
     elseif questID then --and UnitEffectiveLevel('player')== WoWTools_DataMixin.Player.Level then
-
-
-
         local difficulty= C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID)
         if difficulty then
             if difficulty== 0 then--Trivial    
-                return QustColorTab.Trivial
+                color= QustColorTab.Trivial
             elseif difficulty== 1 then--Easy
-                return QustColorTab.Easy
+                color= QustColorTab.Easy
             elseif difficulty==3 then--Difficult    
-                return QustColorTab.Difficult
+                color= QustColorTab.Difficult
             elseif difficulty==4 then--Impossible    
-                return QustColorTab.Impossible
+                color= QustColorTab.Impossible
             end
         end
     end
+    return  color or HIGHLIGHT_FONT_COLOR
 end
 
 
@@ -371,17 +381,20 @@ end
 
 --任务图标，颜色
 function WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, isComplete)--QuestMapFrame.lua QuestUtils.lua
-    questID= questID or (info and info.questID)
-    questID= tonumber(questID)
-    if not info and questID then
-       local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
-       info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
-    end
+    questID= self:IsValidQuestID(questID) or (info and info.questID)
 
-    tagInfo =  tagInfo or C_QuestLog.GetQuestTagInfo(questID) or {}
-    if not questID or not info then
+    if not questID then
         return
     end
+
+    local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
+    info = info or (questLogIndex and C_QuestLog.GetInfo(questLogIndex))
+
+    if not info then
+        return
+    end
+
+    tagInfo=  tagInfo or C_QuestLog.GetQuestTagInfo(questID) or {}
 
     if isComplete==nil then
         isComplete= C_QuestLog.IsComplete(questID)
@@ -429,15 +442,25 @@ function WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, isComplete)--
     else
         tagID, color, atlas= tagInfo.tagID, nil, nil
     end
-    if not atlas and tagID then
-        local tagAtlas = QuestUtils_GetQuestTagAtlas(tagID)
-        if tagAtlas then
-            atlas= '|A:'..tagAtlas..':0:0|a'
+
+    if (tagInfo.tagID==41 or tagInfo.tagID==113 or tagInfo.tagID==140 or tagInfo.tagID==255 or tagInfo.tagID==256 or tagInfo.tagID==278) and not color then
+        color=self:GetColor('PvP')
+        atlas= atlas or '|A:pvptalents-warmode-swords:0:0|a'
+    end
+
+    if not atlas then
+        local icon
+        if tagID then
+            icon=  QuestUtils_GetQuestTagAtlas(tagID, tagInfo.worldQuestType)
+        elseif questLogIndex then
+    	    local _, frequency, isRepeatable, isLegendary, _, isImportant, isMeta = GetAvailableQuestInfo(questLogIndex)
+            icon= QuestUtil.GetQuestIconOffer(isLegendary, frequency, isRepeatable, C_CampaignInfo.IsCampaignQuest(questID), C_QuestLog.IsQuestCalling(questID), isImportant, isMeta)
+        end
+        if icon then
+            atlas= select(3, WoWTools_TextureMixin:IsAtlas(icon))
         end
     end
-    if tagInfo.tagID==41 and not color then
-        color=self:GetColor('PvP')
-    end
+
     return atlas, color
 end
 

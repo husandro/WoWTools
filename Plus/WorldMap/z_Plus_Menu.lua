@@ -30,17 +30,6 @@ end
 
 
 
-local function Color(text)
-    local hex
-    if text then
-        local col= WoWTools_QuestMixin:GetColor(text)
-        if col then
-            hex= col.hex
-        end
-    end
-    return hex
-end
-
 
 
 
@@ -137,18 +126,18 @@ local function QuestList_Tooltip(tooltip, data)
                text= info.title
             end
 
-            local color= select(2, WoWTools_QuestMixin:GetAtlasColor(info.questID, info))
+            local color= select(2, WoWTools_QuestMixin:GetAtlasColor(info.questID, info)) or HIGHLIGHT_FONT_COLOR
 
             tooltip:AddDoubleLine(
-                (color and color.hex or '')
-                ..WoWTools_TextMixin:CN(
+                WoWTools_TextMixin:CN(
                     GetQuestLink(info.questID) or info.title or info.questID, {questID=info.questID, isName=true}
                 )
                 ..(C_QuestLog.IsComplete(info.questID) and ' |cnGREEN_FONT_COLOR:|A:common-dropdown-icon-checkmark-yellow:0:0|a'..(
                     WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE
                 ) or '')
                 ,
-                '|cffffffff'..num..')'
+                '|cffffffff'..num..')',
+                color:GetRGB()
             )
         end
     end
@@ -248,10 +237,9 @@ local function Init_Menu(self, root)
             end
 
             num= num or 0
-
-            name= (tab.enum and Color(tab.enum) or Color(tab.type) or '|cffffffff')
-                ..tab.name
-                ..' |r#'
+            local color= tab.enum and WoWTools_QuestMixin:GetColor(tab.enum) or WoWTools_QuestMixin:GetColor(tab.type)
+            name= color:WrapTextInColorCode(tab.name)
+                ..' #'
                 ..(num==0 and '|cff626262' or '|cffffffff')
                 ..num
                 ..'|r'
