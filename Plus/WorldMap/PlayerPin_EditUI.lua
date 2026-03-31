@@ -866,6 +866,7 @@ local function Init()
 
     local searchButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu4Template')
     searchButton:SetPoint('RIGHT', Frame.search, 'LEFT', 2, 0)
+    searchButton.tooltip= WoWTools_DataMixin.onlyChinese and '条件' or EVENTTRACE_FILTER_HEADER
     searchButton.list={
         [1]=WoWTools_DataMixin.onlyChinese and '专业' or PROFESSIONS_BUTTON,
         [2]=WoWTools_DataMixin.onlyChinese and '职业' or CLASS,
@@ -921,7 +922,7 @@ local function Init()
     Frame.newButton= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     Frame.newButton:SetPoint('LEFT', Frame.search, 'RIGHT', 2, 0)
     Frame.newButton:SetNormalAtlas('communities-chat-icon-plus')
-    Frame.newButton.owner= 'ANCHOR_RIGHT'
+    --Frame.newButton.owner= 'ANCHOR_RIGHT'
     Frame.newButton.tooltip= WoWTools_DataMixin.onlyChinese and '新建' or NEW
     Frame.newButton:SetScript('OnClick', function()
         Set_FrameSelect()
@@ -1162,6 +1163,7 @@ local function Init()
     local fontIconMenu= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template')
     fontIconMenu:SetPoint('LEFT', Frame.fontH, 'RIGHT', 3, 0)
     fontIconMenu:SetNormalAtlas('Professions-Crafting-Orders-Icon')
+    fontIconMenu.tooltip= WoWTools_DataMixin.onlyChinese and '图标和名称' or (SELF_HIGHLIGHT_ICON..'/'..NAME)
     fontIconMenu:SetupMenu(function(self, root)
         if not self:IsMouseOver() then
             return
@@ -1374,9 +1376,13 @@ local function Init()
 
  --颜色
     Frame.colorButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu3Template ColorSwatchTemplate')--ColorSwatchMixin
+    Frame.colorButton.tooltip= (WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)
+        ..WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right
+        ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+    Frame.colorButton:SetScript('OnLeave', WoWToolsButton_OnLeave)
+    Frame.colorButton:SetScript('OnEnter', WoWToolsButton_OnEnter)
     Frame.colorButton:SetPoint('LEFT', Frame.nameEdit, 'RIGHT', 2, 0)
     Frame.colorButton.valueColor= CreateColor(1.0, 0.9294, 0.7607)
-    --Frame.colorButton:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     Frame.colorButton:SetupMenu(function(self, root)
         if not self:IsMouseOver() then
             return
@@ -2077,10 +2083,12 @@ local function Init()
     --if WoWTools_DataMixin.Player.husandro then Frame.questEdit:SetText('93595') end
 
     Frame.questButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu4Template')
+    Frame.questButton.tooltip= WoWTools_DataMixin.onlyChinese and '已接任务' or CURRENT_QUESTS
     Frame.questButton:SetPoint('LEFT', Frame.questEdit, 'RIGHT')
     Frame.questButton.text= Frame.questButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
     Frame.questButton.text:SetPoint('CENTER')
     Frame.questButton.text:SetJustifyH("LEFT")
+    Frame.questButton.text:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
 
     function Frame.questButton:set_text()
         self.text:SetText(select(2, C_QuestLog.GetNumQuestLogEntries()))
@@ -2120,7 +2128,7 @@ local function Init()
             end
         end
         WoWTools_MenuMixin:SetScrollMode(root)
-
+        self.text:SetText(num)
     end)
 
 
@@ -2227,7 +2235,7 @@ local function Init()
         self.searchIcon:SetTexture(icon or 0)
         self.searchIcon.icon= icon
         self.searchIcon.name= name
-        --self.searchIcon:SetShown(icon or name)
+        self.searchIcon:SetShown(icon or name)
 
         if icon and not Frame.iconEdit.icon then
             Frame.iconEdit:SetText(icon)
@@ -2241,7 +2249,7 @@ local function Init()
         local achievementID= self:GetID()
         self.achievementID= achievementID
         self.name:SetText('')
-        self.searchIcon:SetTexture(0)
+        self.searchIcon:SetShown(false)
         self.searchIcon.icon= nil
         self.searchIcon.name= nil
         if self.timer then
@@ -2287,6 +2295,7 @@ local function Init()
     Frame.achievementButton.text= Frame.achievementButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
     Frame.achievementButton.text:SetPoint('CENTER')
     Frame.achievementButton.text:SetJustifyH("LEFT")
+    Frame.achievementButton.tooltip= WoWTools_DataMixin.onlyChinese and '条件和记录' or (EVENTTRACE_FILTER_HEADER..'/'..EVENTTRACE_LOG_HEADER)
     function Frame.achievementButton:set_text()
         self.text:SetText(self.index or '|cff6262620|r')
     end

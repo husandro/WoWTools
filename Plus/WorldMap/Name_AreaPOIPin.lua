@@ -225,7 +225,7 @@ function WoWTools_WorldMapMixin:AreaPOINameMenu(_, root)
             local user= SaveWoW().pinName[poiInfo.areaPoiID]
             sub2= sub:CreateCheckbox(
                 (user and '|cnGREEN_FONT_COLOR:' or '')
-                ..user or WoWTools_TextMixin:CN(poiInfo.name),
+                ..(user or WoWTools_TextMixin:CN(poiInfo.name)),
             function()
                 return not SaveWoW().noShow[poiInfo.areaPoiID]
             end, function(data)

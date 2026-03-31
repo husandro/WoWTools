@@ -3240,7 +3240,9 @@
         "AVAILABLE_QUEST",
         "QUEST_WATCH_QUEST_READY",
         "TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT",
-        "QUEST_DASH"
+        "QUEST_DASH",
+        "EVENTTRACE_FILTER_HEADER",
+        "CURRENT_QUESTS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
