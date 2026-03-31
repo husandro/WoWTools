@@ -174,7 +174,6 @@ end
 
 
 
-
 --GetName
 function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
     local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= self:GetInfo(currencyID, index, link)
