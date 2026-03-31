@@ -3242,7 +3242,10 @@
         "TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT",
         "QUEST_DASH",
         "EVENTTRACE_FILTER_HEADER",
-        "CURRENT_QUESTS"
+        "CURRENT_QUESTS",
+        "CreateUnsecuredRegionPoolInstance",
+        "BaseMapPoiPinMixin",
+        "EncounterJournal_SetDescriptionWithBullets"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

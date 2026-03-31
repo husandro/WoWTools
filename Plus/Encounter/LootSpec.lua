@@ -450,6 +450,10 @@ end
 
 
 --BOSS 列表
+local DisabledShowBoossTabs={
+    [2870]=1,--词缀
+    [2869]=1,--史诗钥石
+}
 local function Init_Loot()
     WoWTools_DataMixin:Hook(EncounterBossButtonMixin, 'Init', function(self, data)--{data={bossID index link rootSectionID, desctiption, name} }
         if not self.specButtons then
@@ -457,7 +461,7 @@ local function Init_Loot()
         end
 
         local scale= Save().lootScale or 1
-        local show= not Save().hideLootSpec
+        local show= not Save().hideLootSpec and not DisabledShowBoossTabs[data.bossID]
 
         for _, btn in pairs(self.specButtons) do
             if show then
@@ -468,6 +472,7 @@ local function Init_Loot()
             btn:SetShown(show)
         end
     end)
+
     Init_Loot=function()end
 end
 

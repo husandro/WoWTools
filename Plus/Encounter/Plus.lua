@@ -826,6 +826,9 @@ local function Init()
 
 --EncounterJournal.encounter.infoFrame
 
+--EncounterJournalOverviewInfoHeader1HeaderButton
+--EncounterJournalEncounterFrameInfoOverviewScrollFrame
+--self.encounter.overviewFrame
     local down= CreateFrame('Button', 'WoWToolsEncounterDownBossSpellButton',  EncounterJournalEncounterFrameInfoDetailsScrollFrame, 'WoWToolsButtonTemplate')
     down:SetPoint('RIGHT', EncounterJournalEncounterFrameInfoDifficulty, 'LEFT')
     down:SetNormalAtlas('NPE_ArrowDown')
@@ -840,11 +843,6 @@ local function Init()
                 EncounterJournal_ToggleHeaders(header)
             end
         end
-        --[[for _, header in pairs(EncounterJournal.encounter.usedHeaders or {}) do
-            if not header.expanded then
-                EncounterJournal_ToggleHeaders(header)
-            end
-        end]]
     end)
 
     local up= CreateFrame('Button', 'WoWToolsEncounterUpBossSpellButton',  down, 'WoWToolsButtonTemplate')
@@ -852,14 +850,46 @@ local function Init()
     up.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
     up:SetNormalAtlas('NPE_ArrowUp')
     up:SetScript('OnClick', function()
-        for _, header in pairs(EncounterJournal.encounter.usedHeaders or {}) do
+        if not EncounterJournal.encounter.usedHeaders then
+            return
+        end
+        for _, header in pairs(EncounterJournal.encounter.usedHeaders) do
             if  header.expanded then
                 EncounterJournal_ToggleHeaders(header)
             end
         end
     end)
 
-    --
+    local overDown=CreateFrame('Button', 'WoWToolsEncounterDownOverviewButton',  EncounterJournalEncounterFrameInfoOverviewScrollFrame, 'WoWToolsButtonTemplate')
+    overDown:SetPoint('RIGHT', EncounterJournalEncounterFrameInfoDifficulty, 'LEFT')
+    overDown:SetNormalAtlas('NPE_ArrowDown')
+    overDown.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
+    overDown:SetScript('OnClick', function()
+        if not EncounterJournal.encounter.overviewFrame.overviews then
+            return
+        end
+        for i= #EncounterJournal.encounter.overviewFrame.overviews, 1, -1 do
+            local header= EncounterJournal.encounter.overviewFrame.overviews[i]
+            if header and not header.expanded then
+                EncounterJournal_ToggleHeaders(header)
+            end
+        end
+    end)
+    local overUp= CreateFrame('Button', 'WoWToolsEncounterUpBossSpellButton',  overDown, 'WoWToolsButtonTemplate')
+    overUp:SetPoint('RIGHT', overDown, 'LEFT')
+    overUp.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+    overUp:SetNormalAtlas('NPE_ArrowUp')
+    overUp:SetScript('OnClick', function()
+        if not EncounterJournal.encounter.overviewFrame.overviews then
+            return
+        end
+        for _, header in ipairs(EncounterJournal.encounter.overviewFrame.overviews) do
+            if  header.expanded then
+                EncounterJournal_ToggleHeaders(header)
+            end
+        end
+    end)
+
 --EncounterJournal.encounter.usedHeaders
     Init=function()end
 end

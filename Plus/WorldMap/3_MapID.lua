@@ -136,11 +136,11 @@ local function Init()
 
 
     --WoWTools_DataMixin:Hook(WorldMapFrame.ScrollContainer, 'SetMapID', function(self, mapID)--MapCanvasScrollControllerMixin
-    WoWTools_DataMixin:Hook(WorldMapFrame, 'OnMapChanged', Set_Text)--Blizzard_WorldMap.lua    
+    WoWTools_DataMixin:Hook(WorldMapFrame, 'OnMapChanged', function() Set_Text() end)--Blizzard_WorldMap.lua    
     --WoWTools_DataMixin:Hook('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 
 
-    Frame:SetScript('OnShow', Set_Text)
+    Frame:SetScript('OnShow', function() Set_Text() end)
     Frame:SetScript('OnHide', function(self)
         self.Text:SetText('')
         self.storyText:SetText('')
