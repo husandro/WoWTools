@@ -1977,7 +1977,7 @@ local function Init()
 
     Frame.questEdit= CreateFrame('EditBox', nil, Frame, 'SearchBoxTemplate')
     Frame.questEdit:SetPoint('TOPLEFT',  Frame.professionMenu, 'BOTTOMLEFT', 0, -12)
-    Frame.questEdit:SetPoint('TOPRIGHT', Frame.professionMenu, 'BOTTOMRIGHT',-6, -12)
+    Frame.questEdit:SetPoint('TOPRIGHT', Frame.professionMenu, 'BOTTOMRIGHT',-35, -12)
     Frame.questEdit:SetHeight(23)
     Frame.questEdit.Instructions:SetText((WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)..' 12345')
     Frame.questEdit.searchIcon:ClearAllPoints()
@@ -2075,6 +2075,59 @@ local function Init()
     end)
 
     --if WoWTools_DataMixin.Player.husandro then Frame.questEdit:SetText('93595') end
+
+    Frame.questButton= CreateFrame('DropdownButton', nil, Frame, 'WoWToolsMenu4Template')
+    Frame.questButton:SetPoint('LEFT', Frame.questEdit, 'RIGHT')
+    Frame.questButton.text= Frame.questButton:CreateFontString(nil, 'BORDER', 'WoWToolsFont')
+    Frame.questButton.text:SetPoint('CENTER')
+    Frame.questButton.text:SetJustifyH("LEFT")
+
+    function Frame.questButton:set_text()
+        self.text:SetText(select(2, C_QuestLog.GetNumQuestLogEntries()))
+    end
+    Frame.questButton:SetScript('OnShow', Frame.questButton.set_text)
+    Frame.questButton:set_text()
+    Frame.questButton:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+        local sub
+        local numQuests =  C_QuestLog.GetNumQuestLogEntries() or 0
+        local num= 0
+        for questLogIndex= 1, numQuests do
+            local info = C_QuestLog.GetInfo(questLogIndex)
+            --local name= WoWTools_QuestMixin:GetName(info.questID)
+            if info and not info.isHidden then
+                if info.isHeader then
+                    root:CreateTitle(info.title)
+                elseif info.questID then
+                
+                    num= num+1
+                    sub= root:CreateCheckbox(
+                        WoWTools_QuestMixin:GetName(info.questID),--info.title,
+                    function(data)
+                        return Frame.questEdit:GetNumber()==data.questID
+                    end, function(data)
+                        Frame.questEdit:SetText(data.questID)
+                    end, {questID=info.questID, rightText='|cff626262'..num})
+
+                    WoWTools_SetTooltipMixin:Set_Menu(sub)
+                    WoWTools_MenuMixin:SetRightText(sub)
+
+                    sub:CreateButton(
+                        WoWTools_DataMixin.onlyChinese and '任务细节' or QUEST_DETAILS,
+                    function(data)
+                        QuestUtil.OpenQuestDetails(data)
+                        return MenuResponse.Open
+                    end, info.questID)
+                end
+            end
+        end
+        WoWTools_MenuMixin:SetScrollMode(root)
+
+    end)
+
+
 
 
 

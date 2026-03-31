@@ -1,5 +1,12 @@
 --[[
-SpellEventListener:AddCancelableCallback(questID, 
+ToggleQuestLog()
+OpenQuestLog(mapID)
+QuestUtils_GetQuestName(questID) return C_TaskQuest.GetQuestInfoByQuestID(questID) or C_QuestLog.GetTitleForQuestID(questID) or "";
+QuestUtil.OpenQuestDetails(questID)--显示任务细节
+QuestUtil.GetQuestIconOffer
+
+
+QuestEventListener:AddCancelableCallback(questID, 
 QuestUtil.
 GetRewardInfo(questID)
 GetName(questID)
@@ -24,7 +31,7 @@ function WoWTools_QuestMixin:GetID()
    local questID = QuestInfoFrame.questLog and C_QuestLog.GetSelectedQuest() or GetQuestID()
    return self:IsValidQuestID(questID)
 end
---QuestUtils_GetQuestName(questID) return C_TaskQuest.GetQuestInfoByQuestID(questID) or C_QuestLog.GetTitleForQuestID(questID) or "";
+
 function WoWTools_QuestMixin:GetName(questID)
     questID= self:IsValidQuestID(questID)
     if not questID then
@@ -35,6 +42,17 @@ function WoWTools_QuestMixin:GetName(questID)
 
     local name =WoWTools_TextMixin:CN(nil, {questID=questID, isName=true}) or QuestUtils_GetQuestName(questID)
     name= name~='' and name or questID
+
+    local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID)
+    if questLogIndex then
+    	local _, frequency, isRepeatable, isLegendary, _, isImportant, isMeta = GetAvailableQuestInfo(questLogIndex)
+        local isCampaign= C_CampaignInfo.IsCampaignQuest(questID)
+        local isCovenantCalling= C_QuestLog.IsQuestCalling(questID)
+        local icon= QuestUtil.GetQuestIconOffer(isLegendary, frequency, isRepeatable, isCampaign, isCovenantCalling, isImportant, isMeta)
+        name= (select(3, WoWTools_TextureMixin:IsAtlas(icon)) or '')..name
+    end
+
+
     return name
 end
 
@@ -50,9 +68,8 @@ function WoWTools_QuestMixin:GetLink(questID)
     if not link then
         local index= C_QuestLog.GetLogIndexForQuestID(questID)
         local info= index and C_QuestLog.GetInfo(index) or {}
-        local name= info.title or self:GetName(questID) or questID
-        name= WoWTools_TextMixin:CN(name, {questID=questID, isName=true})
-        link= '|cffffff00|Hquest:'..questID..':'..(info.level or -1)..':::|h['..(name or questID)..']|h|r'
+        local name= info.title or self:GetName(questID)
+        link= '|cffffff00|Hquest:'..questID..':'..(info.level or -1)..':::|h['..name..']|h|r'
     end
 
     return link
@@ -243,7 +260,8 @@ function WoWTools_QuestMixin:GetQuestAll()
     end
     local num= select(2, C_QuestLog.GetNumQuestLogEntries())
     local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-    GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_DataMixin:MK(#all, 3), self:GetColor('Daily').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', 'common-icon-checkmark'))
+    GameTooltip:AddDoubleLine(
+        (WoWTools_DataMixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_DataMixin:MK(#all, 3), self:GetColor('Daily').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', 'common-icon-checkmark'))
     GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
@@ -296,7 +314,7 @@ local QustColorTab={
 	BonusObjective={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},--C_QuestLog.IsQuestBounty(questID) 
 	Threat={r=1.00, g=0.28, b=0.00, a=1.00, hex='|cffff4800'},--威胁 C_QuestLog.IsThreatQuest(questID)
 	WorldQuest={r=0.9, g=0.8, b=0.5, hex='|cffe6cc80'},--世界任务 C_QuestLog.IsWorldQuest(questID)
-    
+
 
     Trivial={r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty C_QuestLog.IsQuestTrivial(questID)
     Easy={r=0.63, g=1, b=0.61, hex='|cffa1ff9c'},--1
@@ -319,7 +337,7 @@ local QustColorTab={
 }
 
 
-    
+
 
 function WoWTools_QuestMixin:GetColor(text, questID)
 
@@ -327,9 +345,9 @@ function WoWTools_QuestMixin:GetColor(text, questID)
         return QustColorTab[text]
 
     elseif questID then --and UnitEffectiveLevel('player')== WoWTools_DataMixin.Player.Level then
-        
-    
-    
+
+
+
         local difficulty= C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID)
         if difficulty then
             if difficulty== 0 then--Trivial    

@@ -86,7 +86,7 @@ local function Init_OnEnter(self)
                     GameTooltip:AddDoubleLine(
                         index..')',
                         (C_QuestLog.IsComplete(questID) and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
-                        ..(WoWTools_QuestMixin:GetName(questID) or questID)
+                        ..WoWTools_QuestMixin:GetName(questID)
                     )
                 end
             end

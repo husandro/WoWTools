@@ -3222,7 +3222,16 @@
         "ACHIEVEMENT",
         "QuestUtils_GetQuestName",
         "QUESTS_COLON",
-        "HUD_EDIT_MODE_IMPORT_LAYOUT"
+        "HUD_EDIT_MODE_IMPORT_LAYOUT",
+        "FauxScrollFrame_Update",
+        "FauxScrollFrame_SetOffset",
+        "FauxScrollFrame_GetOffset",
+        "FauxScrollFrame_OnVerticalScroll",
+        "ScrollingEdit_OnTextChanged",
+        "QuestLogPopupDetailFrameAbandonButton",
+        "QuestLogPopupDetailFrameShareButton",
+        "QuestLogPopupDetailFrameTrackButton",
+        "QUEST_DETAILS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

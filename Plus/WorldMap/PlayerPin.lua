@@ -656,7 +656,7 @@ local function Init()
     end)
 
 
-    --if WoWTools_DataMixin.Player.husandro then C_Timer.After(2, function() WoWTools_WorldMapMixin:PlayerPin_ShowUI() end) end
+    if WoWTools_DataMixin.Player.husandro then C_Timer.After(2, function() WoWTools_WorldMapMixin:PlayerPin_ShowUI() end) end
 
 
 
