@@ -406,7 +406,7 @@ end)
 function WoWTools_MenuMixin:RestData(root, name, SetValue)
     return root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
+        ..(WoWTools_DataMixin.onlyChinese and '重置数据' or DAMAGE_METER_RESET_ALL_SESSIONS),
     function()
         StaticPopup_Show('WoWTools_RestData', name, nil, SetValue)
         return MenuResponse.Open

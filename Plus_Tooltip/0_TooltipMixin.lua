@@ -13,18 +13,8 @@ WoWTools_TooltipMixin={
 
 function WoWTools_TooltipMixin:Show(tooltip)
     tooltip= tooltip or GameTooltip
-
-
-    --[[local itemTooltip = tooltip.ItemTooltip
-    if itemTooltip then
-        if issecretvalue(itemTooltip:IsShown()) or issecretvalue(itemTooltip:GetWidth()) then
-            tooltip:Show()
-        end
-        return
-    end]]
-
-    tooltip:Show()
-    --WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
+    --tooltip:Show()
+    WoWTools_DataMixin:Call('GameTooltip_CalculatePadding', tooltip)
 end
 
 

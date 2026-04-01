@@ -134,7 +134,7 @@ local function Init_Menu(self, root)
 --重置数据
     sub:CreateDivider()
     sub:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+        (WoWTools_DataMixin.onlyChinese and '重置数据' or DAMAGE_METER_RESET_ALL_SESSIONS),
     function()
         WoWToolsSave['Plus_WorldMap'].PlayerXY={--实时玩家当前坐标
             textY=-2,

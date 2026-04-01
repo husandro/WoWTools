@@ -72,7 +72,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     WoWToolsPlayerDate.WorldMapPin= nil
 
     WoWToolsPlayerDate.PlayerMapPin= WoWToolsPlayerDate.PlayerMapPin or {
-        [2393]={--12.0银月城
+        [2393]= {
+            options={},
+            ["50.02 74.76"]= {name=WoWTools_DataMixin.onlyChinese and "拍卖行" or BUTTON_LAG_AUCTIONHOUSE,},
+            ["47.40 52.60"]={name=WoWTools_DataMixin.onlyChinese and PROFESSIONS_BUTTON or "专业",},
+        },
+    }
+--[[        [2393]={--12.0银月城
+            options={},
             ['50.02 74.76']={
                 name= WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
                 icon= 'wow-token-gold',
@@ -80,10 +87,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 --class={},
                 --profession={},
                 --note=WoWTools_DataMixin.onlyChinese and BUTTON_LAG_AUCTIONHOUSE or '拍卖行',
+                --questID=0,
+                --achievementID= 0,
+                --achievementIndex= 1,
             },
-            options={}
-        }
-    }
+            ['48.24 51.46']={name='草药学',profession={182},},
+        },]]
+
 
 
     WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)

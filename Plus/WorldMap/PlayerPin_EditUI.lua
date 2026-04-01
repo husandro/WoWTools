@@ -80,11 +80,9 @@ local function GetProfessionIcon(profession)
     if profession then
         local text
         for skillLineID in pairs(profession) do
-            local icon, name= WoWTools_ProfessionMixin:GetName(skillLineID)
+            local icon= WoWTools_ProfessionMixin:GetName(skillLineID)
             if icon then
                 text= (text or '')..icon
-            elseif name then
-                text= (text and text..',' or '')..WoWTools_TextMixin:CN(name)
             else
                 text= (text and text..',' or '')..skillLineID
             end
@@ -195,11 +193,14 @@ local function Search_Text(findText, xy, pin)
 
     elseif xy==findText then
         return true
-    elseif pin.name and pin.name:find(findText) then
-
-        return true
-    elseif pin.note and pin.note:find(findText) then
-        return true
+    else
+        local name= WoWTools_TextMixin:CN(_G[pin.name]) or pin.name
+        local note= WoWTools_TextMixin:CN(_G[pin.note]) or pin.note
+        if name and name:find(findText)
+            or (note and note:find(findText))
+        then
+            return true
+        end
     end
 
     if pin.profession then
@@ -463,9 +464,10 @@ local function Initializer(self, data)
 --图标
     WoWTools_TextureMixin:SetTexture(self.Icon, data.pin.icon)
 --名称
-    self.Name:SetText(data.pin.name or '')
+    local name= WoWTools_TextMixin:CN(_G[data.pin.name]) or data.pin.name
+    self.Name:SetText(name or '')
 --颜色
-    if data.pin.name then
+    if name then
         local color= data.pin.color
         if color then
             self.Name:SetTextColor(color.r, color.g, color.b)
@@ -629,14 +631,15 @@ local function Zip_Data(zipData)
         print(WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '无数据' or ERR_HOUSING_RESULT_DB_ERROR))
         return
     end
+
     local lines = { 'WoWToolsWorldMapPlayerPin'}
     local numMapID, all= 0, 0
     for mapID, data in pairs(zipData) do
         local line= format(
             '[%d]={options={iconS=%d,fontH=%d},',
             mapID,
-            data.options and data.options.iconS or 0,
-            data.options and data.options.fontH or 0
+            data.options and data.options.iconS or PinHeight,
+            data.options and data.options.fontH or PinHeight
         )
         numMapID= numMapID+1
 
@@ -668,10 +671,11 @@ local function Zip_Data(zipData)
         line= line..'},'
         table.insert(lines, line)
     end
-    Frame.dataFrame:SetText(WoWTools_ZipMixin:base64Encode(table.concat(lines, "\n")))
-    Frame.dataFrame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
+
     Frame.dataFrame.enter:SetShown(false)
     Frame.dataFrame:SetShown(true)
+    Frame.dataFrame:SetText(WoWTools_ZipMixin:base64Encode(table.concat(lines, "\n")))
+    Frame.dataFrame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
 
     print(
         WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT),
@@ -683,16 +687,15 @@ end
 
 
 
+
+
+
 local function Enter_Data(tooltip)
     local text= WoWTools_ZipMixin:base64Decode(Frame.dataFrame:GetText())
     if not text or not text:find('WoWToolsWorldMapPlayerPin') then
         local err= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '数据库错误' or ERR_HOUSING_RESULT_DB_ERROR)
-        if tooltip then
-            if tooltip~=true then
-                GameTooltip_AddErrorLine(tooltip, err)
-            end
-        else
-            print(err)
+        if tooltip and tooltip~=true then
+            GameTooltip_AddErrorLine(tooltip, err)
         end
         Frame.dataFrame.enter:SetText(Frame.dataFrame.enter.tooltip)
         return
@@ -797,6 +800,76 @@ end
 
 
 
+
+
+
+local function Out_DataLua()
+    local text
+    for mapID, data in pairs(SaveWoW() or {}) do
+        text= text and text..'\n' or ''
+        text= text..'['..mapID..']= {\n'
+
+        local options= data.options or {}
+        text= text..'    options={'
+            if options.iconS and options.iconS~=PinHeight then
+                text= text..'iconS='..options.iconS..', '
+            end
+            if options.iconS and options.iconS~=PinHeight then
+                text= text..'fontH='..options.fontH..', '
+            end
+        text= text..'},\n'
+
+        for xy, info in pairs(data) do
+            if xy~='options' then
+                text= text..'    ["'..xy..'"]={'
+                if info.name then
+                    text= text..'name="'..info.name..'", '
+                end
+                if info.icon then
+                    text= text..'icon='..(type(info.icon)=='number' and info.icon or ('"'..info.icon..'"'))..', '
+                end
+                if info.color then
+                    text= text..'color={r='..info.color.r..',g='..info.color.g..',b='..info.color.b..'}, '
+                end
+                if info.profession then
+                    text= text..'profession={'
+                    for id in pairs(info.profession) do
+                        text= text..'['..id..']=true,'
+                    end
+                    text= text..'}, '
+                end
+                if info.class then
+                    text= text..'class={'
+                    for id in pairs(info.class) do
+                        text= text..'['..id..']=true,'
+                    end
+                    text= text..'}, '
+                end
+
+                if info.questID then
+                    text= text..'questID='..info.questID..', '
+                end
+                if info.achievementID then
+                    text= text..'achievementID='..info.achievementID..', '
+                end
+                if info.achievementIndex then
+                    text= text..'achievementIndex='..info.achievementIndex..', '
+                end
+                if info.note then
+                    text= text..'note="'..info.note..'", '
+                end
+                text= text..'},\n'
+            end
+        end
+
+        text= text..'},'
+    end
+
+    Frame.dataFrame.enter:SetShown(false)
+    Frame.dataFrame:SetShown(true)
+    Frame.dataFrame:SetText(text)
+    Frame.dataFrame:SetInstructions('Lua Data')
+end
 
 
 
@@ -1342,6 +1415,14 @@ local function Init()
     Frame.nameEdit:SetHeight(23)
     Frame.nameEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '名称' or NAME)
     Frame.nameEdit.searchIcon:SetAtlas('Gear')
+    function Frame.nameEdit:tooltip()
+        local name= _G[self:GetName()]
+        if name then
+            GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+            GameTooltip_SetTitle(GameTooltip, name)
+            GameTooltip:Show()
+        end
+    end
     function Frame.nameEdit:get_name()
         local name= self:GetText()
         self.name= name:gsub(' ', '')~='' and name or nil
@@ -1354,6 +1435,9 @@ local function Init()
         self.Instructions:SetShown(not self.name)
         self.searchIcon:SetShown(self.name)
         Set_UpdataAddButton_Stat()
+        if self:IsMouseOver() then
+            self:tooltip()
+        end
     end)
     Frame.nameEdit.clearButton:HookScript('OnMouseUp', function()
         Frame.updateButton:show_new()
@@ -1364,7 +1448,11 @@ local function Init()
         self:ClearFocus()
         Frame.updateButton:run()
     end)
-    
+    Frame.nameEdit:SetScrip('OnLeave', GameTooltip_Hide)
+    Frame.nameEdit:SetScript('OnEnter', function(self)
+        self:tooltip()
+    end)
+
 
 
 
@@ -1807,8 +1895,6 @@ local function Init()
 
 
     Frame.updateButton= CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate')
-    --Frame.updateButton:SetPoint('TOPLEFT', Frame.professionMenu, 'BOTTOMLEFT', 3, -12)
-    --Frame.updateButton:SetPoint('TOPRIGHT', Frame.professionMenu, 'TOPRIGHT', -3, -12)
     Frame.updateButton:SetPoint('TOPLEFT', Frame.sliderX, 'BOTTOMLEFT', -12, -12)
     Frame.updateButton:SetPoint('TOPRIGHT', Frame.sliderX, 'BOTTOMRIGHT', -6, -12)
     Frame.updateButton:SetHeight(28)
@@ -2472,12 +2558,40 @@ local function Init()
         end})
     end)
 
+
+
+
+
+
+
+
+
+    local info= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
+    info.tooltip= 'GlobalStrings'
+    info:SetPoint('TOPLEFT', 6, -6)
+    info:SetNormalAtlas('QuestNormal')
+    WoWTools_TextureMixin:SetButton(info, 0.5)
+    info:SetScript('OnClick', function()
+        Frame.dataFrame.enter:SetShown(false)
+        Frame.dataFrame:SetShown(true)
+        Frame.dataFrame:SetText('https://github.com/Ketho/BlizzardInterfaceResources/tree/live/Resources/GlobalStrings')
+        Frame.dataFrame:SetInstructions('GlobalStrings')
+    end)
+
+
     Frame.dataUscita= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
     Frame.dataUscita:SetNormalAtlas('bags-greenarrow')
-    Frame.dataUscita:SetPoint('TOPLEFT', 6, -6)
-    Frame.dataUscita.tooltip=WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT
-    Frame.dataUscita:SetScript('OnClick', function()
-        Zip_Data(SaveWoW())
+    Frame.dataUscita:SetPoint('LEFT', info, 'RIGHT')
+    Frame.dataUscita.tooltip=(WoWTools_DataMixin.onlyChinese and '分享' or SOCIAL_SHARE_TEXT)
+        ..WoWTools_DataMixin.Icon.left
+        ..WoWTools_DataMixin.Icon.right
+        ..(WoWTools_DataMixin.onlyChinese and '数据Lua' or 'Data lua')
+    Frame.dataUscita:SetScript('OnClick', function(_, d)
+        if d=='LeftButton' then
+            Zip_Data(SaveWoW())
+        else
+            Out_DataLua(SaveWoW())
+        end
     end)
 
     Frame.dataEnter= CreateFrame('Button', nil, Frame, 'WoWToolsButtonTemplate')
@@ -2504,19 +2618,21 @@ local function Init()
 
 
 
-
-
-
-
     Frame:SetScript('OnHide', function(self)
         self.dataFrame:SetShown(false)
         if _G['WoWToolsPlayerPinEditUITavCopyButton'] then
             _G['WoWToolsPlayerPinEditUITavCopyButton']:Hide()
         end
+        if WorldMapFrame:IsShown() then--刷新
+            WoWTools_WorldMapMixin:Init_PlayerPin()
+        end
     end)
     Frame:SetScript('OnShow', function()
         if _G['WoWToolsPlayerPinEditUITavCopyButton'] then
             _G['WoWToolsPlayerPinEditUITavCopyButton']:Show()
+        end
+        if WorldMapFrame:IsShown() then--刷新
+            WoWTools_WorldMapMixin:Init_PlayerPin()
         end
     end)
     function Frame:settings()
@@ -2571,4 +2687,8 @@ end
 
 function WoWTools_WorldMapMixin:PlayerPin_GetUIFrame()
     return Frame, 'WoWToolsPlayerPinEditUIFrame'
+end
+
+function WoWTools_WorldMapMixin:PlayerPin_IsShowUI()
+    return Frame and Frame:IsShown()
 end

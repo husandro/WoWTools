@@ -136,7 +136,7 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip_SetTitle(GameTooltip, WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '重置数据' or DAMAGE_METER_RESET_ALL_SESSIONS, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hide), WoWTools_DataMixin.Icon.mid)
@@ -158,7 +158,7 @@ local function Init()
             WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
             print(
                 WoWTools_AttributesMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET)..'|r',
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重置数据' or DAMAGE_METER_RESET_ALL_SESSIONS)..'|r',
                 WoWTools_DataMixin.onlyChinese and '数值' or STATUS_TEXT_VALUE
             )
 

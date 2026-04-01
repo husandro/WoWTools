@@ -3245,7 +3245,10 @@
         "CURRENT_QUESTS",
         "CreateUnsecuredRegionPoolInstance",
         "BaseMapPoiPinMixin",
-        "EncounterJournal_SetDescriptionWithBullets"
+        "EncounterJournal_SetDescriptionWithBullets",
+        "DAMAGE_METER_RESET_ALL_SESSIONS",
+        "DamageMeterSessionWindow1",
+        "WOW_LABS_RETURN_TO_MATCH_DETAILS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -2153,15 +2153,19 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         local isNonInteractive= frame:IsNonInteractive()
         local isLocked= frame:IsLocked()
 
+        local atlas
         if isLocked and isNonInteractive then
-            menu.Icon:SetAtlas('talents-button-reset')
+            atlas= 'talents-button-reset'
         elseif isLocked then
-            menu.Icon:SetAtlas('friendslist-recentallies-Pin')
+            atlas= 'friendslist-recentallies-Pin'
         elseif isNonInteractive then
-            menu.Icon:SetAtlas('friendslist-recentallies-Pin-yellow')
-        else
-            menu.Icon:SetAtlas('GM-icon-settings-hover')
+            atlas= 'friendslist-recentallies-Pin-yellow'
         end
+        menu.Icon:SetAtlas(atlas or 'GM-icon-settings-hover')
+
+        local s= atlas and 6 or 0
+        menu.Icon:SetPoint('TOPLEFT', s, -s)
+        menu.Icon:SetPoint('BOTTOMRIGHT', -s, s)
 
         menu.Icon:SetAlpha(menu:IsMouseOver() and 1 or 0.3)
     end
@@ -2185,6 +2189,8 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         end)
 
 --当前，总体 WowStyle2DropdownTemplate
+        frame.SessionDropdown:ClearAllPoints()
+        frame.SessionDropdown:SetPoint('RIGHT', frame.SettingsDropdown, 'LEFT')
         self:SetAlphaColor(frame.SessionDropdown.Background, nil, nil, 0)
         frame.SessionDropdown.SessionName:SetFontObject('ChatFontSmall')
         WoWTools_ColorMixin:SetLabelColor(frame.SessionDropdown.SessionName)
@@ -2227,6 +2233,7 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
         frame.SettingsDropdown.Icon:SetPoint('TOPLEFT', 4, -4)
         frame.SettingsDropdown.Icon:SetPoint('BOTTOMRIGHT', -4, 4)
         self:SetAlphaColor(frame.SettingsDropdown.Icon, nil, nil, 0.5)
+        frame.SettingsDropdown.Icon:ClearAllPoints()
         set_Locked_NonInteractive(frame.SettingsDropdown)--.Icon:SetAtlas(frame:IsLocked() and 'Garr_LevelUpgradeLocked' or 'GM-icon-settings-hover')        
         WoWTools_DataMixin:Hook(frame.SettingsDropdown, 'OnButtonStateChanged', set_Locked_NonInteractive)
 
@@ -2272,6 +2279,30 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
             settins(windowData.sessionWindow)
         end
     end
+
+    if DamageMeterSessionWindow1 then
+        local clear= CreateFrame('DropdownButton', 'WoWToolsDamageClearButton', DamageMeterSessionWindow1, 'WoWToolsMenu2Template')
+
+        clear.texture= clear:CreateTexture(nil, 'BORDER')
+        clear.texture:SetPoint('CENTER')
+        clear.texture:SetAtlas('bags-button-autosort-up')
+        WoWTools_ButtonMixin:AddMask(clear, true, clear.texture)
+        function clear:set_alpha()
+            local isOver= self:IsMouseOver()
+            self.texture:SetAlpha(isOver and 1 or 0.5)
+            local w= isOver and 23 or 18
+            clear.texture:SetSize(w, w)
+        end
+        clear:set_alpha()
+
+        clear.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重置数据' or DAMAGE_METER_RESET_ALL_SESSIONS)
+        clear:SetPoint('RIGHT', DamageMeterSessionWindow1.SessionDropdown, 'LEFT')
+        clear:SetScript('OnClick', function()
+            C_DamageMeter.ResetAllCombatSessions()
+        end)
+    end
+
+
     WoWTools_DataMixin:Hook(DamageMeterSessionWindowMixin, 'OnLoad', function(frame)
         settins(frame)
     end)
