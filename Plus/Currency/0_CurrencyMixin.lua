@@ -213,10 +213,16 @@ end
 
 
 
-
+--[[accountCurrencyData= {
+characterGUID	WOWGUID : string	
+characterName	string	
+fullCharacterName	string	11.0.2
+currencyID	number	
+quantity	number
+}]]
 
 function WoWTools_CurrencyMixin:GetAccountInfo(currencyID, checkGUID)
-    local new={}
+    local accountCurrencyData={}
     local num=0
 
     if currencyID and currencyID>0 and C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then
@@ -228,7 +234,7 @@ function WoWTools_CurrencyMixin:GetAccountInfo(currencyID, checkGUID)
                     if WoWTools_WoWDate[tab.characterGUID] then
                         tab.faction= WoWTools_WoWDate[tab.characterGUID].faction
                     end
-                    table.insert(new, tab)
+                    table.insert(accountCurrencyData, tab)
                     num= num+ tab.quantity
                 end
             end
@@ -236,16 +242,9 @@ function WoWTools_CurrencyMixin:GetAccountInfo(currencyID, checkGUID)
             C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
         end
     end
-    return num, new
+
+    return num, accountCurrencyData
 end
---[[
-accountCurrencyData = C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyID)
-characterGUID	string : WOWGUID	
-characterName	string	
-currencyID	number	
-quantity	number
-faction 
-]]
 
 
 function WoWTools_CurrencyMixin:GetWoWCount(currencyID, checkGUID, checkRegion)

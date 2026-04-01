@@ -162,6 +162,7 @@ disabled='talents-button-reset', ChallengeMode-icon-redline
 select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
 common-dropdown-icon-checkmark-yellow 黄色
 ChallengeMode-RankLineDivider
+CampCollection-icon-star auctionhouse-icon-favorite  recipetoast-icon-star 星
 ]]
 
 

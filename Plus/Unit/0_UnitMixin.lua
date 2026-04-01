@@ -208,9 +208,9 @@ function WoWTools_UnitMixin:NameRemoveRealm(name, realm)--玩家名称, 去服�
     if not reName or reRealm=='' or reRealm==WoWTools_DataMixin.Player.Realm then
         return reName
     elseif WoWTools_DataMixin.Player.Realms[reRealm] then
-        return reName..'|cnGREEN_FONT_COLOR:*|r'
+        return reName..GREEN_FONT_COLOR:WrapTextInColorCode('*')
     elseif reRealm then
-        return reName.. GREEN_FONT_COLOR:WrapTextInColorCode('*')
+        return reName..DISABLED_FONT_COLOR:WrapTextInColorCode('*')
     end
     return reName
 end

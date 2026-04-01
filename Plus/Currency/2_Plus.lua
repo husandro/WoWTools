@@ -275,7 +275,7 @@ local function Init_Search(self)
 	local currencyID, name, currencyIndex
 	local findTab={}
 
-	currencyID =math.max(self:GetNumber() or 0)
+	currencyID= self:GetNumber() or 0
 	currencyID= currencyID>0 and currencyID or nil
 
 	name= self:GetText() or ''
@@ -403,7 +403,7 @@ local function Init_PlusButton()
 
 
 	local edit= WoWTools_EditBoxMixin:Create(up, {
-		name='WoWTools_PlusTokensSearchBox',
+		name='WoWToolsPlusTokensSearchBox',
 		Template='SearchBoxTemplate'
 	})
 	edit:SetPoint('RIGHT', up, 'LEFT', -6, 0)
@@ -412,9 +412,9 @@ local function Init_PlusButton()
 	edit:HookScript('OnTextChanged', function(self)
 		Init_Search(self)
 	end)
-	edit:SetScript('OnEnterPressed', function(self)
+	--[[edit:SetScript('OnEnterPressed', function(self)
 		Init_Search(self)
-	end)
+	end)]]
 	edit:HookScript('OnEditFocusGained', function(self)
 		Expand_All()
 		if self:GetText()~='' then

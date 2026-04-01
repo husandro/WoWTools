@@ -25,41 +25,84 @@ local function Init_IsSelf(root)
         end
     end
 
-    local num=0
-    for guid, info in pairs(new) do
-        root:CreateButton(
-            WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, faction=info.faction}),
-        function(data)
-            WoWTools_MailMixin:SetSendName(nil, data.guid)
-            return MenuResponse.Open
-        end, {guid=guid})
-        num=num+1
-    end
-
-    local num2, new2= WoWTools_CurrencyMixin:GetAccountInfo(615)
-    if num2==0 then
-        num2, new2= WoWTools_CurrencyMixin:GetAccountInfo(515)
-    end
-
-    if num2>0 then
-        if num>0 then
-            root:CreateDivider()
-        end
-        for _, info in pairs(new2 or {}) do
-            local guid=info.characterGUID
-            if guid and not new[guid] then
-                root:CreateButton(
-                    WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, faction=info.faction}),
-                function(data)
-                    WoWTools_MailMixin:SetSendName(nil, data.guid)
-                    return MenuResponse.Open
-                end, {guid=guid})
-                num=num+1
+    for _, currencyID in pairs({
+        3316,--/虚光灰岩
+        2003,--巨龙群岛补给
+        1767,--冥殇
+        1560,--战争物资
+        1220,--职业大厅资源
+        823,--/埃匹希斯水晶
+        777,--永恒铸币
+        241,--冠军的徽记
+    }) do
+        local accountCurrencyData= select(2, WoWTools_CurrencyMixin:GetAccountInfo(currencyID))
+        for _, data in pairs(accountCurrencyData or {}) do
+            if not new[data.characterGUID] then
+                new[data.characterGUID]=data
             end
         end
     end
 
+    local tab= {}
+    for guid, data in pairs(new) do
+        local server= select(2, UnitNameFromGUID(guid)) or WoWTools_DataMixin.Player.Realm
+        tab[server]= tab[server] or {}
+
+        table.insert(tab[server], {
+            guid= guid,
+            faction= data.faction,
+            classID= select(3, UnitClassFromGUID(guid)) or 0,
+        })
+    end
+
+    new= {}
+    for server, data in pairs(tab) do
+        local d= {}
+        for _, info in pairs(data) do
+            table.insert(d, info)
+        end
+        table.insert(new, {server= server, data=data, count=#data})
+    end
+    table.sort(new, function(a, b)
+        if a.server==WoWTools_DataMixin.Player.Realm then
+            return true
+        else
+            return a.count> b.count
+        end
+    end)
+
+    for _, acount in pairs(new) do
+        root:CreateTitle(
+            '|cffffffff'..acount.count..'|r '
+            ..(acount.server==WoWTools_DataMixin.Player.Realm and '|A:recipetoast-icon-star:0:0|a' or '')
+            ..acount.server,
+            WoWTools_DataMixin.Player.Realms[acount.server] and GREEN_FONT_COLOR or NORMAL_FONT_COLOR
+        )
+
+        table.sort(acount.data, function(a, b) return a.classID< b.classID end)
+        for index, info in pairs(acount.data) do
+            local guid= info.guid
+
+            local sub=root:CreateRadio(
+                WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, faction=info.faction}),--3reRealm=true, 
+            function(data)
+                local name= WoWTools_UnitMixin:GetFullName(nil, nil, data.guid)
+                if name then
+                    name= name:gsub('%-'..WoWTools_DataMixin.Player.Realm, '')
+                end
+                return name and name==SendMailNameEditBox:GetText()
+            end, function(data)
+                WoWTools_MailMixin:SetSendName(nil, data.guid)
+                return MenuResponse.Refresh
+            end, {guid=guid, rightText=(acount.server==WoWTools_DataMixin.Player.Realm and '|cnGREEN_FONT_COLOR:' or '|cff626262')..index})
+
+            WoWTools_MenuMixin:SetRightText(sub)
+        end
+    end
+
     WoWTools_MenuMixin:SetScrollMode(root)
+    tab=nil
+    new=nil
 end
 
 
@@ -399,14 +442,16 @@ local function Init()
 
 
     --下拉，菜单
-    listButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
+    listButton= CreateFrame('DropdownButton', 'WoWToolsSendMailPlayerNameListButton', SendMailNameEditBox, 'WoWToolsMenu3Template') --WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
+    listButton:SetNormalAtlas('common-icon-rotateleft')
 
     listButton:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT')
-    listButton:SetScript('OnMouseDown', function(self)
+    listButton:SetupMenu(Init_Menu)
+    --[[listButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, function(...)
             Init_Menu(...)
         end)
-    end)
+    end)]]
 
 
 
