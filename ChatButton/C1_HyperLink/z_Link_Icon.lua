@@ -57,9 +57,9 @@ local function SetChannels(link)
     name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
 
     local icon= ChannelIcon[name]
-    if not icon and WoWTools_DataMixin.Player.husandro then
+    --[[if not icon and WoWTools_DataMixin.Player.husandro then
         print('ChannelIcon', name)
-    end
+    end]]
     if icon then
         return icon
     end
