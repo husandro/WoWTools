@@ -76,12 +76,6 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
         return
     end
 
-    --spellID = spellID or select(2, tooltip:GetSpell())-- or (actionID and C_ActionBar.GetSpell(actionID))
-
-    --[[if not canaccessvalue(spellID) or not spellID then
-        return
-    end]]
-
     local name, icon, originalIcon
     local spellInfo= C_Spell.GetSpellInfo(spellID)
 
@@ -116,7 +110,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--, actionID)
         self:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 
-    tooltip.Portrait:settings(spellTexture)
+    --tooltip.Portrait:settings(spellTexture)
 
     WoWTools_TooltipMixin:Show(tooltip)
     --tooltip:Show()
