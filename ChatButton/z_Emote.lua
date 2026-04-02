@@ -152,7 +152,7 @@ local function On_Click(self)
             end
         end
         --DoEmote(value)
-        
+
         C_ChatInfo.PerformEmote(value, UnitName('player'), nil)
     end
 end
