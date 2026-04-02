@@ -47,9 +47,9 @@ local function Init_Menu(self, root, data)
         tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自定义屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, IGNORE), WoWTools_TextMixin:GetEnabeleDisable(Save().userChatFilter))
         tooltip:AddLine(' ')
         tooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM)
+            (WoWTools_DataMixin.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM))
             ..' '
-            .. (Save().userChatFilterTab[description.name] and Save().userChatFilterTab[description.name].num) or ''),
+            .. (Save().userChatFilterTab[description.name] and Save().userChatFilterTab[description.name].num or ''),
             WoWTools_DataMixin.onlyChinese and '添加/移除' or ADD..'/'..REMOVE
         )
 
