@@ -59,7 +59,7 @@ local function Init()
 
 
     local frame= SettingsPanel.AddOnsTab
-    if frame then
+    if frame then--common-icon-exit
         frame.reload= CreateFrame('Button', nil, frame, 'GameMenuButtonTemplate')
         frame.reload:SetText(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
         frame.reload:SetScript('OnLeave', GameTooltip_Hide)

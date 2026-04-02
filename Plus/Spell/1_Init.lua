@@ -18,12 +18,17 @@ local function Init()
         return
     end
 
-
     WoWTools_SpellMixin:Init_TalentsFrame()
     WoWTools_SpellMixin:Init_SpellBookFrame()
     WoWTools_SpellMixin:Init_Spec_Button()
 
-    
+--添加一个按钮
+    local reload= CreateFrame('Button', 'WoWToolsSpellBookReloadButton', PlayerSpellsFrame.TitleContainer, 'WoWToolsButtonTemplate')
+    reload:SetPoint('LEFT', 25, 0)
+    reload:SetNormalAtlas('common-icon-exit')
+    reload.tooltip=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重新加载' or RELOADUI)
+    reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
+    WoWTools_TextureMixin:SetButton(reload)
 
 
     Init=function()end

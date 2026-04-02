@@ -3248,7 +3248,8 @@
         "EncounterJournal_SetDescriptionWithBullets",
         "DAMAGE_METER_RESET_ALL_SESSIONS",
         "DamageMeterSessionWindow1",
-        "WOW_LABS_RETURN_TO_MATCH_DETAILS"
+        "WOW_LABS_RETURN_TO_MATCH_DETAILS",
+        "LFG_LIST_REQUIRE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

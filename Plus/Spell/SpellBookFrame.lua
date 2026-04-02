@@ -200,7 +200,8 @@ end
 
 local function Init()
     WoWTools_DataMixin:Hook(SpellBookItemMixin, 'UpdateVisuals', function(frame)
-        if not frame.spellBookItemInfo then
+        local info= frame.spellBookItemInfo
+        if not info then
             return
         end
         local r,g,b=1,1,1
@@ -212,13 +213,43 @@ local function Init()
                 frame.TextContainer.FlyoutText:SetPoint('BOTTOMLEFT', frame.TextContainer.Name,'TOPLEFT', 2,2)
                 frame.TextContainer.FlyoutText:SetTextColor(SPELLBOOK_FONT_COLOR:GetRGB())
             end
-            flyoutText= Get_FlyoutNum(frame.spellBookItemInfo.actionID)
+            flyoutText= Get_FlyoutNum(info.actionID)
         end
         frame.Button.Arrow:SetVertexColor(r,g,b)
         frame.Button.Border:SetVertexColor(r,g,b)
         frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
         if frame.TextContainer.FlyoutText then
             frame.TextContainer.FlyoutText:SetText(flyoutText or '')
+        end
+	end)
+
+    WoWTools_DataMixin:Hook(SpellBookItemMixin, 'UpdateTextContainer', function(frame)
+        local text, color
+        local info= not frame:IsFlyout() and frame.spellBookItemInfo
+        if info and info.spellID and not (info.isOffSpec or info.itemType == Enum.SpellBookItemType.FutureSpell) then--self.isUnlearned = self.isOffSpec or self.spellBookItemInfo.itemType == Enum.SpellBookItemType.FutureSpell;
+            local data =C_TooltipInfo.GetSpellByID(info.spellID)
+            if data and data.lines then
+                for _, line in pairs(data.lines) do
+                    if line.leftText and line.leftText:find('^'..LFG_LIST_REQUIRE) then
+                        text= line.leftText:match(LFG_LIST_REQUIRE..'(.+)')
+                        color= line.leftColor
+                        break
+                    end
+                end
+            end
+        end
+        if text and not frame.Sub2Name then
+            frame.Sub2Name= frame:CreateFontString(nil, 'ARTWORK', 'SystemFont_Med1')
+            frame.Sub2Name:SetPoint('TOPLEFT', frame.SubName, 'BOTTOMLEFT', 0, -2)
+            frame.Sub2Name:SetPoint('TOPRIGHT', frame.SubName, 'BOTTOMRIGHT', 0, -2)
+            frame.Sub2Name:SetJustifyH('LEFT')
+            frame.Sub2Name:SetShadowOffset(1, -1)
+        end
+        if frame.Sub2Name then
+            frame.Sub2Name:SetText(WoWTools_TextMixin:CN(text) or '')
+           -- color= (not color or color:GenerateHexColor()=='ffffffff') and SPELLBOOK_FONT_COLOR or color
+            color= color or SPELLBOOK_FONT_COLOR
+            frame.Sub2Name:SetTextColor(color:GetRGB())
         end
     end)
 
