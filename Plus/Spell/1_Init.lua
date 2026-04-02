@@ -24,11 +24,11 @@ local function Init()
 
 --添加一个按钮
     local reload= CreateFrame('Button', 'WoWToolsSpellBookReloadButton', PlayerSpellsFrame.TitleContainer, 'WoWToolsButtonTemplate')
-    reload:SetPoint('LEFT', 25, 0)
+    reload:SetPoint('LEFT', 28, -3)
     reload:SetNormalAtlas('common-icon-exit')
     reload.tooltip=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重新加载' or RELOADUI)
     reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
-    WoWTools_TextureMixin:SetButton(reload)
+    WoWTools_TextureMixin:SetButton(reload, 0.5)
 
 
     Init=function()end

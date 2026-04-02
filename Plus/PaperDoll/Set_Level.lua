@@ -128,28 +128,19 @@ local function Init()
 
 
 --专精，职责
-    CharacterFrame.specRole= btn:CreateTexture('WoWToolsPaperDollSpecRoleTexture', 'OVERLAY', nil, 7)
-    CharacterFrame.specRole:SetSize(22,22)
-    CharacterFrame.specRole:SetPoint('BOTTOMRIGHT', CharacterFrame.PortraitContainer, 2,0)
+    CharacterFrame.PortraitSpecRole= CharacterFrame.PortraitContainer:CreateTexture('WoWToolsPaperDollSpecRoleTexture', 'OVERLAY', nil, 7)
+    CharacterFrame.PortraitSpecRole:SetSize(22,22)
+    CharacterFrame.PortraitSpecRole:SetPoint('BOTTOMRIGHT', CharacterFramePortrait, -5,8)
 
 
 
     WoWTools_DataMixin:Hook(CharacterFrame, 'UpdatePortrait', function(self)
-        local atlas, specialization
-
-        if self.activeSubframe == "PaperDollFrame" and not Save().notLevel then
-            specialization= C_SpecializationInfo.GetSpecialization()
-        end
-        if specialization ~= nil then
-            local role = select(5, C_SpecializationInfo.GetSpecializationInfo(specialization))
-            if role then
-                atlas= GetMicroIconForRole(role)
-            end
-        end
+        local role = select(5, PlayerUtil.GetCurrentSpecID())
+        local atlas= role and GetMicroIconForRole(role)
         if atlas then
-            self.specRole:SetAtlas(atlas)
+            self.PortraitSpecRole:SetAtlas(atlas)
         else
-            self.specRole:SetTexture(0)
+            self.PortraitSpecRole:SetTexture(0)
         end
     end)
 

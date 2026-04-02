@@ -255,8 +255,27 @@ local function Init()
 
 
 
+    --专精，职责
+    PlayerSpellsFrame.PortraitSpecRole= PlayerSpellsFrame.PortraitContainer:CreateTexture('WoWToolsSpellBookSpecRoleTexture', 'OVERLAY', nil, 7)
+    PlayerSpellsFrame.PortraitSpecRole:SetSize(22,22)
+    PlayerSpellsFrame.PortraitSpecRole:SetPoint('BOTTOMRIGHT', PlayerSpellsFramePortrait, -5,8)
+    function PlayerSpellsFrame.PortraitSpecRole:setting()
+        local role = select(5, PlayerUtil.GetCurrentSpecID())
+        local atlas= role and GetMicroIconForRole(role)
+        if atlas then
+            self:SetAtlas(atlas)
+        else
+            self:SetTexture(0)
+        end
+    end
+    PlayerSpellsFrame.PortraitSpecRole:setting()
+    WoWTools_DataMixin:Hook(PlayerSpellsFrame, 'UpdatePortrait', function(self)
+        self.PortraitSpecRole:setting()
+    end)
+
 
     Init_All_Flyout()
+
 
     Init=function()end
 end
