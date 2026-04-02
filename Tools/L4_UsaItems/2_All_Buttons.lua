@@ -313,7 +313,7 @@ local function Init()
     end)
 
     for _, itemID in pairs(Save().item) do
-        if C_Item.GetItemCount(itemID)>0 or (PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) or WoWTools_DataMixin.Player.husandro then
+        if C_Item.GetItemCount(itemID)>0 or (PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID)) then-- or WoWTools_DataMixin.Player.husandro then
             WoWTools_DataMixin:Load(itemID, 'item')
             local name = C_Item.GetItemNameByID(itemID) or itemID
             local icon= select(5, C_Item.GetItemInfoInstant(itemID)) or 134400
@@ -328,7 +328,7 @@ local function Init()
    end
 
     for _, itemID in pairs(Save().equip) do
-        if C_Item.GetItemCount(itemID)>0 or WoWTools_DataMixin.Player.husandro then
+        if C_Item.GetItemCount(itemID)>0 then--or WoWTools_DataMixin.Player.husandro then
             WoWTools_DataMixin:Load(itemID, 'item')
             local itemEquipLoc, icon = select(4, C_Item.GetItemInfoInstant(itemID))
             local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
@@ -347,7 +347,7 @@ local function Init()
     end
 
     for _, spellID in pairs(Save().spell) do
-        if C_SpellBook.IsSpellInSpellBook(spellID) or WoWTools_DataMixin.Player.husandro then
+        if C_SpellBook.IsSpellInSpellBook(spellID) then--or WoWTools_DataMixin.Player.husandro then
             WoWTools_DataMixin:Load(spellID, 'spell')
             local btn= WoWTools_ToolsMixin:CreateButton({
                 name='UsaItems_SpellID_'..spellID,
