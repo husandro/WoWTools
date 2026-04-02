@@ -735,7 +735,12 @@ local function Init()
 
 
 
-
+    QuestFrameCompleteQuestButton:HookScript('OnShow', function(self)
+        if not Save().quest or not self:IsEnabled() or IsModifierKeyDown() then
+            return
+        end
+        self:Click()
+    end)
 
 
 
