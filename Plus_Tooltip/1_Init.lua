@@ -297,7 +297,7 @@ local function Init_Panel()
         end
     })
 
-    
+
     WoWTools_PanelMixin:Header(Layout, WARNING_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '替换原生' or REPLACE))
     WoWTools_PanelMixin:OnlyCheck({
         name= 'SetTooltipMoney',
@@ -448,10 +448,13 @@ end
 local function Init()
     WoWTools_LoadUIMixin:Housing()
 
-    WoWTools_DataMixin:Hook("GameTooltip_SetDefaultAnchor", function(frame, parent)
-        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and InCombatLockdown()) then
-            frame:ClearAllPoints()
-            frame:SetOwner(
+    WoWTools_DataMixin:Hook("GameTooltip_SetDefaultAnchor", function(tooltip, parent)
+        if Save().setDefaultAnchor
+            and not (Save().inCombatDefaultAnchor and InCombatLockdown())
+            and not tooltip:IsPreventingSecretValues()
+        then
+            tooltip:ClearAllPoints()
+            tooltip:SetOwner(
                 parent,
                 Save().cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT',
                 Save().cursorX or 0,
