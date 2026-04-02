@@ -1416,10 +1416,12 @@ local function Init()
     Frame.nameEdit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '名称' or NAME)
     Frame.nameEdit.searchIcon:SetAtlas('Gear')
     function Frame.nameEdit:tooltip()
-        local name= _G[self:GetName()]
+        local text= self:GetText()
+        local name= _G[text]
         if name then
             GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
             GameTooltip_SetTitle(GameTooltip, name)
+            GameTooltip:AddLine(text)
             GameTooltip:Show()
         end
     end
