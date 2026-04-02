@@ -485,7 +485,7 @@ local function Init_Menu(self, root)
         WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
     end)
 
---挑战开始
+--[[挑战开始
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '挑战开始' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, START),
     function()
@@ -495,7 +495,7 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tootip)
         tootip:AddLine('CHALLENGE_MODE_START')
-    end)
+    end)]]
 
 --挑战结束
     sub= root:CreateCheckbox(

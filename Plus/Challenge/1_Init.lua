@@ -1,23 +1,3 @@
-local P_Save= {
-    --hideIns=true,--隐藏，副本，挑战，信息
-    --insScale=0.8,--副本，缩放
-
-    --hideTips=true,--提示信息
-    --tipsScale=0.8,--提示信息，缩放
-    rightX= 2,--右边，提示，位置
-    rightY= -22,
-
-    hidePort= not WoWTools_DataMixin.Player.husandro,--传送门
-    portScale=WoWTools_DataMixin.Player.husandro and 0.85 or 1,--传送门, 缩放
-
-    --hideKeyUI=true,--挑战,钥石,插入界面
-    slotKeystoneSay=WoWTools_DataMixin.Player.husandro,--插入, KEY时, 说
-
-    --EndKeystoneSayText= WoWTools_DataMixin.Player.Region==5 and '{rt1}你们还继续吗? ' or '{rt1}Want to continue? ',
-}
-
-
-
 
 
 
@@ -108,8 +88,26 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
-            P_Save=nil
+            WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or {
+                --hideIns=true,--隐藏，副本，挑战，信息
+                --insScale=0.8,--副本，缩放
+
+                --hideTips=true,--提示信息
+                --tipsScale=0.8,--提示信息，缩放
+                rightX= 2,--右边，提示，位置
+                rightY= -22,
+
+                hidePort= not WoWTools_DataMixin.Player.husandro,--传送门
+                portScale=WoWTools_DataMixin.Player.husandro and 0.85 or 1,--传送门, 缩放
+
+                --hideKeyUI=true,--挑战,钥石,插入界面
+                slotKeystoneSay=WoWTools_DataMixin.Player.husandro,--插入, KEY时, 说
+
+                --EndKeystoneSayText= WoWTools_DataMixin.Player.Region==5 and '{rt1}你们还继续吗? ' or '{rt1}Want to continue? ',
+            }
+
+
+            Save().hideAffixSay= nil--已弃用
 
             WoWTools_ChallengeMixin.addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
 
@@ -134,7 +132,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 self:RegisterEvent('CHALLENGE_MODE_COMPLETED')
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
-                self:RegisterEvent('CHALLENGE_MODE_START')
+                --self:RegisterEvent('CHALLENGE_MODE_START')
 
                 for _, tab in pairs(WoWTools_ChallengesSpellData) do
                    WoWTools_DataMixin:Load(tab.spell, 'spell')
@@ -159,8 +157,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         WoWTools_ChallengeMixin:Say_ChallengeComplete()--挑战结束时， 显示按钮
 
-    elseif event=='CHALLENGE_MODE_START' then --赏金, 说 Bounty
-        WoWTools_ChallengeMixin:Chat_Affix()
+    --elseif event=='CHALLENGE_MODE_START' then --赏金, 说 Bounty
+        --WoWTools_ChallengeMixin:Chat_Affix()
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
