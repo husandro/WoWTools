@@ -87,7 +87,7 @@ local function Init()
             end
 
             hasInvite=  WoWTools_GuildMixin:GetApplicantList(clubID) and true or false
-            hasMessage= CommunitiesUtil.DoesCommunityHaveUnreadMessages(clubID)
+            hasMessage= WoWTools_GuildMixin:DoesCommunityHaveUnreadMessages(clubID)
             faction= elementData.clubInfo.crossFaction and 'CrossedFlags'
 
             btn.allText:SetTextColor(btn.Name:GetTextColor())

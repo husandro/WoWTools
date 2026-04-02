@@ -62,18 +62,6 @@ end
 
 
 
-local function DoesCommunityHaveUnreadMessages(clubId)
-	local streamToNotificationSetting = CommunitiesUtil.GetStreamNotificationSettingsLookup(clubId);
-	for _, stream in ipairs(C_Club.GetStreams(clubId)) do
-		if canaccessvalue(stream.streamId) and stream.streamId ~= nil and streamToNotificationSetting[stream.streamId] == Enum.ClubStreamNotificationFilter.All then
-			if CommunitiesUtil.DoesCommunityStreamHaveUnreadMessages(clubId, stream.streamId) then
-				return true;
-			end
-		end
-	end
-end
-
-
 
 local function Init()
     local btn= WoWTools_ChatMixin:GetButtonForName('Guild')
@@ -141,7 +129,7 @@ local function Init()
                         end
                     end
 
-                    isMessage= isMessage or DoesCommunityHaveUnreadMessages(data.clubId)
+                    isMessage= isMessage or WoWTools_GuildMixin:DoesCommunityHaveUnreadMessages(data.clubId)
 
                     if isMessage and isInviete then
                         break

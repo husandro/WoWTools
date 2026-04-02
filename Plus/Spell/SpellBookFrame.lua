@@ -226,11 +226,16 @@ local function Init()
     WoWTools_DataMixin:Hook(SpellBookItemMixin, 'UpdateTextContainer', function(frame)
         local text, color
         local info= not frame:IsFlyout() and frame.spellBookItemInfo
-        if info and info.spellID and not (info.isOffSpec or info.itemType == Enum.SpellBookItemType.FutureSpell) then--self.isUnlearned = self.isOffSpec or self.spellBookItemInfo.itemType == Enum.SpellBookItemType.FutureSpell;
+        if canaccesstable(info) and info
+            and canaccessvalue(info.spellID) and info.spellID
+            and not (info.isOffSpec or info.itemType == Enum.SpellBookItemType.FutureSpell)--self.isUnlearned = self.isOffSpec or self.spellBookItemInfo.itemType == Enum.SpellBookItemType.FutureSpell;
+        then
             local data =C_TooltipInfo.GetSpellByID(info.spellID)
             if data and data.lines then
                 for _, line in pairs(data.lines) do
-                    if line.leftText and line.leftText:find('^'..LFG_LIST_REQUIRE) then
+                if not canaccessvalue(line.leftText) then
+                    break
+                elseif line.leftText and line.leftText:find('^'..LFG_LIST_REQUIRE) then
                         text= line.leftText:match(LFG_LIST_REQUIRE..'(.+)')
                         color= line.leftColor
                         break

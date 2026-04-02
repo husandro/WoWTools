@@ -154,9 +154,8 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
             col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff626262'
 
             name= col..tab.name..'|r'
-
     --未读信息
-            if CommunitiesUtil.DoesCommunityHaveUnreadMessages(tab.clubId) then
+            if WoWTools_GuildMixin:DoesCommunityHaveUnreadMessages(tab.clubId) then
                 name= name..'|A:communities-icon-notification:0:0|a'
             end
 
@@ -213,4 +212,18 @@ function WoWTools_GuildMixin:GetApplicantList(clubID)
             end
         end
     end
+end
+
+
+
+
+function WoWTools_GuildMixin:DoesCommunityHaveUnreadMessages(clubId)
+	local streamToNotificationSetting = CommunitiesUtil.GetStreamNotificationSettingsLookup(clubId);
+	for _, stream in ipairs(C_Club.GetStreams(clubId)) do
+		if canaccessvalue(stream.streamId) and stream.streamId ~= nil and streamToNotificationSetting[stream.streamId] == Enum.ClubStreamNotificationFilter.All then
+			if CommunitiesUtil.DoesCommunityStreamHaveUnreadMessages(clubId, stream.streamId) then
+				return true;
+			end
+		end
+	end
 end
