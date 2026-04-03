@@ -154,4 +154,22 @@
             <OnEnter function="WoWToolsButton_OnEnter"/>
         </Scripts>
     </Button>
+
+    <Button name="WoWToolsReloadButtonTemplate" inherits="WoWToolsTemplate" virtual="true">
+        <NormalTexture atlas="common-icon-exit" alpha='0.5'>
+            <Anchors>
+                <Anchor point="TOPLEFT" x='2' y='-2'/>
+                <Anchor point="BOTTOMRIGHT" x='-2' y='2'/>
+            </Anchors>
+        </NormalTexture>
+        <Scripts>
+            <OnLoad>
+                self.tooltip=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重新加载' or RELOADUI)
+            </OnLoad>
+            <OnLeave function="WoWToolsButton_OnLeave"/>
+            <OnEnter function="WoWToolsButton_OnEnter"/>
+            <OnMouseUp function="C_UI.Reload"/>
+        </Scripts>
+    </Button>
+
 </Ui>

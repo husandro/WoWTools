@@ -20,15 +20,19 @@ local function Set_Texture(self)
 end
 
 local function Set_Assisted(self)
-    if not InCombatLockdown() then
+    if self:GetFrameStrata()=='BACKGROUND' then
+        return
+    elseif not InCombatLockdown() then
         self:SetFrameStrata('BACKGROUND')
+        self:SetScale(0.9)
     else
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
-            self:SetFrameStrata('BACKGROUND')
+            Set_Assisted(self)
             EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
         end)
     end
 end
+
 
 local function Set_KeyText(self)
     local text= WoWTools_KeyMixin:GetHotKeyText(self.HotKey:GetText(), nil)
@@ -67,9 +71,9 @@ local function Init_HooKey(btn)
 
     if btn.AssistedCombatRotationFrame then
         Set_Assisted(btn.AssistedCombatRotationFrame)
-        btn.AssistedCombatRotationFrame:HookScript('OnShow', function(frame)
+        --[[btn.AssistedCombatRotationFrame:HookScript('OnShow', function(frame)
             Set_Assisted(frame)
-        end)
+        end)]]
     end
 end
 
@@ -101,7 +105,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ActionBar()
         Set_Texture(_G['StanceButton'..i])--..'NormalTexture'])
     end
 
-    WoWTools_DataMixin:Hook(ActionBarButtonAssistedCombatRotationFrameMixin, 'OnShow', function(frame)
+    WoWTools_DataMixin:Hook(ActionBarButtonAssistedCombatRotationFrameMixin, 'OnLoad', function(frame)
         Set_Assisted(frame)
     end)
 

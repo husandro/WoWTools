@@ -47,7 +47,10 @@ local NpcGossipTab={
         [121103]=1,
     }
 }
-
+--instanceID 总是选取最高
+local SelectMaxGossipTab={
+    [938]=1,--时光之末
+}
 
 
 
@@ -66,6 +69,11 @@ local function Get_Auto_Instance_Gossip(gossipID, numGossip)
 
     elseif AutoGossipTab[gossipID]==numGossip then--自动，对话 [gossipID]=总数
         return true
+    else --总是选取最高
+        local instanceID= select(8, GetInstanceInfo())
+        if instanceID and SelectMaxGossipTab[instanceID] then
+            return numGossip
+        end
     end
 end
 
@@ -813,7 +821,7 @@ local function Init_Hook()
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif IsInInstance() then--自动对话
+        elseif select(2, IsInInstance())~='none' then--自动对话
             if Get_Auto_Instance_Gossip(index, allGossip) then
                 C_GossipInfo.SelectOption(index)
                 find=true
