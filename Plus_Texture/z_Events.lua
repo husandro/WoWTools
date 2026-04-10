@@ -2403,7 +2403,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     end)
 
 --中间
-    if TransmogFrame.CharacterPreview.ToggleOptions.HideIgnoredToggle then--11.0.5才有
+    if TransmogFrame.CharacterPreview.ToggleOptions then--11.0.5才有
         self:SetCheckBox(TransmogFrame.CharacterPreview.ToggleOptions.HideIgnoredToggle.Checkbox)
         self:SetCheckBox(TransmogFrame.CharacterPreview.ToggleOptions.SheatheWeaponToggle.Checkbox)
     else
