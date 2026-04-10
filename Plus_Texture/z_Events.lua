@@ -2249,12 +2249,19 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
 
         self:SetAlphaColor(frame.Header, nil, nil, 0)
 
-        --frame.SessionTimer:SetTextColor(1,0,0)
         WoWTools_ColorMixin:SetLabelColor(frame.SessionTimer)
 
-        self:SetScrollBar(frame.SourceWindow)
-        self:SetAlphaColor(frame.SourceWindow.Background, nil, nil, true)
-        self:SetFrame(frame.SourceWindow.ResizeButton, nil, nil, true)
+        if frame.MinimizeContainer then--11.05才有了
+            self:SetScrollBar(frame.MinimizeContainer)
+            self:SetAlphaColor(frame.MinimizeContainer.Background, nil, nil, true)
+            self:SetFrame(frame.MinimizeContainer.ResizeButton, nil, nil, true)
+
+            Set_InitiativesLastPoint
+        else
+            self:SetScrollBar(frame.SourceWindow)
+            self:SetAlphaColor(frame.SourceWindow.Background, nil, nil, true)
+            self:SetFrame(frame.SourceWindow.ResizeButton, nil, nil, true)
+        end
     end
 
     --WoWTools_DataMixin:Hook(DamageMeterEntryMixin, 'SetupSharedStyleBackground', Set_BG)

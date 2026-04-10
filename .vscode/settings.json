@@ -3251,7 +3251,8 @@
         "WOW_LABS_RETURN_TO_MATCH_DETAILS",
         "LFG_LIST_REQUIRE",
         "PlayerSpellsFrameMixin",
-        "PlayerSpellsFramePortrait"
+        "PlayerSpellsFramePortrait",
+        "MovieFrame_OnMovieFinished"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

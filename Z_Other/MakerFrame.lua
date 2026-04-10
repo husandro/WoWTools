@@ -1244,13 +1244,15 @@ local function Init()--设置标记, 框架
         end
     end)
 
-    WoWTools_DataMixin:Hook('MovieFrame_PlayMovie', function()
-        MakerFrame:set_shown()
-    end)
+    if MovieFrame_OnMovieFinished then--11.05没有了
+        WoWTools_DataMixin:Hook('MovieFrame_PlayMovie', function()
+            MakerFrame:set_shown()
+        end)
 
-    WoWTools_DataMixin:Hook('MovieFrame_OnMovieFinished', function()
-        MakerFrame:set_shown()
-    end)
+        WoWTools_DataMixin:Hook('MovieFrame_OnMovieFinished', function()
+            MakerFrame:set_shown()
+        end)
+    end
 
 
 
