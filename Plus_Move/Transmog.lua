@@ -285,7 +285,7 @@ local function Init()
         C_Timer.After(0.3, function()
             TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:set_icon()
         end)
-        TransmogFrame.CharacterPreview.HideIgnoredToggle:SetPoint('BOTTOMRIGHT')
+        TransmogFrame.CharacterPreview.HideIgnoredToggle:SetPoint('BOTTOMRIGHT', -12, 0)
     end
 
     TransmogFrame.CharacterPreview:SetPoint('BOTTOM')
