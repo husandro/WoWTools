@@ -234,7 +234,7 @@ local function Init()
 
     WoWTools_PaperDollMixin:Init_EquipSetPlus()--装备管理，Plus
 
-    if WoWTools_DataMixin.Player.Ver<120005 then--11.0.5会出错误
+    if WoWTools_PaperDollMixin.Init_Status then--11.0.5会出错误
         WoWTools_PaperDollMixin:Init_Status()--属性，增强
     end
     WoWTools_PaperDollMixin:Init_Status_Bit()--属性，位数
