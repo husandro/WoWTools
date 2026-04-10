@@ -27,3 +27,8 @@ WoWTools_PaperDollMixin.ItemButtons={
 function WoWTools_PaperDollMixin:Is_Left_Slot(slot)
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
 end
+function WoWTools_PaperDollMixin:UpdateStats()
+    if canaccessvalue(select(2, UnitArmor('player'))) then
+        WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+    end
+end

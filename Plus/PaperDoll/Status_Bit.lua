@@ -11,8 +11,8 @@ end
 
  --自定，数据
 local function status_set_rating(frame, rating)
-    local num= GetCombatRating(rating) or 0
-    if num == 0 then
+    local num= rating and GetCombatRating(rating)
+    if not canaccessvalue(num) or not num then
         frame.numLabel:SetText('')
     else
         local extraChance = GetCombatRatingBonus(rating) or 0
@@ -78,7 +78,11 @@ local function Init_General()
             frame.numLabel:SetText('')
         end
     end)
-    function MovementSpeed_OnUpdate(statFrame)--原生，替换，增强 PaperDollFrame_SetMovementSpeed
+end
+
+
+
+    --[[function MovementSpeed_OnUpdate(statFrame)--原生，替换，增强 PaperDollFrame_SetMovementSpeed
         local unit = statFrame.unit
         local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit)
         local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
@@ -130,9 +134,7 @@ local function Init_General()
         GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED or 14)), GetCombatRatingBonus(CR_SPEED or 14)))
         GameTooltip:Show()
         statFrame.UpdateTooltip = MovementSpeed_OnEnter
-    end
-
-end
+    end]]
 
 
 
@@ -153,7 +155,7 @@ local function Init_Base_Stats(frame, unit, statIndex)--主属性
     if create_status_label(frame) then
         local tooltipText
         local _, _, posBuff, negBuff = UnitStat(unit, statIndex)
-        if posBuff ~= 0 or negBuff ~= 0 then
+        if canaccessvalue(posBuff) and (posBuff ~= 0 or negBuff ~= 0) then
             if ( posBuff > 0 ) then
                 tooltipText = GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff)..FONT_COLOR_CODE_CLOSE
             end
@@ -178,19 +180,21 @@ local function Init_Enhancements()
             local rating, spellCrit, rangedCrit, meleeCrit
             local holySchool = 2
             local minCrit = GetSpellCritChance(holySchool)
-            for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-                spellCrit = GetSpellCritChance(i)
-                minCrit = min(minCrit, spellCrit)
-            end
-            spellCrit = minCrit
-            rangedCrit = GetRangedCritChance()
-            meleeCrit = GetCritChance()
-            if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-                rating = CR_CRIT_SPELL
-            elseif (rangedCrit >= meleeCrit) then
-                rating = CR_CRIT_RANGED
-            else
-                rating = CR_CRIT_MELEE
+            if canaccessvalue(minCrit) then
+                for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+                    spellCrit = GetSpellCritChance(i)
+                    minCrit = min(minCrit, spellCrit)
+                end
+                spellCrit = minCrit
+                rangedCrit = GetRangedCritChance()
+                meleeCrit = GetCritChance()
+                if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
+                    rating = CR_CRIT_SPELL
+                elseif (rangedCrit >= meleeCrit) then
+                    rating = CR_CRIT_RANGED
+                else
+                    rating = CR_CRIT_MELEE
+                end
             end
             status_set_rating(frame, rating)
         end
@@ -204,8 +208,8 @@ local function Init_Enhancements()
     WoWTools_DataMixin:Hook('PaperDollFrame_SetVersatility', function(frame)--全能
         if create_status_label(frame) then
             local text
-            local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE) or 0
-            if versatility>1 then
+            local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
+            if canaccessvalue(versatility) and versatility and versatility>1 then
                 text= BreakUpLargeNumbers(versatility)
                 local versatilityDamageTakenReduction= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
                 if versatilityDamageTakenReduction>1 then
@@ -243,7 +247,7 @@ end
 local function Init_Attack()
     WoWTools_DataMixin:Hook('PaperDollFrame_SetDamage', function(frame)--伤害
         if create_status_label(frame) then
-            frame.numLabel:SetText(frame.damage and frame.damage:match('(|c.-|r)') or '')
+            frame.numLabel:SetText(canaccessvalue(frame.damage) and frame.damage and frame.damage:match('(|c.-|r)') or '')
         end
     end)
     WoWTools_DataMixin:Hook('PaperDollFrame_SetAttackPower', function(frame)--功击强度
@@ -306,12 +310,14 @@ local function Init_Defense()
         if create_status_label(frame) then
             local effectiveArmor = select(2, UnitArmor(unit))
             local text
-            local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel(unit)) or 0
-            if armorReduction>1 then
-                text = format('%i%%', armorReduction)
-                local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor)
-                if armorReductionAgainstTarget and armorReduction~=armorReductionAgainstTarget and armorReductionAgainstTarget>1 then
-                    text = format('%s/%i%%', text, armorReductionAgainstTarget)
+            if canaccessvalue(effectiveArmor) and effectiveArmor then
+                local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel(unit)) or 0
+                if armorReduction>1 then
+                    text = format('%i%%', armorReduction)
+                    local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor)
+                    if armorReductionAgainstTarget and armorReduction~=armorReductionAgainstTarget and armorReductionAgainstTarget>1 then
+                        text = format('%s/%i%%', text, armorReductionAgainstTarget)
+                    end
                 end
             end
             frame.numLabel:SetText(text or '')
@@ -327,12 +333,14 @@ local function Init_Defense()
         if create_status_label(frame) then--, CR_BLOCK)
             local text
             local shieldBlockArmor = GetShieldBlock()
-            local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel(unit)) or 0
-            if blockArmorReduction>1 then
-                local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor)
-                text= format('%i%%', blockArmorReduction)
-                if blockArmorReductionAgainstTarget and blockArmorReduction~= blockArmorReductionAgainstTarget and blockArmorReductionAgainstTarget>1 then
-                    text=format('%s/%i%%', text, blockArmorReductionAgainstTarget)
+            if canaccessvalue(shieldBlockArmor) and shieldBlockArmor then
+                local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel(unit)) or 0
+                if blockArmorReduction>1 then
+                    local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor)
+                    text= format('%i%%', blockArmorReduction)
+                    if blockArmorReductionAgainstTarget and blockArmorReduction~= blockArmorReductionAgainstTarget and blockArmorReductionAgainstTarget>1 then
+                        text=format('%s/%i%%', text, blockArmorReductionAgainstTarget)
+                    end
                 end
             end
             frame.numLabel:SetText(text or '')
@@ -344,7 +352,7 @@ local function Init_Defense()
 
     WoWTools_DataMixin:Hook('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
         local bit= Save().itemLevelBit or -1
-        if bit>=0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then
+        if canaccessvalue(text) and canaccessvalue(numericValue) and bit>=0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then
             statFrame.Value:SetFormattedText('%.0'..bit..'f%%', numericValue)
         end
     end)
@@ -397,14 +405,16 @@ local function Init()
         local bit= Save().itemLevelBit or -1
         if statFrame:IsShown() and bit>=0 then
             local avgItemLevel, avgItemLevelEquipped, avgItemLevelPvP = GetAverageItemLevel()
-	        local minItemLevel = C_PaperDollInfo.GetMinItemLevel()
-	        local displayItemLevel = math.max(minItemLevel or 0, avgItemLevelEquipped)
-            local pvp=''
-            if ( avgItemLevel ~= avgItemLevelPvP ) then
-                pvp= format('/|cffff7f00%i|r', avgItemLevelPvP)
-            end
-            if statFrame.numericValue ~= displayItemLevel then
-                statFrame.Value:SetFormattedText('%.0'..bit..'f%s', displayItemLevel, pvp)
+            if canaccessvalue(avgItemLevelPvP) then
+	            local minItemLevel = C_PaperDollInfo.GetMinItemLevel()    
+                local displayItemLevel = math.max(minItemLevel or 0, avgItemLevelEquipped)
+                local pvp=''
+                if ( avgItemLevel ~= avgItemLevelPvP ) then
+                    pvp= format('/|cffff7f00%i|r', avgItemLevelPvP)
+                end
+                if statFrame.numericValue ~= displayItemLevel then
+                    statFrame.Value:SetFormattedText('%.0'..bit..'f%s', displayItemLevel, pvp)
+                end
             end
         end
     end)
@@ -444,11 +454,12 @@ local function Init()
         n= math.max(-1, n)
         n= math.min(4, n)
         Save().itemLevelBit=n
-        WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+        WoWTools_PaperDollMixin:UpdateStats()
         self:set_tooltips()
         self:SetAlpha(0.3)
     end)
 
+    
 
 
     Init_General()

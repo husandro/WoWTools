@@ -488,7 +488,7 @@ local function set_Item_Tips(btn, slot, link, isPaperDollItemSlot)--附魔, 使�
             if self2.tips then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddLine(self2.tips)
+                GameTooltip:AddLine(WoWTools_TextMixin:CN(self2.tips))
                 GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
@@ -692,7 +692,7 @@ local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
         frame.slotText:SetAlpha(0.3)
         frame.slotText:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip_SetTitle(GameTooltip, 
+            GameTooltip_SetTitle(GameTooltip,
                 WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
                 ..' |cffffffff'..self.slot
             )
@@ -788,10 +788,10 @@ local function Init()
 
 
 
-    
+
     Init=function()
         WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
-        WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+        WoWTools_PaperDollMixin:UpdateStats()
 
         for _, slot in pairs(WoWTools_PaperDollMixin.ItemButtons) do
             local btn2= _G[slot]

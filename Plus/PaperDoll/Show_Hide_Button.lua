@@ -32,7 +32,7 @@ local function Settings()
 
 
     WoWTools_DataMixin:Call('PaperDollFrame_SetLevel')
-    WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+    WoWTools_PaperDollMixin:UpdateStats()
 
     for _, slot in pairs(WoWTools_PaperDollMixin.ItemButtons) do
         local btn2= _G[slot]

@@ -245,6 +245,49 @@ local function Init()
 
 
 --中间
+
+--隐藏已忽略栏位
+    if not TransmogFrame.CharacterPreview.ToggleOptions then--11.0.5才有
+        WoWTools_DataMixin:Hook(TransmogFrame.CharacterPreview, 'RefreshHideIgnoredToggle', function(frame)
+            local icon= frame.HideIgnoredToggle.Checkbox:GetRegions()
+            if icon then
+                icon:SetAlpha(C_CVar.GetCVarBool("transmogHideIgnoredSlots") and 0 or 1)
+            end
+        end)
+        TransmogFrame.CharacterPreview.HideIgnoredToggle:ClearAllPoints()
+        TransmogFrame.CharacterPreview.HideIgnoredToggle:SetPoint('BOTTOM', TransmogFrame.CharacterPreview.ClearAllPendingButton, 'TOP')
+        TransmogFrame.CharacterPreview.HideIgnoredToggle.Text:SetText()
+        function TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:set_icon()
+            local icon= self:GetRegions()
+            if icon then
+                if self:IsMouseOver() then
+                    icon:SetAlpha(1)
+                else
+                    icon:SetAlpha(C_CVar.GetCVarBool("transmogHideIgnoredSlots") and 0 or 1)
+                end
+            end
+        end
+        TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:SetScript('OnLeave', function(self)
+            self:set_icon()
+            GameTooltip:Hide()
+        end)
+        TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:SetScript('OnEnter', function(self)
+            self:set_icon()
+            GameTooltip_ShowSimpleTooltip(GameTooltip,
+                WoWTools_DataMixin.onlyChinese and '隐藏已忽略栏位' or TRANSMOG_HIDE_UNASSIGNED_SLOTS,
+                C_CVar.GetCVarBool("transmogHideIgnoredSlots") and GREEN_FONT_COLOR or SimpleTooltipConstants.NoOverrideColor,
+                SimpleTooltipConstants.DoNotWrapText,
+                self,
+                "ANCHOR_LEFT"
+            )
+        end)
+        WoWTools_DataMixin:Call(TransmogFrame.CharacterPreview.RefreshHideIgnoredToggle, TransmogFrame.CharacterPreview)--原生，没有加上
+        C_Timer.After(0.3, function()
+            TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:set_icon()
+        end)
+        TransmogFrame.HideIgnoredToggle:SetPoint('BOTTOM')
+    end
+
     TransmogFrame.CharacterPreview:SetPoint('BOTTOM')
     TransmogFrame.CharacterPreview.Background:SetPoint('BOTTOMRIGHT')
     TransmogFrame.CharacterPreview.Gradients.GradientLeft:SetPoint('TOPLEFT')
@@ -255,45 +298,6 @@ local function Init()
     TransmogFrame.CharacterPreview.ClearAllPendingButton:ClearAllPoints()
     TransmogFrame.CharacterPreview.ClearAllPendingButton:SetPoint('BOTTOMRIGHT', -46, 25)
 
-
---隐藏已忽略栏位
-    WoWTools_DataMixin:Hook(TransmogFrame.CharacterPreview, 'RefreshHideIgnoredToggle', function(frame)
-        local icon= frame.HideIgnoredToggle.Checkbox:GetRegions()
-        if icon then
-            icon:SetAlpha(C_CVar.GetCVarBool("transmogHideIgnoredSlots") and 0 or 1)
-        end
-    end)
-    TransmogFrame.CharacterPreview.HideIgnoredToggle:ClearAllPoints()
-    TransmogFrame.CharacterPreview.HideIgnoredToggle:SetPoint('BOTTOM', TransmogFrame.CharacterPreview.ClearAllPendingButton, 'TOP')
-    TransmogFrame.CharacterPreview.HideIgnoredToggle.Text:SetText()
-    function TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:set_icon()
-        local icon= self:GetRegions()
-        if icon then
-            if self:IsMouseOver() then
-                icon:SetAlpha(1)
-            else
-                icon:SetAlpha(C_CVar.GetCVarBool("transmogHideIgnoredSlots") and 0 or 1)
-            end
-        end
-    end
-    TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:SetScript('OnLeave', function(self)
-        self:set_icon()
-        GameTooltip:Hide()
-    end)
-    TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:SetScript('OnEnter', function(self)
-        self:set_icon()
-        GameTooltip_ShowSimpleTooltip(GameTooltip,
-            WoWTools_DataMixin.onlyChinese and '隐藏已忽略栏位' or TRANSMOG_HIDE_UNASSIGNED_SLOTS,
-            C_CVar.GetCVarBool("transmogHideIgnoredSlots") and GREEN_FONT_COLOR or SimpleTooltipConstants.NoOverrideColor,
-            SimpleTooltipConstants.DoNotWrapText,
-            self,
-            "ANCHOR_LEFT"
-        )
-    end)
-    WoWTools_DataMixin:Call(TransmogFrame.CharacterPreview.RefreshHideIgnoredToggle, TransmogFrame.CharacterPreview)--原生，没有加上
-    C_Timer.After(0.3, function()
-        TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox:set_icon()
-    end)
 --自定义套装 <Anchor point="TOPLEFT" x="26" y="-72"/> <Anchor point="BOTTOMRIGHT" x="-26" y="10"/>
     TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.PagedContent:SetPoint('TOPLEFT', 26, -26)
     TransmogFrame.WardrobeCollection.TabContent.CustomSetsFrame.PagedContent:SetPoint('BOTTOMRIGHT', -26, 10)

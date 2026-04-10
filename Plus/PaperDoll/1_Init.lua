@@ -83,19 +83,22 @@ local function Init_Menu(self, root)
         WoWTools_PaperDollMixin:Init_EquipSetPlus()--装备管理，Plus
     end)
 
+    
 --属性
-    root:CreateDivider()
-    sub=root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES,
-    function()
-        return not Save().notStatusPlus
-    end, function ()
-        Save().notStatusPlus= not Save().notStatusPlus and true or nil
-        WoWTools_PaperDollMixin:Init_Status()
-    end)
-    sub:SetTooltip(function(tooltip)
-        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
+    if WoWTools_DataMixin.Player.Ver>=120005 then--11.0.5会出错误
+        root:CreateDivider()
+        sub=root:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES,
+        function()
+            return not Save().notStatusPlus
+        end, function ()
+            Save().notStatusPlus= not Save().notStatusPlus and true or nil
+            WoWTools_PaperDollMixin:Init_Status()
+        end)
+        sub:SetTooltip(function(tooltip)
+            GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end)
+    end
 
 --属性小数
     sub=root:CreateCheckbox(
@@ -125,7 +128,7 @@ local function Init_Menu(self, root)
             return Save().itemLevelBit==data.bit
         end, function(data)
             Save().itemLevelBit= data.bit
-            WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+            WoWTools_PaperDollMixin:UpdateStats()
             return MenuResponse.Refresh
         end, {bit=i})
     end
@@ -231,8 +234,9 @@ local function Init()
 
     WoWTools_PaperDollMixin:Init_EquipSetPlus()--装备管理，Plus
 
-
-    WoWTools_PaperDollMixin:Init_Status()--属性，增强
+    if WoWTools_DataMixin.Player.Ver<120005 then--11.0.5会出错误
+        WoWTools_PaperDollMixin:Init_Status()--属性，增强
+    end
     WoWTools_PaperDollMixin:Init_Status_Bit()--属性，位数
 
     WoWTools_PaperDollMixin:Init_Reaml()--服务器
@@ -313,7 +317,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save().trackButtonShowItemLeve= nil
             end
 
-
+            if WoWTools_DataMixin.Player.Ver>=120005 and Save().PAPERDOLL_STATCATEGORIES then--11.0.5会出错误
+                Save().PAPERDOLL_STATCATEGORIES= nil
+                Save().notStatusPlus=nil
+            end
 
             WoWTools_PaperDollMixin.addName= (WoWTools_DataMixin.Player.Sex==Enum.UnitSex.Female and '|A:charactercreate-gendericon-female-selected:0:0|a' or '|A:charactercreate-gendericon-male-selected:0:0|a')
                                         ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
@@ -354,7 +361,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='SOCKET_INFO_UPDATE' then
         if PaperDollItemsFrame:IsShown() then
-            WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+            WoWTools_PaperDollMixin:UpdateStats()
         end
     end
 end)

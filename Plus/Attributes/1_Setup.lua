@@ -1,4 +1,6 @@
-
+if WoWTools_DataMixin.Player.Ver>=120005 then--11.0.5会出错
+    return
+end
 
 local function Save()
     return WoWToolsSave['Plus_Attributes'] or {}
@@ -111,8 +113,7 @@ end
 --设置，当前值
 --###########
 local function set_Text_Value(frame, value, value2)
-    value= value or 0
-    value= value>0 and value or 0
+    value= canaccessvalue(value) and value > 0 and value or 0
     if not frame.value or ((frame.value==0 or value==0) and not frame.zeroShow)  then
         frame.value= value
     end
@@ -466,13 +467,17 @@ end
 
 
 
-
---护甲
+--护甲 local baselineArmor, effectiveArmor, armor, bonusArmor = UnitArmor('player')
 local function set_ARMOR_Text(frame)
     local value, value2
-    local baselineArmor, effectiveArmor, armor, bonusArmor = UnitArmor('player')
-    if Save().useNumber then
+    local effectiveArmor= select(2, UnitArmor('player'))
+
+    if not frame or not canaccessvalue(effectiveArmor) then
+        return 0, 0
+
+    elseif Save().useNumber then
         value= effectiveArmor
+
     else
         value = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'))
         value2 = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor)
@@ -480,11 +485,8 @@ local function set_ARMOR_Text(frame)
             value2= nil
         end
     end
-    if not frame then
-        return value or 0, value2 or 0
-    else
-        set_Text_Value(frame, value, value2)--设置，当前值
-    end
+
+    set_Text_Value(frame, value, value2)--设置，当前值
 end
 
 
@@ -589,7 +591,7 @@ local function set_SPEED_Text(frame, elapsed)
     else
         value= GetUnitSpeed('player')
     end
-    if value==0 then
+    if not canaccessvalue(value) or value == 0 then
         frame.text:SetText('')
     else
         frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)

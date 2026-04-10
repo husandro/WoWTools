@@ -1,5 +1,9 @@
 
 --属性，增强 PaperDollFrame.lua
+if WoWTools_DataMixin.Player.Ver<120005 then--11.0.5会出错误
+    return
+end
+
 local function Save()
     return WoWToolsSave['Plus_PaperDoll']
 end
@@ -16,7 +20,7 @@ local P_PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
 
 
 local function Data_Save()
-    WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+    WoWTools_PaperDollMixin:UpdateStats()
     Save().PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
 end
 
@@ -399,7 +403,7 @@ local function Init_Menu(self, root)
         {SetValue=function()
             PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
             Save().PAPERDOLL_STATCATEGORIES=nil
-            WoWTools_DataMixin:Call('PaperDollFrame_UpdateStats')
+            WoWTools_PaperDollMixin:UpdateStats()
         end})
         return MenuResponse.Open
     end)

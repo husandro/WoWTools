@@ -2171,6 +2171,20 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
     end
 
 
+--最小化，展开，更该图标
+    local function SetMinimized(frame)
+        local minimizeButton = frame:GetMinimizeButton()
+        local normalTexture = minimizeButton:GetNormalTexture()
+        local pushedTexture = minimizeButton:GetPushedTexture()
+        if frame:IsMinimized() then
+            normalTexture:SetAtlas("transmog-icon-hidden")--ui-questtrackerbutton-secondary-expand")--, true);
+            pushedTexture:SetAtlas("ui-questtrackerbutton-secondary-expand-pressed")--, true);
+        else
+            normalTexture:SetAtlas("ui-questtrackerbutton-secondary-collapse")--, true);
+            pushedTexture:SetAtlas("ui-questtrackerbutton-secondary-collapse-pressed")--, true);
+        end
+    end
+
     local function settins(frame)
         self:SetAlphaColor(frame.Header, true)
         self:SetButton(frame.ResizeButton)
@@ -2256,7 +2270,17 @@ function WoWTools_TextureMixin.Events:Blizzard_DamageMeter()
             self:SetAlphaColor(frame.MinimizeContainer.Background, nil, nil, true)
             self:SetFrame(frame.MinimizeContainer.ResizeButton, nil, nil, true)
 
-            Set_InitiativesLastPoint
+--最小化，展开，更该图标
+            SetMinimized(frame)
+            WoWTools_DataMixin:Hook(frame, 'SetMinimized', SetMinimized)
+            --frame.MinimizeButton:SetAlpha(0.5)
+            self:SetAlphaColor(frame.MinimizeButton:GetNormalTexture(), nil, nil, 0.5)
+            frame.MinimizeButton:HookScript('OnLeave', function(f)
+                f:SetAlpha(0.5)
+            end)
+            frame.MinimizeButton:HookScript('OnEnter', function(f)
+                f:SetAlpha(1)
+            end)
         else
             self:SetScrollBar(frame.SourceWindow)
             self:SetAlphaColor(frame.SourceWindow.Background, nil, nil, true)
@@ -2379,11 +2403,18 @@ function WoWTools_TextureMixin.Events:Blizzard_Transmog()
     end)
 
 --中间
-    self:SetCheckBox(TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox)
+    if TransmogFrame.CharacterPreview.ToggleOptions.HideIgnoredToggle then--11.0.5才有
+        self:SetCheckBox(TransmogFrame.CharacterPreview.ToggleOptions.HideIgnoredToggle.Checkbox)
+        self:SetCheckBox(TransmogFrame.CharacterPreview.ToggleOptions.SheatheWeaponToggle.Checkbox)
+    else
+        self:SetCheckBox(TransmogFrame.CharacterPreview.HideIgnoredToggle.Checkbox)
+    end
+
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientLeft)
     self:HideTexture(TransmogFrame.CharacterPreview.Gradients.GradientRight)
     self:HideTexture(TransmogFrame.CharacterPreview.ClearAllPendingButton.NormalTexture)
     self:SetAlphaColor(TransmogFrame.CharacterPreview.ClearAllPendingButton.HighlightTexture, true)
+
     self:SetAlphaColor(TransmogFrame.WardrobeCollection.TabContent.Border, true)
     WoWTools_DataMixin:Hook(TransmogAppearanceSlotMixin, 'OnLoad', function(frame)
         WoWTools_ButtonMixin:AddMask(frame, nil, frame.Icon)

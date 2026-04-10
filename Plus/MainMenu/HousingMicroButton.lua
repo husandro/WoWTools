@@ -64,7 +64,11 @@ local function Init()
     function frame:Set_InitiativesLastPoints()
         local value
         if C_NeighborhoodInitiative.IsInitiativeEnabled() then
-            value= GetCVarNumberOrDefault("endeavorInitiativesLastPoints")
+            value= GetCVar('endeavorInitiativesLastPoints')--11.0.5没有了
+            if value then
+                value= tonumber(value)
+            end
+            --value= GetCVarNumberOrDefault("endeavorInitiativesLastPoints")
         end
 
         if value and value>=0 then

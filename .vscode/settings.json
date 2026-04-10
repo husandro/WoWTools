@@ -3252,7 +3252,9 @@
         "LFG_LIST_REQUIRE",
         "PlayerSpellsFrameMixin",
         "PlayerSpellsFramePortrait",
-        "MovieFrame_OnMovieFinished"
+        "MovieFrame_OnMovieFinished",
+        "MP",
+        "PaperDollFrame_UpdateStats"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -74,6 +74,7 @@ end
 
 --PlayerUtil.GetClassColor():WrapTextInColorCode(linkText)
 WoWTools_DataMixin.Player={
+    Ver= select(4,GetBuildInfo()),
     Realm= playerRealm,
     Realms= {},--多服务器
 
