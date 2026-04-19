@@ -832,22 +832,32 @@ local function Init()
     local down= CreateFrame('Button', 'WoWToolsEncounterDownBossSpellButton',  EncounterJournalEncounterFrameInfoDetailsScrollFrame, 'WoWToolsButtonTemplate')
     down:SetPoint('RIGHT', EncounterJournalEncounterFrameInfoDifficulty, 'LEFT')
     down:SetNormalAtlas('NPE_ArrowDown')
-    down.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-    down:SetScript('OnClick', function()
-        if not EncounterJournal.encounter.usedHeaders then
+    down.tooltip= WoWTools_DataMixin.Icon.icon2
+                ..(WoWTools_DataMixin.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
+                ..'|n'..WARNING_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '不要太快' or ERR_GENERIC_THROTTLE)
+    down:SetScript('OnClick', function(self)
+        if not EncounterJournal.encounter.usedHeaders or self.isRun then
             return
         end
-        for i= #EncounterJournal.encounter.usedHeaders, 1, -1 do
-            local header= EncounterJournal.encounter.usedHeaders[i]
-            if header and not header.expanded then
-                EncounterJournal_ToggleHeaders(header)
+        self.isRun=true
+        do
+            for i= #EncounterJournal.encounter.usedHeaders, 1, -1 do
+                local header= EncounterJournal.encounter.usedHeaders[i]
+                if header and not header.expanded then
+                    do
+                        EncounterJournal_ToggleHeaders(header)
+                    end
+                end
             end
         end
+        self.isRun=nil
     end)
 
     local up= CreateFrame('Button', 'WoWToolsEncounterUpBossSpellButton',  down, 'WoWToolsButtonTemplate')
     up:SetPoint('RIGHT', down, 'LEFT')
-    up.tooltip= WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+    up.tooltip= WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+            --..WARNING_FONT_COLOR:WrapTextInColorCode(WoWTools_DataMixin.onlyChinese and '不要太快' or ERR_GENERIC_THROTTLE)
     up:SetNormalAtlas('NPE_ArrowUp')
     up:SetScript('OnClick', function()
         if not EncounterJournal.encounter.usedHeaders then
