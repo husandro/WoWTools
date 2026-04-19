@@ -79,6 +79,7 @@ local function Init()
             and elementData
             and canaccesstable(elementData.clubInfo)
             and elementData.clubInfo
+            and canaccessvalue(elementData.clubInfo.crossFaction)
         then
             Create_Texture(btn)
 
@@ -93,12 +94,8 @@ local function Init()
 
             hasInvite=  WoWTools_GuildMixin:GetApplicantList(clubID) and true or false
             hasMessage= WoWTools_GuildMixin:DoesCommunityHaveUnreadMessages(clubID)
-            if canaccesstable(elementData) and elementData
-                and canaccesstable(elementData.clubInfo) and elementData.clubInfo
-                and canaccessvalue(elementData.clubInfo.crossFaction)and elementData.clubInfo.crossFaction
-            then
-                faction= 'CrossedFlags'
-            end
+            --faction= elementData.clubInfo.crossFaction and 'CrossedFlags' or false
+            faction= elementData.clubInfo.crossFaction and true or false
 
             btn.allText:SetTextColor(btn.Name:GetTextColor())
         end

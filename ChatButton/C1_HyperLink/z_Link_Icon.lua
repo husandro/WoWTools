@@ -566,7 +566,7 @@ end
 local function ClubFinder(link)
     local clubFinderGUID= link:match('|HclubFinder:(.-)|h%[')
     local clubInfo = clubFinderGUID and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(clubFinderGUID)
-    if clubInfo then
+    if canaccesstable(clubInfo) and clubInfo then
         return
             (clubInfo.isGuild and '|A:hud-microbutton-Guild-Banner:0:0|a' or '')
             ..(clubInfo.isCrossFaction and '|A:CrossedFlags:0:0|a' or '')

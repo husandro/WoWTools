@@ -13,9 +13,10 @@ end
 
 --添加菜单
 local function Add_Menu(self, root, name, channelNumber)
-    if not canaccessvalue(name) or not name then
+    if not canaccessvalue(name) or not name or not canaccessvalue(channelNumber) then
         return
     end
+
     local text, sub, sub2, communityName, communityTexture, online
     local clubId= name:match('Community:(%d+)')
     clubId= clubId and tonumber(clubId)
@@ -25,6 +26,7 @@ local function Add_Menu(self, root, name, channelNumber)
     end
 
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
+
     if clubInfo and not canaccessvalue(clubInfo.clubId) then
         return
     end
@@ -82,7 +84,7 @@ local function Add_Menu(self, root, name, channelNumber)
             t= self:Get_Channel_Color(name, 2)..(WoWTools_DataMixin.onlyChinese and '已屏蔽' or IGNORED)
         end
 
-        local club= desc.data.clubInfo
+        local club= canaccesstable(desc.data.clubInfo) and desc.data.clubInfo
 
         if club and canaccessvalue(club.clubId) and club.clubId then
             local isNet=  club.clubType == Enum.ClubType.BattleNet

@@ -35,7 +35,7 @@ local function Init(btn)
         if name == Save().world then
             self.texture:SetAtlas('WildBattlePet')
         elseif texture then
-            if clubInfo and canaccessvalue(clubInfo.clubId) and clubInfo.clubId then
+            if canaccesstable(clubInfo) and canaccessvalue(clubInfo.clubId) and clubInfo.clubId then
                 C_Club.SetAvatarTexture(self.texture, clubInfo.avatarId, clubInfo.clubType)
             else
                 self.texture:SetTexture(texture)
@@ -140,7 +140,7 @@ local function Init(btn)
         local value
         for i = 1, #channels, 3 do
             channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
-            if not disabled and channelNumber and name then
+            if canaccessvalue(name) and not disabled and channelNumber and name then
                 value= self:Check_Channel(name)
                 col= self:Get_Channel_Color(name, value)
 
@@ -152,7 +152,8 @@ local function Init(btn)
 
                     clubInfo= C_Club.GetClubInfo(clubID)
 
-                    if clubInfo and clubInfo.name and canaccessvalue(clubInfo.avatarId) then
+                    if canaccesstable(clubInfo) and clubInfo
+                        and clubInfo.name and canaccessvalue(clubInfo.avatarId) then
                         name= (clubInfo.avatarId==1
                                 and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
                                 or ('|T'..(clubInfo.avatarId or 0)..':0|t')

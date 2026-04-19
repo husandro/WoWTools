@@ -16,20 +16,19 @@ end
 --公会，名称
 local function Get_Guild_Name()
     local clubID= C_Club.GetGuildClubId()
-    local clubInfo = clubID and C_Club.GetClubInfo(clubID) or {}--C_Club.GetClubInfo(clubID) C_ClubFinder.GetRecruitingClubInfoFromClubID() ClubFinderGetCurrentClubListingInfo(guildClubId)
+    local clubInfo = canaccessvalue(clubID) and clubID and C_Club.GetClubInfo(clubID) or {}--C_Club.GetClubInfo(clubID) C_ClubFinder.GetRecruitingClubInfoFromClubID() ClubFinderGetCurrentClubListingInfo(guildClubId)
     local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
     local canGuildInvite= CanGuildInvite()
     local findDay= canGuildInvite and WoWTools_GuildMixin:GetClubFindDay(clubID)
 
-
-    local name= (guildName or clubInfo.name or (WoWTools_DataMixin.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER))
+    local name= (guildName or (canaccessvalue(clubInfo.name) and clubInfo.name) or (WoWTools_DataMixin.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER))
         ..(realm and (
             WoWTools_DataMixin.Player[realm] and '|cnGREEN_FONT_COLOR:*|r' or '-'..realm
         ) or '')
 
     name= WoWTools_TextMixin:sub(name, Save().subGuildName, nil, nil)
 
-    return  '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
+    return (canaccessvalue(clubInfo.isCrossFaction) and '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a' or '')
     ..(canGuildInvite and '|cff00ccff' or '|cff828282')
     ..WoWTools_GuildMixin:Get_Rank_Texture(guildRankIndex, false)
     ..(name)
@@ -65,9 +64,12 @@ local function Init_Guild_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         local clubID= C_Club.GetGuildClubId()
         local clubInfo = clubID and C_Club.GetClubInfo(clubID)
-        if not clubInfo or not clubID then
+        if not canaccesstable(clubInfo) or not clubInfo
+            or not canaccessvalue(clubID) or not clubID
+            or not canaccessvalue(clubInfo.isCrossFaction) then
             return
         end
+
         local canGuildInvite= CanGuildInvite()
         local findDay= canGuildInvite and clubID and WoWTools_GuildMixin:GetClubFindDay(clubID)
 
