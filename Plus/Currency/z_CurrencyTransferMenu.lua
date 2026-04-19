@@ -10,7 +10,7 @@ end
 
 --货币，转移
 local function Init()
-	if not Save().notPlus  then
+	if Save().notPlus then
 		return
 	end
 
