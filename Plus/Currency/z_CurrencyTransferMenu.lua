@@ -4,9 +4,6 @@ local function Save()
 end
 
 
-local function IsLocked()
-	return WoWTools_FrameMixin:IsLocked(CurrencyTransferMenu)
-end
 
 --货币，转移
 local function Init()
@@ -16,10 +13,12 @@ local function Init()
 
 --有时会有BUG, 加个 重新加载UI 按钮
 	local reload= CreateFrame('Button', nil, CurrencyTransferMenuCloseButton, 'WoWToolsButtonTemplate')
-    reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
+    reload:SetNormalAtlas('common-icon-exit')
     reload:SetPoint('RIGHT', CurrencyTransferMenuCloseButton, 'LEFT', -2, 0)
     reload.tooltip=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
     reload:SetScript('OnClick', function() WoWTools_DataMixin:Reload() end)
+    WoWTools_TextureMixin:SetButton(reload, 0.5)
+
 
 	WoWTools_DataMixin:Hook(CurrencyTransferLogEntryMixin, 'Initialize', function(self, elementData)
 		local name= WoWTools_UnitMixin:GetPlayerInfo(nil, elementData.sourceCharacterGUID, nil, {reName=true, reRealm=true})
@@ -53,7 +52,7 @@ local function Init()
 	end)
 
 	local content= CurrencyTransferMenu.Content
-	
+
 	WoWTools_DataMixin:Hook(content.SourceSelector.Dropdown.Text, 'SetText', function(self)
 		local data= CurrencyTransferMenu.sourceCharacterData
 		if data then
