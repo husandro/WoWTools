@@ -293,7 +293,7 @@ Plus\Unit\ClassTexture.lua
 ##Plus\Unit\PartyFrame_Compact.lua
 Plus\Unit\PartyFrame.lua
 Plus\Unit\PlayerFrame.lua
-Plus\Unit\RaidFrame.lua
+##Plus\Unit\RaidFrame.lua
 Plus\Unit\TargetFrame.lua
 Plus\Unit\PetFrame.lua
 

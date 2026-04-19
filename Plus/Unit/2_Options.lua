@@ -128,7 +128,7 @@ local function Init()
 
 
 
---团队框体
+--[[团队框体
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL,
         GetValue= function() return not Save().hideRaidFrame end,
@@ -145,7 +145,7 @@ local function Init()
             end
         end,
         category= Category,
-    })
+    })]]
 
 
 

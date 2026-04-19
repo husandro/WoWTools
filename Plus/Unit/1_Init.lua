@@ -14,7 +14,7 @@ local function Init()
     --WoWTools_UnitMixin:Init_PartyFrame_Compact()--小队, 使用团框架
 
     WoWTools_UnitMixin:Init_BossFrame()--BOSS
-    WoWTools_UnitMixin:Init_RaidFrame()--团队
+    --WoWTools_UnitMixin:Init_RaidFrame()--团队
 
     WoWTools_UnitMixin:Init_ClassTexture()--职业, 图标， 颜色
 
