@@ -34,9 +34,9 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 --取得玩家信息
     local data= WoWTools_DataMixin.PlayerInfo[guid]
     if data then
-        if not isInCombat then
+        --[[if not isInCombat then
             WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得装等
-        end
+        end]]
 
         textLeft= data.itemLevel----设置装等
 

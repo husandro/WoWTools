@@ -33,9 +33,9 @@ local function Craete_Frame(frame, portrait)
     end
 
     function frame.classFrame:get_playerinfo()
-        local guid= self:get_guid()
+        local guid, unit= self:get_guid()
         if guid and not WoWTools_DataMixin.PlayerInfo[guid] then
-            WoWTools_UnitMixin:GetNotifyInspect(nil, self.unit)--取得玩家信息
+            WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得玩家信息
         end
     end
 
@@ -72,6 +72,7 @@ local function Craete_Frame(frame, portrait)
         EventRegistry:RegisterCallback("WoWTools_Cached_ItemLevel", function(_, guid)
             if guid==self:get_guid() then
                 self:set_settings()
+                EventRegistry:UnregisterCallback("WoWTools_Cached_ItemLevel", self)
             end
         end, self)
         self:set_settings()
@@ -122,7 +123,7 @@ local function Init()
         [PartyFrame.MemberFrame2]=PartyFrame.MemberFrame2.Portrait,
         [PartyFrame.MemberFrame3]=PartyFrame.MemberFrame3.Portrait,
         [PartyFrame.MemberFrame4]=PartyFrame.MemberFrame4.Portrait,
-        [TargetFrameToT]= TargetFrameToT.Portrait,
+        --[TargetFrameToT]= TargetFrameToT.Portrait,--不知哪里出问题，刷新太快
         --[FocusFrame]= FocusFrame.TargetFrameContainer.Portrait,
     }) do
         if frame and portrait then

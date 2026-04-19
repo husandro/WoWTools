@@ -228,10 +228,12 @@ FrameUtil.RegisterFrameForEvents(frame, {
 
 frame:SetScript('OnEvent', function(self, event, arg1)
     if event=='PLAYER_ENTERING_WORLD' then
-        GetGroupGuidDate()
-        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
-        Set_New_Layer(self, 'party1')--位面, 设置，清除
-        Get_WoW_GUID_Info()--战网，好友GUID
+        C_Timer.After(2, function()
+            GetGroupGuidDate()
+            WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
+            Set_New_Layer(self, 'party1')--位面, 设置，清除
+            Get_WoW_GUID_Info()--战网，好友GUID
+        end)
 
     elseif event=='ZONE_CHANGED_NEW_AREA' then
         Set_New_Layer(self, 'party1')--位面, 设置，清除

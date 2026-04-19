@@ -742,30 +742,36 @@ end
 
 
 local function Cached_Player(time, unit)
+    if not canaccessvalue(unit) or not unit then
+        return
+    end
+
     C_Timer.After(time, function()
-        if CanInspect(unit) then
+        if CanInspect(unit, true) then
             NotifyInspect(unit)
         end
     end)
+    return true
 end
 
 
 
 
---取得装等
+--取得装等 INSPECTED_UNIT
 function WoWTools_UnitMixin:GetNotifyInspect(tab, unit)
-    if canaccessvalue(unit) and unit then
-        if CanInspect(unit) then
-            NotifyInspect(unit)
-        end
-    elseif tab then
+    if InspectFrame and InspectFrame.unit then--如果有观察时，会错误
+        return
+    end
+--print('取得装等', tab,unit)
+    if tab then
         local time= 1
         for _, u in pairs(tab) do
-            if canaccessvalue(u) then
-               Cached_Player(time, u)
-               time= time+ 1
+            if Cached_Player(time, u) then
+                time= time+ 1
             end
         end
+    else
+        Cached_Player(0.1, unit)
     end
 end
 
