@@ -19,8 +19,6 @@ local function Init()
     frame= CreateFrame('Frame')
     frame:Hide()
 
-
-
     function frame:settings()
         self:UnregisterAllEvents()
 
@@ -58,26 +56,25 @@ local function Init()
             end)
 
         elseif event=='PLAYER_DEAD' then
-            if HasNoReleaseAura() then
-                return
-            end
 
             RepopMe()--死后将你的幽灵释放到墓地。
 
-            if WoWTools_MapMixin:IsInPvPArea() then
-                print(
-                    WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                    '|cnGREEN_FONT_COLOR:',
-                    WoWTools_DataMixin.onlyChinese and '释放' or BATTLE_PET_RELEASE
-                )
+            if HasNoReleaseAura() then
+                if WoWTools_MapMixin:IsInPvPArea() then
+                    print(
+                        WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnGREEN_FONT_COLOR:',
+                        WoWTools_DataMixin.onlyChinese and '释放' or BATTLE_PET_RELEASE
+                    )
 
-            else
+                else
 
-                print(
-                    WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
-                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '释放' or BATTLE_PET_RELEASE..'|r'),
-                    SecondsToTime(GetCorpseRecoveryDelay() or 0)
-                )
+                    print(
+                        WoWTools_LFDMixin.addName..WoWTools_DataMixin.Icon.icon2,
+                        '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '释放' or BATTLE_PET_RELEASE..'|r'),
+                        SecondsToTime(GetCorpseRecoveryDelay() or 0)
+                    )
+                end
             end
 
 
