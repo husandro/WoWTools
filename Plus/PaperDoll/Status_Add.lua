@@ -320,7 +320,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:IsMouseOver() then
+    if not self:IsMouseOver() or WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
 
