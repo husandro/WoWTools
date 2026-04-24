@@ -14,7 +14,7 @@ local function Init()
     WoWTools_DataMixin:Hook('MoneyFrame_Update', function(frameName, money)
         local frame= GetMoneyFrame(frameName)
         if not frame
-            or (frame.HasAnySecretAspect and frame:GetParent():HasAnySecretAspect())
+            or (frame.HasSecretValues and frame:GetParent():HasSecretValues())
             or issecretvalue(money)
             or not money
         then

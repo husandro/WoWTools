@@ -20,7 +20,7 @@ end
 
 --[[设置，宽度
 function WoWTools_TooltipMixin:Set_Width(tooltip)
-    if tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect() then--12.0才有
+    if tooltip.HasSecretValues and tooltip:HasSecretValues() then--12.0才有
         return
     end
 
@@ -37,10 +37,16 @@ end]]
 
 --设置单位
 function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
-
-    local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
+    --local _, unit= tooltip:GetUnit()
+    local name, unit, guid= tooltip:GetUnit()--TooltipUtil.GetDisplayedUnit(tooltip)
 
     if not canaccessvalue(unit) or not unit then
+        return
+    end
+
+    local isPlayer= UnitIsPlayer(unit)
+
+    if not canaccessvalue(isPlayer) then
         return
     end
 
@@ -56,7 +62,7 @@ function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
 end
 
 function WoWTools_TooltipMixin:IsInCombatDisabled(tooltip)
-    return --(tooltip.HasAnySecretAspect and tooltip:HasAnySecretAspect())--12.0才有
+    return --(tooltip.HasSecretValues and tooltip:HasSecretValues())--12.0才有
         not tooltip
         or WoWTools_FrameMixin:IsLocked(tooltip)
         or (self:Save().isInCombatDisabled and InCombatLockdown())

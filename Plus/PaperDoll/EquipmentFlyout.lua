@@ -266,7 +266,7 @@ local function Init()
     EquipmentFlyoutFrameButtons:SetScale(not Save().notFlyout and Save().flyoutScale or 1)
 
     Init=function()
-        if EquipmentFlyoutFrame:IsVisible() and not EquipmentFlyoutFrame:HasAnySecretAspect() then
+        if EquipmentFlyoutFrame:IsVisible() and not EquipmentFlyoutFrame:HasSecretValues() then
             WoWTools_DataMixin:Call('EquipmentFlyout_UpdateItems')
         end
 --缩放

@@ -260,7 +260,7 @@ local function Init()
     DelvesDifficultyPickerFrame:HookScript('OnShow', function(self)
         if
             not canaccesstable(self.gossipOptions)
-            or self.EnterDelveButton:HasAnySecretAspect()
+            or self.EnterDelveButton:HasSecretValues()
             or (IsInGroup() and not UnitIsGroupLeader('player'))
         then
             return

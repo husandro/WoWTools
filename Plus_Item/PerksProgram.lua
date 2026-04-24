@@ -82,7 +82,7 @@ end
 function WoWTools_ItemMixin.Events:Blizzard_PerksProgram()
 --左边，列表
     WoWTools_DataMixin:Hook( PerksProgramProductButtonMixin, 'OnLoad', function(btn)
-        if btn:HasAnySecretAspect() then
+        if btn:HasSecretValues() then
             return
         end
 

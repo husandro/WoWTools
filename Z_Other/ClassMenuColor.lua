@@ -134,7 +134,7 @@ end
             end
             if colorText then
                 desc:AddInitializer(function(btn)
-                    if not btn:HasAnySecretAspect() then
+                    if not btn:HasSecretValues() then
                         btn.fontString:SetText(colorText)
                     end
                 end)

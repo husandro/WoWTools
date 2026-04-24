@@ -279,7 +279,8 @@ frame:SetScript('OnEvent', function(self, event, arg1)
         if unit then
             Cached_ItemLevel(unit, guid)
             if  GameTooltip.textLeft and GameTooltip:IsShown() then
-                local name2, unit2, guid2= TooltipUtil.GetDisplayedUnit(GameTooltip)
+                local name2, unit2, guid2= GameTooltip:GetUnit()
+                --local name2, unit2, guid2= TooltipUtil.GetDisplayedUnit(GameTooltip)
                 if canaccessvalue(guid2) and guid2==guid then
                     WoWTools_TooltipMixin:Set_Unit_Player(GameTooltip, name2, unit2, guid2)
                 end

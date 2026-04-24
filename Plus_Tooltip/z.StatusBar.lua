@@ -21,7 +21,7 @@ local function Init()--WoWTools_DataMixin:Hook(GameTooltipStatusBar, 'UpdateUnit
     GameTooltipStatusBar.textRight = WoWTools_LabelMixin:Create(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
     GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
     GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
-        local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
+        local unit= select(2, GameTooltip:GetUnit())-- TooltipUtil.GetDisplayedUnit(GameTooltip))
         if WoWTools_FrameMixin:IsLocked(self)
             or not canaccessvalue(unit)
             or not unit
