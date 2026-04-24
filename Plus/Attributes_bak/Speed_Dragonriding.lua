@@ -1,6 +1,3 @@
-if WoWTools_DataMixin.Player.Ver>=120005 then--11.0.5会出错
-    return
-end
 --[[local BuffTabs={
     447959,--一起骑乘 - 开启
     404183,--掠地滑翔

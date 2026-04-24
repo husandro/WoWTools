@@ -235,17 +235,17 @@ Plus\Currency\z_CurrencyTransferMenu.lua
 Plus\Currency\z_Max_Tooltip.lua
 Plus\Currency\z_TrackButton.lua
 
-##属性
+##属性 12.0.5开始出错
 ##Plus\Attributes\0_AttributesMixin.lua
-Plus\Attributes\0_Init.lua
-Plus\Attributes\1_Setup.lua
-Plus\Attributes\2_Button.lua
-Plus\Attributes\3_Tooltip.lua
-Plus\Attributes\4_Menu.lua
-Plus\Attributes\5_Blizzard_Settings.lua
-Plus\Attributes\Speed_Dragonriding.lua
-Plus\Attributes\Speed_Target.lua
-Plus\Attributes\Speed_Vehicle.lua
+##Plus\Attributes\0_Init.lua
+##Plus\Attributes\1_Setup.lua
+##Plus\Attributes\2_Button.lua
+##Plus\Attributes\3_Tooltip.lua
+##Plus\Attributes\4_Menu.lua
+##Plus\Attributes\5_Blizzard_Settings.lua
+##Plus\Attributes\Speed_Dragonriding.lua
+##Plus\Attributes\Speed_Target.lua
+##Plus\Attributes\Speed_Vehicle.lua
 
 ##任务框，增强
 Plus\ObjectiveTracker\0_ObjectiveMixin.lua

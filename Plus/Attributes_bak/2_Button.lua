@@ -1,7 +1,3 @@
-if WoWTools_DataMixin.Player.Ver>=120005 then--11.0.5会出错
-    return
-end
-
 local function Save()
     return WoWToolsSave['Plus_Attributes']
 end

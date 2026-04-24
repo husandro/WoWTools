@@ -1,10 +1,3 @@
-if WoWTools_DataMixin.Player.Ver>=120005 then--11.0.5会出错
-    return
-end
-
-
-
-
 
 --载具，移动，速度
 local function Init()
