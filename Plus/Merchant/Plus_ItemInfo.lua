@@ -1,7 +1,9 @@
 local function Save()
     return WoWToolsSave['Plus_SellBuy']
 end
-
+local function SellBuyItemsSave()
+    return WoWToolsPlayerDate['SellBuyItems']
+end
 
 
 
@@ -253,10 +255,13 @@ local function Set_Item_Info()
         end
         if showItemInfo and itemID and itemLink then
 --自动购买， 数量
-            local buyNum= not notAutoBuy and WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]
-            if buyNum then
-                num= buyNum..'|A:Perks-ShoppingCart:0:0|a'
+            if not notAutoBuy and SellBuyItemsSave().buy and SellBuyItemsSave().buy[WoWTools_DataMixin.Player.GUID] then
+                local buyNum= SellBuyItemsSave().buy[WoWTools_DataMixin.Player.GUID][itemID]
+                if buyNum then
+                    num= buyNum..'|A:Perks-ShoppingCart:0:0|a'
+                end
             end
+
 --包里，银行
             num= num..(WoWTools_ItemMixin:GetCount(itemID, {notZero=true}) or '')
 --物品，属性

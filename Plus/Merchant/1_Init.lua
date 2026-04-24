@@ -93,6 +93,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 },
             }
 
+            WoWToolsPlayerDate['SellBuyItems'].buy= WoWToolsPlayerDate['SellBuyItems'].buy or {}
+
             if not WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID] then
                 WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID]= {}
             end

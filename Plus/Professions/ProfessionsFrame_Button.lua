@@ -248,7 +248,7 @@ local function Init_Menu(self, root)
     function()
         return Save().setButton
     end, function()
-        Save().setButton= not Save().setButton and true or nil
+        Save().setButton= not Save().setButton and true or false
         if Save().showFuocoButton  then
             print(WoWTools_DataMixin.addName,  WoWTools_ProfessionMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end

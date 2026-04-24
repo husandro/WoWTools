@@ -20,7 +20,7 @@ local function Init_Menu(self, root)
     function()
         return Save().plusTab
     end, function()
-        Save().plusTab= not Save().plusTab and true or nil
+        Save().plusTab= not Save().plusTab and true or false
         GuildBankFrame:UpdateTabs()
     end)
 
@@ -30,7 +30,7 @@ local function Init_Menu(self, root)
     function()
         return Save().showIndex
     end, function()
-        Save().showIndex= not Save().showIndex and true or nil--显示，索引
+        Save().showIndex= not Save().showIndex and true or false--显示，索引
         WoWTools_GuildBankMixin:Init_Plus()
     end)
 
@@ -40,7 +40,7 @@ local function Init_Menu(self, root)
     function()
         return Save().plusItem
     end, function()
-        Save().plusItem= not Save().plusItem and true or nil
+        Save().plusItem= not Save().plusItem and true or false
         GuildBankFrame:Update()
     end)
 

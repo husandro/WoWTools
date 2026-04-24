@@ -13,7 +13,7 @@ function WoWTools_MinimapMixin:ExpansionLanding_Menu(_, root)
     function()
         return Save().hideExpansionLandingPageMinimapButton
     end, function()
-        Save().hideExpansionLandingPageMinimapButton= not Save().hideExpansionLandingPageMinimapButton and true or nil
+        Save().hideExpansionLandingPageMinimapButton= not Save().hideExpansionLandingPageMinimapButton and true or false
         Save().moveExpansionLandingPageMinimapButton=nil
         print(
             WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2,
@@ -27,7 +27,7 @@ function WoWTools_MinimapMixin:ExpansionLanding_Menu(_, root)
     function()
         return Save().moveExpansionLandingPageMinimapButton
     end, function()
-        Save().moveExpansionLandingPageMinimapButton= not Save().moveExpansionLandingPageMinimapButton and true or nil
+        Save().moveExpansionLandingPageMinimapButton= not Save().moveExpansionLandingPageMinimapButton and true or false
         Save().hideExpansionLandingPageMinimapButton=nil
         print(
             WoWTools_MinimapMixin.addName..WoWTools_DataMixin.Icon.icon2,

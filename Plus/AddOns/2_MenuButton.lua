@@ -97,7 +97,7 @@ local function Init_Menu(self, root)
     function()
         return Save().load_list_onlyIcon
     end, function()
-        Save().load_list_onlyIcon= not Save().load_list_onlyIcon and true or nil
+        Save().load_list_onlyIcon= not Save().load_list_onlyIcon and true or false
         WoWTools_AddOnsMixin:Init_Bottom_Buttons()
     end)
 

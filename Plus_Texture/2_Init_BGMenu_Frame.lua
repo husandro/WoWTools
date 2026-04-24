@@ -1,6 +1,10 @@
 local function Save()
     return WoWToolsSave['Plus_Texture'].Bg
 end
+local function BGTextureSave()
+    return WoWToolsPlayerDate['BGTexture'] or {}
+end
+    
 
 local BGName= 'WoWTools_BG'
 
@@ -414,7 +418,7 @@ local function Texture_List_Menu(self, root, icon, name)
 
     local newTab={}
 
-    for texture in pairs(WoWToolsPlayerDate['BGTexture']) do
+    for texture in pairs(BGTextureSave()) do
         table.insert(newTab, texture)
     end
     table.sort(newTab)

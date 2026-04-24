@@ -1,8 +1,11 @@
 local function Save()
-    return WoWToolsSave['Plus_SellBuy']
+    return WoWToolsSave['Plus_SellBuy'] or {}
 end
 local function RepairSave()
-    return WoWToolsPlayerDate['RepairMoney']
+    return WoWToolsPlayerDate['RepairMoney'] or {}
+end
+local function SellBuyItemsSave()
+    return WoWToolsPlayerDate['SellBuyItems'] or {}
 end
 
 
@@ -23,7 +26,7 @@ end
 --出售自定义
 local function Player_Sell_Menu(_, root)
     local num, sub, sub2
-    num= CountTable(WoWToolsPlayerDate['SellBuyItems'].sell or {})
+    num= CountTable(SellBuyItemsSave().sell or {})
     sub=root:CreateCheckbox(
         '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM)),
@@ -41,14 +44,18 @@ local function Player_Sell_Menu(_, root)
 
     --列表, 出售自定义
     num=0
-    for itemID in pairs(WoWToolsPlayerDate['SellBuyItems'].sell) do
+    for itemID in pairs(SellBuyItemsSave().sell or {}) do
         num=num+1
         sub2=sub:CreateCheckbox(
             num..') '..WoWTools_ItemMixin:GetName(itemID),
         function(data)
-            return WoWToolsPlayerDate['SellBuyItems'].sell[data.itemID]
+            if SellBuyItemsSave().sell then
+                return SellBuyItemsSave().sell[data.itemID]
+            end
         end, function(data)
-            WoWToolsPlayerDate['SellBuyItems'].sell[data.itemID]= not WoWToolsPlayerDate['SellBuyItems'].sell[data.itemID] and true or nil
+            if SellBuyItemsSave().sell then
+                WoWToolsPlayerDate['SellBuyItems'].sell[data.itemID]= not WoWToolsPlayerDate['SellBuyItems'].sell[data.itemID] and true or nil
+            end
         end, {itemID=itemID})
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
     end
@@ -61,7 +68,7 @@ local function Player_Sell_Menu(_, root)
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
             nil,
             {SetValue=function()
-                WoWToolsPlayerDate['SellBuyItems'].sell={}
+                SellBuyItemsSave().sell={}
             end})
             return MenuResponse.Open
         end)
@@ -98,16 +105,18 @@ local function Buyback_Menu(_, root)
 
 --列表，回购
     num=0
-    for itemID in pairs(WoWToolsPlayerDate['SellBuyItems'].noSell) do
+    for itemID in pairs(SellBuyItemsSave().noSell or {}) do
         num= num+1
        WoWTools_DataMixin:Load(itemID, 'item')
         local itemName= WoWTools_ItemMixin:GetName(itemID)
         sub2= sub:CreateCheckbox(
             itemName,
         function(data)
-            return WoWToolsPlayerDate['SellBuyItems'].noSell[data.itemID]
+            return SellBuyItemsSave().noSell[data.itemID]
         end, function(data)
-            WoWToolsPlayerDate['SellBuyItems'].noSell[data.itemID]=not WoWToolsPlayerDate['SellBuyItems'].noSell[data.itemID] and true or nil
+            if SellBuyItemsSave().noSell then
+                WoWToolsPlayerDate['SellBuyItems'].noSell[data.itemID]=not WoWToolsPlayerDate['SellBuyItems'].noSell[data.itemID] and true or nil
+            end
             local btn= _G['WoWTools_BuybackButton']
             if btn then
                 btn:set_text()--回购，数量，提示
@@ -125,7 +134,7 @@ local function Buyback_Menu(_, root)
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
             nil,
             {SetValue=function()
-               WoWToolsPlayerDate['SellBuyItems'].noSell={}
+               SellBuyItemsSave().noSell={}
             end})
             return MenuResponse.Open
         end)
@@ -181,21 +190,26 @@ local function BuyItem_Menu(self, root)
     --列表，购买
     local guid= WoWTools_DataMixin.Player.GUID
     num=0
-    for itemID, numItem in pairs(WoWToolsPlayerDate['SellBuyItems'].buy[guid]) do
+    for itemID, numItem in pairs(SellBuyItemsSave().buy[guid] or {}) do
         num=num+1
         local itemName= WoWTools_ItemMixin:GetName(itemID)
         sub2=sub:CreateCheckbox(
             '|cnGREEN_FONT_COLOR:'..numItem..'|r '..itemName,
         function(data)
-            return WoWToolsPlayerDate['SellBuyItems'].buy[guid][data.itemID]
+            if SellBuyItemsSave().buy and SellBuyItemsSave().buy[guid] then
+                return SellBuyItemsSave().buy[guid][data.itemID]
+            end
         end, function(data)
-            WoWToolsPlayerDate['SellBuyItems'].buy[guid][data.itemID]=not WoWToolsPlayerDate['SellBuyItems'].buy[guid][data.itemID] and data.num or nil
-           WoWTools_MerchantMixin:Update_MerchantFrame()
+            if SellBuyItemsSave().buy and SellBuyItemsSave().buy[guid] then
+                WoWToolsPlayerDate['SellBuyItems'].buy[guid][data.itemID]=not WoWToolsPlayerDate['SellBuyItems'].buy[guid][data.itemID] and data.num or nil
+            end
+
+            WoWTools_MerchantMixin:Update_MerchantFrame()
             local btn= _G['WoWTools_BuybackButton']
             if btn then
                 btn:set_text()--回购，数量，提示
             end
-        end, {itemID=itemID, num= WoWToolsPlayerDate['SellBuyItems'].buy[guid][itemID] or 1})
+        end, {itemID=itemID, num= SellBuyItemsSave().buy[guid][itemID] or 1})
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
     end
 
@@ -208,7 +222,7 @@ local function BuyItem_Menu(self, root)
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
             nil,
             {SetValue=function()
-                WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID]={}
+                SellBuyItemsSave().buy[WoWTools_DataMixin.Player.GUID]={}
                 WoWTools_MerchantMixin:Update_MerchantFrame()
                 local btn= _G['WoWTools_BuybackButton']
                 if btn then

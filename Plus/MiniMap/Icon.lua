@@ -75,6 +75,7 @@ local function Init_Icon()
         suffix=nil,--string,
         text=name,-- string,
         tocname=nil,--string,
+---@diagnostic disable-next-line: assign-type-mismatch
         tooltip=WoWTools_DataMixin.addName,--Frame,
         type='data source',-- "data source"|"launcher",
         value=nil,--string,

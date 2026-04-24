@@ -3,15 +3,23 @@ local function Save()
     return WoWToolsSave['Plus_SellBuy']
 end
 
+local function SellBuyItemsSave()
+    return WoWToolsPlayerDate['SellBuyItems'] or {}
+end
+
+
 local function Get_Buy_Num(itemID)
     if itemID then
-        local num=WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]
-        return num
+        if SellBuyItemsSave().buy and SellBuyItemsSave().buy[WoWTools_DataMixin.Player.GUID] then
+            return SellBuyItemsSave().buy[WoWTools_DataMixin.Player.GUID][itemID]--数量
+        end
     end
 end
 
 local function SaveBuyItem(itemID, num)--当num=nil时，会清除    
-    WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]=num
+    if SellBuyItemsSave().buy and SellBuyItemsSave().buy[WoWTools_DataMixin.Player.GUID] then
+        WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID][itemID]=num
+    end
 end
 
 
@@ -145,7 +153,7 @@ local function Check_All(onlyRegents)
         return not info.isLocked
             and info.quality<Enum.ItemQuality.Legendary
             and (select(11, C_Item.GetItemInfo(info.hyperlink)) or 0)> 0
-            and not WoWToolsPlayerDate['SellBuyItems'].noSell[info.itemID]
+            and not SellBuyItemsSave().noSell[info.itemID]
     end)
 end
 
@@ -416,7 +424,7 @@ local function Init()
                 )
             else
                 SaveBuyItem(data.itemID, num)
-                WoWToolsPlayerDate['SellBuyItems'].sell[data.itemID]=nil
+                SellBuyItemsSave().sell[data.itemID]=nil
                 print(
                     WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r',
@@ -475,7 +483,7 @@ local function Init()
         if infoType=='item' and itemIDorIndex and itemLink then
             local icon= select(5, C_Item.GetItemInfoInstant(itemLink))
             local name= '|T'..(icon or 0)..':0|t'..itemLink
-            if WoWToolsPlayerDate['SellBuyItems'].sell[itemIDorIndex] then
+            if SellBuyItemsSave().sell[itemIDorIndex] then
                 GameTooltip:AddDoubleLine(
                     name,
                     '|A:bags-button-autosort-up:0:0|a|cnWARNING_FONT_COLOR:'
@@ -560,8 +568,8 @@ local function Init()
     BuyItemButton:SetScript('OnMouseDown', function(self, d)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType=='item' and itemID then
-            if WoWToolsPlayerDate['SellBuyItems'].sell[itemID] then
-                WoWToolsPlayerDate['SellBuyItems'].sell[itemID]=nil
+            if SellBuyItemsSave().sell[itemID] then
+                SellBuyItemsSave().sell[itemID]=nil
                 print(
                     WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
                     '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r',
@@ -569,8 +577,8 @@ local function Init()
                     itemLink
                 )
             else
-                WoWToolsPlayerDate['SellBuyItems'].sell[itemID]=true
-                WoWToolsPlayerDate['SellBuyItems'].noSell[itemID]=nil
+                SellBuyItemsSave().sell[itemID]=true
+                SellBuyItemsSave().noSell[itemID]=nil
                 SaveBuyItem(itemID, nil)
                 print(
                     WoWTools_MerchantMixin.addName..WoWTools_DataMixin.Icon.icon2,
@@ -634,7 +642,7 @@ local function Init()
 
 
     function BuyItemButton:set_text()--回购，数量，提示
-        local num=  CountTable(WoWToolsPlayerDate['SellBuyItems'].buy[WoWTools_DataMixin.Player.GUID] or {})
+        local num=  CountTable(SellBuyItemsSave().buy[WoWTools_DataMixin.Player.GUID] or {})
 
         self.Text:SetText(not Save().notAutoBuy and num or '')
         self.texture:SetDesaturated(Save().notAutoBuy or num==0)

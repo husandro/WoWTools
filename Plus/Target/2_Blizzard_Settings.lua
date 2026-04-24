@@ -4,6 +4,9 @@ local Frame
 local function Save()
     return WoWToolsSave['Plus_Target']
 end
+local function TargetTextureSave()
+    return WoWToolsPlayerDate['TargetTexture'] or {}
+end
 
 local function set_Target_Color(self, isInCombat)--设置，颜色
     if self then
@@ -69,7 +72,7 @@ local TextureTab={
 
 
 local function get_texture_tab()
-    for name, _ in pairs(WoWToolsPlayerDate['TargetTexture'] or {}) do
+    for name in pairs(TargetTextureSave() or {}) do
         if TextureTab[name] then
             WoWToolsPlayerDate['TargetTexture'][name]=nil
         else
@@ -378,8 +381,8 @@ local function Init_Options()
                 Frame.tipTargetTexture:SetTexture(0)
             end
         end
-        self.del:SetShown(name and WoWToolsPlayerDate['TargetTexture'][name])
-        self.add:SetShown(name and not WoWToolsPlayerDate['TargetTexture'][name])
+        self.del:SetShown(name and TargetTextureSave()[name])
+        self.add:SetShown(name and not TargetTextureSave()[name])
     end)
 
     --删除，图片
@@ -388,7 +391,7 @@ local function Init_Options()
     menu.edit.del:SetScript('OnClick', function(self)
         local parent= self:GetParent()
         local isAtals, name= WoWTools_TextureMixin:IsAtlas(parent:GetText())
-        if name and WoWToolsPlayerDate['TargetTexture'][name] then
+        if name and TargetTextureSave()[name] then
             WoWToolsPlayerDate['TargetTexture'][name]= nil
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName,
                 '|cnWARNING_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r',
@@ -405,7 +408,7 @@ local function Init_Options()
     menu.edit.add:SetScript('OnClick', function(self)
         local parent= self:GetParent()
         local isAtlas, icon= WoWTools_TextureMixin:IsAtlas(parent:GetText())
-        if icon and not WoWToolsPlayerDate['TargetTexture'][icon] then
+        if icon and not TargetTextureSave()[icon] then
             WoWToolsPlayerDate['TargetTexture'][icon]= isAtlas and 'a' or 't'
             parent:SetText('')
             print(WoWTools_DataMixin.addName,

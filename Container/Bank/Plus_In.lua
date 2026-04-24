@@ -52,6 +52,7 @@ local function Get_BagItems()
     local items= WoWTools_BagMixin:GetItems(true, nil, nil, function(_, _, info)
         return not info.isFiltered and not info.isLocked
     end)
+    
     local num= #items
     if num==0 then
         return {}, 0
@@ -76,13 +77,15 @@ local function Get_BagItems()
                 },
                 num=1
             }
-        else
+        elseif subClassID then
             table.insert(itemTab[classID].item, info)
 
-            if not itemTab[classID].sub[subClassID] then
-                itemTab[classID].sub[subClassID]= {info}
-            else
-                table.insert(itemTab[classID].sub[subClassID], info)
+            if itemTab[classID].sub then
+                if not itemTab[classID].sub[subClassID] then
+                    itemTab[classID].sub[subClassID]= {info}
+                else
+                    table.insert(itemTab[classID].sub[subClassID], info)
+                end
             end
 
             itemTab[classID].num= itemTab[classID].num+1

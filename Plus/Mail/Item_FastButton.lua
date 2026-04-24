@@ -68,7 +68,7 @@ local function Init_Menu(self, root)
     function()
         return Save().fastShow
     end, function()
-        Save().fastShow= not Save().fastShow and true or nil
+        Save().fastShow= not Save().fastShow and true or false
         self:set_shown()
     end)
 

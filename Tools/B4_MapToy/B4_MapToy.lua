@@ -226,7 +226,7 @@ local function Init_Menu(self, root)
     function()
         return Save().maxLevelIsDisabled
     end, function()
-        Save().maxLevelIsDisabled= not Save().maxLevelIsDisabled and true or nil
+        Save().maxLevelIsDisabled= not Save().maxLevelIsDisabled and true or false
     end)
     sub2:SetTooltip(function (tooltip)
         tooltip:AddLine(

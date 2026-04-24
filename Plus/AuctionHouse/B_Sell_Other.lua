@@ -532,7 +532,7 @@ local function Init_MaxSellItemCheck()
         GameTooltip:Show()
     end)
     MaxSellItemCheck2:SetScript('OnClick', function()
-        Save().isMaxSellItem= not Save().isMaxSellItem and true or nil
+        Save().isMaxSellItem= not Save().isMaxSellItem and true or false
         MaxSellItemCheck:SetChecked(Save().isMaxSellItem)
     end)
 end

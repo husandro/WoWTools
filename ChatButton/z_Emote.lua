@@ -25,7 +25,9 @@ end
 local Init_Button
 
 local function SaveUse(name)
-    return WoWToolsPlayerDate['EmoteButton'][name]
+    if WoWToolsPlayerDate['EmoteButton'] then
+        return WoWToolsPlayerDate['EmoteButton'][name]
+    end
 end
 
 local MainButton

@@ -134,7 +134,8 @@ local function Set_Load_Button()--LoadButtons
             local atlas = C_AddOns.GetAddOnMetadata(i, "IconAtlas")
             local name =  C_AddOns.GetAddOnName(i)
 
-            if Save().fast[name] then
+            if Save().fast[name] then--上次的错误记录，需要改正
+---@diagnostic disable-next-line: assign-type-mismatch
                 Save().fast[name]=i
             end
 

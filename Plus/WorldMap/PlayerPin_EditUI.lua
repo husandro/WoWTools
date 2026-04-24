@@ -393,7 +393,9 @@ local function Add_ListButton(btn)
             data.xy,
             data.pin.note
         )
-        SaveWoW()[Frame.mapID][data.xy]= nil
+        if SaveWoW()[Frame.mapID] then
+            SaveWoW()[Frame.mapID][data.xy]= nil
+        end
         Refresh_All()
         RefreshWorldMapPins()
     end)
