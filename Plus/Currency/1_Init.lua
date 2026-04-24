@@ -38,7 +38,6 @@ local function Init_Menu(self, root)
 		WoWTools_CurrencyMixin:Init_TrackButton()
 	end)
 
-
 --达到上限
 	root:CreateDivider()
 	sub=root:CreateCheckbox(
@@ -53,6 +52,8 @@ local function Init_Menu(self, root)
 		tooltip:AddLine('CURRENCY_DISPLAY_UPDATE')
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
 	end)
+
+	--WoWTools_DataMixin.onlyChinese and '仅限当前版本' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)),
 
 
 --Plus
@@ -124,6 +125,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				str=true,
 				toRightTrackText=true,--向右平移
 				itemButtonUse=WoWTools_DataMixin.Player.husandro,
+				--hideCurrencyMax=true,--达到上限
 			}
 
 			Save().ItemInteractionID= nil

@@ -146,7 +146,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, toLeft)
             end
             hasRewardPending= hasRewardPending or format('|A:GarrMission-%sChest:0:0|a', WoWTools_DataMixin.Player.Faction)
         end
-
+    
         --本周已满
         if C_MajorFactions.IsWeeklyRenownCapped(factionID) then
             barColor= WARNING_FONT_COLOR

@@ -16,6 +16,7 @@ local function Currency_Max(_, curID)--已达到资源上限
         if MaxTabs[curID] then
             return
         end
+
         local isMax, isMaxWeek= WoWTools_CurrencyMixin:IsMax(curID)
         if isMax or isMaxWeek then
             tab[curID]={isMax=isMax, isMaxWeek=isMaxWeek}
@@ -33,6 +34,7 @@ local function Currency_Max(_, curID)--已达到资源上限
             end
         end
 
+    
         for currencyID, _ in pairs(Save().tokens) do
             if not MaxTabs[currencyID] and not tab[currencyID] then
                 local isMax, isMaxWeek= WoWTools_CurrencyMixin:IsMax(currencyID)
@@ -42,7 +44,6 @@ local function Currency_Max(_, curID)--已达到资源上限
                 end
             end
         end
-
     end
 
     if num>0 then
