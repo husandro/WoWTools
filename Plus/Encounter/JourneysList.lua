@@ -59,6 +59,7 @@ local function Create_Button(btn)
     btn.text:SetShadowOffset(1,-1)
     btn.text:SetPoint('LEFT', btn, 'RIGHT')
 
+    --btn.anchor= 'ANCHOR_RIGHT'
 
     btn:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()
