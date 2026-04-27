@@ -195,16 +195,10 @@ local function Init()
         end
 
         local value= GetUnitSpeed('target')
-        if not canaccessvalue(value) then
-            self.Text:SetText('')
-        elseif value==0 or not value then
-            self.Text:SetText('|cff8282820')
-        else
-            self.Text:SetFormattedText(
-                '%.0f%%',
-                (value)*100/BASE_MOVEMENT_SPEED
-            )
-        end
+        self.Text:SetFormattedText(
+            '%.0f%%',
+            (value)*100/BASE_MOVEMENT_SPEED
+        )
     end)
 
 

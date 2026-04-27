@@ -1,9 +1,9 @@
 
 --载具，移动，速度
 local function Init()
-    if WoWToolsSave['Plus_Attributes'].disabledVehicleSpeed then
-        return
-    end
+    --if WoWToolsSave['Plus_Attributes'].disabledVehicleSpeed then
+        --return
+    --end
 
     for _, name in pairs({
         'MainMenuBarVehicleLeaveButton',--没有车辆，界面
@@ -35,8 +35,9 @@ local function Init()
                 if self.elapsed>0.3 then
                     self.elapsed= 0
                     local unit= PlayerFrame.displayedUnit or PlayerFrame.unit or 'player'
-                    local speed= GetUnitSpeed(unit) or 0
-                    self.speedText:SetText(math.modf(speed* 100 / BASE_MOVEMENT_SPEED))
+                    local speed= GetUnitSpeed(unit)
+                    --self.speedText:SetText(math.modf(speed* 100 / BASE_MOVEMENT_SPEED))
+                    self.speedtext:SetText(AbbreviateNumbers(speed, WoWTools_AttributesMixin.SPEED_FORMAT_OPTIONS))
                 end
             end)
             frame:HookScript('OnHide', function(self)

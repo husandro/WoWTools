@@ -437,7 +437,7 @@ end
 
 
 function WoWTools_AttributesMixin:Set_Tooltips(frame, owner)
-    if Show_Tooltip[frame.name] then
+    if not InCombatLockdown() and Show_Tooltip[frame.name] then
         GameTooltip:SetOwner(owner or frame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         Show_Tooltip[frame.name](frame)

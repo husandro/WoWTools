@@ -6,7 +6,6 @@ end
 local Role, PrimaryStat, Tabs
 local RedColor--变小值
 local GreenColor--变大值
-local BASE_MOVEMENT_SPEED= BASE_MOVEMENT_SPEED or 7
 
 
 
@@ -578,20 +577,16 @@ local function set_SPEED_Text(frame, elapsed)
     end
 
     frame.elapsed= 0
-    local value
+    local speed
     local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
-    if isGliding and forwardSpeed then
-        value= forwardSpeed
+    if isGliding then
+        speed= forwardSpeed
     elseif UnitInVehicle('player') then
-        value= GetUnitSpeed('vehicle')
+        speed= GetUnitSpeed('vehicle')
     else
-        value= GetUnitSpeed('player')
+        speed= GetUnitSpeed('player')
     end
-    if not canaccessvalue(value) or value == 0 then
-        frame.text:SetText('')
-    else
-        frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
-    end
+    frame.text:SetText(AbbreviateNumbers(speed, WoWTools_AttributesMixin.SPEED_FORMAT_OPTIONS))
 end
 
 
@@ -838,22 +833,9 @@ end
 EventsTable.SPEED= function(frame)
     frame.frame=CreateFrame('Frame', nil, frame)
     frame.frame.elapsed= 0.3
-    --[[frame.frame:SetScript('OnHide', function(self)
-        self.elapsed= nil
-        self.text:SetText('')
-    end)
-    frame.frame:SetScript('OnShow', function(self)
-        self.elapsed= 0.3
-    end)]]
     frame.frame:SetScript('OnUpdate', set_SPEED_Text)
-
     frame.frame.text= frame.text
     frame.frame:SetAllPoints()
-    --[[frame:RegisterEvent("PLAYER_STARTED_MOVING")
-    frame:RegisterEvent("PLAYER_STOPPED_MOVING")
-    frame:SetScript('OnEvent', function(self, event)
-        self.frame:SetShown(event=='PLAYER_STARTED_MOVING')
-    end)]]
 end
 
 

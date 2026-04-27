@@ -163,7 +163,7 @@ local function Init_Options()--设置 Frame
             sliderBit:SetPoint("LEFT", current.text, 'RIGHT', 6,0)
             sliderBit:SetSize(100,20)
 
-
+--[[
         elseif info.name=='SPEED' then--速度, 当前速度, 选项
 --目标移动速度
             local targetCheck= WoWTools_ButtonMixin:Cbtn(Frame, {isCheck=true})
@@ -204,7 +204,7 @@ local function Init_Options()--设置 Frame
                     WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledVehicleSpeed),
                     WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
                 )
-            end)
+            end)]]
 
 
         elseif info.name=='VERSATILITY' then--全能5

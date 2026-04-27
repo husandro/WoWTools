@@ -63,7 +63,7 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
---目标移动速度
+--[[目标移动速度
     if _G['WoWToolsAttributesTargetMoveButton'] then
         sub= root:CreateButton(
             '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标移动' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TARGET, NPE_MOVE)),
@@ -71,7 +71,7 @@ local function Init_Menu(self, root)
             return MenuResponse.Open
         end)
         WoWTools_AttributesMixin:Target_Speed_Menu(self, sub)
-    end
+    end]]
 
 --选项
     sub=WoWTools_AttributesMixin:Open_Options(root)
